@@ -77,7 +77,6 @@ set_error_handler(null);
 
 include_once __DIR__ . '/GLPITestCase.php';
 include_once __DIR__ . '/DbTestCase.php';
-include_once __DIR__ . '/FrontBaseClass.php';
 include_once __DIR__ . '/RuleBuilder.php';
 
 loadDataset();

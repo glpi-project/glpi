@@ -37,19 +37,19 @@ namespace tests\units\Glpi\Inventory;
 
 use GuzzleHttp;
 
-class Inventory extends \GLPITestCase
+class InventoryTest extends \GLPITestCase
 {
     private $http_client;
     private $base_uri;
 
-    public function beforeTestMethod($method)
+    public function setUp(): void
     {
         global $CFG_GLPI;
 
         $this->http_client = new GuzzleHttp\Client();
         $this->base_uri    = trim($CFG_GLPI['url_base'], "/") . "/";
 
-        parent::beforeTestMethod($method);
+        parent::setUp();
     }
 
     public function testInventoryRequest()
@@ -129,14 +129,19 @@ class Inventory extends \GLPITestCase
                   </REQUEST>"
             ]
         );
-        $this->integer($res->getStatusCode())->isIdenticalTo(200);
-        $this->string((string)$res->getBody())
-         ->isIdenticalTo("<?xml version=\"1.0\"?>\n<REPLY><RESPONSE>SEND</RESPONSE></REPLY>");
-        $this->string($res->getHeader('content-type')[0])->isIdenticalTo('application/xml');
+        $this->assertSame(200, $res->getStatusCode());
+        $this->assertSame(
+            "<?xml version=\"1.0\"?>\n<REPLY><RESPONSE>SEND</RESPONSE></REPLY>",
+            (string)$res->getBody()
+        );
+        $this->assertSame(
+            'application/xml',
+            $res->getHeader('content-type')[0]
+        );
 
-       //check agent in database
+        //check agent in database
         $agent = new \Agent();
-        $this->boolean($agent->getFromDBByCrit(['deviceid' => 'computer-2018-07-09-09-07-13']))->isTrue();
+        $this->assertTrue($agent->getFromDBByCrit(['deviceid' => 'computer-2018-07-09-09-07-13']));
 
         $expected = [
             'deviceid'        => 'computer-2018-07-09-09-07-13',
@@ -149,10 +154,10 @@ class Inventory extends \GLPITestCase
 
         foreach ($expected as $key => $value) {
             if ($key === 'items_id') {
-               //FIXME: retrieve created items_id
-                $this->integer((int)$agent->fields[$key])->isGreaterThan(0);
+                //FIXME: retrieve created items_id
+                $this->assertGreaterThan(0, (int)$agent->fields[$key]);
             } else {
-                $this->variable($agent->fields[$key])->isEqualTo($value, "$key differs");
+                $this->assertEquals($value, $agent->fields[$key], "$key differs");
             }
         }
     }

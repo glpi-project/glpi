@@ -39,40 +39,49 @@ use DbTestCase;
 
 /* Test for inc/telemetry.class.php requiring the Web server*/
 
-class Telemetry extends DbTestCase
+class TelemetryTest extends DbTestCase
 {
     public function testGrabWebserverInfos()
     {
         $infos = \Telemetry::grabWebserverInfos();
-        $this->array($infos)
-         ->hasSize(2)
-         ->hasKeys(['engine', 'version']);
-        $this->string($infos['engine'])->isNotNull();
-        $this->string($infos['version'])->isNotNull();
+        $this->assertCount(2, $infos);
+        $this->assertArrayHasKey('engine', $infos);
+        $this->assertArrayHasKey('version', $infos);
+        $this->assertNotNull($infos['engine']);
+        $this->assertNotNull($infos['version']);
     }
 
     public function testGetTelemetryInfos()
     {
         $infos = \Telemetry::getTelemetryInfos();
-        $this->array($infos)->keys->isEqualTo([
-            'glpi',
-            'system'
-        ]);
+        $this->assertEquals(
+            [
+                'glpi',
+                'system'
+            ],
+            array_keys($infos)
+        );
 
-        $this->array($infos['glpi'])->keys->isEqualTo([
-            'uuid',
-            'version',
-            'plugins',
-            'default_language',
-            'install_mode',
-            'usage'
-        ]);
+        $this->assertEquals(
+            [
+                'uuid',
+                'version',
+                'plugins',
+                'default_language',
+                'install_mode',
+                'usage'
+            ],
+            array_keys($infos['glpi'])
+        );
 
-        $this->array($infos['system'])->keys->isEqualTo([
-            'db',
-            'web_server',
-            'php',
-            'os'
-        ]);
+        $this->assertEquals(
+            [
+                'db',
+                'web_server',
+                'php',
+                'os'
+            ],
+            array_keys($infos['system'])
+        );
     }
 }

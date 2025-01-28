@@ -35,7 +35,7 @@
 
 namespace tests\units;
 
-class Ticket extends \FrontBaseClass
+class TicketTest extends \FrontBaseClass
 {
     public function testTicketCreate()
     {
@@ -57,7 +57,10 @@ class Ticket extends \FrontBaseClass
         );
 
         $ticket = new \Ticket();
-        $this->boolean($ticket->getFromDBByCrit(['name' => ['LIKE', '%thetestuuidtoremove']]))->isTrue();
-        $this->string($ticket->fields['name'])->isIdenticalTo('A \'test\' > "ticket" & name thetestuuidtoremove');
+        $this->assertTrue($ticket->getFromDBByCrit(['name' => ['LIKE', '%thetestuuidtoremove']]));
+        $this->assertSame(
+            'A \'test\' > "ticket" & name thetestuuidtoremove',
+            $ticket->fields['name']
+        );
     }
 }

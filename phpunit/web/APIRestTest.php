@@ -37,7 +37,6 @@ namespace tests\units\Glpi\Api;
 
 use APIClient;
 use Auth;
-use atoum\atoum;
 use Computer;
 use Config;
 use Glpi\Tests\Api\Deprecated\Computer_Item;
@@ -50,15 +49,16 @@ use GuzzleHttp;
 use Item_DeviceSimcard;
 use NetworkPort_NetworkPort;
 use Notepad;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 use QueuedNotification;
 use TicketTemplate;
 use TicketTemplateMandatoryField;
-use User;
 
 /**
  * @engine isolate
  */
-class APIRest extends atoum
+class APIRestTest extends TestCase
 {
     protected $session_token;
     /** @var GuzzleHttp\Client */
@@ -66,7 +66,7 @@ class APIRest extends atoum
     protected $base_uri = "";
     protected $last_error;
 
-    public function beforeTestMethod($method)
+    public function setUp(): void
     {
         global $CFG_GLPI, $GLPI_CACHE;
 
@@ -74,18 +74,20 @@ class APIRest extends atoum
 
         // Empty log file
         $file_updated = file_put_contents($this->getLogFilePath(), "");
-        $this->variable($file_updated)->isNotIdenticalTo(false);
+        $this->assertNotSame(false, $file_updated);
 
         $this->http_client = new GuzzleHttp\Client();
         $this->base_uri    = trim($CFG_GLPI['url_base_api'], "/") . "/";
 
         $this->initSessionCredentials();
+        parent::setUp();
     }
 
-    public function afterTestMethod($method)
+    public function tearDown(): void
     {
         // Check that no errors occurred on the test server
-        $this->string(file_get_contents($this->getLogFilePath()))->isEmpty();
+        $this->assertEmpty(file_get_contents($this->getLogFilePath()));
+        parent::tearDown();
     }
 
     protected function getLogFilePath(): string
@@ -93,7 +95,7 @@ class APIRest extends atoum
         return GLPI_LOG_DIR . "/php-errors.log";
     }
 
-    public function setUp()
+    public static function setUpBeforeClass(): void
     {
         // To bypass various right checks
         // This is mandatory to create/update/delete some items during tests.
@@ -115,14 +117,11 @@ class APIRest extends atoum
         ]);
     }
 
-    /**
-     * @tags   api
-     * @covers API::initSession
-     */
     public function testAppToken()
     {
         $apiclient = new APIClient();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$apiclient->add([
                 'name'             => 'test app token',
                 'is_active'        => 1,
@@ -130,10 +129,11 @@ class APIRest extends atoum
                 'ipv4_range_end'   => '127.0.0.1',
                 '_reset_app_token' => true,
             ])
-        )->isGreaterThan(0);
+        );
 
         $app_token = $apiclient->fields['app_token'];
-        $this->string($app_token)->isNotEmpty()->hasLength(40);
+        $this->assertNotEmpty($app_token);
+        $this->assertSame(40, strlen($app_token));
 
         // test valid app token -> expect ok session
         $data = $this->query(
@@ -146,34 +146,28 @@ class APIRest extends atoum
                 ]
             ]
         );
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('session_token');
+        $this->assertNotFalse($data);
+        $this->assertArrayHasKey('session_token', $data);
 
         // test invalid app token -> expect error 400 and a specific code
-        $data = $this->query(
+        $this->query(
             'initSession',
-            [
-                'query' => [
-                    'login'     => TU_USER,
-                    'password'  => TU_PASS,
-                    'app_token' => "test_invalid_token"
-                ]
+            ['query' => [
+                'login'     => TU_USER,
+                'password'  => TU_PASS,
+                'app_token' => "test_invalid_token"
+            ]
             ],
             400,
             'ERROR_WRONG_APP_TOKEN_PARAMETER'
         );
     }
 
-    /**
-     * @tags    api
-     * @covers  API::changeActiveEntities
-     */
     public function testChangeActiveEntities()
     {
         $this->query(
             'changeActiveEntities',
-            [
-                'verb'    => 'POST',
+            ['verb'    => 'POST',
                 'headers' => ['Session-Token' => $this->session_token],
                 'json'    => [
                     'entities_id'   => 'all',
@@ -184,10 +178,6 @@ class APIRest extends atoum
         );
     }
 
-    /**
-     * @tags    api
-     * @covers  API::getMyEntities
-     */
     public function testGetMyEntities()
     {
         $data = $this->query(
@@ -195,19 +185,12 @@ class APIRest extends atoum
             ['headers' => ['Session-Token' => $this->session_token]]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)
-            ->hasKey('myentities')
-            ->array['myentities']
-                ->array[0] // check presence of first entity
-                    ->variable['id']
-                        ->isEqualTo(0); // check presence of root entity
+        $this->assertNotFalse($data);
+        $this->assertArrayHasKey('myentities', $data);
+        $this->assertIsArray($data['myentities'][0]); // check presence of first entity
+        $this->assertEquals(0, $data['myentities'][0]['id']); // check presence of root entity
     }
 
-    /**
-     * @tags    api
-     * @covers  API::getActiveEntities
-     */
     public function testGetActiveEntities()
     {
         $data = $this->query(
@@ -215,21 +198,15 @@ class APIRest extends atoum
             ['headers' => ['Session-Token' => $this->session_token]]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)
-            ->array['active_entity'];
+        $this->assertNotFalse($data);
+        $this->assertIsArray($data['active_entity']);
 
-        $this->array($data['active_entity'])
-            ->hasKey('id')
-            ->hasKey('active_entity_recursive')
-            ->hasKey('active_entities')
-            ->array['active_entities'];
+        $this->assertArrayHasKey('id', $data['active_entity']);
+        $this->assertArrayHasKey('active_entity_recursive', $data['active_entity']);
+        $this->assertArrayHasKey('active_entities', $data['active_entity']);
+        $this->assertIsArray($data['active_entity']['active_entities']);
     }
 
-    /**
-     * @tags    api
-     * @covers  API::changeActiveProfile
-     */
     public function testChangeActiveProfile()
     {
         // test change to an existing and available profile
@@ -242,7 +219,7 @@ class APIRest extends atoum
             ]
         );
 
-        // test change to a non existing profile
+        // test change to a non-existing profile
         $this->query(
             'changeActiveProfile',
             [
@@ -267,10 +244,6 @@ class APIRest extends atoum
         );
     }
 
-    /**
-     * @tags    api
-     * @covers  API::getMyProfiles
-     */
     public function testGetMyProfiles()
     {
         $data = $this->query(
@@ -278,15 +251,11 @@ class APIRest extends atoum
             ['headers' => ['Session-Token' => $this->session_token]]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('myprofiles'); // check presence of root key
-        $this->array($data['myprofiles'][0])->hasKey('id'); // check presence of id key in first profile
+        $this->assertNotFalse($data);
+        $this->assertArrayHasKey('myprofiles', $data); // check presence of root key
+        $this->assertArrayHasKey('id', $data['myprofiles'][0]); // check presence of id key in first profile
     }
 
-    /**
-     * @tags    api
-     * @covers  API::getActiveProfile
-     */
     public function testGetActiveProfile()
     {
         $data = $this->query(
@@ -294,18 +263,14 @@ class APIRest extends atoum
             ['headers' => ['Session-Token' => $this->session_token]]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('active_profile');
-        $this->array($data['active_profile'])
-            ->hasKey('id')
-            ->hasKey('name')
-            ->hasKey('interface');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('active_profile', $data);
+        $this->assertIsArray($data['active_profile']);
+        $this->assertArrayHasKey('id', $data['active_profile']);
+        $this->assertArrayHasKey('name', $data['active_profile']);
+        $this->assertArrayHasKey('interface', $data['active_profile']);
     }
 
-    /**
-     * @tags    api
-     * @covers  API::getFullSession
-     */
     public function testGetFullSession()
     {
         $data = $this->query(
@@ -313,20 +278,16 @@ class APIRest extends atoum
             ['headers' => ['Session-Token' => $this->session_token]]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('session');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('session', $data);
 
-        $this->array($data['session'])
-            ->hasKey('glpiID')
-            ->hasKey('glpiname')
-            ->hasKey('glpilanguage')
-            ->hasKey('glpilist_limit');
+        $this->assertIsArray($data['session']);
+        $this->assertArrayHasKey('glpiID', $data['session']);
+        $this->assertArrayHasKey('glpiname', $data['session']);
+        $this->assertArrayHasKey('glpilanguage', $data['session']);
+        $this->assertArrayHasKey('glpilist_limit', $data['session']);
     }
 
-    /**
-     * @tags    api
-     * @covers  API::getMultipleItems
-     */
     public function testGetMultipleItems()
     {
         // Get the User TU_USER and the entity in the same query
@@ -355,25 +316,21 @@ class APIRest extends atoum
 
         unset($data['headers']);
 
-        $this->array($data)
-         ->hasSize(2);
+        $this->assertIsArray($data);
+        $this->assertCount(2, $data);
 
         foreach ($data as $item) {
-            $this->array($item)
-                ->hasKey('id')
-                ->hasKey('name')
-                ->hasKey('entities_id')
-                ->hasKey('links')
-                ->hasKey('_logs') // with_logs == true
-                ->notHasKey('password');
-            $this->boolean(is_numeric($item['entities_id']))->isFalse(); // for expand_dropdowns
+            $this->assertIsArray($item);
+            $this->assertArrayHasKey('id', $item);
+            $this->assertArrayHasKey('name', $item);
+            $this->assertArrayHasKey('entities_id', $item);
+            $this->assertArrayHasKey('links', $item);
+            $this->assertArrayHasKey('_logs', $item);
+            $this->assertArrayNotHasKey('password', $item);
+            $this->assertFalse(is_numeric($item['entities_id'])); // for expand_dropdowns
         }
     }
 
-    /**
-     * @tags    api
-     * @covers  API::listSearchOptions
-     */
     public function testListSearchOptions()
     {
         // test retrieve all users
@@ -385,24 +342,21 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)
-            ->size->isGreaterThanOrEqualTo(128);
+        $this->assertIsArray($data);
+        $this->assertGreaterThanOrEqual(128, count($data));
 
-        $this->array($data[1])
-            ->string['name']->isIdenticalTo('Name')
-            ->string['table']->isIdenticalTo('glpi_computers')
-            ->string['field']->isIdenticalTo('name')
-            ->array['available_searchtypes'];
+        $this->assertIsArray($data[1]);
+        $this->assertSame('Name', $data[1]['name']);
+        $this->assertSame('glpi_computers', $data[1]['table']);
+        $this->assertSame('name', $data[1]['field']);
+        $this->assertIsArray($data[1]['available_searchtypes']);
 
-        $this->array($data[1]['available_searchtypes'])
-            ->isIdenticalTo(['contains', 'notcontains', 'equals', 'notequals', 'empty']);
+        $this->assertSame(
+            ['contains', 'notcontains', 'equals', 'notequals', 'empty'],
+            $data[1]['available_searchtypes']
+        );
     }
 
-    /**
-     * @tags    api
-     * @covers  API::searchItems
-     */
     public function testListSearch()
     {
         // test retrieve all users
@@ -421,35 +375,29 @@ class APIRest extends atoum
             ]
         );
 
-        $this->array($data)
-            ->hasKey('headers')
-            ->hasKey('totalcount')
-            ->hasKey('count')
-            ->hasKey('sort')
-            ->hasKey('order')
-            ->hasKey('rawdata');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertArrayHasKey('totalcount', $data);
+        $this->assertArrayHasKey('count', $data);
+        $this->assertArrayHasKey('sort', $data);
+        $this->assertArrayHasKey('order', $data);
+        $this->assertArrayHasKey('rawdata', $data);
 
         $headers = $data['headers'];
-
-        $this->array($data['headers'])->hasKey('Accept-Range');
-
-        $this->string($headers['Accept-Range'][0])->startWith('User');
-
-        $this->array($data['rawdata'])->hasSize(9);
+        $this->assertIsArray($headers);
+        $this->assertArrayHasKey('Accept-Range', $headers);
+        $this->assertStringStartsWith('User', $headers['Accept-Range'][0]);
+        $this->assertCount(9, $data['rawdata']);
 
         $first_user = array_shift($data['data']);
         $second_user = array_shift($data['data']);
 
-        $this->array($first_user)->hasKey(81);
-        $this->array($second_user)->hasKey(81);
+        $this->assertArrayHasKey(81, $first_user);
+        $this->assertArrayHasKey(81, $second_user);
 
         $this->checkContentRange($data, $headers);
     }
 
-    /**
-     * @tags    api
-     * @covers  API::searchItems
-     */
     public function testListSearchPartial()
     {
         // test retrieve partial users
@@ -469,29 +417,23 @@ class APIRest extends atoum
             206
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('totalcount', $data);
+        $this->assertArrayHasKey('count', $data);
+        $this->assertArrayHasKey('sort', $data);
+        $this->assertArrayHasKey('order', $data);
+        $this->assertArrayHasKey('rawdata', $data);
 
-        $this->array($data)
-            ->hasKey('totalcount')
-            ->hasKey('count')
-            ->hasKey('sort')
-            ->hasKey('order')
-            ->hasKey('rawdata');
-
-        $this->array($data['rawdata'])->hasSize(9);
+        $this->assertCount(9, $data['rawdata']);
 
         $first_user = array_shift($data['data']);
         $second_user = array_shift($data['data']);
-        $this->array($first_user)->hasKey(81);
-        $this->array($second_user)->hasKey(81);
+        $this->assertArrayHasKey(81, $first_user);
+        $this->assertArrayHasKey(81, $second_user);
 
         $this->checkContentRange($data, $data['headers']);
     }
 
-    /**
-     * @tags    api
-     * @covers  API::searchItems
-     */
     public function testListSearchEmpty()
     {
         // test retrieve partial users
@@ -517,35 +459,27 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertArrayHasKey('totalcount', $data);
+        $this->assertArrayHasKey('count', $data);
+        $this->assertArrayHasKey('sort', $data);
+        $this->assertArrayHasKey('order', $data);
+        $this->assertArrayHasKey('rawdata', $data);
 
-        $this->array($data)
-            ->hasKey('headers')
-            ->hasKey('totalcount')
-            ->hasKey('count')
-            ->hasKey('sort')
-            ->hasKey('order')
-            ->hasKey('rawdata');
+        $this->assertArrayHasKey('Accept-Range', $data['headers']);
+        $this->assertStringStartsWith('User', $data['headers']['Accept-Range'][0]);
 
-        $this->array($data['headers'])->hasKey('Accept-Range');
-
-        $this->string($data['headers']['Accept-Range'][0])->startWith('User');
-
-        $this->array($data['rawdata'])->hasSize(9);
-
+        $this->assertCount(9, $data['rawdata']);
         $this->checkEmptyContentRange($data, $data['headers']);
     }
 
-    /**
-     * @tags    api
-     * @covers  API::searchItems
-     */
     public function testSearchWithBadCriteria()
     {
         // test retrieve all users
         // multidimensional array of vars in query string not supported ?
 
-        // test a non existing search option ID
+        // test a non-existing search option ID
         $this->query(
             'search',
             [
@@ -565,7 +499,7 @@ class APIRest extends atoum
             'ERROR'
         );
 
-        // test a non numeric search option ID
+        // test a non-numeric search option ID
         $this->query(
             'search',
             [
@@ -607,9 +541,6 @@ class APIRest extends atoum
         );
     }
 
-    /**
-     * @tags    api
-     */
     protected function badEndpoint($expected_code = null, $expected_symbol = null)
     {
         $this->query(
@@ -642,18 +573,16 @@ class APIRest extends atoum
             201
         );
 
-        $this->variable($data)->isNotFalse();
-
-        $this->array($data)
-            ->hasKey('id')
-            ->hasKey('message');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('message', $data);
 
         $computers_id = $data['id'];
-        $this->boolean(is_numeric($computers_id))->isTrue();
-        $this->integer((int)$computers_id)->isGreaterThanOrEqualTo(0);
+        $this->assertTrue(is_numeric($computers_id));
+        $this->assertGreaterThanOrEqual(0, (int)$computers_id);
 
         $computer = new Computer();
-        $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
+        $this->assertTrue((bool)$computer->getFromDB($computers_id));
         return $computer;
     }
 
@@ -691,11 +620,9 @@ class APIRest extends atoum
             201
         );
 
-        $this->variable($data)->isNotFalse();
-
-        $this->array($data)
-            ->hasKey('id')
-            ->hasKey('message');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('message', $data);
     }
 
     /**
@@ -724,17 +651,11 @@ class APIRest extends atoum
             201
         );
 
-        $this->variable($data)->isNotFalse();
-
-        $this->array($data)
-            ->hasKey('id')
-            ->hasKey('message');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('message', $data);
     }
 
-    /**
-     * @tags    api
-     * @covers  API::CreateItems
-     */
     public function testCreateItem()
     {
         $computer = $this->createComputer();
@@ -747,10 +668,6 @@ class APIRest extends atoum
         $this->createNote($computers_id);
     }
 
-    /**
-     * @tags    api
-     * @covers  API::CreateItems
-     */
     public function testCreateItems()
     {
         $data = $this->query(
@@ -774,36 +691,30 @@ class APIRest extends atoum
             201
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertNotFalse($data);
 
         $first_computer = $data[0];
         $second_computer = $data[1];
 
-        $this->array($first_computer)
-            ->hasKey('id')
-            ->hasKey('message');
-        $this->array($second_computer)
-            ->hasKey('id')
-            ->hasKey('message');
+        $this->assertArrayHasKey('id', $first_computer);
+        $this->assertArrayHasKey('message', $first_computer);
+        $this->assertArrayHasKey('id', $second_computer);
+        $this->assertArrayHasKey('message', $second_computer);
 
-        $this->boolean(is_numeric($first_computer['id']))->isTrue();
-        $this->boolean(is_numeric($second_computer['id']))->isTrue();
+        $this->assertTrue(is_numeric($first_computer['id']));
+        $this->assertTrue(is_numeric($second_computer['id']));
 
-        $this->integer((int)$first_computer['id'])->isGreaterThanOrEqualTo(0);
-        $this->integer((int)$second_computer['id'])->isGreaterThanOrEqualTo(0);
+        $this->assertGreaterThanOrEqual(0, (int)$first_computer['id']);
+        $this->assertGreaterThanOrEqual(0, (int)$second_computer['id']);
 
         $computer = new Computer();
-        $this->boolean((bool)$computer->getFromDB($first_computer['id']))->isTrue();
-        $this->boolean((bool)$computer->getFromDB($second_computer['id']))->isTrue();
+        $this->assertTrue((bool)$computer->getFromDB($first_computer['id']));
+        $this->assertTrue((bool)$computer->getFromDB($second_computer['id']));
 
         unset($data['headers']);
         return $data;
     }
 
-    /**
-     * @tags    apit
-     * @covers  API::getItem
-     */
     public function testGetItem()
     {
         $computer = $this->createComputer();
@@ -824,15 +735,14 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)
-            ->hasKey('id')
-            ->hasKey('name')
-            ->hasKey('entities_id')
-            ->hasKey('links')
-            ->hasKey('_logs') // with_logs == true
-            ->notHasKey('password');
-        $this->boolean(is_numeric($data['entities_id']))->isFalse(); // for expand_dropdowns
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('name', $data);
+        $this->assertArrayHasKey('entities_id', $data);
+        $this->assertArrayHasKey('links', $data);
+        $this->assertArrayHasKey('_logs', $data);
+        $this->assertArrayNotHasKey('password', $data);
+        $this->assertFalse(is_numeric($data['entities_id'])); // for expand_dropdowns
 
         // Get user's entity
         $eid = getItemByTypeName('Entity', '_test_root_entity', true);
@@ -846,12 +756,11 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)
-            ->hasKey('id')
-            ->hasKey('name')
-            ->hasKey('completename')
-            ->notHasKey('links'); // get_hateoas == false
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('name', $data);
+        $this->assertArrayHasKey('completename', $data);
+        $this->assertArrayNotHasKey('links', $data); // get_hateoas == false
 
         // Get the previously created 'computer 1'
         $data = $this->query(
@@ -864,15 +773,13 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('name', $data);
+        $this->assertArrayHasKey('_networkports', $data);
 
-        $this->array($data)
-            ->hasKey('id')
-            ->hasKey('name')
-            ->hasKey('_networkports');
-
-        $this->array($data['_networkports'])->hasKey('NetworkPortEthernet');
-        $this->array($data['_networkports']['NetworkPortEthernet'])->isEmpty();
+        $this->assertArrayHasKey('NetworkPortEthernet', $data['_networkports']);
+        $this->assertEmpty($data['_networkports']['NetworkPortEthernet']);
 
         // create a network port for the computer
         $this->createNetworkPort($computers_id);
@@ -886,36 +793,29 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('name', $data);
+        $this->assertArrayHasKey('_networkports', $data);
 
-        $this->array($data)
-         ->hasKey('id')
-         ->hasKey('name')
-         ->hasKey('_networkports');
-
-        $this->array($data['_networkports'])->hasKey('NetworkPortEthernet');
-        $this->array($data['_networkports']['NetworkPortEthernet'])->isNotEmpty();
-
-        $this->array($data['_networkports']['NetworkPortEthernet'][0])->hasKey('NetworkName');
+        $this->assertArrayHasKey('NetworkPortEthernet', $data['_networkports']);
+        $this->assertNotEmpty($data['_networkports']['NetworkPortEthernet']);
+        $this->assertArrayHasKey('NetworkName', $data['_networkports']['NetworkPortEthernet'][0]);
 
         $networkname = $data['_networkports']['NetworkPortEthernet'][0]['NetworkName'];
-        $this->array($networkname)
-            ->hasKey('IPAddress')
-            ->hasKey('FQDN')
-            ->hasKey('id')
-            ->hasKey('name');
+        $this->assertIsArray($networkname);
+        $this->assertArrayHasKey('IPAddress', $networkname);
+        $this->assertArrayHasKey('FQDN', $networkname);
+        $this->assertArrayHasKey('id', $networkname);
+        $this->assertArrayHasKey('name', $networkname);
 
-        $this->array($networkname['IPAddress'][0])
-            ->hasKey('name')
-            ->hasKey('IPNetwork');
+        $this->assertIsArray($networkname['IPAddress'][0]);
+        $this->assertArrayHasKey('name', $networkname['IPAddress'][0]);
+        $this->assertArrayHasKey('IPNetwork', $networkname['IPAddress'][0]);
 
-        $this->string($networkname['IPAddress'][0]['name'])->isIdenticalTo('1.2.3.4');
+        $this->assertSame('1.2.3.4', $networkname['IPAddress'][0]['name']);
     }
 
-    /**
-     * @tags    api
-     * @covers  API::getItem
-     */
     public function testGetItemWithNotes()
     {
         $computer = $this->createComputer();
@@ -935,25 +835,19 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('name', $data);
+        $this->assertArrayHasKey('_notes', $data);
 
-        $this->array($data)
-            ->hasKey('id')
-            ->hasKey('name')
-            ->hasKey('_notes');
-
-        $this->array($data['_notes'][0])
-            ->hasKey('id')
-            ->hasKey('itemtype')
-            ->hasKey('items_id')
-            ->hasKey('users_id')
-            ->hasKey('content');
+        $this->assertIsArray($data['_notes'][0]);
+        $this->assertArrayHasKey('id', $data['_notes'][0]);
+        $this->assertArrayHasKey('itemtype', $data['_notes'][0]);
+        $this->assertArrayHasKey('items_id', $data['_notes'][0]);
+        $this->assertArrayHasKey('users_id', $data['_notes'][0]);
+        $this->assertArrayHasKey('content', $data['_notes'][0]);
     }
 
-    /**
-     * @tags    api
-     * @covers  API::getItem
-     */
     public function testGetItems()
     {
         // test retrieve all users
@@ -968,22 +862,20 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-
-        $this->array($data)
-            ->hasKey('headers')
-            ->hasKey(0)
-            ->size->isGreaterThanOrEqualTo(4);
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertArrayHasKey(0, $data);
+        $this->assertGreaterThanOrEqual(4, count($data));
 
         unset($data['headers']);
 
-        $this->array($data[0])
-            ->hasKey('id')
-            ->hasKey('name')
-            ->hasKey('is_active')
-            ->hasKey('entities_id')
-            ->notHasKey('password');
-        $this->boolean(is_numeric($data[0]['entities_id']))->isFalse(); // for expand_dropdowns
+        $this->assertIsArray($data[0]);
+        $this->assertArrayHasKey('id', $data[0]);
+        $this->assertArrayHasKey('name', $data[0]);
+        $this->assertArrayHasKey('is_active', $data[0]);
+        $this->assertArrayHasKey('entities_id', $data[0]);
+        $this->assertArrayNotHasKey('password', $data[0]);
+        $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
         // test retrieve partial users
         $data = $this->query(
@@ -999,20 +891,18 @@ class APIRest extends atoum
             206
         );
 
-        $this->variable($data)->isNotFalse();
-
-        $this->array($data)
-            ->hasKey('headers')
-            ->hasSize(3);
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertCount(3, $data);
         unset($data['headers']);
 
-        $this->array($data[0])
-            ->hasKey('id')
-            ->hasKey('name')
-            ->hasKey('is_active')
-            ->hasKey('entities_id')
-            ->notHasKey('password');
-        $this->boolean(is_numeric($data[0]['entities_id']))->isFalse(); // for expand_dropdowns
+        $this->assertIsArray($data[0]);
+        $this->assertArrayHasKey('id', $data[0]);
+        $this->assertArrayHasKey('name', $data[0]);
+        $this->assertArrayHasKey('is_active', $data[0]);
+        $this->assertArrayHasKey('entities_id', $data[0]);
+        $this->assertArrayNotHasKey('password', $data[0]);
+        $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
         // test retrieve 1 user with a text filter
         $data = $this->query(
@@ -1024,18 +914,16 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-
-        $this->array($data)
-            ->hasKey('headers')
-            ->hasSize(2);
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertCount(2, $data);
         unset($data['headers']);
 
-        $this->array($data[0])
-            ->hasKey('id')
-            ->hasKey('name');
+        $this->assertIsArray($data[0]);
+        $this->assertArrayHasKey('id', $data[0]);
+        $this->assertArrayHasKey('name', $data[0]);
 
-        $this->string($data[0]['name'])->isIdenticalTo('glpi');
+        $this->assertSame('glpi', $data[0]['name']);
 
         // Test only_id param
         $data = $this->query(
@@ -1047,17 +935,15 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertGreaterThanOrEqual(5, count($data));
 
-        $this->array($data)
-            ->hasKey('headers')
-            ->size->isGreaterThanOrEqualTo(5);
-
-        $this->array($data[0])
-            ->hasKey('id')
-            ->notHasKey('name')
-            ->notHasKey('is_active')
-            ->notHasKey('password');
+        $this->assertIsArray($data[0]);
+        $this->assertArrayHasKey('id', $data[0]);
+        $this->assertArrayNotHasKey('name', $data[0]);
+        $this->assertArrayNotHasKey('is_active', $data[0]);
+        $this->assertArrayNotHasKey('password', $data[0]);
 
         // test retrieve all config
         $data = $this->query(
@@ -1070,22 +956,18 @@ class APIRest extends atoum
             206
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('headers');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
         unset($data['headers']);
         foreach ($data as $config_row) {
-            $this->string($config_row['name'])
-                ->isNotEqualTo('smtp_passwd')
-                ->isNotEqualTo('proxy_passwd');
+            $this->assertNotEquals('smtp_passwd', $config_row['name']);
+            $this->assertNotEquals('proxy_passwd', $config_row['name']);
         }
     }
 
     /**
      * try to retrieve invalid range of users
      * We expect a http code 400
-     *
-     * @tags    api
-     * @covers  API::getItem
      */
     public function testgetItemsInvalidRange()
     {
@@ -1108,9 +990,6 @@ class APIRest extends atoum
      * This function test https://github.com/glpi-project/glpi/issues/1103
      * A post-only user could retrieve tickets of others users when requesting itemtype
      * without first letter in uppercase
-     *
-     * @tags    api
-     * @covers  API::getItem
      */
     public function testgetItemsForPostonly()
     {
@@ -1132,7 +1011,7 @@ class APIRest extends atoum
             'content'             => 'test post-only',
             '_users_id_requester' => 2
         ]);
-        $this->integer((int)$tickets_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$tickets_id);
 
         // try to access this ticket with post-only
         $this->query(
@@ -1160,19 +1039,14 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)
-         ->hasKey('headers')
-         ->hasSize(1);
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertCount(1, $data);
 
-       // delete ticket
+        // delete ticket
         $ticket->delete(['id' => $tickets_id], true);
     }
 
-    /**
-     * @tags    api
-     * @covers  API::updateItems
-     */
     public function testUpdateItem()
     {
         $computer = $this->createComputer();
@@ -1193,23 +1067,19 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
 
         $computer = array_shift($data);
-        $this->array($computer)
-            ->hasKey($computers_id)
-            ->hasKey('message');
-        $this->boolean((bool)$computer[$computers_id])->isTrue();
+        $this->assertIsArray($computer);
+        $this->assertArrayHasKey($computers_id, $computer);
+        $this->assertArrayHasKey('message', $computer);
+        $this->assertTrue((bool)$computer[$computers_id]);
 
         $computer = new Computer();
-        $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
-        $this->string($computer->fields['serial'])->isIdenticalTo('abcdef');
+        $this->assertTrue((bool)$computer->getFromDB($computers_id));
+        $this->assertSame('abcdef', $computer->fields['serial']);
     }
 
-    /**
-     * @tags    api
-     * @covers  API::updateItems
-     */
     public function testUpdateItems()
     {
         $computers_id_collection = $this->testCreateItems();
@@ -1231,37 +1101,34 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('headers');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
         unset($data['headers']);
         foreach ($data as $index => $row) {
             $computers_id = $computers_id_collection[$index]['id'];
-            $this->array($row)
-                ->hasKey($computers_id)
-                ->hasKey('message');
-            $this->boolean(true, (bool) $row[$computers_id])->isTrue();
+            $this->assertIsArray($row);
+            $this->assertArrayHasKey($computers_id, $row);
+            $this->assertArrayHasKey('message', $row);
+            $this->assertTrue(true, (bool) $row[$computers_id]);
 
-            $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
-            $this->string($computer->fields['otherserial'])->isIdenticalTo('abcdef');
+            $this->assertTrue((bool)$computer->getFromDB($computers_id));
+            $this->assertSame('abcdef', $computer->fields['otherserial']);
         }
     }
 
 
-    /**
-     * @tags    api
-     * @covers  API::deleteItems
-     */
     public function testDeleteItem()
     {
         $eid = getItemByTypeName('Entity', '_test_root_entity', true);
         $_SESSION['glpiactive_entity'] = $eid;
         $computer = new \Computer();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             $computer->add([
                 'name'         => 'A computer to delete',
                 'entities_id'  => $eid
             ])
-        )->isGreaterThan(0);
+        );
         $computers_id = $computer->getID();
 
         $data = $this->query(
@@ -1275,24 +1142,19 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-
-        $this->array($data)->hasKey('headers');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
         unset($data['headers']);
         $computer = array_shift($data);
-        $this->array($computer)
-            ->hasKey($computers_id)
-            ->hasKey('message');
+        $this->assertIsArray($computer);
+        $this->assertArrayHasKey($computers_id, $computer);
+        $this->assertArrayHasKey('message', $computer);
 
         $computer = new \Computer();
-        $this->boolean((bool)$computer->getFromDB($computers_id))->isFalse();
+        $this->assertFalse((bool)$computer->getFromDB($computers_id));
     }
 
 
-    /**
-     * @tags    api
-     * @covers  API::deleteItems
-     */
     public function testDeleteItems()
     {
         $computers_id_collection = $this->testCreateItems();
@@ -1315,17 +1177,17 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
         unset($data['headers']);
 
         foreach ($data as $index => $row) {
             $computers_id = $computers_id_collection[$index]['id'];
-            $this->array($row)
-                ->hasKey($computers_id)
-                ->hasKey('message');
-            $this->boolean((bool)$row[$computers_id])->isTrue();
+            $this->assertIsArray($row);
+            $this->assertArrayHasKey($computers_id, $row);
+            $this->assertArrayHasKey('message', $row);
+            $this->assertTrue((bool)$row[$computers_id]);
 
-            $this->boolean((bool)$computer->getFromDB($computers_id))->isFalse();
+            $this->assertFalse((bool)$computer->getFromDB($computers_id));
         }
 
         // Test multiple delete with multi-status
@@ -1351,16 +1213,13 @@ class APIRest extends atoum
             207
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->boolean($data[1][0][$computers_id_collection[0]['id']])->isTrue();
-        $this->array($data[1][0])->hasKey('message');
-        $this->boolean($data[1][1][$computers_id_collection[1]['id']])->isFalse();
-        $this->array($data[1][1])->hasKey('message');
+        $this->assertIsArray($data);
+        $this->assertTrue($data[1][0][$computers_id_collection[0]['id']]);
+        $this->assertArrayHasKey('message', $data[1][0]);
+        $this->assertFalse($data[1][1][$computers_id_collection[1]['id']]);
+        $this->assertArrayHasKey('message', $data[1][1]);
     }
 
-    /**
-     * @tags    api
-     */
     public function testInjection()
     {
         $data = $this->query(
@@ -1379,16 +1238,16 @@ class APIRest extends atoum
             201
         );
 
-        $this->array($data)->hasKey('id');
+        $this->assertArrayHasKey('id', $data);
         $new_id = $data['id'];
 
         $computer = new Computer();
-        $this->boolean((bool)$computer->getFromDB($new_id))->isTrue();
+        $this->assertTrue((bool)$computer->getFromDB($new_id));
 
         //Add SQL injection spotted!
-        $this->boolean($computer->fields['otherserial'] != 'Not hacked')->isFalse();
+        $this->assertFalse($computer->fields['otherserial'] != 'Not hacked');
 
-        $data = $this->query(
+        $this->query(
             'updateItems',
             [
                 'itemtype' => 'Computer',
@@ -1403,17 +1262,14 @@ class APIRest extends atoum
             ]
         );
 
-        $this->boolean((bool)$computer->getFromDB($new_id))->isTrue();
+        $this->assertTrue((bool)$computer->getFromDB($new_id));
         //Update SQL injection spotted!
-        $this->boolean($computer->fields['otherserial'] === 'injected')->isFalse();
+        $this->assertFalse($computer->fields['otherserial'] === 'injected');
 
         $computer = new Computer();
         $computer->delete(['id' => $new_id], true);
     }
 
-    /**
-     * @tags    api
-     */
     public function testProtectedConfigSettings()
     {
         $sensitiveSettings = [
@@ -1421,17 +1277,17 @@ class APIRest extends atoum
             'smtp_passwd',
         ];
 
-        // set a non empty value to the sessionts to check
+        // set a non-empty value to the sessions to check
         foreach ($sensitiveSettings as $name) {
             Config::setConfigurationValues('core', [$name => 'not_empty_password']);
             $value = Config::getConfigurationValues('core', [$name]);
-            $this->array($value)->hasKey($name);
-            $this->string($value[$name])->isNotEmpty();
+            $this->assertArrayHasKey($name, $value);
+            $this->assertNotEmpty($value[$name]);
         }
 
         $config = new Config();
         $rows = $config->find(['context' => 'core', 'name' => $sensitiveSettings]);
-        $this->array($rows)->hasSize(count($sensitiveSettings));
+        $this->assertCount(count($sensitiveSettings), $rows);
 
         // Check the value is not retrieved for sensitive settings
         foreach ($rows as $row) {
@@ -1443,10 +1299,10 @@ class APIRest extends atoum
                     'headers' => ['Session-Token' => $this->session_token]
                 ]
             );
-            $this->array($data)->notHasKey('value');
+            $this->assertArrayNotHasKey('value', $data);
         }
 
-        // Check an other setting is disclosed (when not empty)
+        // Check another setting is disclosed (when not empty)
         $config = new Config();
         $config->getFromDBByCrit(['context' => 'core', 'name' => 'admin_email']);
         $data = $this->query(
@@ -1458,7 +1314,7 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data['value'])->isNotEqualTo('');
+        $this->assertNotEquals('', $data['value']);
 
         // Check a search does not disclose sensitive values
         $data = $this->query(
@@ -1472,14 +1328,11 @@ class APIRest extends atoum
         );
         foreach ($data['data'] as $row) {
             foreach ($row as $col) {
-                $this->variable($col)->isNotEqualTo('not_empty_password');
+                $this->assertNotEquals('not_empty_password', $col);
             }
         }
     }
 
-    /**
-     * @tags    api
-     */
     public function testProtectedDeviceSimcardFields()
     {
         global $DB;
@@ -1495,10 +1348,10 @@ class APIRest extends atoum
 
         // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $this->object($computer)->isInstanceOf('\Computer');
+        $this->assertInstanceOf(\Computer::class, $computer);
         $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
-        $this->integer((int) $deviceSimcard->getID())->isGreaterThan(0);
-        $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
+        $this->assertGreaterThan(0, (int) $deviceSimcard->getID());
+        $this->assertInstanceOf(\DeviceSimcard::class, $deviceSimcard);
         $input = [
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
@@ -1510,7 +1363,7 @@ class APIRest extends atoum
             'puk2'               => '4567',
         ];
         $id = $obj->add($input);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
         //drop update access on item_devicesimcard
         $DB->update(
@@ -1548,10 +1401,10 @@ class APIRest extends atoum
             ]
         );
         foreach ($sensitiveFields as $field) {
-            $this->array($data)->notHasKey($field);
+            $this->assertArrayNotHasKey($field, $data);
         }
 
-       // test getItem discloses sensitive fields when READ enabled
+        // test getItem discloses sensitive fields when READ enabled
         $data = $this->query(
             'getItem',
             [
@@ -1561,7 +1414,7 @@ class APIRest extends atoum
             ]
         );
         foreach ($sensitiveFields as $field) {
-            $this->array($data)->hasKey($field);
+            $this->assertArrayHasKey($field, $data);
         }
 
         // test searching a sensitive field as criteria id forbidden
@@ -1599,10 +1452,6 @@ class APIRest extends atoum
         );
     }
 
-    /**
-     * @tags    api
-     * @covers  API::getGlpiConfig
-     */
     public function testGetGlpiConfig()
     {
         $data = $this->query(
@@ -1611,17 +1460,18 @@ class APIRest extends atoum
         );
 
         // Test a disclosed data
-        $this->array($data)->hasKey('cfg_glpi');
-        $this->array($data['cfg_glpi'])->hasKey('infocom_types');
+        $this->assertArrayHasKey('cfg_glpi', $data);
+        $this->assertArrayHasKey('infocom_types', $data['cfg_glpi']);
     }
 
 
     public function testUndisclosedField()
     {
-        // test common cases
+       // test common cases
         $itemtypes = [
             'APIClient', 'AuthLDAP', 'MailCollector', 'User'
         ];
+        /** @var class-string $itemtype */
         foreach ($itemtypes as $itemtype) {
             $data = $this->query(
                 'getItems',
@@ -1631,14 +1481,13 @@ class APIRest extends atoum
                 ]
             );
 
-            $this->array($itemtype::$undisclosedFields)
-                ->size->isGreaterThan(0);
+            $this->assertGreaterThan(0, count($itemtype::$undisclosedFields));
 
             foreach ($itemtype::$undisclosedFields as $key) {
-                $this->array($data);
+                $this->assertIsArray($data);
                 unset($data['headers']);
                 foreach ($data as $item) {
-                    $this->array($item)->notHasKey($key);
+                    $this->assertArrayNotHasKey($key, $item);
                 }
             }
         }
@@ -1650,18 +1499,13 @@ class APIRest extends atoum
         ]);
 
         // Test undisclosed data are actually not disclosed
-        $this->array(Config::$undisclosedFields)
-            ->size->isGreaterThan(0);
+        $this->assertGreaterThan(0, count(Config::$undisclosedFields));
         foreach (Config::$undisclosedFields as $key) {
-            $this->array($data['cfg_glpi'])->notHasKey($key);
+            $this->assertArrayNotHasKey($key, $data['cfg_glpi']);
         }
     }
 
 
-    /**
-     * @tags    api
-     * @covers  API::killSession
-     */
     public function testKillSession()
     {
         // test retrieve all users
@@ -1677,10 +1521,6 @@ class APIRest extends atoum
         );
     }
 
-    /**
-     * @tags api
-     * @engine inline
-     */
     public function testLostPasswordRequest()
     {
         global $CFG_GLPI;
@@ -1737,8 +1577,8 @@ class APIRest extends atoum
             'notifications_mailing' => '1'
         ]);
 
-        // Test an unknown email, query will succeed to avoid exposing whether or
-        // not the email actually exist in our database but there will be a
+        // Test an unknown email, query will succeed to avoid exposing whether
+        // the email actually exist in our database but there will be a
         // warning in the server logs
         $this->query('lostPassword', [
             'verb'    => 'PUT',
@@ -1765,7 +1605,7 @@ class APIRest extends atoum
         // get the password recovery token
         $user = getItemByTypeName('User', TU_USER);
         $token = $user->fields['password_forget_token'];
-        $this->string($token)->isNotEmpty();
+        $this->assertNotEmpty($token);
 
         // Test reset password with a bad token
         $this->query(
@@ -1807,15 +1647,15 @@ class APIRest extends atoum
             ['password' => Auth::getPasswordHash(TU_PASS)],
             ['id'       => $user->getID()]
         );
-        $this->variable($updateSuccess)->isNotFalse('password update failed');
+        $this->assertNotFalse($updateSuccess, 'password update failed');
 
         // Test the new password was saved
-        $this->variable(\Auth::checkPassword('NewPassword', $newHash))->isNotFalse();
+        $this->assertNotFalse(\Auth::checkPassword('NewPassword', $newHash));
 
         // Validates that password reset token has been removed
         $user = getItemByTypeName('User', TU_USER);
         $token = $user->fields['password_forget_token'];
-        $this->string($token)->isEmpty();
+        $this->assertEmpty($token);
 
         //diable notifications
         Config::setConfigurationValues('core', [
@@ -1834,10 +1674,10 @@ class APIRest extends atoum
      */
     protected function checkContentRange($data, $headers)
     {
-        $this->integer($data['count'])->isLessThanOrEqualTo($data['totalcount']);
-        $this->array($headers)->hasKey('Content-Range');
+        $this->assertLessThanOrEqual($data['totalcount'], $data['count']);
+        $this->assertArrayHasKey('Content-Range', $headers);
         $expectedContentRange = '0-' . ($data['count'] - 1) . '/' . $data['totalcount'];
-        $this->string($headers['Content-Range'][0])->isIdenticalTo($expectedContentRange);
+        $this->assertSame($expectedContentRange, $headers['Content-Range'][0]);
     }
 
     /**
@@ -1850,9 +1690,9 @@ class APIRest extends atoum
      */
     protected function checkEmptyContentRange($data, $headers)
     {
-        $this->integer($data['count'])->isLessThanOrEqualTo($data['totalcount']);
-        $this->integer($data['totalcount'])->isEqualTo(0);
-        $this->array($headers)->notHasKey('Content-Range');
+        $this->assertLessThanOrEqual($data['totalcount'], $data['count']);
+        $this->assertEquals(0, $data['totalcount']);
+        $this->assertArrayNotHasKey('Content-Range', $headers);
     }
 
     /**
@@ -1869,7 +1709,7 @@ class APIRest extends atoum
         $errors = file_get_contents($logfile);
 
         foreach ($expected_errors as $error) {
-            $this->string($errors)->contains($error);
+            $this->assertStringContainsString($error, $errors);
         }
 
         // Clear error file
@@ -1946,11 +1786,11 @@ class APIRest extends atoum
                 //throw exceptions not expected
                 throw $e;
             }
-            $this->array($expected_codes)->contains($response->getStatusCode());
+            $this->assertContains($response->getStatusCode(), $expected_codes);
             $body = json_decode($e->getResponse()->getBody());
-            $this->array($body)
-                ->hasKey('0')
-                ->string[0]->isIdenticalTo($expected_symbol);
+            $this->assertIsArray($body);
+            $this->assertArrayHasKey('0', $body);
+            $this->assertSame($expected_symbol, $body[0]);
             return $body;
         }
 
@@ -1967,16 +1807,12 @@ class APIRest extends atoum
         }
 
         // common tests
-        $this->variable($res)->isNotNull();
-        $this->array($expected_codes)->contains($res->getStatusCode());
+        $this->assertNotNull($res);
+        $this->assertContains($res->getStatusCode(), $expected_codes);
         $this->checkServerSideError($expected_errors);
         return $data;
     }
 
-    /**
-     * @tags   api
-     * @covers API::cors
-     **/
     public function testCORS()
     {
         $res = $this->doHttpRequest(
@@ -1991,69 +1827,54 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($res)->isNotNull();
-        $this->variable($res->getStatusCode())->isEqualTo(200);
+        $this->assertNotNull($res);
+        $this->assertEquals(200, $res->getStatusCode());
         $headers = $res->getHeaders();
-        $this->array($headers)
-            ->hasKey('Access-Control-Allow-Methods')
-            ->hasKey('Access-Control-Allow-Headers');
+        $this->assertArrayHasKey('Access-Control-Allow-Methods', $headers);
+        $this->assertArrayHasKey('Access-Control-Allow-Headers', $headers);
 
-        $this->string($headers['Access-Control-Allow-Methods'][0])
-            ->contains('GET')
-            ->contains('PUT')
-            ->contains('POST')
-            ->contains('DELETE')
-            ->contains('OPTIONS');
+        $this->assertStringContainsString('GET', $headers['Access-Control-Allow-Methods'][0]);
+        $this->assertStringContainsString('PUT', $headers['Access-Control-Allow-Methods'][0]);
+        $this->assertStringContainsString('POST', $headers['Access-Control-Allow-Methods'][0]);
+        $this->assertStringContainsString('DELETE', $headers['Access-Control-Allow-Methods'][0]);
+        $this->assertStringContainsString('OPTIONS', $headers['Access-Control-Allow-Methods'][0]);
 
-        $this->string($headers['Access-Control-Allow-Headers'][0])
-            ->contains('origin')
-            ->contains('content-type')
-            ->contains('accept')
-            ->contains('session-token')
-            ->contains('authorization')
-            ->contains('app-token');
+        $this->assertStringContainsString('origin', $headers['Access-Control-Allow-Headers'][0]);
+        $this->assertStringContainsString('content-type', $headers['Access-Control-Allow-Headers'][0]);
+        $this->assertStringContainsString('accept', $headers['Access-Control-Allow-Headers'][0]);
+        $this->assertStringContainsString('session-token', $headers['Access-Control-Allow-Headers'][0]);
+        $this->assertStringContainsString('authorization', $headers['Access-Control-Allow-Headers'][0]);
+        $this->assertStringContainsString('app-token', $headers['Access-Control-Allow-Headers'][0]);
     }
 
-    /**
-     * @tags   api
-     * @covers API::inlineDocumentation
-     **/
     public function testInlineDocumentation()
     {
         $res = $this->doHttpRequest('GET');
-        $this->variable($res)->isNotNull();
-        $this->variable($res->getStatusCode())->isEqualTo(200);
+        $this->assertNotNull($res);
+        $this->assertEquals(200, $res->getStatusCode());
         $headers = $res->getHeaders();
-        $this->array($headers)->hasKey('Content-Type');
-        $this->string($headers['Content-Type'][0])->isIdenticalTo('text/html; charset=UTF-8');
+        $this->assertArrayHasKey('Content-Type', $headers);
+        $this->assertSame('text/html; charset=UTF-8', $headers['Content-Type'][0]);
 
         // FIXME Remove this when deprecation notices will be fixed on michelf/php-markdown side
         $file_updated = file_put_contents($this->getLogFilePath(), "");
     }
 
-    /**
-     * @tags   api
-     * @covers API::initSession
-     **/
     public function initSessionCredentials()
     {
         $res = $this->doHttpRequest('GET', 'initSession/', ['auth' => [TU_USER, TU_PASS]]);
 
-        $this->variable($res)->isNotNull();
-        $this->variable($res->getStatusCode())->isEqualTo(200);
-        $this->array($res->getHeader('content-type'))->contains('application/json; charset=UTF-8');
+        $this->assertNotNull($res);
+        $this->assertEquals(200, $res->getStatusCode());
+        $this->assertContains('application/json; charset=UTF-8', $res->getHeader('content-type'));
 
         $body = $res->getBody();
         $data = json_decode($body, true);
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('session_token');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('session_token', $data);
         $this->session_token = $data['session_token'];
     }
 
-    /**
-     * @tags   api
-     * @covers API::initSession
-     **/
     public function testInitSessionUserToken()
     {
         $uid = getItemByTypeName('User', TU_USER, true);
@@ -2068,7 +1889,7 @@ class APIRest extends atoum
             ],
             ['id' => $uid]
         );
-        $this->boolean($updated)->isTrue();
+        $this->assertTrue($updated);
 
         $res = $this->doHttpRequest(
             'GET',
@@ -2080,20 +1901,17 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($res)->isNotNull();
-        $this->variable($res->getStatusCode())->isEqualTo(200);
+        $this->assertNotNull($res);
+        $this->assertEquals(200, $res->getStatusCode());
 
         $body = $res->getBody();
         $data = json_decode($body, true);
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('session_token');
-        $this->array($data)->hasKey('session');
-        $this->integer((int) $data['session']['glpiID'])->isEqualTo($uid);
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('session_token', $data);
+        $this->assertArrayHasKey('session', $data);
+        $this->assertEquals($uid, $data['session']['glpiID']);
     }
 
-    /**
-     * @tags    api
-     */
     public function testBadEndpoint()
     {
         $this->query(
@@ -2122,9 +1940,6 @@ class APIRest extends atoum
         );
     }
 
-    /**
-     * @tags    api
-     */
     public function testUpdateItemWithIdInQueryString()
     {
         $computer = $this->createComputer();
@@ -2147,26 +1962,22 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-
-        $this->array($data)->hasKey('headers');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
         unset($data['headers']);
 
         $computer = array_shift($data);
-        $this->array($computer)
-            ->hasKey($computers_id)
-            ->hasKey('message');
-        $this->boolean((bool)$computer[$computers_id])->isTrue();
+        $this->assertIsArray($computer);
+        $this->assertArrayHasKey($computers_id, $computer);
+        $this->assertArrayHasKey('message', $computer);
+        $this->assertTrue((bool)$computer[$computers_id]);
 
         $computer = new \Computer();
-        $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
-        $this->string($computer->fields['serial'])->isIdenticalTo('abcdefg');
+        $this->assertTrue((bool)$computer->getFromDB($computers_id));
+        $this->assertSame('abcdefg', $computer->fields['serial']);
     }
 
 
-    /**
-     * @tags    api
-     */
     public function testUploadDocument()
     {
         // we will try to upload the README.md file
@@ -2204,28 +2015,24 @@ class APIRest extends atoum
             201
         );
 
-        $this->array($data)
-            ->hasKey('id')
-            ->hasKey('message');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('message', $data);
         $documents_id = $data['id'];
-        $this->boolean(is_numeric($documents_id))->isTrue();
-        $this->integer((int)$documents_id)->isGreaterThan(0);
+        $this->assertTrue(is_numeric($documents_id));
+        $this->assertGreaterThan(0, (int)$documents_id);
 
         $document = new \Document();
-        $this->boolean((bool)$document->getFromDB($documents_id));
+        $this->assertTrue((bool)$document->getFromDB($documents_id));
 
-        $this->array($document->fields)
-            ->string['mime']->isIdenticalTo('text/plain')
-            ->string['name']->isIdenticalTo($document_name)
-            ->string['filename']->isIdenticalTo($filename);
+        $this->assertIsArray($document->fields);
+        $this->assertSame('text/plain', $document->fields['mime']);
+        $this->assertSame($document_name, $document->fields['name']);
+        $this->assertSame($filename, $document->fields['filename']);
 
-        $this->string($document->fields['filepath'])->contains('MD/');
+        $this->assertStringContainsString('MD/', $document->fields['filepath']);
     }
 
-    /**
-     * @tags    api
-     * @covers  API::updateItems
-     */
     public function testUpdateItemWithNoInput()
     {
         //try to update an item without input
@@ -2271,7 +2078,7 @@ class APIRest extends atoum
             201
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
         return array_column($data, 'id');
     }
 
@@ -2279,7 +2086,7 @@ class APIRest extends atoum
     {
         foreach ($computers as $computer_id) {
             $computer = new Computer();
-            $this->boolean((bool)$computer->getFromDB($computer_id))->isTrue();
+            $this->assertTrue((bool)$computer->getFromDB($computer_id));
         }
     }
 
@@ -2295,19 +2102,22 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('id')->hasKey('name')->hasKey('_networkports');
-        $this->array($data['_networkports'])->hasKey('NetworkPortEthernet');
-
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('name', $data);
+        $this->assertArrayHasKey('_networkports', $data);
+        $this->assertArrayHasKey('NetworkPortEthernet', $data['_networkports']);
         if ($shouldBeEmpty) {
-            $this->array($data['_networkports']['NetworkPortEthernet'])->isEmpty();
+            $this->assertEmpty($data['_networkports']['NetworkPortEthernet']);
             return null;
         } else {
-            $this->array($data['_networkports']['NetworkPortEthernet'])->isNotEmpty();
+            $this->assertNotEmpty($data['_networkports']['NetworkPortEthernet']);
             $networkport = $data['_networkports']['NetworkPortEthernet'][0];
-            $this->array($networkport)->hasKey('NetworkName')->hasKey('networkports_id_opposite')->hasKey('netport_id');
-            $this->variable($networkport['networkports_id_opposite'])->isNull();
-            $this->integer($networkport['netport_id'])->isGreaterThan(0);
+            $this->assertArrayHasKey('NetworkName', $networkport);
+            $this->assertArrayHasKey('networkports_id_opposite', $networkport);
+            $this->assertArrayHasKey('netport_id', $networkport);
+            $this->assertNull($networkport['networkports_id_opposite']);
+            $this->assertGreaterThan(0, $networkport['netport_id']);
             return $networkport['netport_id'];
         }
     }
@@ -2332,13 +2142,14 @@ class APIRest extends atoum
             201
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
         $data = $data[0];
-        $this->array($data)->hasKey('id')->hasKey('message');
-        $this->integer((int)$data['id'])->isGreaterThan(0);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('message', $data);
+        $this->assertGreaterThan(0, (int)$data['id']);
 
         $networkport_networkport = new NetworkPort_NetworkPort();
-        $this->boolean((bool)$networkport_networkport->getFromDB($data['id']))->isTrue();
+        $this->assertTrue((bool)$networkport_networkport->getFromDB($data['id']));
     }
 
     private function assertNetworkPortLink(array $computers, array $networkports)
@@ -2353,19 +2164,19 @@ class APIRest extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('id')->hasKey('name')->hasKey('_networkports');
-        $this->array($data['_networkports'])->hasKey('NetworkPortEthernet');
-        $this->array($data['_networkports']['NetworkPortEthernet'])->isNotEmpty();
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('name', $data);
+        $this->assertArrayHasKey('_networkports', $data);
+        $this->assertArrayHasKey('NetworkPortEthernet', $data['_networkports']);
+        $this->assertNotEmpty($data['_networkports']['NetworkPortEthernet']);
         $networkport = $data['_networkports']['NetworkPortEthernet'][0];
-        $this->array($networkport)->hasKey('NetworkName')->hasKey('networkports_id_opposite')->hasKey('netport_id');
-        $this->integer($networkport['networkports_id_opposite'])->isEqualTo($networkports[1]);
+        $this->assertArrayHasKey('NetworkName', $networkport);
+        $this->assertArrayHasKey('networkports_id_opposite', $networkport);
+        $this->assertArrayHasKey('netport_id', $networkport);
+        $this->assertEquals($networkports[1], $networkport['networkports_id_opposite']);
     }
 
-    /**
-     * @tags    api
-     * @covers  API::getItems
-     */
     public function testGetItemsCommonDBChild()
     {
         // test the case have DBChild not have entities_id
@@ -2376,13 +2187,13 @@ class APIRest extends atoum
             'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
             'name'        => 'test'
         ]);
-        $this->boolean((bool)$tt_id)->isTrue();
+        $this->assertTrue((bool)$tt_id);
 
         $ttmf_id = $ticketTMF->add([
             'tickettemplates_id' => $tt_id,
             'num'                => 7
         ]);
-        $this->boolean((bool)$ttmf_id)->isTrue();
+        $this->assertTrue((bool)$ttmf_id);
 
         $data = $this->query(
             'getItems',
@@ -2398,13 +2209,9 @@ class APIRest extends atoum
         if (isset($data['headers'])) {
             unset($data['headers']);
         }
-        $this->integer(count($data))->isEqualTo(1);
+        $this->assertCount(1, $data);
     }
 
-    /**
-     * @tags   api
-     * @covers API::userPicture
-     */
     public function testUserPicture()
     {
         $pic = "test_picture.png";
@@ -2417,39 +2224,39 @@ class APIRest extends atoum
          */
 
         // Copy pic to tmp folder so it can be set to a user
-        copy("tests/$pic", GLPI_TMP_DIR . "/$pic");
+        copy("phpunit/$pic", GLPI_TMP_DIR . "/$pic");
 
         // Load GLPI user
-        $this->boolean($user->getFromDB($id))->isTrue();
+        $this->assertTrue($user->getFromDB($id));
 
         // Set a pic URL
         $success = $user->update([
             'id'      => $id,
             '_picture' => [$pic],
         ]);
-        $this->boolean($success)->isTrue();
+        $this->assertTrue($success);
 
         // Get updated pic url
         $pic = $user->fields['picture'];
-        $this->string($pic)->isNotEmpty();
+        $this->assertNotEmpty($pic);
 
         // Check pic was moved correctly into _picture folder
-        $this->boolean(file_exists(GLPI_PICTURE_DIR . "/$pic"))->isTrue();
+        $this->assertTrue(file_exists(GLPI_PICTURE_DIR . "/$pic"));
         $file_content = file_get_contents(GLPI_PICTURE_DIR . "/$pic");
-        $this->string($file_content)->isNotEmpty();
+        $this->assertNotEmpty($file_content);
 
         // Request
         $response = $this->query("User/$id/Picture", $params, 200, '', true);
-        $this->string($response->__toString())->isEqualTo($file_content);
+        $this->assertEquals($file_content, $response->__toString(), sprintf("File %s doesn't match", GLPI_PICTURE_DIR . "/$pic"));
 
         /**
-         * Case 2: user doens't exist
+         * Case 2: user doesn't exist
          */
 
         // Request
         $response = $this->query("User/99999999/Picture", $params, 400, "ERROR");
-        $this->array($response)->hasSize(2);
-        $this->string($response[1])->contains("Bad request: user with id '99999999' not found");
+        $this->assertCount(2, $response);
+        $this->assertStringContainsString("Bad request: user with id '99999999' not found", $response[1]);
 
         /**
          * Case 3: user with no pictures
@@ -2460,14 +2267,14 @@ class APIRest extends atoum
             'id'             => $id,
             '_blank_picture' => true,
         ]);
-        $this->boolean($success)->isTrue();
+        $this->assertTrue($success);
 
         // Request
         $response = $this->query("User/$id/Picture", $params, 204);
-        $this->variable($response)->isNull();
+        $this->assertNull($response);
     }
 
-    protected function deprecatedProvider()
+    public static function deprecatedProvider(): array
     {
         return [
             ['provider' => TicketFollowup::class],
@@ -2480,8 +2287,9 @@ class APIRest extends atoum
     }
 
     /**
-     * @dataProvider deprecatedProvider
+     * @param class-string $provider
      */
+    #[DataProvider('deprecatedProvider')]
     public function testDeprecatedGetItem(string $provider)
     {
         // Get params from provider
@@ -2495,23 +2303,28 @@ class APIRest extends atoum
         // Insert data for tests
         $item = new $itemtype();
         $item_id = $item->add($add_input);
-        $this->integer($item_id);
+        $this->assertGreaterThan(0, $item_id);
 
         // Call API
-        $data = $this->query("$deprecated_itemtype/$item_id", [
-            'headers' => $headers,
-        ], 200);
-        $this->array($data)
-            ->hasSize(count($deprecated_fields) + 1) // + 1 for headers
-            ->hasKeys($deprecated_fields);
+        $data = $this->query(
+            "$deprecated_itemtype/$item_id",
+            ['headers' => $headers],
+            200
+        );
+        $this->assertIsArray($data);
+        $this->assertCount(count($deprecated_fields) + 1, $data); // + 1 for headers
+        foreach ($deprecated_fields as $field) {
+            $this->assertArrayHasKey($field, $data);
+        }
 
         // Clean db to prevent unicity failure on next run
         $item->delete(['id' => $item_id], true);
     }
 
     /**
-     * @dataProvider deprecatedProvider
+     * @param class-string $provider
      */
+    #[DataProvider('deprecatedProvider')]
     public function testDeprecatedGetItems(string $provider)
     {
         // Get params from provider
@@ -2525,19 +2338,23 @@ class APIRest extends atoum
         // Insert data for tests (we need at least one item)
         $item = new $itemtype();
         $item_id = $item->add($add_input);
-        $this->integer($item_id);
+        $this->assertGreaterThan(0, $item_id);
 
         // Call API
-        $data = $this->query("$deprecated_itemtype", [
-            'headers' => $headers,
-        ], [200, 206]);
-        $this->array($data);
+        $data = $this->query(
+            "$deprecated_itemtype",
+            ['headers' => $headers],
+            [200, 206]
+        );
+        $this->assertIsArray($data);
         unset($data["headers"]);
 
         foreach ($data as $row) {
-            $this->array($row)
-            ->hasSize(count($deprecated_fields))
-            ->hasKeys($deprecated_fields);
+            $this->assertIsArray($row);
+            $this->assertCount(count($deprecated_fields), $row);
+            foreach ($deprecated_fields as $field) {
+                $this->assertArrayHasKey($field, $row);
+            }
         }
 
         // Clean db to prevent unicity failure on next run
@@ -2545,8 +2362,9 @@ class APIRest extends atoum
     }
 
     /**
-     * @dataProvider deprecatedProvider
+     * @param class-string $provider
      */
+    #[DataProvider('deprecatedProvider')]
     public function testDeprecatedCreateItems(string $provider)
     {
         // Get params from provider
@@ -2566,11 +2384,11 @@ class APIRest extends atoum
             'json'    => ['input' => $input]
         ], 201);
 
-        $this->integer($data['id']);
-        $this->boolean($item->getFromDB($data['id']))->isTrue();
+        $this->assertGreaterThan(0, $data['id']);
+        $this->assertTrue($item->getFromDB($data['id']));
 
         foreach ($expected_after_insert as $field => $value) {
-            $this->variable($item->fields[$field])->isEqualTo($value);
+            $this->assertEquals($value, $item->fields[$field]);
         }
 
         // Clean db to prevent unicity failure on next run
@@ -2578,8 +2396,9 @@ class APIRest extends atoum
     }
 
     /**
-     * @dataProvider deprecatedProvider
+     * @param class-string $provider
      */
+    #[DataProvider('deprecatedProvider')]
     public function testDeprecatedUpdateItems(string $provider)
     {
         // Get params from provider
@@ -2594,20 +2413,24 @@ class APIRest extends atoum
         // Insert data for tests
         $item = new $itemtype();
         $item_id = $item->add($add_input);
-        $this->integer($item_id);
+        $this->assertGreaterThan(0, $item_id);
 
         // Call API
-        $this->query("$deprecated_itemtype/$item_id", [
-            'headers' => $headers,
-            'verb'    => "PUT",
-            'json'    => ['input' => $update_input]
-        ], 200);
+        $this->query(
+            "$deprecated_itemtype/$item_id",
+            [
+                'headers' => $headers,
+                'verb'    => "PUT",
+                'json'    => ['input' => $update_input]
+            ],
+            200
+        );
 
         // Check expected values
-        $this->boolean($item->getFromDB($item_id))->isTrue();
+        $this->assertTrue($item->getFromDB($item_id));
 
         foreach ($expected_after_update as $field => $value) {
-            $this->variable($item->fields[$field])->isEqualTo($value);
+            $this->assertEquals($value, $item->fields[$field]);
         }
 
         // Clean db to prevent unicity failure on next run
@@ -2615,8 +2438,9 @@ class APIRest extends atoum
     }
 
     /**
-     * @dataProvider deprecatedProvider
+     * @param class-string $provider
      */
+    #[DataProvider('deprecatedProvider')]
     public function testDeprecatedDeleteItems(string $provider)
     {
         // Get params from provider
@@ -2629,20 +2453,27 @@ class APIRest extends atoum
         // Insert data for tests
         $item = new $itemtype();
         $item_id = $item->add($add_input);
-        $this->integer($item_id);
+        $this->assertGreaterThan(0, $item_id);
 
         // Call API
-        $this->query("$deprecated_itemtype/$item_id?force_purge=1", [
-            'headers' => $headers,
-            'verb'    => "DELETE",
-        ], 200, "", true);
+        $this->query(
+            "$deprecated_itemtype/$item_id?force_purge=1",
+            [
+                'headers' => $headers,
+                'verb'    => "DELETE",
+            ],
+            200,
+            "",
+            true
+        );
 
-        $this->boolean($item->getFromDB($item_id))->isFalse();
+        $this->assertFalse($item->getFromDB($item_id));
     }
 
     /**
-     * @dataProvider deprecatedProvider
+     * @param class-string $provider
      */
+    #[DataProvider('deprecatedProvider')]
     public function testDeprecatedListSearchOptions(string $provider)
     {
         // Get params from provider
@@ -2650,22 +2481,24 @@ class APIRest extends atoum
 
         $headers = ['Session-Token' => $this->session_token];
 
-        $data = $this->query("listSearchOptions/$deprecated_itemtype/", [
-            'headers' => $headers,
-        ]);
+        $data = $this->query(
+            "listSearchOptions/$deprecated_itemtype/",
+            ['headers' => $headers]
+        );
 
         $expected = file_get_contents(
             __DIR__ . "/../deprecated-searchoptions/$deprecated_itemtype.json"
         );
-        $this->string($expected)->isNotEmpty();
+        $this->assertNotEmpty($expected);
 
         unset($data['headers']);
-        $this->array($data)->isEqualTo(json_decode($expected, true));
+        $this->assertEquals(json_decode($expected, true), $data);
     }
 
     /**
-     * @dataProvider deprecatedProvider
+     * @param class-string $provider
      */
+    #[DataProvider('deprecatedProvider')]
     public function testDeprecatedSearch(string $provider)
     {
         // Get params from provider
@@ -2687,8 +2520,10 @@ class APIRest extends atoum
             ['headers' => $headers],
             [200, 206]
         );
-        $this->string($deprecated_data['rawdata']['sql']['search'])
-         ->isEqualTo($data['rawdata']['sql']['search']);
+        $this->assertEquals(
+            $data['rawdata']['sql']['search'],
+            $deprecated_data['rawdata']['sql']['search']
+        );
     }
 
 
@@ -2700,10 +2535,10 @@ class APIRest extends atoum
             'name' => 'test deleted PC',
             'entities_id' => getItemByTypeName("Entity", '_test_root_entity', true)
         ]);
-        $this->integer($deleted_computers_id)->isGreaterThan(0);
-        $this->boolean($computer->delete(['id' => $deleted_computers_id]))->isTrue();
-        $this->boolean($computer->getFromDB($deleted_computers_id))->isTrue();
-        $this->integer($computer->fields['is_deleted'])->isEqualTo(1);
+        $this->assertGreaterThan(0, $deleted_computers_id);
+        $this->assertTrue($computer->delete(['id' => $deleted_computers_id]));
+        $this->assertTrue($computer->getFromDB($deleted_computers_id));
+        $this->assertEquals(1, $computer->fields['is_deleted']);
 
         return [
             [
@@ -2814,28 +2649,32 @@ class APIRest extends atoum
 
     /**
      * Tests for the "getMassiveActions" endpoint
-     *
-     * @dataProvider testGetMassiveActionsProvider
      */
-    public function testGetMassiveActions(
-        string $url,
-        int $status,
-        ?array $response,
-        string $error = ""
-    ): void {
-        $headers = ['Session-Token' => $this->session_token];
-        $data    = $this->query($url, [
-            'headers' => $headers,
-        ], $status, $error);
+    public function testGetMassiveActions(): void
+    {
+        foreach ($this->testGetMassiveActionsProvider() as $row) {
+            $url    = $row['url'];
+            $status  = $row['status'];
+            $response = $row['response'] ?? null;
+            $error   = $row['error'] ?? '';
 
-        // If no errors are expected, check results
-        if (empty($error)) {
-            unset($data['headers']);
-            $this->array($data)->isEqualTo($response);
+            $headers = ['Session-Token' => $this->session_token];
+            $data    = $this->query(
+                $url,
+                ['headers' => $headers],
+                $status,
+                $error
+            );
+
+            // If no errors are expected, check results
+            if (empty($error)) {
+                unset($data['headers']);
+                $this->assertEquals($response, $data);
+            }
         }
     }
 
-    protected function testGetMassiveActionParametersProvider(): array
+    public static function testGetMassiveActionParametersProvider(): array
     {
         return [
             [
@@ -2977,9 +2816,8 @@ class APIRest extends atoum
 
     /**
      * Tests for the "getMassiveActionParameters" endpoint
-     *
-     * @dataProvider testGetMassiveActionParametersProvider
      */
+    #[DataProvider('testGetMassiveActionParametersProvider')]
     public function testGetMassiveActionParameters(
         string $url,
         int $status,
@@ -2987,14 +2825,17 @@ class APIRest extends atoum
         string $error = ""
     ): void {
         $headers = ['Session-Token' => $this->session_token];
-        $data    = $this->query($url, [
-            'headers' => $headers,
-        ], $status, $error);
+        $data    = $this->query(
+            $url,
+            ['headers' => $headers],
+            $status,
+            $error
+        );
 
         // If no errors are expected, check results
         if (empty($error)) {
             unset($data['headers']);
-            $this->array($data)->isEqualTo($response);
+            $this->assertEquals($response, $data);
         }
     }
 
@@ -3057,8 +2898,8 @@ class APIRest extends atoum
                             'id'      => $computer->getId(),
                             'comment' => "test comment",
                         ]);
-                        $this->boolean($update)->isTrue();
-                        $this->string($computer->fields['comment'])->isEqualTo("test comment");
+                        $this->assertTrue($update);
+                        $this->assertEquals("test comment", $computer->fields['comment']);
                     }
                 },
                 'after_test' => function () {
@@ -3066,7 +2907,7 @@ class APIRest extends atoum
                     foreach ($computers as $computer) {
                         // Check that "comment" field was modified as expected
                         $computer = getItemByTypeName('Computer', $computer);
-                        $this->string($computer->fields['comment'])->isEqualTo("test comment\n\nnewtexttoadd");
+                        $this->assertEquals("test comment\n\nnewtexttoadd", $computer->fields['comment']);
                     }
                 }
             ],
@@ -3102,14 +2943,17 @@ class APIRest extends atoum
                         // Delete all existing note for this item
                         foreach ($existing_notes as $existing_note) {
                             $deletion = $note->delete(['id' => $existing_note['id']]);
-                            $this->boolean($deletion)->isTrue();
+                            $this->assertTrue($deletion);
                         }
 
                         // Check that the items have no notes remaining
-                        $this->array($note->find([
-                            'itemtype' => 'Computer',
-                            'items_id' => getItemByTypeName('Computer', $computer, true),
-                        ]))->hasSize(0);
+                        $this->assertCount(
+                            0,
+                            $note->find([
+                                'itemtype' => 'Computer',
+                                'items_id' => getItemByTypeName('Computer', $computer, true),
+                            ])
+                        );
                     }
                 },
                 'after_test' => function () {
@@ -3122,10 +2966,10 @@ class APIRest extends atoum
                         ]);
 
                         // Check that the items have one note
-                        $this->array($existing_notes)->hasSize(1);
+                        $this->assertCount(1, $existing_notes);
 
                         foreach ($existing_notes as $existing_note) {
-                            $this->string($existing_note['content'])->isEqualTo("new note");
+                            $this->assertEquals("new note", $existing_note['content']);
                         }
                     }
                 }
@@ -3135,37 +2979,43 @@ class APIRest extends atoum
 
     /**
      * Tests for the "applyMassiveAction" endpoint
-     *
-     * @dataProvider testApplyMassiveActionProvider
      */
-    public function testApplyMassiveAction(
-        string $url,
-        array $payload,
-        int $status,
-        ?array $response,
-        string $error = "",
-        ?callable $before_test = null,
-        ?callable $after_test = null
-    ): void {
-        if (!is_null($before_test)) {
-            $before_test();
-        }
+    public function testApplyMassiveAction(): void
+    {
+        foreach ($this->testApplyMassiveActionProvider() as $row) {
+            $url = $row['url'];
+            $payload = $row['payload'];
+            $status = $row['status'];
+            $response = $row['response'] ?? null;
+            $error = $row['error'] ?? '';
+            $before_test = $row['before_test'] ?? null;
+            $after_test = $row['after_test'] ?? null;
 
-        $headers = ['Session-Token' => $this->session_token];
-        $data    = $this->query($url, [
-            'headers' => $headers,
-            'verb'    => 'POST',
-            'json'    => $payload,
-        ], $status, $error);
+            if (!is_null($before_test)) {
+                $before_test();
+            }
 
-        // If no errors are expected, check results
-        if (empty($error)) {
-            unset($data['headers']);
-            $this->array($data)->isEqualTo($response);
-        }
+            $headers = ['Session-Token' => $this->session_token];
+            $data = $this->query(
+                $url,
+                [
+                    'headers' => $headers,
+                    'verb' => 'POST',
+                    'json' => $payload,
+                ],
+                $status,
+                $error
+            );
 
-        if (!is_null($after_test)) {
-            $after_test();
+            // If no errors are expected, check results
+            if (empty($error)) {
+                unset($data['headers']);
+                $this->assertEquals($response, $data);
+            }
+
+            if (!is_null($after_test)) {
+                $after_test();
+            }
         }
     }
 
@@ -3174,7 +3024,7 @@ class APIRest extends atoum
      *
      * @return array
      */
-    protected function testReturnSanitizedContentUnitProvider(): array
+    public static function testReturnSanitizedContentUnitProvider(): array
     {
         return [
             [null, true],
@@ -3194,6 +3044,7 @@ class APIRest extends atoum
     /**
      * Functional test to ensure returned content is not sanitized.
      *
+            $expected_output,
      * @return void
      */
     public function testContentEncoding(): void
@@ -3210,11 +3061,15 @@ class APIRest extends atoum
         $method = "GET";
         $headers = ['Session-Token' => $this->session_token];
 
-        $data = $this->query($url, [
-            'headers' => $headers,
-            'verb'    => $method,
-        ], 200);
-        $this->string($data['comment'])->isEqualTo("<>");
+        $data = $this->query(
+            $url,
+            [
+                'headers' => $headers,
+                'verb'    => $method,
+            ],
+            200
+        );
+        $this->assertEquals("<>", $data['comment']);
     }
 
     public function test_ActorUpdate()
@@ -3232,12 +3087,16 @@ class APIRest extends atoum
                 'content' => 'content'
             ]
         ];
-        $data = $this->query("/Ticket", [
-            'headers' => $headers,
-            'verb'    => "POST",
-            'json'    => $input,
-        ], 201);
-        $this->integer($data['id'])->isGreaterThan(0);
+        $data = $this->query(
+            "/Ticket",
+            [
+                'headers' => $headers,
+                'verb'    => "POST",
+                'json'    => $input,
+            ],
+            201
+        );
+        $this->assertGreaterThan(0, $data['id']);
         $tickets_id = $data['id'];
 
         // Add group
@@ -3254,20 +3113,28 @@ class APIRest extends atoum
                 ]
             ]
         ];
-        $this->query("/Ticket/$tickets_id/", [
-            'headers' => $headers,
-            'verb'    => "PUT",
-            'json'    => $input,
-        ], 200);
+        $this->query(
+            "/Ticket/$tickets_id/",
+            [
+                'headers' => $headers,
+                'verb'    => "PUT",
+                'json'    => $input,
+            ],
+            200
+        );
 
         // Check assigned groups
-        $data = $this->query("/Ticket/$tickets_id/Group_Ticket", [
-            'headers' => $headers,
-            'verb'    => "GET",
-        ], 200);
+        $data = $this->query(
+            "/Ticket/$tickets_id/Group_Ticket",
+            [
+                'headers' => $headers,
+                'verb'    => "GET",
+            ],
+            200
+        );
 
-        $this->integer($data[0]['tickets_id'])->isEqualTo($tickets_id);
-        $this->integer($data[0]['groups_id'])->isEqualTo($groups_id);
+        $this->assertEquals($tickets_id, $data[0]['tickets_id']);
+        $this->assertEquals($groups_id, $data[0]['groups_id']);
     }
 
     /**
@@ -3306,22 +3173,24 @@ class APIRest extends atoum
         }
 
         // Check response
-        $this->object($response)->isInstanceOf(\Psr\Http\Message\ResponseInterface::class);
-        $this->integer($response->getStatusCode())->isEqualTo(200);
-        $this->object($response)->isInstanceOf(\Psr\Http\Message\ResponseInterface::class);
+        $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, $response);
+        $this->assertEquals(200, $response->getStatusCode());
         $body = $response->getBody()->getContents();
-        $this->array(json_decode($body, true))->isEqualTo([
+        $this->assertEquals(
             [
-                (string)$computers_id => true,
-                'message'             => '',
-            ]
-        ]);
+                [
+                    (string)$computers_id => true,
+                    'message'             => '',
+                ]
+            ],
+            json_decode($body, true)
+        );
 
         // Check computer is updated
         $computer = new \Computer();
-        $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
-        $this->string($computer->fields['serial'])->isIdenticalTo('abcdefg');
-        $this->string($computer->fields['comment'])->isIdenticalTo('This computer has been updated.');
+        $this->assertTrue((bool)$computer->getFromDB($computers_id));
+        $this->assertSame('abcdefg', $computer->fields['serial']);
+        $this->assertSame('This computer has been updated.', $computer->fields['comment']);
     }
 
     /**
@@ -3357,28 +3226,31 @@ class APIRest extends atoum
         }
 
         // Check response
-        $this->object($response)->isInstanceOf(\Psr\Http\Message\ResponseInterface::class);
-        $this->integer($response->getStatusCode())->isEqualTo(200);
-        $this->object($response)->isInstanceOf(\Psr\Http\Message\ResponseInterface::class);
+        $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, $response);
+        $this->assertEquals(200, $response->getStatusCode());
         $body = $response->getBody()->getContents();
-        $this->array(json_decode($body, true))->isEqualTo([
+        $this->assertEquals(
             [
-                (string)$computers_id => true,
-                'message'             => '',
-            ]
-        ]);
+                [
+                    (string)$computers_id => true,
+                    'message'             => '',
+                ]
+            ],
+            json_decode($body, true)
+        );
 
         // Check computer is updated
         $computer = new \Computer();
-        $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
-        $this->boolean((bool)$computer->getField('is_deleted'))->isTrue();
+        $this->assertTrue((bool)$computer->getFromDB($computers_id));
+        $this->assertTrue((bool)$computer->getField('is_deleted'));
     }
 
     public function testSearchTextResponseCode()
     {
         $data = $this->query(
             'getItems',
-            ['itemtype' => Computer::class,
+            [
+                'itemtype' => Computer::class,
                 'headers'  => ['Session-Token' => $this->session_token],
                 'query'    => ['searchText' => ['test' => 'test']]
             ],
@@ -3386,7 +3258,7 @@ class APIRest extends atoum
             'ERROR_FIELD_NOT_FOUND'
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertNotFalse($data);
 
         $data = $this->query(
             'getItems',
@@ -3397,7 +3269,7 @@ class APIRest extends atoum
             200,
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertNotFalse($data);
     }
 
     public function testUndisclosedNotificationContent()
@@ -3407,6 +3279,7 @@ class APIRest extends atoum
             'use_notifications' => '1',
             'notifications_mailing' => '1'
         ]);
+
         // Trigger a notification sending
         $user = getItemByTypeName('User', TU_USER);
         $this->query(
@@ -3419,6 +3292,7 @@ class APIRest extends atoum
             ],
             200
         );
+
         // need to be GLPI to access the root entity notifications
         $data = $this->query(
             'initSession',
@@ -3429,7 +3303,8 @@ class APIRest extends atoum
                 ]
             ]
         );
-        $this->array($data)->hasKey('session_token');
+        $this->assertArrayHasKey('session_token', $data);
+
         // Check notifications returned by `getItems`
         $result = $this->query(
             'getItems',
@@ -3439,17 +3314,21 @@ class APIRest extends atoum
             ],
             200
         );
-        $this->array($result);
+        $this->assertIsArray($result);
         unset($result['headers']);
+
         $notifications = \array_filter(
             $result,
             fn ($notification) => $notification['name'] === '[GLPI] Forgotten password?'
         );
-        $this->array($notifications)->isNotEmpty();
+
+        $this->assertNotEmpty($notifications);
+
         foreach ($notifications as $notification) {
-            $this->string($notification['body_html'])->isEqualTo('********');
-            $this->string($notification['body_text'])->isEqualTo('********');
+            $this->assertEquals('********', $notification['body_html']);
+            $this->assertEquals('********', $notification['body_text']);
         }
+
         // Check notifications returned by a search request
         $result = $this->query(
             'search',
@@ -3463,17 +3342,20 @@ class APIRest extends atoum
             ],
             200
         );
-        $this->array($result);
+        $this->assertIsArray($result);
         unset($result['headers']);
-        $this->array($result)->hasKey('data');
-        $this->array($result['data'])->isNotEmpty();
+
+        $this->assertArrayHasKey('data', $result);
+        $this->assertNotEmpty($result['data']);
+
         $notifications = \array_filter(
             $result['data'],
             fn ($notification) => $notification['1'] === '[GLPI] Forgotten password?'
         );
+
         foreach ($notifications as $notification) {
-            $this->string($notification['12'])->isEqualTo('********'); // 12 = body_html
-            $this->string($notification['13'])->isEqualTo('********'); // 13 = body_text
+            $this->assertEquals('********', $notification['12']); // 12 = body_html
+            $this->assertEquals('********', $notification['13']); // 13 = body_text
         }
     }
 }
