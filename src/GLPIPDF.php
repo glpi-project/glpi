@@ -62,8 +62,16 @@ class GLPIPDF extends TCPDF
 
     public function __construct(array $config = [], ?int $count = null, ?string $title = null)
     {
+        if (
+            isset($config['font'])
+            && !in_array($config['font'], array_keys(self::getFontList()), true)
+        ) {
+            unset($config['font']);
+        }
+
         $config += self::$default_config;
         $this->config = $config;
+
         parent::__construct(
             $config['orientation'],
             $config['unit'],

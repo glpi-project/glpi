@@ -980,12 +980,7 @@ class ConfigTest extends DbTestCase
         $this->assertGreaterThan(0, $total_number);
     }
 
-    /**
-     * Test the `prepareInputForUpdate` method.
-     *
-     * @return void
-     */
-    public function testPrepareInputForUpdate(): void
+    public function testPrepareInputForUpdateLockProfile(): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -1021,5 +1016,32 @@ class ConfigTest extends DbTestCase
             'lock_lockprofile_id' => $super_admin,
         ]);
         $this->assertEquals($super_admin, (int) $CFG_GLPI['lock_lockprofile_id']);
+    }
+
+    public function testPrepareInputForUpdatePdfFont(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $config = new \Config();
+        $default_font = $CFG_GLPI['pdffont'];
+
+        // Invalid font
+        $config->prepareInputForUpdate([
+            'pdffont' => 'notavalidfont',
+        ]);
+        $this->assertEquals($default_font, $CFG_GLPI['pdffont']);
+        $this->hasSessionMessages(ERROR, [
+            'The following field has an incorrect value: "PDF export font".'
+        ]);
+
+        // Valid font
+        $this->assertNotEquals('freesans', $CFG_GLPI['pdffont']);
+        $config->prepareInputForUpdate([
+            'pdffont' => 'freesans',
+        ]);
+        $this->assertEquals('freesans', $CFG_GLPI['pdffont']);
     }
 }

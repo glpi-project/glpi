@@ -416,6 +416,82 @@ class UserTest extends \DbTestCase
         $this->assertSame($expected, $user->prepareInputForAdd($input));
     }
 
+    public function testPrepareInputForAddPdfFont(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $user = new \User();
+
+        $default_values = [
+            'authtype'     => 1,
+            'auths_id'     => 0,
+            'is_active'    => 1,
+            'is_deleted'   => 0,
+            'entities_id'  => 0,
+            'profiles_id'  => 0,
+        ];
+
+        // Valid PDF font
+        $input = [
+            'name'    => __FUNCTION__,
+            'pdffont' => 'freesans',
+        ];
+        $expected = [
+            'name'    => __FUNCTION__,
+            'pdffont' => 'freesans',
+        ] + $default_values;
+        $this->assertSame($expected, $user->prepareInputForAdd($input));
+
+        // Invalid PDF font
+        $input = [
+            'name'    => __FUNCTION__,
+            'pdffont' => 'notavalidfont',
+        ];
+        $expected = [
+            'name'    => __FUNCTION__,
+            // pdffont is removed from the input
+        ] + $default_values;
+        $this->assertSame($expected, $user->prepareInputForAdd($input));
+        $this->hasSessionMessages(ERROR, [
+            'The following field has an incorrect value: "PDF export font".'
+        ]);
+    }
+
+    public function testPrepareInputForUpdatePdfFont(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $user = \getItemByTypeName(\User::class, 'glpi');
+
+        // Valid PDF font
+        $input = [
+            'id'      => $user->getID(),
+            'pdffont' => 'freesans',
+        ];
+        $expected = $input;
+        $this->assertSame($expected, $user->prepareInputForUpdate($input));
+
+        // Invalid PDF font
+        $input = [
+            'id'      => $user->getID(),
+            'pdffont' => 'notavalidfont',
+        ];
+        $expected = [
+            'id'      => $user->getID(),
+            // pdffont is removed from the input
+        ];
+        $this->assertSame($expected, $user->prepareInputForUpdate($input));
+        $this->hasSessionMessages(ERROR, [
+            'The following field has an incorrect value: "PDF export font".'
+        ]);
+    }
+
     public static function prepareInputForTimezoneUpdateProvider()
     {
         return [

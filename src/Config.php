@@ -325,6 +325,20 @@ class Config extends CommonDBTM
             }
         }
 
+        // Check the validity of `pdffont`
+        if (isset($input['pdffont']) && !in_array($input['pdffont'], array_keys(GLPIPDF::getFontList()), true)) {
+            Session::addMessageAfterRedirect(
+                sprintf(
+                    __('The following field has an incorrect value: "%s".'),
+                    __('PDF export font')
+                ),
+                false,
+                ERROR
+            );
+            //__('PDF export font')
+            unset($input['pdffont']);
+        }
+
         // Prevent some input values to be saved in DB
         $values_to_filter = [
             '_dbslave_status',
