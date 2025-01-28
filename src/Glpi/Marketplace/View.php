@@ -281,7 +281,9 @@ class View extends CommonGLPI
     {
 
         // found a logo from online resource?
-        if (isset($apidata['logo_url']) && strpos(strtolower($apidata['logo_url']), '.png') !== false) return $apidata['logo_url'];
+        if (isset($apidata['logo_url']) && strpos(strtolower($apidata['logo_url']), '.png') !== false) {
+            return $apidata['logo_url'];
+        }
 
         // path to the plugin directory (for checking if a local file exists)
         $pluginDir = Plugin::getPhpDir($key);
@@ -290,17 +292,20 @@ class View extends CommonGLPI
         $logo = $pluginDir . $key . '.png';
 
         // logo named as the key found?
-        if (file_exists($logo) && is_readable($logo)) return $pluginPath . basename($logo);
-
+        if (file_exists($logo) && is_readable($logo)) {
+            return $pluginPath . basename($logo);
+        }
+        
         // try again with "logo.png"
         $logo = $pluginDir . 'logo.png';
 
-         // logo named as "logo.png" found?
-         if (file_exists($logo) && is_readable($logo)) return $pluginPath . basename($logo);
-
+        // logo named as "logo.png" found?
+        if (file_exists($logo) && is_readable($logo)) {
+            return $pluginPath . basename($logo);
+        }
+        
         // no logo found at all
         return '';
-
     }
     
     /**
