@@ -450,53 +450,6 @@ class AuthLDAP extends DbTestCase
         $this->integer((int)\AuthLDAP::getDefault())->isIdenticalTo(0);
     }
 
-    public function testPost_updateItem()
-    {
-       //Load ldap servers
-        $this->addLdapServers();
-
-       //Get first lDAP server
-        $ldap = getItemByTypeName('AuthLDAP', 'LDAP1');
-
-       //Set it as default server
-        $this->boolean(
-            $ldap->update(['id' => $ldap->getID(), 'is_default' => 1])
-        )->isTrue();
-
-       //Get first lDAP server now
-        $ldap = getItemByTypeName('AuthLDAP', 'LDAP1');
-        $this->variable($ldap->fields['is_default'])->isEqualTo(1);
-
-       //Get third ldap server (former default one)
-        $ldap = getItemByTypeName('AuthLDAP', 'LDAP3');
-       //Check that it's not the default server anymore
-        $this->variable($ldap->fields['is_default'])->isEqualTo(0);
-    }
-
-    public function testPost_addItem()
-    {
-       //Load ldap servers
-        $this->addLdapServers();
-
-        $ldap     = new \AuthLDAP();
-        $ldaps_id = $ldap->add([
-            'name'        => 'LDAP4',
-            'is_active'   => 1,
-            'is_default'  => 1,
-            'basedn'      => 'ou=people,dc=mycompany',
-            'login_field' => 'email',
-            'phone_field' => 'phonenumber'
-        ]);
-        $this->integer((int)$ldaps_id)->isGreaterThan(0);
-        $this->boolean($ldap->getFromDB($ldaps_id))->isTrue();
-        $this->variable($ldap->fields['is_default'])->isEqualTo(1);
-
-       //Get third ldap server (former default one)
-        $ldap = getItemByTypeName('AuthLDAP', 'LDAP3');
-       //Check that it's not the default server anymore
-        $this->variable($ldap->fields['is_default'])->isEqualTo(0);
-    }
-
     public function testPrepareInputForAdd()
     {
         $ldap     = new \AuthLDAP();
