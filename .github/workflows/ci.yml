@@ -193,6 +193,7 @@ jobs:
       - name: "PHPUnit tests"
         if: "${{ success() || failure() }}"
         run: |
+          .github/actions/init_initialize-phpunit-fixtures.sh
           docker compose exec -T app .github/actions/test_tests-phpunit.sh
       - name: "Functional tests"
         if: "${{ success() || failure() }}"

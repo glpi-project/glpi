@@ -279,7 +279,8 @@ run_single_test () {
       || LAST_EXIT_CODE=$?
       ;;
     "phpunit")
-         docker compose exec -T app .github/actions/test_tests-phpunit.sh $TEST_ARGS \
+         $APPLICATION_ROOT/.github/actions/init_initialize-phpunit-fixtures.sh \
+      && docker compose exec -T app .github/actions/test_tests-phpunit.sh $TEST_ARGS \
       || LAST_EXIT_CODE=$?
       ;;
     "functional")

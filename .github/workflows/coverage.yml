@@ -63,6 +63,7 @@ jobs:
           docker compose exec -T app .github/actions/test_install.sh
       - name: "PHPUnit tests"
         run: |
+          .github/actions/init_initialize-phpunit-fixtures.sh
           docker compose exec -T app .github/actions/test_tests-phpunit.sh
       - name: "Codecov"
         uses: "codecov/codecov-action@v5"

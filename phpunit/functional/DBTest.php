@@ -370,14 +370,14 @@ class DBTest extends \GLPITestCase
         $excluded_tables = [
             'glpi_assets_assets', 'glpi_assets_assetmodels', 'glpi_assets_assettypes',
             'glpi_appliancerelations', 'glpi_dropdowns_dropdowns', 'glpi_oauth_access_tokens', 'glpi_oauth_auth_codes',
-            'glpi_oauth_refresh_tokens', 'glpi_stencils',
+            'glpi_oauth_refresh_tokens', 'glpi_stencils', '/^glpi_plugin_formcreator_/'
         ];
 
         //check if each table has a corresponding itemtype
         foreach ($list as $line) {
             $this->assertCount(1, $line);
             $table = $line['TABLE_NAME'];
-            if (in_array($table, $excluded_tables, true)) {
+            if (in_array($table, $excluded_tables, true) || strpos($table, 'glpi_plugin_formcreator_') === 0) {
                 //FIXME temporary hack for unit tests
                 continue;
             }

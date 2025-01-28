@@ -36,13 +36,14 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Override;
 
 /**
  * Long answers are multiple lines inputs used to answer questions with as much details as needed.
  */
-final class QuestionTypeLongText extends AbstractQuestionType
+final class QuestionTypeLongText extends AbstractQuestionType implements FormQuestionDataConverterInterface
 {
     #[Override]
     public function getFormEditorJsOptions(): string
@@ -182,5 +183,17 @@ TWIG;
     public function isAllowedForUnauthenticatedAccess(): bool
     {
         return true;
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): ?string
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): null
+    {
+        return null;
     }
 }
