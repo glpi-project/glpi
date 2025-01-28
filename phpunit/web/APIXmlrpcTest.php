@@ -44,30 +44,34 @@ use GuzzleHttp;
  * @engine isolate
  * @extensions xmlrpc
  */
-class APIXmlrpc extends APIBaseClass
+class APIXmlrpcTest extends APIBaseClass
 {
-    public function beforeTestMethod($method)
+    public function setUp(): void
     {
         global $CFG_GLPI;
 
         $this->http_client = new GuzzleHttp\Client();
         $this->base_uri    = trim($CFG_GLPI['url_base'], "/") . "/apixmlrpc.php";
 
-        parent::beforeTestMethod($method);
+        parent::setUp();
     }
 
     protected function doHttpRequest($resource = "", $params = [])
     {
         $headers = ["Content-Type" => "text/xml"];
         $request = xmlrpc_encode_request($resource, $params);
-        return $this->http_client->post($this->base_uri, ['body'    => $request,
-            'headers' => $headers
-        ]);
+        return $this->http_client->post(
+            $this->base_uri,
+            [
+                'body'    => $request,
+                'headers' => $headers
+            ]
+        );
     }
 
     protected function query($resource = "", $params = [], $expected_codes = 200, $expected_symbol = '')
     {
-       //reconstruct params for xmlrpc (base params done for rest)
+        //reconstruct params for xmlrpc (base params done for rest)
         $flat_params = array_merge(
             $params,
             isset($params['query'])   ? $params['query']   : [],
@@ -82,24 +86,27 @@ class APIXmlrpc extends APIBaseClass
         if (isset($flat_params['Session-Token'])) {
             $flat_params['session_token'] = $flat_params['Session-Token'];
         }
-       // launch query
+        // launch query
         try {
             $res = $this->doHttpRequest($resource, $flat_params);
         } catch (\Throwable $e) {
             $response = $e->getResponse();
-            $this->variable($response->getStatusCode())->isEqualTo($expected_codes);
+            $this->assertEquals($expected_codes, $response->getStatusCode());
             $body = xmlrpc_decode($response->getBody());
-            $this->array($body)
-            ->hasKey('0')
-            ->string[0]->isIdenticalTo($expected_symbol);
+            $this->assertIsArray($body);
+            $this->assertArrayHasKey('0', $body);
+            $this->assertSame($expected_symbol, $body[0]);
             return;
         }
-       // common tests
+        // common tests
         if (isset($this->last_error)) {
-            $this->variable($res)->isNotNull();
+            $this->assertNotNull($res);
         }
-        $this->variable($res->getStatusCode())->isEqualTo($expected_codes);
-       // retrieve data
+        $this->assertEquals(
+            $expected_codes,
+            $res->getStatusCode()
+        );
+        // retrieve data
         $data = xmlrpc_decode($res->getBody());
         if (is_array($data)) {
             $data['headers'] = $res->getHeaders();
@@ -113,7 +120,6 @@ class APIXmlrpc extends APIBaseClass
      */
     public function initSessionCredentials()
     {
-        $uid = getItemByTypeName('User', TU_USER, true);
         $data = $this->query(
             'initSession',
             ['query' => [
@@ -123,8 +129,8 @@ class APIXmlrpc extends APIBaseClass
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('session_token');
+        $this->assertNotFalse($data);
+        $this->assertArrayHasKey('session_token', $data);
         $this->session_token = $data['session_token'];
     }
 
@@ -144,10 +150,11 @@ class APIXmlrpc extends APIBaseClass
     {
        //:parent::testUpdateItem($session_token, $computers_id);
 
-       //try to update an item without input
-        $data = $this->query(
+        //try to update an item without input
+        $this->query(
             'updateItems',
-            ['itemtype' => 'Computer',
+            [
+                'itemtype' => 'Computer',
                 'verb'     => 'PUT',
                 'headers'  => ['Session-Token' => $this->session_token],
                 'json'     => []

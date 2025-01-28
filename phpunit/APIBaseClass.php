@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use atoum\atoum;
+use PHPUnit\Framework\TestCase;
 
-abstract class APIBaseClass extends atoum
+abstract class APIBaseClass extends TestCase
 {
     protected $session_token;
     protected $http_client;
@@ -48,7 +48,7 @@ abstract class APIBaseClass extends atoum
         $expected_codes = 200
     );
 
-    public function beforeTestMethod($method)
+    public function setUp(): void
     {
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
@@ -58,21 +58,22 @@ abstract class APIBaseClass extends atoum
 
     abstract public function initSessionCredentials();
 
-    public function setUp()
+    public static function setUpBeforeClass(): void
     {
-       // To bypass various right checks
-       // This is mandatory to create/update/delete some items during tests.
+        // To bypass various right checks
+        // This is mandatory to create/update/delete some items during tests.
         $_SESSION['glpishowallentities'] = 1;
         $_SESSION['glpiactive_entity']   = 0;
         $_SESSION['glpiactiveentities']  = [0];
         $_SESSION['glpiactiveentities_string'] = "'0'";
 
-       // Force "cron" mode to prevent user related behaviors
+        // Force "cron" mode to prevent user related behaviors
         $_SESSION['glpicronuserrunning'] = "cron_phpunit";
 
-       // enable api config
+        // enable api config
         $config = new Config();
-        $config->update(['id'                              => 1,
+        $config->update([
+            'id'                              => 1,
             'enable_api'                      => true,
             'enable_api_login_credentials'    => true,
             'enable_api_login_external_token' => true
@@ -85,7 +86,7 @@ abstract class APIBaseClass extends atoum
      */
     public function testInitSessionUserToken()
     {
-       // retrieve personnal token of TU_USER user
+        // retrieve personal token of TU_USER user
         $user = new User();
         $uid = getItemByTypeName('User', TU_USER, true);
         $user->getFromDB($uid);
@@ -98,8 +99,8 @@ abstract class APIBaseClass extends atoum
             'initSession',
             ['query' => ['user_token' => $token]]
         );
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('session_token');
+        $this->assertNotFalse($data);
+        $this->assertArrayHasKey('session_token', $data);
     }
 
     /**
@@ -109,7 +110,8 @@ abstract class APIBaseClass extends atoum
     public function testAppToken()
     {
         $apiclient = new APIClient();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$apiclient->add([
                 'name'             => 'test app token',
                 'is_active'        => 1,
@@ -117,26 +119,28 @@ abstract class APIBaseClass extends atoum
                 'ipv4_range_end'   => '127.0.0.1',
                 '_reset_app_token' => true,
             ])
-        )->isGreaterThan(0);
+        );
 
         $app_token = $apiclient->fields['app_token'];
-        $this->string($app_token)->isNotEmpty()->hasLength(40);
+        $this->assertNotEmpty($app_token);
+        $this->assertSame(40, strlen($app_token));
 
-       // test valid app token -> expect ok session
+        // test valid app token -> expect ok session
         $data = $this->query(
             'initSession',
-            ['query' => [
-                'login'     => TU_USER,
-                'password'  => TU_PASS,
-                'app_token' => $app_token
-            ]
+            [
+                'query' => [
+                    'login'     => TU_USER,
+                    'password'  => TU_PASS,
+                    'app_token' => $app_token
+                ]
             ]
         );
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('session_token');
+        $this->assertNotFalse($data);
+        $this->assertArrayHasKey('session_token', $data);
 
-       // test invalid app token -> expect error 400 and a specific code
-        $data = $this->query(
+        // test invalid app token -> expect error 400 and a specific code
+        $this->query(
             'initSession',
             ['query' => [
                 'login'     => TU_USER,
@@ -155,7 +159,7 @@ abstract class APIBaseClass extends atoum
      */
     public function testChangeActiveEntities()
     {
-        $res = $this->query(
+        $this->query(
             'changeActiveEntities',
             ['verb'    => 'POST',
                 'headers' => ['Session-Token' => $this->session_token],
@@ -179,13 +183,10 @@ abstract class APIBaseClass extends atoum
             ['headers' => ['Session-Token' => $this->session_token]]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)
-         ->hasKey('myentities')
-         ->array['myentities']
-            ->array[0] // check presence of first entity
-               ->variable['id']
-                  ->isEqualTo(0); // check presence of root entity
+        $this->assertNotFalse($data);
+        $this->assertArrayHasKey('myentities', $data);
+        $this->assertIsArray($data['myentities'][0]); // check presence of first entity
+        $this->assertEquals(0, $data['myentities'][0]['id']); // check presence of root entity
     }
 
     /**
@@ -199,15 +200,13 @@ abstract class APIBaseClass extends atoum
             ['headers' => ['Session-Token' => $this->session_token]]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)
-         ->array['active_entity'];
+        $this->assertNotFalse($data);
+        $this->assertIsArray($data['active_entity']);
 
-        $this->array($data['active_entity'])
-         ->hasKey('id')
-         ->hasKey('active_entity_recursive')
-         ->hasKey('active_entities')
-         ->array['active_entities'];
+        $this->assertArrayHasKey('id', $data['active_entity']);
+        $this->assertArrayHasKey('active_entity_recursive', $data['active_entity']);
+        $this->assertArrayHasKey('active_entities', $data['active_entity']);
+        $this->assertIsArray($data['active_entity']['active_entities']);
     }
 
     /**
@@ -216,8 +215,8 @@ abstract class APIBaseClass extends atoum
      */
     public function testChangeActiveProfile()
     {
-       // test change to an existing and available profile
-        $data = $this->query(
+        // test change to an existing and available profile
+        $this->query(
             'changeActiveProfile',
             ['verb'    => 'POST',
                 'headers' => ['Session-Token' => $this->session_token],
@@ -225,8 +224,8 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-       // test change to a non existing profile
-        $data = $this->query(
+        // test change to a non-existing profile
+        $this->query(
             'changeActiveProfile',
             ['verb'    => 'POST',
                 'headers' => ['Session-Token' => $this->session_token],
@@ -236,8 +235,8 @@ abstract class APIBaseClass extends atoum
             'ERROR_ITEM_NOT_FOUND'
         );
 
-       // test a bad request
-        $data = $this->query(
+        // test a bad request
+        $this->query(
             'changeActiveProfile',
             ['verb'    => 'POST',
                 'headers' => ['Session-Token' => $this->session_token],
@@ -259,11 +258,9 @@ abstract class APIBaseClass extends atoum
             ['headers' => ['Session-Token' => $this->session_token]]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)
-         ->hasKey('myprofiles'); // check presence of root key
-        $this->array($data['myprofiles'][0])
-         ->hasKey('id'); // check presence of id key in first profile
+        $this->assertNotFalse($data);
+        $this->assertArrayHasKey('myprofiles', $data); // check presence of root key
+        $this->assertArrayHasKey('id', $data['myprofiles'][0]); // check presence of id key in first profile
     }
 
     /**
@@ -277,13 +274,12 @@ abstract class APIBaseClass extends atoum
             ['headers' => ['Session-Token' => $this->session_token]]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)
-         ->hasKey('active_profile');
-        $this->array($data['active_profile'])
-         ->hasKey('id')
-         ->hasKey('name')
-         ->hasKey('interface');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('active_profile', $data);
+        $this->assertIsArray($data['active_profile']);
+        $this->assertArrayHasKey('id', $data['active_profile']);
+        $this->assertArrayHasKey('name', $data['active_profile']);
+        $this->assertArrayHasKey('interface', $data['active_profile']);
     }
 
     /**
@@ -297,15 +293,15 @@ abstract class APIBaseClass extends atoum
             ['headers' => ['Session-Token' => $this->session_token]]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('session');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('session', $data);
 
-        $this->array($data['session'])
-         ->hasKey('glpiID')
-         ->hasKey('glpiname')
-         ->hasKey('glpiroot')
-         ->hasKey('glpilanguage')
-         ->hasKey('glpilist_limit');
+        $this->assertIsArray($data['session']);
+        $this->assertArrayHasKey('glpiID', $data['session']);
+        $this->assertArrayHasKey('glpiname', $data['session']);
+        $this->assertArrayHasKey('glpiroot', $data['session']);
+        $this->assertArrayHasKey('glpilanguage', $data['session']);
+        $this->assertArrayHasKey('glpilist_limit', $data['session']);
     }
 
     /**
@@ -314,7 +310,7 @@ abstract class APIBaseClass extends atoum
      */
     public function testGetMultipleItems()
     {
-       // Get the User TU_USER and the entity in the same query
+        // Get the User TU_USER and the entity in the same query
         $uid = getItemByTypeName('User', TU_USER, true);
         $eid = getItemByTypeName('Entity', '_test_root_entity', true);
         $data = $this->query(
@@ -336,18 +332,18 @@ abstract class APIBaseClass extends atoum
 
         unset($data['headers']);
 
-        $this->array($data)
-         ->hasSize(2);
+        $this->assertIsArray($data);
+        $this->assertCount(2, $data);
 
         foreach ($data as $item) {
-            $this->array($item)
-            ->hasKey('id')
-            ->hasKey('name')
-            ->hasKey('entities_id')
-            ->hasKey('links')
-            ->hasKey('_logs') // with_logs == true
-            ->notHasKey('password');
-            $this->boolean(is_numeric($item['entities_id']))->isFalse(); // for expand_dropdowns
+            $this->assertIsArray($item);
+            $this->assertArrayHasKey('id', $item);
+            $this->assertArrayHasKey('name', $item);
+            $this->assertArrayHasKey('entities_id', $item);
+            $this->assertArrayHasKey('links', $item);
+            $this->assertArrayHasKey('_logs', $item);
+            $this->assertArrayNotHasKey('password', $item);
+            $this->assertFalse(is_numeric($item['entities_id'])); // for expand_dropdowns
         }
     }
 
@@ -357,7 +353,7 @@ abstract class APIBaseClass extends atoum
      */
     public function testListSearchOptions()
     {
-       // test retrieve all users
+        // test retrieve all users
         $data = $this->query(
             'listSearchOptions',
             ['itemtype' => 'Computer',
@@ -365,18 +361,19 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)
-         ->size->isGreaterThanOrEqualTo(128);
+        $this->assertIsArray($data);
+        $this->assertGreaterThanOrEqual(128, count($data));
 
-        $this->array($data[1])
-         ->string['name']->isIdenticalTo('Name')
-         ->string['table']->isIdenticalTo('glpi_computers')
-         ->string['field']->isIdenticalTo('name')
-         ->array['available_searchtypes'];
+        $this->assertIsArray($data[1]);
+        $this->assertSame('Name', $data[1]['name']);
+        $this->assertSame('glpi_computers', $data[1]['table']);
+        $this->assertSame('name', $data[1]['field']);
+        $this->assertIsArray($data[1]['available_searchtypes']);
 
-        $this->array($data[1]['available_searchtypes'])
-         ->isIdenticalTo(['contains', 'notcontains', 'equals', 'notequals']);
+        $this->assertSame(
+            ['contains', 'notcontains', 'equals', 'notequals'],
+            $data[1]['available_searchtypes']
+        );
     }
 
     /**
@@ -385,7 +382,7 @@ abstract class APIBaseClass extends atoum
      */
     public function testListSearch()
     {
-       // test retrieve all users
+        // test retrieve all users
         $data = $this->query(
             'search',
             ['itemtype' => 'User',
@@ -400,30 +397,25 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->array($data)
-         ->hasKey('headers')
-         ->hasKey('totalcount')
-         ->hasKey('count')
-         ->hasKey('sort')
-         ->hasKey('order')
-         ->hasKey('rawdata');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertArrayHasKey('totalcount', $data);
+        $this->assertArrayHasKey('count', $data);
+        $this->assertArrayHasKey('sort', $data);
+        $this->assertArrayHasKey('order', $data);
+        $this->assertArrayHasKey('rawdata', $data);
 
         $headers = $data['headers'];
-
-        $this->array($data['headers'])
-         ->hasKey('Accept-Range');
-
-        $this->string($headers['Accept-Range'][0])
-         ->startWith('User');
-
-        $this->array($data['rawdata'])
-         ->hasSize(9);
+        $this->assertIsArray($headers);
+        $this->assertArrayHasKey('Accept-Range', $headers);
+        $this->assertStringStartsWith('User', $headers['Accept-Range'][0]);
+        $this->assertCount(9, $data['rawdata']);
 
         $first_user = array_shift($data['data']);
         $second_user = array_shift($data['data']);
 
-        $this->array($first_user)->hasKey(81);
-        $this->array($second_user)->hasKey(81);
+        $this->assertArrayHasKey(81, $first_user);
+        $this->assertArrayHasKey(81, $second_user);
 
         $this->checkContentRange($data, $headers);
     }
@@ -434,7 +426,7 @@ abstract class APIBaseClass extends atoum
      */
     public function testListSearchPartial()
     {
-       // test retrieve partial users
+        // test retrieve partial users
         $data = $this->query(
             'search',
             ['itemtype' => 'User',
@@ -450,22 +442,19 @@ abstract class APIBaseClass extends atoum
             206
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('totalcount', $data);
+        $this->assertArrayHasKey('count', $data);
+        $this->assertArrayHasKey('sort', $data);
+        $this->assertArrayHasKey('order', $data);
+        $this->assertArrayHasKey('rawdata', $data);
 
-        $this->array($data)
-         ->hasKey('totalcount')
-         ->hasKey('count')
-         ->hasKey('sort')
-         ->hasKey('order')
-         ->hasKey('rawdata');
-
-        $this->array($data['rawdata'])
-         ->hasSize(9);
+        $this->assertCount(9, $data['rawdata']);
 
         $first_user = array_shift($data['data']);
         $second_user = array_shift($data['data']);
-        $this->array($first_user)->hasKey(81);
-        $this->array($second_user)->hasKey(81);
+        $this->assertArrayHasKey(81, $first_user);
+        $this->assertArrayHasKey(81, $second_user);
 
         $this->checkContentRange($data, $data['headers']);
     }
@@ -476,7 +465,7 @@ abstract class APIBaseClass extends atoum
      */
     public function testListSearchEmpty()
     {
-       // test retrieve partial users
+        // test retrieve partial users
         $data = $this->query(
             'search',
             ['itemtype' => 'User',
@@ -498,24 +487,18 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertArrayHasKey('totalcount', $data);
+        $this->assertArrayHasKey('count', $data);
+        $this->assertArrayHasKey('sort', $data);
+        $this->assertArrayHasKey('order', $data);
+        $this->assertArrayHasKey('rawdata', $data);
 
-        $this->array($data)
-         ->hasKey('headers')
-         ->hasKey('totalcount')
-         ->hasKey('count')
-         ->hasKey('sort')
-         ->hasKey('order')
-         ->hasKey('rawdata');
+        $this->assertArrayHasKey('Accept-Range', $data['headers']);
+        $this->assertStringStartsWith('User', $data['headers']['Accept-Range'][0]);
 
-        $this->array($data['headers'])
-         ->hasKey('Accept-Range');
-
-        $this->string($data['headers']['Accept-Range'][0])
-         ->startWith('User');
-
-        $this->array($data['rawdata'])
-         ->hasSize(9);
+        $this->assertCount(9, $data['rawdata']);
         $this->checkEmptyContentRange($data, $data['headers']);
     }
 
@@ -525,11 +508,11 @@ abstract class APIBaseClass extends atoum
      */
     public function testSearchWithBadCriteria()
     {
-       // test retrieve all users
-       // multidimensional array of vars in query string not supported ?
+        // test retrieve all users
+        // multidimensional array of vars in query string not supported ?
 
-       // test a non existing search option ID
-        $data = $this->query(
+        // test a non-existing search option ID
+        $this->query(
             'search',
             ['itemtype' => 'User',
                 'headers'  => ['Session-Token' => $this->session_token],
@@ -547,8 +530,8 @@ abstract class APIBaseClass extends atoum
             'ERROR'
         );
 
-       // test a non numeric search option ID
-        $data = $this->query(
+        // test a non-numeric search option ID
+        $this->query(
             'search',
             ['itemtype' => 'User',
                 'headers'  => ['Session-Token' => $this->session_token],
@@ -566,8 +549,8 @@ abstract class APIBaseClass extends atoum
             'ERROR'
         );
 
-       // test an incomplete criteria
-        $data = $this->query(
+        // test an incomplete criteria
+        $this->query(
             'search',
             ['itemtype' => 'User',
                 'headers'  => ['Session-Token' => $this->session_token],
@@ -590,11 +573,12 @@ abstract class APIBaseClass extends atoum
      */
     protected function badEndpoint($expected_code = null, $expected_symbol = null)
     {
-        $data = $this->query(
+        $this->query(
             'badEndpoint',
-            ['headers' => [
-                'Session-Token' => $this->session_token
-            ]
+            [
+                'headers' => [
+                    'Session-Token' => $this->session_token
+                ]
             ],
             $expected_code,
             $expected_symbol
@@ -618,19 +602,16 @@ abstract class APIBaseClass extends atoum
             201
         );
 
-        $this->variable($data)
-         ->isNotFalse();
-
-        $this->array($data)
-         ->hasKey('id')
-         ->hasKey('message');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('message', $data);
 
         $computers_id = $data['id'];
-        $this->boolean(is_numeric($computers_id))->isTrue();
-        $this->integer((int)$computers_id)->isGreaterThanOrEqualTo(0);
+        $this->assertTrue(is_numeric($computers_id));
+        $this->assertGreaterThanOrEqual(0, (int)$computers_id);
 
         $computer = new Computer();
-        $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
+        $this->assertTrue((bool)$computer->getFromDB($computers_id));
         return $computer;
     }
 
@@ -657,7 +638,7 @@ abstract class APIBaseClass extends atoum
                         'itemtype'                 => "Computer",
                         'NetworkName_name'         => "testname",
                         'NetworkName_fqdns_id'     => 0,
-                                  // add an aditionnal key to the next array
+                                  // add an extra key to the next array
                                   // to avoid xmlrpc losing -1 key.
                                   // see https://bugs.php.net/bug.php?id=37746
                         'NetworkName__ipaddresses' => ['-1'                => "1.2.3.4",
@@ -670,11 +651,9 @@ abstract class APIBaseClass extends atoum
             201
         );
 
-        $this->variable($data)->isNotFalse();
-
-        $this->array($data)
-         ->hasKey('id')
-         ->hasKey('message');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('message', $data);
     }
 
     /**
@@ -702,11 +681,9 @@ abstract class APIBaseClass extends atoum
             201
         );
 
-        $this->variable($data)->isNotFalse();
-
-        $this->array($data)
-         ->hasKey('id')
-         ->hasKey('message');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('message', $data);
     }
 
     /**
@@ -718,10 +695,10 @@ abstract class APIBaseClass extends atoum
         $computer = $this->createComputer();
         $computers_id = $computer->getID();
 
-       // create a network port for the previous computer
+        // create a network port for the previous computer
         $this->createNetworkPort($computers_id);
 
-       // try to create a new note
+        // try to create a new note
         $this->createNote($computers_id);
     }
 
@@ -750,27 +727,25 @@ abstract class APIBaseClass extends atoum
             201
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertNotFalse($data);
 
         $first_computer = $data[0];
         $second_computer = $data[1];
 
-        $this->array($first_computer)
-         ->hasKey('id')
-         ->hasKey('message');
-        $this->array($second_computer)
-         ->hasKey('id')
-         ->hasKey('message');
+        $this->assertArrayHasKey('id', $first_computer);
+        $this->assertArrayHasKey('message', $first_computer);
+        $this->assertArrayHasKey('id', $second_computer);
+        $this->assertArrayHasKey('message', $second_computer);
 
-        $this->boolean(is_numeric($first_computer['id']))->isTrue();
-        $this->boolean(is_numeric($second_computer['id']))->isTrue();
+        $this->assertTrue(is_numeric($first_computer['id']));
+        $this->assertTrue(is_numeric($second_computer['id']));
 
-        $this->integer((int)$first_computer['id'])->isGreaterThanOrEqualTo(0);
-        $this->integer((int)$second_computer['id'])->isGreaterThanOrEqualTo(0);
+        $this->assertGreaterThanOrEqual(0, (int)$first_computer['id']);
+        $this->assertGreaterThanOrEqual(0, (int)$second_computer['id']);
 
         $computer = new Computer();
-        $this->boolean((bool)$computer->getFromDB($first_computer['id']))->isTrue();
-        $this->boolean((bool)$computer->getFromDB($second_computer['id']))->isTrue();
+        $this->assertTrue((bool)$computer->getFromDB($first_computer['id']));
+        $this->assertTrue((bool)$computer->getFromDB($second_computer['id']));
 
         unset($data['headers']);
         return $data;
@@ -784,7 +759,7 @@ abstract class APIBaseClass extends atoum
     {
         $computer = $this->createComputer();
         $computers_id = $computer->getID();
-       // Get the User TU_USER
+        // Get the User TU_USER
         $uid = getItemByTypeName('User', TU_USER, true);
         $data = $this->query(
             'getItem',
@@ -798,17 +773,16 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)
-         ->hasKey('id')
-         ->hasKey('name')
-         ->hasKey('entities_id')
-         ->hasKey('links')
-         ->hasKey('_logs') // with_logs == true
-         ->notHasKey('password');
-        $this->boolean(is_numeric($data['entities_id']))->isFalse(); // for expand_dropdowns
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('name', $data);
+        $this->assertArrayHasKey('entities_id', $data);
+        $this->assertArrayHasKey('links', $data);
+        $this->assertArrayHasKey('_logs', $data);
+        $this->assertArrayNotHasKey('password', $data);
+        $this->assertFalse(is_numeric($data['entities_id'])); // for expand_dropdowns
 
-       // Get user's entity
+        // Get user's entity
         $eid = getItemByTypeName('Entity', '_test_root_entity', true);
         $data = $this->query(
             'getItem',
@@ -819,14 +793,13 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)
-         ->hasKey('id')
-         ->hasKey('name')
-         ->hasKey('completename')
-         ->notHasKey('links'); // get_hateoas == false
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('name', $data);
+        $this->assertArrayHasKey('completename', $data);
+        $this->assertArrayNotHasKey('links', $data); // get_hateoas == false
 
-       // Get the previously created 'computer 1'
+        // Get the previously created 'computer 1'
         $data = $this->query(
             'getItem',
             ['itemtype' => 'Computer',
@@ -836,17 +809,15 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('name', $data);
+        $this->assertArrayHasKey('_networkports', $data);
 
-        $this->array($data)
-         ->hasKey('id')
-         ->hasKey('name')
-         ->hasKey('_networkports');
+        $this->assertArrayHasKey('NetworkPortEthernet', $data['_networkports']);
+        $this->assertEmpty($data['_networkports']['NetworkPortEthernet']);
 
-        $this->array($data['_networkports'])->hasKey('NetworkPortEthernet');
-        $this->array($data['_networkports']['NetworkPortEthernet'])->isEmpty();
-
-       // create a network port for the computer
+        // create a network port for the computer
         $this->createNetworkPort($computers_id);
 
         $data = $this->query(
@@ -858,30 +829,27 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('name', $data);
+        $this->assertArrayHasKey('_networkports', $data);
 
-        $this->array($data)
-         ->hasKey('id')
-         ->hasKey('name')
-         ->hasKey('_networkports');
-
-        $this->array($data['_networkports'])->hasKey('NetworkPortEthernet');
-        $this->array($data['_networkports']['NetworkPortEthernet'])->isNotEmpty();
-
-        $this->array($data['_networkports']['NetworkPortEthernet'][0])->hasKey('NetworkName');
+        $this->assertArrayHasKey('NetworkPortEthernet', $data['_networkports']);
+        $this->assertNotEmpty($data['_networkports']['NetworkPortEthernet']);
+        $this->assertArrayHasKey('NetworkName', $data['_networkports']['NetworkPortEthernet'][0]);
 
         $networkname = $data['_networkports']['NetworkPortEthernet'][0]['NetworkName'];
-        $this->array($networkname)
-         ->hasKey('IPAddress')
-         ->hasKey('FQDN')
-         ->hasKey('id')
-         ->hasKey('name');
+        $this->assertIsArray($networkname);
+        $this->assertArrayHasKey('IPAddress', $networkname);
+        $this->assertArrayHasKey('FQDN', $networkname);
+        $this->assertArrayHasKey('id', $networkname);
+        $this->assertArrayHasKey('name', $networkname);
 
-        $this->array($networkname['IPAddress'][0])
-         ->hasKey('name')
-         ->hasKey('IPNetwork');
+        $this->assertIsArray($networkname['IPAddress'][0]);
+        $this->assertArrayHasKey('name', $networkname['IPAddress'][0]);
+        $this->assertArrayHasKey('IPNetwork', $networkname['IPAddress'][0]);
 
-        $this->string($networkname['IPAddress'][0]['name'])->isIdenticalTo('1.2.3.4');
+        $this->assertSame('1.2.3.4', $networkname['IPAddress'][0]['name']);
     }
 
     /**
@@ -893,10 +861,10 @@ abstract class APIBaseClass extends atoum
         $computer = $this->createComputer();
         $computers_id = $computer->getID();
 
-       // try to create a new note
+        // try to create a new note
         $this->createNote($computers_id);
 
-       // Get the previously created 'computer 1'
+        // Get the previously created 'computer 1'
         $data = $this->query(
             'getItem',
             ['itemtype' => 'Computer',
@@ -906,19 +874,17 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('id', $data);
+        $this->assertArrayHasKey('name', $data);
+        $this->assertArrayHasKey('_notes', $data);
 
-        $this->array($data)
-         ->hasKey('id')
-         ->hasKey('name')
-         ->hasKey('_notes');
-
-        $this->array($data['_notes'][0])
-         ->hasKey('id')
-         ->hasKey('itemtype')
-         ->hasKey('items_id')
-         ->hasKey('users_id')
-         ->hasKey('content');
+        $this->assertIsArray($data['_notes'][0]);
+        $this->assertArrayHasKey('id', $data['_notes'][0]);
+        $this->assertArrayHasKey('itemtype', $data['_notes'][0]);
+        $this->assertArrayHasKey('items_id', $data['_notes'][0]);
+        $this->assertArrayHasKey('users_id', $data['_notes'][0]);
+        $this->assertArrayHasKey('content', $data['_notes'][0]);
     }
 
     /**
@@ -927,7 +893,7 @@ abstract class APIBaseClass extends atoum
      */
     public function testGetItems()
     {
-       // test retrieve all users
+        // test retrieve all users
         $data = $this->query(
             'getItems',
             ['itemtype' => 'User',
@@ -938,24 +904,22 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-
-        $this->array($data)
-         ->hasKey('headers')
-         ->hasKey(0)
-         ->size->isGreaterThanOrEqualTo(4);
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertArrayHasKey(0, $data);
+        $this->assertGreaterThanOrEqual(4, count($data));
 
         unset($data['headers']);
 
-        $this->array($data[0])
-         ->hasKey('id')
-         ->hasKey('name')
-         ->hasKey('is_active')
-         ->hasKey('entities_id')
-         ->notHasKey('password');
-        $this->boolean(is_numeric($data[0]['entities_id']))->isFalse(); // for expand_dropdowns
+        $this->assertIsArray($data[0]);
+        $this->assertArrayHasKey('id', $data[0]);
+        $this->assertArrayHasKey('name', $data[0]);
+        $this->assertArrayHasKey('is_active', $data[0]);
+        $this->assertArrayHasKey('entities_id', $data[0]);
+        $this->assertArrayNotHasKey('password', $data[0]);
+        $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
-       // test retrieve partial users
+        // test retrieve partial users
         $data = $this->query(
             'getItems',
             ['itemtype' => 'User',
@@ -968,22 +932,20 @@ abstract class APIBaseClass extends atoum
             206
         );
 
-        $this->variable($data)->isNotFalse();
-
-        $this->array($data)
-         ->hasKey('headers')
-         ->hasSize(3);
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertCount(3, $data);
         unset($data['headers']);
 
-        $this->array($data[0])
-         ->hasKey('id')
-         ->hasKey('name')
-         ->hasKey('is_active')
-         ->hasKey('entities_id')
-         ->notHasKey('password');
-        $this->boolean(is_numeric($data[0]['entities_id']))->isFalse(); // for expand_dropdowns
+        $this->assertIsArray($data[0]);
+        $this->assertArrayHasKey('id', $data[0]);
+        $this->assertArrayHasKey('name', $data[0]);
+        $this->assertArrayHasKey('is_active', $data[0]);
+        $this->assertArrayHasKey('entities_id', $data[0]);
+        $this->assertArrayNotHasKey('password', $data[0]);
+        $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
-       // test retrieve 1 user with a text filter
+        // test retrieve 1 user with a text filter
         $data = $this->query(
             'getItems',
             ['itemtype' => 'User',
@@ -992,20 +954,18 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-
-        $this->array($data)
-         ->hasKey('headers')
-         ->hasSize(2);
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertCount(2, $data);
         unset($data['headers']);
 
-        $this->array($data[0])
-         ->hasKey('id')
-         ->hasKey('name');
+        $this->assertIsArray($data[0]);
+        $this->assertArrayHasKey('id', $data[0]);
+        $this->assertArrayHasKey('name', $data[0]);
 
-        $this->string($data[0]['name'])->isIdenticalTo('glpi');
+        $this->assertSame('glpi', $data[0]['name']);
 
-       // Test only_id param
+        // Test only_id param
         $data = $this->query(
             'getItems',
             ['itemtype' => 'User',
@@ -1014,19 +974,17 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertGreaterThanOrEqual(5, count($data));
 
-        $this->array($data)
-         ->hasKey('headers')
-         ->size->isGreaterThanOrEqualTo(5);
+        $this->assertIsArray($data[0]);
+        $this->assertArrayHasKey('id', $data[0]);
+        $this->assertArrayNotHasKey('name', $data[0]);
+        $this->assertArrayNotHasKey('is_active', $data[0]);
+        $this->assertArrayNotHasKey('password', $data[0]);
 
-        $this->array($data[0])
-         ->hasKey('id')
-         ->notHasKey('name')
-         ->notHasKey('is_active')
-         ->notHasKey('password');
-
-       // test retrieve all config
+        // test retrieve all config
         $data = $this->query(
             'getItems',
             ['itemtype' => 'Config',
@@ -1036,13 +994,12 @@ abstract class APIBaseClass extends atoum
             206
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('headers');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
         unset($data['headers']);
         foreach ($data as $config_row) {
-            $this->string($config_row['name'])
-            ->isNotEqualTo('smtp_passwd')
-            ->isNotEqualTo('proxy_passwd');
+            $this->assertNotEquals('smtp_passwd', $config_row['name']);
+            $this->assertNotEquals('proxy_passwd', $config_row['name']);
         }
     }
 
@@ -1055,7 +1012,7 @@ abstract class APIBaseClass extends atoum
      */
     public function testgetItemsInvalidRange()
     {
-        $data = $this->query(
+        $this->query(
             'getItems',
             ['itemtype' => 'User',
                 'headers'  => ['Session-Token' => $this->session_token],
@@ -1079,7 +1036,7 @@ abstract class APIBaseClass extends atoum
      */
     public function testgetItemsForPostonly()
     {
-       // init session for postonly
+        // init session for postonly
         $data = $this->query(
             'initSession',
             ['query' => [
@@ -1089,15 +1046,15 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-       // create a ticket for another user (glpi - super-admin)
+        // create a ticket for another user (glpi - super-admin)
         $ticket = new \Ticket();
         $tickets_id = $ticket->add(['name'                => 'test post-only',
             'content'             => 'test post-only',
             '_users_id_requester' => 2
         ]);
-        $this->integer((int)$tickets_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$tickets_id);
 
-       // try to access this ticket with post-only
+        // try to access this ticket with post-only
         $this->query(
             'getItem',
             ['itemtype' => 'Ticket',
@@ -1110,7 +1067,7 @@ abstract class APIBaseClass extends atoum
             'ERROR_RIGHT_MISSING'
         );
 
-       // try to access ticket list (we should get empty return)
+        // try to access ticket list (we should get empty return)
         $data = $this->query(
             'getItems',
             ['itemtype' => 'Ticket',
@@ -1122,12 +1079,11 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)
-         ->hasKey('headers')
-         ->hasSize(1);
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
+        $this->assertCount(1, $data);
 
-       // delete ticket
+        // delete ticket
         $ticket->delete(['id' => $tickets_id], true);
     }
 
@@ -1154,17 +1110,17 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
 
         $computer = array_shift($data);
-        $this->array($computer)
-         ->hasKey($computers_id)
-         ->hasKey('message');
-        $this->boolean((bool)$computer[$computers_id])->isTrue();
+        $this->assertIsArray($computer);
+        $this->assertArrayHasKey($computers_id, $computer);
+        $this->assertArrayHasKey('message', $computer);
+        $this->assertTrue((bool)$computer[$computers_id]);
 
         $computer = new Computer();
-        $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
-        $this->string($computer->fields['serial'])->isIdenticalTo('abcdef');
+        $this->assertTrue((bool)$computer->getFromDB($computers_id));
+        $this->assertSame('abcdef', $computer->fields['serial']);
     }
 
     /**
@@ -1190,18 +1146,18 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->array($data)->hasKey('headers');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
         unset($data['headers']);
         foreach ($data as $index => $row) {
             $computers_id = $computers_id_collection[$index]['id'];
-            $this->array($row)
-            ->hasKey($computers_id)
-            ->hasKey('message');
-            $this->boolean(true, (bool) $row[$computers_id])->isTrue();
+            $this->assertIsArray($row);
+            $this->assertArrayHasKey($computers_id, $row);
+            $this->assertArrayHasKey('message', $row);
+            $this->assertTrue(true, (bool) $row[$computers_id]);
 
-            $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
-            $this->string($computer->fields['otherserial'])->isIdenticalTo('abcdef');
+            $this->assertTrue((bool)$computer->getFromDB($computers_id));
+            $this->assertSame('abcdef', $computer->fields['otherserial']);
         }
     }
 
@@ -1215,12 +1171,13 @@ abstract class APIBaseClass extends atoum
         $eid = getItemByTypeName('Entity', '_test_root_entity', true);
         $_SESSION['glpiactive_entity'] = $eid;
         $computer = new \Computer();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             $computer->add([
                 'name'         => 'A computer to delete',
                 'entities_id'  => $eid
             ])
-        )->isGreaterThan(0);
+        );
         $computers_id = $computer->getID();
 
         $data = $this->query(
@@ -1233,17 +1190,16 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
-
-        $this->array($data)->hasKey('headers');
+        $this->assertIsArray($data);
+        $this->assertArrayHasKey('headers', $data);
         unset($data['headers']);
         $computer = array_shift($data);
-        $this->array($computer)
-         ->hasKey($computers_id)
-         ->hasKey('message');
+        $this->assertIsArray($computer);
+        $this->assertArrayHasKey($computers_id, $computer);
+        $this->assertArrayHasKey('message', $computer);
 
         $computer = new \Computer();
-        $this->boolean((bool)$computer->getFromDB($computers_id))->isFalse();
+        $this->assertFalse((bool)$computer->getFromDB($computers_id));
     }
 
 
@@ -1272,20 +1228,20 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data)->isNotFalse();
+        $this->assertIsArray($data);
         unset($data['headers']);
 
         foreach ($data as $index => $row) {
             $computers_id = $computers_id_collection[$index]['id'];
-            $this->array($row)
-            ->hasKey($computers_id)
-            ->hasKey('message');
-            $this->boolean((bool)$row[$computers_id])->isTrue();
+            $this->assertIsArray($row);
+            $this->assertArrayHasKey($computers_id, $row);
+            $this->assertArrayHasKey('message', $row);
+            $this->assertTrue((bool)$row[$computers_id]);
 
-            $this->boolean((bool)$computer->getFromDB($computers_id))->isFalse();
+            $this->assertFalse((bool)$computer->getFromDB($computers_id));
         }
 
-       // Test multiple delete with multi-status
+        // Test multiple delete with multi-status
         $input = [];
         $computers_id_collection = [
             ['id'  => $lastComputer['id']],
@@ -1307,11 +1263,11 @@ abstract class APIBaseClass extends atoum
             207
         );
 
-        $this->variable($data)->isNotFalse();
-        $this->boolean($data[1][0][$computers_id_collection[0]['id']])->isTrue();
-        $this->array($data[1][0])->hasKey('message');
-        $this->boolean($data[1][1][$computers_id_collection[1]['id']])->isFalse();
-        $this->array($data[1][1])->hasKey('message');
+        $this->assertIsArray($data);
+        $this->assertTrue($data[1][0][$computers_id_collection[0]['id']]);
+        $this->assertArrayHasKey('message', $data[1][0]);
+        $this->assertFalse($data[1][1][$computers_id_collection[1]['id']]);
+        $this->assertArrayHasKey('message', $data[1][1]);
     }
 
     /**
@@ -1334,17 +1290,16 @@ abstract class APIBaseClass extends atoum
             201
         );
 
-        $this->array($data)
-         ->hasKey('id');
+        $this->assertArrayHasKey('id', $data);
         $new_id = $data['id'];
 
         $computer = new Computer();
-        $this->boolean((bool)$computer->getFromDB($new_id))->isTrue();
+        $this->assertTrue((bool)$computer->getFromDB($new_id));
 
-       //Add SQL injection spotted!
-        $this->boolean($computer->fields['otherserial'] != 'Not hacked')->isFalse();
+        //Add SQL injection spotted!
+        $this->assertFalse($computer->fields['otherserial'] != 'Not hacked');
 
-        $data = $this->query(
+        $this->query(
             'updateItems',
             ['itemtype' => 'Computer',
                 'verb'     => 'PUT',
@@ -1358,9 +1313,9 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->boolean((bool)$computer->getFromDB($new_id))->isTrue();
-       //Update SQL injection spotted!
-        $this->boolean($computer->fields['otherserial'] === 'injected')->isFalse();
+        $this->assertTrue((bool)$computer->getFromDB($new_id));
+        //Update SQL injection spotted!
+        $this->assertFalse($computer->fields['otherserial'] === 'injected');
 
         $computer = new Computer();
         $computer->delete(['id' => $new_id], true);
@@ -1376,20 +1331,19 @@ abstract class APIBaseClass extends atoum
             'smtp_passwd',
         ];
 
-       // set a non empty value to the sessionts to check
+        // set a non-empty value to the sessions to check
         foreach ($sensitiveSettings as $name) {
             Config::setConfigurationValues('core', [$name => 'not_empty_password']);
             $value = Config::getConfigurationValues('core', [$name]);
-            $this->array($value)->hasKey($name);
-            $this->string($value[$name])->isNotEmpty();
+            $this->assertArrayHasKey($name, $value);
+            $this->assertNotEmpty($value[$name]);
         }
 
         $config = new Config();
         $rows = $config->find(['context' => 'core', 'name' => $sensitiveSettings]);
-        $this->array($rows)
-         ->hasSize(count($sensitiveSettings));
+        $this->assertCount(count($sensitiveSettings), $rows);
 
-       // Check the value is not retrieved for sensitive settings
+        // Check the value is not retrieved for sensitive settings
         foreach ($rows as $row) {
             $data = $this->query(
                 'getItem',
@@ -1398,10 +1352,10 @@ abstract class APIBaseClass extends atoum
                     'headers' => ['Session-Token' => $this->session_token]
                 ]
             );
-            $this->array($data)->notHasKey('value');
+            $this->assertArrayNotHasKey('value', $data);
         }
 
-       // Check an other setting is disclosed (when not empty)
+        // Check another setting is disclosed (when not empty)
         $config = new Config();
         $config->getFromDBByCrit(['context' => 'core', 'name' => 'admin_email']);
         $data = $this->query(
@@ -1412,9 +1366,9 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-        $this->variable($data['value'])->isNotEqualTo('');
+        $this->assertNotEquals('', $data['value']);
 
-       // Check a search does not disclose sensitive values
+        // Check a search does not disclose sensitive values
         $criteria = [];
         $queryString = "";
         foreach ($rows as $row) {
@@ -1431,7 +1385,7 @@ abstract class APIBaseClass extends atoum
         );
         foreach ($data['data'] as $row) {
             foreach ($row as $col) {
-                $this->variable($col)->isNotEqualTo('not_empty_password');
+                $this->assertNotEquals('not_empty_password', $col);
             }
         }
     }
@@ -1452,12 +1406,12 @@ abstract class APIBaseClass extends atoum
 
         $obj = new \Item_DeviceSimcard();
 
-       // Add
+        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $this->object($computer)->isInstanceOf('\Computer');
+        $this->assertInstanceOf(\Computer::class, $computer);
         $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
-        $this->integer((int) $deviceSimcard->getID())->isGreaterThan(0);
-        $this->object($deviceSimcard)->isInstanceOf('\DeviceSimcard');
+        $this->assertGreaterThan(0, (int) $deviceSimcard->getID());
+        $this->assertInstanceOf(\DeviceSimcard::class, $deviceSimcard);
         $input = [
             'itemtype'           => 'Computer',
             'items_id'           => $computer->getID(),
@@ -1469,9 +1423,9 @@ abstract class APIBaseClass extends atoum
             'puk2'               => '4567',
         ];
         $id = $obj->add($input);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
-       //drop update access on item_devicesimcard
+        //drop update access on item_devicesimcard
         $DB->update(
             'glpi_profilerights',
             ['rights' => 2],
@@ -1481,12 +1435,12 @@ abstract class APIBaseClass extends atoum
             ]
         );
 
-       // Profile changed then login
+        // Profile changed then login
         $backupSessionToken = $this->session_token;
         $this->initSessionCredentials();
         $limitedSessionToken = $this->session_token;
 
-       //reset rights. Done here so ACLs are reset even if tests fails.
+        //reset rights. Done here so ACLs are reset even if tests fails.
         $DB->update(
             'glpi_profilerights',
             ['rights' => 3],
@@ -1497,7 +1451,7 @@ abstract class APIBaseClass extends atoum
         );
         $this->session_token = $backupSessionToken;
 
-       // test getItem does not disclose sensitive fields when READ disabled
+        // test getItem does not disclose sensitive fields when READ disabled
         $data = $this->query(
             'getItem',
             ['itemtype' => 'Item_DeviceSimcard',
@@ -1506,10 +1460,10 @@ abstract class APIBaseClass extends atoum
             ]
         );
         foreach ($sensitiveFields as $field) {
-            $this->array($data)->notHasKey($field);
+            $this->assertArrayNotHasKey($field, $data);
         }
 
-       // test getItem discloses sensitive fields when READ enabled
+        // test getItem discloses sensitive fields when READ enabled
         $data = $this->query(
             'getItem',
             ['itemtype' => 'Item_DeviceSimcard',
@@ -1518,11 +1472,11 @@ abstract class APIBaseClass extends atoum
             ]
         );
         foreach ($sensitiveFields as $field) {
-            $this->array($data)->hasKey($field);
+            $this->assertArrayHasKey($field, $data);
         }
 
-       // test searching a sensitive field as criteria id forbidden
-        $data = $this->query(
+        // test searching a sensitive field as criteria id forbidden
+        $this->query(
             'search',
             ['itemtype' => 'Item_DeviceSimcard',
                 'headers'  => ['Session-Token' => $this->session_token],
@@ -1538,8 +1492,8 @@ abstract class APIBaseClass extends atoum
             'ERROR'
         );
 
-       // test forcing display of a sensitive field
-        $data = $this->query(
+        // test forcing display of a sensitive field
+        $this->query(
             'search',
             ['itemtype' => 'Item_DeviceSimcard',
                 'headers'  => ['Session-Token' => $this->session_token],
@@ -1563,11 +1517,9 @@ abstract class APIBaseClass extends atoum
             ['headers'  => ['Session-Token' => $this->session_token]]
         );
 
-       // Test a disclosed data
-        $this->array($data)
-         ->hasKey('cfg_glpi');
-        $this->array($data['cfg_glpi'])
-         ->hasKey('infocom_types');
+        // Test a disclosed data
+        $this->assertArrayHasKey('cfg_glpi', $data);
+        $this->assertArrayHasKey('infocom_types', $data['cfg_glpi']);
     }
 
 
@@ -1586,29 +1538,27 @@ abstract class APIBaseClass extends atoum
                 ]
             );
 
-            $this->array($itemtype::$undisclosedFields)
-             ->size->isGreaterThan(0);
+            $this->assertGreaterThan(0, count($itemtype::$undisclosedFields));
 
             foreach ($itemtype::$undisclosedFields as $key) {
-                $this->array($data);
+                $this->assertIsArray($data);
                 unset($data['headers']);
                 foreach ($data as $item) {
-                    $this->array($item)->notHasKey($key);
+                    $this->assertArrayNotHasKey($key, $item);
                 }
             }
         }
 
-       // test specific cases
-       // Config
+        // test specific cases
+        // Config
         $data = $this->query('getGlpiConfig', [
             'headers'  => ['Session-Token' => $this->session_token]
         ]);
 
-       // Test undisclosed data are actually not disclosed
-        $this->array(Config::$undisclosedFields)
-         ->size->isGreaterThan(0);
+        // Test undisclosed data are actually not disclosed
+        $this->assertGreaterThan(0, count(Config::$undisclosedFields));
         foreach (Config::$undisclosedFields as $key) {
-            $this->array($data['cfg_glpi'])->notHasKey($key);
+            $this->assertArrayNotHasKey($key, $data['cfg_glpi']);
         }
     }
 
@@ -1619,12 +1569,12 @@ abstract class APIBaseClass extends atoum
      */
     public function testKillSession()
     {
-       // test retrieve all users
-        $res = $this->query(
+        // test retrieve all users
+        $this->query(
             'killSession',
             ['headers' => ['Session-Token' => $this->session_token]]
         );
-        $res = $this->query(
+        $this->query(
             'getFullSession',
             ['headers' => ['Session-Token' => $this->session_token]],
             401,
@@ -1638,13 +1588,11 @@ abstract class APIBaseClass extends atoum
      */
     public function testLostPasswordRequest()
     {
-        global $CFG_GLPI;
-
         $user = getItemByTypeName('User', TU_USER);
         $email = $user->getDefaultEmail();
 
         // Check that the POST method is not allowed
-        $res = $this->query(
+        $this->query(
             'lostPassword',
             ['verb'    => 'POST',
             ],
@@ -1653,7 +1601,7 @@ abstract class APIBaseClass extends atoum
         );
 
         // Check that the GET method is not allowed
-        $res = $this->query(
+        $this->query(
             'lostPassword',
             ['verb'    => 'GET',
             ],
@@ -1662,7 +1610,7 @@ abstract class APIBaseClass extends atoum
         );
 
         // Check that the DELETE method is not allowed
-        $res = $this->query(
+        $this->query(
             'lostPassword',
             ['verb'    => 'DELETE',
             ],
@@ -1677,7 +1625,7 @@ abstract class APIBaseClass extends atoum
         ]);
 
         // Check that disabled notifications prevent password changes
-        $res = $this->query(
+        $this->query(
             'lostPassword',
             ['verb'    => 'PUT',
                 'json'    => [
@@ -1694,8 +1642,8 @@ abstract class APIBaseClass extends atoum
             'notifications_mailing' => '1'
         ]);
 
-        // Test an unknown email, query will succeed to avoid exposing whether or
-        // not the email actually exist in our database but there will be a
+        // Test an unknown email, query will succeed to avoid exposing whether
+        // the email actually exist in our database but there will be a
         // warning in the server logs
         $this->query('lostPassword', [
             'verb'    => 'PUT',
@@ -1708,7 +1656,7 @@ abstract class APIBaseClass extends atoum
         ], 200);
 
         // Test a valid email is accepted
-        $res = $this->query(
+        $this->query(
             'lostPassword',
             ['verb'    => 'PATCH',
                 'json'    => [
@@ -1721,10 +1669,10 @@ abstract class APIBaseClass extends atoum
         // get the password recovery token
         $user = getItemByTypeName('User', TU_USER);
         $token = $user->fields['password_forget_token'];
-        $this->string($token)->isNotEmpty();
+        $this->assertNotEmpty($token);
 
         // Test reset password with a bad token
-        $res = $this->query(
+        $this->query(
             'lostPassword',
             ['verb'    => 'PUT',
                 'json'    => [
@@ -1738,7 +1686,7 @@ abstract class APIBaseClass extends atoum
         );
 
         // Test reset password with the good token
-        $res = $this->query(
+        $this->query(
             'lostPassword',
             ['verb'    => 'PATCH',
                 'json'    => [
@@ -1761,15 +1709,15 @@ abstract class APIBaseClass extends atoum
             ['password' => Auth::getPasswordHash(TU_PASS)],
             ['id'       => $user->getID()]
         );
-        $this->variable($updateSuccess)->isNotFalse('password update failed');
+        $this->assertNotFalse($updateSuccess, 'password update failed');
 
         // Test the new password was saved
-        $this->variable(\Auth::checkPassword('NewPassword', $newHash))->isNotFalse();
+        $this->assertNotFalse(\Auth::checkPassword('NewPassword', $newHash));
 
         // Validates that password reset token has been removed
         $user = getItemByTypeName('User', TU_USER);
         $token = $user->fields['password_forget_token'];
-        $this->string($token)->isEmpty();
+        $this->assertEmpty($token);
 
         //diable notifications
         Config::setConfigurationValues('core', [
@@ -1788,10 +1736,10 @@ abstract class APIBaseClass extends atoum
      */
     protected function checkContentRange($data, $headers)
     {
-        $this->integer($data['count'])->isLessThanOrEqualTo($data['totalcount']);
-        $this->array($headers)->hasKey('Content-Range');
+        $this->assertLessThanOrEqual($data['totalcount'], $data['count']);
+        $this->assertArrayHasKey('Content-Range', $headers);
         $expectedContentRange = '0-' . ($data['count'] - 1) . '/' . $data['totalcount'];
-        $this->string($headers['Content-Range'][0])->isIdenticalTo($expectedContentRange);
+        $this->assertSame($expectedContentRange, $headers['Content-Range'][0]);
     }
 
     /**
@@ -1804,9 +1752,9 @@ abstract class APIBaseClass extends atoum
      */
     protected function checkEmptyContentRange($data, $headers)
     {
-        $this->integer($data['count'])->isLessThanOrEqualTo($data['totalcount']);
-        $this->integer($data['totalcount'])->isEqualTo(0);
-        $this->array($headers)->notHasKey('Content-Range');
+        $this->assertLessThanOrEqual($data['totalcount'], $data['count']);
+        $this->assertEquals(0, $data['totalcount']);
+        $this->assertArrayNotHasKey('Content-Range', $headers);
     }
 
     public function testUndisclosedNotificationContent()
@@ -1840,7 +1788,7 @@ abstract class APIBaseClass extends atoum
                 ]
             ]
         );
-        $this->array($data)->hasKey('session_token');
+        $this->assertArrayHasKey('session_token', $data);
 
         // Check notifications returned by `getItems`
         $result = $this->query(
@@ -1851,7 +1799,7 @@ abstract class APIBaseClass extends atoum
             ],
             200
         );
-        $this->array($result);
+        $this->assertIsArray($result);
         unset($result['headers']);
 
         $notifications = \array_filter(
@@ -1859,11 +1807,11 @@ abstract class APIBaseClass extends atoum
             fn ($notification) => $notification['name'] === '[GLPI] Forgotten password?'
         );
 
-        $this->array($notifications)->isNotEmpty();
+        $this->assertNotEmpty($notifications);
 
         foreach ($notifications as $notification) {
-            $this->string($notification['body_html'])->isEqualTo('********');
-            $this->string($notification['body_text'])->isEqualTo('********');
+            $this->assertEquals('********', $notification['body_html']);
+            $this->assertEquals('********', $notification['body_text']);
         }
 
         // Check notifications returned by a search request
@@ -1879,11 +1827,11 @@ abstract class APIBaseClass extends atoum
             ],
             200
         );
-        $this->array($result);
+        $this->assertIsArray($result);
         unset($result['headers']);
 
-        $this->array($result)->hasKey('data');
-        $this->array($result['data'])->isNotEmpty();
+        $this->assertArrayHasKey('data', $result);
+        $this->assertNotEmpty($result['data']);
 
         $notifications = \array_filter(
             $result['data'],
@@ -1891,8 +1839,8 @@ abstract class APIBaseClass extends atoum
         );
 
         foreach ($notifications as $notification) {
-            $this->string($notification['12'])->isEqualTo('********'); // 12 = body_html
-            $this->string($notification['13'])->isEqualTo('********'); // 13 = body_text
+            $this->assertEquals('********', $notification['12']); // 12 = body_html
+            $this->assertEquals('********', $notification['13']); // 13 = body_text
         }
     }
 }

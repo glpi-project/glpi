@@ -35,38 +35,35 @@
 
 namespace tests\units;
 
-class SNMPCredential extends \FrontBaseClass
+use Glpi\Toolbox\Sanitizer;
+use Symfony\Component\BrowserKit\HttpBrowser;
+
+class TicketTest extends \FrontBaseClass
 {
-    public function testCreate()
+    public function testTicketCreate()
     {
         $this->logIn();
-        $this->addToCleanup(\SNMPCredential::class, ['name' => 'thetestuuidtoremove']);
+        $this->addToCleanup(\Ticket::class, ['name' => ['LIKE', '%thetestuuidtoremove']]);
 
-        //load snmp credential form
-        $crawler = $this->http_client->request('GET', $this->base_uri . 'front/snmpcredential.form.php');
+        //load computer form
+        $crawler = $this->http_client->request('GET', $this->base_uri . 'front/ticket.form.php');
 
-        $auth_passphrase = '¡<av€ry$3"cur€p@ssp\'hr@se>!';
-        $priv_passphrase = '>>P4ss"ph&ase<<';
         $crawler = $this->http_client->request(
             'POST',
-            $this->base_uri . 'front/snmpcredential.form.php',
+            $this->base_uri . 'front/ticket.form.php',
             [
                 'add'  => true,
-                'name' => 'thetestuuidtoremove',
-                'snmpversion' => 3,
-                'username' => 'snmpuser',
-                'auth_passphrase' => $auth_passphrase,
-                'priv_passphrase' => $priv_passphrase,
+                'name' => 'A \'test\' > "ticket" & name thetestuuidtoremove',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
                 '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value')
             ]
         );
 
-        $credential = new \SNMPCredential();
-        $this->boolean($credential->getFromDBByCrit(['name' => 'thetestuuidtoremove']))->isTrue();
-
-        $this->string($credential->fields['auth_passphrase'])->isNotIdenticalTo($auth_passphrase);
-        $this->string((new \GLPIKey())->decrypt($credential->fields['auth_passphrase']))->isIdenticalTo($auth_passphrase);
-        $this->string($credential->fields['priv_passphrase'])->isNotIdenticalTo($priv_passphrase);
-        $this->string((new \GLPIKey())->decrypt($credential->fields['priv_passphrase']))->isIdenticalTo($priv_passphrase);
+        $ticket = new \Ticket();
+        $this->assertTrue($ticket->getFromDBByCrit(['name' => ['LIKE', '%thetestuuidtoremove']]));
+        $this->assertSame(
+            'A \'test\' > "ticket" & name thetestuuidtoremove',
+            Sanitizer::unsanitize($ticket->fields['name'], false)
+        );
     }
 }
