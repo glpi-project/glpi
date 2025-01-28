@@ -828,8 +828,8 @@ final class DbUtils
      * @param string $field             field where apply the limit (id != entities_id) (default '')
      * @param mixed $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
      *                                  single item or array (default '')
-     * @param boolean $is_recursive     need to use recursive process to find item
-     *                                  (field need to be named recursive) (false by default, set to auto to automatic detection)
+     * @param boolean|'auto' $is_recursive     need to use recursive process to find item
+     *                                  (field need to be named recursive) (false by default, set to 'auto' to automatic detection)
      * @param boolean $complete_request need to use a complete request and not a simple one
      *                                  when have acces to all entities (used for reminders)
      *                                  (false by default)
