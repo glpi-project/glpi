@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Document;
 use Document_Item;
+use Override;
 use Session;
 
 class HasDocumentsCapacity extends AbstractCapacity
@@ -50,6 +51,12 @@ class HasDocumentsCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Document::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Upload and attach files");
     }
 
     public function getCloneRelations(): array

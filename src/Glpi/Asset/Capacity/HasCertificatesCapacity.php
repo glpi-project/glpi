@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use Certificate;
 use Certificate_Item;
 use CommonGLPI;
+use Override;
 use Session;
 
 class HasCertificatesCapacity extends AbstractCapacity
@@ -50,6 +51,12 @@ class HasCertificatesCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Certificate::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Track certificates used by the assets");
     }
 
     public function getCloneRelations(): array

@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Item_OperatingSystem;
 use OperatingSystem;
+use Override;
 
 class HasOperatingSystemCapacity extends AbstractCapacity
 {
@@ -50,6 +51,12 @@ class HasOperatingSystemCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return OperatingSystem::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Display operating system information");
     }
 
     public function isUsed(string $classname): bool

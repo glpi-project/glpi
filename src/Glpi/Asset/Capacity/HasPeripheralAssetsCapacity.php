@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Override;
 use Session;
 
 class HasPeripheralAssetsCapacity extends AbstractCapacity
@@ -49,6 +50,12 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Asset_PeripheralAsset::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Can be connected to external peripherals or monitors");
     }
 
     public function getCloneRelations(): array

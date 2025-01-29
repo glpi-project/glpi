@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use Appliance;
 use Appliance_Item;
 use CommonGLPI;
+use Override;
 use Session;
 
 class HasAppliancesCapacity extends AbstractCapacity
@@ -50,6 +51,12 @@ class HasAppliancesCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Appliance::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Can be part of an appliance. An appliance is a virtual object that groups several assets");
     }
 
     public function getCloneRelations(): array

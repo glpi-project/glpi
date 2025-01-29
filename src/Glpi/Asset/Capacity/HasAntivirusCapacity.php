@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use ItemAntivirus;
 use Session;
+use Override;
 
 class HasAntivirusCapacity extends AbstractCapacity
 {
@@ -49,6 +50,12 @@ class HasAntivirusCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return ItemAntivirus::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("List antivirus software");
     }
 
     public function getCloneRelations(): array

@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonDevice;
 use CommonGLPI;
 use Item_Devices;
+use Override;
 use Session;
 
 class HasDevicesCapacity extends AbstractCapacity
@@ -50,6 +51,12 @@ class HasDevicesCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return CommonDevice::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Includes sub-components like CPUs, drives or memory");
     }
 
     public function getCloneRelations(): array
