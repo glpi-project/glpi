@@ -2296,7 +2296,7 @@ class AuthLDAPTest extends DbTestCase
     private function checkLdapConnection($ldap_connection)
     {
         if (version_compare(phpversion(), '8.1.0-dev', '<')) {
-            $this->assertInstanceOf('ldap link', $ldap_connection);
+            $this->assertIsResource($ldap_connection);
         } else {
             $this->assertInstanceOf(\LDAP\Connection::class, $ldap_connection);
         }
