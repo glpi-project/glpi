@@ -3807,9 +3807,6 @@ TWIG, $twig_params);
         return count($it) ? $it->current()['id'] : 0;
     }
 
-    /**
-     * @return void
-     */
     public function post_updateItem($history = true)
     {
         if (isset($this->fields["is_default"]) && $this->fields["is_default"] === 1) {
