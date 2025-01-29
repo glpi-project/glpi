@@ -1535,17 +1535,6 @@ class AuthLDAPTest extends DbTestCase
         );
         $ldap::$conn_cache = [];
 
-        /*$this->when(
-            function () use ($ldap, $user) {
-                $synchro = $ldap->forceOneUserSynchronization($user);
-                $this->assertFalse($synchro);
-            }
-        )
-            ->error()
-                ->withType(E_USER_WARNING)
-                ->withMessage("Unable to bind to LDAP server `server-does-not-exists.org:1234` with RDN `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)")
-            ->exists();*/
-
         $synchro = $ldap->forceOneUserSynchronization($user);
         $this->assertFalse($synchro);
         $this->hasPhpLogRecordThatContains(
@@ -2220,15 +2209,6 @@ class AuthLDAPTest extends DbTestCase
             ])
         );
 
-        /*$this->when(
-            function () {
-                $this->login('brazil5', 'password', false, false);
-            }
-        )
-            ->error()
-                ->withType(E_USER_WARNING)
-                ->withMessage("Unable to bind to LDAP server `openldap:1234` with RDN `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)")
-                ->exists();*/
         $this->login('brazil5', 'password', false, false);
         $this->hasPhpLogRecordThatContains(
             "Unable to bind to LDAP server `openldap:1234` with RDN `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)",
@@ -2432,11 +2412,6 @@ class AuthLDAPTest extends DbTestCase
         string $password,
         string $error
     ) {
-        /*$this->when(
-            function () use ($host, $port, $login, $password) {
-                \AuthLDAP::connectToServer($host, $port, $login, $password);
-            }
-        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();*/
         \AuthLDAP::connectToServer($host, $port, $login, $password);
         $this->hasPhpLogRecordThatContains(
             $error,
@@ -2459,17 +2434,6 @@ class AuthLDAPTest extends DbTestCase
             ]
         );
 
-        /*$this->when(
-            function () {
-                \AuthLDAP::connectToServer(
-                    'openldap',
-                    '3890',
-                    'cn=Manager,dc=glpi,dc=org',
-                    'insecure',
-                    true,
-                );
-            }
-        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();*/
         \AuthLDAP::connectToServer(
             'openldap',
             '3890',
@@ -2503,11 +2467,6 @@ class AuthLDAPTest extends DbTestCase
             ]
         );
 
-        /*$this->when(
-            function () use ($connection) {
-                \AuthLDAP::getGroupCNByDn($connection, 'notavaliddn');
-            }
-        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();*/
         \AuthLDAP::getGroupCNByDn($connection, 'notavaliddn');
         $this->hasPhpLogRecordThatContains(
             $error,
@@ -2561,11 +2520,6 @@ class AuthLDAPTest extends DbTestCase
         $connection = $ldap->connect();
         $this->checkLdapConnection($connection);
 
-        /*$this->when(
-            function () use ($connection, $basedn, $filter) {
-                \AuthLDAP::getObjectByDn($connection, $filter, $basedn, ['dn']);
-            }
-        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();*/
         \AuthLDAP::getObjectByDn($connection, $filter, $basedn, ['dn']);
         $this->hasPhpLogRecordThatContains(
             $error,
@@ -2652,22 +2606,6 @@ class AuthLDAPTest extends DbTestCase
         $connection = $ldap->connect();
         $this->checkLdapConnection($connection);
 
-        /*$this->when(
-            function () use ($ldap, $connection, $basedn, $filter) {
-                $limitexceeded = $user_infos = $ldap_users = null;
-
-                \AuthLDAP::searchForUsers(
-                    $connection,
-                    ['basedn' => $basedn],
-                    $filter,
-                    ['dn'],
-                    $limitexceeded,
-                    $user_infos,
-                    $ldap_users,
-                    $ldap
-                );
-            }
-        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();*/
         \AuthLDAP::searchForUsers(
             $connection,
             ['basedn' => $basedn],
@@ -2731,18 +2669,6 @@ class AuthLDAPTest extends DbTestCase
         $connection = $ldap->connect();
         $this->checkLdapConnection($connection);
 
-        /*$this->when(
-            function () use ($connection, $options) {
-                \AuthLDAP::searchUserDn(
-                    $connection,
-                    $options + [
-                        'login_field'       => 'uid',
-                        'search_parameters' => ['fields' => ['login' => 'uid']],
-                        'user_params'       => ['value'  => 'johndoe'],
-                    ]
-                );
-            }
-        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();*/
         \AuthLDAP::searchUserDn(
             $connection,
             $options + [
@@ -2832,18 +2758,6 @@ class AuthLDAPTest extends DbTestCase
         $connection = $ldap->connect();
         $this->checkLdapConnection($connection);
 
-        /*$this->when(
-            function () use ($ldap, $connection, $filter) {
-                $limitexceeded = null;
-
-                \AuthLDAP::getGroupsFromLDAP(
-                    $connection,
-                    $ldap,
-                    $filter,
-                    $limitexceeded
-                );
-            }
-        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();*/
         $limitexceeded = null;
 
         \AuthLDAP::getGroupsFromLDAP(
