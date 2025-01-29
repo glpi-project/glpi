@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Item_SoftwareLicense;
 use Item_SoftwareVersion;
+use Override;
 use Session;
 use Software;
 use SoftwareLicense;
@@ -53,6 +54,12 @@ class HasSoftwaresCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Software::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("List installed software");
     }
 
     public function getCloneRelations(): array

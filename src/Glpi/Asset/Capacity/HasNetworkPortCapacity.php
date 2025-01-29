@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use NetworkPort;
+use Override;
 use Session;
 
 class HasNetworkPortCapacity extends AbstractCapacity
@@ -56,6 +57,12 @@ class HasNetworkPortCapacity extends AbstractCapacity
         return [
             NetworkPort::class,
         ];
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Has network ports (like ethernet and wlan)");
     }
 
     public function isUsed(string $classname): bool

@@ -38,6 +38,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Domain;
 use Domain_Item;
+use Override;
 use Session;
 
 class HasDomainsCapacity extends AbstractCapacity
@@ -50,6 +51,12 @@ class HasDomainsCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Domain::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Track domains, records and their expiration dates");
     }
 
     public function getCloneRelations(): array

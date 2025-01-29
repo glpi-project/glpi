@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use ItemVirtualMachine;
+use Override;
 use Session;
 
 class HasVirtualMachineCapacity extends AbstractCapacity
@@ -49,6 +50,12 @@ class HasVirtualMachineCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return ItemVirtualMachine::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("List virtual machines attached to these assets");
     }
 
     public function getCloneRelations(): array

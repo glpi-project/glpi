@@ -37,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Item_Disk;
+use Override;
 use Session;
 
 class HasVolumesCapacity extends AbstractCapacity
@@ -49,6 +50,12 @@ class HasVolumesCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Item_Disk::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("List storage volumes");
     }
 
     public function getSearchOptions(string $classname): array

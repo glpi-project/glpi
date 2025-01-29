@@ -39,6 +39,7 @@ use Config;
 use Impact;
 use ImpactItem;
 use ImpactRelation;
+use Override;
 use Toolbox;
 
 class HasImpactCapacity extends AbstractCapacity
@@ -51,6 +52,12 @@ class HasImpactCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Impact::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Enable \"Impact analysis\" tab and the assets can also be displayed in the impact tab of other asset types");
     }
 
     private function countImpactRelations(string $classname): int

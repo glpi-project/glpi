@@ -35,11 +35,11 @@
 
 namespace Glpi\Asset\Capacity;
 
-use AutoUpdateSystem;
 use CommonGLPI;
 use Glpi\Inventory\Inventory;
 use Item_Environment;
 use Item_Process;
+use Override;
 use Session;
 
 class IsInventoriableCapacity extends AbstractCapacity
@@ -52,6 +52,12 @@ class IsInventoriableCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return Inventory::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("The GLPI agent can report inventory data for these assets");
     }
 
     public function getSearchOptions(string $classname): array

@@ -39,6 +39,7 @@ use CommonGLPI;
 use Link;
 use Link_Itemtype;
 use ManualLink;
+use Override;
 use Session;
 
 class HasLinksCapacity extends AbstractCapacity
@@ -51,6 +52,12 @@ class HasLinksCapacity extends AbstractCapacity
     public function getIcon(): string
     {
         return ManualLink::getIcon();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Define associated external links for the assets");
     }
 
     public function getCloneRelations(): array
