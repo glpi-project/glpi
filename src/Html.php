@@ -1285,6 +1285,7 @@ HTML;
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
+        $tpl_vars['js_files'][] = ['path' => 'js/clipboard.js'];
 
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
             $tpl_vars['js_modules'][] = ['path' => 'js/modules/Debug/Debug.js'];
