@@ -4863,6 +4863,7 @@ JAVASCRIPT
         $js .= "};
 
          const select2_el = $('#$field_id').select2({
+            language: '{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][2]}',
             width: '$width',
             multiple: '$multiple',
             placeholder: " . json_encode($placeholder) . ",
