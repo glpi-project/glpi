@@ -39,54 +39,56 @@ use DbTestCase;
 use GLPIKey;
 use Group;
 use Group_User;
+use Monolog\Logger;
 use UserTitle;
 use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/authldap.class.php */
 
-class AuthLDAP extends DbTestCase
+class AuthLDAPTest extends DbTestCase
 {
     /**
      * @var \AuthLDAP
      */
     private $ldap;
 
-    public function beforeTestMethod($method)
+    public function setUp(): void
     {
-        parent::beforeTestMethod($method);
+        parent::setUp();
         $this->ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
 
        //make sure bootstrapped ldap is active and is default
-        $this->boolean(
+        $this->assertTrue(
             $this->ldap->update([
                 'id'                => $this->ldap->getID(),
                 'is_active'         => 1,
                 'is_default'        => 1,
                 'responsible_field' => "manager",
             ])
-        )->isTrue();
+        );
     }
 
-    public function afterTestMethod($method)
+    public function tearDown(): void
     {
         unset($_SESSION['ldap_import']);
 
-       //make sure bootstrapped ldap is not active and is default
-        $this->boolean(
+        //make sure bootstrapped ldap is not active and is default
+        $this->assertTrue(
             $this->ldap->update([
                 'id'           => $this->ldap->getID(),
                 'is_active'    => 1,
                 'is_default'   => 1
             ])
-        )->isTrue();
+        );
 
-        parent::afterTestMethod($method);
+        parent::tearDown();
     }
 
     private function addLdapServers()
     {
         $ldap = new \AuthLDAP();
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$ldap->add([
                 'name'        => 'LDAP1',
                 'is_active'   => 1,
@@ -95,8 +97,9 @@ class AuthLDAP extends DbTestCase
                 'login_field' => 'uid',
                 'phone_field' => 'phonenumber'
             ])
-        )->isGreaterThan(0);
-        $this->integer(
+        );
+        $this->assertGreaterThan(
+            0,
             (int)$ldap->add([
                 'name'         => 'LDAP2',
                 'is_active'    => 0,
@@ -106,8 +109,9 @@ class AuthLDAP extends DbTestCase
                 'phone_field'  => 'phonenumber',
                 'email1_field' => 'email'
             ])
-        )->isGreaterThan(0);
-        $this->integer(
+        );
+        $this->assertGreaterThan(
+            0,
             (int)$ldap->add([
                 'name'        => 'LDAP3',
                 'is_active'   => 1,
@@ -117,29 +121,28 @@ class AuthLDAP extends DbTestCase
                 'phone_field' => 'phonenumber',
                 'email1_field' => 'email'
             ])
-        )->isGreaterThan(0);
+        );
     }
 
     public function testGetTypeName()
     {
-        $this->string(\AuthLDAP::getTypeName(1))->isIdenticalTo('LDAP directory');
-        $this->string(\AuthLDAP::getTypeName(0))->isIdenticalTo('LDAP directories');
-        $this->string(\AuthLDAP::getTypeName(\Session::getPluralNumber()))->isIdenticalTo('LDAP directories');
+        $this->assertSame('LDAP directory', \AuthLDAP::getTypeName(1));
+        $this->assertSame('LDAP directories', \AuthLDAP::getTypeName(0));
+        $this->assertSame('LDAP directories', \AuthLDAP::getTypeName(\Session::getPluralNumber()));
     }
 
     public function testPost_getEmpty()
     {
         $ldap = new \AuthLDAP();
         $ldap->post_getEmpty();
-        $this->array($ldap->fields)->hasSize(28);
+        $this->assertCount(28, $ldap->fields);
     }
 
     public function testUnsetUndisclosedFields()
     {
         $fields = ['login_field' => 'test', 'rootdn_passwd' => 'mypassword'];
         \AuthLDAP::unsetUndisclosedFields($fields);
-        $this->array($fields)
-         ->notHasKey('rootdn_passwd');
+        $this->assertArrayNotHasKey('rootdn_passwd', $fields);
     }
 
     public function testPreconfig()
@@ -148,108 +151,110 @@ class AuthLDAP extends DbTestCase
         //Use Active directory preconfiguration :
         //login_field and sync_field must be filled
         $ldap->preconfig('AD');
-        $this->array($ldap->fields)
-         ->string['login_field']->isIdenticalTo('samaccountname')
-         ->string['sync_field']->isIdenticalTo('objectguid');
+        $this->assertSame('samaccountname', $ldap->fields['login_field']);
+        $this->assertSame('objectguid', $ldap->fields['sync_field']);
 
         //Use OpenLDAP preconfiguration :
         //login_field and sync_field must be filled
         $ldap->preconfig('OpenLDAP');
-        $this->array($ldap->fields)
-         ->string['login_field']->isIdenticalTo('uid')
-         ->string['sync_field']->isIdenticalTo('entryuuid');
+        $this->assertSame('uid', $ldap->fields['login_field']);
+        $this->assertSame('entryuuid', $ldap->fields['sync_field']);
 
         //No preconfiguration model
         $ldap->preconfig('');
         //Login_field is set to uid (default)
-        $this->string($ldap->fields['login_field'])->isIdenticalTo('uid');
-        $this->variable($ldap->fields['sync_field'])->isNull();
+        $this->assertSame('uid', $ldap->fields['login_field']);
+        $this->assertNull($ldap->fields['sync_field']);
     }
 
     public function testPrepareInputForUpdate()
     {
-        $ldap   = new \mock\AuthLDAP();
-        $this->calling($ldap)->isSyncFieldUsed = true;
+        $ldap = $this->getMockBuilder(\AuthLDAP::class)
+            ->onlyMethods(['isSyncFieldUsed'])
+            ->getMock();
+        $ldap->method('isSyncFieldUsed')->willReturn(true);
 
-       //------------ Password tests --------------------//
+        //------------ Password tests --------------------//
         $input  = ['name' => 'ldap', 'rootdn_passwd' => ''];
         $result = $ldap->prepareInputForUpdate($input);
-       //empty rootdn_passwd set : should not appear in the response array
-        $this->array($result)->notHasKey('rootdn_passwd');
+        //empty rootdn_passwd set : should not appear in the response array
+        $this->assertArrayNotHasKey('rootdn_passwd', $result);
 
-       //no rootdn_passwd set : should not appear in the response array
+        //no rootdn_passwd set : should not appear in the response array
         $input  = ['name' => 'ldap'];
         $result = $ldap->prepareInputForUpdate($input);
-        $this->array($result)->notHasKey('rootdn_passwd');
+        $this->assertArrayNotHasKey('rootdn_passwd', $result);
 
-       //Field name finishing with _field : set the value in lower case
+        //Field name finishing with _field : set the value in lower case
         $input['_login_field'] = 'TEST';
         $result         = $ldap->prepareInputForUpdate($input);
-        $this->string($result['_login_field'])->isIdenticalTo('test');
+        $this->assertSame('test', $result['_login_field']);
 
         $input['sync_field'] = 'sync_field';
         $result = $ldap->prepareInputForUpdate($input);
-        $this->string($result['sync_field'])->isIdenticalTo('sync_field');
+        $this->assertSame('sync_field', $result['sync_field']);
 
-       //test sync_field update
+        //test sync_field update
         $ldap->fields['sync_field'] = 'sync_field';
         $result = $ldap->prepareInputForUpdate($input);
-        $this->array($result)->notHasKey('sync_field');
-
-        $this->calling($ldap)->isSyncFieldUsed = false;
-        $result = $ldap->prepareInputForUpdate($input);
-        $this->array($result)->hasKey('sync_field');
-        $this->calling($ldap)->isSyncFieldUsed = true;
+        $this->assertArrayNotHasKey('sync_field', $result);
 
         $input['sync_field'] = 'another_field';
         $result = $ldap->prepareInputForUpdate($input);
-        $this->boolean($result)->isFalse();
+        $this->assertFalse($result);
         $this->hasSessionMessages(ERROR, ['Synchronization field cannot be changed once in use.']);
+
+        $ldap = $this->getMockBuilder(\AuthLDAP::class)
+            ->onlyMethods(['isSyncFieldUsed'])
+            ->getMock();
+        $ldap->method('isSyncFieldUsed')->willReturn(false);
+        $result = $ldap->prepareInputForUpdate($input);
+        $this->assertArrayHasKey('sync_field', $result);
     }
 
     public function testgetGroupSearchTypeName()
     {
-       //Get all group search type values
+        //Get all group search type values
         $search_type = \AuthLDAP::getGroupSearchTypeName();
-        $this->array($search_type)->hasSize(3);
+        $this->assertCount(3, $search_type);
 
-       //Give a wrong number value
+        //Give a wrong number value
         $search_type = \AuthLDAP::getGroupSearchTypeName(4);
-        $this->string($search_type)->isIdenticalTo(NOT_AVAILABLE);
+        $this->assertSame(NOT_AVAILABLE, $search_type);
 
-       //Give a wrong string value
+        //Give a wrong string value
         $search_type = \AuthLDAP::getGroupSearchTypeName('toto');
-        $this->string($search_type)->isIdenticalTo(NOT_AVAILABLE);
+        $this->assertSame(NOT_AVAILABLE, $search_type);
 
-       //Give a existing values
+        //Give a existing values
         $search_type = \AuthLDAP::getGroupSearchTypeName(0);
-        $this->string($search_type)->isIdenticalTo('In users');
+        $this->assertSame('In users', $search_type);
 
         $search_type = \AuthLDAP::getGroupSearchTypeName(1);
-        $this->string($search_type)->isIdenticalTo('In groups');
+        $this->assertSame('In groups', $search_type);
 
         $search_type = \AuthLDAP::getGroupSearchTypeName(2);
-        $this->string($search_type)->isIdenticalTo('In users and groups');
+        $this->assertSame('In users and groups', $search_type);
     }
 
     public function testGetSpecificValueToDisplay()
     {
         $ldap = new \AuthLDAP();
 
-       //Value as an array
+        //Value as an array
         $values = ['group_search_type' => 0];
         $result = $ldap->getSpecificValueToDisplay('group_search_type', $values);
-        $this->string($result)->isIdenticalTo('In users');
+        $this->assertSame('In users', $result);
 
-       //Value as a single value
+        //Value as a single value
         $values = 1;
         $result = $ldap->getSpecificValueToDisplay('group_search_type', $values);
-        $this->string($result)->isIdenticalTo('In groups');
+        $this->assertSame('In groups', $result);
 
-       //Value as a single value
+        //Value as a single value
         $values = ['name' => 'ldap'];
         $result = $ldap->getSpecificValueToDisplay('name', $values);
-        $this->string($result)->isEmpty();
+        $this->assertEmpty($result);
     }
 
     public function testDefineTabs()
@@ -259,14 +264,14 @@ class AuthLDAP extends DbTestCase
         $expected = [
             'AuthLDAP$main' => 'LDAP directory',
         ];
-        $this->array($tabs)->isIdenticalTo($expected);
+        $this->assertSame($expected, $tabs);
     }
 
     public function testGetSearchOptionsNew()
     {
         $ldap     = new \AuthLDAP();
         $options  = $ldap->rawSearchOptions();
-        $this->array($options)->hasSize(34);
+        $this->assertCount(34, $options);
     }
 
     public function testGetSyncFields()
@@ -274,35 +279,35 @@ class AuthLDAP extends DbTestCase
         $ldap     = new \AuthLDAP();
         $values   = ['login_field' => 'value'];
         $result   = $ldap->getSyncFields($values);
-        $this->array($result)->isIdenticalTo(['name' => 'value']);
+        $this->assertSame(['name' => 'value'], $result);
 
         $result   = $ldap->getSyncFields([]);
-        $this->array($result)->isEmpty();
+        $this->assertEmpty($result);
     }
 
     public function testLdapStamp2UnixStamp()
     {
-       //Good timestamp
+        //Good timestamp
         $result = \AuthLDAP::ldapStamp2UnixStamp('20161114100339Z');
-        $this->integer($result)->isIdenticalTo(1479117819);
+        $this->assertSame(1479117819, $result);
 
-       //Bad timestamp format
+        //Bad timestamp format
         $result = \AuthLDAP::ldapStamp2UnixStamp(20161114100339);
-        $this->string($result)->isEmpty();
+        $this->assertEmpty($result);
 
-       //Bad timestamp format
+        //Bad timestamp format
         $result = \AuthLDAP::ldapStamp2UnixStamp("201611141003");
-        $this->string($result)->isEmpty();
+        $this->assertEmpty($result);
     }
 
     public function testDate2ldapTimeStamp()
     {
         $result = \AuthLDAP::date2ldapTimeStamp("2017-01-01 22:35:00");
-        $this->string($result)->isIdenticalTo("20170101223500.0Z");
+        $this->assertSame("20170101223500.0Z", $result);
 
-       //Bad date => 01/01/1970
+        //Bad date => 01/01/1970
         $result = \AuthLDAP::date2ldapTimeStamp("2017-25-25 22:35:00");
-        $this->string($result)->isIdenticalTo("19700101000000.0Z");
+        $this->assertSame("19700101000000.0Z", $result);
     }
 
     public function testDnExistsInLdap()
@@ -317,32 +322,30 @@ class AuthLDAP extends DbTestCase
             ]
         ];
 
-       //Ask for a non existing user_dn : result is false
-        $this->boolean(
+        //Ask for a non-existing user_dn : result is false
+        $this->assertFalse(
             \AuthLDAP::dnExistsInLdap(
                 $ldap_infos,
                 'uid=jdupont, ou=people, dc=mycompany'
             )
-        )->isFalse();
+        );
 
-       //Ask for an dn that exists : result is the user's infos as an array
+        //Ask for a dn that exists : result is the user's infos as an array
         $result = \AuthLDAP::dnExistsInLdap(
             $ldap_infos,
             'uid=jdoe, ou=people, dc=mycompany'
         );
-        $this->array($result)->hasSize(3);
+        $this->assertCount(3, $result);
     }
 
     public function testGetLdapServers()
     {
         $this->addLdapServers();
 
-       //The list of ldap server show the default server in first position
+        //The list of ldap server show the default server in first position
         $result = \AuthLDAP::getLdapServers();
-        $this->array($result)
-         ->hasSize(4);
-        $this->array(current($result))
-         ->string['name']->isIdenticalTo('LDAP3');
+        $this->assertCount(4, $result);
+        $this->assertSame('LDAP3', current($result)['name']);
     }
 
     public function testUseAuthLdap()
@@ -350,9 +353,9 @@ class AuthLDAP extends DbTestCase
         global $DB;
         $this->addLdapServers();
 
-        $this->boolean(\AuthLDAP::useAuthLdap())->isTrue();
+        $this->assertTrue(\AuthLDAP::useAuthLdap());
         $DB->update('glpi_authldaps', ['is_active' => 0], [true]);
-        $this->boolean(\AuthLDAP::useAuthLdap())->isFalse();
+        $this->assertFalse(\AuthLDAP::useAuthLdap());
     }
 
     public function testGetNumberOfServers()
@@ -360,50 +363,53 @@ class AuthLDAP extends DbTestCase
         global $DB;
         $this->addLdapServers();
 
-        $this->integer((int)\AuthLDAP::getNumberOfServers())->isIdenticalTo(3);
+        $this->assertSame(3, (int)\AuthLDAP::getNumberOfServers());
         $DB->update('glpi_authldaps', ['is_active' => 0], [true]);
-        $this->integer((int)\AuthLDAP::getNumberOfServers())->isIdenticalTo(0);
+        $this->assertSame(0, (int)\AuthLDAP::getNumberOfServers());
     }
 
     public function testBuildLdapFilter()
     {
         $this->addLdapServers();
 
+        /** @var \AuthLDAP $ldap */
         $ldap = getItemByTypeName('AuthLDAP', 'LDAP3');
         $result = \AuthLDAP::buildLdapFilter($ldap);
-        $this->string($result)->isIdenticalTo("(& (email=*) )");
+        $this->assertSame("(& (email=*) )", $result);
 
         $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
         $_SESSION['ldap_import']['criterias'] = ['name'        => 'foo',
             'phone_field' => '+33454968584'
         ];
         $result = \AuthLDAP::buildLdapFilter($ldap);
-        $this->string($result)->isIdenticalTo('(& (LDAP3=*foo*)(phonenumber=*+33454968584*) )');
+        $this->assertSame('(& (LDAP3=*foo*)(phonenumber=*+33454968584*) )', $result);
 
         $_SESSION['ldap_import']['criterias']['name'] = '^foo';
         $result = \AuthLDAP::buildLdapFilter($ldap);
-        $this->string($result)->isIdenticalTo('(& (LDAP3=foo*)(phonenumber=*+33454968584*) )');
+        $this->assertSame('(& (LDAP3=foo*)(phonenumber=*+33454968584*) )', $result);
 
         $_SESSION['ldap_import']['criterias']['name'] = 'foo$';
         $result = \AuthLDAP::buildLdapFilter($ldap);
-        $this->string($result)->isIdenticalTo('(& (LDAP3=*foo)(phonenumber=*+33454968584*) )');
+        $this->assertSame('(& (LDAP3=*foo)(phonenumber=*+33454968584*) )', $result);
 
         $_SESSION['ldap_import']['criterias']['name'] = '^foo$';
         $result = \AuthLDAP::buildLdapFilter($ldap);
-        $this->string($result)->isIdenticalTo('(& (LDAP3=foo)(phonenumber=*+33454968584*) )');
+        $this->assertSame('(& (LDAP3=foo)(phonenumber=*+33454968584*) )', $result);
 
         $_SESSION['ldap_import']['criterias'] = ['name' => '^foo$'];
         $ldap->fields['condition'] = '(objectclass=inetOrgPerson)';
         $result = \AuthLDAP::buildLdapFilter($ldap);
         $ldap->fields['condition'] = '';
-        $this->string($result)->isIdenticalTo('(& (LDAP3=foo) (objectclass=inetOrgPerson))');
+        $this->assertSame('(& (LDAP3=foo) (objectclass=inetOrgPerson))', $result);
 
         $_SESSION['ldap_import']['begin_date']        = '2017-04-20 00:00:00';
         $_SESSION['ldap_import']['end_date']          = '2017-04-22 00:00:00';
         $_SESSION['ldap_import']['criterias']['name'] = '^foo$';
         $result = \AuthLDAP::buildLdapFilter($ldap);
-        $this->string($result)
-         ->isIdenticalTo('(& (LDAP3=foo)(modifyTimestamp>=20170420000000.0Z)(modifyTimestamp<=20170422000000.0Z) )');
+        $this->assertSame(
+            '(& (LDAP3=foo)(modifyTimestamp>=20170420000000.0Z)(modifyTimestamp<=20170422000000.0Z) )',
+            $result
+        );
     }
 
     public function testAddTimestampRestrictions()
@@ -412,69 +418,66 @@ class AuthLDAP extends DbTestCase
             '',
             '2017-04-22 00:00:00'
         );
-        $this->string($result)
-         ->isIdenticalTo("(modifyTimestamp<=20170422000000.0Z)");
+        $this->assertSame("(modifyTimestamp<=20170422000000.0Z)", $result);
 
         $result = \AuthLDAP::addTimestampRestrictions(
             '2017-04-20 00:00:00',
             ''
         );
-        $this->string($result)
-         ->isIdenticalTo("(modifyTimestamp>=20170420000000.0Z)");
+        $this->assertSame("(modifyTimestamp>=20170420000000.0Z)", $result);
 
         $result = \AuthLDAP::addTimestampRestrictions('', '');
-        $this->string($result)->isEmpty();
+        $this->assertEmpty($result);
 
         $result = \AuthLDAP::addTimestampRestrictions(
             '2017-04-20 00:00:00',
             '2017-04-22 00:00:00'
         );
-        $this->string($result)
-         ->isIdenticalTo("(modifyTimestamp>=20170420000000.0Z)(modifyTimestamp<=20170422000000.0Z)");
+        $this->assertSame("(modifyTimestamp>=20170420000000.0Z)(modifyTimestamp<=20170422000000.0Z)", $result);
     }
 
     public function testGetDefault()
     {
-        $this->integer((int)\AuthLDAP::getDefault())->isIdenticalTo((int)$this->ldap->getID());
+        $this->assertSame((int)$this->ldap->getID(), (int)\AuthLDAP::getDefault());
 
-       //Load ldap servers
+        //Load ldap servers
         $this->addLdapServers();
         $ldap = getItemByTypeName('AuthLDAP', 'LDAP3');
-        $this->integer((int)\AuthLDAP::getDefault())->isIdenticalTo((int)$ldap->getID());
+        $this->assertSame((int)$ldap->getID(), (int)\AuthLDAP::getDefault());
 
         $ldap->update([
             'id'        => $ldap->getID(),
             'is_active' => 0
         ]);
-        $this->integer((int)\AuthLDAP::getDefault())->isIdenticalTo(0);
+        $this->assertSame(0, (int)\AuthLDAP::getDefault());
     }
 
     public function testPost_updateItem()
     {
-       //Load ldap servers
+        //Load ldap servers
         $this->addLdapServers();
 
-       //Get first lDAP server
+        //Get first lDAP server
         $ldap = getItemByTypeName('AuthLDAP', 'LDAP1');
 
-       //Set it as default server
-        $this->boolean(
+        //Set it as default server
+        $this->assertTrue(
             $ldap->update(['id' => $ldap->getID(), 'is_default' => 1])
-        )->isTrue();
+        );
 
-       //Get first lDAP server now
+        //Get first lDAP server now
         $ldap = getItemByTypeName('AuthLDAP', 'LDAP1');
-        $this->variable($ldap->fields['is_default'])->isEqualTo(1);
+        $this->assertEquals(1, $ldap->fields['is_default']);
 
-       //Get third ldap server (former default one)
+        //Get third ldap server (former default one)
         $ldap = getItemByTypeName('AuthLDAP', 'LDAP3');
-       //Check that it's not the default server anymore
-        $this->variable($ldap->fields['is_default'])->isEqualTo(0);
+        //Check that it's not the default server anymore
+        $this->assertEquals(0, $ldap->fields['is_default']);
     }
 
     public function testPost_addItem()
     {
-       //Load ldap servers
+        //Load ldap servers
         $this->addLdapServers();
 
         $ldap     = new \AuthLDAP();
@@ -486,14 +489,14 @@ class AuthLDAP extends DbTestCase
             'login_field' => 'email',
             'phone_field' => 'phonenumber'
         ]);
-        $this->integer((int)$ldaps_id)->isGreaterThan(0);
-        $this->boolean($ldap->getFromDB($ldaps_id))->isTrue();
-        $this->variable($ldap->fields['is_default'])->isEqualTo(1);
+        $this->assertGreaterThan(0, (int)$ldaps_id);
+        $this->assertTrue($ldap->getFromDB($ldaps_id));
+        $this->assertEquals(1, $ldap->fields['is_default']);
 
-       //Get third ldap server (former default one)
+        //Get third ldap server (former default one)
         $ldap = getItemByTypeName('AuthLDAP', 'LDAP3');
-       //Check that it's not the default server anymore
-        $this->variable($ldap->fields['is_default'])->isEqualTo(0);
+        //Check that it's not the default server anymore
+        $this->assertEquals(0, $ldap->fields['is_default']);
     }
 
     public function testPrepareInputForAdd()
@@ -507,36 +510,35 @@ class AuthLDAP extends DbTestCase
             'login_field' => 'email',
             'rootdn_passwd' => 'password'
         ]);
-        $this->integer((int)$ldaps_id)->isGreaterThan(0);
-        $this->boolean($ldap->getFromDB($ldaps_id))->isTrue();
-        $this->array($ldap->fields)
-         ->variable['is_default']->isEqualTo(0)
-         ->string['rootdn_passwd']->isNotEqualTo('password');
+        $this->assertGreaterThan(0, (int)$ldaps_id);
+        $this->assertTrue($ldap->getFromDB($ldaps_id));
+        $this->assertEmpty(0, $ldap->fields['is_default']);
+        $this->assertNotEquals('password', $ldap->fields['rootdn_passwd']);
     }
 
     public function testGetServersWithImportByEmailActive()
     {
         $result = \AuthLDAP::getServersWithImportByEmailActive();
-        $this->array($result)->hasSize(1);
+        $this->assertCount(1, $result);
 
         $this->addLdapServers();
 
-       //Return two ldap server : because LDAP2 is disabled
+        //Return two ldap server: because LDAP2 is disabled
         $result = \AuthLDAP::getServersWithImportByEmailActive();
-        $this->array($result)->hasSize(2);
+        $this->assertCount(2, $result);
 
-       //Enable LDAP2
+        //Enable LDAP2
         $ldap = getItemByTypeName('AuthLDAP', 'LDAP2');
-        $this->boolean(
+        $this->assertTrue(
             $ldap->update([
                 'id' => $ldap->getID(),
                 'is_active' => 1
             ])
-        )->isTrue();
+        );
 
-       //Now there should be 2 enabled servers
+        //Now there should be 2 enabled servers
         $result = \AuthLDAP::getServersWithImportByEmailActive();
-        $this->array($result)->hasSize(3);
+        $this->assertCount(3, $result);
     }
 
     public function testgetTabNameForItem()
@@ -552,10 +554,10 @@ class AuthLDAP extends DbTestCase
             5 => 'Advanced information',
             6 => 'Replicates'
         ];
-        $this->array($result)->isIdenticalTo($expected);
+        $this->assertSame($expected, $result);
 
         $result = $ldap->getTabNameForItem($ldap, 1);
-        $this->string($result)->isEmpty;
+        $this->assertEmpty($result);
     }
 
     public function testGetAllReplicateForAMaster()
@@ -571,64 +573,67 @@ class AuthLDAP extends DbTestCase
             'login_field' => 'uid',
             'phone_field' => 'phonenumber'
         ]);
-        $this->integer((int)$ldaps_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$ldaps_id);
 
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$replicate->add([
                 'name'         => 'replicate1',
                 'host'         => 'myhost1',
                 'port'         => 3306,
                 'authldaps_id' => $ldaps_id
             ])
-        )->isGreaterThan(0);
+        );
 
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$replicate->add([
                 'name'         => 'replicate2',
                 'host'         => 'myhost1',
                 'port'         => 3306,
                 'authldaps_id' => $ldaps_id
             ])
-        )->isGreaterThan(0);
+        );
 
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$replicate->add([
                 'name'         => 'replicate3',
                 'host'         => 'myhost1',
                 'port'         => 3306,
                 'authldaps_id' => $ldaps_id
             ])
-        )->isGreaterThan(0);
+        );
 
         $result = $ldap->getAllReplicateForAMaster($ldaps_id);
-        $this->array($result)->hasSize(3);
+        $this->assertCount(3, $result);
 
         $result = $ldap->getAllReplicateForAMaster(100);
-        $this->array($result)->hasSize(0);
+        $this->assertCount(0, $result);
     }
 
     public function testIsValidGuid()
     {
-        $this->boolean(\AuthLDAP::isValidGuid(''))->isFalse();
-        $this->boolean(\AuthLDAP::isValidGuid('00000000-0000-0000-0000-000000000000'))->isTrue();
-        $this->boolean(\AuthLDAP::isValidGuid('AB52DFB8-A352-BA53-CC58-ABFD5E9D200E'))->isTrue();
-        $this->boolean(\AuthLDAP::isValidGuid('ZB52DFH8-AH52-BH53-CH58-ABFD5E9D200E'))->isFalse();
+        $this->assertFalse(\AuthLDAP::isValidGuid(''));
+        $this->assertTrue(\AuthLDAP::isValidGuid('00000000-0000-0000-0000-000000000000'));
+        $this->assertTrue(\AuthLDAP::isValidGuid('AB52DFB8-A352-BA53-CC58-ABFD5E9D200E'));
+        $this->assertFalse(\AuthLDAP::isValidGuid('ZB52DFH8-AH52-BH53-CH58-ABFD5E9D200E'));
     }
 
     public function testGuidToHex()
     {
         $guid       = '891b903c-9982-4e64-9c2a-a6caff69f5b0';
         $expected   = '\3c\90\1b\89\82\99\64\4e\9c\2a\a6\ca\ff\69\f5\b0';
-        $this->string(\AuthLDAP::guidToHex($guid))->isIdenticalTo($expected);
+        $this->assertSame($expected, \AuthLDAP::guidToHex($guid));
     }
 
     public function testGetFieldValue()
     {
         $infos = ['field' => 'value'];
-        $this->string(\AuthLDAP::getFieldValue($infos, 'field'))->isIdenticalTo('value');
+        $this->assertSame('value', \AuthLDAP::getFieldValue($infos, 'field'));
 
         $infos = ['objectguid' => 'value'];
-        $this->string(\AuthLDAP::getFieldValue($infos, 'objectguid'))->isIdenticalTo('value');
+        $this->assertSame('value', \AuthLDAP::getFieldValue($infos, 'objectguid'));
     }
 
     public function testPassword()
@@ -642,44 +647,44 @@ class AuthLDAP extends DbTestCase
             'login_field' => 'uid',
             'phone_field' => 'phonenumber'
         ]);
-        $this->integer($id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $id);
 
-       //rootdn_passwd is set with a value (a password, not encrypted)
+        //rootdn_passwd is set with a value (a password, not encrypted)
         $password = 'toto';
         $input    = ['id' => $id, 'name' => 'ldap', 'rootdn_passwd' => $password];
-        $this->boolean($ldap->update($input))->isTrue();
-        $this->boolean($ldap->getFromDB($id))->isTrue();
+        $this->assertTrue($ldap->update($input));
+        $this->assertTrue($ldap->getFromDB($id));
 
-       //Expected value to be encrypted using current  key
-        $this->string((new GLPIKey())->decrypt($ldap->fields['rootdn_passwd']))->isIdenticalTo($password);
+        //Expected value to be encrypted using current  key
+        $this->assertSame($password, (new GLPIKey())->decrypt($ldap->fields['rootdn_passwd']));
 
         $password = 'tot\'o';
         $input    = ['id' => $id, 'name' => 'ldap', 'rootdn_passwd' => $password];
-        $this->boolean($ldap->update($input))->isTrue();
-        $this->boolean($ldap->getFromDB($id))->isTrue();
+        $this->assertTrue($ldap->update($input));
+        $this->assertTrue($ldap->getFromDB($id));
 
-       //Expected value to be encrypted using current key
-        $this->string((new GLPIKey())->decrypt($ldap->fields['rootdn_passwd']))->isIdenticalTo($password);
+        //Expected value to be encrypted using current key
+        $this->assertSame($password, (new GLPIKey())->decrypt($ldap->fields['rootdn_passwd']));
 
         $input['_blank_passwd'] = 1;
         $result   = $ldap->prepareInputForUpdate($input);
-       //rootdn_passwd is set but empty
-        $this->string($result['rootdn_passwd'])->isEmpty();
+        //rootdn_passwd is set but empty
+        $this->assertEmpty($result['rootdn_passwd']);
     }
 
     /**
      * Test LDAP connection
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @return void
      */
     public function testTestLDAPConnection()
     {
-        $this->boolean(\AuthLDAP::testLDAPConnection(-1))->isFalse();
+        $this->assertFalse(\AuthLDAP::testLDAPConnection(-1));
 
         $ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
-        $this->boolean(\AuthLDAP::testLDAPConnection($ldap->getID()))->isTrue();
+        $this->assertTrue(\AuthLDAP::testLDAPConnection($ldap->getID()));
 
         $this->checkLdapConnection($ldap->connect());
     }
@@ -687,7 +692,7 @@ class AuthLDAP extends DbTestCase
     /**
      * Test get users
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @return void
      */
@@ -707,8 +712,8 @@ class AuthLDAP extends DbTestCase
             $limit
         );
 
-        $this->array($users)->hasSize(912);
-        $this->array($results)->hasSize(0);
+        $this->assertCount(912, $users);
+        $this->assertCount(0, $results);
 
         $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
         $_SESSION['ldap_import']['criterias'] = ['login_field' => 'brazil2'];
@@ -723,8 +728,8 @@ class AuthLDAP extends DbTestCase
             $limit
         );
 
-        $this->array($users)->hasSize(12);
-        $this->array($results)->hasSize(0);
+        $this->assertCount(12, $users);
+        $this->assertCount(0, $results);
 
         $_SESSION['ldap_import']['criterias'] = ['login_field' => 'remi'];
 
@@ -738,14 +743,14 @@ class AuthLDAP extends DbTestCase
             $limit
         );
 
-        $this->array($users)->hasSize(1);
-        $this->array($results)->hasSize(0);
+        $this->assertCount(1, $users);
+        $this->assertCount(0, $results);
     }
 
     /**
      * Test get groups
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @return void
      */
@@ -762,7 +767,7 @@ class AuthLDAP extends DbTestCase
             $limit
         );
 
-        $this->array($groups)->hasSize(912);
+        $this->assertCount(912, $groups);
 
        /** TODO: filter search... I do not know how to do. */
     }
@@ -770,7 +775,7 @@ class AuthLDAP extends DbTestCase
     /**
      * Test import user
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @return void
      */
@@ -780,7 +785,7 @@ class AuthLDAP extends DbTestCase
         $results = [];
         $limit = false;
 
-       //get user to import
+        //get user to import
         $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
         $_SESSION['ldap_import']['criterias'] = ['login_field' => 'ecuador0'];
 
@@ -794,8 +799,8 @@ class AuthLDAP extends DbTestCase
             $limit
         );
 
-        $this->array($users)->hasSize(1);
-        $this->array($results)->hasSize(0);
+        $this->assertCount(1, $users);
+        $this->assertCount(0, $results);
 
         $import = \AuthLDAP::ldapImportUserByServerId(
             [
@@ -806,34 +811,32 @@ class AuthLDAP extends DbTestCase
             $ldap->getID(),
             true
         );
-        $this->array($import)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
-         ->integer['id']->isGreaterThan(0);
+        $this->assertCount(2, $import);
+        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertGreaterThan(0, $import['id']);
 
-       //check created user
+        //check created user
         $user = new \User();
-        $this->boolean($user->getFromDB($import['id']))->isTrue();
+        $this->assertTrue($user->getFromDB($import['id']));
 
-        $this->array($user->fields)
-         ->string['name']->isIdenticalTo('ecuador0')
-         ->string['phone']->isIdenticalTo('034596780')
-         ->string['realname']->isIdenticalTo('dor0')
-         ->string['firstname']->isIdenticalTo('ecua0')
-         ->string['language']->isIdenticalTo('es_ES')
-         ->variable['is_active']->isEqualTo(true)
-         ->variable['auths_id']->isEqualTo($ldap->getID())
-         ->variable['authtype']->isEqualTo(\Auth::LDAP)
-         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+        $this->assertSame('ecuador0', $user->fields['name']);
+        $this->assertSame('034596780', $user->fields['phone']);
+        $this->assertSame('dor0', $user->fields['realname']);
+        $this->assertSame('ecua0', $user->fields['firstname']);
+        $this->assertSame('es_ES', $user->fields['language']);
+        $this->assertEquals(true, $user->fields['is_active']);
+        $this->assertSame($ldap->getID(), $user->fields['auths_id']);
+        $this->assertSame(\Auth::LDAP, $user->fields['authtype']);
+        $this->assertSame('uid=ecuador0,ou=people,ou=R&#38;D,dc=glpi,dc=org', $user->fields['user_dn']);
 
-        $this->integer((int)$user->fields['usertitles_id'])->isGreaterThan(0);
-        $this->integer((int)$user->fields['usercategories_id'])->isGreaterThan(0);
+        $this->assertGreaterThan(0, (int)$user->fields['usertitles_id']);
+        $this->assertGreaterThan(0, (int)$user->fields['usercategories_id']);
     }
 
     /**
      * Test get groups
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @return void
      */
@@ -846,25 +849,25 @@ class AuthLDAP extends DbTestCase
 
         // Invalid group
         $cn = \AuthLDAP::getGroupCNByDn($connection, 'ou=not,ou=exists,dc=glpi,dc=org');
-        $this->boolean($cn)->isFalse();
+        $this->assertFalse($cn);
 
         // Valid group with no special chars
         $cn = \AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org');
-        $this->string($cn)->isIdenticalTo('glpi2-group1');
+        $this->assertSame('glpi2-group1', $cn);
 
         // OU with special `#` char protected by a `\`
         $cn = \AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group2,ou=groups,ou=\#1-test,ou=ldap2,dc=glpi,dc=org');
-        $this->string($cn)->isIdenticalTo('glpi2-group2');
+        $this->assertSame('glpi2-group2', $cn);
 
         // OU with special `#` char escaped to `\23`
         $cn = \AuthLDAP::getGroupCNByDn($connection, 'cn=glpi2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=glpi,dc=org');
-        $this->string($cn)->isIdenticalTo('glpi2-group2');
+        $this->assertSame('glpi2-group2', $cn);
     }
 
     /**
      * Test get user by dn
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @return void
      */
@@ -878,12 +881,14 @@ class AuthLDAP extends DbTestCase
             []
         );
 
-        $this->array($user)
-         ->hasSize(12)
-         ->hasKeys(['userpassword', 'uid', 'objectclass', 'sn']);
+        $this->assertCount(12, $user);
+        $this->assertArrayHasKey('userpassword', $user);
+        $this->assertArrayHasKey('uid', $user);
+        $this->assertArrayHasKey('objectclass', $user);
+        $this->assertArrayHasKey('sn', $user);
     }
 
-    protected function ldapGroupUserProvider(): iterable
+    public static function ldapGroupUserProvider(): iterable
     {
         yield [
             'group_dn'            => 'cn=glpi2-group1,ou=groups,ou=usa,ou=ldap2,dc=glpi,dc=org',
@@ -913,7 +918,7 @@ class AuthLDAP extends DbTestCase
     /**
      * Test get group
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @dataProvider ldapGroupUserProvider
      *
@@ -928,21 +933,24 @@ class AuthLDAP extends DbTestCase
             $group_dn
         );
 
-        $this->array($group)->isIdenticalTo([
-            'cn'     => [
-                'count' => 1,
-                0       => $expected_group_name,
+        $this->assertSame(
+            [
+                'cn'     => [
+                    'count' => 1,
+                    0       => $expected_group_name,
+                ],
+                0        => 'cn',
+                'count'  => 1,
+                'dn'     => $expected_group_dn
             ],
-            0        => 'cn',
-            'count'  => 1,
-            'dn'     => $expected_group_dn
-        ]);
+            $group
+        );
     }
 
     /**
      * Test import group
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @dataProvider ldapGroupUserProvider
      *
@@ -963,22 +971,21 @@ class AuthLDAP extends DbTestCase
             ]
         );
 
-        $this->integer($import)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $import);
 
         //check group
         $group = new \Group();
-        $this->boolean($group->getFromDB($import))->isTrue();
+        $this->assertTrue($group->getFromDB($import));
 
-        $this->array($group->fields)
-            ->string['name']->isIdenticalTo($expected_group_name)
-            ->string['completename']->isIdenticalTo($expected_group_name)
-            ->string['ldap_group_dn']->isIdenticalTo($expected_group_dn);
+        $this->assertSame($expected_group_name, $group->fields['name']);
+        $this->assertSame($expected_group_name, $group->fields['completename']);
+        $this->assertSame($expected_group_dn, $group->fields['ldap_group_dn']);
     }
 
     /**
      * Test import group and user
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @dataProvider ldapGroupUserProvider
      *
@@ -1001,8 +1008,8 @@ class AuthLDAP extends DbTestCase
                 ]
             );
 
-            $this->integer($import)->isGreaterThan(0);
-            $this->boolean($group->getFromDB($import))->isTrue();
+            $this->assertGreaterThan(0, $import);
+            $this->assertTrue($group->getFromDB($import));
         }
 
         $import = \AuthLDAP::ldapImportUserByServerId(
@@ -1014,33 +1021,31 @@ class AuthLDAP extends DbTestCase
             $ldap->getID(),
             true
         );
-        $this->array($import)
-            ->hasSize(2)
-            ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED);
-        $this->integer((int)$import['id'])->isGreaterThan(0);
+        $this->assertCount(2, $import);
+        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertGreaterThan(0, (int)$import['id']);
 
         //check created user
         $user = new \User();
-        $this->boolean($user->getFromDB($import['id']))->isTrue();
+        $this->assertTrue($user->getFromDB($import['id']));
 
         $usergroups = \Group_User::getUserGroups($user->getID());
-        $this->array($usergroups[0])
-            ->variable['id']->isEqualTo($group->getID())
-            ->string['name']->isIdenticalTo($expected_group_name);
+        $this->assertEquals($group->getID(), $usergroups[0]['id']);
+        $this->assertSame($expected_group_name, $usergroups[0]['name']);
     }
 
 
     /**
      * Test sync user
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @return void
      */
     public function testSyncUser()
     {
         $ldap = $this->ldap;
-        $this->boolean($ldap->isSyncFieldEnabled())->isFalse();
+        $this->assertFalse($ldap->isSyncFieldEnabled());
 
         $import = \AuthLDAP::ldapImportUserByServerId(
             [
@@ -1051,82 +1056,77 @@ class AuthLDAP extends DbTestCase
             $ldap->getID(),
             true
         );
-        $this->array($import)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
-         ->integer['id']->isGreaterThan(0);
+        $this->assertCount(2, $import);
+        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertGreaterThan(0, $import['id']);
 
-       //check created user
+        //check created user
         $user = new \User();
-        $this->boolean($user->getFromDB($import['id']))->isTrue();
-        $this->array($user->fields)
-         ->string['name']->isIdenticalTo('ecuador0')
-         ->string['phone']->isIdenticalTo('034596780')
-         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+        $this->assertTrue($user->getFromDB($import['id']));
+        $this->assertSame('ecuador0', $user->fields['name']);
+        $this->assertSame('034596780', $user->fields['phone']);
+        $this->assertSame('uid=ecuador0,ou=people,ou=R&#38;D,dc=glpi,dc=org', $user->fields['user_dn']);
 
-       // update the user in ldap (change phone number)
-        $this->boolean(
+        // update the user in ldap (change phone number)
+        $this->assertTrue(
             ldap_modify(
                 $ldap->connect(),
                 'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['telephoneNumber' => '+33101010101']
             )
-        )->isTrue();
+        );
 
         $synchro = $ldap->forceOneUserSynchronization($user);
 
-       //reset entry before any test can fail
-        $this->boolean(
+        //reset entry before any test can fail
+        $this->assertTrue(
             ldap_modify(
                 $ldap->connect(),
                 'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['telephoneNumber' => '034596780']
             )
-        )->isTrue();
+        );
 
-        $this->array($synchro)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
-         ->variable['id']->isEqualTo($user->getID());
+        $this->assertCount(2, $synchro);
+        $this->assertSame(\AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
+        $this->assertSame($user->getID(), $synchro['id']);
 
-       // check phone number has been synced
-        $this->boolean($user->getFromDB($user->getID()))->isTrue();
-        $this->array($user->fields)
-         ->string['name']->isIdenticalTo('ecuador0')
-         ->string['phone']->isIdenticalTo('+33101010101')
-         ->string['user_dn']->isIdenticalTo('uid=ecuador0,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+        // check phone number has been synced
+        $this->assertTrue($user->getFromDB($user->getID()));
+        $this->assertSame('ecuador0', $user->fields['name']);
+        $this->assertSame('+33101010101', $user->fields['phone']);
+        $this->assertSame('uid=ecuador0,ou=people,ou=R&#38;D,dc=glpi,dc=org', $user->fields['user_dn']);
 
-       // update sync field of user
-        $this->boolean(
+        // update sync field of user
+        $this->assertTrue(
             $ldap->update([
                 'id'           => $ldap->getID(),
                 'sync_field'   => 'employeenumber'
             ])
-        )->isTrue();
+        );
 
-        $this->boolean($ldap->isSyncFieldEnabled())->isTrue();
+        $this->assertTrue($ldap->isSyncFieldEnabled());
 
-       // add sync field attribute in ldap user
-        $this->boolean(
+        // add sync field attribute in ldap user
+        $this->assertTrue(
             ldap_mod_add(
                 $ldap->connect(),
                 'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['employeeNumber' => '42']
             )
-        )->isTrue();
+        );
 
         $synchro = $ldap->forceOneUserSynchronization($user);
 
-        $this->boolean($user->getFromDB($user->getID()))->isTrue();
-        $this->array($synchro)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
-         ->variable['id']->isEqualTo($user->getID());
+        $this->assertTrue($user->getFromDB($user->getID()));
+        $this->assertCount(2, $synchro);
+        $this->assertSame(\AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
+        $this->assertEquals($user->getID(), $synchro['id']);
 
-        $this->variable($user->fields['sync_field'])->isEqualTo(42);
+        $this->assertEquals(42, $user->fields['sync_field']);
 
-       // rename the user (uid change, syncfield keep its value)
-        $this->boolean(
+        // rename the user (uid change, syncfield keep its value)
+        $this->assertTrue(
             ldap_rename(
                 $ldap->connect(),
                 'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
@@ -1134,12 +1134,12 @@ class AuthLDAP extends DbTestCase
                 '',
                 true
             )
-        )->isTrue();
+        );
 
         $synchro = $ldap->forceOneUserSynchronization($user);
 
-       //reset entry before any test can fail
-        $this->boolean(
+        //reset entry before any test can fail
+        $this->assertTrue(
             ldap_rename(
                 $ldap->connect(),
                 'uid=testecuador,ou=people,ou=R&D,dc=glpi,dc=org',
@@ -1147,85 +1147,81 @@ class AuthLDAP extends DbTestCase
                 '',
                 true
             )
-        )->isTrue();
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             ldap_mod_del(
                 $ldap->connect(),
                 'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['employeeNumber' => 42]
             )
-        )->isTrue();
+        );
 
-       // check the `name` field (corresponding to the uid) has been updated for the user
-        $this->boolean($user->getFromDB($user->getID()))->isTrue();
-        $this->array($synchro)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
-         ->variable['id']->isEqualTo($user->getID());
+        // check the `name` field (corresponding to the uid) has been updated for the user
+        $this->assertTrue($user->getFromDB($user->getID()));
+        $this->assertCount(2, $synchro);
+        $this->assertSame(\AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
+        $this->assertEquals($user->getID(), $synchro['id']);
 
-        $this->variable($user->fields['sync_field'])->isEqualTo(42);
-        $this->string($user->fields['name'])->isIdenticalTo('testecuador');
+        $this->assertEquals(42, $user->fields['sync_field']);
+        $this->assertSame('testecuador', $user->fields['name']);
 
-       // ## test we can sync the user when the syncfield is different but after we reset it manually
-        $this->boolean(
+        // ## test we can sync the user when the syncfield is different but after we reset it manually
+        $this->assertTrue(
             ldap_mod_add(
                 $ldap->connect(),
                 'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['employeeNumber' => '42']
             )
-        )->isTrue();
+        );
 
         $synchro = $ldap->forceOneUserSynchronization($user);
 
-        $this->boolean($user->getFromDB($user->getID()))->isTrue();
-        $this->array($synchro)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
-         ->variable['id']->isEqualTo($user->getID());
+        $this->assertTrue($user->getFromDB($user->getID()));
+        $this->assertCount(2, $synchro);
+        $this->assertSame(\AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
+        $this->assertEquals($user->getID(), $synchro['id']);
 
-        $this->variable($user->fields['sync_field'])->isEqualTo(42);
+        $this->assertEquals(42, $user->fields['sync_field']);
 
-        $this->boolean(
+        $this->assertTrue(
             ldap_mod_replace(
                 $ldap->connect(),
                 'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['employeeNumber' => '43']
             )
-        )->isTrue();
+        );
 
-       // do a simple sync
+        // do a simple sync
         $synchro = $ldap->forceOneUserSynchronization($user);
-        $this->boolean($user->getFromDB($user->getID()))->isTrue();
+        $this->assertTrue($user->getFromDB($user->getID()));
 
-       // the sync field should have been kept
-       // but the user should now be in non synchronized state
-        $this->variable($user->fields['sync_field'])->isEqualTo(42);
-        $this->array($synchro)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
-         ->variable['id']->isEqualTo($user->getID());
+        // the sync field should have been kept
+        // but the user should now be in non synchronized state
+        $this->assertEquals(42, $user->fields['sync_field']);
+        $this->assertCount(2, $synchro);
+        $this->assertSame(\AuthLDAP::USER_DELETED_LDAP, $synchro['action']);
+        $this->assertEquals($user->getID(), $synchro['id']);
 
-       // sync after emptying the sync field
+        // sync after emptying the sync field
         $synchro2 = $ldap->forceOneUserSynchronization($user, true);
-        $this->boolean($user->getFromDB($user->getID()))->isTrue();
+        $this->assertTrue($user->getFromDB($user->getID()));
 
-       // the sync field should have changed
-       // and the user is now synchronized again
-        $this->variable($user->fields['sync_field'])->isEqualTo(43);
-        $this->array($synchro2)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
-         ->variable['id']->isEqualTo($user->getID());
+        // the sync field should have changed
+        // and the user is now synchronized again
+        $this->assertEquals(43, $user->fields['sync_field']);
+        $this->assertCount(2, $synchro2);
+        $this->assertSame(\AuthLDAP::USER_SYNCHRONIZED, $synchro2['action']);
+        $this->assertEquals($user->getID(), $synchro2['id']);
 
-       // reset attribute
-        $this->boolean(
+        // reset attribute
+        $this->assertTrue(
             ldap_mod_del(
                 $ldap->connect(),
                 'uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['employeeNumber' => 43]
             )
-        )->isTrue();
+        );
 
         global $DB;
         $DB->updateOrDie(
@@ -1238,35 +1234,34 @@ class AuthLDAP extends DbTestCase
     /**
      * Test ldap authentication
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @return void
      */
     public function testLdapAuth()
     {
-       //try to login from a user that does not exists yet
+        //try to log in from a user that does not exist yet
         $auth = $this->login('brazil6', 'password', false);
 
         $user = new \User();
         $user->getFromDBbyName('brazil6');
-        $this->array($user->fields)
-         ->string['name']->isIdenticalTo('brazil6')
-         ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=R&#38;D,dc=glpi,dc=org');
-        $this->boolean($auth->user_present)->isFalse();
-        $this->boolean($auth->user_dn)->isFalse();
+        $this->assertSame('brazil6', $user->fields['name']);
+        $this->assertSame('uid=brazil6,ou=people,ou=R&#38;D,dc=glpi,dc=org', $user->fields['user_dn']);
+        $this->assertFalse($auth->user_present);
+        $this->assertFalse($auth->user_dn);
         $this->checkLdapConnection($auth->ldap_connection);
 
-       //import user; then try to login
+        //import user; then try to log in
         $ldap = $this->ldap;
-        $this->boolean(
+        $this->assertTrue(
             $ldap->update([
                 'id'           => $ldap->getID(),
                 'sync_field'   => 'employeenumber'
             ])
-        )->isTrue();
-        $this->boolean($ldap->isSyncFieldEnabled())->isTrue();
+        );
+        $this->assertTrue($ldap->isSyncFieldEnabled());
 
-       //try to import an user from its sync_field
+        //try to import a user from its sync_field
         $import = \AuthLDAP::ldapImportUserByServerId(
             [
                 'method' => \AuthLDAP::IDENTIFIER_LOGIN,
@@ -1276,26 +1271,24 @@ class AuthLDAP extends DbTestCase
             $ldap->getID(),
             true
         );
-        $this->array($import)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
-         ->integer['id']->isGreaterThan(0);
+        $this->assertCount(2, $import);
+        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertGreaterThan(0, $import['id']);
 
-       //check created user
+        //check created user
         $user = new \User();
-        $this->boolean($user->getFromDB($import['id']))->isTrue();
-        $this->array($user->fields)
-         ->string['name']->isIdenticalTo('brazil7')
-         ->string['user_dn']->isIdenticalTo('uid=brazil7,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+        $this->assertTrue($user->getFromDB($import['id']));
+        $this->assertSame('brazil7', $user->fields['name']);
+        $this->assertSame('uid=brazil7,ou=people,ou=R&#38;D,dc=glpi,dc=org', $user->fields['user_dn']);
 
         $auth = $this->login('brazil7', 'password', false, true);
 
-        $this->boolean($auth->user_present)->isTrue();
-        $this->string($auth->user_dn)->isIdenticalTo(Sanitizer::unsanitize($user->fields['user_dn']));
+        $this->assertTrue($auth->user_present);
+        $this->assertSame(Sanitizer::unsanitize($user->fields['user_dn']), $auth->user_dn);
         $this->checkLdapConnection($auth->ldap_connection);
 
-       //change user login, and try again. Existing user should be updated.
-        $this->boolean(
+        //change user login, and try again. Existing user should be updated.
+        $this->assertTrue(
             ldap_rename(
                 $ldap->connect(),
                 'uid=brazil7,ou=people,ou=R&D,dc=glpi,dc=org',
@@ -1303,13 +1296,13 @@ class AuthLDAP extends DbTestCase
                 '',
                 true
             )
-        )->isTrue();
+        );
 
         $this->login('brazil7', 'password', false, false);
         $auth = $this->login('brazil7test', 'password', false);
 
-       //reset entry before any test can fail
-        $this->boolean(
+        //reset entry before any test can fail
+        $this->assertTrue(
             ldap_rename(
                 $ldap->connect(),
                 'uid=brazil7test,ou=people,ou=R&D,dc=glpi,dc=org',
@@ -1317,20 +1310,19 @@ class AuthLDAP extends DbTestCase
                 '',
                 true
             )
-        )->isTrue();
+        );
 
-        $this->boolean($user->getFromDB($user->getID()))->isTrue();
-        $this->array($user->fields)
-         ->string['name']->isIdenticalTo('brazil7test')
-         ->string['user_dn']->isIdenticalTo('uid=brazil7test,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+        $this->assertTrue($user->getFromDB($user->getID()));
+        $this->assertSame('brazil7test', $user->fields['name']);
+        $this->assertSame('uid=brazil7test,ou=people,ou=R&#38;D,dc=glpi,dc=org', $user->fields['user_dn']);
 
-        $this->boolean($auth->user_present)->isTrue();
+        $this->assertTrue($auth->user_present);
         $this->checkLdapConnection($auth->ldap_connection);
 
-       //ensure duplicated DN on different authldaps_id does not prevent login
-        $this->boolean(
+        //ensure duplicated DN on different authldaps_id does not prevent login
+        $this->assertTrue(
             $user->getFromDBByCrit(['user_dn' => 'uid=brazil6,ou=people,ou=R&#38;D,dc=glpi,dc=org'])
-        )->isTrue();
+        );
 
         $dup = $user->fields;
         unset($dup['id']);
@@ -1340,15 +1332,15 @@ class AuthLDAP extends DbTestCase
         $aid = $dup['auths_id'];
         $dup['auths_id'] = $aid + 1;
 
-        $this->integer(
+        $this->assertGreaterThan(
+            0,
             (int)$user->add($dup)
-        )->isGreaterThan(0);
+        );
 
         $auth = $this->login('brazil6', 'password', false);
-        $this->array($auth->user->fields)
-         ->integer['auths_id']->isIdenticalTo($aid)
-         ->string['name']->isIdenticalTo('brazil6')
-         ->string['user_dn']->isIdenticalTo('uid=brazil6,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+        $this->assertSame($aid, $auth->user->fields['auths_id']);
+        $this->assertSame('brazil6', $auth->user->fields['name']);
+        $this->assertSame('uid=brazil6,ou=people,ou=R&#38;D,dc=glpi,dc=org', $auth->user->fields['user_dn']);
 
         global $DB;
         $DB->updateOrDie(
@@ -1361,14 +1353,14 @@ class AuthLDAP extends DbTestCase
     /**
      * Test LDAP authentication when specify the auth source (local, LDAP...)
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @return void
      */
     public function testLdapAuthSpecifyAuth()
     {
         $_SESSION['glpicronuserrunning'] = "cron_phpunit";
-       // Add a local account with same name than a LDAP user ('brazil8')
+        // Add a local account with same name than a LDAP user ('brazil8')
         $input = [
             'name'         => 'brazil8',
             'password'     => 'passwordlocal',
@@ -1378,39 +1370,39 @@ class AuthLDAP extends DbTestCase
         ];
         $user = new \User();
         $user_id = $user->add($input);
-        $this->integer($user_id)->isGreaterThan(0);
+        $this->assertGreaterThan(0, $user_id);
 
-       // check user has at least one profile
+        // check user has at least one profile
         $pus = \Profile_User::getForUser($user_id);
-        $this->array($pus)->size->isEqualTo(1);
+        $this->assertCount(1, $pus);
         $pu = array_shift($pus);
-        $this->integer($pu['profiles_id'])->isEqualTo(1);
-        $this->integer($pu['entities_id'])->isEqualTo(0);
-        $this->integer($pu['is_recursive'])->isEqualTo(0);
-        $this->integer($pu['is_dynamic'])->isEqualTo(0);
+        $this->assertEquals(1, $pu['profiles_id']);
+        $this->assertEquals(0, $pu['entities_id']);
+        $this->assertEquals(0, $pu['is_recursive']);
+        $this->assertEquals(0, $pu['is_dynamic']);
 
-       // first, login with ldap mode
+        // first, login with ldap mode
         $auth = new \Auth();
-        $this->boolean($auth->login('brazil8', 'password', false, false, 'ldap-' . $this->ldap->getID()))->isTrue();
+        $this->assertTrue($auth->login('brazil8', 'password', false, false, 'ldap-' . $this->ldap->getID()));
         $user_ldap_id = $auth->user->fields['id'];
-        $this->integer($user_ldap_id)->isNotEqualTo($user_id);
+        $this->assertNotEquals($user_id, $user_ldap_id);
 
         $auth = new \Auth();
-        $this->boolean($auth->login('brazil8', 'passwordlocal', false, false, 'ldap-' . $this->ldap->getID()))->isFalse();
+        $this->assertFalse($auth->login('brazil8', 'passwordlocal', false, false, 'ldap-' . $this->ldap->getID()));
 
-       // Then, login with local GLPI DB mode
+        // Then, login with local GLPI DB mode
         $auth = new \Auth();
-        $this->boolean($auth->login('brazil8', 'password', false, false, 'local'))->isFalse();
+        $this->assertFalse($auth->login('brazil8', 'password', false, false, 'local'));
 
         $auth = new \Auth();
-        $this->boolean($auth->login('brazil8', 'passwordlocal', false, false, 'local'))->isTrue();
-        $this->integer($auth->user->fields['id'])->isNotEqualTo($user_ldap_id);
+        $this->assertTrue($auth->login('brazil8', 'passwordlocal', false, false, 'local'));
+        $this->assertNotEquals($user_ldap_id, $auth->user->fields['id']);
     }
 
     /**
      * Test get users
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @return void
      */
@@ -1430,8 +1422,8 @@ class AuthLDAP extends DbTestCase
             $limit
         );
 
-        $this->array($users)->hasSize(912);
-        $this->array($results)->hasSize(0);
+        $this->assertCount(912, $users);
+        $this->assertCount(0, $results);
 
         $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
         $_SESSION['ldap_import']['criterias'] = ['login_field' => 'brazil2'];
@@ -1447,8 +1439,8 @@ class AuthLDAP extends DbTestCase
             $limit
         );
 
-        $this->array($users)->hasSize(12);
-        $this->array($results)->hasSize(0);
+        $this->assertCount(12, $users);
+        $this->assertCount(0, $results);
 
         $_SESSION['ldap_import']['criterias'] = ['login_field' => 'remi'];
 
@@ -1462,24 +1454,27 @@ class AuthLDAP extends DbTestCase
             $limit
         );
 
-        $this->array($users)->hasSize(1);
-        $this->array($results)->hasSize(0);
+        $this->assertCount(1, $users);
+        $this->assertCount(0, $results);
 
-       //hardcode tsmap
+        //hardcode tsmap
         $users[0]['stamp'] = 1503470443;
-        $this->array($users[0])->isIdenticalTo([
-            'link'      => 'remi',
-            'stamp'     => 1503470443,
-            'date_sync' => '-----',
-            'uid'       => 'remi'
+        $this->assertSame(
+            [
+                'link'      => 'remi',
+                'stamp'     => 1503470443,
+                'date_sync' => '-----',
+                'uid'       => 'remi'
 
-        ]);
+            ],
+            $users[0]
+        );
     }
 
     /**
      * Test removed users
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @return void
      */
@@ -1489,11 +1484,11 @@ class AuthLDAP extends DbTestCase
 
         $ldap = $this->ldap;
 
-       //put deleted LDAP users in trashbin
+        //put deleted LDAP users in trashbin
         $CFG_GLPI['user_deleted_ldap'] = 1;
 
-       //add a new user in directory
-        $this->boolean(
+        //add a new user in directory
+        $this->assertTrue(
             ldap_add(
                 $ldap->connect(),
                 'uid=toremovetest,ou=people,ou=R&D,dc=glpi,dc=org',
@@ -1508,9 +1503,9 @@ class AuthLDAP extends DbTestCase
                     ]
                 ]
             )
-        )->isTrue();
+        );
 
-       //import the user
+        //import the user
         $import = \AuthLDAP::ldapImportUserByServerId(
             [
                 'method' => \AuthLDAP::IDENTIFIER_LOGIN,
@@ -1520,76 +1515,70 @@ class AuthLDAP extends DbTestCase
             $ldap->getID(),
             true
         );
-        $this->array($import)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
-         ->integer['id']->isGreaterThan(0);
+        $this->assertCount(2, $import);
+        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertGreaterThan(0, $import['id']);
 
-       //check created user
+        //check created user
         $user = new \User();
-        $this->boolean($user->getFromDB($import['id']))->isTrue();
+        $this->assertTrue($user->getFromDB($import['id']));
 
-       //check sync from an non reachable directory
+        //check sync from a non-reachable directory
         $host = $ldap->fields['host'];
         $port = $ldap->fields['port'];
-        $this->boolean(
+        $this->assertTrue(
             $ldap->update([
                 'id'     => $ldap->getID(),
                 'host'   => 'server-does-not-exists.org',
                 'port'   => '1234'
             ])
-        )->isTrue();
+        );
         $ldap::$conn_cache = [];
 
-        $this->when(
-            function () use ($ldap, $user) {
-                $synchro = $ldap->forceOneUserSynchronization($user);
-                $this->boolean($synchro)->isFalse();
-            }
-        )
-            ->error()
-                ->withType(E_USER_WARNING)
-                ->withMessage("Unable to bind to LDAP server `server-does-not-exists.org:1234` with RDN `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)")
-            ->exists();
+        $synchro = $ldap->forceOneUserSynchronization($user);
+        $this->assertFalse($synchro);
+        $this->hasPhpLogRecordThatContains(
+            "Unable to bind to LDAP server `server-does-not-exists.org:1234` with RDN `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)",
+            Logger::WARNING
+        );
 
         //reset directory configuration
-        $this->boolean(
+        $this->assertTrue(
             $ldap->update([
                 'id'     => $ldap->getID(),
                 'host'   => $host,
                 'port'   => $port
             ])
-        )->isTrue();
+        );
 
-       //check that user still exists
+        //check that user still exists
         $uid = $import['id'];
-        $this->boolean($user->getFromDB($uid))->isTrue();
-        $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
+        $this->assertTrue($user->getFromDB($uid));
+        $this->assertFalse((bool)$user->fields['is_deleted']);
 
-       //drop test user
-        $this->boolean(
+        //drop test user
+        $this->assertTrue(
             ldap_delete(
                 $ldap->connect(),
                 'uid=toremovetest,ou=people,ou=R&D,dc=glpi,dc=org'
             )
-        )->isTrue();
+        );
 
         $synchro = $ldap->forceOneUserSynchronization($user);
-        $this->array($synchro)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
-         ->variable['id']->isEqualTo($uid);
+        $this->assertCount(2, $synchro);
+        $this->assertSame(\AuthLDAP::USER_DELETED_LDAP, $synchro['action']);
+        $this->assertSame($uid, $synchro['id']);
         $CFG_GLPI['user_deleted_ldap'] = 0;
 
-       //check that user no longer exists
-        $this->boolean($user->getFromDB($uid))->isTrue();
-        $this->boolean((bool)$user->fields['is_deleted'])->isTrue();
+        //check that user no longer exists
+        $this->assertTrue($user->getFromDB($uid));
+        $this->assertTrue((bool)$user->fields['is_deleted']);
     }
 
     /**
      * Test restoring users from LDAP
      *
-     * @extensions ldap
+     * @requires extension ldap
      *
      * @return void
      */
@@ -1599,8 +1588,8 @@ class AuthLDAP extends DbTestCase
 
         $ldap = $this->ldap;
 
-       //add a new user in directory
-        $this->boolean(
+        //add a new user in directory
+        $this->assertTrue(
             ldap_add(
                 $ldap->connect(),
                 'uid=torestoretest,ou=people,ou=R&D,dc=glpi,dc=org',
@@ -1615,9 +1604,9 @@ class AuthLDAP extends DbTestCase
                     ]
                 ]
             )
-        )->isTrue();
+        );
 
-       //import the user
+        //import the user
         $import = \AuthLDAP::ldapImportUserByServerId(
             [
                 'method' => \AuthLDAP::IDENTIFIER_LOGIN,
@@ -1627,42 +1616,40 @@ class AuthLDAP extends DbTestCase
             $ldap->getID(),
             true
         );
-        $this->array($import)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
-         ->integer['id']->isGreaterThan(0);
+        $this->assertCount(2, $import);
+        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertGreaterThan(0, $import['id']);
 
-       //check created user
+        //check created user
         $user = new \User();
-        $this->boolean($user->getFromDB($import['id']))->isTrue();
-        $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
-        $this->boolean((bool)$user->fields['is_deleted_ldap'])->isFalse();
+        $this->assertTrue($user->getFromDB($import['id']));
+        $this->assertFalse((bool)$user->fields['is_deleted']);
+        $this->assertFalse((bool)$user->fields['is_deleted_ldap']);
 
-       // delete the user in LDAP
-        $this->boolean(
+        // delete the user in LDAP
+        $this->assertTrue(
             ldap_delete(
                 $ldap->connect(),
                 'uid=torestoretest,ou=people,ou=R&D,dc=glpi,dc=org'
             )
-        )->isTrue();
+        );
 
         $user_deleted_ldap_original = $CFG_GLPI['user_deleted_ldap'] ?? 0;
-       //put deleted LDAP users in trashbin
+        //put deleted LDAP users in trashbin
         $CFG_GLPI['user_deleted_ldap'] = 1;
         $synchro = $ldap->forceOneUserSynchronization($user);
         $CFG_GLPI['user_deleted_ldap'] = $user_deleted_ldap_original;
-        $this->array($synchro)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_DELETED_LDAP)
-         ->variable['id']->isEqualTo($import['id']);
+        $this->assertCount(2, $synchro);
+        $this->assertSame(\AuthLDAP::USER_DELETED_LDAP, $synchro['action']);
+        $this->assertSame($import['id'], $synchro['id']);
 
-       //reload user from DB
-        $this->boolean($user->getFromDB($import['id']))->isTrue();
-        $this->boolean((bool)$user->fields['is_deleted'])->isTrue();
-        $this->boolean((bool)$user->fields['is_deleted_ldap'])->isTrue();
+        //reload user from DB
+        $this->assertTrue($user->getFromDB($import['id']));
+        $this->assertTrue((bool)$user->fields['is_deleted']);
+        $this->assertTrue((bool)$user->fields['is_deleted_ldap']);
 
-       // manually re-add the user in LDAP to simulate a restore
-        $this->boolean(
+        // manually re-add the user in LDAP to simulate a restore
+        $this->assertTrue(
             ldap_add(
                 $ldap->connect(),
                 'uid=torestoretest,ou=people,ou=R&D,dc=glpi,dc=org',
@@ -1677,23 +1664,22 @@ class AuthLDAP extends DbTestCase
                     ]
                 ]
             )
-        )->isTrue();
+        );
 
         $user_restored_ldap_original = $CFG_GLPI['user_restored_ldap'] ?? 0;
         $CFG_GLPI['user_restored_ldap'] = 1;
         $synchro = $ldap->forceOneUserSynchronization($user);
         $CFG_GLPI['user_restored_ldap'] = $user_restored_ldap_original;
-        $this->array($synchro)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_RESTORED_LDAP)
-         ->variable['id']->isEqualTo($import['id']);
+        $this->assertCount(2, $synchro);
+        $this->assertSame(\AuthLDAP::USER_RESTORED_LDAP, $synchro['action']);
+        $this->assertEquals($import['id'], $synchro['id']);
 
-       //reload user from DB
-        $this->boolean($user->getFromDB($import['id']))->isTrue();
-        $this->boolean((bool)$user->fields['is_deleted'])->isFalse();
+        //reload user from DB
+        $this->assertTrue($user->getFromDB($import['id']));
+        $this->assertFalse((bool)$user->fields['is_deleted']);
     }
 
-    protected function ssoVariablesProvider()
+    public static function ssoVariablesProvider()
     {
         global $DB;
 
@@ -1723,24 +1709,24 @@ class AuthLDAP extends DbTestCase
         unset($_SESSION['glpiname']);
 
         $auth = new \Auth();
-        $this->boolean($auth->login("", ""))->isTrue();
-        $this->string($_SESSION['glpiname'])->isEqualTo('brazil6');
+        $this->assertTrue($auth->login("", ""));
+        $this->assertEquals('brazil6', $_SESSION['glpiname']);
 
-       //reset config
+        //reset config
         \Config::setConfigurationValues('core', [
             'ssovariables_id' => $config_values['ssovariables_id']
         ]);
     }
 
     /**
-     * @extensions ldap
+     * @requires extension ldap
      */
     public function testSyncLongDN()
     {
         $ldap = $this->ldap;
 
         $ldap_con = $ldap->connect();
-        $this->boolean(
+        $this->assertTrue(
             ldap_add(
                 $ldap_con,
                 'ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
@@ -1750,10 +1736,11 @@ class AuthLDAP extends DbTestCase
                         'organizationalUnit'
                     ]
                 ]
-            )
-        )->isTrue(ldap_error($ldap_con));
+            ),
+            ldap_error($ldap_con)
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             ldap_add(
                 $ldap_con,
                 'ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
@@ -1763,10 +1750,11 @@ class AuthLDAP extends DbTestCase
                         'organizationalUnit'
                     ]
                 ]
-            )
-        )->isTrue(ldap_error($ldap_con));
+            ),
+            ldap_error($ldap_con)
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             ldap_add(
                 $ldap_con,
                 'ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
@@ -1776,10 +1764,11 @@ class AuthLDAP extends DbTestCase
                         'organizationalUnit'
                     ]
                 ]
-            )
-        )->isTrue(ldap_error($ldap_con));
+            ),
+            ldap_error($ldap_con)
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             ldap_add(
                 $ldap_con,
                 'ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
@@ -1789,11 +1778,12 @@ class AuthLDAP extends DbTestCase
                         'organizationalUnit'
                     ]
                 ]
-            )
-        )->isTrue(ldap_error($ldap_con));
+            ),
+            ldap_error($ldap_con)
+        );
 
-       //add a new user in directory
-        $this->boolean(
+        //add a new user in directory
+        $this->assertTrue(
             ldap_add(
                 $ldap_con,
                 'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
@@ -1807,8 +1797,9 @@ class AuthLDAP extends DbTestCase
                         'inetOrgPerson'
                     ]
                 ]
-            )
-        )->isTrue(ldap_error($ldap_con));
+            ),
+            ldap_error($ldap_con)
+        );
 
         $import = \AuthLDAP::ldapImportUserByServerId(
             [
@@ -1819,50 +1810,52 @@ class AuthLDAP extends DbTestCase
             $ldap->getID(),
             true
         );
-        $this->array($import)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
-         ->integer['id']->isGreaterThan(0);
+        $this->assertCount(2, $import);
+        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertGreaterThan(0, $import['id']);
 
-       //check created user
+        //check created user
         $user = new \User();
-        $this->boolean($user->getFromDB($import['id']))->isTrue();
+        $this->assertTrue($user->getFromDB($import['id']));
 
-        $this->array($user->fields)
-         ->string['name']->isIdenticalTo('verylongdn')
-         ->string['user_dn']->isIdenticalTo('uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+        $this->assertSame('verylongdn', $user->fields['name']);
+        $this->assertSame(
+            'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&#38;D,dc=glpi,dc=org',
+            $user->fields['user_dn']
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             ldap_modify(
                 $ldap->connect(),
                 'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org',
                 ['telephoneNumber' => '+33102020202']
             )
-        )->isTrue();
+        );
 
         $synchro = $ldap->forceOneUserSynchronization($user);
-        $this->array($synchro)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
-         ->variable['id']->isEqualTo($user->getID());
+        $this->assertCount(2, $synchro);
+        $this->assertSame(\AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
+        $this->assertSame($user->getID(), $synchro['id']);
 
-        $this->boolean($user->getFromDB($user->getID()))->isTrue();
-        $this->array($user->fields)
-         ->string['name']->isIdenticalTo('verylongdn')
-         ->string['phone']->isIdenticalTo('+33102020202')
-         ->string['user_dn']->isIdenticalTo('uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&#38;D,dc=glpi,dc=org');
+        $this->assertTrue($user->getFromDB($user->getID()));
+        $this->assertSame('verylongdn', $user->fields['name']);
+        $this->assertSame('+33102020202', $user->fields['phone']);
+        $this->assertSame(
+            'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&#38;D,dc=glpi,dc=org',
+            $user->fields['user_dn']
+        );
 
-       //drop test user
-        $this->boolean(
+        //drop test user
+        $this->assertTrue(
             ldap_delete(
                 $ldap->connect(),
                 'uid=verylongdn,ou=averylongstring,ou=anotherlongstringtocheckforsynchronization,ou=andyetanotherlongstring,ou=andyetanotheronetogetaveryhugednidentifier,ou=people,ou=R&D,dc=glpi,dc=org'
             )
-        )->isTrue();
+        );
     }
 
     /**
-     * @extensions ldap
+     * @requires extension ldap
      */
     public function testSyncLongDNiCyrillic()
     {
@@ -1870,7 +1863,7 @@ class AuthLDAP extends DbTestCase
 
         $ldap_con = $ldap->connect();
 
-        $this->boolean(
+        $this->assertTrue(
             ldap_add(
                 $ldap_con,
                 'OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=glpi,DC=org',
@@ -1880,10 +1873,11 @@ class AuthLDAP extends DbTestCase
                         'organizationalUnit'
                     ]
                 ]
-            )
-        )->isTrue(ldap_error($ldap_con));
+            ),
+            ldap_error($ldap_con)
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             ldap_add(
                 $ldap_con,
                 'OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=glpi,DC=org',
@@ -1893,11 +1887,12 @@ class AuthLDAP extends DbTestCase
                         'organizationalUnit'
                     ]
                 ]
-            )
-        )->isTrue(ldap_error($ldap_con));
+            ),
+            ldap_error($ldap_con)
+        );
 
-       //add a new user in directory
-        $this->boolean(
+        //add a new user in directory
+        $this->assertTrue(
             ldap_add(
                 $ldap_con,
                 'uid=Тестов Тест Тестович,OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=glpi,DC=org',
@@ -1911,8 +1906,9 @@ class AuthLDAP extends DbTestCase
                         'inetOrgPerson'
                     ]
                 ]
-            )
-        )->isTrue(ldap_error($ldap_con));
+            ),
+            ldap_error($ldap_con)
+        );
 
         $import = \AuthLDAP::ldapImportUserByServerId(
             [
@@ -1923,49 +1919,51 @@ class AuthLDAP extends DbTestCase
             $ldap->getID(),
             true
         );
-        $this->array($import)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
-         ->integer['id']->isGreaterThan(0);
+        $this->assertCount(2, $import);
+        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertGreaterThan(0, $import['id']);
 
-       //check created user
+        //check created user
         $user = new \User();
-        $this->boolean($user->getFromDB($import['id']))->isTrue();
+        $this->assertTrue($user->getFromDB($import['id']));
 
-        $this->array($user->fields)
-         ->string['name']->isIdenticalTo('Тестов Тест Тестович')
-         ->string['user_dn']->isIdenticalTo('uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&#38;D,dc=glpi,dc=org');
+        $this->assertSame('Тестов Тест Тестович', $user->fields['name']);
+        $this->assertSame(
+            'uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&#38;D,dc=glpi,dc=org',
+            $user->fields['user_dn']
+        );
 
-        $this->boolean(
+        $this->assertTrue(
             ldap_modify(
                 $ldap->connect(),
                 'uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,dc=glpi,dc=org',
                 ['telephoneNumber' => '+33103030303']
             )
-        )->isTrue();
+        );
 
         $synchro = $ldap->forceOneUserSynchronization($user);
-        $this->array($synchro)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_SYNCHRONIZED)
-         ->variable['id']->isEqualTo($user->getID());
+        $this->assertCount(2, $synchro);
+        $this->assertSame(\AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
+        $this->assertSame($user->getID(), $synchro['id']);
 
-        $this->boolean($user->getFromDB($user->getID()))->isTrue();
-        $this->array($user->fields)
-         ->string['name']->isIdenticalTo('Тестов Тест Тестович')
-         ->string['phone']->isIdenticalTo('+33103030303')
-         ->string['user_dn']->isIdenticalTo('uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&#38;D,dc=glpi,dc=org');
+        $this->assertTrue($user->getFromDB($user->getID()));
+        $this->assertSame('Тестов Тест Тестович', $user->fields['name']);
+        $this->assertSame('+33103030303', $user->fields['phone']);
+        $this->assertSame(
+            'uid=Тестов Тест Тестович,ou=Отдел Тест,ou=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&#38;D,dc=glpi,dc=org',
+            $user->fields['user_dn']
+        );
 
-       //drop test user
-        $this->boolean(
+        //drop test user
+        $this->assertTrue(
             ldap_delete(
                 $ldap->connect(),
                 'uid=Тестов Тест Тестович,OU=Отдел Тест,OU=Управление с очень очень длинным названием даже сложно запомнить насколько оно длинное и еле влезает в экран№123,ou=R&D,DC=glpi,DC=org'
             )
-        )->isTrue();
+        );
     }
 
-    protected function testSyncWithManagerProvider()
+    public static function testSyncWithManagerProvider()
     {
         $dns = [
             "Test Test",
@@ -1999,11 +1997,11 @@ class AuthLDAP extends DbTestCase
     /**
      * @dataProvider testSyncWithManagerProvider
      *
-     * @extensions ldap
+     * @requires extension ldap
      */
     public function testSyncWithManager($manager_dn, array $manager_entry)
     {
-       // Static conf
+        // Static conf
         $base_dn = "ou=people,ou=R&D,dc=glpi,dc=org";
         $user_full_dn = "uid=userwithmanager,$base_dn";
         $escaped_manager_dn = ldap_escape($manager_dn, "", LDAP_ESCAPE_DN);
@@ -2020,21 +2018,23 @@ class AuthLDAP extends DbTestCase
             ]
         ];
 
-       // Init ldap
+        // Init ldap
         $ldap = $this->ldap;
         $ldap_con = $ldap->connect();
 
-       // Add the manager
-        $this
-         ->boolean(ldap_add($ldap_con, $manager_full_dn, $manager_entry))
-         ->isTrue(ldap_error($ldap_con));
+        // Add the manager
+        $this->assertTrue(
+            ldap_add($ldap_con, $manager_full_dn, $manager_entry),
+            ldap_error($ldap_con)
+        );
 
-       // Add the user
-        $this
-         ->boolean(ldap_add($ldap_con, $user_full_dn, $user_entry))
-         ->isTrue(ldap_error($ldap_con));
+        // Add the user
+        $this->assertTrue(
+            ldap_add($ldap_con, $user_full_dn, $user_entry),
+            ldap_error($ldap_con)
+        );
 
-       // Import manager
+        // Import manager
         $import_manager = \AuthLdap::ldapImportUserByServerId(
             [
                 'method' => \AuthLDAP::IDENTIFIER_LOGIN,
@@ -2044,13 +2044,11 @@ class AuthLDAP extends DbTestCase
             $ldap->getID(),
             true
         );
-        $this
-         ->array($import_manager)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
-         ->integer['id']->isGreaterThan(0);
+        $this->assertCount(2, $import_manager);
+        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import_manager['action']);
+        $this->assertGreaterThan(0, $import_manager['id']);
 
-       // Import user
+        // Import user
         $import_user = \AuthLdap::ldapImportUserByServerId(
             [
                 'method' => \AuthLDAP::IDENTIFIER_LOGIN,
@@ -2060,41 +2058,39 @@ class AuthLDAP extends DbTestCase
             $ldap->getID(),
             true
         );
-        $this
-         ->array($import_user)
-         ->hasSize(2)
-         ->integer['action']->isIdenticalTo(\AuthLDAP::USER_IMPORTED)
-         ->integer['id']->isGreaterThan(0);
+        $this->assertCount(2, $import_user);
+        $this->assertSame(\AuthLDAP::USER_IMPORTED, $import_user['action']);
+        $this->assertGreaterThan(0, $import_user['id']);
 
-       // Check created manager
+        // Check created manager
         $manager = new \User();
-        $this->boolean($manager->getFromDB($import_manager['id']))->isTrue();
+        $this->assertTrue($manager->getFromDB($import_manager['id']));
 
-        $this
-         ->array($manager->fields)
-         ->string['name']->isIdenticalTo($manager_entry['uid']);
+        $this->assertSame($manager_entry['uid'], $manager->fields['name']);
 
-       // Compare dn in a case insensitive way as ldap_escape create filter in
-       // lowercase ("," -> \2c) but some ldap software store them in uppercase
-        $this
-         ->string(strtolower($manager->fields['user_dn']))
-         ->isIdenticalTo(Sanitizer::encodeHtmlSpecialChars(strtolower($manager_full_dn)));
+        // Compare dn in a case-insensitive way as ldap_escape create filter in
+        // lowercase ("," -> \2c) but some ldap software store them in uppercase
+        $this->assertSame(
+            Sanitizer::encodeHtmlSpecialChars(strtolower($manager_full_dn)),
+            strtolower($manager->fields['user_dn'])
+        );
 
-       // Check created user
+        // Check created user
         $user = new \User();
-        $this->boolean($user->getFromDB($import_user['id']))->isTrue();
+        $this->assertTrue($user->getFromDB($import_user['id']));
 
-        $this
-         ->array($user->fields)
-         ->string['name']->isIdenticalTo($user_entry['uid'])
-         ->string['user_dn']->isIdenticalTo(Sanitizer::encodeHtmlSpecialChars($user_full_dn))
-         ->integer['users_id_supervisor']->isIdenticalTo($manager->fields['id']);
+        $this->assertSame($user_entry['uid'], $user->fields['name']);
+        $this->assertSame(
+            Sanitizer::encodeHtmlSpecialChars($user_full_dn),
+            $user->fields['user_dn']
+        );
+        $this->assertSame($manager->fields['id'], $user->fields['users_id_supervisor']);
 
-       // Drop both
-        $this->boolean(ldap_delete($ldap->connect(), $user_full_dn))->isTrue();
-        $this->boolean(ldap_delete($ldap->connect(), $manager_full_dn))->isTrue();
-        $this->boolean($user->delete(['id' => $user->fields['id']], 1))->isTrue();
-        $this->boolean($user->delete(['id' => $manager->fields['id']], 1))->isTrue();
+        // Drop both
+        $this->assertTrue(ldap_delete($ldap->connect(), $user_full_dn));
+        $this->assertTrue(ldap_delete($ldap->connect(), $manager_full_dn));
+        $this->assertTrue($user->delete(['id' => $user->fields['id']], 1));
+        $this->assertTrue($user->delete(['id' => $manager->fields['id']], 1));
     }
 
     /**
@@ -2104,7 +2100,7 @@ class AuthLDAP extends DbTestCase
      */
     public function testRuleRight()
     {
-       //prepare rules
+        //prepare rules
         $rules = new \RuleRight();
         $rules_id = $rules->add([
             'sub_type'     => 'RuleRight',
@@ -2141,10 +2137,10 @@ class AuthLDAP extends DbTestCase
             'value'       => 1, // '_test_child_1' entity
         ]);
 
-       // Test specific_groups_id rule
+        // Test specific_groups_id rule
         $group = new Group();
         $group_id = $group->add(["name" => "testgroup"]);
-        $this->integer($group_id);
+        $this->assertGreaterThan(0, $group_id);
 
         $actions->add([
             'rules_id'    => $rules_id,
@@ -2153,11 +2149,11 @@ class AuthLDAP extends DbTestCase
             'value'       => $group_id, // '_test_child_1' entity
         ]);
 
-       // login the user to force a real synchronisation and get it's glpi id
+        // login the user to force a real synchronisation and get it's glpi id
         $this->login('brazil6', 'password', false);
         $users_id = \User::getIdByName('brazil6');
-        $this->integer($users_id);
-       // check the user got the entity/profiles assigned
+        $this->assertGreaterThan(0, $users_id);
+        // check the user got the entity/profiles assigned
         $pu = \Profile_User::getForUser($users_id, true);
         $found = false;
         foreach ($pu as $right) {
@@ -2170,19 +2166,19 @@ class AuthLDAP extends DbTestCase
                 break;
             }
         }
-        $this->boolean($found)->isTrue();
+        $this->assertTrue($found);
 
-       // Check group
+        // Check group
         $gu = new Group_User();
         $gus = $gu->find([
             'groups_id' => $group_id,
             'users_id' => $users_id,
         ]);
-        $this->array($gus)->hasSize(1);
+        $this->assertCount(1, $gus);
     }
 
     /**
-     * @extensions ldap
+     * @requires extension ldap
      */
     public function testLdapUnavailable()
     {
@@ -2191,11 +2187,10 @@ class AuthLDAP extends DbTestCase
 
         $user = new \User();
         $user->getFromDBbyName('brazil5');
-        $this->array($user->fields)
-            ->string['name']->isIdenticalTo('brazil5')
-            ->string['user_dn']->isIdenticalTo('uid=brazil5,ou=people,ou=R&#38;D,dc=glpi,dc=org');
-        $this->boolean($auth->user_present)->isFalse();
-        $this->boolean($auth->user_dn)->isFalse();
+        $this->assertSame('brazil5', $user->fields['name']);
+        $this->assertSame('uid=brazil5,ou=people,ou=R&#38;D,dc=glpi,dc=org', $user->fields['user_dn']);
+        $this->assertFalse($auth->user_present);
+        $this->assertFalse($auth->user_dn);
         $this->checkLdapConnection($auth->ldap_connection);
 
         // Add a second LDAP server that is accessible but where user will not be found.
@@ -2204,34 +2199,30 @@ class AuthLDAP extends DbTestCase
         $input['rootdn_passwd'] = 'insecure'; // cannot reuse encrypted password from `$this->ldap->fields`
         $input['basedn'] = 'dc=notglpi'; // use a non-matching base DN to ensure user cannot login on it
         $ldap = new \AuthLDAP();
-        $this->integer($ldap->add($input))->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ldap->add($input));
 
         // Update first LDAP server to make it inaccessible.
-        $this->boolean(
+        $this->assertTrue(
             $this->ldap->update([
                 'id'     => $this->ldap->getID(),
                 'port'   => '1234',
             ])
-        )->isTrue();
+        );
 
-        $this->when(
-            function () {
-                $this->login('brazil5', 'password', false, false);
-            }
-        )
-            ->error()
-                ->withType(E_USER_WARNING)
-                ->withMessage("Unable to bind to LDAP server `openldap:1234` with RDN `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)")
-                ->exists();
+        $this->login('brazil5', 'password', false, false);
+        $this->hasPhpLogRecordThatContains(
+            "Unable to bind to LDAP server `openldap:1234` with RDN `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)",
+            Logger::WARNING
+        );
 
         $user->getFromDBbyName('brazil5');
         // Verify trying to log in while LDAP unavailable does not disable user's GLPI account
-        $this->integer($user->fields['is_active'])->isEqualTo(1);
-        $this->integer($user->fields['is_deleted_ldap'])->isEqualTo(0);
+        $this->assertEquals(1, $user->fields['is_active']);
+        $this->assertEquals(0, $user->fields['is_deleted_ldap']);
     }
 
     /**
-     * @extensions ldap
+     * @requires extension ldap
      */
     public function testLdapDeletionOnLogin()
     {
@@ -2239,7 +2230,7 @@ class AuthLDAP extends DbTestCase
         $this->checkLdapConnection($connection);
 
         // Add a new user in directory
-        $this->boolean(
+        $this->assertTrue(
             ldap_add(
                 $connection,
                 'uid=logintest,ou=people,ou=R&D,dc=glpi,dc=org',
@@ -2254,18 +2245,17 @@ class AuthLDAP extends DbTestCase
                     ]
                 ]
             )
-        )->isTrue();
+        );
 
         //Import user that doesn't exist yet
         $auth = $this->login('logintest', 'password');
 
         $user = new \User();
         $user->getFromDBbyName('logintest');
-        $this->array($user->fields)
-            ->string['name']->isIdenticalTo('logintest')
-            ->string['user_dn']->isIdenticalTo('uid=logintest,ou=people,ou=R&#38;D,dc=glpi,dc=org');
-        $this->boolean($auth->user_present)->isFalse();
-        $this->boolean($auth->user_dn)->isFalse();
+        $this->assertSame('logintest', $user->fields['name']);
+        $this->assertSame('uid=logintest,ou=people,ou=R&#38;D,dc=glpi,dc=org', $user->fields['user_dn']);
+        $this->assertFalse($auth->user_present);
+        $this->assertFalse($auth->user_dn);
         $this->checkLdapConnection($auth->ldap_connection);
 
         // Add a second LDAP server that is accessible but where user will not be found.
@@ -2274,41 +2264,41 @@ class AuthLDAP extends DbTestCase
         $input['rootdn_passwd'] = 'insecure'; // cannot reuse encrypted password from `$this->ldap->fields`
         $input['basedn'] = 'dc=notglpi'; // use a non-matching base DN to ensure user cannot login on it
         $ldap = new \AuthLDAP();
-        $this->integer($ldap->add($input))->isGreaterThan(0);
+        $this->assertGreaterThan(0, $ldap->add($input));
 
         // Delete the user
-        $this->boolean(
+        $this->assertTrue(
             ldap_delete(
                 $connection,
                 'uid=logintest,ou=people,ou=R&D,dc=glpi,dc=org'
             )
-        )->isTrue();
+        );
 
         $auth = new \Auth();
-        $this->boolean($auth->login('logintest', 'password'))->isFalse();
+        $this->assertFalse($auth->login('logintest', 'password'));
 
         $user->getFromDBbyName('logintest');
-        $this->integer($user->fields['is_deleted_ldap'])->isEqualTo(1);
+        $this->assertEquals(1, $user->fields['is_deleted_ldap']);
     }
 
     /**
-     * @extensions ldap
+     * @requires extension ldap
      */
     public function testLdapLoginWithWrongPassword()
     {
         $auth = new \Auth();
-        $this->boolean($auth->login('brazil5', 'wrong-password', false))->isFalse();
+        $this->assertFalse($auth->login('brazil5', 'wrong-password', false));
 
         $user = new \User();
-        $this->boolean($user->getFromDBbyName('brazil5'))->isFalse();
+        $this->assertFalse($user->getFromDBbyName('brazil5'));
     }
 
     private function checkLdapConnection($ldap_connection)
     {
         if (version_compare(phpversion(), '8.1.0-dev', '<')) {
-            $this->resource($ldap_connection)->isOfType('ldap link');
+            $this->assertInstanceOf('ldap link', $ldap_connection);
         } else {
-            $this->object($ldap_connection)->isInstanceOf('\LDAP\Connection');
+            $this->assertInstanceOf(\LDAP\Connection::class, $ldap_connection);
         }
     }
 
@@ -2346,10 +2336,10 @@ class AuthLDAP extends DbTestCase
         $uts = $ut->find([
             'name' => 'manager',
         ]);
-        $this->array($uts)->hasSize(0);
+        $this->assertCount(0, $uts);
     }
 
-    protected function connectToServerErrorsProvider(): iterable
+    public static function connectToServerErrorsProvider(): iterable
     {
         yield [
             'host'     => 'invalidserver',
@@ -2413,7 +2403,7 @@ class AuthLDAP extends DbTestCase
     /**
      * @dataProvider connectToServerErrorsProvider
      *
-     * @extensions ldap
+     * @requires extension ldap
      */
     public function testConnectToServerErrorMessage(
         string $host,
@@ -2422,15 +2412,15 @@ class AuthLDAP extends DbTestCase
         string $password,
         string $error
     ) {
-        $this->when(
-            function () use ($host, $port, $login, $password) {
-                \AuthLDAP::connectToServer($host, $port, $login, $password);
-            }
-        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();
+        \AuthLDAP::connectToServer($host, $port, $login, $password);
+        $this->hasPhpLogRecordThatContains(
+            $error,
+            Logger::WARNING
+        );
     }
 
     /**
-     * @extensions ldap
+     * @requires extension ldap
      */
     public function testConnectToServerTlsError()
     {
@@ -2444,21 +2434,21 @@ class AuthLDAP extends DbTestCase
             ]
         );
 
-        $this->when(
-            function () {
-                \AuthLDAP::connectToServer(
-                    'openldap',
-                    '3890',
-                    'cn=Manager,dc=glpi,dc=org',
-                    'insecure',
-                    true,
-                );
-            }
-        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();
+        \AuthLDAP::connectToServer(
+            'openldap',
+            '3890',
+            'cn=Manager,dc=glpi,dc=org',
+            'insecure',
+            true,
+        );
+        $this->hasPhpLogRecordThatContains(
+            $error,
+            Logger::WARNING
+        );
     }
 
     /**
-     * @extensions ldap
+     * @requires extension ldap
      */
     public function testGetGroupCNByDnError()
     {
@@ -2477,15 +2467,15 @@ class AuthLDAP extends DbTestCase
             ]
         );
 
-        $this->when(
-            function () use ($connection) {
-                \AuthLDAP::getGroupCNByDn($connection, 'notavaliddn');
-            }
-        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();
+        \AuthLDAP::getGroupCNByDn($connection, 'notavaliddn');
+        $this->hasPhpLogRecordThatContains(
+            $error,
+            Logger::WARNING
+        );
     }
 
 
-    protected function getObjectGroupByDnErrorsProvider(): iterable
+    public static function getObjectGroupByDnErrorsProvider(): iterable
     {
         // invalid base DN
         yield [
@@ -2519,7 +2509,7 @@ class AuthLDAP extends DbTestCase
     /**
      * @dataProvider getObjectGroupByDnErrorsProvider
      *
-     * @extensions ldap
+     * @requires extension ldap
      */
     public function testGetObjectGroupByDnError(
         string $basedn,
@@ -2530,14 +2520,14 @@ class AuthLDAP extends DbTestCase
         $connection = $ldap->connect();
         $this->checkLdapConnection($connection);
 
-        $this->when(
-            function () use ($connection, $basedn, $filter) {
-                \AuthLDAP::getObjectByDn($connection, $filter, $basedn, ['dn']);
-            }
-        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();
+        \AuthLDAP::getObjectByDn($connection, $filter, $basedn, ['dn']);
+        $this->hasPhpLogRecordThatContains(
+            $error,
+            Logger::WARNING
+        );
     }
 
-    protected function searchForUsersErrorsProvider(): iterable
+    public static function searchForUsersErrorsProvider(): iterable
     {
         // error messages should be identical whether pagesize support is enabled or not
         $configs = [
@@ -2602,7 +2592,7 @@ class AuthLDAP extends DbTestCase
     /**
      * @dataProvider searchForUsersErrorsProvider
      *
-     * @extensions ldap
+     * @requires extension ldap
      */
     public function testSearchForUsersErrorMessages(
         array $config_fields,
@@ -2616,25 +2606,23 @@ class AuthLDAP extends DbTestCase
         $connection = $ldap->connect();
         $this->checkLdapConnection($connection);
 
-        $this->when(
-            function () use ($ldap, $connection, $basedn, $filter) {
-                $limitexceeded = $user_infos = $ldap_users = null;
-
-                \AuthLDAP::searchForUsers(
-                    $connection,
-                    ['basedn' => $basedn],
-                    $filter,
-                    ['dn'],
-                    $limitexceeded,
-                    $user_infos,
-                    $ldap_users,
-                    $ldap
-                );
-            }
-        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();
+        \AuthLDAP::searchForUsers(
+            $connection,
+            ['basedn' => $basedn],
+            $filter,
+            ['dn'],
+            $limitexceeded,
+            $user_infos,
+            $ldap_users,
+            $ldap
+        );
+        $this->hasPhpLogRecordThatContains(
+            $error,
+            Logger::WARNING
+        );
     }
 
-    protected function searchUserDnErrorsProvider(): iterable
+    public static function searchUserDnErrorsProvider(): iterable
     {
         // invalid base DN
         yield [
@@ -2671,7 +2659,7 @@ class AuthLDAP extends DbTestCase
     /**
      * @dataProvider searchUserDnErrorsProvider
      *
-     * @extensions ldap
+     * @requires extension ldap
      */
     public function testSearchUserDnErrorMessages(
         array $options,
@@ -2681,21 +2669,21 @@ class AuthLDAP extends DbTestCase
         $connection = $ldap->connect();
         $this->checkLdapConnection($connection);
 
-        $this->when(
-            function () use ($connection, $options) {
-                \AuthLDAP::searchUserDn(
-                    $connection,
-                    $options + [
-                        'login_field'       => 'uid',
-                        'search_parameters' => ['fields' => ['login' => 'uid']],
-                        'user_params'       => ['value'  => 'johndoe'],
-                    ]
-                );
-            }
-        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();
+        \AuthLDAP::searchUserDn(
+            $connection,
+            $options + [
+                'login_field'       => 'uid',
+                'search_parameters' => ['fields' => ['login' => 'uid']],
+                'user_params'       => ['value'  => 'johndoe'],
+            ]
+        );
+        $this->hasPhpLogRecordThatContains(
+            $error,
+            Logger::WARNING
+        );
     }
 
-    protected function getGroupsFromLDAPErrorsProvider(): iterable
+    public static function getGroupsFromLDAPErrorsProvider(): iterable
     {
         // error messages should be identical whether pagesize support is enabled or not
         $configs = [
@@ -2757,7 +2745,7 @@ class AuthLDAP extends DbTestCase
     /**
      * @dataProvider getGroupsFromLDAPErrorsProvider
      *
-     * @extensions ldap
+     * @requires extension ldap
      */
     public function testGetGroupsFromLDAPErrors(
         array $config_fields,
@@ -2770,17 +2758,17 @@ class AuthLDAP extends DbTestCase
         $connection = $ldap->connect();
         $this->checkLdapConnection($connection);
 
-        $this->when(
-            function () use ($ldap, $connection, $filter) {
-                $limitexceeded = null;
+        $limitexceeded = null;
 
-                \AuthLDAP::getGroupsFromLDAP(
-                    $connection,
-                    $ldap,
-                    $filter,
-                    $limitexceeded
-                );
-            }
-        )->error()->withType(E_USER_WARNING)->withMessage($error)->exists();
+        \AuthLDAP::getGroupsFromLDAP(
+            $connection,
+            $ldap,
+            $filter,
+            $limitexceeded
+        );
+        $this->hasPhpLogRecordThatContains(
+            $error,
+            Logger::WARNING
+        );
     }
 }
