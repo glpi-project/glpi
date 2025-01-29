@@ -57,7 +57,7 @@ class HasImpactCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("Enable \"Impact analysis\" tab and the asset can also be displayed in the impact tab of other asset types");
+        return __("Enable \"Impact analysis\" tab and the assets can also be displayed in the impact tab of other asset types");
     }
 
     private function countImpactRelations(string $classname): int

@@ -57,7 +57,7 @@ class HasKnowbaseCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("Knowledge base articles can be associated to this asset");
+        return __("Knowledge base articles can be associated to these assets");
     }
 
     public function getCloneRelations(): array

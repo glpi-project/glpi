@@ -54,7 +54,7 @@ class HasInfocomCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("Manage and track asset lifecycle, financial, administrative and warranty information");
+        return __("Manage and track assets lifecycle, financial, administrative and warranty information");
     }
 
     public function getCloneRelations(): array

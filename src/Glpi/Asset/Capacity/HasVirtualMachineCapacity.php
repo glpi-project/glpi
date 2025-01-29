@@ -55,7 +55,7 @@ class HasVirtualMachineCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("List virtual machines attached to this asset");
+        return __("List virtual machines attached to these assets");
     }
 
     public function getCloneRelations(): array

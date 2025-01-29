@@ -56,7 +56,7 @@ class HasCertificatesCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("Track certificates used by the asset");
+        return __("Track certificates used by the assets");
     }
 
     public function getCloneRelations(): array
