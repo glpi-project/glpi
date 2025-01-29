@@ -1645,6 +1645,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 ]
             ],
             'WHERE' => [
+                ProjectTask::getTable() . '.is_template' => false,
                 self::getTable() . '.id' => new QuerySubQuery([
                     'SELECT' => [
                         'projecttasks_id'
@@ -1707,9 +1708,17 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         ProjectState::getTable() => 'id',
                         self::getTable() => 'projectstates_id'
                     ]
+                ],
+                Project::getTable() => [
+                    'FKEY' => [
+                        Project::getTable() => 'id',
+                        ProjectTask::getTable() => 'projects_id'
+                    ]
                 ]
             ],
             'WHERE' => [
+                ProjectTask::getTable() . '.is_template' => false,
+                Project::getTable() . '.is_template' => false,
                 self::getTable() . '.id' => new QuerySubQuery([
                     'SELECT' => [
                         'projecttasks_id'
