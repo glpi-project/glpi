@@ -53,7 +53,7 @@ $migration->addField('glpi_users', 'set_solution_tech', 'tinyint DEFAULT NULL');
 $migration->addField(
     'glpi_users',
     'planned_task_state',
-    'int',
+    'int DEFAULT NULL',
     ['value' => Planning::TODO]
 );
 
