@@ -80,4 +80,4 @@ if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int)$_POST['ite
     }
 }
 
-echo json_encode($result);
+echo json_encode(htmlescape($result));

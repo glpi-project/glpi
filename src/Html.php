@@ -2127,11 +2127,12 @@ TWIG,
         $params['criterion']       = [];
         $params['class']           = '';
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $params[$key] = $val;
             }
         }
+        unset($options);
 
         $out = "";
 
@@ -4903,12 +4904,13 @@ HTML;
     /**
      * Wrap $script in a script tag.
      *
-     * @since 0.85
-     *
-     * @param string $script  The script to wrap
+     * @param string $script The script to wrap
      *
      * @return string
-     **/
+     **@since 0.85
+     * @psalm-taint-specialize
+     *
+     */
     public static function scriptBlock($script)
     {
 

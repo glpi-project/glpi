@@ -76,7 +76,7 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
         return;
     }
 
-    echo MarketplaceView::getButtons($_POST['key']);
+    echo MarketplaceView::getButtons(htmlescape($_POST['key']));
 } else if (($_GET["action"] ?? null) == "refresh_plugin_list") {
     switch ($_GET['tab']) {
         default:

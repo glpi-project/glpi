@@ -42,7 +42,7 @@ if (!isset($_REQUEST["action"])) {
 }
 
 // Parse stringified JSON payload (Used to preserve integers)
-$request_data = array_merge($_REQUEST, json_decode($_REQUEST['data'] ?? '{}', true));
+$request_data = array_merge(htmlescape($_REQUEST), json_decode(htmlescape($_REQUEST['data'] ?? '{}'), true));
 unset($request_data['data']);
 
 // Session check is disabled for this script (see `\Glpi\Http\Firewall::computeStrategyForCoreLegacyScript()`)
@@ -61,7 +61,7 @@ if (
     Session::checkLoginUser();
 }
 
-$dashboard = new Glpi\Dashboard\Dashboard($_REQUEST['dashboard'] ?? "");
+$dashboard = new Glpi\Dashboard\Dashboard(htmlescape($_REQUEST['dashboard'] ?? ""));
 
 switch ($_POST['action'] ?? null) {
     case 'save_new_dashboard':
@@ -70,8 +70,8 @@ switch ($_POST['action'] ?? null) {
         }
 
         echo $dashboard->saveNew(
-            $_POST['title']   ?? "",
-            $_POST['context'] ?? ""
+            htmlescape($_POST['title']   ?? ""),
+            htmlescape($_POST['context'] ?? "")
         );
         return;
 
@@ -80,8 +80,8 @@ switch ($_POST['action'] ?? null) {
             throw new AccessDeniedHttpException();
         }
 
-        $dashboard->saveitems($_POST['items'] ?? []);
-        $dashboard->saveTitle($_POST['title'] ?? "");
+        $dashboard->saveitems(htmlescape($_POST['items'] ?? []));
+        $dashboard->saveTitle(htmlescape($_POST['title'] ?? ""));
         return;
 
     case 'save_rights':
@@ -98,7 +98,7 @@ switch ($_POST['action'] ?? null) {
             throw new AccessDeniedHttpException();
         }
 
-        $dashboard->saveFilter($_POST['filters'] ?? []);
+        $dashboard->saveFilter(htmlescape($_POST['filters'] ?? []));
         return;
 
     case 'delete_dashboard':

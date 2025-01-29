@@ -59,9 +59,10 @@ if ($_REQUEST['action'] === 'get_all_fields') {
         $field_results[] = $v;
     }
     echo json_encode([
-        'results' => $field_results,
+        'results' => htmlescape($field_results),
         'count' => count($all_fields)
     ], JSON_THROW_ON_ERROR);
+
     return;
 } else if ($_REQUEST['action'] === 'get_field_placeholder' && isset($_POST['fields']) && is_array($_POST['fields'])) {
     header("Content-Type: application/json; charset=UTF-8");
