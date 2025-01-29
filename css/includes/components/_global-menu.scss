@@ -99,10 +99,6 @@
         margin-left: 1.5rem !important;
         padding: 3px;
     }
-
-    &.navbar-expand-lg {
-        overflow-y: visible;
-    }
 }
 
 .sidebar {
@@ -213,7 +209,7 @@
             $siderbar-collasped-width: 70px;
 
             width: $siderbar-collasped-width;
-            overflow-x: visible;
+            overflow: visible;
 
             & ~ .page-wrapper,
             ~ .navbar {
