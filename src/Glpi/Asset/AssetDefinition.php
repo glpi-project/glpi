@@ -190,6 +190,8 @@ final class AssetDefinition extends AbstractDefinition
     private function showFieldsForm(): void
     {
         $fields_display = $this->getDecodedFieldsField();
+        $used = array_column($fields_display, 'key');
+        $used = array_combine($used, $used);
 
         TemplateRenderer::getInstance()->display(
             'pages/admin/assetdefinition/fields_display.html.twig',
@@ -197,12 +199,13 @@ final class AssetDefinition extends AbstractDefinition
                 'item'           => $this,
                 'all_fields'     => $this->getAllFields(),
                 'fields_display' => $fields_display,
-                'can_create_fields' => CustomFieldDefinition::canCreate(),
                 'custom_field_form_params' => [
+                    'cancreate' => CustomFieldDefinition::canCreate(),
                     'id' => $this->fields['id'],
                     'type' => CustomFieldDefinition::class,
                     'parenttype' => CustomFieldDefinition::$itemtype,
                     'items_id' => CustomFieldDefinition::$items_id,
+                    'add_new_label' => __('Create new field'),
                     'subitem_container_id' => 'customfield_form_container',
                     'as_modal' => true,
                     'ajax_form_submit' => true,

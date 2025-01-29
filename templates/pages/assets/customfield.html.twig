@@ -43,7 +43,6 @@
     {% endset %}
     {{ fields.textField('system_name', item.fields['system_name'], __('System name'), {
         readonly: not item.isNewItem(),
-        required: true,
         helper: helper
     }) }}
     {{ fields.dropdownArrayField('type', item.fields['type']|default('Glpi\\Asset\\CustomFieldType\\StringType'), field_types, _n('Type', 'Types', 1), {

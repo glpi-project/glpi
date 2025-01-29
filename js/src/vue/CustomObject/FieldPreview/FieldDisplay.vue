@@ -1,7 +1,6 @@
 <script setup>
-    import {onMounted, computed, ref, reactive, watch, useTemplateRef, nextTick} from 'vue';
+    import {onMounted, ref, computed, reactive, watch} from 'vue';
     import Field from "./Field.vue";
-    import Sidebar from "./Sidebar.vue";
 
     const props = defineProps({
         items_id: Number,
@@ -9,12 +8,13 @@
         all_fields: Object,
         fields_display: Array,
         add_edit_fn: String,
-        can_create_fields: Boolean,
     });
 
-    const initial_fields = ref(props.all_fields);
+    const initial_all_fields = props.all_fields;
     const fields_display = props.fields_display;
-    const component_root = useTemplateRef('component_root');
+    const toolbar_el = $(props.toolbar_el);
+    //TODO Vue 3.5: useTemplateRef('component_root')
+    const component_root = ref(null);
     const sortable_fields_container = computed(() => {
         return $(component_root.value).parent();
     });
@@ -26,20 +26,75 @@
      */
     const sortable_fields = reactive(new Map());
 
-    function refreshSortables() {
-        nextTick(() => {
-            // Need to wait for the DOM changes to be applied
-            window.sortable('#sortable-fields', {
-                items: '.sortable-field',
-                forcePlaceholderSize: false,
-                acceptFrom: '.fields-sidebar, #sortable-fields',
-            });
-            window.sortable('.fields-sidebar', {
-                items: '.sortable-field',
-                forcePlaceholderSize: false,
-                acceptFrom: false,
+    function getSelectedField(key) {
+        let selected_field = initial_all_fields[key];
+        if (selected_field === undefined) {
+            const opt = $(`select[name="new_field"] option[value="${key}"]`);
+            if (opt.length > 0) {
+                selected_field = {
+                    text: opt.text(),
+                    customfields_id: opt.attr('data-customfield-id') ?? -1,
+                };
+            }
+        }
+        return selected_field;
+    }
+
+    /**
+     * Fetch the field preview for the given fields and update the fields in the sortable list
+     * @param {{key: string, selected_field: {}}[]} fields
+     */
+    function appendFieldPreview(fields) {
+        const payload = {
+            action: 'get_field_placeholder',
+            assetdefinitions_id: props.items_id,
+            fields: []
+        };
+
+        fields.forEach(({key, selected_field}) => {
+            if (!sortable_fields.has(key)) {
+                sortable_fields.set(key, {
+                    key: key,
+                    label: selected_field.text ?? selected_field,
+                    field_options: fields_display.find((field) => field.key === key)?.field_options ?? {},
+                    customfields_id: selected_field.customfields_id ?? -1,
+                });
+            }
+
+            const field_options = {};
+            for (const [name, value] of Object.entries(sortable_fields.get(key).field_options)) {
+                field_options[name] = value;
+            }
+            payload.fields.push({
+                assetdefinitions_id: props.items_id,
+                customfields_id: selected_field.customfields_id ?? -1,
+                key: key,
+                label: sortable_fields.get(key).label,
+                type: selected_field.type ?? '',
+                field_options: field_options,
             });
         });
+        $.ajax({
+            method: 'POST',
+            url: `${CFG_GLPI.root_doc}/ajax/asset/assetdefinition.php`,
+            data: payload
+        }).then((data) => {
+            if (typeof data !== 'object') {
+                return;
+            }
+            fields.forEach(({key}) => {
+                updateFieldPreview(key, data[key]);
+            });
+        });
+    }
+
+    function updateFieldPreview(key, data) {
+        const placeholder_el = $(`<div>${data}</div>`);
+        const sortable_field = sortable_fields.get(key);
+        sortable_field.preview_html = placeholder_el.find('.field-container').html();
+        sortable_field.label_classes = `${placeholder_el.find('label').attr('class')} cursor-grab`;
+        sortable_field.field_classes = `${placeholder_el.find('.field-container').attr('class')} btn-group shadow-none`;
+        sortable_field.wrapper_classes = `${placeholder_el.find('.form-field').attr('class')} flex-grow-1`;
     }
 
     /**
@@ -54,90 +109,45 @@
             if (selected_fields_data !== undefined && selected_fields_data[key] !== undefined) {
                 selected_field = selected_fields_data[key];
             } else {
-                selected_field = initial_fields.value[key];
+                toolbar_el.find('select[name="new_field"]').val(key).trigger('change');
+                selected_field = getSelectedField(key);
             }
             if (selected_field === undefined) {
                 return;
             }
             preview_data.push({key: key, selected_field: selected_field});
         });
-        preview_data.forEach(({key, selected_field}) => {
-            if (!sortable_fields.has(key)) {
-                const next_order_position = sortable_fields.size;
-                sortable_fields.set(key, {
-                    key: key,
-                    label: selected_field.text ?? selected_field,
-                    field_options: fields_display.find((field) => field.key === key)?.field_options ?? {},
-                    customfields_id: selected_field.customfields_id ?? -1,
-                    is_active: selected_field.is_active ?? true,
-                    order: fields_display.find((field) => field.key === key)?.order ?? next_order_position,
-                });
-            }
-        });
-        refreshSortables();
+        appendFieldPreview(preview_data);
+        // Clear the select2 value
+        toolbar_el.find('select[name="new_field"]').val('').trigger('change');
     }
 
     function removeField(key) {
         // remove the field from sortable list
-        sortable_fields.get(key).is_active = false;
-        refreshSortables();
-    }
-
-    /**
-     * Refresh the data in the all_fields object
-     */
-    function refreshAllFields() {
-        const url = `${CFG_GLPI.root_doc}/ajax/asset/assetdefinition.php?action=get_all_fields&assetdefinitions_id=${props.items_id}`;
-        $.get(url, (data) => {
-            const new_fields = {};
-            $.each(data['results'], (key, field) => {
-                new_fields[field.id] = field;
-            });
-            appendField(Object.keys(new_fields), new_fields)
-            refreshSortables();
-        });
+        sortable_fields.delete(key);
     }
 
     onMounted(() => {
-        $.each(initial_fields.value, (key, field) => {
-            const field_data = field;
-            field_data.is_active = fields_display.find((field) => field.key === key) !== undefined;
-            appendField([key], {[key]: field_data});
-        });
+        //for each field in fields_display, add it to the list using the template and slot
+        appendField(fields_display.map((field) => field.key));
 
         const sortable_container = $('#sortable-fields');
+        const new_field_dropdown = toolbar_el.find('select[name="new_field"]');
 
         sortable_container.on('dragenter', () => {
             const sort_el = $('.sortable-field.sortable-dragging');
             const classes_to_copy = sort_el.attr('class').split(' ')
                 .filter((cls) => !['sortable-dragging'].includes(cls))
                 .join(' ');
-            sortable_container.find('.sortable-placeholder').attr('class', `sortable-placeholder ${classes_to_copy} px-2`);
-            if (sortable_container.find('.sortable-placeholder .sortable-placeholder-inner').length === 0) {
-                sortable_container.find('.sortable-placeholder').append(`<div class="sortable-placeholder-inner"></div>`);
-            }
+            sortable_container.find('.sortable-placeholder').attr('class', `sortable-placeholder ${classes_to_copy}`);
         });
 
-        // Change is_active property of the field when done dragging
-        sortable_container.on('sortupdate', (e) => {
-            const origin_container = e.originalEvent.detail.origin.container;
-            const destination_container = e.originalEvent.detail.destination.container;
-            // Do nothing here if the origin and destination are the same
-            if (origin_container === destination_container) {
-                return;
-            }
-            const moved_field = $(e.originalEvent.detail.item);
-            const moved_to_displayed = $(destination_container).attr('id') === 'sortable-fields';
-
-            if (moved_to_displayed) {
-                const sortable_field = sortable_fields.get(moved_field.attr('data-key'));
-                sortable_field.is_active = true;
-                // Recalculate the order of the fields to match the index in the displayed list
-                sortable_fields.forEach((field) => {
-                    field.order = $(component_root.value).find('.sortable-field').index($(`.sortable-field[data-key="${field.key}"]`));
-                });
-            } else {
-                removeField(moved_field.attr('data-key'));
+        // add field action
+        $('#add-field').on('click', () => {
+            //get select2 value
+            const field_key = new_field_dropdown.val();
+            if (field_key && field_key !== 0 ) {
+                appendField([field_key]);
             }
         });
 
@@ -160,49 +170,26 @@
                     id: 'core_field_options_editor',
                     modalclass: 'modal-lg',
                     appendTo: `#${$(sortable_fields_container.value).attr('id')}`,
-                    title: field_el.text(),
+                    title: field_el.find('label').text(),
                     url: url,
                     buttons: [
-                        {
-                            id: 'cancel_core_field_options',
-                            label: __('Cancel'),
-                            class: 'btn-ghost-secondary',
-                        },
                         {
                             id: 'save_core_field_options',
                             label: _x('button', 'Save'),
                             class: 'btn-primary',
                         },
+                        {
+                            id: 'cancel_core_field_options',
+                            label: __('Cancel'),
+                        }
                     ]
                 });
             } else {
                 window[props.add_edit_fn](field_id);
-                $('#customfield_form_container_modal .modal-title').text(field_el.text());
             }
         }).on('click', '.hide-field', (e) => {
             const field_key = $(e.target).closest('.sortable-field').attr('data-key');
             removeField(field_key);
-        }).on('click', '.purge-field', (e) => {
-            // Only custom fields can be purged
-            const field_key = $(e.target).closest('.sortable-field').attr('data-key');
-            const custom_fields_id = $(e.target).closest('.sortable-field').attr('data-customfield-id');
-
-            // Submit a form via AJAX to delete the field
-            $.ajax({
-                url: `${CFG_GLPI.root_doc}/ajax/asset/customfield.php`,
-                type: 'POST',
-                data: {
-                    customfielddefinitions_id: custom_fields_id,
-                    action: 'purge_field'
-                },
-                success: () => {
-                    sortable_fields.delete(field_key);
-                    refreshSortables();
-                },
-                complete: () => {
-                    displayAjaxMessageAfterRedirect();
-                }
-            });
         });
 
         sortable_fields_container.value.on('click', '#save_core_field_options', () => {
@@ -232,41 +219,28 @@
             const form_data = new FormData(e.target);
             const field_key = `custom_${form_data.get('system_name')}`;
 
-            refreshAllFields();
-            if (btn_submit.attr('name') === 'add' || btn_submit.attr('name') === 'update') {
-                appendField([field_key], {[field_key]: {
-                    text: form_data.get('label'),
-                }});
-                const sortable_field = sortable_fields.get(field_key);
-
-                sortable_field.field_options = {};
-                form_data.entries().forEach(([name, value]) => {
-                    if (name.startsWith('field_options[')) {
-                        const option_name = name.replace('field_options[', '').slice(0, -1);
-                        sortable_field.field_options[option_name] = value;
-                    }
+            if (btn_submit.attr('name') === 'add') {
+                new_field_dropdown.data('select2').dataAdapter.query('', (data) => {
+                    data.results.forEach((result) => {
+                        if (result.id === field_key) {
+                            appendField([field_key], {[field_key]: result});
+                        }
+                    });
                 });
+            } else if (btn_submit.attr('name') === 'update') {
+                // Reload preview
+                appendField([field_key], {[field_key]: sortable_fields.get(field_key)});
             } else if (btn_submit.attr('name') === 'purge') {
                 removeField(field_key);
             }
         });
     });
 
-    const active_fields = computed(() => {
-        const ordered_active_fields = [];
-        [...sortable_fields].filter(([key, field]) => field.is_active)
-            .sort((a, b) => a[1].order - b[1].order)
-            .forEach(([key, field]) => {
-                ordered_active_fields.push({...field, key: key});
-            });
-        return ordered_active_fields;
-    });
-
-    const inactive_fields = computed(() => {
-        return new Map([...sortable_fields].filter(([key, field]) => !field.is_active));
-    });
-
-    watch(active_fields, () => {
+    watch(sortable_fields, () => {
+        window.sortable('#sortable-fields', {
+            items: '.sortable-field',
+            forcePlaceholderSize: false,
+        });
         // If only one field remains, disable the remove button
         $(component_root.value).find('.hide-field')
             .prop('disabled', sortable_fields.size === 1)
@@ -276,31 +250,30 @@
 </script>
 
 <template>
-    <div class="col-12 col-xxl-12 flex-column px-n3" ref="component_root">
+    <div class="col-12 col-xxl-12 flex-column" ref="component_root">
         <input type="hidden" name="_update_fields_display" value="1" />
         <input type="hidden" name="fields_display" value="" />
-
         <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
-            <div class="row flex-row align-items-start flex-grow-1 d-flex">
-                <div class="col">
-                    <div class="user-select-none row flex-row p-2" id="sortable-fields" style="min-height: 50px">
-                        <Field v-for="sortable_field of active_fields" :key="sortable_field.key"
-                               :field_key="sortable_field.key" :customfields_id="sortable_field.customfields_id" :field_options="sortable_field.field_options"
-                               :is_active="sortable_field.is_active">
-                            <template v-slot:field_label>{{ sortable_field.label }}</template>
-                            <template v-slot:field_markers>
-                                <span v-if="parseInt(sortable_field.field_options.required ?? 0) === 1" class="required">*</span>
-                                <i v-if="parseInt(sortable_field.field_options.readonly ?? 0) === 1" class="ti ti-pencil-off ms-2" :title="__('Readonly')"></i>
+            <div class="row flex-row align-items-start flex-grow-1">
+                <div class="user-select-none row flex-row" id="sortable-fields">
+                    <Field v-for="[field_key, sortable_field] of sortable_fields" :key="field_key"
+                           :field_key="field_key" :customfields_id="sortable_field.customfields_id" :label_classes="sortable_field.label_classes"
+                           :field_classes="sortable_field.field_classes" :wrapper_classes="sortable_field.wrapper_classes">
+                        <template v-slot:field_label>{{ sortable_field.label }}</template>
+                        <template v-slot:field_markers>
+                            <span v-if="(sortable_field.field_options.required ?? '0').toString() === '1'" class="required">*</span>
+                            <i v-if="(sortable_field.field_options.readonly ?? '0').toString() === '1'" class="ti ti-pencil-off ms-2" :title="__('Readonly')"></i>
+                        </template>
+                        <template v-slot:field_options>
+                            <template v-for="(field_option_value, field_option_name) in sortable_field.field_options" :key="field_option_name">
+                                <input type="hidden" :name="`field_options[${field_key}][${field_option_name}]`" :value="field_option_value" />
                             </template>
-                            <template v-slot:field_options>
-                                <template v-for="(field_option_value, field_option_name) in sortable_field.field_options" :key="field_option_name">
-                                    <input type="hidden" :name="`field_options[${sortable_field.key}][${field_option_name}]`" :value="field_option_value" />
-                                </template>
-                            </template>
-                        </Field>
-                    </div>
+                        </template>
+                        <template v-slot:field_preview v-if="sortable_field.preview_html">
+                            <div v-html="sortable_field.preview_html" style="display: contents"></div>
+                        </template>
+                    </Field>
                 </div>
-                <Sidebar :inactive_fields="inactive_fields" :add_edit_fn="add_edit_fn"></Sidebar>
             </div>
         </div>
     </div>
@@ -309,15 +282,5 @@
 <style scoped>
     :deep(.sortable-field .btn.hide-field:disabled) {
         pointer-events: auto;
-    }
-    :deep(.sortable-placeholder) {
-        background: unset;
-        border: unset;
-        height: 38px;
-        .sortable-placeholder-inner {
-            border: 2px dashed #dad55e;
-            background: #fff99038;
-            height: 100%;
-        }
     }
 </style>

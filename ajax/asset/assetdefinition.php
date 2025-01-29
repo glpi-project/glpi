@@ -63,6 +63,40 @@ if ($_REQUEST['action'] === 'get_all_fields') {
         'count' => count($all_fields)
     ], JSON_THROW_ON_ERROR);
     return;
+} else if ($_REQUEST['action'] === 'get_field_placeholder' && isset($_POST['fields']) && is_array($_POST['fields'])) {
+    header("Content-Type: application/json; charset=UTF-8");
+    $custom_field = new CustomFieldDefinition();
+    $results = [];
+    foreach ($_POST['fields'] as $field) {
+        if ($field['customfields_id'] > 0) {
+            if (!$custom_field->getFromDB($field['customfields_id'])) {
+                throw new NotFoundHttpException();
+            }
+        } else {
+            $custom_field->fields['system_name'] = '';
+            $custom_field->fields['label'] = $field['label'];
+            $custom_field->fields['type'] = $field['type'];
+            $custom_field->fields['itemtype'] = 'Computer'; // Doesn't matter what it is as long as it's not empty
+            $custom_field->fields['default_value'] = '';
+
+            $asset_definition = new AssetDefinition();
+            if (!$asset_definition->getFromDB($field['assetdefinitions_id'])) {
+                throw new NotFoundHttpException();
+            }
+            $fields_display = $asset_definition->getDecodedFieldsField();
+            foreach ($fields_display as $field_display) {
+                if ($field_display['key'] === $field['key']) {
+                    $custom_field->fields['field_options'] = $field_display['field_options'] ?? [];
+                    break;
+                }
+            }
+        }
+        $custom_field->fields['field_options'] = array_merge($custom_field->fields['field_options'] ?? [], $field['field_options'] ?? []);
+        $custom_field->fields['field_options']['disabled'] = true;
+        $results[$field['key']] = $custom_field->getFieldType()->getFormInput('', null);
+    }
+    echo json_encode($results, JSON_THROW_ON_ERROR);
+    return;
 } else if ($_REQUEST['action'] === 'get_core_field_editor') {
     header("Content-Type: text/html; charset=UTF-8");
     $asset_definition = new AssetDefinition();
