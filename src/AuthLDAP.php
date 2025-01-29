@@ -4397,7 +4397,7 @@ TWIG, $twig_params);
             $DB->update(
                 AuthMail::getTable(),
                 ['is_default' => 0],
-                ['id' => ['!=', '-1']] // @todo maybe there is a better way to do this! ?
+                [new QueryExpression('true')],
             );
         }
     }
