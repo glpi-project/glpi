@@ -7813,6 +7813,7 @@ CREATE TABLE `glpi_users` (
   `privatebookmarkorder` longtext,
   `backcreated` tinyint DEFAULT NULL,
   `task_state` int DEFAULT NULL,
+  `planned_task_state` int DEFAULT NULL,
   `palette` char(20) DEFAULT NULL,
   `page_layout` char(20) DEFAULT NULL,
   `fold_menu` tinyint DEFAULT NULL,
