@@ -40,6 +40,7 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeItem;
 use InvalidArgumentException;
 use Override;
 
@@ -72,8 +73,12 @@ abstract class ITILActorField extends AbstractConfigField
         $twig = TemplateRenderer::getInstance();
         return $twig->render('pages/admin/form/itil_config_fields/itilactor.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
-            'CONFIG_SPECIFIC_VALUE'  => ITILActorFieldStrategy::SPECIFIC_VALUES->value,
-            'CONFIG_SPECIFIC_ANSWER' => ITILActorFieldStrategy::SPECIFIC_ANSWERS->value,
+            'CONFIG_SPECIFIC_VALUE'                    => ITILActorFieldStrategy::SPECIFIC_VALUES->value,
+            'CONFIG_SPECIFIC_ANSWER'                   => ITILActorFieldStrategy::SPECIFIC_ANSWERS->value,
+            'CONFIG_SPECIFIC_USER_OBJECT_ANSWER'       => ITILActorFieldStrategy::USER_FROM_OBJECT_ANSWER->value,
+            'CONFIG_SPECIFIC_TECH_USER_OBJECT_ANSWER'  => ITILActorFieldStrategy::TECH_USER_FROM_OBJECT_ANSWER->value,
+            'CONFIG_SPECIFIC_GROUP_OBJECT_ANSWER'      => ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER->value,
+            'CONFIG_SPECIFIC_TECH_GROUP_OBJECT_ANSWER' => ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER->value,
 
             // General display options
             'options' => $display_options,
@@ -92,6 +97,14 @@ abstract class ITILActorField extends AbstractConfigField
                 'values'          => $config->getSpecificQuestionIds() ?? [],
                 'input_name'      => $input_name . "[" . ITILActorFieldConfig::SPECIFIC_QUESTION_IDS . "]",
                 'possible_values' => $this->getITILActorQuestionsValuesForDropdown($form),
+            ],
+
+            // Specific additional config for USER_FROM_OBJECT_ANSWER and GROUP_FROM_OBJECT_ANSWER strategy
+            'group_object_answer_extra_field' => [
+                'aria_label'      => __("Select questions..."),
+                'values'          => $config->getSpecificQuestionIds() ?? [],
+                'input_name'      => $input_name . "[" . ITILActorFieldConfig::SPECIFIC_QUESTION_IDS . "]",
+                'possible_values' => $this->getItemWithAssignableItemtypeQuestionsValuesForDropdown($form),
             ],
         ]);
     }
@@ -170,6 +183,30 @@ abstract class ITILActorField extends AbstractConfigField
     {
         return array_reduce(
             $form->getQuestionsByType($this->getAllowedQuestionType()),
+            function ($carry, $question) {
+                $carry[$question->getId()] = $question->fields['name'];
+                return $carry;
+            },
+            []
+        );
+    }
+
+    private function getItemWithAssignableItemtypeQuestionsValuesForDropdown(Form $form): array
+    {
+        $allowed_item_questions = array_filter(
+            $form->getQuestionsByType(QuestionTypeItem::class),
+            function ($question) {
+                $question_itemtype = (new QuestionTypeItem())->getDefaultValueItemtype($question);
+                if ($question_itemtype === null) {
+                    return false;
+                }
+
+                return class_uses($question_itemtype)['Glpi\Features\AssignableItem'] ?? false;
+            }
+        );
+
+        return array_reduce(
+            $allowed_item_questions,
             function ($carry, $question) {
                 $carry[$question->getId()] = $question->fields['name'];
                 return $carry;

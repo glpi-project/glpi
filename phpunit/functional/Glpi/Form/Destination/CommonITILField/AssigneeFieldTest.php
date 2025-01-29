@@ -36,27 +36,33 @@
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use CommonITILActor;
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
 use Glpi\Form\Destination\CommonITILField\AssigneeFieldConfig;
+use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
+use Glpi\PHPUnit\Tests\Glpi\Form\Destination\CommonITILField\AbstractActorFieldTest;
 use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
 use Group;
+use Override;
+use Session;
 use Supplier;
 use Ticket;
 use TicketTemplate;
 use TicketTemplatePredefinedField;
 use User;
 
-final class AssigneeFieldTest extends DbTestCase
+final class AssigneeFieldTest extends AbstractActorFieldTest
 {
-    use FormTesterTrait;
+    #[Override]
+    public function getFieldClass(): string
+    {
+        return AssigneeField::class;
+    }
 
     public function testAssigneeFromTemplate(): void
     {
@@ -141,6 +147,45 @@ final class AssigneeFieldTest extends DbTestCase
             config: $form_filler_config,
             answers: [],
             expected_actors_ids: [$auth->getUser()->getID()]
+        );
+    }
+
+    public function testAssigneeFormFillerSupervisor(): void
+    {
+        // Login is required to assign actors
+        $this->login();
+
+        $supervisor = $this->createItem(User::class, ['name' => 'testAssigneeFormFillerSupervisor Supervisor']);
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $form_filler_supervisor_config = new AssigneeFieldConfig(
+            [ITILActorFieldStrategy::FORM_FILLER_SUPERVISOR]
+        );
+
+        // Need user to be logged in
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $form_filler_supervisor_config,
+            answers: [],
+            expected_actors_ids: []
+        );
+
+        // No supervisor set
+        $auth = $this->login();
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $form_filler_supervisor_config,
+            answers: [],
+            expected_actors_ids: []
+        );
+
+        $this->updateItem(User::class, Session::getLoginUserID(), ['users_id_supervisor' => $supervisor->getID()]);
+
+        // Supervisor set
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $form_filler_supervisor_config,
+            answers: [],
+            expected_actors_ids: [$supervisor->getID()]
         );
     }
 
@@ -391,9 +436,9 @@ final class AssigneeFieldTest extends DbTestCase
         );
     }
 
-    private function sendFormAndAssertTicketActors(
+    protected function sendFormAndAssertTicketActors(
         Form $form,
-        AssigneeFieldConfig $config,
+        ITILActorFieldConfig $config,
         array $answers,
         array $expected_actors_ids,
     ): void {
@@ -429,8 +474,6 @@ final class AssigneeFieldTest extends DbTestCase
         $this->assertCount(1, $created_items);
         /** @var Ticket $ticket */
         $ticket = current($created_items);
-
-        $a = $ticket->getActorsForType(CommonITILActor::ASSIGN);
 
         // Check actors
         $this->assertEquals(

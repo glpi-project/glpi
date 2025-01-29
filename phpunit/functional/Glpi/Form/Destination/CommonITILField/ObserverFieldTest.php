@@ -36,26 +36,34 @@
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use CommonITILActor;
-use DbTestCase;
+use Computer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ObserverFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ObserverField;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
+use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
+use Glpi\PHPUnit\Tests\Glpi\Form\Destination\CommonITILField\AbstractActorFieldTest;
 use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
 use Group;
+use Override;
 use Ticket;
 use TicketTemplate;
 use TicketTemplatePredefinedField;
 use User;
 
-final class ObserverFieldTest extends DbTestCase
+final class ObserverFieldTest extends AbstractActorFieldTest
 {
-    use FormTesterTrait;
+    #[Override]
+    public function getFieldClass(): string
+    {
+        return ObserverField::class;
+    }
 
     public function testObserverFromTemplate(): void
     {
@@ -123,6 +131,48 @@ final class ObserverFieldTest extends DbTestCase
             config: $form_filler_config,
             answers: [],
             expected_actors_ids: [$auth->getUser()->getID()]
+        );
+    }
+
+    public function testObserverFormFillerSupervisor(): void
+    {
+        $supervisor = $this->createItem(User::class, ['name' => 'testObserverFormFillerSupervisor Supervisor']);
+        $user = $this->createItem(User::class, [
+            'name'                => 'testObserverFormFillerSupervisor User',
+            'password'            => 'testObserverFormFillerSupervisor User',
+            'password2'           => 'testObserverFormFillerSupervisor User',
+            'users_id_supervisor' => $supervisor->getID()
+        ], ['password', 'password2']);
+
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $form_filler_supervisor_config = new ObserverFieldConfig(
+            [ITILActorFieldStrategy::FORM_FILLER_SUPERVISOR]
+        );
+
+        // Need user to be logged in
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $form_filler_supervisor_config,
+            answers: [],
+            expected_actors_ids: []
+        );
+
+        // No supervisor set
+        $auth = $this->login();
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $form_filler_supervisor_config,
+            answers: [],
+            expected_actors_ids: []
+        );
+
+        // Supervisor set
+        $auth = $this->login($user->fields['name'], $user->fields['name']);
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $form_filler_supervisor_config,
+            answers: [],
+            expected_actors_ids: [$auth->getUser()->fields['users_id_supervisor']]
         );
     }
 
@@ -320,9 +370,9 @@ final class ObserverFieldTest extends DbTestCase
         );
     }
 
-    private function sendFormAndAssertTicketActors(
+    protected function sendFormAndAssertTicketActors(
         Form $form,
-        ObserverFieldConfig $config,
+        ITILActorFieldConfig $config,
         array $answers,
         array $expected_actors_ids,
     ): void {
@@ -376,6 +426,23 @@ final class ObserverFieldTest extends DbTestCase
             '',
             json_encode((new QuestionTypeActorsExtraDataConfig(true))->jsonSerialize())
         );
+        return $this->createForm($builder);
+    }
+
+    private function createAndGetFormWithItemQuestions(): Form
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            'Computer question',
+            QuestionTypeItem::class,
+            '',
+            json_encode((new QuestionTypeItemExtraDataConfig(Computer::class))->jsonSerialize())
+        );
+        $builder->addDestination(
+            FormDestinationTicket::class,
+            "My ticket",
+        );
+
         return $this->createForm($builder);
     }
 }

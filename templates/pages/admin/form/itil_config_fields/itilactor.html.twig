@@ -70,12 +70,43 @@
         specific_answer_extra_field.possible_values,
         "",
         options|merge({
+            rand: random(),
             field_class: '',
             no_label: true,
             multiple: true,
             values: specific_answer_extra_field.values,
             aria_label: specific_answer_extra_field.aria_label,
             mb: '',
+            rand: random(),
         })
     ) }}
 </div>
+
+{% set group_object_strategies = [
+    CONFIG_SPECIFIC_USER_OBJECT_ANSWER,
+    CONFIG_SPECIFIC_TECH_USER_OBJECT_ANSWER,
+    CONFIG_SPECIFIC_GROUP_OBJECT_ANSWER,
+    CONFIG_SPECIFIC_TECH_GROUP_OBJECT_ANSWER
+] %}
+{% for strategy in group_object_strategies %}
+    <div
+        class="d-none"
+        data-glpi-itildestination-field-config-display-condition="{{ strategy }}"
+    >
+        {{ fields.dropdownArrayField(
+            group_object_answer_extra_field.input_name,
+            '',
+            group_object_answer_extra_field.possible_values,
+            "",
+            options|merge({
+                rand: random(),
+                field_class: '',
+                no_label: true,
+                multiple: true,
+                values: group_object_answer_extra_field.values,
+                aria_label: group_object_answer_extra_field.aria_label,
+                mb: '',
+            })
+        ) }}
+    </div>
+{% endfor %}

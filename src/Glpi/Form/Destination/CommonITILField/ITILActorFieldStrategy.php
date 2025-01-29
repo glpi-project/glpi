@@ -36,25 +36,36 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Form\AnswersSet;
+use Group;
 use Session;
 use User;
 
 enum ITILActorFieldStrategy: string
 {
-    case FORM_FILLER               = 'form_filler';
-    case FROM_TEMPLATE             = 'from_template';
-    case SPECIFIC_VALUES           = 'specific_values';
-    case SPECIFIC_ANSWERS          = 'specific_answer';
-    case LAST_VALID_ANSWER         = 'last_valid_answer';
+    case FORM_FILLER                   = 'form_filler';
+    case FORM_FILLER_SUPERVISOR        = 'form_filler_supervisor';
+    case FROM_TEMPLATE                 = 'from_template';
+    case SPECIFIC_VALUES               = 'specific_values';
+    case SPECIFIC_ANSWERS              = 'specific_answer';
+    case LAST_VALID_ANSWER             = 'last_valid_answer';
+    case USER_FROM_OBJECT_ANSWER       = 'user_from_object_answer';
+    case TECH_USER_FROM_OBJECT_ANSWER  = 'tech_user_from_object_answer';
+    case GROUP_FROM_OBJECT_ANSWER      = 'group_from_object_answer';
+    case TECH_GROUP_FROM_OBJECT_ANSWER = 'tech_group_from_object_answer';
 
     public function getLabel(string $label): string
     {
         return match ($this) {
-            self::FORM_FILLER       => __('User who filled the form'),
-            self::FROM_TEMPLATE     => __('From template'),
-            self::SPECIFIC_VALUES   => __('Specific actors'),
-            self::SPECIFIC_ANSWERS  => __('Answer from specific questions'),
-            self::LAST_VALID_ANSWER => sprintf(__('Answer to last "%s" question'), $label),
+            self::FORM_FILLER                   => __('User who filled the form'),
+            self::FORM_FILLER_SUPERVISOR        => __('Supervisor of the user who filled the form'),
+            self::FROM_TEMPLATE                 => __('From template'),
+            self::SPECIFIC_VALUES               => __('Specific actors'),
+            self::SPECIFIC_ANSWERS              => __('Answer from specific questions'),
+            self::LAST_VALID_ANSWER             => sprintf(__('Answer to last "%s" question'), $label),
+            self::USER_FROM_OBJECT_ANSWER       => __('User from GLPI object answer'),
+            self::TECH_USER_FROM_OBJECT_ANSWER  => __('Tech user from GLPI object answer'),
+            self::GROUP_FROM_OBJECT_ANSWER      => __('Group from GLPI object answer'),
+            self::TECH_GROUP_FROM_OBJECT_ANSWER => __('Tech group from GLPI object answer'),
         };
     }
 
@@ -64,17 +75,38 @@ enum ITILActorFieldStrategy: string
         AnswersSet $answers_set
     ): ?array {
         return match ($this) {
-            self::FROM_TEMPLATE    => null,
-            self::FORM_FILLER      => $this->getActorsIdsFromCurrentUser(),
-            self::SPECIFIC_VALUES  => $config->getSpecificITILActorsIds(),
-            self::SPECIFIC_ANSWERS => $this->getActorsIdsForSpecificAnswers(
+            self::FROM_TEMPLATE          => null,
+            self::FORM_FILLER            => $this->getActorsIdsFromCurrentUser(),
+            self::FORM_FILLER_SUPERVISOR => $this->getActorsIdsFromSupervisorOfCurrentUser(),
+            self::SPECIFIC_VALUES        => $config->getSpecificITILActorsIds(),
+            self::SPECIFIC_ANSWERS       => $this->getActorsIdsForSpecificAnswers(
                 $config->getSpecificQuestionIds(),
                 $itil_actor_field,
                 $answers_set,
             ),
-            self::LAST_VALID_ANSWER => $this->getActorsIdsForLastValidAnswer(
+            self::LAST_VALID_ANSWER      => $this->getActorsIdsForLastValidAnswer(
                 $itil_actor_field,
                 $answers_set,
+            ),
+            self::USER_FROM_OBJECT_ANSWER => $this->getActorsIdsFromObjectAnswers(
+                $config->getSpecificQuestionIds(),
+                $answers_set,
+                User::getForeignKeyField()
+            ),
+            self::TECH_USER_FROM_OBJECT_ANSWER => $this->getActorsIdsFromObjectAnswers(
+                $config->getSpecificQuestionIds(),
+                $answers_set,
+                User::getForeignKeyField() . '_tech'
+            ),
+            self::GROUP_FROM_OBJECT_ANSWER => $this->getActorsIdsFromObjectAnswers(
+                $config->getSpecificQuestionIds(),
+                $answers_set,
+                Group::getForeignKeyField()
+            ),
+            self::TECH_GROUP_FROM_OBJECT_ANSWER => $this->getActorsIdsFromObjectAnswers(
+                $config->getSpecificQuestionIds(),
+                $answers_set,
+                Group::getForeignKeyField() . '_tech'
             ),
         };
     }
@@ -88,6 +120,26 @@ enum ITILActorFieldStrategy: string
 
         return [
             User::class => [(int) $users_id],
+        ];
+    }
+
+    private function getActorsIdsFromSupervisorOfCurrentUser(): ?array
+    {
+        $users_id = Session::getLoginUserID();
+        if (!is_numeric($users_id)) {
+            return null;
+        }
+
+        $user = new User();
+        $user->getFromDB($users_id);
+        $supervisor_id = $user->fields['users_id_supervisor'];
+
+        if (!is_numeric($supervisor_id)) {
+            return null;
+        }
+
+        return [
+            User::class => [(int) $supervisor_id],
         ];
     }
 
@@ -162,5 +214,65 @@ enum ITILActorFieldStrategy: string
             $itil_actor_field,
             $answers_set
         );
+    }
+
+    private function getActorsIdsFromObjectAnswers(
+        ?array $question_ids,
+        AnswersSet $answers_set,
+        string $fk_field
+    ): ?array {
+        if (empty($question_ids)) {
+            return null;
+        }
+
+        return array_reduce($question_ids, function ($carry, $question_id) use ($answers_set, $fk_field) {
+            $actors_ids = $this->getActorsIdsFromObjectAnswer(
+                $question_id,
+                $answers_set,
+                $fk_field
+            );
+
+            if ($actors_ids === null) {
+                return $carry;
+            }
+
+            return array_merge_recursive($carry, $actors_ids);
+        }, []);
+    }
+
+    private function getActorsIdsFromObjectAnswer(
+        ?int $question_id,
+        AnswersSet $answers_set,
+        string $fk_field
+    ): ?array {
+        if ($question_id === null) {
+            return null;
+        }
+
+        $answer = $answers_set->getAnswerByQuestionId($question_id);
+        if ($answer === null) {
+            return null;
+        }
+
+        $value = $answer->getRawAnswer();
+        if (
+            getItemForItemtype($value['itemtype']) === false
+            || !is_numeric($value['items_id'])
+        ) {
+            return null;
+        }
+
+        $item = getItemForItemtype($value['itemtype']);
+        if (!$item->getFromDB($value['items_id'])) {
+            return null;
+        }
+
+        if (!isset($item->fields[$fk_field])) {
+            return null;
+        }
+
+        return [
+            getItemtypeForForeignKeyField(str_replace('_tech', '', $fk_field)) => [(int) $item->fields[$fk_field]],
+        ];
     }
 }
