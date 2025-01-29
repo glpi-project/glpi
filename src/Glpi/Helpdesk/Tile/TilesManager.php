@@ -42,6 +42,18 @@ use Profile;
 
 final class TilesManager
 {
+    /**
+     * @return array<TileInterface&CommonDBTM>
+     */
+    public function getTileTypes(): array
+    {
+        return [
+            new GlpiPageTile(),
+            new ExternalPageTile(),
+            new FormTile(),
+        ];
+    }
+
     /** @return TileInterface[] */
     public function getTiles(
         SessionInfo $session_info,

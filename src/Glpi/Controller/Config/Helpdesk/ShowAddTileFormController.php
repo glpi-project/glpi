@@ -38,16 +38,17 @@ use CommonDBTM;
 use Config;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Helpdesk\Tile\TileInterface;
+use Glpi\Form\Form;
+use Glpi\Helpdesk\Tile\ExternalPageTile;
+use Glpi\Helpdesk\Tile\FormTile;
+use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class DeleteTileController extends AbstractController
+final class ShowAddTileFormController extends AbstractController
 {
     private TilesManager $tiles_manager;
 
@@ -57,39 +58,31 @@ final class DeleteTileController extends AbstractController
     }
 
     #[Route(
-        "/Config/Helpdesk/DeleteTile",
-        name: "glpi_config_helpdesk_delete_tile",
-        methods: "POST"
+        "/Config/Helpdesk/ShowAddTileForm",
+        name: "glpi_config_helpdesk_show_add_tile_form",
+        methods: "GET"
     )]
     public function __invoke(Request $request): Response
     {
-        // Read parameters
-        $tile_id = $request->request->getInt('tile_id');
-        $tile_itemtype = $request->request->getString('tile_itemtype');
-
-        // Validate parameters
-        if (
-            $tile_id == 0
-            || !is_a($tile_itemtype, TileInterface::class, true)
-            || !is_a($tile_itemtype, CommonDBTM::class, true)
-        ) {
-            throw new BadRequestHttpException();
+        $possible_tiles = [];
+        foreach ($this->tiles_manager->getTileTypes() as $tile_type) {
+            if ($tile_type::canCreate()) {
+                $possible_tiles[] = $tile_type;
+            }
         }
-        if (!$tile_itemtype::canPurge()) {
+        if (empty($possible_tiles)) {
             throw new AccessDeniedHttpException();
         }
 
-        // Try to load the given tile
-        $tile = $tile_itemtype::getById($tile_id);
-        if (!$tile) {
-            throw new NotFoundHttpException();
-        }
-        if (!$tile->canDeleteItem()) {
-            throw new AccessDeniedHttpException();
+        $possible_tiles_dropdown_values = [];
+        foreach ($possible_tiles as $possible_tile) {
+            $possible_tiles_dropdown_values[$possible_tile::class] = $possible_tile->getLabel();
         }
 
-        // Delete tile and return an empty response
-        $this->tiles_manager->deleteTile($tile);
-        return new Response();
+        // Render form
+        return $this->render('pages/admin/helpdesk_home_config_add_tile_form.html.twig', [
+            'possible_tiles' => $possible_tiles,
+            'possible_tiles_dropdown_values' => $possible_tiles_dropdown_values,
+        ]);
     }
 }
