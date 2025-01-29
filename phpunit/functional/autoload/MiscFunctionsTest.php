@@ -81,12 +81,26 @@ class MiscFunctionsTest extends DbTestCase
         $this->assertEquals($output, \htmlescape($input));
     }
 
-    public function testHtmlescapeWithUnexpectedType(): void
+    public function testHtmlescapeIsRecursiveWithArray(): void
     {
-        $this->assertEquals('Array', \htmlescape(['an', 'array']));
-        $this->hasPhpLogRecordThatContains(
-            'Array to string conversion',
-            LogLevel::WARNING
-        );
+        $input = [
+            'hello \'',
+            [
+                'sub1 >',
+                'sub2 &',
+                ['sub-"sub1"', 'sub-sub2'],
+            ],
+        ];
+
+        $expected = [
+            'hello &#039;',
+            [
+                'sub1 &gt;',
+                'sub2 &amp;',
+                ['sub-&quot;sub1&quot;', 'sub-sub2'],
+            ],
+        ];
+
+        $this->assertEquals($expected, \htmlescape($input));
     }
 }

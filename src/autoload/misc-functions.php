@@ -89,12 +89,17 @@ function isPluginItemType($classname)
 
 /**
  * Escape a string to make it safe to be printed in an HTML page.
- * This function is pretty similar to the `htmlspecialchars` function, but its signature is less strict.
  *
- * @param mixed $str
- * @return string
+ * This function is pretty similar to the `htmlspecialchars` function, but its signature is less strict.
+ * It recursively converts array contents @since 11.0.0
+ *
  */
-function htmlescape(mixed $str): string
+function htmlescape(mixed $contents): string|array
 {
-    return htmlspecialchars((string) $str);
+    if (is_array($contents)) {
+        return array_map('htmlescape', $contents);
+    }
+
+    // For psalm (5.26.1) not use named arguments, as @psalm-taint-escape html is not recognized
+    return htmlspecialchars((string) $contents, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false);
 }
