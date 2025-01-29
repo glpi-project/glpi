@@ -101,13 +101,33 @@ header {
 }
 
 .search-banner {
-    background:
-        url('../pics/serfservice-portal-header-1.svg') no-repeat bottom right,
-        url('../pics/serfservice-portal-header-2.svg') no-repeat bottom left
-    ;
     background-color: var(--glpi-helpdesk-header);
-    padding-top:150px;
-    padding-bottom:100px;
+    position: relative;
+
+    .search-banner-content {
+        padding-top:170px;
+        padding-bottom:80px;
+    }
+
+    .scene {
+        position:absolute;
+        bottom: 0;
+        width: 555px;
+        height:90%;
+
+        // Hide for screens smaller than 1600px
+        @media (max-width: 1600px) {
+            display: none;
+        }
+    }
+
+    .scene-left {
+        left: 0;
+    }
+
+    .scene-right {
+        right: 0;
+    }
 }
 
 .search-overlay {

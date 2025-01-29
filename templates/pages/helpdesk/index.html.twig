@@ -38,8 +38,11 @@
        through and use all the available width. The content is still using the correct width by redefining manually the
        container size for each sections of the page using container-xl/container-narrow classes#}
     <div class="d-flex flex-column helpdesk-home-container force-full-width">
-        <div class="search-banner">
-            <div class="container-narrow">
+        <div class="search-banner d-flex">
+            <div class="scene scene-left">
+                {{ render_scene('shelves') }}
+            </div>
+            <div class="container-narrow search-banner-content">
                 <h1 class="text-dark text-center">
                     {{ __("How can we help you?") }}
                 </h1>
@@ -63,6 +66,9 @@
                     >
                     </section>
                 </div>
+            </div>
+            <div class="scene scene-right">
+                {{ render_scene('desk') }}
             </div>
         </div>
         <section class="tiles-banner" aria-label="{{ __("Quick Access") }}">
