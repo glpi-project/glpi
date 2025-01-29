@@ -55,7 +55,7 @@ final class SetTilesOrderController extends AbstractController
     }
 
     #[Route(
-        "/ajax/Config/Helpdesk/SetTilesOrder",
+        "/Config/Helpdesk/SetTilesOrder",
         name: "glpi_config_helpdesk_set_tiles_order",
         methods: "POST"
     )]
