@@ -51,7 +51,7 @@ class AllowedInGlobalSearchCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("List in the results of a gobal search (from the header bar)");
+        return __("Include in global search (from the header bar) results");
     }
 
     public function isUsed(string $classname): bool

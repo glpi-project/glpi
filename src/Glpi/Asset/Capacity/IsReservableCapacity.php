@@ -56,7 +56,7 @@ class IsReservableCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("End users can reserve this asset");
+        return __("These assets can be made reservable");
     }
 
     public function isUsed(string $classname): bool

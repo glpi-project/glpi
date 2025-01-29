@@ -56,7 +56,7 @@ class HasDevicesCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("includes sub components like CPUs, drives or memories");
+        return __("Includes sub-components like CPUs, drives or memory");
     }
 
     public function getCloneRelations(): array

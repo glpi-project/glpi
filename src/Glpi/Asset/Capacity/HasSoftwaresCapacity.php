@@ -59,7 +59,7 @@ class HasSoftwaresCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("List installed softwares found by automatic inventory");
+        return __("List installed software");
     }
 
     public function getCloneRelations(): array

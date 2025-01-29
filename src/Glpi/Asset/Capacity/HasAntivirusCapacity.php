@@ -55,7 +55,7 @@ class HasAntivirusCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("List antivirus software(s) found by automatic inventory");
+        return __("List antivirus software");
     }
 
     public function getCloneRelations(): array

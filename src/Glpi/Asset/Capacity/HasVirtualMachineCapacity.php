@@ -55,7 +55,7 @@ class HasVirtualMachineCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("List virtual machines attached to this asset and found by automatic inventory");
+        return __("List virtual machines attached to this asset");
     }
 
     public function getCloneRelations(): array

@@ -55,7 +55,7 @@ class HasVolumesCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("List storage volumes found by automatic inventory");
+        return __("List storage volumes");
     }
 
     public function getSearchOptions(string $classname): array

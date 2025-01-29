@@ -57,7 +57,7 @@ class HasLinksCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("Define clickable links");
+        return __("Define associated external links for the asset");
     }
 
     public function getCloneRelations(): array

@@ -56,7 +56,7 @@ class HasAppliancesCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("Can be set as part of an appliance. An appliance is a virtual object that groups several assets");
+        return __("Can be part of an appliance. An appliance is a virtual object that groups several assets");
     }
 
     public function getCloneRelations(): array

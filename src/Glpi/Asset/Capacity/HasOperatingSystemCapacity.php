@@ -56,7 +56,7 @@ class HasOperatingSystemCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("Display operating system informations found by automatic inventory");
+        return __("Display operating system information");
     }
 
     public function isUsed(string $classname): bool
