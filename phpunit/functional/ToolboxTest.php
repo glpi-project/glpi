@@ -1633,11 +1633,15 @@ HTML;
             'expected' => false,
         ];
 
-        // http, https and feed URLs are accepted, unless they contains a user or port information
-        foreach (['http', 'https', 'feed'] as $scheme) {
-            foreach (['', '/', '/path/to/feed.php'] as $path) {
+        // http, https and feed URLs are accepted, unless they contains a user or non default port information
+        foreach (['http' => ':80', 'https' => ':443', 'feed' => ''] as $scheme => $default_port) {
+            foreach (['', '/', '/path/to/resource.php'] as $path) {
                 yield [
                     'url'      => sprintf('%s://localhost%s', $scheme, $path),
+                    'expected' => true,
+                ];
+                yield [
+                    'url'      => sprintf('%s://localhost%s%s', $scheme, $default_port, $path),
                     'expected' => true,
                 ];
                 yield [
@@ -1649,7 +1653,15 @@ HTML;
                     'expected' => false,
                 ];
                 yield [
+                    'url'      => sprintf('%s://test@localhost%s%s', $scheme, $default_port, $path),
+                    'expected' => false,
+                ];
+                yield [
                     'url'      => sprintf('%s://test:pass@localhost%s', $scheme, $path),
+                    'expected' => false,
+                ];
+                yield [
+                    'url'      => sprintf('%s://test:pass@localhost%s%s', $scheme, $default_port, $path),
                     'expected' => false,
                 ];
             }
