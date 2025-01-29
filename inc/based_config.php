@@ -85,7 +85,23 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
         'GLPI_SERVERSIDE_URL_ALLOWLIST'  => [
             // allowlist (regex format) of URL that can be fetched from server side (used for RSS feeds and external calendars, among others)
             // URL will be considered as safe as long as it matches at least one entry of the allowlist
-            '/^(https?|feed):\/\/[^@:]+(\/.*)?$/', // only accept http/https/feed protocols, and reject presence of @ (username) and : (protocol) in host part of URL
+
+            // `http://` URLs
+            // - without presence of @ (username) and : (protocol) in host part of URL
+            // - with optional `:80` default port
+            // - with optional path
+            '#^http://[^@:]+(:80)?(/.*)?$#',
+
+            // `https://` URLs
+            // - without presence of @ (username) and : (protocol) in host part of URL
+            // - with optional `:443` default port
+            // - with optional path
+            '#^https://[^@:]+(:443)?(/.*)?$#',
+
+            // `feed://` URLs
+            // - without presence of @ (username) and : (protocol) in host part of URL
+            // - with optional path
+            '#^feed://[^@:]+(/.*)?$#',
         ],
 
       // Constants related to GLPI Project / GLPI Network external services

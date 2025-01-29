@@ -58,8 +58,13 @@ define(
 define(
     'GLPI_SERVERSIDE_URL_ALLOWLIST',
     [
-        '/^(https?|feed):\/\/[^@:]+(\/.*)?$/', // default allowlist entry
-        '/^file:\/\/.*\.ics$/', // calendar mockups
+        // default allowlist entries
+        '#^http://[^@:]+(:80)?(/.*)?$#',
+        '#^https://[^@:]+(:443)?(/.*)?$#',
+        '#^feed://[^@:]+(/.*)?$#',
+
+        // calendar mockups
+        '/^file:\/\/.*\.ics$/',
     ]
 );
 
