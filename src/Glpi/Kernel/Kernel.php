@@ -221,4 +221,32 @@ final class Kernel extends BaseKernel
             );
         }
     }
+
+    /**
+     * Send the response and catch any exception that may occurs to forward it to the request error handling.
+     *
+     * It permits to correctly handle errors that may be thrown during the response sending. This will mainly
+     * occurs when handling the GLPI legacy scripts using a streamed response, but may also rarely occurs
+     * in other contexts.
+     *
+     * @param Request $request
+     * @param Response $response
+     */
+    public function sendResponse(Request $request, Response $response): void
+    {
+        try {
+            $response->send();
+        } catch (\Throwable $exception) {
+            $event = new ExceptionEvent($this, $request, self::MAIN_REQUEST, $exception);
+
+            $dispatcher = $this->container->get('event_dispatcher');
+            $dispatcher->dispatch($event, KernelEvents::EXCEPTION);
+
+            if ($event->hasResponse()) {
+                $event->getResponse()->send();
+            } else {
+                throw $exception;
+            }
+        }
+    }
 }
