@@ -1288,7 +1288,7 @@ HTML;
 
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
             $tpl_vars['js_modules'][] = ['path' => 'js/modules/Debug/Debug.js'];
-            $tpl_vars['js_files'][] = ['path' => 'js/clipboard.js'];
+            Html::requireJs('clipboard');
         }
 
        // Search
