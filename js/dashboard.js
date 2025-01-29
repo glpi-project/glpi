@@ -138,6 +138,9 @@ class GLPIDashboard {
         // generate the css based on the grid width
         this.generateCss();
 
+        // set the width of the select box to match the selected option
+        this.resizeSelect();
+
         // init filters from storage
         this.initFilters();
         this.refreshDashboard();
@@ -1276,5 +1279,30 @@ class GLPIDashboard {
                 }),
             }
         });
+    }
+
+    /**
+    * Set the width of the select box to match the selected option
+    */
+    resizeSelect() {
+        const select = document.querySelector(this.elem_id+' .dashboard_select');
+
+        select.addEventListener('change', (event) => {
+           let tempSelect = document.createElement('select'),
+               tempOption = document.createElement('option');
+           tempOption.textContent = event.target.options[event.target.selectedIndex].text;
+           tempSelect.style.cssText += `
+              visibility: hidden;
+              position: fixed;
+           `;
+           tempSelect.appendChild(tempOption);
+           event.target.after(tempSelect);
+          
+           const tempSelectWidth = tempSelect.getBoundingClientRect().width;
+           event.target.style.width = `${tempSelectWidth}px`;
+           tempSelect.remove();
+        });
+        
+        select.dispatchEvent(new Event('change'));
     }
 }
