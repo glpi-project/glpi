@@ -431,6 +431,28 @@ HTML;
       $(function () {
          new GLPIDashboard({$js_params})
       });
+
+     // Set the width of the select box to match the selected option
+      const select = document.querySelector('.dashboard .toolbar select.dashboard_select');
+
+      select.addEventListener('change', (event) => {
+         let tempSelect = document.createElement('select'),
+             tempOption = document.createElement('option');
+
+         tempOption.textContent = event.target.options[event.target.selectedIndex].text;
+         tempSelect.style.cssText += `
+            visibility: hidden;
+            position: fixed;
+         `;
+         tempSelect.appendChild(tempOption);
+         event.target.after(tempSelect);
+        
+         const tempSelectWidth = tempSelect.getBoundingClientRect().width;
+         event.target.style.width = `\${tempSelectWidth}px`;
+         tempSelect.remove();
+      });
+
+      select.dispatchEvent(new Event('change'));
 JAVASCRIPT;
         $js = Html::scriptBlock($js);
 
