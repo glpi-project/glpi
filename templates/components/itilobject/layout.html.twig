@@ -33,6 +33,7 @@
 
 {% set rand = random() %}
 {% set main_rand = rand %}
+{% set is_helpdesk = get_current_interface() == 'helpdesk' %}
 
 {% set itil_layout = user_pref('itil_layout', true) %}
 {% set is_collapsed = itil_layout['collapsed'] == "true" %}
@@ -63,22 +64,24 @@
    <div class="row d-flex flex-column alin-items-stretch itil-object">
       {% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
       {% set fl_direction = (item.isNewItem() or is_timeline_reversed ? 'flex-column' : 'flex-column-reverse') %}
-      <div class="itil-left-side col-12 {{ left_side_cls }} order-last order-lg-first pt-2 pe-2 pe-lg-4 d-flex {{ fl_direction }} border-top border-4">
+      <div class="itil-left-side col-12 {{ left_side_cls }} order-last order-lg-first pt-2 pe-2 pe-lg-4 d-flex {{ fl_direction }} border-top border-4 {{ is_helpdesk ? "w-100" : "" }}">
          {% if item.isNewItem() %}
             {{ include('components/itilobject/timeline/new_form.html.twig') }}
          {% else %}
             {{ include('components/itilobject/timeline/timeline.html.twig') }}
          {% endif %}
       </div>
-      <div class="itil-right-side col-12 {{ right_side_cls }} mt-0 mt-lg-n1 card-footer p-0 rounded-0">
-         {% if not item.isNewItem() %}
-            {{ include('components/itilobject/mainform_open.html.twig') }}
-         {% endif %}
-         {{ include('components/itilobject/fields_panel.html.twig') }}
-         {% if not item.isNewItem() %}
-            {{ include('components/itilobject/mainform_close.html.twig') }}
-         {% endif %}
-      </div>
+      {% if not is_helpdesk %}
+         <div class="itil-right-side col-12 {{ right_side_cls }} mt-0 mt-lg-n1 card-footer p-0 rounded-0">
+            {% if not item.isNewItem() %}
+               {{ include('components/itilobject/mainform_open.html.twig') }}
+            {% endif %}
+            {{ include('components/itilobject/fields_panel.html.twig') }}
+            {% if not item.isNewItem() %}
+               {{ include('components/itilobject/mainform_close.html.twig') }}
+            {% endif %}
+         </div>
+      {% endif %}
    </div>
 
    {% if not params['template_preview'] %}
