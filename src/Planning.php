@@ -239,7 +239,7 @@ class Planning extends CommonGLPI
 
         switch ($value) {
             case static::INFO:
-                return _n('Information', 'Information', 1);
+                return _n('Information', 'Informations', 1);
 
             case static::TODO:
                 return __('To do');

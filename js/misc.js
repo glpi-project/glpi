@@ -42,7 +42,7 @@ window.alert = function(message, caption) {
     if(typeof message == 'string') {
         message = message.replace("\n", '<br>');
     }
-    caption = caption || _n('Information', 'Information', 1);
+    caption = caption || _n('Information', 'Informations', 1);
 
     glpi_alert({
         title: caption,

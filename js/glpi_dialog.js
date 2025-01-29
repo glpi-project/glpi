@@ -251,7 +251,7 @@ var glpi_ajax_dialog = function({
  * @param {function} alert.ok_callback - callback function called when "ok" button called
  */
 var glpi_alert = function({
-    title    = _n('Information', 'Information', 1),
+    title    = _n('Information', 'Informations', 1),
     message  = "",
     id       = "modal_" + Math.random().toString(36).substring(7),
     ok_callback = () => {},

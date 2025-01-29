@@ -105,7 +105,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
        // Tabs on CommonITILRecurrent items
         if ($item instanceof self) {
             $ong = [];
-            $ong[1] = _n('Information', 'Information', Session::getPluralNumber());
+            $ong[1] = _n('Information', 'Informations', Session::getPluralNumber());
             return $ong;
         }
 

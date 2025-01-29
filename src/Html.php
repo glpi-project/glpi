@@ -6002,7 +6002,7 @@ HTML;
          if(typeof message == 'string') {
             message = message.replace('\\n', '<br>');
          }
-         caption = caption || '" . _sn('Information', 'Information', 1) . "';
+         caption = caption || '" . _sn('Information', 'Informations', 1) . "';
 
          glpi_alert({
             title: caption,
