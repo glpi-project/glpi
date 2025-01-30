@@ -115,7 +115,9 @@
                </button>
             {% endif %}
 
-            {{ include('components/itilobject/timeline/filter_timeline.html.twig') }}
+            {% if not is_helpdesk %}
+               {{ include('components/itilobject/timeline/filter_timeline.html.twig') }}
+            {% endif %}
          {% endif %}
      </div>
 

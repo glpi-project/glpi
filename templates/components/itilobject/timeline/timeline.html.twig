@@ -32,8 +32,9 @@
  #}
 
 {% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
+{% set is_helpdesk = get_current_interface() == 'helpdesk' %}
 
-<div class="itil-timeline d-flex flex-column align-items-start mb-auto">
+<div class="itil-timeline d-flex flex-column align-items-start mb-auto {{ is_helpdesk ? "px-3 py-2" : '' }}">
     {% if not is_timeline_reversed %}
         {{ include('components/itilobject/timeline/main_description.html.twig') }}
     {% else %}
