@@ -1099,7 +1099,6 @@
    .copy_to_clipboard_wrapper {
       display: flex;
       align-items: center;
-      font-style: normal;
 
       input[type=text] {
          padding-right: 18px !important;
@@ -1140,12 +1139,16 @@
          content: none;
       }
 
-      & i.copy_to_clipboard_wrapper:after {
-         left: 0;
-      }
-
-      & i.copy_to_clipboard_wrapper:before {
-         content: none;
+      i.copy_to_clipboard_wrapper {
+         font-style: normal;
+         
+         &:after {
+            left: 0;
+         }
+         
+         &:before {
+            content: none;
+         }
       }
    }
 
