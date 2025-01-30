@@ -107,10 +107,6 @@ final class TitleFieldTest extends DbTestCase
         $builder = new FormBuilder("My form name");
         $builder->addQuestion("First name", QuestionTypeShortText::class);
         $builder->addQuestion("Last name", QuestionTypeShortText::class);
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $this->createForm($builder);
     }
 }

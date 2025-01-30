@@ -38,12 +38,6 @@ describe('Form tags', () => {
         cy.createWithAPI('Glpi\\Form\\Form', {
             'name': 'Test form for the form tags suite',
         }).as('form_id').then((form_id) => {
-            cy.createWithAPI('Glpi\\Form\\Destination\\FormDestination', {
-                'forms_forms_id': form_id,
-                'itemtype': 'Glpi\\Form\\Destination\\FormDestinationTicket',
-                'name': 'Test ticket 1',
-            });
-
             cy.createWithAPI('Glpi\\Form\\Section', {
                 'name': 'Section 1',
                 'forms_forms_id': form_id,
@@ -74,7 +68,6 @@ describe('Form tags', () => {
         cy.get('@form_id').then((form_id) => {
             const tab = 'Glpi\\Form\\Destination\\FormDestination$1';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
-            cy.findByRole('button', {name: "Test ticket 1"}).click();
         });
     });
 

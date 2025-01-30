@@ -43,6 +43,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\DBAL\QuerySubQuery;
@@ -57,6 +58,7 @@ use Override;
 use ReflectionClass;
 use RuntimeException;
 use Session;
+use Ticket;
 
 /**
  * Helpdesk form
@@ -241,6 +243,11 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
         // Automatically create the first form section unless specified otherwise
         if (!isset($this->input['_do_not_init_sections'])) {
             $this->createFirstSection();
+        }
+
+        // Add the mandatory destinations, unless we are importing a form
+        if (!isset($this->input['_from_import'])) {
+            $this->addMandatoryDestinations();
         }
     }
 
@@ -937,5 +944,16 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     public function getServiceCatalogLink(): string
     {
         return "/Form/Render/" . $this->getID();
+    }
+
+    private function addMandatoryDestinations(): void
+    {
+        $destination = new FormDestination();
+        $destination->add([
+            self::getForeignKeyField() => $this->getId(),
+            'itemtype'                 => FormDestinationTicket::class,
+            'name'                     => Ticket::getTypeName(1),
+            'is_mandatory'             => true,
+        ]);
     }
 }

@@ -512,11 +512,7 @@ final class FormSerializerTest extends \DbTestCase
             QuestionTypeItemDropdown::class,
             json_encode((new QuestionTypeItemDefaultValueConfig($itil_category->getID()))->jsonSerialize()),
             json_encode((new QuestionTypeItemExtraDataConfig(ITILCategory::class))->jsonSerialize()),
-        )->addDestination(
-            FormDestinationTicket::class,
-            'My ticket destination',
-            is_mandatory: true,
-        ));
+        )->addDestination(FormDestinationTicket::class, 'My ticket destination'));
 
         $title_field_config = new SimpleValueConfig("My ticket title");
         $itil_category_field_config = new ITILCategoryFieldConfig(
@@ -535,9 +531,9 @@ final class FormSerializerTest extends \DbTestCase
             ]
         );
 
-        // Insert config
+        // Insert config into second destination
         $destinations = $form->getDestinations();
-        $destination = current($destinations);
+        $destination = end($destinations);
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
@@ -554,12 +550,19 @@ final class FormSerializerTest extends \DbTestCase
         // Export and import process
         $imported_form = $this->exportAndImportForm($form);
         $imported_destinations = $imported_form->getDestinations();
-        $imported_configs = current($imported_destinations)->getConfig();
 
-        $this->assertCount(1, $imported_destinations);
-        $imported_destination = current($imported_destinations);
-        $this->assertEquals('My ticket destination', $imported_destination->fields['name']);
-        $this->assertTrue((bool) $imported_destination->fields['is_mandatory']);
+        $this->assertCount(2, $imported_destinations);
+
+        // Check the mandatory destination
+        $imported_destination_1 = current($imported_destinations);
+        $this->assertEquals('Ticket', $imported_destination_1->fields['name']);
+        $this->assertTrue((bool) $imported_destination_1->fields['is_mandatory']);
+
+        // Check the second destination
+        $imported_destination_2 = next($imported_destinations);
+        $imported_configs = end($imported_destinations)->getConfig();
+        $this->assertEquals('My ticket destination', $imported_destination_2->fields['name']);
+        $this->assertFalse((bool) $imported_destination_2->fields['is_mandatory']);
 
         // Check that the imported form has the same destination
         $this->assertEquals($title_field_config->jsonSerialize(), $imported_configs[TitleField::getKey()]);

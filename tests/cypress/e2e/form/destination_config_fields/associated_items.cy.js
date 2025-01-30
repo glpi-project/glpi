@@ -85,9 +85,7 @@ describe('Associated items configuration', () => {
         cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to destination tab
-        cy.findByRole('tab', {'name': "Items to create"}).click();
-        cy.findByRole('button', {'name': "Add ticket"}).click();
-        cy.checkAndCloseAlert('Item successfully added');
+        cy.findByRole('tab', { 'name': "Items to create 1" }).click();
     };
 
     it('can use all possibles configuration options', () => {
@@ -192,9 +190,7 @@ describe('Associated items configuration', () => {
         });
 
         // Go to destination tab
-        cy.findByRole('tab', {'name': "Items to create"}).click();
-        cy.findByRole('button', {'name': "Add ticket"}).click();
-        cy.checkAndCloseAlert('Item successfully added');
+        cy.findByRole('tab', { 'name': "Items to create 1" }).click();
 
         // Retrieve configuration section
         cy.findByRole('region', {'name': "Associated items configuration"}).as("config");
@@ -260,9 +256,7 @@ describe('Associated items configuration', () => {
 
     it('can add a specifc item, add another strategy and add another specific item', () => {
         // Go to destination tab
-        cy.findByRole('tab', {'name': "Items to create"}).click();
-        cy.findByRole('button', {'name': "Add ticket"}).click();
-        cy.checkAndCloseAlert('Item successfully added');
+        cy.findByRole('tab', { 'name': "Items to create 1" }).click();
 
         // Retrieve configuration section
         cy.findByRole('region', {'name': "Associated items configuration"}).as("config");

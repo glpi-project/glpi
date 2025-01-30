@@ -332,6 +332,7 @@ final class FormSerializer extends AbstractFormSerializer
 
         $form = new Form();
         $id = $form->add([
+            '_from_import'          => true,
             'name'                  => $spec->name,
             'header'                => $spec->header ?? null,
             'description'           => $spec->description ?? null,

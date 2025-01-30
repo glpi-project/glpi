@@ -56,9 +56,7 @@ describe('SLA TTO configuration', () => {
         });
 
         // Go to destination tab
-        cy.findByRole('tab', { 'name': "Items to create" }).click();
-        cy.findByRole('button', { 'name': "Add ticket" }).click();
-        cy.checkAndCloseAlert('Item successfully added');
+        cy.findByRole('tab', { 'name': "Items to create 1" }).click();
     });
 
     it('can use all possibles configuration options', () => {

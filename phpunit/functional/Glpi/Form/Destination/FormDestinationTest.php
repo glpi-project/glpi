@@ -49,18 +49,6 @@ final class FormDestinationTest extends DbTestCase
 {
     use FormTesterTrait;
 
-    public function testGetTabNameForFormWithoutDestinations()
-    {
-        $this->login();
-
-        $form = $this->createForm(
-            (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortText::class)
-        );
-
-        $this->checkGetTabNameForItem($form, "Items to create");
-    }
-
     public function testGetTabNameForFormWithDestinations()
     {
         $this->login();
@@ -68,7 +56,8 @@ final class FormDestinationTest extends DbTestCase
         $_SESSION['glpishow_count_on_tabs'] = true;
         $form = $this->createAndGetFormWithFourDestinations();
 
-        $this->checkGetTabNameForItem($form, "Items to create 4");
+        // 5 because 4 specific + 1 mandatory destination
+        $this->checkGetTabNameForItem($form, "Items to create 5");
     }
 
     public function testGetTabNameForFormWithDestinationsWithoutCount()
@@ -123,5 +112,19 @@ final class FormDestinationTest extends DbTestCase
             ->addDestination(FormDestinationTicket::class, 'destination 4')
         ;
         return $this->createForm($builder);
+    }
+
+    public function testOneMandatoryTicketDestinationIsAlwaysAdded(): void
+    {
+        // Act: create a form
+        $form = $this->createItem(Form::class, ['name' => 'My test form']);
+
+        // Assert: the form should have one ticket destination
+        $destinations = $form->getDestinations();
+        $this->assertCount(1, $destinations);
+        $this->assertEquals(
+            FormDestinationTicket::class,
+            current($destinations)->fields['itemtype']
+        );
     }
 }

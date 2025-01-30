@@ -49,7 +49,6 @@ final class QuestionTypeShortTextTest extends DbTestCase
     {
         $builder = new FormBuilder();
         $builder->addQuestion("First name", QuestionTypeShortText::class);
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [

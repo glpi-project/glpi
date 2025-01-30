@@ -50,7 +50,6 @@ final class QuestionTypeRequestTypeTest extends DbTestCase
     {
         $builder = new FormBuilder();
         $builder->addQuestion("Request type", QuestionTypeRequestType::class);
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [

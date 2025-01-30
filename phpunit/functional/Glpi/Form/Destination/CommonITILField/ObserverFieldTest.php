@@ -376,10 +376,6 @@ final class ObserverFieldTest extends DbTestCase
             '',
             json_encode((new QuestionTypeActorsExtraDataConfig(true))->jsonSerialize())
         );
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $this->createForm($builder);
     }
 }

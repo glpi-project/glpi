@@ -292,7 +292,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
                         ))->jsonSerialize(),
                         ['specific_question_ids' => '']
                     ),
-                    current($imported_destinations)->getConfig()[ValidationField::getKey()]
+                    end($imported_destinations)->getConfig()[ValidationField::getKey()]
                 );
             }
         ];
@@ -356,7 +356,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
                         ))->jsonSerialize(),
                         ['specific_question_ids' => '']
                     ),
-                    current($imported_destinations)->getConfig()[RequesterField::getKey()]
+                    end($imported_destinations)->getConfig()[RequesterField::getKey()]
                 );
             }
         ];
@@ -396,7 +396,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
                         ))->jsonSerialize(),
                         ['specific_question_ids' => '']
                     ),
-                    current($imported_destinations)->getConfig()[ObserverField::getKey()]
+                    end($imported_destinations)->getConfig()[ObserverField::getKey()]
                 );
             }
         ];
@@ -436,7 +436,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
                         ))->jsonSerialize(),
                         ['specific_question_ids' => '']
                     ),
-                    current($imported_destinations)->getConfig()[AssigneeField::getKey()]
+                    end($imported_destinations)->getConfig()[AssigneeField::getKey()]
                 );
             }
         ];
@@ -573,7 +573,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     $config->jsonSerialize(),
                     array_flip($keys_to_ignore)
                 ),
-                current($imported_destinations)->getConfig()[$field_key]
+                end($imported_destinations)->getConfig()[$field_key]
             );
         } else {
             $check_fn($imported_destinations, $created_items);
@@ -819,7 +819,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
 
         $this->assertNotEquals(
             $config->jsonSerialize()[$question_id_key],
-            current($imported_destinations)->getConfig()[$field_key][$question_id_key]
+            end($imported_destinations)->getConfig()[$field_key][$question_id_key]
         );
 
         if (is_array($config->jsonSerialize()[$question_id_key])) {
@@ -827,13 +827,13 @@ final class FormSerializerDestinationTest extends \DbTestCase
                 // Retrieve the question id from the imported form
                 $this->assertEquals(
                     $form->getQuestions()[$question_id]->getName(),
-                    $imported_form->getQuestions()[current($imported_destinations)->getConfig()[$field_key][$question_id_key][$key]]->getName()
+                    $imported_form->getQuestions()[end($imported_destinations)->getConfig()[$field_key][$question_id_key][$key]]->getName()
                 );
             }
         } else {
             $this->assertEquals(
                 $form->getQuestions()[$config->jsonSerialize()[$question_id_key]]->getName(),
-                $imported_form->getQuestions()[current($imported_destinations)->getConfig()[$field_key][$question_id_key]]->getName()
+                $imported_form->getQuestions()[end($imported_destinations)->getConfig()[$field_key][$question_id_key]]->getName()
             );
         }
     }
@@ -893,9 +893,9 @@ final class FormSerializerDestinationTest extends \DbTestCase
             $form = $this->createForm($this->getFormBuilderWithTicketDestination());
         }
 
-        // Insert config
+        // Insert config into the second destination
         $destinations = $form->getDestinations();
-        $destination = current($destinations);
+        $destination = end($destinations);
         $this->updateItem(
             $destination::getType(),
             $destination->getId(),
@@ -915,10 +915,6 @@ final class FormSerializerDestinationTest extends \DbTestCase
     private function getFormBuilderWithTicketDestination(): FormBuilder
     {
         $builder = new FormBuilder();
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $builder;
     }
 }

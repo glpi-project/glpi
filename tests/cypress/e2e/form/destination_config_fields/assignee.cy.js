@@ -55,9 +55,7 @@ describe('Assignee configuration', () => {
             cy.checkAndCloseAlert('Item successfully updated');
 
             // Go to destination tab
-            cy.findByRole('tab', { 'name': "Items to create" }).click();
-            cy.findByRole('button', { 'name': "Add ticket" }).click();
-            cy.checkAndCloseAlert('Item successfully added');
+            cy.findByRole('tab', { 'name': "Items to create 1" }).click();
         });
     });
 
