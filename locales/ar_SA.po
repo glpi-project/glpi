@@ -12354,7 +12354,7 @@ msgstr ""
 #: src/CommonITILRecurrent.php:108 js/glpi_dialog.js:254 js/glpi_dialog.js:288
 #: js/glpi_dialog.js:387 js/misc.js:45
 msgid "Information"
-msgid_plural "Informations"
+msgid_plural "Information"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""

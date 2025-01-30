@@ -384,7 +384,7 @@ const glpi_toast_success = (message, caption, options = {}) => {
  * @param {ToastOptions} options Toast options
  */
 const glpi_toast_info = function(message, caption, options = {}) {
-    glpi_toast(caption || _n("Information", "Informations", 1), message, 'bg-info text-white border-0', options);
+    glpi_toast(caption || _n("Information", "Information", 1), message, 'bg-info text-white border-0', options);
 };
 
 /**
