@@ -7107,15 +7107,13 @@ JAVASCRIPT;
                         $out = Html::convDateTime($data[$ID][0]['name']);
 
                        // No due date in waiting status
-                        if ($data[$ID][0]['status'] == CommonITILObject::WAITING) {
-                             return '';
-                        }
                         if (empty($data[$ID][0]['name'])) {
                             return '';
                         }
                         if (
                             ($data[$ID][0]['status'] == Ticket::SOLVED)
                             || ($data[$ID][0]['status'] == Ticket::CLOSED)
+                            || ($data[$ID][0]['status'] == CommonITILObject::WAITING)
                         ) {
                             return $out;
                         }
