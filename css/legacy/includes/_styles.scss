@@ -1099,6 +1099,7 @@
    .copy_to_clipboard_wrapper {
       display: flex;
       align-items: center;
+      font-style: normal;
 
       input[type=text] {
          padding-right: 18px !important;
@@ -1131,6 +1132,20 @@
          content: "\f071";
          color: red;
          font-weight: 900;
+      }
+   }
+
+   .input-group.copy_to_clipboard_wrapper {
+      &:after {
+         content: none;
+      }
+
+      & i.copy_to_clipboard_wrapper:after {
+         left: 0;
+      }
+
+      & i.copy_to_clipboard_wrapper:before {
+         content: none;
       }
    }
 
