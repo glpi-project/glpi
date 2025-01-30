@@ -388,7 +388,8 @@ class FormBuilder
     public function addDestination(
         string $itemtype,
         string $name,
-        array $config = []
+        array $config = [],
+        bool $is_mandatory = false,
     ): self {
         // If first destination of the given itemtype, init its key
         if (!isset($this->destinations[$itemtype])) {
@@ -396,8 +397,9 @@ class FormBuilder
         }
 
         $this->destinations[$itemtype][] = [
-            'name'   => $name,
-            'config' => $config,
+            'name'         => $name,
+            'config'       => $config,
+            'is_mandatory' => $is_mandatory,
         ];
         return $this;
     }
