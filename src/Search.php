@@ -7106,14 +7106,26 @@ JAVASCRIPT;
                     if (in_array($orig_id, [151, 158, 181, 186])) {
                         $out = Html::convDateTime($data[$ID][0]['name']);
 
-                       // No due date in waiting status
+                        if (
+                            $data[$ID][0]['status'] == CommonITILObject::WAITING
+                        ) {
+                            // No due date in waiting status for TTRs
+                            if (
+                                $table . '.' . $field == "glpi_tickets.time_to_resolve"
+                                || $table . '.' . $field == "glpi_tickets.internal_time_to_resolve"
+                            ) {
+                                return '';
+                            } else {
+                                return $out;
+                            }
+                        }
+
                         if (empty($data[$ID][0]['name'])) {
                             return '';
                         }
                         if (
                             ($data[$ID][0]['status'] == Ticket::SOLVED)
                             || ($data[$ID][0]['status'] == Ticket::CLOSED)
-                            || ($data[$ID][0]['status'] == CommonITILObject::WAITING)
                         ) {
                             return $out;
                         }
