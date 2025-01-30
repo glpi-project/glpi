@@ -3044,12 +3044,13 @@ HTML;
                 echo __("API token");
                 echo "</td><td colspan='2'>";
                 if (!empty($this->fields["api_token"])) {
-                     echo "<div class='copy_to_clipboard_wrapper'>";
-                     echo Html::input('_api_token', [
-                         'value'    => $this->fields["api_token"],
-                         'style'    => 'width:90%'
-                     ]);
-                     echo "</div>";
+                    echo "<div class='input-group flex-grow-1 copy_to_clipboard_wrapper'>";
+                    echo Html::input('_api_token', [
+                        'value'    => $this->fields["api_token"],
+                        'style'    => 'width:90%'
+                    ]);
+                    echo "<i class='input-group-text fa-lg pointer copy_to_clipboard_wrapper' role='button'></i>";
+                    echo "</div>";
                      echo "(" . sprintf(
                          __('generated on %s'),
                          Html::convDateTime($this->fields["api_token_date"])
