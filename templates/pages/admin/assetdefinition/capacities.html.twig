@@ -48,6 +48,9 @@
     </style>
 
     <input type="hidden" name="_update_capacities" value="1" />
+
+    <input type="text" placeholder="{{ _x('button', 'Search') }}" class="form-control mb-5" id="search-capacities" />
+
     {% for capacity in capacities %}
         {% set label %}
             <span class="d-inline-flex align-items-center badge bg-gray-600">
@@ -68,6 +71,7 @@
                     class="form-check-input"
                     id="%id%"
                     data-capacity="{{ get_class(capacity) }}"
+                    data-capacity-search="{{ capacity.getLabel() ~ ' ' ~ capacity.getDescription() }}"
                     data-is-used="{{ capacity.isUsed(classname) ? 1 : 0 }}"
                     {{ item.hasCapacityEnabled(capacity) ? 'checked' : '' }} />
                 <i class="ti ti-alert-circle-filled text-red fs-2 d-none"
@@ -161,6 +165,25 @@
                     $('i[data-capacity="' + $.escapeSelector($(this).data('capacity')) + '"]').toggleClass('d-none');
                     $('div[data-capacity="' + $.escapeSelector($(this).data('capacity')) + '"]').toggleClass('d-none');
                 }
+            });
+
+            // filter the list of capacities
+            let delay_timer = null;
+            $('#search-capacities').on('input', function() {
+                const search = $(this).val().toLowerCase();
+
+                // delay the search to avoid flickering
+                clearTimeout(delay_timer);
+                delay_timer = setTimeout(function() {
+                    $('input[name="capacities[]"]').each(function() {
+                        const capacity_search = $(this).data('capacity-search').toLowerCase();
+                        if (capacity_search.indexOf(search) === -1) {
+                            $(this).closest('.form-field').addClass('d-none');
+                        } else {
+                            $(this).closest('.form-field').removeClass('d-none');
+                        }
+                    });
+                }, 250);
             });
         });
     </script>
