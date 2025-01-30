@@ -68,6 +68,8 @@ class Profile extends CommonDBTM
         'reservation',
         'rssfeed_public',
         'show_group_hardware',
+        'use_mentions',
+        'user_mentions_list',
         'task',
         'ticket',
         'ticket_cost',
@@ -1596,6 +1598,72 @@ class Profile extends CommonDBTM
 
         $matrix_options['title'] = _n('Followup', 'Followups', Session::getPluralNumber()) . " / " . _n('Task', 'Tasks', Session::getPluralNumber());
         $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'tracking', 'followups_tasks'), $matrix_options);
+
+        echo "<div class='mt-n2 mx-n2 mb-4'>";
+        echo "<table class='table table-hover card-table'>";
+        echo "<thead>";
+        echo "<tr><th colspan='2'><h4>" . __s('Users mentions') . "<h4></th></tr>";
+
+        echo "</thead>";
+
+        echo "<tbody>";
+
+        $description = __s('Enables or disables the ability to mention users within the application.') . "<br><br>";
+        $description .= "<b>" . __s('Yes') . "</b> : " . __('Users can mention other members using the dedicated features.') . "<br><br>";
+        $description .= "<b>" . __s('No') . "</b> : " . __('User mentions are disabled for this profile.');
+
+        echo "<tr>";
+        echo "<td>" . __s('Enable User Mentions');
+        echo "<span class='ms-2 form-help'
+              data-bs-toggle='popover'
+              data-bs-placement='top'
+              data-bs-html='true'
+              data-bs-content='" . htmlspecialchars($description) . "'>
+            ?
+        </span>";
+        echo "</td><td>";
+
+        echo Dropdown::showYesNo(
+            'use_mentions',
+            $this->fields['use_mentions'],
+            -1,
+            [
+                'use_checkbox' => true,
+                'display'      => false
+            ]
+        );
+
+        echo "</td></tr>";
+
+        $description = __s('Selection of users to be mentioned') . "<br><br>";
+        $description .= "<b>" . __s('Full') . "</b> : " . __('Displays all users.') . "<br><br>";
+        $description .= "<b>" . __s('Restricted') . "</b> : " . __('Limits the display to actors directly involved in the ticket.');
+
+        echo "<tr>";
+        echo "<td>" . __s('Users list');
+        echo "<span class='ms-2 form-help'
+              data-bs-toggle='popover'
+              data-bs-placement='top'
+              data-bs-html='true'
+              data-bs-content='" . htmlspecialchars($description) . "'>
+            ?
+        </span>";
+        echo "</td><td>";
+
+        echo Dropdown::showFromArray(
+            'user_mentions_list',
+            self::getMentionsLists(),
+            [
+                'value' => $this->fields['user_mentions_list'],
+                'display' => false
+            ]
+        );
+
+        echo "</td></tr>";
+
+        echo "</tbody>";
+        echo "</table>";
+        echo "</div>";
 
         $matrix_options['title'] = _n('Validation', 'Validations', Session::getPluralNumber());
         $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'tracking', 'validations'), $matrix_options);
@@ -4013,6 +4081,26 @@ class Profile extends CommonDBTM
         $p['multiple'] = true;
         $p['size']     = 3;
         return Dropdown::showFromArray($p['name'], $values, $p);
+    }
+
+    /**
+     * @return array<string, string>
+     **/
+    public static function getMentionsLists(): array
+    {
+        return [
+            'full'  => __('Full'),
+            'restricted' => __('Restricted')
+        ];
+    }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public static function getMentionsListName($value): string
+    {
+        return self::getMentionsLists()[$value] ?? NOT_AVAILABLE;
     }
 
     /**

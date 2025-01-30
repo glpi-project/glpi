@@ -87,7 +87,8 @@
          field_options|merge({
             'enable_richtext': true,
             'enable_fileupload': true,
-            'enable_mentions': true,
+            'enable_mentions': enable_mentions,
+            'mentions_restrictions': timeline_itemtype.mentions_restrictions,
             'enable_fileupload': (itiltemplate.isHiddenField('_documents_id')) ? false : true,
             'entities_id': item.isNewItem() ? entities_id : item.fields['entities_id'],
             'uploads': uploads,

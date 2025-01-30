@@ -373,7 +373,8 @@
                 const user_mention = new GLPI.RichText.UserMention(
                     tinymce.get('{{ options.id }}'),
                     {{ options.entities_id }},
-                    '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id}) }}'
+                    '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id}) }}',
+                    {{ options.mentions_restrictions | json_encode | raw }}
                 );
                 user_mention.register();
             });

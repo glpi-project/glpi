@@ -55,7 +55,9 @@
                         {% if timeline_itemtype.template is defined %}
                            {{ include(timeline_itemtype.template, {
                               'item': item,
-                              'subitem': timeline_itemtype.item
+                              'subitem': timeline_itemtype.item,
+                              'enable_mentions': timeline_itemtype.enable_mentions,
+                              'mentions_restrictions': timeline_itemtype.mentions_restrictions,
                            }) }}
                         {% else %}
                            {% set sf_options = {'parent': item} %}

@@ -43,6 +43,7 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
+use Glpi\RichText\UserMention;
 use Glpi\Team\Team;
 
 /**
@@ -7358,6 +7359,9 @@ abstract class CommonITILObject extends CommonDBTM
 
         $itemtypes = [];
 
+        $enable_mentions = UserMention::isEnabled();
+        $mentions_restrictions = UserMention::getRestrictedUsers($this);
+
         $itemtypes['answer'] = [
             'type'          => 'ITILFollowup',
             'class'         => 'ITILFollowup',
@@ -7366,7 +7370,9 @@ abstract class CommonITILObject extends CommonDBTM
             'short_label'   => _x('button', 'Answer'),
             'template'      => 'components/itilobject/timeline/form_followup.html.twig',
             'item'          => $fup,
-            'hide_in_menu'  => !$canadd_fup
+            'hide_in_menu'  => !$canadd_fup,
+            'enable_mentions'    => $enable_mentions,
+            'mentions_restrictions' => $mentions_restrictions,
         ];
         $itemtypes['task'] = [
             'type'          => 'ITILTask',
@@ -7376,7 +7382,9 @@ abstract class CommonITILObject extends CommonDBTM
             'short_label'   => _x('button', 'Task'),
             'template'      => 'components/itilobject/timeline/form_task.html.twig',
             'item'          => $task,
-            'hide_in_menu'  => !$canadd_task
+            'hide_in_menu'  => !$canadd_task,
+            'enable_mentions'    => $enable_mentions,
+            'mentions_restrictions' => $mentions_restrictions,
         ];
         $itemtypes['solution'] = [
             'type'          => 'ITILSolution',
@@ -7386,7 +7394,9 @@ abstract class CommonITILObject extends CommonDBTM
             'short_label'   => _x('button', 'Solution'),
             'template'      => 'components/itilobject/timeline/form_solution.html.twig',
             'item'          => new ITILSolution(),
-            'hide_in_menu'  => !$canadd_solution
+            'hide_in_menu'  => !$canadd_solution,
+            'enable_mentions'    => $enable_mentions,
+            'mentions_restrictions' => $mentions_restrictions,
         ];
         $itemtypes['document'] = [
             'type'          => 'Document_Item',
@@ -7396,7 +7406,9 @@ abstract class CommonITILObject extends CommonDBTM
             'short_label'   => _x('button', 'Document'),
             'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
             'item'          => new Document_Item(),
-            'hide_in_menu'  => !$canadd_document
+            'hide_in_menu'  => !$canadd_document,
+            'enable_mentions'    => $enable_mentions,
+            'mentions_restrictions' => $mentions_restrictions,
         ];
         if ($validation !== null) {
             $itemtypes['validation'] = [
@@ -7407,7 +7419,9 @@ abstract class CommonITILObject extends CommonDBTM
                 'short_label'   => _x('button', 'Validation'),
                 'template'      => 'components/itilobject/timeline/form_validation.html.twig',
                 'item'          => $validation,
-                'hide_in_menu'  => !$canadd_validation
+                'hide_in_menu'  => !$canadd_validation,
+                'enable_mentions'    => $enable_mentions,
+                'mentions_restrictions' => $mentions_restrictions,
             ];
         }
 

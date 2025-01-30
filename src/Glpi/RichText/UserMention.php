@@ -44,6 +44,7 @@ use DOMDocument;
 use ITILFollowup;
 use ITILSolution;
 use NotificationEvent;
+use Profile;
 use User;
 
 final class UserMention
@@ -260,5 +261,47 @@ final class UserMention
         }
 
         return $content;
+    }
+
+    public static function isEnabled(): bool
+    {
+        $pro = Profile::getById($_SESSION['glpiactiveprofile']['id']);
+        \Toolbox::logDebug($pro->fields['use_mentions']);
+        return $pro->fields['use_mentions'];
+    }
+
+    public static function isMentionsRestricted(): bool
+    {
+        $pro = Profile::getById($_SESSION['glpiactiveprofile']['id']);
+        return $pro->fields['user_mentions_list'] === 'restricted';
+    }
+
+    public static function getRestrictedUsers(CommonITILObject $item)
+    {
+        if (!self::isMentionsRestricted()) {
+            return [
+                'full' => true,
+            ];
+        }
+
+        $itemtype = $item->getType();
+        $items_id = $item->getID();
+
+        //get actors from item
+        $userlink = new $item->userlinkclass();
+        $actors = $userlink->getActors($items_id);
+
+        $users = [
+            'full' => false,
+            'users' => [],
+        ];
+
+        foreach ($actors as $actor) {
+            foreach ($actor as $a) {
+                $users['users'][] = $a['users_id'];
+            }
+        }
+
+        return $users;
     }
 }

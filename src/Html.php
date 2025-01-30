@@ -45,6 +45,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Exception\RedirectException;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Plugin\Hooks;
+use Glpi\RichText\UserMention;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
 use Glpi\UI\ThemeManager;

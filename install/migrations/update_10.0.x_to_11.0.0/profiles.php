@@ -47,3 +47,26 @@ $migration->addField(
     ]
 );
 $migration->addKey('glpi_profiles', 'last_rights_update');
+
+$migration->addField(
+    'glpi_profiles',
+    'use_mentions',
+    'bool',
+    [
+        'null' => false,
+        'value' => '1',
+        'after' => 'helpdesk_item_type'
+    ]
+);
+
+
+$migration->addField(
+    'glpi_profiles',
+    'user_mentions_list',
+    'string',
+    [
+        'null' => false,
+        'value' => 'full',
+        'after' => 'use_mentions'
+    ]
+);
