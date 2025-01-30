@@ -4059,7 +4059,7 @@ class Profile extends CommonDBTM
     }
 
     /**
-     * @return array<string, string>
+     * @return array<int, string>
      **/
     public static function getMentionsLists(): array
     {
