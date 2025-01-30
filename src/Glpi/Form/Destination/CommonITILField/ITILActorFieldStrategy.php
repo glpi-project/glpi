@@ -271,8 +271,13 @@ enum ITILActorFieldStrategy: string
             return null;
         }
 
+        $actors_ids = $item->fields[$fk_field];
+        if (!is_array($actors_ids)) {
+            $actors_ids = [$actors_ids];
+        }
+
         return [
-            getItemtypeForForeignKeyField(str_replace('_tech', '', $fk_field)) => [(int) $item->fields[$fk_field]],
+            getItemtypeForForeignKeyField(str_replace('_tech', '', $fk_field)) => $actors_ids,
         ];
     }
 }

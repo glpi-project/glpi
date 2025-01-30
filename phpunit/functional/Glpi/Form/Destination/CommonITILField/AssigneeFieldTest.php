@@ -477,8 +477,8 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
 
         // Check actors
         $this->assertEquals(
-            array_map(fn(array $actor) => $actor['items_id'], $ticket->getActorsForType(CommonITILActor::ASSIGN)),
-            $expected_actors_ids
+            $expected_actors_ids,
+            array_map(fn(array $actor) => $actor['items_id'], $ticket->getActorsForType(CommonITILActor::ASSIGN))
         );
     }
 

@@ -411,8 +411,8 @@ final class RequesterFieldTest extends AbstractActorFieldTest
 
         // Check actors
         $this->assertEquals(
-            array_map(fn(array $actor) => $actor['items_id'], $ticket->getActorsForType(CommonITILActor::REQUESTER)),
-            $expected_actors_ids
+            $expected_actors_ids,
+            array_map(fn(array $actor) => $actor['items_id'], $ticket->getActorsForType(CommonITILActor::REQUESTER))
         );
     }
 
@@ -426,23 +426,6 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             '',
             json_encode((new QuestionTypeActorsExtraDataConfig(true))->jsonSerialize())
         );
-        return $this->createForm($builder);
-    }
-
-    private function createAndGetFormWithItemQuestions(): Form
-    {
-        $builder = new FormBuilder();
-        $builder->addQuestion(
-            'Computer question',
-            QuestionTypeItem::class,
-            '',
-            json_encode((new QuestionTypeItemExtraDataConfig(Computer::class))->jsonSerialize())
-        );
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
-
         return $this->createForm($builder);
     }
 }
