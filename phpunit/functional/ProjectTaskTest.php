@@ -894,6 +894,14 @@ class ProjectTaskTest extends DbTestCase
 
         // Check if a user with a project with tasks, where the user is a member of the group and the group is a member of the team, returns an empty array if $search_in_groups is false
         $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()], false));
+
+        // Templates should be excluded
+        $project = $this->updateItem(
+            \Project::getType(),
+            $project->getID(),
+            ['is_template' => true]
+        );
+        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
     }
 
     public function testGetActiveProjectTaskIDsForGroup(): void
@@ -938,5 +946,13 @@ class ProjectTaskTest extends DbTestCase
             [['id' => $project_task->getID()]],
             \ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()])
         );
+
+        // Templates should be excluded
+        $project = $this->updateItem(
+            \Project::getType(),
+            $project->getID(),
+            ['is_template' => true]
+        );
+        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
     }
 }
