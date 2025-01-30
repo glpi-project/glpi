@@ -1540,6 +1540,10 @@ class Profile extends CommonDBTM
      **/
     public function showFormTracking($openform = true, $closeform = true)
     {
+        /** @var array $CFG_GLPI */
+
+        global $CFG_GLPI;
+
         if (!self::canView()) {
             return false;
         }
@@ -1612,7 +1616,12 @@ class Profile extends CommonDBTM
         $description .= "<b>" . __s('Disabled') . "</b> : " . __('User mentions are disabled for this profile.') . "<br><br>";
         $description .= "<b>" . __s('Full') . "</b> : " . __('Displays all users.') . "<br><br>";
         $description .= "<b>" . __s('Restricted') . "</b> : " . __('Limits the display to actors directly involved in the ticket.') . "<br><br><br>";
-        $description .= "<i><b>" . __s('Warning') . "</b> : " . __('Notifications must be enabled to activate mentions.') . "</i>";
+
+        $disabled = false;
+
+        if ($CFG_GLPI['use_notifications'] == '0') {
+            $disabled = true;
+        }
 
         echo "<tr>";
         echo "<td>" . __s('Mentions configuration');
@@ -1627,12 +1636,20 @@ class Profile extends CommonDBTM
 
         echo Dropdown::showFromArray(
             'use_mentions',
-            self::getMentionsLists(),
+            self::getMentionsLists($disabled),
             [
                 'value' => $this->fields['use_mentions'],
-                'display' => false
+                'display' => false,
+                'disabled' => $disabled
             ]
         );
+
+        if ($disabled) {
+            $warning = __('Notifications must be enabled to activate mentions.');
+            echo "<span class='form-help ms-2' data-bs-toggle='popover' data-bs-placement='top' data-bs-html='true' data-bs-content='" . $warning . "'>";
+            echo "<i class='fas fa-exclamation-triangle text-danger'></i>";
+            echo "</span>";
+        }
 
         echo "</td></tr>";
 
@@ -4061,12 +4078,18 @@ class Profile extends CommonDBTM
     /**
      * @return array<int, string>
      **/
-    public static function getMentionsLists(): array
+    public static function getMentionsLists(bool $disabled): array
     {
+        if ($disabled) {
+            return [
+                UserMention::USER_MENTION_DISABLED => __('Disabled'),
+            ];
+        }
+
         return [
-            UserMention::USER_MENTION_DISABLED => __('Disabled'),
-            UserMention::USER_MENTION_FULL      => __('Full'),
-            UserMention::USER_MENTION_RESTRICTED   => __('Restricted'),
+            UserMention::USER_MENTION_DISABLED     => __('Disabled'),
+            UserMention::USER_MENTION_FULL        => __('Full'),
+            UserMention::USER_MENTION_RESTRICTED  => __('Restricted'),
         ];
     }
 
@@ -4076,7 +4099,7 @@ class Profile extends CommonDBTM
      */
     public static function getMentionsListName($value): string
     {
-        return self::getMentionsLists()[$value] ?? NOT_AVAILABLE;
+        return self::getMentionsLists(false)[$value] ?? NOT_AVAILABLE;
     }
 
     /**
