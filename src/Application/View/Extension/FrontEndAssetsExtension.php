@@ -223,10 +223,10 @@ class FrontEndAssetsExtension extends AbstractExtension
             i18n.setLocale('{$_SESSION['glpilanguage']}');
          });
 
-        $.fn.select2.defaults.set(
+         $.fn.select2.defaults.set(
             'language',
             '{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][2]}',
-        );
+         );
 JAVASCRIPT;
 
         foreach ($locales_domains as $locale_domain => $locale_version) {
