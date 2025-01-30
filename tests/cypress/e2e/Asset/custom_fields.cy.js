@@ -85,14 +85,14 @@ describe("Custom Assets - Custom Fields", () => {
         cy.visit('/front/asset/assetdefinition.form.php');
         const asset_name = getAssetName();
         cy.findByLabelText(/System name/i).type(asset_name);
-        cy.findByLabelText("Active").select('1', { force: true });
+        cy.getDropdownByLabelText('Active').selectDropdownValue('Yes');
         cy.findByRole('button', {name: "Add"}).click();
 
         cy.get('div.toast-container .toast-body a').click();
         cy.url().should('include', '/front/asset/assetdefinition.form.php?id=');
 
         cy.findByRole('tab', {name: 'Profiles'}).click();
-        cy.get('input[type="checkbox"][id^="cb_checkall_table"]').check({ force: true });
+        cy.get('input[type="checkbox"][id^="cb_checkall_table"]').check();
         cy.findByRole('button', {name: 'Save'}).click();
 
         cy.findByRole('tab', {name: /^Fields/}).click();
@@ -121,17 +121,15 @@ describe("Custom Assets - Custom Fields", () => {
         cy.findByLabelText('Status').closest('.form-field').should('be.visible').invoke('index').should('eq', 0);
     });
 
-    // eslint-disable-next-line cypress/no-async-tests
-    it('Create custom fields', async () => {
-        async function createField(label, type, options = new Map()) {
+    it('Create custom fields', () => {
+        function createField(label, type, options = new Map()) {
             cy.findByRole('button', {name: 'New field'}).click();
-            cy.findByRole('dialog').should('be.visible').within(() => {
+            cy.findByRole('dialog').should('be.visible').should('have.attr', 'data-cy-shown', 'true').within(() => {
                 cy.findByLabelText('Label').type(label);
-                cy.findByLabelText('Type').select(type, {force: true});
-                cy.findByLabelText('System name').should('have.attr', 'readonly');
+                cy.getDropdownByLabelText('Type').selectDropdownValue(type);
 
                 if (options.has('item_type')) {
-                    cy.findByLabelText('Item type').select(options.get('item_type'), {force: true});
+                    cy.getDropdownByLabelText('Item type').selectDropdownValue(options.get('item_type'));
                 }
                 if (options.has('min')) {
                     cy.findByLabelText('Minimum').type(`{selectall}{del}${options.get('min')}`);
@@ -153,7 +151,6 @@ describe("Custom Assets - Custom Fields", () => {
                 }
 
                 cy.findByRole('button', {name: 'Add'}).click();
-                cy.waitForNetworkIdle('/front/asset/customfielddefinition.form.php', 100);
             });
             cy.findByRole('dialog').should('not.exist');
             cy.get(`.sortable-field[data-key="custom_${label.toLowerCase().replace(' ', '_')}"]`).should('be.visible');
@@ -162,35 +159,33 @@ describe("Custom Assets - Custom Fields", () => {
         cy.visit('/front/asset/assetdefinition.form.php');
         const asset_name = getAssetName();
         cy.findByLabelText(/System name/i).type(asset_name);
-        cy.findByLabelText("Active").select('1', { force: true });
+        cy.getDropdownByLabelText('Active').selectDropdownValue('Yes');
         cy.findByRole('button', {name: "Add"}).click();
         cy.get('div.toast-container .toast-body a').click();
         cy.url().should('include', '/front/asset/assetdefinition.form.php?id=');
 
         cy.findByRole('tab', {name:  /^Fields/}).click();
 
-        cy.findByRole('button', {name: 'New field'}).parents('.tab-pane').should('have.class', 'active').first().within(async () => {
-            await createField('Test String', 'String');
-            await createField('Test Text', 'Text');
-            await createField('Test Number', 'Number', new Map([['min', '10'], ['max', '20'], ['step', '2']]));
-            await createField('Test Date', 'Date');
-            await createField('Test Datetime', 'Date and time');
-            await createField('Test Dropdown', 'Dropdown', new Map([['item_type', 'Monitor']]));
-            await createField('Test MultiDropdown', 'Dropdown', new Map([['item_type', 'Monitor'], ['multiple_values', true]]));
-            await createField('Test URL', 'URL');
-            await createField('Test YesNo', 'Yes/No');
+        createField('Test String', 'String');
+        createField('Test Text', 'Text');
+        createField('Test Number', 'Number', new Map([['min', '10'], ['max', '20'], ['step', '2']]));
+        createField('Test Date', 'Date');
+        createField('Test Datetime', 'Date and time');
+        createField('Test Dropdown', 'Dropdown', new Map([['item_type', 'Monitor']]));
+        createField('Test MultiDropdown', 'Dropdown', new Map([['item_type', 'Monitor'], ['multiple_values', true]]));
+        createField('Test URL', 'URL');
+        createField('Test YesNo', 'Yes/No');
 
-            // Intercept form submission to check the form display values sent
-            cy.intercept('POST', '/front/asset/assetdefinition.form.php').as('saveFieldsDisplay');
-            cy.findByRole('button', {name: 'Save'}).click({force: true});
-            cy.wait('@saveFieldsDisplay').then((interception) => {
-                const formDataObject = parseRequest(interception);
-                expect(formDataObject['_update_fields_display']).to.be.equal('1');
-                expect(formDataObject['fields_display']).to.include.members([
-                    'custom_test_string', 'custom_test_text', 'custom_test_number', 'custom_test_date', 'custom_test_datetime',
-                    'custom_test_dropdown', 'custom_test_multidropdown', 'custom_test_url', 'custom_test_yesno'
-                ]);
-            });
+        // Intercept form submission to check the form display values sent
+        cy.intercept('POST', '/front/asset/assetdefinition.form.php').as('saveFieldsDisplay');
+        cy.findByRole('button', {name: 'Save'}).click();
+        cy.wait('@saveFieldsDisplay').then((interception) => {
+            const formDataObject = parseRequest(interception);
+            expect(formDataObject['_update_fields_display']).to.be.equal('1');
+            expect(formDataObject['fields_display']).to.include.members([
+                'custom_test_string', 'custom_test_text', 'custom_test_number', 'custom_test_date', 'custom_test_datetime',
+                'custom_test_dropdown', 'custom_test_multidropdown', 'custom_test_url', 'custom_test_yesno'
+            ]);
         });
     });
 
@@ -198,7 +193,7 @@ describe("Custom Assets - Custom Fields", () => {
         cy.visit('/front/asset/assetdefinition.form.php');
         const asset_name = getAssetName();
         cy.findByLabelText(/System name/i).type(asset_name);
-        cy.findByLabelText("Active").select('1', { force: true });
+        cy.getDropdownByLabelText('Active').selectDropdownValue('Yes');
         cy.findByRole('button', {name: "Add"}).click();
         cy.get('div.toast-container .toast-body a').click();
         cy.url().should('include', '/front/asset/assetdefinition.form.php?id=');
