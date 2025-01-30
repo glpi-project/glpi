@@ -61,6 +61,7 @@ class Hooks
     const INIT_SESSION                = 'init_session';
     const POST_INIT                   = 'post_init';
     const CONFIG_PAGE                 = 'config_page';
+    const USE_MASSIVE_ACTION          = 'use_massive_action';
 
    // Specific function hooks with parameters
     const RULE_MATCHED          = 'rule_matched';
