@@ -49,6 +49,10 @@ use User;
 
 final class UserMention
 {
+    const USER_MENTION_DISABLED = 0;
+    const USER_MENTION_FULL = 1;
+    const USER_MENTION_RESTRICTED = 2;
+
     /**
      * Handle user mentions.
      * Add newly mention users to observers and send them a notification.
@@ -266,42 +270,42 @@ final class UserMention
     public static function isEnabled(): bool
     {
         $pro = Profile::getById($_SESSION['glpiactiveprofile']['id']);
-        \Toolbox::logDebug($pro->fields['use_mentions']);
-        return $pro->fields['use_mentions'];
+        return $pro->fields['use_mentions'] !== self::USER_MENTION_DISABLED;
     }
 
     public static function isMentionsRestricted(): bool
     {
         $pro = Profile::getById($_SESSION['glpiactiveprofile']['id']);
-        return $pro->fields['user_mentions_list'] === 'restricted';
+        return $pro->fields['use_mentions'] === self::USER_MENTION_RESTRICTED;
     }
 
-    public static function getRestrictedUsers(CommonITILObject $item)
+    public static function getRestrictedUsers(CommonITILObject $item): array
     {
+        $data = [
+            'enabled' => self::isEnabled(),
+        ];
+
         if (!self::isMentionsRestricted()) {
-            return [
-                'full' => true,
-            ];
+            $data['full'] = true;
+            return $data;
+        } else {
+            $data['full'] = false;
         }
 
-        $itemtype = $item->getType();
         $items_id = $item->getID();
 
         //get actors from item
         $userlink = new $item->userlinkclass();
         $actors = $userlink->getActors($items_id);
 
-        $users = [
-            'full' => false,
-            'users' => [],
-        ];
+        $data['users'] = [];
 
         foreach ($actors as $actor) {
             foreach ($actor as $a) {
-                $users['users'][] = $a['users_id'];
+                $data['users'][] = $a['users_id'];
             }
         }
 
-        return $users;
+        return $data;
     }
 }

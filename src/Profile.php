@@ -41,6 +41,7 @@ use Glpi\Event;
 use Glpi\Form\Form;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Helpdesk\Tile\TilesManager;
+use Glpi\RichText\UserMention;
 use Glpi\Session\SessionInfo;
 use Glpi\Toolbox\ArrayNormalizer;
 
@@ -69,7 +70,6 @@ class Profile extends CommonDBTM
         'rssfeed_public',
         'show_group_hardware',
         'use_mentions',
-        'user_mentions_list',
         'task',
         'ticket',
         'ticket_cost',
@@ -1609,38 +1609,13 @@ class Profile extends CommonDBTM
         echo "<tbody>";
 
         $description = __s('Enables or disables the ability to mention users within the application.') . "<br><br>";
-        $description .= "<b>" . __s('Yes') . "</b> : " . __('Users can mention other members using the dedicated features.') . "<br><br>";
-        $description .= "<b>" . __s('No') . "</b> : " . __('User mentions are disabled for this profile.');
-
-        echo "<tr>";
-        echo "<td>" . __s('Enable User Mentions');
-        echo "<span class='ms-2 form-help'
-              data-bs-toggle='popover'
-              data-bs-placement='top'
-              data-bs-html='true'
-              data-bs-content='" . htmlspecialchars($description) . "'>
-            ?
-        </span>";
-        echo "</td><td>";
-
-        echo Dropdown::showYesNo(
-            'use_mentions',
-            $this->fields['use_mentions'],
-            -1,
-            [
-                'use_checkbox' => true,
-                'display'      => false
-            ]
-        );
-
-        echo "</td></tr>";
-
-        $description = __s('Selection of users to be mentioned') . "<br><br>";
+        $description .= "<b>" . __s('Disabled') . "</b> : " . __('User mentions are disabled for this profile.') . "<br><br>";
         $description .= "<b>" . __s('Full') . "</b> : " . __('Displays all users.') . "<br><br>";
-        $description .= "<b>" . __s('Restricted') . "</b> : " . __('Limits the display to actors directly involved in the ticket.');
+        $description .= "<b>" . __s('Restricted') . "</b> : " . __('Limits the display to actors directly involved in the ticket.') . "<br><br><br>";
+        $description .= "<i><b>" . __s('Warning') . "</b> : " . __('Notifications must be enabled to activate mentions.') . "</i>";
 
         echo "<tr>";
-        echo "<td>" . __s('Users list');
+        echo "<td>" . __s('Mentions configuration');
         echo "<span class='ms-2 form-help'
               data-bs-toggle='popover'
               data-bs-placement='top'
@@ -1651,10 +1626,10 @@ class Profile extends CommonDBTM
         echo "</td><td>";
 
         echo Dropdown::showFromArray(
-            'user_mentions_list',
+            'use_mentions',
             self::getMentionsLists(),
             [
-                'value' => $this->fields['user_mentions_list'],
+                'value' => $this->fields['use_mentions'],
                 'display' => false
             ]
         );
@@ -4089,8 +4064,9 @@ class Profile extends CommonDBTM
     public static function getMentionsLists(): array
     {
         return [
-            'full'  => __('Full'),
-            'restricted' => __('Restricted')
+            UserMention::USER_MENTION_DISABLED => __('Disabled'),
+            UserMention::USER_MENTION_FULL      => __('Full'),
+            UserMention::USER_MENTION_RESTRICTED   => __('Restricted'),
         ];
     }
 

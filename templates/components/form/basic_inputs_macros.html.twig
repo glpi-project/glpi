@@ -319,6 +319,12 @@
         'content_style': "",
     }|merge(options) %}
 
+    {% if options.use_mentions.enabled %}
+        {% set options = options|merge({
+            'enable_mentions': true,
+        }) %}
+    {% endif %}
+
     {% if options.fields_template.isMandatoryField(name) %}
         {% set options = {'required': true}|merge(options) %}
     {% endif %}
@@ -354,7 +360,6 @@
             options.content_style,
         ]) %}
    {% endif %}
-
    {% if options.enable_form_tags %}
         <script>
             $(function() {
@@ -374,7 +379,7 @@
                     tinymce.get('{{ options.id }}'),
                     {{ options.entities_id }},
                     '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id}) }}',
-                    {{ options.mentions_restrictions|json_encode|raw }}
+                    {{ options.use_mentions|json_encode|raw }}
                 );
                 user_mention.register();
             });

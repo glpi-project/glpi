@@ -7359,8 +7359,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $itemtypes = [];
 
-        $enable_mentions = UserMention::isEnabled();
-        $mentions_restrictions = UserMention::getRestrictedUsers($this);
+        $use_mentions = UserMention::getRestrictedUsers($this);
 
         $itemtypes['answer'] = [
             'type'          => 'ITILFollowup',
@@ -7371,8 +7370,7 @@ abstract class CommonITILObject extends CommonDBTM
             'template'      => 'components/itilobject/timeline/form_followup.html.twig',
             'item'          => $fup,
             'hide_in_menu'  => !$canadd_fup,
-            'enable_mentions'    => $enable_mentions,
-            'mentions_restrictions' => $mentions_restrictions,
+            'use_mentions'    => $use_mentions,
         ];
         $itemtypes['task'] = [
             'type'          => 'ITILTask',
@@ -7383,8 +7381,7 @@ abstract class CommonITILObject extends CommonDBTM
             'template'      => 'components/itilobject/timeline/form_task.html.twig',
             'item'          => $task,
             'hide_in_menu'  => !$canadd_task,
-            'enable_mentions'    => $enable_mentions,
-            'mentions_restrictions' => $mentions_restrictions,
+            'use_mentions'    => $use_mentions,
         ];
         $itemtypes['solution'] = [
             'type'          => 'ITILSolution',
@@ -7395,8 +7392,7 @@ abstract class CommonITILObject extends CommonDBTM
             'template'      => 'components/itilobject/timeline/form_solution.html.twig',
             'item'          => new ITILSolution(),
             'hide_in_menu'  => !$canadd_solution,
-            'enable_mentions'    => $enable_mentions,
-            'mentions_restrictions' => $mentions_restrictions,
+            'use_mentions'    => $use_mentions,
         ];
         $itemtypes['document'] = [
             'type'          => 'Document_Item',
@@ -7407,8 +7403,7 @@ abstract class CommonITILObject extends CommonDBTM
             'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
             'item'          => new Document_Item(),
             'hide_in_menu'  => !$canadd_document,
-            'enable_mentions'    => $enable_mentions,
-            'mentions_restrictions' => $mentions_restrictions,
+            'use_mentions'    => $use_mentions,
         ];
         if ($validation !== null) {
             $itemtypes['validation'] = [
@@ -7420,8 +7415,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'template'      => 'components/itilobject/timeline/form_validation.html.twig',
                 'item'          => $validation,
                 'hide_in_menu'  => !$canadd_validation,
-                'enable_mentions'    => $enable_mentions,
-                'mentions_restrictions' => $mentions_restrictions,
+                'use_mentions'    => $use_mentions,
             ];
         }
 
