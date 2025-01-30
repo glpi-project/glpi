@@ -3144,9 +3144,8 @@ HTML;
             echo "</td>";
 
             if (!empty($this->fields["name"])) {
-                $rowspan = ($DB->use_timezones || Session::haveRight("config", READ) ? '7' : '6');
-                echo "<td rowspan='$rowspan'>" . _n('Picture', 'Pictures', 1) . "</td>";
-                echo "<td rowspan='$rowspan'>";
+                echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
+                echo "<td rowspan='7'>";
                 echo self::getPictureForUser($ID);
 
                 echo Html::file(['name' => 'picture', 'display' => false, 'onlyimages' => true]);
@@ -3277,6 +3276,8 @@ HTML;
                     echo "<td colspan='2'></td>";
                 }
                 echo "</tr>";
+            } else {
+                echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
             }
 
             $phonerand = mt_rand();
