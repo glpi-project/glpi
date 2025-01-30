@@ -43,12 +43,7 @@ let api_token = null;
  */
 Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
     cy.clearAllCookies();
-    cy.request('/').its('body').then((body) => {
-        // Click the "Log in again" button if it exists
-        const login_again = Cypress.$(body).find('a[href*="/front/logout.php"]');
-        if (login_again.length > 0) {
-            cy.request(login_again.attr('href'));
-        }
+    cy.request('index.php').its('body').then((body) => {
         const $html = Cypress.$(body);
 
         // Parse page
