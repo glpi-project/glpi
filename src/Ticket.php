@@ -831,35 +831,29 @@ class Ticket extends CommonITILObject
 
     public function defineTabs($options = [])
     {
-        $ong = [];
-        $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('TicketValidation', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-        $this->addStandardTab('Item_Ticket', $ong, $options);
-
-        if ($this->hasImpactTab()) {
-            $this->addStandardTab('Impact', $ong, $options);
-        }
-
-        $this->addStandardTab('TicketCost', $ong, $options);
-        $this->addStandardTab('Itil_Project', $ong, $options);
-        $this->addStandardTab('ProjectTask_Ticket', $ong, $options);
-        $this->addStandardTab('Problem_Ticket', $ong, $options);
-        $this->addStandardTab('Change_Ticket', $ong, $options);
+        $tabs = [];
+        $this->addDefaultFormTab($tabs);
 
         if (Session::getCurrentInterface() == 'central') {
-            $this->addStandardTab(Ticket_Contract::class, $ong, $options);
+            $this->addStandardTab(__CLASS__, $tabs, $options);
+            $this->addStandardTab('TicketValidation', $tabs, $options);
+            $this->addStandardTab('KnowbaseItem_Item', $tabs, $options);
+            $this->addStandardTab('Item_Ticket', $tabs, $options);
+
+            if ($this->hasImpactTab()) {
+                $this->addStandardTab('Impact', $tabs, $options);
+            }
+
+            $this->addStandardTab('TicketCost', $tabs, $options);
+            $this->addStandardTab('Itil_Project', $tabs, $options);
+            $this->addStandardTab('ProjectTask_Ticket', $tabs, $options);
+            $this->addStandardTab('Problem_Ticket', $tabs, $options);
+            $this->addStandardTab('Change_Ticket', $tabs, $options);
+            $this->addStandardTab(Ticket_Contract::class, $tabs, $options);
+            $this->addStandardTab('Log', $tabs, $options);
         }
 
-        if (
-            Entity::getAnonymizeConfig($this->getEntityID()) == Entity::ANONYMIZE_DISABLED
-            || Session::getCurrentInterface() == 'central'
-        ) {
-            $this->addStandardTab('Log', $ong, $options);
-        }
-
-        return $ong;
+        return $tabs;
     }
 
 

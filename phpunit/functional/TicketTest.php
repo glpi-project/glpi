@@ -1691,20 +1691,20 @@ class TicketTest extends DbTestCase
 
         $this->checkFormOutput(
             $ticket,
-            $name = false,
-            $textarea = true,
-            $priority = false,
-            $save = true,
-            $assign = false,
-            $openDate = false,
-            $timeOwnResolve = false,
-            $type = false,
-            $status = false,
-            $urgency = true,
-            $impact = false,
-            $category = true,
-            $requestSource = false,
-            $location = false
+            name: false,
+            textarea: true,
+            priority: false,
+            save: false,
+            assign: false,
+            openDate: false,
+            timeOwnResolve: false,
+            type: false,
+            status: false,
+            urgency: false,
+            impact: false,
+            category: false,
+            requestSource: false,
+            location: false,
         );
 
         $uid = getItemByTypeName('User', TU_USER, true);

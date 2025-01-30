@@ -168,7 +168,7 @@
     }
 }
 
-.horizontal-layout {
+.central.horizontal-layout {
     .itil-object {
         @include media-breakpoint-up(lg) {
             height: calc(100vh - 257px);
