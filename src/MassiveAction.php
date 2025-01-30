@@ -34,6 +34,7 @@
  */
 
 use Glpi\Features\Clonable;
+use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -824,8 +825,8 @@ class MassiveAction
             }
 
            // Plugin Specific actions
-            if (isset($PLUGIN_HOOKS['use_massive_action'])) {
-                foreach (array_keys($PLUGIN_HOOKS['use_massive_action']) as $plugin) {
+            if (isset($PLUGIN_HOOKS[Hooks::USE_MASSIVE_ACTION])) {
+                foreach (array_keys($PLUGIN_HOOKS[Hooks::USE_MASSIVE_ACTION]) as $plugin) {
                     if (!Plugin::isPluginActive($plugin)) {
                         continue;
                     }
