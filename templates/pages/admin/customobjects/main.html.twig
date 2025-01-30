@@ -138,9 +138,6 @@
         $('#mainformtable input[name="system_name"]').on('input', () => {
             const reserved_names = {{ reserved_system_names|json_encode()|raw }}.map((n) => n.toLowerCase());
             const existing_names = {{ existing_system_names|json_encode()|raw }}.map((n) => n.toLowerCase());
-            $('#mainformtable input[name="system_name"]').val(
-                $('#mainformtable input[name="label"]').val().normalize('NFD').replace(/[^a-z]/gi, '')
-            );
             const system_name = $('#mainformtable input[name="system_name"]').val().toLowerCase();
             const system_name_pattern = /^{{ constant('Glpi\\CustomObject\\AbstractDefinition::SYSTEM_NAME_PATTERN')|raw }}$/;
 
