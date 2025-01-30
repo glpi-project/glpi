@@ -38,6 +38,12 @@ $(function() {
         var succeed;
         // find the good element
         var target = $(event.target);
+
+        // click on other button
+        if (target.hasClass('input-group-text') && !target.hasClass('copy_to_clipboard_wrapper')) {
+            return false;
+        }
+
         // click on 'copy button'
         if (target.hasClass('input-group-text') || target.is('input')) {
             target = target.parent('.copy_to_clipboard_wrapper').find('input');
