@@ -204,6 +204,9 @@ class FrontEndAssetsExtension extends AbstractExtension
      */
     public function localesJs(): string
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         if (!isset($_SESSION['glpilanguage'])) {
             return '';
         }
@@ -219,6 +222,11 @@ class FrontEndAssetsExtension extends AbstractExtension
          $(function() {
             i18n.setLocale('{$_SESSION['glpilanguage']}');
          });
+
+        $.fn.select2.defaults.set(
+            'language',
+            '{$CFG_GLPI['languages'][$_SESSION['glpilanguage']][2]}',
+        );
 JAVASCRIPT;
 
         foreach ($locales_domains as $locale_domain => $locale_version) {
