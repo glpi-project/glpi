@@ -124,7 +124,7 @@ jobs:
                   {"php-version": "7.4", "db-image": "mariadb:11.4"},
                   {"php-version": "8.3", "db-image": "mariadb:10.2"},
                   {"php-version": "8.3", "db-image": "mysql:5.7"},
-                  {"php-version": "8.3", "db-image": "percona:8.0"},
+                  {"php-version": "8.3", "db-image": "percona:8.4"},
                   {"php-version": "8.3", "db-image": "percona:5.7"}
                 ]
               }
