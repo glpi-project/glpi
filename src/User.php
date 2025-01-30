@@ -3144,8 +3144,9 @@ HTML;
             echo "</td>";
 
             if (!empty($this->fields["name"])) {
-                echo "<td rowspan='7'>" . _n('Picture', 'Pictures', 1) . "</td>";
-                echo "<td rowspan='7'>";
+                $rowspan = ($DB->use_timezones || Session::haveRight("config", READ) ? '7' : '6');
+                echo "<td rowspan='$rowspan'>" . _n('Picture', 'Pictures', 1) . "</td>";
+                echo "<td rowspan='$rowspan'>";
                 echo self::getPictureForUser($ID);
 
                 echo Html::file(['name' => 'picture', 'display' => false, 'onlyimages' => true]);
@@ -3296,7 +3297,7 @@ HTML;
                 );
             }
             echo "</td>";
-            echo "<td class='top'>" . _n('Email', 'Emails', Session::getPluralNumber());
+            echo "<td class='top align-middle'>" . _n('Email', 'Emails', Session::getPluralNumber());
             UserEmail::showAddEmailButton($this);
             echo "</td><td>";
             UserEmail::showForUser($this);
