@@ -60,6 +60,7 @@ $(function() {
         }
 
         // get copy icon
+        var icon;
         if (target.attr('class') == 'copy_to_clipboard_wrapper') {
             icon = target;
         } else {
