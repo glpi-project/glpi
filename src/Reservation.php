@@ -667,10 +667,10 @@ JAVASCRIPT;
      * Display for reservation
      *
      * @param integer $ID ID of the reservation (empty for create new)
-     * @param array{item: array<int, int>, start: string, end: string} $options
+     * @param array{item: array<int, int>, begin: string, end: string} $options
      * <ul>
      *      <li>item: Reservation items ID(s) for creation process. The array keys and values are expected to be symmetrical (ex: [2 => 2, 5 => 5])</li>
-     *      <li>start: planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
+     *      <li>begin: planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
      *      <li>end: planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
      *  </ul>
      **/
