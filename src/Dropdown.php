@@ -225,7 +225,7 @@ class Dropdown
                 $values = [$params['value']];
             }
             foreach ($values as $value) {
-                $output .= "<input type='hidden' name='" . htmlescape($field_name) . "' value='".htmlescape($value)."'>";
+                $output .= "<input type='hidden' name='" . htmlescape($field_name) . "' value='" . htmlescape($value) . "'>";
             }
             $output .= '<span class="form-control" readonly'
                 . ($params['width'] ? ' style="width: ' . $params["width"] . '"' : '') . '>'

@@ -2150,7 +2150,7 @@ TWIG,
             $out .= '<input type="hidden" name="' . strip_tags($params['name']) . '" value="0" />';
         }
 
-        $out .= "<input type='checkbox' class='form-check-input " . htmlescape($params['class'] ). "' title=\"" . htmlescape($params['title']) . "\" ";
+        $out .= "<input type='checkbox' class='form-check-input " . htmlescape($params['class']) . "' title=\"" . htmlescape($params['title']) . "\" ";
         if (isset($params['onclick'])) {
             $params['onclick'] = htmlescape($params['onclick']);
             $out .= " onclick='{$params['onclick']}'";
@@ -2573,7 +2573,8 @@ TWIG,
         $mode = htmlescape(
             $p['range']
                 ? "mode: 'range',"
-                : "");
+            : ""
+        );
 
         $name = htmlescape($name);
         $p['rand'] = (int) $p['rand'];
@@ -3317,7 +3318,7 @@ JS;
         if (empty($param['applyto'])) {
             if (!empty($param['link'])) {
                 $out .= "<a id='" . (!empty($param['linkid']) ? htmlescape($param['linkid']) : "tooltiplink$rand") . "'
-                        class='dropdown_tooltip ".htmlescape($param['link_class'])."'";
+                        class='dropdown_tooltip " . htmlescape($param['link_class']) . "'";
 
                 if (!empty($param['linktarget'])) {
                     $out .= " target='" . htmlescape($param['linktarget']) . "' ";
@@ -5077,7 +5078,7 @@ HTML;
 
         return sprintf(
             '<link rel="stylesheet" type="text/css" href="%s" %s>',
-             strip_tags($url),
+            strip_tags($url),
             Html::parseAttributes($options)
         );
     }

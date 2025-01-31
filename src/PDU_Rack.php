@@ -606,7 +606,7 @@ JAVASCRIPT;
 
                     echo "<div class='grid-stack-item $picture_c'
                        id='item_$item_rand'
-                       gs-id='". (int) $current['id']."'
+                       gs-id='" . (int) $current['id'] . "'
                        gs-h='$height' gs-w='1'
                        gs-x='0' gs-y='$y'
                        style='background-color: $bg_color; color: $fg_color;'>
@@ -615,7 +615,7 @@ JAVASCRIPT;
                      <span class='rotated_text'>
                         <a href='" . $pdu->getLinkURL() . "'
                            class='itemrack_name'
-                           title='" .htmlescape( $pdu->getName()) . "'
+                           title='" . htmlescape($pdu->getName()) . "'
                            style='$fg_color_s'>" . htmlescape($pdu->getName()) . "
                         </a>
                      </span>
