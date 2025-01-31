@@ -42,7 +42,7 @@ Html::header_nocache();
 Session::checkRight('user', User::UPDATEAUTHENT);
 
 if ($_POST["authtype"] > 0) {
-    $name = $_POST['name'] ?? 'massiveaction';
+    $name = htmlescape($_POST['name'] ?? 'massiveaction');
 
     switch ($_POST["authtype"]) {
         case Auth::DB_GLPI:

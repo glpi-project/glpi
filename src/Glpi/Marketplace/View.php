@@ -325,9 +325,11 @@ class View extends CommonGLPI
         $api  = self::getAPI();
         $tags = $api->getTopTags();
 
-        $tags_li = "<li class='tag active' data-tag=''>" . __("All") . "</li>";
+        $tags_li = "<li class='tag active' data-tag=''>" . __s("All") . "</li>";
         foreach ($tags as $tag) {
-            $tags_li .= "<li class='tag' data-tag='{$tag['key']}'>" . ucfirst($tag['tag']) . "</li>";
+            $key = htmlescape($tag['key']);
+            $tagName = htmlescape(ucfirst($tag['tag']));
+            $tags_li .= "<li class='tag' data-tag='$key'>$tagName</li>";
         }
 
         return "<ul class='plugins-tags'>{$tags_li}</ul>";
@@ -372,7 +374,7 @@ class View extends CommonGLPI
 
         $plugins_li = "";
         foreach ($plugins as $plugin) {
-            $plugin['description'] = self::getLocalizedDescription($plugin);
+            $plugin['description'] = htmlescape(self::getLocalizedDescription($plugin));
             $plugins_li .= self::getPluginCard($plugin, $tab);
         }
 
@@ -451,10 +453,10 @@ HTML;
                     </select>";
             }
 
-            $yourplugin   = __("Your plugin here ? Contact us.");
+            $yourplugin   = __s("Your plugin here ? Contact us.");
             $networkmail  = GLPI_NETWORK_MAIL;
-            $refresh_lbl  = __("Refresh plugin list");
-            $search_label = __("Filter plugin list");
+            $refresh_lbl  = __s("Refresh plugin list");
+            $search_label = __s("Filter plugin list");
 
             $marketplace  = <<<HTML
                 <div class='marketplace $tab' data-tab='{$tab}'>

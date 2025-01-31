@@ -5283,11 +5283,11 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         echo "<div " . ($inobject ? "style='display:none'" : '') . " id='itilactor$rand_type' class='actor-dropdown'>";
-        $rand   = Dropdown::showFromArray(
+        $rand   = htmlescape(Dropdown::showFromArray(
             "_itil_" . $typename . "[_type]",
             $types,
             ['display_emptychoice' => true]
-        );
+        ));
         $params = ['type'            => '__VALUE__',
             'actortype'       => $typename,
             'itemtype'        => $this->getType(),

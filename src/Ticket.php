@@ -4724,7 +4724,7 @@ JAVASCRIPT;
             echo "<div class='center'><table class='tab_cadre_fixe' style='min-width: 85%'>";
            //TRANS: %d is the number of new tickets
             echo "<tr><th colspan='12'>" . sprintf(_sn('%d new ticket', '%d new tickets', $number), $number);
-            echo "<a href='" . Ticket::getSearchURL() . "?" .
+            echo "<a href='" . strip_tags(Ticket::getSearchURL()) . "?" .
                 Toolbox::append_params($options, '&amp;') . "'>" . __s('Show all') . "</a>";
             echo "</th></tr>";
 

@@ -146,13 +146,13 @@ class Item_SoftwareLicense extends CommonDBRelation
                 echo "<table class='tab_cadre_fixe'>";
                 echo "<tr class='tab_bg_2 center'>";
                 echo "<td>";
-                $rand = Dropdown::showItemTypes(
+                $rand = htmlescape(Dropdown::showItemTypes(
                     'itemtype',
                     array_merge($CFG_GLPI['software_types'], [User::class]),
                     [
                         'width'                 => 'unset'
                     ]
-                );
+                ));
 
                 $p = ['idtable'            => '__VALUE__',
                     'rand'                  => $rand,
@@ -521,7 +521,7 @@ class Item_SoftwareLicense extends CommonDBRelation
          */
         global $CFG_GLPI, $DB;
 
-        $searchID = $license->getField('id');
+        $searchID = (int) $license->getField('id');
 
         if (!Software::canView() || !$searchID) {
             return false;

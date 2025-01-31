@@ -102,13 +102,14 @@ class Dropdown
      *    - parent_id_field      : field used to compute parent id (to filter available values inside the dropdown tree)
      *
      * @return string|false|integer
-     *
+     * @psalm-taint-specialize
      * @since 9.5.0 Usage of string in condition option is removed
      **/
     public static function show($itemtype, $options = [])
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+        $itemtype = htmlescape($itemtype);
 
         if (!($item = getItemForItemtype($itemtype))) {
             return false;
@@ -156,6 +157,7 @@ class Dropdown
         }
 
         $params['name'] = Html::sanitizeInputName($params['name']);
+        $params['width'] = (int) $params['width'];
 
         $output       = '';
         $name         = $params['emptylabel'];
@@ -206,9 +208,9 @@ class Dropdown
             foreach ($params['values'] as $value) {
                 if (isset($params['toadd'][$value])) {
                     // Specific case, value added by the "toadd" param
-                    $names[] = $params['toadd'][$value];
+                    $names[] = htmlescape($params['toadd'][$value]);
                 } else {
-                    $names[] = self::getDropdownName($table, $value);
+                    $names[] = htmlescape(self::getDropdownName($table, $value));
                 }
             }
         }
@@ -223,7 +225,7 @@ class Dropdown
                 $values = [$params['value']];
             }
             foreach ($values as $value) {
-                $output .= "<input type='hidden' name='" . $field_name . "' value='$value'>";
+                $output .= "<input type='hidden' name='" . htmlescape($field_name) . "' value='".htmlescape($value)."'>";
             }
             $output .= '<span class="form-control" readonly'
                 . ($params['width'] ? ' style="width: ' . $params["width"] . '"' : '') . '>'
@@ -1096,12 +1098,13 @@ JAVASCRIPT;
         }
         if ($params['use_checkbox']) {
             if (!empty($params['rand'])) {
-                $rand = $params['rand'];
+                $rand = (int) $params['rand'];
             } else {
                 $rand = mt_rand();
             }
 
-            $options = ['name' => $name,
+            $options = [
+                'name' => htmlescape($name),
                 'id'   => Html::cleanId("dropdown_" . $name . $rand)
             ];
 
@@ -1905,7 +1908,7 @@ JAVASCRIPT;
 
         if ($params['display']) {
             echo $out;
-            return $params['rand'];
+            return htmlescape($params['rand']);
         }
 
         return $out;
@@ -2255,7 +2258,7 @@ JAVASCRIPT;
      *                                'key2' => 'val2'),
      *       'optgroupname2' => array('key3' => 'val3',
      *                                'key4' => 'val4'))
-     *
+     * @psalm-taint-specialize
      * @return integer|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
@@ -2299,6 +2302,8 @@ JAVASCRIPT;
                 $param[$key] = $val;
             }
         }
+
+        $name = htmlescape($name);
 
         $other_select_option = $name . '_other_value';
         if ($param['other'] !== false) {

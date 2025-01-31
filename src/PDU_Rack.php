@@ -445,7 +445,7 @@ class PDU_Rack extends CommonDBRelation
                     echo "</td>";
 
                     echo "<td>";
-                    echo "<a href='" . $pdu->getLinkURL() . "'style='$fg_color_s'>" . $pdu->getName() . "</a>";
+                    echo "<a href='" . htmlescape($pdu->getLinkURL()) . "'style='$fg_color_s'>" . htmlescape($pdu->getName()) . "</a>";
                     echo "</td>";
 
                     echo "<td>";
@@ -512,7 +512,7 @@ JAVASCRIPT;
         global $CFG_GLPI;
 
         $rand  = mt_rand();
-        $num_u = $rack->fields['number_units'];
+        $num_u = (int) $rack->fields['number_units'];
         $pdu   = new PDU();
         $pdu_m = new PDUModel();
         $rel   = new self();
@@ -540,7 +540,7 @@ JAVASCRIPT;
             }
 
             foreach ($found_pdus_side as $current) {
-                $bg_color   = $current['bgcolor'];
+                $bg_color   = strip_tags($current['bgcolor']);
                 $fg_color   = !empty($current['bgcolor'])
                              ? Html::getInvertedColor($current['bgcolor'])
                              : "";
@@ -555,20 +555,20 @@ JAVASCRIPT;
                     $height = 1;
                     $model_name = "";
                     if ($pdu_m->getFromDB($pdu->fields['pdumodels_id'])) {
-                        $height     = $pdu_m->fields['required_units'];
+                        $height     = (int) $pdu_m->fields['required_units'];
                         $y          = $num_u + 1 - $current['position'] - $height;
                         $picture    = $pdu_m->fields['picture_front'];
-                        $model_name = $pdu_m->getName();
+                        $model_name = htmlescape($pdu_m->getName());
                     }
 
                     $tip = "<span class='tipcontent'>";
                     $tip .= "<span>
                         <label>" . _sn('Type', 'Types', 1) . ":</label>" .
-                        $pdu->getTypeName() . "
+                        htmlescape($pdu->getTypeName()) . "
                      </span>
                      <span>
                         <label>" . __s('name') . ":</label>" .
-                        $pdu->getName() . "
+                        htmlescape($pdu->getName()) . "
                      </span>";
                     if (!empty($pdu->fields['serial'])) {
                         $tip .= "<span>
@@ -606,7 +606,7 @@ JAVASCRIPT;
 
                     echo "<div class='grid-stack-item $picture_c'
                        id='item_$item_rand'
-                       gs-id='{$current['id']}'
+                       gs-id='". (int) $current['id']."'
                        gs-h='$height' gs-w='1'
                        gs-x='0' gs-y='$y'
                        style='background-color: $bg_color; color: $fg_color;'>
@@ -615,8 +615,8 @@ JAVASCRIPT;
                      <span class='rotated_text'>
                         <a href='" . $pdu->getLinkURL() . "'
                            class='itemrack_name'
-                           title='" . $pdu->getName() . "'
-                           style='$fg_color_s'>" . $pdu->getName() . "
+                           title='" .htmlescape( $pdu->getName()) . "'
+                           style='$fg_color_s'>" . htmlescape($pdu->getName()) . "
                         </a>
                      </span>
                      <a href='" . $rel->getLinkUrl() . "' class='rel-link'>

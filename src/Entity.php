@@ -2794,6 +2794,9 @@ class Entity extends CommonTreeDropdown
         }
     }
 
+    /**
+     * @psalm-taint-specialize
+     */
     public static function inheritedValue($value = "", bool $inline = false, bool $display = true): string
     {
         if (trim($value) === '') {

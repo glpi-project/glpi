@@ -664,7 +664,7 @@ class Software extends CommonDBTM
             $entity_restrict,
             true
         );
-        $rand = Dropdown::show('Software', ['condition' => ['WHERE' => $where]]);
+        $rand = htmlescape(Dropdown::show('Software', ['condition' => ['WHERE' => $where]]));
 
         $paramsselsoft = ['softwares_id' => '__VALUE__',
             'myname'       => $myname

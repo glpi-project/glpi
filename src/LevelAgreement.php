@@ -198,13 +198,13 @@ abstract class LevelAgreement extends CommonDBChild
             'max'   => 1000
         ]);
         $possible_values = self::getDefinitionTimeValues();
-        $rand = Dropdown::showFromArray(
+        $rand = htmlescape(Dropdown::showFromArray(
             'definition_time',
             $possible_values,
             ['value'     => $this->fields["definition_time"],
                 'on_change' => 'appearhideendofworking()'
             ]
-        );
+        ));
         echo "<script type='text/javascript' >";
         echo "function appearhideendofworking() {";
         echo "if ($('#dropdown_definition_time$rand option:selected').val() == 'day'

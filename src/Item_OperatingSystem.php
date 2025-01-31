@@ -266,7 +266,7 @@ class Item_OperatingSystem extends CommonDBRelation
                     $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["assocID"]);
                 }
                 $link = Toolbox::getItemTypeFormURL(self::getType());
-                $name = "<a href=\"" . $link . "?id=" . (int)$data["assocID"] . "\">" . htmlescape($linkname) . "</a>";
+                $name = "<a href=\"" . htmlescape($link) . "?id=" . (int)$data["assocID"] . "\">" . htmlescape($linkname) . "</a>";
 
                 echo "<tr class='tab_bg_1'>";
                 if (

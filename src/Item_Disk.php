@@ -212,7 +212,7 @@ class Item_Disk extends CommonDBChild
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        $ID = $item->fields['id'];
+        $ID = (int) $item->fields['id'];
         $itemtype = $item->getType();
         $rand = mt_rand();
 
@@ -229,8 +229,7 @@ class Item_Disk extends CommonDBChild
             && !(!empty($withtemplate) && ($withtemplate == 2))
         ) {
             echo "<div class='mt-1 mb-3 text-center'>" .
-               "<a class='btn btn-primary' href='" . self::getFormURL() . "?itemtype=" . htmlescape($itemtype) . "&items_id=$ID&amp;withtemplate=" .
-                  $withtemplate . "'>";
+               "<a class='btn btn-primary' href='" . htmlescape(self::getFormURL()) . "?itemtype=" . htmlescape($itemtype) . "&items_id=$ID&amp;withtemplate=2'>";
             echo __s('Add a volume');
             echo "</a></div>\n";
         }

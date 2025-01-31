@@ -710,8 +710,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         $entity_restrict = Session::getMatchingActiveEntities($entity_restrict);
 
-        $rand        = $params['rand'];
-        $already_add = $params['used'];
+        $rand        = (int) $params['rand'];
 
         if (
             $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]
@@ -1577,7 +1576,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $params[$key] = $val;
         }
 
-        $rand = $params['rand'];
+        $rand = (int) $params['rand'];
 
         if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] == 0) {
             echo "<input type='hidden' name='" . htmlescape($myname) . "' value=''>";

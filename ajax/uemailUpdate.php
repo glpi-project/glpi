@@ -124,7 +124,7 @@ if (
          :               value='" . htmlescape($default_email) . "'>";
     }
 
-    echo "$email_string";
+    echo htmlescape($email_string);
 }
 
 Ajax::commonDropdownUpdateItem($_POST);

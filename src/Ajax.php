@@ -81,6 +81,9 @@ class Ajax
             }
         }
 
+        $url = strip_tags($url);
+        $name = htmlescape($name);
+
         $html = TemplateRenderer::getInstance()->render(
             'components/modal.html.twig',
             [
@@ -656,6 +659,7 @@ JS;
      * @param array        $forceloadfor of content which must force update content
      * @param boolean      $display      display or get string (default true)
      *
+     * @psalm-taint-specialize
      * @return void|string (see $display)
      */
     public static function updateItemOnEventJsCode(
@@ -680,6 +684,7 @@ JS;
             foreach ($events as $event) {
                 $event   = htmlescape($event);
                 $zone_id = htmlescape(Html::cleanId($zone));
+                $zone = htmlescape($zone);
 
                 if ($buffertime > 0) {
                     $output .= "var last$zone$event = 0;";
@@ -695,6 +700,8 @@ JS;
                         if (!empty($condition)) {
                              $condition .= " || ";
                         }
+                        // @psalm-taint-specialize $value is not escaped
+                        // $forceloadfor looks never used in core
                         $condition .= "$('#$zone_id').val() == '$value'";
                     }
                 }
@@ -726,7 +733,7 @@ JS;
      *                url (@see Ajax::updateItemOnSelectEvent for information)
      *                and may have moreparams)
      * @param boolean $display display or get string (default true)
-     *
+     * @psalm-taint-specialize
      * @return void|string (see $display)
      */
     public static function commonDropdownUpdateItem($options, $display = true)
@@ -801,7 +808,7 @@ JS;
      *                               or
      *                      array    of id to get value in case of __VALUE#__ used (default '')
      * @param boolean      $display    display or get string (default true)
-     *
+     * @psalm-taint-specialize
      * @return void|string (see $display)
      */
     public static function updateItemJsCode(
@@ -828,7 +835,7 @@ JS;
                     $out .= ",";
                 }
 
-                $out .= $key . ":";
+                $out .= htmlescape($key) . ":";
                 $regs = [];
                 if (is_string($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
                     $out .= sprintf('$("#%s").val()', htmlescape(Html::cleanId($toobserve[$regs[1]])));
@@ -857,7 +864,7 @@ JS;
      * @param string  $toobserve  id of another item used to get value in case of __VALUE__ used
      *                               (default '')
      * @param boolean $display    display or get string (default true)
-     *
+     * @psalm-taint-specialize
      * @return void|string (see $display)
      */
     public static function updateItem($toupdate, $url, $parameters = [], $toobserve = "", $display = true)

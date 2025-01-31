@@ -228,8 +228,8 @@ class Appliance_Item extends CommonDBRelation
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
 
-        $itemtype = $item->getType();
-        $ID       = $item->fields['id'];
+        $itemtype = htmlescape($item->getType());
+        $ID       = (int) $item->fields['id'];
 
         if (
             !Appliance::canView()

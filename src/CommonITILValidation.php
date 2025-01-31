@@ -1656,7 +1656,7 @@ HTML;
             $params[$key] = $val;
         }
         if (!is_array($params['users_id_requester'])) {
-            $params['users_id_requester'] = [$params['users_id_requester']];
+            $params['users_id_requester'] = [(int) $params['users_id_requester']];
         }
 
         $params['validation_class'] = static::class;
@@ -1675,7 +1675,7 @@ HTML;
         ];
 
         $out = Dropdown::showFromArray($validatortype_name, $validators, [
-            'value'               => $validatortype,
+            'value'               => htmlescape($validatortype),
             'display_emptychoice' => true,
             'display'             => false,
             'disabled'            => $params['disabled'],
