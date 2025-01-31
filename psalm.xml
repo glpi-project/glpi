@@ -2,7 +2,8 @@
 <psalm
     runTaintAnalysis="true"
     findUnusedCode="false"
-    findUnusedBaselineEntry="false"
+    findUnusedBaselineEntry="true"
+    errorBaseline="psalm-baseline.xml"
 >
 
     <projectFiles>
