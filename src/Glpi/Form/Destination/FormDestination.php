@@ -155,6 +155,10 @@ final class FormDestination extends CommonDBChild
     #[Override]
     public function canPurgeItem(): bool
     {
+        if ($this->fields['is_mandatory']) {
+            return false;
+        }
+
         $form = Form::getByID($this->fields['forms_forms_id']);
         if (!$form) {
             return false;

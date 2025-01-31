@@ -43,7 +43,6 @@ use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
-use Monitor;
 
 final class FormDestinationTest extends DbTestCase
 {
@@ -126,5 +125,37 @@ final class FormDestinationTest extends DbTestCase
             FormDestinationTicket::class,
             current($destinations)->fields['itemtype']
         );
+    }
+
+    public function testMandatoryDestinationCantBeDeleted(): void
+    {
+        // Arrange: create a form and get its default destination
+        $form = $this->createItem(Form::class, ['name' => 'My test form']);
+        $destinations = $form->getDestinations();
+        $mandatory_destination = current($destinations);
+
+        // Act: check if the destination can be deleted
+        $this->login();
+        $can_delete = $mandatory_destination->canPurgeItem();
+
+        // Assert: the mandatory destination should not be able to be deleted
+        $this->assertFalse($can_delete);
+    }
+
+    public function testNonMandatoryDestinationCanBeDeleted(): void
+    {
+        // Arrange: create a form with a non mandatory destination
+        $builder = new FormBuilder("My test form");
+        $builder->addDestination(FormDestinationTicket::class, 'My destination');
+        $form = $this->createForm($builder);
+        $destinations = $form->getDestinations();
+        $non_mandatory_destination = end($destinations);
+
+        // Act: check if the destination can be deleted
+        $this->login();
+        $can_delete = $non_mandatory_destination->canPurgeItem();
+
+        // Assert: the non mandatory destination should be able to be deleted
+        $this->assertTrue($can_delete);
     }
 }
