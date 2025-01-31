@@ -66,7 +66,7 @@ if (
 }
 
 // Display content
-header('Content-type: text/html');
+header('Content-type: text/html; charset=UTF-8');
 echo RichText::getEnhancedHtml($item->fields['content'], [
     'images_gallery' => false, // Don't show photoswipe gallery
 ]);
