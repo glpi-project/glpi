@@ -3515,7 +3515,7 @@ TWIG, $twig_params);
                 $entity->getFromDB($_SESSION['glpiactive_entity']);
                 $_REQUEST['authldaps_id'] = $entity->getField('authldaps_id');
                 if ((int) $_REQUEST['authldaps_id'] <= 0) {
-                    $_REQUEST['authldaps_id'] = self::getDefault();
+                    $_REQUEST['authldaps_id'] = NOT_AVAILABLE;
                 }
             }
             $_REQUEST['authldaps_id'] = (int) $_REQUEST['authldaps_id'];
@@ -3597,11 +3597,8 @@ TWIG, $twig_params);
                     $_REQUEST['entity_filter'] = $entity->getField('entity_ldapfilter');
                 }
             } else {
-                if (
-                    $_REQUEST['authldaps_id'] === NOT_AVAILABLE
-                    || !$_REQUEST['authldaps_id']
-                ) {
-                    $_REQUEST['authldaps_id'] = self::getDefault();
+                if (!$_REQUEST['authldaps_id']) {
+                    $_REQUEST['authldaps_id'] = NOT_AVAILABLE;
                 }
 
                 if ($_REQUEST['authldaps_id'] > 0) {
@@ -3614,11 +3611,8 @@ TWIG, $twig_params);
                 $_REQUEST['ldap_filter'] = self::buildLdapFilter($authldap);
             }
         } else {
-            if (
-                $_REQUEST['authldaps_id'] === NOT_AVAILABLE
-                || !$_REQUEST['authldaps_id']
-            ) {
-                $_REQUEST['authldaps_id'] = self::getDefault();
+            if (!$_REQUEST['authldaps_id']) {
+                $_REQUEST['authldaps_id'] = NOT_AVAILABLE;
 
                 if ($_REQUEST['authldaps_id'] > 0) {
                     $authldap->getFromDB($_REQUEST['authldaps_id']);
@@ -3784,27 +3778,6 @@ TWIG, $twig_params);
         } else {
             echo "<div class='text-center fw-bold mb-3'>" . __s('Unable to connect to the LDAP directory');
         }
-    }
-
-    /**
-     * Get default ldap
-     *
-     * @deprecated Only search on AuthLDAP but default state is now shared with AuthMail, use getDefaultAuth() instead
-     * @todo at the moment, I did not try to fix the usage of this method, not sure how to change it at the moment, need more work.
-     * @return integer AuthLDAP ID or 0 if not found
-     */
-    public static function getDefault()
-    {
-        // @todo trigger deprecation ?
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $it = $DB->request([
-            'FROM' => self::getTable(),
-            'WHERE' => ['is_default' => 1, 'is_active' => 1],
-            'LIMIT' => 1,
-        ]);
-        return count($it) ? $it->current()['id'] : 0;
     }
 
     public function post_updateItem($history = true)

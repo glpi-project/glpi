@@ -1982,10 +1982,6 @@ class Entity extends CommonTreeDropdown
             return true;
         }
 
-        // If there's a directory marked as default
-        if (AuthLDAP::getDefault()) {
-            return true;
-        }
         return false;
     }
 
