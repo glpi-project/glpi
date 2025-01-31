@@ -2021,11 +2021,13 @@ JAVASCRIPT;
 
         $formatted_number = is_numeric($value)
          ? Html::formatNumber($value, false, $decimals)
-         : $value;
+         : htmlescape($value);
 
         if (strlen($unit) == 0) {
             return $formatted_number;
         }
+
+        $unit = htmlescape($unit);
 
         switch ($unit) {
             case 'year':
@@ -4074,7 +4076,12 @@ JAVASCRIPT;
         $count = 0;
         if (count($iterator)) {
             foreach ($iterator as $data) {
-                $output = $data[$item->getNameField()];
+                $data['id'] = (int) $data['id'];
+
+                $output = htmlescape($data[$item->getNameField()]);
+                $data['contact'] = strip_tags($data['contact']);
+                $data['serial'] = strip_tags($data['serial']);
+                $data['otherserial'] = strip_tags($data['otherserial']);
 
                 if (isset($data['contact']) && !empty($data['contact'])) {
                     $output = sprintf(__('%1$s - %2$s'), $output, $data['contact']);

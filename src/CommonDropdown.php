@@ -927,7 +927,7 @@ abstract class CommonDropdown extends CommonDBTM
         $ret = '';
 
         if ($withname) {
-            $ret .= $this->fields["name"];
+            $ret .= htmlescape($this->fields["name"]);
             $ret .= "&nbsp;&nbsp;";
         }
 
