@@ -120,9 +120,7 @@ describe('Selectable form question types', () => {
                 .find('a').should('exist').click();
 
             // Check if the option is saved
-            cy.findByText('Option 0').should('exist');
-            cy.findByText('Option 1').should('not.exist');
-            cy.findByText('Option 2').should('not.exist');
+            cy.findByText(': Option 0').should('exist');
         });
     });
 
@@ -201,9 +199,7 @@ describe('Selectable form question types', () => {
                 .find('a').should('exist').click();
 
             // Check if the option is saved
-            cy.findByText('Option 0').should('exist');
-            cy.findByText('Option 1').should('exist');
-            cy.findByText('Option 2').should('not.exist');
+            cy.findByText(': Option 0, Option 1').should('exist');
         });
     });
 
