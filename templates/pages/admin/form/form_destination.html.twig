@@ -51,6 +51,7 @@
     {% else %}
         <div class="accordion mt-4">
             {% for destination in destinations %}
+                {% set is_expanded = active_destination == destination.getID() or destinations|length == 1 %}
                 {% set concrete_destination = destination.getConcreteDestinationItem() %}
                 <div
                     id="glpi-destinations-accordion"
@@ -58,11 +59,11 @@
                 >
                     <h3 class="accordion-header">
                         <button
-                            class="accordion-button {{ active_destination == destination.getID() ? '' : 'collapsed' }}"
+                            class="accordion-button {{ is_expanded ? '' : 'collapsed' }}"
                             type="button"
                             data-bs-toggle="collapse"
                             data-bs-target="#glpi-destinations-accordion-collapse-{{ loop.index }}"
-                            aria-expanded="{{ active_destination == destination.getID() ? 'true' : 'false' }}"
+                            aria-expanded="{{ is_expanded ? 'true' : 'false' }}"
                         >
                             <i class="{{ concrete_destination.getTargetItemtype()|itemtype_icon }} me-2"></i>
                             <input
@@ -92,7 +93,7 @@
                     </h3>
                     <div
                         id="glpi-destinations-accordion-collapse-{{ loop.index }}"
-                        class="accordion-collapse collapse {{ active_destination == destination.getID() ? 'show' : '' }}"
+                        class="accordion-collapse collapse {{ is_expanded ? 'show' : '' }}"
                         data-bs-parent="#glpi-destinations-accordion"
                     >
                         <div class="accordion-body pt-0">
