@@ -862,7 +862,7 @@ TWIG, $twig_params);
         if ($item::class === self::class) {
             $tabs = [];
             if (Session::haveRightsOr("reservation", [READ, self::RESERVEANITEM])) {
-                $tabs[1] = Reservation::getTypeName(1);
+                $tabs[1] = Reservation::getTypeName(Session::getPluralNumber());
             }
             if (
                 (Session::getCurrentInterface() === "central")
