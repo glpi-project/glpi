@@ -56,66 +56,25 @@ class AuthMail extends CommonDBTM
     }
 
     /**
-     * Get default AuthMail | AuthLDAP
+     * Get default Auth system (AuthMail | AuthLDAP)
      *
      * Only available if active
      *
-     * @todo maybe this method should be moved to an Auth class, a parent class, or ...
-     * @todo maybe an Auth Interface (or a base abstract class) is needed for response type
-     *
-     * @return AuthMail|AuthLDAP|null Auth ID or null if not found
+     * @return AuthMail|AuthLDAP|null Auth or null if not found
      */
     public static function getDefaultAuth(): AuthMail|AuthLDAP|null
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        // @todo it may be possible to use a UnionQuery here, maybe not...
-
-        $authMailsIterator = $DB->request([
-            'FROM' => AuthMail::getTable(),
-            'WHERE' => ['is_default' => 1, 'is_active' => 1],
-//            'LIMIT' => 1,
-        ]);
-        $authMailId = $authMailsIterator->count() ? $authMailsIterator->current()['id'] : null;
-
-        $authLdapIterator = $DB->request([
-            'FROM' => AuthLDAP::getTable(),
-            'WHERE' => ['is_default' => 1, 'is_active' => 1],
-//            'LIMIT' => 1,
-        ]);
-        $authLdapId = $authLdapIterator->count() ? $authLdapIterator->current()['id'] : null;
-
-        if (is_null($authLdapId ?? $authMailId)) {
-            // no default AuthMail | AuthLDAP found
-            // this can happen if there is no active AuthMail | AuthLDAP at all
-            return null;
+        $auth_mail = new AuthMail();
+        if ($auth_mail->getFromDbByCrit(['is_default' => 1, 'is_active' => 1])) {
+            return $auth_mail;
         }
 
-        if ($authLdapIterator->count() > 1) {
-            // @todo maybe too hard, app should be more resilient and just log the problem
-            throw new \Exception('More than one default AuthLDAP found');
+        $auth_ldap = new AuthLDAP();
+        if ($auth_ldap->getFromDbByCrit(['is_default' => 1, 'is_active' => 1])) {
+            return $auth_ldap;
         }
 
-        if ($authMailsIterator->count() > 1) {
-            // @todo maybe too hard, app should be more resilient and just log the problem
-            throw new \Exception('More than one default AuthMail found');
-        }
-
-        if ($authLdapId && $authMailId) {
-//            dump($authMailsIterator->getSql(), $authLdapIterator->getSql());
-//            Toolbox::logInfo('More than one default AuthMail | AuthLDAP found');
-            // @todo maybe too hard and we should return null or even one of them ...
-            throw new \Exception('More than one default AuthMail | AuthLDAP found');
-        }
-
-        if ($authMailId) {
-            return AuthMail::getById($authMailId);
-        } elseif ($authLdapId) {
-            return AuthLDAP::getById($authLdapId);
-        } else {
-            throw new \LogicException('Unexpected Auth source');
-        }
+        return null;
     }
 
 
