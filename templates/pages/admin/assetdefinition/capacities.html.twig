@@ -51,8 +51,9 @@
 
     <input type="text" placeholder="{{ _x('button', 'Search') }}" class="form-control mb-5" id="search-capacities" />
 
+    <div class="row flew-row gx-2">
     {% for capacity in capacities %}
-        {% set label %}
+        {# {% set label %}
             <span class="d-inline-flex align-items-center badge bg-gray-600">
                 <span>{{ capacity.getLabel() }}</span>
                 <i class="ms-1 {{ capacity.getIcon() }}"></i>
@@ -80,11 +81,72 @@
                     title="{{ capacity.getCapacityUsageDescription(classname) }}"></i>
             </label>
         {% endset %}
-        {{ fields.field('capacities[]', field, label, {
-            label_class: 'col-xxl-10',
-            input_class: 'col-xxl-2',
-        }) }}
+        {{ fields.field('capacities[]', label, field, {
+            label_class: 'col-xxl-1',
+            input_class: 'col-xxl-11',
+        }) }} #}
+
+        {# <div class="form-check form-switch col-12 col-sm-6 mb-3">
+            <input type="checkbox"
+                    name="capacities[]"
+                    value="{{ get_class(capacity) }}"
+                    class="form-check-input"
+                    id="{{ get_class(capacity) }}"
+                    data-capacity="{{ get_class(capacity) }}"
+                    data-is-used="{{ capacity.isUsed(classname) ? 1 : 0 }}"
+                    {{ item.hasCapacityEnabled(capacity) ? 'checked' : '' }} />
+            <label class="form-check-label" for="{{ get_class(capacity) }}">
+                <span class="d-inline-flex align-items-center">
+                    <span class="d-inline-flex align-items-center badge bg-gray-600">
+                        <span>{{ capacity.getLabel() }}</span>
+                        <i class="ms-1 {{ capacity.getIcon() }}"></i>
+                    </span>
+
+                    <i class="ti ti-alert-circle-filled text-red fs-2 ms-1 d-none"
+                       data-capacity="{{ get_class(capacity) }}"
+                       data-bs-toggle="tooltip"
+                       title="{{ capacity.getCapacityUsageDescription(classname) }}"></i>
+                </span>
+                {% if capacity.getDescription() is not empty %}
+                    <small class="form-hint">
+                        {{ capacity.getDescription() }}
+                    </small>
+                {% endif %}
+            </label>
+        </div> #}
+
+        <div class="col-12 col-lg-6 col-xxl-4 mb-2">
+            <label class="form-selectgroup-boxes flex-fill w-100 h-100" style="min-height: 70px;">
+                <input type="checkbox"
+                        name="capacities[]"
+                        value="{{ get_class(capacity) }}"
+                        class="form-selectgroup-input"
+                        id="{{ get_class(capacity) }}"
+                        data-capacity="{{ get_class(capacity) }}"
+                        data-is-used="{{ capacity.isUsed(classname) ? 1 : 0 }}"
+                        {{ item.hasCapacityEnabled(capacity) ? 'checked' : '' }} />
+                <div class="form-selectgroup-label d-flex align-items-center h-100 shadow-none p-0 px-3">
+                    <span class="me-2 mt-1">
+                        <i class="{{ capacity.getIcon() }} fa-2x text-secondary"></i>
+                    </span>
+                    <div class="text-start">
+                        <div class="fw-bold">
+                            {{ capacity.getLabel() }}
+                        </div>
+                        {% if capacity.getDescription() is not empty %}
+                        <small class="form-hint">
+                            {{ capacity.getDescription() }}
+                        </small>
+                        {% endif %}
+                    </div>
+                    <div class="me-2 ms-auto">
+                        <span class="form-selectgroup-check"></span>
+                    </div>
+                </div>
+            </label>
+        </div>
     {% endfor %}
+    </div>
 
     {# Modal #}
     <div class="modal fade" id="capacityWarningModal" tabindex="-1" role="dialog" aria-hidden="true">
