@@ -32,11 +32,16 @@
  */
 
 :root {
+    --tblr-light: #f6f8fb;
+    --tblr-dark: #101923;
     --tblr-primary-rgb: 254, 201, 92;
     --tblr-primary: rgb(var(--tblr-primary-rgb));
     --tblr-primary-fg: #1e293b;
+    --tblr-primary-darken: color-mix(in srgb, var(--tblr-primary), black 10%);
     --tblr-secondary: #606f91;
     --tblr-secondary-fg: var(--tblr-body-bg);
+    --tblr-muted: var(--tblr-secondary);
+    --tblr-muted-darken: color-mix(in srgb, var(--tblr-muted), black 10%);
     --tblr-info: #80abe4;
     --tblr-link-color-rgb: 58, 86, 147;
     --tblr-link-color: rgb(var(--tblr-link-color-rgb));
@@ -47,6 +52,16 @@
     --tblr-bg-surface: #fff;
     --tblr-bg-surface-tertiary: var(--tblr-gray-50);
     --tblr-bg-surface-dark: color-mix(in srgb, var(--tblr-bg-surface), var(--tblr-dark) 1.5%);
+    --tblr-gray-100: var(--tblr-light);
+    --tblr-gray-200: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 4%);
+    --tblr-gray-300: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 6%);
+    --tblr-gray-400: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 12%);
+    --tblr-gray-500: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 22%);
+    --tblr-gray-600: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 40%);
+    --tblr-gray-700: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 64%);
+    --tblr-gray-800: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 84%);
+    --tblr-gray-900: var(--tblr-dark);
+    --tblr-gray-50: var(--tblr-gray-200);
     --glpi-tabs-bg: color-mix(in srgb, var(--tblr-bg-surface), black 1.5%);
     --glpi-tabs-fg: var(--tblr-muted);
     --glpi-tabs-border-color: var(--tblr-border-color);
@@ -104,16 +119,6 @@
     --glpi-timeline-badge-bg: rgba(97, 97, 97, 15%);
     --glpi-timeline-badge-fg: rgba(43, 43, 43, 80%);
     --glpi-hover-bg: rgba(var(--tblr-secondary-rgb), .08);
-    --tblr-gray-100: var(--tblr-light);
-    --tblr-gray-200: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 4%);
-    --tblr-gray-300: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 6%);
-    --tblr-gray-400: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 12%);
-    --tblr-gray-500: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 22%);
-    --tblr-gray-600: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 40%);
-    --tblr-gray-700: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 64%);
-    --tblr-gray-800: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 84%);
-    --tblr-gray-900: var(--tblr-dark);
-    --tblr-gray-50: var(--tblr-gray-200);
     --animate-duration: 0.3s !important; // No prefix because it is overrides animate.js default
     --glpi-zindex-dropdown: #{$zindex-dropdown};
     --glpi-zindex-sticky: #{$zindex-sticky};
@@ -272,6 +277,16 @@ body.in_modal {
             }
         }
     }
+
+    &.btn-link {
+        color: var(--tblr-link-color);
+    }
+}
+
+.status {
+    --tblr-status-color: var(--tblr-secondary);
+
+    background-color: color-mix(in srgb, var(--tblr-status-color), transparent 90%);
 }
 
 .toast-container {
@@ -316,6 +331,10 @@ body.in_modal {
 }
 
 table {
+    &.table thead th {
+        font-size: 0.625rem;
+    }
+
     tbody:not(:has(tr)) {
         display: none; // hide empty `tbody`
     }
@@ -484,4 +503,12 @@ body pre {
 // The definition from tabler doesn't seem to take into account our primary color. Bug?
 .border-primary {
     border-color: var(--tblr-primary) !important;
+}
+
+.nav {
+    --tblr-nav-link-color: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 70%);
+}
+
+.text-muted {
+    color: var(--tblr-muted) !important;
 }
