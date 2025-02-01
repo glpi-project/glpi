@@ -1153,7 +1153,7 @@ class NetworkPort extends CommonDBChild
                                         $output .= '<input type="hidden" name="items[NetworkPort_Vlan][' . $row['id'] . ']" value="' . $row['id'] . '">';
                                         $output .= '<input type="hidden" name="action_name" value="' . __('Delete permanently the relation with selected elements') . '">';
                                         $output .= '<input type="hidden" name="_glpi_csrf_token" value="' . Session::getNewCSRFToken() . '">';
-                                        $output .= '<button type="submit" title="' . __('Delete') . '" class="btn-link fas fa-trash"></button>';
+                                        $output .= '<button type="submit" title="' . __('Delete') . '" class="btn-link fas fa-trash" onclick="this.disabled=true;this.form.submit();"></button>';
                                         $output .= '</form>';
                                     }
                                        $output .= '<br/>';
