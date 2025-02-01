@@ -1144,7 +1144,17 @@ class NetworkPort extends CommonDBChild
                                     }
                                         $output .= ($row['tagged'] == 1 ? 'T' : 'U');
                                     if ($canedit) {
-                                        $output .= "<a title='" . __('Delete') . "' href='" . NetworkPort::getFormURLWithID($row['id']) . "&unassign_vlan=unassigned'> <i class='fas fa-trash'></i> <span class='sr-only'>" . __('Delete') . "</span></a>";
+                                        $output .= '<form method="post" action="/front/massiveaction.php" class="d-inline-flex">';
+                                        $output .= '<input type="hidden" name="massiveaction" value="MassiveAction:purge">';
+                                        $output .= '<input type="hidden" name="action" value="purge">';
+                                        $output .= '<input type="hidden" name="processor" value="MassiveAction">';
+                                        $output .= '<input type="hidden" name="is_delete" value="0">';
+                                        $output .= '<input type="hidden" name="initial_items[NetworkPort_Vlan][' . $row['id'] . ']" value="' . $row['id'] . '">';
+                                        $output .= '<input type="hidden" name="items[NetworkPort_Vlan][' . $row['id'] . ']" value="' . $row['id'] . '">';
+                                        $output .= '<input type="hidden" name="action_name" value="' . __('Delete permanently the relation with selected elements') . '">';
+                                        $output .= '<input type="hidden" name="_glpi_csrf_token" value="' . Session::getNewCSRFToken() . '">';
+                                        $output .= '<button type="submit" title="' . __('Delete') . '" class="btn-link fas fa-trash"></button>';
+                                        $output .= '</form>';
                                     }
                                        $output .= '<br/>';
                                 }
