@@ -109,7 +109,6 @@ final class FormDestination extends CommonDBChild
         $renderer->display('pages/admin/form/form_destination.html.twig', [
             'icon'                         => self::getIcon(),
             'form'                         => $item,
-            'controller_url'               => self::getFormURL(),
             'default_destination_object'   => $manager->getDefaultType(),
             'destinations'                 => $item->getDestinations(),
             'available_destinations_types' => $manager->getDestinationTypesDropdownValues(),

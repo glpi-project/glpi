@@ -98,18 +98,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/form/access_control.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^The overwriting exit point is on this line\\.$#',
-	'identifier' => 'finally.exitPoint',
-	'count' => 1,
-	'path' => __DIR__ . '/front/form/destination/formdestination.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^This throw is overwritten by a different one in the finally block below\\.$#',
-	'identifier' => 'finally.exitPoint',
-	'count' => 6,
-	'path' => __DIR__ . '/front/form/destination/formdestination.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type array\\<mixed\\>\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 2,
