@@ -52,17 +52,42 @@ export class GlpiFormServiceCatalogController
                 (e) => this.#loadChildren(e)
             ))
         ;
+
+        // Initialize breadcrumb with root level
+        this.breadcrumb = [{
+            title: __('Service catalog'),
+            params: 'category=0'
+        }];
+
+        // Handle back/forward navigation
+        window.addEventListener('popstate', (event) => {
+            if (event.state && event.state.url_params) {
+                this.#loadItems(event.state.url_params);
+                if (event.state.breadcrumb) {
+                    this.breadcrumb = event.state.breadcrumb;
+                    this.#updateBreadcrumb();
+                }
+            }
+        });
+
+        // Push initial state to history
+        history.replaceState(
+            {
+                url_params: 'category=0',
+                breadcrumb: this.breadcrumb
+            },
+            '',
+            window.location.pathname
+        );
     }
 
     async #filterItems()
     {
         const input = this.#getFilterInput();
-        const url = `${CFG_GLPI.root_doc}/ServiceCatalog/Items`;
         const url_params = new URLSearchParams({
             filter: input.value,
         });
-        const response = await fetch(`${url}?${url_params}`);
-        this.#getFormsArea().innerHTML = await response.text();
+        this.#loadItems(url_params);
     }
 
     async #loadChildren(e)
@@ -73,11 +98,83 @@ export class GlpiFormServiceCatalogController
         const search_input = this.#getFilterInput();
         search_input.value = '';
 
+        const element = e.currentTarget;
+        const title = element.querySelector('.card-title') ? element.querySelector('.card-title').textContent : '';
+        const url_params = element.dataset['childrenUrlParameters'];
+
+        // Update breadcrumb if it doesn't already contain the current item
+        if (!this.breadcrumb.some(item => item.params === url_params)) {
+            this.breadcrumb.push({
+                title: title,
+                params: url_params
+            });
+            this.#updateBreadcrumb();
+        }
+
         // Get children items from backend
+        this.#loadItems(url_params);
+
+        // Push state to history with breadcrumb
+        history.pushState(
+            {
+                url_params,
+                breadcrumb: this.breadcrumb
+            },
+            '',
+            window.location.pathname
+        );
+    }
+
+    async #loadItems(url_params)
+    {
         const url = `${CFG_GLPI.root_doc}/ServiceCatalog/Items`;
-        const url_params = e.currentTarget.dataset['childrenUrlParameters']; // ref to data-children-url-parameters
         const response = await fetch(`${url}?${url_params}`);
         this.#getFormsArea().innerHTML = await response.text();
+
+        // Reattach event listeners to newly loaded elements
+        document
+            .querySelectorAll('[data-children-url-parameters]')
+            .forEach((composite) => composite.addEventListener(
+                'click',
+                (e) => this.#loadChildren(e)
+            ));
+    }
+
+    #updateBreadcrumb() {
+        const breadcrumbContainer = document.querySelector('.breadcrumb');
+        breadcrumbContainer.innerHTML = '';
+
+        this.breadcrumb.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.className = 'breadcrumb-item text-truncate';
+            if (index === this.breadcrumb.length - 1) {
+                li.classList.add('active');
+            }
+
+            const a = document.createElement('a');
+            a.href = `?${item.params}`;
+            a.textContent = item.title;
+            if (index < this.breadcrumb.length - 1) {
+                a.dataset.childrenUrlParameters = item.params;
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.breadcrumb = this.breadcrumb.slice(0, index + 1);
+                    this.#updateBreadcrumb();
+                    this.#loadItems(item.params);
+                    history.pushState(
+                        {
+                            url_params: item.params,
+                            breadcrumb: this.breadcrumb
+                        },
+                        '',
+                        window.location.pathname
+                    );
+                });
+            }
+
+            li.appendChild(a);
+            breadcrumbContainer.appendChild(li);
+        });
     }
 
     #getFilterInput()

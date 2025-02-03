@@ -180,4 +180,67 @@ describe('Service catalog page', () => {
             .should('contain.text', 'Item successfully created')
         ;
     });
+
+    it('can naviate through the service catalog using the breadcrumbs', () => {
+        function createCategory(name, category_id = 0) {
+            return cy.createWithAPI('Glpi\\Form\\Category', {
+                'name': name,
+                'description': `${name} description.`,
+                'forms_categories_id': category_id,
+            });
+        }
+
+        const time = (new Date()).getTime();
+
+        // Create a category tree with 3 levels
+        cy.changeProfile('Super-Admin');
+        createCategory(`Root Category ${time}`).then(category_id => {
+            createCategory(`Child Category 1 ${time}`, category_id).then(category_id => {
+                createCategory(`Child Category 2 ${time}`, category_id).then(category_id => {
+                    createActiveForm('Form 1', category_id);
+                });
+            });
+        });
+
+        // Go to the service catalog
+        cy.changeProfile('Self-Service', true);
+        cy.visit('/ServiceCatalog');
+
+        // Check breadcrumb
+        cy.findByRole('navigation', {'name': 'Service catalog categories'}).within(() => {
+            cy.findByRole('link', {'name': 'Service catalog'}).should('exist');
+            cy.findByRole('link', {'name': `Root Category ${time}`}).should('not.exist');
+            cy.findByRole('link', {'name': `Child Category 1 ${time}`}).should('not.exist');
+            cy.findByRole('link', {'name': `Child Category 2 ${time}`}).should('not.exist');
+        });
+
+        // Go to the first child category
+        cy.findByRole('region', {'name': `Root Category ${time}`}).within(() => {
+            cy.findByRole('link', {'name': `Child Category 1 ${time}`}).click();
+        });
+
+        // Check breadcrumb
+        cy.findByRole('navigation', {'name': 'Service catalog categories'}).within(() => {
+            cy.findByRole('link', {'name': 'Service catalog'}).should('exist');
+            cy.findByRole('link', {'name': `Root Category ${time}`}).should('not.exist');
+            cy.findByRole('link', {'name': `Child Category 1 ${time}`}).should('exist');
+            cy.findByRole('link', {'name': `Child Category 2 ${time}`}).should('not.exist');
+        });
+
+        // Check that the form is visible
+        cy.findByRole('region', {'name': `Child Category 2 ${time}`}).within(() => {
+            cy.findByRole('link', {'name': 'Form 1'}).should('exist');
+        });
+
+        // Go back to the root category
+        cy.findByRole('link', {'name': 'Service catalog'}).click();
+
+        // Check breadcrumb
+        cy.findByRole('navigation', {'name': 'Service catalog categories'}).within(() => {
+            cy.findByRole('link', {'name': 'Service catalog'}).should('exist');
+            cy.findByRole('link', {'name': `Root Category ${time}`}).should('not.exist');
+            cy.findByRole('link', {'name': `Child Category 1 ${time}`}).should('not.exist');
+            cy.findByRole('link', {'name': `Child Category 2 ${time}`}).should('not.exist');
+        });
+    });
 });
