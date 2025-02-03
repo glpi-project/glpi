@@ -1122,9 +1122,10 @@ HTML;
         self::header_nocache();
 
         $theme = $_SESSION['glpipalette'] ?? 'auror';
+        $lang = $_SESSION['glpilanguage'] ?? Session::getPreferredLanguage();
 
         $tpl_vars = [
-            'lang'               => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
+            'lang'               => $CFG_GLPI["languages"][$lang][3],
             'title'              => $title,
             'theme'              => $theme,
             'is_anonymous_page'  => false,
