@@ -7116,7 +7116,7 @@ JAVASCRIPT;
                             ) {
                                 return '';
                             } else {
-                                return $out;
+                                $color = '#AAAAAA';
                             }
                         }
 
@@ -7243,11 +7243,13 @@ JAVASCRIPT;
                             $less_crit       = ($totaltime - $currenttime);
                         }
 
-                        $color = $_SESSION['glpiduedateok_color'];
-                        if ($less_crit < $less_crit_limit) {
-                            $color = $_SESSION['glpiduedatecritical_color'];
-                        } else if ($less_warn < $less_warn_limit) {
-                            $color = $_SESSION['glpiduedatewarning_color'];
+                        if (!isset($color)) {
+                            $color = $_SESSION['glpiduedateok_color'];
+                            if ($less_crit < $less_crit_limit) {
+                                $color = $_SESSION['glpiduedatecritical_color'];
+                            } else if ($less_warn < $less_warn_limit) {
+                                $color = $_SESSION['glpiduedatewarning_color'];
+                            }
                         }
 
                         if (!isset($so['datatype'])) {
