@@ -48,54 +48,54 @@
 
     <input type="hidden" name="_update_capacities" value="1" />
 
-    <input type="text" placeholder="{{ _x('button', 'Search') }}" class="form-control mb-5" id="search-capacities" />
-
     <div class="row flew-row gx-2">
-
-    <div class="d-flex mb-1">
-        <a role="button" class="btn btn-sm btn-outline-secondary ms-auto" id="select-all-capacities">
-            <i class="ti ti-copy-check"></i>
-            <span>{{ __('(Un)select all') }}</span>
-        </a>
-    </div>
-    {% for capacity in capacities %}
-        <div class="col-12 col-lg-6 col-xxl-4 mb-2">
-            <label class="form-selectgroup-boxes flex-fill w-100 h-100" style="min-height: 70px;">
-                <input type="checkbox"
-                        name="capacities[]"
-                        value="{{ get_class(capacity) }}"
-                        class="form-selectgroup-input"
-                        id="{{ get_class(capacity) }}"
-                        data-capacity="{{ get_class(capacity) }}"
-                        data-is-used="{{ capacity.isUsed(classname) ? 1 : 0 }}"
-                        {{ item.hasCapacityEnabled(capacity) ? 'checked' : '' }} />
-                <div class="form-selectgroup-label d-flex align-items-center h-100 shadow-none p-0 px-3">
-                    <span class="me-2 mt-1">
-                        <i class="{{ capacity.getIcon() }} fa-2x text-secondary"></i>
-                    </span>
-                    <div class="text-start">
-                        <div class="fw-bold">
-                            {{ capacity.getLabel() }}
-                        </div>
-                        {% if capacity.getDescription() is not empty %}
-                        <small class="form-hint">
-                            {{ capacity.getDescription() }}
-                        </small>
-                        {% endif %}
-                        <span class="alert-capacity text-red d-none" data-capacity="{{ get_class(capacity) }}">
-                            <i class="ti ti-alert-triangle fs-2"></i>
-                            <span>
-                                {{ capacity.getCapacityUsageDescription(classname) }}
-                            <span
-                        </span>
-                    </div>
-                    <div class="me-2 ms-auto">
-                        <span class="form-selectgroup-check"></span>
-                    </div>
-                </div>
-            </label>
+        <div class="d-flex mb-1">
+            <input type="text" placeholder="{{ _x('button', 'Search') }}" class="me-3" id="search-capacities" />
+            <a role="button" class="btn btn-sm btn-outline-secondary ms-auto" id="select-all-capacities">
+                <i class="ti ti-copy-check"></i>
+                <span>{{ __('(Un)select all') }}</span>
+            </a>
         </div>
-    {% endfor %}
+
+        {% for capacity in capacities %}
+            <div class="col-12 col-lg-6 col-xxl-4 mb-2 capacity-box">
+                <label class="form-selectgroup-boxes flex-fill w-100 h-100" style="min-height: 70px;">
+                    <input type="checkbox"
+                            name="capacities[]"
+                            value="{{ get_class(capacity) }}"
+                            class="form-selectgroup-input"
+                            id="{{ get_class(capacity) }}"
+                            data-capacity="{{ get_class(capacity) }}"
+                            data-capacity-search="{{ capacity.getLabel() ~ ' ' ~ capacity.getDescription() }}"
+                            data-is-used="{{ capacity.isUsed(classname) ? 1 : 0 }}"
+                            {{ item.hasCapacityEnabled(capacity) ? 'checked' : '' }} />
+                    <div class="form-selectgroup-label d-flex align-items-center h-100 shadow-none p-0 px-3">
+                        <span class="me-2 mt-1">
+                            <i class="{{ capacity.getIcon() }} fa-2x text-secondary"></i>
+                        </span>
+                        <div class="text-start">
+                            <div class="fw-bold">
+                                {{ capacity.getLabel() }}
+                            </div>
+                            {% if capacity.getDescription() is not empty %}
+                            <small class="form-hint">
+                                {{ capacity.getDescription() }}
+                            </small>
+                            {% endif %}
+                            <span class="alert-capacity text-red d-none" data-capacity="{{ get_class(capacity) }}">
+                                <i class="ti ti-alert-triangle fs-2"></i>
+                                <span>
+                                    {{ capacity.getCapacityUsageDescription(classname) }}
+                                <span
+                            </span>
+                        </div>
+                        <div class="me-2 ms-auto">
+                            <span class="form-selectgroup-check"></span>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        {% endfor %}
     </div>
 
     {# Modal #}
@@ -188,9 +188,9 @@
                     $('input[name="capacities[]"]').each(function() {
                         const capacity_search = $(this).data('capacity-search').toLowerCase();
                         if (capacity_search.indexOf(search) === -1) {
-                            $(this).closest('.form-field').addClass('d-none');
+                            $(this).closest('.capacity-box').addClass('d-none');
                         } else {
-                            $(this).closest('.form-field').removeClass('d-none');
+                            $(this).closest('.capacity-box').removeClass('d-none');
                         }
                     });
                 }, 250);
