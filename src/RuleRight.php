@@ -249,7 +249,7 @@ class RuleRight extends Rule
     {
         $crit = $this->getCriteria($ID);
         if (count($crit) && $crit['field'] == 'type') {
-            return Auth::getMethodName($pattern, 0);
+            return Auth::getMethodName((int) $pattern, 0);
         }
         return false;
     }

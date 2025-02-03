@@ -1268,91 +1268,72 @@ class Auth extends CommonGLPI
      *
      * @param integer $authtype Authentication method
      * @param integer $auths_id Authentication method ID
-     * @param integer $link     show links to config page? (default 0)
+     * @param boolean $link     show links to config page? (default false)
      * @param string  $name     override the name if not empty (default '')
      *
-     * @return string
+     * @return string If links are requested, the resulting string will be sanitized for correct use in HTML.
+     * If you don't request links and are displaying the result in HTML, you should sanitize the result yourself.
      */
-    public static function getMethodName($authtype, $auths_id, $link = 0, $name = '')
+    public static function getMethodName($authtype, $auths_id, $link = false, $name = '')
     {
-        switch ($authtype) {
-            case self::LDAP:
-                $auth = new AuthLDAP();
-                if ($auth->getFromDB($auths_id)) {
-                   //TRANS: %1$s is the auth method type, %2$s the auth method name or link
-                    return sprintf(__('%1$s: %2$s'), AuthLDAP::getTypeName(1), $auth->getLink());
-                }
-                return sprintf(__('%1$s: %2$s'), AuthLDAP::getTypeName(1), $name);
-
-            case self::MAIL:
-                $auth = new AuthMail();
-                if ($auth->getFromDB($auths_id)) {
-                    //TRANS: %1$s is the auth method type, %2$s the auth method name or link
-                    return sprintf(__('%1$s: %2$s'), AuthMail::getTypeName(1), $auth->getLink());
-                }
-                return sprintf(__('%1$s: %2$s'), __('Email server'), $name);
-
-            case self::CAS:
-                if ($auths_id > 0) {
-                    $auth = new AuthLDAP();
-                    if ($auth->getFromDB($auths_id)) {
-                        return sprintf(
-                            __('%1$s: %2$s'),
-                            sprintf(
-                                __('%1$s + %2$s'),
-                                __('CAS'),
-                                AuthLDAP::getTypeName(1)
-                            ),
-                            $auth->getLink()
-                        );
-                    }
-                }
-                return __('CAS');
-
-            case self::X509:
-                if ($auths_id > 0) {
-                    $auth = new AuthLDAP();
-                    if ($auth->getFromDB($auths_id)) {
-                        return sprintf(
-                            __('%1$s: %2$s'),
-                            sprintf(
-                                __('%1$s + %2$s'),
-                                __('x509 certificate authentication'),
-                                AuthLDAP::getTypeName(1)
-                            ),
-                            $auth->getLink()
-                        );
-                    }
-                }
-                return __('x509 certificate authentication');
-
-            case self::EXTERNAL:
-                if ($auths_id > 0) {
-                    $auth = new AuthLDAP();
-                    if ($auth->getFromDB($auths_id)) {
-                        return sprintf(
-                            __('%1$s: %2$s'),
-                            sprintf(
-                                __('%1$s + %2$s'),
-                                __('Other'),
-                                AuthLDAP::getTypeName(1)
-                            ),
-                            $auth->getLink()
-                        );
-                    }
-                }
-                return __('Other');
-
-            case self::DB_GLPI:
-                return __('GLPI internal database');
-
-            case self::API:
-                return __("API");
-
-            case self::NOT_YET_AUTHENTIFIED:
-                return __('Not yet authenticated');
+        $auth_type_label = match ($authtype) {
+            self::LDAP => AuthLDAP::getTypeName(1),
+            self::MAIL => AuthMail::getTypeName(1),
+            self::CAS => __('CAS'),
+            self::X509 => __('x509 certificate authentication'),
+            self::EXTERNAL => __('Other'),
+            self::DB_GLPI => __('GLPI internal database'),
+            self::API => __("API"),
+            self::NOT_YET_AUTHENTIFIED => __('Not yet authenticated'),
+            default => '',
+        };
+        // Label used for special auth types when there is also a valid LDAP connection
+        $auth_type_label_ldap = match ($authtype) {
+            self::CAS => sprintf(
+                __('%1$s + %2$s'),
+                __('CAS'),
+                AuthLDAP::getTypeName(1)
+            ),
+            self::X509 => sprintf(
+                __('%1$s + %2$s'),
+                __('x509 certificate authentication'),
+                AuthLDAP::getTypeName(1)
+            ),
+            self::EXTERNAL => sprintf(
+                __('%1$s + %2$s'),
+                __('Other'),
+                AuthLDAP::getTypeName(1)
+            ),
+            default => '',
+        };
+        if (in_array($authtype, [self::DB_GLPI, self::API, self::NOT_YET_AUTHENTIFIED])) {
+            // escaping when link requested even if no link to be consistent
+            return $link ? htmlspecialchars($auth_type_label) : $auth_type_label;
         }
-        return '';
+
+        $auth = match ($authtype) {
+            self::LDAP, self::CAS, self::X509, self::EXTERNAL => new AuthLDAP(),
+            self::MAIL => new AuthMail(),
+            default => null,
+        };
+
+        if (!$auth || !$auth->getFromDB($auths_id)) {
+            $auth_server_name = htmlspecialchars($name);
+        } else {
+            $auth_server_name = $link ? $auth->getLink() : $auth->getName();
+            $auth_type_label = $auth_type_label_ldap ?: $auth_type_label;
+        }
+
+        if ($link) {
+            $auth_type_label = htmlspecialchars($auth_type_label);
+        }
+
+        if ($auth_type_label === '') {
+            return '';
+        } else if ($auth_server_name === '') {
+            return $auth_type_label;
+        }
+        return sprintf(__('%1$s: %2$s'), $auth_type_label, $auth_server_name);
     }
 
     /**
