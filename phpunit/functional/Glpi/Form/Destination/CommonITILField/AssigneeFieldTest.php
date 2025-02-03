@@ -45,7 +45,6 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
-use Glpi\PHPUnit\Tests\Glpi\Form\Destination\CommonITILField\AbstractActorFieldTest;
 use Glpi\Tests\FormBuilder;
 use Group;
 use Override;
@@ -55,6 +54,8 @@ use Ticket;
 use TicketTemplate;
 use TicketTemplatePredefinedField;
 use User;
+
+include_once __DIR__ . '/../../../../../abstracts/AbstractActorFieldTest.php';
 
 final class AssigneeFieldTest extends AbstractActorFieldTest
 {

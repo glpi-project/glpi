@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\PHPUnit\Tests\Glpi\Form\Destination\CommonITILField;
+namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use Computer;
 use DbTestCase;

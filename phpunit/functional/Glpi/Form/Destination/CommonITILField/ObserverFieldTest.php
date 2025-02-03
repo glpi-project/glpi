@@ -36,7 +36,6 @@
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use CommonITILActor;
-use Computer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ObserverFieldConfig;
@@ -45,10 +44,7 @@ use Glpi\Form\Destination\CommonITILField\ObserverField;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
-use Glpi\Form\QuestionType\QuestionTypeItem;
-use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
-use Glpi\PHPUnit\Tests\Glpi\Form\Destination\CommonITILField\AbstractActorFieldTest;
 use Glpi\Tests\FormBuilder;
 use Group;
 use Override;
@@ -56,6 +52,8 @@ use Ticket;
 use TicketTemplate;
 use TicketTemplatePredefinedField;
 use User;
+
+include_once __DIR__ . '/../../../../../abstracts/AbstractActorFieldTest.php';
 
 final class ObserverFieldTest extends AbstractActorFieldTest
 {
