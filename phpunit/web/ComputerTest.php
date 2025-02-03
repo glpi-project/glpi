@@ -35,7 +35,7 @@
 
 namespace tests\units;
 
-class Computer extends \FrontBaseClass
+class ComputerTest extends \FrontBaseClass
 {
     public function testComputerCreate()
     {
@@ -58,7 +58,10 @@ class Computer extends \FrontBaseClass
         );
 
         $computer = new \Computer();
-        $this->boolean($computer->getFromDBByCrit(['uuid' => 'thetestuuidtoremove']))->isTrue();
-        $this->string($computer->fields['name'])->isIdenticalTo('A test > computer & name');
+        $this->assertTrue($computer->getFromDBByCrit(['uuid' => 'thetestuuidtoremove']));
+        $this->assertSame(
+            'A test > computer & name',
+            $computer->fields['name']
+        );
     }
 }

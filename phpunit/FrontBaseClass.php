@@ -41,21 +41,21 @@ class FrontBaseClass extends \GLPITestCase
     protected string $base_uri;
 
     private array $items_to_cleanup = [];
-    public function beforeTestMethod($method)
+    public function setUp(): void
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_GLPI;
 
         $this->http_client = new HttpBrowser();
         $this->base_uri    = trim($CFG_GLPI['url_base'], "/") . "/";
 
         $this->doCleanup();
-        parent::beforeTestMethod($method);
+        parent::setUp();
     }
 
-    public function afterTestMethod($method)
+    public function tearDown(): void
     {
         $this->doCleanup();
-        parent::afterTestMethod($method);
+        parent::tearDown();
     }
 
     protected function logIn()
@@ -71,7 +71,10 @@ class FrontBaseClass extends \GLPITestCase
 
         //once logged in, we reach standard interface
         $page_title = $crawler->filter('title')->text();
-        $this->string($page_title)->isIdenticalTo('Standard interface - GLPI');
+        $this->assertSame(
+            'Standard interface - GLPI',
+            $page_title
+        );
     }
 
     protected function addToCleanup(string $itemtype, array $criteria)

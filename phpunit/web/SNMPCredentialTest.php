@@ -35,7 +35,7 @@
 
 namespace tests\units;
 
-class SNMPCredential extends \FrontBaseClass
+class SNMPCredentialTest extends \FrontBaseClass
 {
     public function testCreate()
     {
@@ -62,11 +62,11 @@ class SNMPCredential extends \FrontBaseClass
         );
 
         $credential = new \SNMPCredential();
-        $this->boolean($credential->getFromDBByCrit(['name' => 'thetestuuidtoremove']))->isTrue();
+        $this->assertTrue($credential->getFromDBByCrit(['name' => 'thetestuuidtoremove']));
 
-        $this->string($credential->fields['auth_passphrase'])->isNotIdenticalTo($auth_passphrase);
-        $this->string((new \GLPIKey())->decrypt($credential->fields['auth_passphrase']))->isIdenticalTo($auth_passphrase);
-        $this->string($credential->fields['priv_passphrase'])->isNotIdenticalTo($priv_passphrase);
-        $this->string((new \GLPIKey())->decrypt($credential->fields['priv_passphrase']))->isIdenticalTo($priv_passphrase);
+        $this->assertNotEquals($auth_passphrase, $credential->fields['auth_passphrase']);
+        $this->assertSame($auth_passphrase, (new \GLPIKey())->decrypt($credential->fields['auth_passphrase']));
+        $this->assertNotEquals($priv_passphrase, $credential->fields['priv_passphrase']);
+        $this->assertSame($priv_passphrase, (new \GLPIKey())->decrypt($credential->fields['priv_passphrase']));
     }
 }
