@@ -51,15 +51,15 @@ class logInFileTest extends \GLPITestCase
     {
         parent::setUp();
         // remove the log file if it exists
-        assert(!file_exists($this->getLogCustomFilePath()) || @unlink($this->getLogCustomFilePath()));
-        assert(!file_exists($this->getDefaultFilePath()) || @unlink($this->getDefaultFilePath()));
+        assert(!file_exists($this->getCustomLogFilePath()) || unlink($this->getCustomLogFilePath()));
+        assert(!file_exists($this->getDefaultFilePath()) || unlink($this->getDefaultFilePath()));
     }
 
     public function test_LogInFile_LogsAreWrittenInLogFile(): void
     {
         assert(\Toolbox::logInFile(self::TEST_CUSTOM_LOG_FILE_NAME, 'The logged message'), 'log failed');
 
-        $this->assertFileExists($this->getLogCustomFilePath());
+        $this->assertFileExists($this->getCustomLogFilePath());
     }
 
     public function test_LogInFile_SeeExpectedContentsInLogFile(): void
@@ -67,7 +67,15 @@ class logInFileTest extends \GLPITestCase
         $message = 'The logged message';
         assert(\Toolbox::logInFile(self::TEST_CUSTOM_LOG_FILE_NAME, $message), 'log failed');
 
-        $this->assertStringContainsString($message, file_get_contents($this->getLogCustomFilePath()));
+        $this->assertStringContainsString($message, file_get_contents($this->getCustomLogFilePath()));
+    }
+
+    public function test_LogInFile_FilterRootPathInLogFile(): void
+    {
+        $messageWithPath = 'Error somewhere in the path ' . GLPI_ROOT . ' triggered';
+        assert(\Toolbox::logInFile(self::TEST_CUSTOM_LOG_FILE_NAME, $messageWithPath), 'log failed');
+
+        $this->assertStringNotContainsString(\GLPI_ROOT, file_get_contents($this->getCustomLogFilePath()));
     }
 
     public function test_Log_LogsAreWrittenInLogFile(): void
@@ -92,11 +100,25 @@ class logInFileTest extends \GLPITestCase
         $this->assertStringContainsString($message, file_get_contents($this->getDefaultFilePath()));
     }
 
-    private function getLogCustomFilePath(): string
+    public function test_Log_FilterRootPathInLogFile(): void
+    {
+        $PHPLOGGER = new Logger('glpi_test');
+        $PHPLOGGER->pushHandler(new ErrorLogHandler());
+
+        $message = 'This is a test error at ' . GLPI_ROOT;
+        $PHPLOGGER->error($message);
+
+        $this->assertStringNotContainsString(GLPI_ROOT, file_get_contents($this->getDefaultFilePath()));
+    }
+
+    private function getCustomLogFilePath(): string
     {
         return GLPI_LOG_DIR . "/" . self::TEST_CUSTOM_LOG_FILE_NAME . ".log";
     }
 
+    /**
+     * value hardcoded in \Glpi\Log\ErrorLogHandler::__construct()
+     */
     private function getDefaultFilePath(): string
     {
         return GLPI_LOG_DIR . "/php-errors.log";

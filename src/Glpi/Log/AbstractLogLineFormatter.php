@@ -63,6 +63,11 @@ abstract class AbstractLogLineFormatter extends LineFormatter
         return $message;
     }
 
+    public function stringify($value): string
+    {
+        return $this->cleanPath(parent::stringify($value));
+    }
+
     private function getTraceAsString(array $trace): string
     {
         if (empty($trace)) {
@@ -97,10 +102,6 @@ abstract class AbstractLogLineFormatter extends LineFormatter
      */
     private function cleanPath(string $path): string
     {
-        if (\str_starts_with($path, \GLPI_ROOT)) {
-            $path = \substr($path, \strlen(\GLPI_ROOT) + 1);
-        }
-
-        return $path;
+        return str_replace(\GLPI_ROOT, "<GLPI_ROOT>", $path);
     }
 }
