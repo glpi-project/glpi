@@ -2275,7 +2275,7 @@ class Entity extends CommonTreeDropdown
         Alert::dropdownIntegerNever(
             'send_contracts_alert_before_delay',
             $entity->fields['send_contracts_alert_before_delay'],
-            ['max'            => 99,
+            ['max'            => 365,
                 'inherit_parent' => (($ID > 0) ? 1 : 0),
                 'unit'           => 'day',
                 'never_string'   => __('No')
@@ -2322,7 +2322,7 @@ class Entity extends CommonTreeDropdown
         Alert::dropdownIntegerNever(
             'send_infocoms_alert_before_delay',
             $entity->fields['send_infocoms_alert_before_delay'],
-            ['max'            => 99,
+            ['max'            => 365,
                 'inherit_parent' => (($ID > 0) ? 1 : 0),
                 'unit'           => 'day',
                 'never_string'   => __('No')
@@ -2356,7 +2356,7 @@ class Entity extends CommonTreeDropdown
         Alert::dropdownIntegerNever(
             'send_licenses_alert_before_delay',
             $entity->fields['send_licenses_alert_before_delay'],
-            ['max'            => 99,
+            ['max'            => 365,
                 'inherit_parent' => (($ID > 0) ? 1 : 0),
                 'unit'           => 'day',
                 'never_string'   => __('No')
@@ -2391,7 +2391,7 @@ class Entity extends CommonTreeDropdown
         Alert::dropdownIntegerNever(
             'send_certificates_alert_before_delay',
             $entity->fields['send_certificates_alert_before_delay'],
-            ['max'            => 99,
+            ['max'            => 365,
                 'inherit_parent' => (($ID > 0) ? 1 : 0),
                 'unit'           => 'day',
                 'never_string'   => __('No')
@@ -2426,7 +2426,7 @@ class Entity extends CommonTreeDropdown
         Alert::dropdownIntegerNever(
             'use_reservations_alert',
             $entity->fields['use_reservations_alert'],
-            ['max'            => 99,
+            ['max'            => 365,
                 'inherit_parent' => (($ID > 0) ? 1 : 0),
                 'unit'           => 'hour'
             ]
@@ -2445,7 +2445,7 @@ class Entity extends CommonTreeDropdown
         Alert::dropdownIntegerNever(
             'notclosed_delay',
             $entity->fields["notclosed_delay"],
-            ['max'            => 99,
+            ['max'            => 365,
                 'inherit_parent' => (($ID > 0) ? 1 : 0),
                 'unit'           => 'day'
             ]
@@ -2478,7 +2478,7 @@ class Entity extends CommonTreeDropdown
             'send_domains_alert_close_expiries_delay',
             $entity->fields["send_domains_alert_close_expiries_delay"],
             [
-                'max'            => 99,
+                'max'            => 365,
                 'inherit_parent' => (($ID > 0) ? 1 : 0),
                 'unit'           => 'day'
             ]
@@ -2494,7 +2494,7 @@ class Entity extends CommonTreeDropdown
             'send_domains_alert_expired_delay',
             $entity->fields["send_domains_alert_expired_delay"],
             [
-                'max'            => 99,
+                'max'            => 365,
                 'inherit_parent' => (($ID > 0) ? 1 : 0),
                 'unit'           => 'day'
             ]
