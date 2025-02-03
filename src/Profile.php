@@ -1614,7 +1614,7 @@ class Profile extends CommonDBTM
 
         $description = __s('Enables or disables the ability to mention users within the application.') . "<br><br>";
         $description .= "<b>" . __s('Disabled') . "</b> : " . __('User mentions are disabled for this profile.') . "<br><br>";
-        $description .= "<b>" . __s('Full') . "</b> : " . __('Displays all users.') . "<br><br>";
+        $description .= "<b>" . __s('Full') . "</b> : " . __('Displays all users. Mentioned users will be added as observers if they are not already actors.') . "<br><br>";
         $description .= "<b>" . __s('Restricted') . "</b> : " . __('Limits the display to actors directly involved in the ticket.') . "<br><br><br>";
 
         $disabled = false;
