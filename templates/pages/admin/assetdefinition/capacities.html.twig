@@ -52,6 +52,13 @@
     <input type="text" placeholder="{{ _x('button', 'Search') }}" class="form-control mb-5" id="search-capacities" />
 
     <div class="row flew-row gx-2">
+
+    <div class="d-flex mb-1">
+        <a role="button" class="btn btn-sm btn-outline-secondary ms-auto" id="select-all-capacities">
+            <i class="ti ti-copy-check"></i>
+            <span>{{ __('(Un)select all') }}</span>
+        </a>
+    </div>
     {% for capacity in capacities %}
         <div class="col-12 col-lg-6 col-xxl-4 mb-2">
             <label class="form-selectgroup-boxes flex-fill w-100 h-100" style="min-height: 70px;">
@@ -188,6 +195,20 @@
                         }
                     });
                 }, 250);
+            });
+
+            // (un)toggle all capacities button
+            $('#select-all-capacities').on('click', function() {
+                var $checkboxes = $('input[name="capacities[]"]');
+                var $checkedCheckboxes = $checkboxes.filter(':checked');
+
+                if ($checkedCheckboxes.length === $checkboxes.length) {
+                    $checkboxes.prop('checked', false);
+                } else {
+                    $checkboxes.prop('checked', true);
+                }
+
+                $checkboxes.trigger('change');
             });
         });
     </script>
