@@ -275,6 +275,26 @@ class APIRest extends API
                 default:
                 case "GET": // retrieve item(s)
                     if (
+                        $itemtype === \Document::class
+                        && $id > 0
+                        && (
+                            ($_SERVER['HTTP_ACCEPT'] ?? null) === 'application/octet-stream'
+                            || ($this->parameters['alt'] ?? null) === 'media'
+                        )
+                    ) {
+                        // Raw document download
+                        $document = new \Document();
+                        if (!$document->getFromDB($id)) {
+                            $this->messageNotfoundError();
+                        }
+                        if (!$document->can($id, READ)) {
+                            $this->messageRightError();
+                        }
+                        $document->send();
+                        exit();
+                    }
+
+                    if (
                         $id > 0
                         || ($id !== false && $id == 0 && $itemtype == "Entity")
                     ) {
@@ -373,7 +393,7 @@ class APIRest extends API
      *                            (default true)
      * @param boolean $all_assets if we can have allasset virtual type (default false)
      *
-     * @return boolean
+     * @return false|class-string<\CommonDBTM>
      */
     private function getItemtype($index = 0, $recursive = true, $all_assets = false)
     {
