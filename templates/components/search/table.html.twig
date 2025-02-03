@@ -82,7 +82,7 @@
                   {% set col_name = __('%1$s - %2$s')|format(col['itemtype']|itemtype_name, col_name) %}
                {% endif %}
 
-               <th data-searchopt-id="{{ col['id'] }}" {% if not can_sort %}data-nosort="true"{% endif %} data-sort-order="{{ sort_order }}"
+               <th scope='col' data-searchopt-id="{{ col['id'] }}" {% if not can_sort %}data-nosort="true"{% endif %} data-sort-order="{{ sort_order }}"
                   {% if sort_num is not empty %}data-sort-num="{{ sort_num - 1 }}"{% endif %}>
                   {% set sort_icon = sort_order == 'ASC' ? 'fas fa-sort-up' : (sort_order == 'DESC' ? 'fas fa-sort-down' : '') %}
                   {{ col_name }}

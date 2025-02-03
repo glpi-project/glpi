@@ -3,6 +3,8 @@ import globals from "globals";
 import vue from "eslint-plugin-vue";
 import js from "@eslint/js";
 import cypress from "eslint-plugin-cypress/flat";
+import playwright from 'eslint-plugin-playwright';
+import tsParser from "@typescript-eslint/parser";
 
 export default [
     {
@@ -19,10 +21,24 @@ export default [
             "public/lib/*",
             "tests/config/*",
             "vendor/*",
-            "**/*.min.js"
+            "**/*.min.js",
         ],
     },
     js.configs.recommended,
+    {
+        files: ["tests/playwright/**/*.ts"],
+        languageOptions: {
+            parser: tsParser,
+            parserOptions: {
+                project: "./tsconfig.json",
+                ecmaVersion: 'latest',
+                sourceType: "module"
+            },
+            globals: {
+                ...globals.node,
+            }
+        },
+    },
     {
         languageOptions: {
             ecmaVersion: 13,
@@ -161,5 +177,14 @@ export default [
         "rules": {
             "prefer-template": "off",
         }
+    },
+    {
+        ...playwright.configs['flat/recommended'],
+        files: ['tests/playwright/**'],
+        rules: {
+            ...playwright.configs['flat/recommended'].rules,
+            "playwright/no-force-option": "error",
+            "playwright/no-raw-locators": "error",
+        },
     }
 ];
