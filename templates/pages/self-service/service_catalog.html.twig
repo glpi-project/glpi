@@ -37,7 +37,11 @@
 
 {% block content_title %}
     <div class="d-flex">
-        <span>{{ __('Service catalog') }}</span>
+        <ol class="breadcrumb breadcrumb-alternate" aria-label="{{ __("Service catalog categories") }}" role="navigation">
+            <li class="breadcrumb-item text-truncate active">
+                <a href="?category=0" data-children-url-parameters="category=0">{{ __('Service catalog') }}</a>
+            </li>
+        </ol>
         <div class="ms-auto input-icon">
             <input
                 class="form-control"
