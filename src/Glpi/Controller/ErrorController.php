@@ -36,6 +36,7 @@ namespace Glpi\Controller;
 
 use Config;
 use DBConnection;
+use Glpi\Error\ErrorUtils;
 use Html;
 use Session;
 use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
@@ -103,19 +104,16 @@ class ErrorController extends AbstractController
                 || isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
             )
         ) {
-            $cleanFilePath = static function ($filePath) {
-                return \str_replace(\GLPI_ROOT, '.', $filePath);
-            };
             $trace = sprintf(
                 "%s\nIn %s(%s)",
                 $exception->getMessage() ?: $exception::class,
-                $cleanFilePath($exception->getFile()),
+                $this->cleanPaths($exception->getFile()),
                 $exception->getLine()
             );
 
             if (!($exception instanceof OutOfMemoryError)) {
                 // Note: OutOfMemoryError has no stack trace, we can only get filename and line.
-                $trace .= "\n" . $cleanFilePath($exception->getTraceAsString());
+                $trace .= "\n" . $this->cleanPaths($exception->getTraceAsString());
             }
 
             $current = $exception;
@@ -124,10 +122,10 @@ class ErrorController extends AbstractController
                 $trace .= sprintf(
                     "\n\nPrevious: %s\nIn %s(%s)",
                     $previous->getMessage() ?: $previous::class,
-                    $cleanFilePath($previous->getFile()),
+                    $this->cleanPaths($previous->getFile()),
                     $previous->getLine()
                 );
-                $trace .= "\n" . $cleanFilePath($previous->getTraceAsString());
+                $trace .= "\n" . $this->cleanPaths($previous->getTraceAsString());
 
                 $current = $previous;
                 $depth++;
@@ -184,5 +182,10 @@ class ErrorController extends AbstractController
             ] + $error_block_params,
             new Response(status: $status_code)
         );
+    }
+
+    private function cleanPaths(string $message): string
+    {
+        return ErrorUtils::cleanPaths($message);
     }
 }

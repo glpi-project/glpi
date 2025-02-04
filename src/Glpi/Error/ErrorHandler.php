@@ -159,10 +159,10 @@ final class ErrorHandler extends BaseErrorHandler
             default             => 'Unknown error',
         };
 
-        $safeFilePath = \str_replace(\GLPI_ROOT, '.', $file);
+        // @todo clean message, too
         self::displayErrorMessage(
             \sprintf('PHP %s (%s)', $error_type, $type),
-            \sprintf('%s in %s at line %s', $message, $safeFilePath, $line),
+            \sprintf('%s in %s at line %s', $message, $this->cleanPaths($file), $line),
             self::ERROR_LEVEL_MAP[$type],
         );
 
@@ -211,10 +211,9 @@ final class ErrorHandler extends BaseErrorHandler
      */
     public static function displayCaughtExceptionMessage(\Throwable $exception): void
     {
-        $safeFilePath = \str_replace(\GLPI_ROOT, '.', $exception->getFile());
         self::displayErrorMessage(
             \sprintf('Caught %s', $exception::class),
-            \sprintf('%s in %s at line %s', $exception->getMessage(), $safeFilePath, $exception->getLine()),
+            \sprintf('%s in %s at line %s', $exception->getMessage(), self::cleanPaths($exception->getFile()), $exception->getLine()),
             LogLevel::ERROR,
         );
     }
@@ -260,5 +259,10 @@ final class ErrorHandler extends BaseErrorHandler
     private function disableNativeErrorDisplaying(): void
     {
         \ini_set('display_errors', 'Off');
+    }
+
+    private static function cleanPaths(string $message): string
+    {
+        return ErrorUtils::cleanPaths($message);
     }
 }

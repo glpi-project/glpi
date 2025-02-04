@@ -34,6 +34,7 @@
 
 namespace Glpi\Log;
 
+use Glpi\Error\ErrorUtils;
 use Monolog\Formatter\LineFormatter;
 
 abstract class AbstractLogLineFormatter extends LineFormatter
@@ -97,11 +98,8 @@ abstract class AbstractLogLineFormatter extends LineFormatter
         return $message;
     }
 
-    /**
-     * Remove the GLPI root directory from file paths.
-     */
     private function cleanPath(string $path): string
     {
-        return str_replace(\GLPI_ROOT, ".", $path);
+        return ErrorUtils::cleanPaths($path);
     }
 }

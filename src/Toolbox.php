@@ -35,6 +35,7 @@
 
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
+use Glpi\Error\ErrorUtils;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
@@ -3315,12 +3316,11 @@ HTML;
     }
 
     /**
-     * @param string $msg
-     * @return array|string|string[]
+     * @param string $message
+     * @return string
      */
-    public static function cleanPaths(string $msg): string|array
+    public static function cleanPaths(string $message): string
     {
-        // remove GLPI_ROOT from paths
-        return str_replace(GLPI_ROOT, ".", $msg);
+        return ErrorUtils::cleanPaths($message);
     }
 }
