@@ -157,7 +157,7 @@ class Dropdown
         }
 
         $params['name'] = Html::sanitizeInputName($params['name']);
-        $params['width'] = (int) $params['width'];
+        $params['width'] = htmlescape($params['width']);
 
         $output       = '';
         $name         = $params['emptylabel'];
@@ -1780,7 +1780,7 @@ JAVASCRIPT;
      *    - used                : array / Already used items ID: not to display in dropdown (default empty)
      *    - display             : true : display directly, false return the html
      *
-     * @return integer randomized value used to generate HTML IDs
+     * @return string randomized value used to generate HTML IDs or html contents
      **/
     public static function showSelectItemFromItemtypes(array $options = [])
     {

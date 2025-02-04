@@ -670,7 +670,7 @@ TWIG, $twig_params);
      *    - entity_sons : boolean / if entity restrict specified auto select its sons
      *                   only available if entity is a single value not an array (default false)
      *
-     * @return integer random part of elements id
+     * @return string random part of elements id
      **/
     public static function dropdownConnect($ID, $options = [])
     {

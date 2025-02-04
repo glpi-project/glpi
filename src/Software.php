@@ -650,7 +650,7 @@ class Software extends CommonDBTM
      * @param string $myname select name
      * @param integer|array<int> $entity_restrict restrict to a defined entity
      *
-     * @return integer random part of elements id
+     * @return string random part of elements id
      **/
     public static function dropdownSoftwareToInstall($myname, $entity_restrict)
     {
