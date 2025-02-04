@@ -411,15 +411,16 @@ class PendingReason_Item extends CommonDBRelation
             ) {
                 $pending_updates[$field] = $new_timeline_item->input[$field];
             } else {
-                $pending_updates[$field] = 0;
+                $pending_updates[$field] = "0";
             }
         }
 
-        if ($new_timeline_item::class === ITILFollowup::class) {
-            self::createForItem($new_timeline_item, $pending_updates);
-        }
+        self::createForItem($new_timeline_item, $pending_updates);
 
-        self::updateForItem($new_timeline_item->input['_job'], $pending_updates);
+        // If the ticket is already pending and the follow-up is pending, updating the ticket waiting is not necessary
+        if (!($new_timeline_item::class === ITILFollowup::class && $pending_updates['pendingreasons_id'] === "0")) {
+            self::updateForItem($new_timeline_item->input['_job'], $pending_updates);
+        }
     }
 
     /**
