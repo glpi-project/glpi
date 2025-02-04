@@ -3575,11 +3575,14 @@ class CommonDBTM extends CommonGLPI
      **/
     public function isField($field)
     {
+        /** @var \DBmysql $DB */
+        global $DB;
 
-        if (!isset($this->fields['id'])) {
-            $this->getEmpty();
+        if (static::$notable === true) {
+            return false;
         }
-        return array_key_exists($field, $this->fields);
+
+        return array_key_exists($field, $DB->listFields(static::getTable()));
     }
 
 
@@ -3920,15 +3923,16 @@ class CommonDBTM extends CommonGLPI
      **/
     final public function searchOptions()
     {
-        $type = $this->getType();
-
-        if (isset(self::$search_options_cache[$type])) {
-            return self::$search_options_cache[$type];
+        if (isset(self::$search_options_cache[static::class])) {
+            return self::$search_options_cache[static::class];
         }
 
-        $options[$type] = [];
+        self::$search_options_cache[static::class] = [];
 
-        foreach ($this->rawSearchOptions() as $opt) {
+        // Force usage of a new object, to be sure that the current object will not be altered.
+        $self = new static();
+
+        foreach ($self->rawSearchOptions() as $opt) {
             // FIXME In GLPI 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
 
             $missingFields = [];
@@ -3954,20 +3958,21 @@ class CommonDBTM extends CommonGLPI
             $optid = $opt['id'];
             unset($opt['id']);
 
-            if (isset($options[$type][$optid])) {
-                $message = "Duplicate key $optid ({$options[$type][$optid]['name']}/{$opt['name']}) in " .
-                  get_class($this) . " searchOptions!";
-
+            if (isset(self::$search_options_cache[static::class][$optid])) {
+                $message = sprintf(
+                    'Duplicate key `%s` (`%s`/`%s`) in `%s` search options.',
+                    $optid,
+                    self::$search_options_cache[static::class][$optid]['name'],
+                    $opt['name'],
+                    static::class
+                );
                 trigger_error($message, E_USER_WARNING);
             }
 
-            foreach ($opt as $k => $v) {
-                $options[$type][$optid][$k] = $v;
-            }
+            self::$search_options_cache[static::class][$optid] = $opt;
         }
 
-        self::$search_options_cache[$type] = $options[$type];
-        return $options[$type];
+        return self::$search_options_cache[static::class];
     }
 
 
