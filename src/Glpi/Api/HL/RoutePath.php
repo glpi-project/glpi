@@ -147,6 +147,9 @@ final class RoutePath
         if (!$is_hydrated) {
             [$controller, $method] = explode('::', $this->key);
             try {
+                if (!\is_a($controller, AbstractController::class, true)) {
+                    throw new \Exception('Invalid controller');
+                }
                 $this->controller = new ReflectionClass($controller);
                 $this->method = $this->controller->getMethod($method);
                 if (!$this->method->isPublic()) {
