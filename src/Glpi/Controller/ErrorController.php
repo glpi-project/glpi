@@ -106,7 +106,7 @@ class ErrorController extends AbstractController
         ) {
             $trace = sprintf(
                 "%s\nIn %s(%s)",
-                $exception->getMessage() ?: $exception::class,
+                $this->cleanPaths($exception->getMessage() ?: $exception::class),
                 $this->cleanPaths($exception->getFile()),
                 $exception->getLine()
             );
@@ -121,7 +121,7 @@ class ErrorController extends AbstractController
             while ($depth < 10 && $previous = $current->getPrevious()) {
                 $trace .= sprintf(
                     "\n\nPrevious: %s\nIn %s(%s)",
-                    $previous->getMessage() ?: $previous::class,
+                    $this->cleanPaths($previous->getMessage() ?: $previous::class),
                     $this->cleanPaths($previous->getFile()),
                     $previous->getLine()
                 );

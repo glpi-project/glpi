@@ -159,10 +159,9 @@ final class ErrorHandler extends BaseErrorHandler
             default             => 'Unknown error',
         };
 
-        // @todo clean message, too
         self::displayErrorMessage(
             \sprintf('PHP %s (%s)', $error_type, $type),
-            \sprintf('%s in %s at line %s', $message, $this->cleanPaths($file), $line),
+            \sprintf('%s in %s at line %s', $this->cleanPaths($message), $this->cleanPaths($file), $line),
             self::ERROR_LEVEL_MAP[$type],
         );
 
@@ -213,7 +212,7 @@ final class ErrorHandler extends BaseErrorHandler
     {
         self::displayErrorMessage(
             \sprintf('Caught %s', $exception::class),
-            \sprintf('%s in %s at line %s', $exception->getMessage(), self::cleanPaths($exception->getFile()), $exception->getLine()),
+            \sprintf('%s in %s at line %s', self::cleanPaths($exception->getMessage()), self::cleanPaths($exception->getFile()), $exception->getLine()),
             LogLevel::ERROR,
         );
     }
