@@ -107,7 +107,7 @@ if (
                     $options['toupdate'] = $toupdate;
                 }
 
-                $rand = htmlescape(User::dropdown($options));
+                $rand = User::dropdown($options);
 
 
                 // Display active tickets for a tech
@@ -124,7 +124,7 @@ if (
                     echo "<br><span id='notif_user_$rand'>";
                     if ($withemail) {
                         echo __s('Email followup') . '&nbsp;';
-                        $rand = htmlescape(Dropdown::showYesNo('_itil_' . $_POST["actortype"] . '[use_notification]', $_POST["use_notif"]));
+                        $rand = Dropdown::showYesNo('_itil_' . $_POST["actortype"] . '[use_notification]', $_POST["use_notif"]);
                         echo '<br>';
                         printf(
                             __('%1$s: %2$s'),
@@ -166,7 +166,7 @@ if (
                     ];
                 }
 
-                $rand = htmlescape(Group::dropdown($param));
+                $rand = Group::dropdown($param);
 
                 if (
                     ($_POST["itemtype"] == 'Ticket')
@@ -216,7 +216,7 @@ if (
                     $options['toupdate'] = $toupdate;
                 }
 
-                $rand = htmlescape(Supplier::dropdown($options));
+                $rand = Supplier::dropdown($options);
                // Display active tickets for a supplier
                // Need to update information on dropdown changes
                 if ($_POST["itemtype"] == 'Ticket') {
@@ -227,7 +227,7 @@ if (
                     echo "<br><span id='notif_supplier_$rand'>";
                     if ($withemail) {
                         echo __s('Email followup') . '&nbsp;';
-                        $rand = htmlescape(Dropdown::showYesNo('_itil_' . $_POST["actortype"] . '[use_notification]', $_POST['use_notif']));
+                        $rand = Dropdown::showYesNo('_itil_' . $_POST["actortype"] . '[use_notification]', $_POST['use_notif']);
                         echo '<br>';
                         printf(
                             __('%1$s: %2$s'),

@@ -73,7 +73,7 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
         'alreadyused' => $already_used
     ]);
 
-    echo "<span id='action_type_span" . htmlescape($randaction) . "' class='d-inline-block'></span>";
+    echo "<span id='action_type_span$randaction' class='d-inline-block'></span>";
 
     $paramsaction = ['action_type'                   => '__VALUE__',
         'field'                         => $_POST["field"],

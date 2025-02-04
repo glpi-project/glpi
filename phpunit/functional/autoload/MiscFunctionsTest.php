@@ -70,9 +70,7 @@ class MiscFunctionsTest extends DbTestCase
         yield [
             'input'  => 0,
             'output' => '0',
-        ]
-
-        ;
+        ];
     }
 
     #[DataProvider('htmlescapeProvider')]

@@ -102,14 +102,13 @@ class Dropdown
      *    - parent_id_field      : field used to compute parent id (to filter available values inside the dropdown tree)
      *
      * @return string|false|integer
-     * @psalm-taint-specialize
+     *
      * @since 9.5.0 Usage of string in condition option is removed
      **/
     public static function show($itemtype, $options = [])
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        $itemtype = htmlescape($itemtype);
 
         if (!($item = getItemForItemtype($itemtype))) {
             return false;
@@ -157,7 +156,6 @@ class Dropdown
         }
 
         $params['name'] = Html::sanitizeInputName($params['name']);
-        $params['width'] = htmlescape($params['width']);
 
         $output       = '';
         $name         = $params['emptylabel'];
@@ -208,9 +206,9 @@ class Dropdown
             foreach ($params['values'] as $value) {
                 if (isset($params['toadd'][$value])) {
                     // Specific case, value added by the "toadd" param
-                    $names[] = htmlescape($params['toadd'][$value]);
+                    $names[] = $params['toadd'][$value];
                 } else {
-                    $names[] = htmlescape(self::getDropdownName($table, $value));
+                    $names[] = self::getDropdownName($table, $value);
                 }
             }
         }
@@ -228,8 +226,8 @@ class Dropdown
                 $output .= "<input type='hidden' name='" . htmlescape($field_name) . "' value='" . htmlescape($value) . "'>";
             }
             $output .= '<span class="form-control" readonly'
-                . ($params['width'] ? ' style="width: ' . $params["width"] . '"' : '') . '>'
-                . ($params['multiple'] ? implode(', ', $names) : $name)
+                . ($params['width'] ? ' style="width: ' . htmlescape($params["width"]) . '"' : '') . '>'
+                . htmlescape($params['multiple'] ? implode(', ', $names) : $name)
                 . '</span>';
             return $output;
         }
@@ -1103,8 +1101,7 @@ JAVASCRIPT;
                 $rand = mt_rand();
             }
 
-            $options = [
-                'name' => htmlescape($name),
+            $options = ['name' => $name,
                 'id'   => Html::cleanId("dropdown_" . $name . $rand)
             ];
 
@@ -1780,7 +1777,7 @@ JAVASCRIPT;
      *    - used                : array / Already used items ID: not to display in dropdown (default empty)
      *    - display             : true : display directly, false return the html
      *
-     * @return string randomized value used to generate HTML IDs or html contents
+     * @return integer|string randomized value used to generate HTML IDs or html contents
      **/
     public static function showSelectItemFromItemtypes(array $options = [])
     {
@@ -2021,13 +2018,11 @@ JAVASCRIPT;
 
         $formatted_number = is_numeric($value)
          ? Html::formatNumber($value, false, $decimals)
-         : htmlescape($value);
+         : $value;
 
         if (strlen($unit) == 0) {
             return $formatted_number;
         }
-
-        $unit = htmlescape($unit);
 
         switch ($unit) {
             case 'year':
@@ -2260,7 +2255,7 @@ JAVASCRIPT;
      *                                'key2' => 'val2'),
      *       'optgroupname2' => array('key3' => 'val3',
      *                                'key4' => 'val4'))
-     * @psalm-taint-specialize
+     *
      * @return integer|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
@@ -2304,8 +2299,6 @@ JAVASCRIPT;
                 $param[$key] = $val;
             }
         }
-
-        $name = htmlescape($name);
 
         $other_select_option = $name . '_other_value';
         if ($param['other'] !== false) {
@@ -4076,12 +4069,7 @@ JAVASCRIPT;
         $count = 0;
         if (count($iterator)) {
             foreach ($iterator as $data) {
-                $data['id'] = (int) $data['id'];
-
-                $output = htmlescape($data[$item->getNameField()]);
-                $data['contact'] = strip_tags($data['contact']);
-                $data['serial'] = strip_tags($data['serial']);
-                $data['otherserial'] = strip_tags($data['otherserial']);
+                $output = $data[$item->getNameField()];
 
                 if (isset($data['contact']) && !empty($data['contact'])) {
                     $output = sprintf(__('%1$s - %2$s'), $output, $data['contact']);

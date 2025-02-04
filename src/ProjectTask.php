@@ -1306,7 +1306,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         if ($canedit) {
             echo "<div class='center firstbloc'>";
-            echo "<a class='btn btn-primary' href='" . strip_tags(ProjectTask::getFormURL()) . "?projects_id=$ID'>" .
+            echo "<a class='btn btn-primary' href='" . htmlescape(ProjectTask::getFormURL()) . "?projects_id=$ID'>" .
                 _sx('button', 'Add a task') . "</a>";
             echo "</div>";
         }

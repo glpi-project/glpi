@@ -42,7 +42,7 @@ Html::header_nocache();
 Session::checkRight('user', User::UPDATEAUTHENT);
 
 if ($_POST["authtype"] > 0) {
-    $name = htmlescape($_POST['name'] ?? 'massiveaction');
+    $name = $_POST['name'] ?? 'massiveaction';
 
     switch ($_POST["authtype"]) {
         case Auth::DB_GLPI:
@@ -65,5 +65,5 @@ if ($_POST["authtype"] > 0) {
             break;
     }
 
-    echo "&nbsp;<input type='submit' name='$name' class='btn btn-primary' value=\"" . _sx('button', 'Post') . "\">";
+    echo "&nbsp;<input type='submit' name='" . htmlescape($name) . "' class='btn btn-primary' value=\"" . _sx('button', 'Post') . "\">";
 }

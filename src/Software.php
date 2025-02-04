@@ -650,7 +650,7 @@ class Software extends CommonDBTM
      * @param string $myname select name
      * @param integer|array<int> $entity_restrict restrict to a defined entity
      *
-     * @return string random part of elements id
+     * @return integer random part of elements id
      **/
     public static function dropdownSoftwareToInstall($myname, $entity_restrict)
     {
@@ -664,7 +664,7 @@ class Software extends CommonDBTM
             $entity_restrict,
             true
         );
-        $rand = htmlescape(Dropdown::show('Software', ['condition' => ['WHERE' => $where]]));
+        $rand = Dropdown::show('Software', ['condition' => ['WHERE' => $where]]);
 
         $paramsselsoft = ['softwares_id' => '__VALUE__',
             'myname'       => $myname

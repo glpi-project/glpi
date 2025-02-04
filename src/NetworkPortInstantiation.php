@@ -670,7 +670,7 @@ TWIG, $twig_params);
      *    - entity_sons : boolean / if entity restrict specified auto select its sons
      *                   only available if entity is a single value not an array (default false)
      *
-     * @return string random part of elements id
+     * @return integer random part of elements id
      **/
     public static function dropdownConnect($ID, $options = [])
     {
@@ -698,7 +698,7 @@ TWIG, $twig_params);
         }
 
         echo "<input type='hidden' name='NetworkPortConnect_networkports_id_1'value='$ID'>";
-        $rand = htmlescape(Dropdown::showItemTypes('NetworkPortConnect_itemtype', $CFG_GLPI["networkport_types"]));
+        $rand = Dropdown::showItemTypes('NetworkPortConnect_itemtype', $CFG_GLPI["networkport_types"]);
 
         $params = ['itemtype'           => '__VALUE__',
             'entity_restrict'    => Session::getMatchingActiveEntities($p['entity']),

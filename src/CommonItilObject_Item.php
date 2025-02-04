@@ -710,7 +710,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         $entity_restrict = Session::getMatchingActiveEntities($entity_restrict);
 
-        $rand        = (int) $params['rand'];
+        $rand = (int) $params['rand'];
 
         if (
             $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]

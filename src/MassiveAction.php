@@ -662,7 +662,7 @@ class MassiveAction
             }
             echo __s('Select the type of the item on which applying this action') . "<br>";
 
-            $rand = htmlescape(Dropdown::showFromArray('specialize_itemtype', $itemtypes));
+            $rand = Dropdown::showFromArray('specialize_itemtype', $itemtypes);
             echo "<br><br>";
 
             $params                        = $this->POST;

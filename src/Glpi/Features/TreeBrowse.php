@@ -60,7 +60,6 @@ trait TreeBrowse
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        $itemtype = htmlescape($itemtype);
 
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/treebrowse.php";
 

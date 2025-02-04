@@ -138,7 +138,7 @@ class Html
                     _x('adjective', 'Invalid')
                 ))
             );
-            return htmlescape($time);
+            return $time;
         }
         $mask = match ($format) {
             1 => 'd-m-Y', // DD-MM-YYYY
@@ -164,7 +164,7 @@ class Html
             return null;
         }
 
-        return self::convDate($time, $format) . ' ' . substr(htmlescape($time), 11, $with_seconds ? 8 : 5);
+        return self::convDate($time, $format) . ' ' . substr($time, 11, $with_seconds ? 8 : 5);
     }
 
     /**
@@ -2014,19 +2014,18 @@ TWIG,
      * @since 0.84
      *
      * @param string $container_id  html of the container of checkboxes link to this check all checkbox
-     * @param string $rand          rand value to use (default is auto generated)(default '')
+     * @param int    $rand          rand value to use (default is auto generated)
      *
      * @return string
      **/
-    public static function getCheckAllAsCheckbox($container_id, $rand = '')
+    public static function getCheckAllAsCheckbox($container_id, $rand = null)
     {
 
-        if (empty($rand)) {
+        if ($rand === null) {
             $rand = mt_rand();
+        } else {
+            $rand = (int) $rand;
         }
-
-        $rand = htmlescape($rand);
-        $container_id = htmlescape($container_id);
 
         $out  = "<input title='" . __s('Check all as') . "' type='checkbox' class='form-check-input massive_action_checkbox'
                       title='" . __s('Check all as') . "'
@@ -2066,9 +2065,6 @@ TWIG,
                 $params[$key] = $val;
             }
         }
-
-        $params['tag_for_massive'] = strip_tags($params['tag_for_massive']);
-        $params['container_id'] = strip_tags($params['container_id']);
 
         if (
             !empty($params['tag_for_massive'])
@@ -2115,8 +2111,6 @@ TWIG,
      *    - specific_tags HTML5 tags to add
      *    - criterion     the criterion for massive checkbox
      *
-     * All contents are properly escaped but psalm does not understand it, so I used @psalm-taint-specialize
-     * @psalm-taint-specialize
      * @return string  the HTML code for the checkbox
      **/
     public static function getCheckbox(array $options)
@@ -2147,7 +2141,7 @@ TWIG,
         $out = "";
 
         if ($params['zero_on_empty']) {
-            $out .= '<input type="hidden" name="' . strip_tags($params['name']) . '" value="0" />';
+            $out .= '<input type="hidden" name="' . htmlescape($params['name']) . '" value="0" />';
         }
 
         $out .= "<input type='checkbox' class='form-check-input " . htmlescape($params['class']) . "' title=\"" . htmlescape($params['title']) . "\" ";
@@ -2158,7 +2152,7 @@ TWIG,
 
         foreach (['id', 'name', 'title', 'value'] as $field) {
             if (!empty($params[$field])) {
-                $out .= " $field='" . strip_tags($params[$field]) . "'";
+                $out .= " $field='" . htmlescape($params[$field]) . "'";
             }
         }
 
@@ -2176,8 +2170,8 @@ TWIG,
                 if (is_array($values)) {
                     $values = implode(' ', $values);
                 }
-                $tag = strip_tags($tag);
-                $values = strip_tags($values);
+                $tag = htmlescape($tag);
+                $values = htmlescape($values);
                 $out .= " $tag='$values'";
             }
         }
@@ -2515,7 +2509,6 @@ TWIG,
      *      - placeholder  : text to display when input is empty
      *      - on_change    : function to execute when date selection changed
      *
-     * @psalm-taint-specialize
      * @return integer|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
@@ -2570,11 +2563,9 @@ TWIG,
                 </button>"
          : "";
 
-        $mode = htmlescape(
-            $p['range']
-                ? "mode: 'range',"
-            : ""
-        );
+        $mode = $p['range']
+         ? "mode: 'range',"
+         : "";
 
         $name = htmlescape($name);
         $p['rand'] = (int) $p['rand'];
@@ -2590,24 +2581,21 @@ TWIG,
       </div>
 HTML;
 
-        $date_format = htmlescape(Toolbox::getDateFormat('js'));
+        $date_format = Toolbox::getDateFormat('js');
 
-        $min_attr = htmlescape(!empty($p['min'])
+        $min_attr = !empty($p['min'])
          ? "minDate: '{$p['min']}',"
-         : "");
-        $max_attr = htmlescape(!empty($p['max'])
+         : "";
+        $max_attr = !empty($p['max'])
          ? "maxDate: '{$p['max']}',"
-         : "");
-        $multiple_attr = htmlescape($p['multiple']
+         : "";
+        $multiple_attr = $p['multiple']
          ? "mode: 'multiple',"
-         : "");
-        // $p['on_change'] can't be escaped
+         : "";
 
         $value = json_encode($p['value']);
 
         $locale = Locale::parseLocale($_SESSION['glpilanguage']);
-        $locale_language = htmlescape($locale['language']);
-        $locale_region = htmlescape($locale['region']);
         $js = <<<JS
       $(function() {
          $("#showdate{$p['rand']}").flatpickr({
@@ -2618,7 +2606,7 @@ HTML;
             wrap: true, // permits to have controls in addition to input (like clear or open date buttons
             weekNumbers: true,
             time_24hr: true,
-            locale: getFlatPickerLocale("$locale_language", "$locale_region"),
+            locale: getFlatPickerLocale("{$locale['language']}", "{$locale['region']}"),
             {$min_attr}
             {$max_attr}
             {$multiple_attr}
@@ -3273,7 +3261,6 @@ JS;
      * @return void|string
      *    void if option display=true
      *    string if option display=false (HTML code)
-     * @psalm-taint-specialize
      **/
     public static function showToolTip($content, $options = [])
     {
@@ -3351,7 +3338,6 @@ JS;
 
         $contentid = htmlescape($param['contentid']);
 
-        // content can't be escaped -> @psalm-taint-specialize
         $out .= "<div id='" . $contentid . "' class='tooltip-invisible'>$content</div>";
         if (!empty($param['popup'])) {
             $out .= Ajax::createIframeModalWindow(
@@ -4199,7 +4185,7 @@ JAVASCRIPT
         $link = "<a ";
 
         if (!empty($btoption)) {
-            $link .= ' ' . htmlescape($btoption) . ' ';
+            $link .= ' ' . $btoption . ' ';
         }
        // Do not force class if already defined
         if (!strstr($btoption, 'class=')) {
@@ -4209,7 +4195,6 @@ JAVASCRIPT
                 $link .= " class='pointer' ";
             }
         }
-        $action = strip_tags($action);
         $action  = " submitGetLink('$action', " . htmlescape(json_encode($fields)) . ");";
 
         if (is_array($confirm) || strlen($confirm)) {
@@ -4273,7 +4258,6 @@ JAVASCRIPT
      *
      * @since 0.83.
      *
-     * @psalm-taint-specialize
      * @return string|true
      * @phpstan-return $display is true ? true : string
      **/
@@ -4300,7 +4284,7 @@ JAVASCRIPT
      **/
     public static function cleanId($id)
     {
-        return htmlescape(str_replace(['[',']'], '_', $id));
+        return str_replace(['[',']'], '_', $id);
     }
 
     /**
@@ -4380,13 +4364,12 @@ JAVASCRIPT
             unset($params["width"]);
         }
 
-        $id = htmlescape($id);
-        $width = htmlescape($width);
-        $dropdownCssClass = htmlescape($params["dropdownCssClass"] ?? '');
+        $dropdownCssClass = $params["dropdownCssClass"] ?? '';
+
         $placeholder = json_encode($params["placeholder"] ?? '');
 
-        $templateresult    = htmlescape($params["templateResult"] ?? "templateResult");
-        $templateselection = htmlescape($params["templateSelection"] ?? "templateSelection");
+        $templateresult    = $params["templateResult"] ?? "templateResult";
+        $templateselection = $params["templateSelection"] ?? "templateSelection";
 
         $js = <<<JS
             select2_configs['{$id}'] = {
@@ -4661,7 +4644,6 @@ JS;
      * @param string $fieldName  Name of a field
      * @param array  $options    Array of HTML attributes.
      *
-     * @psalm-taint-specialize
      * @return string A generated hidden input
      **/
     public static function hidden($fieldName, $options = [])
@@ -4672,7 +4654,7 @@ JS;
             foreach ($options['value'] as $key => $value) {
                 $options2          = $options;
                 $options2['value'] = $value;
-                $result           .= static::hidden($fieldName . '[' . htmlescape($key) . ']', $options2) . "\n";
+                $result           .= static::hidden($fieldName . '[' . $key . ']', $options2) . "\n";
             }
             return $result;
         }
@@ -4907,7 +4889,7 @@ HTML;
             $attributes[] = Html::formatAttribute($key, $value);
         }
 
-        return implode(' ', htmlescape($attributes));
+        return implode(' ', $attributes);
     }
 
 
@@ -4939,8 +4921,7 @@ HTML;
      * @param string $script  The script to wrap
      *
      * @return string
-     * @psalm-taint-specialize
-     */
+     **/
     public static function scriptBlock($script)
     {
 
@@ -4960,7 +4941,6 @@ HTML;
      * @param array   $options Array of HTML attributes
      * @param boolean $minify  Try to load minified file (defaults to true)
      *
-     * @psalm-taint-specialize
      * @return string
      **/
     public static function script($url, $options = [], $minify = true)
@@ -4971,9 +4951,8 @@ HTML;
             unset($options['version']);
         }
 
-        $type = (isset($options['type']) && $options['type'] === 'module') || preg_match('/^js\/modules\//', $url) === 1
-            ? 'module'
-            : 'text/javascript';
+        $type = (isset($options['type']) && $options['type'] === 'module') ||
+         preg_match('/^js\/modules\//', $url) === 1 ? 'module' : 'text/javascript';
 
         if ($minify === true) {
             $url = self::getMiniFile($url);
@@ -5078,7 +5057,7 @@ HTML;
 
         return sprintf(
             '<link rel="stylesheet" type="text/css" href="%s" %s>',
-            strip_tags($url),
+            htmlescape($url),
             Html::parseAttributes($options)
         );
     }
@@ -6067,7 +6046,7 @@ HTML;
      * debug mode, else standard path
      *
      * @param string $file_path File path part
-     * @psalm-taint-specialize
+     *
      * @return string
      */
     private static function getMiniFile($file_path)
@@ -6078,11 +6057,11 @@ HTML;
         $file_minpath = str_replace(['.css', '.js'], ['.min.css', '.min.js'], $file_path);
         if (file_exists(GLPI_ROOT . '/' . $file_minpath)) {
             if (!$debug || !file_exists(GLPI_ROOT . '/' . $file_path)) {
-                return strip_tags($file_minpath);
+                return $file_minpath;
             }
         }
 
-        return strip_tags($file_path);
+        return $file_path;
     }
 
     /**
@@ -6091,7 +6070,7 @@ HTML;
      * @since 9.2
      *
      * @param string $url Original URL (not prefixed)
-     * @psalm-taint-specialize
+     *
      * @return string
      */
     final public static function getPrefixedUrl(string $url): string
@@ -6102,8 +6081,7 @@ HTML;
         if (!str_starts_with($url, '/')) {
             $prefix .= '/';
         }
-
-        return strip_tags($prefix . $url);
+        return $prefix . $url;
     }
 
     /**

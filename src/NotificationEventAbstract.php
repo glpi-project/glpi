@@ -146,7 +146,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                     echo "<tr class='tab_bg_2'><td>" . htmlescape($label) . "</td>";
                                     echo "<td>" . htmlescape($notificationtarget->getNameID()) . "</td>";
                                     echo "<td>" . htmlescape(sprintf(
-                                        __s('%1$s (%2$s)'),
+                                        __('%1$s (%2$s)'),
                                         $template->getName(),
                                         $users_infos['language']
                                     )) . "</td>";

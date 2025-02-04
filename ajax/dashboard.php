@@ -69,10 +69,10 @@ switch ($_POST['action'] ?? null) {
             throw new AccessDeniedHttpException();
         }
 
-        echo htmlescape($dashboard->saveNew(
+        echo $dashboard->saveNew(
             $_POST['title']   ?? "",
             $_POST['context'] ?? ""
-        ));
+        );
         return;
 
     case 'save_items':
@@ -137,7 +137,7 @@ switch ($_GET['action'] ?? null) {
             throw new AccessDeniedHttpException();
         }
 
-        echo strip_tags($dashboard->getFilter());
+        echo $dashboard->getFilter();
         return;
 }
 

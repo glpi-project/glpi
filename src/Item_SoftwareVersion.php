@@ -1127,7 +1127,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                         " . Html::showDateField(
                             "filters[date_install]",
                             [
-                                'value'   => htmlescape($filters['date_install'] ?? ''),
+                                'value'   => ($filters['date_install'] ?? ''),
                                 'display' => false,
                             ]
                         ) . "

@@ -1085,7 +1085,7 @@ class Toolbox
             }
         }
 
-        return htmlescape("$dir/front/$item.form.php");
+        return "$dir/front/$item.form.php";
     }
 
 
@@ -1120,7 +1120,7 @@ class Toolbox
             }
         }
 
-        return htmlescape("$dir/front/$item.php");
+        return "$dir/front/$item.php";
     }
 
 

@@ -540,11 +540,11 @@ JAVASCRIPT;
             }
 
             foreach ($found_pdus_side as $current) {
-                $bg_color   = strip_tags($current['bgcolor']);
+                $bg_color   = $current['bgcolor'];
                 $fg_color   = !empty($current['bgcolor'])
                              ? Html::getInvertedColor($current['bgcolor'])
                              : "";
-                $fg_color_s = "color: $fg_color;";
+                $fg_color_s = 'color: ' . htmlescape($fg_color) . ';';
                 $picture = false;
 
                 if (
