@@ -108,6 +108,7 @@
         "friendsoftwig/twigcs": "^6.4",
         "glpi-project/tools": "^0.7",
         "mikey179/vfsstream": "^1.6",
+        "nikic/php-parser": "^5.4",
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
