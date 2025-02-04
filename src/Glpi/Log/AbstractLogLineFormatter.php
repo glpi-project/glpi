@@ -102,6 +102,6 @@ abstract class AbstractLogLineFormatter extends LineFormatter
      */
     private function cleanPath(string $path): string
     {
-        return str_replace(\GLPI_ROOT, "<GLPI_ROOT>", $path);
+        return str_replace(\GLPI_ROOT, ".", $path);
     }
 }

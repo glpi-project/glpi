@@ -103,16 +103,19 @@ class ErrorController extends AbstractController
                 || isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
             )
         ) {
+            $cleanFilePath = static function ($filePath) {
+                return \str_replace(\GLPI_ROOT, '.', $filePath);
+            };
             $trace = sprintf(
                 "%s\nIn %s(%s)",
                 $exception->getMessage() ?: $exception::class,
-                $exception->getFile(),
+                $cleanFilePath($exception->getFile()),
                 $exception->getLine()
             );
 
             if (!($exception instanceof OutOfMemoryError)) {
                 // Note: OutOfMemoryError has no stack trace, we can only get filename and line.
-                $trace .= "\n" . $exception->getTraceAsString();
+                $trace .= "\n" . $cleanFilePath($exception->getTraceAsString());
             }
 
             $current = $exception;
@@ -121,10 +124,10 @@ class ErrorController extends AbstractController
                 $trace .= sprintf(
                     "\n\nPrevious: %s\nIn %s(%s)",
                     $previous->getMessage() ?: $previous::class,
-                    $previous->getFile(),
+                    $cleanFilePath($previous->getFile()),
                     $previous->getLine()
                 );
-                $trace .= "\n" . $previous->getTraceAsString();
+                $trace .= "\n" . $cleanFilePath($previous->getTraceAsString());
 
                 $current = $previous;
                 $depth++;

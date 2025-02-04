@@ -3321,6 +3321,6 @@ HTML;
     public static function cleanPaths(string $msg): string|array
     {
         // remove GLPI_ROOT from paths
-        return str_replace(GLPI_ROOT, "<GLPI_ROOT>", $msg);
+        return str_replace(GLPI_ROOT, ".", $msg);
     }
 }

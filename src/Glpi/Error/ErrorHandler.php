@@ -159,9 +159,10 @@ final class ErrorHandler extends BaseErrorHandler
             default             => 'Unknown error',
         };
 
+        $safeFilePath = \str_replace(\GLPI_ROOT, '.', $file);
         self::displayErrorMessage(
             \sprintf('PHP %s (%s)', $error_type, $type),
-            \sprintf('%s in %s at line %s', $message, $file, $line),
+            \sprintf('%s in %s at line %s', $message, $safeFilePath, $line),
             self::ERROR_LEVEL_MAP[$type],
         );
 
@@ -210,9 +211,10 @@ final class ErrorHandler extends BaseErrorHandler
      */
     public static function displayCaughtExceptionMessage(\Throwable $exception): void
     {
+        $safeFilePath = \str_replace(\GLPI_ROOT, '.', $exception->getFile());
         self::displayErrorMessage(
             \sprintf('Caught %s', $exception::class),
-            \sprintf('%s in %s at line %s', $exception->getMessage(), $exception->getFile(), $exception->getLine()),
+            \sprintf('%s in %s at line %s', $exception->getMessage(), $safeFilePath, $exception->getLine()),
             LogLevel::ERROR,
         );
     }

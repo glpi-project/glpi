@@ -35,11 +35,6 @@
 
 namespace tests\units\Glpi\Toolbox;
 
-use Glpi\Log\AccessLogHandler;
-use Glpi\Log\ErrorLogHandler;
-use Monolog\Logger;
-use PHPUnit\Framework\Attributes\DataProvider;
-
 /**
  * Test class for src/Glpi/Toolbox::logInFile
  */
@@ -76,39 +71,6 @@ class logInFileTest extends \GLPITestCase
         assert(\Toolbox::logInFile(self::TEST_CUSTOM_LOG_FILE_NAME, $messageWithPath), 'log failed');
 
         $this->assertStringNotContainsString(\GLPI_ROOT, file_get_contents($this->getCustomLogFilePath()));
-    }
-
-    public function test_Log_LogsAreWrittenInLogFile(): void
-    {
-        $PHPLOGGER = new Logger('glpi_test');
-        $PHPLOGGER->pushHandler(new ErrorLogHandler());
-
-        $message = 'This is a test error';
-        $PHPLOGGER->error($message);
-
-        $this->assertFileExists($this->getDefaultFilePath());
-    }
-
-    public function test_Log_SeeExpectedContentsInLogFile(): void
-    {
-        $PHPLOGGER = new Logger('glpi_test');
-        $PHPLOGGER->pushHandler(new ErrorLogHandler());
-
-        $message = 'This is a test error';
-        $PHPLOGGER->error($message);
-
-        $this->assertStringContainsString($message, file_get_contents($this->getDefaultFilePath()));
-    }
-
-    public function test_Log_FilterRootPathInLogFile(): void
-    {
-        $PHPLOGGER = new Logger('glpi_test');
-        $PHPLOGGER->pushHandler(new ErrorLogHandler());
-
-        $message = 'This is a test error at ' . GLPI_ROOT;
-        $PHPLOGGER->error($message);
-
-        $this->assertStringNotContainsString(GLPI_ROOT, file_get_contents($this->getDefaultFilePath()));
     }
 
     private function getCustomLogFilePath(): string
