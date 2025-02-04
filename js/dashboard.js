@@ -1287,6 +1287,11 @@ class GLPIDashboard {
     resizeSelect() {
         const select = document.querySelector(this.elem_id+' .dashboard_select');
 
+        // mini dashboard doesn't have any filter/select
+        if (select === null) {
+            return;
+        }
+
         select.addEventListener('change', (event) => {
             let tempSelect = document.createElement('select'),
                 tempOption = document.createElement('option');
