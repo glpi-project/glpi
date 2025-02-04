@@ -85,7 +85,7 @@ trait AssetImage
 
         $pictures = [];
         $pictures_removed = false;
-        if ($this->isField('pictures')) {
+        if (!$this->isNewItem() && $this->isField('pictures')) {
             $input_keys = array_keys($input);
             $pictures = importArrayFromDB($this->fields['pictures']);
             $to_remove = [];

@@ -932,7 +932,8 @@ abstract class CommonDropdown extends CommonDBTM
         }
 
         if (
-            $this->isField('knowbaseitemcategories_id')
+            !$this->isNewItem()
+            && $this->isField('knowbaseitemcategories_id')
             && $this->fields['knowbaseitemcategories_id']
         ) {
             $title = __s('FAQ');

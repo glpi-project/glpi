@@ -1198,7 +1198,7 @@ class SearchTest extends DbTestCase
      */
     public function testGetSearchOptionsWException()
     {
-        $error = 'Duplicate key 12 (One search option/Any option) in tests\units\DupSearchOpt searchOptions!';
+        $error = 'Duplicate key `12` (`One search option`/`Any option`) in `tests\units\DupSearchOpt` search options.';
 
         $item = new DupSearchOpt();
         $item->searchOptions();

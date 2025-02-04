@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Entity;
 use Glpi\Asset\Asset_PeripheralAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
@@ -639,6 +640,8 @@ class ComputerTest extends DbTestCase
 
     public function testClonedRelationNamesFromTemplate()
     {
+        $entity_id = \getItemByTypeName(Entity::class, '_test_root_entity', true);
+
         $this->login();
         $this->setEntity('_test_root_entity', true);
 
@@ -646,7 +649,8 @@ class ComputerTest extends DbTestCase
         $computer_template = new \Computer();
         $templates_id = $computer_template->add([
             'template_name' => __FUNCTION__ . '_template',
-            'is_template' => 1
+            'is_template'   => 1,
+            'entities_id'   => $entity_id,
         ]);
         $this->assertGreaterThan(0, $templates_id);
 

@@ -37,6 +37,7 @@ namespace tests\units;
 
 use Appliance_Item;
 use DbTestCase;
+use Entity;
 use Glpi\Asset\Capacity\HasAppliancesCapacity;
 use Glpi\Features\Clonable;
 use Toolbox;
@@ -94,15 +95,19 @@ class Appliance_ItemTest extends DbTestCase
         /** @var \DBmysql $DB */
         global $DB;
 
+        $entity_id = \getItemByTypeName(Entity::class, '_test_root_entity', true);
+
         $appliance = new \Appliance();
 
         $appliance_1 = (int)$appliance->add([
-            'name'   => 'Test appliance'
+            'name'        => 'Test appliance',
+            'entities_id' => $entity_id,
         ]);
         $this->assertGreaterThan(0, $appliance_1);
 
         $appliance_2 = (int)$appliance->add([
-            'name'   => 'Test appliance'
+            'name'        => 'Test appliance 2',
+            'entities_id' => $entity_id,
         ]);
         $this->assertGreaterThan(0, $appliance_2);
 
