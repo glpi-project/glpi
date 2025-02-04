@@ -46,7 +46,7 @@ if (isset($_GET["redirect"])) {
 if (Session::getLoginUserID()) {
     Html::helpHeader(__('FAQ'), 'faq');
 } else {
-    $_SESSION["glpilanguage"] = $_SESSION['glpilanguage'] ?? $CFG_GLPI['language'];
+    $_SESSION["glpilanguage"] = $_SESSION['glpilanguage'] ?? Session::getPreferredLanguage();
    // Anonymous FAQ
     Html::simpleHeader(__('FAQ'), [
         __('Authentication') => '/',

@@ -946,6 +946,24 @@
       }
    }
 
+   .input-group.copy_to_clipboard_wrapper {
+      &:after {
+         content: none;
+      }
+
+      i.copy_to_clipboard_wrapper {
+         font-style: normal;
+
+         &:after {
+            left: 0;
+         }
+
+         &:before {
+            content: none;
+         }
+      }
+   }
+
    td.diff {
       ins {
          color: green;

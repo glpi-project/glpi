@@ -991,9 +991,10 @@ TWIG,
         self::header_nocache();
 
         $theme = ThemeManager::getInstance()->getCurrentTheme();
+        $lang = $_SESSION['glpilanguage'] ?? Session::getPreferredLanguage();
 
         $tpl_vars = [
-            'lang'               => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
+            'lang'               => $CFG_GLPI["languages"][$lang][3],
             'title'              => $title,
             'theme'              => $theme,
             'is_anonymous_page'  => false,
@@ -1024,6 +1025,8 @@ TWIG,
             $tpl_vars['js_modules'][] = ['path' => 'js/modules/Monaco/MonacoEditor.js'];
             $tpl_vars['css_files'][] = ['path' => 'lib/monaco.css'];
             $is_monaco_added = true;
+
+            Html::requireJs('clipboard');
         }
 
         //on demand JS.
