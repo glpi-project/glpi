@@ -879,9 +879,13 @@ class NetworkPort extends InventoryAsset
             }
         }
 
-        if (!$hubs_id) {
-           //create direct connection
+        if (!$hubs_id && $this->conf->import_unmanaged) {
+            //create direct connection if import_unmanaged is enabled
             $hubs_id = $link->createHub($netports_id, $this->entities_id);
+        }
+
+        if (!$hubs_id) {
+            return;
         }
 
         $glpi_ports = [];
@@ -898,7 +902,7 @@ class NetworkPort extends InventoryAsset
 
         foreach ($found_macs as $ports_id) {
             if (!isset($glpi_ports[$ports_id])) {
-               // Connect port (port found in GLPI)
+            // Connect port (port found in GLPI)
                 $link->connectToHub($ports_id, $hubs_id);
             }
         }

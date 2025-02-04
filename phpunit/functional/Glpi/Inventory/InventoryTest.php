@@ -247,7 +247,7 @@ class InventoryTest extends InventoryTestCase
             ], [
                 'logical_number' => 0,
                 'name' => 'virbr0-nic',
-                'instantiation_type' => null,
+                'instantiation_type' => 'NetworkPortEthernet',
                 'mac' => '52:54:00:fa:20:0e',
                 'ifstatus' => '2',
                 'ifinternalstatus' => '2',

@@ -779,8 +779,19 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         $duration_dropdown_to_add = [];
-        for ($i = 9; $i <= 100; $i++) {
-            $duration_dropdown_to_add[] = $i * HOUR_TIMESTAMP;
+        for ($i = 1; $i <= 10; $i++) {
+            $duration_dropdown_to_add[$i * MINUTE_TIMESTAMP] = sprintf('00h%02d', $i);
+        }
+        for ($i = 10; $i <= 10 * 60; $i += 5) {
+            $h = intdiv($i, 60);
+            $m = $i % 60;
+            $duration_dropdown_to_add[$i * MINUTE_TIMESTAMP] = sprintf('%02dh%02d', $h, $m);
+        }
+        for ($i = 10; $i <= 5 * 24; $i++) {
+            $duration_dropdown_to_add[$i * HOUR_TIMESTAMP] = sprintf('%02dh%02d', $i, 0);
+        }
+        for ($i = 5; $i <= 366; $i++) {
+            $duration_dropdown_to_add[$i * DAY_TIMESTAMP] = sprintf(_n('%s day', '%s days', $i), $i);
         }
 
         $this->initForm($ID, $options);

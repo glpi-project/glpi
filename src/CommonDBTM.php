@@ -64,7 +64,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Add/Update fields input. Filled during add/update process.
      *
-     * @var mixed[]
+     * @var mixed[]|false
      */
     public $input = [];
 
@@ -5874,6 +5874,7 @@ TWIG, $twig_params);
         // Only process itemtype that are assets
         if (in_array(static::class, $CFG_GLPI['asset_types'], true)) {
             $ruleasset          = new RuleAssetCollection();
+            $ruleasset->setEntity($this->input['entities_id'] ?? $this->fields['entities_id']);
             $input              = $this->input;
             $input['_itemtype'] = static::class;
 

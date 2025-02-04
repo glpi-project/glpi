@@ -41,7 +41,7 @@ require_once __DIR__ . '/../NotificationSettingInstance.php';
 
 /* Test for inc/notificationmailingsetting.class.php */
 
-class NotificationSettingInstancetest extends DbTestCase
+class NotificationSettingInstanceTest extends DbTestCase
 {
     public function testGetTable()
     {

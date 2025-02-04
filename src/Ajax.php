@@ -515,15 +515,15 @@ JS;
     /**
      * Javascript code for update an item when another item changed
      *
-     * @param string  $toobserve    id (or array of id) of the select to observe
-     * @param string  $toupdate     id of the item to update
-     * @param string  $url          Url to get datas to update the item
-     * @param array   $parameters   of parameters to send to ajax URL
-     * @param array   $events       of the observed events (default 'change')
-     * @param integer $minsize      minimum size of data to update content (default -1)
-     * @param integer $buffertime   minimum time to wait before reload (default -1)
-     * @param array   $forceloadfor of content which must force update content
-     * @param boolean $display      display or get string (default true)
+     * @param string|array $toobserve    id (or array of id) of the select to observe
+     * @param string       $toupdate     id of the item to update
+     * @param string       $url          Url to get datas to update the item
+     * @param array        $parameters   of parameters to send to ajax URL
+     * @param array        $events       of the observed events (default 'change')
+     * @param integer      $minsize      minimum size of data to update content (default -1)
+     * @param integer      $buffertime   minimum time to wait before reload (default -1)
+     * @param array        $forceloadfor of content which must force update content
+     * @param boolean      $display      display or get string (default true)
      *
      * @return void|string (see $display)
      */
@@ -564,11 +564,11 @@ JS;
     /**
      * Javascript code for update an item when a select item changed
      *
-     * @param string  $toobserve  id of the select to observe
-     * @param string  $toupdate   id of the item to update
-     * @param string  $url        Url to get datas to update the item
-     * @param array   $parameters of parameters to send to ajax URL
-     * @param boolean $display    display or get string (default true)
+     * @param string|array $toobserve  id of the select to observe
+     * @param string       $toupdate   id of the item to update
+     * @param string       $url        Url to get datas to update the item
+     * @param array        $parameters of parameters to send to ajax URL
+     * @param boolean      $display    display or get string (default true)
      *
      * @return void|string (see $display)
      */
@@ -597,14 +597,14 @@ JS;
     /**
      * Javascript code for update an item when a Input text item changed
      *
-     * @param string  $toobserve    id of the Input text to observe
-     * @param string  $toupdate     id of the item to update
-     * @param string  $url          Url to get datas to update the item
-     * @param array   $parameters   of parameters to send to ajax URL
-     * @param integer $minsize      minimum size of data to update content (default -1)
-     * @param integer $buffertime   minimum time to wait before reload (default -1)
-     * @param array   $forceloadfor of content which must force update content
-     * @param boolean $display      display or get string (default true)
+     * @param string|array $toobserve    id of the Input text to observe
+     * @param string       $toupdate     id of the item to update
+     * @param string       $url          Url to get datas to update the item
+     * @param array        $parameters   of parameters to send to ajax URL
+     * @param integer      $minsize      minimum size of data to update content (default -1)
+     * @param integer      $buffertime   minimum time to wait before reload (default -1)
+     * @param array        $forceloadfor of content which must force update content
+     * @param boolean      $display      display or get string (default true)
      *
      * @return void|string (see $display)
      */
@@ -646,15 +646,15 @@ JS;
     /**
      * Javascript code for update an item when another item changed (Javascript code only)
      *
-     * @param string  $toobserve    id (or array of id) of the select to observe
-     * @param string  $toupdate     id of the item to update
-     * @param string  $url          Url to get datas to update the item
-     * @param array   $parameters   of parameters to send to ajax URL
-     * @param array   $events       of the observed events (default 'change')
-     * @param integer $minsize      minimum size of data to update content (default -1)
-     * @param integer $buffertime   minimum time to wait before reload (default -1)
-     * @param array   $forceloadfor of content which must force update content
-     * @param boolean $display      display or get string (default true)
+     * @param string|array $toobserve    id (or array of id) of the select to observe
+     * @param string       $toupdate     id of the item to update
+     * @param string       $url          Url to get datas to update the item
+     * @param array        $parameters   of parameters to send to ajax URL
+     * @param array        $events       of the observed events (default 'change')
+     * @param integer      $minsize      minimum size of data to update content (default -1)
+     * @param integer      $buffertime   minimum time to wait before reload (default -1)
+     * @param array        $forceloadfor of content which must force update content
+     * @param boolean      $display      display or get string (default true)
      *
      * @return void|string (see $display)
      */

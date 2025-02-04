@@ -36,7 +36,7 @@
         "egulias/email-validator": "^4.0",
         "elvanto/litemoji": "^5.1",
         "gettext/languages": "^2.10",
-        "glpi-project/inventory_format": "^1.1",
+        "glpi-project/inventory_format": "^1.2",
         "guzzlehttp/guzzle": "^7.9",
         "guzzlehttp/psr7": "^2.6",
         "html2text/html2text": "^4.3",
