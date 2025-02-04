@@ -674,6 +674,8 @@ class NetworkPort extends InventoryAsset
                     $input['name'] = $name;
                 }
             }
+            $input['entities_id'] = $this->entities_id;
+            $input['is_recursive'] = $this->is_recursive;
             $items_id = $item->add($input);
         }
 
