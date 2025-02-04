@@ -446,9 +446,13 @@ class CommandLoader implements CommandLoaderInterface
                // Needed as a file located in root source dir of Glpi can be either namespaced either not.
                 continue;
             }
+            if (!is_a($classname_to_check, Command::class, true)) {
+                // Not a console command.
+                continue;
+            }
 
             $reflectionClass = new ReflectionClass($classname_to_check);
-            if ($reflectionClass->isInstantiable() && $reflectionClass->isSubclassOf(Command::class)) {
+            if ($reflectionClass->isInstantiable()) {
                 return new $classname_to_check();
             }
         }
