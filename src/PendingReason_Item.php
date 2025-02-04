@@ -403,25 +403,22 @@ class PendingReason_Item extends CommonDBRelation
 
         // Let's check if there is any real updates before going any further
         $pending_updates = [];
+
         $fields_to_check_for_updates = ['pendingreasons_id', 'followup_frequency', 'followups_before_resolution'];
         foreach ($fields_to_check_for_updates as $field) {
             if (
                 isset($new_timeline_item->input[$field])
-                && $new_timeline_item->input[$field] != $last_pending->fields[$field]
             ) {
                 $pending_updates[$field] = $new_timeline_item->input[$field];
+            } else {
+                $pending_updates[$field] = 0;
             }
         }
 
-        // No actual updates -> nothing to be done
-        if (count($pending_updates) == 0) {
-            return;
+        if ($new_timeline_item::class === ITILFollowup::class) {
+            self::createForItem($new_timeline_item, $pending_updates);
         }
 
-        // Update last pending item and parent
-        $last_pending_timeline_item = new $last_pending->fields['itemtype']();
-        $last_pending_timeline_item->getFromDB($last_pending->fields['items_id']);
-        self::updateForItem($last_pending_timeline_item, $pending_updates);
         self::updateForItem($new_timeline_item->input['_job'], $pending_updates);
     }
 
