@@ -250,7 +250,7 @@ class View extends CommonGLPI
             $clean_plugin = [
                 'key'           => $key,
                 'name'          => $plugin['name'],
-                'logo_url'      => self::getLogo($apidata, $key),
+                'logo_url'      => self::getLogoUrl($apidata, $key),
                 'description'   => $apidata['descriptions'][0]['short_description'] ?? "",
                 'authors'       => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
                 'license'       => $apidata['license'] ?? $plugin['license'] ?? "",
@@ -277,36 +277,70 @@ class View extends CommonGLPI
      *
      * @return string url to the plugins logo or empty string
      */
-    public static function getLogo(array $apidata, string $key): string
-    {
+   protected static function getLogoUrl(array $apidata, string $key): string {
+      // Check if a logo URL is provided from an online resource
+      if (isset($apidata['logo_url'])) {
+          return $apidata['logo_url'];
+      }
 
-        // found a logo from online resource?
-        if (isset($apidata['logo_url']) && strpos(strtolower($apidata['logo_url']), '.png') !== false) {
-            return $apidata['logo_url'];
-        }
+      // Relative path to the plugin directory (used for HTML rendering)
+      $pluginPath = '../plugins/' . $key . '/';
 
-        // path to the plugin directory (for checking if a local file exists)
-        $pluginDir = Plugin::getPhpDir($key);
+      // Attempt to find a local logo named after the plugin directory
+      if (self::checkImage($key, $key . '.png')) {
+          return $pluginPath . $key . '.png';
+      }
 
-        // try to find a local logo
-        $logo = $pluginDir . $key . '.png';
+      // Attempt to find a default file "logo.png" in the plugin directory
+      if (self::checkImage($key, 'logo.png')) {
+          return $pluginPath . 'logo.png';
+      }
 
-        // logo named as the key found?
-        if (file_exists($logo) && is_readable($logo)) {
-            return $pluginPath . basename($logo);
-        }
-        
-        // try again with "logo.png"
-        $logo = $pluginDir . 'logo.png';
+      // Attempt to find a default file "icon.png" in the plugin directory
+      if (self::checkImage($key, 'icon.png')) {
+         return $pluginPath . 'icon.png';
+      }
 
-        // logo named as "logo.png" found?
-        if (file_exists($logo) && is_readable($logo)) {
-            return $pluginPath . basename($logo);
-        }
-        
-        // no logo found at all
-        return '';
-    }
+      // No logo found, return an empty string
+      return '';
+   }
+
+   /**
+     * Checks whether an image file exists, is readable, and is a valid image.
+     *
+     * @param string $key The plugin key used to determine the plugin directory.
+     * @param string $filename The name of the image file to check.
+     * @return bool Returns true if the image exists, is readable, and is valid; otherwise, false.
+    */
+   protected static function checkImage(string $key, string $filename): bool {
+       // Get the absolute path to the plugin directory
+       $pluginDir = Plugin::getPhpDir($key) . '/';
+
+       // Construct the full path to the image file
+       $logo = $pluginDir . $filename;
+
+       // Check if the file exists, is readable, and is a valid image
+      if (file_exists($logo) && is_readable($logo) && self::isValidImage($logo)) {
+         return true;
+      }
+
+      // Image not usable
+      return false;
+   }
+
+    /**
+     * Checks if the given file is a valid image.
+     *
+     * @param string $filePath The path to the file to check.
+     * @return bool True if the file is a valid image, false otherwise.
+     */
+   protected static function isValidImage(string $filePath): bool {
+       // Attempt to retrieve image information
+       $imageInfo = @getimagesize($filePath);
+
+       // Return true if the file is a valid image, otherwise false
+       return ($imageInfo !== false);
+   }
     
     /**
      * Display discover tab (all availble plugins)
