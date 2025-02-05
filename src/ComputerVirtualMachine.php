@@ -434,6 +434,19 @@ class ComputerVirtualMachine extends CommonDBChild
             $result = $iterator->current();
             return $result['id'];
         } else if (count($iterator) > 1) {
+            $iterator = $DB->request([
+                'SELECT' => ['id'],
+                'FROM'   => 'glpi_computers',
+                'WHERE'  => [
+                    'RAW' => [
+                        'LOWER(uuid)'  => $fields['uuid']
+                    ]
+                ]
+            ]);
+            if (count($iterator) == 1) {
+                $result = $iterator->current();
+                return $result['id'];
+            }
             trigger_error(
                 sprintf(
                     'findVirtualMachine expects to get one result, %1$s found in query "%2$s".',
