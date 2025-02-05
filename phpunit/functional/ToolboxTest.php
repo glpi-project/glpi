@@ -1640,18 +1640,11 @@ HTML;
         $this->assertSame($result, $instance->computeRedirect($where));
     }
 
-
-    private function setUpLogFiles(): void
-    {
-        // remove the log file if it exists
-        assert(!file_exists($this->getCustomLogFilePath()) || unlink($this->getCustomLogFilePath()));
-        assert(!file_exists($this->getDefaultFilePath()) || unlink($this->getDefaultFilePath()));
-    }
-
     public function test_LogInFile_SeeExpectedContentsInLogFile(): void
     {
         // Arrange
-        $this->setUpLogFiles();
+        assert(!file_exists($this->getCustomLogFilePath()) || unlink($this->getCustomLogFilePath()));
+
         $message = 'The logged message';
 
         // Act
@@ -1665,7 +1658,7 @@ HTML;
     public function test_LogInFile_FilterRootPathInLogFile(): void
     {
         // Arrange
-        $this->setUpLogFiles();
+        assert(!file_exists($this->getCustomLogFilePath()) || unlink($this->getCustomLogFilePath()));
         $messageWithPath = 'Error somewhere in the path ' . GLPI_ROOT . ' triggered';
 
         // Act
@@ -1678,13 +1671,5 @@ HTML;
     private function getCustomLogFilePath(): string
     {
         return GLPI_LOG_DIR . "/" . self::TEST_CUSTOM_LOG_FILE_NAME . ".log";
-    }
-
-    /**
-     * value hardcoded in \Glpi\Log\ErrorLogHandler::__construct()
-     */
-    private function getDefaultFilePath(): string
-    {
-        return GLPI_LOG_DIR . "/php-errors.log";
     }
 }
