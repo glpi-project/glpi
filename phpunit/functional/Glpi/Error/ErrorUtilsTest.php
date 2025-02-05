@@ -39,10 +39,10 @@ use PHPUnit\Framework\Attributes\DataProvider;
 class ErrorUtilsTest extends \DbTestCase
 {
     #[DataProvider('safeContentsProvider')]
-    public function testcleanPathsOnSafeContent($input, $expected)
+    public function testcleanPathsOnSafeContent($input)
     {
         assert(is_string(\GLPI_ROOT) && strlen(\GLPI_ROOT) > 0);
-        $this->assertEquals($expected, ErrorUtils::cleanPaths($input));
+        $this->assertEquals($input, ErrorUtils::cleanPaths($input));
     }
 
     #[DataProvider('unsafeContentsProvider')]
@@ -66,10 +66,10 @@ class ErrorUtilsTest extends \DbTestCase
     public static function safeContentsProvider(): array
     {
         return [
-            ['input' => '/tmp/files/ is not writtable.', 'expected' => '/tmp/files/ is not writtable.'],
-            ['input' => 'Base dir is writtable, fix rights in assets/images/', 'expected' => 'Base dir is writtable, fix rights in assets/images/'],
-            ['input' => '/not/in/root/', 'expected' => '/not/in/root/'],
-            ['input' => 'file /path/file.php not found', 'expected' => 'file /path/file.php not found'],
+            [ '/tmp/files/ is not writtable.'],
+            [ 'Base dir is writtable, fix rights in assets/images/'],
+            [ '/not/in/root/'],
+            [ 'file /path/file.php not found'],
         ];
     }
 }
