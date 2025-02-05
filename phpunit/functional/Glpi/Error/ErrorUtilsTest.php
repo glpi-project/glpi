@@ -38,7 +38,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class ErrorUtilsTest extends \DbTestCase
 {
-    #[DataProvider('unsafeContentsProvider')]
+    #[DataProvider('safeContentsProvider')]
     public function testcleanPathsOnSafeContent($input, $expected)
     {
         assert(is_string(\GLPI_ROOT) && strlen(\GLPI_ROOT) > 0);
