@@ -1266,13 +1266,11 @@ class NetworkPort extends CommonDBChild
                             break;
                         case 126: //IP address
                             $ips_iterator = $this->getIpsForPort('NetworkPort', $port['id']);
-                            for ($i = 0; $i < count($ips_iterator); $i++) {
-                                if ($i > 0) {
-                                    $output .= '<br />';
-                                    $ips_iterator->next();
-                                }
-                                $output .= $ips_iterator->current()['name'];
+                            $ip_names = [];
+                            foreach ($ips_iterator as $iprow) {
+                                $ip_names[] = $iprow['name'];
                             }
+                            $output .= implode('<br />', $ip_names);
                             break;
                         case 127:
                             $names_iterator = $DB->request([
@@ -1282,15 +1280,13 @@ class NetworkPort extends CommonDBChild
                                     'items_id'  => $port['id']
                                 ]
                             ]);
-                            for ($i = 0; $i < count($names_iterator); $i++) {
-                                if ($i > 0) {
-                                  $output .= '<br />';
-                                  $names_iterator->next();
-                                }
+                            $network_names = [];
+                            foreach ($names_iterator as $namerow) {
                                 $netname = new NetworkName();
-                                $netname->getFromDB($names_iterator->current()['id']);
-                                $output .= $netname->getLink();
+                                $netname->getFromDB($namerow['id']);
+                                $network_names[] = $netname->getLink();
                             }
+                            $output .= implode('<br />', $network_names);
                             break;
                         default:
                             if (
