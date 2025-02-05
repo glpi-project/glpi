@@ -2783,6 +2783,8 @@ HTML;
                 . sprintf(__('Run the "%1$s" command to activate it.'), 'php bin/console database:enable_timezones');
             }
             echo "</td></tr>";
+        } else {
+                echo "<tr class='tab_bg_1'><td></td><td></td></tr>";
         }
 
         echo "<tr class='tab_bg_1'>";
