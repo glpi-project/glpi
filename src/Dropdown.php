@@ -1905,7 +1905,7 @@ JAVASCRIPT;
 
         if ($params['display']) {
             echo $out;
-            return htmlescape($params['rand']);
+            return $params['rand'];
         }
 
         return $out;

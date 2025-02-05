@@ -544,7 +544,6 @@ JAVASCRIPT;
                 $fg_color   = !empty($current['bgcolor'])
                              ? Html::getInvertedColor($current['bgcolor'])
                              : "";
-                $fg_color_s = 'color: ' . htmlescape($fg_color) . ';';
                 $picture = false;
 
                 if (
@@ -558,7 +557,7 @@ JAVASCRIPT;
                         $height     = (int) $pdu_m->fields['required_units'];
                         $y          = $num_u + 1 - $current['position'] - $height;
                         $picture    = $pdu_m->fields['picture_front'];
-                        $model_name = htmlescape($pdu_m->getName());
+                        $model_name = $pdu_m->getName();
                     }
 
                     $tip = "<span class='tipcontent'>";
@@ -585,7 +584,7 @@ JAVASCRIPT;
                     if (!empty($model_name)) {
                         $tip .= "<span>
                            <label>" . __s('model') . ":</label>
-                           $model_name
+                           " . htmlescape($model_name) . "
                         </span>";
                     }
                     $tip .= "</span>";
@@ -609,19 +608,19 @@ JAVASCRIPT;
                        gs-id='" . (int) $current['id'] . "'
                        gs-h='$height' gs-w='1'
                        gs-x='0' gs-y='$y'
-                       style='background-color: $bg_color; color: $fg_color;'>
-                  <div class='grid-stack-item-content' style='$fg_color_s'>
+                       style='background-color: " . htmlescape($bg_color) . "; color: " . htmlescape($fg_color) . ";'>
+                  <div class='grid-stack-item-content' style='color: " . htmlescape($fg_color) . ";'>
                      <i class='item_rack_icon ti ti-plug fa-rotate-270'></i>
                      <span class='rotated_text'>
-                        <a href='" . $pdu->getLinkURL() . "'
+                        <a href='" . htmlescape($pdu->getLinkURL()) . "'
                            class='itemrack_name'
                            title='" . htmlescape($pdu->getName()) . "'
-                           style='$fg_color_s'>" . htmlescape($pdu->getName()) . "
+                           style='color: " . htmlescape($fg_color) . ";'>" . htmlescape($pdu->getName()) . "
                         </a>
                      </span>
-                     <a href='" . $rel->getLinkUrl() . "' class='rel-link'>
+                     <a href='" . htmlescape($rel->getLinkUrl()) . "' class='rel-link'>
                         <i class='ti ti-pencil fa-rotate-270'
-                           style='$fg_color_s'
+                           style='color: " . htmlescape($fg_color) . ";'
                            title='" . __s("Edit rack relation") . "'></i>
                      </a>
                      $tip

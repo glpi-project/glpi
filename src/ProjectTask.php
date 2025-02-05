@@ -1212,7 +1212,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         /** @var \DBmysql $DB */
         global $DB;
 
-        $ID = (int) $item->getField('id');
+        $ID = $item->getID();
 
         if (!$item->canViewItem()) {
             return false;

@@ -227,7 +227,7 @@ class Appliance_Item extends CommonDBRelation
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        $ID = (int) $item->fields['id'];
+        $ID = $item->getID();
 
         if (
             !Appliance::canView()

@@ -327,9 +327,7 @@ class View extends CommonGLPI
 
         $tags_li = "<li class='tag active' data-tag=''>" . __s("All") . "</li>";
         foreach ($tags as $tag) {
-            $key = htmlescape($tag['key']);
-            $tagName = htmlescape(ucfirst($tag['tag']));
-            $tags_li .= "<li class='tag' data-tag='$key'>$tagName</li>";
+            $tags_li .= "<li class='tag' data-tag='" . htmlescape($tag['key']) . "'>" . htmlescape(ucfirst($tag['tag'])) . "</li>";
         }
 
         return "<ul class='plugins-tags'>{$tags_li}</ul>";
@@ -979,12 +977,12 @@ HTML;
             $offerlabel = htmlescape(current($fst_offer));
 
             $html = "<div class='offers'>
-                    <a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'
+                    <a href='" . htmlescape(GLPI_NETWORK_SERVICES) . "' target='_blank'
                        class='badge glpi-network'
                        title='" . sprintf(__s("You must have a %s subscription to get this plugin"), 'GLPI Network') . "'>
                         <i class='ti ti-star-filled'></i>GLPI Network
                     </a>
-                    <a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'
+                    <a href='" . htmlescape(GLPI_NETWORK_SERVICES) . "' target='_blank'
                        class='badge bg-azure $offerkey'
                        title='" . sprintf(__s("You need at least the %s subscription level to get this plugin"), $offerlabel) . "'>
                         $offerlabel

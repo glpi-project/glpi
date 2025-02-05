@@ -121,10 +121,10 @@ if (
         );
     } else {
         $email_string = "<input type='mail' class='form-control' name='" . htmlescape($_POST['field']) . "[alternative_email][]'
-         :               value='" . htmlescape($default_email) . "'>";
+                         value='" . htmlescape($default_email) . "'>";
     }
 
-    echo "$email_string";
+    echo $email_string;
 }
 
 Ajax::commonDropdownUpdateItem($_POST);

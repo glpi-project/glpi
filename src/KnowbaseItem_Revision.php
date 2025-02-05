@@ -113,7 +113,7 @@ class KnowbaseItem_Revision extends CommonDBTM
 
         $language   = '';
         if ($item::class === KnowbaseItem::class) {
-            $kb_item_id = (int) $item->getID();
+            $kb_item_id = $item->getID();
         } else {
             $kb_item_id = (int) $item->fields['knowbaseitems_id'];
             $language   = $item->fields['language'];

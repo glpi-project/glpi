@@ -2014,7 +2014,7 @@ TWIG,
      * @since 0.84
      *
      * @param string $container_id  html of the container of checkboxes link to this check all checkbox
-     * @param int    $rand          rand value to use (default is auto generated)
+     * @param ?int   $rand          rand value to use (default is auto generated)
      *
      * @return string
      **/
