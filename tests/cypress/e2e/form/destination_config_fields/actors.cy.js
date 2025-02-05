@@ -107,10 +107,8 @@ describe('Actors configuration', () => {
                     cy.getDropdownByLabelText("Select an itemtype").selectDropdownValue('Computers');
                     cy.findByRole('button', {'name': 'Save'}).click();
 
-                    // Go to destination tab and add ticket
-                    cy.findByRole('tab', { 'name': "Items to create" }).click();
-                    cy.findByRole('button', { 'name': "Add ticket" }).click();
-                    cy.checkAndCloseAlert('Item successfully added');
+                    // Go to destination tab
+                    cy.findByRole('tab', { 'name': "Items to create 1" }).click();
                 });
             });
 
