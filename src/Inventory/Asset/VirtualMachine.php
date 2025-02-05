@@ -351,7 +351,6 @@ class VirtualMachine extends InventoryAsset
                             'method'    => 'inventory'
                         ];
                         $rulesmatched->add($inputrulelog, [], false);
-                        trigger_error(print_r($inputrulelog, true));
 
                         $computervm->update($input);
                     }
