@@ -1282,9 +1282,9 @@ class NetworkPort extends CommonDBChild
                             ]);
                             $network_names = [];
                             foreach ($names_iterator as $namerow) {
-                                $netname = new NetworkName();
-                                $netname->getFromDB($namerow['id']);
-                                $network_names[] = $netname->getLink();
+                                 $netname = new NetworkName();
+                                 $netname->getFromDB($namerow['id']);
+                                 $network_names[] = $netname->getLink();
                             }
                             $output .= implode('<br />', $network_names);
                             break;
