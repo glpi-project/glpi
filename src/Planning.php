@@ -1037,7 +1037,7 @@ TWIG, $twig_params);
         $item = getItemForItemtype($params['itemtype']);
         if ($item instanceof CommonDBTM) {
             echo "<div class='center'>";
-            echo "<a href='" . $params['url'] . "' class='btn btn-outline-secondary'>" .
+            echo "<a href='" . htmlescape($params['url']) . "' class='btn btn-outline-secondary'>" .
                 "<i class='ti ti-eye'></i>" .
                 "<span>" . __s("View this item in its context") . "</span>" .
             "</a>";
@@ -1287,10 +1287,9 @@ TWIG, $twig_params);
         global $CFG_GLPI;
 
         if (isset($params["id"]) && ($params["id"] > 0)) {
-            echo "<input type='hidden' name='plan[id]' value='" . $params["id"] . "'>";
+            echo "<input type='hidden' name='plan[id]' value='" . (int) $params["id"] . "'>";
         }
 
-        $rand = $params['rand'] ?? mt_rand();
         $display_dates = $params['_display_dates'] ?? true;
         $mintime = $CFG_GLPI["planning_begin"];
         if (!empty($params["begin"])) {

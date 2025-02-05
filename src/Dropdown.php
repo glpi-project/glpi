@@ -223,11 +223,11 @@ class Dropdown
                 $values = [$params['value']];
             }
             foreach ($values as $value) {
-                $output .= "<input type='hidden' name='" . $field_name . "' value='$value'>";
+                $output .= "<input type='hidden' name='" . htmlescape($field_name) . "' value='" . htmlescape($value) . "'>";
             }
             $output .= '<span class="form-control" readonly'
-                . ($params['width'] ? ' style="width: ' . $params["width"] . '"' : '') . '>'
-                . ($params['multiple'] ? implode(', ', $names) : $name)
+                . ($params['width'] ? ' style="width: ' . htmlescape($params["width"]) . '"' : '') . '>'
+                . htmlescape($params['multiple'] ? implode(', ', $names) : $name)
                 . '</span>';
             return $output;
         }
@@ -1096,7 +1096,7 @@ JAVASCRIPT;
         }
         if ($params['use_checkbox']) {
             if (!empty($params['rand'])) {
-                $rand = $params['rand'];
+                $rand = (int) $params['rand'];
             } else {
                 $rand = mt_rand();
             }
@@ -1777,7 +1777,7 @@ JAVASCRIPT;
      *    - used                : array / Already used items ID: not to display in dropdown (default empty)
      *    - display             : true : display directly, false return the html
      *
-     * @return integer randomized value used to generate HTML IDs
+     * @return integer|string randomized value used to generate HTML IDs or html contents
      **/
     public static function showSelectItemFromItemtypes(array $options = [])
     {

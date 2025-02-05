@@ -2014,15 +2014,17 @@ TWIG,
      * @since 0.84
      *
      * @param string $container_id  html of the container of checkboxes link to this check all checkbox
-     * @param string $rand          rand value to use (default is auto generated)(default '')
+     * @param ?int   $rand          rand value to use (default is auto generated)
      *
      * @return string
      **/
-    public static function getCheckAllAsCheckbox($container_id, $rand = '')
+    public static function getCheckAllAsCheckbox($container_id, $rand = null)
     {
 
-        if (empty($rand)) {
+        if ($rand === null) {
             $rand = mt_rand();
+        } else {
+            $rand = (int) $rand;
         }
 
         $out  = "<input title='" . __s('Check all as') . "' type='checkbox' class='form-check-input massive_action_checkbox'
@@ -2139,10 +2141,10 @@ TWIG,
         $out = "";
 
         if ($params['zero_on_empty']) {
-            $out .= '<input type="hidden" name="' . $params['name'] . '" value="0" />';
+            $out .= '<input type="hidden" name="' . htmlescape($params['name']) . '" value="0" />';
         }
 
-        $out .= "<input type='checkbox' class='form-check-input " . $params['class'] . "' title=\"" . $params['title'] . "\" ";
+        $out .= "<input type='checkbox' class='form-check-input " . htmlescape($params['class']) . "' title=\"" . htmlescape($params['title']) . "\" ";
         if (isset($params['onclick'])) {
             $params['onclick'] = htmlescape($params['onclick']);
             $out .= " onclick='{$params['onclick']}'";
@@ -2150,7 +2152,7 @@ TWIG,
 
         foreach (['id', 'name', 'title', 'value'] as $field) {
             if (!empty($params[$field])) {
-                $out .= " $field='" . $params[$field] . "'";
+                $out .= " $field='" . htmlescape($params[$field]) . "'";
             }
         }
 
@@ -2168,6 +2170,8 @@ TWIG,
                 if (is_array($values)) {
                     $values = implode(' ', $values);
                 }
+                $tag = htmlescape($tag);
+                $values = htmlescape($values);
                 $out .= " $tag='$values'";
             }
         }
@@ -2564,6 +2568,10 @@ TWIG,
          : "";
 
         $name = htmlescape($name);
+        $p['rand'] = (int) $p['rand'];
+        $p['size'] = (int) $p['size'];
+        $p['placeholder'] = htmlescape($p['placeholder']);
+
         $output = <<<HTML
       <div class="button-group flex-grow-1 flatpickr d-flex align-items-center" id="showdate{$p['rand']}">
          <input type="text" name="{$name}" size="{$p['size']}"
@@ -2757,6 +2765,7 @@ JS;
         $name = htmlescape($name);
         $value = htmlescape($p['value']);
         $show_datepicker_label = __s('Show date picker');
+        $p['rand'] = (int) $p['rand'];
         $output = <<<HTML
          <div class="btn-group flex-grow-1 flatpickr" id="showdate{$p['rand']}">
             <input type="text" name="{$name}" value="{$value}"
@@ -3296,7 +3305,7 @@ JS;
         if (empty($param['applyto'])) {
             if (!empty($param['link'])) {
                 $out .= "<a id='" . (!empty($param['linkid']) ? htmlescape($param['linkid']) : "tooltiplink$rand") . "'
-                        class='dropdown_tooltip {$param['link_class']}'";
+                        class='dropdown_tooltip " . htmlescape($param['link_class']) . "'";
 
                 if (!empty($param['linktarget'])) {
                     $out .= " target='" . htmlescape($param['linktarget']) . "' ";
@@ -4196,6 +4205,7 @@ JAVASCRIPT
 
         // Ensure $btlabel is properly escaped
         $btlabel = htmlescape($btlabel);
+        $btimage = htmlescape($btimage);
         $link .= '>';
         if (empty($btimage)) {
             $link .= $btlabel;
@@ -5047,7 +5057,7 @@ HTML;
 
         return sprintf(
             '<link rel="stylesheet" type="text/css" href="%s" %s>',
-            $url,
+            htmlescape($url),
             Html::parseAttributes($options)
         );
     }

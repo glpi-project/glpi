@@ -337,7 +337,7 @@ class NetworkAlias extends FQDNLabel
                 echo "};";
                 echo "</script>";
             }
-            echo "<a href='" . static::getFormURLWithID($data["id"]) . "'>" . htmlescape($name) . "</a>";
+            echo "<a href='" . htmlescape(static::getFormURLWithID($data["id"])) . "'>" . htmlescape($name) . "</a>";
             echo "</td>";
             echo "<td class='center' $showviewjs>" . Dropdown::getDropdownName(
                 "glpi_fqdns",

@@ -1117,7 +1117,7 @@ class CommonGLPI implements CommonGLPIInterface
                 ]));
                 if ($this->isField('is_deleted') && $this->fields['is_deleted']) {
                     $title = $this->isField('date_mod')
-                                ? sprintf(__s('Item has been deleted on %s'), Html::convDateTime($this->fields['date_mod']))
+                                ? htmlescape(sprintf(__('Item has been deleted on %s'), Html::convDateTime($this->fields['date_mod'])))
                                 : __s('Deleted');
                     echo "<span class='mx-2 status rounded-1' title=\"" . $title . "\"
                         data-bs-toggle='tooltip'>

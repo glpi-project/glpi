@@ -415,12 +415,11 @@ class PDU_Rack extends CommonDBRelation
                     $fg_color = !empty($current_pdu['bgcolor'])
                               ? Html::getInvertedColor($current_pdu['bgcolor'])
                               : "";
-                    $fg_color_s = "color: $fg_color;";
-                    echo "<tr style='background-color: $bg_color; color: $fg_color;'>";
+                    echo "<tr style='background-color: " . htmlescape($bg_color) . "; color: " . htmlescape($fg_color) . ";'>";
                     echo "<td class='rack_position'>";
                     $current_pdu['position'] = (int) $current_pdu['position'];
                     if ($current_pdu['racked']) {
-                        echo "<i class='" . Rack::getIcon() . "'
+                        echo "<i class='" . htmlescape(Rack::getIcon()) . "'
                            title='" . __s("Racked") . " (" . $current_pdu['position'] . ")'></i>";
                     } else {
                         switch ($current_pdu['side']) {
@@ -445,13 +444,13 @@ class PDU_Rack extends CommonDBRelation
                     echo "</td>";
 
                     echo "<td>";
-                    echo "<a href='" . $pdu->getLinkURL() . "'style='$fg_color_s'>" . $pdu->getName() . "</a>";
+                    echo "<a href='" . htmlescape($pdu->getLinkURL()) . "'style='color: " . htmlescape($fg_color) . ";'>" . htmlescape($pdu->getName()) . "</a>";
                     echo "</td>";
 
                     echo "<td>";
                     if ($pdu_m->getFromDB($pdu->fields['pdumodels_id'])) {
                          echo "<i class='ti ti-bolt'></i>";
-                         echo $pdu_m->fields['max_power'] . "W";
+                         echo htmlescape($pdu_m->fields['max_power']) . "W";
                     }
                     echo "</td>";
                     echo "</tr>";
@@ -512,7 +511,7 @@ JAVASCRIPT;
         global $CFG_GLPI;
 
         $rand  = mt_rand();
-        $num_u = $rack->fields['number_units'];
+        $num_u = (int) $rack->fields['number_units'];
         $pdu   = new PDU();
         $pdu_m = new PDUModel();
         $rel   = new self();
@@ -544,7 +543,6 @@ JAVASCRIPT;
                 $fg_color   = !empty($current['bgcolor'])
                              ? Html::getInvertedColor($current['bgcolor'])
                              : "";
-                $fg_color_s = "color: $fg_color;";
                 $picture = false;
 
                 if (
@@ -555,7 +553,7 @@ JAVASCRIPT;
                     $height = 1;
                     $model_name = "";
                     if ($pdu_m->getFromDB($pdu->fields['pdumodels_id'])) {
-                        $height     = $pdu_m->fields['required_units'];
+                        $height     = (int) $pdu_m->fields['required_units'];
                         $y          = $num_u + 1 - $current['position'] - $height;
                         $picture    = $pdu_m->fields['picture_front'];
                         $model_name = $pdu_m->getName();
@@ -564,11 +562,11 @@ JAVASCRIPT;
                     $tip = "<span class='tipcontent'>";
                     $tip .= "<span>
                         <label>" . _sn('Type', 'Types', 1) . ":</label>" .
-                        $pdu->getTypeName() . "
+                        htmlescape($pdu->getTypeName()) . "
                      </span>
                      <span>
                         <label>" . __s('name') . ":</label>" .
-                        $pdu->getName() . "
+                        htmlescape($pdu->getName()) . "
                      </span>";
                     if (!empty($pdu->fields['serial'])) {
                         $tip .= "<span>
@@ -585,7 +583,7 @@ JAVASCRIPT;
                     if (!empty($model_name)) {
                         $tip .= "<span>
                            <label>" . __s('model') . ":</label>
-                           $model_name
+                           " . htmlescape($model_name) . "
                         </span>";
                     }
                     $tip .= "</span>";
@@ -606,22 +604,22 @@ JAVASCRIPT;
 
                     echo "<div class='grid-stack-item $picture_c'
                        id='item_$item_rand'
-                       gs-id='{$current['id']}'
+                       gs-id='" . (int) $current['id'] . "'
                        gs-h='$height' gs-w='1'
                        gs-x='0' gs-y='$y'
-                       style='background-color: $bg_color; color: $fg_color;'>
-                  <div class='grid-stack-item-content' style='$fg_color_s'>
+                       style='background-color: " . htmlescape($bg_color) . "; color: " . htmlescape($fg_color) . ";'>
+                  <div class='grid-stack-item-content' style='color: " . htmlescape($fg_color) . ";'>
                      <i class='item_rack_icon ti ti-plug fa-rotate-270'></i>
                      <span class='rotated_text'>
-                        <a href='" . $pdu->getLinkURL() . "'
+                        <a href='" . htmlescape($pdu->getLinkURL()) . "'
                            class='itemrack_name'
-                           title='" . $pdu->getName() . "'
-                           style='$fg_color_s'>" . $pdu->getName() . "
+                           title='" . htmlescape($pdu->getName()) . "'
+                           style='color: " . htmlescape($fg_color) . ";'>" . htmlescape($pdu->getName()) . "
                         </a>
                      </span>
-                     <a href='" . $rel->getLinkUrl() . "' class='rel-link'>
+                     <a href='" . htmlescape($rel->getLinkUrl()) . "' class='rel-link'>
                         <i class='ti ti-pencil fa-rotate-270'
-                           style='$fg_color_s'
+                           style='color: " . htmlescape($fg_color) . ";'
                            title='" . __s("Edit rack relation") . "'></i>
                      </a>
                      $tip

@@ -257,7 +257,7 @@ TWIG, $twig_params);
         /** @var \DBmysql $DB */
         global $DB;
 
-        $ID = $itil->getField('id');
+        $ID = $itil->getID();
         if (!$itil->can($ID, READ)) {
             return false;
         }

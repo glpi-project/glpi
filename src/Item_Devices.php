@@ -628,7 +628,7 @@ class Item_Devices extends CommonDBRelation
         $is_device = ($item instanceof CommonDevice);
 
         /** @var CommonDBTM $item */
-        $ID = $item->getField('id');
+        $ID = $item->getID();
 
         if (!$item->can($ID, READ)) {
             return false;
