@@ -99,8 +99,12 @@ abstract class ITILActorField extends AbstractConfigField
                 'possible_values' => $this->getITILActorQuestionsValuesForDropdown($form),
             ],
 
-            // Specific additional config for USER_FROM_OBJECT_ANSWER and GROUP_FROM_OBJECT_ANSWER strategy
-            'group_object_answer_extra_field' => [
+            // Specific additional config for the following strategies:
+            // - USER_FROM_OBJECT_ANSWER
+            // - TECH_USER_OBJECT_ANSWER
+            // - GROUP_FROM_OBJECT_ANSWER
+            // - TECH_GROUP_OBJECT_ANSWER
+            'object_answer_extra_field' => [
                 'aria_label'      => __("Select questions..."),
                 'values'          => $config->getSpecificQuestionIds() ?? [],
                 'input_name'      => $input_name . "[" . ITILActorFieldConfig::SPECIFIC_QUESTION_IDS . "]",

@@ -93,17 +93,17 @@
         data-glpi-itildestination-field-config-display-condition="{{ strategy }}"
     >
         {{ fields.dropdownArrayField(
-            group_object_answer_extra_field.input_name,
+            object_answer_extra_field.input_name,
             '',
-            group_object_answer_extra_field.possible_values,
+            object_answer_extra_field.possible_values,
             "",
             options|merge({
                 rand: random(),
                 field_class: '',
                 no_label: true,
                 multiple: true,
-                values: group_object_answer_extra_field.values,
-                aria_label: group_object_answer_extra_field.aria_label,
+                values: object_answer_extra_field.values,
+                aria_label: object_answer_extra_field.aria_label,
                 mb: '',
             })
         ) }}
