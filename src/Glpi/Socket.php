@@ -87,6 +87,11 @@ class Socket extends CommonDBChild
         return false;
     }
 
+    public function maybeRecursive()
+    {
+        return false;
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
