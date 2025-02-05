@@ -297,10 +297,6 @@ final class EntityFieldTest extends DbTestCase
         $builder->addQuestion("Entity 2", QuestionTypeItem::class, 0, json_encode([
             'itemtype' => Entity::getType(),
         ]));
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $this->createForm($builder);
     }
 }

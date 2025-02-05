@@ -56,7 +56,6 @@ final class QuestionTypeDateTimeTest extends DbTestCase
                 'is_time_enabled' => 1,
             ])
         );
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
@@ -80,7 +79,6 @@ final class QuestionTypeDateTimeTest extends DbTestCase
                 'is_time_enabled' => 0,
             ])
         );
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
@@ -104,7 +102,6 @@ final class QuestionTypeDateTimeTest extends DbTestCase
                 'is_time_enabled' => 1,
             ])
         );
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [

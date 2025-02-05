@@ -299,10 +299,6 @@ final class ITILCategoryFieldTest extends DbTestCase
         $builder->addQuestion("ITILCategory 2", QuestionTypeItemDropdown::class, 0, json_encode([
             'itemtype' => ITILCategory::class,
         ]));
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $this->createForm($builder);
     }
 }

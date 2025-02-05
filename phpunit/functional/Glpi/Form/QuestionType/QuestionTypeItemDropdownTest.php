@@ -58,7 +58,6 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
         $builder->addQuestion("Category", QuestionTypeItemDropdown::class, 0, json_encode(
             ['itemtype' => ITILCategory::getType()]
         ));
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [

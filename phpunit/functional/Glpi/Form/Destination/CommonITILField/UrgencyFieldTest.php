@@ -281,10 +281,6 @@ final class UrgencyFieldTest extends DbTestCase
         $builder = new FormBuilder();
         $builder->addQuestion("Urgency 1", QuestionTypeUrgency::class);
         $builder->addQuestion("Urgency 2", QuestionTypeUrgency::class);
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $this->createForm($builder);
     }
 }

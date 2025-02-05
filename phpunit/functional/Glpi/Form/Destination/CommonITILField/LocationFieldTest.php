@@ -299,10 +299,6 @@ final class LocationFieldTest extends DbTestCase
         $builder->addQuestion("Location 2", QuestionTypeItemDropdown::class, 0, json_encode([
             'itemtype' => Location::getType(),
         ]));
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $this->createForm($builder);
     }
 }

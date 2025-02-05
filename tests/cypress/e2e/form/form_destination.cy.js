@@ -43,10 +43,6 @@ describe('Form destination', () => {
         cy.get('@form_id').then((form_id) => {
             const tab = 'Glpi\\Form\\Destination\\FormDestination$1';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
-
-            // Create a ticket destination
-            cy.findByRole('button', {name: "Add ticket"}).click();
-            cy.checkAndCloseAlert('Item successfully added');
         });
     });
 

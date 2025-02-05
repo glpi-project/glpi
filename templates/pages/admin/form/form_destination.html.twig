@@ -51,6 +51,7 @@
     {% else %}
         <div class="accordion mt-4">
             {% for destination in destinations %}
+                {% set is_expanded = active_destination == destination.getID() or destinations|length == 1 %}
                 {% set concrete_destination = destination.getConcreteDestinationItem() %}
                 <div
                     id="glpi-destinations-accordion"
@@ -58,11 +59,11 @@
                 >
                     <h3 class="accordion-header">
                         <button
-                            class="accordion-button {{ active_destination == destination.getID() ? '' : 'collapsed' }}"
+                            class="accordion-button {{ is_expanded ? '' : 'collapsed' }}"
                             type="button"
                             data-bs-toggle="collapse"
                             data-bs-target="#glpi-destinations-accordion-collapse-{{ loop.index }}"
-                            aria-expanded="{{ active_destination == destination.getID() ? 'true' : 'false' }}"
+                            aria-expanded="{{ is_expanded ? 'true' : 'false' }}"
                         >
                             <i class="{{ concrete_destination.getTargetItemtype()|itemtype_icon }} me-2"></i>
                             <input
@@ -77,11 +78,22 @@
                                 data-bs-target=""
                                 data-glpi-form-destination-dynamic-input
                             />
+                            {% if destination.fields.is_mandatory %}
+                                <span class="badge bg-secondary-lt ms-2">
+                                    {{ __("Mandatory") }}
+                                    <span
+                                        class="form-help"
+                                        data-bs-toggle="popover"
+                                        data-bs-placement="right"
+                                        data-bs-content="{{ __("This is the main item that will be created by this form. It can't be deleted.") }}"
+                                    >?</span>
+                                </span>
+                            {% endif %}
                         </button>
                     </h3>
                     <div
                         id="glpi-destinations-accordion-collapse-{{ loop.index }}"
-                        class="accordion-collapse collapse {{ active_destination == destination.getID() ? 'show' : '' }}"
+                        class="accordion-collapse collapse {{ is_expanded ? 'show' : '' }}"
                         data-bs-parent="#glpi-destinations-accordion"
                     >
                         <div class="accordion-body pt-0">
@@ -106,16 +118,18 @@
                                             <i class="ti ti-device-floppy me-2"></i>
                                             {{ __("Update item") }}
                                         </button>
-                                        <button
-                                            class="btn btn-ghost-danger"
-                                            name="purge"
-                                            type="submit"
-                                            formaction="{{ '/Form/%d/Destination/%d/Purge'|format(form.getID(), destination.getID()) }}"
-                                            formmethod="post"
-                                        >
-                                            <i class="ti ti-trash me-2"></i>
-                                            {{ __("Delete") }}
-                                        </button>
+                                        {% if destination.canPurgeItem() %}
+                                            <button
+                                                class="btn btn-ghost-danger"
+                                                name="purge"
+                                                type="submit"
+                                                formaction="{{ '/Form/%d/Destination/%d/Purge'|format(form.getID(), destination.getID()) }}"
+                                                formmethod="post"
+                                            >
+                                                <i class="ti ti-trash me-2"></i>
+                                                {{ __("Delete") }}
+                                            </button>
+                                        {% endif %}
                                     </div>
                                 {% endif %}
 

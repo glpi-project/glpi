@@ -136,23 +136,6 @@ abstract class AbstractFormDestinationType extends DbTestCase
         $this->assertTrue(isset($available_search_options[$search_option_id]));
     }
 
-    public function testGetTabNameUsingFormWithoutDestination(): void
-    {
-        $tab_name = $this->getTestedInstance()::getTargetItemtype()::getTypeName();
-        $answers = $this->getAnswersOfFormWithNoDestination();
-        $this->login();
-        $this->checkGetTabNameForItem($answers, $tab_name);
-    }
-
-    public function testGetTabNameUsingFormWithThreeDestination(): void
-    {
-        $tab_name = $this->getTestedInstance()::getTargetItemtype()::getTypeName();
-        $answers = $this->getAnswersOfFormWithThreeDestination();
-        $this->login();
-        $_SESSION['glpishow_count_on_tabs'] = true;
-        $this->checkGetTabNameForItem($answers, "$tab_name 3");
-    }
-
     public function testGetTabNameUsingFormWithThreeDestinationWithoutCount(): void
     {
         $tab_name = $this->getTestedInstance()::getTargetItemtype()::getTypeName();

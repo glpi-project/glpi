@@ -465,10 +465,6 @@ final class AssociatedItemsFieldTest extends DbTestCase
             'itemtype' => Computer::getType(),
         ]));
 
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket"
-        );
         return $this->createForm($builder);
     }
 }

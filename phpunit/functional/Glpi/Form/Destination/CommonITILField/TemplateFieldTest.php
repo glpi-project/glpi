@@ -197,10 +197,6 @@ final class TemplateFieldTest extends DbTestCase
     private function createAndGetFormWithTicketDestination(): Form
     {
         $builder = new FormBuilder();
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $this->createForm($builder);
     }
 }

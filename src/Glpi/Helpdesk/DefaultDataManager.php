@@ -205,7 +205,7 @@ final class DefaultDataManager
         ];
 
         // Add ticket destination
-        $this->addTicketDestination($form, $config);
+        $this->setMandatoryTicketDestination($form, $config);
 
         // Allow all users
         $this->allowAllUsers($form);
@@ -268,7 +268,7 @@ final class DefaultDataManager
         ];
 
         // Add ticket destination
-        $this->addTicketDestination($form, $config);
+        $this->setMandatoryTicketDestination($form, $config);
 
         // Allow all users
         $this->allowAllUsers($form);
@@ -385,18 +385,16 @@ final class DefaultDataManager
         ];
     }
 
-    private function addTicketDestination(Form $form, array $config): void
+    private function setMandatoryTicketDestination(Form $form, array $config): void
     {
-        $destination = new FormDestination();
-        $id = $destination->add([
-            Form::getForeignKeyField() => $form->getID(),
-            'itemtype' => FormDestinationTicket::class,
-            'name'     => _n('Ticket', 'Tickets', 1),
+        $destination = current($form->getDestinations());
+        $success = $destination->update([
+            'id' => $destination->getID(),
             'config'   => $config,
         ]);
 
-        if (!$id) {
-            throw new \RuntimeException("Failed to create destination");
+        if (!$success) {
+            throw new \RuntimeException("Failed configure destination");
         }
     }
 

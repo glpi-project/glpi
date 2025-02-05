@@ -74,10 +74,6 @@ abstract class AbstractQuestionTypeActorsTest extends DbTestCase
             "",
             json_encode((new QuestionTypeActorsExtraDataConfig($is_multiple))->jsonSerialize())
         );
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket"
-        );
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
@@ -180,7 +176,6 @@ abstract class AbstractQuestionTypeActorsTest extends DbTestCase
 
         $builder = new FormBuilder();
         $builder->addQuestion("Question", static::getQuestionType());
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
