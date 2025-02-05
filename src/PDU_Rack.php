@@ -415,12 +415,11 @@ class PDU_Rack extends CommonDBRelation
                     $fg_color = !empty($current_pdu['bgcolor'])
                               ? Html::getInvertedColor($current_pdu['bgcolor'])
                               : "";
-                    $fg_color_s = "color: $fg_color;";
-                    echo "<tr style='background-color: $bg_color; color: $fg_color;'>";
+                    echo "<tr style='background-color: " . htmlescape($bg_color) . "; color: " . htmlescape($fg_color) . ";'>";
                     echo "<td class='rack_position'>";
                     $current_pdu['position'] = (int) $current_pdu['position'];
                     if ($current_pdu['racked']) {
-                        echo "<i class='" . Rack::getIcon() . "'
+                        echo "<i class='" . htmlescape(Rack::getIcon()) . "'
                            title='" . __s("Racked") . " (" . $current_pdu['position'] . ")'></i>";
                     } else {
                         switch ($current_pdu['side']) {
@@ -445,13 +444,13 @@ class PDU_Rack extends CommonDBRelation
                     echo "</td>";
 
                     echo "<td>";
-                    echo "<a href='" . htmlescape($pdu->getLinkURL()) . "'style='$fg_color_s'>" . htmlescape($pdu->getName()) . "</a>";
+                    echo "<a href='" . htmlescape($pdu->getLinkURL()) . "'style='color: " . htmlescape($fg_color) . ";'>" . htmlescape($pdu->getName()) . "</a>";
                     echo "</td>";
 
                     echo "<td>";
                     if ($pdu_m->getFromDB($pdu->fields['pdumodels_id'])) {
                          echo "<i class='ti ti-bolt'></i>";
-                         echo $pdu_m->fields['max_power'] . "W";
+                         echo htmlescape($pdu_m->fields['max_power']) . "W";
                     }
                     echo "</td>";
                     echo "</tr>";
