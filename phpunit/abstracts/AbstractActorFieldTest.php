@@ -329,10 +329,6 @@ abstract class AbstractActorFieldTest extends DbTestCase
             '',
             json_encode((new QuestionTypeItemExtraDataConfig(Computer::class))->jsonSerialize())
         );
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
 
         return $this->createForm($builder);
     }
