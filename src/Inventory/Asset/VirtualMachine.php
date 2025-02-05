@@ -316,12 +316,27 @@ class VirtualMachine extends InventoryAsset
                     $input['states_id'] = $this->conf->states_id_default > 0 ? $this->conf->states_id_default : 0;
                     $input['entities_id'] = $this->main_asset->getEntityID();
                     $input  = Sanitizer::sanitize($input);
-                    $datarules = $rule->processAllRules($input);
+                    $datarules = $rule->processAllRules($input, [], ['class' => $input['itemtype'], 'return' => true]);
 
                     if (isset($datarules['_no_rule_matches']) && ($datarules['_no_rule_matches'] == '1') || isset($datarules['found_inventories'])) {
                         //this is a new one
                         $vm->entities_id = $this->item->fields['entities_id'];
                         $computers_vm_id = $computervm->add($input);
+
+                        $rulesmatched = new \RuleMatchedLog();
+                        $agents_id = $this->agent->fields['id'];
+                        if (empty($agents_id)) {
+                            $agents_id = 0;
+                        }
+                        $inputrulelog = [
+                            'date'      => date('Y-m-d H:i:s'),
+                            'rules_id'  => $datarules['rules_id'],
+                            'items_id'  => $computers_vm_id,
+                            'itemtype'  => $input['itemtype'],
+                            'agents_id' => $agents_id,
+                            'method'    => 'inventory'
+                        ];
+                        $rulesmatched->add($inputrulelog, [], false);
                     } else {
                         //refused by rules
                         continue;
