@@ -642,6 +642,61 @@ class PendingReasonTest extends DbTestCase
                 'pending_timeline_index'      => 0,
             ]
         ];
+
+        // Case 8: ticket with 2 timeline items
+        // The first set the pending data and the second send the same data
+        // This simulate what will be sent if a pending task is added after the pending followup
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                ],
+                [
+                    'type'                        => TicketTask::class,
+                    'pending'                     => 1,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => 0,
+                'followup_frequency'          => 0,
+                'followups_before_resolution' => 0,
+                // Pending reason is attached to the first timeline item
+                'pending_timeline_index'      => 0,
+            ]
+        ];
+
+        // Case 9: ticket with 2 timeline items
+        // The first set the pending data and the second send the same data
+        // This simulate what will be sent if a pending followup with relauch added after the pending followup relauch
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => 0,
+                ],
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason1->getID(),
+                'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                'followups_before_resolution' => 2,
+                // Pending reason is attached to the first timeline item
+                'pending_timeline_index'      => 1,
+            ]
+        ];
     }
 
     /**
@@ -720,6 +775,7 @@ class PendingReasonTest extends DbTestCase
                     $correct_timeline_item::getType(),
                     $last_timeline_item_pending_data->fields['itemtype']
                 );
+                $test = $correct_timeline_item->getID();
                 $this->assertEquals(
                     $correct_timeline_item->getID(),
                     $last_timeline_item_pending_data->fields['items_id']

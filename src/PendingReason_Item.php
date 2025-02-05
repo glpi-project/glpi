@@ -408,19 +408,40 @@ class PendingReason_Item extends CommonDBRelation
         foreach ($fields_to_check_for_updates as $field) {
             if (
                 isset($new_timeline_item->input[$field])
+                && $new_timeline_item->input[$field] != $last_pending->fields[$field]
             ) {
                 $pending_updates[$field] = $new_timeline_item->input[$field];
-            } else {
-                $pending_updates[$field] = "0";
             }
         }
 
-        self::createForItem($new_timeline_item, $pending_updates);
-
-        // If the ticket is already pending and the follow-up is pending, updating the ticket waiting is not necessary
-        if (!($new_timeline_item::class === ITILFollowup::class && $pending_updates['pendingreasons_id'] === "0")) {
-            self::updateForItem($new_timeline_item->input['_job'], $pending_updates);
+        if (!isset($new_timeline_item->input['pendingreasons_id']) && $new_timeline_item->getType() === 'TicketTask') {
+            $pending_updates = [
+                'pendingreasons_id' => 0,
+                'followup_frequency' => 0,
+                'followups_before_resolution' => 0,
+            ];
         }
+
+        // No actual updates -> nothing to be done
+        if (count($pending_updates) == 0) {
+            return;
+        }
+
+        if ($new_timeline_item->getType() === 'ITILFollowup') {
+            if ($last_pending->fields['pendingreasons_id'] == 0) {
+                $pending_updates['items_id'] = $new_timeline_item->getID();
+                $pending_updates['itemtype'] = $new_timeline_item::getType();
+                $pending_updates['last_bump_date'] = $new_timeline_item->fields['last_bump_date'];
+            } else {
+                $pending_updates['last_bump_date'] = $last_pending->fields['last_bump_date'];
+            }
+        }
+
+        // Update last pending item and parent
+        $last_pending_timeline_item = new $last_pending->fields['itemtype']();
+        $last_pending_timeline_item->getFromDB($last_pending->fields['items_id']);
+        self::updateForItem($last_pending_timeline_item, $pending_updates);
+        self::updateForItem($new_timeline_item->input['_job'], $pending_updates);
     }
 
     /**
