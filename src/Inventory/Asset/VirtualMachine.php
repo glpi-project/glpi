@@ -306,13 +306,13 @@ class VirtualMachine extends InventoryAsset
 
             if (property_exists($vm, 'uuid') && $vm->uuid != '') {
                 $computers_vm_id = $this->getExistingVMAsComputer($vm);
+                $rule = new RuleImportAssetCollection();
+                $rule->getCollectionPart();
+                $input = $this->handleInput($vm, $this->item);
+                $input['itemtype'] = \Computer::class;
                 if ($computers_vm_id == 0) {
                     //call rules on current collected data to find item
                     //a callback on rulepassed() will be done if one is found.
-                    $rule = new RuleImportAssetCollection();
-                    $rule->getCollectionPart();
-                    $input = (array)$vm;
-                    $input['itemtype'] = \Computer::class;
                     $input['states_id'] = $this->conf->states_id_default > 0 ? $this->conf->states_id_default : 0;
                     $input['entities_id'] = $this->main_asset->getEntityID();
                     $input  = Sanitizer::sanitize($input);
@@ -329,12 +329,32 @@ class VirtualMachine extends InventoryAsset
                 } else {
                     // Update computer
                     $computervm->getFromDB($computers_vm_id);
-                    $input = (array)$vm;
                     $input['id'] = $computers_vm_id;
                     if ($this->conf->states_id_default != '-1') {
                         $input['states_id'] = $this->conf->states_id_default;
                     }
-                    $computervm->update(Sanitizer::sanitize($input));
+                    $input = Sanitizer::sanitize($input);
+
+                    $datarules = $rule->processAllRules($input, [], ['class' => $input['itemtype'], 'return' => true]);
+                    if (isset($datarules['found_inventories'])) {
+                        $rulesmatched = new \RuleMatchedLog();
+                        $agents_id = $this->agent->fields['id'];
+                        if (empty($agents_id)) {
+                            $agents_id = 0;
+                        }
+                        $inputrulelog = [
+                            'date'      => date('Y-m-d H:i:s'),
+                            'rules_id'  => $datarules['rules_id'],
+                            'items_id'  => $computers_vm_id,
+                            'itemtype'  => $input['itemtype'],
+                            'agents_id' => $agents_id,
+                            'method'    => 'inventory'
+                        ];
+                        $rulesmatched->add($inputrulelog, [], false);
+                        trigger_error(print_r($inputrulelog, true));
+
+                        $computervm->update($input);
+                    }
                 }
 
                 //load if new, reload if not.
