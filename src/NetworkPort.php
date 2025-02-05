@@ -1283,13 +1283,13 @@ class NetworkPort extends CommonDBChild
                                 ]
                             ]);
                             for ($i = 0; $i < count($names_iterator); $i++) {
-                                 if ($i > 0) {
-                                   $output .= '<br />';
-                                   $names_iterator->next();
-                                 }
-                                 $netname = new NetworkName();
-                                 $netname->getFromDB($names_iterator->current()['id']);
-                                 $output .= $netname->getLink();
+                                if ($i > 0) {
+                                  $output .= '<br />';
+                                  $names_iterator->next();
+                                }
+                                $netname = new NetworkName();
+                                $netname->getFromDB($names_iterator->current()['id']);
+                                $output .= $netname->getLink();
                             }
                             break;
                         default:
