@@ -37,9 +37,9 @@ namespace Glpi\Error;
 class ErrorUtils
 {
     /**
-     * @param string $message
+     * Rewrite file paths to not expose their full filesystem path, as it can be considered as a sensitive information.
      *
-     * Replace GLPI_ROOT path by '.' in $message
+     * @param string $message
      * @return string
      */
     public static function cleanPaths(string $message): string
