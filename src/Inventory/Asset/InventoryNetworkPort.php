@@ -109,6 +109,10 @@ trait InventoryNetworkPort
      */
     public function handlePorts($itemtype = null, $items_id = null)
     {
+        if (!$this->checkConf($this->conf)) {
+            return;
+        }
+
         $this->itemtype = $itemtype ?? $this->item->getType();
         $this->items_id = $items_id ?? $this->item->fields['id'];
 
@@ -223,12 +227,17 @@ trait InventoryNetworkPort
             }
             $stmt = $this->ipnetwork_stmt;
 
-            $stmt->bind_param(
+            $res = $stmt->bind_param(
                 'sss',
                 $port->subnet,
                 $port->netmask,
                 $port->gateway
             );
+            if (false === $res) {
+                $msg = "Error binding params";
+                throw new \RuntimeException($msg);
+            }
+
             $DB->executeStatement($stmt);
             $results = $stmt->get_result();
 
