@@ -80,7 +80,7 @@ class Cartridge extends CommonDBRelation
                 $input = $ma->getInput();
                 $input['maxpages'] = isset($input['maxpages']) ? (int) $input['maxpages'] : '';
 
-                echo "<input type='text' name='pages' value=\"" . htmlescape($input['maxpages']) . "\" size='6'>";
+                echo "<input type='text' name='pages' value=\"" . $input['maxpages'] . "\" size='6'>";
                 echo "<br><br>" . Html::submit(_x('button', 'Update'), ['name' => 'massiveaction']);
                 return true;
         }
