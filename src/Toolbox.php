@@ -2838,7 +2838,7 @@ class Toolbox
                             // Avoids creating a link within a link, when the image is already in an <a> tag
                             $add_link_tmp = $add_link;
                             if ($add_link) {
-                                $pattern = '/<a[^>]*>.*?<img[^>]*' . preg_quote($image['tag'], '/') . '[^>]*>.*?<\/a>/s';
+                                $pattern = '/<a[^>]*>[^<>]*?<img[^>]+' . preg_quote($image['tag'], '/') . '[^<]+>[^<>]*?<\/a>/s';
                                 if (preg_match($pattern, $content_text)) {
                                     $add_link_tmp = false;
                                 }
@@ -2849,7 +2849,7 @@ class Toolbox
                                 $width,
                                 $height,
                                 $add_link_tmp,
-                                $object_url_param
+                                $object_url_param,
                             );
                             if (empty($new_image)) {
                                   $new_image = '#' . $image['tag'] . '#';

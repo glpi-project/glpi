@@ -542,6 +542,16 @@ HTML;
          $('.pswp-img{$p['rand']}').on('click', 'figure', function(event) {
             event.preventDefault();
 
+            const documentChildren = Array.from(pswp.parentNode.children);
+            const hasLinkRedirection = documentChildren.length > 0 && documentChildren[0].tagName.toLowerCase() === 'a';
+
+            if (hasLinkRedirection) {
+                let url = documentChildren[0].getAttribute('href');
+                if (url) {
+                    window.open(url, '_blank');
+                }
+            }
+
             var options = {
                 index: $(this).index(),
                 bgOpacity: 0.7,
