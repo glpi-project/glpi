@@ -50,6 +50,30 @@ describe('Requester configuration', () => {
             cy.getDropdownByLabelText('Question type').selectDropdownValue('Actors');
             cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Requesters');
             cy.getDropdownByLabelText("Select an actor...").selectDropdownValue(requester_name);
+
+            // Create a Group
+            cy.createWithAPI('Group', {
+                name: `Test Group - ${form_id}`,
+            }).as('group_id');
+
+            // Create a Computer with users_id, users_id_tech, groups_id and groups_id_tech
+            cy.get('@group_id').then((group_id) => {
+                cy.createWithAPI('Computer', {
+                    name: `Test Computer - ${form_id}`,
+                    users_id: 7, // E2E Tests user
+                    users_id_tech: 7, // E2E Tests user
+                    groups_id: group_id,
+                    groups_id_tech: group_id,
+                }).as('computer_id');
+            });
+
+            cy.findByRole('button', {'name': "Add a new question"}).click();
+            cy.focused().type("My Computer question");
+            cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
+            cy.getDropdownByLabelText('Question sub type').selectDropdownValue('GLPI Objects');
+            cy.getDropdownByLabelText("Select an itemtype").selectDropdownValue('Computers');
+
+            // Save form
             cy.findByRole('button', {'name': 'Save'}).click();
             cy.checkAndCloseAlert('Item successfully updated');
 
@@ -84,6 +108,12 @@ describe('Requester configuration', () => {
         cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@requesters_dropdown').should('have.text', 'User who filled the form');
 
+        // Switch to "Supervisor of the user who filled the form"
+        cy.get('@requesters_dropdown').selectDropdownValue('Supervisor of the user who filled the form');
+        cy.findByRole('button', { 'name': 'Update item' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+        cy.get('@requesters_dropdown').should('have.text', 'Supervisor of the user who filled the form');
+
         // Switch to "Specific actors"
         cy.get('@requesters_dropdown').selectDropdownValue('Specific actors');
         cy.get('@config').getDropdownByLabelText('Select actors...').as('specific_requesters_dropdown');
@@ -115,6 +145,43 @@ describe('Requester configuration', () => {
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.get('@requesters_dropdown').should('have.text', 'Answer to last "Requesters" question');
+
+        // Switch to "User from GLPI object answer"
+        cy.get('@requesters_dropdown').selectDropdownValue('User from GLPI object answer');
+        cy.get('@config').getDropdownByLabelText('Select questions...').as('user_object_answer_dropdown');
+        cy.get('@user_object_answer_dropdown').selectDropdownValue('My Computer question');
+
+        cy.findByRole('button', { 'name': 'Update item' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+        cy.get('@requesters_dropdown').should('have.text', 'User from GLPI object answer');
+        cy.get('@user_object_answer_dropdown').should('have.text', '×My Computer question');
+
+        // Switch to "Tech user from GLPI object answer"
+        cy.get('@requesters_dropdown').selectDropdownValue('Tech user from GLPI object answer');
+        cy.get('@config').getDropdownByLabelText('Select questions...').as('tech_user_object_answer_dropdown');
+
+        cy.findByRole('button', { 'name': 'Update item' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+        cy.get('@requesters_dropdown').should('have.text', 'Tech user from GLPI object answer');
+        cy.get('@tech_user_object_answer_dropdown').should('have.text', '×My Computer question');
+
+        // Switch to "Group from GLPI object answer"
+        cy.get('@requesters_dropdown').selectDropdownValue('Group from GLPI object answer');
+        cy.get('@config').getDropdownByLabelText('Select questions...').as('group_object_answer_dropdown');
+
+        cy.findByRole('button', { 'name': 'Update item' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+        cy.get('@requesters_dropdown').should('have.text', 'Group from GLPI object answer');
+        cy.get('@group_object_answer_dropdown').should('have.text', '×My Computer question');
+
+        // Switch to "Tech group from GLPI object answer"
+        cy.get('@requesters_dropdown').selectDropdownValue('Tech group from GLPI object answer');
+        cy.get('@config').getDropdownByLabelText('Select questions...').as('tech_group_object_answer_dropdown');
+
+        cy.findByRole('button', { 'name': 'Update item' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+        cy.get('@requesters_dropdown').should('have.text', 'Tech group from GLPI object answer');
+        cy.get('@tech_group_object_answer_dropdown').should('have.text', '×My Computer question');
     });
 
     it('can create ticket using default configuration', () => {

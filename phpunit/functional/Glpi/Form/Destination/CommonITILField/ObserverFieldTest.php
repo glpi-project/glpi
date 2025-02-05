@@ -36,8 +36,8 @@
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use CommonITILActor;
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ObserverFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ObserverField;
@@ -46,16 +46,22 @@ use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
 use Group;
+use Override;
 use Ticket;
 use TicketTemplate;
 use TicketTemplatePredefinedField;
 use User;
 
-final class ObserverFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractActorFieldTest.php';
+
+final class ObserverFieldTest extends AbstractActorFieldTest
 {
-    use FormTesterTrait;
+    #[Override]
+    public function getFieldClass(): string
+    {
+        return ObserverField::class;
+    }
 
     public function testObserverFromTemplate(): void
     {
@@ -123,6 +129,48 @@ final class ObserverFieldTest extends DbTestCase
             config: $form_filler_config,
             answers: [],
             expected_actors_ids: [$auth->getUser()->getID()]
+        );
+    }
+
+    public function testObserverFormFillerSupervisor(): void
+    {
+        $supervisor = $this->createItem(User::class, ['name' => 'testObserverFormFillerSupervisor Supervisor']);
+        $user = $this->createItem(User::class, [
+            'name'                => 'testObserverFormFillerSupervisor User',
+            'password'            => 'testObserverFormFillerSupervisor User',
+            'password2'           => 'testObserverFormFillerSupervisor User',
+            'users_id_supervisor' => $supervisor->getID()
+        ], ['password', 'password2']);
+
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $form_filler_supervisor_config = new ObserverFieldConfig(
+            [ITILActorFieldStrategy::FORM_FILLER_SUPERVISOR]
+        );
+
+        // Need user to be logged in
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $form_filler_supervisor_config,
+            answers: [],
+            expected_actors_ids: []
+        );
+
+        // No supervisor set
+        $auth = $this->login();
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $form_filler_supervisor_config,
+            answers: [],
+            expected_actors_ids: []
+        );
+
+        // Supervisor set
+        $auth = $this->login($user->fields['name'], $user->fields['name']);
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $form_filler_supervisor_config,
+            answers: [],
+            expected_actors_ids: [$auth->getUser()->fields['users_id_supervisor']]
         );
     }
 
@@ -320,9 +368,9 @@ final class ObserverFieldTest extends DbTestCase
         );
     }
 
-    private function sendFormAndAssertTicketActors(
+    protected function sendFormAndAssertTicketActors(
         Form $form,
-        ObserverFieldConfig $config,
+        ITILActorFieldConfig $config,
         array $answers,
         array $expected_actors_ids,
     ): void {
@@ -361,8 +409,8 @@ final class ObserverFieldTest extends DbTestCase
 
         // Check actors
         $this->assertEquals(
-            array_map(fn(array $actor) => $actor['items_id'], $ticket->getActorsForType(CommonITILActor::OBSERVER)),
-            $expected_actors_ids
+            $expected_actors_ids,
+            array_map(fn(array $actor) => $actor['items_id'], $ticket->getActorsForType(CommonITILActor::OBSERVER))
         );
     }
 
