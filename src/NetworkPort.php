@@ -1266,8 +1266,12 @@ class NetworkPort extends CommonDBChild
                             break;
                         case 126: //IP address
                             $ips_iterator = $this->getIpsForPort('NetworkPort', $port['id']);
-                            foreach ($ips_iterator as $iprow) {
-                                $output .= '<br/>' . $iprow['name'];
+                            for ($i = 0; $i < count($ips_iterator); $i++) {
+                                if ($i > 0) {
+                                    $output .= '<br />';
+                                    $ips_iterator->next();
+                                }
+                                $output .= $ips_iterator->current()['name'];
                             }
                             break;
                         case 127:
@@ -1278,10 +1282,14 @@ class NetworkPort extends CommonDBChild
                                     'items_id'  => $port['id']
                                 ]
                             ]);
-                            foreach ($names_iterator as $namerow) {
+                            for ($i = 0; $i < count($names_iterator); $i++) {
+                                 if ($i > 0) {
+                                   $output .= '<br />';
+                                   $names_iterator->next();
+                                 }
                                  $netname = new NetworkName();
-                                 $netname->getFromDB($namerow['id']);
-                                 $output .= '<br/>' . $netname->getLink();
+                                 $netname->getFromDB($names_iterator->current()['id']);
+                                 $output .= $netname->getLink();
                             }
                             break;
                         default:
