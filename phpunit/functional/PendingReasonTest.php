@@ -775,7 +775,6 @@ class PendingReasonTest extends DbTestCase
                     $correct_timeline_item::getType(),
                     $last_timeline_item_pending_data->fields['itemtype']
                 );
-                $test = $correct_timeline_item->getID();
                 $this->assertEquals(
                     $correct_timeline_item->getID(),
                     $last_timeline_item_pending_data->fields['items_id']
