@@ -207,7 +207,7 @@ class ItemVirtualMachine extends CommonDBChild
                 foreach ($hosts as $host) {
                     if ($computer->can($host['items_id'], READ)) {
                         $entries[] = [
-                            'name' => $computer->getLink($host['items_id']),
+                            'name' => $computer->getLink(),
                             'serial' => $computer->fields['serial'],
                             'comment' => $computer->fields['comment'],
                             'entity' => Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id'])
