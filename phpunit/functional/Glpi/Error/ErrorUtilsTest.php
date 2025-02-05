@@ -38,46 +38,38 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class ErrorUtilsTest extends \DbTestCase
 {
-    public function testcleanPathsOnSafeContent()
+    #[DataProvider('unsafeContentsProvider')]
+    public function testcleanPathsOnSafeContent($input, $expected)
     {
-        // Arrange
         assert(is_string(\GLPI_ROOT) && strlen(\GLPI_ROOT) > 0);
-        $safeMessage = 'a string without GLPI_ROOT';
-
-        // Act & Assert
-        // - string without GLPI_ROOT should not be changed
-        $this->assertEquals($safeMessage, ErrorUtils::cleanPaths($safeMessage));
-    }
-
-    public function testcleanPathsOnUnsafeContentsKeepOtherContents()
-    {
-        // Arrange
-        assert(is_string(\GLPI_ROOT) && strlen(\GLPI_ROOT) > 0);
-
-        $data = 'a string with ' . \GLPI_ROOT . ' and other content';
-        // Act & Assert
-        // - string without GLPI_ROOT should not be changed
-        $this->assertStringContainsString('other content', ErrorUtils::cleanPaths($data));
+        $this->assertEquals($expected, ErrorUtils::cleanPaths($input));
     }
 
     #[DataProvider('unsafeContentsProvider')]
-    public function testcleanPathsOnUnsafeContentsRemovesGLPI_ROOT($data)
+    public function testcleanPathsOnUnsafeContentsRemovesGLPI_ROOT($input, $expected)
     {
-        // Arrange
         assert(is_string(\GLPI_ROOT) && strlen(\GLPI_ROOT) > 0);
 
-        // Act & Assert
-        // - string without GLPI_ROOT should not be changed
-        $this->assertStringNotContainsString(\GLPI_ROOT, ErrorUtils::cleanPaths($data));
+        $this->assertSame($expected, ErrorUtils::cleanPaths($input));
     }
 
     public static function unsafeContentsProvider(): array
     {
         return [
-            [\GLPI_ROOT . 'bla bla'],
-            ['bla bla' . \GLPI_ROOT],
-            [\GLPI_ROOT],
-            ['/path/' . \GLPI_ROOT . '/path'],
+            ['input' => \GLPI_ROOT . '/files/ is not writtable.', 'expected' => './files/ is not writtable.'],
+            ['input' => 'Base dir is writtable, fix rights in ' . \GLPI_ROOT, 'expected' => 'Base dir is writtable, fix rights in .'],
+            ['input' => \GLPI_ROOT, 'expected' => '.'],
+            ['input' => 'error in ' . \GLPI_ROOT . '/path : content not readable', 'expected' => 'error in ./path : content not readable'],
+        ];
+    }
+
+    public static function safeContentsProvider(): array
+    {
+        return [
+            ['input' => '/tmp/files/ is not writtable.', 'expected' => '/tmp/files/ is not writtable.'],
+            ['input' => 'Base dir is writtable, fix rights in assets/images/', 'expected' => 'Base dir is writtable, fix rights in assets/images/'],
+            ['input' => '/not/in/root/', 'expected' => '/not/in/root/'],
+            ['input' => 'file /path/file.php not found', 'expected' => 'file /path/file.php not found'],
         ];
     }
 }
