@@ -225,9 +225,15 @@ class VirtualMachineTest extends AbstractInventoryAsset
             <VERSIONCLIENT>GLPI-Agent_v1.4-1</VERSIONCLIENT>
             <VIRTUALMACHINES>
               <COMMENT>Computer VM</COMMENT>
+              <IPADDRESS>10.100.240.11</IPADDRESS>
               <MAC>00:50:56:90:43:42</MAC>
               <MEMORY>1024</MEMORY>
               <NAME>SRV-DMZ-EZ</NAME>
+              <OPERATINGSYSTEM>
+                 <BOOT_TIME>2024-01-24T16:00:00Z</BOOT_TIME>
+                 <FQDN>test.test.test</FQDN>
+                 <FULL_NAME>OS Test</FULL_NAME>
+              </OPERATINGSYSTEM>
               <STATUS>running</STATUS>
               <UUID>420904FE-6a92-95e8-13f9-a37fc3607c14</UUID>
               <VCPU>1</VCPU>
@@ -262,11 +268,39 @@ class VirtualMachineTest extends AbstractInventoryAsset
               'computers_id' => $esx_id_first
           ]));
 
-
           //get Computer
           $computer_linked_first = new \Computer();
           $this->assertTrue($computer_linked_first->getFromDBByCrit([
               'uuid' => '420904fe-6a92-95e8-13f9-a37fc3607c14',
+          ]));
+
+          //get NetworkPort Computer
+          $netport_computer_linked_first = new \NetworkPort();
+          $this->assertTrue($netport_computer_linked_first->getFromDBByCrit([
+              'items_id' => $computer_linked_first->fields['id'],
+              'itemtype' => 'Computer',
+          ]));
+          $netpname_computer_linked_first = new \NetworkName();
+          $this->assertTrue($netpname_computer_linked_first->getFromDBByCrit([
+              'items_id' => $netport_computer_linked_first->fields['id'],
+              'itemtype' => 'NetworkPort',
+          ]));
+          $ip_computer_linked_first = new \IPAddress();
+          $this->assertTrue($ip_computer_linked_first->getFromDBByCrit([
+              'items_id' => $netpname_computer_linked_first->fields['id'],
+              'itemtype' => 'NetworkName',
+              'name' => '10.100.240.11'
+          ]));
+          //get Operating system Computer
+          $itemos_computer_linked_first = new \Item_OperatingSystem();
+          $this->assertTrue($itemos_computer_linked_first->getFromDBByCrit([
+              'items_id' => $computer_linked_first->fields['id'],
+              'itemtype' => 'Computer',
+          ]));
+          $os_computer_linked_first = new \OperatingSystem();
+          $this->assertTrue($os_computer_linked_first->getFromDBByCrit([
+              'id' => $itemos_computer_linked_first->fields['operatingsystems_id'],
+              'name' => 'OS Test'
           ]));
 
           $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
