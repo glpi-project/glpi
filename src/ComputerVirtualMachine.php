@@ -420,7 +420,7 @@ class ComputerVirtualMachine extends CommonDBChild
         }
 
         $iterator = $DB->request([
-            'SELECT' => 'id',
+            'SELECT' => ['id', 'uuid'],
             'FROM'   => 'glpi_computers',
             'WHERE'  => [
                 'RAW' => [
@@ -434,18 +434,12 @@ class ComputerVirtualMachine extends CommonDBChild
             $result = $iterator->current();
             return $result['id'];
         } else if (count($iterator) > 1) {
-            $iterator = $DB->request([
-                'SELECT' => ['id'],
-                'FROM'   => 'glpi_computers',
-                'WHERE'  => [
-                    'RAW' => [
-                        'LOWER(uuid)'  => $fields['uuid']
-                    ]
-                ]
-            ]);
-            if (count($iterator) == 1) {
-                $result = $iterator->current();
-                return $result['id'];
+            for ($i = 0; $i < count($iterator); $i++) {
+                $iterator->seek($i);
+                if ($iterator->current()['uuid'] == $fields['uuid']) {
+                    $result = $iterator->current();
+                    return $result['id'];
+                }
             }
             trigger_error(
                 sprintf(
