@@ -69,6 +69,8 @@
     "scripts": {
         "build:pack": "webpack --config .webpack.config.js",
         "build": "npm run build:pack",
+        "dependencies:postinstall": "php -r \"file_put_contents('.package.hash', sha1_file('package-lock.json'));\"",
+        "dependencies": "npm run dependencies:postinstall",
         "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --forceExit --config tests/js/jest.config.js ./tests/js/**"
     },
     "devDependencies": {
