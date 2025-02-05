@@ -434,12 +434,14 @@ class ComputerVirtualMachine extends CommonDBChild
             $result = $iterator->current();
             return $result['id'];
         } else if (count($iterator) > 1) {
-            for ($i = 0; $i < count($iterator); $i++) {
-                $iterator->seek($i);
-                if ($iterator->current()['uuid'] == $fields['uuid']) {
-                    $result = $iterator->current();
-                    return $result['id'];
+            $exact_matches = array_filter(
+                iterator_to_array($iterator),
+                static function (array $row) use ($fields) {
+                    return strtolower($row['uuid']) === strtolower($fields['uuid']);
                 }
+            );
+            if (count($exact_matches) === 1) {
+                return end($exact_matches)['id'];
             }
             trigger_error(
                 sprintf(
