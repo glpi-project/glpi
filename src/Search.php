@@ -7106,10 +7106,20 @@ JAVASCRIPT;
                     if (in_array($orig_id, [151, 158, 181, 186])) {
                         $out = Html::convDateTime($data[$ID][0]['name']);
 
-                       // No due date in waiting status
-                        if ($data[$ID][0]['status'] == CommonITILObject::WAITING) {
-                             return '';
+                        if (
+                            $data[$ID][0]['status'] == CommonITILObject::WAITING
+                        ) {
+                            // No due date in waiting status for TTRs
+                            if (
+                                $table . '.' . $field == "glpi_tickets.time_to_resolve"
+                                || $table . '.' . $field == "glpi_tickets.internal_time_to_resolve"
+                            ) {
+                                return '';
+                            } else {
+                                $color = '#AAAAAA';
+                            }
                         }
+
                         if (empty($data[$ID][0]['name'])) {
                             return '';
                         }
@@ -7233,11 +7243,13 @@ JAVASCRIPT;
                             $less_crit       = ($totaltime - $currenttime);
                         }
 
-                        $color = $_SESSION['glpiduedateok_color'];
-                        if ($less_crit < $less_crit_limit) {
-                            $color = $_SESSION['glpiduedatecritical_color'];
-                        } else if ($less_warn < $less_warn_limit) {
-                            $color = $_SESSION['glpiduedatewarning_color'];
+                        if (!isset($color)) {
+                            $color = $_SESSION['glpiduedateok_color'];
+                            if ($less_crit < $less_crit_limit) {
+                                $color = $_SESSION['glpiduedatecritical_color'];
+                            } else if ($less_warn < $less_warn_limit) {
+                                $color = $_SESSION['glpiduedatewarning_color'];
+                            }
                         }
 
                         if (!isset($so['datatype'])) {
