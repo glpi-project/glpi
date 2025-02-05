@@ -32,7 +32,6 @@
  #}
 
 {% extends "generic_show_form.html.twig" %}
-{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set params = {} %}
 {# do not display delete button #}
@@ -49,42 +48,55 @@
 
     <input type="hidden" name="_update_capacities" value="1" />
 
-    <input type="text" placeholder="{{ _x('button', 'Search') }}" class="form-control mb-5" id="search-capacities" />
+    <div class="row flew-row gx-2">
+        <div class="d-flex mb-3">
+            <input type="text" placeholder="{{ _x('button', 'Search') }}" class="me-3" id="search-capacities" />
+            <a role="button" class="btn btn-sm btn-ghost-secondary ms-auto" id="select-all-capacities">
+                <i class="ti ti-copy-check"></i>
+                <span>{{ __('(Un)select all') }}</span>
+            </a>
+        </div>
 
-    {% for capacity in capacities %}
-        {% set label %}
-            <span class="d-inline-flex align-items-center badge bg-gray-600">
-                <span>{{ capacity.getLabel() }}</span>
-                <i class="ms-1 {{ capacity.getIcon() }}"></i>
-            </span>
-            {% if capacity.getDescription() is not empty %}
-                <small class="form-hint">
-                    {{ capacity.getDescription() }}
-                </small>
-            {% endif %}
-        {% endset %}
-        {% set field %}
-            <label class="d-flex align-items-center gap-2 form-check form-switch mt-2">
-                <input type="checkbox"
-                    name="capacities[]"
-                    value="{{ get_class(capacity) }}"
-                    class="form-check-input"
-                    id="%id%"
-                    data-capacity="{{ get_class(capacity) }}"
-                    data-capacity-search="{{ capacity.getLabel() ~ ' ' ~ capacity.getDescription() }}"
-                    data-is-used="{{ capacity.isUsed(classname) ? 1 : 0 }}"
-                    {{ item.hasCapacityEnabled(capacity) ? 'checked' : '' }} />
-                <i class="ti ti-alert-circle-filled text-red fs-2 d-none"
-                    data-capacity="{{ get_class(capacity) }}"
-                    data-bs-toggle="tooltip"
-                    title="{{ capacity.getCapacityUsageDescription(classname) }}"></i>
-            </label>
-        {% endset %}
-        {{ fields.field('capacities[]', field, label, {
-            label_class: 'col-xxl-10',
-            input_class: 'col-xxl-2',
-        }) }}
-    {% endfor %}
+        {% for capacity in capacities %}
+            <div class="col-12 col-lg-6 col-xxl-4 mb-2 capacity-box">
+                <label class="form-selectgroup-boxes flex-fill w-100 h-100" style="min-height: 70px;">
+                    <input type="checkbox"
+                            name="capacities[]"
+                            value="{{ get_class(capacity) }}"
+                            class="form-selectgroup-input"
+                            id="{{ get_class(capacity) }}"
+                            data-capacity="{{ get_class(capacity) }}"
+                            data-capacity-search="{{ capacity.getLabel() ~ ' ' ~ capacity.getDescription() }}"
+                            data-is-used="{{ capacity.isUsed(classname) ? 1 : 0 }}"
+                            {{ item.hasCapacityEnabled(capacity) ? 'checked' : '' }} />
+                    <div class="form-selectgroup-label d-flex align-items-center h-100 shadow-none p-0 px-3">
+                        <span class="me-2 mt-1">
+                            <i class="{{ capacity.getIcon() }} fa-2x text-secondary"></i>
+                        </span>
+                        <div class="text-start">
+                            <div class="fw-bold">
+                                {{ capacity.getLabel() }}
+                            </div>
+                            {% if capacity.getDescription() is not empty %}
+                            <small class="form-hint">
+                                {{ capacity.getDescription() }}
+                            </small>
+                            {% endif %}
+                            <span class="alert-capacity text-red d-none" data-capacity="{{ get_class(capacity) }}">
+                                <i class="ti ti-alert-triangle fs-2"></i>
+                                <span>
+                                    {{ capacity.getCapacityUsageDescription(classname) }}
+                                <span
+                            </span>
+                        </div>
+                        <div class="me-2 ms-auto">
+                            <span class="form-selectgroup-check"></span>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        {% endfor %}
+    </div>
 
     {# Modal #}
     <div class="modal fade" id="capacityWarningModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -159,12 +171,10 @@
                 );
             });
 
-            $('input[name="capacities[]"]').on('change', function() {
-                if ($(this).data('is-used')) {
-                    $(this).toggleClass('red-toggle-switch-bg');
-                    $('i[data-capacity="' + $.escapeSelector($(this).data('capacity')) + '"]').toggleClass('d-none');
-                    $('div[data-capacity="' + $.escapeSelector($(this).data('capacity')) + '"]').toggleClass('d-none');
-                }
+            // warn user about the consequences of disabling a capacity
+            $('input[name="capacities[]"][data-is-used=1]').on('change', function() {
+                $(this).toggleClass('red-toggle-switch-bg');
+                $('.alert-capacity[data-capacity="' + $.escapeSelector($(this).data('capacity')) + '"]').toggleClass('d-none', $(this).is(':checked'));
             });
 
             // filter the list of capacities
@@ -178,12 +188,26 @@
                     $('input[name="capacities[]"]').each(function() {
                         const capacity_search = $(this).data('capacity-search').toLowerCase();
                         if (capacity_search.indexOf(search) === -1) {
-                            $(this).closest('.form-field').addClass('d-none');
+                            $(this).closest('.capacity-box').addClass('d-none');
                         } else {
-                            $(this).closest('.form-field').removeClass('d-none');
+                            $(this).closest('.capacity-box').removeClass('d-none');
                         }
                     });
                 }, 250);
+            });
+
+            // (un)toggle all capacities button
+            $('#select-all-capacities').on('click', function() {
+                var $checkboxes = $('input[name="capacities[]"]');
+                var $checkedCheckboxes = $checkboxes.filter(':checked');
+
+                if ($checkedCheckboxes.length === $checkboxes.length) {
+                    $checkboxes.prop('checked', false);
+                } else {
+                    $checkboxes.prop('checked', true);
+                }
+
+                $checkboxes.trigger('change');
             });
         });
     </script>
