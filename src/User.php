@@ -2784,7 +2784,7 @@ HTML;
             }
             echo "</td></tr>";
         } else {
-                echo "<tr class='tab_bg_1'><td></td><td></td></tr>";
+                echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
         }
 
         echo "<tr class='tab_bg_1'>";
