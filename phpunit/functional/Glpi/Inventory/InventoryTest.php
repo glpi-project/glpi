@@ -44,7 +44,6 @@ use OperatingSystemArchitecture;
 use OperatingSystemServicePack;
 use OperatingSystemVersion;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use UserEmail;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
@@ -6541,7 +6540,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame($other_states_id, $computer->fields['states_id']);
     }
 
-    #[RunInSeparateProcess] // TODO: fix this test, it shouldn't need an individual process
     public function testOtherSerialFromTag()
     {
         global $DB;

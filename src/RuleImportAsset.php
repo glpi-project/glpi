@@ -854,7 +854,11 @@ class RuleImportAsset extends Rule
                             ]
                         ];
                     } else {
-                        $it_criteria['WHERE'][] = ["$itemtable.uuid" => $input['uuid']];
+                        $it_criteria['WHERE'][] = [
+                            "RAW" => [
+                                "LOWER($itemtable.uuid)" => ItemVirtualMachine::getUUIDRestrictCriteria($input['uuid'])
+                            ]
+                        ];
                     }
                     break;
 

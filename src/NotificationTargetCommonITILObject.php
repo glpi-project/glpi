@@ -1493,7 +1493,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 'glpi_itilfollowups',
                 [
                     'WHERE'  => $followup_restrict,
-                    'ORDER'  => ['date_mod DESC', 'id ASC']
+                    'ORDER'  => ['date_mod DESC', 'id DESC']
                 ]
             );
             $data['followups'] = [];

@@ -87,8 +87,6 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
       exit($exit_code);
    }
 
-   file_put_contents('.package.hash', sha1_file('package-lock.json'));
-
    passthru('npm run-script build', $exit_code);
    if ($exit_code > 0) {
       exit($exit_code);
