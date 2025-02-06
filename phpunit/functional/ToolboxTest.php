@@ -52,6 +52,8 @@ use Psr\Log\LogLevel;
 
 class ToolboxTest extends DbTestCase
 {
+    private const TEST_CUSTOM_LOG_FILE_NAME = 'test_log_file';
+
     public function testGetRandomString()
     {
         for ($len = 20; $len < 50; $len += 5) {
@@ -1636,5 +1638,38 @@ HTML;
         $instance = new \Toolbox();
 
         $this->assertSame($result, $instance->computeRedirect($where));
+    }
+
+    public function test_LogInFile_SeeExpectedContentsInLogFile(): void
+    {
+        // Arrange
+        assert(!file_exists($this->getCustomLogFilePath()) || unlink($this->getCustomLogFilePath()));
+
+        $message = 'The logged message';
+
+        // Act
+        assert(\Toolbox::logInFile(self::TEST_CUSTOM_LOG_FILE_NAME, $message), 'log failed');
+
+        // Assert
+        $this->assertFileExists($this->getCustomLogFilePath());
+        $this->assertStringContainsString($message, file_get_contents($this->getCustomLogFilePath()));
+    }
+
+    public function test_LogInFile_FilterRootPathInLogFile(): void
+    {
+        // Arrange
+        assert(!file_exists($this->getCustomLogFilePath()) || unlink($this->getCustomLogFilePath()));
+        $messageWithPath = 'Error somewhere in the path ' . GLPI_ROOT . ' triggered';
+
+        // Act
+        assert(\Toolbox::logInFile(self::TEST_CUSTOM_LOG_FILE_NAME, $messageWithPath), 'log failed');
+
+        // Assert
+        $this->assertStringNotContainsString(\GLPI_ROOT, file_get_contents($this->getCustomLogFilePath()));
+    }
+
+    private function getCustomLogFilePath(): string
+    {
+        return GLPI_LOG_DIR . "/" . self::TEST_CUSTOM_LOG_FILE_NAME . ".log";
     }
 }

@@ -35,6 +35,7 @@
 
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
+use Glpi\Error\ErrorUtils;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
@@ -311,9 +312,12 @@ class Toolbox
         $tps = microtime(true);
 
         try {
+            $msg = self::cleanPaths($msg);
             $PHPLOGGER->log($level, $msg, $extra);
         } catch (\Throwable $e) {
-           //something went wrong, make sure logging does not cause fatal
+            //something went wrong
+            // make sure logging does not cause fatal
+            // and error still logged (without glpi root path removed)
             error_log($e);
         }
     }
@@ -415,9 +419,9 @@ class Toolbox
     /**
      * Log a message in log file
      *
-     * @param string  $name   name of the log file
-     * @param string  $text   text to log
-     * @param boolean $force  force log in file not seeing use_log_in_files config
+     * @param string $name name of the log file, relative to GLPI_LOG_DIR, without '.log' extension
+     * @param string $text text to log
+     * @param boolean $force force log in file not seeing use_log_in_files config
      *
      * @return boolean
      **/
@@ -425,6 +429,7 @@ class Toolbox
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+        $text = self::cleanPaths($text);
 
         $user = '';
         if (method_exists('Session', 'getLoginUserID')) {
@@ -3308,5 +3313,14 @@ HTML;
     final public static function getNormalizedItemtype(string $itemtype)
     {
         return strtolower(str_replace('\\', '', $itemtype));
+    }
+
+    /**
+     * @param string $message
+     * @return string
+     */
+    public static function cleanPaths(string $message): string
+    {
+        return ErrorUtils::cleanPaths($message);
     }
 }
