@@ -122,7 +122,7 @@ class ItemVirtualMachineTest extends DbTestCase
 
         $this->assertEquals($cid, $obj->findVirtualMachine(['itemtype' => \Computer::getType(),'uuid' => $uuid]));
 
-        $rule = new RuleImportAssetCollection();
+        $rule = new \RuleImportAssetCollection();
         $rule->getCollectionPart();
         $datarules = $rule->processAllRules($vm, [], ['class' => \Computer::getType(), 'return' => true]);
         $rulesmatchedLog = new \RuleMatchedLog();
