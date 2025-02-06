@@ -328,6 +328,7 @@ class VirtualMachine extends InventoryAsset
                     }
                 } else {
                     // Update computer
+                    $computervm->getFromDB($computers_vm_id);
                     $input = (array)$vm;
                     $input['id'] = $computers_vm_id;
                     if ($this->conf->states_id_default != '-1') {
