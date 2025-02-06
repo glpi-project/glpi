@@ -178,17 +178,6 @@ class AuthLDAP extends CommonDBTM
      */
     private static ?int $last_errno;
 
-    /**
-     * @todo this is just a proxy, temporary fix because I havn't took any architecture decision
-     * see \AuthMail::getDefaultAuth() comments for details
-     *
-     * @return AuthLDAP|AuthMail|null
-     */
-    public static function getDefaultAuth()
-    {
-        return \AuthMail::getDefaultAuth();
-    }
-
     public static function getTypeName($nb = 0)
     {
         return _n('LDAP directory', 'LDAP directories', $nb);
@@ -3611,12 +3600,18 @@ TWIG, $twig_params);
                 $_REQUEST['ldap_filter'] = self::buildLdapFilter($authldap);
             }
         } else {
-            if (!$_REQUEST['authldaps_id']) {
-                $_REQUEST['authldaps_id'] = NOT_AVAILABLE;
+            if (
+                $_REQUEST['authldaps_id'] === NOT_AVAILABLE
+                || !$_REQUEST['authldaps_id']
+            ) {
+                $defaultAuth = \Auth::getDefaultAuth();
+                if ($defaultAuth instanceof AuthLDAP) {
+                    $_REQUEST['authldaps_id'] = $defaultAuth->getID();
 
-                if ($_REQUEST['authldaps_id'] > 0) {
-                    $authldap->getFromDB($_REQUEST['authldaps_id']);
-                    $_REQUEST['basedn'] = $authldap->getField('basedn');
+                    if ($_REQUEST['authldaps_id'] > 0) {
+                        $authldap->getFromDB($_REQUEST['authldaps_id']);
+                        $_REQUEST['basedn'] = $authldap->getField('basedn');
+                    }
                 }
             }
             if (
@@ -4370,7 +4365,7 @@ TWIG, $twig_params);
             $DB->update(
                 AuthMail::getTable(),
                 ['is_default' => 0],
-                [new QueryExpression('true')],
+                [new \Glpi\DBAL\QueryExpression('true')],
             );
         }
     }

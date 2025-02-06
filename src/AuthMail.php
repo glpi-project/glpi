@@ -55,29 +55,6 @@ class AuthMail extends CommonDBTM
         return ['config', Auth::class, self::class];
     }
 
-    /**
-     * Get default Auth system (AuthMail | AuthLDAP)
-     *
-     * Only available if active
-     *
-     * @return AuthMail|AuthLDAP|null Auth or null if not found
-     */
-    public static function getDefaultAuth(): AuthMail|AuthLDAP|null
-    {
-        $auth_mail = new AuthMail();
-        if ($auth_mail->getFromDbByCrit(['is_default' => 1, 'is_active' => 1])) {
-            return $auth_mail;
-        }
-
-        $auth_ldap = new AuthLDAP();
-        if ($auth_ldap->getFromDbByCrit(['is_default' => 1, 'is_active' => 1])) {
-            return $auth_ldap;
-        }
-
-        return null;
-    }
-
-
     public function prepareInputForUpdate($input)
     {
         if (empty($input['name'])) {
