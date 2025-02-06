@@ -336,7 +336,6 @@ class VirtualMachine extends InventoryAsset
                     }
                     $datarules = $rule->processAllRules($input, [], ['class' => $input['itemtype'], 'return' => true]);
                     if (isset($datarules['_no_rule_matches']) && ($datarules['_no_rule_matches'] == '1') || isset($datarules['found_inventories'])) {
-                        $computervm->getFromDB($computers_vm_id);
                         $computervm->update(Sanitizer::sanitize($input));
                     } else {
                         //refused by rules
