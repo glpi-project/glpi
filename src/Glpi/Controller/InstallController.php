@@ -37,6 +37,7 @@ namespace Glpi\Controller;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\Firewall;
 use Glpi\Progress\ProgressStorage;
+use Glpi\Progress\StoredProgressIndicator;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -60,31 +61,16 @@ class InstallController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $progress_storage = $this->progress_storage;
+        $progress_indicator = new StoredProgressIndicator($this->progress_storage, self::PROGRESS_KEY_INIT_DATABASE);
 
-        $this->progress_storage->startProgress(self::PROGRESS_KEY_INIT_DATABASE);
-
-        return new StreamedResponse(function () use ($progress_storage) {
+        return new StreamedResponse(function () use ($progress_indicator) {
             try {
-                $progress_callback = static function (int $current, ?int $max = null, ?string $data = null) use ($progress_storage) {
-                    $progress = $progress_storage->getCurrentProgress(self::PROGRESS_KEY_INIT_DATABASE);
-                    $progress->setCurrent($current);
-                    if ($max !== null) {
-                        $progress->setMax($max);
-                    }
-                    if ($data !== null) {
-                        $progress->setData($data);
-                    }
-                    $progress_storage->save($progress);
-                };
-                Toolbox::createSchema($_SESSION["glpilanguage"], null, $progress_callback);
+                Toolbox::createSchema($_SESSION["glpilanguage"], null, $progress_indicator);
             } catch (\Throwable $e) {
-                $progress_storage->abortProgress(self::PROGRESS_KEY_INIT_DATABASE);
+                $progress_indicator->fail();
                 // Try to remove the config file, to be able to restart the process.
                 @unlink(GLPI_CONFIG_DIR . '/config_db.php');
             }
-
-            $this->progress_storage->endProgress(self::PROGRESS_KEY_INIT_DATABASE);
         });
     }
 }

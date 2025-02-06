@@ -61,7 +61,11 @@ return static function (ContainerConfigurator $container): void {
     $services->load('Glpi\Http\\', $projectDir . '/src/Glpi/Http');
     $services->load('Glpi\Kernel\\Listener\\', $projectDir . '/src/Glpi/Kernel/Listener');
     $services->load('Glpi\DependencyInjection\\', $projectDir . '/src/Glpi/DependencyInjection');
-    $services->load('Glpi\Progress\\', $projectDir . '/src/Glpi/Progress')->exclude($projectDir . '/src/Glpi/Progress/SessionProgress.php');
+    $services->load('Glpi\Progress\\', $projectDir . '/src/Glpi/Progress')
+        ->exclude([
+            $projectDir . '/src/Glpi/Progress/ConsoleProgressIndicator.php',
+            $projectDir . '/src/Glpi/Progress/StoredProgressIndicator.php',
+        ]);
     $services->load(
         'Glpi\Form\ConditionalVisiblity\\',
         $projectDir . '/src/Glpi/Form/ConditionalVisiblity/*Manager.php'

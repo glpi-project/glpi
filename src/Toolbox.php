@@ -42,13 +42,14 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
+use Glpi\Progress\AbstractProgressIndicator;
+use Glpi\Progress\ProgressMessageType;
 use Glpi\Rules\RulesManager;
 use Glpi\Toolbox\URL;
 use Glpi\Toolbox\VersionParser;
 use GuzzleHttp\Client;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -2051,24 +2052,20 @@ class Toolbox
      *
      * @param string   $lang     Language to install
      * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
-     * @param ?Closure $progressCallback
+     * @param ?AbstractProgressIndicator $progress_indicator
      *
      * @return void
      *
      * @internal
      *
      * @since 9.1
-     * @since 9.4.7 Added $database parameter
-     **/
-    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?Closure $progressCallback = null)
+     * @since 9.4.7 Added the `$database` parameter.
+     * @since 11.0.0 Added the `$progress_indicator` parameter.
+     */
+    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?AbstractProgressIndicator $progress_indicator = null)
     {
         /** @var \DBmysql $DB */
         global $DB;
-
-        if (!$progressCallback) {
-            $progressCallback = function (?int $current = null, ?int $max = null, ?string $data = null) {
-            };
-        }
 
         if (null === $database) {
             // Use configured DB if no $db is defined in parameters
@@ -2107,16 +2104,18 @@ class Toolbox
             $number_of_steps += $cron_config_weight;
         }
 
-        $progressCallback($done_steps, $number_of_steps, __('Creating database structure…'));
+        $progress_indicator?->setMaxSteps($number_of_steps);
+        $progress_indicator?->setProgressBarMessage(__('Creating database structure…'));
 
         foreach ($structure_queries as $query) {
             $DB->doQuery($query);
 
             $done_steps++;
-            $progressCallback($done_steps);
+            $progress_indicator?->setCurrentStep($done_steps);
         }
+        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Database structure created.'));
 
-        $progressCallback($done_steps, null, __('Adding empty data…'));
+        $progress_indicator?->setProgressBarMessage(__('Importing default data…'));
 
         foreach ($tables as $table => $data) {
             $reference = array_replace(
@@ -2146,25 +2145,32 @@ class Toolbox
                 }
 
                 $done_steps++;
-                $progressCallback($done_steps);
+                $progress_indicator?->setCurrentStep($done_steps);
             }
         }
+        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Default data imported.'));
 
-        $progressCallback($done_steps, null, __('Creating default forms…'));
+        $progress_indicator?->setProgressBarMessage(__('Creating default forms…'));
         $default_forms_manager = new DefaultDataManager();
         $default_forms_manager->initializeData();
         $done_steps += $init_form_weight;
+        $progress_indicator?->setCurrentStep($done_steps);
+        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Default forms created.'));
 
-        $progressCallback($done_steps, null, __('Initalizing rules…'));
+        $progress_indicator?->setProgressBarMessage(__('Initalizing default rules…'));
         RulesManager::initializeRules();
         $done_steps += $init_rules_weight;
+        $progress_indicator?->setCurrentStep($done_steps);
+        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Default rules initialized.'));
 
-        $progressCallback($done_steps, null, __('Generating keys…'));
+        $progress_indicator?->setProgressBarMessage(__('Generating security keys…'));
         // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
         \Glpi\OAuth\Server::generateKeys();
         $done_steps += $generate_keys_weight;
+        $progress_indicator?->setCurrentStep($done_steps);
+        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Security keys generated.'));
 
-        $progressCallback($done_steps, null, __('Updating default language…'));
+        $progress_indicator?->setProgressBarMessage(__('Defining configuration defaults…'));
         Config::setConfigurationValues(
             'core',
             [
@@ -2174,10 +2180,10 @@ class Toolbox
             ]
         );
         $done_steps += $default_lang_weight;
+        $progress_indicator?->setCurrentStep($done_steps);
 
         if (defined('GLPI_SYSTEM_CRON')) {
-            $progressCallback($done_steps, null, __('Configuring cron tasks…'));
-           // Downstream packages may provide a good system cron
+            // Downstream packages may provide a good system cron
             $DB->update(
                 'glpi_crontasks',
                 [
@@ -2189,9 +2195,13 @@ class Toolbox
                 ]
             );
             $done_steps += $cron_config_weight;
+            $progress_indicator?->setCurrentStep($done_steps);
         }
+        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Configuration defaults defined.'));
 
-        $progressCallback($number_of_steps, $number_of_steps, __('Done!'));
+        $progress_indicator?->setProgressBarMessage('');
+        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Installation done.'));
+        $progress_indicator?->finish();
     }
 
 
