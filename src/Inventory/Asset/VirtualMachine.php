@@ -334,7 +334,13 @@ class VirtualMachine extends InventoryAsset
                     if ($this->conf->states_id_default != '-1') {
                         $input['states_id'] = $this->conf->states_id_default;
                     }
-                    $computervm->update(Sanitizer::sanitize($input));
+                    $datarules = $rule->processAllRules($input, [], ['class' => $input['itemtype'], 'return' => true]);
+                    if (isset($datarules['_no_rule_matches']) && ($datarules['_no_rule_matches'] == '1') || isset($datarules['found_inventories'])) {
+                        $computervm->update(Sanitizer::sanitize($input));
+                    } else {
+                        //refused by rules
+                        continue;
+                    }
                 }
 
                 //load if new, reload if not.
