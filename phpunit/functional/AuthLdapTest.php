@@ -36,24 +36,26 @@
 namespace tests\units;
 
 use AuthLDAP;
+use AuthMail;
 use DbTestCase;
-use Exception;
+use Glpi\PHPUnit\Tests\Glpi\Auth\helpersTrait;
 
 class AuthLdapTest extends DbTestCase
 {
-    private AuthLDAP $defaultAuthLDAP;
+    use helpersTrait;
+
+    private AuthLDAP $initialDefaultAuth;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        // tests here rely on a default existing AuthLDAP
-        // I didn't use the same approach in AuthMailTest
-        // Maybe this could be improved, I didn't think about which test should change.
-        // not important.
-        // @todo remove this comment
-        $this->setDefaultAuthLdap();
-        $this->createAdditionalLDAPs();
+        $this->createDefaultAuthLdap();
+        $this->createAdditionalAuthMail();
+        $this->createAdditionalAuthLDAP();
+        $this->initialDefaultAuth = $this->getDefaultAuth(AuthLDAP::class);
+
+        $this->checkOnlyOnSingleDefaultAuth();
     }
 
     public function test_AddDefaultAuthLdapChangesDefaultAuthLdap()
@@ -62,93 +64,70 @@ class AuthLdapTest extends DbTestCase
 
         // Act - add another AuthLdap as default
         $created = $this->createItem(AuthLDAP::class, [
+            'is_default' => 1,
             'name' => 'LDAP4',
             'is_active' => 1,
-            'is_default' => 1,
             'basedn' => 'ou=people,dc=mycompany',
             'login_field' => 'uid',
             'phone_field' => '01.02.03.04.05'
         ]);
 
         // Assert
-        // - Default AuthLDAP is the new created one
-        $this->assertEquals(
-            $created->getID(),
-            AuthLDAP::getDefaultAuth()->getID()
-        );
-        // - The previous default AuthLdap is not the default anymore (total default AuthLdap = 1)
-        $this->assertEquals(1, countElementsInTable(AuthLDAP::getTable(), ['is_default' => 1]));
+        $this->assertDefaultAuthIs($created);
     }
 
     public function test_AddNonDefaultAuthLdapDoesntChangeDefaultAuthLdap()
     {
-        // Arrange - ensure there is one default AuthLdap
-        $initialDefaultAuthLDAPId = $this->getDefaultAuth()->getID();
-
-        // Act - add another AuthLdap not as default
+        // Act - new not default AuthLdap
         $this->createItem(AuthLDAP::class, [
+            'is_default' => 0,
             'name' => 'newldap',
             'is_active' => 1,
-            'is_default' => 0,
             'basedn' => 'ou=people,dc=mycompany',
             'login_field' => 'uid',
             'phone_field' => '01.02.03.04.05'
         ]);
 
-        // Assert the default AuthLDAP is still the same
-        $this->assertEquals(
-            $initialDefaultAuthLDAPId,
-            AuthLDAP::getDefaultAuth()->getID()
-        );
+        // Assert
+        $this->assertDefaultAuthUnchanged();
     }
 
     public function test_UpdateAuthLdapToDefaultChangesDefaultAuthLdap()
     {
         // Arrange - ensure there is one default AuthLdap
-        $initialDefaultAuthLDAPId = $this->getDefaultAuth()->getID();
+
+        /** @var AuthLDAP $changingAuthLDAP */
+        $changingAuthLDAP = getItemByTypeName(AuthLDAP::class, 'LDAP3', throwException: true);
+
+        $this->checkAuthsAreDifferent($this->initialDefaultAuth, $changingAuthLDAP);
+        $this->checkAuthClassesAreTheSame($this->initialDefaultAuth, $changingAuthLDAP);
+        $this->checkAuthIsNotDefault($changingAuthLDAP);
+        $this->checkAuthIsActive($changingAuthLDAP);
 
         // Act - update an existing AuthLdap as default
-        /** @var AuthLDAP $changingAuthLDAP */
-        $changingAuthLDAP = getItemByTypeName(AuthLDAP::class, 'LDAP1');
-        assert($changingAuthLDAP instanceof AuthLDAP, "AuthLDAP not found by name");
-        assert($initialDefaultAuthLDAPId !== $changingAuthLDAP->getID(), 'Can\'t perform assertion, AuthLDAPs must be different');
-        assert(0 === $changingAuthLDAP->fields['is_default']);
-        assert(1 === $changingAuthLDAP->fields['is_active'], 'getDefault will not return an inactive AuthLDAP as default. $changingAuthLDAP must be active');
+        $updated = $this->updateItem(AuthLDAP::class, $changingAuthLDAP->getID(), ['is_default' => 1]);
 
-        assert($changingAuthLDAP->update([
-            'id' => $changingAuthLDAP->getID(),
-            'is_default' => 1
-        ]), 'Failed to update the AuthLDAP');
-
-        // Assert - the updated AuthLdap is the default
-        $this->assertEquals($changingAuthLDAP->getID(), AuthLDAP::getDefaultAuth()->getID());
+        // Assert
+        $this->assertDefaultAuthIs($updated);
     }
-
 
     public function test_UpdateAuthLdapDoesntChangeDefaultAuthLdap()
     {
         // Arrange - ensure there is one default AuthLdap
-        $initialDefaultAuthLDAPId = $this->getDefaultAuth()->getID();
 
-        // Act - udpate an existing AuthLdap as default
         /** @var AuthLDAP $changingAuthLDAP */
-        $changingAuthLDAP = getItemByTypeName(AuthLDAP::class, 'LDAP1');
-        assert($changingAuthLDAP instanceof AuthLDAP, "AuthLDAP not found by name");
-        assert($initialDefaultAuthLDAPId !== $changingAuthLDAP->getID());
-        assert(0 === $changingAuthLDAP->fields['is_default']);
+        $changingAuthLDAP = getItemByTypeName(AuthLDAP::class, 'LDAP3', throwException: true);
 
+        $this->checkAuthsAreDifferent($this->initialDefaultAuth, $changingAuthLDAP);
+        $this->checkAuthClassesAreTheSame($this->initialDefaultAuth, $changingAuthLDAP);
+        $this->checkAuthIsNotDefault($changingAuthLDAP);
+        $this->checkAuthIsActive($changingAuthLDAP);
 
-        assert(
-            $changingAuthLDAP->update(
-                [
-                    'id' => $changingAuthLDAP->getID(),
-                    'is_default' => 0
-                ]
-            )
-        );
+        // Act - update an existing AuthLdap not as default
+        $this->updateItem(AuthLDAP::class, $changingAuthLDAP->getID(), ['is_default' => 0]);
 
-        // Assert - the updated AuthLdap is the default
-        $this->assertEquals($initialDefaultAuthLDAPId, AuthLDAP::getDefaultAuth()->getID());
+        // Assert
+        $this->assertDefaultAuthUnchanged();
     }
 
     // --- interactions with AuthMail
@@ -156,150 +135,64 @@ class AuthLdapTest extends DbTestCase
     public function test_AddNonDefaultAuthMailDoesntChangeDefaultAuthLdap()
     {
         // Arrange - Ensure default Auth is an AuthLDAP
-        $initialDefaultAuthLDAPId = $this->getDefaultAuth()->getID();
 
         // Act - add a AuthLDAP as default
-        $this->createItem(AuthLDAP::class, [
-            'name' => 'newldap',
+        $this->createItem(AuthMail::class, [
+            'is_default' => 0,
+            'name' => 'newmail',
             'is_active' => 1,
-            'is_default' => 0
         ]);
 
-        // Assert the default AuthLDAP is still the same
-        $this->assertEquals(
-            $initialDefaultAuthLDAPId,
-            AuthLDAP::getDefaultAuth()->getID()
-        );
+        // Assert
+        $this->assertDefaultAuthUnchanged();
     }
 
-    public function test_AddDefaultAuthMailChangeDefaultAuthLDAP()
+    public function test_AddDefaultAuthMailChangeDefaultAuth()
     {
-        // Arrange - done by setUp()
-        $initialDefaultAuthLDAPId = $this->getDefaultAuth()->getID();
-
         // Act - add an AuthLDAP as default
         $created = $this->createItem(AuthLDAP::class, [
+            'is_default' => 1,
             'name' => 'newldap',
             'is_active' => 1,
-            'is_default' => 1
         ]);
 
         // Assert
-        // - the previous Auth (AuthLDAP) is not the default anymore
-        $this->assertNotEquals(AuthLDAP::getDefaultAuth()->getID(), $initialDefaultAuthLDAPId);
-        // - the new Auth is the default
-        $this->assertEquals($created->getID(), AuthLDAP::getDefaultAuth()->getID());
+        $this->assertDefaultAuthIs($created);
     }
 
-    public function test_UpdateAuthMailToDefaultChangeDefaultAuthLDAP()
+    public function test_UpdateAuthMailToDefaultChangeDefaultAuthLdap()
     {
         // Arrange
-        // - Ensure default Auth is an AuthLDAP
-        $initialDefaultAuthLDAPId = $this->getDefaultAuth()->getID();
+        $authMail = getItemByTypeName(AuthMail::class, 'MAIL3', throwException: true);
+        $this->checkAuthIsNotDefault($authMail);
+        $this->checkAuthIsActive($authMail);
 
-        // - Ensure the changing AuthLDAP is not the default for now (and is active)
-        /** @var AuthLDAP $changingAuthLDAP */
-        $changingAuthLDAP = $this->createItem(AuthLDAP::class, [
-            'name' => 'LDAP3',
-            'is_active' => 1,
-            'is_default' => 0, // not created as default
-        ]);
-        assert($changingAuthLDAP instanceof AuthLDAP, "AuthLDAP not found by name");
-        assert(0 === $changingAuthLDAP->fields['is_default']);
-        assert(1 === $changingAuthLDAP->fields['is_active'], 'getDefault will not return an inactive AuthLDAP as default. $changingAuthLDAP must be active');
+        $initialDefaultAuthLDAP = $this->getDefaultAuth(AuthLDAP::class); // must be after $authMail creation
+        $this->checkAuthIsActive($initialDefaultAuthLDAP);
 
-        // Act - udpate the AuthLDAP as default
-        assert($changingAuthLDAP->update(array_merge($changingAuthLDAP->fields, [
-            'id' => $changingAuthLDAP->getID(),
-            'is_default' => 1
-        ])), 'Failed to update the AuthLDAP');
+        // Act
+        $updated = $this->updateItem(AuthMail::class, $authMail->getID(), ['is_default' => 1, 'name' => 'MAIL2']); // name is mandatory
 
         // Assert
-        // - the updated Auth is the default
-        $this->assertEquals($changingAuthLDAP->getID(), AuthLDAP::getDefaultAuth()->getId());
-        // - the previous Auth (AuthLDAP) is not the default anymore
-        $this->assertNotEquals($initialDefaultAuthLDAPId, AuthLDAP::getDefaultAuth()->getID());
+        $this->assertDefaultAuthIs($updated);
     }
 
-    /**
-     * Notice that there is another AuthLdap defined in tests/src/autoload/functions.php::loadDataset()
-     */
-    private function createAdditionalLDAPs(): void
+    private function createDefaultAuthLdap()
     {
-        $this->createItems(
+        // remove ldap from loadDataset(), make our independent from initial dataset
+        $query = "DELETE FROM " . AuthLDAP::getTable();
+        global $DB;
+        assert($DB->doQuery($query), 'Failed to empty AuthLDAP table');
+
+        $this->createItem(
             AuthLDAP::class,
             [
-                [
-                    'name' => 'LDAP3',
-                    'is_active' => 1,
-                    'is_default' => 0,
-                    'basedn' => 'ou=people,dc=mycompany',
-                    'login_field' => 'uid',
-                    'phone_field' => '01.02.03.04.05'
-                ],
-                [
-                    'name' => 'LDAP2',
-                    'is_active' => 0,
-                    'is_default' => 0,
-                    'basedn' => 'ou=people,dc=mycompany',
-                    'login_field' => 'uid',
-                    'phone_field' => '01.02.03.04.05',
-                    'email1_field' => 'email@email.com'
-                ],
-                [
-                    'name' => 'LDAP1',
-                    'is_active' => 1,
-                    'is_default' => 0,
-                    'basedn' => 'ou=people,dc=mycompany',
-                    'login_field' => 'email',
-                    'phone_field' => '01.02.03.04.05',
-                    'email1_field' => 'email@email.com',
-                ]
-            ]
-        );
-    }
-
-
-    /**
-     * Set the default AuthLDAP and unsure it's active and the default one
-     */
-    private function setDefaultAuthLdap(): void
-    {
-        /** @var AuthLDAP $defaultAuthLDAP */
-        $defaultAuthLDAP = getItemByTypeName(AuthLDAP::class, '_local_ldap');
-
-        $this->defaultAuthLDAP = getItemByTypeName('AuthLDAP', '_local_ldap');
-
-        //make sure bootstrapped ldap is active and is default
-        assert(
-            $this->defaultAuthLDAP->update([
-                'id' => $this->defaultAuthLDAP->getID(),
+                'name' => 'LDAP1',
                 'is_active' => 1,
                 'is_default' => 1,
-                'responsible_field' => "manager",
-            ])
+                'basedn' => 'ou=people,dc=mycompany',
+                'login_field' => 'uid',
+            ]
         );
-        $defaultAuthLDAP = getItemByTypeName(AuthLDAP::class, '_local_ldap');
-
-        assert($defaultAuthLDAP instanceof AuthLDAP, "default AuthLDAP not found by name");
-        assert($defaultAuthLDAP->getField('is_default') === 1, "default AuthLDAP is not default");
-        assert($defaultAuthLDAP->getField('is_active') === 1, "default AuthLDAP is not active");
-
-        $this->defaultAuthLDAP = $defaultAuthLDAP;
-    }
-
-    /**
-     * Ensure default Auth is an AuthLDAP and return it
-     *
-     * @throws Exception
-     */
-    private function getDefaultAuth(): AuthLDAP
-    {
-        $initialDefaultAuthLDAP = AuthLDAP::getDefaultAuth();
-        $initialDefaultAuthLDAPId = $initialDefaultAuthLDAP->getID();
-        assert(0 !== $initialDefaultAuthLDAPId);
-        assert($initialDefaultAuthLDAP instanceof AuthLDAP, "default AuthLDAP not found.");
-
-        return $initialDefaultAuthLDAP;
     }
 }

@@ -39,22 +39,31 @@ use AuthMail;
 use AuthLDAP;
 use DbTestCase;
 use Exception;
+use Glpi\PHPUnit\Tests\Glpi\Auth\helpersTrait;
 
 class AuthMailTest extends DbTestCase
 {
+    use helpersTrait;
+
+    private AuthMail $initialDefaultAuth;
+
     public function setUp(): void
     {
         parent::setUp();
-        $this->createAdditionalAuth();
-        $this->removeExistingAuthLDAP();
+
+        $this->createDefaultAuthMail();
+        $this->createAdditionalAuthMail();
+        $this->createAdditionalAuthLDAP();
+        $this->initialDefaultAuth = $this->getDefaultAuth(AuthMail::class);
+
+        $this->checkOnlyOnSingleDefaultAuth();
     }
 
     public function test_AddDefaultAuthMailChangesDefaultAuthMail()
     {
-        // Arrange - nothing to do
-
-        // Act - add new AuthMail as default
+        // Act - new default AuthMail
         $created = $this->createItem(AuthMail::class, [
+            'is_default' => 1,
             'name' => 'NewAuthMail',
             'connect_string' => '{dovecot/imap/novalidate-cert/notls/norsh}',
             'host' => 'localhost',
@@ -62,27 +71,17 @@ class AuthMailTest extends DbTestCase
             'date_creation' => date('Y-m-d H:i:s', time()),
             'comment' => 'This is a comment',
             'is_active' => 1,
-            'is_default' => 1,
         ]);
 
         // Assert
-        // - Default AuthMail is the new created one
-        $this->assertEquals(
-            $created->getID(),
-            AuthMail::getDefaultAuth()->getID()
-        );
-
-        // - The previous default AuthMail is not the default anymore (total default AuthMail = 1)
-        $this->assertEquals(1, countElementsInTable(AuthMail::getTable(), ['is_default' => 1]));
+        $this->assertDefaultAuthIs($created);
     }
 
     public function test_AddNonDefaultAuthMailDoesntChangeDefaultAuthMail()
     {
-        // Arrange - Ensure default Auth is an AuthMail
-        $initialDefaultAuthMailId = $this->getDefaultAuth()->getID();
-
-        // Act - add another AuthMail not as default
+        // Act - new not default AuthMail
         $this->createItem(AuthMail::class, [
+            'is_default' => 0,
             'name' => 'new_AuthMail' . __FUNCTION__,
             'connect_string' => '{dovecot/imap/novalidate-cert/notls/norsh}',
             'host' => 'localhost',
@@ -90,200 +89,116 @@ class AuthMailTest extends DbTestCase
             'date_creation' => date('Y-m-d H:i:s', time()),
             'comment' => 'This is another comment',
             'is_active' => 1,
-            'is_default' => 0,
         ]);
 
-        // Assert the default AuthMail is still the same
-        $this->assertEquals(
-            $initialDefaultAuthMailId,
-            AuthMail::getDefaultAuth()->getID()
-        );
+        // Assert
+        $this->assertDefaultAuthUnchanged();
     }
 
     public function test_UpdateAuthMailToDefaultChangesDefaultAuthMail()
     {
-        // Arrange - Ensure default Auth is an AuthMail
-        $initialDefaultAuthMailId = $this->getDefaultAuth()->getID();
+        // Arrange
+        /** @var AuthMail $changingAuthMail */
+        $changingAuthMail = getItemByTypeName(AuthMail::class, 'MAIL3', throwException: true);
+
+        $this->checkAuthsAreDifferent($this->initialDefaultAuth, $changingAuthMail);
+        $this->checkAuthClassesAreTheSame($this->initialDefaultAuth, $changingAuthMail);
+        $this->checkAuthIsNotDefault($changingAuthMail);
+        $this->checkAuthIsActive($changingAuthMail);
 
         // Act - Update an existing AuthMail as default
-        /** @var AuthMail $changingAuthMail */
-        $changingAuthMail = getItemByTypeName(AuthMail::class, 'Mail3');
-        assert($changingAuthMail instanceof AuthMail, "AuthMail not found by name");
-        assert($initialDefaultAuthMailId !== $changingAuthMail->getID(), 'Can\'t perform assertion, AuthMails must be different');
-        assert(0 === $changingAuthMail->fields['is_default']);
-        assert(1 === $changingAuthMail->fields['is_active'], 'getDefault will not return an inactive AuthMail as default. $changingAuthMail must be active');
+        /** @var AuthMail $updated */
+        $updated = $this->updateItem(AuthMail::class, $changingAuthMail->getID(), ['is_default' => 1, 'name' => 'MAIL3']);
 
-        assert($changingAuthMail->update(array_merge($changingAuthMail->fields, [
-            'id' => $changingAuthMail->getID(),
-            'is_default' => 1
-        ])), 'Failed to update the AuthMail');
-
-        // Assert - the updated AuthMail is the default
-        $this->assertEquals($changingAuthMail->getID(), AuthMail::getDefaultAuth()->getId());
+        // Assert
+        $this->assertDefaultAuthIs($updated);
     }
 
     public function test_UpdateAuthMailDoesntChangeDefaultAuthMail()
     {
-        // Arrange - Ensure default Auth is an AuthMail
-        $initialDefaultAuthMailId = $this->getDefaultAuth()->getID();
-
-        // Act - udpate an existing AuthMail as default
+        // Arrange
         /** @var AuthMail $changingAuthMail */
-        $changingAuthMail = getItemByTypeName(AuthMail::class, 'Mail3');
-        assert($changingAuthMail instanceof AuthMail, "AuthMail not found by name");
-        assert($initialDefaultAuthMailId !== $changingAuthMail->getID(), 'Can\'t perform assertion, AuthMails must be different');
-        assert(0 === $changingAuthMail->fields['is_default']);
+        $changingAuthMail = getItemByTypeName(AuthMail::class, 'MAIL3', throwException: true);
 
-        $changingAuthMail->update([
-            'is_default' => 0
-        ]);
+        $this->checkAuthsAreDifferent($this->initialDefaultAuth, $changingAuthMail);
+        $this->checkAuthClassesAreTheSame($this->initialDefaultAuth, $changingAuthMail);
+        $this->checkAuthIsNotDefault($changingAuthMail);
+        $this->checkAuthIsActive($changingAuthMail);
 
-        // Assert - default AuthMail is still the same
-        $this->assertEquals($initialDefaultAuthMailId, AuthMail::getDefaultAuth()->getID());
+        // Act - udpate an existing AuthMail to default
+        $this->updateItem(AuthMail::class, $changingAuthMail->getID(), ['is_default' => 0, 'name' => 'MAIL3']);
+
+        // Assert
+        $this->assertDefaultAuthUnchanged();
     }
 
     // --- interactions with AuthLDAP
     public function test_AddNonDefaultAuthLdapDoesntChangeDefaultAuthMail()
     {
-        // Arrange - Ensure default Auth is an AuthMail
-        $initialDefaultAuthMailId = $this->getDefaultAuth()->getID();
-
         // Act - add a AuthLDAP as default
         $this->createItem(AuthLDAP::class, [
+            'is_default' => 0,
             'name' => 'newldap',
             'is_active' => 1,
             'basedn' => 'ou=people,dc=mycompany',
             'login_field' => 'uid',
             'phone_field' => '01.02.03.04.05',
             'email1_field' => 'email@email.com',
-            'is_default' => 0
-        ]);
-
-        // Assert the default AuthMail is still the same
-        $this->assertEquals(
-            $initialDefaultAuthMailId,
-            AuthMail::getDefaultAuth()->getID()
-        );
-    }
-
-    public function test_AddDefaultAuthLdapChangeDefaultAuthMail()
-    {
-        // Arrange - Ensure default Auth is an AuthMail
-        $initialDefaultAuthMailId = $this->getDefaultAuth()->getID();
-
-        // Act - add an AuthMail as default
-        $created = $this->createItem(AuthLDAP::class, [
-            'name' => 'newldap',
-            'is_active' => 1,
-            'basedn' => 'ou=people,dc=mycompany',
-            'login_field' => 'uid',
-            'phone_field' => '01.02.03.04.05',
-            'email1_field' => 'email@email.com',
-            'is_default' => 1
         ]);
 
         // Assert
-        // - the previous Auth (AuthMail) is not the default anymore
-        $this->assertNotEquals(AuthMail::getDefaultAuth()->getID(), $initialDefaultAuthMailId);
-        // - the new Auth is the default
-        $this->assertEquals($created->getID(), AuthMail::getDefaultAuth()->getID());
+        $this->assertDefaultAuthUnchanged();
+    }
+
+    public function test_AddDefaultAuthLdapChangeDefaultAuth()
+    {
+        // Arrange - Nothing to do
+
+        // Act - add an AuthMail as default
+        $created = $this->createItem(AuthMail::class, [
+            'is_default' => 1,
+            'is_active' => 1,
+            'name' => 'new_mail',
+        ]);
+
+        // Assert
+        $this->assertDefaultAuthIs($created);
     }
 
     public function test_UpdateAuthLDAPToDefaultChangeDefaultAuthMail()
     {
         // Arrange
-        // - Ensure default Auth is an AuthMail
-        $initialDefaultAuthMailId = $this->getDefaultAuth()->getID();
+        $authLdap = getItemByTypeName(AuthLDAP::class, 'LDAP3', throwException: true);
+        $this->checkAuthIsNotDefault($authLdap);
+        $this->checkAuthIsActive($authLdap);
 
-        // - Ensure the changing AuthLDAP is not the default for now (and is active)
-        /** @var AuthLDAP $changingAuthLDAP */
-        $changingAuthLDAP = $this->createItem(AuthLDAP::class, [
-            'name' => 'LDAP3',
-            'is_active' => 1,
-            'is_default' => 0, // not created as default
-            'basedn' => 'ou=people,dc=mycompany',
-            'login_field' => 'uid',
-            'phone_field' => '01.02.03.04.05'
-        ]);
-        assert($changingAuthLDAP instanceof AuthLDAP, "AuthLDAP not found by name");
-        assert(0 === $changingAuthLDAP->fields['is_default']);
-        assert(1 === $changingAuthLDAP->fields['is_active'], 'getDefault will not return an inactive AuthMail as default. $changingAuthLDAP must be active');
+        $initialDefaultAuthMail = $this->getDefaultAuth(AuthMail::class); // must be after $authMail creation
+        $this->checkAuthIsActive($initialDefaultAuthMail);
 
-        // Act - udpate the AuthLDAP as default
-        assert($changingAuthLDAP->update(array_merge($changingAuthLDAP->fields, [
-            'id' => $changingAuthLDAP->getID(),
-            'is_default' => 1
-        ])), 'Failed to update the AuthLDAP');
+        // Act
+        $updated = $this->updateItem(AuthLDAP::class, $authLdap->getID(), ['is_default' => 1]);
 
         // Assert
-        // - the updated AutH is the default
-        $this->assertEquals($changingAuthLDAP->getID(), AuthLDAP::getDefaultAuth()->getId());
-        // - the previous Auth (AuthMail) is not the default anymore
-        $this->assertNotEquals($initialDefaultAuthMailId, AuthMail::getDefaultAuth()->getID());
+        $this->assertDefaultAuthIs($updated);
     }
 
     /**
-     * No default AuthMail defined in tests/src/autoload/functions.php::loadDataset()
+     * Create first Default AuthMail
      */
-    private function createAdditionalAuth(): void
+    private function createDefaultAuthMail(): void
     {
-        $this->createItems(
+        $this->createItem(
             AuthMail::class,
             [
-                [
-                    'name' => 'Mail1',
-                    'connect_string' => '{dovecot/imap/novalidate-cert/notls/norsh}',
-                    'host' => 'localhost',
-                    'date_mod' => date('Y-m-d H:i:s', time()),
-                    'date_creation' => date('Y-m-d H:i:s', time()),
-                    'comment' => 'This is a comment',
-                    'is_active' => 1,
-                    'is_default' => 1,
-                ],
-                [
-                    'name' => 'Mail2',
-                    'connect_string' => '{dovecot/imap/novalidate-cert/tls/norsh}',
-                    'host' => 'localhost',
-                    'date_mod' => date('Y-m-d H:i:s', time()),
-                    'date_creation' => date('Y-m-d H:i:s', time()),
-                    'comment' => 'This is a comment',
-                    'is_active' => 0,
-                    'is_default' => 0,
-                ],
-                [
-                    'name' => 'Mail3',
-                    'connect_string' => '{dovecot/imap/novalidate-cert/notls/rsh}',
-                    'host' => 'localhost',
-                    'date_mod' => date('Y-m-d H:i:s', time()),
-                    'date_creation' => date('Y-m-d H:i:s', time()),
-                    'comment' => 'This is a comment',
-                    'is_active' => 1,
-                    'is_default' => 0,
-                ]
-            ]
+                'name' => 'MAIL1',
+                'is_active' => 1,
+                'is_default' => 1,
+                'connect_string' => '{dovecot/imap/novalidate-cert/notls/norsh}',
+                'host' => 'localhost',
+                'date_mod' => date('Y-m-d H:i:s', time()),
+                'date_creation' => date('Y-m-d H:i:s', time()),
+                'comment' => 'This is a comment',
+            ],
         );
-    }
-
-    private function removeExistingAuthLDAP(): void
-    {
-        // @todo maybe there is a better way to do this.
-        $query = "DELETE FROM " . AuthLDAP::getTable();
-        global $DB;
-        assert($DB->doQuery($query), 'Failed to empty AuthLDAP table');
-    }
-
-    /**
-     * Ensure default Auth is an AuthMail and return it
-     *
-     * @throws Exception
-     */
-    private function getDefaultAuth(): AuthMail
-    {
-        $initialDefaultAuthMail = AuthMail::getDefaultAuth();
-        $initialDefaultAuthMailId = $initialDefaultAuthMail->getID();
-        assert(0 !== $initialDefaultAuthMailId);
-        assert($initialDefaultAuthMail instanceof AuthMail, "default AuthMail not found.");
-
-        return $initialDefaultAuthMail;
     }
 }
