@@ -414,33 +414,23 @@ class PendingReason_Item extends CommonDBRelation
             }
         }
 
-        if (!isset($new_timeline_item->input['pendingreasons_id']) && $new_timeline_item->getType() === 'TicketTask') {
-            $pending_updates = [
-                'pendingreasons_id' => 0,
-                'followup_frequency' => 0,
-                'followups_before_resolution' => 0,
-            ];
-        }
-
         // No actual updates -> nothing to be done
         if (count($pending_updates) == 0) {
             return;
         }
 
-        if ($new_timeline_item->getType() === 'ITILFollowup') {
-            if ($last_pending->fields['pendingreasons_id'] == 0) {
-                $pending_updates['items_id'] = $new_timeline_item->getID();
-                $pending_updates['itemtype'] = $new_timeline_item::getType();
-                $pending_updates['last_bump_date'] = $new_timeline_item->fields['last_bump_date'];
-            } else {
-                $pending_updates['last_bump_date'] = $last_pending->fields['last_bump_date'];
-            }
+        if (isset($new_timeline_item->input['last_bump_date'])) {
+            $pending_updates['last_bump_date'] = $new_timeline_item->input['last_bump_date'];
         }
 
+        $pending_updates_timeline_item = $pending_updates;
+        $pending_updates_timeline_item['items_id'] = $new_timeline_item->getID();
+        $pending_updates_timeline_item['itemtype'] = $new_timeline_item::getType();
+
         // Update last pending item and parent
-        $last_pending_timeline_item = new $last_pending->fields['itemtype']();
-        $last_pending_timeline_item->getFromDB($last_pending->fields['items_id']);
-        self::updateForItem($last_pending_timeline_item, $pending_updates);
+        if ($pending_updates['pendingreasons_id'] > 0 || $new_timeline_item::getType() !== $last_pending::getType()) {
+            self::createForItem($new_timeline_item, $pending_updates_timeline_item);
+        }
         self::updateForItem($new_timeline_item->input['_job'], $pending_updates);
     }
 
