@@ -225,20 +225,20 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
-     * Create an item of the given class
+     * Create an item and checks it's data are same as given in input.
      *
-     * @param string $itemtype
+     * @template T of CommonDBTM
+     * @param class-string<T> $itemtype
      * @param array $input
      * @param array $skip_fields Fields that wont be checked after creation
-     *
-     * @return CommonDBTM The updated item
+     * @return T The updated item
      */
     protected function updateItem($itemtype, $id, $input, $skip_fields = []): CommonDBTM
     {
         $item = new $itemtype();
         $input['id'] = $id;
         $success = $item->update($input);
-        $this->assertTrue($success);
+        $this->assertTrue($success, 'Failed to update item ' . $itemtype . ' with id ' . $id . ' and input ' . json_encode($input));
 
         // Remove special fields
         $input = array_filter($input, function ($key) use ($skip_fields) {

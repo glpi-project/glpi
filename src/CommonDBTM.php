@@ -392,26 +392,28 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * Get an object using some criteria
+     * Update the current object fields with data from database, only if there's single entry matching the criteria
      *
+     * If there's more than one entry, an error is triggered
+     *
+     * return true if the matched object was found and updated, false otherwise (no match or multiple matches)
+     * @param array $criteria search criteria
+     *
+     * @return bool
      * @since 9.2
-     *
-     * @param array $crit search criteria
-     *
-     * @return boolean|array
      */
-    public function getFromDBByCrit(array $crit)
+    public function getFromDBByCrit(array $criteria)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        $crit = [
+        $criteria = [
             'SELECT' => static::getIndexName(),
             'FROM'   => static::getTable(),
-            'WHERE'  => $crit
+            'WHERE'  => $criteria
         ];
 
-        $iter = $DB->request($crit);
+        $iter = $DB->request($criteria);
         if (count($iter) === 1) {
             $row = $iter->current();
             return $this->getFromDB($row[static::getIndexName()]);
