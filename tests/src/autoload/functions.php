@@ -739,26 +739,23 @@ function loadDataset()
                     } else if ($k == 'items_id'  &&  isset($input['itemtype']) && isset($ids[$input['itemtype']][$v]) && !is_numeric($v)) {
                         $input[$k] = $ids[$input['itemtype']][$v];
                     } else if ($foreigntype && $foreigntype != 'UNKNOWN' && !is_numeric($v)) {
-                        // not found in ids array, then must get it from DB
-                        $foreign_id = getItemByTypeName($foreigntype, $v, true);
-                        $input[$k] = $foreign_id;
-
-                        $ids[$foreigntype][$v] = $foreign_id; // cache ID
+                       // not found in ids array, then must get it from DB
+                        if ($obj = getItemByTypeName($foreigntype, $v)) {
+                            $input[$k] = $obj->getID();
+                        }
                     }
                 }
 
-                $item = getItemForItemtype($type);
-                $name_field = $item::getNameField();
-
-                if (isset($input[$name_field]) && $item->getFromDBByCrit([$name_field => $input[$name_field]])) {
-                    // Update existing item
-                    $item->update([$item::getIndexName() => $item->getID()] + $input);
+                if (isset($input['name']) && $item = getItemByTypeName($type, $input['name'])) {
+                    $input['id'] = $ids[$type][$input['name']] = $item->getField('id');
+                    $item->update($input);
                 } else {
                     // Not found, create it
-                    $item->add($input);
-                }
-                if (isset($input[$name_field])) {
-                    $ids[$type][$input[$name_field]] = $item->getID(); // cache ID
+                    $item = getItemForItemtype($type);
+                    $id = $item->add($input);
+                    if (isset($input['name'])) {
+                        $ids[$type][$input['name']] = $id;
+                    }
                 }
             }
         }
@@ -777,17 +774,23 @@ function loadDataset()
 /**
  * Test helper, search an item from its type and name
  *
- * @param string    $type
- * @param string    $name
- * @param bool      $onlyid
- * @return CommonDBTM|int the item, or its id
+ * @param string  $type
+ * @param string  $name
+ * @param boolean $onlyid
+ * @param boolean $throwException Whether to throw an exception if item is not found
+ * @return CommonDBTM|false the item, or its id
  */
-function getItemByTypeName(string $type, string $name, bool $onlyid = false): CommonDBTM|int
+function getItemByTypeName($type, $name, $onlyid = false, bool $throwException = false)
 {
     $item = getItemForItemtype($type);
     $nameField = $type::getNameField();
-    if (!$item->getFromDBByCrit([$nameField => $name])) {
-        throw new \RuntimeException(sprintf('Unable to load the `%s` item with the name `%s`.', $type, $name));
+    if ($item->getFromDBByCrit([$nameField => $name])) {
+        return ($onlyid ? $item->getField('id') : $item);
     }
-    return ($onlyid ? $item->getID() : $item);
+
+    if ($throwException) {
+        throw new Exception("Item of type $type with name $name not found");
+    }
+
+    return false;
 }
