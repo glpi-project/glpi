@@ -3799,12 +3799,6 @@ TWIG, $twig_params);
 
     public function prepareInputForAdd($input)
     {
-        // If there no other AuthLDAP or AuthMail, set it as default
-        // @todo the same behavior is not defined for AuthMail, it should be, maybe. Should I create an issue or is it not important ?
-        if (is_null(static::getDefaultAuth())) {
-            $input['is_default'] = 1;
-        }
-
         if (empty($input['can_support_pagesize'] ?? '')) {
             $input['can_support_pagesize'] = 0;
         }
