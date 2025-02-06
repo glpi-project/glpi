@@ -91,16 +91,18 @@ class ItemVirtualMachineTest extends DbTestCase
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->assertInstanceOf('\Computer', $computer);
 
+        $vm = [
+            'itemtype'     => 'Computer',
+            'items_id'     => $computer->fields['id'],
+            'name'         => 'Virtu Hall',
+            'uuid'         => $uuid,
+            'vcpu'         => 1,
+            'ram'          => 1024
+        ];
+
         $this->assertGreaterThan(
             0,
-            $id = $obj->add([
-                'itemtype'     => 'Computer',
-                'items_id'     => $computer->fields['id'],
-                'name'         => 'Virtu Hall',
-                'uuid'         => $uuid,
-                'vcpu'         => 1,
-                'ram'          => 1024
-            ])
+            $id = $obj->add($vm)
         );
         $this->assertTrue($obj->getFromDB($id));
         $this->assertSame($uuid, $obj->fields['uuid']);
@@ -119,5 +121,26 @@ class ItemVirtualMachineTest extends DbTestCase
         );
 
         $this->assertEquals($cid, $obj->findVirtualMachine(['itemtype' => \Computer::getType(),'uuid' => $uuid]));
+
+        $rule = new RuleImportAssetCollection();
+        $rule->getCollectionPart();
+        $datarules = $rule->processAllRules($input, [], ['class' => \Computer::getType(), 'return' => true]);
+        $rulesmatchedLog = new \RuleMatchedLog();
+        $inputrulelog = [
+            'date'      => date('Y-m-d H:i:s'),
+            'rules_id'  => $datarules['rules_id'],
+            'items_id'  => $cid,
+            'itemtype'  => \Computer::getType(),
+            'agents_id' => 0,
+            'method'    => 'inventory'
+        ];
+        $rid = $rulesmatchedLog->add($inputrulelog, [], false);
+        $found_rulematchedLog = $rulesmatchedLog->find(
+            [
+                'id' => $rid,
+            ]
+        );
+        //get one RuleMatchedLog
+        $this->assertCount(1, $found_rulematchedLog);
     }
 }
