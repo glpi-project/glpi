@@ -474,6 +474,12 @@ abstract class InventoryAsset
                 $input[$key] = $val;
             }
         }
+
+        if (isset($this->agent->fields['tag'])) {
+            // Pass the tag that can be used in rules criteria
+            $input['_tag'] = $this->agent->fields['tag'];
+        }
+
         return $input;
     }
 
