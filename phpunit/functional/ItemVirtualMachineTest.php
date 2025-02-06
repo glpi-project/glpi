@@ -124,7 +124,7 @@ class ItemVirtualMachineTest extends DbTestCase
 
         $rule = new RuleImportAssetCollection();
         $rule->getCollectionPart();
-        $datarules = $rule->processAllRules($input, [], ['class' => \Computer::getType(), 'return' => true]);
+        $datarules = $rule->processAllRules($vm, [], ['class' => \Computer::getType(), 'return' => true]);
         $rulesmatchedLog = new \RuleMatchedLog();
         $inputrulelog = [
             'date'      => date('Y-m-d H:i:s'),
