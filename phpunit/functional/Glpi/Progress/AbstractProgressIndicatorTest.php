@@ -35,8 +35,8 @@
 namespace tests\units\Glpi\Log;
 
 use DateTimeImmutable;
+use Glpi\Message\MessageType;
 use Glpi\Progress\AbstractProgressIndicator;
-use Glpi\Progress\ProgressMessageType;
 use GLPITestCase;
 
 class AbstractProgressIndicatorTest extends GLPITestCase
@@ -158,7 +158,7 @@ class AbstractProgressIndicatorTest extends GLPITestCase
         return new class () extends AbstractProgressIndicator {
             public int $updates_count = 0;
 
-            public function addMessage(ProgressMessageType $type, string $message): void
+            public function addMessage(MessageType $type, string $message): void
             {
                 // void
             }

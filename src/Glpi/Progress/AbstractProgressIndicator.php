@@ -36,6 +36,7 @@ namespace Glpi\Progress;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use Glpi\Message\MessageType;
 
 abstract class AbstractProgressIndicator
 {
@@ -192,7 +193,7 @@ abstract class AbstractProgressIndicator
     /**
      * Add a message.
      */
-    abstract public function addMessage(ProgressMessageType $type, string $message): void;
+    abstract public function addMessage(MessageType $type, string $message): void;
 
     /**
      * Trigger the progress indicator update.
