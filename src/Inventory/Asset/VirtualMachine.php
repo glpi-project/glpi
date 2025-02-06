@@ -306,13 +306,13 @@ class VirtualMachine extends InventoryAsset
 
             if (property_exists($vm, 'uuid') && $vm->uuid != '') {
                 $computers_vm_id = $this->getExistingVMAsComputer($vm);
+                $rule = new RuleImportAssetCollection();
+                $rule->getCollectionPart();
+                $input = (array)$vm;
+                $input['itemtype'] = \Computer::class;
                 if ($computers_vm_id == 0) {
                     //call rules on current collected data to find item
                     //a callback on rulepassed() will be done if one is found.
-                    $rule = new RuleImportAssetCollection();
-                    $rule->getCollectionPart();
-                    $input = (array)$vm;
-                    $input['itemtype'] = \Computer::class;
                     $input['states_id'] = $this->conf->states_id_default > 0 ? $this->conf->states_id_default : 0;
                     $input['entities_id'] = $this->main_asset->getEntityID();
                     $input  = Sanitizer::sanitize($input);
@@ -328,7 +328,6 @@ class VirtualMachine extends InventoryAsset
                     }
                 } else {
                     // Update computer
-                    $computervm->getFromDB($computers_vm_id);
                     $input = (array)$vm;
                     $input['id'] = $computers_vm_id;
                     if ($this->conf->states_id_default != '-1') {
@@ -336,6 +335,7 @@ class VirtualMachine extends InventoryAsset
                     }
                     $datarules = $rule->processAllRules($input, [], ['class' => $input['itemtype'], 'return' => true]);
                     if (isset($datarules['_no_rule_matches']) && ($datarules['_no_rule_matches'] == '1') || isset($datarules['found_inventories'])) {
+                        $computervm->getFromDB($computers_vm_id);
                         $computervm->update(Sanitizer::sanitize($input));
                     } else {
                         //refused by rules
