@@ -377,6 +377,9 @@ class VirtualMachine extends InventoryAsset
                             ];
                             $rulesmatched->add($inputrulelog, [], false);
                         }
+                    } else {
+                        //refused by rules
+                        continue;
                     }
                 }
 
