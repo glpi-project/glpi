@@ -323,19 +323,21 @@ class VirtualMachine extends InventoryAsset
                         $vm->entities_id = $this->item->fields['entities_id'];
                         $computers_vm_id = $computervm->add($input);
 
-                        $rulesmatched = new \RuleMatchedLog();
-                        $agents_id = $this->agent->fields['id'];
-                        if (empty($agents_id)) {
-                            $agents_id = 0;
+                        if (isset($datarules['found_inventories'])) {
+                            $rulesmatched = new \RuleMatchedLog();
+                            $agents_id = $this->agent->fields['id'];
+                            if (empty($agents_id)) {
+                                $agents_id = 0;
+                            }
+                            $inputrulelog = [
+                                'date'      => date('Y-m-d H:i:s'),
+                                'rules_id'  => $datarules['rules_id'],
+                                'items_id'  => $computers_vm_id,
+                                'itemtype'  => $input['itemtype'],
+                                'agents_id' => $agents_id,
+                                'method'    => 'inventory'
+                            ];
                         }
-                        $inputrulelog = [
-                            'date'      => date('Y-m-d H:i:s'),
-                            'rules_id'  => $datarules['rules_id'],
-                            'items_id'  => $computers_vm_id,
-                            'itemtype'  => $input['itemtype'],
-                            'agents_id' => $agents_id,
-                            'method'    => 'inventory'
-                        ];
                         $rulesmatched->add($inputrulelog, [], false);
                     } else {
                         //refused by rules
@@ -366,7 +368,9 @@ class VirtualMachine extends InventoryAsset
                             'method'    => 'inventory'
                         ];
                         $rulesmatched->add($inputrulelog, [], false);
+                    }
 
+                    if (isset($datarules['_no_rule_matches']) && ($datarules['_no_rule_matches'] == '1') || isset($datarules['found_inventories'])) {
                         $computervm->update($input);
                     }
                 }
