@@ -1589,7 +1589,8 @@ class TicketTest extends DbTestCase
         $impact = true,
         $category = true,
         $requestSource = true,
-        $location = true
+        $location = true,
+        $itil_form = true,
     ) {
         ob_start();
         $ticket->showForm($ticket->getID());
@@ -1655,6 +1656,15 @@ class TicketTest extends DbTestCase
         $matches = iterator_to_array($crawler->filter("#itil-footer button[type=submit][name=update]:not([disabled])"));
         $this->assertCount(($save === true ? 1 : 0), $matches, ($save === true ? 'Save button missing' : 'Save button present') . ' ' . $caller);
 
+        // Check that the itil form exist
+        $matches = iterator_to_array($crawler->filter("#itil-form"));
+        $this->assertCount(
+            ($itil_form === true ? 1 : 0),
+            $matches,
+            ($itil_form === true ? 'ITIL form' : 'ITIL form present') . ' ' . $caller
+        );
+
+
         //Assign to
         /*preg_match(
           '|.*<select name=\'_itil_assign\[_type\]\'[^>]*>.*|',
@@ -1705,6 +1715,7 @@ class TicketTest extends DbTestCase
             category: false,
             requestSource: false,
             location: false,
+            itil_form: false,
         );
 
         $uid = getItemByTypeName('User', TU_USER, true);
@@ -1735,7 +1746,33 @@ class TicketTest extends DbTestCase
             $impact = false,
             $category = false,
             $requestSource = false,
-            $location = false
+            $location = false,
+            itil_form: false,
+        );
+
+        // Display extra fields
+        $this->login('glpi', 'glpi'); // Need to be admin to update entities
+        $this->updateItem(Entity::class, 0, [
+            'show_tickets_properties_on_helpdesk' => 1,
+        ]);
+        $this->login('post-only', 'postonly');
+        $this->checkFormOutput(
+            $ticket,
+            name: false,
+            textarea: false,
+            priority: false,
+            save: false,
+            assign: false,
+            openDate: false,
+            timeOwnResolve: false,
+            type: false,
+            status: false,
+            urgency: false,
+            impact: false,
+            category: false,
+            requestSource: false,
+            location: false,
+            itil_form: true,
         );
     }
 

@@ -2843,6 +2843,7 @@ CREATE TABLE `glpi_entities` (
   `is_group_autoclean` tinyint NOT NULL DEFAULT '-2',
   `is_location_autoclean` tinyint NOT NULL DEFAULT '-2',
   `state_autoclean_mode` int NOT NULL DEFAULT '-2',
+  `show_tickets_properties_on_helpdesk` int NOT NULL DEFAULT '-2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `name` (`name`),

@@ -3755,6 +3755,10 @@ JAVASCRIPT;
             'cancreateuser'             => $cancreateuser,
             'canreadnote'               => Session::haveRight('entity', READNOTE),
             'has_pending_reason'        => PendingReason_Item::getForItem($this) !== false,
+            'show_tickets_properties_on_helpdesk' => Entity::getUsedConfig(
+                'show_tickets_properties_on_helpdesk',
+                Session::getActiveEntity(),
+            ),
         ]);
 
         return true;

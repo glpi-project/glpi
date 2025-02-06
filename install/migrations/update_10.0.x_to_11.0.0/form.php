@@ -273,6 +273,22 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_externalpagetiles')) {
     );
 }
 
+$field = 'show_tickets_properties_on_helpdesk';
+if (!$DB->fieldExists("glpi_entities", $field)) {
+    $migration->addField(
+        'glpi_entities',
+        $field,
+        "int NOT NULL DEFAULT '-2'"
+    );
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            'glpi_entities',
+            [$field => 0],
+            ['id' => 0]
+        )
+    );
+}
+
 // Add rights for the forms object
 $migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
 
