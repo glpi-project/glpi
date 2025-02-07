@@ -110,6 +110,12 @@ class RuleMailCollector extends Rule
         $criterias['x-uce-status']['table']             = '';
         $criterias['x-uce-status']['type']              = 'text';
 
+        $criterias['x-ms-exchange-organization-expirationstarttimereason'] = [
+            'name'  => __('X-MS-Exchange-Organization-ExpirationStartTimeReason email header'),
+            'table' => '',
+            'type'  => 'text',
+        ];
+
         $criterias['received']['name']                  = __('Received email header');
         $criterias['received']['table']                 = '';
         $criterias['received']['type']                  = 'text';
