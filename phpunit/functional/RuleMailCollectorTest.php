@@ -158,7 +158,7 @@ class RuleMailCollectorTest extends DbTestCase
                         ],
                     ],
                 ],
-                'rule_match' => true,
+                'result_match' => true,
             ],
             [
                 'headers' =>
@@ -175,7 +175,7 @@ class RuleMailCollectorTest extends DbTestCase
                         ],
                     ],
                 ],
-                'rule_match' => false,
+                'result_match' => false,
             ],
             [
                 'headers' =>
@@ -198,7 +198,7 @@ class RuleMailCollectorTest extends DbTestCase
                         ],
                     ],
                 ],
-                'rule_match' => false,
+                'result_match' => false,
             ],
             [
                 'headers' =>
@@ -220,7 +220,7 @@ class RuleMailCollectorTest extends DbTestCase
                         ],
                     ],
                 ],
-                'rule_match' => true,
+                'result_match' => true,
             ],
         ];
     }
@@ -231,7 +231,7 @@ class RuleMailCollectorTest extends DbTestCase
     public function testHeaderCriterias(
         array $headers,
         array $rule_param,
-        bool $rule_match
+        bool $result_match
     ) {
         $this->login();
 
@@ -242,7 +242,7 @@ class RuleMailCollectorTest extends DbTestCase
         // Create rule
         $rule     = new \RuleMailCollector();
         $rule_id = $rule->add($rule_input = [
-            'name'         => 'test assign entity based on group',
+            'name'         => __FUNCTION__,
             'match'        => $rule_param['match'],
             'is_active'    => 1,
             'sub_type'     => 'RuleMailCollector',
@@ -275,7 +275,7 @@ class RuleMailCollectorTest extends DbTestCase
             ['headers' => $headers]
         );
 
-        if ($rule_match) {
+        if ($result_match) {
             $this->assertEquals(
                 [
                     '_refuse_email_no_response' => 1,
