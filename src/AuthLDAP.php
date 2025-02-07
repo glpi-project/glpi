@@ -4343,21 +4343,27 @@ TWIG, $twig_params);
 
     private function removeDefaultFromOtherItems(int $authldaps_id): void
     {
-        if (isset($this->fields['is_default']) && (int)$this->fields["is_default"] === 1) {
-            // if current default Auth is an AuthLDAP, remvove it
+        if (isset($this->fields["is_default"]) && (int)$this->fields["is_default"] === 1) {
+            // Si current default Auth est un AuthLDAP, on le retire
             $auth = new self();
             $defaults = $auth->find(['is_default' => 1, ['NOT' => ['id' => $authldaps_id]]]);
             foreach ($defaults as $default) {
                 $auth = new self();
-                $auth->update(['is_default' => 0]  + $default);
+                $auth->update([
+                    'id' => $default['id'],
+                    'is_default' => 0
+                ]);
             }
 
-            // if current default Auth is an AuthMail, remvove it
+            // Si current default Auth est un AuthMail, on le retire
             $auth = new AuthMail();
             $defaults = $auth->find(['is_default' => 1]);
             foreach ($defaults as $default) {
                 $auth = new AuthMail();
-                $auth->update(['is_default' => 0]  + $default);
+                $auth->update([
+                    'id' => $default['id'],
+                    'is_default' => 0
+                ]);
             }
         }
     }
