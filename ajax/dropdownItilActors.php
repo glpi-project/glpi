@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,8 +36,6 @@
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include('../inc/includes.php');
-
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -52,6 +50,7 @@ if (
     $rand = mt_rand();
     $withemail = isset($_POST['allow_email']) && filter_var($_POST['allow_email'], FILTER_VALIDATE_BOOLEAN);
 
+    /** @var CommonITILObject $item */
     if ($item = getItemForItemtype($_POST["itemtype"])) {
         switch ($_POST["type"]) {
             case "user":
@@ -64,11 +63,13 @@ if (
                     }
                 }
 
-                $options = ['name'        => '_itil_' . $_POST["actortype"] . '[users_id]',
+                $options = [
+                    'name'        => '_itil_' . $_POST["actortype"] . '[users_id]',
                     'entity'      => Session::getMatchingActiveEntities($_POST['entity_restrict']),
                     'right'       => $right,
                     'rand'        => $rand,
-                    'ldap_import' => true
+                    'ldap_import' => true,
+                    'toupdate'    => null,
                 ];
 
                 if ($CFG_GLPI["notifications_mailing"]) {
@@ -94,7 +95,7 @@ if (
                     && ($_POST["actortype"] == 'assign')
                 ) {
                     $toupdate = [];
-                    if (isset($options['toupdate']) && is_array($options['toupdate'])) {
+                    if (is_array($options['toupdate'])) {
                         $toupdate[] = $options['toupdate'];
                     }
                     $toupdate[] = ['value_fieldname' => 'value',
@@ -122,12 +123,12 @@ if (
                 if ($CFG_GLPI["notifications_mailing"]) {
                     echo "<br><span id='notif_user_$rand'>";
                     if ($withemail) {
-                        echo __('Email followup') . '&nbsp;';
+                        echo __s('Email followup') . '&nbsp;';
                         $rand = Dropdown::showYesNo('_itil_' . $_POST["actortype"] . '[use_notification]', $_POST["use_notif"]);
                         echo '<br>';
                         printf(
                             __('%1$s: %2$s'),
-                            _n('Email', 'Emails', 1),
+                            _sn('Email', 'Emails', 1),
                             "<input type='text' size='25' name='_itil_" . $_POST["actortype"] .
                             "[alternative_email]'>"
                         );
@@ -180,7 +181,8 @@ if (
             case "supplier":
                 $options = ['name'      => '_itil_' . $_POST["actortype"] . '[suppliers_id]',
                     'entity'    => Session::getMatchingActiveEntities($_POST['entity_restrict']),
-                    'rand'      => $rand
+                    'rand'      => $rand,
+                    'to_update' => null,
                 ];
                 if ($CFG_GLPI["notifications_mailing"]) {
                     $paramscomment = ['value'       => '__VALUE__',
@@ -202,7 +204,7 @@ if (
                 }
                 if ($_POST["itemtype"] == 'Ticket') {
                     $toupdate = [];
-                    if (isset($options['toupdate']) && is_array($options['toupdate'])) {
+                    if (is_array($options['toupdate'])) {
                         $toupdate[] = $options['toupdate'];
                     }
                     $toupdate[] = ['value_fieldname' => 'value',
@@ -224,12 +226,12 @@ if (
                 if ($CFG_GLPI["notifications_mailing"]) {
                     echo "<br><span id='notif_supplier_$rand'>";
                     if ($withemail) {
-                        echo __('Email followup') . '&nbsp;';
+                        echo __s('Email followup') . '&nbsp;';
                         $rand = Dropdown::showYesNo('_itil_' . $_POST["actortype"] . '[use_notification]', $_POST['use_notif']);
                         echo '<br>';
                         printf(
                             __('%1$s: %2$s'),
-                            _n('Email', 'Emails', 1),
+                            _sn('Email', 'Emails', 1),
                             "<input type='text' size='25' name='_itil_" . $_POST["actortype"] .
                             "[alternative_email]'>"
                         );

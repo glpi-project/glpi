@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -31,21 +31,35 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set theme = config('palette') %}
+{% set theme = config('palette')|default('auror') %}
 {% if css_files is not defined %}
    {% set css_files = [
-       {'path': 'public/lib/base.css'},
-       {'path': 'css/palettes/' ~ theme ~ '.scss'}
+       {'path': 'lib/base.css'},
+       {'path': 'lib/tabler.css'},
+       {'path': 'css/glpi.scss'},
+       {'path': 'css/core_palettes.scss'}
    ] %}
    {# TODO : load hight contrast css #}
 {% endif %}
 {% if js_files is not defined %}
    {% set js_files = [
-       {'path': 'public/lib/base.js'},
+       {'path': 'lib/base.js'},
        {'path': 'js/common.js'},
-       {'path': 'public/lib/fuzzy.js'}
+       {'path': 'lib/fuzzy.js'}
    ] %}
 {% endif %}
+{% if js_modules is not defined %}
+   {% set js_modules = [] %}
+{% endif %}
+{% if custom_header_tags is not defined %}
+   {% set custom_header_tags = [] %}
+{% endif %}
+
+{# JS scripts / modules are loaded in the header in anonymous pages #}
+{% set js_files = js_files|merge(get_plugins_js_scripts_files(true)) %}
+{% set js_modules = js_modules|merge(get_plugins_js_modules_files(true)) %}
+
+{% set is_anonymous_page = true %}
 
 {{ include('layout/parts/head.html.twig') }}
 <body class="welcome-anonymous">
@@ -65,9 +79,11 @@
                   <span class="glpi-logo mb-4" title="GLPI"></span>
                </div>
             </div>
-            <div class="card card-md">
+            <div class="card card-md main-content-card">
+               {# Keep the header on one line so that the :empty CSS selector will work #}
+               <div class="card-header">{% block header_block %}{% endblock %}</div>
                <div class="card-body">
-               {% block content_block %}{% endblock %}
+                  {% block content_block %}{% endblock %}
                </div>
             </div>
 

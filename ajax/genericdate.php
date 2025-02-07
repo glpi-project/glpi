@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,21 +33,20 @@
  * ---------------------------------------------------------------------
  */
 
-$AJAX_INCLUDE = 1;
-include('../inc/includes.php');
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 if (isset($_POST['value']) && (strcmp($_POST['value'], '0') == 0)) {
-    if ($_POST['withtime']) {
+    $withtime = filter_var($_POST['withtime'], FILTER_VALIDATE_BOOLEAN);
+    if ($withtime) {
         Html::showDateTimeField($_POST['name'], ['value' => $_POST['specificvalue']]);
     } else {
         Html::showDateField($_POST['name'], ['value' => $_POST['specificvalue']]);
     }
 } else {
-    echo "<input type='hidden' name='" . $_POST['name'] . "' value='" . $_POST['value'] . "'>";
+    echo "<input type='hidden' name='" . htmlescape($_POST['name']) . "' value='" . htmlescape($_POST['value']) . "'>";
 }

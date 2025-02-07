@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Features\Clonable;
 use Glpi\Socket;
 
 /**
@@ -41,8 +40,10 @@ use Glpi\Socket;
  **/
 class PassiveDCEquipment extends CommonDBTM
 {
-    use Clonable;
+    use Glpi\Features\AssignableItem;
+    use Glpi\Features\Clonable;
     use Glpi\Features\DCBreadcrumb;
+    use Glpi\Features\State;
 
    // From CommonDBTM
     public $dohistory = true;
@@ -51,6 +52,16 @@ class PassiveDCEquipment extends CommonDBTM
     public static function getTypeName($nb = 0)
     {
         return _n('Passive device', 'Passive devices', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
     }
 
     public function defineTabs($options = [])
@@ -62,7 +73,7 @@ class PassiveDCEquipment extends CommonDBTM
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
-         ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
@@ -124,6 +135,35 @@ class PassiveDCEquipment extends CommonDBTM
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
         $tab[] = [
+            'id'                 => '70',
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => User::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'right'              => 'all'
+        ];
+
+        $tab[] = [
+            'id'                 => '71',
+            'table'              => 'glpi_groups',
+            'field'              => 'completename',
+            'name'               => Group::getTypeName(1),
+            'condition'          => ['is_itemgroup' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
             'id'                 => '19',
             'table'              => $this->getTable(),
             'field'              => 'date_mod',
@@ -142,11 +182,11 @@ class PassiveDCEquipment extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_passivedcequipment' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [
@@ -171,9 +211,20 @@ class PassiveDCEquipment extends CommonDBTM
             'id'                 => '49',
             'table'              => 'glpi_groups',
             'field'              => 'completename',
-            'linkfield'          => 'groups_id_tech',
+            'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -209,11 +260,25 @@ class PassiveDCEquipment extends CommonDBTM
 
         $tab = array_merge($tab, Rack::rawSearchOptionsToAdd(get_class($this)));
 
-        $tab = array_merge($tab, Socket::rawSearchOptionsToAdd());
+        $tab = array_merge($tab, PassiveDCEquipmentModel::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, DCRoom::rawSearchOptionsToAdd());
 
         return $tab;
+    }
+
+    public function getFormOptionsFromUrl(array $query_params): array
+    {
+        $options = [];
+
+        if (isset($query_params['position'])) {
+            $options['position'] = $query_params['position'];
+        }
+        if (isset($query_params['room'])) {
+            $options['room'] = $query_params['room'];
+        }
+
+        return $options;
     }
 
     public static function getIcon()
@@ -227,6 +292,7 @@ class PassiveDCEquipment extends CommonDBTM
             Contract_Item::class,
             Document_Item::class,
             Infocom::class,
+            Socket::class,
         ];
     }
 }

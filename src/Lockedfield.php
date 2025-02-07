@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Inventory\Inventory;
+use Glpi\Search\SearchOption;
 
 /**
  *  Locked fields for inventory
@@ -53,19 +55,75 @@ class Lockedfield extends CommonDBTM
         return _n('Locked field', 'Locked fields', $nb);
     }
 
-    public static function canView()
+    public static function getSectorizedDetails(): array
+    {
+        return ['admin', Inventory::class, self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
+
+    public static function canView(): bool
     {
         return self::canUpdate();
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return Session::haveRight(self::$rightname, UPDATE);
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Session::haveRight(self::$rightname, UPDATE);
+    }
+
+    public function canCreateItem(): bool
+    {
+        return $this->canAccessItemEntity($this->fields['itemtype'], $this->fields['items_id']);
+    }
+
+    public function canUpdateItem(): bool
+    {
+        return $this->canAccessItemEntity($this->fields['itemtype'], $this->fields['items_id']);
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return $this->canAccessItemEntity($this->fields['itemtype'], $this->fields['items_id']);
+    }
+
+    public static function isMassiveActionAllowed(int $items_id): bool
+    {
+        $lock = new self();
+        $lock->getFromDB($items_id);
+        if ($lock->canAccessItemEntity($lock->fields['itemtype'], $lock->fields['items_id'])) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if user can access main item entity
+     *
+     * @param string $itemtype
+     * @param int    $items_id
+     *
+     * @return bool
+     */
+    private function canAccessItemEntity(string $itemtype, int $items_id): bool
+    {
+        $item = new $itemtype();
+        if (
+            $item->getFromDB($items_id) //not a global lock
+            && $item->isEntityAssign()
+            && !Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive()) // no access to main item entity
+        ) {
+            return false;
+        }
+        return true;
     }
 
     public function rawSearchOptions()
@@ -341,7 +399,7 @@ class Lockedfield extends CommonDBTM
      *
      * @return array
      */
-    public function getFieldsToLock(string $specific_itemtype = null): array
+    public function getFieldsToLock(?string $specific_itemtype = null): array
     {
         /**
          * @var array $CFG_GLPI
@@ -385,7 +443,7 @@ class Lockedfield extends CommonDBTM
         }
 
         foreach ($itemtypes as $itemtype) {
-            $search_options = Search::getOptions($itemtype);
+            $search_options = SearchOption::getOptionsForItemtype($itemtype);
             $fields = $std_fields;
             $fields[] = strtolower($itemtype) . 'models_id'; //model relation field
             $fields[] = strtolower($itemtype) . 'types_id'; //type relation field

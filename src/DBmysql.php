@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,22 +33,35 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
 use Glpi\System\Requirement\DbTimezones;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  *  Database class for Mysql
  **/
 class DBmysql
 {
-   //! Database Host - string or Array of string (round robin)
+    private const CHARS_MAPPING = [
+        '&'  => '&#38;',
+        '<'  => '&#60;',
+        '>'  => '&#62;',
+    ];
+
+    private const LEGACY_CHARS_MAPPING = [
+        '<'  => '&lt;',
+        '>'  => '&gt;',
+    ];
+
+    //! Database Host - string or Array of string (round-robin)
     public $dbhost             = "";
-   //! Database User
+    //! Database User
     public $dbuser             = "";
-   //! Database Password
+    //! Database Password
     public $dbpassword         = "";
-   //! Default Database
+    //! Default Database
     public $dbdefault          = "";
 
     /**
@@ -57,10 +70,7 @@ class DBmysql
      */
     protected $dbh;
 
-   //! Database Error
-    public $error              = 0;
-
-   // Slave management
+    // Slave management
     public $slave              = false;
     private $in_transaction;
 
@@ -137,14 +147,6 @@ class DBmysql
     public $use_utf8mb4 = false;
 
     /**
-     * Determine if MyISAM engine usage should be allowed for tables creation/altering operations.
-     * Defaults to true to keep backward compatibility with old DB.
-     *
-     * @var bool
-     */
-    public $allow_myisam = true;
-
-    /**
      * Determine if datetime fields usage should be allowed for tables creation/altering operations.
      * Defaults to true to keep backward compatibility with old DB.
      *
@@ -166,13 +168,17 @@ class DBmysql
      * if first attempt fail -> display a warning which indicates that glpi is in readonly
      **/
     public $first_connection   = true;
-   // Is connected to the DB ?
+    // Is connected to the DB ?
     public $connected          = false;
 
-   //to calculate execution time
+    //to calculate execution time
     public $execution_time          = false;
 
     private $cache_disabled = false;
+
+    private string $current_query;
+
+    private DBmysqlIterator $iterator;
 
     /**
      * Cached list fo tables.
@@ -189,13 +195,6 @@ class DBmysql
      * @see self::listFields()
      */
     private $field_cache = [];
-
-    /**
-     * Last query warnings.
-     *
-     * @var array
-     */
-    private $last_query_warnings = [];
 
     /**
      * Constructor / Connect to the MySQL Database
@@ -221,8 +220,8 @@ class DBmysql
     {
         $this->connected = false;
 
-       // Do not trigger errors nor throw exceptions at PHP level
-       // as we already extract error and log while fetching result.
+        // Do not trigger errors nor throw exceptions at PHP level
+        // as we already extract error and log while fetching result.
         mysqli_report(MYSQLI_REPORT_OFF);
 
         $this->dbh = @new mysqli();
@@ -237,35 +236,32 @@ class DBmysql
         }
 
         if (is_array($this->dbhost)) {
-           // Round robin choice
+            // Round robin choice
             $i    = (isset($choice) ? $choice : mt_rand(0, count($this->dbhost) - 1));
             $host = $this->dbhost[$i];
         } else {
             $host = $this->dbhost;
         }
 
+        // Add timeout option to avoid infinite connection
+        $this->dbh->options(MYSQLI_OPT_CONNECT_TIMEOUT, 5);
+
         $hostport = explode(":", $host);
         if (count($hostport) < 2) {
-           // Host
+            // Host
             $this->dbh->real_connect($host, $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault);
         } else if (intval($hostport[1]) > 0) {
-           // Host:port
+            // Host:port
             $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, $hostport[1]);
         } else {
-            // :Socket
+             // :Socket
             $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
         }
 
-        if ($this->dbh->connect_error) {
-            $this->connected = false;
-            $this->error     = 1;
-        } else if (!defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE')) {
-            $this->connected = false;
-            $this->error     = 2;
-        } else {
+        if (!$this->dbh->connect_error) {
             $this->setConnectionCharset();
 
-           // force mysqlnd to return int and float types correctly (not as strings)
+            // force mysqlnd to return int and float types correctly (not as strings)
             $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
 
             $this->dbh->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
@@ -338,18 +334,13 @@ class DBmysql
      *
      * @param string $query Query to execute
      *
-     * @var array   $CFG_GLPI
-     * @var array   $DEBUG_SQL
-     * @var integer $SQL_TOTAL_REQUEST
-     *
      * @return mysqli_result|boolean Query result handler
      *
      * @deprecated 10.0.11
      */
     public function query($query)
     {
-        Toolbox::deprecated('Direct query usage is strongly discouraged! Use DB::request() instead.', false);
-        return $this->doQuery($query);
+        throw new \Exception('Executing direct queries is not allowed!');
     }
 
     /**
@@ -357,23 +348,10 @@ class DBmysql
      *
      * @param string $query Query to execute
      *
-     * @var array   $CFG_GLPI
-     * @var array   $DEBUG_SQL
-     * @var integer $SQL_TOTAL_REQUEST
-     *
      * @return mysqli_result|boolean Query result handler
      */
     public function doQuery($query)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var array $DEBUG_SQL
-         * @var integer $SQL_TOTAL_REQUEST
-         */
-        global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
-
-        //FIXME Remove use of $DEBUG_SQL and $SQL_TOTAL_REQUEST
-
         $debug_data = [
             'query' => $query,
             'time' => 0,
@@ -382,85 +360,71 @@ class DBmysql
             'warnings' => '',
         ];
 
-        $is_debug = isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
-        if ($is_debug && $CFG_GLPI["debug_sql"]) {
-            $SQL_TOTAL_REQUEST++;
-            $DEBUG_SQL["queries"][$SQL_TOTAL_REQUEST] = $query;
-        }
-
-        $TIMER = new Timer();
-        $TIMER->start();
+        $start_time = microtime(true);
 
         $this->checkForDeprecatedTableOptions($query);
 
         $res = $this->dbh->query($query);
         if (!$res) {
-           // no translation for error logs
-            $error = "  *** MySQL query error:\n  SQL: " . $query . "\n  Error: " .
-                   $this->dbh->error . "\n";
-            $error .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
-
-            Toolbox::logSqlError($error);
-
-            ErrorHandler::getInstance()->handleSqlError($this->dbh->errno, $this->dbh->error, $query);
-
-            if (($is_debug || isAPI()) && $CFG_GLPI["debug_sql"]) {
-                $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
-                $debug_data['errors'] = $this->error();
-            }
-        }
-
-        if ($is_debug && $CFG_GLPI["debug_sql"]) {
-            $TIME = $TIMER->getTime();
-            $debug_data['time'] = (int) ($TIME * 1000);
-            $debug_data['rows'] = $this->affectedRows();
-            $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
-            $DEBUG_SQL['rows'][$SQL_TOTAL_REQUEST] = $this->affectedRows();
-        }
-
-        $this->last_query_warnings = $this->fetchQueryWarnings();
-        $DEBUG_SQL['warnings'][$SQL_TOTAL_REQUEST] = $this->last_query_warnings;
-
-        $warnings_string = implode(
-            "\n",
-            array_map(
-                static function ($warning) {
-                    return sprintf('%s: %s', $warning['Code'], $warning['Message']);
-                },
-                $this->last_query_warnings
-            )
-        );
-        $debug_data['warnings'] = $warnings_string;
-
-        // Output warnings in SQL log
-        if (!empty($this->last_query_warnings)) {
-            $message = sprintf(
-                "  *** MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s\n",
-                $query,
-                $warnings_string
+            throw new \RuntimeException(
+                sprintf(
+                    'MySQL query error: %s (%d) in SQL query "%s".',
+                    $this->dbh->error,
+                    $this->dbh->errno,
+                    $query
+                )
             );
-            $message .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
-            Toolbox::logSqlWarning($message);
-
-            ErrorHandler::getInstance()->handleSqlWarnings($this->last_query_warnings, $query);
         }
 
-        \Glpi\Debug\Profile::getCurrent()->addSQLQueryData(
-            $debug_data['query'],
-            $debug_data['time'],
-            $debug_data['rows'],
-            $debug_data['errors'],
-            $debug_data['warnings']
-        );
+        $duration = (microtime(true) - $start_time) * 1000;
+
+        $debug_data['time'] = $duration;
+        $debug_data['rows'] = $this->affectedRows();
+
+        // Trigger warning errors if any SQL warnings was produced by the query
+        $sql_warnings = $this->fetchQueryWarnings(); // Ensure that we collect warning after affected rows
+        if (count($sql_warnings) > 0) {
+            $warnings_string = implode(
+                "\n",
+                array_map(
+                    static function ($warning) {
+                        return sprintf('%s: %s', $warning['Code'], $warning['Message']);
+                    },
+                    $sql_warnings
+                )
+            );
+
+            $debug_data['warnings'] = $warnings_string;
+
+            trigger_error(
+                sprintf(
+                    "MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s",
+                    $query,
+                    $warnings_string
+                ),
+                E_USER_WARNING
+            );
+        }
+
+        if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
+            \Glpi\Debug\Profile::getCurrent()->addSQLQueryData(
+                $debug_data['query'],
+                $debug_data['time'],
+                $debug_data['rows'],
+                $debug_data['errors'],
+                $debug_data['warnings']
+            );
+        }
+
         if ($this->execution_time === true) {
-            $this->execution_time = $TIMER->getTime(0, true);
+            $this->execution_time = $duration;
         }
         return $res;
     }
 
     /**
-     * Execute a MySQL query and die
-     * (optionnaly with a message) if it fails
+     * Execute a MySQL query and throw an exception
+     * (optionally with a message) if it fails
      *
      * @since 0.84
      *
@@ -473,40 +437,24 @@ class DBmysql
      */
     public function queryOrDie($query, $message = '')
     {
-        Toolbox::deprecated('Direct query usage is strongly discouraged! Use DB::request() instead.', false);
-        return $this->doQueryOrDie($query, $message);
+        throw new \Exception('Executing direct queries is not allowed!');
     }
 
     /**
-     * Execute a MySQL query and die
-     * (optionnaly with a message) if it fails
-     *
-     * @since 0.84
+     * Execute a MySQL query and throw an exception if it fails.
      *
      * @param string $query   Query to execute
      * @param string $message Explanation of query (default '')
      *
      * @return mysqli_result Query result handler
+     *
+     * @deprecated 11.0.0
      */
     public function doQueryOrDie($query, $message = '')
     {
-        $res = $this->doQuery($query);
-        if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
-            $message = sprintf(
-                __('%1$s - Error during the database query: %2$s - Error is %3$s'),
-                $message,
-                $query,
-                $this->error()
-            );
-            if (isCommandLine()) {
-                 throw new \RuntimeException($message);
-            } else {
-                echo $message . "\n";
-                die(1);
-            }
-        }
-        return $res;
+        Toolbox::deprecated('Use `DBmysql::doQuery()`.');
+
+        return $this->doQuery($query);
     }
 
     /**
@@ -514,37 +462,22 @@ class DBmysql
      *
      * @param string $query Query to prepare
      *
-     * @return mysqli_stmt|boolean statement object or FALSE if an error occurred.
+     * @return mysqli_stmt
      */
     public function prepare($query)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var array $DEBUG_SQL
-         * @var integer $SQL_TOTAL_REQUEST
-         */
-        global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
-
         $res = $this->dbh->prepare($query);
         if (!$res) {
-           // no translation for error logs
-            $error = "  *** MySQL prepare error:\n  SQL: " . $query . "\n  Error: " .
-                   $this->dbh->error . "\n";
-            $error .= Toolbox::backtrace(false, 'DBmysql->prepare()', ['Toolbox::backtrace()']);
-
-            Toolbox::logSqlError($error);
-
-            ErrorHandler::getInstance()->handleSqlError($this->dbh->errno, $this->dbh->error, $query);
-
-            if (
-                isset($_SESSION['glpi_use_mode'])
-                && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
-                && $CFG_GLPI["debug_sql"]
-            ) {
-                $SQL_TOTAL_REQUEST++;
-                $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
-            }
+            throw new \RuntimeException(
+                sprintf(
+                    'MySQL prepare error: %s (%d) in SQL query "%s".',
+                    $this->dbh->error,
+                    $this->dbh->errno,
+                    $query
+                )
+            );
         }
+        $this->current_query = $query;
         return $res;
     }
 
@@ -561,7 +494,7 @@ class DBmysql
     {
         if (
             $result && ($result->data_seek($i))
-            && ($data = $result->fetch_array())
+            && ($data = $this->fetchArray($result))
             && isset($data[$field])
         ) {
             return $data[$field];
@@ -591,7 +524,7 @@ class DBmysql
      */
     public function fetchArray($result)
     {
-        return $result->fetch_array();
+        return $this->decodeFetchResult($result->fetch_array());
     }
 
     /**
@@ -603,7 +536,7 @@ class DBmysql
      */
     public function fetchRow($result)
     {
-        return $result->fetch_row();
+        return $this->decodeFetchResult($result->fetch_row());
     }
 
     /**
@@ -615,7 +548,7 @@ class DBmysql
      */
     public function fetchAssoc($result)
     {
-        return $result->fetch_assoc();
+        return $this->decodeFetchResult($result->fetch_assoc());
     }
 
     /**
@@ -627,7 +560,7 @@ class DBmysql
      */
     public function fetchObject($result)
     {
-        return $result->fetch_object();
+        return $this->decodeFetchResult($result->fetch_object());
     }
 
     /**
@@ -779,7 +712,7 @@ class DBmysql
                 'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
                 'information_schema.tables.table_type'    => 'BASE TABLE',
                 ['NOT' => ['information_schema.columns.collation_name' => null]],
-                ['NOT' => ['information_schema.columns.collation_name' => 'utf8mb4_unicode_ci']]
+                ['NOT' => ['information_schema.columns.collation_name' => ['LIKE', 'utf8mb4\_%']]]
             ],
         ];
 
@@ -1005,7 +938,8 @@ class DBmysql
      */
     public function freeResult($result)
     {
-        return $result->free();
+        $result->free();
+        return true;
     }
 
     /**
@@ -1060,53 +994,50 @@ class DBmysql
      */
     public function runFile($path)
     {
-        $script = fopen($path, 'r');
-        if (!$script) {
-            return false;
-        }
-        $sql_query = @fread(
-            $script,
-            @filesize($path)
-        ) . "\n";
-        $sql_query = html_entity_decode($sql_query, ENT_COMPAT, 'UTF-8');
-
-        $sql_query = $this->removeSqlRemarks($sql_query);
-        $queries = preg_split('/;\s*$/m', $sql_query);
+        $queries = $this->getQueriesFromFile($path);
 
         foreach ($queries as $query) {
-            $query = trim($query);
-            if ($query != '') {
-                $query = htmlentities($query, ENT_COMPAT, 'UTF-8');
-                if (!$this->doQuery($query)) {
-                    return false;
-                }
-                if (!isCommandLine()) {
-                  // Flush will prevent proxy to timeout as it will receive data.
-                  // Flush requires a content to be sent, so we sent spaces as multiple spaces
-                  // will be shown as a single one on browser.
-                    echo ' ';
-                    Html::glpi_flush();
-                }
-            }
+            $this->doQuery($query);
         }
 
         return true;
     }
 
     /**
+     * @internal
+     *
+     * @return array<string>
+     */
+    public function getQueriesFromFile(string $path): array
+    {
+        $script = fopen($path, 'r');
+        if (!$script) {
+            return [];
+        }
+        $sql_query = @fread($script, @filesize($path)) . "\n";
+
+        $sql_query = $this->removeSqlRemarks($sql_query);
+
+        $queries = preg_split('/;\s*$/m', $sql_query);
+
+        $queries = array_filter($queries, static fn ($query) => \trim($query) !== '');
+
+        return $queries;
+    }
+
+    /**
      * Instanciate a Simple DBIterator
      *
-     * @param string|string[] $tableorsql Table name, array of names or SQL query
-     * @param string|string[] $crit       String or array of filed/values, ex array("id"=>1), if empty => all rows
-     *                                    (default '')
-     * @param boolean         $debug      To log the request (default false)
+     * @param array|QueryUnion  $criteria Query criteria
      *
      * @return DBmysqlIterator
+     *
+     * @since 11.0.0 The `$debug` parameter has been removed.
      */
-    public function request($tableorsql, $crit = "", $debug = false)
+    public function request($criteria)
     {
         $iterator = new DBmysqlIterator($this);
-        $iterator->execute($tableorsql, $crit, $debug);
+        $iterator->execute(...func_get_args()); // pass all args to be compatible with previous signature
         return $iterator;
     }
 
@@ -1156,8 +1087,8 @@ class DBmysql
      */
     public function getLock($name)
     {
-        $name          = addslashes($this->dbdefault . '.' . $name);
-        $query         = "SELECT GET_LOCK('$name', 0)";
+        $name          = $this->quote($this->dbdefault . '.' . $name);
+        $query         = "SELECT GET_LOCK($name, 0)";
         $result        = $this->doQuery($query);
         list($lock_ok) = $this->fetchRow($result);
 
@@ -1175,8 +1106,8 @@ class DBmysql
      */
     public function releaseLock($name)
     {
-        $name          = addslashes($this->dbdefault . '.' . $name);
-        $query         = "SELECT RELEASE_LOCK('$name')";
+        $name          = $this->quote($this->dbdefault . '.' . $name);
+        $query         = "SELECT RELEASE_LOCK($name)";
         $result        = $this->doQuery($query);
         list($lock_ok) = $this->fetchRow($result);
 
@@ -1315,16 +1246,9 @@ class DBmysql
             // transform boolean as int (prevent `false` to be transformed to empty string)
             $value = "'" . (int)$value . "'";
         } else {
-            if (Sanitizer::isNsClassOrCallableIdentifier($value)) {
-                // Values that corresponds to an existing namespaced class are not sanitized (see `Glpi\Toolbox\Sanitizer::sanitize()`).
-                // However, they have to be escaped in SQL queries.
-                // Note: method is called statically, so `$DB` may be not defined yet in edge cases (install process).
-                /** @var \DBmysql $DB */
-                global $DB;
-                $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;
-            }
-
-           // phone numbers may start with '+' and will be considered as numeric
+            /** @var \DBmysql|null $DB */
+            global $DB;
+            $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;
             $value = "'$value'";
         }
         return $value;
@@ -1345,20 +1269,27 @@ class DBmysql
     {
         $query = "INSERT INTO " . self::quoteName($table) . ' ';
 
-        $fields = [];
         if ($params instanceof QuerySubQuery) {
             // INSERT INTO ... SELECT Query where the sub-query returns all columns needed for the insert
             $query .= $params->getQuery();
         } else {
-            $query .= "(";
-            foreach ($params as $key => &$value) {
+            $fields = [];
+            $values = [];
+            foreach ($params as $key => $value) {
                 $fields[] = $this->quoteName($key);
-                $value = $this->quoteValue($value);
+                if ($value instanceof QueryExpression) {
+                    $values[] = $value->getValue();
+                    unset($params[$key]);
+                } elseif ($value instanceof QueryParam) {
+                    $values[] = $value->getValue();
+                } else {
+                    $values[] = self::quoteValue($value);
+                }
             }
-
+            $query .= "(";
             $query .= implode(', ', $fields);
             $query .= ") VALUES (";
-            $query .= implode(", ", $params);
+            $query .= implode(", ", $values);
             $query .= ")";
         }
 
@@ -1371,7 +1302,7 @@ class DBmysql
      * @since 9.3
      *
      * @param string $table  Table name
-     * @param array  $params Query parameters ([field name => field value)
+     * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
      *
      * @return mysqli_result|boolean Query result handler
      */
@@ -1384,8 +1315,7 @@ class DBmysql
     }
 
     /**
-     * Insert a row in the database and die
-     * (optionnaly with a message) if it fails
+     * Insert a row in the database and throw an exception if it fails.
      *
      * @since 9.3
      *
@@ -1394,27 +1324,14 @@ class DBmysql
      * @param string $message Explanation of query (default '')
      *
      * @return mysqli_result|boolean Query result handler
+     *
+     * @deprecated 11.0.0
      */
     public function insertOrDie($table, $params, $message = '')
     {
-        $insert = $this->buildInsert($table, $params);
-        $res = $this->doQuery($insert);
-        if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
-            $message = sprintf(
-                __('%1$s - Error during the database query: %2$s - Error is %3$s'),
-                $message,
-                $insert,
-                $this->error()
-            );
-            if (isCommandLine()) {
-                 throw new \RuntimeException($message);
-            } else {
-                echo $message . "\n";
-                die(1);
-            }
-        }
-        return $res;
+        Toolbox::deprecated('Use `DBmysql::insert()`.');
+
+        return $this->insert($table, $params);
     }
 
     /**
@@ -1443,7 +1360,7 @@ class DBmysql
                         str_replace(
                             '%clause',
                             $key,
-                            'Trying to use an unknonw clause (%clause) building update query!'
+                            'Trying to use an unknown clause (%clause) building update query!'
                         )
                     );
                 }
@@ -1459,26 +1376,36 @@ class DBmysql
 
         $query  = "UPDATE " . self::quoteName($table);
 
-       //JOINS
-        $it = new DBmysqlIterator($this);
-        $query .= $it->analyseJoins($joins);
+        //JOINS
+        $this->iterator = new DBmysqlIterator($this);
+        $query .= $this->iterator->analyseJoins($joins);
 
         $query .= " SET ";
         foreach ($params as $field => $value) {
-            $query .= self::quoteName($field) . " = " . $this->quoteValue($value) . ", ";
+            if ($value instanceof QueryParam || $value instanceof QueryExpression) {
+                //no quote for query parameters nor expressions
+                $query .= self::quoteName($field) . " = " . $value->getValue() . ", ";
+            } else if ($value === null || $value === 'NULL' || $value === 'null') {
+                $query .= self::quoteName($field) . " = NULL, ";
+            } else if (is_bool($value)) {
+                // transform boolean as int (prevent `false` to be transformed to empty string)
+                $query .= self::quoteName($field) . " = '" . (int)$value . "', ";
+            } else {
+                $query .= self::quoteName($field) . " = " . self::quoteValue($value) . ", ";
+            }
         }
         $query = rtrim($query, ', ');
 
-        $query .= " WHERE " . $it->analyseCrit($clauses['WHERE']);
+        $query .= " WHERE " . $this->iterator->analyseCrit($clauses['WHERE']);
 
        // ORDER BY
         if (isset($clauses['ORDER']) && !empty($clauses['ORDER'])) {
-            $query .= $it->handleOrderClause($clauses['ORDER']);
+            $query .= $this->iterator->handleOrderClause($clauses['ORDER']);
         }
 
         if (isset($clauses['LIMIT']) && !empty($clauses['LIMIT'])) {
             $offset = (isset($clauses['START']) && !empty($clauses['START'])) ? $clauses['START'] : null;
-            $query .= $it->handleLimits($clauses['LIMIT'], $offset);
+            $query .= $this->iterator->handleLimits($clauses['LIMIT'], $offset);
         }
 
         return $query;
@@ -1505,8 +1432,7 @@ class DBmysql
     }
 
     /**
-     * Update a row in the database or die
-     * (optionnaly with a message) if it fails
+     * Update a row in the database and throw an exception if it fails.
      *
      * @since 9.3
      *
@@ -1518,27 +1444,14 @@ class DBmysql
      *
      * @since 9.4.0 $joins parameter added
      * @return mysqli_result|boolean Query result handler
+     *
+     * @deprecated 11.0.0
      */
     public function updateOrDie($table, $params, $where, $message = '', array $joins = [])
     {
-        $update = $this->buildUpdate($table, $params, $where, $joins);
-        $res = $this->doQuery($update);
-        if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
-            $message = sprintf(
-                __('%1$s - Error during the database query: %2$s - Error is %3$s'),
-                $message,
-                $update,
-                $this->error()
-            );
-            if (isCommandLine()) {
-                 throw new \RuntimeException($message);
-            } else {
-                echo $message . "\n";
-                die(1);
-            }
-        }
-        return $res;
+        Toolbox::deprecated('Use `DBmysql::update()`.');
+
+        return $this->update($table, $params, $where, $joins);
     }
 
     /**
@@ -1555,15 +1468,20 @@ class DBmysql
      */
     public function updateOrInsert($table, $params, $where, $onlyone = true)
     {
-        $req = $this->request($table, $where);
+        $query = $this->buildUpdateOrInsert($table, $params, $where, $onlyone);
+        return $this->doQuery($query);
+    }
+
+    public function buildUpdateOrInsert($table, $params, $where, $onlyone = true): string
+    {
+        $req = $this->request(array_merge(['FROM' => $table], $where));
         $data = array_merge($where, $params);
         if ($req->count() == 0) {
-            return $this->insertOrDie($table, $data, 'Unable to create new element or update existing one');
-        } else if ($req->count() == 1 || !$onlyone) {
-            return $this->updateOrDie($table, $data, $where, 'Unable to create new element or update existing one');
+            return $this->buildInsert($table, $data);
+        } elseif ($req->count() == 1 || !$onlyone) {
+            return $this->buildUpdate($table, $data, $where);
         } else {
-            trigger_error('Update would change too many rows!', E_USER_WARNING);
-            return false;
+            throw new RuntimeException('Update would change too many rows!');
         }
     }
 
@@ -1573,7 +1491,6 @@ class DBmysql
      * @since 9.3
      *
      * @param string $table  Table name
-     * @param array  $params Query parameters ([field name => field value)
      * @param array  $where  WHERE clause (@see DBmysqlIterator capabilities)
      * @param array  $joins  JOINS criteria array
      *
@@ -1589,9 +1506,9 @@ class DBmysql
 
         $query  = "DELETE " . self::quoteName($table) . " FROM " . self::quoteName($table);
 
-        $it = new DBmysqlIterator($this);
-        $query .= $it->analyseJoins($joins);
-        $query .= " WHERE " . $it->analyseCrit($where);
+        $this->iterator = new DBmysqlIterator($this);
+        $query .= $this->iterator->analyseJoins($joins);
+        $query .= " WHERE " . $this->iterator->analyseCrit($where);
 
         return $query;
     }
@@ -1616,8 +1533,7 @@ class DBmysql
     }
 
     /**
-     * Delete a row in the database and die
-     * (optionnaly with a message) if it fails
+     * Delete a row in the database and throw an exception if it fails.
      *
      * @since 9.3
      *
@@ -1628,27 +1544,14 @@ class DBmysql
      *
      * @since 9.4.0 $joins parameter added
      * @return mysqli_result|boolean Query result handler
+     *
+     * @deprecated 11.0.0
      */
     public function deleteOrDie($table, $where, $message = '', array $joins = [])
     {
-        $update = $this->buildDelete($table, $where, $joins);
-        $res = $this->doQuery($update);
-        if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
-            $message = sprintf(
-                __('%1$s - Error during the database query: %2$s - Error is %3$s'),
-                $message,
-                $update,
-                $this->error()
-            );
-            if (isCommandLine()) {
-                 throw new \RuntimeException($message);
-            } else {
-                echo $message . "\n";
-                die(1);
-            }
-        }
-        return $res;
+        Toolbox::deprecated('Use `DBmysql::delete()`.');
+
+        return $this->delete($table, $where, $joins);
     }
 
 
@@ -1657,19 +1560,22 @@ class DBmysql
      *
      * @since 10.0.0
      *
-     * @param string $table  Table name
+     * @param string $table Table name
      *
      * @return mysqli_result|boolean Query result handler
+     *
+     * @deprecated 11.0.0
      */
     public function truncate($table)
     {
+        Toolbox::deprecated();
         // Use delete to prevent table corruption on some MySQL operations
         // (i.e. when using mysqldump without `--single-transaction` option)
         return $this->delete($table, [1]);
     }
 
     /**
-     * Truncate table in the database or die
+     * Truncate table in the database or throw an exception
      * (optionally with a message) if it fails
      *
      * @since 10.0.0
@@ -1678,26 +1584,13 @@ class DBmysql
      * @param string $message Explanation of query (default '')
      *
      * @return mysqli_result|boolean Query result handler
+     *
+     * @deprecated 11.0.0
      */
     public function truncateOrDie($table, $message = '')
     {
-        $table_name = $this::quoteName($table);
-        $res = $this->doQuery("TRUNCATE $table_name");
-        if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
-            $message = sprintf(
-                __('%1$s - Error during the database query: %2$s - Error is %3$s'),
-                $message,
-                "TRUNCATE $table",
-                $this->error()
-            );
-            if (isCommandLine()) {
-                 throw new \RuntimeException($message);
-            }
-            echo $message . "\n";
-            die(1);
-        }
-        return $res;
+        Toolbox::deprecated();
+        return $this->deleteOrDie($table, [1], $message);
     }
 
     /**
@@ -1876,7 +1769,7 @@ class DBmysql
        //setup timezone
         if ($this->use_timezones) {
             date_default_timezone_set($timezone);
-            $this->dbh->query("SET SESSION time_zone = '$timezone'");
+            $this->dbh->query(sprintf("SET SESSION time_zone = %s", $this->quote($timezone)));
             $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
         }
         return $this;
@@ -1958,7 +1851,7 @@ class DBmysql
     /**
      * Is value quoted as database field/expression?
      *
-     * @param string|\QueryExpression $value Value to check
+     * @param string|QueryExpression $value Value to check
      *
      * @return boolean
      *
@@ -2077,15 +1970,6 @@ class DBmysql
     }
 
     /**
-     * Get SQL warnings related to last query.
-     * @return array
-     */
-    public function getLastQueryWarnings(): array
-    {
-        return $this->last_query_warnings;
-    }
-
-    /**
      * Set charset to use for DB connection.
      *
      * @return void
@@ -2105,7 +1989,14 @@ class DBmysql
     public function executeStatement(mysqli_stmt $stmt): void
     {
         if (!$stmt->execute()) {
-            throw new \RuntimeException($stmt->error);
+            throw new \RuntimeException(
+                sprintf(
+                    'MySQL statement error: %s (%d) in SQL query "%s".',
+                    $stmt->error,
+                    $stmt->errno,
+                    $this->current_query
+                )
+            );
         }
     }
 
@@ -2153,7 +2044,7 @@ class DBmysql
         }
 
         // Usage of MyISAM
-        if (!$this->allow_myisam && preg_match('/[)\s]engine\s*=\s*\'?myisam([\';\s]|$)/i', $query)) {
+        if (preg_match('/[)\s]engine\s*=\s*\'?myisam([\';\s]|$)/i', $query)) {
             trigger_error('Usage of "MyISAM" engine is discouraged, please use "InnoDB" engine.', E_USER_WARNING);
         }
 
@@ -2207,16 +2098,122 @@ class DBmysql
             $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] = true;
         }
 
-        if ($this->getMyIsamTables(true)->count() === 0) {
-           // Disallow MyISAM if there is no core table still using this engine.
-            $config_flags[DBConnection::PROPERTY_ALLOW_MYISAM] = false;
-        }
-
         if ($this->getSignedKeysColumns(true)->count() === 0) {
            // Disallow MyISAM if there is no core table still using this engine.
             $config_flags[DBConnection::PROPERTY_ALLOW_SIGNED_KEYS] = false;
         }
 
         return $config_flags;
+    }
+
+    /**
+     * Check if special chars are encoded.
+     *
+     * @param string $value
+     *
+     * @return bool
+     */
+    private function isHtmlEncoded(string $value): bool
+    {
+        // A value is Html Encoded if it does not contains
+        // - `<`;
+        // - `>`;
+        // - `&` not followed by an HTML entity identifier;
+        // and if it contains any entity used to encode HTML special chars during sanitization process.
+        $special_chars_pattern   = '/(<|>|(&(?!#?[a-z0-9]+;)))/i';
+        $sanitized_chars = array_merge(
+            array_values(self::CHARS_MAPPING),
+            array_values(self::LEGACY_CHARS_MAPPING)
+        );
+        $sanitized_chars_pattern = '/(' . implode('|', $sanitized_chars) . ')/';
+
+        return preg_match($special_chars_pattern, $value) === 0
+            && preg_match($sanitized_chars_pattern, $value) === 1;
+    }
+
+    /**
+     * Decode HTML special chars.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    private function decodeHtmlSpecialChars(string $value): string
+    {
+        if (!$this->isHtmlEncoded($value)) {
+            return $value;
+        }
+
+        $mapping = null;
+        foreach (self::CHARS_MAPPING as $htmlentity) {
+            if (strpos($value, $htmlentity) !== false) {
+                // Value was cleaned using new char mapping, so it must be uncleaned with same mapping
+                $mapping = self::CHARS_MAPPING;
+                break;
+            }
+        }
+        if ($mapping === null) {
+            $mapping = self::LEGACY_CHARS_MAPPING; // Fallback to legacy chars mapping
+
+            if (preg_match('/&lt;img\s+(alt|src|width)=&quot;/', $value)) {
+                // In some cases (at least on some ITIL followups, quotes have been converted too,
+                // probably due to a misusage of encoding process.
+                // Result is that quotes were encoded too (i.e. `&lt:img src=&quot;/front/document.send.php`)
+                // and should be decoded too.
+                $mapping['"'] = '&quot;';
+            }
+        }
+
+        $mapping = array_reverse($mapping);
+        return str_replace(array_values($mapping), array_keys($mapping), $value);
+    }
+
+    /**
+     * Decode HTML special chars on fetch operation result.
+     */
+    private function decodeFetchResult(array|object|null|false $values): array|object|null|false
+    {
+        if ($values === null || $values === false) {
+            // No more results or error on fetch operation.
+            return $values;
+        }
+
+        foreach ($values as $key => $value) {
+            if (!is_string($value)) {
+                continue;
+            }
+
+            $value = $this->decodeHtmlSpecialChars($value);
+
+            if (is_object($values)) {
+                $values->{$key} = $value;
+            } else {
+                $values[$key] = $value;
+            }
+        }
+
+        return $values;
+    }
+
+    /**
+     * Get global variables values as an associative array.
+     *
+     * @param array $variables List of variables to get
+     *
+     * @return array
+     */
+    final public function getGlobalVariables(array $variables): array
+    {
+        $query = sprintf(
+            'SHOW GLOBAL VARIABLES WHERE %s IN (%s)',
+            $this->quoteName('Variable_name'),
+            implode(', ', array_map([$this, 'quote'], $variables))
+        );
+        $result = $this->doQuery($query);
+        $values = [];
+        while ($row = $result->fetch_assoc()) {
+            $values[$row['Variable_name']] = $row['Value'];
+        }
+        return $values;
     }
 }

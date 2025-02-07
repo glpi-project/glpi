@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,11 @@
 
 namespace tests\units;
 
+use Computer;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\SessionExpiredException;
+use ReflectionClass;
+
 /* Test for inc/session.class.php */
 
 class Session extends \DbTestCase
@@ -45,13 +50,13 @@ class Session extends \DbTestCase
         $warn_msg = 'There was a warning. Be carefull.';
         $info_msg = 'All goes well. Or not... Who knows ;)';
 
-        $this->array($_SESSION)->notHasKey('MESSAGE_AFTER_REDIRECT');
+        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
 
        //test add message in cron mode
         $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
         \Session::addMessageAfterRedirect($err_msg, false, ERROR);
        //adding a message in "cron mode" does not add anything in the session
-        $this->array($_SESSION)->notHasKey('MESSAGE_AFTER_REDIRECT');
+        $this->array($_SESSION['MESSAGE_AFTER_REDIRECT'])->isEmpty();
 
        //set not running from cron
         unset($_SESSION['glpicronuserrunning']);
@@ -411,21 +416,18 @@ class Session extends \DbTestCase
      */
     public function testGetNewIDORToken(string $itemtype = "", array $add_params = [])
     {
-        $initial_time = time();
-
         // generate token
         $token = \Session::getNewIDORToken($itemtype, $add_params);
         $this->string($token)->hasLength(64);
 
-        // token exists in session and is valid
+        // validate token with dedicated method
         $this->array($token_data = $_SESSION['glpiidortokens'][$token]);
         if ($itemtype !== '') {
-            $this->array($token_data)->size->isEqualTo(2 + count($add_params));
+            $this->array($token_data)->size->isEqualTo(1 + count($add_params));
             $this->array($token_data)->string['itemtype']->isEqualTo($itemtype);
         } else {
-            $this->array($token_data)->size->isEqualTo(1 + count($add_params));
+            $this->array($token_data)->size->isEqualTo(count($add_params));
         }
-        $this->array($token_data)->integer['expires']->isGreaterThanOrEqualTo($initial_time + GLPI_IDOR_EXPIRES);
 
         // validate token
         $data = [
@@ -608,6 +610,297 @@ class Session extends \DbTestCase
         $this->boolean($result)->isTrue();
     }
 
+    public function testCleanIDORTokens(): void
+    {
+        $refected_class = new ReflectionClass(\Session::class);
+        $max = $refected_class->getConstant('IDOR_MAX_TOKENS');
+        $overflow = 100;
+
+        $tokens = [];
+        for ($i = 1; $i < $max + $overflow; $i++) {
+            $tokens[$i] = \Session::getNewIDORToken(Computer::class, ['test' => $i]);
+        }
+
+        \Session::cleanIDORTokens();
+
+        // Ensure that only max token count has been preserved
+        $this->integer(count($_SESSION['glpiidortokens']))->isEqualTo($max);
+
+        // Ensure that latest tokens are preserved during cleaning
+        for ($i = 1; $i < $max + $overflow; $i++) {
+            $result = \Session::validateIDOR(
+                [
+                    '_idor_token' => $tokens[$i],
+                    'itemtype'    => Computer::class,
+                    'test'       => $i,
+                ]
+            );
+            // if $i < $overflow, then the token should have been dropped from the list
+            $this->boolean($result)->isEqualTo($i >= $overflow);
+        }
+    }
+
+    public function testGetNewCSRFToken(): void
+    {
+        /** @var string $CURRENTCSRFTOKEN */
+        global $CURRENTCSRFTOKEN;
+
+        $CURRENTCSRFTOKEN = null;
+
+        $shared_token = \Session::getNewCSRFToken();
+        $this->string($shared_token)->isNotEmpty();
+
+        $standalone_token = null;
+        for ($i = 0; $i < 10; $i++) {
+            $previous_shared_token = $shared_token;
+            $shared_token = \Session::getNewCSRFToken(false);
+            $this->string($shared_token)->isEqualTo($previous_shared_token);
+            $this->string($shared_token)->isEqualTo($CURRENTCSRFTOKEN);
+
+            $previous_standalone_token = $standalone_token;
+            $standalone_token = \Session::getNewCSRFToken(true);
+            $this->string($standalone_token)->isNotEmpty();
+            $this->string($standalone_token)->isNotEqualTo($shared_token);
+            $this->string($standalone_token)->isNotEqualTo($previous_standalone_token);
+        }
+    }
+
+    public function testValidateCSRF(): void
+    {
+        for ($i = 0; $i < 10; $i++) {
+            // A shared token is only valid once
+            $shared_token = \Session::getNewCSRFToken(false);
+            $this->boolean(\Session::validateCSRF(['_glpi_csrf_token' => $shared_token]))->isTrue();
+            $this->boolean(\Session::validateCSRF(['_glpi_csrf_token' => $shared_token]))->isFalse();
+
+            // A standalone token is only valid once
+            $standalone_token = \Session::getNewCSRFToken(true);
+            $this->boolean(\Session::validateCSRF(['_glpi_csrf_token' => $standalone_token]))->isTrue();
+            $this->boolean(\Session::validateCSRF(['_glpi_csrf_token' => $standalone_token]))->isFalse();
+
+            // A fake token is never valid
+            $this->boolean(\Session::validateCSRF(['_glpi_csrf_token' => bin2hex(random_bytes(32))]))->isFalse();
+        }
+    }
+
+    public function testCleanCSRFTokens(): void
+    {
+        $refected_class = new ReflectionClass(\Session::class);
+        $max = $refected_class->getConstant('CSRF_MAX_TOKENS');
+        $overflow = 100;
+
+        $tokens = [];
+        for ($i = 1; $i < $max + $overflow; $i++) {
+            $tokens[$i] = \Session::getNewCSRFToken(true);
+        }
+
+        \Session::cleanCSRFTokens();
+
+        // Ensure that only max token count has been preserved
+        $this->integer(count($_SESSION['glpicsrftokens']))->isEqualTo($max);
+
+        // Ensure that latest tokens are preserved during cleaning
+        for ($i = 1; $i < $max + $overflow; $i++) {
+            $result = \Session::validateCSRF(['_glpi_csrf_token' => $tokens[$i]]);
+            // if $i < $overflow, then the token should have been dropped from the list
+            $this->boolean($result)->isEqualTo($i >= $overflow);
+        }
+    }
+
+    public function testCanImpersonate()
+    {
+        global $DB;
+
+        $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $users = [];
+        for ($i = 0; $i < 6; $i++) {
+            $user = new \User();
+            $users_id = $user->add([
+                'name'     => 'testCanImpersonate' . $i,
+                'password' => 'test',
+                'password2' => 'test',
+                'entities_id' => $root_entity,
+            ]);
+            $this->integer($users_id)->isGreaterThan(0);
+            $users[] = $users_id;
+        }
+
+        $profiles_to_copy = ['Technician', 'Admin'];
+        // Copy the data of each profile to a new one with the same name but suffixed with '-Impersonate
+        foreach ($profiles_to_copy as $profile_name) {
+            $profile = new \Profile();
+            $profiles_id = getItemByTypeName('Profile', $profile_name, true);
+            $this->integer($profiles_id)->isGreaterThan(0);
+            $profile->getFromDB($profiles_id);
+            $new_input = $profile->fields;
+            unset($new_input['id']);
+            foreach (['helpdesk_item_type', 'managed_domainrecordtypes', 'ticket_status', 'problem_status', 'change_status'] as $json_field) {
+                $new_input[$json_field] = \importArrayFromDB($new_input[$json_field]);
+            }
+            $new_input['name'] .= '-Impersonate';
+            $new_profiles_id = $profile->add($new_input);
+
+            // Copy all rights from original profile to the new one, adding user impersonate right
+            $rights = \ProfileRight::getProfileRights($profiles_id, ['user']);
+            $rights['user'] = (int) $rights['user'] | \User::IMPERSONATE;
+            \ProfileRight::updateProfileRights($new_profiles_id, $rights);
+        }
+
+        $assign_profile = function (int $users_id, int $profiles_id) use ($root_entity) {
+            $profile_user = new \Profile_User();
+            $result = $profile_user->add([
+                'profiles_id' => $profiles_id,
+                'users_id'    => $users_id,
+                'entities_id' => $root_entity,
+            ]);
+            $this->integer($result)->isGreaterThan(0);
+            $user = new \User();
+            $this->boolean($user->update([
+                'id' => $users_id,
+                'profiles_id' => $profiles_id,
+            ]))->isTrue();
+        };
+
+        $assign_profile($users[1], getItemByTypeName('Profile', 'Technician-Impersonate', true));
+        $assign_profile($users[2], getItemByTypeName('Profile', 'Admin-Impersonate', true));
+        $assign_profile($users[3], getItemByTypeName('Profile', 'Admin-Impersonate', true));
+        $assign_profile($users[4], getItemByTypeName('Profile', 'Super-Admin', true));
+        $assign_profile($users[5], getItemByTypeName('Profile', 'Super-Admin', true));
+
+        $this->login('testCanImpersonate1', 'test');
+        $this->boolean(\Session::canImpersonate($users[0]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[1]))->isFalse();
+        $this->boolean(\Session::canImpersonate($users[2]))->isFalse();
+        $this->boolean(\Session::canImpersonate($users[3]))->isFalse();
+        $this->boolean(\Session::canImpersonate($users[4]))->isFalse();
+
+        $this->login('testCanImpersonate2', 'test');
+        $this->boolean(\Session::canImpersonate($users[0]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[1]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[2]))->isFalse();
+        $this->boolean(\Session::canImpersonate($users[3]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[4]))->isFalse();
+
+        $this->login('testCanImpersonate3', 'test');
+        $this->boolean(\Session::canImpersonate($users[0]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[1]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[2]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[3]))->isFalse();
+        $this->boolean(\Session::canImpersonate($users[4]))->isFalse();
+
+        $this->login('testCanImpersonate4', 'test');
+        // Super-admins have config UPDATE right so they can impersonate anyone (except themselves)
+        $this->boolean(\Session::canImpersonate($users[0]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[1]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[2]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[3]))->isTrue();
+        $this->boolean(\Session::canImpersonate($users[4]))->isFalse();
+        $this->boolean(\Session::canImpersonate($users[5]))->isTrue();
+
+        $assign_profile($users[0], getItemByTypeName('Profile', 'Admin-Impersonate', true));
+        $this->login('testCanImpersonate1', 'test');
+        // User 0 now has a higher-level profile (Admin) than User 1 which is only Technician
+        $this->boolean(\Session::canImpersonate($users[0]))->isFalse();
+
+        $this->login('testCanImpersonate0', 'test');
+        // Force user 0 to use Self-Service profile initially
+        \Session::changeProfile(getItemByTypeName('Profile', 'Self-Service', true));
+        // User 0's default profile is still Self-Service, so they can't impersonate anyone
+        $this->boolean(\Session::canImpersonate($users[1]))->isFalse();
+        \Session::changeProfile(getItemByTypeName('Profile', 'Admin-Impersonate', true));
+        // User 0's default profile is now Admin-Impersonate, so they can impersonate the user with Technician-Impersonate
+        $this->boolean(\Session::canImpersonate($users[1]))->isTrue();
+    }
+
+    protected function testSessionGroupsProvider(): iterable
+    {
+        // Base entity for our tests
+        $entity = getItemByTypeName("Entity", "_test_root_entity", true);
+
+        // Create some groups to use for our tests
+        $group_1 = $this->createItem('Group', [
+            'name' => 'testSessionGroups Group 1',
+            'entities_id' => $entity,
+            'recursive_membership' => false,
+        ])->getID();
+        $group_1A = $this->createItem('Group', [
+            'name'        => 'testSessionGroups Group 1A',
+            'entities_id' => $entity,
+            'groups_id'   => $group_1,
+            'recursive_membership' => false,
+        ])->getID();
+
+        // Login to TU_USER account (no groups);
+        $tests_users_id = getItemByTypeName("User", TU_USER, true);
+        $this->login();
+        yield ['expected' => []];
+
+        // Assign our user to a group
+        $group_user_1 = $this->createItem('Group_User', [
+            'groups_id' => $group_1,
+            'users_id' => $tests_users_id,
+        ])->getID();
+        yield ['expected' => [$group_1]];
+
+        // Enable group recursion on all groups
+        $this->updateItem('Group', $group_1, ['recursive_membership' => true]);
+        $this->updateItem('Group', $group_1A, ['recursive_membership' => true]);
+        yield ['expected' => [$group_1, $group_1A]];
+
+        // Add another child group
+        $group_1A1 = $this->createItem('Group', [
+            'name'        => 'testSessionGroups Group 1A1',
+            'entities_id' => $entity,
+            'groups_id'   => $group_1A,
+            'recursive_membership' => true,
+        ])->getID();
+        yield ['expected' => [$group_1, $group_1A, $group_1A1]];
+
+        // Disable group recursion on $group_1A
+        $this->updateItem("Group", $group_1A, ['recursive_membership' => false]);
+        yield ['expected' => [$group_1, $group_1A]];
+
+        // Re-enable recursion
+        $this->updateItem("Group", $group_1A, ['recursive_membership' => true]);
+        yield ['expected' => [$group_1, $group_1A, $group_1A1]];
+
+        // Change parent group for $group_1A1
+        $this->updateItem("Group", $group_1A1, ['groups_id' => 0]);
+        yield ['expected' => [$group_1, $group_1A]];
+
+        // Disable recursion on all groups
+        $this->updateItem('Group', $group_1, ['recursive_membership' => false]);
+        $this->updateItem('Group', $group_1A, ['recursive_membership' => false]);
+        $this->updateItem('Group', $group_1A1, ['recursive_membership' => false]);
+        yield ['expected' => [$group_1]];
+
+        // Link Group 1A manually
+        $this->createItem('Group_User', [
+            'groups_id' => $group_1A,
+            'users_id' => $tests_users_id,
+        ]);
+        yield ['expected' => [$group_1, $group_1A]];
+
+        // Unlink Group 1
+        $this->deleteItem('Group_User', $group_user_1);
+        yield ['expected' => [$group_1A]];
+
+        // Delete group 1A
+        $this->deleteItem('Group', $group_1A);
+        yield ['expected' => []];
+    }
+
+    /**
+     * Test that $_SESSION['glpigroups'] contains the expected ids
+     *
+     * @dataprovider testSessionGroupsProvider
+     */
+    public function testSessionGroups(array $expected): void
+    {
+        $this->array($_SESSION['glpigroups'])->isEqualTo($expected);
+    }
+
     protected function getRightNameForErrorProvider()
     {
         return [
@@ -630,6 +923,86 @@ class Session extends \DbTestCase
         // Set language to French to ensure we always get names back as en_GB regardless of the user's language
         \Session::loadLanguage('fr_FR');
         $this->string(\Session::getRightNameForError($module, $right))->isEqualTo($expected);
+    }
+
+    /**
+     * Test the reloadCurrentProfile method.
+     * This test creates a new profile, assigns it to a user,
+     * and checks if the profile is correctly reloaded.
+     *
+     * @return void
+     */
+    public function testReloadCurrentProfile(): void
+    {
+        global $DB;
+
+        // Login as a user
+        $user = $this->login()->user;
+
+        // Create a new profile with name 'testReloadCurrentProfile' and interface 'central'
+        $profile = $this->createItem(
+            'Profile',
+            [
+                'name' => 'testReloadCurrentProfile',
+                'interface' => 'central',
+            ]
+        );
+
+        // Create a new Profile_User item with the created profile and user
+        $this->createItem(
+            'Profile_User',
+            [
+                'profiles_id' => $profile->getID(),
+                'users_id' => $user->getID(),
+                'entities_id' => \Session::getActiveEntity(),
+            ]
+        );
+
+        // Login again to refresh the user data
+        $user = $this->login()->user;
+
+        // Assign the new profile to the user
+        \Session::changeProfile($profile->getID());
+
+        // Update or insert a new profilerights item with the created profile and 'ticket' rights
+        $DB->updateOrInsert(
+            'glpi_profilerights',
+            [
+                'rights'       => \Ticket::READALL
+            ],
+            [
+                'profiles_id'  => $profile->getID(),
+                'name'         => 'ticket'
+            ],
+        );
+
+        // Assert that the current profile does not have 'ticket' rights set to \Ticket::READALL
+        $this->variable($_SESSION['glpiactiveprofile']['ticket'])->isNotEqualTo(\Ticket::READALL);
+
+        // Reload the current profile
+        \Session::reloadCurrentProfile();
+
+        // Assert that the current profile now has 'ticket' rights set to \Ticket::READALL
+        $this->variable($_SESSION['glpiactiveprofile']['ticket'])->isEqualTo(\Ticket::READALL);
+    }
+
+    /**
+     * Test the deleteMessageAfterRedirect method
+     *
+     * @return void
+     */
+    public function testDeleteMessageAfterRedirect(): void
+    {
+        \Session::addMessageAfterRedirect("Test 1", INFO);
+        \Session::addMessageAfterRedirect("Test 2", INFO);
+        \Session::addMessageAfterRedirect("Test 3", INFO);
+        $this->hasSessionMessages(INFO, ["Test 1", "Test 2", "Test 3"]);
+
+        \Session::addMessageAfterRedirect("Test 1", INFO);
+        \Session::addMessageAfterRedirect("Test 2", INFO);
+        \Session::addMessageAfterRedirect("Test 3", INFO);
+        \Session::deleteMessageAfterRedirect("Test 2", INFO);
+        $this->hasSessionMessages(INFO, ["Test 1", "Test 3"]);
     }
 
     protected function entitiesRestrictProvider(): iterable
@@ -739,7 +1112,7 @@ class Session extends \DbTestCase
     /**
      * @dataProvider entitiesRestrictProvider
      */
-    public function testGetMatchingActiveEntities(/*mixed*/ $entity_restrict, ?array $active_entities, /*int|array*/ $result): void
+    public function testGetMatchingActiveEntities(mixed $entity_restrict, ?array $active_entities, mixed $result): void
     {
         $_SESSION['glpiactiveentities'] = $active_entities;
         $this->variable(\Session::getMatchingActiveEntities($entity_restrict))->isIdenticalTo($result);
@@ -761,5 +1134,428 @@ class Session extends \DbTestCase
          ->withType(E_USER_WARNING)
          ->withMessage('Unexpected value `null` found in `$_SESSION[\'glpiactiveentities\']`.')
          ->exists();
+    }
+
+    public function testShouldReloadActiveEntities(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+        $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+        // Create a new entity
+        $entity_id = $this->createItem(\Entity::class, [
+            'name'        => __METHOD__,
+            'entities_id' => $ent1
+        ])->getID();
+
+        $this->boolean(\Session::changeActiveEntities($ent1, true))->isTrue();
+
+        // The entity goes out of scope -> reloaded TRUE
+        $this->updateItem(\Entity::class, $entity_id, [
+            'entities_id' => $ent0
+        ]);
+        $this->boolean(\Session::shouldReloadActiveEntities())->isTrue();
+
+        $this->boolean(\Session::changeActiveEntities($ent2, true))->isTrue();
+
+        // The entity enters the scope -> reloaded TRUE
+        $this->updateItem(\Entity::class, $entity_id, [
+            'entities_id' => $ent2
+        ]);
+        $this->boolean(\Session::shouldReloadActiveEntities())->isTrue();
+
+        $this->boolean(\Session::changeActiveEntities($ent1, true))->isTrue();
+
+        // The entity remains out of scope -> reloaded FALSE
+        $this->updateItem(\Entity::class, $entity_id, [
+            'entities_id' => $ent0
+        ]);
+        $this->boolean(\Session::shouldReloadActiveEntities())->isFalse();
+
+        $this->boolean(\Session::changeActiveEntities($ent1, false))->isTrue();
+
+        // The entity remains out of scope -> reloaded FALSE
+        $this->updateItem(\Entity::class, $entity_id, [
+            'entities_id' => $ent1
+        ]);
+        $this->boolean(\Session::shouldReloadActiveEntities())->isFalse();
+
+        // See all entities -> reloaded FALSE
+        $this->boolean(\Session::changeActiveEntities('all'))->isTrue();
+
+        $this->updateItem(\Entity::class, $entity_id, [
+            'entities_id' => $ent2
+        ]);
+
+        $this->boolean(\Session::shouldReloadActiveEntities())->isFalse();
+    }
+
+    public function testActiveEntityNameForFullStructure(): void
+    {
+        $this->login();
+        \Session::changeActiveEntities("all");
+        $this->string($_SESSION["glpiactive_entity_name"])->isEqualTo("Root entity (full structure)");
+        $this->string($_SESSION["glpiactive_entity_shortname"])->isEqualTo("Root entity (full structure)");
+    }
+
+    public function testCheckValidSessionIdWithSessionExpiration(): void
+    {
+        $this->login();
+
+        unset($_SESSION);
+
+        $this->exception(
+            function () {
+                \Session::checkValidSessionId();
+            }
+        )->isInstanceOf(SessionExpiredException::class);
+    }
+
+    protected function checkCentralAccessProvider(): iterable
+    {
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'exception'   => new AccessDeniedHttpException(
+                'The current profile does not use the standard interface'
+            ),
+        ];
+    }
+
+    /**
+     * @dataProvider checkCentralAccessProvider
+     */
+    public function testCheckCentralAccess(array $credentials, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->exception(
+                function () {
+                    \Session::checkCentralAccess();
+                }
+            )->isInstanceOf($exception::class)
+             ->hasMessage($exception->getMessage())
+             ->hasCode($exception->getCode());
+        }
+    }
+
+    protected function checkHelpdeskAccessProvider(): iterable
+    {
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'exception'   => new AccessDeniedHttpException(
+                'The current profile does not use the simplified interface'
+            ),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'exception'   => null,
+        ];
+    }
+
+    /**
+     * @dataProvider checkHelpdeskAccessProvider
+     */
+    public function testCheckHelpdeskAccess(array $credentials, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->exception(
+                function () {
+                    \Session::checkHelpdeskAccess();
+                }
+            )->isInstanceOf($exception::class)
+             ->hasMessage($exception->getMessage())
+             ->hasCode($exception->getCode());
+        }
+    }
+
+    protected function checkFaqAccessProvider(): iterable
+    {
+        yield [
+            'rights'         => 0,
+            'use_public_faq' => false,
+            'exception'      => new AccessDeniedHttpException(
+                'Missing FAQ right'
+            ),
+        ];
+
+        yield [
+            'rights'         => \KnowbaseItem::READFAQ,
+            'use_public_faq' => false,
+            'exception'      => null,
+        ];
+
+        yield [
+            'rights'         => READ,
+            'use_public_faq' => false,
+            'exception'      => null,
+        ];
+
+        yield [
+            'rights'         => 0,
+            'use_public_faq' => true,
+            'exception'      => null,
+        ];
+
+        yield [
+            'rights'         => \KnowbaseItem::READFAQ,
+            'use_public_faq' => true,
+            'exception'      => null,
+        ];
+
+        yield [
+            'rights'         => READ,
+            'use_public_faq' => true,
+            'exception'      => null,
+        ];
+    }
+
+    /**
+     * @dataProvider checkFaqAccessProvider
+     */
+    public function testFaqAccessAccess(int $rights, bool $use_public_faq, ?\Throwable $exception): void
+    {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $CFG_GLPI['use_public_faq'] = $use_public_faq;
+        $_SESSION["glpiactiveprofile"]['knowbase'] = $rights;
+
+        if ($exception !== null) {
+            $this->exception(
+                function () {
+                    \Session::checkFaqAccess();
+                }
+            )->isInstanceOf($exception::class)
+             ->hasMessage($exception->getMessage())
+             ->hasCode($exception->getCode());
+        }
+    }
+
+    public function testCheckLoginUser(): void
+    {
+        $this->login();
+
+        \Session::checkLoginUser(); // no exception thrown, as expected
+
+        unset($_SESSION['glpiname']);
+
+        $this->exception(
+            function () {
+                \Session::checkLoginUser();
+            }
+        )->isInstanceOf(AccessDeniedHttpException::class)
+         ->hasMessage('User has no valid session but seems to be logged in');
+    }
+
+    protected function checkRightProvider(): iterable
+    {
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'module'      => 'computer',
+            'right'       => READ,
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'module'      => 'computer',
+            'right'       => UPDATE,
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => ['normal', 'normal'],
+            'module'      => 'config',
+            'right'       => DELETE,
+            'exception'   => new AccessDeniedHttpException(
+                'User is missing the 8 (DELETE) right for config'
+            ),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'module'      => 'computer',
+            'right'       => READ,
+            'exception'   => new AccessDeniedHttpException(
+                'User is missing the 1 (READ) right for computer'
+            ),
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'module'      => 'computer',
+            'right'       => UPDATE,
+            'exception'   => new AccessDeniedHttpException(
+                'User is missing the 2 (UPDATE) right for computer'
+            ),
+        ];
+    }
+
+    /**
+     * @dataProvider checkRightProvider
+     */
+    public function testCheckRight(array $credentials, string $module, int $right, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->exception(
+                function () use ($module, $right) {
+                    \Session::checkRight($module, $right);
+                }
+            )->isInstanceOf($exception::class)
+             ->hasMessage($exception->getMessage())
+             ->hasCode($exception->getCode());
+        }
+    }
+
+    protected function checkRightsOrProvider(): iterable
+    {
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'module'      => 'computer',
+            'rights'      => [READ, CREATE, UPDATE],
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'module'      => 'computer',
+            'rights'      => [READ, CREATE, UPDATE],
+            'exception'   => new AccessDeniedHttpException(
+                'User is missing all of the following rights: 1 (READ), 4 (CREATE), 2 (UPDATE) for computer'
+            ),
+        ];
+    }
+
+    /**
+     * @dataProvider checkRightsOrProvider
+     */
+    public function testCheckRightsOr(array $credentials, string $module, array $rights, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->exception(
+                function () use ($module, $rights) {
+                    \Session::checkRightsOr($module, $rights);
+                }
+            )->isInstanceOf($exception::class)
+             ->hasMessage($exception->getMessage())
+             ->hasCode($exception->getCode());
+        }
+    }
+
+    protected function checkSeveralRightsOrProvider(): iterable
+    {
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'rights'      => [
+                'notification' => READ,
+                'config'       => UPDATE,
+            ],
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'rights'      => [
+                'notification' => READ,
+                'config'       => UPDATE,
+            ],
+            'exception'   => new AccessDeniedHttpException(
+                'User is missing all of the following rights: 1 (READ) for module notification, 2 (UPDATE) for module config'
+            ),
+        ];
+    }
+
+    /**
+     * @dataProvider checkSeveralRightsOrProvider
+     */
+    public function testCheckSeveralRightsOr(array $credentials, array $rights, ?\Throwable $exception): void
+    {
+        $this->login(...$credentials);
+
+        if ($exception !== null) {
+            $this->exception(
+                function () use ($rights) {
+                    \Session::checkSeveralRightsOr($rights);
+                }
+            )->isInstanceOf($exception::class)
+             ->hasMessage($exception->getMessage())
+             ->hasCode($exception->getCode());
+        }
+    }
+
+    protected function checkCSRFProvider(): iterable
+    {
+        yield [
+            'credentials' => [TU_USER, TU_PASS],
+            'rights'      => [
+                'notification' => READ,
+                'config'       => UPDATE,
+            ],
+            'exception'   => null,
+        ];
+
+        yield [
+            'credentials' => ['post-only', 'postonly'],
+            'rights'      => [
+                'notification' => READ,
+                'config'       => UPDATE,
+            ],
+            'exception'   => new AccessDeniedHttpException(
+                'User is missing all of the following rights: 1 (READ) for module notification, 2 (UPDATE) for module config'
+            ),
+        ];
+    }
+
+    public function testCheckCSRF(): void
+    {
+        $token = \Session::getNewCSRFToken();
+        \Session::checkCSRF(['_glpi_csrf_token' => $token]); // No exception thrown
+
+
+        $this->exception(
+            function () {
+                \Session::checkCSRF(['_glpi_csrf_token' => 'invalid token']);
+            }
+        )->isInstanceOf(AccessDeniedHttpException::class);
+    }
+
+    public function testRightCheckBypass()
+    {
+        $this->login();
+        $this->boolean(\Session::isRightChecksDisabled())->isFalse();
+        $this->boolean(\Session::haveRight('_nonexistant_module', READ))->isFalse();
+        \Session::callAsSystem(function () {
+            $this->boolean(\Session::isRightChecksDisabled())->isTrue();
+            $this->boolean(\Session::haveRight('_nonexistant_module', READ))->isTrue();
+        });
+        $this->boolean(\Session::isRightChecksDisabled())->isFalse();
+        $this->boolean(\Session::haveRight('_nonexistant_module', READ))->isFalse();
+        // Try throwing an exception inside the callAsSystem callable to make sure right checks are still re-enabled after it runs
+        $this->exception(function () {
+            \Session::callAsSystem(function () {
+                throw new \Exception('test');
+            });
+        })->hasMessage('test');
+        $this->boolean(\Session::isRightChecksDisabled())->isFalse();
+        $this->boolean(\Session::haveRight('_nonexistant_module', READ))->isFalse();
     }
 }

@@ -8,7 +8,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,28 @@
  * ---------------------------------------------------------------------
  */
 
+// Try detecting if we are running with the root user (Not available on Windows)
+if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
+    // Translation functions not available here
+    echo "\t" . 'WARNING: running as root is discouraged.' . "\n";
+    echo "\t" . 'You should run the script as the same user that your web server runs as to avoid file permissions being ruined.' . "\n";
+
+    if (!in_array('--allow-superuser', $_SERVER['argv'], true)) {
+        if (in_array('-n', $_SERVER['argv'], true) || in_array('--no-interaction', $_SERVER['argv'], true)) {
+            echo "\t" . 'Use --allow-superuser option to bypass this limitation.' . "\n";
+            exit(1);
+        } else {
+            echo "\t" . 'Do you want to continue anyway? [yes/No]' . ' ';
+            $handle = fopen('php://stdin', 'rb');
+            $line = fgets($handle);
+            fclose($handle);
+            if (trim($line) !== 'yes' && trim($line) !== 'y') {
+                exit(1);
+            }
+        }
+    }
+}
+
 // Extract command line arguments
 $options = [];
 if (isset($_SERVER['argv'])) {
@@ -43,8 +65,8 @@ if (isset($_SERVER['argv'])) {
       $options[$chunks[0]] = (isset($chunks[1]) ? $chunks[1] : true);
    }
 }
-
-// Handle specific dependencies update command that cannot be made upon symfony console
+ 
+//Handle specific dependencies update command that cannot be made upon symfony console
 if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SERVER['argv'], 1, 2)) {
    chdir(dirname(__FILE__, 2));
 
@@ -65,58 +87,69 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
       exit($exit_code);
    }
 
-   file_put_contents('.package.hash', sha1_file('package-lock.json'));
-
    passthru('npm run-script build', $exit_code);
+   if ($exit_code > 0) {
+      exit($exit_code);
+   }
+
+   $exit_code = compileLocales();
+
    exit($exit_code);
 }
 
 // Handle specific "locales:compile" command that cannot be made upon symfony console
 if (isset($_SERVER['argv']) && ($_SERVER['argv'][1] ?? '') === 'locales:compile') {
+   $exit_code = compileLocales();
+
+   exit($exit_code);
+}
+
+function compileLocales(): int
+{
    chdir(dirname(__FILE__, 2));
 
    $exit_code = 0;
 
    $po_files = preg_grep('/\.po$/', scandir('./locales'));
+   echo "Compiling MO files...";
    foreach ($po_files as $po_file) {
       $mo_file = preg_replace('/\.po$/', '.mo', $po_file);
-      echo("Processing {$po_file}\n");
       passthru("cd ./locales && msgfmt -f -o {$mo_file} {$po_file}", $exit_code);
       if ($exit_code > 0) {
          exit($exit_code);
       }
    }
+   echo " Done.\n";
 
-   exit($exit_code);
+   return $exit_code;
 }
+
+// Check the resources state before trying to instanciate the Kernel.
+// It must be done here as this check must be done even when the Kernel
+// cannot be instanciated due to missing dependencies.
+require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
+(new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
 
 // If "config-dir" option is used in command line, defines GLPI_CONFIG_DIR with its value
 if (array_key_exists('config-dir', $options)) {
+   echo "\n" . 'Usage of the `--config-dir` option is deprecated. Please use the `--env` option instead.' . "\n\n";
+
    $config_dir = $options['config-dir'];
 
    if (false === $config_dir || !@is_dir($config_dir)) {
-      die(
-         sprintf(
-            '--config-dir "%s" does not exists in "%s".' . "\n",
-            $config_dir,
-            getcwd()
-         )
+      echo sprintf(
+         '--config-dir "%s" does not exists in "%s".' . "\n",
+         $config_dir,
+         getcwd()
       );
+      exit(1);
    }
 
    define('GLPI_CONFIG_DIR', realpath($config_dir));
 }
 
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-// Init GLPI
-define('GLPI_ROOT', dirname(__DIR__));
-
-include_once(GLPI_ROOT . '/inc/based_config.php');
-include_once(GLPI_ROOT . '/inc/db.function.php');
-@include_once(GLPI_CONFIG_DIR . '/config_db.php');
-
-// Run console application
-use Glpi\Console\Application;
-
-$application = new Application();
+$kernel = new \Glpi\Kernel\Kernel($options['env'] ?? null);
+$application = new \Glpi\Console\Application($kernel);
 $application->run();

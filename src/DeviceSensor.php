@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -45,20 +45,19 @@ class DeviceSensor extends CommonDevice
         return _n('Sensor', 'Sensors', $nb);
     }
 
-
     public function getAdditionalFields()
     {
-
         return array_merge(
             parent::getAdditionalFields(),
-            [['name'  => 'devicesensortypes_id',
-                'label' => _n('Type', 'Types', 1),
-                'type'  => 'dropdownValue'
-            ]
+            [
+                [
+                    'name'  => 'devicesensortypes_id',
+                    'label' => _n('Type', 'Types', 1),
+                    'type'  => 'dropdownValue'
+                ]
             ]
         );
     }
-
 
     public function rawSearchOptions()
     {
@@ -74,15 +73,13 @@ class DeviceSensor extends CommonDevice
         return $tab;
     }
 
-
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
-        HTMLTableSuperHeader $super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
-
         $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
         if ($column == $father) {
@@ -98,36 +95,34 @@ class DeviceSensor extends CommonDevice
         }
     }
 
-
     public function getHTMLTableCellForItem(
-        HTMLTableRow $row = null,
-        CommonDBTM $item = null,
-        HTMLTableCell $father = null,
+        ?HTMLTableRow $row = null,
+        ?CommonDBTM $item = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
-
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
             return $father;
         }
 
-        switch ($item->getType()) {
-            case 'Computer':
-            case 'Peripheral':
+        switch ($item::class) {
+            case Computer::class:
+            case Peripheral::class:
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 break;
         }
+        return null;
     }
-
 
     /**
      * Criteria used for import function
      */
     public function getImportCriteria()
     {
-
-        return ['designation'          => 'equal',
+        return [
+            'designation'          => 'equal',
             'manufacturers_id'     => 'equal',
             'devicesensortypes_id' => 'equal',
             'locations_id'         => 'equal'

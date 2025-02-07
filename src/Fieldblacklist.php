@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -49,7 +49,7 @@ class Fieldblacklist extends CommonDropdown
     }
 
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return static::canUpdate();
     }
@@ -57,7 +57,7 @@ class Fieldblacklist extends CommonDropdown
     /**
      * @since 0.85
      **/
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return static::canUpdate();
     }
@@ -253,7 +253,7 @@ class Fieldblacklist extends CommonDropdown
             if ($item = getItemForItemtype($this->fields['itemtype'])) {
                 echo $item->getTypeName(1);
             }
-            echo "<input type='hidden' name='itemtype' value='" . $this->fields['itemtype'] . "'>";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($this->fields['itemtype']) . "'>";
         } else {
             //Add criteria : display dropdown
             $options = [];
@@ -372,7 +372,7 @@ class Fieldblacklist extends CommonDropdown
 
 
     /**
-     * @param $field  (default '')
+     * @param string $field  (default '')
      **/
     public function selectValues($field = '')
     {
@@ -398,10 +398,10 @@ class Fieldblacklist extends CommonDropdown
     /**
      * Check if a field & value are blacklisted or not
      *
-     * @param itemtype      itemtype of the blacklisted field
-     * @param entities_id   the entity in which the field must be saved
-     * @param field         the field to check
-     * @param value         the field's value
+     * @param string $itemtype      itemtype of the blacklisted field
+     * @param int $entities_id   the entity in which the field must be saved
+     * @param string $field         the field to check
+     * @param string $value         the field's value
      *
      * @return true is value if blacklisted, false otherwise
      **/

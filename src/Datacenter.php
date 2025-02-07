@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -50,6 +50,11 @@ class Datacenter extends CommonDBTM
     {
        //TRANS: Test of comment for translation (mark : //TRANS)
         return _n('Data center', 'Data centers', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', self::class];
     }
 
     public function prepareInputForAdd($input)
@@ -195,12 +200,11 @@ class Datacenter extends CommonDBTM
     public static function getAdditionalMenuLinks()
     {
         $links = [];
+        $label = htmlescape(DCRoom::getTypeName(Session::getPluralNumber()));
         if (static::canView()) {
             $rooms = "<i class='ti ti-building pointer'
-                      title=\"" . DCRoom::getTypeName(Session::getPluralNumber()) . "\"></i>
-            <span class='d-none d-xxl-block ps-1'>
-               " . DCRoom::getTypeName(Session::getPluralNumber()) . "
-            </span>";
+                      title=\"$label\"></i>
+            <span class='d-none d-xxl-block ps-1'>$label</span>";
             $links[$rooms] = DCRoom::getSearchURL(false);
         }
         if (count($links)) {
@@ -213,7 +217,7 @@ class Datacenter extends CommonDBTM
     {
         if (static::canView()) {
             return [
-                'dcroom' => [
+                DCRoom::class => [
                     'title' => DCRoom::getTypeName(Session::getPluralNumber()),
                     'page'  => DCRoom::getSearchURL(false),
                     'icon'  => DCRoom::getIcon(),

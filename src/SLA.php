@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,17 +51,33 @@ class SLA extends LevelAgreement
 
     public static function getTypeName($nb = 0)
     {
-       // Acronymous, no plural
+        // Acronym, no plural
         return __('SLA');
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', SLM::class, self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'setup';
+    }
+
+    public static function getIcon()
+    {
+        return SLM::getIcon();
     }
 
     public function showFormWarning()
     {
     }
 
-    public function getAddConfirmation()
+    public function getAddConfirmation(): array
     {
-        return [__("The assignment of a SLA to a ticket causes the recalculation of the date."),
+        return [
+            __("The assignment of a SLA to a ticket causes the recalculation of the date."),
             __("Escalations defined in the SLA will be triggered under this new date.")
         ];
     }

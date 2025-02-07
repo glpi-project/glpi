@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -103,7 +103,7 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
         $err_msg = null;
         if (!TemplateManager::validate($input['content'], $err_msg)) {
             Session::addMessageAfterRedirect(
-                sprintf('%s: %s', __('Content'), $err_msg),
+                htmlescape(sprintf('%s: %s', __('Content'), $err_msg)),
                 false,
                 ERROR
             );
@@ -128,22 +128,20 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
         }
 
         $content = $this->fields['content'];
-        if (DropdownTranslation::isDropdownTranslationActive()) {
-            $content = DropdownTranslation::getTranslatedValue(
-                $this->getID(),
-                $this->getType(),
-                'content',
-                $_SESSION['glpilanguage'],
-                $content
-            );
-        }
+        $content = DropdownTranslation::getTranslatedValue(
+            $this->getID(),
+            $this->getType(),
+            'content',
+            $_SESSION['glpilanguage'],
+            $content
+        );
 
         $html = TemplateManager::renderContentForCommonITIL(
             $itil_item,
             $content
         );
 
-        if (!$html) {
+        if ($html === null) {
             $html = $content;
         }
 

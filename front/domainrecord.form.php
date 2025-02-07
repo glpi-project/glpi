@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,8 +32,6 @@
  *
  * ---------------------------------------------------------------------
  */
-
-include('../inc/includes.php');
 
 Session::checkCentralAccess();
 
@@ -70,11 +68,11 @@ if (isset($_POST["add"])) {
     $record->update($_POST);
     Html::back();
 } else if (isset($_GET['_in_modal'])) {
-    Html::popHeader(DomainRecord::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], true);
+    Html::popHeader(DomainRecord::getTypeName(Session::getPluralNumber()), in_modal: true);
     $record->showForm($_GET["id"], ['domains_id' => $_GET['domains_id'] ?? null]);
     Html::popFooter();
 } else {
-    $menus = ["management", "domain", "domainrecord"];
+    $menus = ["management", "domain", "DomainRecord"];
     $options = [
         'withtemplate' => $_GET["withtemplate"]
     ];

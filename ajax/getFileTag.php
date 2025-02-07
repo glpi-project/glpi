@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,14 +37,11 @@
  * @since 0.85
  */
 
-$AJAX_INCLUDE = 1;
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
 
-include('../inc/includes.php');
-
-header('Content-type: application/json');
+header('Content-type: application/json; charset=UTF-8');
 Html::header_nocache();
-
-Session::checkLoginUser();
 
 if (isset($_POST['data'])) {
     $response = [];

@@ -1,0 +1,221 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+
+{% set params = {} %}
+{# do not display delete button #}
+{% set params = params|merge({'candel': false}) %}
+{# do not display footer with dates #}
+{% set params = params|merge({'formfooter': false}) %}
+
+{% block form_fields %}
+    <style>
+        .red-toggle-switch-bg {
+            --tblr-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23d63939'/%3e%3c/svg%3e") !important;
+        }
+    </style>
+
+    <input type="hidden" name="_update_capacities" value="1" />
+
+    <div class="row flew-row gx-2">
+        <div class="d-flex mb-3">
+            <input type="text" placeholder="{{ _x('button', 'Search') }}" class="me-3" id="search-capacities" />
+            <a role="button" class="btn btn-sm btn-ghost-secondary ms-auto" id="select-all-capacities">
+                <i class="ti ti-copy-check"></i>
+                <span>{{ __('(Un)select all') }}</span>
+            </a>
+        </div>
+
+        {% for capacity in capacities %}
+            <div class="col-12 col-lg-6 col-xxl-4 mb-2 capacity-box">
+                <label class="form-selectgroup-boxes flex-fill w-100 h-100" style="min-height: 70px;">
+                    <input type="checkbox"
+                            name="capacities[]"
+                            value="{{ get_class(capacity) }}"
+                            class="form-selectgroup-input"
+                            id="{{ get_class(capacity) }}"
+                            data-capacity="{{ get_class(capacity) }}"
+                            data-capacity-search="{{ capacity.getLabel() ~ ' ' ~ capacity.getDescription() }}"
+                            data-is-used="{{ capacity.isUsed(classname) ? 1 : 0 }}"
+                            {{ item.hasCapacityEnabled(capacity) ? 'checked' : '' }} />
+                    <div class="form-selectgroup-label d-flex align-items-center h-100 shadow-none p-0 px-3">
+                        <span class="me-2 mt-1">
+                            <i class="{{ capacity.getIcon() }} fa-2x text-secondary"></i>
+                        </span>
+                        <div class="text-start">
+                            <div class="fw-bold">
+                                {{ capacity.getLabel() }}
+                            </div>
+                            {% if capacity.getDescription() is not empty %}
+                            <small class="form-hint">
+                                {{ capacity.getDescription() }}
+                            </small>
+                            {% endif %}
+                            <span class="alert-capacity text-red d-none" data-capacity="{{ get_class(capacity) }}">
+                                <i class="ti ti-alert-triangle fs-2"></i>
+                                <span>
+                                    {{ capacity.getCapacityUsageDescription(classname) }}
+                                <span
+                            </span>
+                        </div>
+                        <div class="me-2 ms-auto">
+                            <span class="form-selectgroup-check"></span>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+
+    {# Modal #}
+    <div class="modal fade" id="capacityWarningModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <a type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _x('button', 'Close') }}"></a>
+                <div class="modal-status bg-danger"></div>
+                <div class="modal-body text-center py-4">
+                    {# SVG Icon corresponding to the ti-alert-triangle icon #}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 9v4"></path><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z"></path><path d="M12 16h.01"></path></svg>
+
+                    <h3>{{ _x('button', 'Are you sure?') }}</h3>
+                    <div class="text-muted">
+                        {{ __('You have disabled one or more capacities that are used by assets. Disabling them will result in the deletion of associated data.') }}
+                    </div>
+                    <div class="list-group list-group-flush list-group-hoverable text-start mt-2">
+                        {% for capacity in capacities|filter(capacity => capacity.isUsed(classname)) %}
+                            <div class="list-group-item p-3 d-none" data-capacity="{{ get_class(capacity) }}">
+                                <div class="row align-items-center">
+                                    <div class="col text-truncate ms-6">
+                                        <span class="text-reset d-block">{{ capacity.getLabel() }}</span>
+                                        <div class="d-block text-red text-truncate">
+                                            {{ capacity.getCapacityUsageDescription(classname) }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="w-100">
+                        <div class="row">
+                            <div class="col">
+                                <a class="btn w-100" data-bs-dismiss="modal">
+                                    {{ _x('button', 'Cancel') }}
+                                </a>
+                            </div>
+                            <div class="col">
+                                <button type="button" class="btn btn-danger w-100" name="save">
+                                    {{ _x('button', 'Yes, disable it!') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#mainformtable button[type="submit"]').on('click', { is_from_modal: false }, function(event, data) {
+                data = data || event.data;
+
+                if (
+                    data.is_from_modal !== true
+                    && $('input[name="capacities[]"][data-is-used="1"]:not(:checked)').length > 0
+                ) {
+                    event.preventDefault();
+                    $('#capacityWarningModal').modal('show');
+                }
+            });
+
+            $('#capacityWarningModal button[name="save"]').on('click', function() {
+                $('#capacityWarningModal').modal('hide');
+                $('#mainformtable button[type="submit"]').trigger(
+                    'click',
+                    {
+                        'is_from_modal': true,
+                    }
+                );
+            });
+
+            // warn user about the consequences of disabling a capacity
+            $('input[name="capacities[]"][data-is-used=1]').on('change', function() {
+                $(this).toggleClass('red-toggle-switch-bg');
+                $('.alert-capacity[data-capacity="' + $.escapeSelector($(this).data('capacity')) + '"]').toggleClass('d-none', $(this).is(':checked'));
+            });
+
+            // filter the list of capacities
+            let delay_timer = null;
+            $('#search-capacities').on('input', function() {
+                const search = $(this).val().toLowerCase();
+
+                // delay the search to avoid flickering
+                clearTimeout(delay_timer);
+                delay_timer = setTimeout(function() {
+                    $('input[name="capacities[]"]').each(function() {
+                        const capacity_search = $(this).data('capacity-search').toLowerCase();
+                        if (capacity_search.indexOf(search) === -1) {
+                            $(this).closest('.capacity-box').addClass('d-none');
+                        } else {
+                            $(this).closest('.capacity-box').removeClass('d-none');
+                        }
+                    });
+                }, 250);
+            });
+
+            // (un)toggle all capacities button
+            $('#select-all-capacities').on('click', function() {
+                var $checkboxes = $('input[name="capacities[]"]');
+                var $checkedCheckboxes = $checkboxes.filter(':checked');
+
+                if ($checkedCheckboxes.length === $checkboxes.length) {
+                    $checkboxes.prop('checked', false);
+                } else {
+                    $checkboxes.prop('checked', true);
+                }
+
+                $checkboxes.trigger('change');
+            });
+        });
+    </script>
+
+    <style>
+        /* To avoid separator on the last visible item but not the last item of the dom */
+        div.list-group-item:not(.d-none):last-of-type {
+            border-bottom-width: 0 !important;
+        }
+    </style>
+{% endblock %}

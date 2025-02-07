@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,8 +34,6 @@
  */
 
 use Glpi\Event;
-
-include('../inc/includes.php');
 
 Session::checkRight("group", READ);
 
@@ -68,13 +66,12 @@ if (isset($_POST["add"])) {
     ) {
         Html::header(
             $group->getTypeName(1),
-            $_SERVER['PHP_SELF'],
+            '',
             "admin",
-            "group",
-            str_replace('glpi_', '', $group->getTable())
+            "group"
         );
 
-        $group->showDeleteConfirmForm($_SERVER['PHP_SELF']);
+        $group->showDeleteConfirmForm();
         Html::footer();
     } else {
         $group->delete($_POST, 1);
@@ -101,7 +98,7 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else if (isset($_GET['_in_modal'])) {
-    Html::popHeader(Group::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], true);
+    Html::popHeader(Group::getTypeName(Session::getPluralNumber()), in_modal: true);
     $group->showForm($_GET["id"]);
     Html::popFooter();
 } else if (isset($_POST["replace"])) {

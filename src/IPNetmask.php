@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -83,7 +83,7 @@ class IPNetmask extends IPAddress
      * @param $netmask   string   netmask defined as textual
      * @param $version   integer  =4 or =6 : version of IP protocol
      *
-     * @return false if the netmask is not valid or if it does not correspond to version
+     * @return bool false if the netmask is not valid or if it does not correspond to version
      **/
     public function setNetmaskFromString($netmask, $version)
     {

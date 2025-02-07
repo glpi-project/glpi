@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,13 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
+use Glpi\Search\SearchOption;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST['itemtype']))) {
-    exit();
+    return;
 }
 
 if (Infocom::canApplyOn($_POST["itemtype"])) {
@@ -56,7 +56,7 @@ if (isset($_POST['inline']) && $_POST['inline']) {
 }
 $submitname = _sx('button', 'Post');
 if (isset($_POST['submitname']) && $_POST['submitname']) {
-    $submitname = stripslashes($_POST['submitname']);
+    $submitname = htmlescape($_POST['submitname']);
 }
 
 
@@ -64,9 +64,9 @@ if (
     isset($_POST["itemtype"])
     && isset($_POST["id_field"]) && $_POST["id_field"]
 ) {
-    $search = Search::getOptions($_POST["itemtype"]);
+    $search = SearchOption::getOptionsForItemtype($_POST["itemtype"]);
     if (!isset($search[$_POST["id_field"]])) {
-        exit();
+        return;
     }
 
     $search            = $search[$_POST["id_field"]];

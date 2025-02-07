@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,9 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Http\Response;
-
-include('../inc/includes.php');
+use Glpi\Exception\Http\BadRequestHttpException;
 
 $impact_item = new ImpactItem();
 
@@ -44,7 +42,7 @@ if (isset($_POST["update"])) {
 
    // Can't update, id is missing
     if ($id === 0) {
-        Response::sendError(400, "Can't update the target impact item, id is missing", Response::CONTENT_TYPE_TEXT_HTML);
+        throw new BadRequestHttpException("Can't update the target impact item, id is missing");
     }
 
    // Load item and check rights

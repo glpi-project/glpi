@@ -1,0 +1,88 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set total_pages = (countIcons(filter) / page_size)|round(0, 'ceil') %}
+{% set icon_ids = searchIcons(filter, page, page_size) %}
+
+<div
+    data-glpi-icon-picker-body
+    {# Keep track of our page size as we will need to request the same size
+    when querying the server for others pages #}
+    data-glpi-icon-picker-page-size="{{ page_size }}"
+>
+    {% if icon_ids|length %}
+        <div class="row g-3 mb-4 align-items-start">
+            {% for icon_id in icon_ids %}
+                <div class="col-4 col-sm-3 col-lg-2" data-bs-dismiss="modal" data-glpi-icon-picker-value="{{ icon_id }}">
+                    <div class="card border-secondary-hover cursor-pointer rounded">
+                        <div class="card-body h-100 aspect-ratio-1">
+                            {{ render_illustration(icon_id) }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if total_pages > 1 %}
+            <div class="d-flex align-items-center">
+                <span class="text-secondary ms-auto me-3">
+                    {{ __('Page %s of %s')|format(page, total_pages) }}
+                </span>
+
+                {% for i in range(1, total_pages) %}
+                    {# Display go-to buttons for:
+                       - The first page
+                       - The current page +/- 1
+                       - The last page
+                     #}
+                    {% if i in [1, page - 1, page, page + 1, total_pages] %}
+                        <button
+                            class="btn me-1 {{ i == page ? 'active' : '' }}"
+                            type="button"
+                            aria-label="{{ __('Go to page %s')|format(i) }}"
+                            data-glpi-icon-picker-go-to-page="{{ i }}"
+                        >
+                            <span class="btn-text" data-glpi-icon-picker-pagination-text>{{ i }}</span>
+                        </button>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="empty">
+            <p class="empty-title">{{ __("No results found") }}</p>
+            <p class="empty-subtitle text-secondary">
+                {{ __("Try different keywords or filters.") }}
+            </p>
+        </div>
+    {% endif %}
+</div>

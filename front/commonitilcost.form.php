@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.85
  */
@@ -42,19 +46,12 @@
  * @var CommonITILCost $cost
  */
 
-use Glpi\Event;
-
-// autoload include in objecttask.form (ticketcost, problemcost,...)
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
-}
-
 Session::checkCentralAccess();
 if (!($cost instanceof CommonITILCost)) {
-    Html::displayErrorAndDie('');
+    throw new BadRequestHttpException();
 }
 if (!$cost->canView()) {
-    Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 $itemtype = $cost->getItilObjectItemType();
 $fk       = getForeignKeyFieldForItemType($itemtype);
@@ -103,4 +100,4 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-Html::displayErrorAndDie('Lost');
+throw new BadRequestHttpException();

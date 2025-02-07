@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,10 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * Update from 9.4.1 to 9.4.2
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update941to942()
 {
@@ -57,7 +59,7 @@ function update941to942()
         $DB->buildUpdate(
             'glpi_configs',
             [
-                'value' => new \QueryExpression(
+                'value' => new QueryExpression(
                     'TRIM(TRAILING ' . $DB->quoteValue('/') . ' FROM ' . $DB->quoteName('value') . ')'
                 )
             ],
@@ -128,7 +130,7 @@ function update941to942()
             );
             foreach ($elements_to_fix as $data) {
                  $data['content'] = $DB->escape($fix_content_fct($data['content'], $data['items_id'], $itil_fkey));
-                 $DB->updateOrDie($itil_element_table, $data, ['id' => $data['id']]);
+                 $DB->update($itil_element_table, $data, ['id' => $data['id']]);
             }
         }
 
@@ -144,7 +146,7 @@ function update941to942()
         );
         foreach ($tasks_to_fix as $data) {
             $data['content'] = $DB->escape($fix_content_fct($data['content'], $data[$itil_fkey], $itil_fkey));
-            $DB->updateOrDie($task_table, $data, ['id' => $data['id']]);
+            $DB->update($task_table, $data, ['id' => $data['id']]);
         }
     }
     /** /Fix URL of images inside ITIL objects contents */

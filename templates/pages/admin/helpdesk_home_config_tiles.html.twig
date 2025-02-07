@@ -1,0 +1,120 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% for tile in tiles %}
+    {% set profile_tile_id = tiles_manager.getProfileTileForTile(tile).getID() %}
+
+    <section
+        class="col-12 col-lg-6 col-xl-4 d-flex-soft"
+        aria-label="{{ tile.getTitle() }}"
+        data-glpi-draggable-item
+        data-glpi-helpdesk-config-tile-container
+    >
+        <div
+            data-glpi-helpdesk-config-tile
+            data-glpi-helpdesk-config-tile-id="{{ tile.getDatabaseId() }}"
+            data-glpi-helpdesk-config-tile-itemtype="{{ get_class(tile) }}"
+            data-glpi-helpdesk-config-tile-profile-id="{{ profile_tile_id }}"
+            class="card rounded my-2 flex-grow-1 cursor-grab"
+            draggable="true"
+        >
+            <section class="card-body">
+                <div class="d-flex">
+                    <div class="aspect-ratio-1">
+                        {{ render_illustration(tile.getIllustration(), 70) }}
+                    </div>
+                    <div class="ms-4 w-100">
+                        <div class="d-flex w-100">
+                            <h2 class="card-title mb-2">
+                                {{ tile.getTitle() }}
+                            </h2>
+
+                            <div
+                                data-glpi-helpdesk-config-extra-actions
+                                class="dropdown ms-auto cursor-pointer ms-auto me-n2 mt-n1"
+                            >
+                                <i
+                                    class="ti ti-dots-vertical show"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    role="button"
+                                    title="{{ __('Show more actions') }}"
+                                ></i>
+                                <ul class="dropdown-menu" data-bs-popper="none">
+                                    <li>
+                                        <button
+                                            type="button"
+                                            class="dropdown-item"
+                                            data-glpi-helpdesk-config-action-show-edit-form
+                                        >
+                                            <i class="ti ti-edit me-2"></i>
+                                            <span>{{ __("Edit tile") }}</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            type="button"
+                                            class="dropdown-item"
+                                            data-glpi-helpdesk-config-action-delete
+                                        >
+                                            <i class="ti ti-trash me-2"></i>
+                                            <span>{{ __("Delete tile") }}</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="text-secondary remove-last-tinymce-margin">
+                            {{ tile.getDescription()|safe_html }}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+{% endfor %}
+
+<div
+    role="button"
+    aria-label="{{ __('Add tile') }}"
+    data-glpi-helpdesk-config-action-new-tile
+    class="col-12 col-lg-6 col-xl-4 d-flex-soft opacity-80 cursor-pointer opacity-100-hover min-height-110"
+>
+    <div class="card rounded my-2 flex-grow-1 border-dashed">
+        <div class="card-body d-flex justify-content-center">
+            <div class="d-flex align-items-center">
+                <i class="ti ti-plus me-1"></i>
+                <span class="fs-3">{{ __('Add tile') }}</span>
+            </div>
+        </div>
+    </div>
+</div>

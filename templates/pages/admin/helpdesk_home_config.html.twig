@@ -1,0 +1,86 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set container_id = "glpi-helpdesk-config-container-" ~ random() %}
+
+<div id="{{ container_id }}">
+    <div data-glpi-helpdesk-config-default-view>
+        <section class="container-xl ms-0 mt-2" aria-labelledby="config-tiles-header">
+            <h1 id="config-tiles-header" class="fs-2">
+                {{ __("Home tiles configuration") }}
+            </h1>
+
+            <div class="row ms-n2 me-n2 mb-3" data-glpi-helpdesk-config-tiles>
+                {# The tiles have their own templates as they will be reloaded using AJAX #}
+                {{ include('pages/admin/helpdesk_home_config_tiles.html.twig', {
+                    'tiles_manager': tiles_manager,
+                    'tiles': tiles,
+                }, with_context = false) }}
+            </div>
+
+            <div
+                class="d-flex mb-3 d-none"
+                data-glpi-helpdesk-config-reorder-actions
+            >
+                <button
+                    class="btn btn-outline-secondary ms-auto w-auto d-flex align-items-center"
+                    data-glpi-helpdesk-config-reorder-action-cancel
+                >
+                    <i class="ti ti-cancel me-1"></i>
+                    <span>{{ __("Cancel") }}<span>
+                </button>
+                <button
+                    class="btn btn-primary ms-2 w-auto d-flex align-items-center"
+                    data-glpi-helpdesk-config-reorder-action-save
+                >
+                    <i class="ti ti-device-floppy me-1"></i>
+                    <span>{{ __("Save order") }}<span>
+                </button>
+            </div>
+        </section>
+    </div>
+    <div class="d-none" data-glpi-helpdesk-config-add-view></div>
+    <div class="d-none" data-glpi-helpdesk-config-edit-view></div>
+</div>
+
+{# Start js controller #}
+<script defer type="module">
+    (async () => {
+        const module = await import(
+            "{{ js_path('js/modules/Helpdesk/HelpdeskConfigController.js') }}"
+        );
+        new module.GlpiHelpdeskConfigController(
+            document.getElementById("{{ container_id }}"),
+            {{ profile_id }},
+        );
+    })();
+</script>

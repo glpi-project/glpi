@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,20 +33,78 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
+/**
+ * @var \DBmysql|null $DB
+ * @var array $CFG_GLPI
+ */
+global $DB, $CFG_GLPI;
+
+if (PHP_SAPI === 'cli') {
+    // Check the resources state before trying to instanciate the Kernel.
+    // It must be done here as this check must be done even when the Kernel
+    // cannot be instanciated due to missing dependencies.
+    require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
+    (new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
+
+    require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+    $kernel = new \Glpi\Kernel\Kernel();
+    $kernel->boot();
+
+    // Handle the `--debug` argument
+    $debug = array_search('--debug', $_SERVER['argv']);
+    if ($debug) {
+        $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+        unset($_SERVER['argv'][$debug]);
+        $_SERVER['argv'] = array_values($_SERVER['argv']);
+        $_SERVER['argc']--;
+    }
+
+    if ($CFG_GLPI['maintenance_mode'] ?? false) {
+        echo 'Service is down for maintenance. It will be back shortly.' . PHP_EOL;
+        exit();
+    }
+
+    if (!($DB instanceof DBmysql)) {
+        echo sprintf(
+            'ERROR: The database configuration file "%s" is missing or is corrupted. You have to either restart the install process, or restore this file.',
+            GLPI_CONFIG_DIR . '/config_db.php'
+        ) . PHP_EOL;
+        exit();
+    }
+
+    if (!$DB->connected) {
+        echo 'ERROR: The connection to the SQL server could not be established. Please check your configuration.' . PHP_EOL;
+        exit();
+    }
+
+    if (!Config::isLegacyConfigurationLoaded()) {
+        echo 'ERROR: Unable to load the GLPI configuration from the database.' . PHP_EOL;
+        exit();
+    }
+
+    if (!defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+        echo 'The GLPI codebase has been updated. The update of the GLPI database is necessary.' . PHP_EOL;
+        exit();
+    }
+}
 
 // Ensure current directory when run from crontab
 chdir(__DIR__);
 
-$SECURITY_STRATEGY = 'no_check'; // in GLPI mode, cronjob can also be triggered from public pages
-
-include('../inc/includes.php');
+// Try detecting if we are running with the root user (Not available on Windows)
+if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
+    echo "\t" . 'WARNING: running as root is discouraged.' . "\n";
+    echo "\t" . 'You should run the script as the same user that your web server runs as to avoid file permissions being ruined.' . "\n";
+    if (!in_array('--allow-superuser', $_SERVER['argv'], true)) {
+        echo "\t" . 'Use --allow-superuser option to bypass this limitation.' . "\n";
+        exit(1);
+    }
+}
 
 if (!is_writable(GLPI_LOCK_DIR)) {
-   //TRANS: %s is a directory
-    echo "\t" . sprintf(__('ERROR: %s is not writable') . "\n", GLPI_LOCK_DIR);
-    echo "\t" . __('run script as apache user') . "\n";
+    echo "\t" . sprintf('ERROR: %s is not writable.' . "\n", GLPI_LOCK_DIR);
+    echo "\t" . 'Run the script as the same user that your web server runs as.' . "\n";
     exit(1);
 }
 

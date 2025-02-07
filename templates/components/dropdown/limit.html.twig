@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -74,8 +74,12 @@
 {% if user_pref('list_limit') not in options %}
    {% set options = options|merge([user_pref('list_limit')]) %}
 {% endif %}
-<select class="form-select form-select-sm mx-1 d-inline-block w-auto {{ select_class|default('') }}"
-        {% if not no_onchange %}onChange="{{ href }}"{% endif %}>
+{% set select_name = select_name|default('list_limit') %}
+<select id="{{ select_name|slug }}{{ rand|default(random()) }}" class="form-select form-select-sm mx-1 d-inline-block w-auto {{ select_class|default('') }}"
+        {% if not no_onchange %}onChange="{{ href }}"{% endif %} name="{{ select_name }}"
+        {% for attr, value in additional_attributes %}
+            {{ attr }}="{{ value }}"
+        {% endfor %}>
    {% for value in options|sort %}
       <option value="{{ value }}" {{ value == user_pref('list_limit') ? 'selected' : '' }}>
          {{ value }}

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Socket;
 
 /**
@@ -43,6 +45,10 @@ class NetworkEquipment extends CommonDBTM
     use Glpi\Features\DCBreadcrumb;
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
+    use Glpi\Features\State;
+    use Glpi\Features\AssignableItem {
+        prepareInputForAdd as prepareInputForAddAssignableItem;
+    }
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -63,7 +69,16 @@ class NetworkEquipment extends CommonDBTM
             NetworkPort::class,
             Contract_Item::class,
             Document_Item::class,
-            KnowbaseItem_Item::class
+            KnowbaseItem_Item::class,
+            Appliance_Item::class,
+            Certificate_Item::class,
+            Domain_Item::class,
+            Item_Disk::class,
+            Item_Project::class,
+            Item_SoftwareLicense::class,
+            Item_SoftwareVersion::class,
+            ManualLink::class,
+            Socket::class,
         ];
     }
     /** /RELATIONS */
@@ -79,13 +94,17 @@ class NetworkEquipment extends CommonDBTM
         return _n('Network device', 'Network devices', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
 
     public static function getAdditionalMenuOptions()
     {
 
         if (static::canView()) {
             $options = [
-                'networkport' => [
+                NetworkPort::class => [
                     'title' => NetworkPort::getTypeName(Session::getPluralNumber()),
                     'page'  => NetworkPort::getFormURL(false),
                 ],
@@ -116,6 +135,7 @@ class NetworkEquipment extends CommonDBTM
          ->addStandardTab('Item_OperatingSystem', $ong, $options)
          ->addStandardTab('Item_SoftwareVersion', $ong, $options)
          ->addStandardTab('Item_Devices', $ong, $options)
+         ->addStandardTab('Item_Line', $ong, $options)
          ->addStandardTab('Item_Disk', $ong, $options)
          ->addStandardTab('NetworkPort', $ong, $options)
          ->addStandardTab('NetworkName', $ong, $options)
@@ -124,9 +144,10 @@ class NetworkEquipment extends CommonDBTM
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
          ->addStandardTab('KnowbaseItem_Item', $ong, $options)
-         ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
+         ->addStandardTab('Item_Project', $ong, $options)
          ->addStandardTab('ManualLink', $ong, $options)
          ->addStandardTab('Lock', $ong, $options)
          ->addStandardTab('Notepad', $ong, $options)
@@ -143,13 +164,13 @@ class NetworkEquipment extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
         }
         unset($input['id']);
         unset($input['withtemplate']);
 
+        $input = $this->prepareInputForAddAssignableItem($input);
         return $input;
     }
 
@@ -180,9 +201,9 @@ class NetworkEquipment extends CommonDBTM
         $entities = getAncestorsOf("glpi_entities", $this->fields['entities_id']);
         $entities[] = $this->fields['entities_id'];
 
-       // RELATION : networking -> _port -> _wire -> _port -> device
+        // RELATION : networking -> _port -> _wire -> _port -> device
 
-       // Evaluate connection in the 2 ways
+        // Evaluate connection in the 2 ways
         foreach (
             ["networkports_id_1" => "networkports_id_2",
                 "networkports_id_2" => "networkports_id_1"
@@ -191,7 +212,11 @@ class NetworkEquipment extends CommonDBTM
             $criteria = [
                 'SELECT'       => [
                     'itemtype',
-                    new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ' . $DB->quoteName('ids'))
+                    QueryFunction::groupConcat(
+                        expression: 'items_id',
+                        distinct: true,
+                        alias: 'ids'
+                    ),
                 ],
                 'FROM'         => 'glpi_networkports_networkports',
                 'INNER JOIN'   => [
@@ -251,7 +276,7 @@ class NetworkEquipment extends CommonDBTM
             $actions += [
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
                => "<i class='ma-icon fas fa-key'></i>" .
-                  _x('button', 'Add a license')
+                  _sx('button', 'Add a license')
             ];
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
         }
@@ -293,11 +318,11 @@ class NetworkEquipment extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_networkequipment' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [
@@ -346,8 +371,19 @@ class NetworkEquipment extends CommonDBTM
             'table'              => 'glpi_groups',
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
-            'datatype'           => 'dropdown',
-            'condition'          => ['is_itemgroup' => 1]
+            'condition'          => ['is_itemgroup' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
@@ -458,9 +494,20 @@ class NetworkEquipment extends CommonDBTM
             'id'                 => '49',
             'table'              => 'glpi_groups',
             'field'              => 'completename',
-            'linkfield'          => 'groups_id_tech',
+            'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -504,9 +551,9 @@ class NetworkEquipment extends CommonDBTM
 
         $tab = array_merge($tab, Rack::rawSearchOptionsToAdd(get_class($this)));
 
-        $tab = array_merge($tab, Socket::rawSearchOptionsToAdd());
-
         $tab = array_merge($tab, SNMPCredential::rawSearchOptionsToAdd());
+
+        $tab = array_merge($tab, NetworkEquipmentModel::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, DCRoom::rawSearchOptionsToAdd());
 

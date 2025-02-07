@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,14 +44,12 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     private $colSpan     = 1;
     private $numberCells = 0;
 
-
     /**
      * get the table of the header (for a subheader, it is the table of its super header)
      *
      * @return HTMLTableMain the table owning the current header
      **/
     abstract protected function getTable();
-
 
     /**
      * get its name and subname : usefull for instance to create an index for arrays
@@ -63,14 +61,12 @@ abstract class HTMLTableHeader extends HTMLTableEntity
      **/
     abstract public function getHeaderAndSubHeaderName(&$header_name, &$subheader_name);
 
-
     /**
      * check to see if it is a super header or not
      *
      * @return boolean
      **/
     abstract public function isSuperHeader();
-
 
     /**
      * @param $itemtype
@@ -81,28 +77,25 @@ abstract class HTMLTableHeader extends HTMLTableEntity
         $this->itemtypes[$itemtype] = $title;
     }
 
-
     /**
      * @param string               $name    the name of the header
      * @param string               $content see HTMLTableEntity#__construct()
      * @param HTMLTableHeader|null $father  father of the current column (default NULL)
      */
-    public function __construct($name, $content, HTMLTableHeader $father = null)
+    public function __construct($name, $content, ?HTMLTableHeader $father = null)
     {
-
         parent::__construct($content);
 
         $this->name           = $name;
         $this->father         = $father;
     }
 
-
     /**
-     * @param CommonDBTM $item
-     **/
-    public function checkItemType(CommonDBTM $item = null)
+     * @param ?CommonDBTM $item
+     * @throws Exception
+     */
+    public function checkItemType(?CommonDBTM $item = null)
     {
-
         if (($item === null) && (count($this->itemtypes) > 0)) {
             throw new \Exception('Implementation error: header requires an item');
         }
@@ -114,12 +107,10 @@ abstract class HTMLTableHeader extends HTMLTableEntity
         }
     }
 
-
     public function getName()
     {
         return $this->name;
     }
-
 
     /**
      * @param integer $colSpan
@@ -129,24 +120,20 @@ abstract class HTMLTableHeader extends HTMLTableEntity
         $this->colSpan = $colSpan;
     }
 
-
     public function addCell()
     {
         $this->numberCells++;
     }
-
 
     public function hasToDisplay()
     {
         return ($this->numberCells > 0);
     }
 
-
     public function getColSpan()
     {
         return $this->colSpan;
     }
-
 
     /**
      * @param boolean $with_content do we display the content ?
@@ -154,7 +141,6 @@ abstract class HTMLTableHeader extends HTMLTableEntity
      **/
     public function displayTableHeader($with_content, $main_header = true)
     {
-
         if ($main_header) {
             echo "<th";
         } else {
@@ -172,7 +158,6 @@ abstract class HTMLTableHeader extends HTMLTableEntity
             echo "</td>";
         }
     }
-
 
     public function getFather()
     {

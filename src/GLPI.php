@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,93 +33,31 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\ErrorHandler;
-use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-
 /**
- *  GLPI (instantiation and so on)
- **/
+ * @FIXME Find a better place for these constants.
+ */
 class GLPI
 {
-    private $error_handler;
-    private $log_level;
+    /**
+     * Production environment.
+     */
+    public const ENV_PRODUCTION  = 'production';
 
     /**
-     * Init logger
-     *
-     * @return void
+     * Staging environment.
+     * Suitable for pre-production servers and customer acceptance tests.
      */
-    public function initLogger()
-    {
-        /**
-         * @var \Psr\Log\LoggerInterface $PHPLOGGER
-         * @var \Psr\Log\LoggerInterface $SQLLOGGER
-         */
-        global $PHPLOGGER, $SQLLOGGER;
-
-        $this->log_level = Logger::WARNING;
-        if (defined('GLPI_LOG_LVL')) {
-            $this->log_level = GLPI_LOG_LVL;
-        } else if (
-            !isset($_SESSION['glpi_use_mode'])
-            || ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-        ) {
-            $this->log_level = Logger::DEBUG;
-        }
-
-        foreach (['php', 'sql'] as $type) {
-            $logger = new Logger('glpi' . $type . 'log');
-            $handler = new StreamHandler(
-                GLPI_LOG_DIR . "/{$type}-errors.log",
-                $this->log_level
-            );
-            $formatter = new LineFormatter(null, 'Y-m-d H:i:s', true, true);
-            $handler->setFormatter($formatter);
-            $logger->pushHandler($handler);
-            switch ($type) {
-                case 'php':
-                    $PHPLOGGER = $logger;
-                    break;
-                case 'sql':
-                    $SQLLOGGER = $logger;
-                    break;
-            }
-        }
-    }
+    public const ENV_STAGING     = 'staging';
 
     /**
-     * Get log level
-     *
-     * @return string
+     * Testing environment.
+     * Suitable for CI runners, quality control and internal acceptance tests.
      */
-    public function getLogLevel()
-    {
-        Toolbox::deprecated();
-        return $this->log_level;
-    }
+    public const ENV_TESTING     = 'testing';
 
     /**
-     * Init and register error handler.
-     *
-     * @return ErrorHandler
+     * Development environment.
+     * Suitable for developer machines and development servers.
      */
-    public function initErrorHandler()
-    {
-        $this->error_handler = ErrorHandler::getInstance();
-        $this->error_handler->register();
-
-        return $this->error_handler;
-    }
-
-    /**
-     * Get registered error handler.
-     *
-     * @return null|ErrorHandler
-     */
-    public function getErrorHandler()
-    {
-        return $this->error_handler;
-    }
+    public const ENV_DEVELOPMENT = 'development';
 }

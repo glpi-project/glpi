@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,38 +37,22 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Toolbox\VersionParser;
 
-if (!defined('GLPI_ROOT')) {
-    define('GLPI_ROOT', realpath('..'));
-}
-
-include_once(GLPI_ROOT . "/inc/based_config.php");
-include_once(GLPI_ROOT . "/inc/db.function.php");
-include_once(GLPI_CONFIG_DIR . "/config_db.php");
-
 /**
- * @var \DBmysql $DB
- * @var \GLPI $GLPI
+ * @var \DBmysql|null $DB
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+ * @var \Update $update
+ * @var bool $HEADER_LOADED
  */
-global $DB, $GLPI, $GLPI_CACHE;
-
-$GLPI = new GLPI();
-$GLPI->initLogger();
-$GLPI->initErrorHandler();
+global $DB,
+       $GLPI_CACHE,
+       $update,
+       $HEADER_LOADED;
 
 $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
-Config::detectRootDoc();
-
-if (!($DB instanceof DBmysql)) { // $DB can have already been init in install.php script
-    $DB = new DB();
-}
 $DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old versions
 
-Config::loadLegacyConfiguration();
-
 $update = new Update($DB);
-$update->initSession();
 
 if (isset($_POST['update_end'])) {
     if (isset($_POST['send_stats'])) {
@@ -76,51 +60,6 @@ if (isset($_POST['update_end'])) {
     }
     header('Location: ../index.php');
 }
-
-/* ----------------------------------------------------------------- */
-
-/*---------------------------------------------------------------------*/
-/**
- * To be conserved to migrations before 0.80
- * since 0.80, migration is a new class
- **/
-function displayMigrationMessage($id, $msg = "")
-{
-    static $created = 0;
-    static $deb;
-
-    if ($created != $id) {
-        if (empty($msg)) {
-            $msg = __('Work in progress...');
-        }
-        echo "<div id='migration_message_$id'><p class='center'>$msg</p></div>";
-        $created = $id;
-        $deb     = time();
-    } else {
-        if (empty($msg)) {
-            $msg = __('Task completed.');
-        }
-        $fin = time();
-        $tps = Html::timestampToString($fin - $deb);
-        echo "<script type='text/javascript'>document.getElementById('migration_message_$id').innerHTML =
-             '<p class=\"center\" >$msg ($tps)</p>';</script>\n";
-    }
-    Html::glpi_flush();
-}
-
-
-//test la connection a la base de donn???.
-function test_connect()
-{
-    /** @var \DBmysql $DB */
-    global $DB;
-
-    if ($DB->error == 0) {
-        return true;
-    }
-    return false;
-}
-
 
 
 //update database
@@ -131,10 +70,6 @@ function doUpdateDb()
      * @var \Update $update
      */
     global $migration, $update;
-
-    // Init debug variable
-    // Only show errors
-    Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
 
     $currents            = $update->getCurrents();
     $current_version     = $currents['version'];
@@ -183,72 +118,77 @@ function showSecurityKeyCheckForm()
     echo '<input type="hidden" name="continuer" value="1" />';
     echo '<input type="hidden" name="missing_key_warning_shown" value="1" />';
     echo '<div class="text-center">';
-    echo '<h3>' . __('Missing security key file') . '</h3>';
+    echo '<h3>' . __s('Missing security key file') . '</h3>';
     echo '<div class="d-flex alert alert-warning">';
     echo '<i class="fa fa-3x fa-exclamation-triangle text-warning"></i>';
     echo '<p class="text-start">';
     echo sprintf(
-        __('The key file "%s" used to encrypt/decrypt sensitive data is missing. You should retrieve it from your previous installation or encrypted data will be unreadable.'),
-        $update->getExpectedSecurityKeyFilePath()
+        __s('The key file "%s" used to encrypt/decrypt sensitive data is missing. You should retrieve it from your previous installation or encrypted data will be unreadable.'),
+        htmlescape($update->getExpectedSecurityKeyFilePath())
     );
     echo '</p>';
     echo '</div>';
-    echo '<input type="submit" name="ignore" class="btn btn-primary" value="' . __('Ignore warning') . '" />';
+    echo '<input type="submit" name="ignore" class="btn btn-primary" value="' . __s('Ignore warning') . '" />';
     echo '&nbsp;&nbsp;';
-    echo '<input type="submit" name="retry" class="btn btn-primary" value="' . __('Try again') . '" />';
+    echo '<input type="submit" name="retry" class="btn btn-primary" value="' . __s('Try again') . '" />';
     echo '</form>';
 }
 
 //Debut du script
 $HEADER_LOADED = true;
 
-Session::start();
-
-Session::loadLanguage('', false);
-
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 
-echo "<!DOCTYPE html>";
-echo "<html lang='fr'>";
-echo "<head>";
-echo "<meta charset='utf-8'>";
-echo "<title>Setup GLPI</title>";
-//JS
-echo Html::script("public/lib/base.js");
-echo Html::script("js/glpi_dialog.js");
-// CSS
-echo Html::css('public/lib/base.css');
-echo Html::scss("css/install", [], true);
-echo "</head>";
+TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', [
+    'lang'  => $_SESSION['glpilanguage'],
+    'title' => __('GLPI setup'),
+    'css_files' => [
+        ['path' => 'lib/tabler.css'],
+        ['path' => 'lib/base.css'],
+        ['path' => 'css/install.scss'],
+    ],
+    'js_files' => [
+        ['path' => 'lib/base.js'],
+        ['path' => 'lib/fuzzy.js'],
+        ['path' => 'js/common.js'],
+        ['path' => 'js/glpi_dialog.js'],
+    ],
+    'js_modules' => [],
+    'custom_header_tags' => [],
+]);
+
+// CFG
+echo Html::getCoreVariablesForJavascript();
+
 echo "<body>";
 echo "<div id='principal'>";
 echo "<div id='bloc'>";
 echo "<div id='logo_bloc'></div>";
-echo "<h2>GLPI SETUP</h2>";
-echo "<br><h3>" . __('Upgrade') . "</h3>";
+echo "<h2>" . __s('GLPI setup') . "</h2>";
+echo "<br><h3>" . __s('Upgrade') . "</h3>";
 
 // step 1    avec bouton de confirmation
 
 if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
     if (empty($from_install) && !isset($_POST["from_update"])) {
         echo "<div class='center'>";
-        echo "<h3><span class='migred'>" . __('Impossible to accomplish an update by this way!') . "</span>";
+        echo "<h3><span class='migred'>" . __s('Impossible to accomplish an update by this way!') . "</span>";
         echo "<p>";
         echo "<a class='btn btn-primary' href='../index.php'>
-            " . __('Go back to GLPI') . "
+            " . __s('Go back to GLPI') . "
          </a></p>";
         echo "</div>";
     } else {
         echo "<div class='center'>";
-        echo "<h3 class='my-4'><span class='migred p-2'>" . sprintf(__('Caution! You will update the GLPI database named: %s'), $DB->dbdefault) . "</h3>";
+        echo "<h3 class='my-4'><span class='migred p-2'>" . sprintf(__s('Caution! You will update the GLPI database named: %s'), htmlescape($DB->dbdefault)) . "</h3>";
 
         echo "<form action='update.php' method='post'>";
         if (!VersionParser::isStableRelease(GLPI_VERSION)) {
             echo Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION));
         }
         echo "<button type='submit' class='btn btn-primary' name='continuer' value='1'>
-         " . __('Continue') . "
+         " . __s('Continue') . "
          <i class='fas fa-chevron-right ms-1'></i>
       </button>";
         Html::closeForm();
@@ -256,13 +196,13 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
     }
 } else {
    // Step 2
-    if (test_connect()) {
-        echo "<h3>" . __('Database connection successful') . "</h3>";
+    if ($DB->connected) {
+        echo "<h3>" . __s('Database connection successful') . "</h3>";
         echo "<p class='text-center'>";
         $result = Config::displayCheckDbEngine(true);
         echo "</p>";
         if ($result > 0) {
-            die(1);
+            return;
         }
         if (
             $update->isExpectedSecurityKeyFileMissing()
@@ -276,6 +216,8 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
             doUpdateDb();
             echo "</div>";
 
+            Session::destroy(); // Remove session data set by web installation
+
             $_SESSION['telemetry_from_install'] = true;
 
             TemplateRenderer::getInstance()->display('install/update.html.twig', [
@@ -288,7 +230,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
         }
     } else {
         echo "<h3>";
-        echo __("Connection to database failed, verify the connection parameters included in config_db.php file") . "</h3>";
+        echo __s("Connection to database failed, verify the connection parameters included in config_db.php file") . "</h3>";
     }
 }
 

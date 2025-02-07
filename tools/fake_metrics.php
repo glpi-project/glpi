@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-include(__DIR__ . '/../inc/includes.php');
+if (PHP_SAPI != 'cli') {
+    echo "This script must be run from command line";
+    exit();
+}
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$kernel = new \Glpi\Kernel\Kernel();
+$kernel->boot();
 
 $printers_id = false;
 $networkports_id = false;

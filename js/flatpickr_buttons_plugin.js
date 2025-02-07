@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,6 +44,26 @@ window.CustomFlatpickrButtons = (config = {}) => {
                 },
                 onClick: (e, fp) => {
                     fp.setDate(new Date());
+                }
+            },
+            {
+                label: __('Save'),
+                attributes: {
+                    'class': 'btn btn-primary'
+                },
+                onClick: (e, fp) => {
+                    const current_date = new Date();
+                    // If the input is empty, we need to set a date
+                    if ($(fp.input).val().length == 0) {
+                        if (fp.config.enableTime) {
+                            // Reuse the default date that is displayed to the user
+                            fp.setDate(`${current_date.getFullYear()}-${current_date.getMonth() + 1}-${current_date.getDate()} ${fp.config.defaultHour}:${fp.config.defaultMinute}:${fp.config.defaultSeconds}`);
+                        } else {
+                            // No time, we can directly use the current date as it is the default value
+                            fp.setDate(new Date());
+                        }
+                    }
+                    fp.close();
                 }
             }];
         }

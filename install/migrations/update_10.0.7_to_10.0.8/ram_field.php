@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 foreach (['glpi_computervirtualmachines', 'glpi_networkequipments'] as $table) {
     /**
      * @var \DBmysql $DB
@@ -55,13 +57,13 @@ foreach (['glpi_computervirtualmachines', 'glpi_networkequipments'] as $table) {
         ],
     ]);
     foreach ($iterator as $row) {
-        $DB->updateOrDie(
+        $DB->update(
             $table,
             ['ram' => preg_replace('/[^0-9]+/', '', $row['ram'])],
             ['id'  => $row['id']]
         );
     }
-    $DB->updateOrDie(
+    $DB->update(
         $table,
         ['ram' => null],
         [

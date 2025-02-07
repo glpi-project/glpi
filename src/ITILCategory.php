@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,11 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /**
  * ITILCategory class
  **/
 class ITILCategory extends CommonTreeDropdown
 {
+    use Clonable;
+
    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;
@@ -48,7 +52,7 @@ class ITILCategory extends CommonTreeDropdown
     {
         $tab = [
             [
-                'name'      => $this->getForeignKeyField(),
+                'name'      => static::getForeignKeyField(),
                 'label'     => __('As child of'),
                 'type'      => 'parent',
                 'list'      => false,
@@ -148,7 +152,6 @@ class ITILCategory extends CommonTreeDropdown
         return $tab;
     }
 
-
     public function rawSearchOptions()
     {
         $tab                       = parent::rawSearchOptions();
@@ -208,7 +211,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '74',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_incident',
             'name'               => __('Visible for an incident'),
             'datatype'           => 'bool'
@@ -216,7 +219,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '75',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_request',
             'name'               => __('Visible for a request'),
             'datatype'           => 'bool'
@@ -224,7 +227,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '76',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_problem',
             'name'               => __('Visible for a problem'),
             'datatype'           => 'bool'
@@ -232,7 +235,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '85',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_change',
             'name'               => __('Visible for a change'),
             'datatype'           => 'bool'
@@ -240,7 +243,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '3',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_helpdeskvisible',
             'name'               => __('Visible in the simplified interface'),
             'datatype'           => 'bool'
@@ -253,6 +256,7 @@ class ITILCategory extends CommonTreeDropdown
             'name'               => _x('quantity', 'Number of tickets'),
             'datatype'           => 'count',
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child'
@@ -266,6 +270,7 @@ class ITILCategory extends CommonTreeDropdown
             'name'               => _x('quantity', 'Number of problems'),
             'datatype'           => 'count',
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child'
@@ -273,12 +278,13 @@ class ITILCategory extends CommonTreeDropdown
         ];
 
         $tab[] = [
-            'id'                 => '98',
+            'id'                 => '151',
             'table'              => 'glpi_changes',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of changes'),
             'datatype'           => 'count',
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child'
@@ -295,7 +301,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '99',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'code',
             'name'               => __('Code representing the ticket category'),
             'massiveaction'      => false,
@@ -305,16 +311,13 @@ class ITILCategory extends CommonTreeDropdown
         return $tab;
     }
 
-
     public static function getTypeName($nb = 0)
     {
         return _n('ITIL category', 'ITIL categories', $nb);
     }
 
-
     public function post_getEmpty()
     {
-
         $this->fields['is_helpdeskvisible'] = 1;
         $this->fields['is_request']         = 1;
         $this->fields['is_incident']        = 1;
@@ -322,17 +325,17 @@ class ITILCategory extends CommonTreeDropdown
         $this->fields['is_change']          = 1;
     }
 
-
     public function cleanDBonPurge()
     {
         Rule::cleanForItemCriteria($this);
     }
 
     /**
+     * @param string $value
+     * @return int
      * @since 9.5.0
      *
-     * @param $value
-     **/
+     */
     public static function getITILCategoryIDByCode($value)
     {
         return self::getITILCategoryIDByField("code", $value);
@@ -342,7 +345,8 @@ class ITILCategory extends CommonTreeDropdown
      * @since 9.5.0
      *
      * @param string $field
-     * @param mixed  $value must be addslashes
+     * @param mixed  $value
+     * @return int
      **/
     private static function getITILCategoryIDByField($field, $value)
     {
@@ -355,7 +359,7 @@ class ITILCategory extends CommonTreeDropdown
             'WHERE'  => [$field => $value]
         ]);
 
-        if (count($iterator) == 1) {
+        if (count($iterator) === 1) {
             $result = $iterator->current();
             return $result['id'];
         }
@@ -369,10 +373,10 @@ class ITILCategory extends CommonTreeDropdown
         $input['code'] = isset($input['code']) ? trim($input['code']) : '';
         if (
             !empty($input["code"])
-            && ITILCategory::getITILCategoryIDByCode($input["code"]) != -1
+            && self::getITILCategoryIDByCode($input["code"]) !== -1
         ) {
             Session::addMessageAfterRedirect(
-                __("Code representing the ticket category is already used"),
+                __s("Code representing the ticket category is already used"),
                 false,
                 ERROR
             );
@@ -380,7 +384,6 @@ class ITILCategory extends CommonTreeDropdown
         }
         return $input;
     }
-
 
     public function prepareInputForUpdate($input)
     {
@@ -394,7 +397,7 @@ class ITILCategory extends CommonTreeDropdown
             && !in_array(ITILCategory::getITILCategoryIDByCode($input["code"]), [$input['id'],-1])
         ) {
             Session::addMessageAfterRedirect(
-                __("Code representing the ticket category is already used"),
+                __s("Code representing the ticket category is already used"),
                 false,
                 ERROR
             );
@@ -403,39 +406,37 @@ class ITILCategory extends CommonTreeDropdown
         return $input;
     }
 
-    /**
-     * @since 0.84
-     *
-     * @param $item         CommonGLPI object
-     * @param $withtemplate (default 0)
-     **/
+    public function prepareInputForClone($input)
+    {
+        // The code must be unique so we cannot clone it
+        unset($input['code']);
+        return $input;
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (Session::haveRight(self::$rightname, READ)) {
             if ($item instanceof ITILTemplate) {
-                $ong[1] = $this->getTypeName(Session::getPluralNumber());
+                $ong[1] = $this::getTypeName(Session::getPluralNumber());
                 return $ong;
             }
         }
         return parent::getTabNameForItem($item, $withtemplate);
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
         if ($item instanceof ITILTemplate) {
             self::showForITILTemplate($item, $withtemplate);
         }
         return parent::displayTabContentForItem($item, $tabnum, $withtemplate);
     }
 
-
     /**
-     * @param $tt           ITILTemplate object
-     * @param $withtemplate (default 0)
-     **/
+     * @param ITILTemplate $tt
+     * @param integer $withtemplate (default 0)
+     * @return false|void
+     */
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
     {
         /**
@@ -477,11 +478,11 @@ class ITILCategory extends CommonTreeDropdown
         echo "</a>";
         echo "</th></tr>";
         if (count($iterator)) {
-            echo "<th>" . __('Name') . "</th>";
-            echo "<th>" . __('Incident') . "</th>";
-            echo "<th>" . __('Request') . "</th>";
-            echo "<th>" . Change::getTypeName(1) . "</th>";
-            echo "<th>" . Problem::getTypeName(1) . "</th>";
+            echo "<th>" . __s('Name') . "</th>";
+            echo "<th>" . __s('Incident') . "</th>";
+            echo "<th>" . __s('Request') . "</th>";
+            echo "<th>" . htmlescape(Change::getTypeName(1)) . "</th>";
+            echo "<th>" . htmlescape(Problem::getTypeName(1)) . "</th>";
             echo "</tr>";
 
             foreach ($iterator as $data) {
@@ -490,7 +491,7 @@ class ITILCategory extends CommonTreeDropdown
                 echo "<td>" . $itilcategory->getLink(['comments' => true]) . "</td>";
                 if ($data['tickettemplates_id_incident'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . $CFG_GLPI["root_doc"] . "/pics/ok.png' alt=\"" . __('OK') .
+                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK') .
                         "\" width='14' height='14'>
                      </td>";
                 } else {
@@ -498,7 +499,7 @@ class ITILCategory extends CommonTreeDropdown
                 }
                 if ($data['tickettemplates_id_demand'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . $CFG_GLPI["root_doc"] . "/pics/ok.png' alt=\"" . __('OK') .
+                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK') .
                         "\" width='14' height='14'>
                      </td>";
                 } else {
@@ -506,7 +507,7 @@ class ITILCategory extends CommonTreeDropdown
                 }
                 if ($data['changetemplates_id'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . $CFG_GLPI["root_doc"] . "/pics/ok.png' alt=\"" . __('OK') .
+                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK') .
                         "\" width='14' height='14'>
                      </td>";
                 } else {
@@ -514,7 +515,7 @@ class ITILCategory extends CommonTreeDropdown
                 }
                 if ($data['problemtemplates_id'] == $ID) {
                     echo "<td class='center'>
-                     <img src='" . $CFG_GLPI["root_doc"] . "/pics/ok.png' alt=\"" . __('OK') .
+                     <img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/ok.png' alt=\"" . __s('OK') .
                         "\" width='14' height='14'>
                      </td>";
                 } else {
@@ -522,9 +523,14 @@ class ITILCategory extends CommonTreeDropdown
                 }
             }
         } else {
-            echo "<tr><th colspan='5'>" . __('No item found') . "</th></tr>";
+            echo "<tr><th colspan='5'>" . __s('No item found') . "</th></tr>";
         }
 
         echo "</table></div>";
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

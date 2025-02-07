@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,19 +34,21 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-
-/**
- * @since 9.2
- */
-
-
+use Glpi\DBAL\QueryFunction;
+use Glpi\Features\AssignableItem;
 
 /**
  * Class to declare a certificate
+ * @since 9.2
  */
 class Certificate extends CommonDBTM
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\State;
+    use AssignableItem {
+        prepareInputForAdd as prepareInputForAddAssignableItem;
+        post_updateItem as post_updateItemAssignableItem;
+    }
 
     public $dohistory           = true;
     public static $rightname           = "certificate";
@@ -58,13 +60,26 @@ class Certificate extends CommonDBTM
             Infocom::class,
             Contract_Item::class,
             Document_Item::class,
-            KnowbaseItem_Item::class
+            KnowbaseItem_Item::class,
+            Domain_Item::class,
+            Item_Project::class,
+            ManualLink::class,
         ];
     }
 
     public static function getTypeName($nb = 0)
     {
         return _n('Certificate', 'Certificates', $nb);
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', self::class];
     }
 
     /**
@@ -254,20 +269,31 @@ class Certificate extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_certificate' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [
             'id'                 => '49',
             'table'              => 'glpi_groups',
             'field'              => 'completename',
-            'linkfield'          => 'groups_id_tech',
+            'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -297,6 +323,17 @@ class Certificate extends CommonDBTM
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -460,9 +497,10 @@ class Certificate extends CommonDBTM
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
          ->addStandardTab('KnowbaseItem_Item', $ong, $options)
-         ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
+         ->addStandardTab('Item_Project', $ong, $options)
          ->addStandardTab('ManualLink', $ong, $options)
          ->addStandardTab('Lock', $ong, $options)
          ->addStandardTab('Notepad', $ong, $options)
@@ -473,7 +511,10 @@ class Certificate extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-
+        $input = $this->prepareInputForAddAssignableItem($input);
+        if ($input === false) {
+            return false;
+        }
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
         }
@@ -527,14 +568,6 @@ class Certificate extends CommonDBTM
         return true;
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::getSpecificMassiveActions()
-     * @param null $checkitem
-     * @return array
-     */
     public function getSpecificMassiveActions($checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -542,27 +575,20 @@ class Certificate extends CommonDBTM
         if (Session::getCurrentInterface() == 'central') {
             if (self::canUpdate()) {
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
-                 = _x('button', 'Associate certificate');
+                 = _sx('button', 'Associate certificate');
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
-                 = _x('button', 'Dissociate certificate');
+                 = _sx('button', 'Dissociate certificate');
             }
         }
         return $actions;
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::showMassiveActionsSubForm()
-     * @param MassiveAction $ma
-     * @return bool|false
-     */
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
         switch ($ma->getAction()) {
             case __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install':
+            case __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall':
                 Dropdown::showSelectItemFromItemtypes(['items_id_name' => 'item_item',
                     'itemtype_name' => 'typeitem',
                     'itemtypes'     => self::getTypes(true),
@@ -570,16 +596,6 @@ class Certificate extends CommonDBTM
                 ]);
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
-            break;
-            case __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall':
-                Dropdown::showSelectItemFromItemtypes(['items_id_name' => 'item_item',
-                    'itemtype_name' => 'typeitem',
-                    'itemtypes'     => self::getTypes(true),
-                    'checkright'    => true
-                ]);
-                echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
-                return true;
-            break;
         }
         return parent::showMassiveActionsSubForm($ma);
     }
@@ -723,7 +739,15 @@ class Certificate extends CommonDBTM
                 $where_date = [
                     'OR' => [
                         ['glpi_alerts.date' => null],
-                        ['glpi_alerts.date' => ['<', new QueryExpression('CURRENT_TIMESTAMP() - INTERVAL ' . $repeat . ' second')]],
+                        [
+                            'glpi_alerts.date' => ['<',
+                                QueryFunction::dateSub(
+                                    date: QueryFunction::now(),
+                                    interval: $repeat,
+                                    interval_unit: 'SECOND'
+                                )
+                            ]
+                        ],
                     ]
                 ];
             } else {
@@ -789,7 +813,7 @@ class Certificate extends CommonDBTM
                         $task->log($msg);
                         $task->addVolume(1);
                     } else {
-                        Session::addMessageAfterRedirect($msg);
+                        Session::addMessageAfterRedirect(htmlescape($msg));
                     }
 
                     // Add alert
@@ -813,21 +837,13 @@ class Certificate extends CommonDBTM
                     if ($task) {
                         $task->log($msg);
                     } else {
-                        Session::addMessageAfterRedirect($msg, false, ERROR);
+                        Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
                     }
                 }
             }
         }
 
         return $errors > 0 ? -1 : ($total > 0 ? 1 : 0);
-    }
-
-    /**
-     * Display debug information for current object
-     **/
-    public function showDebug()
-    {
-        NotificationEvent::debugEvent($this);
     }
 
 
@@ -839,7 +855,7 @@ class Certificate extends CommonDBTM
 
     public function post_updateItem($history = true)
     {
+        $this->post_updateItemAssignableItem($history);
         $this->cleanAlerts([Alert::END]);
-        parent::post_updateItem($history);
     }
 }

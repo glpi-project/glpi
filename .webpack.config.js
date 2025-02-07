@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const { globSync } = require('glob');
 const path = require('path');
@@ -13,15 +14,21 @@ const scssOutputPath = 'css/lib';
 /*
  * External libraries files build configuration.
  */
-let config = {
+const config = {
     entry: function () {
-        // Create an entry per *.js file in lib/bundle directory.
+        // Create an entry per file in lib/bundle directory.
         // Entry name will be name of the file (without ext).
-        let entries = {};
+        const entries = {};
 
-        const files = globSync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min).js');
-        for (const file of files) {
-            entries[path.basename(file, '.js')] = file;
+        for (const ext of ['.js', '.scss']) {
+            const files = globSync(path.resolve(__dirname, 'lib/bundles') + '/!(*.min)' + ext);
+            for (const file of files) {
+                const entry_name = path.basename(file, ext);
+                if (entry_name in entries) {
+                    throw new Error(`Duplicate bundle entry: '${entry_name}'.`);
+                }
+                entries[entry_name] = file;
+            }
         }
 
         return entries;
@@ -40,15 +47,17 @@ let config = {
                 test: /\.js$/,
                 include: [
                     path.resolve(__dirname, 'node_modules/@fullcalendar'),
-                    path.resolve(__dirname, 'node_modules/codemirror'),
                     path.resolve(__dirname, 'node_modules/cystoscape'),
                     path.resolve(__dirname, 'node_modules/cytoscape-context-menus'),
                     path.resolve(__dirname, 'node_modules/jquery-migrate'),
-                    path.resolve(__dirname, 'node_modules/photoswipe'),
                     path.resolve(__dirname, 'node_modules/rrule'),
                     path.resolve(__dirname, 'lib/blueimp/jquery-file-upload'),
                 ],
                 use: ['script-loader', 'strip-sourcemap-loader'],
+            },
+            {
+                test: /\.json$/,
+                type: 'json'
             },
             {
                 // Test for a polyfill (or any file) and it won't be included in your
@@ -68,7 +77,7 @@ let config = {
                 generator: {
                     filename: function (pathData) {
                         // Keep only relative path
-                        var sanitizedPath = path.relative(__dirname, pathData.filename);
+                        let sanitizedPath = path.relative(__dirname, pathData.filename);
 
                         // Sanitize name
                         sanitizedPath = sanitizedPath.replace(/[^\\/\w-.]/, '');
@@ -76,7 +85,7 @@ let config = {
                         // Remove the first directory (lib, node_modules, ...) and empty parts
                         // and replace directory separator by '/' (windows case)
                         sanitizedPath = sanitizedPath.split(path.sep)
-                            .filter(function (part, index) {
+                            .filter((part, index) => {
                                 return '' != part && index != 0;
                             }).join('/');
 
@@ -84,9 +93,17 @@ let config = {
                     },
                 },
             },
+            {
+                // Build SCSS files
+                test: /\.scss$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+            },
         ],
     },
     plugins: [
+        new webpack.optimize.LimitChunkCountPlugin({
+            maxChunks: 1,
+        }),
         new webpack.ProvidePlugin(
             {
                 process: 'process/browser', // required by some libs (including `popper.js`)
@@ -101,8 +118,15 @@ let config = {
             }
         ), // Clean lib dir content
         new MiniCssExtractPlugin(), // Extract styles into CSS files
+        new MonacoWebpackPlugin({
+            'languages': ['html', 'javascript', 'typescript', 'json', 'markdown', 'twig', 'css', 'scss', 'shell'],
+            'publicPath': '/lib/'
+        }),
     ],
     resolve: {
+        fallback: {
+            "path": require.resolve("path-browserify"),
+        },
         // Use only main file in requirement resolution as we do not yet handle modules correctly
         mainFields: [
             'main',
@@ -122,8 +146,8 @@ let config = {
     },
 };
 
-// Copy raw JS and SCSS files
-var filesToCopy = [
+// Copy raw JS, SCSS files and SVG files
+const filesToCopy = [
     // JS files
     {
         package: '@fullcalendar/core',
@@ -154,23 +178,8 @@ var filesToCopy = [
     },
     // SCSS files
     {
-        package: '@fontsource/inter',
-        from: '{scss/mixins.scss,files/*all-[0-9]00*.woff,files/*[0-9]00*.woff2}',
-        to: scssOutputPath,
-    },
-    {
-        package: '@tabler/core',
-        from: 'src/scss/**/*.scss',
-        to: scssOutputPath,
-    },
-    {
-        package: '@tabler/icons-webfont',
-        from: '{fonts/*,tabler-icons.scss}',
-        to: scssOutputPath,
-    },
-    {
         package: 'bootstrap',
-        from: 'scss/**/*.scss',
+        from: 'scss/vendor/_rfs.scss',
         to: scssOutputPath,
     },
     {
@@ -178,19 +187,48 @@ var filesToCopy = [
         from: 'src/scss/**/*.scss',
         to: scssOutputPath,
     },
+    {
+        package: 'tinymce',
+        from: 'skins/ui/oxide*/skin.css',
+        to: scssOutputPath,
+    },
+    {
+        package: 'swagger-ui-dist',
+        from: 'oauth2-redirect.html'
+    },
+    // SVG files
+    {
+        package: '@glpi-project/illustrations',
+        context: 'dist',
+        from: '*.svg',
+    },
+    // JSON files
+    {
+        package: '@glpi-project/illustrations',
+        context: 'dist',
+        from: '*.json',
+    },
 ];
 
-let copyPatterns = [];
+const copyPatterns = [];
+
+// See https://github.com/glpi-project/glpi/issues/17745
+copyPatterns.push({
+    from:    path.resolve(__dirname, 'node_modules/flatpickr/dist/l10n/cat.js'),
+    to:      path.resolve(__dirname, libOutputPath + '/flatpickr/l10n/ca.js'),
+    toType:  'file',
+});
+
 for (let s = 0; s < filesToCopy.length; s++) {
-    let specs = filesToCopy[s];
-    let to = (specs.to || libOutputPath) + '/' + specs.package.replace(/^@/, ''); // remove leading @ in case of prefixed package
+    const specs = filesToCopy[s];
+    const to = (specs.to || libOutputPath) + '/' + specs.package.replace(/^@/, ''); // remove leading @ in case of prefixed package
 
     let context = 'node_modules/' + specs.package;
     if (Object.prototype.hasOwnProperty.call(specs, 'context')) {
         context += '/' + specs.context;
     }
 
-    let copyParams = {
+    const copyParams = {
         context: path.resolve(__dirname, context),
         from:    specs.from,
         to:      path.resolve(__dirname, to),

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,118 +35,9 @@
 
 class ChangeTask extends CommonITILTask
 {
-    public static $rightname = 'task';
-
-
     public static function getTypeName($nb = 0)
     {
         return _n('Change task', 'Change tasks', $nb);
-    }
-
-
-    public static function canCreate()
-    {
-        return Session::haveRight('change', UPDATE)
-          || Session::haveRight(self::$rightname, parent::ADDALLITEM);
-    }
-
-
-    public static function canView()
-    {
-        return Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
-    }
-
-
-    public static function canUpdate()
-    {
-        return Session::haveRight('change', UPDATE)
-          || Session::haveRight(self::$rightname, parent::UPDATEALL);
-    }
-
-
-    public function canViewPrivates()
-    {
-        return true;
-    }
-
-
-    public function canEditAll()
-    {
-        return Session::haveRightsOr('change', [CREATE, UPDATE, DELETE, PURGE]);
-    }
-
-
-    /**
-     * Does current user have right to show the current task?
-     *
-     * @return boolean
-     **/
-    public function canViewItem()
-    {
-        return $this->canReadITILItem();
-    }
-
-
-    /**
-     * Does current user have right to create the current task?
-     *
-     * @return boolean
-     **/
-    public function canCreateItem()
-    {
-
-        if (!$this->canReadITILItem()) {
-            return false;
-        }
-
-        $change = new Change();
-        if ($change->getFromDB($this->fields['changes_id'])) {
-            return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
-                 || Session::haveRight('change', UPDATE)
-                 || (Session::haveRight('change', Change::READMY)
-                     && ($change->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-                         || (isset($_SESSION["glpigroups"])
-                             && $change->haveAGroup(
-                                 CommonITILActor::ASSIGN,
-                                 $_SESSION['glpigroups']
-                             )))));
-        }
-        return false;
-    }
-
-
-    /**
-     * Does current user have right to update the current task?
-     *
-     * @return boolean
-     **/
-    public function canUpdateItem()
-    {
-
-        if (!$this->canReadITILItem()) {
-            return false;
-        }
-
-        if (
-            ($this->fields["users_id"] != Session::getLoginUserID())
-            && !Session::haveRight('change', UPDATE)
-            && !Session::haveRight(self::$rightname, parent::UPDATEALL)
-        ) {
-            return false;
-        }
-
-        return true;
-    }
-
-
-    /**
-     * Does current user have right to purge the current task?
-     *
-     * @return boolean
-     **/
-    public function canPurgeItem()
-    {
-        return $this->canUpdateItem();
     }
 
 

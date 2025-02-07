@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Kanban;
+
 class Item_Kanban extends CommonDBRelation
 {
     public static $itemtype_1 = 'itemtype';
@@ -47,21 +49,27 @@ class Item_Kanban extends CommonDBRelation
      * @param string $itemtype Type of the item.
      * @param int $items_id ID of the item.
      * @param array $state Array of Kanban column state data.
+     * @param array $columns Array of columns to save state for. If empty, all columns are saved.
      * @return bool
      */
-    public static function saveStateForItem($itemtype, $items_id, $state)
+    public static function saveStateForItem($itemtype, $items_id, $state, array $columns = [])
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        /** @var Kanban|CommonDBTM $item */
+        /** @var CommonDBTM $item */
         $item = new $itemtype();
         $item->getFromDB($items_id);
-        $force_global = $item->forceGlobalState();
+        $force_global = false;
+        if (method_exists($item, 'forceGlobalState')) {
+            $force_global = $item->forceGlobalState();
+        }
 
         $oldstate = self::loadStateForItem($itemtype, $items_id);
         $users_id = $force_global ? 0 : Session::getLoginUserID();
-        $state = $item->prepareKanbanStateForUpdate($oldstate, $state, $users_id);
+        if (method_exists($item, 'prepareKanbanStateForUpdate')) {
+            $state = $item->prepareKanbanStateForUpdate($oldstate, $state, $users_id);
+        }
 
         if ($state === null || $state === 'null' || $state === false) {
            // Save was probably denied in prepareKanbanStateForUpdate or an invalid state was given
@@ -93,6 +101,33 @@ class Item_Kanban extends CommonDBRelation
     }
 
     /**
+     * Check if a state is saved for a specific item.
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @return bool
+     */
+    public static function hasStateForItem(string $itemtype, int $items_id): bool
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        /** @var Kanban|CommonDBTM $item */
+        $item = new $itemtype();
+        $item->getFromDB($items_id);
+        $force_global = $item->forceGlobalState();
+
+        return $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => 'glpi_items_kanbans',
+            'WHERE'  => [
+                'users_id' => $force_global ? 0 : Session::getLoginUserID(),
+                'itemtype' => $itemtype,
+                'items_id' => $items_id
+            ]
+        ])->count() > 0;
+    }
+
+    /**
      * Load the state of a Kanban's columns for a specific item for the current user or globally.
      * @since 9.5.0
      * @param string $itemtype Type of the item.
@@ -107,10 +142,13 @@ class Item_Kanban extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
-        /** @var Kanban|CommonDBTM $item */
+        /** @var CommonDBTM $item */
         $item = new $itemtype();
         $item->getFromDB($items_id);
-        $force_global = $item->forceGlobalState();
+        $force_global = false;
+        if (method_exists($item, 'forceGlobalState')) {
+            $force_global = $item->forceGlobalState();
+        }
 
         $iterator = $DB->request([
             'SELECT' => ['date_mod', 'state'],
@@ -139,6 +177,34 @@ class Item_Kanban extends CommonDBRelation
         }
     }
 
+    /**
+     * Clear the state of a Kanban's columns for a specific item for the current user or globally.
+     * @since 11.0.0
+     * @param string $itemtype Type of the item.
+     * @param int $items_id ID of the item.
+     * @return bool True if successful
+     */
+    public static function clearStateForItem(string $itemtype, int $items_id)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        try {
+            /** @var Kanban|CommonDBTM $item */
+            $item = new $itemtype();
+            $item->getFromDB($items_id);
+            $force_global = $item->forceGlobalState();
+
+            return (bool) $DB->delete('glpi_items_kanbans', [
+                'users_id' => $force_global ? 0 : Session::getLoginUserID(),
+                'itemtype' => $itemtype,
+                'items_id' => $items_id
+            ]);
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
     public static function moveCard($itemtype, $items_id, $card, $column, $position)
     {
         $state = self::loadStateForItem($itemtype, $items_id);
@@ -160,18 +226,21 @@ class Item_Kanban extends CommonDBRelation
             }
         }
 
-        /** @var Kanban|CommonDBTM $item */
+        /** @var CommonDBTM $item */
         $item = new $itemtype();
         $item->getFromDB($items_id);
-        $all_columns = $item->getAllKanbanColumns();
+        $all_columns = [];
+        if (method_exists($item, 'getAllKanbanColumns')) {
+            $all_columns = $item->getAllKanbanColumns();
+        }
         $new_column_index = array_keys(array_filter($state, function ($c, $k) use ($column) {
             return $c['column'] === $column;
         }, ARRAY_FILTER_USE_BOTH));
         if (count($new_column_index)) {
             $new_column_index = reset($new_column_index);
-            if (isset($all_columns[$new_column_index])) {
-                $drop_only = $all_columns[$new_column_index]['drop_only'] ?? false;
-                if (isset($all_columns[$new_column_index]) && !$drop_only) {
+            if (isset($all_columns[(int) $column])) {
+                $drop_only = $all_columns[(int) $column]['drop_only'] ?? false;
+                if (isset($all_columns[(int) $column]) && !$drop_only) {
                     array_splice($state[$new_column_index]['cards'], $position, 0, $card);
                 }
             }

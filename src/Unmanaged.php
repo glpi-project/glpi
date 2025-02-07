@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -35,6 +35,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssignableItem;
 
 /**
  * Not managed devices from inventory
@@ -42,6 +43,8 @@ use Glpi\Application\View\TemplateRenderer;
 class Unmanaged extends CommonDBTM
 {
     use Glpi\Features\Inventoriable;
+    use Glpi\Features\State;
+    use AssignableItem;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -49,7 +52,17 @@ class Unmanaged extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Unmanaged device', 'Unmanaged devices', $nb);
+        return _n('Unmanaged asset', 'Unmanaged assets', $nb);
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['assets', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
     }
 
     public function defineTabs($options = [])
@@ -186,11 +199,71 @@ class Unmanaged extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_unmanaged' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
+        ];
+
+        $tab[] = [
+            'id'                 => '24',
+            'table'              => User::getTable(),
+            'field'              => 'name',
+            'linkfield'          => 'users_id_tech',
+            'name'               => __('Technician in charge'),
+            'datatype'           => 'dropdown',
+            'right'              => 'own_ticket'
+        ];
+
+        $tab[] = [
+            'id'                 => '49',
+            'table'              => Group::getTable(),
+            'field'              => 'completename',
+            'linkfield'          => 'groups_id',
+            'name'               => __('Group in charge'),
+            'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
+            'id'                 => '70',
+            'table'              => User::getTable(),
+            'field'              => 'name',
+            'name'               => User::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'right'              => 'all'
+        ];
+
+        $tab[] = [
+            'id'                 => '71',
+            'table'              => Group::getTable(),
+            'field'              => 'completename',
+            'name'               => Group::getTypeName(1),
+            'condition'          => ['is_itemgroup' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         return $tab;
@@ -205,7 +278,7 @@ class Unmanaged extends CommonDBTM
     {
         $actions = [];
         if (self::canUpdate()) {
-            $actions['Unmanaged' . MassiveAction::CLASS_ACTION_SEPARATOR . 'convert']    = __('Convert');
+            $actions['Unmanaged' . MassiveAction::CLASS_ACTION_SEPARATOR . 'convert']    = __s('Convert');
         }
         return $actions;
     }
@@ -214,10 +287,10 @@ class Unmanaged extends CommonDBTM
         array &$actions,
         $itemtype,
         $is_deleted = false,
-        CommonDBTM $checkitem = null
+        ?CommonDBTM $checkitem = null
     ) {
         if (self::canUpdate()) {
-            $actions['Unmanaged' . MassiveAction::CLASS_ACTION_SEPARATOR . 'convert']    = __('Convert');
+            $actions['Unmanaged' . MassiveAction::CLASS_ACTION_SEPARATOR . 'convert']    = __s('Convert');
         }
     }
 
@@ -248,8 +321,13 @@ class Unmanaged extends CommonDBTM
                 $unmanaged = new self();
                 foreach ($ids as $id) {
                     $itemtype = $_POST['itemtype'];
-                    $unmanaged->convert($id, $itemtype);
+                    $new_asset_id = $unmanaged->convert($id, $itemtype);
                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    if ($ma->isFromSingleItem()) {
+                        $ma->setRedirect($itemtype::getFormURLWithID($new_asset_id));
+                    } else {
+                        $ma->setRedirect($item::getSearchURL());
+                    }
                 }
                 break;
         }
@@ -261,7 +339,7 @@ class Unmanaged extends CommonDBTM
      * @param int         $items_id ID of Unmanaged equipment
      * @param string|null $itemtype Item type to convert to. Will take Unmanaged value if null
      */
-    public function convert(int $items_id, string $itemtype = null)
+    public function convert(int $items_id, ?string $itemtype = null): int
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -313,14 +391,14 @@ class Unmanaged extends CommonDBTM
         //do not keep Unmanaged ID
         unset($asset_data['id']);
 
-        $assets_id = $asset->add(Toolbox::addslashes_deep($asset_data));
+        $assets_id = $asset->add($asset_data);
 
         foreach ($iterator_np as $row) {
             $row += [
                 'items_id' => $assets_id,
                 'itemtype' => $itemtype
             ];
-            $netport->update(Toolbox::addslashes_deep($row));
+            $netport->update($row);
         }
 
         foreach ($iterator_rml as $row) {
@@ -328,7 +406,7 @@ class Unmanaged extends CommonDBTM
                 'items_id' => $assets_id,
                 'itemtype' => $itemtype
             ];
-            $rulematch->update(Toolbox::addslashes_deep($row));
+            $rulematch->update($row);
         }
 
         foreach ($iterator_lf as $row) {
@@ -336,9 +414,10 @@ class Unmanaged extends CommonDBTM
                 'items_id' => $assets_id,
                 'itemtype' => $itemtype
             ];
-            $lockfield->update(Toolbox::addslashes_deep($row));
+            $lockfield->update($row);
         }
         $this->deleteFromDB(1);
+        return $assets_id;
     }
 
     public function useDeletedToLockIfDynamic()

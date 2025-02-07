@@ -1,37 +1,5 @@
 # GLPI REST API:  Documentation
 
-## Summary
-
-* [Glossary](#glossary)
-* [Important](#important)
-* [Init session](#init-session)
-* [Kill session](#kill-session)
-* [Lost password](#lost-password)
-* [Get my profiles](#get-my-profiles)
-* [Get active profile](#get-active-profile)
-* [Change active profile](#change-active-profile)
-* [Get my entities](#get-my-entities)
-* [Get active entities](#get-active-entities)
-* [Change active entities](#change-active-entities)
-* [Get full session](#get-full-session)
-* [Get GLPI config](#get-glpi-config)
-* [Get an item](#get-an-item)
-* [Get all items](#get-all-items)
-* [Get sub items](#get-sub-items)
-* [Get multiple items](#get-multiple-items)
-* [List searchOptions](#list-searchoptions)
-* [Search items](#search-items)
-* [Add item(s)](#add-items)
-* [Update item(s)](#update-items)
-* [Delete item(s)](#delete-items)
-* [Get available massive actions for an itemtype](#get-available-massive-actions-for-an-itemtype)
-* [Get available massive actions for an item](#get-available-massive-actions-for-an-item)
-* [Get massive action parameters](#get-massive-action-parameters)
-* [Apply massive action](#apply-massive-action)
-* [Special cases](#special-cases)
-* [Errors](#errors)
-* [Servers configuration](#servers-configuration)
-
 ## Glossary
 
 Endpoint
@@ -890,7 +858,7 @@ $ curl -X GET \
   * *criteria*: array of criterion objects to filter search. Optional.
     You can optionally precise `meta=true` to pass a searchoption of another itemtype (meta-criteria).
     Each criterion object must provide at least:
-      * *link*: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
+      * *link*: (optional for 1st element) logical operator in [AND, OR, AND NOT, OR NOT].
 
       And you can pass a direct searchoption usage :
 
@@ -950,7 +918,7 @@ $ curl -X GET \
       **Deprecated: Now criteria support meta flag, you should use it instead direct metacriteria option.**
 
       Each meta-criterion object must provide:
-        * *link*: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory.
+        * *link*: logical operator in [AND, OR, AND NOT, OR NOT]. Mandatory.
         * *itemtype*: second itemtype to link.
         * *field*: id of the searchoption.
         * *searchtype*: type of search in [contains¹, equals², notequals², lessthan, morethan, under, notunder].
@@ -1266,10 +1234,6 @@ $ curl -X GET \
     "label": "Put in trashbin"
   },
   {
-    "key": "MassiveAction:add_transfer_list",
-    "label": "Add to transfer list"
-  },
-  {
     "key": "Appliance:add_item",
     "label": "Associate to an appliance"
   },
@@ -1278,7 +1242,7 @@ $ curl -X GET \
     "label": "Operating systems"
   },
   {
-    "key": "Computer_Item:add",
+    "key": "Glpi\\Asset\\Asset_PeripheralAsset:add",
     "label": "Connect"
   },
   {
@@ -1388,10 +1352,6 @@ $ curl -X GET \
     "label": "Put in trashbin"
   },
   {
-    "key": "MassiveAction:add_transfer_list",
-    "label": "Add to transfer list"
-  },
-  {
     "key": "Appliance:add_item",
     "label": "Associate to an appliance"
   },
@@ -1400,7 +1360,7 @@ $ curl -X GET \
     "label": "Operating systems"
   },
   {
-    "key": "Computer_Item:add",
+    "key": "Glpi\\Asset\\Asset_PeripheralAsset:add",
     "label": "Connect"
   },
   {
@@ -1654,16 +1614,6 @@ $ curl -X GET \
 
 The body of the answer contains the raw image.
 
-### Sanitized content
-
-By default, the API will return sanitized content.  
-This mean that all HTML special characters will be encoded.  
-You can disable this feature by adding the following header to your request:  
-
-```
-X-GLPI-Sanitized-Content: false
-```
-
 ## Errors
 
 ### ERROR_ITEM_NOT_FOUND
@@ -1786,6 +1736,16 @@ Run 'getMassiveActions' endpoint to see available keys.
 
 No ids supplied when trying to run a massive action.
 
+### ERROR_FIELD_NOT_FOUND
+
+The field specified as the key for the searchText parameter does not exist.
+This field must refer to a column in the table corresponding to the element in the query.
+
+### ERROR_UNKNOWN
+
+An unknown error has occurred.
+This may be due to an unexpected condition encountered by the server or an issue that does not fit into any of the predefined error categories.
+Check the server logs for more details or contact the support team.
 
 ## Servers configuration
 

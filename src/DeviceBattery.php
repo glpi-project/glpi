@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,7 +42,6 @@ class DeviceBattery extends CommonDevice
         return _n('Battery', 'Batteries', $nb);
     }
 
-
     public function getAdditionalFields()
     {
         return array_merge(
@@ -71,14 +70,13 @@ class DeviceBattery extends CommonDevice
         );
     }
 
-
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'capacity',
             'name'               => __('Capacity'),
             'datatype'           => 'integer',
@@ -86,7 +84,7 @@ class DeviceBattery extends CommonDevice
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'voltage',
             'name'               => __('Voltage'),
             'datatype'           => 'integer',
@@ -106,8 +104,8 @@ class DeviceBattery extends CommonDevice
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
-        HTMLTableSuperHeader $super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
 
@@ -124,12 +122,11 @@ class DeviceBattery extends CommonDevice
     }
 
     public function getHTMLTableCellForItem(
-        HTMLTableRow $row = null,
-        CommonDBTM $item = null,
-        HTMLTableCell $father = null,
+        ?HTMLTableRow $row = null,
+        ?CommonDBTM $item = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
-
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -164,12 +161,11 @@ class DeviceBattery extends CommonDevice
                 $father
             );
         }
+        return null;
     }
-
 
     public function getImportCriteria()
     {
-
         return [
             'designation'           => 'equal',
             'devicebatterytypes_id' => 'equal',
@@ -178,7 +174,6 @@ class DeviceBattery extends CommonDevice
             'voltage'               => 'delta:10'
         ];
     }
-
 
     public static function getIcon()
     {

@@ -22,10 +22,10 @@ Creating a dedicated database
 -----------------------------
 
 Use the **database:install** CLI command to create a new database,
-only used for the test suite, using the `--config-dir=./tests/config` option:
+only used for the test suite, using the `--env=testing` option:
 
 ```bash
-$ bin/console database:install --config-dir=./tests/config --db-name=glpitests --db-user=root --db-password=xxxx
+$ bin/console database:install --env=testing --db-name=glpitests --db-user=root --db-password=xxxx
 Creating the database...
 Saving configuration file...
 Loading default schema...
@@ -45,31 +45,30 @@ Changing database configuration
 
 Using the same database than the web application is not recommended. Use the `tests/config/config_db.php` file to adjust connection settings.
 
-Running the test suite on developpement env
--------------------------------------------
+Running the test suite on developpement machine
+-----------------------------------------------
 
 There are multiple directories for tests:
-- `tests/units` for unit tests;
-- `tests/functional` for functional tests;
-- `tests/imap` for Mail collector tests;
+- `tests/functional` and `phpunit/functional` for unit and functional tests;
+- `phpunit/imap` for Mail collector tests;
 - `tests/LDAP` for LDAP connection tests;
 - `tests/web` for API tests.
 
 You can choose to run tests on a whole directory, on any file, or on any \<class::method>. You have to specify a bootstrap file each time:
 
 ```bash
-$ atoum -bf tests/bootstrap.php -mcn 1 -d tests/units/
+$ atoum -bf tests/bootstrap.php -mcn 1 -d tests/functional/
 [...]
-$ atoum -bf tests/bootstrap.php -f tests/units/Html.php
+$ atoum -bf tests/bootstrap.php -f tests/functional/Html.php
 [...]
-$ atoum -bf tests/bootstrap.php -f tests/units/Html.php -m tests\units\Html::testConvDateTime
+$ atoum -bf tests/bootstrap.php -f tests/functional/Html.php -m tests\units\Html::testConvDateTime
 ```
 In `tests\units\Html::testConvDateTime`, you may need to double the backslashes (depending on the shell you use);
 
 If you want to run the API tests suite, you need to run a development server:
 
 ```bash
-php -S localhost:8088 tests/router.php &>/dev/null &
+php -S localhost:8088 -t public tests/router.php &>/dev/null &
 ```
 
 Running `atoum` without any arguments will show you the possible options. Most important are:
@@ -93,5 +92,5 @@ Running the test suite on containerized env
 -------------------------------------------
 
 If you want to execute tests in an environment similar to what is done by CI, you can use the `tests/run_tests.sh`.
-This scripts requires both "docker" and "docker-compose" utilities to be installed.
+This scripts requires the "docker" utility to be installed.
 Run `tests/run_tests.sh --help` for more information about its usage.

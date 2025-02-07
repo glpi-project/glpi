@@ -1,0 +1,205 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2025 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+// Remove padding as we have a custom illustration as a background that should
+// be displayed in full width.
+.page-body {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-top: 0 !important;
+}
+
+header {
+    // We do not want the navigation menu to be sticky on this page.
+    &.sticky-lg-top {
+        // Same as removing 'sticky-lg-top' class.
+        position: relative !important;
+    }
+
+    // Disable "right slide" effect on the user info dropdown as it is not on the
+    // complete right side of the page for this special layout.
+    .dropdown .animate__animated{
+        // Same as removing the 'animate__animated' class
+        animation-duration: unset !important;
+    }
+}
+
+.home-search {
+    line-height: 26px;
+
+    &::placeholder {
+        color: var(--glpi-mainmenu-bg);
+    }
+}
+
+// Adjust nav styles to match our white background.
+.home-tickets-tabs {
+    border-bottom-color: white !important;
+
+    .active {
+        background-color: white !important;
+    }
+
+    .nav-link {
+        border-bottom-color: white !important;
+    }
+}
+
+#open-tickets-pane .search-card {
+    .table-responsive-lg {
+        overflow: scroll !important;
+    }
+
+    .search-card {
+        border-top-left-radius: 0;
+    }
+}
+
+.helpdesk-home-container {
+    height: 100vh;
+
+    h1 {
+        font-size:3.7rem;
+    }
+
+    .search-bar-container {
+        padding: 3rem 0;
+
+        // Must be greater than .search-overlay but smaller than the user menu
+        // dropdown (1030).
+        z-index: 1025;
+    }
+}
+
+.search-banner {
+    background:
+        url('../pics/serfservice-portal-header-1.svg') no-repeat bottom right,
+        url('../pics/serfservice-portal-header-2.svg') no-repeat bottom left
+    ;
+    background-color: var(--glpi-helpdesk-header);
+    padding-top:150px;
+    padding-bottom:100px;
+}
+
+.search-overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    z-index: 1020;
+    transition: opacity 0.4s, visibility 0.4s;
+}
+
+.search-results {
+    box-shadow:var(--tblr-box-shadow-input);
+    border-radius: var(--tblr-border-radius);
+    border:var(--tblr-border-width) solid var(--tblr-border-color);
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-top: 0 !important;
+
+    // Must be greater than .search-overlay.
+    z-index:1025;
+}
+
+.richtext-strip-margin
+{
+    // Remove the last paragraph margin on rich text content.
+    p:last-of-type {
+        margin-bottom: 0 !important;
+    }
+}
+
+.search-results-title {
+    font-size:0.75rem;
+}
+
+.remove-bottom-border-radius{
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.tiles-banner {
+    background: #f6f8fb;
+    padding-top:70px;
+    padding-bottom:70px;
+}
+
+.tickets-banner {
+    background: #fff;
+    padding-top:70px;
+    padding-bottom:70px;
+    flex-grow: 1;
+}
+
+// Specific style for the tabs
+#tabspanel {
+    border-right: 0 !important;
+    border-bottom: 1px solid transparent;
+
+    .nav-link {
+        border-bottom: 0 !important;
+        border-bottom-color: unset !important;
+    }
+}
+
+.tab-content {
+    border-top-right-radius: 0 !important;
+    border: 0 !important;
+}
+
+.tab-pane {
+    // Cancel parent padding, can't be done in .tab-content because the p-2 class
+    // already use !important so we can't override it.
+    margin: -0.5rem !important;
+}
+
+.home-ticket-list {
+    .search-card {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+    td {
+        // Remove stripped rows
+        box-shadow: none !important;
+    }
+
+    .card-footer {
+        border-top: 0;
+        padding-top: 16px;
+        padding-bottom: 8px;
+    }
+}

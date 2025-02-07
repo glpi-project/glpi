@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,8 +34,6 @@
  */
 
 use Glpi\Event;
-
-include('../inc/includes.php');
 
 Session::checkRight("refusedequipment", READ);
 
@@ -73,7 +71,7 @@ if (isset($_POST["purge"])) {
     );
     Html::back();
 } else {
-    $menus = ["admin", "glpi\inventory\inventory", "refusedequipment"];
+    $menus = ["admin", "glpi\inventory\inventory", "RefusedEquipment"];
     RefusedEquipment::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"

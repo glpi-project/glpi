@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,10 +32,6 @@
  *
  * ---------------------------------------------------------------------
  */
-
-if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
-}
 
 /** Replace -1 values for glpi_items_operatingsystems table foreign key fields */
 // Migration may have been missed if user installed 10.x version before 9.5.7 release date.

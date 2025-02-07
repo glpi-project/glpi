@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,10 +34,7 @@
  */
 
 use Glpi\Event;
-
-include('../inc/includes.php');
-
-Session::checkLoginUser();
+use Glpi\Exception\Http\BadRequestHttpException;
 
 $item = new Problem_Ticket();
 
@@ -47,7 +44,7 @@ if (isset($_POST["add"])) {
             __('Mandatory fields are not filled. Please correct: %s'),
             Problem::getTypeName(1)
         );
-        Session::addMessageAfterRedirect($message, false, ERROR);
+        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
         Html::back();
     }
     if (empty($_POST['tickets_id']) && !empty($_POST['problems_id'])) {
@@ -55,7 +52,7 @@ if (isset($_POST["add"])) {
             __('Mandatory fields are not filled. Please correct: %s'),
             Ticket::getTypeName(1)
         );
-        Session::addMessageAfterRedirect($message, false, ERROR);
+        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
         Html::back();
     }
     $item->check(-1, CREATE, $_POST);
@@ -73,4 +70,4 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-Html::displayErrorAndDie("lost");
+throw new BadRequestHttpException();

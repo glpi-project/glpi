@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,14 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-$AJAX_INCLUDE = 1;
-if (strpos($_SERVER['PHP_SELF'], "uemailUpdate.php")) {
-    include('../inc/includes.php');
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
+use Glpi\Application\View\TemplateRenderer;
 
-Session::checkLoginUser();
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
+
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 if (
     (isset($_POST['field']) && ($_POST["value"] > 0))
@@ -70,8 +69,7 @@ if (
     $default_notif = $_POST['use_notification'][$user_index] ?? true;
 
     if (
-        isset($_POST['alternative_email'][$user_index])
-        && !empty($_POST['alternative_email'][$user_index])
+        !empty($_POST['alternative_email'][$user_index])
         && empty($default_email)
     ) {
         if (NotificationMailing::isUserAddressValid($_POST['alternative_email'][$user_index])) {
@@ -85,7 +83,7 @@ if (
     echo "<div class='my-1 d-flex align-items-center'>
          <label  for='email_fup_check'>
             <i class='far fa-envelope me-1'></i>
-            " . __('Email followup') . "
+            " . __s('Email followup') . "
          </label>
          <div class='ms-2'>
             " . Dropdown::showYesNo($_POST['field'] . '[use_notification][]', $default_notif, -1, ['display' => false]) . "
@@ -99,9 +97,9 @@ if (
         && !empty($default_email)
         && NotificationMailing::isUserAddressValid($default_email[$user_index])
     ) {
-        $email_string =  $default_email[$user_index];
+        $email_string = htmlescape($default_email[$user_index]);
        // Clean alternative email
-        echo "<input type='hidden' size='25' name='" . $_POST['field'] . "[alternative_email][]'
+        echo "<input type='hidden' size='25' name='" . htmlescape($_POST['field']) . "[alternative_email][]'
              value=''>";
     } else if (count($emails) > 1) {
        // Several emails : select in the list
@@ -122,11 +120,11 @@ if (
             ]
         );
     } else {
-        $email_string = "<input type='mail' class='form-control' name='" . $_POST['field'] . "[alternative_email][]'
-                        value='" . htmlentities($default_email, ENT_QUOTES, 'utf-8') . "'>";
+        $email_string = "<input type='mail' class='form-control' name='" . htmlescape($_POST['field']) . "[alternative_email][]'
+                         value='" . htmlescape($default_email) . "'>";
     }
 
-    echo "$email_string";
+    echo $email_string;
 }
 
 Ajax::commonDropdownUpdateItem($_POST);

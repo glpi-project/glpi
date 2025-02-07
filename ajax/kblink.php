@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,21 +41,14 @@
 /** @var \DBmysql $DB */
 global $DB;
 
-include('../inc/includes.php');
-
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
-if (
-    isset($_POST["table"])
-    && isset($_POST["value"])
-) {
-   // Security
+if (isset($_POST["table"], $_POST["value"])) {
+    // Security
     if (!$DB->tableExists($_POST['table'])) {
-        exit();
+        return;
     }
 
     if (isset($_POST['withlink'])) {
@@ -66,10 +59,10 @@ if (
                 '_idor_token' => $_POST['_idor_token'] ?? ""
             ])
         ) {
-            exit();
+            return;
         }
         $item = new $itemtype();
-        $item->getFromDB(intval($_POST["value"]));
+        $item->getFromDB((int)$_POST["value"]);
         echo '&nbsp;' . $item->getLinks();
     }
 }

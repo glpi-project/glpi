@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,16 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
-include('../../inc/includes.php');
-
 use Glpi\ContentTemplates\TemplateManager;
-use Glpi\Http\Response;
-use Michelf\MarkdownExtra;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Toolbox\MarkdownRenderer;
 
 // Check mandatory parameter
 $preset = $_GET['preset'] ?? null;
 if (is_null($preset)) {
-    Response::sendError(400, "Missing mandatory 'preset' parameter", Response::CONTENT_TYPE_TEXT_HTML);
+    throw new BadRequestHttpException("Missing mandatory 'preset' parameter");
 }
 
 Html::includeHeader(__("Template variables documentation"));
@@ -51,11 +49,8 @@ echo "<div id='page'>";
 echo "<div class='documentation documentation-large'>";
 
 // Parse markdown
-$md = new MarkdownExtra();
-$md->header_id_func = function ($headerName) {
-    return Toolbox::slugify($headerName, '');
-};
-echo $md->transform(TemplateManager::generateMarkdownDocumentation($preset));
+$md = new MarkdownRenderer();
+echo $md->render(TemplateManager::generateMarkdownDocumentation($preset));
 
 echo "</div>";
 echo "</div>";

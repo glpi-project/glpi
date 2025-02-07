@@ -1,4 +1,4 @@
-![GLPI Logo](https://raw.githubusercontent.com/glpi-project/glpi/main/pics/logos/logo-GLPI-250-black.png)
+![GLPI Logo](https://raw.githubusercontent.com/glpi-project/glpi/main/public/pics/logos/logo-GLPI-250-black.png)
 
 ![GLPI CI](https://github.com/glpi-project/glpi/workflows/GLPI%20CI/badge.svg?branch=9.5%2Fbugfixes)
 [![Github All Releases](https://img.shields.io/github/downloads/glpi-project/glpi/total.svg)](#download)
@@ -57,31 +57,31 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 3 - please consul
 
 **Tickets**
 
-![Tickets Timeline](pics/screenshots/ticket.png)
+![Tickets Timeline](/public/pics/screenshots/ticket.png)
 
 **DCIM**
 
-![DCIM drag&drop](pics/screenshots/dcim_racks_draganddrop.gif)
+![DCIM drag&drop](/public/pics/screenshots/dcim_racks_draganddrop.gif)
 
 **Assets**
 
-![asset view](pics/screenshots/asset.png)
+![asset view](/public/pics/screenshots/asset.png)
 
 **Dashboards**
 
-![Asset dashboard](pics/screenshots/dashboard.png)
+![Asset dashboard](/public/pics/screenshots/dashboard.png)
 
 ## Prerequisites
 
 * A web server (Apache, Nginx, IIS, etc.)
-* MariaDB >= 10.2 or MySQL >= 5.7
+* MariaDB >= 10.5 or MySQL >= 8.0
 * PHP (See compatibility matrix below)
 
     | GLPI Version | Minimum PHP | Maximum PHP |
     | ------------ | ----------- | ----------- |
-    | 9.4.X        | 5.6         | 7.4         |
     | 9.5.X        | 7.2         | 8.0         |
     | 10.0.X       | 7.4         | 8.3         |
+    | 10.1.X       | 8.2         | 8.3         |
 * Mandatory PHP extensions:
     - dom, fileinfo, json, session, simplexml (these are enabled in PHP by default)
     - curl (access to remote resources, like inventory agents, marketplace API, RSS feeds, ...)

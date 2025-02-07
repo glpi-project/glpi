@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -88,12 +88,12 @@ class ProjectTaskTeam extends CommonDBRelation
 
         if (!$withtemplate && static::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'ProjectTask':
+            switch (get_class($item)) {
+                case ProjectTask::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = $item->getTeamCount();
                     }
-                    return self::createTabEntry(self::getTypeName(1), $nb);
+                    return self::createTabEntry(self::getTypeName(1), $nb, $item::getType());
             }
         }
         return '';
@@ -103,8 +103,8 @@ class ProjectTaskTeam extends CommonDBRelation
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
-            case 'ProjectTask':
+        switch (get_class($item)) {
+            case ProjectTask::class:
                 $item->showTeam($item);
                 break;
         }
@@ -172,7 +172,7 @@ class ProjectTaskTeam extends CommonDBRelation
 
         if (!isset($input['itemtype'])) {
             Session::addMessageAfterRedirect(
-                __('An item type is mandatory'),
+                __s('An item type is mandatory'),
                 false,
                 ERROR
             );
@@ -181,7 +181,7 @@ class ProjectTaskTeam extends CommonDBRelation
 
         if (!isset($input['items_id'])) {
             Session::addMessageAfterRedirect(
-                __('An item ID is mandatory'),
+                __s('An item ID is mandatory'),
                 false,
                 ERROR
             );
@@ -190,7 +190,7 @@ class ProjectTaskTeam extends CommonDBRelation
 
         if (!isset($input['projecttasks_id'])) {
             Session::addMessageAfterRedirect(
-                __('A project task is mandatory'),
+                __s('A project task is mandatory'),
                 false,
                 ERROR
             );

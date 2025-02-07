@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,8 +42,6 @@ global $CFG_GLPI;
  * @since 0.84
  */
 
-include('../inc/includes.php');
-
 if (isset($_POST['itemtype'])) {
     $itemtype    = $_POST['itemtype'];
     $source_item = new $itemtype();
@@ -58,10 +56,10 @@ if (isset($_POST['itemtype'])) {
                     foreach (array_keys($_POST[$type]) as $key) {
                         if (!$item->can($key, UPDATE)) {
                             Session::addMessageAfterRedirect(
-                                sprintf(
+                                htmlescape(sprintf(
                                     __('You do not have rights to restore %s item.'),
                                     $type
-                                ),
+                                )),
                                 true,
                                 ERROR
                             );
@@ -83,10 +81,10 @@ if (isset($_POST['itemtype'])) {
                     foreach (array_keys($_POST[$type]) as $key) {
                         if (!$item->can($key, PURGE)) {
                              Session::addMessageAfterRedirect(
-                                 sprintf(
+                                 htmlescape(sprintf(
                                      __('You do not have rights to delete %s item.'),
                                      $type
-                                 ),
+                                 )),
                                  true,
                                  ERROR
                              );

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -130,7 +130,7 @@ class DocumentType extends CommonDropdown
             case 'icon':
                 if (!empty($values[$field])) {
                     return "&nbsp;<img style='vertical-align:middle;' alt='' src='" .
-                      $CFG_GLPI["typedoc_icon_dir"] . "/" . $values[$field] . "'>";
+                      htmlescape($CFG_GLPI["typedoc_icon_dir"] . "/" . $values[$field]) . "'>";
                 }
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -191,7 +191,8 @@ class DocumentType extends CommonDropdown
         $display .= Ajax::createIframeModalWindow(
             "documenttypelist_{$p['rand']}",
             $CFG_GLPI["root_doc"] . "/front/documenttype.list.php",
-            ['title'   => static::getTypeName(Session::getPluralNumber()),
+            [
+                'title'   => static::getTypeName(Session::getPluralNumber()),
                 'display' => false
             ]
         );

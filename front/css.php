@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,37 +33,34 @@
  * ---------------------------------------------------------------------
  */
 
-$SECURITY_STRATEGY = 'no_check'; // CSS must be accessible also on public pages
+use Glpi\UI\ThemeManager;
 
-if (!defined('GLPI_ROOT')) {
-    define('GLPI_ROOT', dirname(__DIR__));
-}
-
-use Glpi\Application\ErrorHandler;
-
-$_GET["donotcheckversion"]   = true;
-$dont_check_maintenance_mode = true;
-$skip_db_check               = true;
-
-//std cache, with DB connection
-include_once GLPI_ROOT . "/inc/db.function.php";
-include_once GLPI_ROOT . '/inc/config.php';
-
-// Main CSS compilation requires about 140MB of memory on PHP 7.4 (110MB on PHP 8.2).
+// Main CSS compilation requires about 70MB of memory.
 // Ensure to have enough memory to not reach memory limit.
-$max_memory = 192;
+$max_memory = 96;
 if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
     ini_set('memory_limit', sprintf('%dM', $max_memory));
 }
 
-// Ensure warnings will not break CSS output.
-ErrorHandler::getInstance()->disableOutput();
+// If a custom theme is requested, we need to get the real path of the theme
+if (isset($_GET['file']) && isset($_GET['is_custom_theme']) && $_GET['is_custom_theme']) {
+    $theme = ThemeManager::getInstance()->getTheme($_GET['file']);
+
+    if (!$theme) {
+        trigger_error(sprintf('Unable to find theme `%s`.', $_GET['file']), E_USER_WARNING);
+        $theme = ThemeManager::getInstance()->getTheme(ThemeManager::DEFAULT_THEME);
+    }
+
+    $_GET['file'] = $theme->getPath();
+}
 
 $css = Html::compileScss($_GET);
 
 header('Content-Type: text/css');
 
-$is_cacheable = !isset($_GET['debug']) && !isset($_GET['nocache']);
+$is_cacheable = !isset($_GET['nocache'])
+    && GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT // do not use browser cache on development env
+;
 if ($is_cacheable) {
    // Makes CSS cacheable by browsers and proxies
     $max_age = WEEK_TIMESTAMP;

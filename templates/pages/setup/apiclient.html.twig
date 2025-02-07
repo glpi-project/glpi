@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -84,7 +84,8 @@
         item.fields['app_token'],
         __('%1$s (%2$s)')|format(__('Application token'), 'app_token'),
         {
-            'add_field_html': reset_btn
+            'input_class': 'input-group copy_to_clipboard_wrapper col',
+            'add_field_html': '<i class="input-group-text fa-lg pointer copy_to_clipboard_wrapper" role="button"></i>' ~ reset_btn
         }
     ) }}
 

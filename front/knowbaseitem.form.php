@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,8 +37,6 @@ use Glpi\Event;
 
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
-
-include('../inc/includes.php');
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
@@ -150,17 +148,17 @@ if (isset($_POST["add"])) {
     $kb->check($_GET["id"], UPDATE);
     if ($kb->revertTo($_GET['to_rev'])) {
         Session::addMessageAfterRedirect(
-            sprintf(
+            htmlescape(sprintf(
                 __('Knowledge base item has been reverted to revision %s'),
                 $_GET['to_rev']
-            )
+            ))
         );
     } else {
         Session::addMessageAfterRedirect(
-            sprintf(
+            htmlescape(sprintf(
                 __('Knowledge base item has not been reverted to revision %s'),
                 $_GET['to_rev']
-            ),
+            )),
             false,
             ERROR
         );
@@ -172,7 +170,7 @@ if (isset($_POST["add"])) {
     }
 
     if (isset($_GET["_in_modal"])) {
-        Html::popHeader(__('Knowledge base'), $_SERVER['PHP_SELF']);
+        Html::popHeader(__('Knowledge base'));
         if ($_GET['id']) {
             $kb->check($_GET["id"], READ);
             $kb->showFull();

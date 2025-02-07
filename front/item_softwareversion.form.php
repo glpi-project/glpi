@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,8 +34,7 @@
  */
 
 use Glpi\Event;
-
-include('../inc/includes.php');
+use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkRight('software', UPDATE);
 $inst = new Item_SoftwareVersion();
@@ -65,13 +64,14 @@ if (isset($_POST['add'])) {
     } else {
         $message = null;
         if (!isset($_POST['softwares_id']) || !$_POST['softwares_id']) {
-            $message = __('Please select a software!');
+            $message = __s('Please select a software!');
         } else if (!isset($_POST['softwareversions_id']) || !$_POST['softwareversions_id']) {
-            $message = __('Please select a version!');
+            $message = __s('Please select a version!');
         }
 
         Session::addMessageAfterRedirect($message, true, ERROR);
     }
     Html::back();
 }
-Html::displayErrorAndDie('Lost');
+
+throw new BadRequestHttpException();

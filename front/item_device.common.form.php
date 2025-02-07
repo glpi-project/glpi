@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,28 +33,28 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.85
  */
+
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
 
 /**
  * Following variables have to be defined before inclusion of this file:
  * @var Item_Devices $item_device
  */
 
-use Glpi\Event;
-
-/** @var array $CFG_GLPI */
-global $CFG_GLPI;
-
 /** @var Item_Devices|null $item_device */
 if (!($item_device instanceof Item_Devices)) {
-    Html::displayErrorAndDie('');
+    throw new BadRequestHttpException();
 }
 if (!$item_device->canView()) {
-   // Gestion timeout session
-    Session::redirectIfNotLoggedIn();
-    Html::displayRightError();
+    throw new AccessDeniedHttpException();
 }
 
 

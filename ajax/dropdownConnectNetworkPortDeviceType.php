@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,10 +37,10 @@
  * @since 0.84
  */
 
+use Glpi\DBAL\QuerySubQuery;
+
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
-
-include('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -67,7 +67,7 @@ if (class_exists($_POST["itemtype"])) {
         'name'      => "items",
         'entity'    => $_POST["entity_restrict"],
         'condition' => [
-            'id' => new \QuerySubQuery([
+            'id' => new QuerySubQuery([
                 'SELECT' => 'items_id',
                 'FROM'   => 'glpi_networkports',
                 'WHERE'  => [
@@ -82,5 +82,5 @@ if (class_exists($_POST["itemtype"])) {
     Dropdown::show($_POST['itemtype'], $params);
 
     echo "<span id='results_item_$rand'>";
-    echo "</span>\n";
+    echo "</span>";
 }

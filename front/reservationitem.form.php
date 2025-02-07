@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,8 +35,6 @@
 
 use Glpi\Event;
 
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
 Session::checkRightsOr('reservation', [CREATE, UPDATE, DELETE, PURGE]);
 
@@ -46,6 +44,10 @@ if (!isset($_GET["id"])) {
 
 $ri = new ReservationItem();
 if (isset($_POST["add"])) {
+    if (str_contains($_POST['itemtype'], '%5C')) {
+        //TODO Remove when ReservationItem::showActivationFormForItem rewritten in Twig. Param is urlencoded by Html::getSimpleForm currently.
+        $_POST['itemtype'] = urldecode($_POST['itemtype']);
+    }
     $ri->check(-1, CREATE, $_POST);
     if ($newID = $ri->add($_POST)) {
         Event::log(
@@ -88,19 +90,6 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["backToStock"])) {
-    $ri->check($_POST["id"], PURGE);
-    $ri->backToStock($_POST);
-
-    Event::log(
-        $_POST['id'],
-        "reservationitem",
-        4,
-        "inventory",
-        //TRANS: %s is the user login
-        sprintf(__('%s restores an item'), $_SESSION["glpiname"])
-    );
-    Html::back();
 } else if (isset($_POST["update"])) {
     $ri->check($_POST["id"], UPDATE);
     $ri->update($_POST);
@@ -115,7 +104,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } else {
     $ri->check($_GET["id"], READ);
-    Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
+    Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
     $ri->showForm($_GET["id"]);
 }
 

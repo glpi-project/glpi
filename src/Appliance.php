@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\AssetImage;
+use Glpi\Features\AssignableItem;
 
 /**
  * Appliances Class
@@ -42,7 +43,12 @@ use Glpi\Features\AssetImage;
 class Appliance extends CommonDBTM
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\State;
     use AssetImage;
+    use AssignableItem {
+        prepareInputForAdd as prepareInputForAddAssignableItem;
+        prepareInputForUpdate as prepareInputForUpdateAssignableItem;
+    }
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -57,8 +63,22 @@ class Appliance extends CommonDBTM
             Document_Item::class,
             Infocom::class,
             Notepad::class,
-            KnowbaseItem_Item::class
+            KnowbaseItem_Item::class,
+            Certificate_Item::class,
+            Domain_Item::class,
+            Item_Project::class,
+            ManualLink::class,
         ];
+    }
+
+    public static function getSectorizedDetails(): array
+    {
+        return ['management', self::class];
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'inventory';
     }
 
     public static function getTypeName($nb = 0)
@@ -78,9 +98,10 @@ class Appliance extends CommonDBTM
          ->addStandardTab('Certificate_Item', $ong, $options)
          ->addStandardTab('Domain_Item', $ong, $options)
          ->addStandardTab('KnowbaseItem_Item', $ong, $options)
-         ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
+         ->addStandardTab('Item_Project', $ong, $options)
          ->addStandardTab('ManualLink', $ong, $options)
          ->addStandardTab('DatabaseInstance', $ong, $options)
          ->addStandardTab('Notepad', $ong, $options)
@@ -92,13 +113,19 @@ class Appliance extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        $input = parent::prepareInputForAdd($input);
+        $input = $this->prepareInputForAddAssignableItem($input);
+        if ($input === false) {
+            return false;
+        }
         return $this->managePictures($input);
     }
 
     public function prepareInputForUpdate($input)
     {
-        $input = parent::prepareInputForUpdate($input);
+        $input = $this->prepareInputForUpdateAssignableItem($input);
+        if ($input === false) {
+            return false;
+        }
         return $this->managePictures($input);
     }
 
@@ -162,7 +189,18 @@ class Appliance extends CommonDBTM
             'field'         => 'completename',
             'name'          => Group::getTypeName(1),
             'condition'     => ['is_itemgroup' => 1],
-            'datatype'      => 'dropdown'
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
@@ -203,10 +241,21 @@ class Appliance extends CommonDBTM
             'id'            => '49',
             'table'         => Group::getTable(),
             'field'         => 'completename',
-            'linkfield'     => 'groups_id_tech',
+            'linkfield'     => 'groups_id',
             'name'          => __('Group in charge'),
             'condition'     => ['is_assign' => 1],
-            'datatype'      => 'dropdown'
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
@@ -222,7 +271,7 @@ class Appliance extends CommonDBTM
             'id'            => '10',
             'table'         => ApplianceEnvironment::getTable(),
             'field'         => 'name',
-            'name'          => __('Environment'),
+            'name'          => _n('Environment', 'Environments', 1),
             'datatype'      => 'dropdown'
         ];
 
@@ -291,11 +340,11 @@ class Appliance extends CommonDBTM
 
         $tab[] = [
             'id'                 => '32',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_appliance' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab = array_merge($tab, Certificate::rawSearchOptionsToAdd());
@@ -382,11 +431,18 @@ class Appliance extends CommonDBTM
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin'         => [
-                    'table'              => self::getTable(),
+                    'table'              => 'glpi_groups_items',
                     'joinparams'         => [
-                        'beforejoin' => [
-                            'table'      => Appliance_Item::getTable(),
-                            'joinparams' => ['jointype' => 'itemtype_item']
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
+                        'beforejoin'         => [
+                            'table'              => self::getTable(),
+                            'joinparams'         => [
+                                'beforejoin' => [
+                                    'table'      => Appliance_Item::getTable(),
+                                    'joinparams' => ['jointype' => 'itemtype_item']
+                                ]
+                            ]
                         ]
                     ]
                 ]
@@ -441,35 +497,18 @@ class Appliance extends CommonDBTM
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
             $prefix                    = 'Appliance_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add']    = _x('button', 'Add an item');
-            $actions[$prefix . 'remove'] = _x('button', 'Remove an item');
+            $actions[$prefix . 'add']    = _sx('button', 'Add an item');
+            $actions[$prefix . 'remove'] = _sx('button', 'Remove an item');
         }
 
         KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
 
         return $actions;
-    }
-
-    public static function getMassiveActionsForItemtype(
-        array &$actions,
-        $itemtype,
-        $is_deleted = false,
-        CommonDBTM $checkitem = null
-    ) {
-        if (in_array($itemtype, self::getTypes())) {
-            if (self::canUpdate()) {
-                $action_prefix                    = 'Appliance_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-                $actions[$action_prefix . 'add']    = "<i class='fa-fw fas fa-file-contract'></i>" .
-                                                _x('button', 'Add to an appliance');
-                $actions[$action_prefix . 'remove'] = _x('button', 'Remove from an appliance');
-            }
-        }
     }
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
@@ -480,7 +519,6 @@ class Appliance extends CommonDBTM
                 Appliance::dropdown();
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
-            break;
         }
         return parent::showMassiveActionsSubForm($ma);
     }

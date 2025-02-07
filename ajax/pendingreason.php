@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,23 +33,22 @@
  * ---------------------------------------------------------------------
  */
 
-// Direct access to file
-include('../inc/includes.php');
-header("Content-Type: application/json; charset=UTF-8");
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::checkLoginUser();
+// Direct access to file
+
+header("Content-Type: application/json; charset=UTF-8");
 
 // Tech only
 if (Session::getCurrentInterface() !== "central") {
-    http_response_code(403);
-    die;
+    throw new AccessDeniedHttpException();
 }
 
 // Read parameter and load pending reason
 $pending_reason = PendingReason::getById($_REQUEST['pendingreasons_id'] ?? null);
 if (!$pending_reason) {
-    http_response_code(400);
-    die;
+    throw new BadRequestHttpException();
 }
 
 echo json_encode([

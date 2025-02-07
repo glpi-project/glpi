@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -40,21 +40,20 @@
 {% set in_navheader = in_navheader|default(false) %}
 
 {% set entity_name = entity_name|default('') %}
-{% if entity_id is not defined and item.isEntityAssign() %}
-   {% if item.getType() == 'Entity' and item.fields['id'] == 0 %}
-      {% set entity_id = null %}
-   {% else %}
-      {% set entity_id = params['entities_id'] ?? item.getEntityID() ?? session('glpiactive_entity') %}
-   {% endif %}
-
-   {% if is_multi_entities_mode() %}
-      {% set entity_name = get_item_name('Entity', item.getEntityID()) %}
-   {% endif %}
-{% elseif entity_id is not defined %}
-   {% set entity_id = 0 %}
+{% if entity_id is not defined %}
+    {% if item.getType() == 'Entity' %}
+        {% set entity_id = item.fields['id'] == 0 ? null : (params['entities_id'] ?? item.fields['entities_id'] ?? session('glpiactive_entity')) %}
+    {% elseif item.isEntityAssign() %}
+        {% set entity_id = params['entities_id'] ?? item.getEntityID() ?? session('glpiactive_entity') %}
+    {% else %}
+        {% set entity_id = 0 %}
+    {% endif %}
+    {% if is_multi_entities_mode() %}
+        {% set entity_name = entity_id is not null ? get_item_name('Entity', entity_id) : null %}
+    {% endif %}
 {% endif %}
 
-{% set template_name = item.fields['template_name']|verbatim_value %}
+{% set template_name = item.fields['template_name'] %}
 {% if withtemplate == 2 and not item.isNewItem() %}
    <input type="hidden" name="template_name" value="{{ template_name }}" />
    {% set nametype = __('Created from the template %s')|format(template_name) %}
@@ -62,54 +61,55 @@
    <input type="hidden" name="is_template" value="1" />
 {% elseif item.isNewItem() %}
    {% set nametype = __('%1$s - %2$s')|format(__('New item'), nametype) %}
-{% else %}
-   {% if noid == false and (session('glpiis_ids_visible') or nametype|length == 0) %}
-      {% set nametype = __('%1$s - %2$s')|format(nametype, item.fields['id']) %}
-   {% endif %}
 {% endif %}
 
 {% if item.canEdit(item.fields['id']) %}
    <form name="massaction_{{ rand }}" id="massaction_{{ rand }}" method="post"
-         action="{{ path('/front/massiveaction.php') }}" data-submit-once>
+         action="{{ path('/front/massiveaction.php') }}?_from_single_item=1" data-submit-once>
       <div id="massive_container_{{ rand }}"></div>
       <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
    </form>
 {% endif %}
 
 <div id="header_{{ rand }}"
-     class="card-header main-header d-flex flex-wrap mx-n2 mt-n2 align-items-stretch {% if in_navheader %} align-self-end {% endif %} flex-grow-1">
+     class="card-header main-header d-flex flex-wrap me-2 mt-n2 align-items-stretch {% if in_navheader %} align-self-end {% endif %} flex-grow-1">
    {% if withtemplate == 1 and item.isNewItem() %}
       <input type="text" class="form-control ms-4 mb-2" placeholder="{{ __('Template name') }}"
              name="template_name" id="textfield_template_name{{ rand }}"
              value="{{ template_name }}" />
    {% endif %}
-   <h3 class="card-title d-flex align-items-center {{ in_navheader ? "ps-5" : "ps-4" }}">
+   <h3 class="card-title d-flex align-items-center {{ in_navheader ? "" : "ps-5" }}">
       {% set icon = item.getIcon() %}
       {% if not in_navheader and icon|length > 0 %}
          <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
             <i class="{{ icon }} fa-2x"></i>
          </div>
       {% endif %}
-      <span {% if in_navheader %} class="status rounded-1" {% endif %}>
+      <span {% if in_navheader %} class="status rounded-1 me-1" {% endif %}>
          {% if in_navheader %}
             <i class="{{ icon }}"></i>
          {% endif %}
          {% if withtemplate == 1 and item.id > 0 %}
             {{ _n('Template', 'Templates', 1) }} - {{ nametype }} - {{ template_name }}
          {% elseif not item.isNewItem() %}
-            {{ nametype }} - {{ friendlyname }}
+            {{ nametype }} - <span id="header-friendlyname"> {{ friendlyname }} </span>
          {% else %}
             {{ nametype }}
          {% endif %}
       </span>
       {% if in_navheader and item.isField('is_dynamic') and item.fields['is_dynamic'] %}
-      <span class="mx-1 bg-secondary status rounded-1" title="{{ __('Automatic Inventory') }}" data-bs-toggle="tooltip">
+      <span class="mx-1 status rounded-1" title="{{ __('Automatic Inventory') }}" data-bs-toggle="tooltip">
          <i class="{{ call('Agent::getIcon') }}"></i>
       </span>
       {% endif %}
-      {% if in_navheader and item.isField('is_deleted') and item.fields['is_deleted'] %}
+      {% if in_navheader and item.isField('is_deleted') %}
       {% set title = item.isField('date_mod') ? __('Item has been deleted on %s')|format(item.fields['date_mod']) : __('Deleted') %}
-      <span class="mx-1 bg-danger status rounded-1" title="{{ title }}" data-bs-toggle="tooltip">
+      <span
+         id="header-is-deleted"
+         class="mx-1 status rounded-1"
+         title="{{ title }}"
+         data-bs-toggle="tooltip"
+      >
          <i class="ti ti-trash"></i>
          {{ __('Deleted') }}
       </span>
@@ -141,7 +141,7 @@
                {% if item is instanceof('CommonDBChild') %}
                   {% set comment  = __('Can՛t change this attribute. It՛s inherited from its parent.') %}
                   {% set disabled = true %}
-               {% elseif not item.can(id, 'recursive') %}
+               {% elseif not item.canRecurs() %}
                   {% set comment  = __('You are not allowed to change the visibility flag for child entities.') %}
                   {% set disabled = true %}
                {% elseif not item.canUnrecurs() %}
@@ -149,13 +149,13 @@
                   {% set disabled = true %}
                {% endif %}
 
-               {% if not disabled %}<input type="hidden" name="is_recursive" value="0" />{% endif %}
-               <input class="form-check-input" type="checkbox" name="is_recursive" value="1"
+               {% if not disabled %}<input form="main-form" type="hidden" name="is_recursive" value="0" />{% endif %}
+               <input form="main-form" class="form-check-input" type="checkbox" name="is_recursive" value="1"
                   {% if item.isRecursive() %}checked="checked"{% endif %}
                   {% if disabled %}disabled="disabled"{% endif %} />
                {% if item is instanceof('CommonDBChild') and item.isNewItem() and item.isRecursive() %}
                   {# Send value on hidden field to ensure creation will use inherited recursivity on CommonDBChild #}
-                  <input type="hidden" name="is_recursive" value="1" />
+                  <input form="main-form" type="hidden" name="is_recursive" value="1" />
                {% endif %}
                <span class="form-check-label mb-0 mx-2">
                   {{ __('Child entities') }}
@@ -167,19 +167,4 @@
    {% endif %}
 
    {{ include('components/form/single-action.html.twig') }}
-
-   {% if inside_main is not defined %}
-      <script>
-         $("#header_{{ rand }} input[name='is_recursive']").on('change', function(e) {
-             const asset_form = $("form[name='asset_form']");
-             // If asset form has an is_recursive checkbox, we need set the value to the one in the header
-             if (asset_form.length) {
-                 const chk = asset_form.find("input[name='is_recursive']");
-                 if (chk.length) {
-                     chk.val(e.target.checked ? 1 : 0);
-                 }
-             }
-         });
-      </script>
-   {% endif %}
 </div>

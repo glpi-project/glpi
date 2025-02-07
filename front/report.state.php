@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,18 +37,14 @@
  * @since 0.84
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("reports", READ);
 
-Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "report");
+Html::header(Report::getTypeName(Session::getPluralNumber()), '', "tools", "report");
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = 0;
 }
 
 Report::title();
-
 State::showSummary();
-
 Html::footer();

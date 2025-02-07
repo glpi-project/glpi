@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -46,25 +46,24 @@ class RuleRightParameter extends CommonDropdown
      **/
     public function prepareInputForAdd($input)
     {
-
-       //LDAP parameters MUST be in lower case
-       //because the are retieved in lower case  from the directory
+        //LDAP parameters MUST be in lower case
+        //because they are retrieved in lower case  from the directory
         $input["value"] = Toolbox::strtolower($input["value"]);
         return $input;
     }
 
-
     public function getAdditionalFields()
     {
 
-        return [['name'  => 'value',
-            'label' => _n('Criterion', 'Criteria', 1),
-            'type'  => 'text',
-            'list'  => false
-        ]
+        return [
+            [
+                'name'  => 'value',
+                'label' => _n('Criterion', 'Criteria', 1),
+                'type'  => 'text',
+                'list'  => false
+            ]
         ];
     }
-
 
     public function rawSearchOptions()
     {
@@ -80,7 +79,6 @@ class RuleRightParameter extends CommonDropdown
 
         return $tab;
     }
-
 
     public static function getTypeName($nb = 0)
     {

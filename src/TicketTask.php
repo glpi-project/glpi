@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,171 +35,10 @@
 
 class TicketTask extends CommonITILTask
 {
-    public static $rightname = 'task';
-
-
     public static function getTypeName($nb = 0)
     {
         return _n('Ticket task', 'Ticket tasks', $nb);
     }
-
-
-    public static function canCreate()
-    {
-        return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
-              || Session::haveRight('ticket', Ticket::OWN));
-    }
-
-
-    public static function canView()
-    {
-        return (Session::haveRightsOr(self::$rightname, [parent::SEEPUBLIC, parent::SEEPRIVATE])
-              || Session::haveRight('ticket', Ticket::OWN));
-    }
-
-
-    public static function canUpdate()
-    {
-        return (Session::haveRight(self::$rightname, parent::UPDATEALL)
-              || Session::haveRight('ticket', Ticket::OWN));
-    }
-
-
-    public function canViewPrivates()
-    {
-        return Session::haveRight(self::$rightname, parent::SEEPRIVATE);
-    }
-
-
-    public function canEditAll()
-    {
-        return Session::haveRight(self::$rightname, parent::UPDATEALL);
-    }
-
-
-    /**
-     * Does current user have right to show the current task?
-     *
-     * @return boolean
-     **/
-    public function canViewItem()
-    {
-
-        if (!$this->canReadITILItem()) {
-            return false;
-        }
-
-        if (Session::haveRight(self::$rightname, parent::SEEPRIVATE)) {
-            return true;
-        }
-
-        if (
-            !$this->fields['is_private']
-            && Session::haveRight(self::$rightname, parent::SEEPUBLIC)
-        ) {
-            return true;
-        }
-
-       // see task created or affected to me
-        if (
-            Session::getCurrentInterface() == "central"
-            && ($this->fields["users_id"] === Session::getLoginUserID())
-              || ($this->fields["users_id_tech"] === Session::getLoginUserID())
-        ) {
-            return true;
-        }
-
-        if (
-            $this->fields["groups_id_tech"] && ($this->fields["groups_id_tech"] > 0)
-            && isset($_SESSION["glpigroups"])
-            && in_array($this->fields["groups_id_tech"], $_SESSION["glpigroups"])
-        ) {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    /**
-     * Does current user have right to create the current task?
-     *
-     * @return boolean
-     **/
-    public function canCreateItem()
-    {
-
-        if (!$this->canReadITILItem()) {
-            return false;
-        }
-
-        $ticket = new Ticket();
-        if (
-            $ticket->getFromDB($this->fields['tickets_id'])
-            // No validation for closed tickets
-            && !in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
-        ) {
-            return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
-                 || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-                 || (isset($_SESSION["glpigroups"])
-                     && $ticket->haveAGroup(
-                         CommonITILActor::ASSIGN,
-                         $_SESSION['glpigroups']
-                     )));
-        }
-        return false;
-    }
-
-
-    /**
-     * Does current user have right to update the current task?
-     *
-     * @return boolean
-     **/
-    public function canUpdateItem()
-    {
-
-        if (!$this->canReadITILItem()) {
-            return false;
-        }
-
-        $ticket = new Ticket();
-        if (
-            $ticket->getFromDB($this->fields['tickets_id'])
-            && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
-        ) {
-            return false;
-        }
-
-        if (
-            ($this->fields["users_id"] != Session::getLoginUserID())
-            && !Session::haveRight(self::$rightname, parent::UPDATEALL)
-        ) {
-            return false;
-        }
-
-        return true;
-    }
-
-
-    /**
-     * Does current user have right to purge the current task?
-     *
-     * @return boolean
-     **/
-    public function canPurgeItem()
-    {
-        $ticket = new Ticket();
-        if (
-            $ticket->getFromDB($this->fields['tickets_id'])
-            && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
-        ) {
-            return false;
-        }
-
-        return Session::haveRight(self::$rightname, PURGE);
-    }
-
 
     /**
      * Populate the planning with planned ticket tasks
@@ -248,33 +87,6 @@ class TicketTask extends CommonITILTask
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
         return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
-    }
-
-
-    /**
-     * @since 0.85
-     *
-     * @see commonDBTM::getRights()
-     **/
-    public function getRights($interface = 'central')
-    {
-
-        $values = parent::getRights();
-        unset($values[UPDATE], $values[CREATE], $values[READ]);
-
-        if ($interface == 'central') {
-            $values[parent::UPDATEALL]      = __('Update all');
-            $values[parent::ADDALLITEM  ]   = __('Add to all items');
-            $values[parent::SEEPRIVATE]     = __('See private ones');
-        }
-
-        $values[parent::SEEPUBLIC]   = __('See public ones');
-
-        if ($interface == 'helpdesk') {
-            unset($values[PURGE]);
-        }
-
-        return $values;
     }
 
     /**

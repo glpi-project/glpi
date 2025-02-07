@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,12 +37,15 @@
  * @since 0.84
  */
 
-/** @var \DBmysql $DB */
+use Glpi\DBAL\QueryExpression;
+
+/**
+ * @var \DBmysql $DB
+ */
 global $DB;
 
-$AJAX_INCLUDE = 1;
-
-include('../inc/includes.php');
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();

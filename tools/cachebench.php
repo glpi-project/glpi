@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,10 +38,13 @@ if (PHP_SAPI != 'cli') {
     exit();
 }
 
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$kernel = new \Glpi\Kernel\Kernel();
+$kernel->boot();
+
 define('PER_LEVEL', 8);
 define('COUNT', 1024);
-
-require __DIR__ . '/../inc/includes.php';
 
 // To bypass various right checks
 $_SESSION['glpishowallentities'] = 1;
@@ -79,9 +82,6 @@ if ($nb < 100000) {
             }
         }
     }
-
-   //echo "Regenerate tree\n";
-   //regenerateTreeCompleteName('glpi_entities');
 
     $nb = countElementsInTable('glpi_entities');
 }

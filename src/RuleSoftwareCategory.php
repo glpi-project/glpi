@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,7 +44,6 @@ class RuleSoftwareCategory extends Rule
 {
    // From Rule
     public static $rightname = 'rule_softwarecategories';
-    public $can_sort  = true;
 
 
     public function getTitle()
@@ -52,19 +51,8 @@ class RuleSoftwareCategory extends Rule
         return __('Rules for assigning a category to software');
     }
 
-
-    /**
-     * @see Rule::maxActionsCount()
-     **/
-    public function maxActionsCount()
-    {
-        return 1;
-    }
-
-
     public function getCriterias()
     {
-
         static $criterias = [];
 
         if (count($criterias)) {
@@ -72,7 +60,7 @@ class RuleSoftwareCategory extends Rule
         }
 
         $criterias['name']['field']         = 'name';
-        $criterias['name']['name']          = _n('Software', 'Software', Session::getPluralNumber());
+        $criterias['name']['name']          = Software::getTypeName(1);
         $criterias['name']['table']         = 'glpi_softwares';
 
         $criterias['manufacturer']['field'] = 'name';
@@ -89,10 +77,8 @@ class RuleSoftwareCategory extends Rule
         return $criterias;
     }
 
-
     public function getActions()
     {
-
         $actions                                   = parent::getActions();
 
         $actions['softwarecategories_id']['name']  = _n('Category', 'Categories', 1);

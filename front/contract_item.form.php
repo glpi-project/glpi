@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,17 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.84
  */
 
-use Glpi\Event;
-
-include('../inc/includes.php');
-
 Session::checkCentralAccess();
-
-$contract_item   = new Contract_Item();
 
 if (isset($_POST["add"])) {
     if (!isset($_POST['contracts_id']) || empty($_POST['contracts_id'])) {
@@ -51,8 +48,17 @@ if (isset($_POST["add"])) {
             __('Mandatory fields are not filled. Please correct: %s'),
             Contract::getTypeName(1)
         );
-        Session::addMessageAfterRedirect($message, false, ERROR);
+        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
         Html::back();
+    }
+
+    if (isset($_POST['itemtype']) && $_POST['itemtype'] == 'User') {
+        $contract_item = new Contract_User();
+        // convert form data to match the Contract_User case
+        $_POST['users_id'] = $_POST['items_id'];
+        unset($_POST['itemtype'], $_POST['items_id']);
+    } else {
+        $contract_item   = new Contract_Item();
     }
 
     $contract_item->check(-1, CREATE, $_POST);
@@ -69,4 +75,4 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-Html::displayErrorAndDie("lost");
+throw new BadRequestHttpException();

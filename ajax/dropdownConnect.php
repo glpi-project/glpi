@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,22 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-if (strpos($_SERVER['PHP_SELF'], "dropdownConnect.php")) {
-    include('../inc/includes.php');
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-} else if (!defined('GLPI_ROOT')) {
-    die("Sorry. You can't access this file directly");
-}
+use Glpi\Asset\Asset_PeripheralAsset;
+
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 if (!isset($_POST['fromtype']) || !($fromitem = getItemForItemtype($_POST['fromtype']))) {
-    exit();
+    return;
 }
 
 $fromitem->checkGlobal(UPDATE);
 
 $used = $_POST["used"] ?? [];
-Computer_Item::dropdownConnect(
+Asset_PeripheralAsset::dropdownConnect(
     $_POST["itemtype"],
     $_POST['fromtype'],
     $_POST['myname'],

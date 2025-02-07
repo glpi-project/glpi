@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -35,7 +35,7 @@
    <div class="alert alert-{{ alert_type }} {{ important ? "alert-important" : "" }}" role="alert">
       <div class="d-flex">
          <div>
-            <i class="{{ icon }} fa-2x alert-icon"></i>
+            <i class="{{ icon }} fs-2x alert-icon"></i>
          </div>
          <div>
             {% if title|length %}
@@ -65,7 +65,7 @@
       'success',
       title,
       messages,
-      "fas fa-check",
+      "ti ti-check",
       important
    ) }}
 {% endmacro %}
@@ -75,7 +75,7 @@
       'info',
       title,
       messages,
-      "fas fa-info-circle",
+      "ti ti-info-circle",
       important
    ) }}
 {% endmacro %}
@@ -85,7 +85,7 @@
       'warning',
       title,
       messages,
-      "fas fa-exclamation-triangle",
+      "ti ti-alert-triangle",
       important
    ) }}
 {% endmacro %}
@@ -95,7 +95,7 @@
       'danger',
       title,
       messages,
-      "fas fa-exclamation-circle",
+      "ti ti-exclamation-circle",
       important
    ) }}
 {% endmacro %}

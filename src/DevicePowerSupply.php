@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -43,7 +43,6 @@ class DevicePowerSupply extends CommonDevice
         return _n('Power supply', 'Power supplies', $nb);
     }
 
-
     public function getAdditionalFields()
     {
 
@@ -65,14 +64,13 @@ class DevicePowerSupply extends CommonDevice
         );
     }
 
-
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_atx',
             'name'               => __('ATX'),
             'datatype'           => 'bool'
@@ -80,7 +78,7 @@ class DevicePowerSupply extends CommonDevice
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'power',
             'name'               => __('Power'),
             'datatype'           => 'string',
@@ -97,15 +95,13 @@ class DevicePowerSupply extends CommonDevice
         return $tab;
     }
 
-
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
-        HTMLTableSuperHeader $super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
-
         $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
         if ($column == $father) {
@@ -120,14 +116,12 @@ class DevicePowerSupply extends CommonDevice
         }
     }
 
-
     public function getHTMLTableCellForItem(
-        HTMLTableRow $row = null,
-        CommonDBTM $item = null,
-        HTMLTableCell $father = null,
+        ?HTMLTableRow $row = null,
+        ?CommonDBTM $item = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
-
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -141,6 +135,7 @@ class DevicePowerSupply extends CommonDevice
                     $row->addCell($row->getHeaderByName('power'), $this->fields["power"]);
                 }
         }
+        return null;
     }
 
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
@@ -166,7 +161,6 @@ class DevicePowerSupply extends CommonDevice
 
         return $tab;
     }
-
 
     public static function getIcon()
     {

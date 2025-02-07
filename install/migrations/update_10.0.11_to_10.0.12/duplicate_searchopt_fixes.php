@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,11 +38,11 @@
  * @var \Migration $migration
  */
 
-$iterator = $DB->request('glpi_configs', ['name' => 'lock_use_lock_item']);
+$iterator = $DB->request(['FROM' => 'glpi_configs', 'WHERE' => ['name' => 'lock_use_lock_item']]);
 $lock_use_lock_item = $iterator->current()['value'] ?? false;
 
 if ($lock_use_lock_item) {
-    $iterator = $DB->request('glpi_configs', ['name' => 'lock_item_list']);
+    $iterator = $DB->request(['FROM' => 'glpi_configs', 'WHERE' => ['name' => 'lock_item_list']]);
     $lock_item_list = $iterator->current()['value'] ?? '';
     $lock_item_list = json_decode($lock_item_list);
 

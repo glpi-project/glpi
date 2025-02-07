@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,7 +36,7 @@
 /**
  * Update from 0.90.1 to 0.90.5
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update0901to0905()
 {
@@ -63,7 +63,7 @@ function update0901to0905()
             $migration->displayWarning("$new_table table already exists. " .
                                     "A backup have been done to backup_$new_table.");
             $backup_tables = true;
-            $query         = $migration->renameTable("$new_table", "backup_$new_table");
+            $migration->renameTable("$new_table", "backup_$new_table");
         }
     }
     if ($backup_tables) {
@@ -75,7 +75,7 @@ function update0901to0905()
 
    // fix https://github.com/glpi-project/glpi/issues/820
    // remove empty suppliers in tickets
-    $DB->deleteOrDie("glpi_suppliers_tickets", [
+    $DB->delete("glpi_suppliers_tickets", [
         'suppliers_id'       => 0,
         'alternative_email'  => ""
     ]);

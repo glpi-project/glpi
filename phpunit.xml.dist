@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+    bootstrap="phpunit/bootstrap.php"
+    colors="true"
+>
+  <source>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </source>
+
+  <testsuites>
+    <testsuite name="Unit">
+       <directory>phpunit/functional/</directory>
+    </testsuite>
+  </testsuites>
+
+  <php>
+    <!-- Code coverage requires about 1.5GB of memory. -->
+    <ini name="memory_limit" value="2G" />
+  </php>
+</phpunit>

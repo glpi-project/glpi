@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,20 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
+
 /**
  * @since 0.85
  */
 
-use Glpi\Event;
-
-if (!defined('GLPI_ROOT')) {
-    include('../inc/includes.php');
-}
-
 $link = new Problem_Supplier();
 
-Session::checkLoginUser();
-Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
+Html::popHeader(__('Email followup'));
 
 if (isset($_POST["update"])) {
     $link->check($_POST["id"], UPDATE);
@@ -68,10 +64,8 @@ if (isset($_POST["update"])) {
         sprintf(__('%s deletes an actor'), $_SESSION["glpiname"])
     );
     Html::redirect(Problem::getFormURLWithID($link->fields['problems_id']));
-} else if (isset($_GET["id"])) {
-    $link->showSupplierNotificationForm($_GET["id"]);
 } else {
-    Html::displayErrorAndDie('Lost');
+    throw new BadRequestHttpException();
 }
 
 Html::popFooter();

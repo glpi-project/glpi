@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -63,10 +63,11 @@ class NotImportedEmail extends CommonDBTM
         return _n('Refused email', 'Refused emails', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', MailCollector::class, self::class];
+    }
 
-    /**
-     * @see CommonDBTM::getSpecificMassiveActions()
-     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
 
@@ -75,18 +76,12 @@ class NotImportedEmail extends CommonDBTM
 
         if ($isadmin) {
             $prefix                          = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'delete_email'] = __('Delete emails');
-            $actions[$prefix . 'import_email'] = _x('button', 'Import');
+            $actions[$prefix . 'delete_email'] = __s('Delete emails');
+            $actions[$prefix . 'import_email'] = _sx('button', 'Import');
         }
         return $actions;
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::showMassiveActionsSubForm()
-     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -100,12 +95,6 @@ class NotImportedEmail extends CommonDBTM
         return parent::showMassiveActionsSubForm($ma);
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -219,7 +208,7 @@ class NotImportedEmail extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-        $DB->truncate('glpi_notimportedemails');
+        $DB->delete('glpi_notimportedemails', [1]);
     }
 
 

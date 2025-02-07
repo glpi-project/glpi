@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,12 +35,8 @@
 
 class RuleDictionnaryMonitorType extends RuleDictionnaryDropdown
 {
-    /**
-     * @see Rule::getCriterias()
-     **/
     public function getCriterias()
     {
-
         static $criterias = [];
 
         if (count($criterias)) {
@@ -54,13 +50,8 @@ class RuleDictionnaryMonitorType extends RuleDictionnaryDropdown
         return $criterias;
     }
 
-
-    /**
-     * @see Rule::getActions()
-     **/
     public function getActions()
     {
-
         $actions                          = [];
         $actions['name']['name']          = _n('Type', 'Types', 1);
         $actions['name']['force_actions'] = ['append_regex_result', 'assign', 'regex_result'];

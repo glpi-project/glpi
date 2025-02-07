@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,22 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
+use Glpi\Exception\Http\BadRequestHttpException;
+
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
-
 $result = [];
 if (!isset($_POST['itemtype']) || !isset($_POST['params'])) {
-    http_response_code(500);
-    $result = [
-        'success'   => false,
-        'message'   => __('Required argument missing!')
-    ];
+    throw new BadRequestHttpException();
 } else {
     $itemtype = $_POST['itemtype'];
-    $params = $_POST['params'];
+    $params   = $_POST['params'];
 
     $data = Search::prepareDatasForSearch($itemtype, $params);
     Search::constructSQL($data);

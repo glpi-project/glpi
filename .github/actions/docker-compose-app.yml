@@ -1,15 +1,13 @@
-version: "3.5"
-
 services:
   app:
-    container_name: "app"
-    image: "ghcr.io/glpi-project/${PHP_IMAGE:-githubactions-php}"
+    container_name: "glpi-test-app"
+    image: "ghcr.io/glpi-project/${PHP_IMAGE:-githubactions-php-apache:8.3}"
     environment:
       CODE_COVERAGE: "${CODE_COVERAGE:-false}"
-    volumes: 
+    volumes:
       - type: "bind"
         source: "${APPLICATION_ROOT}"
         target: "/var/www/glpi"
       - type: "bind"
         source: "${APP_CONTAINER_HOME}"
-        target: "/home/glpi"
+        target: "/home/www-data"

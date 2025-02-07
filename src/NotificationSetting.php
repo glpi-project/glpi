@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,6 +38,11 @@
  */
 abstract class NotificationSetting extends CommonDBTM
 {
+    public const ATTACH_INHERIT           = -2;   // Inherit from global config
+    public const ATTACH_NO_DOCUMENT       = 0;    // No document
+    public const ATTACH_ALL_DOCUMENTS     = 1;    // All documents
+    public const ATTACH_FROM_TRIGGER_ONLY = 2;    // Only documents related to the item that triggers the event
+
     public $table           = 'glpi_configs';
     protected $displaylist  = false;
     public static $rightname       = 'config';
@@ -102,7 +107,7 @@ abstract class NotificationSetting extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == static::class) {
+        if (get_class($item) == static::class) {
             switch ($tabnum) {
                 case 1:
                     $item->showFormConfig();
@@ -114,7 +119,7 @@ abstract class NotificationSetting extends CommonDBTM
 
 
     /**
-     * Disable (temporary) all notifications
+     * Disable (temporary) all notifications for the rest of the request execution
      *
      * @return void
      */
@@ -125,7 +130,7 @@ abstract class NotificationSetting extends CommonDBTM
 
         $CFG_GLPI['use_notifications'] = 0;
         foreach (array_keys($CFG_GLPI) as $key) {
-            if (substr($key, 0, strlen('notifications_')) === 'notifications_') {
+            if (str_starts_with($key, 'notifications_')) {
                 $CFG_GLPI[$key] = 0;
             }
         }

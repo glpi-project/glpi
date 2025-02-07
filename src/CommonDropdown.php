@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,8 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Features\AssetImage;
-use Glpi\Toolbox\Sanitizer;
 
 /// CommonDropdown class - generic dropdown
 abstract class CommonDropdown extends CommonDBTM
@@ -49,10 +49,6 @@ abstract class CommonDropdown extends CommonDBTM
     public $must_be_replace = false;
 
    //Menu & navigation
-    public $first_level_menu  = "config";
-    public $second_level_menu = "commondropdown";
-    public $third_level_menu  = "";
-
     public $display_dropdowntitle  = true;
 
    //This dropdown can be translated
@@ -71,13 +67,18 @@ abstract class CommonDropdown extends CommonDBTM
         return _n('Dropdown', 'Dropdowns', $nb);
     }
 
+    public static function getSectorizedDetails(): array
+    {
+        return ['config', self::class, static::class];
+    }
+
 
     /**
      * Is translation enabled for this itemtype
      *
      * @since 0.85
      *
-     * @return true if translation is available, false otherwise
+     * @return boolean true if translation is available, false otherwise
      **/
     public function maybeTranslated()
     {
@@ -105,39 +106,51 @@ abstract class CommonDropdown extends CommonDBTM
     {
 
         $menu = [];
-        if (get_called_class() == 'CommonDropdown') {
+        if (static::class === 'CommonDropdown') {
             $menu['title']             = static::getTypeName(Session::getPluralNumber());
             $menu['shortcut']          = 'n';
             $menu['page']              = '/front/dropdown.php';
             $menu['icon']              = self::getIcon();
             $menu['config']['default'] = '/front/dropdown.php';
 
-            $dps = Dropdown::getStandardDropdownItemTypes();
-            $menu['options'] = [];
+            $menu['links']   = [
+                DropdownDefinition::class => DropdownDefinition::getSearchURL(false),
+            ];
+            $menu['options'] = [
+                DropdownDefinition::class => [
+                    'icon'  => DropdownDefinition::getIcon(),
+                    'title' => DropdownDefinition::getTypeName(Session::getPluralNumber()),
+                    'page'  => DropdownDefinition::getSearchURL(false),
+                    'links' => [
+                        'search' => DropdownDefinition::getSearchURL(false),
+                        'add'    => DropdownDefinition::getFormURL(false),
+                    ]
+                ]
+            ];
 
+            $dps = Dropdown::getStandardDropdownItemTypes();
             foreach ($dps as $tab) {
                 foreach ($tab as $key => $val) {
-                    if ($tmp = getItemForItemtype($key)) {
+                    /** @var class-string<CommonDropdown> $key */
+                    if (class_exists($key)) {
                         $menu['options'][$key]['title']           = $val;
-                        $menu['options'][$key]['page']            = $tmp->getSearchURL(false);
-                        $menu['options'][$key]['icon']            = $tmp->getIcon();
-                        $menu['options'][$key]['links']['search'] = $tmp->getSearchURL(false);
+                        $menu['options'][$key]['page']            = $key::getSearchURL(false);
+                        $menu['options'][$key]['icon']            = $key::getIcon();
+                        $menu['options'][$key]['links']['search'] = $key::getSearchURL(false);
                         //saved search list
                         $menu['options'][$key]['links']['lists']  = "";
-                        $menu['options'][$key]['lists_itemtype']  = $tmp::getType();
-                        if ($tmp->canCreate()) {
-                            $menu['options'][$key]['links']['add'] = $tmp->getFormURL(false);
+                        $menu['options'][$key]['lists_itemtype']  = $key::getType();
+                        if ($key::canCreate()) {
+                            $menu['options'][$key]['links']['add'] = $key::getFormURL(false);
                         }
                     }
                 }
             }
-            if (count($menu['options'])) {
-                return $menu;
-            }
+
+            return $menu;
         } else {
             return parent::getMenuContent();
         }
-        return false;
     }
 
 
@@ -216,36 +229,11 @@ abstract class CommonDropdown extends CommonDBTM
             $this->addStandardTab('Log', $ong, $options);
         }
 
-        if (DropdownTranslation::canBeTranslated($this)) {
+        if ($this->maybeTranslated()) {
             $this->addStandardTab('DropdownTranslation', $ong, $options);
         }
 
         return $ong;
-    }
-
-    public function displayHeader()
-    {
-        Toolbox::deprecated(
-            "This method is deprecated. Use displayCentralHeader() instead"
-        );
-        static::displayCentralHeader();
-    }
-
-    public static function displayCentralHeader(
-        ?string $title = null,
-        ?array $menus = null
-    ): void {
-        if (empty($menus)) {
-            $dropdown = new static();
-
-            $menus = [
-                $dropdown->first_level_menu,
-                $dropdown->second_level_menu,
-                $dropdown->third_level_menu ?: $dropdown->getType()
-            ];
-        }
-
-        parent::displayCentralHeader($title, $menus);
     }
 
     /**
@@ -394,7 +382,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @param int $ID          ID of the item
      * @param array $field     Field specs (see self::getAdditionalFields())
-     * @param array $options   Additionnal options
+     * @param array $options   Additional options
      *
      * @return void
      *
@@ -617,31 +605,33 @@ abstract class CommonDropdown extends CommonDBTM
      * Show a dialog to Confirm delete action
      * And propose a value to replace
      *
-     * @param $target string URL
-     **/
-    public function showDeleteConfirmForm($target)
+     * since 11.0.0 The `$target` parameter has been removed and its value is automatically computed.
+     */
+    public function showDeleteConfirmForm()
     {
 
         if ($this->haveChildren()) {
             echo "<div class='center'><p class='red'>" .
-               __("You can't delete that item, because it has sub-items") . "</p></div>";
+               __s("You can't delete that item, because it has sub-items") . "</p></div>";
             return false;
         }
 
-        $ID = $this->fields['id'];
+        $ID = (int)$this->fields['id'];
+
+        $target = htmlescape(static::getFormURL());
 
         echo "<div class='center'><p class='red'>";
-        echo __("Caution: you're about to remove a heading used for one or more items.");
+        echo __s("Caution: you're about to remove a heading used for one or more items.");
         echo "</p>";
 
         if (!$this->must_be_replace) {
            // Delete form (set to 0)
-            echo "<p>" . __('If you confirm the deletion, all uses of this dropdown will be blanked.') .
+            echo "<p>" . __s('If you confirm the deletion, all uses of this dropdown will be blanked.') .
               "</p>";
-            echo "<form action='$target' method='post'>";
+            echo "<form action='" . $target . "' method='post'>";
             echo "<table class='tab_cadre'><tr>";
             echo "<td><input type='hidden' name='id' value='$ID'>";
-            echo "<input type='hidden' name='itemtype' value='" . $this->getType() . "' />";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($this->getType()) . "' />";
             echo "<input type='hidden' name='forcepurge' value='1'>";
             echo "<input class='btn btn-primary' type='submit' name='purge'
                 value=\"" . _sx('button', 'Confirm') . "\">";
@@ -650,9 +640,9 @@ abstract class CommonDropdown extends CommonDBTM
                     value=\"" . _sx('button', 'Cancel') . "\">";
             echo "</td></tr></table>\n";
             Html::closeForm();
-            echo "<p>" . __('You can also replace all uses of this dropdown by another.') . "</p>";
+            echo "<p>" . __s('You can also replace all uses of this dropdown by another.') . "</p>";
         } else {
-            echo "<p>" . __('You must replace all uses of this dropdown by another.') . "</p>";
+            echo "<p>" . __s('You must replace all uses of this dropdown by another.') . "</p>";
         }
 
        // Replace form (set to new value)
@@ -678,7 +668,7 @@ abstract class CommonDropdown extends CommonDBTM
             $replacement_options
         );
         echo "<input type='hidden' name='id' value='$ID' />";
-        echo "<input type='hidden' name='itemtype' value='" . $this->getType() . "' />";
+        echo "<input type='hidden' name='itemtype' value='" . htmlescape($this->getType()) . "' />";
         echo "</td><td>";
         echo "<input class='btn btn-primary' type='submit' name='replace' value=\"" . _sx('button', 'Replace') . "\">";
         echo "</td><td>";
@@ -752,8 +742,6 @@ abstract class CommonDropdown extends CommonDBTM
             return -1;
         }
 
-        $input = Sanitizer::sanitize($input);
-
        // Check twin :
         if ($ID = $this->findID($input)) {
             if ($ID > 0) {
@@ -770,10 +758,10 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * This import a new dropdown if it doesn't exist - Play dictionary if needed
      *
-     * @param string  $value           Value of the new dropdown (need to be addslashes)
+     * @param string  $value           Value of the new dropdown
      * @param integer $entities_id     Entity in case of specific dropdown (default -1)
-     * @param array   $external_params (manufacturer) (need to be addslashes)
-     * @param string  $comment         Comment (need to be addslashes)
+     * @param array   $external_params (manufacturer)
+     * @param string  $comment         Comment
      * @param boolean $add             if true, add it if not found. if false,
      *                                 just check if exists (true by default)
      *
@@ -814,14 +802,14 @@ abstract class CommonDropdown extends CommonDBTM
             break;
        }*/
 
-        $input = Sanitizer::sanitize([
+        $input = [
             'name'        => $value,
             'comment'     => $comment,
             'entities_id' => $entities_id,
-        ]);
+        ];
 
         if ($rulecollection) {
-            $res_rule = $rulecollection->processAllRules(Sanitizer::dbUnescapeRecursive($ruleinput), [], []);
+            $res_rule = $rulecollection->processAllRules($ruleinput, [], []);
             if (isset($res_rule["name"])) {
                 $input["name"] = $res_rule["name"];
             }
@@ -832,13 +820,8 @@ abstract class CommonDropdown extends CommonDBTM
         return ($add ? $this->import($input) : $this->findID($input));
     }
 
-
-    /**
-     * @see CommonDBTM::getSpecificMassiveActions()
-     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -851,24 +834,18 @@ abstract class CommonDropdown extends CommonDBTM
             && (count($_SESSION['glpiactiveentities']) > 1)
             && !in_array('merge', $forbidden_actions)
         ) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge'] = __('Merge and assign to current entity');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge'] = __s('Merge and assign to current entity');
         }
 
         return $actions;
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::showMassiveActionsSubForm()
-     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
         switch ($ma->getAction()) {
             case 'merge':
-                echo "&nbsp;" . $_SESSION['glpiactive_entity_shortname'];
+                echo "&nbsp;" . htmlescape($_SESSION['glpiactive_entity_shortname']);
                 echo "<br><br>" . Html::submit(_x('button', 'Merge'), ['name' => 'massiveaction']);
                 return true;
         }
@@ -876,12 +853,6 @@ abstract class CommonDropdown extends CommonDBTM
         return parent::showMassiveActionsSubForm($ma);
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -915,7 +886,6 @@ abstract class CommonDropdown extends CommonDBTM
                             // Change entity
                             $input2['entities_id']  = $_SESSION['glpiactive_entity'];
                             $input2['is_recursive'] = 1;
-                            $input2 = Toolbox::addslashes_deep($input2);
                             // Import new
                             if ($newid = $item->import($input2)) {
                                // Delete old
@@ -957,7 +927,7 @@ abstract class CommonDropdown extends CommonDBTM
         $ret = '';
 
         if ($withname) {
-            $ret .= $this->fields["name"];
+            $ret .= htmlescape($this->fields["name"]);
             $ret .= "&nbsp;&nbsp;";
         }
 

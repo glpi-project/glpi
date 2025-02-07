@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,17 +34,13 @@
  */
 
 use Glpi\Event;
-
-include('../inc/includes.php');
-
-Session::checkLoginUser();
+use Glpi\Exception\Http\BadRequestHttpException;
 
 $category = new KnowbaseItem_KnowbaseItemCategory();
 
 if (isset($_POST["add"])) {
     if (!isset($_POST['knowbaseitems_id']) || !isset($_POST['knowbaseitemcategories_id'])) {
-        $message = __('Mandatory fields are not filled!');
-        Session::addMessageAfterRedirect($message, false, ERROR);
+        Session::addMessageAfterRedirect(__('Mandatory fields are not filled!'), false, ERROR);
         Html::back();
     }
 
@@ -60,4 +56,4 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-Html::displayErrorAndDie("lost");
+throw new BadRequestHttpException();

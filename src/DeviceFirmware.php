@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,10 +42,8 @@ class DeviceFirmware extends CommonDevice
         return _n('Firmware', 'Firmware', $nb);
     }
 
-
     public function getAdditionalFields()
     {
-
         return array_merge(
             parent::getAdditionalFields(),
             [
@@ -73,14 +71,13 @@ class DeviceFirmware extends CommonDevice
         );
     }
 
-
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date',
             'name'               => __('Release date'),
             'datatype'           => 'date'
@@ -160,7 +157,7 @@ class DeviceFirmware extends CommonDevice
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin' => [
-                    'table'      => DeviceFirmware::getTable(),
+                    'table'      => self::getTable(),
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
@@ -180,7 +177,7 @@ class DeviceFirmware extends CommonDevice
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin' => [
-                    'table'      => DeviceFirmware::getTable(),
+                    'table'      => self::getTable(),
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
@@ -200,7 +197,7 @@ class DeviceFirmware extends CommonDevice
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin' => [
-                    'table'      => DeviceFirmware::getTable(),
+                    'table'      => self::getTable(),
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
@@ -242,8 +239,8 @@ class DeviceFirmware extends CommonDevice
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
-        HTMLTableSuperHeader $super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
         /** @var array $CFG_GLPI */
@@ -263,9 +260,9 @@ class DeviceFirmware extends CommonDevice
     }
 
     public function getHTMLTableCellForItem(
-        HTMLTableRow $row = null,
-        CommonDBTM $item = null,
-        HTMLTableCell $father = null,
+        ?HTMLTableRow $row = null,
+        ?CommonDBTM $item = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
         /** @var array $CFG_GLPI */
@@ -276,7 +273,7 @@ class DeviceFirmware extends CommonDevice
             return $father;
         }
 
-        if (in_array($item->getType(), $CFG_GLPI['itemdevicefirmware_types'])) {
+        if (in_array($item::class, $CFG_GLPI['itemdevicefirmware_types'], true)) {
             Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
 
             if ($this->fields["devicefirmwaretypes_id"]) {
@@ -303,11 +300,11 @@ class DeviceFirmware extends CommonDevice
                 );
             }
         }
+        return null;
     }
 
     public function getImportCriteria()
     {
-
         return [
             'designation'              => 'equal',
             'devicefirmwaretypes_id'   => 'equal',
@@ -315,7 +312,6 @@ class DeviceFirmware extends CommonDevice
             'version'                  => 'equal'
         ];
     }
-
 
     public static function getIcon()
     {

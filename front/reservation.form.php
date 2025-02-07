@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,15 +35,16 @@
 
 use Glpi\Event;
 
-/** @var array $CFG_GLPI */
+/**
+ * @var array $CFG_GLPI
+ */
 global $CFG_GLPI;
 
 // avoid reloading js libs
 if (isset($_GET['ajax']) && $_GET['ajax']) {
-    $AJAX_INCLUDE = true;
+    /** @var \Glpi\Controller\LegacyFileLoadController $this */
+    $this->setAjax();
 }
-
-include('../inc/includes.php');
 
 Session::checkRight("reservation", ReservationItem::RESERVEANITEM);
 
@@ -55,7 +56,7 @@ if (isset($_REQUEST['ajax'])) {
 } else if (Session::getCurrentInterface() == "helpdesk") {
     Html::helpHeader(__('Simplified interface'));
 } else {
-    Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
+    Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
 }
 
 if (isset($_POST["update"])) {
@@ -64,7 +65,6 @@ if (isset($_POST["update"])) {
         Session::haveRight("reservation", UPDATE)
         || (Session::getLoginUserID() == $_POST["users_id"])
     ) {
-        $_POST['_target'] = $_SERVER['PHP_SELF'];
         $_POST['_item']   = key($_POST["items"]);
         $_POST['begin']   = $_POST['resa']["begin"];
         $_POST['end']     = $_POST['resa']["end"];

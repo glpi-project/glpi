@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2015-2025 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -41,16 +41,16 @@
          </div>
 
 {% if canedit or item.canEdit(item.fields['id']) %}
-      <div class="card-body mx-n2 mb-4 border-top d-flex flex-row-reverse align-items-start flex-wrap">
-         {% if withtemplate|length > 0 or item.isNewID(id) %}
+      <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
+         {% if withtemplate > 0 or item.isNewID(id) %}
             {% if id <= 0 or withtemplate == 2 %}
                <button class="btn btn-primary me-2" type="submit" name="add" value="1">
-                  <i class="fas fa-plus"></i>
+                  <i class="ti ti-plus"></i>
                   <span>{{ _x('button', 'Add') }}</span>
                </button>
             {% else %}
                <button class="btn btn-primary me-2" type="submit" name="update" value="1">
-                  <i class="far fa-save"></i>
+                  <i class="ti ti-device-floppy"></i>
                   <span>{{ _x('button', 'Save') }}</span>
                </button>
             {% endif %}
@@ -61,7 +61,7 @@
 
             {% if canedit and item.can(id, constant('UPDATE')) %}
                <button class="btn btn-primary me-2" type="submit" name="update" value="1">
-                  <i class="far fa-save"></i>
+                  <i class="ti ti-device-floppy"></i>
                   <span>{{ _x('button', 'Save') }}</span>
                </button>
             {% endif %}
@@ -102,7 +102,7 @@
                                 </label>
                             </span>
                         {% endif %}
-                     <span>
+                     </span>
                   {% endif %}
                {% else %}
                   {% if (not item.maybeDeleted() or item.useDeletedToLockIfDynamic()) %}
@@ -135,7 +135,12 @@
 
          {% if canedit and params['addbuttons']|length > 0 %}
             {% for key, val in params['addbuttons'] %}
-               <button class="btn btn-outline-secondary me-2" type="submit" name="{{ key }}" value="1">
+                {% if val.add_attribs is not empty %}
+                    {% set extra_attribs = call('Html::parseAttributes', {options: val.add_attribs}) %}
+                {% else %}
+                    {% set extra_attribs = '' %}
+                {% endif %}
+               <button class="btn {{ val.btn_class ?? 'btn-outline-secondary' }} me-2 {{ val.add_class ?? '' }}" type="{{ val.type ?? 'submit' }}" name="{{ key }}" value="1" title="{{ val.title ?? '' }}" onclick="{{ val.onclick ?? '' }}" {{ extra_attribs|raw }}>
                   {% if val is iterable %}
                      {% if val.icon is defined %}
                         <i class="{{ val.icon }}"></i>

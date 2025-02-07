@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,7 +36,7 @@
 /**
  * Update from 9.1.1 to 9.1.3
  *
- * @return bool for success (will die for most error)
+ * @return bool
  **/
 function update911to913()
 {
@@ -66,7 +66,7 @@ function update911to913()
             $migration->displayWarning("$new_table table already exists. " .
                                     "A backup have been done to backup_$new_table.");
             $backup_tables = true;
-            $query         = $migration->renameTable("$new_table", "backup_$new_table");
+            $migration->renameTable("$new_table", "backup_$new_table");
         }
     }
     if ($backup_tables) {
@@ -78,7 +78,7 @@ function update911to913()
 
    //Fix duplicated search options
     if (countElementsInTable("glpi_displaypreferences", ['itemtype' => 'IPNetwork', 'num' => '17']) == 0) {
-        $DB->updateOrDie(
+        $DB->update(
             "glpi_displaypreferences",
             [
                 "num" => 17
@@ -86,12 +86,11 @@ function update911to913()
             [
                 'itemtype'  => "IPNetwork",
                 'num'       => 13
-            ],
-            "9.1.3 Fix duplicate IPNetwork Gateway search option"
+            ]
         );
     }
     if (countElementsInTable("glpi_displaypreferences", ['itemtype' => 'IPNetwork', 'num' => '18']) == 0) {
-        $DB->updateOrDie(
+        $DB->update(
             "glpi_displaypreferences",
             [
                 "num" => 18
@@ -99,8 +98,7 @@ function update911to913()
             [
                 'itemtype'  => "IPNetwork",
                 'num'       => 14
-            ],
-            "9.1.3 Fix duplicate IPNetwork addressable network search option"
+            ]
         );
     }
 

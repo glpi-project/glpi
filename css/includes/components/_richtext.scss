@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -31,15 +31,22 @@
  * ---------------------------------------------------------------------
  */
 
+:root:not([glpi-theme-dark="1"]) {
+    body.mce-content-body {
+        background: transparent;
+    }
+}
+
 body.mce-content-body {
     margin: 15px 10px;
 
-    @if not $is-dark {
-        background: transparent;
-    }
-
+    [data-form-tag="true"],
     [data-user-mention="true"] {
         cursor: default !important; // Overrides "not-allowed" cursor on noneditable content
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        margin-bottom: 0.5rem;
     }
 }
 
@@ -48,10 +55,10 @@ body.mce-content-body {
     justify-content: flex-end;
 }
 
-.tox.tox-tinymce {
-    border: $input-border-width solid $input-border-color;
-
-    @include border-radius($input-border-radius, 0);
+.tox.tox-tinymce:not(.content-editable-tinymce .tox.tox-tinymce) {
+    border: var(--tblr-border-width) solid var(--tblr-border-color) !important;
+    border-radius: var(--tblr-border-radius);
+    box-shadow: var(--tblr-box-shadow-input) !important;
 }
 
 .rich_text_container {
@@ -78,7 +85,7 @@ body.mce-content-body {
     }
 
     a[target="_blank"]::before {
-        font-family: tabler-icons;
+        font-family: tabler-icons, sans-serif;
         content: "\ea99";
         padding-right: 4px;
     }
@@ -89,17 +96,23 @@ body.mce-content-body {
         overflow: hidden;
 
         .read_more {
-            @if not $is_dark {
-                background: linear-gradient(to bottom, rgba(255, 255, 255, 0%) 0%, #f1f4e3 100%);
-            } @else {
-                background: linear-gradient(to bottom, rgba(255, 255, 255, 0%) 0%, $dark 100%);
-            }
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0%) 0%, var(--glpi-timeline-itil-content-bg) 100%);
         }
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        margin-bottom: 0.5rem;
     }
 }
 
 .user-mention,
 [data-user-mention="true"] {
+    background: rgba(0, 0, 0, 20%);
+    border-radius: 3px;
+    padding: 5px;
+}
+
+[data-form-tag="true"] {
     background: rgba(0, 0, 0, 20%);
     border-radius: 3px;
     padding: 5px;

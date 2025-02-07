@@ -1,0 +1,136 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = rand|default(random()) %}
+{% set subitem_container_id = subitem_container_id|default('viewsubitem' ~ rand) %}
+{% set as_modal = as_modal|default(false) %}
+{% set add_new_label = add_new_label|default(__('Add')) %}
+
+{% if as_modal %}
+<div class="modal fade" id="{{ subitem_container_id ~ '_modal' }}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-4">{{ modal_title|default(add_new_label) }}</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _x('button', 'Close') }}"></button>
+            </div>
+            <div class="modal-body overflow-auto mb-n5">
+{% endif %}
+<div id='{{ subitem_container_id }}'></div>
+{% if as_modal %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+    function viewAddEditSubItem{{ rand }}(id) {
+        const modal_el = $('#{{ subitem_container_id ~ '_modal' }}');
+        modal_el[0].addEventListener('shown.bs.modal', (event) => {
+            event.target.setAttribute('data-cy-ready', 'true');
+        });
+        modal_el[0].addEventListener('hidden.bs.modal', (event) => {
+            event.target.removeAttribute('data-cy-ready');
+        });
+        $('#{{ subitem_container_id }}').load('{{ path('/ajax/viewsubitem.php')|e('js') }}',{
+            type: "{{ type|e('js') }}",
+            parenttype: "{{ parenttype|e('js') }}",
+        {{ items_id }}: {{ id }},
+        id: id
+    }, () => {
+            if (modal_el.length) {
+                modal_el.modal('show');
+            }
+        });
+    }
+    $(() => {
+        const modal_el = $('#{{ subitem_container_id ~ '_modal' }}');
+
+        {% if datatable_id is defined %}
+            $('#{{ datatable_id }}').on('click', 'tbody tr', (e) => {
+                if ($(e.target).closest('td').find('.massive_action_checkbox').length > 0) {
+                    return;
+                }
+                const subitem_id = $(e.currentTarget).data('id');
+                if (subitem_id) {
+                    viewAddEditSubItem{{ rand }}(subitem_id);
+                }
+            });
+        {% endif %}
+
+        $('#addsubitem{{ rand }}').on('click', (e) => {
+            viewAddEditSubItem{{ rand }}(-1);
+        });
+        const subitem_container = $('#{{ subitem_container_id }}');
+        subitem_container.on('submit', 'form', (e) => {
+            {% if ajax_form_submit %}
+                e.preventDefault();
+                let form_data = $(e.target).serialize();
+                // Add submitter button name/value to form data
+                const submit_btn = $(e.originalEvent.submitter);
+                form_data += '&' + submit_btn.attr('name') + '=' + submit_btn.val();
+
+                const on_finish = () => {
+                    displayAjaxMessageAfterRedirect();
+                    if (modal_el.length) {
+                        modal_el.modal('hide');
+                    }
+                };
+                const on_success = () => {
+                    $(e.target).trigger('glpi:submit:success', {
+                        submitter: submit_btn,
+                    });
+                    on_finish();
+                };
+                const on_error = () => {
+                    $(e.target).trigger('glpi:submit:error', {
+                        submitter: submit_btn,
+                    });
+                    on_finish();
+                };
+                $.post($(e.target).attr('action'), form_data).then(on_success, on_error);
+            {% endif %}
+        });
+    });
+</script>
+{% if cancreate %}
+    {% if not add_new_inline %}
+        <div class="text-center mt-1 mb-3">
+    {% endif %}
+        <button id="addsubitem{{ rand }}" type="button" class="btn {{ add_new_btn_class|default('btn-primary') }}">
+            {{ add_new_label }}
+        </button>
+    {% if not add_new_inline %}
+        </div>
+    {% endif %}
+{% endif %}

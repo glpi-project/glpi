@@ -1,22 +1,2 @@
-parameters:
-    parallel:
-        maximumNumberOfProcesses: 2
-    level: 1
-    bootstrapFiles:
-        - inc/based_config.php
-    paths:
-        - ajax
-        - front
-        - inc
-        - install
-        - src
-    stubFiles:
-        - stubs/glpi_constants.php
-    ignoreErrors:
-        - '/Call to static method \w+\(\) on an unknown class phpCAS/'
-        - '/Class phpCAS not found/'
-        - '/Instantiated class (DB|DBSlave) not found/'
-        - '/Instantiated class XHProfRuns_Default not found/'
-        - '/\w+ has been replaced by \w+/'
-rules:
-    - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
+includes:
+    - phpstan.neon.dist

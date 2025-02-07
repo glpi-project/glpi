@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -55,6 +55,10 @@ abstract class FQDNLabel extends CommonDBChild
         );
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-signature';
+    }
 
     /**
      * Get the internet name from a label and a domain ID
@@ -116,10 +120,10 @@ abstract class FQDNLabel extends CommonDBChild
 
            // Before adding a name, we must unsure its is valid : it conforms to RFC
             if (!self::checkFQDNLabel($input['name'])) {
-                Session::addMessageAfterRedirect(sprintf(
+                Session::addMessageAfterRedirect(htmlescape(sprintf(
                     __('Invalid internet name: %s'),
                     $input['name']
-                ), false, ERROR);
+                )), false, ERROR);
                 return false;
             }
         }
@@ -256,7 +260,10 @@ abstract class FQDNLabel extends CommonDBChild
         }
 
         foreach (self::getIDsByLabelAndFQDNID($label, $fqdns_id, $wildcard_search) as $class => $IDs) {
-            if ($FQDNlabel = getItemForItemtype($class)) {
+            if (
+                ($FQDNlabel = getItemForItemtype($class))
+                && ($FQDNlabel instanceof CommonDBChild)
+            ) {
                 foreach ($IDs as $ID) {
                     if ($FQDNlabel->getFromDB($ID)) {
                         $FQNDs_with_Items[] = array_merge(
@@ -265,6 +272,11 @@ abstract class FQDNLabel extends CommonDBChild
                         );
                     }
                 }
+            } else {
+                trigger_error(
+                    sprintf('%s is not a valid item type', $class),
+                    E_USER_WARNING
+                );
             }
         }
 

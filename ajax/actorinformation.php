@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,15 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-// Direct access to file
-if (strpos($_SERVER['PHP_SELF'], "actorinformation.php")) {
-    $AJAX_INCLUDE = 1;
-    include('../inc/includes.php');
-    header("Content-Type: text/html; charset=UTF-8");
-    Html::header_nocache();
-}
-
-Session::checkLoginUser();
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
 // save value and force boolval for security of $_REQUEST['only_number]
 $only_number = boolval($_REQUEST['only_number'] ?? false);
@@ -122,12 +117,12 @@ $options2 = [
 $ticket = new Ticket();
 
 $url = $ticket->getSearchURL() . "?" . Toolbox::append_params($options2, '&amp;');
-$nb  = $ticket->{$method}($actor_id);
+$nb  = (int) $ticket->{$method}($actor_id);
 
 if ($only_number) {
     echo "<a href='$url'>" . $nb . "</a>";
 } else {
     echo "&nbsp;<a href='$url' title=\"" . __s('Processing') . "\">(";
-    printf(__('%1$s: %2$s'), __('Processing'), $nb);
+    printf(__s('%1$s: %2$s'), __('Processing'), $nb);
     echo ")</a>";
 }

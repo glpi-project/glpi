@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,8 +34,6 @@
  */
 
 use Glpi\Event;
-
-include('../inc/includes.php');
 
 Session::checkRight("datacenter", READ);
 
@@ -129,6 +127,6 @@ if (isset($_POST["add"])) {
         $datacenter->getFromDB($options['datacenters_id']);
         $options['locations_id'] = $datacenter->fields['locations_id'];
     }
-    $menus = ["management", "datacenter", "dcroom"];
+    $menus = ["management", "datacenter", "DCRoom"];
     DCRoom::displayFullPageForItem($_GET["id"], $menus, $options);
 }

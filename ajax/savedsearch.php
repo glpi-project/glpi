@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,11 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
 header('Content-Type: application/json; charset=UTF-8');
 Html::header_nocache();
-
-Session::checkLoginUser();
 
 $savedsearch = new SavedSearch();
 
@@ -47,14 +44,14 @@ if (isset($_POST["name"])) {
     $savedsearch->check(-1, CREATE, $_POST);
     if ($savedsearch->add($_POST)) {
         Session::addMessageAfterRedirect(
-            __('Search has been saved'),
+            __s('Search has been saved'),
             false,
             INFO
         );
         echo json_encode(['success' => true]);
     } else {
         Session::addMessageAfterRedirect(
-            __('Search has not been saved'),
+            __s('Search has not been saved'),
             false,
             ERROR
         );
@@ -86,8 +83,7 @@ if ($action == 'display_mine') {
     header("Content-Type: text/html; charset=UTF-8");
     $savedsearch->displayMine(
         $_GET["itemtype"],
-        (bool) ($_GET["inverse"] ?? false),
-        false
+        (bool) ($_GET["inverse"] ?? false)
     );
 }
 

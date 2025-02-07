@@ -4,11 +4,14 @@ set -e -u -x -o pipefail
 LOG_FILE="./tests/files/_log/install.log"
 mkdir -p $(dirname "$LOG_FILE")
 
+# Run the check requirements command to make sure it is working
+bin/console system:check_requirements
+
 # Execute install
 bin/console database:install \
-  --config-dir=./tests/config --ansi --no-interaction \
+  --ansi --no-interaction \
   --force \
-  --reconfigure --db-name=glpi --db-host=db --db-user=root \
+  --reconfigure --db-name=glpi --db-host=db --db-user=root --db-password="" \
   --strict-configuration \
   | tee $LOG_FILE
 if [[ -n $(grep "Warning" $LOG_FILE) ]];
@@ -16,14 +19,16 @@ if [[ -n $(grep "Warning" $LOG_FILE) ]];
 fi
 
 # Check DB
-bin/console database:check_schema_integrity --config-dir=./tests/config --ansi --no-interaction --strict
-bin/console tools:check_database_keys --config-dir=./tests/config --ansi --no-interaction --detect-useless-keys
-bin/console tools:check_database_schema_consistency --config-dir=./tests/config --ansi --no-interaction
-tests/bin/test-data-sanitization --ansi --no-interaction
+bin/console database:check_schema_integrity --ansi --no-interaction --strict
+bin/console tools:check_database_keys --ansi --no-interaction --detect-useless-keys
+bin/console tools:check_database_schema_consistency --ansi --no-interaction
 
 # Execute update
 ## Should do nothing.
-bin/console database:update --config-dir=./tests/config --ansi --no-interaction | tee $LOG_FILE
+bin/console database:update --ansi --no-interaction | tee $LOG_FILE
 if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "database:update command FAILED" && exit 1;
 fi
+
+# Defines the base URL to match the default one used in web/e2e tests
+bin/console config:set url_base http://localhost:80

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,7 +34,6 @@
  */
 
 use Glpi\Plugin\Hooks;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  *  GLPI security key
@@ -63,6 +62,7 @@ class GLPIKey
     protected $fields = [
         'glpi_authldaps.rootdn_passwd',
         'glpi_mailcollectors.passwd',
+        'glpi_oauthclients.secret',
         'glpi_snmpcredentials.auth_passphrase',
         'glpi_snmpcredentials.priv_passphrase',
     ];
@@ -165,7 +165,7 @@ class GLPIKey
      *
      * @return bool
      */
-    public function generate(): bool
+    public function generate(bool $update_db = true): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -181,14 +181,12 @@ class GLPIKey
 
        // Fetch old key before generating the new one (but only if DB exists and there is something to migrate)
         $previous_key = null;
-        if ($DB instanceof DBmysql && $DB->connected) {
-            if ($this->keyExists()) {
-                $previous_key = $this->get();
-                if ($previous_key === null) {
-                    // Do not continue if unable to get previous key.
-                    // Detailed warning has already been triggered by `get()` method.
-                    return false;
-                }
+        if ($update_db && $this->keyExists()) {
+            $previous_key = $this->get();
+            if ($previous_key === null) {
+                // Do not continue if unable to get previous key when DB update is requested.
+                // Detailed warning has already been triggered by `get()` method.
+                return false;
             }
         }
 
@@ -199,11 +197,12 @@ class GLPIKey
             return false;
         }
 
-        if ($DB instanceof DBmysql && $DB->connected) {
-            if (!$this->migrateFieldsInDb($previous_key) || !$this->migrateConfigsInDb($previous_key)) {
-                trigger_error('Error during encrypted data update in database.', E_USER_WARNING);
-                return false;
-            }
+        if (
+            $update_db
+            && (!$this->migrateFieldsInDb($previous_key) || !$this->migrateConfigsInDb($previous_key))
+        ) {
+            trigger_error('Error during encrypted data update in database.', E_USER_WARNING);
+            return false;
         }
 
         return true;
@@ -391,10 +390,11 @@ class GLPIKey
     /**
      * Descrypt a string.
      *
-     * @param string|null   $string  String to decrypt.
-     * @param string|null   $key     Key to use, fallback to default key if null.
+     * @param string|null $string String to decrypt.
+     * @param string|null $key Key to use, fallback to default key if null.
      *
      * @return string|null
+     * @throws SodiumException
      */
     public function decrypt(?string $string, $key = null): ?string
     {
@@ -472,6 +472,9 @@ class GLPIKey
             $result .= $char;
         }
 
-        return Sanitizer::unsanitize($result);
+        // In legacy password encrytion logic, an HTML encoded value of password was sometimes stored
+        $result = str_replace(['<', '>'], ['&lt;', '&gt;'], $result);
+
+        return $result;
     }
 }

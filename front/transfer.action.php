@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
-Html::header(__('Transfer'), '', 'admin', 'rule', 'transfer');
+Html::header(__('Transfer'), '', 'admin', 'rule', 'Transfer');
 
 $transfer = new Transfer();
 
@@ -44,22 +44,22 @@ $transfer->checkGlobal(READ);
 if (isset($_POST['transfer'])) {
     if (isset($_SESSION['glpitransfer_list'])) {
         if (!Session::haveAccessToEntity($_POST['to_entity'])) {
-            Html::displayRightError();
+            throw new AccessDeniedHttpException();
         }
         $transfer->moveItems($_SESSION['glpitransfer_list'], $_POST['to_entity'], $_POST);
         unset($_SESSION['glpitransfer_list']);
-        echo "<div class='b center'>" . __('Operation successful') . "<br>";
-        echo "<a href='central.php'>" . __('Back') . "</a></div>";
+        echo "<div class='fw-bold text-center'>" . __s('Operation successful') . "<br>";
+        echo "<a href='central.php' role='button' class='btn btn-primary'>" . __s('Back') . "</a></div>";
         Html::footer();
-        exit();
+        return;
     }
 } else if (isset($_POST['clear'])) {
     unset($_SESSION['glpitransfer_list']);
-    echo "<div class='b center'>" . __('Operation successful') . "<br>";
-    echo "<a href='central.php'>" . __('Back') . "</a></div>";
+    echo "<div class='fw-bold text-center'>" . __s('Operation successful') . "<br>";
+    echo "<a href='central.php' role='button' class='btn btn-primary'>" . __s('Back') . "</a></div>";
     echo "</div>";
     Html::footer();
-    exit();
+    return;
 }
 
 unset($_SESSION['glpimassiveactionselected']);

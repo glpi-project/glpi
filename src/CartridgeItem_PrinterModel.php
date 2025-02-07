@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -78,7 +78,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
-                    return self::createTabEntry(PrinterModel::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(PrinterModel::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';
@@ -94,8 +94,8 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
      **/
     public static function showForCartridgeItem(CartridgeItem $item)
     {
+        $instID = $item->getID();
 
-        $instID = $item->getField('id');
         if (!$item->can($instID, READ)) {
             return false;
         }
@@ -119,7 +119,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";
-            echo "<th colspan='6'>" . __('Add a compatible printer model') . "</th></tr>";
+            echo "<th colspan='6'>" . __s('Add a compatible printer model') . "</th></tr>";
 
             echo "<tr><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name='cartridgeitems_id' value='$instID'>";
@@ -154,7 +154,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
                 $header_bottom .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
                 $header_end    .= "</th>";
             }
-            $header_end .= "<th>" . _n('Model', 'Models', 1) . "</th></tr>";
+            $header_end .= "<th>" . _sn('Model', 'Models', 1) . "</th></tr>";
             echo $header_begin . $header_top . $header_end;
 
             foreach ($datas as $data) {
@@ -175,7 +175,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
                     ]
                 ];
                 $url = Printer::getSearchURL() . "?" . Toolbox::append_params($opt, '&amp;');
-                echo "<td class='center'><a href='" . $url . "'>" . $data["name"] . "</a></td>";
+                echo "<td class='center'><a href='" . $url . "'>" . htmlescape($data["name"]) . "</a></td>";
                 echo "</tr>";
             }
             echo $header_begin . $header_bottom . $header_end;
@@ -187,7 +187,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
             }
             echo "</div>";
         } else {
-            echo "<p class='center b'>" . __('No item found') . "</p>";
+            echo "<p class='center b'>" . __s('No item found') . "</p>";
         }
     }
 }

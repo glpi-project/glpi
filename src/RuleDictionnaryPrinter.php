@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,9 +41,6 @@
  **/
 class RuleDictionnaryPrinter extends Rule
 {
-   // From Rule
-    public $can_sort  = true;
-
     public static $rightname = 'rule_dictionnary_printer';
 
 
@@ -52,21 +49,8 @@ class RuleDictionnaryPrinter extends Rule
         return __('Dictionary of printers');
     }
 
-
-    /**
-     * @see Rule::maxActionsCount()
-     **/
-    public function maxActionsCount()
-    {
-        return 4;
-    }
-
-    /**
-     * @see Rule::getCriterias()
-     **/
     public function getCriterias()
     {
-
         static $criterias = [];
 
         if (count($criterias)) {
@@ -88,13 +72,8 @@ class RuleDictionnaryPrinter extends Rule
         return $criterias;
     }
 
-
-    /**
-     * @see Rule::getActions()
-     **/
     public function getActions()
     {
-
         $actions                               = parent::getActions();
 
         $actions['name']['name']               = __('Name');

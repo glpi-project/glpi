@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,8 +36,6 @@
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
-include('../inc/includes.php');
-
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -56,11 +54,11 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
         $link = "getDropdownUsers.php";
     }
 
-    $rand = $_POST['rand'] ?? mt_rand();
+    $rand = (int) ($_POST['rand'] ?? mt_rand());
 
     $field_id = Html::cleanId("dropdown_" . $_POST["name"] . $rand);
 
-    $displaywith = ['otherserial', 'serial'];
+    $displaywith = is_a($_POST['idtable'], CommonITILObject::class, true) ? ['id'] : ['otherserial', 'serial'];
     $p = [
         'value'               => 0,
         'valuename'           => Dropdown::EMPTY_VALUE,
@@ -73,6 +71,9 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
     ];
     if (isset($_POST['value'])) {
         $p['value'] = $_POST['value'];
+    }
+    if (isset($_POST['valuename'])) {
+        $p['valuename'] = $_POST['valuename'];
     }
     if (isset($_POST['entity_restrict'])) {
         $p['entity_restrict']           = $_POST['entity_restrict'];
@@ -91,6 +92,15 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
     if (isset($_POST['width'])) {
         $p['width'] = $_POST['width'];
     }
+    if (isset($_POST['container_css_class'])) {
+        $p['container_css_class'] = $_POST['container_css_class'];
+    }
+    if (isset($_POST['specific_tags_items_id_dropdown'])) {
+        $p['specific_tags'] = $_POST['specific_tags_items_id_dropdown'];
+    }
+    if (isset($_POST['aria_label'])) {
+        $p['aria_label'] = $_POST['aria_label'];
+    }
     $p['_idor_token'] = Session::getNewIDORToken($_POST["idtable"], $idor_params);
 
     echo  Html::jsAjaxDropdown(
@@ -108,13 +118,14 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
             $params['entity_restrict'] = $_POST['entity_restrict'];
         }
 
+        $name = htmlescape($_POST["name"]);
         Ajax::updateItemOnSelectEvent(
             $field_id,
-            "showItemSpecificity_" . $_POST["name"] . "$rand",
+            "showItemSpecificity_" . $name . "$rand",
             $_POST['showItemSpecificity'],
             $params
         );
 
-        echo "<br><span id='showItemSpecificity_" . $_POST["name"] . "$rand'>&nbsp;</span>\n";
+        echo "<br><span id='showItemSpecificity_" . $name . "$rand'>&nbsp;</span>";
     }
 }

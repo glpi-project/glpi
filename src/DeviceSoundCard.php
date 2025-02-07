@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -45,27 +45,23 @@ class DeviceSoundCard extends CommonDevice
         return _n('Soundcard', 'Soundcards', $nb);
     }
 
-
     public function getAdditionalFields()
     {
-
         return array_merge(
             parent::getAdditionalFields(),
-            [['name'  => 'type',
-                'label' => _n('Type', 'Types', 1),
-                'type'  => 'text'
-            ],
-                ['name'  => 'none',
-                    'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
-                                        RegisteredID::showAddChildButtonForItemForm(
-                                            $this,
-                                            '_registeredID',
-                                            null,
-                                            false
-                                        ),
+            [
+                [
+                    'name'  => 'type',
+                    'label' => _n('Type', 'Types', 1),
+                    'type'  => 'text'
+                ],
+                [
+                    'name'  => 'none',
+                    'label' => RegisteredID::getTypeName(Session::getPluralNumber()),
                     'type'  => 'registeredIDChooser'
                 ],
-                ['name'  => 'devicesoundcardmodels_id',
+                [
+                    'name'  => 'devicesoundcardmodels_id',
                     'label' => _n('Model', 'Models', 1),
                     'type'  => 'dropdownValue'
                 ]
@@ -73,14 +69,13 @@ class DeviceSoundCard extends CommonDevice
         );
     }
 
-
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'type',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'string',
@@ -97,12 +92,11 @@ class DeviceSoundCard extends CommonDevice
         return $tab;
     }
 
-
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
-        HTMLTableSuperHeader $super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
 
@@ -113,38 +107,38 @@ class DeviceSoundCard extends CommonDevice
         }
 
         switch ($itemtype) {
-            case 'Computer':
+            case Computer::class:
                 Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
                 $base->addHeader('devicesoundcard_type', _n('Type', 'Types', 1), $super, $father);
                 break;
         }
     }
 
-
     public function getHTMLTableCellForItem(
-        HTMLTableRow $row = null,
-        CommonDBTM $item = null,
-        HTMLTableCell $father = null,
+        ?HTMLTableRow $row = null,
+        ?CommonDBTM $item = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
-
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
             return $father;
         }
 
-        switch ($item->getType()) {
+        $cell = null;
+        switch ($item::class) {
             case 'Computer':
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 if ($this->fields["type"]) {
-                    $row->addCell(
+                    $cell = $row->addCell(
                         $row->getHeaderByName('devicesoundcard_type'),
                         $this->fields["type"],
                         $father
                     );
                 }
         }
+        return $cell;
     }
 
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
@@ -169,7 +163,6 @@ class DeviceSoundCard extends CommonDevice
 
         return $tab;
     }
-
 
     public static function getIcon()
     {

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,12 +34,25 @@
  */
 
 use Glpi\Event;
-
-include('../inc/includes.php');
+use Glpi\Security\TOTPManager;
 
 $user = new User();
 
-Session::checkLoginUser();
+// Manage 2FA
+if (isset($_POST['disable_2fa'])) {
+    $totp_manager = new TOTPManager();
+    $totp_manager->disable2FAForUser(Session::getLoginUserID());
+    Html::redirect(Preference::getSearchURL());
+} else if (isset($_POST['secret'], $_POST['totp_code'])) {
+    $code = is_array($_POST['totp_code']) ? implode('', $_POST['totp_code']) : $_POST['totp_code'];
+    $totp = new TOTPManager();
+    if (Session::validateIDOR($_POST) && ($algorithm = $totp->verifyCodeForSecret($code, $_POST['secret'])) !== false) {
+        $totp->setSecretForUser($_SESSION['glpiID'], $_POST['secret'], $algorithm);
+    } else {
+        Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
+    }
+    Html::redirect(Preference::getSearchURL() . '?regenerate_backup_codes=1');
+}
 
 if (
     isset($_POST["update"])
@@ -57,7 +70,7 @@ if (
     Html::back();
 } else {
     if (Session::getCurrentInterface() == "central") {
-        Html::header(Preference::getTypeName(1), $_SERVER['PHP_SELF'], 'preference');
+        Html::header(Preference::getTypeName(1), '', 'preference');
     } else {
         Html::helpHeader(Preference::getTypeName(1));
     }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -78,163 +78,32 @@ class Item_Problem extends CommonItilObject_Item
     }
 
 
-    /**
-     * Print the HTML array for Items linked to a problem
-     *
-     * @param $problem Problem object
-     *
-     * @return void
-     **/
-    public static function showForProblem(Problem $problem)
-    {
-        $instID = $problem->fields['id'];
-
-        if (!$problem->can($instID, READ)) {
-            return false;
-        }
-        $canedit = $problem->canEdit($instID);
-        $rand    = mt_rand();
-
-        $types_iterator = self::getDistinctTypes($instID);
-        $number = count($types_iterator);
-
-        if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='problemitem_form$rand' id='problemitem_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add an item') . "</th></tr>";
-
-            echo "<tr class='tab_bg_1'><td>";
-            $types = [];
-            foreach ($problem->getAllTypesForHelpdesk() as $key => $val) {
-                $types[] = $key;
-            }
-            Dropdown::showSelectItemFromItemtypes(['itemtypes'
-                                                      => $types,
-                'entity_restrict'
-                                                      => ($problem->fields['is_recursive']
-                                                          ? getSonsOf(
-                                                              'glpi_entities',
-                                                              $problem->fields['entities_id']
-                                                          )
-                                                          : $problem->fields['entities_id'])
-            ]);
-            echo "</td><td class='center' width='30%'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "<input type='hidden' name='problems_id' value='$instID'>";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
-        }
-
-        echo "<div class='spaced'>";
-        if ($canedit && $number) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams = ['container' => 'mass' . __CLASS__ . $rand];
-            Html::showMassiveActions($massiveactionparams);
-        }
-        echo "<table class='tab_cadre_fixehov'>";
-        $header_begin  = "<tr>";
-        $header_top    = '';
-        $header_bottom = '';
-        $header_end    = '';
-        if ($canedit && $number) {
-            $header_top    .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-            $header_top    .= "</th>";
-            $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-            $header_bottom .= "</th>";
-        }
-        $header_end .= "<th>" . _n('Type', 'Types', 1) . "</th>";
-        $header_end .= "<th>" . Entity::getTypeName(1) . "</th>";
-        $header_end .= "<th>" . __('Name') . "</th>";
-        $header_end .= "<th>" . __('Serial number') . "</th>";
-        $header_end .= "<th>" . __('Inventory number') . "</th></tr>";
-        echo $header_begin . $header_top . $header_end;
-
-        $totalnb = 0;
-        foreach ($types_iterator as $row) {
-            $itemtype = $row['itemtype'];
-            if (!($item = getItemForItemtype($itemtype))) {
-                continue;
-            }
-
-            if ($item->canView()) {
-                $iterator = self::getTypeItems($instID, $itemtype);
-                $nb = count($iterator);
-
-                $prem = true;
-                foreach ($iterator as $data) {
-                    $name = $data["name"] ?? '';
-                    if (
-                        $_SESSION["glpiis_ids_visible"]
-                        || empty($data["name"])
-                    ) {
-                        $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
-                    }
-                    $link = $itemtype::getFormURLWithID($data['id']);
-                    $namelink = "<a href=\"" . $link . "\">" . $name . "</a>";
-
-                    echo "<tr class='tab_bg_1'>";
-                    if ($canedit) {
-                        echo "<td width='10'>";
-                        Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
-                        echo "</td>";
-                    }
-                    if ($prem) {
-                        $typename = $item->getTypeName($nb);
-                        echo "<td class='center top' rowspan='$nb'>" .
-                         (($nb > 1) ? sprintf(__('%1$s: %2$s'), $typename, $nb) : $typename) . "</td>";
-                        $prem = false;
-                    }
-                    echo "<td class='center'>";
-                    echo Dropdown::getDropdownName("glpi_entities", $data['entity']) . "</td>";
-                    echo "<td class='center" .
-                        (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
-                    echo ">" . $namelink . "</td>";
-                    echo "<td class='center'>" . (isset($data["serial"]) ? "" . $data["serial"] . "" : "-") .
-                    "</td>";
-                    echo "<td class='center'>" .
-                      (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
-                    echo "</tr>";
-                }
-                $totalnb += $nb;
-            }
-        }
-
-        if ($number) {
-            echo $header_begin . $header_bottom . $header_end;
-        }
-
-        echo "</table>";
-        if ($canedit && $number) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
-        echo "</div>";
-    }
-
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
+        /**
+         * @var \DBmysql $DB
+         * @var array $CFG_GLPI
+         **/
+        global $DB, $CFG_GLPI;
+
+        if (in_array($item::getType(), $CFG_GLPI['asset_types']) && !$this->shouldDisplayTabForAsset($item)) {
+            return '';
+        }
 
         if (!$withtemplate) {
             $nb = 0;
             switch ($item->getType()) {
                 case 'Problem':
+                    /** @var Problem $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForMainItem($item);
                     }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
 
                 case 'User':
                 case 'Group':
                 case 'Supplier':
+                    /** @var User|Group|Supplier $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $from = $item->getType() == 'Group' ? 'glpi_groups_problems' : 'glpi_problems_' . strtolower($item->getType() . 's');
                         $result = $DB->request([
@@ -246,10 +115,13 @@ class Item_Problem extends CommonItilObject_Item
                         ])->current();
                         $nb = $result['cpt'];
                     }
-                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
 
                 default:
-                    if (Session::haveRight("problem", Problem::READALL)) {
+                    if (
+                        Session::haveRight("problem", Problem::READALL)
+                        && ($item instanceof CommonDBTM)
+                    ) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               // Direct one
                               $nb = self::countForItem($item);
@@ -267,7 +139,7 @@ class Item_Problem extends CommonItilObject_Item
                                 }
                             }
                         }
-                        return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
+                        return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
             }
         }
@@ -280,7 +152,7 @@ class Item_Problem extends CommonItilObject_Item
 
         switch ($item->getType()) {
             case 'Problem':
-                self::showForProblem($item);
+                self::showForObject($item);
                 break;
 
             default:

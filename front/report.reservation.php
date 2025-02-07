@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,33 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
-
 Session::checkRight("reports", READ);
 
-Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "report");
+Html::header(Report::getTypeName(Session::getPluralNumber()), '', "tools", "report");
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = 0;
 }
 
 Report::title();
-
-echo "<form method='get' name='form' action='report.reservation.php'>";
-echo "<table class='tab_cadre' width='500'><tr class='tab_bg_2'>";
-echo "<td class='center' width='300'>";
-User::dropdown(['name'   => 'id',
-    'value'  => $_GET["id"],
-    'right'  => 'reservation'
-]);
-
-echo "</td>";
-echo "<td class='center'><input type='submit' class='btn btn-primary' name='submit' value='" .
-      __s('Display report') . "'></td></tr>";
-echo "</table>";
-Html::closeForm();
-
+Report::showReservationReportCriteria();
 if ($_GET["id"] > 0) {
-    Reservation::showForUser($_GET["id"]);
+    Report::showReservationReport($_GET['id']);
 }
 Html::footer();

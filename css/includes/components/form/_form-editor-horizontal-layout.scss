@@ -1,0 +1,257 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+[data-glpi-form-editor-horizontal-blocks] {
+    // Hide block toolbar
+    [data-glpi-form-editor-block] {
+        [data-glpi-form-editor-toolbar] {
+            &.btn-group,
+            &.btn-group-vertical {
+                display: none !important;
+            }
+        }
+    }
+}
+
+
+[data-glpi-form-editor-horizontal-blocks-container] {
+    margin-bottom: 1rem;
+
+    &[data-glpi-form-editor-active-horizontal-blocks] {
+        [data-glpi-form-editor-horizontal-blocks] {
+            &:has(> [data-glpi-form-editor-active-question], [data-glpi-form-editor-active-comment]) {
+                [data-glpi-form-editor-question], [data-glpi-form-editor-comment] {
+                    &:not([data-glpi-form-editor-active-question], [data-glpi-form-editor-active-comment]) {
+                        flex-grow: 0;
+
+                        [data-glpi-form-editor-question-details], [data-glpi-form-editor-comment-details] {
+                            >.card-body {
+                                padding: 0.5rem;
+
+                                div:not(:has(> [data-glpi-form-editor-dynamic-input])) {
+                                    display: none !important;
+                                }
+
+                                div:has(> [data-glpi-form-editor-dynamic-input]) {
+                                    height: 100%;
+                                    justify-content: center;
+                                }
+
+                                div:has(> [data-glpi-form-editor-dynamic-input]) {
+                                    width: 1rem;
+                                    position: relative;
+
+                                    [data-glpi-form-editor-dynamic-input] {
+                                        transform: rotate(90deg);
+                                        transform-origin: left;
+                                        font-size: 1rem;
+                                        left: 0.5rem;
+                                        top: 0;
+                                    }
+                                }
+
+                                [data-glpi-form-editor-required-mark] {
+                                    display: none !important;
+                                }
+                            }
+
+                            height: 100%;
+                            position: relative;
+
+                            [data-glpi-form-editor-dynamic-input] {
+                                display: block;
+                                position: absolute;
+                            }
+                        }
+                    }
+                }
+
+                [data-glpi-form-editor-horizontal-block-placeholder] {
+                    min-width: 1.5rem !important;
+                    max-width: 1.5rem !important;
+                }
+
+                [data-glpi-form-editor-horizontal-block-toolbar] {
+                    @include media-breakpoint-down(sm) {
+                        display: none !important;
+                    }
+                }
+            }
+
+            [data-glpi-form-editor-horizontal-block-placeholder] {
+                &:not([data-glpi-form-editor-active-horizontal-block-placeholder]) {
+                    [data-glpi-form-editor-toolbar] {
+                        display: none !important;
+                    }
+                }
+            }
+        }
+    }
+
+    &:not([data-glpi-form-editor-active-horizontal-blocks]) {
+        > [data-glpi-form-editor-toolbar] {
+            position: absolute;
+            height: 0;
+            width: 0;
+            opacity: 0;
+            visibility: hidden;
+            overflow: hidden;
+        }
+    }
+
+    [data-glpi-form-editor-horizontal-blocks] {
+        position: relative;
+        display: flex;
+        gap: 0.5rem;
+        align-items: stretch;
+
+        // Add a max-width to elements when the block isn't active
+        @for $i from 2 through 4 {
+            &:has(> section:nth-of-type(#{$i})) {
+                [data-glpi-form-editor-block],
+                [data-glpi-form-editor-horizontal-block-placeholder],
+                .glpi-form-editor-drag-question-placeholder {
+                    &:not([data-glpi-form-editor-active-question], [data-glpi-form-editor-active-comment]) {
+                        // Ensure each block has the same max width and share the available space
+                        @if $i == 4 {
+                            max-width: calc(100% / #{$i} - 0.5rem * (#{$i} - 1) / #{$i});
+                        } @else {
+                            /**
+                             * 0.5rem is the gap between blocks
+                             * 2.5rem is the width of the button
+                             */
+                            max-width: calc(100% / #{$i} - 0.5rem - 2.5rem / #{$i});
+                        }
+                    }
+                }
+            }
+        }
+
+        &:has(> section:nth-of-type(4)) {
+            [data-glpi-form-editor-horizontal-block-toolbar],
+            [data-glpi-form-editor-on-click="duplicate-question"],
+            [data-glpi-form-editor-on-click="duplicate-comment"] {
+                display: none !important;
+            }
+        }
+
+        [data-glpi-form-editor-block] {
+            margin-bottom: 0;
+            flex: 1;
+
+            &[data-glpi-form-editor-active-question] {
+                display: flex;
+                width: 100%;
+            }
+
+            &[data-glpi-form-editor-active-comment] {
+                display: flex;
+                width: 100%;
+            }
+
+            &:not([data-glpi-form-editor-active-question]) {
+                div:has(> [data-glpi-form-editor-dynamic-input]) {
+                    overflow: hidden;
+                }
+            }
+        }
+
+        >[data-glpi-form-editor-horizontal-block-toolbar] {
+            margin-top: auto;
+            margin-bottom: auto;
+            order: 100;
+
+            // Remove hover effect on buttons
+            button {
+                border: unset !important;
+                background-color: unset !important;
+                color: var(--tblr-btn-color) !important;
+            }
+        }
+
+        [data-glpi-form-editor-horizontal-block-placeholder] {
+            // Hide the placeholder toolbar when the block isn't active and the placeholder isn't hovered
+            &:not([data-glpi-form-editor-active-horizontal-block-placeholder]) {
+                &:not(:hover) {
+                    [data-glpi-form-editor-toolbar] {
+                        display: none !important;
+                    }
+                }
+            }
+
+            &:not(:has(.glpi-form-editor-drag-question-placeholder)) {
+                border: 2px dashed var(--tblr-border-color);
+                border-radius: var(--tblr-border-radius);
+            }
+
+            min-height: 100px;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            [data-glpi-form-editor-toolbar] {
+                height: unset !important;
+                margin-top: unset !important;
+
+                @include media-breakpoint-down(sm) {
+                    flex-direction: column;
+                }
+
+                // Remove hover effect on buttons
+                button {
+                    border: unset !important;
+                    background-color: unset !important;
+                    color: var(--tblr-btn-color) !important;
+                }
+            }
+
+            .glpi-form-editor-drag-question-placeholder {
+                width: 100%;
+                max-width: unset !important;
+                height: 100% !important;
+                margin: unset !important;
+            }
+        }
+
+        .glpi-form-editor-drag-question-placeholder {
+            flex: 1;
+            height: unset !important;
+            margin: unset !important;
+        }
+
+        [data-glpi-form-editor-question-details], [data-glpi-form-editor-comment-details] {
+            height: 100%;
+        }
+    }
+}

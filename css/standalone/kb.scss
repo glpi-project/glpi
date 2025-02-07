@@ -1,0 +1,173 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+.comments {
+    margin: 0 0 0 1em;
+    padding: 0;
+    list-style: none;
+    position: relative;
+
+    ul {
+        margin: 0 0 0 2em;
+        padding: 0;
+        list-style: none;
+        position: relative;
+        clear: both;
+    }
+
+    &::before,
+    ul::before {
+        content: "";
+        display: block;
+        width: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 85px;
+        border-left: 1px solid #CECECE;
+    }
+
+    ul.has_sub_answers::before {
+        bottom: inherit;
+        height: 105px;
+    }
+
+    li {
+        margin: 0;
+        padding: 0;
+        line-height: 2em;
+
+        // default list item's `line-height`
+        position: relative;
+        clear: left;
+
+        &.has_answers {
+            &:last-child::before {
+                // same with body background
+                height: auto;
+                top: 7.5em;
+                bottom: 0;
+            }
+        }
+
+        &:not(.has_answers) {
+            ul::before {
+                display: none;
+            }
+        }
+
+        .timeline-content {
+            min-width: auto;
+            width: 100%;
+        }
+
+        .newcomment {
+            width: 100%;
+            max-width: 820px;
+        }
+    }
+
+    .h_content {
+        position: relative;
+    }
+}
+
+.forcomments.timeline_history {
+    border: none;
+}
+
+.comments hr {
+    border: none;
+    border-top: 1px #222 dotted;
+    margin-top: 2px;
+}
+
+.comment_form textarea {
+    width: 100%;
+    min-height: 70px;
+}
+
+input[type="checkbox"].toggle_comments {
+    display: none;
+
+    +.toggle_label {
+        cursor: pointer;
+        position: absolute;
+        left: -6px;
+        top: calc(7.5em - 8px);
+        background: #FFF url("../pics/expand.png") no-repeat;
+        width: 14px;
+        height: 14px;
+
+        &::before {
+            content: "";
+            display: block;
+            width: 12px;
+
+            // same with indentation
+            height: 0;
+            border-top: 1px solid #CECECE;
+            margin-top: -1px;
+
+            // border top width
+            position: absolute;
+            top: 8px;
+            left: 13px;
+        }
+    }
+
+    &:checked {
+        +.toggle_label {
+            background: #FFF url("../pics/collapse.png") no-repeat;
+        }
+
+        ~ul {
+            display: block;
+        }
+    }
+
+    &:not(:checked) {
+        +.toggle_label {
+            &::before {
+                content: "...";
+                border: none;
+                top: -12px;
+                left: 20px;
+            }
+        }
+
+        ~ul {
+            display: none;
+        }
+    }
+}

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,9 +34,6 @@
  */
 
 use Glpi\Event;
-use Glpi\Toolbox\Sanitizer;
-
-include('../inc/includes.php');
 
 Session::checkRight("snmpcredential", READ);
 
@@ -46,15 +43,6 @@ if (!isset($_GET["id"])) {
 
 if (!isset($_GET["withtemplate"])) {
     $_GET["withtemplate"] = "";
-}
-
-if (array_key_exists('auth_passphrase', $_POST)) {
-    // Passphrase must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-    $_POST['auth_passphrase'] = Sanitizer::unsanitize($_POST['auth_passphrase']);
-}
-if (array_key_exists('priv_passphrase', $_POST)) {
-    // Passphrase must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-    $_POST['priv_passphrase'] = Sanitizer::unsanitize($_POST['priv_passphrase']);
 }
 
 $cred = new SNMPCredential();
@@ -126,7 +114,7 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else {
-    $menus = ["admin", "glpi\inventory\inventory", "snmpcredential"];
+    $menus = ["admin", "glpi\inventory\inventory", "SNMPCredential"];
     SNMPCredential::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
         'formoptions'  => "data-track-changes=true"

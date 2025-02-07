@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -43,10 +43,8 @@ class DeviceMotherboard extends CommonDevice
         return _n('System board', 'System boards', $nb);
     }
 
-
     public function getAdditionalFields()
     {
-
         return array_merge(
             parent::getAdditionalFields(),
             [['name'  => 'chipset',
@@ -61,14 +59,13 @@ class DeviceMotherboard extends CommonDevice
         );
     }
 
-
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'chipset',
             'name'               => __('Chipset'),
             'datatype'           => 'string',
@@ -85,12 +82,11 @@ class DeviceMotherboard extends CommonDevice
         return $tab;
     }
 
-
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
-        HTMLTableSuperHeader $super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ) {
 
@@ -107,11 +103,10 @@ class DeviceMotherboard extends CommonDevice
         }
     }
 
-
     public function getHTMLTableCellForItem(
-        HTMLTableRow $row = null,
-        CommonDBTM $item = null,
-        HTMLTableCell $father = null,
+        ?HTMLTableRow $row = null,
+        ?CommonDBTM $item = null,
+        ?HTMLTableCell $father = null,
         array $options = []
     ) {
 
@@ -121,18 +116,18 @@ class DeviceMotherboard extends CommonDevice
             return $father;
         }
 
-        switch ($item->getType()) {
-            case 'Computer':
+        switch ($item::class) {
+            case Computer::class:
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 break;
         }
+        return null;
     }
-
 
     public function getImportCriteria()
     {
-
-        return ['designation'      => 'equal',
+        return [
+            'designation'      => 'equal',
             'manufacturers_id' => 'equal',
             'chipset'          => 'equal'
         ];

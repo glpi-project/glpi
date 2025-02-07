@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,60 +33,78 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
+/**
+ * @var array $CFG_GLPI
+ */
 global $CFG_GLPI;
 
-$AJAX_INCLUDE = 1;
-include('../inc/includes.php');
+/** @var \Glpi\Controller\LegacyFileLoadController $this */
+$this->setAjax();
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkLoginUser();
+use Glpi\Application\View\TemplateRenderer;
 
 if (
     isset($_POST["itemtype"])
     && isset($_POST["value"])
 ) {
-   // Security
+    // Security
     if (!is_subclass_of($_POST["itemtype"], "CommonDBTM")) {
-        exit();
+        return;
     }
 
     switch ($_POST["itemtype"]) {
         case User::getType():
+            $link = null;
+            $comments = [];
             if ($_POST['value'] == 0) {
-                $tmpname = [
-                    'link'    => $CFG_GLPI['root_doc'] . "/front/user.php",
-                    'comment' => "",
-                ];
+                $link = $CFG_GLPI['root_doc'] . "/front/user.php";
             } else {
                 $user = new \User();
                 if (is_array($_POST["value"])) {
-                    $comments = [];
                     foreach ($_POST["value"] as $users_id) {
                         if ($user->getFromDB($users_id) && $user->canView()) {
-                            $username   = getUserName($users_id, 2);
-                            $comments[] = $username['comment'] ?? "";
+                            $comments[] = $user->getInfoCard();
                         }
                     }
-                    $tmpname = [
-                        'comment' => implode("<br>", $comments),
-                    ];
                     unset($_POST['withlink']);
                 } else {
                     if ($user->getFromDB($_POST['value']) && $user->canView()) {
-                        $tmpname = getUserName($_POST["value"], 2);
+                        $link = $user->getLinkURL();
+                        $comments[] = $user->getInfoCard();
                     }
                 }
             }
-            echo ($tmpname["comment"] ?? '');
 
-            if (isset($_POST['withlink']) && isset($tmpname['link'])) {
-                echo "<script type='text/javascript' >\n";
-                echo Html::jsGetElementbyID($_POST['withlink']) . ".attr('href', '" . $tmpname['link'] . "');";
-                echo "</script>\n";
+            echo(implode("<br>", $comments));
+
+            if (isset($_POST['withlink']) && $link !== null) {
+                echo Html::scriptBlock(
+                    sprintf(
+                        '$("#%s").attr("href", "%s");',
+                        htmlescape($_POST['withlink']),
+                        htmlescape($link)
+                    )
+                );
+            }
+            break;
+
+        case Group::getType():
+            if ($_POST['value'] != 0) {
+                $group = new \Group();
+                if (!is_array($_POST["value"]) && $group->getFromDB($_POST['value']) && $group->canView()) {
+                    $group_params = [
+                        'id' => $group->getID(),
+                        'group_name' => $group->fields['completename'],
+                        'comment' => $group->fields['comment'],
+                    ];
+                    TemplateRenderer::getInstance()->display('components/group/info_card.html.twig', [
+                        'group' => $group_params,
+                    ]);
+                }
             }
             break;
 
@@ -98,7 +116,7 @@ if (
                         '_idor_token' => $_POST['_idor_token'] ?? ""
                     ])
                 ) {
-                    exit();
+                    return;
                 }
 
                 $itemtype = $_POST['itemtype'];
@@ -107,31 +125,43 @@ if (
                 } else {
                     $table = getTableForItemType($_POST['itemtype']);
                 }
-                $tmpname = Dropdown::getDropdownName($table, $_POST["value"], 1);
-                if (is_array($tmpname) && isset($tmpname["comment"])) {
-                    echo $tmpname["comment"];
-                }
+
+                echo Dropdown::getDropdownComments($table, (int) $_POST["value"]);
 
                 if (isset($_POST['withlink'])) {
-                    echo "<script type='text/javascript' >\n";
-                    echo Html::jsGetElementbyID($_POST['withlink']) . ".
-                    attr('href', '" . $_POST['itemtype']::getFormURLWithID($_POST["value"]) . "');";
-                    echo "</script>\n";
+                    echo Html::scriptBlock(
+                        sprintf(
+                            '$("#%s").attr("href", "%s");',
+                            htmlescape($_POST['withlink']),
+                            htmlescape($_POST['itemtype']::getFormURLWithID($_POST["value"]))
+                        )
+                    );
                 }
 
                 if (isset($_POST['with_dc_position'])) {
                     $item = getItemForItemtype($_POST['itemtype']);
-                    echo "<script type='text/javascript' >\n";
 
-                   //if item have a DC position (reload url to it's rack)
-                    if ($rack = $item->isRackPart($_POST['itemtype'], $_POST["value"], true)) {
-                        echo Html::jsGetElementbyID($_POST['with_dc_position']) . ".
-                  html(\"&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>\");";
+                    //if item have a DC position (reload url to it's rack)
+                    if (
+                        method_exists($item, 'getParentRack')
+                        && ($rack = $item->getParentRack())
+                    ) {
+                        echo Html::scriptBlock(
+                            sprintf(
+                                '$("#%s").html("href", "&nbsp;<a class=\'fas fa-crosshairs\' href=\'%s\'></a>");',
+                                htmlescape($_POST['with_dc_position']),
+                                htmlescape($rack->getLinkURL())
+                            )
+                        );
                     } else {
-                       //remove old dc position
-                        echo Html::jsGetElementbyID($_POST['with_dc_position']) . ".empty();";
+                        //remove old dc position
+                        echo Html::scriptBlock(
+                            sprintf(
+                                '$("#%s").empty();',
+                                htmlescape($_POST['with_dc_position'])
+                            )
+                        );
                     }
-                    echo "</script>\n";
                 }
             }
     }

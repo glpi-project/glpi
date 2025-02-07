@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -82,7 +82,7 @@ class Plugin extends DbTestCase
             function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
             }
-        )->isIdenticalTo('This plugin requires GLPI >= 0.90.');
+        )->isIdenticalTo('This plugin requires GLPI &gt;= 0.90.');
 
        // Test max compatibility
         $infos = ['max' => '9.3'];
@@ -95,7 +95,7 @@ class Plugin extends DbTestCase
             function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
             }
-        )->isIdenticalTo('This plugin requires GLPI < 9.3.');
+        )->isIdenticalTo('This plugin requires GLPI &lt; 9.3.');
 
        // Test min and max compatibility
         $infos = ['min' => '0.90', 'max' => '9.3'];
@@ -108,14 +108,14 @@ class Plugin extends DbTestCase
             function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkGlpiVersion($infos, true))->isFalse();
             }
-        )->isIdenticalTo('This plugin requires GLPI >= 0.90 and < 9.3.');
+        )->isIdenticalTo('This plugin requires GLPI &gt;= 0.90 and &lt; 9.3.');
 
         $this->calling($plugin)->getGlpiVersion = '9.3.0';
         $this->output(
             function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkGlpiVersion($infos))->isFalse();
             }
-        )->isIdenticalTo('This plugin requires GLPI >= 0.90 and < 9.3.');
+        )->isIdenticalTo('This plugin requires GLPI &gt;= 0.90 and &lt; 9.3.');
     }
 
     public function testcheckPhpVersion()
@@ -131,7 +131,7 @@ class Plugin extends DbTestCase
             function () use ($plugin, $infos) {
                 $this->boolean($plugin->checkPhpVersion($infos))->isFalse();
             }
-        )->isIdenticalTo('This plugin requires PHP >= 5.6.');
+        )->isIdenticalTo('This plugin requires PHP &gt;= 5.6.');
 
         $this->calling($plugin)->getPhpVersion = '7.1';
         $this->boolean($plugin->checkPhpVersion($infos))->isTrue();
@@ -141,7 +141,7 @@ class Plugin extends DbTestCase
                 $infos = ['min' => '5.6', 'max' => '7.0'];
                 $this->boolean($plugin->checkPhpVersion($infos))->isFalse();
             }
-        )->isIdenticalTo('This plugin requires PHP >= 5.6 and < 7.0.');
+        )->isIdenticalTo('This plugin requires PHP &gt;= 5.6 and &lt; 7.0.');
 
         $infos = ['min' => '5.6', 'max' => '7.2'];
         $this->boolean($plugin->checkPhpVersion($infos))->isTrue();
@@ -1007,5 +1007,95 @@ PHP
     {
         $plugin = new \Plugin();
         $this->array($plugin->getPluginOptions('thisplugindoesnotexists'))->isEqualTo([]);
+    }
+
+    protected function pluginDirectoryProvider(): iterable
+    {
+        yield [
+            'directory' => 'MyAwesomePlugin',
+            'is_valid'  => true,
+        ];
+
+        yield [
+            'directory' => 'My4wes0mePlugin',
+            'is_valid'  => true,
+        ];
+
+        yield [
+            'directory' => '',
+            'is_valid'  => false,
+        ];
+
+        yield [
+            'directory' => 'My-Plugin', // - is not valid
+            'is_valid'  => false,
+        ];
+
+        yield [
+            'directory' => 'мійплагін', // only latin chars are accepted
+            'is_valid'  => false,
+        ];
+
+        yield [
+            'directory' => '../../anotherapp',
+            'is_valid'  => false,
+        ];
+    }
+
+    protected function inputProvider(): iterable
+    {
+        foreach ($this->pluginDirectoryProvider() as $specs) {
+            $case = [
+                'input'     => [
+                    'directory' => $specs['directory']
+                ],
+            ];
+            if ($specs['is_valid']) {
+                $case['result'] = $case['input'];
+            } else {
+                $case['result'] = false;
+                $case['messages'] = ['Invalid plugin directory'];
+            }
+
+            yield $case;
+        }
+    }
+
+    protected function addInputProvider(): iterable
+    {
+        yield from $this->inputProvider();
+
+        yield [
+            'input'     => [
+            ],
+            'result'    => false,
+            'messages'  => [
+                'Invalid plugin directory',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider addInputProvider
+     */
+    public function testPrepareInputForAdd(array $input, /* array|false */ $result, array $messages = []): void
+    {
+        $this->variable($this->newTestedInstance()->prepareInputForAdd($input))->isEqualTo($result);
+
+        if (count($messages) > 0) {
+            $this->hasSessionMessages(ERROR, $messages);
+        }
+    }
+
+    /**
+     * @dataProvider inputProvider
+     */
+    public function testPrepareInputForUpdate(array $input, /* array|false */ $result, array $messages = []): void
+    {
+        $this->variable($this->newTestedInstance()->prepareInputForAdd($input))->isEqualTo($result);
+
+        if (count($messages) > 0) {
+            $this->hasSessionMessages(ERROR, $messages);
+        }
     }
 }

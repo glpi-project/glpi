@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,9 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-/// NetworkPortLocal class : local instantiation of NetworkPort. Among others, loopback
-/// (ie.: 127.0.0.1)
-/// @since 0.84
+/**
+ * Local instantiation of NetworkPort. Among others, loopback (ie.: 127.0.0.1).
+ * @since 0.84
+ */
 class NetworkPortLocal extends NetworkPortInstantiation
 {
     public $canHaveVLAN = false;

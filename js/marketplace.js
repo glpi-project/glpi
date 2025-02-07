@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* eslint prefer-arrow-callback: 0 */
+/* eslint no-var: 0 */
 /* global displayAjaxMessageAfterRedirect, marketplace_total_plugin */
 
 var current_page = 1;
@@ -38,7 +40,7 @@ var ajax_url;
 var ajax_done = false;
 
 $(document).ready(function() {
-    ajax_url = CFG_GLPI.root_doc+"/ajax/marketplace.php";
+    ajax_url = `${CFG_GLPI.root_doc}/ajax/marketplace.php`;
 
     // plugin actions (install, enable, etc)
     $(document).on('click', '.marketplace .modify_plugin', function() {
@@ -54,27 +56,44 @@ $(document).ready(function() {
             .removeClass()
             .addClass('fas fa-spinner fa-spin');
 
-        if (action === 'download_plugin'
-          || action === 'update_plugin') {
-            followDownloadProgress(button);
-        }
-
-        ajax_done = false;
-        $.post(ajax_url, {
-            'action': action,
-            'key': plugin_key
-        }).done(function(html) {
-            ajax_done = true;
-
-            if (html.indexOf("cleaned") !== -1 && installed) {
-                li.remove();
-            } else {
-                html = html.replace('cleaned', '');
-                buttons.html(html);
-                displayAjaxMessageAfterRedirect();
-                addTooltips();
+        const executeAction = function () {
+            if (action === 'download_plugin'
+              || action === 'update_plugin') {
+                followDownloadProgress(button);
             }
-        });
+
+            ajax_done = false;
+            $.post(ajax_url, {
+                'action': action,
+                'key': plugin_key
+            }).done(function(html) {
+                ajax_done = true;
+
+                if (html.indexOf("cleaned") !== -1 && installed) {
+                    li.remove();
+                } else {
+                    html = html.replace('cleaned', '');
+                    buttons.html(html);
+                    displayAjaxMessageAfterRedirect();
+                    addTooltips();
+                }
+            });
+        };
+
+        if (action === 'download_plugin' || action === 'update_plugin') {
+            // Specific case for plugin code source replacement.
+            // The plugin execution must be suspended first to ensure that its `setup.php` file is not loaded before
+            // its new version is downloaded.
+            $.post(ajax_url, {
+                'action': 'suspend_plugin',
+                'key': plugin_key
+            }).done(function() {
+                executeAction();
+            });
+            return;
+        } else {
+            executeAction();
+        }
     });
 
     // sort control
