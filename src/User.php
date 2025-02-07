@@ -5738,7 +5738,7 @@ HTML;
             Session::addMessageAfterRedirect($e->getMessage(), false, ERROR);
             return;
         }
-        Session::addMessageAfteRredirect(__('If the given email address corresponds to one and only one GLPI user, you will receive an email containing the information required to reset your password. Please contact your administrator if you do not receive emails.'));
+        Session::addMessageAfteRredirect(__('If the given email address corresponds to one and only one GLPI user, you will receive an email containing the information required to reset your password. Please contact your administrator if you do not receive an email.'));
 
         TemplateRenderer::getInstance()->display('password_form.html.twig', [
             'title'         => __('Forgotten password?'),
