@@ -844,4 +844,120 @@ class PendingReasonTest extends DbTestCase
             }
         }
     }
+
+    protected function testCronPendingReasonAutobumpAutosolveProvider()
+    {
+        $this->login();
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $currentDate = $_SESSION['glpi_currenttime'];
+
+        // Create a set of pending reasons that will be reused in our test cases
+        list(
+            $pending_reason1,
+        ) = $this->createItems(\PendingReason::class, [
+            ['entities_id' => $entity, 'is_recursive' => true, 'name' => 'Pending 1'],
+        ]);
+
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                    'last_bump_date'              => date('Y-m-d H:i:s', strtotime('-30 seconds', strtotime($currentDate))),
+                    'dump_count'                  => 0,
+                ],
+            ],
+            'expected' => [
+                [
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                ]
+            ],
+            'expectedTicket' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason1->getID(),
+                'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                'followups_before_resolution' => 2,
+                'last_bump_date' => date('Y-m-d H:i:s', strtotime('-30 seconds', strtotime($currentDate))),
+                'dump_count'                  => 0,
+            ]
+        ];
+    }
+
+    public function testCronPendingReasonAutobumpAutosolve()
+    {
+        $provider = $this->testCronPendingReasonAutobumpAutosolveProvider();
+        foreach ($provider as $row) {
+            $timeline = $row['timeline'];
+            $expected = $row['expected'];
+            $expectedTicket = $row['expectedTicket'];
+
+            // Create test ticket
+            $ticket = $this->createItem(Ticket::class, [
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'name' => 'test',
+                'content' => 'test',
+            ]);
+
+            // Insert timeline
+            $items = [];
+            foreach ($timeline as $timeline_item) {
+                // Insert fake content
+                $timeline_item['content'] = 'test';
+
+                // Read and prepare itemtype (task or followup)
+                $itemtype = $timeline_item['type'];
+                unset($timeline_item['type']);
+
+                if ($itemtype == ITILFollowup::class) {
+                    $timeline_item['itemtype'] = Ticket::class;
+                    $timeline_item['items_id'] = $ticket->getID();
+                } else {
+                    $timeline_item['tickets_id'] = $ticket->getID();
+                }
+                $items[] = $this->createItem($itemtype, $timeline_item, [
+                    'pending',
+                    'pendingreasons_id',
+                    'followup_frequency',
+                    'followups_before_resolution',
+                    'last_bump_date',
+                    'dump_count',
+                ]);
+            }
+
+            // launch Cron for closing tickets
+            $mode = - \CronTask::MODE_EXTERNAL; // force
+            \CronTask::launch($mode, 5, 'pendingreason_autobump_autosolve');
+
+            // Reload ticket
+            $this->assertTrue($ticket->getFromDB($ticket->getID()));
+
+            /** @var Ticket $ticket */
+            $timeline = $ticket->getTimelineItems();
+
+            foreach ($timeline as $index => $timeline_item) {
+                $this->assertEquals($expected[$index]['pending'], $timeline_item->fields['pending']);
+                if ($expected[$index]['pending']) {
+                    $pending_item = PendingReason_Item::getForItem($timeline_item);
+                    $this->assertEquals($expected[$index]['pendingreasons_id'], $pending_item->fields['pendingreasons_id']);
+                    $this->assertEquals($expected[$index]['followup_frequency'], $pending_item->fields['followup_frequency']);
+                    $this->assertEquals($expected[$index]['followups_before_resolution'], $pending_item->fields['followups_before_resolution']);
+                }
+            }
+
+            $ticket_pending_data = PendingReason_Item::getForItem($ticket);
+            $this->assertEquals($expectedTicket['status'], $ticket->fields['status']);
+            $this->assertEquals($expectedTicket['pendingreasons_id'], $ticket_pending_data->fields['pendingreasons_id']);
+            $this->assertEquals($expectedTicket['followup_frequency'], $ticket_pending_data->fields['followup_frequency']);
+            $this->assertEquals($expectedTicket['followups_before_resolution'], $ticket_pending_data->fields['followups_before_resolution']);
+            $this->assertEquals($expectedTicket['last_bump_date'], $ticket_pending_data->fields['last_bump_date']);
+            $this->assertEquals($expectedTicket['dump_count'], $ticket_pending_data->fields['dump_count']);
+        }
+    }
 }
