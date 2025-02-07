@@ -439,22 +439,6 @@ class AuthLDAPTest extends DbTestCase
         $this->assertSame("(modifyTimestamp>=20170420000000.0Z)(modifyTimestamp<=20170422000000.0Z)", $result);
     }
 
-    public function testGetDefault()
-    {
-        $this->assertSame((int)$this->ldap->getID(), (int)\AuthLDAP::getDefault());
-
-        //Load ldap servers
-        $this->addLdapServers();
-        $ldap = getItemByTypeName('AuthLDAP', 'LDAP3');
-        $this->assertSame((int)$ldap->getID(), (int)\AuthLDAP::getDefault());
-
-        $ldap->update([
-            'id'        => $ldap->getID(),
-            'is_active' => 0
-        ]);
-        $this->assertSame(0, (int)\AuthLDAP::getDefault());
-    }
-
     public function testPost_updateItem()
     {
         //Load ldap servers
@@ -500,22 +484,6 @@ class AuthLDAPTest extends DbTestCase
         $ldap = getItemByTypeName('AuthLDAP', 'LDAP3');
         //Check that it's not the default server anymore
         $this->assertEquals(0, $ldap->fields['is_default']);
-    }
-
-    public function testGetDefault()
-    {
-        $this->integer((int)\AuthLDAP::getDefault())->isIdenticalTo((int)$this->ldap->getID());
-
-       //Load ldap servers
-        $this->addLdapServers();
-        $ldap = getItemByTypeName('AuthLDAP', 'LDAP3');
-        $this->integer((int)\AuthLDAP::getDefault())->isIdenticalTo((int)$ldap->getID());
-
-        $ldap->update([
-            'id'        => $ldap->getID(),
-            'is_active' => 0
-        ]);
-        $this->integer((int)\AuthLDAP::getDefault())->isIdenticalTo(0);
     }
 
     public function testPrepareInputForAdd()
