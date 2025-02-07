@@ -53,7 +53,7 @@ class PurgeSoftwareCron extends CommonDBTM
      */
     public static function getTaskDescription(): string
     {
-        return __("Purge software versions and software that are deleted.");
+        return __("Purge software with no version that are deleted.");
     }
 
     /**
@@ -75,7 +75,7 @@ class PurgeSoftwareCron extends CommonDBTM
     }
 
     /**
-     * Purge deleted software and software versions
+     * Purge deleted & unused software
      *
      * @param int $max Max items to handle
      * @return int Number of purged items
@@ -84,21 +84,12 @@ class PurgeSoftwareCron extends CommonDBTM
     {
         $total = 0;
 
-       // Purge deleted software versions
+        // Purge deleted software
         $total += self::purgeItems(
-            self::getVersionsWithNoInstallationCriteria(),
-            new SoftwareVersion(),
-            $max
+            self::getDeletedSoftwareWithNoVersionsCriteria(),
+            new Software(),
+            $max - $total
         );
-
-        if ($total < $max) {
-            // Purge deleted software
-            $total += self::purgeItems(
-                self::getSoftwareWithNoVersionsCriteria(),
-                new Software(),
-                $max - $total
-            );
-        }
 
         return $total;
     }
@@ -118,33 +109,25 @@ class PurgeSoftwareCron extends CommonDBTM
     }
 
     /**
-     * Get all deleted software versions
-     *
-     * @return array
-     */
-    protected static function getDeletedVersionsCriteria(): array
-    {
-        return [
-            'SELECT' => 'id',
-            'FROM'   => SoftwareVersion::getTable(),
-            'WHERE'  => [
-                'is_deleted' => 1,
-            ],
-        ];
-    }
-
-    /**
      * Get all deleted software
      *
      * @return array
      */
-    protected static function getDeletedSoftwareCriteria(): array
+    protected static function getDeletedSoftwareWithNoVersionsCriteria(): array
     {
         return [
             'SELECT' => 'id',
             'FROM'   => Software::getTable(),
             'WHERE'  => [
                 'is_deleted' => 1,
+                'NOT' => [
+                    'id' => new QuerySubQuery(
+                        [
+                            'SELECT' => 'softwares_id',
+                            'FROM'   => SoftwareVersion::getTable(),
+                        ]
+                    ),
+                ]
             ]
         ];
     }
