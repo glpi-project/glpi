@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\RichText\UserMention;
-
 /**
  * @var \Migration $migration
  */
@@ -56,7 +54,7 @@ $migration->addField(
     'int',
     [
         'null' => false,
-        'value' => UserMention::USER_MENTION_FULL,
+        'value' => '1',
         'after' => 'helpdesk_item_type'
     ]
 );

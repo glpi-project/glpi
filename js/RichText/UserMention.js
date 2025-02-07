@@ -47,13 +47,13 @@ window.GLPI.RichText.UserMention = class {
     * @param {Editor} editor
     * @param {number} activeEntity
     * @param {string} idorToken
-    * @param {Array} mentions_options
+    * @param {Array} mentionsOptions
     */
-    constructor(editor, activeEntity, idorToken, mentions_options) {
+    constructor(editor, activeEntity, idorToken, mentionsOptions) {
         this.editor = editor;
         this.activeEntity = activeEntity;
         this.idorToken = idorToken;
-        this.mentionsOptions = mentions_options;
+        this.mentionsOptions = mentionsOptions;
     }
 
     /**

@@ -49,9 +49,9 @@ use User;
 
 final class UserMention
 {
-    const USER_MENTION_DISABLED = 0;
-    const USER_MENTION_FULL = 1;
-    const USER_MENTION_RESTRICTED = 2;
+    public const USER_MENTION_DISABLED = 0;
+    public const USER_MENTION_FULL = 1;
+    public const USER_MENTION_RESTRICTED = 2;
 
     /**
      * Handle user mentions.
@@ -267,25 +267,16 @@ final class UserMention
         return $content;
     }
 
-    public static function isEnabled(): bool
-    {
-        $pro = Profile::getById($_SESSION['glpiactiveprofile']['id']);
-        return $pro->fields['use_mentions'] !== self::USER_MENTION_DISABLED;
-    }
-
-    public static function isMentionsRestricted(): bool
-    {
-        $pro = Profile::getById($_SESSION['glpiactiveprofile']['id']);
-        return $pro->fields['use_mentions'] === self::USER_MENTION_RESTRICTED;
-    }
-
     public static function getRestrictedUsers(CommonITILObject $item): array
     {
+        $pro = Profile::getById($_SESSION['glpiactiveprofile']['id']);
+        $use_mentions = $pro->fields['use_mentions'];
+
         $data = [
-            'enabled' => self::isEnabled(),
+            'enabled' => $use_mentions !== self::USER_MENTION_DISABLED,
         ];
 
-        if (!self::isMentionsRestricted()) {
+        if ($use_mentions !== self::USER_MENTION_RESTRICTED) {
             $data['full'] = true;
             return $data;
         } else {
@@ -305,7 +296,6 @@ final class UserMention
                 $data['users'][] = $a['users_id'];
             }
         }
-
         return $data;
     }
 }

@@ -1636,7 +1636,7 @@ class Profile extends CommonDBTM
 
         echo Dropdown::showFromArray(
             'use_mentions',
-            self::getMentionsLists($disabled),
+            self::getUseMentionsChoices($disabled),
             [
                 'value' => $this->fields['use_mentions'],
                 'display' => false,
@@ -1645,7 +1645,7 @@ class Profile extends CommonDBTM
         );
 
         if ($disabled) {
-            $warning = __('Notifications must be enabled to activate mentions.');
+            $warning = __s('Notifications must be enabled to activate mentions.');
             echo "<span class='form-help ms-2' data-bs-toggle='popover' data-bs-placement='top' data-bs-html='true' data-bs-content='" . $warning . "'>";
             echo "<i class='fas fa-exclamation-triangle text-danger'></i>";
             echo "</span>";
@@ -4078,7 +4078,7 @@ class Profile extends CommonDBTM
     /**
      * @return array<int, string>
      **/
-    public static function getMentionsLists(bool $disabled): array
+    private static function getUseMentionsChoices(bool $disabled): array
     {
         if ($disabled) {
             return [
@@ -4091,15 +4091,6 @@ class Profile extends CommonDBTM
             UserMention::USER_MENTION_FULL        => __('Full'),
             UserMention::USER_MENTION_RESTRICTED  => __('Restricted'),
         ];
-    }
-
-    /**
-     * @param $value
-     * @return string
-     */
-    public static function getMentionsListName($value): string
-    {
-        return self::getMentionsLists(false)[$value] ?? NOT_AVAILABLE;
     }
 
     /**
