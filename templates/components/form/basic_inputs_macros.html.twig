@@ -237,7 +237,7 @@
         {% endif %}
     {% endif %}
 
-    <div class="btn-group flex-grow-1 flatpickr" id="{{ options.id }}">
+    <div class="btn-group flex-grow-1 flatpickr d-flex" id="{{ options.id }}">
         {{ _self.input(name, value, options|merge({
             'type': 'text',
             'id': options.id ~ '_input',
@@ -389,6 +389,7 @@
         'readonly': false,
         'disabled': false,
         'required': false,
+        'additional_attributes': {},
     }|merge(options) %}
 
     <input type="hidden"   name="{{ name }}" value="0" />
@@ -398,7 +399,10 @@
            {{ value == 1 ? 'checked' : '' }}
            {{ options.readonly ? 'readonly' : '' }}
            {{ options.required ? 'required' : '' }}
-           {{ options.disabled ? 'disabled' : '' }} />
+           {{ options.disabled ? 'disabled' : '' }}
+            {% for attr, value in options.additional_attributes %}
+                {{ attr }}="{{ value }}"
+            {% endfor %}/>
 {% endmacro %}
 
 
