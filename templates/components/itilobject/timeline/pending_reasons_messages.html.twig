@@ -49,7 +49,7 @@
    {% set done_pending_icon %}
       <i class="fas fa-solid fa-check"></i>
    {% endset %}
-   {% set pending_reason_option = is_latest_pending ? {
+   {% set pending_reason_option = is_latest_pending and pending_reason_item_parent != false ? {
       'className' : 'badge bg-blue-lt',
       'icon' : active_pending_icon,
       'text': 'Pending',
