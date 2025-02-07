@@ -375,6 +375,13 @@ class PendingReason_Item extends CommonDBRelation
     ): void {
         $last_pending = self::getLastPendingTimelineItemDataForItem($new_timeline_item->input['_job']);
 
+        // Let's check if there is any real updates before going any further
+        $pending_updates = [];
+
+        if (isset($new_timeline_item->input['last_bump_date'])) {
+            $pending_updates['last_bump_date'] = $new_timeline_item->input['last_bump_date'];
+        }
+
         // There is no existing pending data on previous timeline items for this ticket
         // Nothing to be done here since the goal of this method is to update active pending data
         if (!$last_pending) {
@@ -388,6 +395,7 @@ class PendingReason_Item extends CommonDBRelation
             $last_pending->fields['itemtype'] == $new_timeline_item::getType()
             && $last_pending->fields['items_id'] == $new_timeline_item->getID()
         ) {
+            self::updateForItem($new_timeline_item->input['_job'], $pending_updates);
             return;
         }
 
@@ -400,9 +408,6 @@ class PendingReason_Item extends CommonDBRelation
         // If we reach this point, this mean a timeline item with pending information
         // was added on a CommonITILObject which already had pending data
         // This mean the user might be trying to update the existing pending reason data
-
-        // Let's check if there is any real updates before going any further
-        $pending_updates = [];
 
         $fields_to_check_for_updates = ['pendingreasons_id', 'followup_frequency', 'followups_before_resolution'];
         foreach ($fields_to_check_for_updates as $field) {
@@ -417,10 +422,6 @@ class PendingReason_Item extends CommonDBRelation
         // No actual updates -> nothing to be done
         if (count($pending_updates) == 0) {
             return;
-        }
-
-        if (isset($new_timeline_item->input['last_bump_date'])) {
-            $pending_updates['last_bump_date'] = $new_timeline_item->input['last_bump_date'];
         }
 
         $pending_updates_timeline_item = $pending_updates;
