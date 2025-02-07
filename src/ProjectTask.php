@@ -1226,9 +1226,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'plan_start_date'  => __('Planned start date'),
             'plan_end_date'    => __('Planned end date'),
             'planned_duration' => __('Planned duration'),
-            '_effect_duration' => __('Effective duration'),
+            'effect_duration' => ['label' => __('Effective duration'), 'nosort' => true],
             'fname'            => __('Father'),
-            '_task_team'       => ProjectTaskTeam::getTypeName(),
+            'task_team'       => ['label' => ProjectTaskTeam::getTypeName(), 'nosort' => true],
         ];
 
         $criteria = [
@@ -1262,69 +1262,50 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 ]
             ],
             'WHERE'  => [], //$where
-            'ORDERBY'   => [] // $sort $order";
         ];
 
-        if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
-            $order = "DESC";
-        } else {
-            $order = "ASC";
-        }
+        $order = strtoupper($_GET["order"] ?? "");
+        $order = $order === 'DESC' ? $order : 'ASC';
 
-        if (!isset($_GET["sort"]) || empty($_GET["sort"])) {
-            $_GET["sort"] = "plan_start_date";
+        if (empty($_GET["sort"]) || !isset($columns[$_GET["sort"]])) {
+            $_GET['sort'] = 'plan_start_date';
         }
+        $criteria['ORDERBY'] = [$_GET["sort"] . " $order"];
 
-        if (isset($_GET["sort"]) && !empty($_GET["sort"]) && isset($columns[$_GET["sort"]])) {
-            $sort = [$_GET["sort"] . " $order"];
-            $ui_sort = $_GET['sort'];
-        } else {
-            $sort = ["plan_start_date $order", "name"];
-            $ui_sort = 'plan_start_date';
-        }
-        $criteria['ORDERBY'] = $sort;
+        $canedit = $item::class === Project::class && $item->canEdit($ID);
 
-        $canedit = false;
-        if ($item->getType() == 'Project') {
-            $canedit = $item->canEdit($ID);
-        }
-
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'Project':
                 $criteria['WHERE']['glpi_projecttasks.projects_id'] = $ID;
                 break;
-
             case 'ProjectTask':
                 $criteria['WHERE']['glpi_projecttasks.projecttasks_id'] = $ID;
                 break;
-
             default: // Not available type
                 return;
         }
 
-        echo "<div class='spaced'>";
-
         if ($canedit) {
-            echo "<div class='center firstbloc'>";
-            echo "<a class='btn btn-primary' href='" . htmlescape(ProjectTask::getFormURL()) . "?projects_id=$ID'>" .
-                _sx('button', 'Add a task') . "</a>";
-            echo "</div>";
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div class="mb-3">
+                    <a class="btn btn-primary" href="{{ 'ProjectTask'|itemtype_form_path(projects_id) }}">{{ btn_label }}</a>
+                </div>
+TWIG, ['projects_id' => $ID, 'btn_label' => _x('button', 'Add a task')]);
         }
 
-        $rand = mt_rand();
-        if (
-            ($item->getType() == 'ProjectTask')
-            && $item->can($ID, UPDATE)
-        ) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='projecttask_form$rand' id='projecttask_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL('ProjectTask') . "'>";
-            $projet = $item->fields['projects_id'];
-            echo "<a href='" . Toolbox::getItemTypeFormURL('ProjectTask') . "?projecttasks_id=$ID&amp;projects_id=$projet'>";
-            echo __s('Create a sub task from this task of project');
-            echo "</a>";
-            Html::closeForm();
-            echo "</div>";
+        if ($item::class === self::class && $item->can($ID, UPDATE)) {
+            $twig_params = [
+                'projects_id' => $item->fields['projects_id'],
+                'projecttasks_id' => $ID,
+                'btn_label' => __('Create a sub task from this task of project')
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div class="mb-3">
+                    <a class="btn btn-primary" href="{{ 'ProjectTask'|itemtype_form_path }}?projecttasks_id={{ projecttasks_id }}&projects_id={{ projects_id }}">{{ btn_label }}</a>
+                </div>
+TWIG, $twig_params);
         }
 
         if (Session::haveTranslations('ProjectTaskType', 'name')) {
@@ -1359,134 +1340,76 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             ];
         }
 
-        Session::initNavigateListItems(
-            'ProjectTask',
-            //TRANS : %1$s is the itemtype name,
-            //       %2$s is the name of the item (used for headings of a list)
-                                     sprintf(
-                                         __('%1$s = %2$s'),
-                                         $item::getTypeName(1),
-                                         $item->getName()
-                                     )
-        );
-
         $iterator = $DB->request($criteria);
-        if (count($criteria)) {
-            $massive_action_form_id = 'mass' . str_replace('\\', '', static::class) . $rand;
-            if ($canedit) {
-                Html::openMassiveActionsForm($massive_action_form_id);
-                $massiveactionparams = [
-                    'num_displayed' => min($_SESSION['glpilist_limit'], count($criteria)),
-                    'specific_actions' => [
-                        'update' => _x('button', 'Update'),
-                        'clone' => _x('button', 'Clone'),
-                        'delete' => _x('button', 'Put in trashbin'),
-                        'restore' => _x('button', 'Restore'),
-                        'purge' => _x('button', 'Delete permanently')
-                    ]
-                ];
-                Html::showMassiveActions($massiveactionparams);
+        $entries = [];
+        $task = new self();
+        foreach ($iterator as $data) {
+            $task->getFromDB($data['id']);
+            $entry = [
+                'itemtype' => static::class,
+                'id' => $data['id'],
+                'row_class' => $data['is_deleted'] ? 'table-danger' : '',
+                'name' => $task->getLink(['comments' => true]),
+                'tname' => $data['transname2'] ?? $data['tname'],
+                'sname' => [
+                    'content' => $data['transname3'] ?? $data['sname'],
+                    'color' => $data['color']
+                ],
+                'percent_done' => Dropdown::getValueWithUnit($data["percent_done"], "%"),
+                'plan_start_date' => $data['plan_start_date'],
+                'plan_end_date' => $data['plan_end_date'],
+                'planned_duration' => Html::timestampToString($data['planned_duration'], false),
+                'effect_duration' => Html::timestampToString(self::getTotalEffectiveDuration($data['id']), false),
+            ];
+
+            if ($data['projecttasks_id'] > 0) {
+                $parent = new self();
+                $parent->getFromDB($data['projecttasks_id']);
+                $entry['fname'] = $parent->getLink();
             }
-
-            echo "<table class='tab_cadre_fixehov'>";
-
-            $header = '<tr>';
-            if ($canedit) {
-                $header  .= "<th width='10'>";
-                $header    .= Html::getCheckAllAsCheckbox($massive_action_form_id);
-                $header    .= "</th>";
+            $projecttask = new ProjectTask();
+            $projecttask->getFromDB($data['id']);
+            $task_team = '';
+            foreach ($projecttask->getTeam() as $projecttaskteam) {
+                $item = getItemForItemtype($projecttaskteam['itemtype']);
+                $task_team .= "<a href='" . htmlescape($item->getFormURLWithID($projecttaskteam['items_id'])) . "'>" .
+                    htmlescape($projecttaskteam['display_name']) . '</a><br>';
             }
-            foreach ($columns as $key => $val) {
-                $val = htmlescape($val);
-
-                // Non order column
-                if ($key[0] == '_') {
-                    $header .= "<th>$val</th>";
-                } else {
-                    $header .= "<th" . ($ui_sort == $key ? " class='order_$order'" : '') . ">" .
-                     "<a href='javascript:reloadTab(\"sort=$key&amp;order=" .
-                        (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a></th>";
-                }
-            }
-            $header .= "</tr>";
-            echo $header;
-
-            foreach ($iterator as $data) {
-                Session::addToNavigateListItems('ProjectTask', $data['id']);
-                $rand = mt_rand();
-                echo "<tr class='" . ($data['is_deleted'] ? "tab_bg_1_2" : "tab_bg_2") . "'>";
-
-                if ($canedit) {
-                    echo "<td width='10'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data['id']);
-                    echo "</td>";
-                } else {
-                    echo "<td></td>";
-                }
-
-                echo "<td>";
-                $link = "<a id='ProjectTask" . (int)$data["id"] . $rand . "' href='" .
-                        htmlescape(ProjectTask::getFormURLWithID($data['id'])) . "'>" . htmlescape($data['name']) .
-                        (empty($data['name']) ? "(" . (int)$data['id'] . ")" : "") . "</a>";
-                echo sprintf(
-                    __s('%1$s %2$s'),
-                    $link,
-                    Html::showToolTip(
-                        RichText::getEnhancedHtml($data['content']),
-                        ['display' => false,
-                            'applyto' => "ProjectTask" . (int)$data["id"] . $rand
-                        ]
-                    )
-                );
-                echo "</td>";
-                $name = !empty($data['transname2']) ? $data['transname2'] : $data['tname'];
-                echo "<td>" . htmlescape($name) . "</td>";
-                echo "<td";
-                $statename = !empty($data['transname3']) ? $data['transname3'] : $data['sname'];
-                echo " style=\"background-color:" . htmlescape($data['color']) . "\"";
-                echo ">" . htmlescape($statename) . "</td>";
-                echo "<td>";
-                echo Dropdown::getValueWithUnit($data["percent_done"], "%");
-                echo "</td>";
-                echo "<td>" . Html::convDateTime($data['plan_start_date']) . "</td>";
-                echo "<td>" . Html::convDateTime($data['plan_end_date']) . "</td>";
-                echo "<td>" . Html::timestampToString($data['planned_duration'], false) . "</td>";
-                echo "<td>" . Html::timestampToString(
-                    self::getTotalEffectiveDuration($data['id']),
-                    false
-                ) . "</td>";
-                echo "<td>";
-                if ($data['projecttasks_id'] > 0) {
-                      $father = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
-                      echo "<a id='ProjectTask" . (int)$data["projecttasks_id"] . $rand . "' href='" .
-                        htmlescape(ProjectTask::getFormURLWithID($data['projecttasks_id'])) . "'>" . htmlescape($father) .
-                        (empty($father) ? "(" . (int)$data['projecttasks_id'] . ")" : "") . "</a>";
-                }
-                echo '</td><td>';
-                $projecttask = new ProjectTask();
-                $projecttask->getFromDB($data['id']);
-                foreach ($projecttask->getTeam() as $projecttaskteam) {
-                    $item = getItemForItemtype($projecttaskteam['itemtype']);
-                    echo "<a href='" . htmlescape($item->getFormURLWithID($projecttaskteam['items_id'])) . "'>" .
-                        htmlescape($projecttaskteam['display_name']) . '</a><br>';
-                }
-                echo "</td></tr>";
-            }
-            echo $header;
-            echo "</table>";
-
-            if ($canedit) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-                Html::closeForm();
-            }
-        } else {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . __s('No results found') . "</th></tr>";
-            echo "</table>";
+            $entry['task_team'] = $task_team;
+            $entries[] = $entry;
         }
 
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'sort' => $_GET['sort'],
+            'order' => $order,
+            'columns' => $columns,
+            'formatters' => [
+                'name' => 'raw_html',
+                'sname' => 'badge',
+                'plan_start_date' => 'datetime',
+                'plan_end_date' => 'datetime',
+                'fname' => 'raw_html',
+                'task_team' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . mt_rand(),
+                'specific_actions' => [
+                    'update' => _x('button', 'Update'),
+                    'clone' => _x('button', 'Clone'),
+                    'delete' => _x('button', 'Put in trashbin'),
+                    'restore' => _x('button', 'Restore'),
+                    'purge' => _x('button', 'Delete permanently')
+                ]
+            ]
+        ]);
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
@@ -1539,92 +1462,78 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $ID      = $task->fields['id'];
         $canedit = $task->canEdit($ID);
 
-        $rand = mt_rand();
-        $nb   = $task->getTeamCount();
-
         if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='projecttaskteam_form$rand' id='projecttaskteam_form$rand' ";
-            echo " method='post' action='" . Toolbox::getItemTypeFormURL('ProjectTaskTeam') . "'>";
-            echo "<input type='hidden' name='projecttasks_id' value='$ID'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th colspan='2'>" . __s('Add a team member') . "</tr>";
-            echo "<tr class='tab_bg_2'><td>";
-
-            $params = ['itemtypes'       => ProjectTeam::$available_types,
-                'entity_restrict' => ($task->fields['is_recursive']
-                                               ? getSonsOf(
-                                                   'glpi_entities',
-                                                   $task->fields['entities_id']
-                                               )
-                                               : $task->fields['entities_id']),
-                'checkright'      => true
+            $twig_params = [
+                'id' => $ID,
+                'label' => __('Add a team member'),
+                'btn_label' => _x('button', 'Add'),
+                'dropdown_params' => [
+                    'itemtypes'       => ProjectTeam::$available_types,
+                    'entity_restrict' => ($task->fields['is_recursive']
+                        ? getSonsOf(
+                            'glpi_entities',
+                            $task->fields['entities_id']
+                        )
+                        : $task->fields['entities_id']),
+                    'checkright'      => true
+                ]
             ];
-            $addrand = Dropdown::showSelectItemFromItemtypes($params);
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <div class="mb-3">
+                    <form method="post" action="{{ 'ProjectTaskTeam'|itemtype_form_path }}">
+                        <div class="d-flex">
+                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="projecttasks_id" value="{{ id }}">
+                            {{ fields.dropdownItemsFromItemtypes('items_id', label, dropdown_params) }}
+                        </div>
+                        <div class="d-flex flex-row-reverse">
+                            <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                        </div>
+                    </form>
+                </div>
+TWIG, $twig_params);
+        }
 
-            echo "</td>";
-            echo "<td width='20%'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td>";
-            echo "</tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
-        }
-        echo "<div class='spaced'>";
-        if ($canedit && $nb) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $nb),
-                'container'     => 'mass' . __CLASS__ . $rand
-            ];
-            Html::showMassiveActions($massiveactionparams);
-        }
-        echo "<table class='tab_cadre_fixehov'>";
-        $header_begin  = "<tr>";
-        $header_top    = '';
-        $header_bottom = '';
-        $header_end    = '';
-        if ($canedit && $nb) {
-            $header_top    .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-            $header_top    .= "</th>";
-            $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-            $header_bottom .= "</th>";
-        }
-        $header_end .= "<th>" . _sn('Type', 'Types', 1) . "</th>";
-        $header_end .= "<th>" . _sn('Member', 'Members', Session::getPluralNumber()) . "</th>";
-        $header_end .= "</tr>";
-        echo $header_begin . $header_top . $header_end;
-
+        $entries = [];
         foreach (ProjectTaskTeam::$available_types as $type) {
             if (isset($task->team[$type]) && count($task->team[$type])) {
                 if ($item = getItemForItemtype($type)) {
                     foreach ($task->team[$type] as $data) {
                         $item->getFromDB($data['items_id']);
-                        echo "<tr class='tab_bg_2'>";
-                        if ($canedit) {
-                             echo "<td>";
-                             Html::showMassiveActionCheckBox('ProjectTaskTeam', $data["id"]);
-                             echo "</td>";
-                        }
-                        echo "<td>" . htmlescape($item->getTypeName(1)) . "</td>";
-                        echo "<td>" . $item->getLink() . "</td>";
-                        echo "</tr>";
+                        $entries[] = [
+                            'itemtype' => 'ProjectTaskTeam',
+                            'id' => $data['id'],
+                            'type' => $item::getTypeName(1),
+                            'member' => $item->getLink()
+                        ];
                     }
                 }
             }
         }
-        if ($nb) {
-            echo $header_begin . $header_bottom . $header_end;
-        }
-        echo "</table>";
-        if ($canedit && $nb) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
 
-        echo "</div>";
-       // Add items
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'type' => _n('Type', 'Types', 1),
+                'member' => _n('Member', 'Members', 1)
+            ],
+            'formatters' => [
+                'member' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . mt_rand()
+            ]
+        ]);
 
         return true;
     }
@@ -2133,63 +2042,71 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $html = "";
-        $rand     = mt_rand();
         $users_id = "";  // show users_id project task
-        $img      = "rdv_private.png"; // default icon for project task
+        $img      = $CFG_GLPI["root_doc"] . "/pics/rdv_private.png"; // default icon for project task
 
         if ((int) $val["users_id"] !== Session::getLoginUserID()) {
             $users_id = "<br>" . sprintf(__('%1$s: %2$s'), __('By'), getUserName($val["users_id"]));
-            $img      = "rdv_public.png";
+            $img      = $CFG_GLPI["root_doc"] . "/pics/rdv_public.png";
         }
 
-        $html .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/" . $img . "' alt='' title=\"" .
-             self::getTypeName(1) . "\">&nbsp;";
-        $html .= "<a id='project_task_" . $val["id"] . $rand . "' href='" .
-             self::getFormURLWithID($val["id"]) . "'>";
-
-        switch ($type) {
-            case "in":
-               //TRANS: %1$s is the start time of a planned item, %2$s is the end
-                $beginend = sprintf(
+        $name = Html::resume_text($val['name'], 80);
+        $label = match ($type) {
+            "in" => sprintf(
+                __('%1$s: %2$s'),
+                sprintf(
                     __('From %1$s to %2$s'),
                     date("H:i", strtotime($val["begin"])),
                     date("H:i", strtotime($val["end"]))
-                );
-                $html .= sprintf(__('%1$s: %2$s'), $beginend, Html::resume_text($val["name"], 80));
-                break;
-
-            case "through":
-                $html .= Html::resume_text($val["name"], 80);
-                break;
-
-            case "begin":
-                $start = sprintf(__('Start at %s'), date("H:i", strtotime($val["begin"])));
-                $html .= sprintf(__('%1$s: %2$s'), $start, Html::resume_text($val["name"], 80));
-                break;
-
-            case "end":
-                $end = sprintf(__('End at %s'), date("H:i", strtotime($val["end"])));
-                $html .= sprintf(__('%1$s: %2$s'), $end, Html::resume_text($val["name"], 80));
-                break;
-        }
-
-        $html .= $users_id;
-        $html .= "</a>";
-
-        $html .= "<div class='b'>";
-        $html .= sprintf(__('%1$s: %2$s'), __('Percent done'), $val["status"] . "%");
-        $html .= "</div>";
-
-        // $val['content'] has already been sanitized and decoded by self::populatePlanning()
-        $content = $val['content'];
-        $html .= "<div class='event-description rich_text_container'>" . $content . "</div>";
+                ),
+                $name
+            ),
+            "through" => $name,
+            "begin" => sprintf(
+                __('%1$s: %2$s'),
+                sprintf(
+                    __('Start at %s'),
+                    date("H:i", strtotime($val["begin"]))
+                ),
+                $name
+            ),
+            "end" => sprintf(
+                __('%1$s: %2$s'),
+                sprintf(
+                    __('End at %s'),
+                    date("H:i", strtotime($val["end"]))
+                ),
+                $name
+            ),
+            default => ''
+        };
 
         $parent = getItemForItemtype($val['itemtype']);
         $parent->getFromDB($val[$parent::getForeignKeyField()]);
-        $html .= $parent->getLink(['icon' => true, 'forceid' => true]) . "<br>";
-        $html .= "<span>" . Entity::badgeCompletenameById($parent->getEntityID()) . "</span><br>";
-        return $html;
+
+        $twig_params = [
+            'users_id' => $users_id,
+            'img' => $img,
+            'planning' => $val,
+            'label' => $label,
+            'percent_done' => sprintf(__('%1$s: %2$s'), __('Percent done'), $val["status"] . "%"),
+            'parent' => $parent,
+            'parent_entity' => Entity::badgeCompletenameById($parent->getEntityID())
+        ];
+
+        // language=Twig
+        return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <img src="{{ img }}" role="presentation" alt='' title="{{ 'ProjectTask'|itemtype_name(1) }}"/>
+            <a href="{{ 'ProjectTask'|itemtype_form_path(planning['id']) }}">
+                {{ label }}
+                {{ users_id }}
+            </a>
+            <div class="fw-bold">{{ percent_done }}</div>
+            <div class="event-description rich_text_container">{{ planning['content'] }}</div>
+            {{ get_item_link(parent) }}
+            <br>
+            <span>{{ parent_entity|raw }}</span>
+TWIG, $twig_params);
     }
 
     /**
