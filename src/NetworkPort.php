@@ -1118,6 +1118,7 @@ class NetworkPort extends CommonDBChild
                                     Vlan::getTable() . '.name',
                                     NetworkPort_Vlan::getTable() . '.tagged',
                                     Vlan::getTable() . '.tag',
+                                    NetworkPort_Vlan::getTable() . '.vlans_id'
                                 ],
                                 'FROM'   => NetworkPort_Vlan::getTable(),
                                 'INNER JOIN'   => [
@@ -1138,11 +1139,13 @@ class NetworkPort extends CommonDBChild
                                  );
                             } else {
                                 foreach ($vlans as $row) {
+                                        $output .= '<a href="/front/vlan.form.php?id=' . $row['vlans_id'] . '">';
                                         $output .= $row['name'];
                                     if (!empty($row['tag'])) {
                                         $output .= ' [' . $row['tag'] . ']';
                                     }
                                         $output .= ($row['tagged'] == 1 ? 'T' : 'U');
+                                        $output .= '</a>';
                                     if ($canedit) {
                                         $output .= '<form method="post" action="/front/massiveaction.php" class="d-inline-flex">';
                                         $output .= '<input type="hidden" name="massiveaction" value="MassiveAction:purge">';
