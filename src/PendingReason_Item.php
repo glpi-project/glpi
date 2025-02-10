@@ -96,7 +96,9 @@ class PendingReason_Item extends CommonDBRelation
 
         $fields['itemtype'] = $item::getType();
         $fields['items_id'] = $item->getID();
-        //$fields['last_bump_date'] = $_SESSION['glpi_currenttime'];
+        if (!isset($fields['last_bump_date'])) {
+            $fields['last_bump_date'] = $_SESSION['glpi_currenttime'];
+        }
         $success = $em->add($fields);
         if (!$success) {
             trigger_error("Failed to create PendingReason_Item", E_USER_WARNING);
