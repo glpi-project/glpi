@@ -1591,6 +1591,7 @@ class TicketTest extends DbTestCase
         $requestSource = true,
         $location = true,
         $itil_form = true,
+        $cancel_ticket = false,
     ) {
         ob_start();
         $ticket->showForm($ticket->getID());
@@ -1664,6 +1665,14 @@ class TicketTest extends DbTestCase
             ($itil_form === true ? 'ITIL form' : 'ITIL form present') . ' ' . $caller
         );
 
+        // Cancel ticket button
+        $matches = iterator_to_array($crawler->filter("button:contains('Cancel ticket')"));
+        $this->assertCount(
+            ($cancel_ticket === true ? 1 : 0),
+            $matches,
+            'Cancel ticket ' . ($cancel_ticket === true ? 'missing' : 'present')
+        );
+
 
         //Assign to
         /*preg_match(
@@ -1716,6 +1725,7 @@ class TicketTest extends DbTestCase
             requestSource: false,
             location: false,
             itil_form: false,
+            cancel_ticket: true,
         );
 
         $uid = getItemByTypeName('User', TU_USER, true);
@@ -1748,6 +1758,7 @@ class TicketTest extends DbTestCase
             $requestSource = false,
             $location = false,
             itil_form: false,
+            cancel_ticket: false, // Can no longer cancel once a followup is added
         );
 
         // Display extra fields
@@ -1773,6 +1784,7 @@ class TicketTest extends DbTestCase
             requestSource: false,
             location: false,
             itil_form: true,
+            cancel_ticket: false, // Can no longer cancel once a followup is added
         );
     }
 
