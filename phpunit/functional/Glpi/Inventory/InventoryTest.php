@@ -9386,4 +9386,55 @@ JSON;
             }
         }
     }
+
+    public function testAdditionalProperty()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $json_str = <<<JSON
+{
+   "action": "inventory",
+   "content": {
+      "hardware": {
+         "name": "pc_with_additional_prop",
+         "uuid": "32EED9C2-204C-42A1-A97E-A6EF2CE44B4F"
+      },
+      "unknown_property": [
+         {
+            "description": "An unknown property, will be silently ignored",
+            "any": true
+         }
+      ],
+      "versionclient": "GLPI-Inventory_v1.11"
+   },
+   "deviceid": "WinDev2404Eval-2024-10-14-15-28-37",
+   "itemtype": "Computer"
+}
+JSON;
+        $json = json_decode($json_str);
+        $computer = new \Computer();
+
+        //initial import
+        $inventory = new \Glpi\Inventory\Inventory();
+        $this->assertFalse($inventory->isSchemaStrict());
+        $inventory->setData($json);
+        $inventory->doInventory();
+        $this->assertTrue($computer->getFromDBByCrit(['name' => 'pc_with_additional_prop']));
+
+        //enable strict schema checks; an error is thrown
+        $inventory = new \Glpi\Inventory\Inventory();
+        $inventory->setStrictSchema();
+        $this->assertTrue($inventory->isSchemaStrict());
+        $inventory->setData($json);
+
+        $this->assertTrue($inventory->inError());
+        $this->assertSame(
+            ['JSON does not validate. Violations:
+Additional properties not allowed: unknown_property at #->properties:content
+'
+            ],
+            $inventory->getErrors()
+        );
+    }
 }
