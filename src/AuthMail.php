@@ -57,7 +57,7 @@ class AuthMail extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        if (empty($input['name'])) {
+        if (isset($input['name']) && empty($input['name'])) {
             Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
 
             return false;
@@ -410,7 +410,6 @@ TWIG, $twig_params);
                 $auth = new self();
                 $auth->update([
                     'id' => $default['id'],
-                    'name' => $default['name'],
                     'is_default' => 0
                 ]);
             }

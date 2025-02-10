@@ -4390,7 +4390,6 @@ TWIG, $twig_params);
                 $auth = new AuthMail();
                 $auth->update([
                     'id' => $default['id'],
-                    'name' => $default['name'],
                     'is_default' => 0
                 ]);
             }
