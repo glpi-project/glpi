@@ -48,8 +48,6 @@ test.beforeEach(async ({ page, request }) => {
 });
 
 test('can search for forms and faq entries', async () => {
-    await home_page.goto();
-
     // Arrange some KB entries
     const glpi_api = new GlpiApi(test.info().parallelIndex);
     ["My faq entry", "My other faq entry"].forEach(async (entry) => {
@@ -63,6 +61,8 @@ test('can search for forms and faq entries', async () => {
             users_id: await glpi_api.getCurrentUserId(),
         });
     });
+
+    await home_page.goto();
 
     // Search for a form
     await home_page.search("Issue");
