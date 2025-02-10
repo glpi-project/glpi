@@ -77,7 +77,7 @@
 {% endif %}
 
 <div id="header_{{ rand }}"
-     class="card-header main-header d-flex flex-wrap mx-n2 mt-n2 align-items-stretch {% if in_navheader %} align-self-end {% endif %} flex-grow-1">
+     class="card-header main-header d-flex flex-wrap mx-n2 mt-n2 align-items-stretch {% if in_navheader %} align-self-end {% endif %} flex-grow-1 relative">
    {% if withtemplate == 1 and item.isNewItem() %}
       <input type="text" class="form-control ms-4 mb-2" placeholder="{{ __('Template name') }}"
              name="template_name" id="textfield_template_name{{ rand }}"
