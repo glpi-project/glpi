@@ -101,6 +101,15 @@ class Dashboard extends \CommonDBTM
     }
 
 
+    public function getID()
+    {
+        // Force usage of the `id` field
+        if (isset($this->fields['id'])) {
+            return (int)$this->fields['id'];
+        }
+        return -1;
+    }
+
     public function getFromDB($ID)
     {
         /** @var \DBmysql $DB */
