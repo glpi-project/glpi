@@ -97,7 +97,7 @@ class AuthLdapTest extends DbTestCase
         // Arrange - ensure there is one default AuthLdap
 
         /** @var AuthLDAP $changingAuthLDAP */
-        $changingAuthLDAP = getItemByTypeName(AuthLDAP::class, 'LDAP3', throwException: true);
+        $changingAuthLDAP = getItemByTypeName(AuthLDAP::class, 'LDAP3', throw_exception: true);
 
         $this->checkAuthsAreDifferent($this->initialDefaultAuth, $changingAuthLDAP);
         $this->checkAuthClassesAreTheSame($this->initialDefaultAuth, $changingAuthLDAP);
@@ -116,7 +116,7 @@ class AuthLdapTest extends DbTestCase
         // Arrange - ensure there is one default AuthLdap
 
         /** @var AuthLDAP $changingAuthLDAP */
-        $changingAuthLDAP = getItemByTypeName(AuthLDAP::class, 'LDAP3', throwException: true);
+        $changingAuthLDAP = getItemByTypeName(AuthLDAP::class, 'LDAP3', throw_exception: true);
 
         $this->checkAuthsAreDifferent($this->initialDefaultAuth, $changingAuthLDAP);
         $this->checkAuthClassesAreTheSame($this->initialDefaultAuth, $changingAuthLDAP);
@@ -163,7 +163,7 @@ class AuthLdapTest extends DbTestCase
     public function test_UpdateAuthMailToDefaultChangeDefaultAuthLdap()
     {
         // Arrange
-        $authMail = getItemByTypeName(AuthMail::class, 'MAIL3', throwException: true);
+        $authMail = getItemByTypeName(AuthMail::class, 'MAIL3', throw_exception: true);
         $this->checkAuthIsNotDefault($authMail);
         $this->checkAuthIsActive($authMail);
 

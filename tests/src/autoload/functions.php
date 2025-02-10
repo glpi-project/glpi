@@ -777,10 +777,10 @@ function loadDataset()
  * @param string  $type
  * @param string  $name
  * @param boolean $onlyid
- * @param boolean $throwException Whether to throw an exception if item is not found
+ * @param boolean $throw_exception Whether to throw an exception if item is not found
  * @return CommonDBTM|false the item, or its id
  */
-function getItemByTypeName($type, $name, $onlyid = false, bool $throwException = false)
+function getItemByTypeName($type, $name, $onlyid = false, bool $throw_exception = false)
 {
     $item = getItemForItemtype($type);
     $nameField = $type::getNameField();
@@ -788,7 +788,7 @@ function getItemByTypeName($type, $name, $onlyid = false, bool $throwException =
         return ($onlyid ? $item->getField('id') : $item);
     }
 
-    if ($throwException) {
+    if ($throw_exception) {
         throw new Exception("Item of type $type with name $name not found");
     }
 

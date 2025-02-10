@@ -3504,7 +3504,7 @@ TWIG, $twig_params);
                 $entity->getFromDB($_SESSION['glpiactive_entity']);
                 $_REQUEST['authldaps_id'] = $entity->getField('authldaps_id');
                 if ((int) $_REQUEST['authldaps_id'] <= 0) {
-                    $_REQUEST['authldaps_id'] = NOT_AVAILABLE;
+                    $_REQUEST['authldaps_id'] = self::getDefault();
                 }
             }
             $_REQUEST['authldaps_id'] = (int) $_REQUEST['authldaps_id'];
@@ -3586,8 +3586,11 @@ TWIG, $twig_params);
                     $_REQUEST['entity_filter'] = $entity->getField('entity_ldapfilter');
                 }
             } else {
-                if (!$_REQUEST['authldaps_id']) {
-                    $_REQUEST['authldaps_id'] = NOT_AVAILABLE;
+                if (
+                    $_REQUEST['authldaps_id'] === NOT_AVAILABLE
+                    || !$_REQUEST['authldaps_id']
+                ) {
+                    $_REQUEST['authldaps_id'] = self::getDefault();
                 }
 
                 if ($_REQUEST['authldaps_id'] > 0) {
@@ -4362,7 +4365,6 @@ TWIG, $twig_params);
     private function removeDefaultFromOtherItems(int $authldaps_id): void
     {
         if (isset($this->fields["is_default"]) && (int)$this->fields["is_default"] === 1) {
-            // Si current default Auth est un AuthLDAP, on le retire
             $auth = new self();
             $defaults = $auth->find(['is_default' => 1, ['NOT' => ['id' => $authldaps_id]]]);
             foreach ($defaults as $default) {
@@ -4373,7 +4375,6 @@ TWIG, $twig_params);
                 ]);
             }
 
-            // Si current default Auth est un AuthMail, on le retire
             $auth = new AuthMail();
             $defaults = $auth->find(['is_default' => 1]);
             foreach ($defaults as $default) {
