@@ -90,9 +90,10 @@ class PendingReasonCron extends CommonDBTM
 
         $now = date("Y-m-d H:i:s");
 
-        $pending_items = new PendingReason_Item();
-        $data = $pending_items->find([
-            [
+        $data = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => PendingReason_Item::getTable(),
+            'WHERE'  => [
                 'pendingreasons_id'  => ['>', 0],
                 'followup_frequency' => ['>', 0],
                 'itemtype'           => $targets
