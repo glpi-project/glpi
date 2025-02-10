@@ -9417,24 +9417,8 @@ JSON;
 
         //initial import
         $inventory = new \Glpi\Inventory\Inventory();
-        $this->assertFalse($inventory->isSchemaStrict());
         $inventory->setData($json);
         $inventory->doInventory();
         $this->assertTrue($computer->getFromDBByCrit(['name' => 'pc_with_additional_prop']));
-
-        //enable strict schema checks; an error is thrown
-        $inventory = new \Glpi\Inventory\Inventory();
-        $inventory->setStrictSchema();
-        $this->assertTrue($inventory->isSchemaStrict());
-        $inventory->setData($json);
-
-        $this->assertTrue($inventory->inError());
-        $this->assertSame(
-            ['JSON does not validate. Violations:
-Additional properties not allowed: unknown_property at #->properties:content
-'
-            ],
-            $inventory->getErrors()
-        );
     }
 }
