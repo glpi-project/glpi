@@ -90,10 +90,9 @@ class PendingReasonCron extends CommonDBTM
 
         $now = date("Y-m-d H:i:s");
 
-        $data = $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => PendingReason_Item::getTable(),
-            'WHERE'  => [
+        $pending_items = new PendingReason_Item();
+        $data = $pending_items->find([
+            [
                 'pendingreasons_id'  => ['>', 0],
                 'followup_frequency' => ['>', 0],
                 'itemtype'           => $targets
@@ -144,7 +143,7 @@ class PendingReasonCron extends CommonDBTM
                 $success = $pending_item->update([
                     'id'             => $pending_item->getID(),
                     'bump_count'     => $pending_item->fields['bump_count'] + 1,
-                    'last_bump_date' => date("Y-m-d H:i:s"),
+                    'last_bump_date' => $_SESSION['glpi_currenttime'],
                 ]);
 
                 if (!$success) {

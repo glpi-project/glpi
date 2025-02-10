@@ -45,6 +45,8 @@ use Problem;
 use ProblemTask;
 use Ticket;
 use TicketTask;
+use ITILFollowupTemplate;
+use SolutionTemplate;
 
 class PendingReasonTest extends DbTestCase
 {
@@ -464,6 +466,9 @@ class PendingReasonTest extends DbTestCase
         $this->login();
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
+        $currentDate = date('Y-m-d H:i:s');
+        $_SESSION['glpi_currenttime'] = $currentDate;
+
         // Create a set of pending reasons that will be reused in our test cases
         list(
             $pending_reason1,
@@ -493,6 +498,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => $currentDate,
                 ],
             ],
             'expected' => [
@@ -502,6 +508,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 2,
                 // Pending reason is attached to the last followup
                 'pending_timeline_index'      => 0,
+                'last_bump_date'              => $currentDate,
             ]
         ];
 
@@ -514,6 +521,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => $currentDate,
                 ],
                 [
                     'type'           => TicketTask::class,
@@ -527,6 +535,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 2,
                 // Pending reason is attached to the last task
                 'pending_timeline_index'      => 0,
+                'last_bump_date'              => $currentDate,
             ]
         ];
 
@@ -540,6 +549,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => $currentDate,
                 ],
                 [
                     'type'                        => ITILFollowup::class,
@@ -547,6 +557,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason2->getID(),
                     'followup_frequency'          => 2 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 1,
+                    'last_bump_date'              => date('Y-m-d H:i:s', strtotime('+30 seconds', strtotime($currentDate))),
                 ],
 
             ],
@@ -557,6 +568,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 1,
                 // The pending reason is always attached to the last follow-up, the second one changes the value of the first one
                 'pending_timeline_index'      => 1,
+                'last_bump_date'              => date('Y-m-d H:i:s', strtotime('+30 seconds', strtotime($currentDate))),
             ]
         ];
 
@@ -592,6 +604,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => $currentDate,
                 ],
                 [
                     'type'    => TicketTask::class,
@@ -603,6 +616,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason2->getID(),
                     'followup_frequency'          => 0,
                     'followups_before_resolution' => 0,
+                    'last_bump_date'              => date('Y-m-d H:i:s', strtotime('+30 seconds', strtotime($currentDate))),
                 ],
             ],
             'expected' => [
@@ -612,6 +626,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 0,
                 // Pending reason is attached to the third timeline item
                 'pending_timeline_index'      => 2,
+                'last_bump_date'              => date('Y-m-d H:i:s', strtotime('+30 seconds', strtotime($currentDate))),
             ]
         ];
 
@@ -626,6 +641,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => $currentDate,
                 ],
                 [
                     'type'                        => ITILFollowup::class,
@@ -633,6 +649,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => date('Y-m-d H:i:s', strtotime('+30 seconds', strtotime($currentDate))),
                 ],
             ],
             'expected' => [
@@ -642,6 +659,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 2,
                 // Pending reason is attached to the first timeline item
                 'pending_timeline_index'      => 0,
+                'last_bump_date'              => $currentDate,
             ]
         ];
 
@@ -655,10 +673,12 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => $currentDate,
                 ],
                 [
                     'type'                        => TicketTask::class,
                     'pending'                     => 1,
+                    'last_bump_date'              => date('Y-m-d H:i:s', strtotime('+30 seconds', strtotime($currentDate))),
                 ],
             ],
             'expected' => [
@@ -668,6 +688,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 2,
                 // Pending reason is attached to the last followup
                 'pending_timeline_index'      => 0,
+                'last_bump_date'              => $currentDate,
             ]
         ];
 
@@ -679,6 +700,7 @@ class PendingReasonTest extends DbTestCase
                     'type'                        => ITILFollowup::class,
                     'pending'                     => 1,
                     'pendingreasons_id'           => 0,
+                    'last_bump_date'              => $currentDate,
                 ],
                 [
                     'type'                        => ITILFollowup::class,
@@ -686,6 +708,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => date('Y-m-d H:i:s', strtotime('+30 seconds', strtotime($currentDate))),
                 ],
             ],
             'expected' => [
@@ -695,6 +718,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 2,
                 // Pending reason is attached to the last timeline item
                 'pending_timeline_index'      => 1,
+                'last_bump_date'              => date('Y-m-d H:i:s', strtotime('+30 seconds', strtotime($currentDate))),
             ]
         ];
 
@@ -708,6 +732,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => $currentDate,
                 ],
                 [
                     'type'                        => ITILFollowup::class,
@@ -715,6 +740,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => 0,
                     'followup_frequency'          => 0,
                     'followups_before_resolution' => 0,
+                    'last_bump_date'              => date('Y-m-d H:i:s', strtotime('+30 seconds', strtotime($currentDate))),
                 ],
             ],
             'expected' => [
@@ -724,6 +750,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 0,
                 // Pending reason is attached to the last timeline item
                 'pending_timeline_index'      => 1,
+                'last_bump_date'              => date('Y-m-d H:i:s', strtotime('+30 seconds', strtotime($currentDate))),
             ]
         ];
 
@@ -737,6 +764,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => $currentDate,
                 ],
                 [
                     'type'                        => ITILFollowup::class,
@@ -744,6 +772,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason2->getID(),
                     'followup_frequency'          => 2 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 1,
+                    'last_bump_date'              => date('Y-m-d H:i:s', strtotime('+30 seconds', strtotime($currentDate))),
                 ],
             ],
             'expected' => [
@@ -753,6 +782,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 1,
                 // Pending reason is attached to the last timeline item
                 'pending_timeline_index'      => 1,
+                'last_bump_date'              => date('Y-m-d H:i:s', strtotime('+30 seconds', strtotime($currentDate))),
             ]
         ];
     }
@@ -801,6 +831,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id',
                     'followup_frequency',
                     'followups_before_resolution',
+                    'last_bump_date',
                 ]);
             }
 
@@ -848,16 +879,30 @@ class PendingReasonTest extends DbTestCase
     protected function testCronPendingReasonAutobumpAutosolveProvider()
     {
         $this->login();
+
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
         $currentDate = date('Y-m-d H:i:s');
         $followup_frequency = 3 * DAY_TIMESTAMP;
+        $_SESSION['glpi_currenttime'] = $currentDate;
+
+        $itilfollowuptemplate = $this->createItem(ITILFollowupTemplate::class, [
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name' => 'test',
+            'content' => 'test',
+        ]);
+
+        $itilsolutiontemplate = $this->createItem(SolutionTemplate::class, [
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name' => 'test',
+            'content' => 'test',
+        ]);
 
         // Create a set of pending reasons that will be reused in our test cases
         list(
             $pending_reason1,
         ) = $this->createItems(\PendingReason::class, [
-            ['entities_id' => $entity, 'is_recursive' => true, 'name' => 'Pending 1'],
+            ['entities_id' => $entity, 'is_recursive' => true, 'name' => 'Pending 1', 'itilfollowuptemplates_id' => $itilfollowuptemplate->getID(), 'solutiontemplates_id' => $itilsolutiontemplate->getID()],
         ]);
 
         yield [
@@ -877,7 +922,7 @@ class PendingReasonTest extends DbTestCase
                 'pendingreasons_id'           => $pending_reason1->getID(),
                 'followup_frequency'          => $followup_frequency,
                 'followups_before_resolution' => 2,
-                'last_bump_date' => $currentDate,
+                'last_bump_date'              => $currentDate,
                 'bump_count'                  => 0,
             ]
         ];
@@ -947,6 +992,50 @@ class PendingReasonTest extends DbTestCase
                 'bump_count'                  => 1,
             ]
         ];
+
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => $followup_frequency,
+                    'followups_before_resolution' => 2,
+                    'last_bump_date'              => date('Y-m-d H:i:s', strtotime('-' . $followup_frequency + 1 . ' seconds', strtotime($currentDate))),
+                    'bump_count'                  => 1,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason1->getID(),
+                'followup_frequency'          => $followup_frequency,
+                'followups_before_resolution' => 2,
+                'last_bump_date'              => $currentDate,
+                'bump_count'                  => 2,
+            ]
+        ];
+
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => $followup_frequency,
+                    'followups_before_resolution' => 2,
+                    'last_bump_date'              => date('Y-m-d H:i:s', strtotime('-' . $followup_frequency + 1 . ' seconds', strtotime($currentDate))),
+                    'bump_count'                  => 2,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::SOLVED,
+                'pendingreasons_id'           => 0,
+                'followup_frequency'          => 0,
+                'followups_before_resolution' => 0,
+                'last_bump_date'              => $currentDate,
+                'bump_count'                  => 3,
+            ]
+        ];
     }
 
     public function testCronPendingReasonAutobumpAutosolve()
@@ -1001,11 +1090,13 @@ class PendingReasonTest extends DbTestCase
 
             $ticket_pending_data = PendingReason_Item::getForItem($ticket);
             $this->assertEquals($expected['status'], $ticket->fields['status']);
-            $this->assertEquals($expected['pendingreasons_id'], $ticket_pending_data->fields['pendingreasons_id']);
-            $this->assertEquals($expected['followup_frequency'], $ticket_pending_data->fields['followup_frequency']);
-            $this->assertEquals($expected['followups_before_resolution'], $ticket_pending_data->fields['followups_before_resolution']);
-            $this->assertEquals($expected['last_bump_date'], $ticket_pending_data->fields['last_bump_date']);
-            $this->assertEquals($expected['bump_count'], $ticket_pending_data->fields['bump_count']);
+            if ($ticket->fields['status'] == CommonITILObject::WAITING) {
+                $this->assertEquals($expected['pendingreasons_id'], $ticket_pending_data->fields['pendingreasons_id']);
+                $this->assertEquals($expected['followup_frequency'], $ticket_pending_data->fields['followup_frequency']);
+                $this->assertEquals($expected['followups_before_resolution'], $ticket_pending_data->fields['followups_before_resolution']);
+                $this->assertEquals($expected['last_bump_date'], $ticket_pending_data->fields['last_bump_date']);
+                $this->assertEquals($expected['bump_count'], $ticket_pending_data->fields['bump_count']);
+            }
         }
     }
 }
