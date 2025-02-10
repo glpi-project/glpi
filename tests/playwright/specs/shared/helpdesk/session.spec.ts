@@ -30,35 +30,15 @@
  * ---------------------------------------------------------------------
  */
 
-import { APIRequestContext } from 'playwright/test';
-import { JSDOM } from 'jsdom';
+import test, { expect } from "playwright/test";
+import { LoginPage } from "../../../pages/LoginPage";
 
-export class CsrfManager
-{
-    private request: APIRequestContext;
+// Reset storage state for this file to avoid being authenticated
+test.use({ storageState: { cookies: [], origins: [] } });
 
-    public constructor(request: APIRequestContext) {
-        this.request = request;
-    }
-
-    /**
-     * @param url Url from which the CSRF token will be extracted.
-     * Defaults to "/front/preference.php" which is a lightweight page that
-     * is accessible to all logged in users.
-     */
-    public async getToken(url: string = "/front/preference.php")
-    {
-        // TODO: try to reuse a single csrf token per worker if it is possible.
-        const response = await this.request.get(url);
-        return this.extractToken(await response.text());
-    }
-
-    public extractToken(body: string)
-    {
-        const dom = new JSDOM(body);
-        const input = dom.window.document.querySelector(
-            'input[name="_glpi_csrf_token"]'
-        ) as HTMLInputElement;
-        return input.value;
-    }
-}
+test('can login with correct credentials', async ( {page} ) => {
+    const login_page = new LoginPage(page);
+    await login_page.goto();
+    await login_page.login('glpi', 'glpi');
+    await expect(page).toHaveURL('/front/central.php');
+});
