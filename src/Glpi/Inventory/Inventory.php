@@ -87,6 +87,7 @@ class Inventory
     private $request_query;
     /** @var bool */
     private bool $is_discovery = false;
+    private bool $strict_schema = false;
 
     /**
      * @param mixed   $data   Inventory data, optional
@@ -129,6 +130,9 @@ class Inventory
         $converter = new Converter();
 
         $schema = $converter->getSchema();
+        if (!$this->strict_schema) {
+            $schema->setFlexible(); //allow extra nodes in inventory file
+        }
 
         $schema->setExtraItemtypes($this->getExtraItemtypes());
 
@@ -1018,5 +1022,37 @@ class Inventory
             }
         }
         return $itemtypes;
+    }
+
+    /**
+     * Set schema validation strict (no additional properties allowed anywhere)
+     *
+     * @return self
+     */
+    public function setFlexibleSchema(): self
+    {
+        $this->strict_schema = false;
+        return $this;
+    }
+
+    /**
+     * Set schema validation strict (no additional properties allowed anywhere)
+     *
+     * @return self
+     */
+    public function setStrictSchema(): self
+    {
+        $this->strict_schema = true;
+        return $this;
+    }
+
+    /**
+     * Is scheam validation strict?
+     *
+     * @return bool
+     */
+    public function isSchemaStrict(): bool
+    {
+        return $this->strict_schema;
     }
 }
