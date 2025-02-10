@@ -3503,8 +3503,12 @@ TWIG, $twig_params);
                 $entity = new Entity();
                 $entity->getFromDB($_SESSION['glpiactive_entity']);
                 $_REQUEST['authldaps_id'] = $entity->getField('authldaps_id');
+                // if $_REQUEST['authldaps_id'] <= 0, try to use the default Auth
                 if ((int) $_REQUEST['authldaps_id'] <= 0) {
-                    $_REQUEST['authldaps_id'] = self::getDefault();
+                    $defaultAuth = \Auth::getDefaultAuth();
+                    if ($defaultAuth instanceof AuthLDAP) {
+                        $_REQUEST['authldaps_id'] = $defaultAuth->getID();
+                    }
                 }
             }
             $_REQUEST['authldaps_id'] = (int) $_REQUEST['authldaps_id'];
@@ -3590,7 +3594,12 @@ TWIG, $twig_params);
                     $_REQUEST['authldaps_id'] === NOT_AVAILABLE
                     || !$_REQUEST['authldaps_id']
                 ) {
-                    $_REQUEST['authldaps_id'] = self::getDefault();
+                    $defaultAuth = Auth::getDefaultAuth();
+                    if ($defaultAuth instanceof AuthLDAP) {
+                        $_REQUEST['authldaps_id'] = $defaultAuth->getID();
+                    } else {
+                        $_REQUEST['authldaps_id'] = 0;
+                    }
                 }
 
                 if ($_REQUEST['authldaps_id'] > 0) {
