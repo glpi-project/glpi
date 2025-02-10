@@ -82,7 +82,7 @@ class RuleMailCollectorCollection extends RuleCollection
             $input['_headers'] = implode(
                 "\n",
                 array_map(
-                    fn($k, $v) => "$k: $v",
+                    fn($k, $v) => is_array($v) ? "$k: " . implode(', ', $v) : "$k: $v",
                     array_keys($params['headers']),
                     $params['headers']
                 )
