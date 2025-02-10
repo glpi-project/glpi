@@ -332,17 +332,14 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
-        $neteq = getItemByTypeName('NetworkEquipment', 'My network equipment');
-        if ($neteq === false) {
-            $neteq = new \NetworkEquipment();
-            $this->assertGreaterThan(
-                0,
-                $neteq->add([
-                    'name'   => 'My network equipment',
-                    'entities_id'  => 0
-                ])
-            );
-        }
+        $neteq = new \NetworkEquipment();
+        $this->assertGreaterThan(
+            0,
+            $neteq->add([
+                'name'   => 'My network equipment',
+                'entities_id'  => 0
+            ])
+        );
 
         $asset = new \Glpi\Inventory\Asset\NetworkPort($neteq, $json->content->network_ports);
         $asset->setExtraData((array)$json->content);
