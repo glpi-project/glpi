@@ -3785,6 +3785,24 @@ TWIG, $twig_params);
     }
 
     /**
+     * Get default ldap
+     *
+     * @deprecated Only search on AuthLDAP but default state is now shared with AuthMail, use getDefaultAuth() instead
+     * @return integer AuthLDAP ID or 0 if not found
+     */
+    public static function getDefault()
+    {
+        Toolbox::deprecated('The `AuthLDAP::getDefault()` method is deprecated, use `\Auth::getDefaultAuth` instead.');
+
+        $default = \Auth::getDefaultAuth();
+        if($default instanceof AuthLDAP) {
+            return $default->getID();
+        }
+
+        return 0;
+    }
+
+    /**
      * @return void
      */
     public function post_addItem()
