@@ -279,16 +279,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.2.0",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "cb5793011cf68a9aae7f5a06da83666881567c29"
+                "reference": "43d60d8a5c7f1e3609aac40c7e716e74ebcae025"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/cb5793011cf68a9aae7f5a06da83666881567c29",
-                "reference": "cb5793011cf68a9aae7f5a06da83666881567c29",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/43d60d8a5c7f1e3609aac40c7e716e74ebcae025",
+                "reference": "43d60d8a5c7f1e3609aac40c7e716e74ebcae025",
                 "shasum": ""
             },
             "require": {
@@ -348,7 +348,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2025-01-21T12:19:15+00:00"
+            "time": "2025-02-10T14:53:31+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -8011,7 +8011,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
@@ -8038,5 +8038,5 @@
     "platform-overrides": {
         "php": "7.4.0"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
