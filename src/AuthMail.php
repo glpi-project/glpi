@@ -408,7 +408,11 @@ TWIG, $twig_params);
             $defaults = $auth->find(['is_default' => 1, ['NOT' => ['id' => $authmails_id]]]);
             foreach ($defaults as $default) {
                 $auth = new self();
-                $auth->update(['is_default' => 0]  + $default);
+                $auth->update([
+                    'id' => $default['id'],
+                    'name' => $default['name'],
+                    'is_default' => 0
+                ]);
             }
 
             // if current default Auth is an AuthMail, remvove it
@@ -416,7 +420,10 @@ TWIG, $twig_params);
             $defaults = $auth->find(['is_default' => 1]);
             foreach ($defaults as $default) {
                 $auth = new AuthLDAP();
-                $auth->update(['is_default' => 0]  + $default);
+                $auth->update([
+                    'id' => $default['id'],
+                    'is_default' => 0
+                ]);
             }
         }
     }

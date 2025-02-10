@@ -3795,7 +3795,7 @@ TWIG, $twig_params);
         Toolbox::deprecated('The `AuthLDAP::getDefault()` method is deprecated, use `\Auth::getDefaultAuth` instead.');
 
         $default = \Auth::getDefaultAuth();
-        if($default instanceof AuthLDAP) {
+        if ($default instanceof AuthLDAP) {
             return $default->getID();
         }
 
@@ -4380,6 +4380,7 @@ TWIG, $twig_params);
                 $auth = new AuthMail();
                 $auth->update([
                     'id' => $default['id'],
+                    'name' => $default['name'],
                     'is_default' => 0
                 ]);
             }
