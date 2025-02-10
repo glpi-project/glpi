@@ -192,9 +192,9 @@ class RuleMailCollectorTest extends DbTestCase
                             'pattern'   => '/^(?!.*no).+$/i',
                         ],
                         [
-                            'criteria'  => 'x-ms-exchange-organization-expirationstarttimereason',
+                            'criteria'  => '_headers',
                             'condition' => Rule::PATTERN_NOT_CONTAIN,
-                            'pattern'   => 'QuarantineReleased',
+                            'pattern'   => 'X-MS-Exchange-Organization-ExpirationStartTimeReason: QuarantineReleased',
                         ],
                     ],
                 ],
@@ -214,9 +214,9 @@ class RuleMailCollectorTest extends DbTestCase
                             'pattern'   => '/^(?!.*no).+$/i',
                         ],
                         [
-                            'criteria'  => 'x-ms-exchange-organization-expirationstarttimereason',
+                            'criteria'  => '_headers',
                             'condition' => Rule::PATTERN_NOT_CONTAIN,
-                            'pattern'   => 'QuarantineReleased',
+                            'pattern'   => 'X-MS-Exchange-Organization-ExpirationStartTimeReason: QuarantineReleased',
                         ],
                     ],
                 ],
