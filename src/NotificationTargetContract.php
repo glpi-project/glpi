@@ -72,7 +72,7 @@ class NotificationTargetContract extends NotificationTarget
                 $contract["begin_date"],
                 $contract["duration"]
             );
-            if ($contract["notice"]) {
+            if (isset($contract["notice"])) {
                 $tmp['##contract.noticetime##'] = Infocom::getWarrantyExpir(
                     $contract["begin_date"],
                     $contract["duration"],
