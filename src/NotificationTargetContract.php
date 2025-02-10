@@ -79,8 +79,8 @@ class NotificationTargetContract extends NotificationTarget
                     $contract["notice"]
                 );
             } else {
-				$tmp['##contract.noticetime##'] = "";
-			}
+                $tmp['##contract.noticetime##'] = "";
+	    }
             if ($contract['contracttypes_id']) {
                 $tmp['##contract.type##'] = Dropdown::getDropdownName(
                     'glpi_contracttypes',
