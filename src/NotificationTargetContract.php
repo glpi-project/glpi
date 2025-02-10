@@ -72,7 +72,7 @@ class NotificationTargetContract extends NotificationTarget
                 $contract["begin_date"],
                 $contract["duration"]
             );
-            if ($contract["notice"]){
+            if ($contract["notice"]) {
                 $tmp['##contract.noticetime##'] = Infocom::getWarrantyExpir(
                     $contract["begin_date"],
                     $contract["duration"],
@@ -80,7 +80,7 @@ class NotificationTargetContract extends NotificationTarget
                 );
             } else {
                 $tmp['##contract.noticetime##'] = "";
-	    }
+            }
             if ($contract['contracttypes_id']) {
                 $tmp['##contract.type##'] = Dropdown::getDropdownName(
                     'glpi_contracttypes',
