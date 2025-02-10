@@ -39,8 +39,6 @@ use Glpi\Tests\DbTestCase;
 use KnowbaseItem_User;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-use function PHPUnit\Framework\assertTrue;
-
 /* Test for inc/knowbaseitem.class.php */
 
 class KnowbaseItemTest extends DbTestCase
