@@ -191,7 +191,6 @@ class TestUpdatedDataCommand extends Command
                             ]
                         ];
                     } elseif ($field_type === 'json') {
-                        // Compare JSON fields using their CHAR representation
                         $criteria[$key] = new QueryExpression(
                             QueryFunction::cast(
                                 new QueryExpression($fresh_db->quoteValue($value)),
