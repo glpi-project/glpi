@@ -63,8 +63,6 @@
 
     {{ fields.textareaField('glpinetwork_registration_key', registration_key, __('Registration key'), {
         full_width: true,
-        label_class: 'col-xxl-2',
-        input_class: 'col-xxl-10',
         rows: 10
     }) }}
 
@@ -79,28 +77,20 @@
             {% endset %}
             {{ fields.htmlField('', validation_message, null, {
                 full_width: true,
-                label_class: 'col-xxl-2',
-                input_class: 'col-xxl-10',
             }) }}
         {% endif %}
 
         {% if informations['is_valid'] %}
             {{ fields.htmlField('', informations['subscription']['title']|e, __('Subscription'), {
                 full_width: true,
-                label_class: 'col-xxl-2',
-                input_class: 'col-xxl-10',
             }) }}
 
             {{ fields.htmlField('', __('From %1$s to %2$s')|format(informations['subscription']['begin_date']|formatted_date, informations['subscription']['end_date']|formatted_date)|e, __('Period'), {
                 full_width: true,
-                label_class: 'col-xxl-2',
-                input_class: 'col-xxl-10',
             }) }}
 
             {{ fields.htmlField('', informations['owner']['name']|e, __('Registered by'), {
                 full_width: true,
-                label_class: 'col-xxl-2',
-                input_class: 'col-xxl-10',
             }) }}
         {% endif %}
     {% endif %}

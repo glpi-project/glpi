@@ -40,8 +40,7 @@
             '<a href="' ~ url|escape ~ '">' ~ url|escape ~ '</a>',
             __('External survey'),
             {
-                'input_class' : 'col-xxl-9',
-                'label_class' : 'col-xxl-3'
+                full_width: true
             }
         ) }}
 
@@ -65,8 +64,7 @@
                 '',
                 __('No response given'),
                 {
-                    'input_class' : 'col-xxl-9',
-                    'label_class' : 'col-xxl-3'
+                    full_width: true
                 }
             ) }}
         {% else %}
@@ -94,8 +92,7 @@
                 __('Satisfaction with the resolution of the %s')|format(parent_item.getTypeName(1)),
                 {
                     'full_width': true,
-                    'label_class': 'col-xxl-4',
-                    'input_class': 'col-xxl-8 text-start',
+                    'input_class': 'col-xxl-7 text-start',
                 }
             ) }}
 

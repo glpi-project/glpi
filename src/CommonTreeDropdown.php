@@ -557,8 +557,6 @@ abstract class CommonTreeDropdown extends CommonDropdown
                             <div>
                                 {{ fields.textField('name', '', name_label, {
                                     full_width: true,
-                                    label_class: 'col-xxl-2',
-                                    input_class: 'col-xxl-10',
                                 }) }}
                                 {% if entity is not null %}
                                     <input type="hidden" name="entities_id" value="{{ entity }}">

@@ -126,10 +126,7 @@ class Location extends CommonTreeDropdown
                 'label'  => __('Location on map'),
                 'list'   => false,
                 'form_params' => [
-                    'full_width' => true,
-                    'full_width_adapt_column' => false,
-                    'label_class' => 'col-xxl-2',
-                    'input_class' => 'col-xxl-10',
+                    'full_width' => true
                 ]
             ]
         ];
