@@ -88,7 +88,7 @@ class PendingReasonCron extends CommonDBTM
             Problem::getType(),
         ];
 
-        $now = date("Y-m-d H:i:s");
+        $now = $_SESSION['glpi_currenttime'];
 
         $data = $DB->request([
             'SELECT' => 'id',
