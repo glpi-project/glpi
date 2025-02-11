@@ -109,7 +109,7 @@ class AuthMail extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Email server')
+            'name'               => _n('Email server', 'Email servers', 1)
         ];
 
         $tab[] = [
