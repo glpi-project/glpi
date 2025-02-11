@@ -35,6 +35,9 @@
 
 namespace tests\units;
 
+use Auth;
+use AuthLDAP;
+use AuthMail;
 use DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -190,5 +193,36 @@ class AuthTest extends DbTestCase
     {
         $auth = new \Auth();
         $this->assertSame($expected, $auth->validateLogin($login, $password, $noauto, $login_auth));
+    }
+
+    public function testGetMethodName()
+    {
+        $this->assertSame(AuthLDAP::getTypeName(1), Auth::getMethodName(Auth::LDAP, 0));
+        $this->assertSame(AuthMail::getTypeName(1), Auth::getMethodName(Auth::MAIL, 0));
+        $this->assertSame('CAS', Auth::getMethodName(Auth::CAS, 0));
+        $this->assertSame('x509 certificate authentication', Auth::getMethodName(Auth::X509, 0));
+        $this->assertSame('Other', Auth::getMethodName(Auth::EXTERNAL, 0));
+        $this->assertSame('GLPI internal database', Auth::getMethodName(Auth::DB_GLPI, 0));
+        $this->assertSame('API', Auth::getMethodName(Auth::API, 0));
+
+        $this->assertSame('LDAP directory: _local_ldap', Auth::getMethodLink(Auth::LDAP, getItemByTypeName(AuthLDAP::class, '_local_ldap', true)));
+    }
+
+    public function testGetMethodLink()
+    {
+        $this->login();
+
+        $this->assertSame(AuthLDAP::getTypeName(1), Auth::getMethodLink(Auth::LDAP, 0));
+        $this->assertSame(AuthMail::getTypeName(1), Auth::getMethodLink(Auth::MAIL, 0));
+        $this->assertSame('CAS', Auth::getMethodLink(Auth::CAS, 0));
+        $this->assertSame('x509 certificate authentication', Auth::getMethodLink(Auth::X509, 0));
+        $this->assertSame('Other', Auth::getMethodLink(Auth::EXTERNAL, 0));
+        $this->assertSame('GLPI internal database', Auth::getMethodLink(Auth::DB_GLPI, 0));
+        $this->assertSame('API', Auth::getMethodLink(Auth::API, 0));
+
+        $this->assertSame(
+            'LDAP directory: <a href="/glpi/front/authldap.form.php?id=1" title="_local_ldap">_local_ldap</a>',
+            Auth::getMethodLink(Auth::LDAP, getItemByTypeName(AuthLDAP::class, '_local_ldap', true))
+        );
     }
 }

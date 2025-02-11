@@ -2983,7 +2983,7 @@ JAVASCRIPT;
         if (!empty($ID)) {
             if (Session::haveRight(self::$rightname, self::READAUTHENT)) {
                 echo "<td>" . __s('Authentication') . "</td><td>";
-                echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"], true);
+                echo Auth::getMethodLink($this->fields["authtype"], $this->fields["auths_id"]);
                 if (!empty($this->fields["date_sync"])) {
                     //TRANS: %s is the date of last sync
                     echo '<br>' . sprintf(
@@ -4362,7 +4362,7 @@ JAVASCRIPT;
                 if (isset($values['auths_id']) && !empty($values['auths_id'])) {
                     $auths_id = $values['auths_id'];
                 }
-                return Auth::getMethodName($values[$field], $auths_id, true);
+                return Auth::getMethodLink($values[$field], $auths_id);
             case 'picture':
                 if (isset($options['html']) && $options['html']) {
                     return Html::image(
