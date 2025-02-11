@@ -39,9 +39,16 @@ import { expect, type Locator, type Page } from '@playwright/test';
 export class GlpiPage
 {
     protected readonly page: Page;
+    protected readonly userMenu: Locator;
+    protected readonly logoutLink: Locator;
+    protected readonly changeProfileButton: Locator;
 
     public constructor(page: Page) {
         this.page = page;
+
+        this.userMenu = page.getByRole('link', {name: 'User menu'});
+        this.logoutLink = page.getByRole('link', {name: 'Logout'});
+        this.changeProfileButton = page.getByRole('button', {name: 'Change profile'});
     }
 
     /**
@@ -101,5 +108,24 @@ export class GlpiPage
                 node.removeAttribute('role');
             });
         }
+    }
+
+    public async logout() {
+        await this.userMenu.click();
+        await this.logoutLink.click();
+    }
+
+    public async changeProfile(profile: string) {
+        await this.userMenu.click();
+        await this.changeProfileButton.click();
+        await this.page.getByRole('button', {name: profile}).click();
+    }
+
+    public getUserMenu() {
+        return this.userMenu;
+    }
+
+    public getMenuEntry(entry: string) {
+        return this.page.getByRole('listitem', {'name': entry});
     }
 }

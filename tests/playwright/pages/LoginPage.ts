@@ -70,8 +70,5 @@ export class LoginPage extends GlpiPage
         await this.passwordField.fill(password);
         await this.rememberMeCheckbox.check();
         await this.submitButton.click();
-
-        // Wait for the redirection to the central page to be sure cookies are set.
-        await this.page.waitForURL(`${this.base_url}/front/central.php`);
     }
 }
