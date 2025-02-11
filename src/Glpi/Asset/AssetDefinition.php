@@ -237,7 +237,7 @@ final class AssetDefinition extends AbstractDefinition
         $custom_field->fields['itemtype'] = \Computer::class; // Doesn't matter what it is as long as it's not empty
         $custom_field->fields['field_options'] = $field_options;
 
-        $options_allowlist = ['required', 'readonly', 'full_width'];
+        $options_allowlist = ['required', 'readonly', 'full_width', 'hidden'];
 
         $twig_params = [
             'options' => array_filter($custom_field->getFieldType()->getOptions(), static fn ($option) => in_array($option->getKey(), $options_allowlist, true)),

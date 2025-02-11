@@ -40,11 +40,15 @@ class ProfileRestrictOption extends AbstractOption
 {
     public function getFormInput(): string
     {
+        $value = parent::getValue();
+        if (!is_array($value)) {
+            $value = [$value];
+        }
         $twig_params = [
             'item' => $this->custom_field,
             'key' => $this->getKey(),
             'label' => $this->getName(),
-            'value' => parent::getValue(),
+            'value' => $value,
             'inverted' => $this->getInverted(),
         ];
         // language=Twig

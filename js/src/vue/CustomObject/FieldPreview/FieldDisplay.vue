@@ -242,8 +242,14 @@
                 sortable_field.field_options = {};
                 form_data.entries().forEach(([name, value]) => {
                     if (name.startsWith('field_options[')) {
-                        const option_name = name.replace('field_options[', '').slice(0, -1);
-                        sortable_field.field_options[option_name] = value;
+                        const is_array = name.endsWith('[]');
+                        const option_name = name.replace('field_options[', '').replace(/\[\]/, '');
+                        if (is_array) {
+                            sortable_field.field_options[option_name] = sortable_field.field_options[option_name] ?? [];
+                            sortable_field.field_options[option_name].push(value);
+                        } else {
+                            sortable_field.field_options[option_name] = value;
+                        }
                     }
                 });
             } else if (btn_submit.attr('name') === 'purge') {
