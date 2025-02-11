@@ -61,7 +61,7 @@ final class ConditionData
 
     public function getItemType(): Type
     {
-        return Type::tryFrom($this->item_type ?? "") ?? Type::QUESTION;
+        return Type::from($this->item_type);
     }
 
     public function getValue(): mixed
