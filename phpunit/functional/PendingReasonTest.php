@@ -951,7 +951,7 @@ class PendingReasonTest extends DbTestCase
             ]
         ];
 
-        // Case 3: follow up that will soon be bumped
+        // Case 3: follow up published one day ago
         yield [
             'timeline' => [
                 [
@@ -960,7 +960,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => $followup_frequency,
                     'followups_before_resolution' => 2,
-                    'last_bump_date'              => date('Y-m-d H:i:s', strtotime('-' . $followup_frequency . ' seconds', strtotime($currentDate))),
+                    'last_bump_date'              => date('Y-m-d H:i:s', strtotime('-' . DAY_TIMESTAMP . ' seconds', strtotime($currentDate))),
                     'bump_count'                  => 0,
                 ],
             ],
@@ -969,7 +969,7 @@ class PendingReasonTest extends DbTestCase
                 'pendingreasons_id'           => $pending_reason1->getID(),
                 'followup_frequency'          => $followup_frequency,
                 'followups_before_resolution' => 2,
-                'last_bump_date'              => date('Y-m-d H:i:s', strtotime('-' . $followup_frequency . ' seconds', strtotime($currentDate))),
+                'last_bump_date'              => date('Y-m-d H:i:s', strtotime('-' . DAY_TIMESTAMP . ' seconds', strtotime($currentDate))),
                 'bump_count'                  => 0,
             ]
         ];
