@@ -34,9 +34,11 @@ import { test, expect } from '../../../fixtures/authenticated';
 import { HomePage } from '../../../pages/helpdesk/HomePage';
 import { Constants } from '../../../utils/Constants';
 import { GlpiApi } from '../../../utils/GlpiApi';
+import { randomUUID } from 'crypto';
 import { SessionManager } from '../../../utils/SessionManager';
 
 let home_page: HomePage;
+const uuid = randomUUID();
 
 test.beforeEach(async ({ page, request }) => {
     // Load helpdesk profile
@@ -50,7 +52,7 @@ test.beforeEach(async ({ page, request }) => {
 test('can search for forms and faq entries', async () => {
     // Arrange some KB entries
     const glpi_api = new GlpiApi(test.info().parallelIndex);
-    ["My faq entry", "My other faq entry"].forEach(async (entry) => {
+    [`My faq entry ${uuid}`, `My other faq entry ${uuid}`].forEach(async (entry) => {
         const id = await glpi_api.createItem('KnowbaseItem', {
             name: entry,
             answer: 'my answer',
@@ -68,15 +70,15 @@ test('can search for forms and faq entries', async () => {
     await home_page.search("Issue");
     await expect(home_page.getSearchResult("Report an issue")).toBeVisible();
     await expect(home_page.getSearchResult("Request a service")).not.toBeAttached();
-    await expect(home_page.getSearchResult("My faq entry")).not.toBeAttached();
-    await expect(home_page.getSearchResult("My other faq entry")).not.toBeAttached();
+    await expect(home_page.getSearchResult(`My faq entry ${uuid}`)).not.toBeAttached();
+    await expect(home_page.getSearchResult(`My other faq entry ${uuid}`)).not.toBeAttached();
 
     // Search for a KB entry
     await home_page.search("Other");
-    await expect(home_page.getSearchResult("Report an issue")).not.toBeAttached();
-    await expect(home_page.getSearchResult("Request a service")).not.toBeAttached();
-    await expect(home_page.getSearchResult("My faq entry")).not.toBeAttached();
-    await expect(home_page.getSearchResult("My other faq entry")).toBeAttached();
+    await expect(home_page.getSearchResult(`Report an issue`)).not.toBeAttached();
+    await expect(home_page.getSearchResult(`Request a service`)).not.toBeAttached();
+    await expect(home_page.getSearchResult(`My faq entry ${uuid}`)).not.toBeAttached();
+    await expect(home_page.getSearchResult(`My other faq entry ${uuid}`)).toBeAttached();
 });
 
 test('can use tiles', async ( {request} ) => {
@@ -96,9 +98,9 @@ test('can use tabs', async () => {
     // Create some tickets
     const glpi_api = new GlpiApi(test.info().parallelIndex);
     [
-        {name: "Open ticket 1", status: Constants.TICKET_STATUS_NEW},
-        {name: "Open ticket 2", status: Constants.TICKET_STATUS_NEW},
-        {name: "Closed ticket 1", status: Constants.TICKET_STATUS_RESOLVED},
+        {name: `Open ticket 1 ${uuid}`, status: Constants.TICKET_STATUS_NEW},
+        {name: `Open ticket 2 ${uuid}`, status: Constants.TICKET_STATUS_NEW},
+        {name: `Closed ticket 1 ${uuid}`, status: Constants.TICKET_STATUS_RESOLVED},
     ].forEach(async (ticket: {name: string, status: number}) => {
         await glpi_api.createItem('Ticket', {
             users_id: await glpi_api.getCurrentUserId(),
@@ -112,8 +114,8 @@ test('can use tabs', async () => {
     const next_year = (new Date().getFullYear() + 1);
     const reminder_id = await glpi_api.createItem('Reminder', {
         users_id: await glpi_api.getCurrentUserId(),
-        name    : 'Public reminder 1',
-        content : 'Public reminder 1',
+        name    : `Public reminder 1 ${uuid}`,
+        content : `Public reminder 1 ${uuid}`,
         begin   : '2023-10-01 16:45:11',
         end     : `${next_year}-10-01 16:45:11`,
     });
@@ -124,10 +126,10 @@ test('can use tabs', async () => {
 
     // Go to page, the default tab should be "opened tickets"
     await home_page.goto();
-    await expect(home_page.getLinkToTicket('Open ticket 1')).toBeVisible();
-    await expect(home_page.getLinkToTicket('Open ticket 2')).toBeVisible();
-    await expect(home_page.getLinkToTicket('Closed ticket 1')).not.toBeAttached();
-    await expect(home_page.getLinkToReminder('Public reminder 1')).not.toBeAttached();
+    await expect(home_page.getLinkToTicket(`Open ticket 1 ${uuid}`)).toBeVisible();
+    await expect(home_page.getLinkToTicket(`Open ticket 2 ${uuid}`)).toBeVisible();
+    await expect(home_page.getLinkToTicket(`Closed ticket 1 ${uuid}`)).not.toBeAttached();
+    await expect(home_page.getLinkToReminder(`Public reminder 1 ${uuid}`)).not.toBeAttached();
 
     // Before changing tab, validate the columns that are displayed
     await expect(home_page.getTicketListColumnHeaders()).toHaveCount(5);
@@ -139,10 +141,10 @@ test('can use tabs', async () => {
 
     // Go to the "closed tickets" tab
     await home_page.goToTab('Solved tickets');
-    await expect(home_page.getLinkToTicket('Open ticket 1')).not.toBeAttached();
-    await expect(home_page.getLinkToTicket('Open ticket 2')).not.toBeAttached();
-    await expect(home_page.getLinkToTicket('Closed ticket 1')).toBeVisible();
-    await expect(home_page.getLinkToReminder('Public reminder 1')).not.toBeAttached();
+    await expect(home_page.getLinkToTicket(`Open ticket 1 ${uuid}`)).not.toBeAttached();
+    await expect(home_page.getLinkToTicket(`Open ticket 2 ${uuid}`)).not.toBeAttached();
+    await expect(home_page.getLinkToTicket(`Closed ticket 1 ${uuid}`)).toBeVisible();
+    await expect(home_page.getLinkToReminder(`Public reminder 1 ${uuid}`)).not.toBeAttached();
 
     // Before changing tab, validate the columns that are displayed
     await expect(home_page.getTicketListColumnHeaders()).toHaveCount(5);
@@ -154,10 +156,10 @@ test('can use tabs', async () => {
 
     // Go to the "reminder feed" tab
     await home_page.goToTab('Reminders');
-    await expect(home_page.getLinkToTicket('Open ticket 1')).not.toBeAttached();
-    await expect(home_page.getLinkToTicket('Open ticket 2')).not.toBeAttached();
-    await expect(home_page.getLinkToTicket('Closed ticket 1')).not.toBeAttached();
-    await expect(home_page.getLinkToReminder('Public reminder 1')).toBeVisible();
+    await expect(home_page.getLinkToTicket(`Open ticket 1 ${uuid}`)).not.toBeAttached();
+    await expect(home_page.getLinkToTicket(`Open ticket 2 ${uuid}`)).not.toBeAttached();
+    await expect(home_page.getLinkToTicket(`Closed ticket 1 ${uuid}`)).not.toBeAttached();
+    await expect(home_page.getLinkToReminder(`Public reminder 1 ${uuid}`)).toBeVisible();
 
     // RSS feeds are not tested as they are only displayed if a real feed
     // is configurated. Since the query to the feed is done on the backend,
