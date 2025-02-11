@@ -38,11 +38,11 @@ namespace tests\units;
 use AuthLDAP;
 use AuthMail;
 use DbTestCase;
-use Glpi\PHPUnit\Tests\Glpi\Auth\helpersTrait;
+use Glpi\PHPUnit\Tests\Glpi\Auth\HelpersTrait;
 
 class AuthLdapTest extends DbTestCase
 {
-    use helpersTrait;
+    use HelpersTrait;
 
     private AuthLDAP $initialDefaultAuth;
 
@@ -97,7 +97,7 @@ class AuthLdapTest extends DbTestCase
         // Arrange - ensure there is one default AuthLdap
 
         /** @var AuthLDAP $changingAuthLDAP */
-        $changingAuthLDAP = getItemByTypeName(AuthLDAP::class, 'LDAP3', throw_exception: true);
+        $changingAuthLDAP = getItemByTypeName(AuthLDAP::class, 'LDAP3');
 
         $this->checkAuthsAreDifferent($this->initialDefaultAuth, $changingAuthLDAP);
         $this->checkAuthClassesAreTheSame($this->initialDefaultAuth, $changingAuthLDAP);
@@ -116,7 +116,7 @@ class AuthLdapTest extends DbTestCase
         // Arrange - ensure there is one default AuthLdap
 
         /** @var AuthLDAP $changingAuthLDAP */
-        $changingAuthLDAP = getItemByTypeName(AuthLDAP::class, 'LDAP3', throw_exception: true);
+        $changingAuthLDAP = getItemByTypeName(AuthLDAP::class, 'LDAP3');
 
         $this->checkAuthsAreDifferent($this->initialDefaultAuth, $changingAuthLDAP);
         $this->checkAuthClassesAreTheSame($this->initialDefaultAuth, $changingAuthLDAP);
@@ -163,7 +163,7 @@ class AuthLdapTest extends DbTestCase
     public function test_UpdateAuthMailToDefaultChangeDefaultAuthLdap()
     {
         // Arrange
-        $authMail = getItemByTypeName(AuthMail::class, 'MAIL3', throw_exception: true);
+        $authMail = getItemByTypeName(AuthMail::class, 'MAIL3');
         $this->checkAuthIsNotDefault($authMail);
         $this->checkAuthIsActive($authMail);
 
@@ -179,10 +179,9 @@ class AuthLdapTest extends DbTestCase
 
     private function createDefaultAuthLdap()
     {
-        // remove ldap from loadDataset(), make our independent from initial dataset
-        $query = "DELETE FROM " . AuthLDAP::getTable();
+        // remove ldap present in loadDataset(), make our tests independent from initial dataset
         global $DB;
-        assert($DB->doQuery($query), 'Failed to empty AuthLDAP table');
+        assert($DB->delete(AuthLDAP::getTable(), [1]), 'Failed to empty AuthLDAP table');
 
         $this->createItem(
             AuthLDAP::class,

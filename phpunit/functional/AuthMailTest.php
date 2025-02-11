@@ -39,11 +39,11 @@ use AuthMail;
 use AuthLDAP;
 use DbTestCase;
 use Exception;
-use Glpi\PHPUnit\Tests\Glpi\Auth\helpersTrait;
+use Glpi\PHPUnit\Tests\Glpi\Auth\HelpersTrait;
 
 class AuthMailTest extends DbTestCase
 {
-    use helpersTrait;
+    use HelpersTrait;
 
     private AuthMail $initialDefaultAuth;
 
@@ -99,7 +99,7 @@ class AuthMailTest extends DbTestCase
     {
         // Arrange
         /** @var AuthMail $changingAuthMail */
-        $changingAuthMail = getItemByTypeName(AuthMail::class, 'MAIL3', throw_exception: true);
+        $changingAuthMail = getItemByTypeName(AuthMail::class, 'MAIL3');
 
         $this->checkAuthsAreDifferent($this->initialDefaultAuth, $changingAuthMail);
         $this->checkAuthClassesAreTheSame($this->initialDefaultAuth, $changingAuthMail);
@@ -118,7 +118,7 @@ class AuthMailTest extends DbTestCase
     {
         // Arrange
         /** @var AuthMail $changingAuthMail */
-        $changingAuthMail = getItemByTypeName(AuthMail::class, 'MAIL3', throw_exception: true);
+        $changingAuthMail = getItemByTypeName(AuthMail::class, 'MAIL3');
 
         $this->checkAuthsAreDifferent($this->initialDefaultAuth, $changingAuthMail);
         $this->checkAuthClassesAreTheSame($this->initialDefaultAuth, $changingAuthMail);
@@ -168,7 +168,7 @@ class AuthMailTest extends DbTestCase
     public function test_UpdateAuthLDAPToDefaultChangeDefaultAuthMail()
     {
         // Arrange
-        $authLdap = getItemByTypeName(AuthLDAP::class, 'LDAP3', throw_exception: true);
+        $authLdap = getItemByTypeName(AuthLDAP::class, 'LDAP3');
         $this->checkAuthIsNotDefault($authLdap);
         $this->checkAuthIsActive($authLdap);
 

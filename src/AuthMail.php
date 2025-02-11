@@ -57,7 +57,7 @@ class AuthMail extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        if (isset($input['name']) && empty($input['name'])) {
+        if (array_key_exists('name', $input) && strlen($input['name']) === 0) {
             Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
 
             return false;
@@ -403,9 +403,9 @@ TWIG, $twig_params);
     private function removeDefaultFromOtherItems(int $authmails_id): void
     {
         if (isset($this->fields['is_default']) && (int)$this->fields["is_default"] === 1) {
-            // if current default Auth is an AuthLDAP, remvove it
+            // if current default Auth is an AuthMail, remvove it
             $auth = new self();
-            $defaults = $auth->find(['is_default' => 1, ['NOT' => ['id' => $authmails_id]]]);
+            $defaults = $auth->find(['is_default' => 1, ['NOT' => ['id' => $this->getID()]]]);
             foreach ($defaults as $default) {
                 $auth = new self();
                 $auth->update([
@@ -414,7 +414,7 @@ TWIG, $twig_params);
                 ]);
             }
 
-            // if current default Auth is an AuthMail, remvove it
+            // if current default Auth is an AuthLDAP, remvove it
             $auth = new AuthLDAP();
             $defaults = $auth->find(['is_default' => 1]);
             foreach ($defaults as $default) {

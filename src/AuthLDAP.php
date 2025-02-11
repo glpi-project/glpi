@@ -3503,7 +3503,6 @@ TWIG, $twig_params);
                 $entity = new Entity();
                 $entity->getFromDB($_SESSION['glpiactive_entity']);
                 $_REQUEST['authldaps_id'] = $entity->getField('authldaps_id');
-                // if $_REQUEST['authldaps_id'] <= 0, try to use the default Auth
                 if ((int) $_REQUEST['authldaps_id'] <= 0) {
                     $defaultAuth = \Auth::getDefaultAuth();
                     if ($defaultAuth instanceof AuthLDAP) {
@@ -3794,24 +3793,6 @@ TWIG, $twig_params);
         }
 
         parent::post_updateItem($history);
-    }
-
-    /**
-     * Get default ldap
-     *
-     * @deprecated Only search on AuthLDAP but default state is now shared with AuthMail, use getDefaultAuth() instead
-     * @return integer AuthLDAP ID or 0 if not found
-     */
-    public static function getDefault()
-    {
-        Toolbox::deprecated('The `AuthLDAP::getDefault()` method is deprecated, use `\Auth::getDefaultAuth` instead.');
-
-        $default = \Auth::getDefaultAuth();
-        if ($default instanceof AuthLDAP) {
-            return $default->getID();
-        }
-
-        return 0;
     }
 
     /**

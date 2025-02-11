@@ -37,7 +37,7 @@ namespace Glpi\PHPUnit\Tests\Glpi\Auth;
 use AuthLDAP;
 use AuthMail;
 
-trait helpersTrait
+trait HelpersTrait
 {
     /**
      * Create additional AuthMail, is_default = false
