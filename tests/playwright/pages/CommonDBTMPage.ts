@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -31,22 +30,16 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Tabs', () => {
-    beforeEach(() => {
-        cy.login();
-        cy.changeProfile('Super-Admin');
-    });
-    it('can use the "forcetab" URL parameter to land on a specific tab', () => {
-        cy.visit("/front/user.form.php?id=2&forcetab=Change_Item$1");
-        cy.findByRole('tab', { name: 'Changes' })
-            .should('have.attr', 'aria-selected', 'true');
-        cy.findByRole('tab', { name: 'Problems' })
-            .should('not.have.attr', 'aria-selected', 'true');
+import { type Page } from '@playwright/test';
+import { GlpiPage } from './GlpiPage';
 
-        cy.visit("/front/user.form.php?id=2&forcetab=Item_Problem$1");
-        cy.findByRole('tab', { name: 'Problems' })
-            .should('have.attr', 'aria-selected', 'true');
-        cy.findByRole('tab', { name: 'Changes' })
-            .should('not.have.attr', 'aria-selected', 'true');
-    });
-});
+export class CommonDBTMPage extends GlpiPage
+{
+    public constructor(page: Page) {
+        super(page);
+    }
+
+    public getTab(tab: string) {
+        return this.page.getByRole('tab', { name: tab});
+    }
+}

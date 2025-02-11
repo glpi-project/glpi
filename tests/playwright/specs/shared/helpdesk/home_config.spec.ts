@@ -39,7 +39,7 @@ let config_page: HomeConfigPage;
 let profile_id: number;
 
 test.beforeEach(async ({ page, request }) => {
-    // Load helpdesk profile
+    // Load super admin profile
     const session = new SessionManager(request);
     await session.changeProfile("Super-Admin");
 
