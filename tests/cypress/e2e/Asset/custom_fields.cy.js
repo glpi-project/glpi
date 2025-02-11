@@ -144,7 +144,7 @@ describe("Custom Assets - Custom Fields", () => {
                     cy.findByLabelText('Multiple values').check();
                 }
                 if (options.has('readonly')) {
-                    cy.findByLabelText('Readonly').selectDropdownValue('Super-Admin');
+                    cy.getDropdownByLabelText('Readonly').selectDropdownValue('Super-Admin');
                 }
                 if (options.has('mandatory')) {
                     cy.findByLabelText('Mandatory').check();
@@ -211,13 +211,12 @@ describe("Custom Assets - Custom Fields", () => {
         cy.get('.sortable-field[data-key="name"] .edit-field').click({force: true});
         cy.get('#core_field_options_editor').within(() => {
             cy.findByLabelText('Full width').should('be.visible').check();
-            cy.findByLabelText('Readonly').should('be.visible').check();
+            cy.getDropdownByLabelText('Readonly').selectDropdownValue('Super-Admin');
             cy.findByLabelText('Mandatory').should('be.visible').check();
-            cy.intercept('POST', '/ajax/asset/assetdefinition.php').as('saveFieldOptions');
             cy.findByRole('button', {name: 'Save'}).click();
         });
         cy.get('input[name="field_options[name][full_width]"]').should('have.value', '1');
-        cy.get('input[name="field_options[name][readonly]"]').should('have.value', '1');
+        cy.get('input[name="field_options[name][readonly][]"]').should('have.value', '4');
         cy.get('input[name="field_options[name][required]"]').should('have.value', '1');
     });
 });

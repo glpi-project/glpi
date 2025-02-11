@@ -38,9 +38,9 @@ use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 
 Session::checkRight(AssetDefinition::$rightname, READ);
-Session::writeClose();
 
 if ($_REQUEST['action'] === 'get_all_fields') {
+    Session::writeClose();
     header("Content-Type: application/json; charset=UTF-8");
     $definition = new AssetDefinition();
     if (!$definition->getFromDB($_GET['assetdefinitions_id'])) {
