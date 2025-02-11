@@ -106,7 +106,7 @@ final class Engine
 
         // No conditions are defined, we consider the result to be true
         if ($conditions_result === null) {
-            $conditions_result = true;
+            $conditions_result = false;
         }
 
         return $strategy->mustBeVisible($conditions_result);
