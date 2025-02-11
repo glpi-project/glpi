@@ -95,6 +95,10 @@ class RuleRight extends Rule
                                 $output['timezone'] = $action->fields['value'];
                                 break;
 
+                            case 'language':
+                                $output['language'] = $action->fields['value'];
+                                break;
+
                             case "_ignore_user_import":
                                 $continue                   = false;
                                 $output_src["_stop_import"] = true;
@@ -320,6 +324,9 @@ class RuleRight extends Rule
         $actions['timezone']['name']                          = __('Timezone');
         $actions['timezone']['type']                          = 'timezone';
 
+        $actions['language']['name']                          = __('Language');
+        $actions['language']['type']                          = 'language';
+
         $actions['_deny_login']['name']                       = __('Deny login');
         $actions['_deny_login']['type']                       = 'yesonly';
         $actions['_deny_login']['table']                      = '';
@@ -342,6 +349,11 @@ class RuleRight extends Rule
                         'display_emptychoice' => true
                     ]
                 );
+                return true;
+            case 'language':
+                Dropdown::showLanguages('value', [
+                    'display_emptychoice' => true
+                ]);
                 return true;
         }
         return false;
