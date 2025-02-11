@@ -54,7 +54,7 @@ export class GlpiFormConditionEngine
         } catch (e) {
             console.error(e);
             glpi_toast_error(
-                __("Unexpected error, please contact your administrator.")
+                __("An unexpected error occurred.")
             );
         }
     }
