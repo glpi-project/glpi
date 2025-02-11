@@ -246,6 +246,9 @@
                         const option_name = name.replace('field_options[', '').replace(/\[\]/, '');
                         if (is_array) {
                             sortable_field.field_options[option_name] = sortable_field.field_options[option_name] ?? [];
+                            if (!Array.isArray(sortable_field.field_options[option_name])) {
+                                sortable_field.field_options[option_name] = [sortable_field.field_options[option_name]];
+                            }
                             sortable_field.field_options[option_name].push(value);
                         } else {
                             sortable_field.field_options[option_name] = value;
