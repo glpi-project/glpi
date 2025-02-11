@@ -52,7 +52,7 @@ class RuleRightTest extends DbTestCase
     {
         $rule = new \RuleRight();
         $actions  = $rule->getActions();
-        $this->assertGreaterThan(12, count($actions));
+        $this->assertEquals(17, count($actions));
     }
 
     public function testDefaultRuleExists()
@@ -275,5 +275,42 @@ class RuleRightTest extends DbTestCase
                 }
             )
         );
+    }
+
+    public function testLanguage()
+    {
+        $rule = $this->createItem('RuleRight', [
+            'sub_type' => 'RuleRight',
+            'name' => __METHOD__,
+            'match' => 'AND',
+            'is_active' => 1,
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->createItem('RuleCriteria', [
+            'rules_id' => $rule->getID(),
+            'criteria' => 'LOGIN',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => TU_USER,
+        ]);
+        $this->createItem('RuleAction', [
+            'rules_id' => $rule->getID(),
+            'action_type' => 'assign',
+            'field' => 'language',
+            'value' => 'fr_FR',
+        ]);
+
+        $user = new \User();
+
+        // language is not set
+        $user->getFromDBByName(TU_USER);
+        $this->assertEquals(null, $user->getField('language'));
+
+        // login
+        $this->login(TU_USER, TU_PASS);
+
+        // language from rule
+        $user->getFromDBByName(TU_USER);
+        $this->assertEquals('fr_FR', $user->getField('language'));
     }
 }
