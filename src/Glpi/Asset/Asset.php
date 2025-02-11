@@ -337,6 +337,9 @@ abstract class Asset extends CommonDBTM
         $fields_display = static::getDefinition()->getDecodedFieldsField();
         $core_field_options = [];
 
+        // Remove custom fields that are hidden for the current profile
+        $custom_fields = array_filter($custom_fields, static fn ($f) => !$f->getFieldType()->getOptionValues()['hidden']);
+
         foreach ($fields_display as $field) {
             $core_field_options[$field['key']] = $field['field_options'] ?? [];
         }

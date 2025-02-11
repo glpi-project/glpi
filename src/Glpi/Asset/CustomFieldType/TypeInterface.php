@@ -89,6 +89,11 @@ interface TypeInterface
     public function getOptions(): array;
 
     /**
+     * @return array<string, mixed>
+     */
+    public function getOptionValues(bool $default_field = false): array;
+
+    /**
      * Defines configured default value.
      */
     public function setDefaultValue(mixed $value): void;

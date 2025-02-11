@@ -78,10 +78,7 @@ abstract class AbstractType implements TypeInterface
         ];
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getOptionValues(bool $default_field = false): array
+    public function getOptionValues(bool $default_field = false): array
     {
         $values = [];
         foreach ($this->getOptions() as $option) {
