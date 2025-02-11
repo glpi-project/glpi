@@ -72,8 +72,6 @@
                 {{ fields.smallTitle(__('Search criteria for users')) }}
                 {{ fields.textField('basedn', _request['basedn'], __('BaseDN'), {
                     full_width: true,
-                    label_class: 'col-xxl-3',
-                    input_class: 'col-xxl-9',
                     add_field_class: is_expert_interface ? '' : 'd-none',
                     add_field_attribs: {
                         'data-interface': 'expert'
@@ -81,8 +79,6 @@
                 }) }}
                 {{ fields.textField('ldap_filter', _request['ldap_filter'], __('Search filter for users'), {
                     full_width: true,
-                    label_class: 'col-xxl-3',
-                    input_class: 'col-xxl-9',
                     add_field_class: is_expert_interface ? '' : 'd-none',
                     add_field_attribs: {
                         'data-interface': 'expert'
