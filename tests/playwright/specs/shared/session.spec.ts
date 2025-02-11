@@ -36,7 +36,10 @@ import { LoginPage } from "../../pages/LoginPage";
 import { GlpiPage } from "../../pages/GlpiPage";
 import { SessionManager } from "../../utils/SessionManager";
 
-test_unauthenticated.describe('Test without sessions', () => {
+// This rule does not work correctly when using alias for the `test()` method.
+/* eslint-disable playwright/no-standalone-expect */
+
+test_unauthenticated.describe('tests without sessions', () => {
     // Reset storage state for this 'describe' block to avoid being authenticated
     test_unauthenticated.use({ storageState: { cookies: [], origins: [] } });
 
