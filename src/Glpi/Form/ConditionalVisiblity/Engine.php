@@ -104,7 +104,7 @@ final class Engine
             }
         }
 
-        // No conditions are defined, we consider the result to be true
+        // No conditions are defined, we consider the result to be false
         if ($conditions_result === null) {
             $conditions_result = false;
         }

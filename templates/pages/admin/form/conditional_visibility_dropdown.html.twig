@@ -136,7 +136,7 @@
                     {% if item is not null %}
                         {# Initial values #}
                         {% for condition in item.getConfiguredConditionsData() %}
-                            {% if condition.getItemUuid() != 0 %}
+                            {% if not condition.getItemUuid() is empty %}
                                 <div data-glpi-form-editor-condition>
                                     {% if not loop.first %}
                                         <input
