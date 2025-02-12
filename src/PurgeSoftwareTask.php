@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,87 +32,27 @@
  * ---------------------------------------------------------------------
  */
 
+// ...existing headers et éventuels use statements...
 use Glpi\DBAL\QuerySubQuery;
 
-/**
- * @since 11.0.0
- */
-class PurgeSoftwareCron extends CommonDBTM
+class PurgeSoftwareTask extends Software
 {
     const TASK_NAME = 'purgesoftware';
-
     const MAX_BATCH_SIZE = 2000;
 
-    protected static $notable = true;
-
-    /**
-     * Get task description
-     *
-     * @return string
-     */
-    public static function getTaskDescription(): string
-    {
-        return __("Purge software with no version that are deleted.");
-    }
-
-    /**
-     * Get task's parameter description
-     *
-     * @return string
-     */
-    public static function getParameterDescription(): string
-    {
-        return __('Max items to handle in one execution');
-    }
-
-    public static function cronInfo($name)
-    {
-        return [
-            'description' => self::getTaskDescription(),
-            'parameter' => self::getParameterDescription(),
-        ];
-    }
-
-    /**
-     * Purge deleted & unused software
-     *
-     * @param int $max Max items to handle
-     * @return int Number of purged items
-     */
-    public static function run(?int $max): int
+    // Méthode principale de purge (non statique)
+    public function run(?int $max): int
     {
         $total = 0;
-
         // Purge deleted software
-        $total += self::purgeItems(
-            self::getDeletedSoftwareWithNoVersionsCriteria(),
-            new Software(),
-            $max - $total
-        );
-
+        $criteria = $this->getDeletedSoftwareWithNoVersionsCriteria();
+        $software = new Software();
+        $total += $this->purgeItems($criteria, $software, $max - $total);
         return $total;
     }
 
-    /**
-     * Run from cronTask
-     *
-     * @param CronTask $task
-     */
-    public static function cronPurgeSoftware(CronTask $task)
-    {
-        $max = $task->fields['param'];
-        $total = self::run($max);
-        $task->addVolume($total);
-
-        return 1;
-    }
-
-    /**
-     * Get all deleted software
-     *
-     * @return array
-     */
-    protected static function getDeletedSoftwareWithNoVersionsCriteria(): array
+    // Récupère les critères pour sélectionner les logiciels à purger
+    protected function getDeletedSoftwareWithNoVersionsCriteria(): array
     {
         return [
             'SELECT' => 'id',
@@ -132,38 +71,20 @@ class PurgeSoftwareCron extends CommonDBTM
         ];
     }
 
-    /**
-     * Purge given items
-     *
-     * @param array         $scope   Items to purge
-     * @param CommonDBTM    $em      EM for this itemtype
-     * @param int           $max     Max number of items to handle
-     *
-     * @return int Number of items purged
-     */
-    protected static function purgeItems(
-        array $scope,
-        CommonDBTM $em,
-        int $max
-    ): int {
-        /** @var \DBmysql $DB */
+    // Exécute la purge étape par étape
+    protected function purgeItems(array $scope, $em, int $max): int
+    {
         global $DB;
-
         $total = 0;
-
         do {
             $scope['LIMIT'] = min($max - $total, self::MAX_BATCH_SIZE);
             $items = $DB->request($scope);
             $count = count($items);
             $total += $count;
-
             foreach ($items as $item) {
                 $em->delete($item, true);
             }
-
-           // Stop if no items found
         } while ($count > 0 && $total < $max);
-
         return $total;
     }
 }

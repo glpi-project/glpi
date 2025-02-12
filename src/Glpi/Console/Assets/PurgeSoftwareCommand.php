@@ -35,7 +35,7 @@
 
 namespace Glpi\Console\Assets;
 
-use PurgeSoftwareCron;
+use PurgeSoftwareTask;
 use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -47,15 +47,17 @@ class PurgeSoftwareCommand extends AbstractCommand
     protected function configure()
     {
         parent::configure();
+        // Création d'une instance pour utiliser les méthodes d'instance.
+        $task = new PurgeSoftwareTask();
 
         $this->setName('assets:purgesoftware');
-        $this->setDescription(PurgeSoftwareCron::getTaskDescription());
+        $this->setDescription($task->getPurgeTaskDescription());
 
         $this->addOption(
             'max',
             'm',
             InputOption::VALUE_REQUIRED,
-            PurgeSoftwareCron::getParameterDescription(),
+            $task->getPurgeTaskParameterDescription(),
             500
         );
     }
@@ -65,8 +67,9 @@ class PurgeSoftwareCommand extends AbstractCommand
         $this->validateInput($input);
         $max = $input->getOption('max');
 
-       // Run crontask
-        $total = PurgeSoftwareCron::run($max);
+        // Création d'une instance pour invoquer la méthode run.
+        $task = new PurgeSoftwareTask();
+        $total = $task->run($max);
         $output->writeln("<info> $total item(s) purged </info>");
 
         return 0;

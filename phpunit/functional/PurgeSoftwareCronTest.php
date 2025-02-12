@@ -87,8 +87,10 @@ class PurgeSoftwareCronTest extends DbTestCase
             ])->current()['cpt']
         );
 
+
+        $purgeTask = new \PurgeSoftwareTask();
         // Execute the purge with a limit of 3
-        $purged = \PurgeSoftwareCron::run(3);
+        $purged = $purgeTask->run(3);
         $this->assertSame(3, $purged);
         $this->assertSame(
             7,
@@ -99,7 +101,7 @@ class PurgeSoftwareCronTest extends DbTestCase
         );
 
         // Execute the purge for the remaining 10, expecting 2 purged items (because only 2 eligible software remain)
-        $purged = \PurgeSoftwareCron::run(10);
+        $purged = $purgeTask->run(10);
         $this->assertSame(2, $purged);
         // There should remain 5 non-eligible software (those with an associated version)
         $this->assertSame(

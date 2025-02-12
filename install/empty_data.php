@@ -935,8 +935,8 @@ $empty_data_builder = new class
                 'hourmax' => 24,
             ], [
                 'id' => 49,
-                'itemtype' => PurgeSoftwareCron::getType(),
-                'name' => PurgeSoftwareCron::TASK_NAME,
+                'itemtype' => PurgeSoftwareTask::getType(),
+                'name' => PurgeSoftwareTask::TASK_NAME,
                 'frequency' => MONTH_TIMESTAMP,
                 'param' => 1000,
                 'state' => CronTask::STATE_DISABLE,

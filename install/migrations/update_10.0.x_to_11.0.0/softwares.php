@@ -38,9 +38,9 @@
  * @var \Migration $migration
  */
 
-// PurgeSoftwareCron cron task
+// PurgeSoftwareTask cron task
 CronTask::register(
-    'PurgeSoftwareCron',
+    'PurgeSoftwareTask',
     'purgesoftware',
     MONTH_TIMESTAMP,
     [
