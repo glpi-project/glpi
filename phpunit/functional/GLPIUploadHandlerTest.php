@@ -102,14 +102,17 @@ class GLPIUploadHandlerTest extends DbTestCase
         $instance->method('validate_image_file')->willReturn(true);
 
         $reflection = new ReflectionClass($instance);
-        $reflection->getProperty('options')->setValue(
+
+        $options_property = $reflection->getProperty('options');
+        $options_property->setAccessible(true);
+        $options_property->setValue(
             $instance,
             [
                 'accept_file_types'   => '/.*/',
                 'max_file_size'       => PHP_INT_MAX,
                 'min_file_size'       => 0,
                 'max_number_of_files' => PHP_INT_MAX,
-                'upload_dir' => GLPI_TMP_DIR . '/',
+                'upload_dir'          => GLPI_TMP_DIR . '/',
                 'user_dirs'           => false,
             ]
         );
