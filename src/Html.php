@@ -467,7 +467,7 @@ class Html
      * @since 9.2.2
      * @since 11.0.0 The `$url_in` parameter has been removed.
      *
-     * @return string|false Referer URL or false if referer URL is invalid.
+     * @return string Referer URL or false if referer URL is invalid.
      */
     public static function getBackUrl()
     {

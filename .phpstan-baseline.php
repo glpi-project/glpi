@@ -1058,54 +1058,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/rssfeed.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method add\\(\\) on Rule\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/front/rule.common.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method delete\\(\\) on Rule\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/front/rule.common.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getFormURLWithID\\(\\) on Rule\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/front/rule.common.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method redirectToList\\(\\) on Rule\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/front/rule.common.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method update\\(\\) on Rule\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/front/rule.common.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method displayFullPageForItem\\(\\) on Rule\\|null\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/front/rule.common.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$items_id of static method Glpi\\\\Event\\:\\:log\\(\\) expects int\\|string, int\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/rule.common.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method initRules\\(\\) on Rule\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/front/rule.common.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method checkGlobal\\(\\) on RuleCollection\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -6836,21 +6788,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/CentralController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$url of class Glpi\\\\Http\\\\RedirectResponse constructor expects string, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Config/Helpdesk/CopyParentEntityController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$callback of function call_user_func expects callable\\(\\)\\: mixed, array\\{CommonDropdown, non\\-falsy\\-string\\} given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/DropdownFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$url of class Glpi\\\\Http\\\\RedirectResponse constructor expects string, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Controller/DropdownFormController.php',
 ];
 $ignoreErrors[] = [
@@ -6974,12 +6914,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/GenericFormController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$url of class Glpi\\\\Http\\\\RedirectResponse constructor expects string, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/GenericFormController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$action_success of static method CommonDBTM\\:\\:getPostFormAction\\(\\) expects bool, bool\\|int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -7028,12 +6962,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/ItemType/Form/AuthMailFormController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$url of class Glpi\\\\Http\\\\RedirectResponse constructor expects string, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/ItemType/Form/AuthMailFormController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$login of static method AuthMail\\:\\:testAuth\\(\\) expects string, bool\\|float\\|int\\|string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -7058,12 +6986,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/ItemType/Form/MailCollectorFormController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$url of class Glpi\\\\Http\\\\RedirectResponse constructor expects string, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/ItemType/Form/SavedSearchFormController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\$status of class Symfony\\\\Component\\\\HttpFoundation\\\\Response constructor expects int, bool\\|int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -7073,12 +6995,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$code of method Glpi\\\\Security\\\\TOTPManager\\:\\:verifyBackupCodeForUser\\(\\) expects string, bool\\|float\\|int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Security/MFAController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$url of class Symfony\\\\Component\\\\HttpFoundation\\\\RedirectResponse constructor expects string, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Controller/Security/MFAController.php',
 ];
 $ignoreErrors[] = [
@@ -7104,18 +7020,6 @@ $ignoreErrors[] = [
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/ServiceCatalog/ItemsController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$url of class Glpi\\\\Http\\\\RedirectResponse constructor expects string, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Session/ChangeEntityController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$haystack of function str_contains expects string, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Session/ChangeProfileController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method ImpactContext\\:\\:findForImpactItem\\(\\) expects ImpactItem, bool\\|ImpactItem given\\.$#',
@@ -11150,12 +11054,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyItemtypeRouteListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ID of static method CommonDBTM\\:\\:isNewID\\(\\) expects int, bool\\|float\\|int\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyItemtypeRouteListener.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$id of static method Glpi\\\\Asset\\\\Asset\\:\\:getById\\(\\) expects int\\|null, bool\\|float\\|int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -12323,12 +12221,6 @@ $ignoreErrors[] = [
 	'message' => '#^Offset \'region\' might not exist on array\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 2,
-	'path' => __DIR__ . '/src/Html.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$dest of static method Html\\:\\:redirect\\(\\) expects string, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
@@ -14115,12 +14007,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Property MassiveAction\\:\\:\\$current_itemtype \\(class\\-string\\<CommonDBTM\\>\\|null\\) does not accept string\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MassiveAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property MassiveAction\\:\\:\\$redirect \\(string\\) does not accept string\\|false\\.$#',
 	'identifier' => 'assign.propertyType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MassiveAction.php',

@@ -608,7 +608,7 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Get the sector/item/option definition.
      *
-     * @return array{0?: string, 1?: class-string, 2?: class-string}
+     * @return array{0?: string, 1?: string, 2?: string}
      *      An array containing optionaly:
      *          the sector as first element;
      *          the itemtype as second element;
@@ -622,7 +622,7 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Get the parameters to be used in the `Html::header()` method.
      *
-     * @return array{0: string, 1: '', 2?: string, 3?: class-string, 4?: class-string}
+     * @return array{0: string, 1: '', 2?: string, 3?: string, 4?: string}
      *      An array containing optionaly:
      *          the page title as first element;
      *          an unused string as second element;
