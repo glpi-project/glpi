@@ -302,7 +302,11 @@
         'rows': 3,
         'enable_richtext': false,
         'enable_images': true,
-        'enable_mentions': false,
+        'mention_options': {
+            'enabled': options.enable_mentions is defined and options.enable_mentions,
+            'full': false,
+            'users': [],
+        },
         'entities_id': session('glpiactive_entity'),
         'readonly': false,
         'disabled': false,
@@ -318,12 +322,6 @@
         'statusbar': true,
         'content_style': "",
     }|merge(options) %}
-
-    {% if options.use_mentions.enabled %}
-        {% set options = options|merge({
-            'enable_mentions': true,
-        }) %}
-    {% endif %}
 
     {% if options.fields_template.isMandatoryField(name) %}
         {% set options = {'required': true}|merge(options) %}
@@ -372,14 +370,14 @@
         </script>
     {% endif %}
 
-    {% if options.enable_mentions and config('use_notifications') %}
+    {% if options.mention_options.enabled and config('use_notifications') %}
         <script>
             $(function() {
                 const user_mention = new GLPI.RichText.UserMention(
                     tinymce.get('{{ options.id }}'),
                     {{ options.entities_id }},
                     '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id}) }}',
-                    {{ options.use_mentions|json_encode|raw }}
+                    {{ options.mention_options|json_encode|raw }}
                 );
                 user_mention.register();
             });

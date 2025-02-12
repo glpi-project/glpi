@@ -267,20 +267,26 @@ final class UserMention
         return $content;
     }
 
-    public static function getRestrictedUsers(CommonITILObject $item): array
+    /**
+     * Get the options to pass to the `UserMention` javascript module.
+     *
+     * @param CommonITILObject $item
+     *
+     * @return array{enabled: bool, full: bool, users: array<int, int>}
+     */
+    public static function getMentionOptions(CommonITILObject $item): array
     {
-        $pro = Profile::getById($_SESSION['glpiactiveprofile']['id']);
-        $use_mentions = $pro->fields['use_mentions'];
+        $profile = Profile::getById($_SESSION['glpiactiveprofile']['id']);
+        $use_mentions = $profile->fields['use_mentions'];
 
         $data = [
             'enabled' => $use_mentions !== self::USER_MENTION_DISABLED,
+            'full'    => $use_mentions === self::USER_MENTION_FULL,
+            'users'   => [],
         ];
 
         if ($use_mentions !== self::USER_MENTION_RESTRICTED) {
-            $data['full'] = true;
             return $data;
-        } else {
-            $data['full'] = false;
         }
 
         $items_id = $item->getID();

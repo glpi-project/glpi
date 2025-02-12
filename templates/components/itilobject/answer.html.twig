@@ -56,7 +56,7 @@
                            {{ include(timeline_itemtype.template, {
                               'item': item,
                               'subitem': timeline_itemtype.item,
-                              'use_mentions': timeline_itemtype.use_mentions,
+                              'mention_options': mention_options,
                            }) }}
                         {% else %}
                            {% set sf_options = {'parent': item} %}

@@ -42,6 +42,7 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\RichText\RichText;
+use Glpi\RichText\UserMention;
 
 /**
  * Ticket Class
@@ -3733,8 +3734,11 @@ JAVASCRIPT;
             $item_ticket = new Item_Ticket();
         }
 
+        $mention_options = UserMention::getMentionOptions($this);
+
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
             'item'                      => $this,
+            'mention_options'           => $mention_options,
             'timeline_itemtypes'        => $this->getTimelineItemtypes(),
             'legacy_timeline_actions'   => $this->getLegacyTimelineActionsHTML(),
             'params'                    => $options,

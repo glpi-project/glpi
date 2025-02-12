@@ -631,8 +631,11 @@ abstract class CommonITILObject extends CommonDBTM
             $item_commonitilobject = new $item_link();
         }
 
+        $mention_options = UserMention::getMentionOptions($this);
+
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
             'item'                    => $this,
+            'mention_options'         => $mention_options,
             'timeline_itemtypes'      => $this->getTimelineItemtypes(),
             'legacy_timeline_actions' => $this->getLegacyTimelineActionsHTML(),
             'params'                  => $options,
@@ -7359,8 +7362,6 @@ abstract class CommonITILObject extends CommonDBTM
 
         $itemtypes = [];
 
-        $use_mentions = UserMention::getRestrictedUsers($this);
-
         $itemtypes['answer'] = [
             'type'          => 'ITILFollowup',
             'class'         => 'ITILFollowup',
@@ -7369,8 +7370,7 @@ abstract class CommonITILObject extends CommonDBTM
             'short_label'   => _x('button', 'Answer'),
             'template'      => 'components/itilobject/timeline/form_followup.html.twig',
             'item'          => $fup,
-            'hide_in_menu'  => !$canadd_fup,
-            'use_mentions'    => $use_mentions,
+            'hide_in_menu'  => !$canadd_fup
         ];
         $itemtypes['task'] = [
             'type'          => 'ITILTask',
@@ -7380,8 +7380,7 @@ abstract class CommonITILObject extends CommonDBTM
             'short_label'   => _x('button', 'Task'),
             'template'      => 'components/itilobject/timeline/form_task.html.twig',
             'item'          => $task,
-            'hide_in_menu'  => !$canadd_task,
-            'use_mentions'    => $use_mentions,
+            'hide_in_menu'  => !$canadd_task
         ];
         $itemtypes['solution'] = [
             'type'          => 'ITILSolution',
@@ -7391,8 +7390,7 @@ abstract class CommonITILObject extends CommonDBTM
             'short_label'   => _x('button', 'Solution'),
             'template'      => 'components/itilobject/timeline/form_solution.html.twig',
             'item'          => new ITILSolution(),
-            'hide_in_menu'  => !$canadd_solution,
-            'use_mentions'    => $use_mentions,
+            'hide_in_menu'  => !$canadd_solution
         ];
         $itemtypes['document'] = [
             'type'          => 'Document_Item',
@@ -7402,8 +7400,7 @@ abstract class CommonITILObject extends CommonDBTM
             'short_label'   => _x('button', 'Document'),
             'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
             'item'          => new Document_Item(),
-            'hide_in_menu'  => !$canadd_document,
-            'use_mentions'    => $use_mentions,
+            'hide_in_menu'  => !$canadd_document
         ];
         if ($validation !== null) {
             $itemtypes['validation'] = [
@@ -7414,8 +7411,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'short_label'   => _x('button', 'Validation'),
                 'template'      => 'components/itilobject/timeline/form_validation.html.twig',
                 'item'          => $validation,
-                'hide_in_menu'  => !$canadd_validation,
-                'use_mentions'    => $use_mentions,
+                'hide_in_menu'  => !$canadd_validation
             ];
         }
 

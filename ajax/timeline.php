@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\RichText\UserMention;
 
 if (($_POST['action'] ?? null) === 'change_task_state') {
     header("Content-Type: application/json; charset=UTF-8");
@@ -98,9 +99,13 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     if ($id) {
         $item->getFromDB($id);
     }
+
+    $mention_options = UserMention::getMentionOptions($parent);
+
     $params = [
-        'item'      => $parent,
-        'subitem'   => $item
+        'item'            => $parent,
+        'subitem'         => $item,
+        'mention_options' => $mention_options,
     ];
 
     if ($_REQUEST['type'] === ITILFollowup::class) {
