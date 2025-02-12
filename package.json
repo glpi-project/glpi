@@ -119,6 +119,7 @@
         "monaco-editor-webpack-plugin": "^7.0.1",
         "null-loader": "^4.0.1",
         "playwright": "^1.50.1",
+        "playwright-ctrf-json-reporter": "^0.0.18",
         "sass": "^1.65.1",
         "sass-loader": "^13.3.2",
         "script-loader": "^0.7.2",
