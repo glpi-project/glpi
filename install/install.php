@@ -506,6 +506,7 @@ function update1($dbname)
         footer_html();
     } else {
         $from_install = true;
+        $_SESSION['can_process_update'] = true;
         include_once(GLPI_ROOT . "/install/update.php");
     }
 }
