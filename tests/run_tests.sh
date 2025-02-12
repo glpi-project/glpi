@@ -54,6 +54,7 @@ TESTS_SUITES=(
   "web"
   "javascript"
   "e2e"
+  "playwright" # Temporary, should become e2e at some point
 )
 
 # Extract named options
@@ -159,6 +160,7 @@ Available tests suites:
  - web
  - javascript
  - e2e
+ - playwright
 EOF
 
   exit 0
@@ -225,6 +227,15 @@ run_single_test () {
     echo "Reinstall now status: $REINSTALL_NOW"
     # Run install test suite before any other test suite
     run_single_test "install"
+  fi
+
+  if [[ $TEST_TO_RUN == "playwright" ]]; then
+    echo "npm ci"
+    docker compose exec -T app npm ci
+    echo "npx playwright install chromium --with-deps"
+    docker compose exec -T --user=root app sudo -E npx playwright install chromium --with-deps
+    echo "npx tsc -p tsconfig.json --noEmit"
+    docker compose exec -T app npx tsc -p tsconfig.json --noEmit
   fi
 
   local TEST_ARGS=""
@@ -310,6 +321,10 @@ run_single_test () {
       ;;
     "e2e")
          docker compose exec -T app .github/actions/test_tests-e2e.sh \
+      || LAST_EXIT_CODE=$?
+      ;;
+    "playwright")
+         docker compose exec -T app npx playwright test --workers=2 \
       || LAST_EXIT_CODE=$?
       ;;
   esac
