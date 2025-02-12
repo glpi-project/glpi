@@ -209,8 +209,8 @@ class AuthMail extends CommonDBTM
      */
     public function post_updateItem($history = true)
     {
-        if (isset($this->fields["is_default"]) && $this->fields["is_default"] === 1) {
-            $this->removeDefaultFromOtherItems((int) $this->fields['id']);
+        if ($this->fields["is_default"] === 1) {
+            $this->removeDefaultFromOtherItems();
         }
 
         parent::post_updateItem($history);
@@ -221,8 +221,8 @@ class AuthMail extends CommonDBTM
      */
     public function post_addItem()
     {
-        if (isset($this->fields["is_default"]) && $this->fields["is_default"] === 1) {
-            $this->removeDefaultFromOtherItems((int) $this->fields['id']);
+        if ($this->fields["is_default"] === 1) {
+            $this->removeDefaultFromOtherItems();
         }
 
         parent::post_addItem();
@@ -400,7 +400,10 @@ TWIG, $twig_params);
         return "far fa-envelope";
     }
 
-    private function removeDefaultFromOtherItems(int $authmails_id): void
+    /**
+     * Remove the `is_default` flag from authentication methods that does not match the current item.
+     */
+    private function removeDefaultFromOtherItems(): void
     {
         if (isset($this->fields['is_default']) && (int)$this->fields["is_default"] === 1) {
             // if current default Auth is an AuthMail, remvove it

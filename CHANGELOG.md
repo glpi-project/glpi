@@ -329,6 +329,7 @@ The present file will list all changes made to the project; according to the
 - `AuthLDAP::displayLdapFilter()`
 - `AuthLDAP::dropdownUserDeletedActions()`
 - `AuthLDAP::dropdownUserRestoredActions()`
+- `AuthLDAP::getDefault()`
 - `AuthLDAP::getLdapDeletedUserActionOptions()`
 - `AuthLDAP::manageValuesInSession()`
 - `AuthLDAP::showDateRestrictionForm()`

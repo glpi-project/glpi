@@ -3788,8 +3788,8 @@ TWIG, $twig_params);
 
     public function post_updateItem($history = true)
     {
-        if (isset($this->fields["is_default"]) && $this->fields["is_default"] === 1) {
-            $this->removeDefaultFromOtherItems($this->getID());
+        if ($this->fields["is_default"]) {
+            $this->removeDefaultFromOtherItems();
         }
 
         parent::post_updateItem($history);
@@ -3800,8 +3800,8 @@ TWIG, $twig_params);
      */
     public function post_addItem()
     {
-        if (isset($this->fields["is_default"]) && $this->fields["is_default"] === 1) {
-            $this->removeDefaultFromOtherItems($this->getID());
+        if ($this->fields["is_default"]) {
+            $this->removeDefaultFromOtherItems();
         }
 
         parent::post_addItem();
@@ -4352,11 +4352,14 @@ TWIG, $twig_params);
         return $message;
     }
 
-    private function removeDefaultFromOtherItems(int $authldaps_id): void
+    /**
+     * Remove the `is_default` flag from authentication methods that does not match the current item.
+     */
+    private function removeDefaultFromOtherItems(): void
     {
-        if (isset($this->fields["is_default"]) && (int)$this->fields["is_default"] === 1) {
+        if ($this->fields["is_default"]) {
             $auth = new self();
-            $defaults = $auth->find(['is_default' => 1, ['NOT' => ['id' => $authldaps_id]]]);
+            $defaults = $auth->find(['is_default' => 1, ['NOT' => ['id' => $this->getID()]]]);
             foreach ($defaults as $default) {
                 $auth = new self();
                 $auth->update([
