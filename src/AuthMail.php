@@ -197,7 +197,7 @@ class AuthMail extends CommonDBTM
         echo "<td><input class='form-control' type='text' name='host' value='" . $this->fields["host"] . "'>";
         echo "</td></tr>";
 
-        Toolbox::showMailServerConfig($this->fields["connect_string"]);
+        Toolbox::showMailServerConfig($this->fields["connect_string"], false);
 
         echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
         echo "<td>";
