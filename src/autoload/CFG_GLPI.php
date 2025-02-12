@@ -359,6 +359,7 @@ $CFG_GLPI["systeminformations_types"]     = ['AuthLDAP', 'DBConnection', 'MailCo
 ];
 
 $CFG_GLPI["rulecollections_types"]        = [
+    'RuleDefineItemtypeCollection',
     'RuleImportAssetCollection',
     'RuleImportEntityCollection',
     'RuleLocationCollection',
