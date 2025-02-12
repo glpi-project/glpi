@@ -154,6 +154,7 @@ class Search
     {
 
         $params = self::manageParams($itemtype, $_GET);
+        $params['display_type'] = self::HTML_OUTPUT; //we obviousely are displaying an HTML content
         echo "<div class='search_page row'>";
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
             'itemtype' => $itemtype,
