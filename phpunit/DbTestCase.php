@@ -225,7 +225,7 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
-     * Create an item and checks it's data are same as given in input.
+     * Update an item and checks it's data are same as given in input.
      *
      * @template T of CommonDBTM
      * @param class-string<T> $itemtype
