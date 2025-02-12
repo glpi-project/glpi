@@ -254,6 +254,11 @@ jobs:
       - name: "Build dependencies / translations"
         run: |
           docker compose exec -T app .github/actions/init_build.sh
+      # Playwright setup
+      - name: Install dependencies
+        run: docker compose exec -T app npm ci
+      - name: Install Playwright Browsers
+        run: docker compose exec -T --user=root app sudo -E npx playwright install chromium --with-deps
       - name: "Install DB tests"
         if: "${{ success() || failure() }}"
         run: |
@@ -273,14 +278,12 @@ jobs:
         with:
           name: cypress-screenshots
           path: tests/cypress/screenshots
-      # Playwright specific steps
-      - name: Install dependencies
-        run: docker compose exec -T app npm ci
-      - name: Install Playwright Browsers
-        run: docker compose exec -T --user=root app sudo -E npx playwright install chromium --with-deps
+      # Run playwright
       - name: Run type checks
+        if: "${{ success() || failure() }}"
         run: docker compose exec -T app npx tsc -p tsconfig.json --noEmit
       - name: Run Playwright tests
+        if: "${{ success() || failure() }}"
         run: docker compose exec -T app npx playwright test --reporter=dot,playwright-ctrf-json-reporter
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
@@ -289,4 +292,5 @@ jobs:
           path: playwright-report/
           retention-days: 30
       - name: Publish Test Summary Results
+        if: ${{ !cancelled() }}
         run: npx github-actions-ctrf ctrf/ctrf-report.json
