@@ -50,11 +50,10 @@
     .entry-point {
         display: flex;
         align-items: center;
-
         position: relative;
         padding-left: 30px;
 
-        &:before {
+        &::before {
             content: '';
             position: absolute;
             left: 0;
@@ -72,9 +71,9 @@
         padding-bottom: 30px;
         margin-bottom: 15px;
 
-        &:after {
+        &::after {
             content: '\10068'; // Tabler icon hex code for arrow
-            font-family: "tabler-icons";
+            font-family: tabler-icons, sans-serif;
             position: absolute;
             left: 50%;
             bottom: -10px;
@@ -83,7 +82,7 @@
             color: var(--tblr-card-color);
         }
 
-        &:last-child:after {
+        &:last-child::after {
             display: none;
         }
 
