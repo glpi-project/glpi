@@ -40,7 +40,7 @@
 
 // PurgeSoftwareTask cron task
 CronTask::register(
-    'PurgeSoftwareTask',
+    'Software',
     'purgesoftware',
     MONTH_TIMESTAMP,
     [
