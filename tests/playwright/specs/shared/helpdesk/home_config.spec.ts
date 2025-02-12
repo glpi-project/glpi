@@ -44,7 +44,7 @@ test.beforeEach(async ({ page, request }) => {
     await session.changeProfile("Super-Admin");
 
     // Create a test profile with a few tiles
-    const glpi_api = new GlpiApi(test.info().parallelIndex);
+    const glpi_api = new GlpiApi();
     profile_id = await glpi_api.createItem('Profile', {
         name: 'Helpdesk profile for e2e tests',
         interface: 'helpdesk',

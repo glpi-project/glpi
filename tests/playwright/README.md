@@ -193,7 +193,7 @@ import { test, expect } from '../../fixtures/authenticated';
 import { GlpiApi } from '../../utils/GlpiApi';
 
 test('using API', async ({ page, request }) => {
-    const api = new GlpiApi(test.info().parallelIndex);
+    const api = new GlpiApi();
     const id = await api.createItem('Computer', {
         'name': "My computer"
     });

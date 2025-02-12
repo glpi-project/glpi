@@ -281,7 +281,7 @@ jobs:
       - name: Run type checks
         run: docker compose exec -T app npx tsc -p tsconfig.json --noEmit
       - name: Run Playwright tests
-        run: docker compose exec -T app npx playwright test
+        run: docker compose exec -T app npx playwright test --reporter=list
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:

@@ -45,12 +45,12 @@ export class GlpiApi
     private token: string|null = null;
     private user_id: number|null = null;
 
-    constructor(worker_id: number) {
+    constructor() {
         const base_url = Config.getBaseUrl();
         this.client = axios.create({
             baseURL: `${base_url}/apirest.php`,
         });
-        this.worker_id = worker_id;
+        this.worker_id = Number(process.env.TEST_PARALLEL_INDEX);
 
         // TODO: make this constructor private and use a getInstanceMethod
         // that will return an instance for a given worker id.

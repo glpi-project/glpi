@@ -30,28 +30,39 @@
  * ---------------------------------------------------------------------
  */
 
-import { Locator, type Page } from '@playwright/test';
-import { GlpiPage } from './GlpiPage';
+import { expect, Locator, Page } from 'playwright/test';
+import { CommonDBTMPage } from './CommonDBTMPage';
 
-export class CommonDBTMPage extends GlpiPage
+export class FormPage extends CommonDBTMPage
 {
-    private readonly historyRows: Locator;
+    public static MAIN_TAB = 'Glpi\\Form\\Form$main';
+
+    private readonly editorActiveCheckbox: Locator;
+    private readonly editorSaveButton: Locator;
+    private readonly editorSaveSuccessAlert: Locator;
 
     public constructor(page: Page) {
         super(page);
 
-        this.historyRows = page.getByRole('row');
+        this.editorActiveCheckbox = page.getByRole('checkbox', {'name': "Active"});
+        this.editorSaveButton = page.getByRole('button', {
+            name: "Save",
+            exact: true,
+        });
+        this.editorSaveSuccessAlert = page.getByRole('alert');
     }
 
-    public async goToTab(tab: string|RegExp) {
-        await this.page.getByRole('tab', { name: tab, exact: true }).click();
+    public async goto(id: number, tab: string = FormPage.MAIN_TAB) {
+        await this.page.goto(`/front/form/form.form.php?id=${id}&forcetab=${tab}`);
     }
 
-    public getTab(tab: string) {
-        return this.page.getByRole('tab', { name: tab, exact: true});
+    public async setActive() {
+        await this.editorActiveCheckbox.check();
     }
 
-    public getHistoryRows() {
-        return this.historyRows;
+    public async saveFormEditor() {
+        await this.editorSaveButton.click();
+        await expect(this.editorSaveSuccessAlert).toBeVisible();
+        await expect(this.editorSaveSuccessAlert).toContainText('Item successfully updated');
     }
 }

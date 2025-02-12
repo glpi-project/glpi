@@ -51,7 +51,7 @@ test.beforeEach(async ({ page, request }) => {
 
 test('can search for forms and faq entries', async () => {
     // Arrange some KB entries
-    const glpi_api = new GlpiApi(test.info().parallelIndex);
+    const glpi_api = new GlpiApi();
     [`My faq entry ${uuid}`, `My other faq entry ${uuid}`].forEach(async (entry) => {
         const id = await glpi_api.createItem('KnowbaseItem', {
             name: entry,
@@ -96,7 +96,7 @@ test('can use tiles', async ( {request} ) => {
 
 test('can use tabs', async () => {
     // Create some tickets
-    const glpi_api = new GlpiApi(test.info().parallelIndex);
+    const glpi_api = new GlpiApi();
     [
         {name: `Open ticket 1 ${uuid}`, status: Constants.TICKET_STATUS_NEW},
         {name: `Open ticket 2 ${uuid}`, status: Constants.TICKET_STATUS_NEW},
