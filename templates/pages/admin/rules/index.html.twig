@@ -13,71 +13,91 @@
             </li>
 
             <li class="step">
-                <a class="btn">
-                    <i class="ti ti-book"></i>
-                    <span>{{ __('Tranform itemtypes') }}</span>
-                </a>
-            </li>
-
-            <li class="step">
-                <a class="btn" href="{{ call('RuleImportEntity::getSearchURL') }}">
-                    <i class="{{ call('RuleImportEntity::getIcon') }}"></i>
-                    <span>{{ __('Rules for assigning an item to an entity') }}</span>
-                </a>
-            </li>
-
-            <li class="step">
-                <a class="btn" href="{{ call('RuleLocation::getSearchURL') }}">
-                    <i class="{{ call('RuleLocation::getIcon') }}"></i>
-                    <span>{{ __('Location rules') }}</span>
-                </a>
-            </li>
-
-            <li class="step">
-                <a class="btn" href="{{ call('RuleImportAsset::getSearchURL') }}">
-                    <i class="{{ call('RuleImportAsset::getIcon') }}"></i>
-                    <span>{{ __("Rules for import and link equipments") }}</span>
-                </a>
-            </li>
-
-            <li class="step">
-                <a class="btn" href="{{ path('/front/dictionnary.php') }}">
-                    <i class="{{ call('RuleDictionnaryDropdownCollection::getIcon') }}"></i>
-                    <span>{{ _n('Dictionary', 'Dictionaries', get_plural_number()) }}</span>
-                </a>
-            </li>
-
-            <li class="step">
-                <div class='card'>
-                    <div class="card-header card-header-light d-flex justify-content-center">
-                        <h4 class="my-0">
-                            {% set add_label %}
-                                <span>
-                                    <i class='ti ti-database-plus ms-1'></i>
-                                    <span>{{ __("Add") }}</span>
-                                </span>
-                            {% endset %}
-                            {% set update_label %}
-                                <span>
-                                    <i class='ti ti-database-import ms-1'></i>
-                                    <span>{{ __("Update asset") }}</span>
-                                </span>
-                            {% endset %}
-
-                            {{ __('%s or %s ')|format(add_label, update_label)|raw }}
-                        </h4>
+                <a class="btn flex-column">
+                    <div>
+                        <i class="ti ti-book"></i>
+                        <span>{{ __('Tranform itemtypes') }}</span>
                     </div>
-                    <div class='list-group list-group-flush'>
-                        <a class='list-group-item' href="{{ call('RuleAsset::getSearchURL') }}">
-                            <i class="{{ call('RuleAsset::getIcon') }}"></i>
-                            <span>{{ __("Business rules for assets") }}</span>
-                        </a>
-                        <a class='list-group-item' href="{{ call('Webhook::getSearchURL') }}">
-                            <i class="{{ call('Webhook::getIcon') }}"></i>
-                            <span>{{ call('Webhook::getTypeName', [get_plural_number()]) }}</span>
-                        </a>
+                    <div class="text-muted">
+                        {{ __("Morph the asset to another custom definition (like Servers)") }}
                     </div>
-                </div>
+                </a>
+            </li>
+
+            <li class="step">
+                <a class="btn flex-column" href="{{ call('RuleImportEntity::getSearchURL') }}">
+                    <div>
+                        <i class="{{ call('RuleImportEntity::getIcon') }}"></i>
+                        <span>{{ __('Rules for assigning an item to an entity') }}</span>
+                    </div>
+                    <div class="text-muted">
+                        {{ __("Set an entity with some criteria (by its tag for example)") }}
+                    </div>
+                </a>
+            </li>
+
+            <li class="step">
+                <a class="btn flex-column" href="{{ call('RuleLocation::getSearchURL') }}">
+                    <div>
+                        <i class="{{ call('RuleLocation::getIcon') }}"></i>
+                        <span>{{ __('Location rules') }}</span>
+                    </div>
+                    <div class="text-muted">
+                        {{ __("Apply a location by checking common criteria") }}
+                    </div>
+                </a>
+            </li>
+
+            <li class="step">
+                <a class="btn flex-column" href="{{ call('RuleImportAsset::getSearchURL') }}">
+                    <div>
+                        <i class="{{ call('RuleImportAsset::getIcon') }}"></i>
+                        <span>{{ __("Rules for import and link equipments") }}</span>
+                    </div>
+                    <div class="text-muted">
+                        {{ __("Identify if the asset exists or create a new one") }}
+                    </div>
+                </a>
+            </li>
+
+            <li class="step">
+                <a class="btn flex-column" href="{{ path('/front/dictionnary.php') }}">
+                    <div>
+                        <i class="{{ call('RuleDictionnaryDropdownCollection::getIcon') }}"></i>
+                        <span>{{ _n('Dictionary', 'Dictionaries', get_plural_number()) }}</span>
+                    </div>
+                    <div class="text-muted">
+                        {{ __("Normalize sub-data (like softwares, OS and models)") }}
+                    </div>
+                </a>
+            </li>
+
+            <li class="step">
+                <a class="btn flex-column" href="{{ call('RuleAsset::getSearchURL') }}">
+                    <div>
+                        <i class="{{ call('RuleAsset::getIcon') }}"></i>
+                        <span>{{ __("Business rules for assets") }}</span>
+                    </div>
+                    <div class="text-muted">
+                        {{ __("Alter assets fields based on their data") }}
+                    </div>
+                </a>
+            </li>
+
+            <li class="step ps-6 ms-3">
+                {% set add_label %}
+                    <span class="px-1">
+                        <i class='ti ti-database-plus ms-1'></i>
+                        <span>{{ __("Add") }}</span>
+                    </span>
+                {% endset %}
+                {% set update_label %}
+                    <span class="px-1">
+                        <i class='ti ti-database-import ms-1'></i>
+                        <span>{{ __("Update asset") }}</span>
+                    </span>
+                {% endset %}
+                <span>{{ __('%s or %s ')|format(add_label, update_label)|raw }}</span>
             </li>
         </ul>
     </div>
