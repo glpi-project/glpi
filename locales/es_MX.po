@@ -522,7 +522,7 @@ msgstr "Guardar búsqueda actual"
 
 #: js/modules/Search/Table.js:53
 msgid "Submit current search before saving it"
-msgstr ""
+msgstr "Enviar la búsqueda actual antes de guardarla"
 
 #: js/modules/SearchTokenizer/SearchInput.js:651
 msgid "Exclude"
@@ -4448,7 +4448,7 @@ msgstr "Sí"
 #: phpunit/functional/UserTest.php:635 src/User.php:1093
 #, php-format
 msgid "You are not allowed to update the following fields: %s"
-msgstr ""
+msgstr "No tienes permisos para actualizar los siguientes campos: 1%s"
 
 #: src/APIClient.php:70
 msgid "API client"
@@ -8003,9 +8003,9 @@ msgstr "Último estado de la solución"
 #: src/ITILFollowup.php:722
 msgid "Latest date"
 msgid_plural "Latest dates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Última fecha"
+msgstr[1] "Últimas fechas"
+msgstr[2] "Últimas fechas"
 
 #: src/CommonITILObject.php:4400
 msgid "Resolution time"
@@ -21124,9 +21124,9 @@ msgstr "Seguimientos automáticos / solución"
 #: src/Peripheral.php:78
 msgid "Peripheral"
 msgid_plural "Peripherals"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Periférico"
+msgstr[1] "Periféricos"
+msgstr[2] "Periféricos"
 
 #: src/Peripheral.php:307 src/Phone.php:353
 #: templates/generic_show_form.html.twig
@@ -25815,9 +25815,9 @@ msgstr[2] "Fabricantes USB"
 #: src/Unmanaged.php:52
 msgid "Unmanaged asset"
 msgid_plural "Unmanaged assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Activo no administrado"
+msgstr[1] "Activos no administrados"
+msgstr[2] "Activos no administrados"
 
 #: src/Unmanaged.php:135 templates/pages/assets/unmanaged.html.twig
 msgid "Network hub"
@@ -25989,7 +25989,7 @@ msgstr "Zona horaria"
 
 #: src/User.php:2791
 msgid "Not enough rights to change this field"
-msgstr ""
+msgstr "Sin permisos para cambiar este campo"
 
 #: src/User.php:2808
 msgid "Valid since"

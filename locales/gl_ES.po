@@ -9,6 +9,7 @@
 # CarlosCF, 2023
 # Óscar Beiro, 2024
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# Raúl Barreiro, 2025
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-30 12:16+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: Raúl Barreiro, 2025\n"
 "Language-Team: Galician (Spain) (https://app.transifex.com/glpi/teams/1637/gl_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -72,7 +73,7 @@ msgstr ""
 
 #: js/common.js:759 src/Dropdown.php:367
 msgid "Display on map"
-msgstr ""
+msgstr "Ensinar no mapa"
 
 #: js/common.js:1179
 msgid "just now"
@@ -81,7 +82,7 @@ msgstr "arestora"
 #: js/common.js:1180
 #, javascript-format
 msgid "%s seconds ago"
-msgstr ""
+msgstr "fai 1%s segundos"
 
 #: js/common.js:1181
 msgid "a minute ago"
@@ -90,7 +91,7 @@ msgstr "fai un minuto"
 #: js/common.js:1182 src/Html.php:7004
 #, javascript-format, php-format
 msgid "%s minutes ago"
-msgstr ""
+msgstr "fai 1%s minutos"
 
 #: js/common.js:1183
 msgid "an hour ago"
@@ -99,7 +100,7 @@ msgstr "fai unha hora"
 #: js/common.js:1184 src/Html.php:7007
 #, javascript-format, php-format
 msgid "%s hours ago"
-msgstr ""
+msgstr "fai 1%s horas"
 
 #: js/common.js:1185
 msgid "yesterday"
@@ -108,25 +109,25 @@ msgstr "onte"
 #: js/common.js:1186 src/Html.php:7014
 #, javascript-format, php-format
 msgid "%s days ago"
-msgstr ""
+msgstr "fai 1%s días"
 
 #: js/common.js:1187
 msgid "a week ago"
-msgstr ""
+msgstr "fai unha semana"
 
 #: js/common.js:1188 src/Html.php:7017
 #, javascript-format, php-format
 msgid "%s weeks ago"
-msgstr ""
+msgstr "fai 1%s semanas"
 
 #: js/common.js:1189
 msgid "a month ago"
-msgstr ""
+msgstr "fai un mes"
 
 #: js/common.js:1190
 #, javascript-format
 msgid "%s months ago"
-msgstr ""
+msgstr "fai 1%s meses"
 
 #: js/common.js:1191
 msgid "a year ago"
@@ -135,7 +136,7 @@ msgstr "fai un ano"
 #: js/common.js:1192
 #, javascript-format
 msgid "%s years ago"
-msgstr ""
+msgstr "fai %s anos"
 
 #: js/dashboard.js:191 src/Dashboard/Grid.php:285
 msgid "Share or embed this dashboard"
@@ -234,7 +235,7 @@ msgstr "Cancelar"
 
 #: js/glpi_dialog.js:376
 msgid "Success"
-msgstr ""
+msgstr "Correcto"
 
 #: js/glpi_dialog.js:398 ajax/dropdownMassiveAction.php:48
 #: ajax/massiveaction.php:56 front/massiveaction.php:52
@@ -258,7 +259,7 @@ msgstr "Erro"
 
 #: js/impact.js:1325 js/modules/Kanban/Kanban.js:487
 msgid "Go to"
-msgstr ""
+msgstr "Ir a"
 
 #: js/impact.js:1326
 msgid "Open this element in a new tab"
@@ -266,11 +267,11 @@ msgstr "Abre este elemento nunha nova lapela"
 
 #: js/impact.js:1332
 msgid "Show ongoing tickets"
-msgstr ""
+msgstr "Ver peticións en curso"
 
 #: js/impact.js:1333
 msgid "Show ongoing tickets for this item"
-msgstr ""
+msgstr "Ver peticións en curso para este ítem"
 
 #: js/impact.js:1339
 msgid "Group properties..."
@@ -278,15 +279,15 @@ msgstr "Propiedades do grupo..."
 
 #: js/impact.js:1340
 msgid "Set name and/or color for this group"
-msgstr ""
+msgstr "Establecer nome e/ou cor para este grupo"
 
 #: js/impact.js:1347
 msgid "Remove from group"
-msgstr ""
+msgstr "Eliminar do grupo"
 
 #: js/impact.js:1348
 msgid "Remove this asset from the group"
-msgstr ""
+msgstr "Eliminar este activo do grupo"
 
 #: js/impact.js:1355 js/modules/Kanban/Kanban.js:477
 #: js/modules/Kanban/Kanban.js:499 js/modules/Kanban/Kanban.js:794
@@ -309,7 +310,7 @@ msgstr "Este activo xa existe."
 
 #: js/impact.js:1393
 msgid "Unexpected error."
-msgstr ""
+msgstr "Erro inesperado."
 
 #: js/impact.js:2300
 msgid "Draw a line between two assets to add an impact relation"
@@ -318,7 +319,7 @@ msgstr ""
 
 #: js/impact.js:2307
 msgid "Click on an element to remove it from the network"
-msgstr ""
+msgstr "Facer clic nun elemento para eliminalo da rede"
 
 #: js/impact.js:2315
 msgid "Draw a square containing the assets you wish to group"
@@ -342,11 +343,11 @@ msgstr "Problemas"
 
 #: js/impact.js:2481
 msgid "You need to select at least 1 asset to make a group"
-msgstr ""
+msgstr "Necesitas polo menos seleccionar 1 activo para facer un grupo"
 
 #: js/modules/Kanban/Kanban.js:474
 msgid "Bulk add"
-msgstr ""
+msgstr "Engadir masivamente"
 
 #: js/modules/Kanban/Kanban.js:493
 msgid "Restore"
@@ -354,15 +355,15 @@ msgstr "Restaurar"
 
 #: js/modules/Kanban/Kanban.js:541
 msgid "Search or filter results"
-msgstr ""
+msgstr "Buscar ou filtrar resultados"
 
 #: js/modules/Kanban/Kanban.js:543
 msgid "Add column"
-msgstr ""
+msgstr "Engadir columna"
 
 #: js/modules/Kanban/Kanban.js:564
 msgid "Regex"
-msgstr ""
+msgstr "Expresiòn regular"
 
 #: js/modules/Kanban/Kanban.js:791 src/CommonDBTM.php:5450
 #: src/Dashboard/Grid.php:1391 src/Profile.php:999 src/Profile.php:1014
@@ -406,7 +407,7 @@ msgstr ""
 
 #: js/modules/Kanban/Kanban.js:1862
 msgid "One item per line"
-msgstr ""
+msgstr "Un ítem por liña"
 
 #: js/modules/Kanban/Kanban.js:1948
 msgid "Add a column from existing status"

@@ -15550,7 +15550,7 @@ msgid ""
 msgstr ""
 "Você precisa de ajuda para integrar o GLPI a sua TI, ter um bug corrigido ou se beneficiar de regras ou dicionários pré-configurados?\n"
 "\n"
-"Nós fornecemos o %sespaço para você.\n"
+"Nós fornecemos o espaço %s para você.\n"
 "GLPI-Network é um serviço comercial que inclui uma assinatura para suporte de nível 3, garantindo a correção de bugs encontrados com um compromisso de tempo.\n"
 "\n"
 "No mesmo lugar, você poderá encontrar um parceiro oficial para te ajudar com a sua integração do GLPI."
@@ -16717,11 +16717,11 @@ msgstr "interno"
 #: src/Inventory/Conf.php:199 src/Inventory/Conf.php:260
 #, php-format
 msgid "File has not been imported: `%s`."
-msgstr "O arquivo não foi importado: `%s`."
+msgstr "O arquivo não foi importado: `%s`"
 
 #: src/Inventory/Conf.php:264
 msgid "File has been successfully imported."
-msgstr "O arquivo foi importado com sucesso."
+msgstr "O arquivo foi importado com sucesso"
 
 #: src/Inventory/Conf.php:271
 #, php-format
@@ -18808,8 +18808,8 @@ msgstr "Nenhum nome de rede encontrado"
 msgid "Network port"
 msgid_plural "Network ports"
 msgstr[0] "Porta de Rede"
-msgstr[1] "Porta de rede"
-msgstr[2] "Porta de rede"
+msgstr[1] "Portas de rede"
+msgstr[2] "Portas de rede"
 
 #: src/NetworkPort.php:620
 msgid "Global displays"
@@ -22617,7 +22617,7 @@ msgstr "Ver todos os itens"
 
 #: src/Reservation.php:553
 msgid "All reservable devices"
-msgstr "Todos dispositivos reserváveis"
+msgstr "Todos os dispositivos reserváveis"
 
 #: src/Reservation.php:661
 #, php-format
@@ -23281,7 +23281,7 @@ msgstr "Descrição da porta"
 
 #: src/RuleImportAsset.php:139
 msgid "Device_id"
-msgstr "Device_id"
+msgstr "ID do dispositivo"
 
 #: src/RuleImportAsset.php:142
 msgid "Serial of the operating system"
@@ -25979,7 +25979,7 @@ msgstr "Chaves de acesso remoto"
 
 #: src/User.php:3044 src/User.php:3438
 msgid "API token"
-msgstr "API token"
+msgstr "Token de API"
 
 #: src/User.php:3054 src/User.php:3448
 #, php-format
@@ -27022,7 +27022,7 @@ msgstr "Nome do arquivo"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Import process is complete."
-msgstr "O processo de importação está concluído."
+msgstr "O processo de importação está concluído"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Result"
