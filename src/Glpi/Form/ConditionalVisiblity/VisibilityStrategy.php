@@ -34,38 +34,45 @@
 
 namespace Glpi\Form\ConditionalVisiblity;
 
-enum ValueOperator: string
+enum VisibilityStrategy: string
 {
-    case EQUALS = 'equals';
-    case NOT_EQUALS = 'not_equals';
-    case CONTAINS = 'contains';
-    case NOT_CONTAINS = 'not_contains';
-
-    // Not yet implemented:
-    // case GREATER_THAN = 'greater_than';
-    // case GREATER_THAN_OR_EQUALS = 'greater_than_or_equals';
-    // case LESS_THAN = 'less_than';
-    // case LESS_THAN_OR_EQUALS = 'less_than_or_equals';
-    // case VISIBLE = 'visible';
-    // case NOT_VISIBLE = 'not_visible';
+    case ALWAYS_VISIBLE = 'always_visible';
+    case VISIBLE_IF = 'visible_if';
+    case HIDDEN_IF = 'hidden_if';
 
     public function getLabel(): string
     {
         return match ($this) {
-            self::EQUALS       => __("Is equal to"),
-            self::NOT_EQUALS   => __("Is not equal to"),
-            self::CONTAINS     => __("Contains"),
-            self::NOT_CONTAINS => __("Do not contains"),
+            self::ALWAYS_VISIBLE => __('Always visible'),
+            self::VISIBLE_IF     => __('Visible if...'),
+            self::HIDDEN_IF      => __("Hidden if..."),
         };
     }
 
-    public function applyForString(string $a, string $b): bool
+    public function getIcon(): string
     {
         return match ($this) {
-            self::EQUALS       => $a === $b,
-            self::NOT_EQUALS   => $a !== $b,
-            self::CONTAINS     => str_contains($b, $a),
-            self::NOT_CONTAINS => !str_contains($b, $a),
+            self::ALWAYS_VISIBLE => 'ti ti-eye',
+            self::VISIBLE_IF     => 'ti ti-eye-cog',
+            self::HIDDEN_IF      => 'ti ti-eye-off',
+        };
+    }
+
+    public function showEditor(): bool
+    {
+        return match ($this) {
+            self::ALWAYS_VISIBLE => false,
+            self::VISIBLE_IF     => true,
+            self::HIDDEN_IF      => true,
+        };
+    }
+
+    public function mustBeVisible(bool $conditions_result): bool
+    {
+        return match ($this) {
+            self::ALWAYS_VISIBLE => true,
+            self::VISIBLE_IF     => $conditions_result,
+            self::HIDDEN_IF      => !$conditions_result,
         };
     }
 }

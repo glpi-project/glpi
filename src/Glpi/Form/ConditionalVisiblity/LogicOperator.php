@@ -54,4 +54,12 @@ enum LogicOperator: string
             self::OR->value  => self::OR->getLabel(),
         ];
     }
+
+    public function apply(bool $a, bool $b): bool
+    {
+        return match ($this) {
+            self::AND => $a && $b,
+            self::OR  => $a || $b,
+        };
+    }
 }

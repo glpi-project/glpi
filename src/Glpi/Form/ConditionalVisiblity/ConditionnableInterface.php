@@ -34,7 +34,7 @@
 
 namespace Glpi\Form\ConditionalVisiblity;
 
-use Glpi\Form\QuestionVisibilityStrategy;
+use Glpi\Form\ConditionalVisiblity\VisibilityStrategy;
 
 /**
  * This interface must be satisfied by any form item for which its visibility
@@ -52,7 +52,7 @@ interface ConditionnableInterface
     /**
      * Get the configured visibility strategy from the database.
      *
-     * @return \Glpi\Form\QuestionVisibilityStrategy
+     * @return VisibilityStrategy
      */
-    public function getConfiguredVisibilityStrategy(): QuestionVisibilityStrategy;
+    public function getConfiguredVisibilityStrategy(): VisibilityStrategy;
 }

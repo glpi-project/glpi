@@ -59,9 +59,9 @@ final class ConditionData
         return $this->item_uuid;
     }
 
-    public function getItemType(): string
+    public function getItemType(): Type
     {
-        return $this->item_type;
+        return Type::from($this->item_type);
     }
 
     public function getValue(): mixed
