@@ -112,7 +112,7 @@ jobs:
       - name: "Generate matrix"
         id: "generate-matrix"
         run: |
-          if [[ "${{ github.event_name }}" = "workflow_dispatch" || ( "${{ github.ref_type }}" = "branch" && "${{ github.ref_name }}" =~ ^(main|.*/bugfixes)$ ) || "${{ github.ref_type }}" = "tag" ]]; then
+          if [[ "${{ github.event_name }}" = "workflow_dispatch" || ( "${{ github.ref_type }}" = "branch" && "${{ github.ref_name }}" =~ ^(main|.*/bugfixes|security/.*)$ ) || "${{ github.ref_type }}" = "tag" ]]; then
             MATRIX='
               {
                 "include": [
