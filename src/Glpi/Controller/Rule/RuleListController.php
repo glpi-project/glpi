@@ -39,6 +39,9 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Html;
+use Rule;
+use Session;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,41 +59,33 @@ final class RuleListController extends AbstractController
         $reinit =       $request->get('reinit');
         $replay_rule =  $request->get('replay_rule');
         $reorder =      $request->request->get('action');
+        // pour debug on prend le param en get
+//        $reorder =      $request->get('action');
+
+        // @todo param subtype contient le type d'item http://localhost:8081/front/ruleticket.php?reinit=true&subtype=RuleTicket
+        // pour debug
+//        $reorder =      $request->get('action');
 
         $this->ruleCollection = new \RuleTicketCollection($_SESSION['glpiactive_entity']);
 
         // dispatch
         if(!is_null($reorder))
         {
-            if(!in_array($reorder, ['up', 'down'])) {
-                return new Response('Invalid action, only "up" or "down" are supported.', Response::HTTP_BAD_REQUEST);
-            }
-
             $this->moveRule($id, $reorder, (int) $request->request->get('condition'));
 
-            return new RedirectResponse($request->getUri());
+            return new RedirectResponse($request->getPathInfo());
         }
         if(!is_null($reinit))
         {
             $this->reinitializeRules();
 
-            return new RedirectResponse($request->getUri());
+            return new RedirectResponse($request->getPathInfo());
         }
         if (!is_null($replay_rule))
         {
+            // @todo voir ce qui peut être bougé dans replayRule
             // act only if confirmation is needed and given
-            $replay_confirmation = !is_null($request->request->get('replay_confirm') ?? $request->query->get('replay_confirm'));
-            if(!$replay_confirmation) {
-                // @todo sort du html
-                $need_confirmation = $this->ruleCollection->warningBeforeReplayRulesOnExistingDB();
-                if($need_confirmation) {
-                    throw new \Exception('implement me');
-                    // rien à afficher, c'est déjà fait par $this->ruleCollection->warningBeforeReplayRulesOnExistingDB()
-                    // donc a capter dans streamResponse
-                    return new Response('html à sortir / implement me '.__LINE__, Response::HTTP_NOT_IMPLEMENTED);
-                }
-
-            }
+            $confirmed = !is_null($request->request->get('replay_confirm') ?? $request->query->get('replay_confirm'));
 
             // same behaviour as before, can maybe be simplified if manufacturer is not in conflict in POST & GET
             if(!isset($_GET['offset'])) {
@@ -98,14 +93,12 @@ final class RuleListController extends AbstractController
             } else {
                 $manufacturer = $request->query->get('manufacturer') ?? '0';
             }
-            // @todo espace $manufacturer
+            $manufacturer = htmlescape($manufacturer);
 
             $offset = (int) $request->get('offset');
-            $start = (int) $request->get('start') ?? time();
+            $start = (int) ($request->get('start') ?? time());
 
-            $this->replayRule(offset: $offset, manufacturer: $manufacturer, start: $start);
-
-            return new Response('html à sortir / implement me '.__LINE__, Response::HTTP_NOT_IMPLEMENTED);
+            return $this->replayRule(offset: $offset, manufacturer: $manufacturer, start: $start, confirmed: $confirmed);
         }
 
         // default action : display list
@@ -138,6 +131,10 @@ final class RuleListController extends AbstractController
      */
     private function moveRule(int $id, string $direction, int $condition): void
     {
+        if(!in_array($direction, ['up', 'down'])) {
+            throw new BadRequestHttpException('Invalid action, only "up" or "down" are supported.');
+        }
+
         $this->ruleCollection->checkGlobal(UPDATE);
         $this->ruleCollection->changeRuleOrder($id, $direction, $condition);
     }
@@ -153,8 +150,7 @@ final class RuleListController extends AbstractController
         $initProcess = $ruleclass->initRules();
 
         if ($initProcess) {
-            // @todo use flash ?
-            \Session::addMessageAfterRedirect(
+            Session::addMessageAfterRedirect(
                 htmlescape(sprintf(
                 //TRANS: first parameter is the rule type name
                     __('%1$s has been reset.'),
@@ -164,8 +160,7 @@ final class RuleListController extends AbstractController
         }
         else
         {
-            // @todo use flash ?
-            \Session::addMessageAfterRedirect(
+            Session::addMessageAfterRedirect(
                 htmlescape(sprintf(
                 //TRANS: first parameter is the rule type name
                     __('%1$s reset failed.'),
@@ -177,83 +172,107 @@ final class RuleListController extends AbstractController
         }
     }
 
-    private function replayRule(int $offset, string $manufacturer, int $start): void
+    /**
+     * @param int $offset
+     * @param string $manufacturer
+     * @param int $start
+     * @param bool $confirmed
+     * @return Response
+     * @throws \Exception
+     *
+     * Possible responses:
+     * - Confirmation needed response
+     * - RedirectResponse to continue the process
+     * - StreamedResponse to display the final result
+     */
+    private function replayRule(int $offset, string $manufacturer, int $start, bool $confirmed): Response
     {
         $this->ruleCollection->checkGlobal(UPDATE);
 
-        // @todo voir layout twig
-//        Html::header(
-//            Rule::getTypeName(Session::getPluralNumber()),
-//            '',
-//            "admin",
-//            $this->ruleCollection->menu_type,
-//            $this->ruleCollection->menu_option
-//        );
+        // - Confirmation needed response
+        if(!$confirmed) {
+            $rulecollection = $this->ruleCollection;
+            if ($this->ruleCollection->hasWarningBeforeReplayRulesOnExistingDB()) {
+                return new StreamedResponse(static function () use ($rulecollection) {
+                    Html::header(
+                        Rule::getTypeName(Session::getPluralNumber()),
+                        '',
+                        "admin",
+                        $rulecollection->menu_type,
+                        $rulecollection->menu_option
+                    );
 
+                    echo $rulecollection->getWarningBeforeReplayRulesOnExistingDB();
 
-        // affichage bar de progression -> streamResponse
-        echo "<table class='tab_cadrehov'>";
-
-        echo "<tr><th><div class='relative b'>" . htmlescape($this->ruleCollection->getTitle()) . "<br>" .
-            __s('Replay the rules dictionary') . "</div></th></tr>";
-        echo "<tr><td class='center'>";
-        \Html::progressBar('doaction_progress', [
-            'create' => true,
-            'message' => __s('Work in progress...')
-        ]);
-        echo "</td></tr>";
-        echo "</table>";
-
-        // timestamp limit to stop the process
-        $max_execution_time = (int) get_cfg_var("max_execution_time");
-        // so at the moment we sum a microtime
-        $deadline_timestamp = $start + ($max_execution_time > 0 ? $max_execution_time / 2.0 : 30.0);
-
-        if ($offset === 0)  {
-            // First run
-            $new_offset       = $this->ruleCollection->replayRulesOnExistingDB(
-                $offset,
-                $deadline_timestamp,
-                [],
-                ['manufacturer' => $manufacturer]
-            );
-        } else {
-            // Next run
-            $new_offset       = $this->ruleCollection->replayRulesOnExistingDB(
-                $offset,
-                $deadline_timestamp,
-                [],
-                ['manufacturer' => $manufacturer]
-            );
+                    Html::footer();
+                });
+            }
         }
 
+        // - RedirectResponse to continue the process & StreamedResponse to display the final result
+        // start the final response, abort with HTML::redirect to continue the process
+        $rulecollection = $this->ruleCollection;
         $rule_class = $this->ruleCollection->getRuleClassName();
 
-        if ($new_offset < 0) {
-            // Work ended
-            // @todo remplacer par time()
-            $elapsed_time = round(microtime(true) - $start);
-            \Html::changeProgressBarMessage(sprintf(
+        return new StreamedResponse(static function () use ($rulecollection, $rule_class, $start, $offset, $manufacturer)
+        {
+            // timestamp limit to stop the process
+            $max_execution_time = (int) get_cfg_var("max_execution_time");
+            // so at the moment we sum a microtime
+            $deadline_timestamp = $start + ($max_execution_time > 0 ? $max_execution_time / 2.0 : 30.0);
+
+            Html::header(
+                Rule::getTypeName(Session::getPluralNumber()),
+                '',
+                "admin",
+                $rulecollection->menu_type,
+                $rulecollection->menu_option
+            );
+            // output html contents
+            $new_offset       = $rulecollection->replayRulesOnExistingDB(
+                $offset,
+                $deadline_timestamp,
+                [],
+                ['manufacturer' => $manufacturer]
+            );
+
+            $more_work_needed = false !== $new_offset && $new_offset >= 0;
+            if($more_work_needed)
+            {
+                Html::redirect($rule_class::getSearchURL() . "?start=$start&replay_rule=1&offset=$new_offset&manufacturer=" . $manufacturer);
+            }
+
+            $elapsed_time = time() - $start;
+            $message = sprintf(
                 __('Task completed in %s'),
-                \Html::timestampToString($elapsed_time)
-            ));
+                Html::timestampToString($elapsed_time)
+            );
+
             echo "<a href='" . htmlescape($rule_class::getSearchURL()) . "'>" . __s('Back') . "</a>";
-        } else {
-            // Need more work
-            \Html::redirect($rule_class::getSearchURL() . "?start=$start&replay_rule=1&offset=$new_offset&manufacturer=" .
-                "$manufacturer");
-        }
+            echo "<table class='tab_cadrehov'>";
+            echo "<tr><th><div class='relative b'>" . htmlescape($rulecollection->getTitle()) . "<br>" .
+                __s('Replay the rules dictionary') . "</div></th></tr>";
+            echo "<tr><td class='center'>";
+            Html::progressBar('doaction_progress', [
+                'create' => true,
+                'message' => $message
+            ]);
+            echo "</td></tr>";
+            echo "</table>";
+
+            Html::footer();
+        });
 
     }
 
-    private function renderList()
+    private function renderList(): Response
     {
         $this->ruleCollection->checkGlobal(READ);
         $rulecollection = $this->ruleCollection;
 
         return new StreamedResponse(static function () use ($rulecollection) {
-            \Html::header(
-                \Rule::getTypeName(\Session::getPluralNumber()),
+            Html::header(
+                Rule::getTypeName(Session::getPluralNumber()),
                 '',
                 'admin',
                 $rulecollection->menu_type,
@@ -265,13 +284,7 @@ final class RuleListController extends AbstractController
                 'display_actions'   => true,
             ]);
 
-            \Html::footer();
-
-//            $rulecollection->display([
-//                'display_criterias' => true,
-//                'display_actions'   => true,
-//            ]);
-//            TemplateRenderer::getInstance()->display('pages/tools/search_solution.twig', $twig_bindings);
+            Html::footer();
         });
     }
 }
