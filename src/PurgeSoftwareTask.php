@@ -35,7 +35,7 @@
 // ...existing headers et éventuels use statements...
 use Glpi\DBAL\QuerySubQuery;
 
-class PurgeSoftwareTask extends Software
+class PurgeSoftwareTask
 {
     const TASK_NAME = 'purgesoftware';
     const MAX_BATCH_SIZE = 2000;

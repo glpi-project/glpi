@@ -37,6 +37,7 @@ namespace Glpi\Console\Assets;
 
 use PurgeSoftwareTask;
 use Glpi\Console\AbstractCommand;
+use Software;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -47,16 +48,16 @@ class PurgeSoftwareCommand extends AbstractCommand
     protected function configure()
     {
         parent::configure();
-        $task = new PurgeSoftwareTask();
+        $software = new Software();
 
         $this->setName('assets:purgesoftware');
-        $this->setDescription($task->getPurgeTaskDescription());
+        $this->setDescription($software->getPurgeTaskDescription());
 
         $this->addOption(
             'max',
             'm',
             InputOption::VALUE_REQUIRED,
-            $task->getPurgeTaskParameterDescription(),
+            $software->getPurgeTaskParameterDescription(),
             500
         );
     }
