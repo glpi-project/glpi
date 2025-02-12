@@ -1150,108 +1150,156 @@ PLAINTEXT,
 
     public static function mailServerProtocolsHookProvider()
     {
-        return [
-            // Check that invalid hook result does not alter core protocols specs
-            [
-                'hook_result'        => 'invalid result',
-                'type'               => 'imap',
-                'expected_warning'   => 'Invalid value returned by "mail_server_protocols" hook.',
-                'expected_protocol'  => 'Laminas\Mail\Protocol\Imap',
-                'expected_storage'   => 'Laminas\Mail\Storage\Imap',
-            ],
-            // Check that hook cannot alter core protocols specs
-            [
-                'hook_result'        => [
-                    'imap' => [
-                        'label'    => 'Override test',
-                        'protocol' => 'SomeClass',
-                        'storage'  => 'SomeClass',
-                    ],
+        // Check that invalid hook result does not alter core protocols specs
+        yield [
+            'allow_plugins_protocols'   => true,
+            'hook_result'               => 'invalid result',
+            'type'                      => 'imap',
+            'expected_warning'          => 'Invalid value returned by "mail_server_protocols" hook.',
+            'expected_protocol'         => \Laminas\Mail\Protocol\Imap::class,
+            'expected_storage'          => \Laminas\Mail\Storage\Imap::class,
+        ];
+
+        // Check that hook cannot alter core IMAP protocol
+        yield [
+            'allow_plugins_protocols'   => true,
+            'hook_result'               => [
+                'imap' => [
+                    'label'    => 'Override test',
+                    'protocol' => 'SomeClass',
+                    'storage'  => 'SomeClass',
                 ],
-                'type'               => 'imap',
-                'expected_warning'   => 'Protocol "imap" is already defined and cannot be overwritten.',
-                'expected_protocol'  => 'Laminas\Mail\Protocol\Imap',
-                'expected_storage'   => 'Laminas\Mail\Storage\Imap',
             ],
-            // Check that hook cannot alter core protocols specs
-            [
-                'hook_result'        => [
-                    'pop' => [
-                        'label'    => 'Override test',
-                        'protocol' => 'SomeClass',
-                        'storage'  => 'SomeClass',
-                    ],
+            'type'                      => 'imap',
+            'expected_warning'          => 'Protocol "imap" is already defined and cannot be overwritten.',
+            'expected_protocol'         => \Laminas\Mail\Protocol\Imap::class,
+            'expected_storage'          => \Laminas\Mail\Storage\Imap::class,
+        ];
+
+        // Check that hook cannot alter core POP3 protocol
+        yield [
+            'allow_plugins_protocols'   => true,
+            'hook_result'               => [
+                'pop' => [
+                    'label'    => 'Override test',
+                    'protocol' => 'SomeClass',
+                    'storage'  => 'SomeClass',
                 ],
-                'type'               => 'pop',
-                'expected_warning'   => 'Protocol "pop" is already defined and cannot be overwritten.',
-                'expected_protocol'  => 'Laminas\Mail\Protocol\Pop3',
-                'expected_storage'   => 'Laminas\Mail\Storage\Pop3',
             ],
-            // Check that class must exist
-            [
-                'hook_result'        => [
-                    'custom-protocol' => [
-                        'label'    => 'Invalid class',
-                        'protocol' => 'SomeClass1',
-                        'storage'  => 'SomeClass2',
-                    ],
+            'type'                      => 'pop',
+            'expected_warning'          => 'Protocol "pop" is already defined and cannot be overwritten.',
+            'expected_protocol'         => \Laminas\Mail\Protocol\Pop3::class,
+            'expected_storage'          => \Laminas\Mail\Storage\Pop3::class,
+        ];
+
+        // Check that class must exist
+        yield [
+            'allow_plugins_protocols'   => true,
+            'hook_result'               => [
+                'custom-protocol' => [
+                    'label'    => 'Invalid class',
+                    'protocol' => 'SomeClass1',
+                    'storage'  => 'SomeClass2',
                 ],
-                'type'               => 'custom-protocol',
-                'expected_warning'   => 'Invalid specs for protocol "custom-protocol".',
-                'expected_protocol'  => null,
-                'expected_storage'   => null,
             ],
-            // Check that class must implement expected functions
-            [
-                'hook_result'        => [
-                    'custom-protocol' => [
-                        'label'    => 'Invalid class',
-                        'protocol' => 'Plugin',
-                        'storage'  => 'Migration',
-                    ],
+            'type'                      => 'custom-protocol',
+            'expected_warning'          => 'Invalid specs for protocol "custom-protocol".',
+            'expected_protocol'         => null,
+            'expected_storage'          => null,
+        ];
+
+        // Check that class must implement expected functions
+        yield [
+            'allow_plugins_protocols'   => true,
+            'hook_result'               => [
+                'custom-protocol' => [
+                    'label'    => 'Invalid class',
+                    'protocol' => 'Plugin',
+                    'storage'  => 'Migration',
                 ],
-                'type'               => 'custom-protocol',
-                'expected_warning'   => 'Invalid specs for protocol "custom-protocol".',
-                'expected_protocol'  => null,
-                'expected_storage'   => null,
             ],
-            // Check valid case using class names
-            [
-                'hook_result'        => [
-                    'custom-protocol' => [
-                        'label'    => 'Custom email protocol',
-                        'protocol' => \PluginTesterFakeProtocol::class,
-                        'storage'  => \PluginTesterFakeStorage::class,
-                    ],
+            'type'                      => 'custom-protocol',
+            'expected_warning'          => 'Invalid specs for protocol "custom-protocol".',
+            'expected_protocol'         => null,
+            'expected_storage'          => null,
+        ];
+
+        // Check valid case using class names
+        yield [
+            'allow_plugins_protocols'   => true,
+            'hook_result'               => [
+                'custom-protocol' => [
+                    'label'    => 'Custom email protocol',
+                    'protocol' => \PluginTesterFakeProtocol::class,
+                    'storage'  => \PluginTesterFakeStorage::class,
                 ],
-                'type'               => 'custom-protocol',
-                'expected_warning'   => null,
-                'expected_protocol'  => \PluginTesterFakeProtocol::class,
-                'expected_storage'   => \PluginTesterFakeStorage::class,
             ],
-            // Check valid case using callback
-            [
-                'hook_result'        => [
-                    'custom-protocol' => [
-                        'label'    => 'Custom email protocol',
-                        'protocol' => function () {
-                            return new \PluginTesterFakeProtocol();
-                        },
-                        'storage'  => function (array $params) {
-                            return new \PluginTesterFakeStorage($params);
-                        },
-                    ],
+            'type'                      => 'custom-protocol',
+            'expected_warning'          => null,
+            'expected_protocol'         => \PluginTesterFakeProtocol::class,
+            'expected_storage'          => \PluginTesterFakeStorage::class,
+        ];
+
+        // Check valid case using class names is not returned if plugins protocols are not allowed
+        yield [
+            'allow_plugins_protocols'   => false,
+            'hook_result'               => [
+                'custom-protocol' => [
+                    'label'    => 'Custom email protocol',
+                    'protocol' => \PluginTesterFakeProtocol::class,
+                    'storage'  => \PluginTesterFakeStorage::class,
                 ],
-                'type'               => 'custom-protocol',
-                'expected_warning'   => null,
-                'expected_protocol'  => \PluginTesterFakeProtocol::class,
-                'expected_storage'   => \PluginTesterFakeStorage::class,
             ],
+            'type'                      => 'custom-protocol',
+            'expected_warning'          => null,
+            'expected_protocol'         => null,
+            'expected_storage'          => null,
+        ];
+
+        // Check valid case using callback
+        yield [
+            'allow_plugins_protocols'   => true,
+            'hook_result'               => [
+                'custom-protocol' => [
+                    'label'    => 'Custom email protocol',
+                    'protocol' => function () {
+                        return new \PluginTesterFakeProtocol();
+                    },
+                    'storage'  => function (array $params) {
+                        return new \PluginTesterFakeStorage($params);
+                    },
+                ],
+            ],
+            'type'                      => 'custom-protocol',
+            'expected_warning'          => null,
+            'expected_protocol'         => \PluginTesterFakeProtocol::class,
+            'expected_storage'          => \PluginTesterFakeStorage::class,
+        ];
+
+        // Check valid case using callback is not returned if plugins protocols are not allowed
+        yield [
+            'allow_plugins_protocols'   => false,
+            'hook_result'               => [
+                'custom-protocol' => [
+                    'label'    => 'Custom email protocol',
+                    'protocol' => function () {
+                        return new \PluginTesterFakeProtocol();
+                    },
+                    'storage'  => function (array $params) {
+                        return new \PluginTesterFakeStorage($params);
+                    },
+                ],
+            ],
+            'type'                      => 'custom-protocol',
+            'expected_warning'          => null,
+            'expected_protocol'         => null,
+            'expected_storage'          => null,
         ];
     }
 
     #[DataProvider('mailServerProtocolsHookProvider')]
     public function testGetAdditionnalMailServerProtocols(
+        bool $allow_plugins_protocols,
         $hook_result,
         string $type,
         ?string $expected_warning,
@@ -1270,8 +1318,8 @@ PLAINTEXT,
 
         // Get protocol
         $protocol = null;
-        $getProtocol = function () use ($type, &$protocol) {
-            $protocol = \Toolbox::getMailServerProtocolInstance($type);
+        $getProtocol = function () use ($type, $allow_plugins_protocols, &$protocol) {
+            $protocol = \Toolbox::getMailServerProtocolInstance($type, $allow_plugins_protocols);
         };
 
         $getProtocol();
@@ -1284,13 +1332,13 @@ PLAINTEXT,
 
         // Get storage
         $storage   = null;
-        $getStorage = function () use ($type, &$storage) {
+        $getStorage = function () use ($type, $allow_plugins_protocols, &$storage) {
             $params = [
                 'host'     => 'dovecot',
                 'user'     => 'testuser',
                 'password' => 'applesauce',
             ];
-            $storage = \Toolbox::getMailServerStorageInstance($type, $params);
+            $storage = \Toolbox::getMailServerStorageInstance($type, $params, $allow_plugins_protocols);
         };
         $getStorage();
         if ($expected_warning !== null) {

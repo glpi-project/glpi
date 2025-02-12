@@ -78,4 +78,17 @@ class GLPIUploadHandler extends UploadHandler
        // send answer
         return $upload_handler->generate_response($response, $params['print_response']);
     }
+
+    protected function validate($uploaded_file, $file, $error, $index, $content_range)
+    {
+        if (
+            !empty(GLPI_DISALLOWED_UPLOADS_PATTERN) // @phpstan-ignore empty.expr
+            && preg_match(GLPI_DISALLOWED_UPLOADS_PATTERN, $file->name) === 1
+        ) {
+            $file->error = __('The file upload has been refused for security reasons.');
+            return false;
+        }
+
+        return parent::validate($uploaded_file, $file, $error, $index, $content_range);
+    }
 }

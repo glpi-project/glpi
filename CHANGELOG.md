@@ -589,7 +589,7 @@ The present file will list all changes made to the project; according to the
 - Handling of the `delegate` right in `User::getSqlSearchResult()`.
 
 
-## [10.0.18] unreleased
+## [10.0.18] 2025-02-12
 
 ### Added
 

@@ -73,6 +73,10 @@ class Sanitizer
             );
         }
 
+        if ($value instanceof \Stringable || (\is_object($value) && \method_exists($value, '__toString'))) {
+            $value = (string) $value;
+        }
+
         if (!is_string($value)) {
             return $value;
         }
@@ -314,8 +318,12 @@ class Sanitizer
                 if (is_array($value)) {
                     return self::encodeHtmlSpecialCharsRecursive($value);
                 }
-                if (is_string($value)) {
-                    return self::encodeHtmlSpecialChars($value);
+                if (
+                    is_string($value)
+                    || $value instanceof \Stringable
+                    || (\is_object($value) && \method_exists($value, '__toString'))
+                ) {
+                    return self::encodeHtmlSpecialChars((string) $value);
                 }
                 return $value;
             },
@@ -437,8 +445,12 @@ class Sanitizer
                 if (is_array($value)) {
                     return self::dbEscapeRecursive($value);
                 }
-                if (is_string($value)) {
-                    return self::dbEscape($value);
+                if (
+                    is_string($value)
+                    || $value instanceof \Stringable
+                    || (\is_object($value) && \method_exists($value, '__toString'))
+                ) {
+                    return self::dbEscape((string) $value);
                 }
                 return $value;
             },

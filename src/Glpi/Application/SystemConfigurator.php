@@ -127,6 +127,7 @@ final class SystemConfigurator
                     // - with optional path
                     '#^feed://[^@:]+(/.*)?$#',
                 ],
+                'GLPI_DISALLOWED_UPLOADS_PATTERN' => '/\.(php\d*|phar)$/i', // Prevent upload of any PHP file / PHP archive; can be set to an empty value to allow every files
 
                 // Constants related to GLPI Project / GLPI Network external services
                 'GLPI_TELEMETRY_URI'                => 'https://telemetry.glpi-project.org', // Telemetry project URL

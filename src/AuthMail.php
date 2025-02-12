@@ -189,9 +189,15 @@ class AuthMail extends CommonDBTM
             return false;
         }
 
+        $protocol_choices = [];
+        foreach (Toolbox::getMailServerProtocols(allow_plugins_protocols: false) as $key => $protocol) {
+            $protocol_choices['/' . $key] = $protocol['label'];
+        }
+
         TemplateRenderer::getInstance()->display('pages/setup/authentication/mail.html.twig', [
-            'item' => $this,
-            'params' => $options
+            'item'             => $this,
+            'params'           => $options,
+            'protocol_choices' => $protocol_choices,
         ]);
     }
 
