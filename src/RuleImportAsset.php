@@ -1256,4 +1256,10 @@ TWIG, $twig_params);
             $drules->appendChild($drule->cloneNode(true));
         }
     }
+
+
+    public static function getIcon()
+    {
+        return "ti ti-database-search";
+    }
 }

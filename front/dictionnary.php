@@ -41,6 +41,7 @@ Session::checkSeveralRightsOr(['rule_dictionnary_dropdown' => READ,
 
 Html::header(_n('Dictionary', 'Dictionaries', Session::getPluralNumber()), '', "admin", "dictionnary", -1);
 
+echo TemplateRenderer::getInstance()->render('pages/admin/rules/backup_header.html.twig');
 echo TemplateRenderer::getInstance()->render(
     'pages/admin/rules/collections_list.html.twig',
     [

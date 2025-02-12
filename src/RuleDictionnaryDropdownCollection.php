@@ -307,4 +307,9 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
         }
         return ($i == $nb ? -1 : $i);
     }
+
+    public static function getIcon()
+    {
+        return 'ti ti-vocabulary';
+    }
 }

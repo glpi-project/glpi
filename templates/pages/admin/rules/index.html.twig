@@ -1,0 +1,90 @@
+{{ include('pages/admin/rules/backup_header.html.twig') }}
+
+<div class="row">
+    <div class="col-12 col-lg-6">
+        <ul class="process-chart">
+            <li class="title align-items-center d-flex justify-content-center">
+                <i class="ti ti-cloud-download me-1"></i>
+                <span>{{ __("Inventory rules") }}</span>
+            </li>
+            <li class="entry-point">
+                <i class="ti ti-robot"></i>
+                <span>{{ __('Agent sending an inventory file') }}</span>
+            </li>
+
+            <li class="step">
+                <a class="btn">
+                    <i class="ti ti-book"></i>
+                    <span>{{ __('Tranform itemtypes') }}</span>
+                </a>
+            </li>
+
+            <li class="step">
+                <a class="btn" href="{{ call('RuleImportEntity::getSearchURL') }}">
+                    <i class="{{ call('RuleImportEntity::getIcon') }}"></i>
+                    <span>{{ __('Rules for assigning an item to an entity') }}</span>
+                </a>
+            </li>
+
+            <li class="step">
+                <a class="btn" href="{{ call('RuleLocation::getSearchURL') }}">
+                    <i class="{{ call('RuleLocation::getIcon') }}"></i>
+                    <span>{{ __('Location rules') }}</span>
+                </a>
+            </li>
+
+            <li class="step">
+                <a class="btn" href="{{ call('RuleImportAsset::getSearchURL') }}">
+                    <i class="{{ call('RuleImportAsset::getIcon') }}"></i>
+                    <span>{{ __("Rules for import and link equipments") }}</span>
+                </a>
+            </li>
+
+            <li class="step">
+                <a class="btn" href="{{ path('/front/dictionnary.php') }}">
+                    <i class="{{ call('RuleDictionnaryDropdownCollection::getIcon') }}"></i>
+                    <span>{{ _n('Dictionary', 'Dictionaries', get_plural_number()) }}</span>
+                </a>
+            </li>
+
+            <li class="step">
+                <div class='card'>
+                    <div class="card-header card-header-light d-flex justify-content-center">
+                        <h4 class="my-0">
+                            {% set add_label %}
+                                <span>
+                                    <i class='ti ti-database-plus ms-1'></i>
+                                    <span>{{ __("Add") }}</span>
+                                </span>
+                            {% endset %}
+                            {% set update_label %}
+                                <span>
+                                    <i class='ti ti-database-import ms-1'></i>
+                                    <span>{{ __("Update asset") }}</span>
+                                </span>
+                            {% endset %}
+
+                            {{ __('%s or %s ')|format(add_label, update_label)|raw }}
+                        </h4>
+                    </div>
+                    <div class='list-group list-group-flush'>
+                        <a class='list-group-item' href="{{ call('RuleAsset::getSearchURL') }}">
+                            <i class="{{ call('RuleAsset::getIcon') }}"></i>
+                            <span>{{ __("Business rules for assets") }}</span>
+                        </a>
+                        <a class='list-group-item' href="{{ call('Webhook::getSearchURL') }}">
+                            <i class="{{ call('Webhook::getIcon') }}"></i>
+                            <span>{{ call('Webhook::getTypeName', [get_plural_number()]) }}</span>
+                        </a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-12 col-lg-6">
+        {% include "pages/admin/rules/collections_list.html.twig" with {
+            rules_group: rules_group,
+        } only %}
+    </div>
+</div>
