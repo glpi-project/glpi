@@ -50,6 +50,7 @@ phpstan.neon
 .env
 
 # Playwright
+ctrf/
 node_modules/
 /tests/playwright/test-results/
 /playwright-report/
