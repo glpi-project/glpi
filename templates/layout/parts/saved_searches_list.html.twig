@@ -31,10 +31,10 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
 {% if saved_searches|length == 0 %}
-   <div class="alert alert-info" role="alert">
-      {{ __('You have not recorded any saved searches yet') }}
-   </div>
+    {{ alerts.callout_info(__('You have not recorded any saved searches yet')) }}
 {% endif %}
 
 <div class='sortable-savedsearches'>

@@ -32,21 +32,25 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
-<div class="alert alert-warning">
-   <strong>
-      {% if is_dev %}
-         {{ __('You are using a development version, be careful!') }}
-      {% else %}
-         {{ __('You are using a pre-release version, be careful!') }}
-      {% endif %}
-   </strong>
-   <br>
-   {{ fields.checkboxField('agree_unstable', 0, __('I know I am using a unstable version.'), {
-      required: true,
-      id: 'agree_unstable'
-   }) }}
-</div>
+{% set title %}
+    {% if is_dev %}
+        {{ __('You are using a development version, be careful!') }}
+    {% else %}
+        {{ __('You are using a pre-release version, be careful!') }}
+    {% endif %}
+{% endset %}
+{% set message %}
+    {{ fields.checkboxField('agree_unstable', 0, __('I know I am using a unstable version.'), {
+        required: true,
+        id: 'agree_unstable',
+        field_class: 'col-12',
+        label_class: 'col-10',
+        input_class: 'col-2',
+    }) }}
+{% endset %}
+{{ alerts.alert_warning(title, [message]) }}
 <script>
    $(function() {
        $('[name=from_update]').on('click', function(event){

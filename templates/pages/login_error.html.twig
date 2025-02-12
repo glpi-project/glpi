@@ -32,28 +32,17 @@
  #}
 
 {% extends 'layout/page_card_notlogged.html.twig' %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 {% block content_block %}
-<div class="alert alert-warning">
-    <div class="d-flex align-items-center">
-        <div class="me-4">
-            <i class="ti ti-alert-triangle fa-2x"></i>
-        </div>
-        <div>
-            <h4 class="alert-title">
-                {{ _n('Error', 'Errors', 1) }}
-            </h4>
-            <div>
-                {% for error in errors %}
-                    {{ error }}<br />
-                {% endfor %}
-            </div>
-
-            <a href="{{ login_url }}" class="btn btn-primary mt-3">
-                <i class="ti ti-login"></i>
-                <span>{{ __('Log in again') }}</span>
-            </a>
-        </div>
-    </div>
-</div>
+    {% set message %}
+        {% for error in errors %}
+            {{ error }}<br />
+        {% endfor %}
+        <a href="{{ login_url }}" class="btn btn-primary mt-3">
+            <i class="ti ti-login"></i>
+            <span>{{ __('Log in again') }}</span>
+        </a>
+    {% endset %}
+    {{ alerts.alert_danger(_n('Error', 'Errors', 1), [message]) }}
 {% endblock %}

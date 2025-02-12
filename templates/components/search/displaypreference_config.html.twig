@@ -32,31 +32,28 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 <div id="tabsbody" class="m-n2 display_preference_config">
     <input type="hidden" name="itemtype" value="{{ itemtype }}">
     <input type="hidden" name="users_id" value="{{ users_id }}">
     {% if not available_itemtype %}
-        <div class="alert alert-danger">
-            {{ __('These preferences cannot be edited at this time. The item type no longer exists or is provided by a plugin that is not enabled.') }}
-        </div>
+        {{ alerts.alert_danger(__('These preferences cannot be edited at this time. The item type no longer exists or is provided by a plugin that is not enabled.')) }}
     {% else %}
         {% if is_global %}
             <div class="my-1 me-1">
-                <div class="alert alert-secondary">
-                    <i class="ti ti-info-circle"></i>
-                    <i>{{ __('These preferences are used by everyone that does not have a personal view configured.') }}</i>
-                </div>
+                {{ alerts.callout_info(__('These preferences are used by everyone that does not have a personal view configured.')) }}
             </div>
         {% endif %}
         {% if not is_global and not has_personal %}
-            <div class="alert alert-warning mt-3">
+            {% set no_personal_msg %}
                 {{ __('No personal criteria. Create personal parameters?') }}
                 <button type="button" class="btn btn-primary ms-3" name="activate" value="1">
                     <i class="ti ti-plus"></i>
                     <span>{{ __('Create') }}</span>
                 </button>
-            </div>
+            {% endset %}
+            {{ alerts.callout_warning(no_personal_msg) }}
         {% else %}
             <div class="pt-3">
                 {% if available_to_add|length > 0 %}

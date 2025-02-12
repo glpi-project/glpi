@@ -31,7 +31,8 @@
  # ---------------------------------------------------------------------
  #}
 
-<div class="alert alert-warning"><strong>{{ message }}</strong></div>
+{% import 'components/alerts_macros.html.twig' as alerts %}
+{{ alerts.alert_warning(message) }}
 
 <form action="install.php" method="post" class="d-inline" data-submit-once>
     <button type="submit" name="submit" class="btn btn-warning">

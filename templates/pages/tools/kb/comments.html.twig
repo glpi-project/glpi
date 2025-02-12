@@ -31,6 +31,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
 {% macro kb_comment(comment, level, can_comment) %}
     {% set has_answers = comment['answers'] is defined and comment['answers']|length > 0 %}
     <li id="kbcomment{{ comment['id'] }}" class="comment {{ level > 0 ? 'subcomment' : '' }} timeline-item KnowbaseItemComment {{ has_answers ? "has_answers" : "" }}"
@@ -114,9 +116,7 @@
 {% endif %}
 
 {% if comments|length == 0 %}
-    <div class="alert alert-info">
-        {{ __('No comments') }}
-    </div>
+    {{ alerts.callout_info(__('No comments')) }}
 {% else %}
     <div class="forcomments timeline_history">
         <ul class="comments">

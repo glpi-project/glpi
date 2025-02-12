@@ -31,6 +31,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
 {% macro display_folder(folder, input_id) %}
    <li class="cursor-pointer" data-input-id="{{ input_id }}">
       <i class="ti ti-folder"></i>
@@ -54,5 +56,5 @@
       {% endif %}
    </ul>
 {% else %}
-   <div class="alert alert-danger">{{ __('An error occurred trying to connect to collector.') }}</div>
+    {{ alerts.alert_danger(__('An error occurred trying to connect to collector.')) }}
 {% endif %}

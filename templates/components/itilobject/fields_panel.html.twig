@@ -32,6 +32,7 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 {% set field_options = {
    'full_width': true,
    'fields_template': itiltemplate,
@@ -300,7 +301,12 @@
              <div id="notes" class="accordion-collapse collapse {{ notes_show ? "show" : "" }}" aria-labelledby="notes-heading">
                 <div class="accordion-body row m-0 mt-n2">
                   {% for note in notes %}
-                     <div class="alert alert-info entitynote rich_text_container" role="alert">{{ note['content']|safe_html }}</div>
+                      {%- set note_content -%}
+                          <div class="mb-n3">
+                              {{ note['content']|safe_html }}
+                          </div>
+                      {%- endset -%}
+                      {{ alerts.callout_info(title: '', messages: [note_content], options: { add_class: 'entitynote rich_text_container' }) }}
                   {% endfor %}
                 </div>
              </div>
@@ -494,7 +500,7 @@ $(function() {
          $(this).removeClass('show');
       })
    }
-});
+%});
 
 $(function() {
     // Prevent display of accordion header tooltips when right panel is expanded

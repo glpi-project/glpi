@@ -138,7 +138,7 @@
                             {% endif %}
                         </div>
                         <div id="screen_capture_preview" class="w-100">
-                            <div class="previews overflow-x-scroll my-2 d-flex px-2"></div>
+                            <div class="previews overflow-x-auto my-2 d-flex px-2"></div>
                             <button type="button" name="stop_recording" class="btn btn-secondary d-none">{{ __('Stop recording') }}</button>
                         </div>
                         <hr class="my-1">
@@ -157,12 +157,6 @@
                     ) }}
                 {% endif %}
 
-                {% set max_size %}
-                    <div class="alert alert-info">
-                        {{ call("Document::getMaxUploadSize") }}
-                    </div>
-                {% endset %}
-
                 {{ fields.fileField(
                     'filename',
                     null,
@@ -171,7 +165,6 @@
                         'multiple': true,
                         'full_width': true,
                         'is_horizontal': false,
-                        'add_field_html': max_size,
                     }
                 ) }}
 

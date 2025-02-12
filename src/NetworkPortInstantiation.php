@@ -85,7 +85,11 @@ class NetworkPortInstantiation extends CommonDBChild
      **/
     public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
     {
-        echo "<div class='alert alert-info'>" . __s('No options available for this port type.') . "</div>";
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/alerts_macros.html.twig' as alerts %}
+            {{ alerts.callout_info(msg) }}
+TWIG, ['msg' => __('No options available for this port type.')]);
     }
 
     public function prepareInput($input)
@@ -334,9 +338,10 @@ class NetworkPortInstantiation extends CommonDBChild
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% import 'components/alerts_macros.html.twig' as alerts %}
             {% if alert is not empty %}
                 {% set alert_field %}
-                    <div class="alert alert-info mb-0">{{ alert }}</div>
+                    {{ alerts.callout_info(alert) }}
                 {% endset %}
                 {{ fields.htmlField('', alert_field, 'DeviceNetworkCard'|itemtype_name) }}
             {% else %}
@@ -408,10 +413,11 @@ TWIG, ['label' => __('MAC'), 'mac' => $netport->fields['mac']]);
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% import 'components/alerts_macros.html.twig' as alerts %}
             {% if recursive_items|length > 0 %}
                 {{ fields.dropdownField('Glpi\\\\Socket', 'sockets_id', socket_id, label) }}
             {% else %}
-                <div class="alert alert-info">{{ no_link_label }}</div>
+                {{ alerts.callout_info(no_link_label) }}
             {% endif %}
 TWIG, $twig_params);
     }

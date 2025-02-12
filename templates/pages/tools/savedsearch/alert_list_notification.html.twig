@@ -31,36 +31,39 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
 <div class="center">
-   <div class="my-2">
-      {% if notifications|length %}
-         {{ _n('Notification used:', 'Notifications used:', notifications|length) }}
-         {% if has_profile_right('notification', constant('UPDATE')) %}
-            {% for notification in notifications %}
-               {% if not loop.first %}, {% endif %}
-               <a href="{{ 'Notification'|itemtype_form_path(notification['id']) }}">{{ notification['name'] }}</a>
-            {% endfor %}
-         {% else %}
-            {{ notifications|map(n => n['name'])|join(', ') }}
-         {% endif %}
-      {% else %}
-         <div class="alert alert-warning">
-            {{ __('Notification does not exist') }}
-            {% if params.canedit %}
-               <br>
-               <a href="{{ search.getLinkURL() }}&amp;create_notif=true">{{ __('Create it now') }}</a>
-               {% set params = params|merge({
-                  'canedit': false
-               }) %}
+    <div class="my-2">
+        {% if notifications|length %}
+            {{ _n('Notification used:', 'Notifications used:', notifications|length) }}
+            {% if has_profile_right('notification', constant('UPDATE')) %}
+                {% for notification in notifications %}
+                    {% if not loop.first %}, {% endif %}
+                    <a href="{{ 'Notification'|itemtype_form_path(notification['id']) }}">{{ notification['name'] }}</a>
+                {% endfor %}
+            {% else %}
+                {{ notifications|map(n => n['name'])|join(', ') }}
             {% endif %}
-         </div>
-      {% endif %}
-   </div>
-   <div class="my-2">
-      {% if params['canedit'] and not (params['withtemplate'] is not empty and params['withtemplate'] == 2) %}
-         <a class="btn btn-primary" href="{{ 'SavedSearch_Alert'|itemtype_form_path }}?savedsearches_id={{ search.fields['id'] }}&amp;withtemplate={{ params['withtemplate'] }}">
-            {{ __('Add an alert') }}
-         </a>
-      {% endif %}
-   </div>
+        {% else %}
+            {%- set message -%}
+                {%- if params.canedit -%}
+                    <a href="{{ search.getLinkURL() }}&amp;create_notif=true">{{ __('Create it now') }}</a>
+                {%- endif -%}
+            {%- endset -%}
+            {{ alerts.alert_warning(__('Notification does not exist'), message is not empty ? [message] : []) }}
+            {% if params.canedit %}
+                {% set params = params|merge({
+                    'canedit': false
+                }) %}
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="my-2">
+        {% if params['canedit'] and not (params['withtemplate'] is not empty and params['withtemplate'] == 2) %}
+            <a class="btn btn-primary" href="{{ 'SavedSearch_Alert'|itemtype_form_path }}?savedsearches_id={{ search.fields['id'] }}&amp;withtemplate={{ params['withtemplate'] }}">
+                {{ __('Add an alert') }}
+            </a>
+        {% endif %}
+    </div>
 </div>

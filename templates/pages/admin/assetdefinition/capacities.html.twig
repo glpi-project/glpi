@@ -82,11 +82,11 @@
                                 {{ capacity.getDescription() }}
                             </small>
                             {% endif %}
-                            <span class="alert-capacity text-red d-none" data-capacity="{{ get_class(capacity) }}">
+                            <span class="alert-capacity text-red d-none" data-capacity="{{ get_class(capacity) }}" role="alert">
                                 <i class="ti ti-alert-triangle fs-2"></i>
                                 <span>
                                     {{ capacity.getCapacityUsageDescription(classname) }}
-                                <span
+                                </span>
                             </span>
                         </div>
                         <div class="me-2 ms-auto">

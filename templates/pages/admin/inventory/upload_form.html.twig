@@ -32,17 +32,17 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 <form method='POST' enctype='multipart/form-data'>
     <h2>
         {{ __("Import inventory files") }}
     </h2>
-    <div class="alert alert-info" role="alert">
-        <p>
-            {{ __("You can use this menu to upload one or several inventory files. Files must have a known extension (%1\$s).\n")|format(inventory_extensions|join(', ')) }}<br>
-            {{ __('It is also possible to upload a compressed archive directly with a collection of inventory files.') }}
-        </p>
-    </div>
+    {% set help_message %}
+        {{ __("You can use this menu to upload one or several inventory files. Files must have a known extension (%1\$s).\n")|format(inventory_extensions|join(', ')) }}<br>
+        {{ __('It is also possible to upload a compressed archive directly with a collection of inventory files.') }}
+    {% endset %}
+    {{ alerts.callout_info(help_message) }}
     {{ fields.fileField(
         'inventory_files[]',
         '',

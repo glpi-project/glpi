@@ -82,7 +82,7 @@
             {% if search_error %}
                 {{ alerts.alert_danger(__('An error occured during the search'), __('Consider changing the search criteria or adjusting the displayed columns.')) }}
             {% else %}
-                {{ alerts.alert_info(__('No results found')) }}
+                {{ alerts.callout_info(__('No results found')) }}
             {% endif %}
         {% endif %}
     </form>

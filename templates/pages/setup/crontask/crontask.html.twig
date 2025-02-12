@@ -32,6 +32,7 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 <div class="asset {{ bg }}">
    {{ include('components/form/header.html.twig') }}
@@ -146,9 +147,7 @@
                               {{ item_meta.next_run_display }}
                            {% endif %}
                            {% if config('maintenance_mode') %}
-                              <div class="alert alert-warning">
-                                 {{ __('Maintenance mode enabled, running tasks is disabled') }}
-                              </div>
+                               {{ alerts.callout_warning(__('Maintenance mode enabled, running tasks is disabled')) }}
                            {% elseif can_execute and launch %}
                               {# ID and CSRF token fields are defined in components/form/buttons.html.twig #}
                               <button class="btn btn-primary" type="submit" name="execute" value="{{ item.fields['name'] }}">{{ __('Execute') }}</button>
