@@ -82,7 +82,7 @@ class GLPIUploadHandler extends UploadHandler
     protected function validate($uploaded_file, $file, $error, $index, $content_range)
     {
         if (
-            !empty(GLPI_DISALLOWED_UPLOADS_PATTERN) // @phpstan-ignore empty.expr
+            !empty(GLPI_DISALLOWED_UPLOADS_PATTERN)
             && preg_match(GLPI_DISALLOWED_UPLOADS_PATTERN, $file->name) === 1
         ) {
             $file->error = __('The file upload has been refused for security reasons.');
