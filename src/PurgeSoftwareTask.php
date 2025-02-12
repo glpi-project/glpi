@@ -40,18 +40,15 @@ class PurgeSoftwareTask extends Software
     const TASK_NAME = 'purgesoftware';
     const MAX_BATCH_SIZE = 2000;
 
-    // Méthode principale de purge (non statique)
     public function run(?int $max): int
     {
         $total = 0;
-        // Purge deleted software
         $criteria = $this->getDeletedSoftwareWithNoVersionsCriteria();
         $software = new Software();
         $total += $this->purgeItems($criteria, $software, $max - $total);
         return $total;
     }
 
-    // Récupère les critères pour sélectionner les logiciels à purger
     protected function getDeletedSoftwareWithNoVersionsCriteria(): array
     {
         return [
@@ -71,10 +68,11 @@ class PurgeSoftwareTask extends Software
         ];
     }
 
-    // Exécute la purge étape par étape
     protected function purgeItems(array $scope, $em, int $max): int
     {
+        /** @var \DBmysql $DB */
         global $DB;
+
         $total = 0;
         do {
             $scope['LIMIT'] = min($max - $total, self::MAX_BATCH_SIZE);

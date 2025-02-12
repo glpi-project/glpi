@@ -47,7 +47,6 @@ class PurgeSoftwareCommand extends AbstractCommand
     protected function configure()
     {
         parent::configure();
-        // Création d'une instance pour utiliser les méthodes d'instance.
         $task = new PurgeSoftwareTask();
 
         $this->setName('assets:purgesoftware');
@@ -67,7 +66,6 @@ class PurgeSoftwareCommand extends AbstractCommand
         $this->validateInput($input);
         $max = $input->getOption('max');
 
-        // Création d'une instance pour invoquer la méthode run.
         $task = new PurgeSoftwareTask();
         $total = $task->run($max);
         $output->writeln("<info> $total item(s) purged </info>");
