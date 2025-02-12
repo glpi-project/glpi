@@ -175,8 +175,7 @@ class Ajax
 
         $rand = mt_rand();
 
-        $domid  = htmlescape($domid);
-        $url    = htmlescape($url);
+        $domid  = Html::sanitizeDomId($domid);
         $title  = htmlescape($param['title']);
         $class  = htmlescape($param['dialog_class']);
         $height = (int) $param['height'];
@@ -202,6 +201,7 @@ HTML;
 
         $reloadonclose = $param['reloadonclose'] ? "true" : "false";
         $autoopen      = $param['autoopen'] ? "true" : "false";
+        $url           = json_encode($url);
         $js = <<<JAVASCRIPT
       $(function() {
          myModalEl{$rand} = document.getElementById('{$domid}');
@@ -211,7 +211,7 @@ HTML;
          $(myModalEl{$rand}).appendTo($("body"));
 
          myModalEl{$rand}.addEventListener('show.bs.modal', function () {
-            $('#iframe{$domid}').attr('src','{$url}').removeClass('hidden');
+            $('#iframe{$domid}').attr('src', {$url}).removeClass('hidden');
          });
          myModalEl{$rand}.addEventListener('hide.bs.modal', function () {
             if ({$reloadonclose}) {
