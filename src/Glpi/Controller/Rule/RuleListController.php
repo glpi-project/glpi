@@ -56,25 +56,28 @@ final class RuleListController extends AbstractController
         $reinit =       $request->get('reinit');
         $replay_rule =  $request->get('replay_rule');
         $reorder =      $request->request->get('action');
+        // pour debug
+//        $reorder =      $request->get('action');
 
         $this->ruleCollection = new \RuleTicketCollection($_SESSION['glpiactive_entity']);
 
         // dispatch
         if(!is_null($reorder))
         {
+            // @todo maybe rewrite the ajax file
             if(!in_array($reorder, ['up', 'down'])) {
                 return new Response('Invalid action, only "up" or "down" are supported.', Response::HTTP_BAD_REQUEST);
             }
 
             $this->moveRule($id, $reorder, (int) $request->request->get('condition'));
 
-            return new RedirectResponse($request->getUri());
+            return new RedirectResponse($request->getPathInfo());
         }
         if(!is_null($reinit))
         {
             $this->reinitializeRules();
 
-            return new RedirectResponse($request->getUri());
+            return new RedirectResponse($request->getPathInfo());
         }
         if (!is_null($replay_rule))
         {
@@ -246,7 +249,7 @@ final class RuleListController extends AbstractController
 
     }
 
-    private function renderList()
+    private function renderList(): Response
     {
         $this->ruleCollection->checkGlobal(READ);
         $rulecollection = $this->ruleCollection;
@@ -266,12 +269,6 @@ final class RuleListController extends AbstractController
             ]);
 
             \Html::footer();
-
-//            $rulecollection->display([
-//                'display_criterias' => true,
-//                'display_actions'   => true,
-//            ]);
-//            TemplateRenderer::getInstance()->display('pages/tools/search_solution.twig', $twig_bindings);
         });
     }
 }
