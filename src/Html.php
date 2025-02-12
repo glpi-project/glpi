@@ -6573,4 +6573,15 @@ CSS;
     {
         return preg_replace('/[^a-z0-9_\[\]\-]/i', '', $name);
     }
+
+    /**
+     * Sanitize a DOM ID to prevent XSS.
+     *
+     * @param string $name
+     * @return string
+     */
+    public static function sanitizeDomId(string $name): string
+    {
+        return preg_replace('/[^a-z0-9_-]/i', '', $name);
+    }
 }
