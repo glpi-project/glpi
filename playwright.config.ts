@@ -21,7 +21,7 @@ export default defineConfig({
     retries: process.env.CI ? 2 : 0,
 
     // Reporter to use. See https://playwright.dev/docs/test-reporters
-    reporter: 'html',
+    reporter: process.env.CI ? [['html'], ['playwright-ctrf-json-reporter']] : 'html',
 
     // Stop the tests after 15 failures on the CI
     maxFailures: process.env.CI ? 15 : undefined,
