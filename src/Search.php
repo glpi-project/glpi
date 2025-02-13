@@ -5441,8 +5441,8 @@ JAVASCRIPT;
         if ($use_subquery_on_id_search || $use_subquery_on_text_search) {
             // Compute tables and fields names
             $main_table = getTableForItemType($itemtype);
-            $fk = getForeignKeyFieldForTable($main_table);
             $beforejoin = $searchopt[$ID]['joinparams']['beforejoin'];
+            $fk = $beforejoin['joinparams']['field'] ?? getForeignKeyFieldForTable($main_table);
             $child_table = $searchopt[$ID]['table'];
             $link_table = $beforejoin['table'];
             $linked_fk = $beforejoin['joinparams']['linkfield'] ?? getForeignKeyFieldForTable($searchopt[$ID]['table']);
