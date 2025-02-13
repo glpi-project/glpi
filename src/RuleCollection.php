@@ -332,7 +332,7 @@ class RuleCollection extends CommonDBTM
      */
     public function warningBeforeReplayRulesOnExistingDB()
     {
-        Toolbox::deprecated('The `'.__FUNCTION__.'` method is deprecated, use `getWarningBeforeReplayRulesOnExistingDB()` or `hasWarningBeforeReplayRulesOnExistingDB()` instead.');
+        Toolbox::deprecated('The `' . __FUNCTION__ . '` method is deprecated, use `getWarningBeforeReplayRulesOnExistingDB()` or `hasWarningBeforeReplayRulesOnExistingDB()` instead.');
 
         return false;
     }
@@ -353,7 +353,7 @@ class RuleCollection extends CommonDBTM
      */
     public function getWarningBeforeReplayRulesOnExistingDB(): string
     {
-        if(!$this->hasWarningBeforeReplayRulesOnExistingDB()) {
+        if (!$this->hasWarningBeforeReplayRulesOnExistingDB()) {
             return '';
         }
 

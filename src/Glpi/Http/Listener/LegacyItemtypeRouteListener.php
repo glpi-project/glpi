@@ -91,17 +91,15 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
         }
 
         if ($class = $this->findClass($request)) {
+            $request->attributes->set('class', $class);
             $is_form = \str_ends_with($request->getPathInfo(), '.form.php');
 
             if (\is_a($class, CommonDropdown::class, true)) {
                 $request->attributes->set('_controller', $is_form ? DropdownFormController::class : GenericListController::class);
-                $request->attributes->set('class', $class);
-            } elseif (\is_a($class, \RuleTicket::class, true)) { // RuleCommonITILObject
+            } elseif (\is_subclass_of($class, \Rule::class)) {
                 $request->attributes->set('_controller', $is_form ? GenericFormController::class : RuleListController::class);
-                $request->attributes->set('class', $class);
             } else {
                 $request->attributes->set('_controller', $is_form ? GenericFormController::class : GenericListController::class);
-                $request->attributes->set('class', $class);
             }
         }
     }
@@ -127,6 +125,14 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
 
         if ($asset_type_class = $this->findAssetTypeclass($request)) {
             return $asset_type_class;
+        }
+
+        if ($asset_model_dictionary_class = $this->findAssetModelDictionaryclass($request)) {
+            return $asset_model_dictionary_class;
+        }
+
+        if ($asset_type_dictionary_class = $this->findAssetTypeDictionaryclass($request)) {
+            return $asset_type_dictionary_class;
         }
 
         if ($dropdown_class = $this->findCustomDropdownClass($request)) {
@@ -328,6 +334,51 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
             if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
                 $classname = $definition->getAssetTypeClassName();
             }
+        }
+
+        return $classname;
+    }
+
+    private function findAssetModelDictionaryclass(Request $request): ?string
+    {
+        $matches = [];
+        if (!\preg_match('~^/front/asset/ruledictionarymodel(?<is_form>\.form)?\.php$~i', $request->getPathInfo(), $matches)) {
+            return null;
+        }
+
+        $is_form = !empty($matches['is_form']);
+        $id = $request->query->get('id') ?: $request->request->get('id');
+
+        $classname = null;
+        $definition = new AssetDefinition();
+
+        if ($is_form && !AssetModel::isNewId($id) && $id === null) {
+            return null;
+        }
+        if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
+            $classname = $definition->getAssetModelDictionaryClassName();
+        }
+
+        return $classname;
+    }
+
+    private function findAssetTypeDictionaryclass(Request $request): ?string
+    {
+        $matches = [];
+        if (!\preg_match('~^/front/asset/ruledictionarytype(?<is_form>\.form)?\.php$~i', $request->getPathInfo(), $matches)) {
+            return null;
+        }
+
+        $is_form = !empty($matches['is_form']);
+        $id = $request->query->get('id') ?: $request->request->get('id');
+        $classname = null;
+        $definition = new AssetDefinition();
+
+        if ($is_form && !AssetType::isNewId($id) && $id === null) {
+            return null;
+        }
+        if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
+            $classname = $definition->getAssetTypeDictionaryClassName();
         }
 
         return $classname;

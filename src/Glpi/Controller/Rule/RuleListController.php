@@ -34,10 +34,7 @@
 
 namespace Glpi\Controller\Rule;
 
-use CommonGLPI;
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Html;
 use Rule;
@@ -50,50 +47,34 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RuleListController extends AbstractController
 {
-    private \RuleTicketCollection $ruleCollection; // @todo genéraliser a tous les RuleCollection
+    private \RuleCollection $ruleCollection;
 
-    #[Route("/{class}/Search", name: "fixme", priority: -1)]
+    #[Route("/{class}/Search", name: "rules.list", priority: -1)]
     public function __invoke(Request $request): Response
     {
         $id =           (int) $request->get('id');
         $reinit =       $request->get('reinit');
         $replay_rule =  $request->get('replay_rule');
         $reorder =      $request->request->get('action');
-        // pour debug on prend le param en get
-//        $reorder =      $request->get('action');
+        $rule_classname =   $request->attributes->getString('class');
 
-        // @todo param subtype contient le type d'item http://localhost:8081/front/ruleticket.php?reinit=true&subtype=RuleTicket
-        // pour debug
-//        $reorder =      $request->get('action');
-
-        $this->ruleCollection = new \RuleTicketCollection($_SESSION['glpiactive_entity']);
+        $this->ruleCollection = $this->getRuleCollectionInstanceFromRuleSubtype($rule_classname, (int) $_SESSION['glpiactive_entity']);
 
         // dispatch
-        if(!is_null($reorder))
-        {
+        if (!is_null($reorder)) {
             $this->moveRule($id, $reorder, (int) $request->request->get('condition'));
 
             return new RedirectResponse($request->getPathInfo());
         }
-        if(!is_null($reinit))
-        {
+        if (!is_null($reinit)) {
             $this->reinitializeRules();
 
             return new RedirectResponse($request->getPathInfo());
         }
-        if (!is_null($replay_rule))
-        {
-            // @todo voir ce qui peut être bougé dans replayRule
-            // act only if confirmation is needed and given
+        if (!is_null($replay_rule)) {
+            // confirmation for replay
             $confirmed = !is_null($request->request->get('replay_confirm') ?? $request->query->get('replay_confirm'));
-
-            // same behaviour as before, can maybe be simplified if manufacturer is not in conflict in POST & GET
-            if(!isset($_GET['offset'])) {
-                $manufacturer = $request->request->get('manufacturer') ?? '0';
-            } else {
-                $manufacturer = $request->query->get('manufacturer') ?? '0';
-            }
-            $manufacturer = htmlescape($manufacturer);
+            $manufacturer = htmlescape($request->get('manufacturer') ?? '0');
 
             $offset = (int) $request->get('offset');
             $start = (int) ($request->get('start') ?? time());
@@ -105,25 +86,6 @@ final class RuleListController extends AbstractController
         return $this->renderList();
     }
 
-    private function checkIsValidClass(string $class): void
-    {
-        if ($class === '') {
-            throw new BadRequestHttpException('The "class" attribute is mandatory for itemtype routes.');
-        }
-
-        if (!\class_exists($class)) {
-            throw new BadRequestHttpException(\sprintf("Class \"%s\" does not exist.", $class));
-        }
-
-        if (!\is_subclass_of($class, CommonGLPI::class)) {
-            throw new BadRequestHttpException(\sprintf("Class \"%s\" is not a valid itemtype.", $class));
-        }
-
-        if (!$class::canView()) {
-            throw new AccessDeniedHttpException();
-        }
-    }
-
     /**
      * @param int $id
      * @param 'up' |'down' $direction
@@ -131,7 +93,7 @@ final class RuleListController extends AbstractController
      */
     private function moveRule(int $id, string $direction, int $condition): void
     {
-        if(!in_array($direction, ['up', 'down'])) {
+        if (!in_array($direction, ['up', 'down'])) {
             throw new BadRequestHttpException('Invalid action, only "up" or "down" are supported.');
         }
 
@@ -141,9 +103,10 @@ final class RuleListController extends AbstractController
 
     private function reinitializeRules(): void
     {
-        // @todo pas de verif de droit ?
+        $this->ruleCollection->checkGlobal(UPDATE);
+
         $ruleclass = $this->ruleCollection->getRuleClass();
-        if(is_null($ruleclass)) {
+        if (is_null($ruleclass)) {
             throw new \RuntimeException('Rule class not found.');
         }
 
@@ -152,17 +115,13 @@ final class RuleListController extends AbstractController
         if ($initProcess) {
             Session::addMessageAfterRedirect(
                 htmlescape(sprintf(
-                //TRANS: first parameter is the rule type name
                     __('%1$s has been reset.'),
                     $this->ruleCollection->getTitle()
                 ))
             );
-        }
-        else
-        {
+        } else {
             Session::addMessageAfterRedirect(
                 htmlescape(sprintf(
-                //TRANS: first parameter is the rule type name
                     __('%1$s reset failed.'),
                     $this->ruleCollection->getTitle()
                 )),
@@ -190,7 +149,7 @@ final class RuleListController extends AbstractController
         $this->ruleCollection->checkGlobal(UPDATE);
 
         // - Confirmation needed response
-        if(!$confirmed) {
+        if (!$confirmed) {
             $rulecollection = $this->ruleCollection;
             if ($this->ruleCollection->hasWarningBeforeReplayRulesOnExistingDB()) {
                 return new StreamedResponse(static function () use ($rulecollection) {
@@ -214,8 +173,7 @@ final class RuleListController extends AbstractController
         $rulecollection = $this->ruleCollection;
         $rule_class = $this->ruleCollection->getRuleClassName();
 
-        return new StreamedResponse(static function () use ($rulecollection, $rule_class, $start, $offset, $manufacturer)
-        {
+        return new StreamedResponse(static function () use ($rulecollection, $rule_class, $start, $offset, $manufacturer) {
             // timestamp limit to stop the process
             $max_execution_time = (int) get_cfg_var("max_execution_time");
             // so at the moment we sum a microtime
@@ -237,8 +195,7 @@ final class RuleListController extends AbstractController
             );
 
             $more_work_needed = false !== $new_offset && $new_offset >= 0;
-            if($more_work_needed)
-            {
+            if ($more_work_needed) {
                 Html::redirect($rule_class::getSearchURL() . "?start=$start&replay_rule=1&offset=$new_offset&manufacturer=" . $manufacturer);
             }
 
@@ -262,7 +219,6 @@ final class RuleListController extends AbstractController
 
             Html::footer();
         });
-
     }
 
     private function renderList(): Response
@@ -286,5 +242,27 @@ final class RuleListController extends AbstractController
 
             Html::footer();
         });
+    }
+
+    /**
+     * @param class-string<\Rule> $rule_classname
+     * @param int $entity
+     * @return \RuleCollection
+     * @throw BadRequestHttpException
+     */
+    private function getRuleCollectionInstanceFromRuleSubtype(string $rule_classname, int $entity): \RuleCollection
+    {
+        if (class_exists($rule_classname) === false) {
+            throw new BadRequestHttpException(sprintf('Invalid rule (sub)type "%s"', htmlescape($rule_classname)));
+        }
+        $rule = new $rule_classname();
+        $collection_classname = $rule->getCollectionClassName();
+
+        /**
+         * Not all classes extendending RuleCollection have a constructor.
+         * Only \RuleCommonITILObjectCollection instances, so we can really pass an entity parameter to the constructor.
+         */
+        /* @phpstan-ignore-next-line */
+        return new $collection_classname($entity);
     }
 }

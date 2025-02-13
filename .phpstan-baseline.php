@@ -110,6 +110,42 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/notificationmailingsetting.form.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Instanceof between Glpi\\\\Controller\\\\LegacyFileLoadController and Glpi\\\\Controller\\\\LegacyFileLoadController will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/front/rule.common.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instanceof between RuleCollection and RuleCollection will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/front/rule.common.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Result of \\|\\| is always false\\.$#',
+	'identifier' => 'booleanOr.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/front/rule.common.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instanceof between Glpi\\\\Controller\\\\LegacyFileLoadController and Glpi\\\\Controller\\\\LegacyFileLoadController will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/front/rule.common.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instanceof between RuleCollection and RuleCollection will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/front/rule.common.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Result of \\|\\| is always false\\.$#',
+	'identifier' => 'booleanOr.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/front/rule.common.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Match expression does not handle remaining value\\: mixed$#',
 	'identifier' => 'match.unhandled',
 	'count' => 1,
@@ -4088,6 +4124,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ObjectLock.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method OlaLevel\\:\\:getSectorizedDetails\\(\\) should return array\\{\'admin\', string, string\\} but returns array\\{\'config\', \'OLA\', \'OlaLevel\'\\}\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/OlaLevel.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$type$#',
 	'identifier' => 'parameter.notFound',
 	'count' => 1,
@@ -4938,6 +4980,12 @@ $ignoreErrors[] = [
 	'identifier' => 'booleanOr.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Session.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method SlaLevel\\:\\:getSectorizedDetails\\(\\) should return array\\{\'admin\', string, string\\} but returns array\\{\'config\', \'SLA\', \'SlaLevel\'\\}\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/SlaLevel.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Software\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',

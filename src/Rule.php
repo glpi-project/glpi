@@ -2032,6 +2032,17 @@ JS
         $this->handleRankChange();
     }
 
+    public function post_purgeItem()
+    {
+        parent::post_purgeItem();
+
+        // reorder collection items
+        $rule = new static();
+        $classname = $rule->getCollectionClassName();
+        $rulecollection = new $classname();
+        $rulecollection->deleteRuleOrder($this->fields['ranking']);
+    }
+
     /**
      * Handles any rank change from the API or another source except {@link RuleCollection::moveRule()}
      * by moving the rule rather than directly setting the rank to handle the other rules and avoid rules with the same rank.
@@ -2052,6 +2063,18 @@ JS
             $collection->moveRule($this->fields['id'], 0, $this->input['_ranking'], $new_rule);
             $this->getFromDB($this->fields['id']);
         }
+    }
+
+    /**
+     * @return array{'admin', string, string}
+     */
+    public static function getSectorizedDetails(): array
+    {
+        $rule = new static();
+        $classname = $rule->getCollectionClassName();
+        $rulecollection = new $classname();
+
+        return ['admin', $rulecollection->menu_type, $rulecollection->menu_option];
     }
 
     /**
@@ -3576,6 +3599,11 @@ JS
     public function getDefaultRules(): SimpleXMLElement|false
     {
         return simplexml_load_file(self::getDefaultRulesFilePath());
+    }
+
+    public static function getLogDefaultServiceName(): string
+    {
+        return 'setup';
     }
 
     /**
