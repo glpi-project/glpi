@@ -34,7 +34,14 @@
 
 namespace Glpi\Form\ConditionalVisiblity;
 
-final class ConditionData
+use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
+use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
+use Glpi\Form\Export\Specification\ConditionDataSpecification;
+use Glpi\Form\Export\Specification\ContentSpecificationInterface;
+use JsonSerializable;
+use Override;
+
+final class ConditionData implements JsonSerializable, ConfigWithForeignKeysInterface
 {
     public function __construct(
         private string $item_uuid,
@@ -80,5 +87,30 @@ final class ConditionData
         // No follback here as an empty value is valid if the condition is not
         // fully specified yet.
         return ValueOperator::tryFrom($this->value_operator ?? "");
+    }
+
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return [
+            'item'           => $this->getItemDropdownKey(),
+            'item_uuid'      => $this->item_uuid,
+            'item_type'      => $this->item_type,
+            'value_operator' => $this->value_operator,
+            'value'          => $this->value,
+            'logic_operator' => $this->logic_operator,
+        ];
+    }
+
+    #[Override]
+    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
+    {
+        if (!$content_spec instanceof ConditionDataSpecification) {
+            return [];
+        }
+
+        return [
+            new QuestionForeignKeyHandler('item_uuid', 'uuid'),
+        ];
     }
 }

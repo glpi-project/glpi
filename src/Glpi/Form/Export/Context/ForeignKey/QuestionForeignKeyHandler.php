@@ -44,8 +44,15 @@ use Glpi\Form\Question;
  */
 final class QuestionForeignKeyHandler implements JsonConfigForeignKeyHandlerInterface
 {
+    private function getQuestionByCriteria(array $criteria): ?Question
+    {
+        $question = new Question();
+        return $question->getFromDBByCrit($criteria) ? $question : null;
+    }
+
     public function __construct(
-        private string $key
+        private string $key,
+        private ?string $column_key = null,
     ) {
     }
 
@@ -59,11 +66,11 @@ final class QuestionForeignKeyHandler implements JsonConfigForeignKeyHandlerInte
         $foreign_key = $serialized_data[$this->key];
 
         // Create a data requirement for the foreign key and load item
-        $item = new Question();
-        if ($item->getFromDB($foreign_key)) {
+        $question = $this->getQuestionByCriteria([$this->column_key ?? 'id' => $foreign_key]);
+        if ($question !== null) {
             $requirements[] = new DataRequirementSpecification(
                 Question::class,
-                $item->getUniqueIDInForm()
+                $question->getUniqueIDInForm()
             );
         }
 
@@ -79,9 +86,9 @@ final class QuestionForeignKeyHandler implements JsonConfigForeignKeyHandlerInte
         $foreign_key = $serialized_data[$this->key];
 
         // Replace the foreign key by the name of the item it references and load item
-        $item = new Question();
-        if ($item->getFromDB($foreign_key)) {
-            $serialized_data[$this->key] = $item->getUniqueIDInForm();
+        $question = $this->getQuestionByCriteria([$this->column_key ?? 'id' => $foreign_key]);
+        if ($question !== null) {
+            $serialized_data[$this->key] = $question->getUniqueIDInForm();
         } else {
             unset($serialized_data[$this->key]);
         }
@@ -102,6 +109,13 @@ final class QuestionForeignKeyHandler implements JsonConfigForeignKeyHandlerInte
             Question::class,
             $serialized_data[$this->key]
         );
+
+        if ($this->column_key !== null) {
+            $question = $this->getQuestionByCriteria(['id' => $serialized_data[$this->key]]);
+            if ($question !== null) {
+                $serialized_data[$this->key] = $question->fields[$this->column_key];
+            }
+        }
 
         return $serialized_data;
     }
