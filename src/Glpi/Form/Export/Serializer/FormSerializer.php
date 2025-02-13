@@ -39,6 +39,8 @@ use Entity;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Category;
 use Glpi\Form\Comment;
+use Glpi\Form\ConditionalVisiblity\ConditionData;
+use Glpi\Form\ConditionalVisiblity\FormData;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
@@ -50,6 +52,7 @@ use Glpi\Form\Export\Result\ImportResultIssues;
 use Glpi\Form\Export\Result\ImportResultPreview;
 use Glpi\Form\Export\Specification\AccesControlPolicyContentSpecification;
 use Glpi\Form\Export\Specification\CommentContentSpecification;
+use Glpi\Form\Export\Specification\ConditionDataSpecification;
 use Glpi\Form\Export\Specification\DestinationContentSpecification;
 use Glpi\Form\Export\Specification\ExportContentSpecification;
 use Glpi\Form\Export\Specification\FormContentSpecification;
@@ -252,6 +255,7 @@ final class FormSerializer extends AbstractFormSerializer
         $form = $this->importQuestions($form, $form_spec, $mapper);
         $form = $this->importAccessControlPolicices($form, $form_spec, $mapper);
         $form = $this->importDestinations($form, $form_spec, $mapper);
+        $form = $this->importQuestionConditions($form, $form_spec, $mapper);
 
         return $form;
     }
@@ -444,16 +448,18 @@ final class FormSerializer extends AbstractFormSerializer
         FormContentSpecification $form_spec,
     ): FormContentSpecification {
         foreach ($form->getQuestions() as $question) {
-            $question_spec = new QuestionContentSpecification();
-            $question_spec->name = $question->fields['name'];
-            $question_spec->type = $question->fields['type'];
-            $question_spec->is_mandatory = $question->fields['is_mandatory'];
-            $question_spec->vertical_rank = $question->fields['vertical_rank'];
-            $question_spec->horizontal_rank = $question->fields['horizontal_rank'];
-            $question_spec->description = $question->fields['description'];
-            $question_spec->default_value = $question->fields['default_value'];
-            $question_spec->extra_data = $question->fields['extra_data'];
-            $question_spec->section_rank = $form->getSections()[$question->fields['forms_sections_id']]->fields['rank'];
+            $question_spec                      = new QuestionContentSpecification();
+            $question_spec->name                = $question->fields['name'];
+            $question_spec->type                = $question->fields['type'];
+            $question_spec->is_mandatory        = $question->fields['is_mandatory'];
+            $question_spec->vertical_rank       = $question->fields['vertical_rank'];
+            $question_spec->horizontal_rank     = $question->fields['horizontal_rank'];
+            $question_spec->description         = $question->fields['description'];
+            $question_spec->default_value       = $question->fields['default_value'];
+            $question_spec->extra_data          = $question->fields['extra_data'];
+            $question_spec->section_rank        = $form->getSections()[$question->fields['forms_sections_id']]->fields['rank'];
+            $question_spec->visibility_strategy = $question->fields['visibility_strategy'];
+            $question_spec->conditions          = [];
 
             $question_type = new $question_spec->type();
             if ($question_type->getDefaultValueConfigClass() !== null) {
@@ -479,6 +485,28 @@ final class FormSerializer extends AbstractFormSerializer
                         );
                     }
                 }
+            }
+
+            foreach ($question->getConfiguredConditionsData() as $condition_data) {
+                $condition_spec                 = new ConditionDataSpecification();
+                $condition_spec->item_uuid      = $condition_data->getItemUuid();
+                $condition_spec->item_type      = $condition_data->getItemType()->value;
+                $condition_spec->value_operator = $condition_data->getValueOperator()->value;
+                $condition_spec->logic_operator = $condition_data->getLogicOperator()->value;
+                $condition_spec->value          = $condition_data->getValue();
+
+                $requirements = $this->extractDataRequirementsFromSerializedJsonConfig(
+                    $condition_data::listForeignKeysHandlers($condition_spec),
+                    $condition_data->jsonSerialize()
+                );
+                array_push($form_spec->data_requirements, ...$requirements);
+
+                $question_spec->conditions[] = json_encode(
+                    $this->replaceForeignKeysByNameInSerializedJsonConfig(
+                        $condition_data::listForeignKeysHandlers($condition_spec),
+                        $condition_data->jsonSerialize()
+                    )
+                );
             }
 
             $form_spec->questions[] = $question_spec;
@@ -544,6 +572,63 @@ final class FormSerializer extends AbstractFormSerializer
                 $question->getUniqueIDInForm(),
                 $id
             );
+        }
+
+        // Reload form to clear lazy loaded data
+        $form->getFromDB($form->getID());
+        return $form;
+    }
+
+    private function importQuestionConditions(
+        Form $form,
+        FormContentSpecification $form_spec,
+        DatabaseMapper $mapper,
+    ): Form {
+        /** @var QuestionContentSpecification $question_spec */
+        foreach ($form_spec->questions as $question_spec) {
+            $question = current(array_filter(
+                $form->getQuestions(),
+                fn (Question $question) => $question->fields['name'] === $question_spec->name
+            ));
+
+            $conditions = [];
+            foreach ($question_spec->conditions as $raw_condition_data) {
+                $raw_condition_data             = json_decode($raw_condition_data, true);
+                $condition_spec                 = new ConditionDataSpecification();
+                $condition_spec->item_uuid      = $raw_condition_data['item_uuid'];
+                $condition_spec->item_type      = $raw_condition_data['item_type'];
+                $condition_spec->value_operator = $raw_condition_data['value_operator'];
+                $condition_spec->value          = $raw_condition_data['value'];
+                $condition_spec->logic_operator = $raw_condition_data['logic_operator'];
+
+                // Replace names by UUID
+                $raw_condition_data = $this->replaceNamesByForeignKeysInSerializedJsonConfig(
+                    ConditionData::listForeignKeysHandlers($condition_spec),
+                    $raw_condition_data,
+                    $mapper
+                );
+
+                // We need to re-create the condition data object to generate the `item` key
+                $condition_data = new ConditionData(
+                    $raw_condition_data['item_uuid'],
+                    $raw_condition_data['item_type'],
+                    $raw_condition_data['value_operator'],
+                    $raw_condition_data['value'],
+                    $raw_condition_data['logic_operator']
+                );
+                $conditions[] = $condition_data->jsonSerialize();
+            }
+
+            $question->update([
+                '_from_import'        => true,
+                'id'                  => $question->getID(),
+                'visibility_strategy' => $question_spec->visibility_strategy,
+                'conditions'          => json_encode($conditions),
+            ]);
+
+            if ($question->getFromDB($question->getID()) === false) {
+                throw new RuntimeException("Failed to set visibility strategy and conditions for question");
+            }
         }
 
         // Reload form to clear lazy loaded data

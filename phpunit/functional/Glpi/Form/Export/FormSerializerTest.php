@@ -39,6 +39,12 @@ use Computer;
 use Entity;
 use Glpi\Form\Category;
 use Glpi\Form\Comment;
+use Glpi\Form\ConditionalVisiblity\ConditionData;
+use Glpi\Form\ConditionalVisiblity\FormData;
+use Glpi\Form\ConditionalVisiblity\LogicOperator;
+use Glpi\Form\ConditionalVisiblity\Type;
+use Glpi\Form\ConditionalVisiblity\ValueOperator;
+use Glpi\Form\ConditionalVisiblity\VisibilityStrategy;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldConfig;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldStrategy;
@@ -485,6 +491,103 @@ final class FormSerializerTest extends \DbTestCase
                 'extra_data'        => json_encode($actors_extra_data_config->jsonSerialize()),
                 'forms_sections_id' => array_values($form_copy->getSections())[1]->fields['id'],
             ]
+        ], $questions_data);
+    }
+
+    public function testExportAndImportQuestionConditions(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with multiple questions and conditions
+        $builder = new FormBuilder();
+        $builder->addSection("My first section")
+            ->addQuestion("My first question", QuestionTypeShortText::class)
+            ->addQuestion("My second question", QuestionTypeShortText::class)
+            ->addSection("My second section")
+            ->addQuestion("My third question", QuestionTypeShortText::class)
+            ->addQuestion("My fourth question", QuestionTypeShortText::class);
+        $builder->setQuestionVisibility(
+            "My second question",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My first question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => 'test',
+                ]
+            ]
+        );
+        $builder->setQuestionVisibility(
+            "My third question",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My first question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => 'test2',
+                ]
+            ]
+        );
+
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate questions fields
+        $questions = array_values($form_copy->getQuestions());
+        $questions_data = array_map(function (Question $question) {
+            return [
+                'name'                => $question->fields['name'],
+                'visibility_strategy' => $question->fields['visibility_strategy'],
+                'conditions'          => json_decode($question->fields['conditions'], true),
+            ];
+        }, $questions);
+
+        $first_question_uuid = Question::getById($this->getQuestionId($form_copy, "My first question"))->fields['uuid'];
+        $this->assertEquals([
+            [
+                'name'                => 'My first question',
+                'visibility_strategy' => '',
+                'conditions'          => [],
+            ],
+            [
+                'name'                => 'My second question',
+                'visibility_strategy' => VisibilityStrategy::VISIBLE_IF->value,
+                'conditions'          => [
+                    [
+                        'item'           => Type::QUESTION->value . '-' . $first_question_uuid,
+                        'item_type'      => Type::QUESTION->value,
+                        'item_uuid'      => $first_question_uuid,
+                        'value'          => 'test',
+                        'value_operator' => ValueOperator::EQUALS->value,
+                        'logic_operator' => LogicOperator::AND->value,
+                    ]
+                ],
+            ],
+            [
+                'name'                => 'My third question',
+                'visibility_strategy' => VisibilityStrategy::VISIBLE_IF->value,
+                'conditions'          => [
+                    [
+                        'item'           => Type::QUESTION->value . '-' . $first_question_uuid,
+                        'item_type'      => Type::QUESTION->value,
+                        'item_uuid'      => $first_question_uuid,
+                        'value'          => 'test2',
+                        'value_operator' => ValueOperator::EQUALS->value,
+                        'logic_operator' => LogicOperator::AND->value,
+                    ]
+                ],
+            ],
+            [
+                'name'                => 'My fourth question',
+                'visibility_strategy' => '',
+                'conditions'          => [],
+            ],
         ], $questions_data);
     }
 

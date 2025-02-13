@@ -35,17 +35,12 @@
 
 namespace Glpi\Form\Export\Specification;
 
-final class QuestionContentSpecification implements ContentSpecificationInterface
+final class ConditionDataSpecification implements ContentSpecificationInterface
 {
-    public string $name;
-    public string $type;
-    public bool $is_mandatory;
-    public int $vertical_rank;
-    public ?int $horizontal_rank;
-    public ?string $description;
-    public ?string $default_value;
-    public ?string $extra_data;
-    public int $section_rank;
-    public string $visibility_strategy;
-    public array $conditions;
+    public string $item;
+    public string $item_uuid;
+    public string $item_type;
+    public ?string $value_operator;
+    public ?string $logic_operator;
+    public mixed $value;
 }
