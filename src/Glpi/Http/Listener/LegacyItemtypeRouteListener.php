@@ -96,7 +96,8 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
             if (\is_a($class, CommonDropdown::class, true)) {
                 $request->attributes->set('_controller', $is_form ? DropdownFormController::class : GenericListController::class);
                 $request->attributes->set('class', $class);
-            } elseif (\is_a($class, \RuleTicket::class, true)) { // RuleCommonITILObject
+                // @todo maybe \Rule::class is too large ?
+            } elseif (\is_subclass_of($class, \Rule::class, true)) {
                 $request->attributes->set('_controller', $is_form ? GenericFormController::class : RuleListController::class);
                 $request->attributes->set('class', $class);
             } else {
