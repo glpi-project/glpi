@@ -57,7 +57,7 @@ class AuthMail extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        if (empty($input['name'])) {
+        if (array_key_exists('name', $input) && strlen($input['name']) === 0) {
             Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
 
             return false;
@@ -156,6 +156,15 @@ class AuthMail extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'is_default',
+            'name'               => __('Default server'),
+            'datatype'           => 'bool',
+            'massiveaction'      => false
+        ];
+
+        $tab[] = [
             'id'                 => '19',
             'table'              => static::getTable(),
             'field'              => 'date_mod',
@@ -199,6 +208,30 @@ class AuthMail extends CommonDBTM
             'params'           => $options,
             'protocol_choices' => $protocol_choices,
         ]);
+    }
+
+    /**
+     * @return void
+     */
+    public function post_updateItem($history = true)
+    {
+        if ($this->fields["is_default"] === 1) {
+            $this->removeDefaultFromOtherItems();
+        }
+
+        parent::post_updateItem($history);
+    }
+
+    /**
+     * @return void
+     */
+    public function post_addItem()
+    {
+        if ($this->fields["is_default"] === 1) {
+            $this->removeDefaultFromOtherItems();
+        }
+
+        parent::post_addItem();
     }
 
     /**
@@ -371,5 +404,35 @@ TWIG, $twig_params);
     public static function getIcon()
     {
         return "far fa-envelope";
+    }
+
+    /**
+     * Remove the `is_default` flag from authentication methods that does not match the current item.
+     */
+    private function removeDefaultFromOtherItems(): void
+    {
+        if (isset($this->fields['is_default']) && (int)$this->fields["is_default"] === 1) {
+            // if current default Auth is an AuthMail, remvove it
+            $auth = new self();
+            $defaults = $auth->find(['is_default' => 1, ['NOT' => ['id' => $this->getID()]]]);
+            foreach ($defaults as $default) {
+                $auth = new self();
+                $auth->update([
+                    'id' => $default['id'],
+                    'is_default' => 0
+                ]);
+            }
+
+            // if current default Auth is an AuthLDAP, remvove it
+            $auth = new AuthLDAP();
+            $defaults = $auth->find(['is_default' => 1]);
+            foreach ($defaults as $default) {
+                $auth = new AuthLDAP();
+                $auth->update([
+                    'id' => $default['id'],
+                    'is_default' => 0
+                ]);
+            }
+        }
     }
 }
