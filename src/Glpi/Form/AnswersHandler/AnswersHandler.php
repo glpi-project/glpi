@@ -266,7 +266,8 @@ final class AnswersHandler
             $items = $concrete_destination->createDestinationItems(
                 $form,
                 $answers_set,
-                $destination->getConfig()
+                $destination->getConfig(),
+                link_to_form: $destination->isMandatory()
             );
 
             // Link items to answers by creating a AnswersSet_FormDestinationItem object

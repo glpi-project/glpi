@@ -160,19 +160,6 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
-    {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">{{ answer|safe_html }}</div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'answer' => $answer,
-        ]);
-    }
-
-    #[Override]
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::LONG_ANSWER;

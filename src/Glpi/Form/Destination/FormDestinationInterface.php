@@ -46,6 +46,7 @@ interface FormDestinationInterface
      * @param Form       $form
      * @param AnswersSet $answers_set
      * @param array      $config
+     * @param bool       $link_to_form Should the created items be linked to the form ?
      *
      * @return \CommonDBTM[]
      *
@@ -54,7 +55,8 @@ interface FormDestinationInterface
     public function createDestinationItems(
         Form $form,
         AnswersSet $answers_set,
-        array $config
+        array $config,
+        bool $link_to_form,
     ): array;
 
 
@@ -73,11 +75,4 @@ interface FormDestinationInterface
      * @return string (Must be a valid CommonDBTM class name)
      */
     public static function getTargetItemtype(): string;
-
-    /**
-     * Get the search option used to filter the target itemtype by answers set.
-     *
-     * @return int
-     */
-    public static function getFilterByAnswsersSetSearchOptionID(): int;
 }

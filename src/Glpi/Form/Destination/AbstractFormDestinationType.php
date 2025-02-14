@@ -36,68 +36,7 @@
 namespace Glpi\Form\Destination;
 
 use CommonGLPI;
-use Glpi\Form\AnswersSet;
-use Override;
-use Search;
 
 abstract class AbstractFormDestinationType extends CommonGLPI implements FormDestinationInterface
 {
-    #[Override]
-    final public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
-    {
-        // Only for answers set
-        if (!($item instanceof AnswersSet)) {
-            return "";
-        }
-
-        $count = 0;
-        if ($_SESSION['glpishow_count_on_tabs']) {
-            $count = $this->countCreatedItemsForAnswersSet($item);
-        }
-
-        return self::createTabEntry(static::getTypeName(), $count, icon: static::getTargetItemtype()::getIcon());
-    }
-
-    #[Override]
-    final public static function displayTabContentForItem(
-        CommonGLPI $item,
-        $tabnum = 1,
-        $withtemplate = 0
-    ) {
-        // Only for answers set
-        if (!($item instanceof AnswersSet)) {
-            return false;
-        }
-
-        Search::showList(static::getTargetItemtype(), [
-            'criteria' => [
-                [
-                    'link'       => 'AND',
-                    'field'      => static::getFilterByAnswsersSetSearchOptionID(), // Parent answer
-                    'searchtype' => 'equals',
-                    'value'      => $item->getID()
-                ],
-            ],
-            'showmassiveactions' => false,
-            'hide_controls'      => true,
-            'order'              => 'DESC',
-            'as_map'             => false,
-        ]);
-        return true;
-    }
-
-    /**
-     * Count the number of created items for an answers set
-     *
-     * @param AnswersSet $answers
-     *
-     * @return int
-     */
-    final protected function countCreatedItemsForAnswersSet(AnswersSet $answers): int
-    {
-        return countElementsInTable(AnswersSet_FormDestinationItem::getTable(), [
-            'forms_answerssets_id' => $answers->getID(),
-            'itemtype'             => static::getTargetItemtype(),
-        ]);
-    }
 }

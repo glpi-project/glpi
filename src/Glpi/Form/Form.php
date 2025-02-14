@@ -103,7 +103,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     {
         $tabs = parent::defineTabs();
         $this->addStandardTab(ServiceCatalog::getType(), $tabs, $options);
-        $this->addStandardTab(AnswersSet::getType(), $tabs, $options);
+        $this->addStandardTab(Ticket::getType(), $tabs, $options);
         $this->addStandardTab(FormAccessControl::getType(), $tabs, $options);
         $this->addStandardTab(FormDestination::getType(), $tabs, $options);
         $this->addStandardTab(Log::getType(), $tabs, $options);

@@ -83,7 +83,8 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
     final public function createDestinationItems(
         Form $form,
         AnswersSet $answers_set,
-        array $config
+        array $config,
+        bool $link_to_form,
     ): array {
         $typename        = static::getTypeName(1);
         $itemtype        = static::getTargetItemtype();
@@ -148,29 +149,25 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             );
         }
 
-        // We will also link the answers directly to the commonitil object
+        // If requested, link the form directly to the commonitil object
         // This allow users to see it an an associated item and known where the
         // commonitil object come from
-        $link_class = $itil_object::getItemLinkClass();
-        $link = new $link_class();
-        $input = [
-            $itil_object->getForeignKeyField() => $itil_object->getID(),
-            'itemtype'                             => $answers_set::class,
-            'items_id'                             => $answers_set->getID(),
-        ];
-        if (!$link->add($input)) {
-            throw new \Exception(
-                "Failed to create item link for $typename: " . json_encode($input)
-            );
+        if ($link_to_form) {
+            $link_class = $itil_object::getItemLinkClass();
+            $link = new $link_class();
+            $input = [
+                $itil_object->getForeignKeyField() => $itil_object->getID(),
+                'itemtype'                         => $form::class,
+                'items_id'                         => $form->getID(),
+            ];
+            if (!$link->add($input)) {
+                throw new \Exception(
+                    "Failed to create item link for $typename: " . json_encode($input)
+                );
+            }
         }
 
         return [$itil_object];
-    }
-
-    #[Override]
-    final public static function getFilterByAnswsersSetSearchOptionID(): int
-    {
-        return 120;
     }
 
     /**

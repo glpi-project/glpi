@@ -337,23 +337,6 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
-    {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">
-                {% for actors in actors %}
-                    {{ get_item_link(actors.itemtype, actors.items_id) }}
-                {% endfor %}
-            </div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'actors' => $answer
-        ]);
-    }
-
-    #[Override]
     public function formatRawAnswer(mixed $answer): string
     {
         $formatted_actors = [];
