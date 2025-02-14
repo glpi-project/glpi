@@ -1,6 +1,4 @@
-<?php
-
-/**
+/*!
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,12 +31,27 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form;
+[data-glpi-form-translations-add-language-container] {
+    .select2-container {
+        width: 100% !important;
+    }
 
-use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+    .select2-selection.select2-selection--single {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
+}
 
-interface BlockInterface extends ProvideTranslationsInterface
-{
-    public function displayBlockForEditor(): void;
-    public function getUniqueIDInForm(): string;
+// Apply table header styles to rows containing a span with the data-glpi-form-translations-subtitle-row attribute
+td:has(> span[data-glpi-form-translations-subtitle-row]) {
+    color: var(--tblr-secondary);
+    background: var(--tblr-bg-surface-tertiary);
+    font-size: 0.625rem;
+    font-weight: var(--tblr-font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    white-space: nowrap;
 }

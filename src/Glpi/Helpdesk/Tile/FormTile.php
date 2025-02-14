@@ -90,7 +90,7 @@ final class FormTile extends CommonDBChild implements TileInterface
         if ($this->form === null) {
             return "";
         }
-        return $this->form->fields['name'];
+        return $this->form->getServiceCatalogItemTitle();
     }
 
     #[Override]
@@ -99,7 +99,7 @@ final class FormTile extends CommonDBChild implements TileInterface
         if ($this->form === null) {
             return "";
         }
-        return $this->form->fields['description'];
+        return $this->form->getServiceCatalogItemDescription();
     }
 
     #[Override]
