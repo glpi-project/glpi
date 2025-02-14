@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -58,9 +57,9 @@
             </li>
 
             <li class="step">
-                <a class="btn flex-column" href="{{ call('RuleImportEntity::getSearchURL') }}">
+                <a class="btn flex-column" href="{{ 'RuleImportEntity'|itemtype_search_path }}">
                     <div>
-                        <i class="{{ call('RuleImportEntity::getIcon') }}"></i>
+                        <i class="{{ 'RuleImportEntity'|itemtype_icon }}"></i>
                         <span>{{ __('Rules for assigning an item to an entity') }}</span>
                     </div>
                     <div class="text-muted">
@@ -70,9 +69,9 @@
             </li>
 
             <li class="step">
-                <a class="btn flex-column" href="{{ call('RuleLocation::getSearchURL') }}">
+                <a class="btn flex-column" href="{{ 'RuleLocation'|itemtype_search_path }}">
                     <div>
-                        <i class="{{ call('RuleLocation::getIcon') }}"></i>
+                        <i class="{{ 'RuleLocation'|itemtype_icon }}"></i>
                         <span>{{ __('Location rules') }}</span>
                     </div>
                     <div class="text-muted">
@@ -82,9 +81,9 @@
             </li>
 
             <li class="step">
-                <a class="btn flex-column" href="{{ call('RuleImportAsset::getSearchURL') }}">
+                <a class="btn flex-column" href="{{ 'RuleImportAsset'|itemtype_search_path }}">
                     <div>
-                        <i class="{{ call('RuleImportAsset::getIcon') }}"></i>
+                        <i class="{{ 'RuleImportAsset'|itemtype_icon }}"></i>
                         <span>{{ __("Rules for import and link equipments") }}</span>
                     </div>
                     <div class="text-muted">
@@ -96,7 +95,7 @@
             <li class="step">
                 <a class="btn flex-column" href="{{ path('/front/dictionnary.php') }}">
                     <div>
-                        <i class="{{ call('RuleDictionnaryDropdownCollection::getIcon') }}"></i>
+                        <i class="{{ 'RuleDictionnaryDropdownCollection'|itemtype_icon }}"></i>
                         <span>{{ _n('Dictionary', 'Dictionaries', get_plural_number()) }}</span>
                     </div>
                     <div class="text-muted">
@@ -106,9 +105,9 @@
             </li>
 
             <li class="step">
-                <a class="btn flex-column" href="{{ call('RuleAsset::getSearchURL') }}">
+                <a class="btn flex-column" href="{{ 'RuleAsset'|itemtype_search_path }}">
                     <div>
-                        <i class="{{ call('RuleAsset::getIcon') }}"></i>
+                        <i class="{{ 'RuleAsset'|itemtype_icon }}"></i>
                         <span>{{ __("Business rules for assets") }}</span>
                     </div>
                     <div class="text-muted">
@@ -130,7 +129,7 @@
                         <span>{{ __("Update asset") }}</span>
                     </span>
                 {% endset %}
-                <span>{{ __('%s or %s ')|format(add_label, update_label)|raw }}</span>
+                <span>{{ __('%s or %s')|e|format(add_label, update_label)|raw }}</span>
             </li>
         </ul>
     </div>
