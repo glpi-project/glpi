@@ -105,11 +105,21 @@ class GLPITestCase extends TestCase
             $this->assertIsArray($this->log_handler->getRecords());
             $clean_logs = array_map(
                 static function (\Monolog\LogRecord $entry): array {
-                    return [
+                    $clean_entry = [
                         'channel' => $entry->channel,
                         'level'   => $entry->level->name,
                         'message' => $entry->message,
+                        'context' => [],
                     ];
+                    if (isset($entry->context['exception']) && $entry->context['exception'] instanceof \Throwable) {
+                        /* @var \Throwable $exception */
+                        $exception = $entry->context['exception'];
+                        $clean_entry['context']['exception'] = [
+                            'message' => $exception->getMessage(),
+                            'trace'   => $exception->getTraceAsString(),
+                        ];
+                    }
+                    return $clean_entry;
                 },
                 $this->log_handler->getRecords()
             );

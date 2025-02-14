@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Entity;
 
 class Appliance_Item_RelationTest extends DbTestCase
 {
@@ -53,10 +54,13 @@ class Appliance_Item_RelationTest extends DbTestCase
         /** @var \DBmysql $DB */
         global $DB;
 
+        $entity_id = \getItemByTypeName(Entity::class, '_test_root_entity', true);
+
         $appliance = new \Appliance();
 
         $appliances_id = (int)$appliance->add([
-            'name'   => 'Test appliance'
+            'name'        => 'Test appliance',
+            'entities_id' => $entity_id,
         ]);
         $this->assertGreaterThan(0, $appliances_id);
 

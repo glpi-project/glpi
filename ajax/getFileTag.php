@@ -37,10 +37,7 @@
  * @since 0.85
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
-header('Content-type: application/json');
+header('Content-type: application/json; charset=UTF-8');
 Html::header_nocache();
 
 if (isset($_POST['data'])) {

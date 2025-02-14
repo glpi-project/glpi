@@ -39,9 +39,6 @@
  */
 global $CFG_GLPI, $GLPI_CACHE;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 

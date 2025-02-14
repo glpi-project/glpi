@@ -40,7 +40,7 @@ $network = new IPNetwork();
 
 if ($_POST['ipnetworks_id'] && $network->can($_POST['ipnetworks_id'], READ)) {
     echo "<br>";
-    echo "<a href='" . $network->getLinkURL() . "'>" . htmlescape($network->fields['completename']) . "</a><br>";
+    echo "<a href='" . htmlescape($network->getLinkURL()) . "'>" . htmlescape($network->fields['completename']) . "</a><br>";
 
     $address = $network->getAddress()->getTextual();
     $netmask = $network->getNetmask()->getTextual();

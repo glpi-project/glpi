@@ -1129,4 +1129,23 @@ SCSS
     {
         $this->assertEquals($expected, \Html::sanitizeInputName($name));
     }
+
+    public static function domIdProvider(): iterable
+    {
+        yield [
+            'name'      => 'itemtype',
+            'expected'  => 'itemtype',
+        ];
+
+        yield [
+            'name'      => 'foo\'"$**_23-1',
+            'expected'  => 'foo_23-1',
+        ];
+    }
+
+    #[DataProvider('domIdProvider')]
+    public function testSanitizeDomId(string $name, string $expected): void
+    {
+        $this->assertEquals($expected, \Html::sanitizeInputName($name));
+    }
 }

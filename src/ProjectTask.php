@@ -779,8 +779,19 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         $duration_dropdown_to_add = [];
-        for ($i = 9; $i <= 100; $i++) {
-            $duration_dropdown_to_add[] = $i * HOUR_TIMESTAMP;
+        for ($i = 1; $i <= 10; $i++) {
+            $duration_dropdown_to_add[$i * MINUTE_TIMESTAMP] = sprintf('00h%02d', $i);
+        }
+        for ($i = 10; $i <= 10 * 60; $i += 5) {
+            $h = intdiv($i, 60);
+            $m = $i % 60;
+            $duration_dropdown_to_add[$i * MINUTE_TIMESTAMP] = sprintf('%02dh%02d', $h, $m);
+        }
+        for ($i = 10; $i <= 5 * 24; $i++) {
+            $duration_dropdown_to_add[$i * HOUR_TIMESTAMP] = sprintf('%02dh%02d', $i, 0);
+        }
+        for ($i = 5; $i <= 366; $i++) {
+            $duration_dropdown_to_add[$i * DAY_TIMESTAMP] = sprintf(_n('%s day', '%s days', $i), $i);
         }
 
         $this->initForm($ID, $options);
@@ -1201,7 +1212,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         /** @var \DBmysql $DB */
         global $DB;
 
-        $ID = $item->getField('id');
+        $ID = $item->getID();
 
         if (!$item->canViewItem()) {
             return false;
@@ -1295,7 +1306,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         if ($canedit) {
             echo "<div class='center firstbloc'>";
-            echo "<a class='btn btn-primary' href='" . ProjectTask::getFormURL() . "?projects_id=$ID'>" .
+            echo "<a class='btn btn-primary' href='" . htmlescape(ProjectTask::getFormURL()) . "?projects_id=$ID'>" .
                 _sx('button', 'Add a task') . "</a>";
             echo "</div>";
         }
@@ -1642,9 +1653,17 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         ProjectState::getTable() => 'id',
                         self::getTable() => 'projectstates_id'
                     ]
+                ],
+                Project::getTable() => [
+                    'FKEY' => [
+                        Project::getTable() => 'id',
+                        ProjectTask::getTable() => 'projects_id'
+                    ]
                 ]
             ],
             'WHERE' => [
+                ProjectTask::getTable() . '.is_template' => false,
+                Project::getTable() . '.is_template' => false,
                 self::getTable() . '.id' => new QuerySubQuery([
                     'SELECT' => [
                         'projecttasks_id'
@@ -1707,9 +1726,17 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         ProjectState::getTable() => 'id',
                         self::getTable() => 'projectstates_id'
                     ]
+                ],
+                Project::getTable() => [
+                    'FKEY' => [
+                        Project::getTable() => 'id',
+                        ProjectTask::getTable() => 'projects_id'
+                    ]
                 ]
             ],
             'WHERE' => [
+                ProjectTask::getTable() . '.is_template' => false,
+                Project::getTable() . '.is_template' => false,
                 self::getTable() . '.id' => new QuerySubQuery([
                     'SELECT' => [
                         'projecttasks_id'
@@ -1889,6 +1916,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'genical'             => false,
             'color'               => '',
             'event_type_color'    => '',
+            'state_done'          => true,
         ];
         $options = array_merge($default_options, $options);
 
@@ -1940,12 +1968,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             ];
         }
 
-        if (!isset($options['display_done_events']) || !$options['display_done_events']) {
+        if ($options['state_done']) {
             $ADDWHERE['glpi_projecttasks.percent_done'] = ['<', 100];
-            $ADDWHERE[] = ['OR' => [
-                ['glpi_projectstates.is_finished'  => 0],
-                ['glpi_projectstates.is_finished'  => null]
-            ]
+            $ADDWHERE[] = [
+                'OR' => [
+                    ['glpi_projectstates.is_finished' => 0],
+                    ['glpi_projectstates.is_finished' => null]
+                ]
             ];
         }
 

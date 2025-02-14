@@ -36,6 +36,7 @@ namespace Glpi\Helpdesk\Tile;
 
 use CommonDBTM;
 use Glpi\Session\SessionInfo;
+use Glpi\UI\IllustrationManager;
 use Html;
 use Override;
 use TicketValidation;
@@ -50,27 +51,49 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
     public const PAGE_APPROVAL = 'approval';
 
     #[Override]
+    public function getLabel(): string
+    {
+        return __("GLPI page");
+    }
+
+    #[Override]
     public static function canCreate(): bool
     {
         return self::canUpdate();
     }
 
     #[Override]
+    public static function canPurge(): bool
+    {
+        return self::canUpdate();
+    }
+
+    public static function getPossiblesPages(): array
+    {
+        return [
+            self::PAGE_SERVICE_CATALOG => __("Service catalog"),
+            self::PAGE_FAQ             => __("FAQ"),
+            self::PAGE_RESERVATION     => _n("Reservation", "Reservations", 1),
+            self::PAGE_APPROVAL        => _n('Approval', 'Approvals', 1)
+        ];
+    }
+
+    #[Override]
     public function getTitle(): string
     {
-        return $this->fields['title'];
+        return $this->fields['title'] ?? "";
     }
 
     #[Override]
     public function getDescription(): string
     {
-        return $this->fields['description'];
+        return $this->fields['description'] ?? "";
     }
 
     #[Override]
     public function getIllustration(): string
     {
-        return $this->fields['illustration'];
+        return $this->fields['illustration'] ?? IllustrationManager::DEFAULT_ILLUSTRATION;
     }
 
     #[Override]
@@ -107,5 +130,16 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
     public function getDatabaseId(): int
     {
         return $this->fields['id'];
+    }
+
+    #[Override]
+    public function getConfigFieldsTemplate(): string
+    {
+        return "pages/admin/glpi_page_tile_config_fields.html.twig";
+    }
+
+    public function getPage(): string
+    {
+        return $this->fields['page'] ?? "";
     }
 }

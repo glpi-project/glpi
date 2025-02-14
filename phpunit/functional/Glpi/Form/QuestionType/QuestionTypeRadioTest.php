@@ -55,7 +55,6 @@ final class QuestionTypeRadioTest extends DbTestCase
                 'options' => ['GLPI', 'GLPI again', 'Still GLPI'],
             ])
         );
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [

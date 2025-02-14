@@ -33,15 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Controller\LegacyFileLoadController;
-
 /** @var int|bool|null $AJAX_INCLUDE */
 global $AJAX_INCLUDE;
 if (isset($AJAX_INCLUDE)) {
-    \Toolbox::deprecated('The global `$AJAX_INCLUDE` variable usage is deprecated. Use "$this->setAjax()" from your controllers instead.');
-    if ($this instanceof LegacyFileLoadController) {
-        $this->setAjax();
-    }
+    trigger_error(
+        'The global `$AJAX_INCLUDE` variable has no effect anymore.',
+        E_USER_WARNING
+    );
 }
 
 /** @var string|null $SECURITY_STRATEGY */

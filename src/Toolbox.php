@@ -35,6 +35,7 @@
 
 use Glpi\Console\Application;
 use Glpi\DBAL\QueryParam;
+use Glpi\Error\ErrorUtils;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
@@ -42,6 +43,7 @@ use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Rules\RulesManager;
+use Glpi\Toolbox\URL;
 use Glpi\Toolbox\VersionParser;
 use GuzzleHttp\Client;
 use Laminas\Mail\Storage\AbstractStorage;
@@ -311,9 +313,12 @@ class Toolbox
         $tps = microtime(true);
 
         try {
+            $msg = self::cleanPaths($msg);
             $PHPLOGGER->log($level, $msg, $extra);
         } catch (\Throwable $e) {
-           //something went wrong, make sure logging does not cause fatal
+            //something went wrong
+            // make sure logging does not cause fatal
+            // and error still logged (without glpi root path removed)
             error_log($e);
         }
     }
@@ -415,9 +420,9 @@ class Toolbox
     /**
      * Log a message in log file
      *
-     * @param string  $name   name of the log file
-     * @param string  $text   text to log
-     * @param boolean $force  force log in file not seeing use_log_in_files config
+     * @param string $name name of the log file, relative to GLPI_LOG_DIR, without '.log' extension
+     * @param string $text text to log
+     * @param boolean $force force log in file not seeing use_log_in_files config
      *
      * @return boolean
      **/
@@ -425,6 +430,7 @@ class Toolbox
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+        $text = self::cleanPaths($text);
 
         $user = '';
         if (method_exists('Session', 'getLoginUserID')) {
@@ -1481,21 +1487,22 @@ class Toolbox
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $matches = [];
+        $parsed_url = parse_url($where);
 
-        // redirect to full url -> check if it's based on glpi url
-        if (preg_match('@(([^:/].+:)?//[^/]+)(/.+)?@', $where, $matches)) {
-            if ($matches[1] !== $CFG_GLPI['url_base']) {
-                return null;
+        if ($parsed_url !== false) {
+            // Target URL contains a hostname, validates that it matches the base GLPI URL
+            if (array_key_exists('host', $parsed_url)) {
+                if (!str_starts_with($where, $CFG_GLPI['url_base'] . '/')) {
+                    return null;
+                } else {
+                    return $where;
+                }
             }
 
-            return $where;
-        }
-
-        // Redirect to relative url
-        if ($where[0] === '/') {
-            // prevent exploit (//example.com) and force a redirect from glpi root
-            return $CFG_GLPI["root_doc"] . "/" . ltrim($where, '/');
+            // Target URL is a relative path
+            if (array_key_exists('path', $parsed_url) && $parsed_url['path'][0] === '/') {
+                return URL::isGLPIRelativeUrl($where) ? $CFG_GLPI["root_doc"] . $where : null;
+            }
         }
 
         // explode with limit 3 to preserve the last part of the url
@@ -1564,7 +1571,7 @@ class Toolbox
                     // no break
                     case "tracking":
                         $data[0] = "Ticket";
-                        // var defined, use default case
+                        //var defined, use default case
 
                     default:
                         // redirect to item
@@ -1660,14 +1667,15 @@ class Toolbox
      *
      * @since 0.84
      *
-     * @param string  $value      connect string
-     * @param boolean $forceport  force compute port if not set
+     * @param string    $value                      connect string
+     * @param bool      $forceport                  force compute port if not set
+     * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
      * @return array  parsed arguments (address, port, mailbox, type, ssl, tls, validate-cert
      *                norsh, secure and debug) : options are empty if not set
      *                and options have boolean values if set
      **/
-    public static function parseMailServerConnectString($value, $forceport = false)
+    public static function parseMailServerConnectString($value, $forceport = false, bool $allow_plugins_protocols = true)
     {
 
         $tab = [];
@@ -1688,7 +1696,7 @@ class Toolbox
        // server string is surrounded by "{}" and can be followed by a folder name
        // i.e. "{mail.domain.org/imap/ssl}INBOX", or "{mail.domain.org/pop}"
         $type = preg_replace('/^\{[^\/]+\/([^\/]+)(?:\/.+)*\}.*/', '$1', $value);
-        $tab['type'] = in_array($type, array_keys(self::getMailServerProtocols())) ? $type : '';
+        $tab['type'] = in_array($type, array_keys(self::getMailServerProtocols($allow_plugins_protocols))) ? $type : '';
 
         $tab['ssl'] = false;
         if (strstr($value, "/ssl")) {
@@ -1797,9 +1805,11 @@ class Toolbox
      *  - 'protocol_class' field is the protocol class to use (see Laminas\Mail\Protocol\Imap | Laminas\Mail\Protocol\Pop3);
      *  - 'storage_class' field is the storage class to use (see Laminas\Mail\Storage\Imap | Laminas\Mail\Storage\Pop3).
      *
+     * @param bool  $allow_plugins_protocols    Whether plugins protocol must be allowed.
+     *
      * @return array
      */
-    public static function getMailServerProtocols(): array
+    public static function getMailServerProtocols(bool $allow_plugins_protocols = true): array
     {
         $protocols = [
             'imap' => [
@@ -1815,6 +1825,10 @@ class Toolbox
                 'storage'  => 'Laminas\Mail\Storage\Pop3',
             ]
         ];
+
+        if ($allow_plugins_protocols === false) {
+            return $protocols;
+        }
 
         $additionnal_protocols = Plugin::doHookFunction('mail_server_protocols', []);
         if (is_array($additionnal_protocols)) {
@@ -1856,13 +1870,14 @@ class Toolbox
      * Class should implements Glpi\Mail\Protocol\ProtocolInterface
      * or should be \Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3 for native protocols.
      *
-     * @param string $protocol_type
+     * @param string    $protocol_type
+     * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
      * @return null|\Glpi\Mail\Protocol\ProtocolInterface|\Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3
      */
-    public static function getMailServerProtocolInstance(string $protocol_type)
+    public static function getMailServerProtocolInstance(string $protocol_type, bool $allow_plugins_protocols = true)
     {
-        $protocols = self::getMailServerProtocols();
+        $protocols = self::getMailServerProtocols($allow_plugins_protocols);
         if (array_key_exists($protocol_type, $protocols)) {
             $protocol = $protocols[$protocol_type]['protocol'];
             if (is_callable($protocol)) {
@@ -1889,14 +1904,15 @@ class Toolbox
      *
      * Class should extends \Laminas\Mail\Storage\AbstractStorage.
      *
-     * @param string $protocol_type
-     * @param array  $params         Storage constructor params, as defined in AbstractStorage
+     * @param string    $protocol_type
+     * @param array     $params                     Storage constructor params, as defined in AbstractStorage
+     * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
      * @return null|AbstractStorage
      */
-    public static function getMailServerStorageInstance(string $protocol_type, array $params): ?AbstractStorage
+    public static function getMailServerStorageInstance(string $protocol_type, array $params, bool $allow_plugins_protocols = true): ?AbstractStorage
     {
-        $protocols = self::getMailServerProtocols();
+        $protocols = self::getMailServerProtocols($allow_plugins_protocols);
         if (array_key_exists($protocol_type, $protocols)) {
             $storage = $protocols[$protocol_type]['storage'];
             if (is_callable($storage)) {
@@ -3308,5 +3324,14 @@ HTML;
     final public static function getNormalizedItemtype(string $itemtype)
     {
         return strtolower(str_replace('\\', '', $itemtype));
+    }
+
+    /**
+     * @param string $message
+     * @return string
+     */
+    public static function cleanPaths(string $message): string
+    {
+        return ErrorUtils::cleanPaths($message);
     }
 }

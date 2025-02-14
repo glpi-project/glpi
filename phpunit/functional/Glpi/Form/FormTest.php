@@ -382,37 +382,37 @@ class FormTest extends DbTestCase
         $this->login();
 
         $form = $this->createForm(new FormBuilder());
-        $this->checkTestLogs($form, 1); // Created
+        $this->checkTestLogs($form, 2); // Created + mandatory target added
 
         $this->addSectionToForm($form, "Section 1");
         $this->addSectionToForm($form, "Section 2");
         $this->addSectionToForm($form, "Section 3");
-        $this->checkTestLogs($form, 4); // + 3 sections added
+        $this->checkTestLogs($form, 5); // + 3 sections added
 
         $q1 = $this->addQuestionToForm($form, "Question 1");
         $this->addQuestionToForm($form, "Question 2");
-        $this->checkTestLogs($form, 6); // + 2 questions added
+        $this->checkTestLogs($form, 7); // + 2 questions added
 
         $c1 = $this->addCommentBlockToForm($form, "Title 1", "Content 1");
         $this->addCommentBlockToForm($form, "Title 2", "Content 2");
-        $this->checkTestLogs($form, 8); // + 2 comments added
+        $this->checkTestLogs($form, 9); // + 2 comments added
 
         $this->updateItem(Question::class, $q1->getId(), [
             'name' => 'Question 1 (updated)',
             'type' => QuestionTypeEmail::class,
         ]);
-        $this->checkTestLogs($form, 10); // + 2 question fields updated
+        $this->checkTestLogs($form, 11); // + 2 question fields updated
 
         $this->deleteItem(Question::class, $q1->getId());
-        $this->checkTestLogs($form, 11); // + 1 question deleted
+        $this->checkTestLogs($form, 12); // + 1 question deleted
 
         $this->updateItem(Comment::class, $c1->getId(), [
             'name' => 'Title 1 (updated)',
         ]);
-        $this->checkTestLogs($form, 12); // + 1 comment updated
+        $this->checkTestLogs($form, 13); // + 1 comment updated
 
         $this->deleteItem(Comment::class, $c1->getId());
-        $this->checkTestLogs($form, 13); // + 1 comment deleted
+        $this->checkTestLogs($form, 14); // + 1 comment deleted
     }
 
     private function checkTestLogs(
@@ -475,7 +475,7 @@ class FormTest extends DbTestCase
         $this->assertEquals(6 + $questions, countElementsInTable(Question::getTable()));
         $this->assertEquals(3 + $sections, countElementsInTable(Section::getTable()));
         $this->assertEquals(3 + $comments, countElementsInTable(Comment::getTable()));
-        $this->assertEquals(2 + $destinations, countElementsInTable(FormDestination::getTable()));
+        $this->assertEquals(4 + $destinations, countElementsInTable(FormDestination::getTable())); // +1 mandatory for each form
         $this->assertEquals(3 + $access_controls, countElementsInTable(FormAccessControl::getTable()));
 
         // Delete item
@@ -490,7 +490,7 @@ class FormTest extends DbTestCase
         $this->assertEquals(1 + $questions, countElementsInTable(Question::getTable()));
         $this->assertEquals(1 + $sections, countElementsInTable(Section::getTable()));
         $this->assertEquals(1 + $comments, countElementsInTable(Comment::getTable()));
-        $this->assertEquals(1 + $destinations, countElementsInTable(FormDestination::getTable()));
+        $this->assertEquals(2 + $destinations, countElementsInTable(FormDestination::getTable()));
         $this->assertEquals(1 + $access_controls, countElementsInTable(FormAccessControl::getTable()));
     }
 

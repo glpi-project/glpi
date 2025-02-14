@@ -41,7 +41,6 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Session Class
@@ -52,12 +51,6 @@ class Session
     const NORMAL_MODE       = 0;
     const TRANSLATION_MODE  = 1; // no more used
     const DEBUG_MODE        = 2;
-
-    /**
-     * Indicates whether the request is made in an AJAX context.
-     * @FIXME This flag is actually not set to true by all AJAX requests.
-     */
-    private static bool $is_ajax_request = false;
 
     /**
      * Max count of CSRF tokens to keep in session.
@@ -358,9 +351,16 @@ class Session
      **/
     public static function initNavigateListItems($itemtype, $title = "", $url = null)
     {
-        if (self::$is_ajax_request === true && ($url === null)) {
+        /**
+         * @var \Symfony\Component\HttpFoundation\Request|null $request
+         */
+        global $request;
+
+        if ($request !== null && $request->isXmlHttpRequest() && $url === null) {
+            // `$request` is defined by the `/public/index.php` script.
             return;
         }
+
         if (empty($title)) {
             $title = __('List');
         }
@@ -2350,22 +2350,6 @@ class Session
             profile_id: $_SESSION['glpiactiveprofile']['id'],
             active_entities_ids: $_SESSION['glpiactiveentities'],
         );
-    }
-
-    /**
-     * Indicates that the request is made in an AJAX context.
-     */
-    public static function setAjax(): void
-    {
-        self::$is_ajax_request = true;
-    }
-
-    /**
-     * Unset the flag that indicates that the request is made in an AJAX context.
-     */
-    public static function resetAjaxParam(): void
-    {
-        self::$is_ajax_request = false;
     }
 
     public static function getCurrentProfile(): Profile

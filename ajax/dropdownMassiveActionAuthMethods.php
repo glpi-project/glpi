@@ -33,9 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -65,5 +62,5 @@ if ($_POST["authtype"] > 0) {
             break;
     }
 
-    echo "&nbsp;<input type='submit' name='$name' class='btn btn-primary' value=\"" . _sx('button', 'Post') . "\">";
+    echo "&nbsp;<input type='submit' name='" . htmlescape($name) . "' class='btn btn-primary' value=\"" . _sx('button', 'Post') . "\">";
 }

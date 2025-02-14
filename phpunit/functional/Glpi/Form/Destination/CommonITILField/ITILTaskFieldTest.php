@@ -146,10 +146,6 @@ final class ITILTaskFieldTest extends DbTestCase
     private function createAndGetFormWithMultipleDropdownItemQuestions(): Form
     {
         $builder = new FormBuilder();
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket"
-        );
         return $this->createForm($builder);
     }
 

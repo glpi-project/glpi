@@ -44,7 +44,6 @@ use OperatingSystemArchitecture;
 use OperatingSystemServicePack;
 use OperatingSystemVersion;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use UserEmail;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
@@ -247,7 +246,7 @@ class InventoryTest extends InventoryTestCase
             ], [
                 'logical_number' => 0,
                 'name' => 'virbr0-nic',
-                'instantiation_type' => null,
+                'instantiation_type' => 'NetworkPortEthernet',
                 'mac' => '52:54:00:fa:20:0e',
                 'ifstatus' => '2',
                 'ifinternalstatus' => '2',
@@ -6541,7 +6540,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame($other_states_id, $computer->fields['states_id']);
     }
 
-    #[RunInSeparateProcess] // TODO: fix this test, it shouldn't need an individual process
     public function testOtherSerialFromTag()
     {
         global $DB;
@@ -9387,5 +9385,40 @@ JSON;
                 }
             }
         }
+    }
+
+    public function testAdditionalProperty()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $json_str = <<<JSON
+{
+   "action": "inventory",
+   "content": {
+      "hardware": {
+         "name": "pc_with_additional_prop",
+         "uuid": "32EED9C2-204C-42A1-A97E-A6EF2CE44B4F"
+      },
+      "unknown_property": [
+         {
+            "description": "An unknown property, will be silently ignored",
+            "any": true
+         }
+      ],
+      "versionclient": "GLPI-Inventory_v1.11"
+   },
+   "deviceid": "WinDev2404Eval-2024-10-14-15-28-37",
+   "itemtype": "Computer"
+}
+JSON;
+        $json = json_decode($json_str);
+        $computer = new \Computer();
+
+        //initial import
+        $inventory = new \Glpi\Inventory\Inventory();
+        $inventory->setData($json);
+        $inventory->doInventory();
+        $this->assertTrue($computer->getFromDBByCrit(['name' => 'pc_with_additional_prop']));
     }
 }

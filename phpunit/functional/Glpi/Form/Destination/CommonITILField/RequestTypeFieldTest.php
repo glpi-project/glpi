@@ -249,10 +249,6 @@ final class RequestTypeFieldTest extends DbTestCase
         $builder = new FormBuilder();
         $builder->addQuestion("Request type 1", QuestionTypeRequestType::class);
         $builder->addQuestion("Request type 2", QuestionTypeRequestType::class);
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $this->createForm($builder);
     }
 }

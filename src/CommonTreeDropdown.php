@@ -66,6 +66,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
         $this->addImpactTab($ong, $options);
 
         $this->addStandardTab($this->getType(), $ong, $options);
+
+        $ong = array_merge($ong, $this->insertTabs($options));
+
         if ($this->dohistory) {
             $this->addStandardTab('Log', $ong, $options);
         }
@@ -75,6 +78,15 @@ abstract class CommonTreeDropdown extends CommonDropdown
         }
 
         return $ong;
+    }
+
+    /**
+     * Override this method to easily insert new tabs between the children tab
+     * and the log tab.
+     */
+    protected function insertTabs($options = []): array
+    {
+        return [];
     }
 
 
@@ -545,8 +557,6 @@ abstract class CommonTreeDropdown extends CommonDropdown
                             <div>
                                 {{ fields.textField('name', '', name_label, {
                                     full_width: true,
-                                    label_class: 'col-xxl-2',
-                                    input_class: 'col-xxl-10',
                                 }) }}
                                 {% if entity is not null %}
                                     <input type="hidden" name="entities_id" value="{{ entity }}">

@@ -63,6 +63,15 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     }
 
     #[Override]
+    protected function insertTabs($options = []): array
+    {
+        $tabs = [];
+        $this->addStandardTab(Form::class, $tabs, $options);
+
+        return $tabs;
+    }
+
+    #[Override]
     public function getAdditionalFields()
     {
         $fields = parent::getAdditionalFields();

@@ -255,6 +255,7 @@ final class StatusChecker
                     $global_status = self::STATUS_OK;
                     foreach ($ldap_methods as $method) {
                         $ldap = null;
+                        $display_name = $public_only ? 'GLPI_LDAP_' . $method['id'] : $method['name'];
                         try {
                             if (
                                 @AuthLDAP::tryToConnectToServer(
@@ -263,11 +264,11 @@ final class StatusChecker
                                     (new \GLPIKey())->decrypt($method['rootdn_passwd'])
                                 )
                             ) {
-                                $status['servers'][$method['name']] = [
+                                $status['servers'][$display_name] = [
                                     'status' => self::STATUS_OK
                                 ];
                             } else {
-                                $status['servers'][$method['name']] = [
+                                $status['servers'][$display_name] = [
                                     'status' => self::STATUS_PROBLEM,
                                     'status_msg' => _x('glpi_status', 'Unable to connect to the LDAP server')
                                 ];
@@ -323,6 +324,7 @@ final class StatusChecker
                     $global_status = self::STATUS_OK;
                     foreach ($imap_methods as $method) {
                         $param = Toolbox::parseMailServerConnectString($method['connect_string'], true);
+                        $display_name = $public_only ? 'GLPI_IMAP_' . $method['id'] : $method['name'];
                         if ($param['ssl'] === true) {
                             $host = 'ssl://' . $param['address'];
                         } else if ($param['tls'] === true) {
@@ -331,11 +333,11 @@ final class StatusChecker
                             $host = $param['address'];
                         }
                         if ($fp = @fsockopen($host, $param['port'], $errno, $errstr, 1)) {
-                            $status['servers'][$method['name']] = [
+                            $status['servers'][$display_name] = [
                                 'status' => self::STATUS_OK
                             ];
                         } else {
-                            $status['servers'][$method['name']] = [
+                            $status['servers'][$display_name] = [
                                 'status' => self::STATUS_PROBLEM,
                                 'status_msg' => _x('glpi_status', 'Unable to connect to the IMAP server')
                             ];
@@ -374,11 +376,14 @@ final class StatusChecker
         if ($status === null) {
             $status['status'] = self::STATUS_NO_DATA;
             if (!empty($CFG_GLPI['cas_host'])) {
-                $url = $CFG_GLPI['cas_host'];
+                // Rebuild CAS URL
+                // see `CAS_Client::_getServerBaseURL()`
+                $url = 'https://' . $CFG_GLPI['cas_host'];
                 if (!empty($CFG_GLPI['cas_port'])) {
                     $url .= ':' . (int)$CFG_GLPI['cas_port'];
                 }
                 $url .= '/' . $CFG_GLPI['cas_uri'];
+
                 if (Toolbox::isUrlSafe($url)) {
                     $data = Toolbox::getURLContent($url);
                     if (!empty($data)) {
@@ -426,13 +431,14 @@ final class StatusChecker
                     $mailcol = new MailCollector();
                     foreach ($mailcollectors as $mc) {
                         if ($mailcol->getFromDB($mc['id'])) {
+                            $display_name = $public_only ? 'GLPI_COLLECTOR_' . $mc['id'] : $mc['name'];
                             try {
                                 $mailcol->connect();
-                                $status['servers'][$mc['name']] = [
+                                $status['servers'][$display_name] = [
                                     'status' => self::STATUS_OK
                                 ];
                             } catch (\Throwable $e) {
-                                $status['servers'][$mc['name']] = [
+                                $status['servers'][$display_name] = [
                                     'status'       => self::STATUS_PROBLEM,
                                     'error_code'   => $e->getCode(),
                                     'status_msg'      => $e->getMessage()

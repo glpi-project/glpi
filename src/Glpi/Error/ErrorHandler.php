@@ -161,7 +161,7 @@ final class ErrorHandler extends BaseErrorHandler
 
         self::displayErrorMessage(
             \sprintf('PHP %s (%s)', $error_type, $type),
-            \sprintf('%s in %s at line %s', $message, $file, $line),
+            \sprintf('%s in %s at line %s', $this->cleanPaths($message), $this->cleanPaths($file), $line),
             self::ERROR_LEVEL_MAP[$type],
         );
 
@@ -212,7 +212,7 @@ final class ErrorHandler extends BaseErrorHandler
     {
         self::displayErrorMessage(
             \sprintf('Caught %s', $exception::class),
-            \sprintf('%s in %s at line %s', $exception->getMessage(), $exception->getFile(), $exception->getLine()),
+            \sprintf('%s in %s at line %s', self::cleanPaths($exception->getMessage()), self::cleanPaths($exception->getFile()), $exception->getLine()),
             LogLevel::ERROR,
         );
     }
@@ -258,5 +258,10 @@ final class ErrorHandler extends BaseErrorHandler
     private function disableNativeErrorDisplaying(): void
     {
         \ini_set('display_errors', 'Off');
+    }
+
+    private static function cleanPaths(string $message): string
+    {
+        return ErrorUtils::cleanPaths($message);
     }
 }

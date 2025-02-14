@@ -107,4 +107,8 @@ bin/console database:configure \
   --no-interaction --ansi \
   --reconfigure --db-name=glpi --db-host=db --db-user=root --db-password="" \
   --strict-configuration
-tests/bin/test-updated-data --host=db --user=root --fresh-db=glpi --updated-db=glpitest085 --ansi --no-interaction
+
+tests/bin/test-updated-data --host=db --user=root --fresh-db=glpi --updated-db=glpitest085 --ansi --no-interaction | tee $LOG_FILE
+if [[ -n $(grep "Warning" $LOG_FILE) ]];
+  then echo "tests/bin/test-updated-data FAILED" && exit 1;
+fi

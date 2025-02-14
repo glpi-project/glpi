@@ -37,8 +37,6 @@ namespace tests\units\Glpi\Asset;
 
 use Change_Item;
 use DbTestCase;
-use Glpi\Asset\Asset;
-use Glpi\Asset\AssetDefinition;
 use Item_Problem;
 use Item_Ticket;
 use Profile;
@@ -58,6 +56,19 @@ class AssetDefinitionManagerTest extends DbTestCase
             $this->assertTrue(class_exists($expected_classname));
             $this->assertEquals($definition->fields, $expected_classname::getDefinition()->fields);
         }
+    }
+
+    public function testAutoloader(): void
+    {
+        $this->initAssetDefinition('Test123'); // use a name with numbers, to validate it works as expected
+
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test123'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test123Model'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test123Type'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest123ModelCollection'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest123Model'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest123TypeCollection'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest123Type'));
     }
 
     /**

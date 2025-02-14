@@ -230,8 +230,14 @@ class MailCollector extends CommonDBTM
      **/
     public function showForm($ID, array $options = [])
     {
+        $protocol_choices = [];
+        foreach (Toolbox::getMailServerProtocols(allow_plugins_protocols: true) as $key => $protocol) {
+            $protocol_choices['/' . $key] = $protocol['label'];
+        }
+
         TemplateRenderer::getInstance()->display('pages/setup/mailcollector/setup_form.html.twig', [
-            'item' => $this,
+            'item'             => $this,
+            'protocol_choices' => $protocol_choices,
         ]);
         return true;
     }

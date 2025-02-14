@@ -55,7 +55,6 @@ final class QuestionTypeDropdownTest extends DbTestCase
                 'options' => ['Blue', 'Green', 'Red', 'Yellow', 'Black'],
             ])
         );
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
@@ -79,7 +78,6 @@ final class QuestionTypeDropdownTest extends DbTestCase
                 'is_multiple_dropdown' => 1,
             ])
         );
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [

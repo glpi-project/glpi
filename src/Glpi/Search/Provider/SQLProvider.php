@@ -4789,15 +4789,10 @@ final class SQLProvider implements SearchProviderInterface
 
                 // Parse data
                 foreach ($newrow['raw'] as $key => $val) {
-                    if (preg_match('/ITEM(_(\w[^\d]+))?_(\d+)(_(.+))?/', $key, $matches)) {
-                        $j = $matches[3];
-                        if (isset($matches[2]) && !empty($matches[2])) {
-                            $j = $matches[2] . '_' . $matches[3];
-                        }
-                        $fieldname = 'name';
-                        if (isset($matches[5])) {
-                            $fieldname = $matches[5];
-                        }
+                    $matches = [];
+                    if (preg_match('/^ITEM(_(?<itemtype>[a-z][\w\\\]*))?_(?<num>\d+)(_(?<fieldname>.+))?$/i', $key, $matches)) {
+                        $j = (!empty($matches['itemtype']) ? $matches['itemtype'] . '_' : '') . $matches['num'];
+                        $fieldname = $matches['fieldname'] ?? 'name';
 
                         // No Group_concat case
                         if ($fieldname == 'content' || !is_string($val) || strpos($val, \Search::LONGSEP) === false) {
@@ -5521,10 +5516,21 @@ final class SQLProvider implements SearchProviderInterface
                     if (in_array($orig_id, [151, 158, 181, 186])) {
                         $out = \Html::convDateTime($data[$ID][0]['name']);
 
-                        // No due date in waiting status
-                        if ($data[$ID][0]['status'] == \CommonITILObject::WAITING) {
-                            return '';
+                        $color = null;
+                        if (
+                            $data[$ID][0]['status'] == CommonITILObject::WAITING
+                        ) {
+                            // No due date in waiting status for TTRs
+                            if (
+                                $table . '.' . $field == "glpi_tickets.time_to_resolve"
+                                || $table . '.' . $field == "glpi_tickets.internal_time_to_resolve"
+                            ) {
+                                return '';
+                            } else {
+                                $color = '#AAAAAA';
+                            }
                         }
+
                         if (empty($data[$ID][0]['name'])) {
                             return '';
                         }
@@ -5648,11 +5654,13 @@ final class SQLProvider implements SearchProviderInterface
                             $less_crit       = ($totaltime - $currenttime);
                         }
 
-                        $color = $_SESSION['glpiduedateok_color'];
-                        if ($less_crit < $less_crit_limit) {
-                            $color = $_SESSION['glpiduedatecritical_color'];
-                        } else if ($less_warn < $less_warn_limit) {
-                            $color = $_SESSION['glpiduedatewarning_color'];
+                        if ($color === null) {
+                            $color = $_SESSION['glpiduedateok_color'];
+                            if ($less_crit < $less_crit_limit) {
+                                $color = $_SESSION['glpiduedatecritical_color'];
+                            } else if ($less_warn < $less_warn_limit) {
+                                $color = $_SESSION['glpiduedatewarning_color'];
+                            }
                         }
 
                         if (!isset($so['datatype'])) {

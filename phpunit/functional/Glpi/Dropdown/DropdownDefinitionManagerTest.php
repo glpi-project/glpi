@@ -55,6 +55,13 @@ class DropdownDefinitionManagerTest extends DbTestCase
         }
     }
 
+    public function testAutoloader(): void
+    {
+        $this->initDropdownDefinition('Iso3CountryCode'); // use a name with numbers, to validate it works as expected
+
+        $this->assertTrue(\class_exists('Glpi\CustomDropdown\Iso3CountryCode'));
+    }
+
     /**
      * Ensure all asset types are registered in the ticket types configuration.
      *

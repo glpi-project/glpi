@@ -50,7 +50,6 @@ final class QuestionTypeUrgencyTest extends DbTestCase
     {
         $builder = new FormBuilder();
         $builder->addQuestion("What is the urgency", QuestionTypeUrgency::class);
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [

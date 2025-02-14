@@ -109,7 +109,6 @@ final class FormDestination extends CommonDBChild
         $renderer->display('pages/admin/form/form_destination.html.twig', [
             'icon'                         => self::getIcon(),
             'form'                         => $item,
-            'controller_url'               => self::getFormURL(),
             'default_destination_object'   => $manager->getDefaultType(),
             'destinations'                 => $item->getDestinations(),
             'available_destinations_types' => $manager->getDestinationTypesDropdownValues(),
@@ -156,6 +155,10 @@ final class FormDestination extends CommonDBChild
     #[Override]
     public function canPurgeItem(): bool
     {
+        if ($this->fields['is_mandatory']) {
+            return false;
+        }
+
         $form = Form::getByID($this->fields['forms_forms_id']);
         if (!$form) {
             return false;

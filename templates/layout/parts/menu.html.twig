@@ -132,12 +132,16 @@ $(function() {
 
       // opening a sub menu close others
       menuDropdown.addEventListener('show.bs.dropdown', function (event) {
+          if ($('body').hasClass('navbar-collapsed')) {
+              // Dropdown submenus will be shown with CSS, and shouldn't be handled by Bootstrap
+              event.preventDefault();
+              event.stopPropagation();
+          }
          $('#menu_{{ rand }} .nav-link').removeClass('show active');
          $('#menu_{{ rand }} .nav-item').removeClass('active');
          $('#menu_{{ rand }} .dropdown-menu').removeClass('show');
       })
    });
-
 });
 </script>
 {% endif %}

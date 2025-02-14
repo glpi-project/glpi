@@ -253,7 +253,7 @@ class Fieldblacklist extends CommonDropdown
             if ($item = getItemForItemtype($this->fields['itemtype'])) {
                 echo $item->getTypeName(1);
             }
-            echo "<input type='hidden' name='itemtype' value='" . $this->fields['itemtype'] . "'>";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($this->fields['itemtype']) . "'>";
         } else {
             //Add criteria : display dropdown
             $options = [];

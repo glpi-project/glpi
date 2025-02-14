@@ -439,9 +439,17 @@ var GLPIPlanning  = {
                 }).done(function() {
                     // indicate to central page we're done rendering
                     if (!options.full_view) {
-                        setTimeout(function () {
-                            $(document).trigger('masonry_grid:layout');
-                        }, 100);
+                        // Observe changes in the DOM before triggering
+                        const observer = new MutationObserver((mutations, obs) => {
+                            if (document.readyState === 'complete') {
+                                obs.disconnect(); // Stop observation once the DOM is stable
+                                setTimeout(() => {
+                                    $(document).trigger('masonry_grid:layout');
+                                }, 100);
+                            }
+                        });
+
+                        observer.observe(document.body, { childList: true, subtree: true });
                     }
                 });
 
@@ -455,13 +463,8 @@ var GLPIPlanning  = {
                     var view_name = GLPIPlanning.calendar
                         ? GLPIPlanning.calendar.state.viewType
                         : options.default_view;
-                    var display_done_events = 1;
-                    if (view_name.indexOf('list') >= 0) {
-                        display_done_events = 0;
-                    }
                     return {
                         'action': 'get_events',
-                        'display_done_events': display_done_events,
                         'view_name': view_name
                     };
                 },

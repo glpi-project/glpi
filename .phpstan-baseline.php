@@ -98,18 +98,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/form/access_control.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^The overwriting exit point is on this line\\.$#',
-	'identifier' => 'finally.exitPoint',
-	'count' => 1,
-	'path' => __DIR__ . '/front/form/destination/formdestination.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^This throw is overwritten by a different one in the finally block below\\.$#',
-	'identifier' => 'finally.exitPoint',
-	'count' => 6,
-	'path' => __DIR__ . '/front/form/destination/formdestination.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type array\\<mixed\\>\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 2,
@@ -318,12 +306,6 @@ $ignoreErrors[] = [
 	'identifier' => 'nullCoalesce.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Agent.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#',
-	'identifier' => 'function.impossibleType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ajax.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
@@ -722,12 +704,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array\\<mixed\\> will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_numeric\\(\\) with int will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -826,12 +802,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Right side of \\|\\| is always false\\.$#',
 	'identifier' => 'booleanOr.rightAlwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and false will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
@@ -1436,12 +1406,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Result of && is always false\\.$#',
-	'identifier' => 'booleanAnd.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/DbUtils.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 2,
@@ -1449,12 +1413,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between \'\\.php\' and bool will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DbUtils.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between bool and \'auto\' will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DbUtils.php',
@@ -1628,12 +1586,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Dropdown\\:\\:showSelectItemFromItemtypes\\(\\) should return int but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Dropdown.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'max\' on non\\-empty\\-array in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
@@ -1782,12 +1734,6 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\APIRest\\:\\:getItemtype\\(\\) should return bool but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\APIRest\\:\\:parseIncomingParams\\(\\) with return type void returns string but should not return anything\\.$#',
@@ -2358,12 +2304,6 @@ $ignoreErrors[] = [
 	'identifier' => 'nullCoalesce.expr',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Controller/ApiController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\LegacyFileLoadController\\:\\:getRequest\\(\\) never returns null so it can be removed from the return type\\.$#',
-	'identifier' => 'return.unusedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/LegacyFileLoadController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
@@ -3074,12 +3014,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset 2 on array\\{0\\: string, 1\\: string, 2\\: string, 3\\: numeric\\-string, 4\\?\\: string, 5\\?\\: non\\-empty\\-string\\} in isset\\(\\) always exists and is not nullable\\.$#',
-	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset 2 on array\\{string, string, string\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
@@ -3262,7 +3196,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 9,
+	'count' => 8,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
@@ -3684,12 +3618,6 @@ $ignoreErrors[] = [
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/KnowbaseItemTranslation.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItem_Item\\:\\:dropdownAllTypes\\(\\) should return string but returns int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem_Item.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method CommonDBTM\\:\\:getFromDBForTicket\\(\\)\\.$#',
@@ -4670,7 +4598,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Reservation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#2 \\$options \\(array\\{\\}\\) of method Reservation\\:\\:showForm\\(\\) is incompatible with type array\\{item\\: array\\<int, int\\>, start\\: string, end\\: string\\}\\.$#',
+	'message' => '#^Default value of the parameter \\#2 \\$options \\(array\\{\\}\\) of method Reservation\\:\\:showForm\\(\\) is incompatible with type array\\{item\\: array\\<int, int\\>, begin\\: string, end\\: string\\}\\.$#',
 	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Reservation.php',
@@ -4706,7 +4634,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Reservation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'item\' on array\\{item\\: array\\<int, int\\>, start\\: string, end\\: string\\} in isset\\(\\) always exists and is not nullable\\.$#',
+	'message' => '#^Offset \'item\' on array\\{item\\: array\\<int, int\\>, begin\\: string, end\\: string\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Reservation.php',

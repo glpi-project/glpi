@@ -1743,13 +1743,16 @@ abstract class RuleCommonITILObject extends DbTestCase
 
     public function testAssignAppliance()
     {
+        $root_entity = \getItemByTypeName(Entity::class, '_test_root_entity', true);
+
         $this->login();
 
         //create appliance "appliance"
         $applianceTest1 = new \Appliance();
         $appliancetest1_id = $applianceTest1->add($applianceTest1_input = [
             "name"                  => "appliance",
-            "is_helpdesk_visible"   => true
+            "is_helpdesk_visible"   => true,
+            "entities_id"           => $root_entity,
         ]);
         $this->checkInput($applianceTest1, $appliancetest1_id, $applianceTest1_input);
 
@@ -1855,13 +1858,16 @@ abstract class RuleCommonITILObject extends DbTestCase
 
     public function testRegexAppliance()
     {
+        $root_entity = \getItemByTypeName(Entity::class, '_test_root_entity', true);
+
         $this->login();
 
         //create appliance "erp"
         $applianceTest1 = new \Appliance();
         $appliancetest1_id = $applianceTest1->add($applianceTest1_input = [
             "name"                  => "erp",
-            "is_helpdesk_visible"   => true
+            "is_helpdesk_visible"   => true,
+            "entities_id"           => $root_entity,
         ]);
         $this->checkInput($applianceTest1, $appliancetest1_id, $applianceTest1_input);
 
@@ -1965,13 +1971,16 @@ abstract class RuleCommonITILObject extends DbTestCase
 
     public function testAppendAppliance()
     {
+        $root_entity = \getItemByTypeName(Entity::class, '_test_root_entity', true);
+
         $this->login();
 
         //create appliance "erp"
         $applianceTest1 = new \Appliance();
         $appliancetest1_id = $applianceTest1->add($applianceTest1_input = [
             "name"                  => "erp",
-            "is_helpdesk_visible"   => true
+            "is_helpdesk_visible"   => true,
+            "entities_id"           => $root_entity,
         ]);
         $this->checkInput($applianceTest1, $appliancetest1_id, $applianceTest1_input);
 
@@ -1979,7 +1988,8 @@ abstract class RuleCommonITILObject extends DbTestCase
         $applianceTest2 = new \Appliance();
         $appliancetest2_id = $applianceTest2->add($applianceTest2_input = [
             "name"                  => "glpi",
-            "is_helpdesk_visible"   => true
+            "is_helpdesk_visible"   => true,
+            "entities_id"           => $root_entity,
         ]);
         $this->checkInput($applianceTest2, $appliancetest2_id, $applianceTest2_input);
 

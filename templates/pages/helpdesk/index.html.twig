@@ -101,13 +101,15 @@
                             >
                                 <section class="card-body">
                                     <div class="d-flex">
-                                        {{ render_illustration(tile.getIllustration(), 100) }}
+                                        <div class="aspect-ratio-1">
+                                            {{ render_illustration(tile.getIllustration(), 70) }}
+                                        </div>
                                         <div class="ms-4">
                                             <h2 class="card-title mb-2">
                                                 {{ tile.getTitle() }}
                                             </h2>
-                                            <div class="text-secondary">
-                                                {{ tile.getDescription() }}
+                                            <div class="text-secondary remove-last-tinymce-margin">
+                                                {{ tile.getDescription()|safe_html }}
                                             </div>
                                         </div>
                                     </div>

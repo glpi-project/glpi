@@ -273,11 +273,11 @@ window.GLPI.Monaco = {
      * @return {Promise<string>}
      */
     colorizeText: async (text, language) => {
-        return import('../../../lib/monaco.js').then(() => {
-            window.GLPI.Monaco.registerGLPIThemes();
-            // Theme set here because colorize doesn't support specifying the theme in the options like colorizeElement does
-            window.monaco.editor.setTheme('glpi');
-            return window.monaco.editor.colorize(text, language);
+        const el = document.createElement('div');
+        $(el).attr('lang', language);
+        $(el).text(text);
+        return window.GLPI.Monaco.colorizeElement(el, language).then(() => {
+            return el.innerHTML;
         });
     },
     /**

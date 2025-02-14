@@ -8743,13 +8743,15 @@ abstract class CommonITILObject extends CommonDBTM
 
        // Add tasks in itilfollowup template if defined in itiltemplate
         foreach ($this->input['_itilfollowuptemplates_id'] as $fup_templates_id) {
-           // Insert new followup from template
-            $fup = new ITILFollowup();
-            $fup->add([
+            $values = [
                 '_itilfollowuptemplates_id' => $fup_templates_id,
                 'itemtype'                  => $this->getType(),
                 'items_id'                  => $this->getID(),
-            ]);
+                '_do_not_compute_status'    => $this->input['_do_not_compute_status'] ?? 0,
+            ];
+           // Insert new followup from template
+            $fup = new ITILFollowup();
+            $fup->add($values);
         }
     }
 
@@ -9410,16 +9412,27 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function setTechAndGroupFromHardware($input, $item)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         if ($item != null) {
             // Auto assign tech from item
             $has_user_assigned  = $this->hasValidActorInInput($input, User::class, CommonITILActor::ASSIGN);
-            if (!$has_user_assigned && $item->isField('users_id_tech') && $item->fields['users_id_tech'] > 0) {
+            if (
+                !$has_user_assigned
+                && in_array($item::class, $CFG_GLPI['assignable_types'], true)
+                && $item->fields['users_id_tech'] > 0
+            ) {
                 $input['_users_id_assign'] = $item->fields['users_id_tech'];
             }
 
             // Auto assign group from item
             $has_group_assigned = $this->hasValidActorInInput($input, Group::class, CommonITILActor::ASSIGN);
-            if (!$has_group_assigned && $item->isField('groups_id_tech') && $item->fields['groups_id_tech'] > 0) {
+            if (
+                !$has_group_assigned
+                && in_array($item::class, $CFG_GLPI['assignable_types'], true)
+                && $item->fields['groups_id_tech'] > 0
+            ) {
                 $input['_groups_id_assign'] = $item->fields['groups_id_tech'];
             }
         }

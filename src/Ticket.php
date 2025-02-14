@@ -831,35 +831,29 @@ class Ticket extends CommonITILObject
 
     public function defineTabs($options = [])
     {
-        $ong = [];
-        $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('TicketValidation', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-        $this->addStandardTab('Item_Ticket', $ong, $options);
-
-        if ($this->hasImpactTab()) {
-            $this->addStandardTab('Impact', $ong, $options);
-        }
-
-        $this->addStandardTab('TicketCost', $ong, $options);
-        $this->addStandardTab('Itil_Project', $ong, $options);
-        $this->addStandardTab('ProjectTask_Ticket', $ong, $options);
-        $this->addStandardTab('Problem_Ticket', $ong, $options);
-        $this->addStandardTab('Change_Ticket', $ong, $options);
+        $tabs = [];
+        $this->addDefaultFormTab($tabs);
 
         if (Session::getCurrentInterface() == 'central') {
-            $this->addStandardTab(Ticket_Contract::class, $ong, $options);
+            $this->addStandardTab(__CLASS__, $tabs, $options);
+            $this->addStandardTab('TicketValidation', $tabs, $options);
+            $this->addStandardTab('KnowbaseItem_Item', $tabs, $options);
+            $this->addStandardTab('Item_Ticket', $tabs, $options);
+
+            if ($this->hasImpactTab()) {
+                $this->addStandardTab('Impact', $tabs, $options);
+            }
+
+            $this->addStandardTab('TicketCost', $tabs, $options);
+            $this->addStandardTab('Itil_Project', $tabs, $options);
+            $this->addStandardTab('ProjectTask_Ticket', $tabs, $options);
+            $this->addStandardTab('Problem_Ticket', $tabs, $options);
+            $this->addStandardTab('Change_Ticket', $tabs, $options);
+            $this->addStandardTab(Ticket_Contract::class, $tabs, $options);
+            $this->addStandardTab('Log', $tabs, $options);
         }
 
-        if (
-            Entity::getAnonymizeConfig($this->getEntityID()) == Entity::ANONYMIZE_DISABLED
-            || Session::getCurrentInterface() == 'central'
-        ) {
-            $this->addStandardTab('Log', $ong, $options);
-        }
-
-        return $ong;
+        return $tabs;
     }
 
 
@@ -3761,6 +3755,10 @@ JAVASCRIPT;
             'cancreateuser'             => $cancreateuser,
             'canreadnote'               => Session::haveRight('entity', READNOTE),
             'has_pending_reason'        => PendingReason_Item::getForItem($this) !== false,
+            'show_tickets_properties_on_helpdesk' => Entity::getUsedConfig(
+                'show_tickets_properties_on_helpdesk',
+                Session::getActiveEntity(),
+            ),
         ]);
 
         return true;
@@ -4730,7 +4728,7 @@ JAVASCRIPT;
             echo "<div class='center'><table class='tab_cadre_fixe' style='min-width: 85%'>";
            //TRANS: %d is the number of new tickets
             echo "<tr><th colspan='12'>" . sprintf(_sn('%d new ticket', '%d new tickets', $number), $number);
-            echo "<a href='" . Ticket::getSearchURL() . "?" .
+            echo "<a href='" . htmlescape(Ticket::getSearchURL()) . "?" .
                 Toolbox::append_params($options, '&amp;') . "'>" . __s('Show all') . "</a>";
             echo "</th></tr>";
 

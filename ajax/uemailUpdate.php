@@ -35,9 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -97,7 +94,7 @@ if (
         && !empty($default_email)
         && NotificationMailing::isUserAddressValid($default_email[$user_index])
     ) {
-        $email_string =  $default_email[$user_index];
+        $email_string = htmlescape($default_email[$user_index]);
        // Clean alternative email
         echo "<input type='hidden' size='25' name='" . htmlescape($_POST['field']) . "[alternative_email][]'
              value=''>";
@@ -121,10 +118,10 @@ if (
         );
     } else {
         $email_string = "<input type='mail' class='form-control' name='" . htmlescape($_POST['field']) . "[alternative_email][]'
-         :               value='" . htmlescape($default_email) . "'>";
+                         value='" . htmlescape($default_email) . "'>";
     }
 
-    echo "$email_string";
+    echo $email_string;
 }
 
 Ajax::commonDropdownUpdateItem($_POST);

@@ -57,16 +57,12 @@ final class DeleteTileController extends AbstractController
     }
 
     #[Route(
-        "/ajax/Config/Helpdesk/DeleteTile",
+        "/Config/Helpdesk/DeleteTile",
         name: "glpi_config_helpdesk_delete_tile",
         methods: "POST"
     )]
     public function __invoke(Request $request): Response
     {
-        if (!Session::haveRight(Config::$rightname, UPDATE)) {
-            throw new AccessDeniedHttpException();
-        }
-
         // Read parameters
         $tile_id = $request->request->getInt('tile_id');
         $tile_itemtype = $request->request->getString('tile_itemtype');
@@ -79,14 +75,20 @@ final class DeleteTileController extends AbstractController
         ) {
             throw new BadRequestHttpException();
         }
+        if (!$tile_itemtype::canPurge()) {
+            throw new AccessDeniedHttpException();
+        }
 
         // Try to load the given tile
         $tile = $tile_itemtype::getById($tile_id);
         if (!$tile) {
             throw new NotFoundHttpException();
         }
+        if (!$tile->canDeleteItem()) {
+            throw new AccessDeniedHttpException();
+        }
 
-        // Delete tyle and return an empty response
+        // Delete tile and return an empty response
         $this->tiles_manager->deleteTile($tile);
         return new Response();
     }

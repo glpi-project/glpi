@@ -55,7 +55,6 @@ final class QuestionTypeCheckboxTest extends DbTestCase
                 'options' => ['Bread', 'Milk', 'Cheese', 'Eggs', 'Butter'],
             ])
         );
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [

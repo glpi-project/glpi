@@ -35,28 +35,53 @@ $(() => {
     // set a function to track drag hover event
     $(document).on("click", ".copy_to_clipboard_wrapper", (event) => {
 
-        // find the good element
+        let succeed;
         let target = $(event.target);
-        if (target.attr('class') == 'copy_to_clipboard_wrapper') {
-            target = target.find('*');
+
+        // click on other button
+        if (target.hasClass('input-group-text') && !target.hasClass('copy_to_clipboard_wrapper')) {
+            return false;
         }
 
-        // copy text
-        target.select();
-        let succeed;
-        try {
-            succeed = document.execCommand("copy");
-        } catch {
-            succeed = false;
+        // click on 'copy button'
+        if (target.hasClass('input-group-text') || target.is('input')) {
+            target = target.parent('.copy_to_clipboard_wrapper').find('input');
+
+            // copy text
+            succeed = copyTextToClipboard(target.val());
+        } else {
+            if (target.attr('class') == 'copy_to_clipboard_wrapper') {
+                target = target.find('*');
+            }
+
+            // copy text
+            target.select();
+            try {
+                succeed = document.execCommand("copy");
+            } catch {
+                succeed = false;
+            }
+            target.blur();
         }
-        target.blur();
+
+        // get copy icon
+        let icon;
+        if (target.attr('class') == 'copy_to_clipboard_wrapper') {
+            icon = target;
+        } else {
+            icon = target.parent('.copy_to_clipboard_wrapper').find('i.copy_to_clipboard_wrapper');
+            if (!icon.length) {
+                icon = target.parent('.copy_to_clipboard_wrapper');
+            }
+        }
 
         // indicate success
         if (succeed) {
             $('.copy_to_clipboard_wrapper.copied').removeClass('copied');
-            target.parent('.copy_to_clipboard_wrapper').addClass('copied');
+            icon.addClass('copied');
+            setTimeout(() => icon.removeClass('copied'), 1000);
         } else {
-            target.parent('.copy_to_clipboard_wrapper').addClass('copyfail');
+            icon.addClass('copyfail');
         }
     });
 
@@ -89,8 +114,15 @@ function copyTextToClipboard(text) {
 
     // Select and copy text to clipboard
     textarea.select();
-    document.execCommand('copy');
+    let succeed;
+    try {
+        succeed = document.execCommand('copy');
+    } catch {
+        succeed = false;
+    }
 
     // Remove textarea
     document.body.removeChild(textarea);
+
+    return succeed;
 }

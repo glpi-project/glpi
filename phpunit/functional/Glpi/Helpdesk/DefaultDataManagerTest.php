@@ -99,6 +99,7 @@ final class DefaultDataManagerTest extends DbTestCase
         $this->assertEmpty($row['header']);
         $this->assertNotEmpty($row['illustration']);
         $this->assertNotEmpty($row['description']);
+        $this->assertCount(1, Form::getById($row['id'])->getDestinations());
     }
 
     public function testRequestFormProperties(): void
@@ -117,6 +118,7 @@ final class DefaultDataManagerTest extends DbTestCase
         $this->assertEmpty($row['header']);
         $this->assertNotEmpty($row['illustration']);
         $this->assertNotEmpty($row['description']);
+        $this->assertCount(1, Form::getById($row['id'])->getDestinations());
     }
 
     public function testIncidentFormQuestions(): void

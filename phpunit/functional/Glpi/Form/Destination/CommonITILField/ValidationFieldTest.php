@@ -381,10 +381,6 @@ final class ValidationFieldTest extends DbTestCase
         $builder->addQuestion("GLPI User", QuestionTypeItem::class, 0, json_encode([
             'itemtype' => User::class,
         ]));
-        $builder->addDestination(
-            FormDestinationTicket::class,
-            "My ticket",
-        );
         return $this->createForm($builder);
     }
 

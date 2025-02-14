@@ -178,21 +178,24 @@ class TestUpdatedDataCommand extends Command
                     }
                     $field_type = $this->getFieldType($fresh_db, $table_name, $key);
                     if ($value === null && !in_array($field_type, ['datetime', 'timestamp'], true)) {
+                        $empty_value = '';
+                        if (in_array($field_type, ['int', 'tinyint'])) {
+                            $empty_value = 0;
+                        }
+
                        // some fields were not nullable in previous GLPI versions
                         $criteria[] = [
                             'OR' => [
-                                [$key => ''],
+                                [$key => $empty_value],
                                 [$key => null],
                             ]
                         ];
                     } elseif ($field_type === 'json') {
-                        // Compare JSON fields using they CHAR representation
                         $criteria[$key] = new QueryExpression(
-                            sprintf(
-                                '%s = %s',
-                                QueryFunction::cast($key, 'CHAR'),
-                                $fresh_db->quoteValue($value)
-                            )
+                            QueryFunction::cast(
+                                new QueryExpression($fresh_db->quoteValue($value)),
+                                'JSON'
+                            ),
                         );
                     } else {
                         $criteria[$key] = $value;

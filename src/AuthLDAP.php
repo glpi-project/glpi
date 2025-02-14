@@ -3504,7 +3504,10 @@ TWIG, $twig_params);
                 $entity->getFromDB($_SESSION['glpiactive_entity']);
                 $_REQUEST['authldaps_id'] = $entity->getField('authldaps_id');
                 if ((int) $_REQUEST['authldaps_id'] <= 0) {
-                    $_REQUEST['authldaps_id'] = self::getDefault();
+                    $defaultAuth = \Auth::getDefaultAuth();
+                    if ($defaultAuth instanceof AuthLDAP) {
+                        $_REQUEST['authldaps_id'] = $defaultAuth->getID();
+                    }
                 }
             }
             $_REQUEST['authldaps_id'] = (int) $_REQUEST['authldaps_id'];
@@ -3590,7 +3593,12 @@ TWIG, $twig_params);
                     $_REQUEST['authldaps_id'] === NOT_AVAILABLE
                     || !$_REQUEST['authldaps_id']
                 ) {
-                    $_REQUEST['authldaps_id'] = self::getDefault();
+                    $defaultAuth = Auth::getDefaultAuth();
+                    if ($defaultAuth instanceof AuthLDAP) {
+                        $_REQUEST['authldaps_id'] = $defaultAuth->getID();
+                    } else {
+                        $_REQUEST['authldaps_id'] = 0;
+                    }
                 }
 
                 if ($_REQUEST['authldaps_id'] > 0) {
@@ -3607,11 +3615,14 @@ TWIG, $twig_params);
                 $_REQUEST['authldaps_id'] === NOT_AVAILABLE
                 || !$_REQUEST['authldaps_id']
             ) {
-                $_REQUEST['authldaps_id'] = self::getDefault();
+                $defaultAuth = \Auth::getDefaultAuth();
+                if ($defaultAuth instanceof AuthLDAP) {
+                    $_REQUEST['authldaps_id'] = $defaultAuth->getID();
 
-                if ($_REQUEST['authldaps_id'] > 0) {
-                    $authldap->getFromDB($_REQUEST['authldaps_id']);
-                    $_REQUEST['basedn'] = $authldap->getField('basedn');
+                    if ($_REQUEST['authldaps_id'] > 0) {
+                        $authldap->getFromDB($_REQUEST['authldaps_id']);
+                        $_REQUEST['basedn'] = $authldap->getField('basedn');
+                    }
                 }
             }
             if (
@@ -3775,59 +3786,29 @@ TWIG, $twig_params);
         }
     }
 
-    /**
-     * Get default ldap
-     *
-     * @return integer
-     */
-    public static function getDefault()
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $it = $DB->request([
-            'FROM' => self::getTable(),
-            'WHERE' => ['is_default' => 1, 'is_active' => 1],
-            'LIMIT' => 1,
-        ]);
-        return count($it) ? $it->current()['id'] : 0;
-    }
-
     public function post_updateItem($history = true)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        if (in_array('is_default', $this->updates, true) && (int) $this->input["is_default"] === 1) {
-            $DB->update(
-                static::getTable(),
-                ['is_default' => 0],
-                ['id' => ['<>', $this->input['id']]]
-            );
+        if ($this->fields["is_default"]) {
+            $this->removeDefaultFromOtherItems();
         }
+
+        parent::post_updateItem($history);
     }
 
+    /**
+     * @return void
+     */
     public function post_addItem()
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        if (isset($this->fields['is_default']) && (int) $this->fields["is_default"] === 1) {
-            $DB->update(
-                static::getTable(),
-                ['is_default' => 0],
-                ['id' => ['<>', $this->fields['id']]]
-            );
+        if ($this->fields["is_default"]) {
+            $this->removeDefaultFromOtherItems();
         }
+
+        parent::post_addItem();
     }
 
     public function prepareInputForAdd($input)
     {
-        // If it's the first ldap directory then set it as the default directory
-        if (!self::getNumberOfServers()) {
-            $input['is_default'] = 1;
-        }
-
         if (empty($input['can_support_pagesize'] ?? '')) {
             $input['can_support_pagesize'] = 0;
         }
@@ -4369,5 +4350,33 @@ TWIG, $twig_params);
             (ldap_get_option($ds, LDAP_OPT_ERROR_STRING, $err_message) ? "\nerr string: " . $err_message : '')
         );
         return $message;
+    }
+
+    /**
+     * Remove the `is_default` flag from authentication methods that does not match the current item.
+     */
+    private function removeDefaultFromOtherItems(): void
+    {
+        if ($this->fields["is_default"]) {
+            $auth = new self();
+            $defaults = $auth->find(['is_default' => 1, ['NOT' => ['id' => $this->getID()]]]);
+            foreach ($defaults as $default) {
+                $auth = new self();
+                $auth->update([
+                    'id' => $default['id'],
+                    'is_default' => 0
+                ]);
+            }
+
+            $auth = new AuthMail();
+            $defaults = $auth->find(['is_default' => 1]);
+            foreach ($defaults as $default) {
+                $auth = new AuthMail();
+                $auth->update([
+                    'id' => $default['id'],
+                    'is_default' => 0
+                ]);
+            }
+        }
     }
 }

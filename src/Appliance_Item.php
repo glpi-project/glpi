@@ -227,9 +227,7 @@ class Appliance_Item extends CommonDBRelation
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-
-        $itemtype = $item->getType();
-        $ID       = $item->fields['id'];
+        $ID = $item->getID();
 
         if (
             !Appliance::canView()
@@ -254,7 +252,7 @@ class Appliance_Item extends CommonDBRelation
             echo "<form name='applianceitem_form$rand' id='applianceitem_form$rand' method='post'
                 action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
             echo "<input type='hidden' name='items_id' value='$ID'>";
-            echo "<input type='hidden' name='itemtype' value='$itemtype'>";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($item::class) . "'>";
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'><th colspan='2'>" . __s('Add to an appliance') . "</th></tr>";

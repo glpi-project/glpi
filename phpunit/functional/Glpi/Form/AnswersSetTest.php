@@ -350,7 +350,8 @@ class AnswersSetTest extends DbTestCase
         $answers_handler = AnswersHandler::getInstance();
         $answers = $answers_handler->saveAnswers($form, [], \Session::getLoginUserID());
 
-        $this->assertCount(2, $answers->getLinksToCreatedItems());
+        // 3 because +1 mandatory
+        $this->assertCount(3, $answers->getLinksToCreatedItems());
     }
 
     public function testGetLinksToCreatedItemssForEndUser()

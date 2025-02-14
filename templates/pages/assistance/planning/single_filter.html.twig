@@ -47,7 +47,7 @@
 
     <span class="ms-auto d-flex align-items-center">
         {# Colors not for groups #}
-        {% if filter_data.type != 'group_users' and filter_key != 'OnlyBgEvents' %}
+        {% if filter_data.type != 'group_users' and filter_key != 'OnlyBgEvents' and filter_key != 'StateDone' %}
             <span class="color_input">
                 <input type="color" name="{{ filter_key }}_color" aria-label="{{ __('%s color')|format(title) }}" value="{{ color }}">
             </span>

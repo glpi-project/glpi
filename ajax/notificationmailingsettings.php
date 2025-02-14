@@ -33,13 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
 Session::checkRight("config", UPDATE);
 
 if (isset($_POST["test_smtp_send"])) {
     $result = NotificationMailing::testNotification();
-    header('Content-Type: application/json');
+    header('Content-Type: application/json; charset=UTF-8');
     echo json_encode($result);
 }

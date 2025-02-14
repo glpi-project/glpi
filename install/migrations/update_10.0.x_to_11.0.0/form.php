@@ -201,6 +201,7 @@ if (!$DB->tableExists('glpi_forms_destinations_formdestinations')) {
             `itemtype` varchar(255) NOT NULL,
             `name` varchar(255) NOT NULL,
             `config` JSON NOT NULL COMMENT 'Extra configuration field(s) depending on the destination type',
+            `is_mandatory` tinyint NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`),
             KEY `name` (`name`),
             KEY `itemtype` (`itemtype`),
@@ -269,6 +270,22 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_externalpagetiles')) {
             `url` text DEFAULT NULL,
             PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
+    );
+}
+
+$field = 'show_tickets_properties_on_helpdesk';
+if (!$DB->fieldExists("glpi_entities", $field)) {
+    $migration->addField(
+        'glpi_entities',
+        $field,
+        "int NOT NULL DEFAULT '-2'"
+    );
+    $migration->addPostQuery(
+        $DB->buildUpdate(
+            'glpi_entities',
+            [$field => 0],
+            ['id' => 0]
+        )
     );
 }
 

@@ -332,6 +332,7 @@ final class FormSerializer extends AbstractFormSerializer
 
         $form = new Form();
         $id = $form->add([
+            '_from_import'          => true,
             'name'                  => $spec->name,
             'header'                => $spec->header ?? null,
             'description'           => $spec->description ?? null,
@@ -636,10 +637,11 @@ final class FormSerializer extends AbstractFormSerializer
         FormContentSpecification $form_spec,
     ): FormContentSpecification {
         foreach ($form->getDestinations() as $destination) {
-            $destination_spec           = new DestinationContentSpecification();
-            $destination_spec->itemtype = $destination->fields['itemtype'];
-            $destination_spec->name     = $destination->fields['name'];
-            $destination_spec->config   = $destination->getConfig();
+            $destination_spec               = new DestinationContentSpecification();
+            $destination_spec->itemtype     = $destination->fields['itemtype'];
+            $destination_spec->name         = $destination->fields['name'];
+            $destination_spec->config       = $destination->getConfig();
+            $destination_spec->is_mandatory = $destination->fields['is_mandatory'];
 
             $config = $destination->getConfig();
             foreach ($config as $field_key => $field_config_data) {
@@ -700,6 +702,7 @@ final class FormSerializer extends AbstractFormSerializer
                 'itemtype'                 => $destination_spec->itemtype,
                 'name'                     => $destination_spec->name,
                 'config'                   => $config,
+                'is_mandatory'             => $destination_spec->is_mandatory,
                 Form::getForeignKeyField() => $form->getID(),
             ]);
 

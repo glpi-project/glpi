@@ -40,6 +40,7 @@ use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Comment;
+use Glpi\Form\ConditionalVisiblity\Type;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
@@ -49,6 +50,7 @@ use Glpi\Form\Tag\Tag;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Profile;
+use RuntimeException;
 use Session;
 use Ticket;
 use User;
@@ -128,6 +130,7 @@ trait FormTesterTrait
                     'itemtype'       => $itemtype,
                     'name'           => $destination_data['name'],
                     'config'         => $destination_data['config'],
+                    'is_mandatory'   => $destination_data['is_mandatory'],
                 ], ['config']);
             }
         }
@@ -140,6 +143,135 @@ trait FormTesterTrait
                 '_config'        => $params['config'],
                 'is_active'      => $params['is_active'],
             ]);
+        }
+
+        // Add visibility conditions on questions
+        foreach ($builder->getQuestionVisibility() as $name => $params) {
+            // Find the correct question
+            $id = $this->getQuestionId($form, $name);
+
+            $params['conditions'] = array_map(function ($condition) use ($form) {
+                // Find the correct UUID
+                if ($condition['item_type'] == Type::SECTION) {
+                    $item = Section::getById($this->getSectionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::QUESTION) {
+                    $item = Question::getById($this->getQuestionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::COMMENT) {
+                    $item = Comment::getById($this->getCommentId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } else {
+                    throw new RuntimeException("Unknown type");
+                }
+                $item_uuid = $item->fields['uuid'];
+
+                return [
+                    'item'           => $condition['item_type']->value . "-" . $item_uuid,
+                    'item_type'      => $condition['item_type'],
+                    'item_uuid'      => $item_uuid,
+                    'value'          => $condition['value'],
+                    'value_operator' => $condition['value_operator']->value,
+                    'logic_operator' => $condition['logic_operator']->value,
+                ];
+            }, $params['conditions']);
+
+            $this->updateItem(Question::class, $id, [
+                'visibility_strategy' => $params['strategy'],
+                'conditions' => json_encode($params['conditions']),
+            ], ['conditions']);
+        }
+
+        // Add visibility conditions on comments
+        foreach ($builder->getCommentVisibility() as $name => $params) {
+            // Find the correct comment
+            $id = $this->getCommentId($form, $name);
+
+            $params['conditions'] = array_map(function ($condition) use ($form) {
+                // Find the correct UUID
+                if ($condition['item_type'] == Type::SECTION) {
+                    $item = Section::getById($this->getSectionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::QUESTION) {
+                    $item = Question::getById($this->getQuestionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::COMMENT) {
+                    $item = Comment::getById($this->getCommentId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } else {
+                    throw new RuntimeException("Unknown type");
+                }
+                $item_uuid = $item->fields['uuid'];
+
+                return [
+                    'item'           => $condition['item_type']->value . "-" . $item_uuid,
+                    'item_type'      => $condition['item_type'],
+                    'item_uuid'      => $item_uuid,
+                    'value'          => $condition['value'],
+                    'value_operator' => $condition['value_operator']->value,
+                    'logic_operator' => $condition['logic_operator']->value,
+                ];
+            }, $params['conditions']);
+
+            $this->updateItem(Comment::class, $id, [
+                'visibility_strategy' => $params['strategy'],
+                'conditions' => json_encode($params['conditions']),
+            ], ['conditions']);
+        }
+
+        // Add visibility conditions on section
+        foreach ($builder->getSectionVisibility() as $name => $params) {
+            // Find the correct comment
+            $id = $this->getSectionId($form, $name);
+
+            $params['conditions'] = array_map(function ($condition) use ($form) {
+                // Find the correct UUID
+                if ($condition['item_type'] == Type::SECTION) {
+                    $item = Section::getById($this->getSectionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::QUESTION) {
+                    $item = Question::getById($this->getQuestionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::COMMENT) {
+                    $item = Comment::getById($this->getCommentId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } else {
+                    throw new RuntimeException("Unknown type");
+                }
+                $item_uuid = $item->fields['uuid'];
+
+                return [
+                    'item'           => $condition['item_type']->value . "-" . $item_uuid,
+                    'item_type'      => $condition['item_type'],
+                    'item_uuid'      => $item_uuid,
+                    'value'          => $condition['value'],
+                    'value_operator' => $condition['value_operator']->value,
+                    'logic_operator' => $condition['logic_operator']->value,
+                ];
+            }, $params['conditions']);
+
+            $this->updateItem(Section::class, $id, [
+                'visibility_strategy' => $params['strategy'],
+                'conditions' => json_encode($params['conditions']),
+            ], ['conditions']);
         }
 
         // Reload form

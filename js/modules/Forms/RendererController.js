@@ -31,7 +31,9 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_info, tinymce, glpi_toast_error */
+/* global glpi_toast_info, tinymce, glpi_toast_error, _ */
+
+import { GlpiFormConditionEngine } from './Condition/Engine.js';
 
 /**
  * Client code to handle users actions on the form_renderer template
@@ -57,12 +59,18 @@ export class GlpiFormRendererController
     #number_of_sections;
 
     /**
+     * @type {GlpiFormConditionEngine}
+     */
+    #condition_engine;
+
+    /**
      * Create a new GlpiFormRendererController instance for the given target.
      * The target must be a valid form.
      *
      * @param {string} target
+     * @param {number} form_id
      */
-    constructor(target) {
+    constructor(target, form_id) {
         // Target must be a valid form
         this.#target = target;
         if ($(this.#target).prop("tagName") != "FORM") {
@@ -82,6 +90,9 @@ export class GlpiFormRendererController
         $(this.#target)
             .find("[data-glpi-form-renderer-action=submit]")
             .removeAttr("disabled");
+
+        // Load condition engine
+        this.#condition_engine = new GlpiFormConditionEngine(form_id);
     }
 
     /**
@@ -105,6 +116,15 @@ export class GlpiFormRendererController
         $(this.#target)
             .find(`[${action_attribute}=previous-section]`)
             .on("click", () => this.#goToPreviousSection());
+
+        // Watch for any change on answers
+        const debouncedComputeItemsVisibilities = _.debounce(
+            () => this.#computeItemsVisibilities(),
+            400,
+        );
+        $(document).on('input tinyMCEInput', this.#target, () => {
+            debouncedComputeItemsVisibilities();
+        });
     }
 
     /**
@@ -254,5 +274,9 @@ export class GlpiFormRendererController
                 .find("[data-glpi-form-renderer-action=previous-section]")
                 .removeClass("d-none");
         }
+    }
+
+    #computeItemsVisibilities() {
+        this.#condition_engine.computeVisiblity(this.#target);
     }
 }

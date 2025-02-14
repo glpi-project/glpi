@@ -172,4 +172,19 @@
             });
         </script>
     {% endfor %}
+
+    {{ fields.smallTitle(__('Helpdesk')) }}
+    {{ fields.dropdownArrayField(
+        'show_tickets_properties_on_helpdesk',
+        item.fields['show_tickets_properties_on_helpdesk'],
+        inheritable_params.toadd + {
+            0: __('No'),
+            1: __('Yes'),
+        },
+        __('Show tickets properties on helpdesk'),
+        {
+            add_field_html: inheritance_labels['show_tickets_properties_on_helpdesk']|default(null)
+        } + inheritable_params
+    ) }}
+
 {% endblock %}

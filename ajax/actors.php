@@ -33,9 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
 switch ($_REQUEST['action']) {
     case "getActors":
         header("Content-Type: application/json; charset=UTF-8");

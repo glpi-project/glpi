@@ -80,6 +80,7 @@
             item.fields['duration'],
             item.fields['notice'],
             true,
+            item.fields['renewal'] == constant('Contract::RENEWAL_TACIT'),
             item.fields['periodicity']
          ])|raw }}
       {% endset %}

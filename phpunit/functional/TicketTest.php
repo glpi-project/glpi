@@ -1589,7 +1589,9 @@ class TicketTest extends DbTestCase
         $impact = true,
         $category = true,
         $requestSource = true,
-        $location = true
+        $location = true,
+        $itil_form = true,
+        $cancel_ticket = false,
     ) {
         ob_start();
         $ticket->showForm($ticket->getID());
@@ -1655,6 +1657,23 @@ class TicketTest extends DbTestCase
         $matches = iterator_to_array($crawler->filter("#itil-footer button[type=submit][name=update]:not([disabled])"));
         $this->assertCount(($save === true ? 1 : 0), $matches, ($save === true ? 'Save button missing' : 'Save button present') . ' ' . $caller);
 
+        // Check that the itil form exist
+        $matches = iterator_to_array($crawler->filter("#itil-form"));
+        $this->assertCount(
+            ($itil_form === true ? 1 : 0),
+            $matches,
+            ($itil_form === true ? 'ITIL form' : 'ITIL form present') . ' ' . $caller
+        );
+
+        // Cancel ticket button
+        $matches = iterator_to_array($crawler->filter("button:contains('Cancel ticket')"));
+        $this->assertCount(
+            ($cancel_ticket === true ? 1 : 0),
+            $matches,
+            'Cancel ticket ' . ($cancel_ticket === true ? 'missing' : 'present')
+        );
+
+
         //Assign to
         /*preg_match(
           '|.*<select name=\'_itil_assign\[_type\]\'[^>]*>.*|',
@@ -1691,20 +1710,22 @@ class TicketTest extends DbTestCase
 
         $this->checkFormOutput(
             $ticket,
-            $name = false,
-            $textarea = true,
-            $priority = false,
-            $save = true,
-            $assign = false,
-            $openDate = false,
-            $timeOwnResolve = false,
-            $type = false,
-            $status = false,
-            $urgency = true,
-            $impact = false,
-            $category = true,
-            $requestSource = false,
-            $location = false
+            name: false,
+            textarea: true,
+            priority: false,
+            save: false,
+            assign: false,
+            openDate: false,
+            timeOwnResolve: false,
+            type: false,
+            status: false,
+            urgency: false,
+            impact: false,
+            category: false,
+            requestSource: false,
+            location: false,
+            itil_form: false,
+            cancel_ticket: true,
         );
 
         $uid = getItemByTypeName('User', TU_USER, true);
@@ -1735,7 +1756,35 @@ class TicketTest extends DbTestCase
             $impact = false,
             $category = false,
             $requestSource = false,
-            $location = false
+            $location = false,
+            itil_form: false,
+            cancel_ticket: false, // Can no longer cancel once a followup is added
+        );
+
+        // Display extra fields
+        $this->login('glpi', 'glpi'); // Need to be admin to update entities
+        $this->updateItem(Entity::class, 0, [
+            'show_tickets_properties_on_helpdesk' => 1,
+        ]);
+        $this->login('post-only', 'postonly');
+        $this->checkFormOutput(
+            $ticket,
+            name: false,
+            textarea: false,
+            priority: false,
+            save: false,
+            assign: false,
+            openDate: false,
+            timeOwnResolve: false,
+            type: false,
+            status: false,
+            urgency: false,
+            impact: false,
+            category: false,
+            requestSource: false,
+            location: false,
+            itil_form: true,
+            cancel_ticket: false, // Can no longer cancel once a followup is added
         );
     }
 
@@ -8445,5 +8494,66 @@ HTML
         ]));
         $ticket->loadActors();
         $this->assertEquals(0, $ticket->countUsers(\CommonITILActor::ASSIGN));
+    }
+
+    public function testDoNotComputeStatusFollowup()
+    {
+        $this->login('glpi', 'glpi');
+
+        $user1 = new \User();
+        $user1->getFromDBbyName('glpi');
+        $this->assertGreaterThan(0, $user1->getID());
+
+        $user2 = new \User();
+        $user2->getFromDBbyName('tech');
+        $this->assertGreaterThan(0, $user2->getID());
+
+        $ticket = new \Ticket();
+        // Create ticket with two actors (requester and technician)
+        $tickets_id = $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'status' => \CommonITILObject::WAITING,
+            '_actors' => [
+                'requester' => [
+                    [
+                        'items_id' => $user1->getID(),
+                        'itemtype' => 'User'
+                    ]
+                ],
+                'assign' => [
+                    [
+                        'items_id' => $user2->getID(),
+                        'itemtype' => 'User'
+                    ]
+                ],
+            ]
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+
+        $this->createItem('ITILFollowup', [
+            'itemtype'               => $ticket::getType(),
+            'items_id'               => $tickets_id,
+            'content'                => 'do not compute status followup content',
+            'date'                   => '2015-01-01 00:00:00',
+            '_do_not_compute_status' => 1
+        ]);
+
+        $ticket = new \Ticket();
+        $ticket->getFromDB($tickets_id);
+
+        $this->assertEquals(\CommonITILObject::WAITING, $ticket->fields['status']);
+
+        $this->createItem('ITILFollowup', [
+            'itemtype'               => $ticket::getType(),
+            'items_id'               => $tickets_id,
+            'content'                => 'simple followup content',
+            'date'                   => '2015-01-01 00:00:00',
+        ]);
+
+        $ticket = new \Ticket();
+        $ticket->getFromDB($tickets_id);
+
+        $this->assertEquals(\CommonITILObject::ASSIGNED, $ticket->fields['status']);
     }
 }

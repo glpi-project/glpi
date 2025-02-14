@@ -74,6 +74,16 @@
                                         <button
                                             type="button"
                                             class="dropdown-item"
+                                            data-glpi-helpdesk-config-action-show-edit-form
+                                        >
+                                            <i class="ti ti-edit me-2"></i>
+                                            <span>{{ __("Edit tile") }}</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            type="button"
+                                            class="dropdown-item"
                                             data-glpi-helpdesk-config-action-delete
                                         >
                                             <i class="ti ti-trash me-2"></i>
@@ -83,8 +93,8 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="text-secondary">
-                            {{ tile.getDescription() }}
+                        <div class="text-secondary remove-last-tinymce-margin">
+                            {{ tile.getDescription()|safe_html }}
                         </div>
                     </div>
                 </div>
@@ -92,3 +102,19 @@
         </div>
     </section>
 {% endfor %}
+
+<div
+    role="button"
+    aria-label="{{ __('Add tile') }}"
+    data-glpi-helpdesk-config-action-new-tile
+    class="col-12 col-lg-6 col-xl-4 d-flex-soft opacity-80 cursor-pointer opacity-100-hover min-height-110"
+>
+    <div class="card rounded my-2 flex-grow-1 border-dashed">
+        <div class="card-body d-flex justify-content-center">
+            <div class="d-flex align-items-center">
+                <i class="ti ti-plus me-1"></i>
+                <span class="fs-3">{{ __('Add tile') }}</span>
+            </div>
+        </div>
+    </div>
+</div>

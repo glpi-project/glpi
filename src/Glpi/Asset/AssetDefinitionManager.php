@@ -247,20 +247,23 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
      */
     public function autoloadClass(string $classname): void
     {
-        $ns = self::getDefinitionClass()::getCustomObjectNamespace() . '\\';
+        $definition_class = self::getDefinitionClass();
+        $ns = $definition_class::getCustomObjectNamespace() . '\\';
 
         if (!\str_starts_with($classname, $ns)) {
             return;
         }
 
+        $system_name_pattern = $definition_class::SYSTEM_NAME_PATTERN;
+
         $patterns = [
-            '/^' . preg_quote($ns, '/') . 'RuleDictionary([A-Za-z]+)ModelCollection$/' => 'loadConcreteModelDictionaryCollectionClass',
-            '/^' . preg_quote($ns, '/') . 'RuleDictionary([A-Za-z]+)TypeCollection$/' => 'loadConcreteTypeDictionaryCollectionClass',
-            '/^' . preg_quote($ns, '/') . 'RuleDictionary([A-Za-z]+)Model$/' => 'loadConcreteModelDictionaryClass',
-            '/^' . preg_quote($ns, '/') . 'RuleDictionary([A-Za-z]+)Type$/' => 'loadConcreteTypeDictionaryClass',
-            '/^' . preg_quote($ns, '/') . '([A-Za-z]+)Model$/' => 'loadConcreteModelClass',
-            '/^' . preg_quote($ns, '/') . '([A-Za-z]+)Type$/' => 'loadConcreteTypeClass',
-            '/^' . preg_quote($ns, '/') . '([A-Za-z]+)$/' => 'loadConcreteClass',
+            '/^' . preg_quote($ns, '/') . 'RuleDictionary(' . $system_name_pattern . ')ModelCollection$/' => 'loadConcreteModelDictionaryCollectionClass',
+            '/^' . preg_quote($ns, '/') . 'RuleDictionary(' . $system_name_pattern . ')TypeCollection$/' => 'loadConcreteTypeDictionaryCollectionClass',
+            '/^' . preg_quote($ns, '/') . 'RuleDictionary(' . $system_name_pattern . ')Model$/' => 'loadConcreteModelDictionaryClass',
+            '/^' . preg_quote($ns, '/') . 'RuleDictionary(' . $system_name_pattern . ')Type$/' => 'loadConcreteTypeDictionaryClass',
+            '/^' . preg_quote($ns, '/') . '(' . $system_name_pattern . ')Model$/' => 'loadConcreteModelClass',
+            '/^' . preg_quote($ns, '/') . '(' . $system_name_pattern . ')Type$/' => 'loadConcreteTypeClass',
+            '/^' . preg_quote($ns, '/') . '(' . $system_name_pattern . ')$/' => 'loadConcreteClass',
         ];
 
         foreach ($patterns as $pattern => $load_function) {

@@ -33,10 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
-header("Content-Type: text/html; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
 echo json_encode(Html::getMenuFuzzySearchList(), JSON_THROW_ON_ERROR);

@@ -64,7 +64,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Add/Update fields input. Filled during add/update process.
      *
-     * @var mixed[]
+     * @var mixed[]|false
      */
     public $input = [];
 
@@ -392,26 +392,28 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * Get an object using some criteria
+     * Update the current object fields with data from database, only if there's single entry matching the criteria
      *
+     * If there's more than one entry, an error is triggered
+     *
+     * return true if the matched object was found and updated, false otherwise (no match or multiple matches)
+     * @param array $criteria search criteria
+     *
+     * @return bool
      * @since 9.2
-     *
-     * @param array $crit search criteria
-     *
-     * @return boolean|array
      */
-    public function getFromDBByCrit(array $crit)
+    public function getFromDBByCrit(array $criteria)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        $crit = [
+        $criteria = [
             'SELECT' => static::getIndexName(),
             'FROM'   => static::getTable(),
-            'WHERE'  => $crit
+            'WHERE'  => $criteria
         ];
 
-        $iter = $DB->request($crit);
+        $iter = $DB->request($criteria);
         if (count($iter) === 1) {
             $row = $iter->current();
             return $this->getFromDB($row[static::getIndexName()]);
@@ -3575,11 +3577,14 @@ class CommonDBTM extends CommonGLPI
      **/
     public function isField($field)
     {
+        /** @var \DBmysql $DB */
+        global $DB;
 
-        if (!isset($this->fields['id'])) {
-            $this->getEmpty();
+        if (static::$notable === true) {
+            return false;
         }
-        return array_key_exists($field, $this->fields);
+
+        return array_key_exists($field, $DB->listFields(static::getTable()));
     }
 
 
@@ -3920,15 +3925,16 @@ class CommonDBTM extends CommonGLPI
      **/
     final public function searchOptions()
     {
-        $type = $this->getType();
-
-        if (isset(self::$search_options_cache[$type])) {
-            return self::$search_options_cache[$type];
+        if (isset(self::$search_options_cache[static::class])) {
+            return self::$search_options_cache[static::class];
         }
 
-        $options[$type] = [];
+        self::$search_options_cache[static::class] = [];
 
-        foreach ($this->rawSearchOptions() as $opt) {
+        // Force usage of a new object, to be sure that the current object will not be altered.
+        $self = new static();
+
+        foreach ($self->rawSearchOptions() as $opt) {
             // FIXME In GLPI 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
 
             $missingFields = [];
@@ -3954,20 +3960,21 @@ class CommonDBTM extends CommonGLPI
             $optid = $opt['id'];
             unset($opt['id']);
 
-            if (isset($options[$type][$optid])) {
-                $message = "Duplicate key $optid ({$options[$type][$optid]['name']}/{$opt['name']}) in " .
-                  get_class($this) . " searchOptions!";
-
+            if (isset(self::$search_options_cache[static::class][$optid])) {
+                $message = sprintf(
+                    'Duplicate key `%s` (`%s`/`%s`) in `%s` search options.',
+                    $optid,
+                    self::$search_options_cache[static::class][$optid]['name'],
+                    $opt['name'],
+                    static::class
+                );
                 trigger_error($message, E_USER_WARNING);
             }
 
-            foreach ($opt as $k => $v) {
-                $options[$type][$optid][$k] = $v;
-            }
+            self::$search_options_cache[static::class][$optid] = $opt;
         }
 
-        self::$search_options_cache[$type] = $options[$type];
-        return $options[$type];
+        return self::$search_options_cache[static::class];
     }
 
 
@@ -5874,6 +5881,7 @@ TWIG, $twig_params);
         // Only process itemtype that are assets
         if (in_array(static::class, $CFG_GLPI['asset_types'], true)) {
             $ruleasset          = new RuleAssetCollection();
+            $ruleasset->setEntity($this->input['entities_id'] ?? $this->fields['entities_id']);
             $input              = $this->input;
             $input['_itemtype'] = static::class;
 
@@ -5906,17 +5914,6 @@ TWIG, $twig_params);
             // Add last_inventory_update
             if (!isset($this->input['last_inventory_update']) && isset($this->fields['last_inventory_update'])) {
                 $input['last_inventory_update'] = $this->fields['last_inventory_update'];
-            }
-
-            //if agent exist pass the 'tag' to RuleAssetCollection
-            if (
-                Toolbox::hasTrait($this, \Glpi\Features\Inventoriable::class)
-                && method_exists($this, 'getInventoryAgent')
-            ) {
-                $agent = $this->getInventoryAgent();
-                if ($agent !== null) {
-                    $input['_tag'] = $agent->fields['tag'];
-                }
             }
 
             // Set the condition (add or update)
@@ -6860,5 +6857,23 @@ TWIG, $twig_params);
         }
 
         return null;
+    }
+
+    /**
+     * @param 'ASC'|'DESC' $order
+     */
+    public static function displayList(
+        array $criteria,
+        int $sort_search_option_id,
+        string $order = 'ASC'
+    ): void {
+        Search::showList(static::class, [
+            'criteria'           => $criteria,
+            'showmassiveactions' => false,
+            'hide_controls'      => true,
+            'sort'               => $sort_search_option_id,
+            'order'              => $order,
+            'as_map'             => false,
+        ]);
     }
 }

@@ -36,10 +36,6 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% block form_fields %}
-    {% set field_options = {
-        label_class: 'col-xxl-2',
-        input_class: 'col-xxl-10'
-    } %}
     {% if not id %}
         {{ inputs.hidden('users_id', item.fields['users_id']) }}
     {% endif %}
@@ -47,29 +43,29 @@
         {{ inputs.hidden('from_planning_edit_ajax', 1) }}
     {% endif %}
 
-    {{ fields.textField('name', item.fields['name'], __('Title'), field_options|merge({
+    {{ fields.textField('name', item.fields['name'], __('Title'), {
         full_width: true,
-    })) }}
+    }) }}
 
     {% if params['from_planning_ajax'] is not defined %}
         {% set visibility_fields %}
-            {{ fields.datetimeField('begin_view_date', item.fields['begin_view_date'], __('Begin'), field_options|merge({
+            {{ fields.datetimeField('begin_view_date', item.fields['begin_view_date'], __('Begin'), {
                 clearable: true,
                 readonly: not params['canedit'],
                 mb: '',
                 is_horizontal: false,
-            })) }}
-            {{ fields.datetimeField('end_view_date', item.fields['end_view_date'], __('End'), field_options|merge({
+            }) }}
+            {{ fields.datetimeField('end_view_date', item.fields['end_view_date'], __('End'), {
                 clearable: true,
                 readonly: not params['canedit'],
                 mb: '',
                 is_horizontal: false,
-            })) }}
+            }) }}
         {% endset %}
-        {{ fields.htmlField('', visibility_fields, __('Visibility'), field_options|merge({
+        {{ fields.htmlField('', visibility_fields, __('Visibility'), {
             full_width: true,
             wrapper_class: 'd-flex',
-        })) }}
+        }) }}
     {% endif %}
 
     {% set state_dropdown %}
@@ -79,9 +75,9 @@
             {{ call('Planning::getState', [item.fields['state']]) }}
         {% endif %}
     {% endset %}
-    {{ fields.htmlField('', state_dropdown, __('Status'), field_options|merge({
+    {{ fields.htmlField('', state_dropdown, __('Status'), {
         full_width: true,
-    })) }}
+    }) }}
 
     {% set calendar_field %}
         {% if params['from_planning_ajax'] %}
@@ -141,13 +137,13 @@
             {% endif %}
         {% endif %}
     {% endset %}
-    {{ fields.htmlField('', calendar_field, _n('Calendar', 'Calendars', 1), field_options|merge({
+    {{ fields.htmlField('', calendar_field, _n('Calendar', 'Calendars', 1), {
         full_width: true,
-    })) }}
+    }) }}
 
-    {{ fields.textareaField('text', item.fields['text']|safe_html, __('Description'), field_options|merge({
+    {{ fields.textareaField('text', item.fields['text']|safe_html, __('Description'), {
         full_width: true,
         enable_richtext: true,
         enable_fileupload: true,
-    })) }}
+    }) }}
 {% endblock %}

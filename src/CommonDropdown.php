@@ -927,12 +927,13 @@ abstract class CommonDropdown extends CommonDBTM
         $ret = '';
 
         if ($withname) {
-            $ret .= $this->fields["name"];
+            $ret .= htmlescape($this->fields["name"]);
             $ret .= "&nbsp;&nbsp;";
         }
 
         if (
-            $this->isField('knowbaseitemcategories_id')
+            !$this->isNewItem()
+            && $this->isField('knowbaseitemcategories_id')
             && $this->fields['knowbaseitemcategories_id']
         ) {
             $title = __s('FAQ');

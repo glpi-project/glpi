@@ -234,7 +234,7 @@ class Auth extends CommonGLPI
 
         // No retry (avoid lock account when password is not correct)
         try {
-            $config = Toolbox::parseMailServerConnectString($host);
+            $config = Toolbox::parseMailServerConnectString($host, false, false);
 
             $ssl = false;
             if ($config['ssl']) {
@@ -244,7 +244,7 @@ class Auth extends CommonGLPI
                 $ssl = 'TLS';
             }
 
-            $protocol = Toolbox::getMailServerProtocolInstance($config['type']);
+            $protocol = Toolbox::getMailServerProtocolInstance($config['type'], false);
             if ($protocol === null) {
                 throw new \RuntimeException(sprintf(__('Unsupported mail server type:%s.'), $config['type']));
             }
@@ -1388,6 +1388,28 @@ class Auth extends CommonGLPI
     }
 
     /**
+     * Get default Auth system (AuthMail | AuthLDAP)
+     *
+     * Only available if active
+     *
+     * @return AuthMail|AuthLDAP|null Auth or null if not found
+     */
+    public static function getDefaultAuth(): AuthMail|AuthLDAP|null
+    {
+        $auth_ldap = new AuthLDAP();
+        if ($auth_ldap->getFromDbByCrit(['is_default' => 1, 'is_active' => 1])) {
+            return $auth_ldap;
+        }
+
+        $auth_mail = new AuthMail();
+        if ($auth_mail->getFromDbByCrit(['is_default' => 1, 'is_active' => 1])) {
+            return $auth_mail;
+        }
+
+        return null;
+    }
+
+    /**
      * Is an external authentication used?
      *
      * @return boolean
@@ -1686,6 +1708,9 @@ class Auth extends CommonGLPI
         ]);
         foreach ($iterator as $data) {
             $elements['mail-' . $data['id']] = $data['name'];
+            if ($data['is_default'] == 1) {
+                $elements['_default'] = 'mail-' . $data['id'];
+            }
         }
 
         return $elements;

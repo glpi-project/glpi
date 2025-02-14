@@ -36,12 +36,14 @@
 namespace Glpi\Form;
 
 use CommonDBTM;
+use CommonGLPI;
 use CronTask;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\DBAL\QuerySubQuery;
@@ -56,6 +58,7 @@ use Override;
 use ReflectionClass;
 use RuntimeException;
 use Session;
+use Ticket;
 
 /**
  * Helpdesk form
@@ -131,6 +134,47 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     }
 
     #[Override]
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
+    {
+        if (!$item instanceof Category) {
+            return "";
+        }
+
+        $nb = 0;
+        if ($_SESSION['glpishow_count_on_tabs']) {
+            $nb = countElementsInTable(self::getTable(), [
+                'forms_categories_id' => $item->getID(),
+            ]);
+        }
+
+        return self::createTabEntry(
+            self::getTypeName(Session::getPluralNumber()),
+            $nb,
+        );
+    }
+
+    #[Override]
+    public static function displayTabContentForItem(
+        CommonGLPI $item,
+        $tabnum = 1,
+        $withtemplate = 0
+    ): bool {
+        if (!$item instanceof Category) {
+            return false;
+        }
+
+        self::displayList([
+            [
+                'link'       => 'AND',
+                'field'      => 6,  // Service catalog category
+                'searchtype' => 'equals',
+                'value'      => $item->getID()
+            ]
+        ], 1 /* Sort by name */);
+        return true;
+    }
+
+    #[Override]
     public function rawSearchOptions()
     {
         $search_options = parent::rawSearchOptions();
@@ -174,6 +218,14 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
             'datatype'      => 'datetime',
             'massiveaction' => false
         ];
+        $search_options[] = [
+            'id'            => '6',
+            'table'         => Category::getTable(),
+            'field'         => 'completename',
+            'name'          => Category::getTypeName(1),
+            'datatype'      => 'dropdown',
+            'massiveaction' => true,
+        ];
 
         return $search_options;
     }
@@ -191,6 +243,11 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
         // Automatically create the first form section unless specified otherwise
         if (!isset($this->input['_do_not_init_sections'])) {
             $this->createFirstSection();
+        }
+
+        // Add the mandatory destinations, unless we are importing a form
+        if (!isset($this->input['_from_import'])) {
+            $this->addMandatoryDestinations();
         }
     }
 
@@ -887,5 +944,16 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     public function getServiceCatalogLink(): string
     {
         return "/Form/Render/" . $this->getID();
+    }
+
+    private function addMandatoryDestinations(): void
+    {
+        $destination = new FormDestination();
+        $destination->add([
+            self::getForeignKeyField() => $this->getId(),
+            'itemtype'                 => FormDestinationTicket::class,
+            'name'                     => Ticket::getTypeName(1),
+            'is_mandatory'             => true,
+        ]);
     }
 }

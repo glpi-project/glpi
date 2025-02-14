@@ -860,9 +860,10 @@ class DbUtilsTest extends DbTestCase
         //test with new sub entity
         //Cache tests:
         //Cache is updated on entity creation; so even if we do not expect $hit; we got it.
-        $new_id = getItemByTypeName('Entity', 'Sub child entity', true);
-        if (!$new_id) {
-            $entity = new \Entity();
+        $entity = new \Entity();
+        if ($entity->getFromDBByCrit(['name' => 'Sub child entity'])) {
+            $new_id = $entity->getID();
+        } else {
             $new_id = $entity->add([
                 'name'         => 'Sub child entity',
                 'entities_id'  => $ent1
@@ -884,9 +885,10 @@ class DbUtilsTest extends DbTestCase
         }
 
         //test with another new sub entity
-        $new_id2 = getItemByTypeName('Entity', 'Sub child entity 2', true);
-        if (!$new_id2) {
-            $entity = new \Entity();
+        $entity = new \Entity();
+        if ($entity->getFromDBByCrit(['name' => 'Sub child entity 2'])) {
+            $new_id2 = $entity->getID();
+        } else {
             $new_id2 = $entity->add([
                 'name'         => 'Sub child entity 2',
                 'entities_id'  => $ent2
@@ -1030,9 +1032,10 @@ class DbUtilsTest extends DbTestCase
         //test with new sub entity
         //Cache tests:
         //Cache is updated on entity creation; so even if we do not expect $hit; we got it.
-        $new_id = getItemByTypeName('Entity', 'Sub child entity', true);
-        if (!$new_id) {
-            $entity = new \Entity();
+        $entity = new \Entity();
+        if ($entity->getFromDBByCrit(['name' => 'Sub child entity'])) {
+            $new_id = $entity->getID();
+        } else {
             $new_id = (int)$entity->add([
                 'name'         => 'Sub child entity',
                 'entities_id'  => $ent1
@@ -1053,9 +1056,10 @@ class DbUtilsTest extends DbTestCase
         }
 
         //test with another new sub entity
-        $new_id2 = getItemByTypeName('Entity', 'Sub child entity 2', true);
-        if (!$new_id2) {
-            $entity = new \Entity();
+        $entity = new \Entity();
+        if ($entity->getFromDBByCrit(['name' => 'Sub child entity 2'])) {
+            $new_id2 = $entity->getID();
+        } else {
             $new_id2 = (int)$entity->add([
                 'name'         => 'Sub child entity 2',
                 'entities_id'  => $ent1

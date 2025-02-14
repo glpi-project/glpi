@@ -987,8 +987,8 @@ class Item_SoftwareVersion extends CommonDBRelation
             return;
         }
 
-        $items_id      = $item->getField('id');
-        $itemtype      = $item->getType();
+        $items_id      = $item->getID();
+        $itemtype      = $item::class;
         $rand          = mt_rand();
         $filters       = $_GET['filters'] ?? [];
         $is_filtered   = count($filters) > 0;
@@ -1007,7 +1007,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "<div class='spaced'><table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo _sn('Software', 'Software', Session::getPluralNumber()) . "&nbsp;&nbsp;";
-            echo "<input type='hidden' name='itemtype' value='$itemtype'>";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($itemtype) . "'>";
             echo "<input type='hidden' name='items_id' value='$items_id'>";
             Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
             echo "</td><td width='20%'>";

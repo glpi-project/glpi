@@ -58,7 +58,6 @@ final class QuestionTypeUserDeviceTest extends DbTestCase
 
         $builder = new FormBuilder();
         $builder->addQuestion("Computer", QuestionTypeUserDevice::class);
-        $builder->addDestination(FormDestinationTicket::class, "My ticket");
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [

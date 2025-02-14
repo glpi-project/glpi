@@ -325,9 +325,9 @@ class View extends CommonGLPI
         $api  = self::getAPI();
         $tags = $api->getTopTags();
 
-        $tags_li = "<li class='tag active' data-tag=''>" . __("All") . "</li>";
+        $tags_li = "<li class='tag active' data-tag=''>" . __s("All") . "</li>";
         foreach ($tags as $tag) {
-            $tags_li .= "<li class='tag' data-tag='{$tag['key']}'>" . ucfirst($tag['tag']) . "</li>";
+            $tags_li .= "<li class='tag' data-tag='" . htmlescape($tag['key']) . "'>" . htmlescape(ucfirst($tag['tag'])) . "</li>";
         }
 
         return "<ul class='plugins-tags'>{$tags_li}</ul>";
@@ -367,7 +367,7 @@ class View extends CommonGLPI
                 // Not completely offline. Do not treat as fully offline.
                 $msg = sprintf(__('Plugin list may be truncated due to %s services website unavailability. Please try again later.'), 'GLPI Network');
             }
-            $messages = '<li class="warning"><i class="ti ti-alert-triangle fs-3x"></i>' . $msg . '</li>';
+            $messages = '<li class="warning"><i class="ti ti-alert-triangle fs-3x"></i>' . htmlescape($msg) . '</li>';
         }
 
         $plugins_li = "";
@@ -451,10 +451,10 @@ HTML;
                     </select>";
             }
 
-            $yourplugin   = __("Your plugin here ? Contact us.");
-            $networkmail  = GLPI_NETWORK_MAIL;
-            $refresh_lbl  = __("Refresh plugin list");
-            $search_label = __("Filter plugin list");
+            $yourplugin   = __s("Your plugin here ? Contact us.");
+            $networkmail  = htmlescape(GLPI_NETWORK_MAIL);
+            $refresh_lbl  = __s("Refresh plugin list");
+            $search_label = __s("Filter plugin list");
 
             $marketplace  = <<<HTML
                 <div class='marketplace $tab' data-tab='{$tab}'>
@@ -527,21 +527,21 @@ JS;
         $plugin_state = Plugin::getStateKey($plugin_inst->fields['state'] ?? -1);
         $buttons      = self::getButtons($plugin_key);
 
-        $name = Toolbox::stripTags($plugin['name']);
-        $description = Toolbox::stripTags($plugin['description']);
+        $name = htmlescape(Toolbox::stripTags($plugin['name']));
+        $description = htmlescape(Toolbox::stripTags($plugin['description']));
 
-        $authors = Toolbox::stripTags(implode(', ', array_column($plugin['authors'] ?? [], 'name', 'id')));
-        $authors_title = htmlescape($authors);
+        $authors = htmlescape(Toolbox::stripTags(implode(', ', array_column($plugin['authors'] ?? [], 'name', 'id'))));
+        $authors_title = $authors;
         $authors = strlen($authors)
             ? "<i class='ti ti-users'></i>{$authors}"
             : "";
 
-        $licence = Toolbox::stripTags($plugin['license'] ?? '');
+        $licence = htmlescape(Toolbox::stripTags($plugin['license'] ?? ''));
         $licence = strlen($licence)
             ? "<i class='ti ti-license'></i>{$licence}"
             : "";
 
-        $version = Toolbox::stripTags($plugin['version'] ?? '');
+        $version = htmlescape(Toolbox::stripTags($plugin['version'] ?? ''));
         $version = strlen($version)
             ? "<i class='ti ti-git-branch'></i>{$version}"
             : "";
@@ -949,10 +949,10 @@ HTML;
                     $initials .= mb_substr($words[$i], 0, 1);
                 }
             }
-            $bg_color = Toolbox::getColorForString($initials);
-            $fg_color = Toolbox::getFgColor($bg_color);
+            $bg_color = htmlescape(Toolbox::getColorForString($initials));
+            $fg_color = htmlescape(Toolbox::getFgColor($bg_color));
             $icon = "<span style='background-color: $bg_color; color: $fg_color'
-                           class='icon-text'>$initials</span>";
+                           class='icon-text'>" . htmlescape($initials) . "</span>";
         }
 
         return $icon;
@@ -973,16 +973,16 @@ HTML;
         $html = "";
         if (count($require_offers)) {
             $fst_offer  = array_splice($require_offers, 0, 1);
-            $offerkey   = key($fst_offer);
-            $offerlabel = current($fst_offer);
+            $offerkey   = htmlescape(key($fst_offer));
+            $offerlabel = htmlescape(current($fst_offer));
 
             $html = "<div class='offers'>
-                    <a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'
+                    <a href='" . htmlescape(GLPI_NETWORK_SERVICES) . "' target='_blank'
                        class='badge glpi-network'
                        title='" . sprintf(__s("You must have a %s subscription to get this plugin"), 'GLPI Network') . "'>
                         <i class='ti ti-star-filled'></i>GLPI Network
                     </a>
-                    <a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'
+                    <a href='" . htmlescape(GLPI_NETWORK_SERVICES) . "' target='_blank'
                        class='badge bg-azure $offerkey'
                        title='" . sprintf(__s("You need at least the %s subscription level to get this plugin"), $offerlabel) . "'>
                         $offerlabel

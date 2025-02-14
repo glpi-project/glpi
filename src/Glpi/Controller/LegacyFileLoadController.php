@@ -43,7 +43,7 @@ final class LegacyFileLoadController implements PublicService
 {
     public const REQUEST_FILE_KEY = '_glpi_file_to_load';
 
-    protected ?Request $request = null;
+    private ?Request $request = null;
 
     public function __invoke(Request $request): Response
     {
@@ -62,16 +62,14 @@ final class LegacyFileLoadController implements PublicService
         return new HeaderlessStreamedResponse($callback->bindTo($this, self::class));
     }
 
-    protected function setAjax(): void
+    /**
+     * Method used in `front/dropdown.common.form.php` to get the current request.
+     *
+     * @phpstan-ignore method.unused
+     */
+    private function getRequest(): Request
     {
-        $this->getRequest()->attributes->set('_glpi_ajax', true);
-
-        \Session::setAjax();
-    }
-
-    private function getRequest(): ?Request
-    {
-        if (!$this->request) {
+        if ($this->request === null) {
             throw new \RuntimeException(\sprintf(
                 'Could not find Request in "%s" controller. Did you forget to call "%s"?',
                 self::class,

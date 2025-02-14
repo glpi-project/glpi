@@ -36,6 +36,7 @@ namespace Glpi\Controller;
 
 use Config;
 use DBConnection;
+use Glpi\Error\ErrorUtils;
 use Html;
 use Session;
 use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
@@ -105,14 +106,14 @@ class ErrorController extends AbstractController
         ) {
             $trace = sprintf(
                 "%s\nIn %s(%s)",
-                $exception->getMessage() ?: $exception::class,
-                $exception->getFile(),
+                $this->cleanPaths($exception->getMessage() ?: $exception::class),
+                $this->cleanPaths($exception->getFile()),
                 $exception->getLine()
             );
 
             if (!($exception instanceof OutOfMemoryError)) {
                 // Note: OutOfMemoryError has no stack trace, we can only get filename and line.
-                $trace .= "\n" . $exception->getTraceAsString();
+                $trace .= "\n" . $this->cleanPaths($exception->getTraceAsString());
             }
 
             $current = $exception;
@@ -120,11 +121,11 @@ class ErrorController extends AbstractController
             while ($depth < 10 && $previous = $current->getPrevious()) {
                 $trace .= sprintf(
                     "\n\nPrevious: %s\nIn %s(%s)",
-                    $previous->getMessage() ?: $previous::class,
-                    $previous->getFile(),
+                    $this->cleanPaths($previous->getMessage() ?: $previous::class),
+                    $this->cleanPaths($previous->getFile()),
                     $previous->getLine()
                 );
-                $trace .= "\n" . $previous->getTraceAsString();
+                $trace .= "\n" . $this->cleanPaths($previous->getTraceAsString());
 
                 $current = $previous;
                 $depth++;
@@ -181,5 +182,10 @@ class ErrorController extends AbstractController
             ] + $error_block_params,
             new Response(status: $status_code)
         );
+    }
+
+    private function cleanPaths(string $message): string
+    {
+        return ErrorUtils::cleanPaths($message);
     }
 }
