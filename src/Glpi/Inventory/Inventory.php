@@ -332,12 +332,8 @@ class Inventory
 
             $this->data = $data;
 
-            //create/load agent
-            $this->agent = new Agent();
-            $this->agent->handleAgent($this->metadata);
-
             //process itemtype definition from rules engine
-            $itemtype_string = $this->agent->fields['itemtype'];
+            $itemtype_string = $this->metadata['itemtype'] ?? 'Computer';
             $main_itemtype = new Itemtype(
                 new CommonDBTM(),
                 $this->raw_data
@@ -346,15 +342,21 @@ class Inventory
             $main_itemtype
                 ->setDiscovery($this->is_discovery)
                 ->setRequestQuery($this->request_query)
-                ->setAgent($this->getAgent())
+                ->setMetadata($this->metadata)
+                //->setAgent($this->getAgent())
                 ->setExtraData($this->data);
             $main_itemtype->prepare();
             $data_itemtype = $main_itemtype->defineItemtype($itemtype_string);
 
             if (isset($data_itemtype['new_itemtype']) && $data_itemtype['new_itemtype'] != -1) {
-                $itemtype_string = $data_itemtype['new_itemtype'];
+                $this->metadata['itemtype'] = $data_itemtype['new_itemtype'];
             }
-            $this->item = new $itemtype_string();
+
+            //create/load agent
+            $this->agent = new Agent();
+            $this->agent->handleAgent($this->metadata);
+
+            $this->item = new $this->agent->fields['itemtype']();
 
             //load existing itemtype, if any
             if (!empty($this->agent->fields['items_id'])) {
@@ -734,6 +736,7 @@ class Inventory
                 $asset->setMainAsset($this->mainasset);
                 if ($asset->checkConf($this->conf)) {
                     $asset->setAgent($this->getAgent());
+                    $asset->setMetadata($this->metadata);
                     $asset->setExtraData($this->data);
                     $asset->setEntityID($this->mainasset->getEntityID());
                     $asset->prepare();

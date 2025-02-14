@@ -85,6 +85,9 @@ abstract class InventoryAsset
     protected array $known_links = [];
     /** @var array */
     protected array $raw_links = [];
+    /** @var array<string, mixed> */
+    protected array $metadata = [];
+
 
     /**
      * Constructor
@@ -302,6 +305,19 @@ abstract class InventoryAsset
     }
 
     /**
+     * Set metadata
+     *
+     * @param array<string, mixed> $metadata Metadata
+     *
+     * @return self
+     */
+    public function setMetadata(array $metadata): self
+    {
+        $this->metadata = $metadata;
+        return $this;
+    }
+
+    /**
      * Set agent
      *
      * @param Agent $agent Agent instance
@@ -484,9 +500,9 @@ abstract class InventoryAsset
             }
         }
 
-        if (isset($this->agent->fields['tag'])) {
+        if (isset($this->metadata['tag'])) {
             // Pass the tag that can be used in rules criteria
-            $input['_tag'] = $this->agent->fields['tag'];
+            $input['_tag'] = $this->metadata['tag'];
         }
 
         return $input;
