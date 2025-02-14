@@ -257,12 +257,16 @@ class UserEmail extends CommonDBChild
         ) {
             return;
         }
-        $canedit = (
-            (
-                $user->can($users_id, UPDATE)
-                && ($user->currentUserHaveMoreRightThan($users_id)))
-            || ($users_id == Session::getLoginUserID())
-        );
+
+        $canedit = $users_id == Session::getLoginUserID();
+        if (!$canedit) {
+            if ($user->isNewID($users_id)) {
+                $canedit = $user->can($users_id, CREATE);
+            } else {
+                $canedit = $user->can($users_id, UPDATE)
+                && $user->currentUserHaveMoreRightThan($users_id);
+            }
+        }
 
         parent::showChildsForItemForm($user, '_useremails', $canedit);
     }
@@ -278,16 +282,18 @@ class UserEmail extends CommonDBChild
         if (!$user->can($users_id, READ) && ($users_id != Session::getLoginUserID())) {
             return false;
         }
-        $canedit = (
-            (
-                $user->can($users_id, UPDATE)
-                && ($user->currentUserHaveMoreRightThan($users_id)))
-            || ($users_id == Session::getLoginUserID())
-        );
+
+        $canedit = $users_id == Session::getLoginUserID();
+        if (!$canedit) {
+            if ($user->isNewID($users_id)) {
+                $canedit = $user->can($users_id, CREATE);
+            } else {
+                $canedit = $user->can($users_id, UPDATE)
+                    && $user->currentUserHaveMoreRightThan($users_id);
+            }
+        }
 
         parent::showAddChildButtonForItemForm($user, '_useremails', $canedit);
-
-        return;
     }
 
 
