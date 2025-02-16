@@ -1482,7 +1482,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             }
         } else {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . __s('No item found') . "</th></tr>";
+            echo "<tr><th>" . __s('No results found') . "</th></tr>";
             echo "</table>";
         }
 

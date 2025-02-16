@@ -1658,7 +1658,7 @@ TWIG, $twig_params);
                 );
             }
         } else {
-            echo "<div class='center b'>" . __s('No item found') . "</div>";
+            echo "<div class='center b'>" . __s('No results found') . "</div>";
         }
     }
 

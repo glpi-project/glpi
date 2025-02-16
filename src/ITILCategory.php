@@ -523,7 +523,7 @@ class ITILCategory extends CommonTreeDropdown
                 }
             }
         } else {
-            echo "<tr><th colspan='5'>" . __s('No item found') . "</th></tr>";
+            echo "<tr><th colspan='5'>" . __s('No results found') . "</th></tr>";
         }
 
         echo "</table></div>";

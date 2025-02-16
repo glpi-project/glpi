@@ -187,7 +187,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
             }
             echo "</div>";
         } else {
-            echo "<p class='center b'>" . __s('No item found') . "</p>";
+            echo "<p class='center b'>" . __s('No results found') . "</p>";
         }
     }
 }
