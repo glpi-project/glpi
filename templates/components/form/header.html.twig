@@ -55,8 +55,9 @@
 {# - This template is called from another twig template (as opposed to from PHP and most likely a legacy form) OR is in a modal #}
 {# - Not from a twig template and it is a new item #}
 {% set include_header_content = no_header == false and ((in_twig is defined or _get._in_modal|default(false)) or (in_twig is not defined and item.isNewID(item.fields['id']))) %}
+{% set canedit = params['canedit']|default(item.canEdit(item.fields['id'])) %}
 
-{% if open_form and item.canEdit(item.fields['id']) %}
+{% if open_form and canedit %}
 <form id="main-form" name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
    {% if item.isField("entities_id") %}
        <input type="hidden" name="entities_id" value="{{ entity_id }}" />
