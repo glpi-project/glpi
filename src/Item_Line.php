@@ -258,7 +258,7 @@ class Item_Line extends CommonDBRelation
         }
 
         if (!count($items)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __s('No item found') . "</th></tr>";
+            echo "<table class='tab_cadre_fixe'><tr><th>" . __s('No results found') . "</th></tr>";
             echo "</table>";
         } else {
             if ($canedit) {

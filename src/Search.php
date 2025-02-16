@@ -970,7 +970,7 @@ class Search
     public static function showError($type, $message = "")
     {
         if (strlen($message) == 0) {
-            $message = __('No item found');
+            $message = __('No results found');
         }
 
         $output = SearchEngine::getOutputForLegacyKey($type);

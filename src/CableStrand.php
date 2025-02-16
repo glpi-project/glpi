@@ -211,7 +211,7 @@ class CableStrand extends CommonDropdown
                 echo"</tr>";
             }
         } else {
-            echo "<p class='center b'>" . __s('No item found') . "</p>";
+            echo "<p class='center b'>" . __s('No results found') . "</p>";
         }
         echo "</table></div>";
     }

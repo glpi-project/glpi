@@ -393,7 +393,7 @@ class NetworkAlias extends FQDNLabel
 
         if ($number < 1) {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . htmlescape(self::getTypeName(1)) . "</th><th>" . __s('No item found') . "</th></tr>";
+            echo "<tr><th>" . htmlescape(self::getTypeName(1)) . "</th><th>" . __s('No results found') . "</th></tr>";
             echo "</table>";
         } else {
             Html::printAjaxPager(self::getTypeName($number), $start, $number);

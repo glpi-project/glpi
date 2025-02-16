@@ -84,7 +84,7 @@ class GeolocationField {
     #finalizeMap() {
         const geocoder = L.Control.geocoder({
             defaultMarkGeocode: false,
-            errorMessage: __('No result found'),
+            errorMessage: __('No results found'),
             placeholder: __('Search')
         });
         geocoder.on('markgeocode', (e) => {
