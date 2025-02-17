@@ -414,12 +414,16 @@ abstract class MainAsset extends InventoryAsset
     {
         $input = ['_auto' => 1];
 
-        if (isset($this->metadata['tag'])) {
-            $input['tag'] = $this->metadata['tag'];
+        $data = $this->metadata;
+        if ($agent = $this->getAgent()) {
+            $data = $agent->fields;
+        }
+        if (isset($data['tag'])) {
+            $input['tag'] = $data['tag'];
         }
 
-        if (isset($this->metadata['deviceid'])) {
-            $input['deviceid'] = $this->metadata['deviceid'];
+        if (isset($data['deviceid'])) {
+            $input['deviceid'] = $data['deviceid'];
         }
 
         $models_id = $this->getModelsFieldName();

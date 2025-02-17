@@ -736,7 +736,6 @@ class Inventory
                 $asset->setMainAsset($this->mainasset);
                 if ($asset->checkConf($this->conf)) {
                     $asset->setAgent($this->getAgent());
-                    $asset->setMetadata($this->metadata);
                     $asset->setExtraData($this->data);
                     $asset->setEntityID($this->mainasset->getEntityID());
                     $asset->prepare();

@@ -333,11 +333,11 @@ abstract class InventoryAsset
     /**
      * Get agent
      *
-     * @return Agent
+     * @return ?Agent
      */
-    public function getAgent(): Agent
+    public function getAgent(): ?Agent
     {
-        return $this->agent;
+        return $this->agent ?? null;
     }
 
     /**
@@ -500,9 +500,13 @@ abstract class InventoryAsset
             }
         }
 
-        if (isset($this->metadata['tag'])) {
+        $data = $this->metadata;
+        if ($agent = $this->getAgent()) {
+            $data = $agent->fields;
+        }
+        if (isset($data['tag'])) {
             // Pass the tag that can be used in rules criteria
-            $input['_tag'] = $this->metadata['tag'];
+            $input['_tag'] = $data['tag'];
         }
 
         return $input;
