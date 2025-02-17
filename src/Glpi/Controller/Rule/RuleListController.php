@@ -45,7 +45,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-// @todo use final like in GenericListController ?
 final class RuleListController extends AbstractController
 {
     private \RuleCollection $ruleCollection;
@@ -57,7 +56,6 @@ final class RuleListController extends AbstractController
         $reinit =       $request->get('reinit');
         $replay_rule =  $request->get('replay_rule');
         $reorder =      $request->request->get('action');
-        $reorder =      $request->get('action'); // pour debug, à supprimer
         $item_class = $request->attributes->getString('class');
 
         $this->ruleCollection = $this->getRuleCollectionInstanceFromRuleSubtype($item_class, (int) $_SESSION['glpiactive_entity']);
@@ -263,7 +261,7 @@ final class RuleListController extends AbstractController
 
         /**
          * Not all classes extendending RuleCollection have a constructor.
-         * Only \RuleCommonITILObjectCollection instances, so we cant really pass an entity parameter to the constructor.
+         * Only \RuleCommonITILObjectCollection instances, so we can really pass an entity parameter to the constructor.
          */
         return new $collection_classname($entity);
     }
