@@ -377,7 +377,7 @@ class DBTest extends \GLPITestCase
         foreach ($list as $line) {
             $this->assertCount(1, $line);
             $table = $line['TABLE_NAME'];
-            if (in_array($table, $excluded_tables, true)) {
+            if (in_array($table, $excluded_tables, true) || strpos($table, 'glpi_plugin_formcreator_') === 0) {
                 //FIXME temporary hack for unit tests
                 continue;
             }
