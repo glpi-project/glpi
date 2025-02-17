@@ -55,11 +55,7 @@ class ProgressStorage
             ));
         }
 
-        Session::start();
-
         $progress = $_SESSION['progress'][$key];
-
-        session_write_close();
 
         if (!$progress instanceof StoredProgressIndicator) {
             throw new \RuntimeException(\sprintf(
@@ -79,10 +75,13 @@ class ProgressStorage
         // resulting in a "Header too big" or "File too big" HTTP error response.
         @ini_set('session.use_cookies', 0);
 
+        // Restart the session that may have been closed by a previous call to the current method.
         Session::start();
 
         $_SESSION['progress'][$progress->getStorageKey()] = $progress;
 
+        // Close the session to release the lock on its storage file.
+        // This is required to not block the execution of concurrent requests.
         session_write_close();
     }
 }

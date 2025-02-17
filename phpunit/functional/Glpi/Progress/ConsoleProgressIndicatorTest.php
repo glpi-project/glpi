@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\Log;
 
-use DateTimeImmutable;
 use Glpi\Progress\ConsoleProgressIndicator;
 use Glpi\Progress\ProgressMessageType;
 use GLPITestCase;
@@ -118,7 +117,7 @@ class ConsoleProgressIndicatorTest extends GLPITestCase
                 ->method('writeln')
                 ->with($expected_output, $expected_verbosity);
         } else {
-            // method is not call due to internal filtering if verbosity of the message is lower that the output verbosity
+            // method is not called due to internal filtering if verbosity of the message is lower that the output verbosity
             $output->expects($this->never())->method('writeln');
         }
 
