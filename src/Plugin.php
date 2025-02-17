@@ -2771,7 +2771,12 @@ TWIG;
 
         Toolbox::deprecated('All plugins resources should be accessed from the `/plugins/` path.');
 
-        $directory = 'plugins/' . $plugin_key;
+        $directory = self::getPhpDir($plugin_key, false);
+        if ($directory === false) {
+            return false;
+        }
+
+        $directory = ltrim($directory, '/\\');
 
         if ($full) {
             $root = $use_url_base ? $CFG_GLPI['url_base'] : $CFG_GLPI["root_doc"];
