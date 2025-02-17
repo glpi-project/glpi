@@ -40,9 +40,9 @@ use DBmysql;
 use Glpi\Cache\CacheManager;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
+use Glpi\Progress\ConsoleProgressIndicator;
 use Glpi\System\Requirement\DbConfiguration;
 use GLPIKey;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -308,27 +308,13 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             OutputInterface::VERBOSITY_VERBOSE
         );
 
-        $progress_bar = new ProgressBar($output);
-        $progress_bar->setFormat('[%bar%] %percent:3s%%' . PHP_EOL . '<comment>%message%</comment>' . PHP_EOL);
-        $progress_bar->setMessage(''); // Empty message on iteration start
-        $progress_bar->start();
-
+        $progress_indicator = new ConsoleProgressIndicator($output);
         try {
             $this->db->connect(); // Reconnect DB to ensure it uses update configuration (see `self::configureDatabase()`)
 
-            $progress_callback = static function (int $current, ?int $max = null, ?string $data = null) use ($progress_bar) {
-                if ($max !== null) {
-                    $progress_bar->setMaxSteps($max);
-                }
-                if ($data !== null) {
-                    $progress_bar->setMessage($data);
-                }
-                $progress_bar->advance($current - $progress_bar->getProgress());
-            };
-
-            Toolbox::createSchema($default_language, $this->db, $progress_callback);
+            Toolbox::createSchema($default_language, $this->db, $progress_indicator);
         } catch (\Throwable $e) {
-            $progress_bar->finish();
+            $progress_indicator->fail();
 
             $message = sprintf(
                 __('An error occurred during the database initialization. The error was: %s'),
@@ -337,11 +323,6 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             $output->writeln('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET);
             return self::ERROR_SCHEMA_CREATION_FAILED;
         }
-
-        $progress_bar->setMessage(''); // Remove last message
-        $progress_bar->finish();
-
-        $output->writeln('<info>' . __('Installation done.') . '</info>');
 
         (new CacheManager())->resetAllCaches(); // Ensure cache will not use obsolete data
 

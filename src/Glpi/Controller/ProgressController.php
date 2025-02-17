@@ -56,6 +56,17 @@ class ProgressController extends AbstractController
             return new JsonResponse([], 404);
         }
 
-        return new JsonResponse($this->progress_storage->getCurrentProgress($key));
+        $progress = $this->progress_storage->getCurrentProgress($key);
+
+        return new JsonResponse([
+            'started_at'            => $progress->getStartedAt()->format('c'),
+            'updated_at'            => $progress->getUpdatedAt()->format('c'),
+            'ended_at'              => $progress->getEndedAt()?->format('c'),
+            'failed'                => $progress->hasFailed(),
+            'current_step'          => $progress->getCurrentStep(),
+            'max_steps'             => $progress->getMaxSteps(),
+            'progress_bar_message'  => $progress->getProgressBarMessage(),
+            'messages'              => $progress->getMessages(),
+        ]);
     }
 }
