@@ -47,22 +47,29 @@
         margin: 2em 0;
     }
 
-    .entry-point {
+    .entry-point, .end {
         display: flex;
         align-items: center;
         position: relative;
         padding-left: 30px;
 
-        &::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: calc(50% - 15px);
-            transform: translateY(-50%);
-            width: 25px;
-            height: 25px;
-            border: 3px solid gray;
-            border-radius: 50%;
+        .icon-stack {
+            display: inline-block;
+            position: relative;
+            vertical-align: middle;
+            width: 1.8em;
+
+            i {
+                font-size: 1.2em;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+
+                &.sm-size {
+                    font-size: 0.6em;
+                }
+            }
         }
     }
 

@@ -39,8 +39,12 @@
                 <i class="ti ti-cloud-download me-1"></i>
                 <span>{{ __("Inventory rules") }}</span>
             </li>
+
             <li class="entry-point">
-                <i class="ti ti-robot"></i>
+                <span class="icon-stack fa-2x">
+                    <i class="ti ti-circle-dashed"></i>
+                    <i class="ti ti-robot sm-size"></i>
+                </span>
                 <span>{{ __('Agent sends an inventory file') }}</span>
             </li>
 
@@ -116,20 +120,9 @@
                 </a>
             </li>
 
-            <li class="step ps-6 ms-3">
-                {% set add_label %}
-                    <span class="px-1">
-                        <i class='ti ti-database-plus ms-1'></i>
-                        <span>{{ __("Add") }}</span>
-                    </span>
-                {% endset %}
-                {% set update_label %}
-                    <span class="px-1">
-                        <i class='ti ti-database-import ms-1'></i>
-                        <span>{{ __("Update asset") }}</span>
-                    </span>
-                {% endset %}
-                <span>{{ __('%s or %s')|e|format(add_label, update_label)|raw }}</span>
+            <li class="end ps-6 ms-3">
+                <i class="ti ti-circle-check me-1 fa-2x"></i>
+                <span>{{ __('The asset is created or updated in GLPI') }}</span>
             </li>
         </ul>
     </div>
