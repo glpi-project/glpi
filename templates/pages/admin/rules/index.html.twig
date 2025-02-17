@@ -50,7 +50,7 @@
 
             <li class="step">
                 <a class="btn flex-column">
-                    <div>
+                    <div class="d-flex align-items-center">
                         <i class="ti ti-book"></i>
                         <span>{{ __('Transform itemtypes') }}</span>
                     </div>
@@ -62,7 +62,7 @@
 
             <li class="step">
                 <a class="btn flex-column" href="{{ 'RuleImportEntity'|itemtype_search_path }}">
-                    <div>
+                    <div class="d-flex align-items-center">
                         <i class="{{ 'RuleImportEntity'|itemtype_icon }}"></i>
                         <span>{{ __('Rules for assigning an item to an entity') }}</span>
                     </div>
@@ -74,7 +74,7 @@
 
             <li class="step">
                 <a class="btn flex-column" href="{{ 'RuleLocation'|itemtype_search_path }}">
-                    <div>
+                    <div class="d-flex align-items-center">
                         <i class="{{ 'RuleLocation'|itemtype_icon }}"></i>
                         <span>{{ __('Location rules') }}</span>
                     </div>
@@ -86,7 +86,7 @@
 
             <li class="step">
                 <a class="btn flex-column" href="{{ 'RuleImportAsset'|itemtype_search_path }}">
-                    <div>
+                    <div class="d-flex align-items-center">
                         <i class="{{ 'RuleImportAsset'|itemtype_icon }}"></i>
                         <span>{{ __("Rules for import and link equipments") }}</span>
                     </div>
@@ -98,7 +98,7 @@
 
             <li class="step">
                 <a class="btn flex-column" href="{{ path('/front/dictionnary.php') }}">
-                    <div>
+                    <div class="d-flex align-items-center">
                         <i class="{{ 'RuleDictionnaryDropdownCollection'|itemtype_icon }}"></i>
                         <span>{{ _n('Dictionary', 'Dictionaries', get_plural_number()) }}</span>
                     </div>
@@ -110,7 +110,7 @@
 
             <li class="step">
                 <a class="btn flex-column" href="{{ 'RuleAsset'|itemtype_search_path }}">
-                    <div>
+                    <div class="d-flex align-items-center">
                         <i class="{{ 'RuleAsset'|itemtype_icon }}"></i>
                         <span>{{ __("Business rules for assets") }}</span>
                     </div>
@@ -120,7 +120,7 @@
                 </a>
             </li>
 
-            <li class="end ps-6 ms-3">
+            <li class="end ps-6">
                 <i class="ti ti-circle-check me-1 fa-2x"></i>
                 <span>{{ __('The asset is created or updated in GLPI') }}</span>
             </li>

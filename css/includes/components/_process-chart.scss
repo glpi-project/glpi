@@ -44,7 +44,6 @@
         display: flex;
         align-items: center;
         position: relative;
-        padding-left: 30px;
 
         .icon-stack {
             display: inline-block;
@@ -87,7 +86,13 @@
         }
 
         .btn {
-            min-width: 430px;
+            width: 390px;
+        }
+
+        .text-muted {
+            font-size: 0.9em;
+            font-style: italic;
+            text-wrap: auto;
         }
 
         .card {
