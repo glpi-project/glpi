@@ -58,17 +58,9 @@ final class RuleListController extends AbstractController
         $replay_rule =  $request->get('replay_rule');
         $reorder =      $request->request->get('action');
         $reorder =      $request->get('action'); // pour debug, à supprimer
-
-        // some requests have subtype query argument
-        // eg. http://.../front/ruleticket.php?reinit=true&subtype=RuleTicket
-        // but it's not used anymore
-        // because subtype is redundant with $request->attributes->get('class')
-        // $request->get('subtype');
-
         $item_class = $request->attributes->getString('class');
-        $this->ruleCollection = $this->getRuleCollectionInstanceFromRuleSubtype($item_class, (int) $_SESSION['glpiactive_entity']);
 
-        // @todo param subtype contient le type d'item sur certaines requetes http://localhost:8081/front/ruleticket.php?reinit=true&subtype=RuleTicket
+        $this->ruleCollection = $this->getRuleCollectionInstanceFromRuleSubtype($item_class, (int) $_SESSION['glpiactive_entity']);
 
         // dispatch
         if (!is_null($reorder)) {
@@ -268,9 +260,6 @@ final class RuleListController extends AbstractController
         }
         $rule = new $item_subtype();
         $collection_classname = $rule->getCollectionClassName();
-        if (!is_subclass_of($collection_classname, \RuleCollection::class)) {
-            throw new BadRequestHttpException(sprintf('Invalid Rule Collection type "%s"', htmlescape($collection_classname)));
-        }
 
         /**
          * Not all classes extendending RuleCollection have a constructor.

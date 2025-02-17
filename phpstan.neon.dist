@@ -2,6 +2,7 @@ includes:
     - .phpstan-baseline.php
 
 parameters:
+#    treatPhpDocTypesAsCertain: false
     level: 4
     bootstrapFiles:
         - stubs/db_config_classes.php

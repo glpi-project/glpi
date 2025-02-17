@@ -41,6 +41,8 @@ use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetModel;
 use Glpi\Asset\AssetType;
+use Glpi\Asset\RuleDictionaryModel;
+use Glpi\Asset\RuleDictionaryType;
 use Glpi\Controller\GenericFormController;
 use Glpi\Controller\GenericListController;
 use Glpi\Controller\DropdownFormController;
@@ -96,8 +98,11 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
             if (\is_a($class, CommonDropdown::class, true)) {
                 $request->attributes->set('_controller', $is_form ? DropdownFormController::class : GenericListController::class);
                 $request->attributes->set('class', $class);
-                // @todo maybe \Rule::class is too large ?
-            } elseif (\is_subclass_of($class, \Rule::class, true)) {
+            } elseif (
+                \is_subclass_of($class, \Rule::class, true)
+                || is_subclass_of($class, RuleDictionaryModel::class, true)
+                || is_subclass_of($class, RuleDictionaryType::class, true)
+            ) {
                 $request->attributes->set('_controller', $is_form ? GenericFormController::class : RuleListController::class);
                 $request->attributes->set('class', $class);
             } else {
@@ -128,6 +133,14 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
 
         if ($asset_type_class = $this->findAssetTypeclass($request)) {
             return $asset_type_class;
+        }
+
+        if ($asset_model_dictionary_class = $this->findAssetModelDictionaryclass($request)) {
+            return $asset_model_dictionary_class;
+        }
+
+        if ($asset_type_dictionary_class = $this->findAssetTypeDictionaryclass($request)) {
+            return $asset_type_dictionary_class;
         }
 
         if ($dropdown_class = $this->findCustomDropdownClass($request)) {
@@ -328,6 +341,65 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
             $definition = new AssetDefinition();
             if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
                 $classname = $definition->getAssetTypeClassName();
+            }
+        }
+
+        return $classname;
+    }
+
+    private function findAssetModelDictionaryclass(Request $request): ?string
+    {
+        $matches = [];
+        if (!\preg_match('~^/front/asset/ruledictionarymodel(?<is_form>\.form)?\.php$~i', $request->getPathInfo(), $matches)) {
+            return null;
+        }
+
+        $is_form = !empty($matches['is_form']);
+        $id = $request->query->get('id') ?: $request->request->get('id');
+
+        $classname = null;
+
+        // @todo
+        if ($is_form && $id !== null && !AssetModel::isNewId($id)) {
+            throw new \Exception('Not implemented');
+            $asset = AssetModel::getById($id); // @todo AssetModelDictionary ?
+            if (!$asset) {
+                return null;
+            }
+            $classname = $asset::class;
+        } else {
+            $definition = new AssetDefinition();
+            if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
+                $classname = $definition->getAssetModelDictionaryClassName();
+            }
+        }
+
+        return $classname;
+    }
+    private function findAssetTypeDictionaryclass(Request $request): ?string
+    {
+        $matches = [];
+        if (!\preg_match('~^/front/asset/ruledictionarytype(?<is_form>\.form)?\.php$~i', $request->getPathInfo(), $matches)) {
+            return null;
+        }
+
+        $is_form = !empty($matches['is_form']);
+        $id = $request->query->get('id') ?: $request->request->get('id');
+
+        $classname = null;
+
+        // @todo
+        if ($is_form && $id !== null && !AssetModel::isNewId($id)) {
+            throw new \Exception('Not implemented');
+            $asset = AssetModel::getById($id); // @todo AssetModelDictionary ?
+            if (!$asset) {
+                return null;
+            }
+            $classname = $asset::class;
+        } else {
+            $definition = new AssetDefinition();
+            if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
+                $classname = $definition->getAssetTypeDictionaryClassName();
             }
         }
 
