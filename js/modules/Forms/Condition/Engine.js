@@ -47,10 +47,9 @@ export class GlpiFormConditionEngine
 
         try {
             // Send data to server for computation and apply results.
-            const results = await this.#computeVisibilityOnBackend({
+            return await this.#computeVisibilityOnBackend({
                 answers: this.#getQuestionsData(container)
             });
-            this.#applyVisibilityResults(results, container);
         } catch (e) {
             console.error(e);
             glpi_toast_error(
@@ -125,46 +124,6 @@ export class GlpiFormConditionEngine
         }
 
         return response.json();
-    }
-
-    #applyVisibilityResults(results, container)
-    {
-        // TODO: sections_visibility
-
-        // Apply questions visibility
-        for (const [id, must_be_visible] of Object.entries(
-            results.questions_visibility
-        )) {
-            const question = container.querySelector(
-                `[data-glpi-form-renderer-question][data-glpi-form-renderer-id="${id}"]`
-            );
-            if (question === null) {
-                continue;
-            }
-            this.#applyVisibilityToItem(question, must_be_visible);
-        };
-
-        // Apply comments visibility
-        for (const [id, must_be_visible] of Object.entries(
-            results.comments_visibility
-        )) {
-            const comment = container.querySelector(
-                `[data-glpi-form-renderer-comment][data-glpi-form-renderer-id="${id}"]`
-            );
-            if (comment === null) {
-                continue;
-            }
-            this.#applyVisibilityToItem(comment, must_be_visible);
-        };
-    }
-
-    #applyVisibilityToItem(item, must_be_visible)
-    {
-        if (must_be_visible) {
-            item.removeAttribute("data-glpi-form-renderer-hidden-by-condition");
-        } else {
-            item.setAttribute("data-glpi-form-renderer-hidden-by-condition", "");
-        }
     }
 }
 

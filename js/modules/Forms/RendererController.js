@@ -53,12 +53,6 @@ export class GlpiFormRendererController
     #section_index;
 
     /**
-     * Total number of sections
-     * @type {number}
-     */
-    #number_of_sections;
-
-    /**
      * @type {GlpiFormConditionEngine}
      */
     #condition_engine;
@@ -79,9 +73,6 @@ export class GlpiFormRendererController
 
         // Init section data
         this.#section_index = 0;
-        this.#number_of_sections = $(this.#target)
-            .find("[data-glpi-form-renderer-section]")
-            .length;
 
         // Init event handlers
         this.#initEventHandlers();
@@ -93,6 +84,8 @@ export class GlpiFormRendererController
 
         // Load condition engine
         this.#condition_engine = new GlpiFormConditionEngine(form_id);
+        this.#enableActions();
+        this.#updateActionsVisiblity();
     }
 
     /**
@@ -123,6 +116,10 @@ export class GlpiFormRendererController
             400,
         );
         $(document).on('input tinyMCEInput', this.#target, () => {
+            // Disable actions immediately to avoid someone clicking on the actions
+            // while the conditions have not been computed yet.
+            this.#disableActions();
+
             debouncedComputeItemsVisibilities();
         });
     }
@@ -189,8 +186,13 @@ export class GlpiFormRendererController
             `)
             .addClass("d-none");
 
-        // Show next section and its questions
-        this.#section_index++;
+        // Show next visible section and its questions
+        const next_section_index = this.#getNextVisibleSectionIndex();
+        if (next_section_index === null) {
+            throw new Error('Impossible to load the next section');
+        }
+
+        this.#section_index = next_section_index;
         $(this.#target)
             .find(`
                 [data-glpi-form-renderer-section=${this.#section_index}],
@@ -214,8 +216,13 @@ export class GlpiFormRendererController
             `)
             .addClass("d-none");
 
-        // Show preview section and its questions
-        this.#section_index--;
+        // Show previous visible section and its questions
+        const previous_section_index = this.#getPreviousVisibleSectionIndex();
+        if (previous_section_index === null) {
+            throw new Error('Impossible to load the previous section');
+        }
+
+        this.#section_index = previous_section_index;
         $(this.#target)
             .find(`
                 [data-glpi-form-renderer-section=${this.#section_index}],
@@ -232,51 +239,212 @@ export class GlpiFormRendererController
      * section of the form.
      */
     #updateActionsVisiblity() {
-        if (this.#section_index == 0) {
-            // First section, show next button
+        if (this.#hasOneVisibleSectionAfterCurrentIndex()) {
+            // Show "next" button if at least one other following section is visible
             $(this.#target)
                 .find("[data-glpi-form-renderer-action=submit]")
                 .addClass("d-none");
-
             $(this.#target)
                 .find("[data-glpi-form-renderer-action=next-section]")
                 .removeClass("d-none");
-
-            $(this.#target)
-                .find("[data-glpi-form-renderer-action=previous-section]")
-                .addClass("d-none");
-
-        } else if (this.#section_index == (this.#number_of_sections - 1)) { // Minus 1 because section_index is 0-based
-            // Last section, show submit and previous button
-            $(this.#target)
-                .find("[data-glpi-form-renderer-action=submit]")
-                .removeClass("d-none");
-
-            $(this.#target)
-                .find("[data-glpi-form-renderer-action=next-section]")
-                .addClass("d-none");
-
-            $(this.#target)
-                .find("[data-glpi-form-renderer-action=previous-section]")
-                .removeClass("d-none");
-
         } else {
-            // Any middle section, show next and previous button
+            // Show "submit" button instead
             $(this.#target)
                 .find("[data-glpi-form-renderer-action=submit]")
-                .addClass("d-none");
-
+                .removeClass("d-none");
             $(this.#target)
                 .find("[data-glpi-form-renderer-action=next-section]")
-                .removeClass("d-none");
+                .addClass("d-none");
+        }
 
+        if (this.#hasOneVisibleSectionBeforeCurrentIndex()) {
+            // Show "back" button if at least one previous section is visible
             $(this.#target)
                 .find("[data-glpi-form-renderer-action=previous-section]")
                 .removeClass("d-none");
+        } else {
+            $(this.#target)
+                .find("[data-glpi-form-renderer-action=previous-section]")
+                .addClass("d-none");
         }
     }
 
-    #computeItemsVisibilities() {
-        this.#condition_engine.computeVisiblity(this.#target);
+    #updateStepLabels() {
+        const number_of_visible_sections = this.#getNumberOfVisibleSections();
+
+        $(this.#target).find('[data-glpi-form-renderer-section]').each((_i, section) => {
+            const $section = $(section);
+
+            // If section if hidden, there is not label to display
+            if (section.dataset.glpiFormRendererHiddenByCondition !== undefined) {
+                $section
+                    .find('[data-glpi-form-renderer-step-label]')
+                    .html('')
+                ;
+                return;
+            }
+
+            const number_of_sections_after = $section.nextAll(
+                '[data-glpi-form-renderer-section]'
+            ).length;
+            const number_of_hidden_sections_after = $section.nextAll(
+                '[data-glpi-form-renderer-section][data-glpi-form-renderer-hidden-by-condition]'
+            ).length;
+            const number_of_visible_sections_after = number_of_sections_after - number_of_hidden_sections_after;
+
+            $section
+                .find('[data-glpi-form-renderer-step-label]')
+                .html(
+                    __("Step %1$d of %2$d")
+                        .replace("%1$d", number_of_visible_sections - number_of_visible_sections_after)
+                        .replace("%2$d", number_of_visible_sections)
+                )
+            ;
+        });
+    }
+
+    #getNumberOfVisibleSections() {
+        const total_sections = $(this.#target).find('[data-glpi-form-renderer-section]');
+        const hidden_sections = $(this.#target).find(
+            '[data-glpi-form-renderer-section][data-glpi-form-renderer-hidden-by-condition]'
+        );
+        return total_sections.length - hidden_sections.length;
+    }
+
+    async #computeItemsVisibilities() {
+        const results = await this.#condition_engine.computeVisiblity(this.#target);
+        this.#applyVisibilityResults(results);
+        this.#enableActions();
+    }
+
+    #applyVisibilityResults(results)
+    {
+        const container = document.querySelector(this.#target);
+
+        // Apply sections visibility
+        for (const [id, must_be_visible] of Object.entries(
+            results.sections_visibility
+        )) {
+            const section = container.querySelector(
+                `[data-glpi-form-renderer-section][data-glpi-form-renderer-id="${id}"]`
+            );
+            if (section === null) {
+                continue;
+            }
+
+            // Can't change the visibility of the current section
+            if ($(section).data('glpi-form-renderer-section') == this.#section_index) {
+                continue;
+            }
+
+            this.#applyVisibilityToItem(section, must_be_visible);
+        };
+
+        // Apply questions visibility
+        for (const [id, must_be_visible] of Object.entries(
+            results.questions_visibility
+        )) {
+            const question = container.querySelector(
+                `[data-glpi-form-renderer-question][data-glpi-form-renderer-id="${id}"]`
+            );
+            if (question === null) {
+                continue;
+            }
+            this.#applyVisibilityToItem(question, must_be_visible);
+        };
+
+        // Apply comments visibility
+        for (const [id, must_be_visible] of Object.entries(
+            results.comments_visibility
+        )) {
+            const comment = container.querySelector(
+                `[data-glpi-form-renderer-comment][data-glpi-form-renderer-id="${id}"]`
+            );
+            if (comment === null) {
+                continue;
+            }
+            this.#applyVisibilityToItem(comment, must_be_visible);
+        };
+
+        this.#updateActionsVisiblity();
+        this.#updateStepLabels();
+    }
+
+    #applyVisibilityToItem(item, must_be_visible)
+    {
+        if (must_be_visible) {
+            item.removeAttribute("data-glpi-form-renderer-hidden-by-condition");
+        } else {
+            item.setAttribute("data-glpi-form-renderer-hidden-by-condition", "");
+        }
+    }
+
+    #getNextVisibleSectionIndex()
+    {
+        let index = null;
+
+        const sections = $(this.#target).find('[data-glpi-form-renderer-section]');
+        sections.each((_i, section) => {
+            // Ignore previous and current section
+            if (section.dataset.glpiFormRendererSection <= this.#section_index) {
+                return;
+            }
+
+            // A visible section won't have the following data property
+            if (section.dataset.glpiFormRendererHiddenByCondition === undefined) {
+                index = section.dataset.glpiFormRendererSection;
+                return false; // Break
+            }
+        });
+
+        return index;
+    }
+
+    #getPreviousVisibleSectionIndex()
+    {
+        let index = null;
+
+        const sections = $(this.#target).find('[data-glpi-form-renderer-section]');
+        sections.each((_i, section) => {
+            // Ignore next and current section
+            if (section.dataset.glpiFormRendererSection >= this.#section_index) {
+                return false; // Break
+            }
+
+            // A visible section won't have the following data property
+            if (section.dataset.glpiFormRendererHiddenByCondition === undefined) {
+                index = section.dataset.glpiFormRendererSection;
+            }
+        });
+
+        return index;
+    }
+
+    #hasOneVisibleSectionAfterCurrentIndex()
+    {
+        return this.#getNextVisibleSectionIndex() !== null;
+    }
+
+    #hasOneVisibleSectionBeforeCurrentIndex()
+    {
+        return this.#getPreviousVisibleSectionIndex() !== null;
+    }
+
+    #disableActions()
+    {
+        // Do not use "disable" prop to avoid the button "flashing" back and
+        // forth.
+        $(this.#target)
+            .find("button[data-glpi-form-renderer-action]")
+            .addClass("pointer-events-none")
+        ;
+    }
+
+    #enableActions()
+    {
+        $(this.#target)
+            .find("button[data-glpi-form-renderer-action]")
+            .removeClass("pointer-events-none")
+        ;
     }
 }

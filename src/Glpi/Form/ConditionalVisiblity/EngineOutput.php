@@ -53,6 +53,15 @@ final class EngineOutput implements JsonSerializable
         ];
     }
 
+    public function getNumberOfVisibleSections(): int
+    {
+        $visible = array_filter(
+            $this->sections_visibility,
+            fn ($is_visible): bool => $is_visible
+        );
+        return count($visible);
+    }
+
     public function setSectionVisibility(int $section_id, bool $is_visible): void
     {
         $this->sections_visibility[$section_id] = $is_visible;
