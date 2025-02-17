@@ -1314,8 +1314,8 @@ TWIG,
             $menu = self::getMenuInfos();
 
            // Permit to plugins to add entry to others sector !
-            if (isset($PLUGIN_HOOKS["menu_toadd"]) && count($PLUGIN_HOOKS["menu_toadd"])) {
-                foreach ($PLUGIN_HOOKS["menu_toadd"] as $plugin => $items) {
+            if (isset($PLUGIN_HOOKS[Hooks::MENU_TOADD]) && count($PLUGIN_HOOKS[Hooks::MENU_TOADD])) {
+                foreach ($PLUGIN_HOOKS[Hooks::MENU_TOADD] as $plugin => $items) {
                     if (!Plugin::isPluginActive($plugin)) {
                         continue;
                     }

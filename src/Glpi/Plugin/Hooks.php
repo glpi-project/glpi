@@ -171,7 +171,8 @@ class Hooks
     // Debug / Development hooks
     const DEBUG_TABS = 'debug_tabs';
 
-    // Helpdesk Menu Hooks
+    // Menu Hooks
+    const MENU_TOADD = 'menu_toadd';
     const HELPDESK_MENU_ENTRY = 'helpdesk_menu_entry';
     const HELPDESK_MENU_ENTRY_ICON = 'helpdesk_menu_entry_icon';
 
