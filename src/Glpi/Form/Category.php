@@ -100,7 +100,7 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     #[Override]
     public function getServiceCatalogItemDescription(): string
     {
-        return $this->fields['description'];
+        return $this->fields['description'] ?? '';
     }
 
     #[Override]

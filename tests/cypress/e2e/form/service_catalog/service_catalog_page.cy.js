@@ -41,10 +41,18 @@ describe('Service catalog page', () => {
             'forms_categories_id': category,
         }).as('form_id');
 
-        cy.get('@form_id').visitFormTab('Policies');
-        cy.getDropdownByLabelText('Allow specifics users, groups or profiles').selectDropdownValue('All users');
-        cy.findByRole('link', {'name': /There are \d+ user\(s\) matching these criteria\./}).should('exist');
-        cy.findByRole('button', {name: 'Save changes'}).click();
+        cy.get('@form_id').then(form_id => {
+            cy.createWithAPI('Glpi\\Form\\AccessControl\\FormAccessControl', {
+                'forms_forms_id': form_id,
+                'strategy'      : 'Glpi\\Form\\AccessControl\\ControlType\\AllowList',
+                '_config'        : {
+                    'user_ids': ['all'],
+                    'groups_ids': [],
+                    'profiles_ids': [],
+                },
+                'is_active'     : true,
+            });
+        });
     }
 
     beforeEach(() => {
@@ -181,7 +189,7 @@ describe('Service catalog page', () => {
         ;
     });
 
-    it('can naviate through the service catalog using the breadcrumbs', () => {
+    it('can navigate through the service catalog using the breadcrumbs', () => {
         function createCategory(name, category_id = 0) {
             return cy.createWithAPI('Glpi\\Form\\Category', {
                 'name': name,
@@ -242,5 +250,85 @@ describe('Service catalog page', () => {
             cy.findByRole('link', {'name': `Child Category 1 ${time}`}).should('not.exist');
             cy.findByRole('link', {'name': `Child Category 2 ${time}`}).should('not.exist');
         });
+    });
+
+    it('can paginate through the service catalog', () => {
+        const time = (new Date()).getTime();
+        const forms_per_page = 12; // Default value from ServiceCatalogManager::ITEMS_PER_PAGE
+        const total_forms = forms_per_page + 5; // Create more than one page worth of forms
+
+        // Create enough forms to trigger pagination
+        cy.changeProfile('Super-Admin');
+        const formPromises = [];
+        for (let i = 0; i < total_forms; i++) {
+            formPromises.push(createActiveForm(`Form ${String.fromCharCode(65 + i)} ${time}`));
+        }
+        cy.wrap(Promise.all(formPromises));
+
+        // Go to service catalog
+        cy.changeProfile('Self-Service', true);
+        cy.visit('/ServiceCatalog');
+
+        // Filter forms to show only the ones created in this test
+        cy.findByPlaceholderText('Search for forms...').type(time);
+
+        // Verify first page content
+        for (let i = 0; i < forms_per_page; i++) {
+            cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + i)} ${time}`}).should('exist');
+        }
+        // Verify items from second page are not visible
+        cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + forms_per_page)} ${time}`}).should('not.exist');
+
+        // Test pagination controls visibility
+        cy.findByRole('navigation', {name: 'Service catalog pages'}).within(() => {
+            // First page active
+            cy.findByRole('link', {name: '1'}).closest('li').should('have.class', 'active');
+            // Second page link available
+            cy.findByRole('link', {name: '2'}).should('exist');
+            // Third page link not available
+            cy.findByRole('link', {name: '3'}).should('not.exist');
+            // Next/Last buttons enabled
+            cy.findByRole('link', {name: 'Next page'}).closest('li').should('not.have.class', 'disabled');
+            cy.findByRole('link', {name: 'Last page'}).closest('li').should('not.have.class', 'disabled');
+            // Prev/First buttons disabled
+            cy.findByRole('link', {name: 'Previous page'}).closest('li').should('have.class', 'disabled');
+            cy.findByRole('link', {name: 'First page'}).closest('li').should('have.class', 'disabled');
+        });
+
+        // Go to second page
+        cy.findByRole('link', {name: '2'}).click();
+
+        // Verify second page content
+        for (let i = 0; i < forms_per_page; i++) {
+            cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + i)} ${time}`}).should('not.exist');
+        }
+        for (let i = forms_per_page; i < total_forms; i++) {
+            cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + i)} ${time}`}).should('exist');
+        }
+
+        // Test pagination controls after page change
+        cy.findByRole('navigation', {name: 'Service catalog pages'}).within(() => {
+            // Second page active
+            cy.findByRole('link', {name: '2'}).closest('li').should('have.class', 'active');
+            // First page link available
+            cy.findByRole('link', {name: '1'}).should('exist');
+            // Third page link available
+            cy.findByRole('link', {name: '3'}).should('not.exist');
+            // Next/Last buttons disabled (on last page)
+            cy.findByRole('link', {name: 'Next page'}).closest('li').should('have.class', 'disabled');
+            cy.findByRole('link', {name: 'Last page'}).closest('li').should('have.class', 'disabled');
+            // Prev/First buttons enabled
+            cy.findByRole('link', {name: 'Previous page'}).closest('li').should('not.have.class', 'disabled');
+            cy.findByRole('link', {name: 'First page'}).closest('li').should('not.have.class', 'disabled');
+        });
+
+        // Go back to first page using prev button
+        cy.findByRole('link', {name: 'Previous page'}).click();
+
+        // Verify first page content again
+        for (let i = 0; i < forms_per_page; i++) {
+            cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + i)} ${time}`}).should('exist');
+        }
+        cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + forms_per_page)} ${time}`}).should('not.exist');
     });
 });
