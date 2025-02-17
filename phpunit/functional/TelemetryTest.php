@@ -127,6 +127,8 @@ class TelemetryTest extends DbTestCase
             0,
             $collector->add([
                 'name'        => 'Collector1',
+                'mail_server' => 'test',
+                'server_type' => '/imap',
                 'is_active'   => 1
             ])
         );
