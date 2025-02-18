@@ -228,6 +228,7 @@ The present file will list all changes made to the project; according to the
 - The `$target` parameter has been removed from the `AuthLDAP::showLdapGroups()` method.
 - The `$target` parameter has been removed from the `Rule::showRulePreviewCriteriasForm()`, `Rule::showRulePreviewResultsForm()`, `RuleCollection::showRulesEnginePreviewCriteriasForm()`, and `RuleCollection::showRulesEnginePreviewResultsForm()` methods signature.
 - `Hooks::SHOW_IN_TIMELINE`/`show_in_timeline` plugin hook has been renamed to `Hooks::TIMELINE_ITEMS`/`timeline_items`.
+- `Auth::getMethodName()` now only returns the name without a link. Use `Auth::getMethodLink()` to get a HTML-safe link.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.
@@ -588,6 +589,7 @@ The present file will list all changes made to the project; according to the
 - `ajax/ticketsatisfaction.php` and `ajax/changesatisfaction.php` scripts. Access `ajax/commonitilsatisfaction.php` directly instead.
 - Usage of the `$cut` parameter in `formatUserName()` and `DbUtils::formatUserName()`.
 - Handling of the `delegate` right in `User::getSqlSearchResult()`.
+- Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
 
 
 ## [10.0.18] 2025-02-12

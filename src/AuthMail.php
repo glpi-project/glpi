@@ -47,7 +47,7 @@ class AuthMail extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Mail server', 'Mail servers', $nb);
+        return _n('Email server', 'Email servers', $nb);
     }
 
     public static function getSectorizedDetails(): array
@@ -109,7 +109,7 @@ class AuthMail extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Email server')
+            'name'               => _n('Email server', 'Email servers', 1)
         ];
 
         $tab[] = [
