@@ -44,7 +44,7 @@ $migration->addConfig([
     'set_followup_tech' => '0',
     'set_solution_tech' => '0',
     'is_demo_dashboards' => '0',
-    'planned_task_state' => Planning::TODO,
+    'planned_task_state' => '1',
 ]);
 $migration->addField('glpi_users', 'toast_location', 'string');
 
@@ -54,7 +54,7 @@ $migration->addField(
     'glpi_users',
     'planned_task_state',
     'int DEFAULT NULL',
-    ['value' => Planning::TODO]
+    ['update' => 1]
 );
 
 $migration->removeConfig(['url_base_api']);
