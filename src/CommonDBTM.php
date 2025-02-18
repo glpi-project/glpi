@@ -6849,7 +6849,7 @@ TWIG, $twig_params);
         };
     }
 
-    public static function getByUuid(string $uuid): ?self
+    public static function getByUuid(string $uuid): ?static
     {
         $item = new static();
         if ($item->getFromDBByCrit(['uuid' => $uuid])) {

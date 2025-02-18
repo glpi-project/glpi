@@ -137,6 +137,20 @@ final class EditorManager
         return LogicOperator::getDropdownValues();
     }
 
+    public function getInputTemplateKeyForCondition(
+        ConditionData $condition
+    ): InputTemplateKey {
+        $question = $this->findQuestionDataByUuid($condition->getItemUuid());
+        $type = $question->getType();
+
+        if ($type instanceof UsedAsCriteriaInterface) {
+            return $type->getInputTemplateKey();
+        }
+
+        // Safe fallback
+        return InputTemplateKey::STRING;
+    }
+
     private function findQuestionDataByUuid(string $question_uuid): ?QuestionData
     {
         $questions = $this->form_data->getQuestionsData();

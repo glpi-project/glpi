@@ -129,16 +129,22 @@ final class Engine
         $question = Question::getByUuid($condition->getItemUuid());
         $answer = $this->input->getAnswers()[$question->getID()] ?? null;
 
-        // Compute condition
-        return match (true) {
-            $answer === null => false,
-            is_string($answer) => $condition->getValueOperator()->applyForString(
-                $answer,
-                $condition->getValue()
-            ),
-            // Only strings are supported as values for now, this should
-            // never happen.
-            default => throw new RuntimeException("Not supported"),
-        };
+        // Fail for questions without an answer.
+        if ($answer === null) {
+            return false;
+        }
+
+        // Get UsedForConditionInstance
+        $question_type = $question->getQuestionType();
+        if (!($question_type instanceof UsedAsCriteriaInterface)) {
+            // Invalid condition
+            return false;
+        }
+
+        return $question_type->applyValueOperator(
+            $answer,
+            $condition->getValueOperator(),
+            $condition->getValue(),
+        );
     }
 }

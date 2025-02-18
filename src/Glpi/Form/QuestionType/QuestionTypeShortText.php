@@ -35,12 +35,14 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Glpi\Form\ConditionalVisiblity\StringConditionTrait;
 use Glpi\Form\ConditionalVisiblity\UsedAsCriteriaInterface;
-use Glpi\Form\ConditionalVisiblity\ValueOperator;
 use Override;
 
 final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
 {
+    use StringConditionTrait;
+
     #[Override]
     public function getInputType(): string
     {
@@ -63,16 +65,5 @@ final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implem
     public function getWeight(): int
     {
         return 10;
-    }
-
-    #[Override]
-    public function getSupportedValueOperators(): array
-    {
-        return [
-            ValueOperator::EQUALS,
-            ValueOperator::NOT_EQUALS,
-            ValueOperator::CONTAINS,
-            ValueOperator::NOT_CONTAINS,
-        ];
     }
 }

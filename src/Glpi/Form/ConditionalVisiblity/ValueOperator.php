@@ -40,32 +40,26 @@ enum ValueOperator: string
     case NOT_EQUALS = 'not_equals';
     case CONTAINS = 'contains';
     case NOT_CONTAINS = 'not_contains';
+    case GREATER_THAN = 'greater_than';
+    case GREATER_THAN_OR_EQUALS = 'greater_than_or_equals';
+    case LESS_THAN = 'less_than';
+    case LESS_THAN_OR_EQUALS = 'less_than_or_equals';
 
     // Not yet implemented:
-    // case GREATER_THAN = 'greater_than';
-    // case GREATER_THAN_OR_EQUALS = 'greater_than_or_equals';
-    // case LESS_THAN = 'less_than';
-    // case LESS_THAN_OR_EQUALS = 'less_than_or_equals';
     // case VISIBLE = 'visible';
     // case NOT_VISIBLE = 'not_visible';
 
     public function getLabel(): string
     {
         return match ($this) {
-            self::EQUALS       => __("Is equal to"),
-            self::NOT_EQUALS   => __("Is not equal to"),
-            self::CONTAINS     => __("Contains"),
-            self::NOT_CONTAINS => __("Do not contains"),
-        };
-    }
-
-    public function applyForString(string $a, string $b): bool
-    {
-        return match ($this) {
-            self::EQUALS       => $a === $b,
-            self::NOT_EQUALS   => $a !== $b,
-            self::CONTAINS     => str_contains($b, $a),
-            self::NOT_CONTAINS => !str_contains($b, $a),
+            self::EQUALS                 => __("Is equal to"),
+            self::NOT_EQUALS             => __("Is not equal to"),
+            self::CONTAINS               => __("Contains"),
+            self::NOT_CONTAINS           => __("Do not contains"),
+            self::GREATER_THAN           => __("Is greater than"),
+            self::GREATER_THAN_OR_EQUALS => __("Is greater than or equals to"),
+            self::LESS_THAN              => __("Is less than"),
+            self::LESS_THAN_OR_EQUALS    => __("Is less than or equals to"),
         };
     }
 }

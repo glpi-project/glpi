@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,43 +32,48 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Form\ConditionalVisiblity;
 
-use Glpi\Form\ConditionalVisiblity\NumberConditionTrait;
-use Glpi\Form\ConditionalVisiblity\UsedAsCriteriaInterface;
 use Override;
 
-final class QuestionTypeNumber extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
+trait StringConditionTrait
 {
-    use NumberConditionTrait;
-
     #[Override]
-    public function getInputType(): string
+    public function getSupportedValueOperators(): array
     {
-        return 'number';
+        return [
+            ValueOperator::EQUALS,
+            ValueOperator::NOT_EQUALS,
+            ValueOperator::CONTAINS,
+            ValueOperator::NOT_CONTAINS,
+        ];
     }
 
     #[Override]
-    public function getName(): string
+    public function getInputTemplateKey(): InputTemplateKey
     {
-        return __("Number");
+        return InputTemplateKey::STRING;
     }
 
     #[Override]
-    public function getIcon(): string
-    {
-        return 'ti ti-number-123';
-    }
+    public function applyValueOperator(
+        mixed $a,
+        ValueOperator $operator,
+        mixed $b,
+    ): bool {
+        // Normalize strings.
+        $a = strtolower(strval($a));
+        $b = strtolower(strval($b));
 
-    #[Override]
-    public function getWeight(): int
-    {
-        return 30;
-    }
+        return match ($operator) {
+            ValueOperator::EQUALS       => $a === $b,
+            ValueOperator::NOT_EQUALS   => $a !== $b,
+            ValueOperator::CONTAINS     => str_contains($b, $a),
+            ValueOperator::NOT_CONTAINS => !str_contains($b, $a),
 
-    #[Override]
-    public function getInputAttributes(): array
-    {
-        return ['step' => 'any'];
+            // Unsupported operators
+            ValueOperator::GREATER_THAN, ValueOperator::GREATER_THAN_OR_EQUALS => false,
+            ValueOperator::LESS_THAN, ValueOperator::LESS_THAN_OR_EQUALS => false,
+        };
     }
 }

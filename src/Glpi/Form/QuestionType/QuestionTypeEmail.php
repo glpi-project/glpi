@@ -35,11 +35,15 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Glpi\Form\ConditionalVisiblity\StringConditionTrait;
+use Glpi\Form\ConditionalVisiblity\UsedAsCriteriaInterface;
 use Override;
 use Session;
 
-final class QuestionTypeEmail extends AbstractQuestionTypeShortAnswer
+final class QuestionTypeEmail extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
 {
+    use StringConditionTrait;
+
     #[Override]
     public function getInputType(): string
     {

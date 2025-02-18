@@ -37,9 +37,11 @@ namespace tests\units\Glpi\Form\ConditionalVisiblity;
 use Glpi\Form\ConditionalVisiblity\ConditionData;
 use Glpi\Form\ConditionalVisiblity\EditorManager;
 use Glpi\Form\ConditionalVisiblity\FormData;
+use Glpi\Form\ConditionalVisiblity\InputTemplateKey;
 use Glpi\Form\ConditionalVisiblity\LogicOperator;
 use Glpi\Form\ConditionalVisiblity\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeFile;
+use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use GLPITestCase;
 
@@ -236,7 +238,7 @@ final class EditorManagerTest extends GLPITestCase
 
     public function testValueOperatorsForInvalidQuestionAreNotReturned(): void
     {
-        // Arrange: create an editor manager with three questions
+        // Arrange: create an editor manager with one invalid question
         $form_data = new FormData([
             'questions' => [
                 [
@@ -253,5 +255,67 @@ final class EditorManagerTest extends GLPITestCase
 
         // Assert: no operators should be found.
         $this->assertEquals([], $dropdown_values);
+    }
+
+    public function testInputTemplateKeyCanBeComputedFromCondition(): void
+    {
+        // Arrange: create an editor manager with some data
+        $condition_1 = new ConditionData(
+            item_uuid: '1',
+            item_type: 'question',
+            value_operator: ValueOperator::EQUALS->value,
+            value: "foo",
+        );
+        $condition_2 = new ConditionData(
+            item_uuid: '2',
+            item_type: 'question',
+            value_operator: ValueOperator::EQUALS->value,
+            value: "bar",
+        );
+        $form_data = new FormData([
+            'questions' => [
+                [
+                    'uuid' => 1,
+                    'name' => 'Question 1',
+                    'type' => QuestionTypeShortText::class,
+                ],
+                [
+                    'uuid' => 2,
+                    'name' => 'Question 2',
+                    'type' => QuestionTypeNumber::class,
+                ],
+                [
+                    'uuid' => 3,
+                    'name' => 'Question 3',
+                    'type' => QuestionTypeShortText::class,
+                ],
+            ],
+            'conditions' => [
+                [
+                    'item'           => $condition_1->getItemDropdownKey(),
+                    'value_operator' => $condition_1->getValueOperator()->value,
+                    'value'          => $condition_1->getValue(),
+                ],
+                [
+                    'logic_operator' => LogicOperator::AND->value,
+                    'item'           => $condition_2->getItemDropdownKey(),
+                    'value_operator' => $condition_2->getValueOperator()->value,
+                    'value'          => $condition_2->getValue(),
+                ],
+            ]
+        ]);
+        $editor_manager = $this->getManagerWithData($form_data);
+
+        // Act: get the template types using the condition
+        $question_1_template_key = $editor_manager->getInputTemplateKeyForCondition(
+            $condition_1
+        );
+        $question_2_template_key = $editor_manager->getInputTemplateKeyForCondition(
+            $condition_2
+        );
+
+        // Assert: the correct template key must be found
+        $this->assertEquals(InputTemplateKey::STRING, $question_1_template_key);
+        $this->assertEquals(InputTemplateKey::NUMBER, $question_2_template_key);
     }
 }

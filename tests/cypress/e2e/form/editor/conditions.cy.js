@@ -53,6 +53,14 @@ function addQuestion(name) {
     });
 }
 
+function setQuestionTypeCategory(category) {
+    cy.getDropdownByLabelText('Question type').selectDropdownValue(category);
+}
+
+function setQuestionType(type) {
+    cy.getDropdownByLabelText('Question sub type').selectDropdownValue(type);
+}
+
 function addComment(name) {
     cy.findByRole('button', {'name': "Add a new comment"}).click();
     cy.focused().type(name);
@@ -183,7 +191,7 @@ function deleteConditon(index) {
     cy.get('@condition').findByRole('button', {'name': 'Delete criteria'}).click();
 }
 
-function fillCondition(index, logic_operator, question_name, value_operator_name, value) {
+function fillCondition(index, logic_operator, question_name, value_operator_name, value, value_type = "string") {
     cy.get("[data-glpi-form-editor-condition]").eq(index).as('condition');
     if (logic_operator !== null && index > 0) {
         cy.get('@condition')
@@ -195,10 +203,15 @@ function fillCondition(index, logic_operator, question_name, value_operator_name
     cy.get('@condition').getDropdownByLabelText('Value operator')
         .selectDropdownValue(value_operator_name)
     ;
-    cy.get('@condition').findByRole('textbox', {'name': 'Value'}).type(value);
+
+    if (value_type === "string"){
+        cy.get('@condition').findByRole('textbox', {'name': 'Value'}).type(value);
+    } else if (value_type === "number") {
+        cy.get('@condition').findByRole('spinbutton', {'name': 'Value'}).type(value);
+    }
 }
 
-function checkThatConditionExist(index, logic_operator, question_name, value_operator_name, value) {
+function checkThatConditionExist(index, logic_operator, question_name, value_operator_name, value, value_type = "string") {
     cy.get("[data-glpi-form-editor-condition]").eq(index).as('condition');
     if (logic_operator !== null && index > 0) {
         cy.get('@condition')
@@ -211,7 +224,12 @@ function checkThatConditionExist(index, logic_operator, question_name, value_ope
         'have.text',
         value_operator_name
     );
-    cy.get('@condition').findByRole('textbox', {'name': 'Value'}).should('have.value', value);
+
+    if (value_type === "string"){
+        cy.get('@condition').findByRole('textbox', {'name': 'Value'}).should('have.value', value);
+    } else {
+        cy.get('@condition').findByRole('spinbutton', {'name': 'Value'}).should('have.value', value);
+    }
 }
 
 function checkThatConditionDoNotExist(index) {
@@ -727,5 +745,77 @@ describe ('Conditions', () => {
             'First section',
             'My section that is always visible',
         ]);
+    });
+
+    it('can apply all supported conditions types', () => {
+        createForm();
+
+        // Init test question on which we will add our conditions.
+        addQuestion('Test subject');
+        getAndFocusQuestion('Test subject').within(() => {
+            initVisibilityConfiguration();
+            setVisibilityOption('Visible if...');
+        });
+        closeVisibilityConfiguration();
+
+        // Text condition
+        addQuestion('My text question');
+        getAndFocusQuestion('Test subject').within(() => {
+            openVisibilityOptions();
+            cy.waitForNetworkIdle(150);
+            fillCondition(
+                0,
+                null,
+                'My text question',
+                'Contains',
+                'Expected answer'
+            );
+        });
+        closeVisibilityConfiguration();
+
+        // Number condition
+        addQuestion('My number question');
+        setQuestionTypeCategory('Short answer');
+        setQuestionType('Number');
+        getAndFocusQuestion('Test subject').within(() => {
+            openVisibilityOptions();
+            cy.waitForNetworkIdle(150);
+            addNewEmptyCondition();
+            fillCondition(
+                1,
+                'And',
+                'My number question',
+                'Is greater than',
+                10,
+                "number",
+            );
+        });
+        closeVisibilityConfiguration();
+
+        // Reload and check values
+        saveAndReload();
+
+        getAndFocusQuestion('Test subject').within(() => {
+            openVisibilityOptions();
+
+            // Validate text condition
+            checkThatConditionExist(
+                0,
+                null,
+                'My text question',
+                'Contains',
+                'Expected answer',
+            );
+
+            // Validate number condition
+            checkThatConditionExist(
+                1,
+                'And',
+                'My number question',
+                'Is greater than',
+                10,
+                'number',
+            );
+        });
     });
 });
