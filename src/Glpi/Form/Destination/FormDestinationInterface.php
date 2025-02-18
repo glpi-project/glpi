@@ -46,7 +46,6 @@ interface FormDestinationInterface
      * @param Form       $form
      * @param AnswersSet $answers_set
      * @param array      $config
-     * @param bool       $link_to_form Should the created items be linked to the form ?
      *
      * @return \CommonDBTM[]
      *
@@ -56,7 +55,6 @@ interface FormDestinationInterface
         Form $form,
         AnswersSet $answers_set,
         array $config,
-        bool $link_to_form,
     ): array;
 
 

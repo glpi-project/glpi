@@ -124,21 +124,7 @@ class Change_Item extends CommonItilObject_Item
                 default:
                     if (Session::haveRight("change", Change::READALL)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                              // Direct one
-                              $nb = self::countForItem($item);
-                              // Linked items
-                              $linkeditems = $item->getLinkedItems();
-
-                            if (count($linkeditems)) {
-                                foreach ($linkeditems as $type => $tab) {
-                                    foreach ($tab as $ID) {
-                                        $typeitem = new $type();
-                                        if ($typeitem->getFromDB($ID)) {
-                                            $nb += self::countForItem($typeitem);
-                                        }
-                                    }
-                                }
-                            }
+                            $nb = self::countLinkedChanges($item);
                         }
                         return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
@@ -147,6 +133,27 @@ class Change_Item extends CommonItilObject_Item
         return '';
     }
 
+    public static function countLinkedChanges(CommonDBTM $item): int
+    {
+        // Direct links
+        $nb = self::countForItem($item);
+
+        // Linked items
+        $linkeditems = $item->getLinkedItems();
+
+        if (count($linkeditems)) {
+            foreach ($linkeditems as $type => $tab) {
+                foreach ($tab as $ID) {
+                    $typeitem = new $type();
+                    if ($typeitem->getFromDB($ID)) {
+                        $nb += self::countForItem($typeitem);
+                    }
+                }
+            }
+        }
+
+        return $nb;
+    }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {

@@ -84,7 +84,6 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         Form $form,
         AnswersSet $answers_set,
         array $config,
-        bool $link_to_form,
     ): array {
         $typename        = static::getTypeName(1);
         $itemtype        = static::getTargetItemtype();
@@ -152,19 +151,17 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         // If requested, link the form directly to the commonitil object
         // This allow users to see it an an associated item and known where the
         // commonitil object come from
-        if ($link_to_form) {
-            $link_class = $itil_object::getItemLinkClass();
-            $link = new $link_class();
-            $input = [
-                $itil_object->getForeignKeyField() => $itil_object->getID(),
-                'itemtype'                         => $form::class,
-                'items_id'                         => $form->getID(),
-            ];
-            if (!$link->add($input)) {
-                throw new \Exception(
-                    "Failed to create item link for $typename: " . json_encode($input)
-                );
-            }
+        $link_class = $itil_object::getItemLinkClass();
+        $link = new $link_class();
+        $input = [
+            $itil_object->getForeignKeyField() => $itil_object->getID(),
+            'itemtype'                         => $form::class,
+            'items_id'                         => $form->getID(),
+        ];
+        if (!$link->add($input)) {
+            throw new \Exception(
+                "Failed to create item link for $typename: " . json_encode($input)
+            );
         }
 
         return [$itil_object];
