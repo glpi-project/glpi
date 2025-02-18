@@ -549,24 +549,28 @@ describe ('Conditions', () => {
         preview();
 
         // The form questions are all empty, we expect the following default state
-        validateThatQuestionIsVisible("My question used as a criteria");
         validateThatQuestionIsVisible("My question that is always visible");
         validateThatQuestionIsNotVisible("My question that is visible if some criteria are met");
         validateThatQuestionIsVisible("My question that is hidden if some criteria are met");
 
+        // Note: after changing the answer, make sure that the first value that is being
+        // checked has a different visibility that in the previous assertions.
+        // Indeed, if we don't do that the assertion might be validated instantly
+        // before the UI is updated with the new visibilities.
+        // By checking for a different value, we make sure the first assertion can't
+        // run until the UI is updated - thus making the other assertions safe.
+
         // Set first answer to "Expected answer 1" and check the displayed content again.
         setTextAnswer("My question used as a criteria", "Expected answer 1");
-        validateThatQuestionIsVisible("My question used as a criteria");
-        validateThatQuestionIsVisible("My question that is always visible");
         validateThatQuestionIsVisible("My question that is visible if some criteria are met");
         validateThatQuestionIsVisible("My question that is hidden if some criteria are met");
+        validateThatQuestionIsVisible("My question that is always visible");
 
         // Set first answer to "Expected answer 2" and check the displayed content again.
         setTextAnswer("My question used as a criteria", "Expected answer 2");
-        validateThatQuestionIsVisible("My question used as a criteria");
-        validateThatQuestionIsVisible("My question that is always visible");
-        validateThatQuestionIsVisible("My question that is visible if some criteria are met");
         validateThatQuestionIsNotVisible("My question that is hidden if some criteria are met");
+        validateThatQuestionIsNotVisible("My question that is visible if some criteria are met");
+        validateThatQuestionIsVisible("My question that is always visible");
     });
 
     it('conditions are applied on comments', () => {
@@ -609,23 +613,27 @@ describe ('Conditions', () => {
         preview();
 
         // The form questions are all empty, we expect the following default state
-        validateThatQuestionIsVisible("My question used as a criteria");
         validateThatCommentIsVisible("My comment that is always visible");
-        validateThatCommentIsNotVisible("My comment that is visible if some criteria are met");
         validateThatCommentIsVisible("My comment that is hidden if some criteria are met");
+        validateThatCommentIsNotVisible("My comment that is visible if some criteria are met");
+
+        // Note: after changing the answer, make sure that the first value that is being
+        // checked has a different visibility that in the previous assertions.
+        // Indeed, if we don't do that the assertion might be validated instantly
+        // before the UI is updated with the new visibilities.
+        // By checking for a different value, we make sure the first assertion can't
+        // run until the UI is updated - thus making the other assertions safe.
 
         // Set first answer to "Expected answer 1" and check the displayed content again.
         setTextAnswer("My question used as a criteria", "Expected answer 1");
-        validateThatQuestionIsVisible("My question used as a criteria");
-        validateThatCommentIsVisible("My comment that is always visible");
         validateThatCommentIsVisible("My comment that is visible if some criteria are met");
         validateThatCommentIsVisible("My comment that is hidden if some criteria are met");
+        validateThatCommentIsVisible("My comment that is always visible");
 
         // Set first answer to "Expected answer 2" and check the displayed content again.
         setTextAnswer("My question used as a criteria", "Expected answer 2");
-        validateThatQuestionIsVisible("My question used as a criteria");
-        validateThatCommentIsVisible("My comment that is always visible");
-        validateThatCommentIsVisible("My comment that is visible if some criteria are met");
         validateThatCommentIsNotVisible("My comment that is hidden if some criteria are met");
+        validateThatCommentIsNotVisible("My comment that is visible if some criteria are met");
+        validateThatCommentIsVisible("My comment that is always visible");
     });
 });
