@@ -32,6 +32,10 @@
 
 {% set last_condition_is_filled = false %}
 
+{# Load enum values for InputTemplateKey #}
+{% set string_input = enum('Glpi\\Form\\ConditionalVisiblity\\InputTemplateKey').STRING %}
+{% set number_input = enum('Glpi\\Form\\ConditionalVisiblity\\InputTemplateKey').NUMBER %}
+
 {% for condition in defined_conditions %}
     {% set condition_is_filled = condition.getItemUuid() != '' %}
     {% set last_condition_is_filled = loop.last and condition_is_filled %}
@@ -105,14 +109,35 @@
                         ]) %}
                     </span>
 
-                    <input
-                        class="me-2 form-control value-selector flex-grow-1"
-                        value="{{ condition.getValue() }}"
-                        name="_conditions[{{ loop.index0 }}][value]"
-                        placeholder="{{ __("Enter a value...") }}"
-                        data-glpi-form-editor-condition-value
-                        aria-label="{{ __("Value") }}"
-                    />
+                    {# Load the correct template to use #}
+                    {% set template_key = manager.getInputTemplateKeyForCondition(condition) %}
+
+                    {# Load common values that will be used by all templates #}
+                    {% set condition_input_value = condition.getValue() %}
+                    {% set condition_input_name = "_conditions[" ~ loop.index0 ~ "][value]" %}
+                    {% set condition_input_label = __("Value") %}
+
+                    {% if template_key == string_input %}
+                        <input
+                            class="me-2 form-control value-selector flex-grow-1"
+                            value="{{ condition_input_value }}"
+                            name="{{ condition_input_name }}"
+                            placeholder="{{ __("Enter a value...") }}"
+                            data-glpi-form-editor-condition-value
+                            aria-label="{{ condition_input_label }}"
+                        />
+                    {% elseif template_key == number_input %}
+                        <input
+                            class="me-2 form-control value-selector flex-grow-1"
+                            value="{{ condition_input_value }}"
+                            name="{{ condition_input_name }}"
+                            placeholder="{{ __("Enter a value...") }}"
+                            data-glpi-form-editor-condition-value
+                            aria-label="{{ condition_input_label }}"
+                            type="number"
+                            step="any"
+                        />
+                    {% endif %}
                 {% endif %}
 
                 {% if condition_is_filled or loop.index0 > 0 %}

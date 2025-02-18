@@ -42,6 +42,8 @@ use Glpi\Form\ConditionalVisiblity\ValueOperator;
 use Glpi\Form\ConditionalVisiblity\VisibilityStrategy;
 use Glpi\Form\ConditionalVisiblity\Type;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -451,6 +453,458 @@ final class EngineTest extends DbTestCase
                 "Section '$name' does not have the expected visibility.",
             );
         }
+    }
+
+    public static function conditionsOnStringValues(): iterable
+    {
+        foreach ([QuestionTypeShortText::class, QuestionTypeEmail::class] as $type) {
+            // Test string answers with the EQUALS operator
+            yield "Equals check - case 1 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::EQUALS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "unexpected answer",
+                'expected_result'    => false,
+            ];
+            yield "Equals check - case 2 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::EQUALS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "Exact",
+                'expected_result'    => false,
+            ];
+            yield "Equals check - case 3 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::EQUALS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "answer",
+                'expected_result'    => false,
+            ];
+            yield "Equals check - case 4 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::EQUALS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "Exact answer",
+                'expected_result'    => true,
+            ];
+            yield "Equals check - case 5 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::EQUALS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "exact ANSWER",
+                'expected_result'    => true,
+            ];
+
+            // Test string answers with the NOT_EQUALS operator
+            yield "Not equals check - case 1 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::NOT_EQUALS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "unexpected answer",
+                'expected_result'    => true,
+            ];
+            yield "Not equals check - case 2 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::NOT_EQUALS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "Exact",
+                'expected_result'    => true,
+            ];
+            yield "Not equals check - case 3 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::NOT_EQUALS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "answer",
+                'expected_result'    => true,
+            ];
+            yield "Not equals check - case 4 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::NOT_EQUALS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "Exact answer",
+                'expected_result'    => false,
+            ];
+            yield "Not equals check - case 5 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::NOT_EQUALS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "exact ANSWER",
+                'expected_result'    => false,
+            ];
+
+            // Test string answers with the CONTAINS operator
+            yield "Contains check - case 1 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::CONTAINS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "unexpected answer",
+                'expected_result'    => false,
+            ];
+            yield "Contains check - case 2 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::CONTAINS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "Exact",
+                'expected_result'    => true,
+            ];
+            yield "Contains check - case 3 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::CONTAINS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "answer",
+                'expected_result'    => true,
+            ];
+            yield "Contains check - case 4 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::CONTAINS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "Exact answer",
+                'expected_result'    => true,
+            ];
+            yield "Contains check - case 5 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::CONTAINS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "exact ANSWER",
+                'expected_result'    => true,
+            ];
+
+            // Test string answers with the NOT_CONTAINS operator
+            yield "Not contains check - case 1 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::NOT_CONTAINS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "unexpected answer",
+                'expected_result'    => true,
+            ];
+            yield "Not contains check - case 2 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::NOT_CONTAINS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "Exact",
+                'expected_result'    => false,
+            ];
+            yield "Not contains check - case 3 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::NOT_CONTAINS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "answer",
+                'expected_result'    => false,
+            ];
+            yield "Not contains check - case 4 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::NOT_CONTAINS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "Exact answer",
+                'expected_result'    => false,
+            ];
+            yield "Not contains check - case 5 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::NOT_CONTAINS,
+                'condition_value'    => "Exact answer",
+                'submitted_answer'   => "exact ANSWER",
+                'expected_result'    => false,
+            ];
+        }
+    }
+
+    public static function conditionsOnNumberValues(): iterable
+    {
+        $type = QuestionTypeNumber::class;
+
+        // Test number answers with the EQUALS operator
+        yield "Equals check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 9,
+            'expected_result'    => false,
+        ];
+        yield "Equals check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 11,
+            'expected_result'    => false,
+        ];
+        yield "Equals check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10,
+            'expected_result'    => true,
+        ];
+        yield "Equals check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10.00001,
+            'expected_result'    => false,
+        ];
+        yield "Equals check - case 5 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10.0,
+            'expected_result'    => true,
+        ];
+
+        // Test number answers with the NOT EQUALS operator
+        yield "Not equals check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 9,
+            'expected_result'    => true,
+        ];
+        yield "Not equals check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 11,
+            'expected_result'    => true,
+        ];
+        yield "Not equals check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10,
+            'expected_result'    => false,
+        ];
+        yield "Not equals check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10.00001,
+            'expected_result'    => true,
+        ];
+        yield "Not equals check - case 5 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10.0,
+            'expected_result'    => false,
+        ];
+
+        // Test number answers with the GREATER_THAN operator
+        yield "Greater than check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::GREATER_THAN,
+            'condition_value'    => 10,
+            'submitted_answer'   => 9,
+            'expected_result'    => false,
+        ];
+        yield "Greater than check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::GREATER_THAN,
+            'condition_value'    => 10,
+            'submitted_answer'   => 11,
+            'expected_result'    => true,
+        ];
+        yield "Greater than check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::GREATER_THAN,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10,
+            'expected_result'    => false,
+        ];
+        yield "Greater than check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::GREATER_THAN,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10.00001,
+            'expected_result'    => true,
+        ];
+        yield "Greater than check - case 5 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::GREATER_THAN,
+            'condition_value'    => 10,
+            'submitted_answer'   => 9.9999,
+            'expected_result'    => false,
+        ];
+        yield "Greater than check - case 6 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::GREATER_THAN,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10.0,
+            'expected_result'    => false,
+        ];
+
+        // Test number answers with the GREATER_THAN_OR_EQUALS operator
+        yield "Greater than or equals check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 9,
+            'expected_result'    => false,
+        ];
+        yield "Greater than or equals check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 11,
+            'expected_result'    => true,
+        ];
+        yield "Greater than or equals check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10,
+            'expected_result'    => true,
+        ];
+        yield "Greater than or equals check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10.00001,
+            'expected_result'    => true,
+        ];
+        yield "Greater than or equals check - case 5 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 9.9999,
+            'expected_result'    => false,
+        ];
+        yield "Greater than or equals check - case 6 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10.0,
+            'expected_result'    => true,
+        ];
+
+        // Test number answers with the LESS_THAN operator
+        yield "Less than check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::LESS_THAN,
+            'condition_value'    => 10,
+            'submitted_answer'   => 9,
+            'expected_result'    => true,
+        ];
+        yield "Less than check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::LESS_THAN,
+            'condition_value'    => 10,
+            'submitted_answer'   => 11,
+            'expected_result'    => false,
+        ];
+        yield "Less than check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::LESS_THAN,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10,
+            'expected_result'    => false,
+        ];
+        yield "Less than check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::LESS_THAN,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10.00001,
+            'expected_result'    => false,
+        ];
+        yield "Less than check - case 5 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::LESS_THAN,
+            'condition_value'    => 10,
+            'submitted_answer'   => 9.9999,
+            'expected_result'    => true,
+        ];
+        yield "Less than check - case 6 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::LESS_THAN,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10.0,
+            'expected_result'    => false,
+        ];
+
+        // Test number answers with the LESS_THAN_OR_EQUALS operator
+        yield "Less than or equals check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 9,
+            'expected_result'    => true,
+        ];
+        yield "Less than or equals check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 11,
+            'expected_result'    => false,
+        ];
+        yield "Less than or equals check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10,
+            'expected_result'    => true,
+        ];
+        yield "Less than or equals check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10.00001,
+            'expected_result'    => false,
+        ];
+        yield "Less than or equals check - case 5 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 9.9999,
+            'expected_result'    => true,
+        ];
+        yield "Less than or equals check - case 6 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'    => 10,
+            'submitted_answer'   => 10.0,
+            'expected_result'    => true,
+        ];
+    }
+
+    /**
+     * Similar to `testComputation` but will always use the same simplified form
+     * to reduce boilerplate and focus and what is really being tested.
+     */
+    #[DataProvider('conditionsOnStringValues')]
+    #[DataProvider('conditionsOnNumberValues')]
+    public function testSingleComputation(
+        string $question_type,
+        ValueOperator $condition_operator,
+        mixed $condition_value,
+        mixed $submitted_answer,
+        bool $expected_result,
+    ): void {
+        // Arrange: create the given form and build the correct input
+        $form = new FormBuilder();
+        $form->addQuestion("My condition", $question_type);
+        $form->addQuestion("Test subject", QuestionTypeShortText::class);
+        $form->setQuestionVisibility("Test subject", VisibilityStrategy::VISIBLE_IF, [
+            [
+                'logic_operator' => LogicOperator::AND,
+                'item_name'      => "My condition",
+                'item_type'      => Type::QUESTION,
+                'value_operator' => $condition_operator,
+                'value'          => $condition_value,
+            ]
+        ]);
+
+        $form = $this->createForm($form);
+        $input = $this->mapInput($form, [
+            'answers' => ['My condition' => $submitted_answer],
+        ]);
+
+        // Act: execute visibility engine
+        $engine = new Engine($form, $input);
+        $output = $engine->computeVisibility();
+
+        // Assert: validate output
+        $id = $this->getQuestionId($form, "Test subject");
+        $this->assertEquals(
+            $expected_result,
+            $output->isQuestionVisible($id),
+        );
     }
 
     /**

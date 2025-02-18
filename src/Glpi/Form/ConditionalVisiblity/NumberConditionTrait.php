@@ -34,19 +34,49 @@
 
 namespace Glpi\Form\ConditionalVisiblity;
 
-/**
- * Items that implements this interface can be used as a criteria in a condition.
- */
-interface UsedAsCriteriaInterface
+use Override;
+
+trait NumberConditionTrait
 {
-    /** @return ValueOperator[] */
-    public function getSupportedValueOperators(): array;
+    #[Override]
+    public function getSupportedValueOperators(): array
+    {
+        return [
+            ValueOperator::EQUALS,
+            ValueOperator::NOT_EQUALS,
+            ValueOperator::GREATER_THAN,
+            ValueOperator::GREATER_THAN_OR_EQUALS,
+            ValueOperator::LESS_THAN,
+            ValueOperator::LESS_THAN_OR_EQUALS,
+        ];
+    }
 
-    public function getInputTemplateKey(): InputTemplateKey;
+    #[Override]
+    public function getInputTemplateKey(): InputTemplateKey
+    {
+        return InputTemplateKey::NUMBER;
+    }
 
+    #[Override]
     public function applyValueOperator(
         mixed $a,
         ValueOperator $operator,
         mixed $b,
-    ): bool;
+    ): bool {
+        // Normalize values.
+        $a = (float) $a;
+        $b = (float) $b;
+
+        return match ($operator) {
+            ValueOperator::EQUALS                 => $a === $b,
+            ValueOperator::NOT_EQUALS             => $a !== $b,
+            ValueOperator::GREATER_THAN           => $a > $b,
+            ValueOperator::GREATER_THAN_OR_EQUALS => $a >= $b,
+            ValueOperator::LESS_THAN              => $a < $b,
+            ValueOperator::LESS_THAN_OR_EQUALS    => $a <= $b,
+
+            // Unsupported operators
+            ValueOperator::CONTAINS, ValueOperator::NOT_CONTAINS => false,
+        };
+    }
 }
