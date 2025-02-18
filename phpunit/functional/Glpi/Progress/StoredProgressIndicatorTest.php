@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Log;
 
 use DateTimeImmutable;
-use Glpi\Progress\ProgressMessageType;
+use Glpi\Message\MessageType;
 use Glpi\Progress\ProgressStorage;
 use Glpi\Progress\StoredProgressIndicator;
 use GLPITestCase;
@@ -79,42 +79,42 @@ class StoredProgressIndicatorTest extends GLPITestCase
         $storage->expects($this->exactly(7))->method('save');
 
         // Act
-        $instance->addMessage(ProgressMessageType::Error, 'An unexpected error occured.');
-        $instance->addMessage(ProgressMessageType::Warning, 'Invalid foo has been ignored.');
-        $instance->addMessage(ProgressMessageType::Debug, 'Some debug info...');
-        $instance->addMessage(ProgressMessageType::Debug, 'Some other debug info...');
-        $instance->addMessage(ProgressMessageType::Error, 'Another unexpected error occured.');
-        $instance->addMessage(ProgressMessageType::Notice, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
-        $instance->addMessage(ProgressMessageType::Success, 'Operation successfully done.');
+        $instance->addMessage(MessageType::Error, 'An unexpected error occured.');
+        $instance->addMessage(MessageType::Warning, 'Invalid foo has been ignored.');
+        $instance->addMessage(MessageType::Debug, 'Some debug info...');
+        $instance->addMessage(MessageType::Debug, 'Some other debug info...');
+        $instance->addMessage(MessageType::Error, 'Another unexpected error occured.');
+        $instance->addMessage(MessageType::Notice, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
+        $instance->addMessage(MessageType::Success, 'Operation successfully done.');
 
         // Assert
         $expected_messages_1 = [
             [
-                'type'      => ProgressMessageType::Error,
+                'type'      => MessageType::Error,
                 'message'   => 'An unexpected error occured.',
             ],
             [
-                'type'      => ProgressMessageType::Warning,
+                'type'      => MessageType::Warning,
                 'message'   => 'Invalid foo has been ignored.',
             ],
             [
-                'type'      => ProgressMessageType::Debug,
+                'type'      => MessageType::Debug,
                 'message'   => 'Some debug info...',
             ],
             [
-                'type'      => ProgressMessageType::Debug,
+                'type'      => MessageType::Debug,
                 'message'   => 'Some other debug info...',
             ],
             [
-                'type'      => ProgressMessageType::Error,
+                'type'      => MessageType::Error,
                 'message'   => 'Another unexpected error occured.',
             ],
             [
-                'type'      => ProgressMessageType::Notice,
+                'type'      => MessageType::Notice,
                 'message'   => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
             ],
             [
-                'type'      => ProgressMessageType::Success,
+                'type'      => MessageType::Success,
                 'message'   => 'Operation successfully done.',
             ],
         ];

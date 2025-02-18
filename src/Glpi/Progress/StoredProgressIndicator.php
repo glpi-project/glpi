@@ -34,6 +34,8 @@
 
 namespace Glpi\Progress;
 
+use Glpi\Message\MessageType;
+
 /**
  * @final
  */
@@ -52,7 +54,7 @@ class StoredProgressIndicator extends AbstractProgressIndicator
     /**
      * Messages.
      *
-     * @var array<int, array{type: ProgressMessageType, message: string}>
+     * @var array<int, array{type: \Glpi\Message\MessageType, message: string}>
      */
     private array $messages = [];
 
@@ -66,7 +68,7 @@ class StoredProgressIndicator extends AbstractProgressIndicator
         $this->store();
     }
 
-    public function addMessage(ProgressMessageType $type, string $message): void
+    public function addMessage(MessageType $type, string $message): void
     {
         $this->messages[] = [
             'type'      => $type,
@@ -83,6 +85,8 @@ class StoredProgressIndicator extends AbstractProgressIndicator
 
     /**
      * Get the messages.
+     *
+     * @return array<int, array{type: \Glpi\Message\MessageType, message: string}>
      */
     public function getMessages(): array
     {
