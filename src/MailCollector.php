@@ -1582,7 +1582,7 @@ class MailCollector extends CommonDBTM
 
         if (isset($message->threadindex)) {
             if ($threadindex = $message->getHeader('threadindex')) {
-                $mail_details['threadindex'] = threadindex->getFieldValue();
+                $mail_details['threadindex'] = $threadindex->getFieldValue();
             }
         }
 
