@@ -2762,8 +2762,8 @@ HTML;
             echo "<tr class='tab_bg_1'><td></td><td></td></tr>";
         }
 
+        echo '<tr class="tab_bg_1">';
         if ($DB->use_timezones || Session::haveRight("config", READ)) {
-            echo "<tr class='tab_bg_1'>";
             echo "<td><label for='timezone'>" . __('Time zone') . "</label></td><td>";
             if ($DB->use_timezones) {
                 $timezones = $DB->getTimezones();
@@ -2782,10 +2782,11 @@ HTML;
                 . ' '
                 . sprintf(__('Run the "%1$s" command to activate it.'), 'php bin/console database:enable_timezones');
             }
-            echo "</td></tr>";
+            echo "</td>";
         } else {
-                echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
+            echo '<td colspan="2"></td>';
         }
+        echo '</tr>';
 
         echo "<tr class='tab_bg_1'>";
         if (!GLPI_DEMO_MODE) {
@@ -3250,8 +3251,8 @@ HTML;
                 echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
             }
 
+            echo '<tr class="tab_bg_1">';
             if ($DB->use_timezones || Session::haveRight("config", READ)) {
-                echo "<tr class='tab_bg_1'>";
                 echo "<td><label for='timezone'>" . __('Time zone') . "</label></td><td>";
                 if ($DB->use_timezones) {
                     $timezones = $DB->getTimezones();
@@ -3271,16 +3272,13 @@ HTML;
                     . sprintf(__('Run the "%1$s" command to activate it.'), 'php bin/console database:enable_timezones');
                 }
                 echo "</td>";
-                if (
-                    $extauth
-                    || !Session::haveRight("password_update", "1")
-                ) {
-                    echo "<td colspan='2'></td>";
-                }
-                echo "</tr>";
             } else {
-                echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
+                echo '<td colspan="2"></td>';
             }
+            if ($extauth || !Session::haveRight("password_update", READ)) {
+                echo "<td colspan='2'></td>";
+            }
+            echo '</tr>';
 
             $phonerand = mt_rand();
             echo "<tr class='tab_bg_1'><td><label for='textfield_phone$phonerand'>" .  Phone::getTypeName(1) . "</label></td><td>";
