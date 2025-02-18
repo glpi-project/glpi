@@ -197,6 +197,10 @@ class AuthTest extends DbTestCase
 
     public function testGetMethodName()
     {
+        $autmail = $this->createItem(AuthMail::class, ['name' => 'mail.example.org']);
+
+        $local_ldap_id = getItemByTypeName(AuthLDAP::class, '_local_ldap', true);
+
         $this->assertSame(AuthLDAP::getTypeName(1), Auth::getMethodName(Auth::LDAP, 0));
         $this->assertSame(AuthMail::getTypeName(1), Auth::getMethodName(Auth::MAIL, 0));
         $this->assertSame('CAS', Auth::getMethodName(Auth::CAS, 0));
@@ -205,12 +209,22 @@ class AuthTest extends DbTestCase
         $this->assertSame('GLPI internal database', Auth::getMethodName(Auth::DB_GLPI, 0));
         $this->assertSame('API', Auth::getMethodName(Auth::API, 0));
 
-        $this->assertSame('LDAP directory: _local_ldap', Auth::getMethodLink(Auth::LDAP, getItemByTypeName(AuthLDAP::class, '_local_ldap', true)));
+        $this->assertSame('LDAP directory: _local_ldap', Auth::getMethodLink(Auth::LDAP, $local_ldap_id));
+
+        $this->assertSame('Email server: mail.example.org', Auth::getMethodLink(Auth::MAIL, $autmail->getID()));
+
+        $this->assertSame('CAS + LDAP directory: _local_ldap', Auth::getMethodName(Auth::CAS, $local_ldap_id));
+        $this->assertSame('x509 certificate authentication + LDAP directory: _local_ldap', Auth::getMethodName(Auth::X509, $local_ldap_id));
+        $this->assertSame('Other + LDAP directory: _local_ldap', Auth::getMethodName(Auth::EXTERNAL, $local_ldap_id));
     }
 
     public function testGetMethodLink()
     {
         $this->login();
+
+        $autmail = $this->createItem(AuthMail::class, ['name' => 'mail.example.org']);
+
+        $local_ldap_id = getItemByTypeName(AuthLDAP::class, '_local_ldap', true);
 
         $this->assertSame(AuthLDAP::getTypeName(1), Auth::getMethodLink(Auth::LDAP, 0));
         $this->assertSame(AuthMail::getTypeName(1), Auth::getMethodLink(Auth::MAIL, 0));
@@ -221,8 +235,41 @@ class AuthTest extends DbTestCase
         $this->assertSame('API', Auth::getMethodLink(Auth::API, 0));
 
         $this->assertSame(
-            'LDAP directory: <a href="/glpi/front/authldap.form.php?id=1" title="_local_ldap">_local_ldap</a>',
-            Auth::getMethodLink(Auth::LDAP, getItemByTypeName(AuthLDAP::class, '_local_ldap', true))
+            sprintf(
+                'LDAP directory: <a href="/glpi/front/authldap.form.php?id=%d" title="_local_ldap">_local_ldap</a>',
+                $local_ldap_id
+            ),
+            Auth::getMethodLink(Auth::LDAP, $local_ldap_id)
+        );
+
+        $this->assertSame(
+            sprintf(
+                'Email server: <a href="/glpi/front/authmail.form.php?id=%d" title="mail.example.org">mail.example.org</a>',
+                $autmail->getID()
+            ),
+            Auth::getMethodLink(Auth::MAIL, $autmail->getID())
+        );
+
+        $this->assertSame(
+            sprintf(
+                'CAS + LDAP directory: <a href="/glpi/front/authldap.form.php?id=%d" title="_local_ldap">_local_ldap</a>',
+                $local_ldap_id
+            ),
+            Auth::getMethodLink(Auth::CAS, $local_ldap_id)
+        );
+        $this->assertSame(
+            sprintf(
+                'x509 certificate authentication + LDAP directory: <a href="/glpi/front/authldap.form.php?id=%d" title="_local_ldap">_local_ldap</a>',
+                $local_ldap_id
+            ),
+            Auth::getMethodLink(Auth::X509, $local_ldap_id)
+        );
+        $this->assertSame(
+            sprintf(
+                'Other + LDAP directory: <a href="/glpi/front/authldap.form.php?id=%d" title="_local_ldap">_local_ldap</a>',
+                $local_ldap_id
+            ),
+            Auth::getMethodLink(Auth::EXTERNAL, $local_ldap_id)
         );
     }
 }

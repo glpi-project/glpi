@@ -1272,9 +1272,14 @@ class Auth extends CommonGLPI
             self::X509 => __('x509 certificate authentication'),
             self::EXTERNAL => __('Other'),
             self::DB_GLPI => __('GLPI internal database'),
-            self::API => __("API"),
+            self::API => __('API'),
             default => '',
         };
+
+        if ($auth === null) {
+            return $auth_type_label;
+        }
+
         // Label used for special auth types when there is also a valid LDAP connection
         $auth_type_label_ldap = match ($auth_type) {
             self::CAS => sprintf(
@@ -1295,9 +1300,6 @@ class Auth extends CommonGLPI
             default => '',
         };
 
-        if ($auth === null || $auth->isNewItem()) {
-            return $auth_type_label;
-        }
         return $auth_type_label_ldap ?: $auth_type_label;
     }
 
@@ -1312,27 +1314,24 @@ class Auth extends CommonGLPI
     public static function getMethodName($authtype, $auths_id)
     {
         $auth = match ($authtype) {
-            self::LDAP, self::CAS, self::X509, self::EXTERNAL => new AuthLDAP(),
+            self::LDAP => new AuthLDAP(),
             self::MAIL => new AuthMail(),
+            // Combination of an external system + LDAP
+            self::CAS, self::X509, self::EXTERNAL => $auths_id > 0 ? new AuthLDAP() : null,
             default => null,
         };
 
-        if (in_array($authtype, [self::DB_GLPI, self::API, self::NOT_YET_AUTHENTIFIED])) {
-            return self::getMethodTypeLabel($authtype, $auth);
+        if ($auth !== null && ($auth::isNewID($auths_id) || !$auth->getFromDB($auths_id))) {
+            $auth = null;
         }
 
-        $auth_server_name = '';
-        if ($auth && $auth->getFromDB($auths_id)) {
-            $auth_server_name = $auth->getName();
-        }
         $auth_type_label = self::getMethodTypeLabel($authtype, $auth);
 
-        if ($auth_type_label === '') {
-            return '';
-        } else if ($auth_server_name === '') {
+        if ($auth === null) {
             return $auth_type_label;
         }
-        return sprintf(__('%1$s: %2$s'), $auth_type_label, $auth_server_name);
+
+        return sprintf(__('%1$s: %2$s'), $auth_type_label, $auth->getName());
     }
 
     /**
@@ -1346,27 +1345,24 @@ class Auth extends CommonGLPI
     public static function getMethodLink(int $authtype, int $auths_id): string
     {
         $auth = match ($authtype) {
-            self::LDAP, self::CAS, self::X509, self::EXTERNAL => new AuthLDAP(),
+            self::LDAP => new AuthLDAP(),
             self::MAIL => new AuthMail(),
+            // Combination of an external system + LDAP
+            self::CAS, self::X509, self::EXTERNAL => $auths_id > 0 ? new AuthLDAP() : null,
             default => null,
         };
 
-        if (in_array($authtype, [self::DB_GLPI, self::API, self::NOT_YET_AUTHENTIFIED])) {
-            return self::getMethodTypeLabel($authtype, $auth);
+        if ($auth !== null && ($auth::isNewID($auths_id) || !$auth->getFromDB($auths_id))) {
+            $auth = null;
         }
 
-        $auth_server_name = '';
-        if ($auth && $auth->getFromDB($auths_id)) {
-            $auth_server_name = $auth->getLink();
-        }
-        $auth_type_label = self::getMethodTypeLabel($authtype, $auth);
+        $auth_type_label = htmlescape(self::getMethodTypeLabel($authtype, $auth));
 
-        if ($auth_type_label === '') {
-            return '';
-        } else if ($auth_server_name === '') {
+        if ($auth === null) {
             return $auth_type_label;
         }
-        return sprintf(__s('%1$s: %2$s'), $auth_type_label, $auth_server_name);
+
+        return sprintf(__s('%1$s: %2$s'), $auth_type_label, $auth->getLink());
     }
 
     /**
