@@ -42,7 +42,7 @@
  */
 function glpi_autoload($classname)
 {
-    if (!str_starts_with($classname, 'Plugin')) {
+    if (!str_starts_with($classname, 'Plugin') && !str_starts_with($classname, NS_PLUG)) {
         return;
     }
 
