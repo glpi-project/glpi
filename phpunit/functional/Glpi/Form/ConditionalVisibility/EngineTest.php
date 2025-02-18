@@ -360,6 +360,7 @@ final class EngineTest extends DbTestCase
     public static function firstSectionShouldAlwaysBeVisible(): iterable
     {
         $form = new FormBuilder();
+        $form->addSection("First section");
         $form->addQuestion("Question used as condition", QuestionTypeShortText::class);
         $form->addSection("Second section");
         $form->addQuestion("Another question", QuestionTypeShortText::class);
