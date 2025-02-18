@@ -281,22 +281,6 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
-    {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">
-                {{ get_item_link(itemtype, items_id) }}
-            </div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'itemtype' => $answer['itemtype'],
-            'items_id' => $answer['items_id'],
-        ]);
-    }
-
-    #[Override]
     public function formatRawAnswer(mixed $answer): string
     {
         $item = $answer['itemtype']::getById($answer['items_id']);

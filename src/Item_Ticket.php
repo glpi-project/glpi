@@ -149,8 +149,45 @@ class Item_Ticket extends CommonItilObject_Item
             $title = Ticket::getTypeName(Session::getPluralNumber());
 
             if ($_SESSION['glpishow_count_on_tabs']) {
-                // Direct one
-                $nb = countElementsInTable(
+                $nb = self::countLinkedTickets($item);
+            }
+        } else {
+            $title = _n('Item', 'Items', Session::getPluralNumber());
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $nb = self::countForMainItem($item);
+            }
+        }
+
+        return self::createTabEntry($title, $nb, $item::getType());
+    }
+
+    public static function countLinkedTickets(CommonDBTM $item): int
+    {
+        // Direct link
+        $nb = countElementsInTable(
+            'glpi_items_tickets',
+            [
+                'INNER JOIN' => [
+                    'glpi_tickets' => [
+                        'FKEY' => [
+                            'glpi_items_tickets' => 'tickets_id',
+                            'glpi_tickets'       => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE' => [
+                    'itemtype' => $item->getType(),
+                    'items_id' => $item->getID(),
+                    'is_deleted' => 0
+                ]
+            ]
+        );
+
+        // Linked items
+        $linkeditems = $item->getLinkedItems();
+        if (count($linkeditems)) {
+            foreach ($linkeditems as $type => $tab) {
+                $nb += countElementsInTable(
                     'glpi_items_tickets',
                     [
                         'INNER JOIN' => [
@@ -162,46 +199,16 @@ class Item_Ticket extends CommonItilObject_Item
                             ]
                         ],
                         'WHERE' => [
-                            'itemtype' => $item->getType(),
-                            'items_id' => $item->getID(),
+                            'itemtype' => $type,
+                            'items_id' => $tab,
                             'is_deleted' => 0
                         ]
                     ]
                 );
-
-                // Linked items
-                $linkeditems = $item->getLinkedItems();
-                if (count($linkeditems)) {
-                    foreach ($linkeditems as $type => $tab) {
-                        $nb += countElementsInTable(
-                            'glpi_items_tickets',
-                            [
-                                'INNER JOIN' => [
-                                    'glpi_tickets' => [
-                                        'FKEY' => [
-                                            'glpi_items_tickets' => 'tickets_id',
-                                            'glpi_tickets'       => 'id'
-                                        ]
-                                    ]
-                                ],
-                                'WHERE' => [
-                                    'itemtype' => $type,
-                                    'items_id' => $tab,
-                                    'is_deleted' => 0
-                                ]
-                            ]
-                        );
-                    }
-                }
-            }
-        } else {
-            $title = _n('Item', 'Items', Session::getPluralNumber());
-            if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = self::countForMainItem($item);
             }
         }
 
-        return self::createTabEntry($title, $nb, $item::getType());
+        return $nb;
     }
 
     #[Override]

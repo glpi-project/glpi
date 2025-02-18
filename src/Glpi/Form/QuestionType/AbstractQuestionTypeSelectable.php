@@ -335,21 +335,6 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate($answers): string
-    {
-        $template = <<<TWIG
-            {% for answer in answers %}
-                <div class="form-control-plaintext">{{ answer }}</div>
-            {% endfor %}
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'answers' => $answers,
-        ]);
-    }
-
-    #[Override]
     public function isAllowedForUnauthenticatedAccess(): bool
     {
         return true;

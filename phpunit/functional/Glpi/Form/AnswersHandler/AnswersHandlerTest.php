@@ -35,9 +35,13 @@
 
 namespace tests\units\Glpi\Form\AnswersHandler;
 
+use CommonITILObject;
 use DbTestCase;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\FormDestinationChange;
+use Glpi\Form\Destination\FormDestinationProblem;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Question;
 use Glpi\Tests\FormBuilder;
 use Glpi\Form\Form;
@@ -174,5 +178,39 @@ class AnswersHandlerTest extends DbTestCase
 
         // The `createDestinations` part of the `saveAnswers` method is tested
         // by each possible destinations type in their own test file
+    }
+
+    public function testDestinationItemsAreLinkedToForm(): void
+    {
+        // Arrange: create a form with its default mandatory destination
+        $builder = new FormBuilder("My test form");
+        $builder->addQuestion("Name", QuestionTypeShortText::class);
+        $builder->addDestination(FormDestinationTicket::class, "Second ticket");
+        $builder->addDestination(FormDestinationChange::class, "First change");
+        $builder->addDestination(FormDestinationProblem::class, "First problem");
+        $form = $this->createForm($builder);
+
+        // Act: submit an answer for this form
+        $answers = $this->sendFormAndGetAnswerSet($form, [
+            'Name' => 'My test answer',
+        ]);
+        $created_items = $answers->getCreatedItems();
+
+        // Assert: the created ticket should be linked to the form
+        $this->assertCount(4, $created_items);
+
+        foreach ($created_items as $item) {
+            $this->assertInstanceOf(CommonITILObject::class, $item);
+
+            $linked_items = $item->getLinkedItems();
+            $this->assertCount(1, $linked_items);
+            $this->assertArrayHasKey(Form::class, $linked_items);
+
+            $linked_forms_ids = $linked_items[Form::class];
+            $this->assertCount(1, $linked_forms_ids);
+
+            $linked_forms_id = current($linked_forms_ids);
+            $this->assertEquals($form->getID(), $linked_forms_id);
+        }
     }
 }

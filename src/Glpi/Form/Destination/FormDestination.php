@@ -40,6 +40,7 @@ use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Form;
 use InvalidArgumentException;
+use LogicException;
 use Override;
 use ReflectionClass;
 
@@ -341,5 +342,14 @@ final class FormDestination extends CommonDBChild
         }
 
         return $config;
+    }
+
+    public function isMandatory(): bool
+    {
+        if (!isset($this->fields['is_mandatory'])) {
+            throw new LogicException("Fields are not loaded");
+        }
+
+        return (bool) $this->fields['is_mandatory'];
     }
 }

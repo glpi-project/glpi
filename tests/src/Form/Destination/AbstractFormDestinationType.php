@@ -100,14 +100,6 @@ abstract class AbstractFormDestinationType extends DbTestCase
         // Check fields
         $itil_item = current($itil_items);
         $this->assertEquals('My content', $itil_item['content']);
-
-        // Make sure link with the form answers was created too
-        $links = (new $link_itemtype())->find([
-            $itemtype::getForeignKeyField() => $itil_item['id'],
-            'items_id' => $answers->getID(),
-            'itemtype' => $answers::getType(),
-        ]);
-        $this->assertCount(1, $links);
     }
 
     final public function testGetTargetItemtype(): void
@@ -118,56 +110,6 @@ abstract class AbstractFormDestinationType extends DbTestCase
             && !(new ReflectionClass($type))->isAbstract();
 
         $this->assertTrue($is_valid_class);
-    }
-
-    final public function testGetFilterByAnswsersSetSearchOptionID(): void
-    {
-        $this->login();
-
-        // Get search option ID
-        $search_option_id = $this->getTestedInstance()::getFilterByAnswsersSetSearchOptionID();
-        $this->assertGreaterThan(0, $search_option_id);
-
-        // Compute all available search options for the target itemtype
-        $created_item = new ($this->getTestedInstance()::getTargetItemtype())();
-        $available_search_options = $created_item->searchOptions();
-
-        // Ensure the search option is available for the target itemtype
-        $this->assertTrue(isset($available_search_options[$search_option_id]));
-    }
-
-    public function testGetTabNameUsingFormWithThreeDestinationWithoutCount(): void
-    {
-        $tab_name = $this->getTestedInstance()::getTargetItemtype()::getTypeName();
-        $answers = $this->getAnswersOfFormWithThreeDestination();
-        $this->login();
-        $_SESSION['glpishow_count_on_tabs'] = false;
-        $this->checkGetTabNameForItem($answers, $tab_name);
-    }
-
-    protected function checkGetTabNameForItem(
-        CommonGLPI $item,
-        string|false $expected_tab_name
-    ): void {
-        $destination = $this->getTestedInstance();
-        $tab_name = $destination->getTabNameForItem($item);
-
-        // Strip tags to keep only the relevant data
-        $tab_name = strip_tags($tab_name);
-        $this->assertEquals($expected_tab_name, $tab_name);
-    }
-
-    final public function testDisplayTabContentForItem(): void
-    {
-        $destination = $this->getTestedInstance();
-        $answers = $this->getAnswersOfFormWithThreeDestination();
-
-        // Render tab content
-        ob_start();
-        $return = $destination->displayTabContentForItem($answers);
-        ob_end_clean();
-
-        $this->assertTrue($return);
     }
 
     /**

@@ -2402,12 +2402,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/AnswersHandler/AnswersHandler.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\AnswersSet\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
-	'identifier' => 'return.unusedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/AnswersSet.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -2418,12 +2412,6 @@ $ignoreErrors[] = [
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Comment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\AbstractFormDestinationType\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
-	'identifier' => 'return.unusedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/AbstractFormDestinationType.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\LocationFieldConfig\\:\\:getSpecificLocationID\\(\\) never returns null so it can be removed from the return type\\.$#',
