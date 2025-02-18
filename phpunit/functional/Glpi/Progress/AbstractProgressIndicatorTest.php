@@ -35,8 +35,8 @@
 namespace tests\units\Glpi\Log;
 
 use DateTimeImmutable;
+use Glpi\Message\MessageType;
 use Glpi\Progress\AbstractProgressIndicator;
-use Glpi\Progress\ProgressMessageType;
 use GLPITestCase;
 
 class AbstractProgressIndicatorTest extends GLPITestCase
@@ -123,14 +123,16 @@ class AbstractProgressIndicatorTest extends GLPITestCase
 
         // Act
         $instance->setCurrentStep($step = \rand(1, 100));
+        $instance->advance();
+        $instance->advance(3);
 
         // Assert
-        $this->assertEquals(1, $instance->updates_count); // update has been triggered once
+        $this->assertEquals(3, $instance->updates_count); // update has been triggered each time the current step changed
 
-        $this->assertEquals($step, $instance->getCurrentStep());
+        $this->assertEquals($step + 1 + 3, $instance->getCurrentStep());
         $this->assertGreaterThan($instance->getStartedAt(), $instance->getUpdatedAt());
 
-        $this->assertEquals(1, $instance->updates_count); // update has not been re-triggered by getters
+        $this->assertEquals(3, $instance->updates_count); // update has not been re-triggered by getters
     }
 
     public function testProgressBarMessageAccessors(): void
@@ -158,7 +160,7 @@ class AbstractProgressIndicatorTest extends GLPITestCase
         return new class () extends AbstractProgressIndicator {
             public int $updates_count = 0;
 
-            public function addMessage(ProgressMessageType $type, string $message): void
+            public function addMessage(MessageType $type, string $message): void
             {
                 // void
             }
