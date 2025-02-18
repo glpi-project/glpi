@@ -5826,6 +5826,7 @@ CREATE TABLE `glpi_profiles` (
   `is_default` tinyint NOT NULL DEFAULT '0',
   `helpdesk_hardware` int NOT NULL DEFAULT '0',
   `helpdesk_item_type` text,
+  `use_mentions` int NOT NULL DEFAULT '1',
   `ticket_status` text COMMENT 'json encoded array of from/dest allowed status change',
   `date_mod` timestamp NULL DEFAULT NULL,
   `comment` text,

@@ -43,6 +43,7 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
+use Glpi\RichText\UserMention;
 use Glpi\Team\Team;
 
 /**
@@ -630,8 +631,11 @@ abstract class CommonITILObject extends CommonDBTM
             $item_commonitilobject = new $item_link();
         }
 
+        $mention_options = UserMention::getMentionOptions($this);
+
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
             'item'                    => $this,
+            'mention_options'         => $mention_options,
             'timeline_itemtypes'      => $this->getTimelineItemtypes(),
             'legacy_timeline_actions' => $this->getLegacyTimelineActionsHTML(),
             'params'                  => $options,

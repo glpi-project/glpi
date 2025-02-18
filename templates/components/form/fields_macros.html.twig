@@ -207,7 +207,11 @@
       'enable_richtext': false,
       'enable_images': true,
       'enable_fileupload': false,
-      'enable_mentions': false,
+      'mention_options': {
+         'enabled': options.enable_mentions is defined and options.enable_mentions,
+         'full': true,
+         'users': [],
+      },
       'entities_id': session('glpiactive_entity'),
       'uploads': [],
       'rows': 3,
