@@ -196,12 +196,14 @@ class Itil_Project extends CommonDBRelation
                             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
                             <div class="d-flex">
                                 {{ fields.dropdownItemsFromItemtypes('items_id', null, {
+                                    add_field_class: 'd-inline',
                                     no_label: true,
                                     itemtypes: config('itil_types'),
                                     used: used,
-                                    inline_add_field_html: true,
-                                    add_field_html: '<button class="btn btn-primary ms-3" type="submit" name="add" value="">' ~ btn_msg ~ '</button>'
                                 }) }}
+                                <div>
+                                    <button class="btn btn-primary ms-3" type="submit" name="add" value="">{{ btn_msg }}</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -313,12 +315,14 @@ TWIG, $twig_params);
                             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
                             <div class="d-flex">
                                 {{ fields.dropdownField('Project', 'projects_id', '', null, {
+                                    add_field_class: 'd-inline',
                                     no_label: true,
                                     used: used,
                                     entity: entities_id,
-                                    inline_add_field_html: true,
-                                    add_field_html: '<button class="btn btn-primary ms-3" type="submit" name="add" value="">' ~ btn_msg ~ '</button>'
                                 }) }}
+                            </div>
+                            <div>
+                                <button class="btn btn-primary ms-3" type="submit" name="add" value="">{{ btn_msg }}</button>
                             </div>
                         </form>
                     </div>
