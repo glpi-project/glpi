@@ -1574,6 +1574,18 @@ class MailCollector extends CommonDBTM
             }
         }
 
+        if (isset($message->threadtopic)) {
+            if ($threadtopic = $message->getHeader('threadtopic')) {
+                $mail_details['threadtopic'] = $threadtopic->getFieldValue();
+            }
+        }
+
+        if (isset($message->threadindex)) {
+            if ($threadindex = $message->getHeader('threadindex')) {
+                $mail_details['threadindex'] = threadindex->getFieldValue();
+            }
+        }
+
        //Add additional headers in X-
         foreach ($this->getAdditionnalHeaders($message) as $header => $value) {
             $mail_details[$header] = $value;
