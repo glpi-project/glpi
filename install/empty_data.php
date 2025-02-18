@@ -934,6 +934,18 @@ $empty_data_builder = new class
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
                 'hourmax' => 24,
+            ], [
+                'id' => 49,
+                'itemtype' => Software::class,
+                'name' => PurgeSoftwareTask::TASK_NAME,
+                'frequency' => MONTH_TIMESTAMP,
+                'param' => 1000,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_EXTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 300,
+                'hourmin' => 0,
+                'hourmax' => 6,
             ]
         ];
 
