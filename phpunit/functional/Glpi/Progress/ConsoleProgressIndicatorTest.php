@@ -34,8 +34,8 @@
 
 namespace tests\units\Glpi\Log;
 
+use Glpi\Message\MessageType;
 use Glpi\Progress\ConsoleProgressIndicator;
-use Glpi\Progress\ProgressMessageType;
 use GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -56,7 +56,7 @@ class ConsoleProgressIndicatorTest extends GLPITestCase
         foreach ($verbosities as $verbosity) {
             yield [
                 'verbosity'          => $verbosity,
-                'type'               => ProgressMessageType::Error,
+                'type'               => MessageType::Error,
                 'message'            => 'An unexpected error occured.',
                 'expected_output'    => '<error>An unexpected error occured.</error>',
                 'expected_verbosity' => OutputInterface::VERBOSITY_QUIET,
@@ -64,7 +64,7 @@ class ConsoleProgressIndicatorTest extends GLPITestCase
 
             yield [
                 'verbosity'          => $verbosity,
-                'type'               => ProgressMessageType::Warning,
+                'type'               => MessageType::Warning,
                 'message'            => 'Invalid foo has been ignored.',
                 'expected_output'    => '<comment>Invalid foo has been ignored.</comment>',
                 'expected_verbosity' => OutputInterface::VERBOSITY_QUIET,
@@ -72,7 +72,7 @@ class ConsoleProgressIndicatorTest extends GLPITestCase
 
             yield [
                 'verbosity'          => $verbosity,
-                'type'               => ProgressMessageType::Success,
+                'type'               => MessageType::Success,
                 'message'            => 'Bar has been created successfully.',
                 'expected_output'    => '<info>Bar has been created successfully.</info>',
                 'expected_verbosity' => OutputInterface::VERBOSITY_NORMAL,
@@ -80,7 +80,7 @@ class ConsoleProgressIndicatorTest extends GLPITestCase
 
             yield [
                 'verbosity'          => $verbosity,
-                'type'               => ProgressMessageType::Notice,
+                'type'               => MessageType::Notice,
                 'message'            => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
                 'expected_output'    => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
                 'expected_verbosity' => OutputInterface::VERBOSITY_NORMAL,
@@ -88,7 +88,7 @@ class ConsoleProgressIndicatorTest extends GLPITestCase
 
             yield [
                 'verbosity'          => $verbosity,
-                'type'               => ProgressMessageType::Debug,
+                'type'               => MessageType::Debug,
                 'message'            => 'Bla bla bla.',
                 'expected_output'    => '[DEBUG] Bla bla bla.',
                 'expected_verbosity' => OutputInterface::VERBOSITY_VERY_VERBOSE,
@@ -99,7 +99,7 @@ class ConsoleProgressIndicatorTest extends GLPITestCase
     #[DataProvider('messageProvider')]
     public function testMessageOuput(
         int $verbosity,
-        ProgressMessageType $type,
+        MessageType $type,
         string $message,
         string $expected_output,
         int $expected_verbosity,
