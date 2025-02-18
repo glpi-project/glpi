@@ -152,7 +152,7 @@ class MailCollector extends CommonDBTM
         $this->fields['is_active']    = 1;
     }
 
-    public function prepareInput(array $input, $mode = 'add'): array|false
+    public function prepareInput(array $input, $mode = 'add')
     {
         $missing_fields = [];
         if (($mode === 'add' || array_key_exists('mail_server', $input)) && empty($input['mail_server'])) {
