@@ -74,6 +74,14 @@ class RuleMailCollectorCollection extends RuleCollection
                     $input[$key] = $value;
                 }
             }
+            $input['_headers'] = implode(
+                "\n",
+                array_map(
+                    fn($k, $v) => is_array($v) ? "$k: " . implode(', ', $v) : "$k: $v",
+                    array_keys($params['headers']),
+                    $params['headers']
+                )
+            );
         }
 
         // Add all user's groups
