@@ -158,7 +158,7 @@
                 const url = `${CFG_GLPI.root_doc}/ajax/asset/assetdefinition.php?${url_params}`;
                 window.glpi_ajax_dialog({
                     id: 'core_field_options_editor',
-                    modalclass: 'modal-lg',
+                    modalclass: 'modal-xl',
                     appendTo: `#${$(sortable_fields_container.value).attr('id')}`,
                     title: field_el.text(),
                     url: url,
