@@ -41,11 +41,10 @@ use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetModel;
 use Glpi\Asset\AssetType;
-use Glpi\Asset\RuleDictionaryModel;
-use Glpi\Asset\RuleDictionaryType;
 use Glpi\Controller\GenericFormController;
 use Glpi\Controller\GenericListController;
 use Glpi\Controller\DropdownFormController;
+use Glpi\Controller\Rule\RuleFormController;
 use Glpi\Controller\Rule\RuleListController;
 use Glpi\Dropdown\Dropdown;
 use Glpi\Dropdown\DropdownDefinition;
@@ -358,24 +357,19 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
         $id = $request->query->get('id') ?: $request->request->get('id');
 
         $classname = null;
+        $definition = new AssetDefinition();
 
-        // @todo
-        if ($is_form && $id !== null && !AssetModel::isNewId($id)) {
-            throw new \Exception('Not implemented');
-            $asset = AssetModel::getById($id); // @todo AssetModelDictionary ?
-            if (!$asset) {
-                return null;
-            }
-            $classname = $asset::class;
-        } else {
-            $definition = new AssetDefinition();
-            if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
-                $classname = $definition->getAssetModelDictionaryClassName();
-            }
+        if($is_form && ($id === null || AssetModel::isNewId($id))) {
+            return null;
+        }
+        if($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class')))
+        {
+            $classname = $definition->getAssetModelDictionaryClassName();
         }
 
         return $classname;
     }
+
     private function findAssetTypeDictionaryclass(Request $request): ?string
     {
         $matches = [];
@@ -385,22 +379,15 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
 
         $is_form = !empty($matches['is_form']);
         $id = $request->query->get('id') ?: $request->request->get('id');
-
         $classname = null;
+        $definition = new AssetDefinition();
 
-        // @todo
-        if ($is_form && $id !== null && !AssetModel::isNewId($id)) {
-            throw new \Exception('Not implemented');
-            $asset = AssetModel::getById($id); // @todo AssetModelDictionary ?
-            if (!$asset) {
-                return null;
-            }
-            $classname = $asset::class;
-        } else {
-            $definition = new AssetDefinition();
-            if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
-                $classname = $definition->getAssetTypeDictionaryClassName();
-            }
+        if($is_form && ($id === null || AssetModel::isNewId($id))) {
+            return null;
+        }
+        if($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class')))
+        {
+            $classname = $definition->getAssetTypeDictionaryClassName();
         }
 
         return $classname;
