@@ -32,13 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-// ...existing headers et éventuels use statements...
 use Glpi\DBAL\QuerySubQuery;
 
 class PurgeSoftwareTask
 {
-    const TASK_NAME = 'purgesoftware';
-    const MAX_BATCH_SIZE = 2000;
+    public const TASK_NAME = 'purgesoftware';
+    private const MAX_BATCH_SIZE = 2000;
 
     public function run(?int $max): int
     {

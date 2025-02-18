@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -48,16 +47,15 @@ class PurgeSoftwareCommand extends AbstractCommand
     protected function configure()
     {
         parent::configure();
-        $software = new Software();
 
         $this->setName('assets:purgesoftware');
-        $this->setDescription($software->getPurgeTaskDescription());
+        $this->setDescription(Software::getPurgeTaskDescription());
 
         $this->addOption(
             'max',
             'm',
             InputOption::VALUE_REQUIRED,
-            $software->getPurgeTaskParameterDescription(),
+            Software::getPurgeTaskParameterDescription(),
             500
         );
     }
@@ -69,7 +67,7 @@ class PurgeSoftwareCommand extends AbstractCommand
 
         $task = new PurgeSoftwareTask();
         $total = $task->run($max);
-        $output->writeln("<info> $total item(s) purged </info>");
+        $output->writeln('<info>' . sprintf(__('%s item(s) removed from the database.'), $total) . '</info>');
 
         return 0;
     }
