@@ -235,10 +235,10 @@ class Certificate_Item extends CommonDBRelation
                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <div class="d-flex">
                             {{ fields.dropdownItemsFromItemtypes('items_id', '', dropdown_params|merge({
+                                add_field_class: 'd-inline',
                                 no_label: true,
-                                inline_add_field_html: true,
-                                add_field_html: '<button type="submit" name="add" class="btn btn-primary ms-3">' ~ btn_label ~ '</button>'
                             })) }}
+                            <button type="submit" name="add" class="btn btn-primary ms-3 mb-3">{{ btn_label }}</button>
                         </div>
                     </form>
                 </div>
@@ -379,10 +379,11 @@ TWIG, $twig_params);
                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <div class="d-flex">
                             {{ fields.dropdownField('Certificate', 'certificates_id', null, '', dropdown_params|merge({
+                                add_field_class: 'd-inline',
                                 no_label: true,
-                                inline_add_field_html: true,
-                                add_field_html: '<button type="submit" name="add" class="btn btn-primary ms-3">' ~ btn_label ~ '</button>'
                             })) }}
+                            <button type="submit" name="add" class="btn btn-primary ms-3 mb-3">{{ btn_label }}</button>
+                        </div>
                     </form>
                 </div>
 TWIG, $twig_params);
