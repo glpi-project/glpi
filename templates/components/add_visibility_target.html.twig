@@ -32,8 +32,7 @@
 
 {% import "components/form/fields_macros.html.twig" as fields %}
 <div class="mb-3">
-    <form name="{{ type }}visibility_form{{ rand }}" id="{{ type }}visibility_form{{ rand }}"
-          method="post" action="{{ type|itemtype_form_path }}">
+    <form method="post" action="{{ type|itemtype_form_path }}">
         <input type="hidden" name="{{ type|itemtype_foreign_key }}" value="{{ id }}">
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
         <div class="d-flex flex-wrap">
@@ -47,7 +46,7 @@
         <script defer>
             $('#dropdown__type{{ rand }}').on('change', (e) => {
                 $('#visibility{{ rand }}').load(
-                    "{{ CFG_GLPI.root_doc }}/ajax/visibility.php",
+                    `${CFG_GLPI.root_doc}/ajax/visibility.php`,
                     {
                         ...{{ visiblity_dropdown_params|json_encode|raw }},
                         type: e.target.value,
