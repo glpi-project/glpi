@@ -72,7 +72,7 @@ final class UpdateTileController extends AbstractTileController
 
         // Re-render the tile list
         $tiles = $this->tiles_manager->getTilesForItem($linked_item);
-        return $this->render('pages/admin/helpdesk_home_config_tiles.html.twig', [
+        return $this->render('pages/admin/profile/helpdesk_home/tiles.html.twig', [
             'tiles_manager' => $this->tiles_manager,
             'tiles' => $tiles,
             // If we reach this point, the item was editable so we must keep

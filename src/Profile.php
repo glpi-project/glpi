@@ -738,22 +738,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     public function showLegend()
     {
-        echo "<div class='spaced'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr class='tab_bg_2'><td width='70' style='text-decoration:underline' class='b'>";
-        echo __s('Caption') . "</td>";
-        echo "<td class='tab_bg_4' width='15' style='border:1px solid black'></td>";
-        echo "<td class='b'>" . __s('Global right') . "</td></tr>";
-        echo "<tr class='tab_bg_2'><td></td>";
-        echo "<td class='tab_bg_2' width='15' style='border:1px solid black'></td>";
-        echo "<td class='b'>" . __s('Entity right') . "</td></tr>";
-        echo "</table></div>";
+        TemplateRenderer::getInstance()->display('pages/admin/profile/legend.html.twig');
     }
 
     public function post_getEmpty()
     {
         $this->fields["interface"] = "helpdesk";
-        $this->fields["name"]      = __('Without name');
         ProfileRight::cleanAllPossibleRights();
         $this->fields = array_merge($this->fields, ProfileRight::getAllPossibleRights());
     }
@@ -1143,14 +1133,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * Print the helpdesk right form for the current profile
-     *
-     * @since 0.85
-     **/
-    public function showFormTrackingHelpdesk()
+     * Print the helpdesk right form for the current profile.
+     */
+    private function showFormTrackingHelpdesk(): void
     {
         if (!self::canView()) {
-            return false;
+            return;
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/assistance_simple.html.twig', [
@@ -1159,14 +1147,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * Print the helpdesk right form for the current profile
-     *
-     * @since 0.85
-     **/
-    public function showFormToolsHelpdesk()
+     * Print the helpdesk right form for the current profile.
+     */
+    private function showFormToolsHelpdesk(): void
     {
         if (!self::canView()) {
-            return false;
+            return;
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/tools_simple.html.twig', [
@@ -1175,18 +1161,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * Print the Asset rights form for the current profile
-     *
-     * @since 0.85
-     *
-     * @param boolean $openform open the form (true by default)
-     * @param boolean $closeform close the form (true by default)
-     *
-     **/
-    public function showFormAsset($openform = true, $closeform = true)
+     * Print the Asset rights form for the current profile.
+     */
+    private function showFormAsset(): void
     {
         if (!self::canView()) {
-            return false;
+            return;
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/assets.html.twig', [
@@ -1195,17 +1175,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * Print the Management rights form for the current profile
-     *
-     * @since 0.85 (before showFormInventory)
-     *
-     * @param boolean $openform open the form (true by default)
-     * @param boolean $closeform close the form (true by default)
-     **/
-    public function showFormManagement($openform = true, $closeform = true)
+     * Print the Management rights form for the current profile.
+     */
+    private function showFormManagement(): void
     {
         if (!self::canView()) {
-            return false;
+            return;
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/management.html.twig', [
@@ -1214,17 +1189,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * Print the Tools rights form for the current profile
-     *
-     * @since 0.85
-     *
-     * @param boolean $openform open the form (true by default)
-     * @param boolean $closeform close the form (true by default)
-     **/
-    public function showFormTools($openform = true, $closeform = true)
+     * Print the Tools rights form for the current profile.
+     */
+    private function showFormTools(): void
     {
         if (!self::canView()) {
-            return false;
+            return;
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/tools.html.twig', [
@@ -1233,15 +1203,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * Print the Tracking right form for the current profile
-     *
-     * @param boolean $openform open the form (true by default)
-     * @param boolean $closeform close the form (true by default)
-     **/
-    public function showFormTracking($openform = true, $closeform = true)
+     * Print the Tracking right form for the current profile.
+     */
+    private function showFormTracking(): void
     {
         if (!self::canView()) {
-            return false;
+            return;
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/assistance.html.twig', [
@@ -1261,6 +1228,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * @param boolean $canedit        can we edit the elements ?
      *
      * @return void
+     * @used-by templates/pages/admin/profile/base_tab.html.twig
      **/
     public function displayLifeCycleMatrix($title, $html_field, $db_field, $statuses, $canedit)
     {
@@ -1299,15 +1267,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * Print the Life Cycles form for the current profile
-     *
-     * @param boolean $openform open the form (true by default)
-     * @param boolean $closeform close the form (true by default)
-     **/
-    public function showFormLifeCycle($openform = true, $closeform = true)
+     * Print the Life Cycles form for the current profile.
+     */
+    private function showFormLifeCycle(): void
     {
         if (!self::canView()) {
-            return false;
+            return;
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/lifecycle.html.twig', [
@@ -1326,6 +1291,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * @param boolean $canedit        can we edit the elements ?
      *
      * @return void
+     * @used-by templates/pages/admin/profile/lifecycle_simple.html.twig
      **/
     public function displayLifeCycleMatrixTicketHelpdesk($title, $html_field, $db_field, $canedit)
     {
@@ -1386,17 +1352,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * Print the Life Cycles form for the current profile
-     *
-     *  @since 0.85
-     *
-     * @param boolean $openform open the form (true by default)
-     * @param boolean $closeform close the form (true by default)
-     **/
-    public function showFormLifeCycleHelpdesk($openform = true, $closeform = true)
+     * Print the Life Cycles form for the current profile.
+     */
+    private function showFormLifeCycleHelpdesk(): void
     {
         if (!self::canView()) {
-            return false;
+            return;
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/lifecycle_simple.html.twig', [
@@ -1405,15 +1366,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * Print the administration form for a profile
-     *
-     * @param boolean $openform open the form (true by default)
-     * @param boolean $closeform close the form (true by default)
-     **/
-    public function showFormAdmin($openform = true, $closeform = true)
+     * Print the administration form for a profile.
+     */
+    private function showFormAdmin(): void
     {
         if (!self::canView()) {
-            return false;
+            return;
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/admin.html.twig', [
@@ -1422,106 +1380,41 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * Print the setup form for a profile
-     *
-     * @param boolean $openform open the form (true by default)
-     * @param boolean $closeform close the form (true by default)
-     **/
-    public function showFormSetup($openform = true, $closeform = true)
+     * Print the setup form for a profile.
+     */
+    private function showFormSetup(): void
     {
         if (!self::canView()) {
-            return false;
+            return;
         }
 
-        echo "<div class='spaced'>";
-        if (
-            ($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
-            && $openform
-        ) {
-            echo "<form method='post' action='" . $this->getFormURL() . "' data-track-changes='true'>";
-        }
-
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'setup', 'general'), [
-            'canedit'       => $canedit,
-            'title'         => __('Setup'),
+        TemplateRenderer::getInstance()->display('pages/admin/profile/setup.html.twig', [
+            'item' => $this,
         ]);
-
-        if (
-            $canedit
-            && $closeform
-        ) {
-            echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->getID() . "'>";
-            echo Html::submit(_x('button', 'Save'), [
-                'class' => 'btn btn-primary mt-2',
-                'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update',
-            ]);
-            echo "</div>";
-            Html::closeForm();
-        }
-        echo "</div>";
-
-        $this->showLegend();
     }
 
     /**
-     * Print the Setup rights form for a helpdesk profile
-     *
-     * @since 9.4.0
-     *
-     * @param boolean $openform  open the form (true by default)
-     * @param boolean $closeform close the form (true by default)
-     *
-     * @return void
-     *
-     **/
-    public function showFormSetupHelpdesk($openform = true, $closeform = true)
+     * Print the Setup rights form for a helpdesk profile.
+     */
+    private function showFormSetupHelpdesk(): void
     {
         if (!self::canView()) {
-            return false;
+            return;
         }
 
-        echo "<div class='spaced'>";
-        if (
-            ($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
-            && $openform
-        ) {
-            echo "<form method='post' action='" . $this->getFormURL() . "' data-track-changes='true'>";
-        }
-
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('helpdesk', 'setup', 'general'), [
-            'canedit'       => $canedit,
-            'title'         => __('Setup'),
+        TemplateRenderer::getInstance()->display('pages/admin/profile/setup_simple.html.twig', [
+            'item' => $this,
         ]);
-
-        if (
-            $canedit
-            && $closeform
-        ) {
-            echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->getID() . "'>";
-            echo Html::submit(_x('button', 'Save'), [
-                'class' => 'btn btn-primary mt-2',
-                'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update',
-            ]);
-            echo "</div>";
-            Html::closeForm();
-        }
-        echo "</div>";
-
-        $this->showLegend();
     }
 
     /**
-     * Print the Security form for a profile
-     *
-     * @param boolean $openform open the form (true by default)
-     * @param boolean $closeform close the form (true by default)
-     **/
-    public function showFormSecurity($openform = true, $closeform = true)
+     * Print the Security form for a profile.
+     */
+    private function showFormSecurity(): void
     {
+        if (!self::canView()) {
+            return;
+        }
         $canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]);
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
             'canedit' => $canedit,
@@ -3461,6 +3354,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * Get domains records types
      *
      * @return array
+     * @used-by templates/pages/admin/profile/management.html.twig
      */
     public function getDomainRecordTypes()
     {
@@ -3603,6 +3497,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         $param['canedit']       = true;
         $param['default_class'] = '';
 
+        if (empty($rights)) {
+            return mt_rand();
+        }
+
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
                 $param[$key] = $val;
@@ -3638,8 +3536,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 if (!empty($info['row_class'])) {
                     $row['class'] = $info['row_class'];
                 } elseif (isset($info['scope'])) {
-                    $default_scope_class = !empty($param['default_class']) ? $param['default_class'] : 'tab_bg_2';
-                    $row['class'] = $info['scope'] === 'global' ? 'tab_bg_4' : $default_scope_class;
+                    $default_scope_class = !empty($param['default_class']) ? $param['default_class'] : '';
+                    $row['class'] = $info['scope'] === 'global' ? 'table-secondary' : $default_scope_class;
                 } else {
                     $row['class'] = $param['default_class'];
                 }
@@ -3736,6 +3634,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *             'check_method'  method used to check the right
      *
      * @return string|void Return generated content if `display` parameter is true.
+     * @used-by templates/pages/admin/profile/assistance.html.twig
+     * @used-by templates/pages/admin/profile/assistance_simple.html.twig
      **/
     public static function getLinearRightChoice(array $elements, array $options = [])
     {
@@ -3875,12 +3775,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return true;
     }
 
-    public function showHelpdeskHomeConfig(): bool
+    private function showHelpdeskHomeConfig(): void
     {
         $tiles_manager = new TilesManager();
         $tiles_manager->showConfigFormForItem($this);
-
-        return true;
     }
 
     #[Override]

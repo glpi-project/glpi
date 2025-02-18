@@ -58,7 +58,7 @@ final class ShowEditTileFormController extends AbstractTileController
         }
 
         // Render form
-        return $this->render('pages/admin/helpdesk_home_config_edit_tile_form.html.twig', [
+        return $this->render('pages/admin/profile/helpdesk_home/edit_tile_form.html.twig', [
             'tile' => $tile,
         ]);
     }
