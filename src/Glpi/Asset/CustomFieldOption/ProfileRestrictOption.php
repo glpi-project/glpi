@@ -54,16 +54,8 @@ class ProfileRestrictOption extends AbstractOption
         // language=Twig
         return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
-            {% set match_invert_field %}
-                {{ fields.sliderField('field_options[' ~ key ~ '_invert]', inverted, __('Restrict to all but these profiles'), {
-                    field_class: 'col-12',
-                    label_class: 'col-xxl-10',
-                    input_class: 'col-xxl-2'
-                }) }}
-            {% endset %}
             {{ fields.dropdownField('Profile', 'field_options[' ~ key ~ ']', value, label, {
                 multiple: true,
-                add_field_html: match_invert_field,
                 to_add: {
                     '-1': __('All')
                 },
@@ -74,14 +66,8 @@ class ProfileRestrictOption extends AbstractOption
         TWIG, $twig_params);
     }
 
-    protected function getInverted(): bool
-    {
-        return (bool) ($this->custom_field->fields['field_options'][$this->getKey() . '_invert'] ?? false);
-    }
-
     public function getValue(): bool
     {
-        $inverted = $this->getInverted();
         $value = parent::getValue() ?? [];
 
         if (!is_array($value)) {
@@ -90,13 +76,13 @@ class ProfileRestrictOption extends AbstractOption
 
         // Handle special 'All' value
         if (in_array(-1, $value, true)) {
-            return !$inverted;
+            return true;
         }
 
         $active_profile = $_SESSION['glpiactiveprofile']['id'] ?? null;
         if ($active_profile === null) {
             return false;
         }
-        return $inverted ? !in_array($active_profile, $value, false) : in_array($active_profile, $value, false);
+        return in_array($active_profile, $value, false);
     }
 }
