@@ -48,8 +48,7 @@ class ProfileRestrictOption extends AbstractOption
             'item' => $this->custom_field,
             'key' => $this->getKey(),
             'label' => $this->getName(),
-            'value' => $value,
-            'inverted' => $this->getInverted(),
+            'value' => array_filter($value),
         ];
         // language=Twig
         return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
