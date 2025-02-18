@@ -238,7 +238,9 @@ class Certificate_Item extends CommonDBRelation
                                 add_field_class: 'd-inline',
                                 no_label: true,
                             })) }}
-                            <button type="submit" name="add" class="btn btn-primary ms-3 mb-3">{{ btn_label }}</button>
+                            <div>
+                                <button type="submit" name="add" class="btn btn-primary ms-3 mb-3">{{ btn_label }}</button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -382,7 +384,9 @@ TWIG, $twig_params);
                                 add_field_class: 'd-inline',
                                 no_label: true,
                             })) }}
-                            <button type="submit" name="add" class="btn btn-primary ms-3 mb-3">{{ btn_label }}</button>
+                            <div>
+                                <button type="submit" name="add" class="btn btn-primary ms-3 mb-3">{{ btn_label }}</button>
+                            </div>
                         </div>
                     </form>
                 </div>
