@@ -853,6 +853,8 @@ final class DbUtils
             && $_SESSION['glpishowallentities']
         ) {
             return [];
+        } elseif ($value === []) {
+            return ['1' => 0];
         }
 
         if (empty($field)) {

@@ -556,8 +556,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 $key = key($value);
                 $value = current($value);
                 $ret .= '((' . $key . ') ' . $this->analyseCriterion($value) . ')';
-            } elseif ($value === []) {
-                $ret .= '1=0'; //always false
             } else {
                 $ret .= DBmysql::quoteName($name) . ' ' . $this->analyseCriterion($value);
             }
