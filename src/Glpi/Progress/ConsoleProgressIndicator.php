@@ -34,6 +34,7 @@
 
 namespace Glpi\Progress;
 
+use Glpi\Message\MessageType;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -67,14 +68,14 @@ class ConsoleProgressIndicator extends AbstractProgressIndicator
         $this->progress_bar->start();
     }
 
-    public function addMessage(ProgressMessageType $type, string $message): void
+    public function addMessage(MessageType $type, string $message): void
     {
         match ($type) {
-            ProgressMessageType::Error => $this->outputMessage('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET),
-            ProgressMessageType::Warning => $this->outputMessage('<comment>' . $message . '</comment>', OutputInterface::VERBOSITY_QUIET),
-            ProgressMessageType::Success => $this->outputMessage('<info>' . $message . '</info>', OutputInterface::VERBOSITY_NORMAL),
-            ProgressMessageType::Notice => $this->outputMessage($message, OutputInterface::VERBOSITY_NORMAL),
-            ProgressMessageType::Debug => $this->outputMessage('[DEBUG] ' . $message, OutputInterface::VERBOSITY_VERY_VERBOSE),
+            MessageType::Error => $this->outputMessage('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET),
+            MessageType::Warning => $this->outputMessage('<comment>' . $message . '</comment>', OutputInterface::VERBOSITY_QUIET),
+            MessageType::Success => $this->outputMessage('<info>' . $message . '</info>', OutputInterface::VERBOSITY_NORMAL),
+            MessageType::Notice => $this->outputMessage($message, OutputInterface::VERBOSITY_NORMAL),
+            MessageType::Debug => $this->outputMessage('[DEBUG] ' . $message, OutputInterface::VERBOSITY_VERY_VERBOSE),
         };
     }
 
