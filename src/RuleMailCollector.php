@@ -110,6 +110,12 @@ class RuleMailCollector extends Rule
         $criterias['x-uce-status']['table']             = '';
         $criterias['x-uce-status']['type']              = 'text';
 
+        $criterias['_headers'] = [
+            'name'  => __('Full email headers'),
+            'table' => '',
+            'type'  => 'text',
+        ];
+
         $criterias['received']['name']                  = __('Received email header');
         $criterias['received']['table']                 = '';
         $criterias['received']['type']                  = 'text';
