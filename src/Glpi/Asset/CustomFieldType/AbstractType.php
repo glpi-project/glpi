@@ -71,9 +71,8 @@ abstract class AbstractType implements TypeInterface
     {
         return [
             new BooleanOption($this->custom_field, 'full_width', __('Full width'), false),
-            new ProfileRestrictOption($this->custom_field, 'readonly', __('Readonly'), false),
             new BooleanOption($this->custom_field, 'required', __('Mandatory'), false),
-            new BooleanOption($this->custom_field, 'disabled', __('Disabled'), false), // Not exposed in the UI. Only used in field order preview
+            new ProfileRestrictOption($this->custom_field, 'readonly', __('Readonly'), false),
             new ProfileRestrictOption($this->custom_field, 'hidden', __('Hidden'), false),
         ];
     }
