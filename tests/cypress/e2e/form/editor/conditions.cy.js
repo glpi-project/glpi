@@ -223,6 +223,35 @@ function setTextAnswer(question, value) {
     cy.findByRole('textbox', {'name': question}).type(value);
 }
 
+/**
+ * Must be called only when positioned at the start of a form.
+ */
+function validateSectionOrder(sections) {
+    let back = 0;
+
+    // Validate each sections one by one
+    sections.forEach((section, i) => {
+        cy.findByRole('heading', {'name': section}).should('be.visible');
+
+        // Make sure step label is accurate
+        cy.findByText(`Step ${i + 1} of ${sections.length}`).should('be.visible');
+
+        if (i + 1 === sections.length) {
+            // Last section, do not submit form
+            cy.findByRole('button', {'name': "Send form"}).should('be.visible');
+        } else {
+            // Any other section, go to next.
+            cy.findByRole('button', {'name': "Continue"}).click();
+            back++;
+        }
+    });
+
+    // Go back to first section
+    for (let i=0; i<back; i++) {
+        cy.findByRole('button', {'name': "Back"}).click();
+    }
+}
+
 describe ('Conditions', () => {
     beforeEach(() => {
         cy.login();
@@ -627,5 +656,68 @@ describe ('Conditions', () => {
         validateThatCommentIsVisible("My comment that is always visible");
         validateThatCommentIsVisible("My comment that is visible if some criteria are met");
         validateThatCommentIsNotVisible("My comment that is hidden if some criteria are met");
+    });
+
+    it('conditions are applied on sections', () => {
+        createForm();
+        addQuestion('My question used as a criteria');
+        addSection('My section that is always visible');
+        addSection('My section that is visible if some criteria are met');
+        addSection('My section that is hidden if some criteria are met');
+
+        getAndFocusSection('My section that is always visible').within(() => {
+            initVisibilityConfiguration();
+            setVisibilityOption('Always visible');
+        });
+        closeVisibilityConfiguration();
+        getAndFocusSection('My section that is visible if some criteria are met').within(() => {
+            initVisibilityConfiguration();
+            setVisibilityOption('Visible if...');
+            fillCondition(
+                0,
+                null,
+                'My question used as a criteria',
+                'Is equal to',
+                'Expected answer 1'
+            );
+        });
+        closeVisibilityConfiguration();
+        getAndFocusSection('My section that is hidden if some criteria are met').within(() => {
+            initVisibilityConfiguration();
+            setVisibilityOption('Hidden if...');
+            fillCondition(
+                0,
+                null,
+                'My question used as a criteria',
+                'Is equal to',
+                'Expected answer 2'
+            );
+        });
+        closeVisibilityConfiguration();
+        save();
+        preview();
+
+        // The form questions are all empty, we expect the following default state
+        validateSectionOrder([
+            'First section',
+            'My section that is always visible',
+            'My section that is hidden if some criteria are met',
+        ]);
+
+        // Set first answer to "Expected answer 1" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "Expected answer 1");
+        validateSectionOrder([
+            'First section',
+            'My section that is always visible',
+            'My section that is visible if some criteria are met',
+            'My section that is hidden if some criteria are met',
+        ]);
+
+        // Set first answer to "Expected answer 2" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "Expected answer 2");
+        validateSectionOrder([
+            'First section',
+            'My section that is always visible',
+        ]);
     });
 });

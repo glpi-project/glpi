@@ -259,8 +259,160 @@ final class EngineTest extends DbTestCase
         ];
     }
 
+    public static function conditionsOnSections(): iterable
+    {
+        $form = new FormBuilder();
+        $form->addQuestion("Question 1", QuestionTypeShortText::class);
+        $form->addQuestion("Question 2", QuestionTypeShortText::class);
+        $form->addSection("Test section 1");
+        $form->addComment("Comment 1");
+        $form->addSection("Test section 2");
+        $form->addComment("Comment 2");
+        $form->setSectionVisibility(
+            "Test section 1",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question 1",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "answer for question 1",
+                ]
+            ]
+        );
+        $form->setSectionVisibility(
+            "Test section 2",
+            VisibilityStrategy::HIDDEN_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question 2",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "answer for question 2",
+                ]
+            ]
+        );
+
+        yield [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "",
+                    'Question 2' => "",
+                ],
+            ],
+            'expected_output' => [
+                'sections' => [
+                    'Test section 1' => false,
+                    'Test section 2' => true,
+                ],
+            ],
+        ];
+        yield [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "answer for question 1",
+                    'Question 2' => "",
+                ],
+            ],
+            'expected_output' => [
+                'sections' => [
+                    'Test section 1' => true,
+                    'Test section 2' => true,
+                ],
+            ],
+        ];
+        yield [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "",
+                    'Question 2' => "answer for question 2",
+                ],
+            ],
+            'expected_output' => [
+                'sections' => [
+                    'Test section 1' => false,
+                    'Test section 2' => false,
+                ],
+            ],
+        ];
+        yield [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "answer for question 1",
+                    'Question 2' => "answer for question 2",
+                ],
+            ],
+            'expected_output' => [
+                'sections' => [
+                    'Test section 1' => true,
+                    'Test section 2' => false,
+                ],
+            ],
+        ];
+    }
+
+    public static function firstSectionShouldAlwaysBeVisible(): iterable
+    {
+        $form = new FormBuilder();
+        $form->addSection("First section");
+        $form->addQuestion("Question used as condition", QuestionTypeShortText::class);
+        $form->addSection("Second section");
+        $form->addQuestion("Another question", QuestionTypeShortText::class);
+        $form->setSectionVisibility(
+            "First section",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question used as condition",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "expected answer",
+                ]
+            ]
+        );
+        $form->setSectionVisibility(
+            "Second section",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question used as condition",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "expected answer",
+                ]
+            ]
+        );
+
+        yield [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question used as condition' => "unexpected answer",
+                    'Another question' => "doesn't matter",
+                ],
+            ],
+            'expected_output' => [
+                // Despite both sections have the same condition, the first one is visible
+                'sections' => [
+                    'First section' => true,
+                    'Second section' => false,
+                ],
+            ],
+        ];
+    }
+
     #[DataProvider('conditionsOnQuestions')]
     #[DataProvider('conditionsOnComments')]
+    #[DataProvider('conditionsOnSections')]
+    #[DataProvider('firstSectionShouldAlwaysBeVisible')]
     public function testComputation(
         FormBuilder $form,
         array $input,
@@ -289,6 +441,14 @@ final class EngineTest extends DbTestCase
                 $expected_visibility,
                 $output->isCommentVisible($id),
                 "Comment '$name' does not have the expected visibility.",
+            );
+        }
+        foreach (($expected_output['sections'] ?? []) as $name => $expected_visibility) {
+            $id = $this->getSectionId($form, $name);
+            $this->assertEquals(
+                $expected_visibility,
+                $output->isSectionVisible($id),
+                "Section '$name' does not have the expected visibility.",
             );
         }
     }

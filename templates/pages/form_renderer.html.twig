@@ -58,6 +58,7 @@
                 </div>
             </div>
 
+            {% set section_visible_index = 1 %}
             {% for section in form.getSections() %}
                 {# Is this the first section of a form ? #}
                 {% set is_first_section = loop.index0 == 0 %}
@@ -67,6 +68,7 @@
                     class="{{ is_first_section ? "" : "d-none" }}"
                     data-glpi-form-renderer-section="{{ section_index }}"
                     data-glpi-form-renderer-uuid="{{ section.fields.uuid }}"
+                    data-glpi-form-renderer-id="{{ section.fields.id }}"
                     {% if not visibility_engine_output.isSectionVisible(section.getID()) %}
                         data-glpi-form-renderer-hidden-by-condition
                     {% endif %}
@@ -75,8 +77,15 @@
                         <div
                             class="bg-primary px-2 py-1 rounded-top "
                             style="width: fit-content;"
+                            data-glpi-form-renderer-step-label
                         >
-                            {{ __("Step %d of %d")|format(loop.index, form.getSections()|length) }}
+                            {% if visibility_engine_output.isSectionVisible(section.getID()) %}
+                                {{ __("Step %d of %d")|format(
+                                    section_visible_index,
+                                    visibility_engine_output.getNumberOfVisibleSections()
+                                ) }}
+                                {% set section_visible_index = section_visible_index + 1 %}
+                            {% endif %}
                         </div>
                     {% endif %}
                     <div
@@ -186,7 +195,7 @@
                 <button
                     type="button"
                     data-glpi-form-renderer-action="previous-section"
-                    class="btn btn-ghost-secondary d-none me-2"
+                    class="btn btn-ghost-secondary d-none me-2 pointer-events-none"
                 >
                     {{ __("Back") }}
                 </button>
@@ -194,7 +203,7 @@
                 <button
                     type="button"
                     data-glpi-form-renderer-action="next-section"
-                    class="btn btn-primary {{ is_single_section_form ? "d-none" : "" }}"
+                    class="btn btn-primary pointer-events-none {{ is_single_section_form ? "d-none" : "" }}"
                 >
                     {{ __("Continue") }}
                 </button>
@@ -202,7 +211,7 @@
                 <button
                     type="button"
                     data-glpi-form-renderer-action="submit"
-                    class="btn btn-primary {{ not is_single_section_form ? "d-none" : "" }}"
+                    class="btn btn-primary pointer-events-none {{ not is_single_section_form ? "d-none" : "" }}"
                     disabled
                 >
                     {{ __("Send form") }}

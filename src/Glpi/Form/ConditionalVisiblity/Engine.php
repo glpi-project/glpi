@@ -67,9 +67,14 @@ final class Engine
             );
         }
 
-        // Compute section visiblity (not done yet, will always be visible)
+        // Compute section visiblity
+        $first = true;
         foreach ($this->form->getSections() as $section) {
-            $output->setSectionVisibility($section->getID(), true);
+            $output->setSectionVisibility(
+                $section->getID(),
+                $first ? true : $this->computeItemVisibility($section),
+            );
+            $first = false;
         }
 
         return $output;

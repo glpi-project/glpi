@@ -39,6 +39,8 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\ConditionalVisiblity\Engine;
 use Glpi\Form\ConditionalVisiblity\EngineInput;
 use Glpi\Form\Form;
+use Glpi\Http\Firewall;
+use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,6 +53,7 @@ final class EngineController extends AbstractController
         name: "glpi_form_conditional_visibility_engine",
         methods: "POST"
     )]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function __invoke(Request $request): Response
     {
         // Load target form
