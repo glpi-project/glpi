@@ -254,6 +254,7 @@
                 <script type="text/javascript">
                     function showPlanUpdate{{ rand }}(e) {
                         $('#plan{{ rand }}').hide();
+                        $('#dropdown_state{{ rand }}').trigger('setValue', {{ session('glpiplanned_task_state') }});
                         $('#viewplan{{ rand }}').load('{{ path('/ajax/planning.php') }}', {
                             action: "add_event_classic_form",
                             form: "followups", // Was followups for tasks before. Can't find where this is used.
