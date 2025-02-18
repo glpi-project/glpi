@@ -34,54 +34,56 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 <div class="spaced">
-   {% if canedit %}
-      <form method="post" name="form" action="{{ action }}" data-track-changes="true">
-   {% endif %}
-   <table class="tab_cadre_fixe">
-      {{ call_plugin_hook('pre_item_form', {
-         'item': item,
-         'options': {}
-      }) }}
-      <tr>
-         <th colspan="2">{{ __('Two-factor authentication (2FA)') }}</th>
-      </tr>
-      <tr class="tab_bg_1">
-         <td colspan="2">
-            <div class="alert alert-info">
-               {{ __('If 2FA is enforced, users with access to this %s will be required to use 2FA at login even if this is not their default')|format(item.getTypeName(1)) }}
-            </div>
-         </td>
-      </tr>
-      <tr class="tab_bg_1">
-         <td>{{ __('Enforce 2FA') }}</td>
-         <td>
-            {% if item.getType() == 'Entity' %}
-               {{ fields.dropdownArrayField('2fa_enforcement_strategy', item.fields['2fa_enforcement_strategy'], {
-                  (constant('Entity::CONFIG_PARENT')): __('Inheritance of the parent entity'),
-                  '0': __('No'),
-                  '1': __('Yes'),
-               }, '', {
-                  'no_label': true,
-                   add_field_html: inherited_value
-               }) }}
-            {% else %}
-               {{ fields.dropdownYesNo('2fa_enforced', item.fields['2fa_enforced'], '', {
-                  'no_label': true,
-               }) }}
-            {% endif %}
-         </td>
-      </tr>
-      {{ call_plugin_hook('post_item_form', {
-         'item': item,
-         'options': {}
-      }) }}
-   </table>
-   {% if canedit %}
-         <input type="hidden" name="id" value="{{ item.fields['id'] }}">
-         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-         <button type="submit" name="update" class="btn btn-primary">
-            {{ _x('button', 'Save') }}
-         </button>
-      </form>
-   {% endif %}
+    {% if canedit %}
+    <form method="post" name="form" action="{{ action }}" data-track-changes="true">
+        {% endif %}
+        <table class="tab_cadre_fixe">
+            {{ call_plugin_hook('pre_item_form', {
+                'item': item,
+                'options': {}
+            }) }}
+            <tr>
+                <th colspan="2">{{ __('Two-factor authentication (2FA)') }}</th>
+            </tr>
+            <tr class="tab_bg_1">
+                <td colspan="2">
+                    <div class="alert alert-info">
+                        {{ __('If 2FA is enforced, users with access to this %s will be required to use 2FA at login even if this is not their default')|format(item.getTypeName(1)) }}
+                    </div>
+                </td>
+            </tr>
+            <tr class="tab_bg_1">
+                <td>{{ __('Enforce 2FA') }}</td>
+                <td>
+                    {% if item.getType() == 'Entity' %}
+                        {{ fields.dropdownArrayField('2fa_enforcement_strategy', item.fields['2fa_enforcement_strategy'], {
+                            (constant('Entity::CONFIG_PARENT')): __('Inheritance of the parent entity'),
+                            '0': __('No'),
+                            '1': __('Yes'),
+                        }, '', {
+                            'no_label': true,
+                            add_field_html: inherited_value
+                        }) }}
+                    {% else %}
+                        {{ fields.dropdownYesNo('2fa_enforced', item.fields['2fa_enforced'], '', {
+                            'no_label': true,
+                        }) }}
+                    {% endif %}
+                </td>
+            </tr>
+            {{ call_plugin_hook('post_item_form', {
+                'item': item,
+                'options': {}
+            }) }}
+        </table>
+        {% if canedit %}
+        <div class="card-body mb-n5 border-top d-flex flex-row-reverse">
+            <input type="hidden" name="id" value="{{ item.fields['id'] }}">
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" name="update" class="btn btn-primary">
+                {{ _x('button', 'Save') }}
+            </button>
+        </div>
+    </form>
+    {% endif %}
 </div>

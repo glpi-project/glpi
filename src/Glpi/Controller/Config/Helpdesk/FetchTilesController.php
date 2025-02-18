@@ -69,7 +69,7 @@ final class FetchTilesController extends AbstractController
             profile_id: $profile_id,
         ), check_availability: false);
 
-        return $this->render('pages/admin/helpdesk_home_config_tiles.html.twig', [
+        return $this->render('pages/admin/profile/helpdesk_home/tiles.html.twig', [
             'tiles_manager' => $this->tiles_manager,
             'tiles' => $tiles,
         ]);

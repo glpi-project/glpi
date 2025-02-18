@@ -1,0 +1,50 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+    {{ fields.textField('name', item.fields['name'], __('Name')) }}
+    {{ fields.textareaField('comment', item.fields['comment'], _n('Comment', 'Comments', get_plural_number())) }}
+    {% block more_fields %}
+        {{ fields.checkboxField('is_default', item.fields['is_default'], __('Default profile')) }}
+        {{ fields.nullField() }}
+        {{ fields.dropdownArrayField('interface', item.fields['interface'], interfaces, __("Profile's interface"), {
+            readonly: last_super_admin_profile and item.fields['interface'] == 'central'
+        }) }}
+        {{ fields.nullField() }}
+        {{ fields.checkboxField('_password_update', item.fields['password_update'], __('Update own password')) }}
+        {{ fields.nullField() }}
+        {{ fields.checkboxField('create_ticket_on_login', item.fields['create_ticket_on_login'], __('Ticket creation form on login')) }}
+    {% endblock %}
+{% endblock %}

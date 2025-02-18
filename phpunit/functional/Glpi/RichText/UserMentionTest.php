@@ -38,12 +38,14 @@ namespace tests\units\Glpi\RichText;
 use CommonITILActor;
 use CommonITILObject;
 use DbTestCase;
+use Glpi\RichText\UserMention;
 use Notification;
 use Notification_NotificationTemplate;
 use NotificationTarget;
 use NotificationTemplate;
 use NotificationTemplateTranslation;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
 use Session;
 use Ticket;
 use Ticket_User;
@@ -633,5 +635,92 @@ HTML
             ]
         );
         $this->assertGreaterThan(0, $target_id);
+    }
+
+    public function testDisableMentions()
+    {
+        global $CFG_GLPI;
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $profiles_id = $_SESSION['glpiactiveprofile']['id'];
+        $profile = new Profile();
+        $profile->update([
+            'id' => $profiles_id,
+            'use_mentions' => UserMention::USER_MENTION_DISABLED
+        ]);
+
+        $ticket = new Ticket();
+        $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true)
+        ]);
+
+        $options = UserMention::getMentionOptions($ticket);
+        $this->assertEmpty($options['users']);
+        $this->assertFalse($options['full']);
+    }
+
+    public function testRestrictMentions()
+    {
+        global $CFG_GLPI;
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $profiles_id = $_SESSION['glpiactiveprofile']['id'];
+        $profile = new Profile();
+        $profile->update([
+            'id' => $profiles_id,
+            'use_mentions' => UserMention::USER_MENTION_RESTRICTED
+        ]);
+
+        $ticket = new Ticket();
+        $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true)
+        ]);
+        $options = UserMention::getMentionOptions($ticket);
+        $this->assertEmpty($options['users']);
+        $this->assertFalse($options['full']);
+
+        $ticket_user = new Ticket_User();
+        $ticket_user->add([
+            'tickets_id' => $ticket->getID(),
+            'users_id' => Session::getLoginUserID(),
+            'type' => 2
+        ]);
+
+        $options = UserMention::getMentionOptions($ticket);
+        $this->assertCount(1, $options['users']);
+        $this->assertFalse($options['full']);
+    }
+
+    public function testFullMentions()
+    {
+        global $CFG_GLPI;
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $profiles_id = $_SESSION['glpiactiveprofile']['id'];
+        $profile = new Profile();
+        $profile->update([
+            'id' => $profiles_id,
+            'use_mentions' => UserMention::USER_MENTION_FULL
+        ]);
+
+        $ticket = new Ticket();
+        $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true)
+        ]);
+        $options = UserMention::getMentionOptions($ticket);
+        $this->assertEmpty($options['users']);
+        $this->assertTrue($options['full']);
     }
 }
