@@ -32,9 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Progress;
+namespace Glpi\Message;
 
-enum ProgressMessageType: string
+enum MessageType: string
 {
     case Error = 'error';
     case Warning = 'warning';
