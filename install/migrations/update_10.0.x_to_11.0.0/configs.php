@@ -53,8 +53,7 @@ $migration->addField('glpi_users', 'set_solution_tech', 'tinyint DEFAULT NULL');
 $migration->addField(
     'glpi_users',
     'planned_task_state',
-    'int DEFAULT NULL',
-    ['update' => 1]
+    'int DEFAULT NULL'
 );
 
 $migration->removeConfig(['url_base_api']);
