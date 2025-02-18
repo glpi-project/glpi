@@ -45,6 +45,8 @@ use Problem;
 use ProblemTask;
 use Ticket;
 use TicketTask;
+use ITILFollowupTemplate;
+use SolutionTemplate;
 
 class PendingReasonTest extends DbTestCase
 {
@@ -464,6 +466,10 @@ class PendingReasonTest extends DbTestCase
         $this->login();
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
 
+        $current_date = '2025-01-31 12:00:00';
+        $date2 = '2025-01-31 13:00:00';
+
+        $_SESSION['glpi_currenttime'] = $current_date;
         // Create a set of pending reasons that will be reused in our test cases
         list(
             $pending_reason1,
@@ -493,6 +499,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => $current_date,
                 ],
             ],
             'expected' => [
@@ -500,8 +507,9 @@ class PendingReasonTest extends DbTestCase
                 'pendingreasons_id'           => $pending_reason1->getID(),
                 'followup_frequency'          => 3 * DAY_TIMESTAMP,
                 'followups_before_resolution' => 2,
-                // Pending reason is attached to the first followup
+                // Pending reason is attached to the last followup
                 'pending_timeline_index'      => 0,
+                'last_bump_date'              => $current_date,
             ]
         ];
 
@@ -514,8 +522,11 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => $current_date,
                 ],
-                ['type' => TicketTask::class],
+                [
+                    'type'           => TicketTask::class,
+                ],
 
             ],
             'expected' => [
@@ -523,13 +534,14 @@ class PendingReasonTest extends DbTestCase
                 'pendingreasons_id'           => $pending_reason1->getID(),
                 'followup_frequency'          => 3 * DAY_TIMESTAMP,
                 'followups_before_resolution' => 2,
-                // Pending reason is attached to the first task
+                // Pending reason is attached to the last task
                 'pending_timeline_index'      => 0,
+                'last_bump_date'              => $current_date,
             ]
         ];
 
         // Case 4: ticket with two followups
-        // The first set the pending data and the second change it
+        // The first set the pending data and the second change the pending data
         yield [
             'timeline' => [
                 [
@@ -538,6 +550,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => $current_date,
                 ],
                 [
                     'type'                        => ITILFollowup::class,
@@ -545,6 +558,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason2->getID(),
                     'followup_frequency'          => 2 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 1,
+                    'last_bump_date'              => $date2,
                 ],
 
             ],
@@ -553,8 +567,9 @@ class PendingReasonTest extends DbTestCase
                 'pendingreasons_id'           => $pending_reason2->getID(),
                 'followup_frequency'          => 2 * DAY_TIMESTAMP,
                 'followups_before_resolution' => 1,
-                // Pending reason is still attached to the first followup, the second one only edited its value
-                'pending_timeline_index'      => 0,
+                // The pending reason is always attached to the last follow-up, the second one changes the value of the first one
+                'pending_timeline_index'      => 1,
+                'last_bump_date'              => $date2,
             ]
         ];
 
@@ -590,6 +605,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => $current_date,
                 ],
                 [
                     'type'    => TicketTask::class,
@@ -601,6 +617,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason2->getID(),
                     'followup_frequency'          => 0,
                     'followups_before_resolution' => 0,
+                    'last_bump_date'              => $date2,
                 ],
             ],
             'expected' => [
@@ -610,6 +627,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 0,
                 // Pending reason is attached to the third timeline item
                 'pending_timeline_index'      => 2,
+                'last_bump_date'              => $date2,
             ]
         ];
 
@@ -624,6 +642,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => $current_date,
                 ],
                 [
                     'type'                        => ITILFollowup::class,
@@ -631,6 +650,7 @@ class PendingReasonTest extends DbTestCase
                     'pendingreasons_id'           => $pending_reason1->getID(),
                     'followup_frequency'          => 3 * DAY_TIMESTAMP,
                     'followups_before_resolution' => 2,
+                    'last_bump_date'              => $date2,
                 ],
             ],
             'expected' => [
@@ -640,6 +660,130 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 2,
                 // Pending reason is attached to the first timeline item
                 'pending_timeline_index'      => 0,
+                'last_bump_date'              => $current_date,
+            ]
+        ];
+
+        // Case 8: ticket with 2 timeline items
+        // This simulates what will be sent if a pending task is sent after a follow-up with retry
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                    'last_bump_date'              => $current_date,
+                ],
+                [
+                    'type'                        => TicketTask::class,
+                    'pending'                     => 1,
+                    'last_bump_date'              => $date2,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason1->getID(),
+                'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                'followups_before_resolution' => 2,
+                // Pending reason is attached to the last followup
+                'pending_timeline_index'      => 0,
+                'last_bump_date'              => $current_date,
+            ]
+        ];
+
+        // Case 9: ticket with 2 timeline items
+        // This simulate what will be sent if a pending followup with relauch added after the pending followup without relauch
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => 0,
+                    'last_bump_date'              => $current_date,
+                ],
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                    'last_bump_date'              => $date2,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason1->getID(),
+                'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                'followups_before_resolution' => 2,
+                // Pending reason is attached to the last timeline item
+                'pending_timeline_index'      => 1,
+                'last_bump_date'              => $date2,
+            ]
+        ];
+
+        // Case 10: ticket with 2 timeline items
+        // This simulates what will be sent if a pending follow up without retry is added after a task with waiting
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => TicketTask::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                    'last_bump_date'              => $current_date,
+                ],
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => 0,
+                    'followup_frequency'          => 0,
+                    'followups_before_resolution' => 0,
+                    'last_bump_date'              => $date2,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => 0,
+                'followup_frequency'          => 0,
+                'followups_before_resolution' => 0,
+                // Pending reason is attached to the last timeline item
+                'pending_timeline_index'      => 1,
+                'last_bump_date'              => $date2,
+            ]
+        ];
+
+        // Case 11: ticket with 2 timeline items
+        // This simulates what will be sent if a pending follow with prompt is added after a pending task
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => TicketTask::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => 3 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 2,
+                    'last_bump_date'              => $current_date,
+                ],
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason2->getID(),
+                    'followup_frequency'          => 2 * DAY_TIMESTAMP,
+                    'followups_before_resolution' => 1,
+                    'last_bump_date'              => $date2,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason2->getID(),
+                'followup_frequency'          => 2 * DAY_TIMESTAMP,
+                'followups_before_resolution' => 1,
+                // Pending reason is attached to the last timeline item
+                'pending_timeline_index'      => 1,
+                'last_bump_date'              => $date2,
             ]
         ];
     }
@@ -687,7 +831,8 @@ class PendingReasonTest extends DbTestCase
                     'pending',
                     'pendingreasons_id',
                     'followup_frequency',
-                    'followups_before_resolution'
+                    'followups_before_resolution',
+                    'last_bump_date',
                 ]);
             }
 
@@ -724,6 +869,244 @@ class PendingReasonTest extends DbTestCase
                     $correct_timeline_item->getID(),
                     $last_timeline_item_pending_data->fields['items_id']
                 );
+                $this->assertEquals(
+                    $last_timeline_item_pending_data->fields['last_bump_date'],
+                    $ticket_pending_data->fields['last_bump_date']
+                );
+            }
+        }
+    }
+
+    protected function testCronPendingReasonAutobumpAutosolveProvider()
+    {
+        $this->login();
+
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $followup_frequency = 3 * DAY_TIMESTAMP;
+
+        $current_date = '2025-01-31 12:00:00';
+        $date_before_bump = '2025-01-28 12:00:00';
+        $date_to_bump = '2025-01-28 11:59:59';
+
+        $_SESSION['glpi_currenttime'] = $current_date;
+
+        $itilfollowuptemplate = $this->createItem(ITILFollowupTemplate::class, [
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name' => 'test',
+            'content' => 'test',
+        ]);
+
+        $itilsolutiontemplate = $this->createItem(SolutionTemplate::class, [
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'name' => 'test',
+            'content' => 'test',
+        ]);
+
+        // Create a set of pending reasons that will be reused in our test cases
+        list(
+            $pending_reason1,
+        ) = $this->createItems(\PendingReason::class, [
+            ['entities_id' => $entity, 'is_recursive' => true, 'name' => 'Pending 1', 'itilfollowuptemplates_id' => $itilfollowuptemplate->getID(), 'solutiontemplates_id' => $itilsolutiontemplate->getID()],
+        ]);
+
+        // Case 1: followup just published
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => $followup_frequency,
+                    'followups_before_resolution' => 2,
+                    'last_bump_date'              => $current_date,
+                    'bump_count'                  => 0,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason1->getID(),
+                'followup_frequency'          => $followup_frequency,
+                'followups_before_resolution' => 2,
+                'last_bump_date'              => $current_date,
+                'bump_count'                  => 0,
+            ]
+        ];
+
+        // Case 2: task just published
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => TicketTask::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => $followup_frequency,
+                    'followups_before_resolution' => 2,
+                    'last_bump_date'              => $current_date,
+                    'bump_count'                  => 0,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason1->getID(),
+                'followup_frequency'          => $followup_frequency,
+                'followups_before_resolution' => 2,
+                'last_bump_date'              => $current_date,
+                'bump_count'                  => 0,
+            ]
+        ];
+
+        // Case 3: follow up published just before the bump date
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => $followup_frequency,
+                    'followups_before_resolution' => 2,
+                    'last_bump_date'              => $date_before_bump,
+                    'bump_count'                  => 0,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason1->getID(),
+                'followup_frequency'          => $followup_frequency,
+                'followups_before_resolution' => 2,
+                'last_bump_date'              => $date_before_bump,
+                'bump_count'                  => 0,
+            ]
+        ];
+
+        // Case 4: follow up that will be bumped one time
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => $followup_frequency,
+                    'followups_before_resolution' => 2,
+                    'last_bump_date'              => $date_to_bump,
+                    'bump_count'                  => 0,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason1->getID(),
+                'followup_frequency'          => $followup_frequency,
+                'followups_before_resolution' => 2,
+                'last_bump_date'              => $current_date,
+                'bump_count'                  => 1,
+            ]
+        ];
+
+        // Case 5: follow up that will be bumped two times
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => $followup_frequency,
+                    'followups_before_resolution' => 2,
+                    'last_bump_date'              => $date_to_bump,
+                    'bump_count'                  => 1,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::WAITING,
+                'pendingreasons_id'           => $pending_reason1->getID(),
+                'followup_frequency'          => $followup_frequency,
+                'followups_before_resolution' => 2,
+                'last_bump_date'              => $current_date,
+                'bump_count'                  => 2,
+            ]
+        ];
+
+        // Case 6: follow up that will be bumped three times. Close the ticket
+        yield [
+            'timeline' => [
+                [
+                    'type'                        => ITILFollowup::class,
+                    'pending'                     => 1,
+                    'pendingreasons_id'           => $pending_reason1->getID(),
+                    'followup_frequency'          => $followup_frequency,
+                    'followups_before_resolution' => 2,
+                    'last_bump_date'              => $date_to_bump,
+                    'bump_count'                  => 2,
+                ],
+            ],
+            'expected' => [
+                'status'                      => CommonITILObject::SOLVED,
+                'pendingreasons_id'           => 0,
+                'followup_frequency'          => 0,
+                'followups_before_resolution' => 0,
+                'last_bump_date'              => $current_date,
+                'bump_count'                  => 3,
+            ]
+        ];
+    }
+
+    public function testCronPendingReasonAutobumpAutosolve()
+    {
+        $provider = $this->testCronPendingReasonAutobumpAutosolveProvider();
+        foreach ($provider as $row) {
+            $timeline = $row['timeline'];
+            $expected = $row['expected'];
+
+            // Create test ticket
+            $ticket = $this->createItem(Ticket::class, [
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'name' => 'test',
+                'content' => 'test',
+            ]);
+
+            // Insert timeline
+            $items = [];
+            foreach ($timeline as $timeline_item) {
+                // Insert fake content
+                $timeline_item['content'] = 'test';
+
+                // Read and prepare itemtype (task or followup)
+                $itemtype = $timeline_item['type'];
+                unset($timeline_item['type']);
+
+                if ($itemtype == ITILFollowup::class) {
+                    $timeline_item['itemtype'] = Ticket::class;
+                    $timeline_item['items_id'] = $ticket->getID();
+                } else {
+                    $timeline_item['tickets_id'] = $ticket->getID();
+                }
+                $items[] = $this->createItem($itemtype, $timeline_item, [
+                    'pending',
+                    'pendingreasons_id',
+                    'followup_frequency',
+                    'followups_before_resolution',
+                    'last_bump_date',
+                    'bump_count',
+                ]);
+            }
+
+            // launch Cron for closing tickets
+            $mode = - \CronTask::MODE_EXTERNAL; // force
+            \CronTask::launch($mode, 1, 'pendingreason_autobump_autosolve');
+
+            // Reload ticket
+            $this->assertTrue($ticket->getFromDB($ticket->getID()));
+
+            /** @var Ticket $ticket */
+            $timeline = $ticket->getTimelineItems();
+
+            $ticket_pending_data = PendingReason_Item::getForItem($ticket);
+            $this->assertEquals($expected['status'], $ticket->fields['status']);
+            if ($ticket->fields['status'] == CommonITILObject::WAITING) {
+                $this->assertEquals($expected['pendingreasons_id'], $ticket_pending_data->fields['pendingreasons_id']);
+                $this->assertEquals($expected['followup_frequency'], $ticket_pending_data->fields['followup_frequency']);
+                $this->assertEquals($expected['followups_before_resolution'], $ticket_pending_data->fields['followups_before_resolution']);
+                $this->assertEquals($expected['last_bump_date'], $ticket_pending_data->fields['last_bump_date']);
+                $this->assertEquals($expected['bump_count'], $ticket_pending_data->fields['bump_count']);
             }
         }
     }
