@@ -1571,10 +1571,10 @@ class Profile extends CommonDBTM
            // Only root entity ones and recursive
             $options = [
                 'value'     => $this->fields[strtolower($itiltype) . "templates_id"],
-                'entity'    => 0
+                'condition' => ['entities_id' => 0]
             ];
             if (Session::isMultiEntitiesMode()) {
-                $options['condition'] = ['is_recursive' => 1];
+                $options['condition']['is_recursive'] = 1;
             }
            // Only add profile if on root entity
             if (!isset($_SESSION['glpiactiveentities'][0])) {
