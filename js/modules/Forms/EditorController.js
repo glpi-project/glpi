@@ -191,7 +191,7 @@ export class GlpiFormEditorController
                 (e) => this.#renderVisibilityEditor(
                     $(e.target)
                         .parent()
-                        .find('[data-glpi-form-editor-visibility-editor]')
+                        .find('[data-glpi-conditions-editor]')
                 ),
             );
 
@@ -479,7 +479,7 @@ export class GlpiFormEditorController
             case "render-visibility-editor": {
                 this.#renderVisibilityEditor(
                     $(target).closest(
-                        '[data-glpi-form-editor-visibility-editor]'
+                        '[data-glpi-conditions-editor]'
                     )
                 );
                 break;
@@ -488,10 +488,10 @@ export class GlpiFormEditorController
             // Delete the selected conditon and re-render the visibility editor
             case "delete-condition": {
                 this.#deleteCondition(
-                    $(target).closest('[data-glpi-form-editor-visibility-editor]'),
+                    $(target).closest('[data-glpi-conditions-editor]'),
                     $(target)
-                        .closest('[data-glpi-form-editor-condition]')
-                        .data('glpi-form-editor-condition-index')
+                        .closest('[data-glpi-conditions-editor-condition]')
+                        .data('glpi-conditions-editor-condition-index')
                 );
                 break;
             }
@@ -499,7 +499,7 @@ export class GlpiFormEditorController
             // Add a new empty condition and re-render the visibility editor
             case "add-condition": {
                 this.#addNewEmptyCondition(
-                    $(target).closest('[data-glpi-form-editor-visibility-editor]')
+                    $(target).closest('[data-glpi-conditions-editor]')
                 );
                 break;
             }
@@ -2179,10 +2179,10 @@ export class GlpiFormEditorController
 
         // Show/hide the condition editor
         const should_displayed_editor = (container
-            .find(`[data-glpi-form-editor-visibility-editor-display-for-${value}]`)
+            .find(`[data-glpi-conditions-editor-display-for-${value}]`)
             .length
         ) > 0;
-        container.find(`[data-glpi-form-editor-visibility-editor]`)
+        container.find(`[data-glpi-conditions-editor]`)
             .toggleClass('d-none', !should_displayed_editor)
         ;
     }
@@ -2207,7 +2207,7 @@ export class GlpiFormEditorController
             // For now, the type is hardcoded to 'question' but we will support
             // conditions on section and comments too
             'selected_item_type': container.closest(
-                '[data-glpi-form-editor-condition-type]'
+                '[data-glpi-conditions-editor-condition-type]'
             ).data('glpi-form-editor-condition-type'),
         };
 
@@ -2224,13 +2224,13 @@ export class GlpiFormEditorController
         ;
 
         // Extract already defined conditions for the current question
-        container.find('[data-glpi-form-editor-condition]')
+        container.find('[data-glpi-conditions-editor-condition]')
             .each((_index, condition) => {
                 const condition_data = {};
 
                 // Try to find a selected logic operator
                 const condition_logic_operator = $(condition).find(
-                    '[data-glpi-form-editor-condition-logic-operator]'
+                    '[data-glpi-conditions-editor-logic-operator]'
                 );
                 if (condition_logic_operator.length > 0) {
                     condition_data.logic_operator = condition_logic_operator.val();
@@ -2238,7 +2238,7 @@ export class GlpiFormEditorController
 
                 // Try to find a selected item
                 const condition_item = $(condition).find(
-                    '[data-glpi-form-editor-condition-item]'
+                    '[data-glpi-conditions-editor-item]'
                 );
                 if (condition_item.length > 0) {
                     condition_data.item = condition_item.val();
@@ -2246,7 +2246,7 @@ export class GlpiFormEditorController
 
                 // Try to find a selected value operator
                 const condition_value_operator = $(condition).find(
-                    '[data-glpi-form-editor-condition-value-operator]'
+                    '[data-glpi-conditions-editor-value-operator]'
                 );
                 if (condition_value_operator.length > 0) {
                     condition_data.value_operator = condition_value_operator.val();
@@ -2254,7 +2254,7 @@ export class GlpiFormEditorController
 
                 // Try to find a selected value
                 const condition_value = $(condition).find(
-                    '[data-glpi-form-editor-condition-value]'
+                    '[data-glpi-conditions-editor-value]'
                 );
                 if (condition_value.length > 0) {
                     condition_data.value = condition_value.val();
