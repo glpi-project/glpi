@@ -690,24 +690,16 @@ class Conf extends CommonGLPI
             echo __s('Related configurations');
             echo "</th>";
             echo "</tr>";
-            echo "<tr class='tab_bg_1'>";
-
-            foreach (['Asset', 'Entity'] as $col_name) {
-                $col_class = 'RuleImport' . $col_name . 'Collection';
-                $collection = new $col_class();
-                $rules = $collection->getRuleClass();
-                echo "<td colspan='2'>";
-                echo sprintf(
-                    '<a href="%s">%s</a>',
-                    $rules::getSearchURL(),
-                    \Rule::createTabEntry($collection->getTitle(), 0, \Rule::getType())
-                );
-                echo "</td>";
-            }
-            echo "</tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>";
+            echo "<td colspan='2'>";
+            echo sprintf(
+                '<a href="%s">%s</a>',
+                \Rule::getSearchURL(),
+                \Rule::createTabEntry(\Rule::getTypeName(\Session::getPluralNumber()), 0, \Rule::getType())
+            );
+            echo "</td>";
+            echo "<td colspan='2'>";
 
             echo sprintf(
                 '<a href="%s">%s</a>',
