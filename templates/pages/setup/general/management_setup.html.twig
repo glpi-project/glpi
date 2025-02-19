@@ -40,7 +40,7 @@
     <div>
         {{ alerts.callout_info(
             title: __('The maximum upload size is primarily determined by the "upload_max_filesize" and "post_max_size" PHP settings. The setting below is to further restrict the uploads for just GLPI.'),
-            options: { add_class: 'mx-2' }
+            options: {add_class: 'mx-2'}
         ) }}
     </div>
    {{ fields.numberField('document_max_size', config['document_max_size'], __('Document files maximum size (Mio)'), {

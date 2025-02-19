@@ -44,7 +44,11 @@
                </div>
 
                {% if use_notifications and not has_active_mode %}
-                   {{ alerts.alert_warning(__('You must enable at least one notification mode.'), [], true, { add_class: 'm-3' }) }}
+                   {{ alerts.alert_warning(
+                       title: __('You must enable at least one notification mode.'),
+                       important: true,
+                       options: {add_class: 'm-3'}
+                   ) }}
                {% endif %}
 
                <ul class="list-group list-group-flush">
@@ -110,9 +114,9 @@
                {% else %}
                   <div class="list-group-item">
                       {{ alerts.alert_warning(
-                          title=__('Unable to configure notifications: please configure at least one notification type using the above configuration.'),
-                          important=true,
-                          options={ add_class: 'm-3' }
+                          title: __('Unable to configure notifications: please configure at least one notification type using the above configuration.'),
+                          important: true,
+                          options: {add_class: 'm-3'}
                       ) }}
                   </div>
                {% endif %}

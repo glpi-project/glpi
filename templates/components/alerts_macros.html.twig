@@ -49,7 +49,7 @@
 
     {% set only_title = messages|length == 0 %}
 
-    <div {{ options.id is not empty ? ('id=' ~ options.id) : ''}}
+    <div {{ options.id is not empty ? ('id=' ~ options.id) : '' }}
         class="flex-shrink-1 alert alert-{{ alert_type }} {{ important ? "alert-important" : "" }} {{ options.add_class }} {{ options.dismissible ? "alert-dismissible" : "" }}"
         {{ options.alert ? 'role=alert' : '' }}>
         <div class="d-flex {{ only_title ? 'align-items-center' : '' }}">
@@ -169,6 +169,6 @@
         messages,
         icon,
         important,
-        { alert: false }|merge(options),
+        {alert: false}|merge(options),
     ) }}
 {% endmacro %}

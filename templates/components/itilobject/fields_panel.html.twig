@@ -306,7 +306,7 @@
                               {{ note['content']|safe_html }}
                           </div>
                       {%- endset -%}
-                      {{ alerts.callout_info(title: '', messages: [note_content], options: { add_class: 'entitynote rich_text_container' }) }}
+                      {{ alerts.callout_info(title: '', messages: [note_content], options: {add_class: 'entitynote rich_text_container'}) }}
                   {% endfor %}
                 </div>
              </div>

@@ -52,7 +52,7 @@
                      }) }}
                  </div>
              {% endset %}
-             {{ alerts.callout(callout_type: 'info', title: comment_submission, icon: 'ti ti-quote', options: { add_class: 'mt-2' }) }}
+             {{ alerts.callout(callout_type: 'info', title: comment_submission, icon: 'ti ti-quote', options: {add_class: 'mt-2'}) }}
          {% endif %}
          {% if entry_i['comment_validation']|length %}
              {% set comment_validation %}
@@ -63,7 +63,7 @@
                      }) }}
                  </div>
              {% endset %}
-             {{ alerts.callout(callout_type: 'info', title: comment_validation, icon: 'ti ti-quote', options: { add_class: 'mt-2' }) }}
+             {{ alerts.callout(callout_type: 'info', title: comment_validation, icon: 'ti ti-quote', options: {add_class: 'mt-2'}) }}
          {% endif %}
 
          {% if entry_i['can_answer'] %}

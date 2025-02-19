@@ -201,11 +201,8 @@
             </div>
 
             {{ alerts.callout_info(
-                title=__('Once the form has been validated, you will be redirected to your supplierʼs authentication page if necessary.'),
-                options={
-                    add_class: 'mx-2',
-                    id: "oauth_redirect_alert_" ~ rand
-                }
+                title: __('Once the form has been validated, you will be redirected to your supplierʼs authentication page if necessary.'),
+                options: {add_class: 'mx-2', id: "oauth_redirect_alert_" ~ rand}
             ) }}
 
             {{ fields.dropdownArrayField(

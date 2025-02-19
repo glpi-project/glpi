@@ -59,7 +59,7 @@
             }) }}
         </div>
     {% else %}
-        {{ alerts.callout_info(__('The preview is not available for the notifications related to %s.')|format(template.fields['itemtype']|itemtype_name(get_plural_number())))  }}
+        {{ alerts.callout_info(__('The preview is not available for the notifications related to %s.')|format(template.fields['itemtype']|itemtype_name(get_plural_number()))) }}
     {% endif %}
 
     {% if data is not null %}
