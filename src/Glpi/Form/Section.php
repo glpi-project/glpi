@@ -36,8 +36,8 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
-use Glpi\Form\ConditionalVisiblity\ConditionnableInterface;
-use Glpi\Form\ConditionalVisiblity\ConditionnableTrait;
+use Glpi\Form\Condition\ConditionnableInterface;
+use Glpi\Form\Condition\ConditionnableTrait;
 use Override;
 use Ramsey\Uuid\Uuid;
 

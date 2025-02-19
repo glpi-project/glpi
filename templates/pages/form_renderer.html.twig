@@ -151,7 +151,7 @@
                                                     data-glpi-form-renderer-comment
                                                 {% endif %}
 
-                                                {% if form_block is instanceof('Glpi\\Form\\Question') and form_block.getQuestionType() is instanceof('Glpi\\Form\\ConditionalVisiblity\\UsedAsCriteriaInterface') %}
+                                                {% if form_block is instanceof('Glpi\\Form\\Question') and form_block.getQuestionType() is instanceof('Glpi\\Form\\Condition\\UsedAsCriteriaInterface') %}
                                                     data-glpi-form-renderer-criteria
                                                 {% endif %}
 

@@ -32,15 +32,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Form\ConditionalVisiblity;
+namespace tests\units\Glpi\Form\Condition;
 
 use DbTestCase;
-use Glpi\Form\ConditionalVisiblity\Engine;
-use Glpi\Form\ConditionalVisiblity\EngineInput;
-use Glpi\Form\ConditionalVisiblity\LogicOperator;
-use Glpi\Form\ConditionalVisiblity\ValueOperator;
-use Glpi\Form\ConditionalVisiblity\VisibilityStrategy;
-use Glpi\Form\ConditionalVisiblity\Type;
+use Glpi\Form\Condition\Engine;
+use Glpi\Form\Condition\EngineInput;
+use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Condition\VisibilityStrategy;
+use Glpi\Form\Condition\Type;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeNumber;

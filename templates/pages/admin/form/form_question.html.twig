@@ -51,7 +51,7 @@
     role="option"
     data-glpi-form-editor-block
     data-glpi-form-editor-question
-    data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\ConditionalVisiblity\\Type').QUESTION.value }}"
+    data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\Condition\\Type').QUESTION.value }}"
     data-glpi-draggable-item
     aria-label="{{ question is not null ? question.fields.name : __('New question') }}"
 >
@@ -99,7 +99,7 @@
                 <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
 
                 {% if question is null %}
-                    {% set question_strategy = enum('Glpi\\Form\\ConditionalVisiblity\\VisibilityStrategy').ALWAYS_VISIBLE %}
+                    {% set question_strategy = enum('Glpi\\Form\\Condition\\VisibilityStrategy').ALWAYS_VISIBLE %}
                 {% else %}
                     {% set question_strategy = question.getConfiguredVisibilityStrategy() %}
                 {% endif %}

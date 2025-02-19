@@ -32,11 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ConditionalVisiblity;
+namespace Glpi\Form\Condition;
 
 use Glpi\Form\Form;
 use Glpi\Form\Question;
-use Glpi\Form\ConditionalVisiblity\VisibilityStrategy;
+use Glpi\Form\Condition\VisibilityStrategy;
 use RuntimeException;
 
 final class Engine

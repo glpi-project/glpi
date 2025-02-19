@@ -32,12 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Form\ConditionalVisibility;
+namespace Glpi\Controller\Form\Condition;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Form\ConditionalVisiblity\Engine;
-use Glpi\Form\ConditionalVisiblity\EngineInput;
+use Glpi\Form\Condition\Engine;
+use Glpi\Form\Condition\EngineInput;
 use Glpi\Form\Form;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
@@ -49,8 +49,8 @@ use Symfony\Component\Routing\Attribute\Route;
 final class EngineController extends AbstractController
 {
     #[Route(
-        "/Form/ConditionalVisibility/Engine",
-        name: "glpi_form_conditional_visibility_engine",
+        "/Form/Condition/Engine",
+        name: "glpi_form_condition_engine",
         methods: "POST"
     )]
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
