@@ -1544,7 +1544,7 @@ class Profile extends CommonDBTM
             }
            // Only add profile if on root entity
             if (!isset($_SESSION['glpiactiveentities'][0])) {
-                $options['addicon'] = false;
+                $options['readonly'] = true;
             }
 
             $tpl_class = $itiltype . 'Template';
