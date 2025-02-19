@@ -854,7 +854,7 @@ final class DbUtils
         ) {
             return [];
         } elseif ($value === []) {
-            return ['1' => 0];
+            return [new QueryExpression('false')];
         }
 
         if (empty($field)) {
