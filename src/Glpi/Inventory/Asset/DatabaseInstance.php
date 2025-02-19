@@ -190,7 +190,7 @@ class DatabaseInstance extends InventoryAsset
                 }
                 $inputrulelog = [
                     'date'      => date('Y-m-d H:i:s'),
-                    'rules_id'  => $data['rules_id'],
+                    'rules_id'  => $data['_ruleid'],
                     'items_id'  => $items_id,
                     'itemtype'  => $itemtype,
                     'agents_id' => $agents_id,

@@ -601,7 +601,7 @@ abstract class MainAsset extends InventoryAsset
                     unset($this->data[$key]);
                 } else {
                     if ($datarules['action'] != RuleImportAsset::LINK_RESULT_DENIED) {
-                        $input['rules_id'] = $datarules['rules_id'];
+                        $input['rules_id'] = $datarules['_ruleid'];
                         $this->addRefused($input);
                     }
                 }
