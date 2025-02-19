@@ -1949,7 +1949,7 @@ class Toolbox
         $tab = Toolbox::parseMailServerConnectString($value, false, $allow_plugins_protocols);
 
         echo "<tr class='tab_bg_1'><td>" . __('Server') . "</td>";
-        echo "<td><input size='30' class='form-control' type='text' name='mail_server' value=\"" . $tab['address'] . "\">";
+        echo "<td><input size='30' class='form-control' type='text' name='mail_server' value=\"" . $tab['address'] . "\" required>";
         echo "</td></tr>\n";
 
         echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
