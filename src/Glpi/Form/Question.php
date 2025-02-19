@@ -133,12 +133,12 @@ final class Question extends CommonDBChild implements BlockInterface, Conditionn
     public function getForm(): Form
     {
         $section = $this->getItem();
-        if (!$section || !($section instanceof Section)) {
+        if (!($section instanceof Section)) {
             throw new RuntimeException("Can't load parent section");
         }
 
         $form = $section->getItem();
-        if (!$form || !($form instanceof Form)) {
+        if (!($form instanceof Form)) {
             throw new RuntimeException("Can't load parent form");
         }
 
