@@ -91,15 +91,6 @@ class ItemVirtualMachineTest extends DbTestCase
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->assertInstanceOf('\Computer', $computer);
 
-        $vm = [
-            'itemtype'     => 'Computer',
-            'items_id'     => $computer->fields['id'],
-            'name'         => 'Virtu Hall',
-            'uuid'         => $uuid,
-            'vcpu'         => 1,
-            'ram'          => 1024
-        ];
-
         $this->assertGreaterThan(
             0,
             $id = $obj->add([
