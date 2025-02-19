@@ -736,7 +736,7 @@ class DbUtilsTest extends DbTestCase
         $it->execute('glpi_entities', $instance->getEntitiesRestrictCriteria('glpi_entities', '', [], true));
         $this->assertSame(0, $it->count());
         $this->assertSame(
-            'SELECT * FROM `glpi_entities` WHERE (0)',
+            'SELECT * FROM `glpi_entities` WHERE false',
             $it->getSql()
         );
 
@@ -767,7 +767,7 @@ class DbUtilsTest extends DbTestCase
         $it->execute('glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', [], true));
         $this->assertSame(0, $it->count());
         $this->assertSame(
-            'SELECT * FROM `glpi_entities` WHERE ((0))',
+            'SELECT * FROM `glpi_entities` WHERE (false)',
             $it->getSql()
         );
     }
