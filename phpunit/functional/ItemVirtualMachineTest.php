@@ -102,7 +102,14 @@ class ItemVirtualMachineTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            $id = $obj->add($vm)
+            $id = $obj->add([
+                'itemtype'     => 'Computer',
+                'items_id'     => $computer->fields['id'],
+                'name'         => 'Virtu Hall',
+                'uuid'         => $uuid,
+                'vcpu'         => 1,
+                'ram'          => 1024
+            ])
         );
         $this->assertTrue($obj->getFromDB($id));
         $this->assertSame($uuid, $obj->fields['uuid']);
@@ -110,6 +117,8 @@ class ItemVirtualMachineTest extends DbTestCase
         $this->assertFalse($obj->findVirtualMachine(['itemtype' => \Computer::getType(), 'name' => 'Virtu Hall']));
         //a machine exists yet
         $this->assertFalse($obj->findVirtualMachine(['itemtype' => \Computer::getType(), 'uuid' => $uuid]));
+
+        $count_before_import = countElementsInTable(\RuleMatchedLog::getTable());
 
         $this->assertGreaterThan(
             0,
@@ -122,25 +131,6 @@ class ItemVirtualMachineTest extends DbTestCase
 
         $this->assertEquals($cid, $obj->findVirtualMachine(['itemtype' => \Computer::getType(),'uuid' => $uuid]));
 
-        $rule = new \RuleImportAssetCollection();
-        $rule->getCollectionPart();
-        $datarules = $rule->processAllRules($vm, [], ['class' => \Computer::getType(), 'return' => true]);
-        $rulesmatchedLog = new \RuleMatchedLog();
-        $inputrulelog = [
-            'date'      => date('Y-m-d H:i:s'),
-            'rules_id'  => $datarules['rules_id'],
-            'items_id'  => $cid,
-            'itemtype'  => \Computer::getType(),
-            'agents_id' => 0,
-            'method'    => 'inventory'
-        ];
-        $rid = $rulesmatchedLog->add($inputrulelog, [], false);
-        $found_rulematchedLog = $rulesmatchedLog->find(
-            [
-                'id' => $rid,
-            ]
-        );
-        //get one RuleMatchedLog
-        $this->assertCount(1, $found_rulematchedLog);
+        $this->assetEquals(1, countElementsInTable(\RuleMatchedLog::getTable()) - $count_before_import);
     }
 }
