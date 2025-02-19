@@ -829,6 +829,7 @@
       'mb': 'mb-3',
       'add_field_class': '',
       'add_field_attribs': {},
+      'inline_add_field_html': false,
    }|merge(options) %}
 
    {% set class = options.field_class ?? 'col-12 col-sm-6' %}
@@ -843,7 +844,7 @@
       {% set extra_attribs = '' %}
    {% endif %}
 
-   <div class="{{ class }} {{ options.mb }}" {{ extra_attribs|raw }}>
+   <div class="{{ class }} {{ options.mb }} {{ options.inline_add_field_html ? 'd-flex' : '' }}" {{ extra_attribs|raw }}>
       {{ field|raw }}
       {{ add_field_html|raw }}
    </div>

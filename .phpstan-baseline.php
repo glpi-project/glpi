@@ -608,18 +608,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Certificate.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Left side of && is always true\\.$#',
-	'identifier' => 'booleanAnd.leftAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Certificate_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Ternary operator condition is always true\\.$#',
-	'identifier' => 'ternary.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Certificate_Item.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Access to an undefined property CommonGLPI\\:\\:\\$fields\\.$#',
 	'identifier' => 'property.notFound',
 	'count' => 1,
