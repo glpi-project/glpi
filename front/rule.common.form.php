@@ -46,14 +46,8 @@ $rulecollection->checkGlobal(READ);
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
-$ruleaction   = new RuleAction(get_class($rule));
 
-if (isset($_POST["add_action"])) {
-    $rulecollection->checkGlobal(CREATE);
-    $ruleaction->add($_POST);
-
-    Html::back();
-} else if (isset($_POST["update"])) {
+if (isset($_POST["update"])) {
     $rulecollection->checkGlobal(UPDATE);
     $rule->update($_POST);
 
