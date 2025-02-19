@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,38 +32,36 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Controller\Form\Condition;
 
-use Glpi\Form\Condition\StringConditionTrait;
-use Glpi\Form\Condition\UsedAsCriteriaInterface;
-use Override;
-use Session;
+use Glpi\Controller\AbstractController;
+use Glpi\Form\Condition\EditorManager;
+use Glpi\Form\Condition\FormData;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
-final class QuestionTypeEmail extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
+final class EditorController extends AbstractController
 {
-    use StringConditionTrait;
-
-    #[Override]
-    public function getInputType(): string
-    {
-        return 'email';
+    public function __construct(
+        private EditorManager $editor_manager,
+    ) {
     }
 
-    #[Override]
-    public function getName(): string
+    #[Route(
+        "/Form/Condition/Editor",
+        name: "glpi_form_condition_editor",
+        methods: "POST"
+    )]
+    public function __invoke(Request $request): Response
     {
-        return _n('Email', 'Emails', Session::getPluralNumber());
-    }
+        $form_data = $request->request->all()['form_data'];
+        $this->editor_manager->setFormData(new FormData($form_data));
 
-    #[Override]
-    public function getIcon(): string
-    {
-        return 'ti ti-mail';
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 20;
+        return $this->render('pages/admin/form/conditional_visibility_editor.html.twig', [
+            'manager'            => $this->editor_manager,
+            'defined_conditions' => $this->editor_manager->getDefinedConditions(),
+            'items_values'       => $this->editor_manager->getItemsDropdownValues(),
+        ]);
     }
 }

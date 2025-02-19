@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ConditionalVisiblity;
+namespace Glpi\Form\Condition;
 
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
