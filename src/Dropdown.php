@@ -187,10 +187,14 @@ class Dropdown
         }
 
         if ($params['readonly']) {
-            return '<span class="form-control" readonly'
+            $output = '<span class="form-control" readonly'
                 . ($params['width'] ? ' style="width: ' . $params["width"] . '"' : '') . '>'
                 . ($params['multiple'] ? implode(', ', $names) : $name)
                 . '</span>';
+            if ($params['display']) {
+                echo $output;
+            }
+            return $output;
         }
 
        // Manage entity_sons

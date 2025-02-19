@@ -853,6 +853,8 @@ final class DbUtils
             && $_SESSION['glpishowallentities']
         ) {
             return [];
+        } elseif ($value === []) {
+            return [new QueryExpression('false')];
         }
 
         if (empty($field)) {
