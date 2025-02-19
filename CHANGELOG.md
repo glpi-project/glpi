@@ -495,7 +495,9 @@ The present file will list all changes made to the project; according to the
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
+- `Project::commonListHeader()`
 - `Project::showDebug()`
+- `Project::showShort()`
 - `ProjectTask::showDebug()`
 - `QuerySubQuery` class. Replaced by `Glpi\DBAL\QuerySubQuery`.
 - `QueryUnion` class. Replaced by `Glpi\DBAL\QueryUnion`.

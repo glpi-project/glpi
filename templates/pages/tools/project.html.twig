@@ -1,0 +1,135 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set no_header = no_header|default(not item.isNewItem() and not _get._in_modal|default(false)) %}
+{% set withtemplate = params['withtemplate'] ?? '' %}
+{% set is_template = withtemplate == 1 %}
+{% set from_template = withtemplate == 2 %}
+{% set rand = random() %}
+{% set field_options = {
+    'rand': rand,
+} %}
+
+{% block form_fields %}
+    {% if not item.isNewItem() and not is_template %}
+        {{ fields.datetimeField('date', item.fields['date'], __('Creation date'), field_options) }}
+        {{ fields.htmlField('date_mod', item.fields['date_mod']|formatted_datetime, __('Last update')) }}
+    {% elseif is_template and not item.isNewItem() and no_header %}
+        {{ fields.autoNameField('template_name', item, __('Template name'), 0, field_options) }}
+        {{ fields.nullField() }}
+    {% endif %}
+    {{ fields.autoNameField('name', item, __('Name'), withtemplate, field_options) }}
+    {{ fields.textField('code', item.fields['code'], __('Code'), field_options) }}
+
+    {% set priority_field %}
+        {% do call('CommonITILObject::dropdownPriority', [{
+            value: item.fields['priority'],
+            name: 'priority',
+            withmajor: true
+        }]) %}
+    {% endset %}
+    {{ fields.htmlField('', priority_field, __('Priority'), field_options) }}
+
+    {{ fields.dropdownField(
+        item_type,
+        'projects_id',
+        item.fields['projects_id'],
+        __('As child of'),
+        field_options|merge({
+            entity: item.fields['entities_id'],
+            used: [item.getID()]
+        })
+    ) }}
+
+    {{ fields.dropdownField('ProjectState', 'projectstates_id', item.fields['projectstates_id'], _x('item', 'State'), field_options) }}
+
+    {{ fields.dropdownNumberField('percent_done', item.fields['percent_done'], __('Percent done'), field_options|merge({
+        min: 0,
+        max: 100,
+        step: 5,
+        unit: '%',
+        add_field_html: fields.sliderField('auto_percent_done', item.fields['auto_percent_done'], __('Automatically calculate'), field_options|merge({
+            field_class: 'col-12',
+            label_class: 'col-xxl-10',
+            input_class: 'col-xxl-2',
+            additional_attributes: {
+                onclick: "$(`select[name='percent_done']`).prop('disabled', $(`input[type='checkbox'][name='auto_percent_done']`).prop('checked'));"
+            },
+        })),
+        helper: __('When automatic computation is active, percentage is computed based on the average of all child project and task percent done.')
+    })) }}
+
+    {{ fields.dropdownField('ProjectType', 'projecttypes_id', item.fields['projecttypes_id'], _n('Type', 'Types', 1), field_options) }}
+
+    {% if gantt_plugin_enabled %}
+        {{ fields.dropdownYesNo('show_on_global_gantt', item.fields['show_on_global_gantt'], __('Show on global Gantt'), field_options) }}
+    {% else %}
+        {{ fields.nullField() }}
+    {% endif %}
+
+    {{ fields.smallTitle(_n('Manager', 'Managers', 1)) }}
+    {{ fields.dropdownField('User', 'users_id', item.fields['users_id'], 'User'|itemtype_name(1), field_options|merge({
+        right: 'see_project',
+        entity: item.fields['entities_id']
+    })) }}
+    {{ fields.dropdownField('Group', 'groups_id', item.fields['groups_id'], 'Group'|itemtype_name(1), field_options|merge({
+        condition: {
+            is_manager: 1
+        },
+        entity: item.fields['entities_id']
+    })) }}
+
+    {{ fields.smallTitle(__('Planning')) }}
+    {{ fields.datetimeField('plan_start_date', item.fields['plan_start_date'], __('Planned start date'), field_options|merge({clearable: true})) }}
+    {{ fields.datetimeField('real_start_date', item.fields['real_start_date'], __('Real start date'), field_options|merge({clearable: true})) }}
+    {{ fields.datetimeField('plan_end_date', item.fields['plan_end_date'], __('Planned end date'), field_options|merge({clearable: true})) }}
+    {{ fields.datetimeField('real_end_date', item.fields['real_end_date'], __('Real end date'), field_options|merge({clearable: true})) }}
+    {{ fields.htmlField('planned_duration', planned_duration|formatted_duration(false), __('Planned duration'), field_options|merge({
+        helper: __('Sum of planned durations of tasks')
+    })) }}
+    {{ fields.htmlField('effective_duration', effective_duration|formatted_duration(false), __('Effective duration'), field_options|merge({
+        helper: __('Sum of total effective durations of tasks')
+    })) }}
+
+    {{ fields.textareaField('content', item.fields['content'], __('Description'), field_options|merge({
+        full_width: true,
+        enable_richtext: true,
+        rows: 6
+    })) }}
+    {{ fields.textareaField('comment', item.fields['comment'], __('Comments'), field_options|merge({
+        full_width: true,
+        rows: 6
+    })) }}
+{% endblock %}

@@ -6928,7 +6928,7 @@ abstract class CommonITILObject extends CommonDBTM
      * @param array{ticket_stats: bool} $params
      * @return array{columns: array, formatters: array} Array of columns and formatters to be used in datatables (templates/components/datatable.html.twig) that are common to all ITIL objects.
      * @see CommonITILObject::getDatatableEntries()
-     * @note If hte columns are changed, you must also update the `getDatatableEntries` method to match the new columns.
+     * @note If the columns are changed, you must also update the `getDatatableEntries` method to match the new columns.
      */
     final public static function getCommonDatatableColumns(array $params = []): array
     {
@@ -6964,7 +6964,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'name' => 'raw_html',
                 'status' => 'raw_html',
                 'date_mod' => 'datetime',
-                'priority' => 'raw_html',
+                'priority' => 'badge',
                 'requester' => 'raw_html',
                 'assigned' => 'raw_html',
                 'planification' => 'raw_html',
@@ -7086,7 +7086,10 @@ abstract class CommonITILObject extends CommonDBTM
 
             $priority_name = static::getPriorityName($item->fields["priority"]);
             $priority_color = $_SESSION["glpipriority_" . $item->fields["priority"]];
-            $entry['priority'] = '<span class="fw-bold badge text-body" style="background-color: ' . htmlescape($priority_color) . '">' . htmlescape($priority_name) . '</span>';
+            $entry['priority'] = [
+                'content' => $priority_name,
+                'color' => $priority_color,
+            ];
 
             $entry['requester'] = '';
             foreach ($item->getUsers(CommonITILActor::REQUESTER) as $d) {
