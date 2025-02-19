@@ -65,7 +65,7 @@
                     </span>
                 {% endif %}
                 {% if messages|length > 0 %}
-                    <div class="text-muted">
+                    <div class="{{ not important ? "text-muted" : "" }}">
                         {% if messages is iterable %}
                             {% for message in messages %}
                                 {{ message }}

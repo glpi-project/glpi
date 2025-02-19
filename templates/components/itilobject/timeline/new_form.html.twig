@@ -60,7 +60,7 @@
                               entitybadge
                           )|raw }}
                       {% endset %}
-                      {{ alerts.callout_info(entity_msg) }}
+                      {{ alerts.callout_info(messages: [entity_msg], options: {add_class: 'bg-light'}) }}
                   {% endif %}
 
                   {{ include('components/itilobject/timeline/simple_form.html.twig', {

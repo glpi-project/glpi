@@ -34,12 +34,12 @@
 
 <div class="card">
     <div class="card-body">
-        {%- set link -%}
+        {% set link %}
             {% if link_url is not empty %}
                 <a href="{{ link_url }}">{{ link_text }}</a>
             {% endif %}
-        {%- endset -%}
-        {{ alerts.alert_danger(message, link_url is not empty ? [link] : [], true) }}
+        {% endset %}
+        {{ alerts.alert_danger(title: message, messages: link_url is not empty ? [link] : [], important: true) }}
         {% if trace is not empty %}
             <pre data-testid="stack-trace">{{ trace }}</pre>
         {% endif %}
