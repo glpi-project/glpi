@@ -95,11 +95,6 @@ $inline-input-padding: 2px 4px;
         padding: 0 !important;
     }
 
-    // Override some hard-set tinymce margins
-    .tox-sidebar-wrap {
-        margin-bottom: -20px;
-    }
-
     // Do not display file upload summary as it will only contains pasted images
     .fileupload {
         display: none;
