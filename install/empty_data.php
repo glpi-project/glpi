@@ -947,6 +947,18 @@ $empty_data_builder = new class
                 'logs_lifetime' => 300,
                 'hourmin' => 0,
                 'hourmax' => 6,
+            ], [
+                'id' => 50,
+                'itemtype' => 'CommonITILValidationCron',
+                'name' => 'approvalreminder',
+                'frequency' => WEEK_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ]
         ];
 
