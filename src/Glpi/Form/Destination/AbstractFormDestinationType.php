@@ -35,8 +35,8 @@
 
 namespace Glpi\Form\Destination;
 
-use CommonGLPI;
+use CommonDBTM;
 
-abstract class AbstractFormDestinationType extends CommonGLPI implements FormDestinationInterface
+abstract class AbstractFormDestinationType extends CommonDBTM implements FormDestinationInterface
 {
 }

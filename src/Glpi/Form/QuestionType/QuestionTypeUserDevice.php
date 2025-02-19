@@ -213,22 +213,20 @@ TWIG;
         }
 
         $devices = [];
-        if (is_array($answer)) {
-            foreach ($answer as $device) {
-                $device_parts = [];
-                if (
-                    preg_match('/^(?<itemtype>.+)_(?<id>\d+)$/', $device, $device_parts) !== 1
-                    || !is_a($device_parts['itemtype'], \CommonDBTM::class, true)
-                    || $device_parts['itemtype']::getById($device_parts['id']) === false
-                ) {
-                    continue;
-                }
-
-                $devices[] = [
-                    'itemtype' => $device_parts['itemtype'],
-                    'items_id' => $device_parts['id']
-                ];
+        foreach ($answer as $device) {
+            $device_parts = [];
+            if (
+                preg_match('/^(?<itemtype>.+)_(?<id>\d+)$/', $device, $device_parts) !== 1
+                || !is_a($device_parts['itemtype'], \CommonDBTM::class, true)
+                || $device_parts['itemtype']::getById($device_parts['id']) === false
+            ) {
+                continue;
             }
+
+            $devices[] = [
+                'itemtype' => $device_parts['itemtype'],
+                'items_id' => $device_parts['id']
+            ];
         }
 
         return $devices;
@@ -277,7 +275,7 @@ TWIG;
     }
 
     #[Override]
-    public function getExtraDataConfigClass(): ?string
+    public function getExtraDataConfigClass(): string
     {
         return QuestionTypeUserDevicesConfig::class;
     }

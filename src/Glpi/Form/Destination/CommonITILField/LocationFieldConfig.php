@@ -114,7 +114,7 @@ final class LocationFieldConfig implements
         return $this->specific_question_id;
     }
 
-    public function getSpecificLocationID(): ?int
+    public function getSpecificLocationID(): int
     {
         return $this->specific_location_id ?? 0;
     }

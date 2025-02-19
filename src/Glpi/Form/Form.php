@@ -263,7 +263,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         // Insert date_mod even if the framework would handle it by itself
         // This avoid "empty" updates when the form itself is not modified but
@@ -274,7 +274,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     }
 
     #[Override]
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var \DBmysql $DB */
         global $DB;

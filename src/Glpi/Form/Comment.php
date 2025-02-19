@@ -42,6 +42,7 @@ use Glpi\Form\ConditionalVisiblity\ConditionnableTrait;
 use Log;
 use Override;
 use Ramsey\Uuid\Uuid;
+use RuntimeException;
 
 /**
  * Comment of a given helpdesk form's section
@@ -141,7 +142,17 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionna
      */
     public function getForm(): Form
     {
-        return $this->getItem()->getItem();
+        $section = $this->getItem();
+        if (!$section || !($section instanceof Section)) {
+            throw new RuntimeException("Can't load parent section");
+        }
+
+        $form = $section->getItem();
+        if (!$form || !($form instanceof Form)) {
+            throw new RuntimeException("Can't load parent form");
+        }
+
+        return $form;
     }
 
     /**
@@ -198,7 +209,7 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionna
                 continue;
             }
             $changes = $this->getHistoryChangeWhenUpdateField($field);
-            if ((!is_array($changes)) || (count($changes) != 3)) {
+            if (count($changes) != 3) {
                 continue;
             }
 

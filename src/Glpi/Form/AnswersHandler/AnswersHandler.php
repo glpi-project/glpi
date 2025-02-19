@@ -270,10 +270,6 @@ final class AnswersHandler
 
             // Link items to answers by creating a AnswersSet_FormDestinationItem object
             foreach ($items as $item) {
-                if (!($item instanceof CommonDBTM)) {
-                    throw new \Exception("Invalid destination item");
-                }
-
                 $form_item = new AnswersSet_FormDestinationItem();
                 $input = [
                     AnswersSet::getForeignKeyField() => $answers_set->getID(),

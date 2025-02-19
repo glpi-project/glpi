@@ -46,6 +46,7 @@ use Log;
 use Override;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
+use RuntimeException;
 
 /**
  * Question of a given helpdesk form's section
@@ -131,7 +132,17 @@ final class Question extends CommonDBChild implements BlockInterface, Conditionn
      */
     public function getForm(): Form
     {
-        return $this->getItem()->getItem();
+        $section = $this->getItem();
+        if (!$section || !($section instanceof Section)) {
+            throw new RuntimeException("Can't load parent section");
+        }
+
+        $form = $section->getItem();
+        if (!$form || !($form instanceof Form)) {
+            throw new RuntimeException("Can't load parent form");
+        }
+
+        return $form;
     }
 
     public function getEndUserInputName(): string
@@ -297,7 +308,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditionn
                 continue;
             }
             $changes = $this->getHistoryChangeWhenUpdateField($field);
-            if ((!is_array($changes)) || (count($changes) != 3)) {
+            if (count($changes) != 3) {
                 continue;
             }
 
