@@ -1580,7 +1580,6 @@ TWIG,
         $menu            = self::generateMenuSession();
 
         $menu = Plugin::doHookFunction("redefine_menus", $menu);
-        
         $menu_active     = $menu[$sector]['content'][$active_item]['title'] ?? "";
 
         $tpl_vars = [
