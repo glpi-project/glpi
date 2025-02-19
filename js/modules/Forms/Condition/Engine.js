@@ -108,7 +108,7 @@ export class GlpiFormConditionEngine
         }
 
         // Send request
-        const url = `${CFG_GLPI.root_doc}/Form/ConditionalVisibility/Engine`;
+        const url = `${CFG_GLPI.root_doc}/Form/Condition/Engine`;
         const response = await fetch(url, {
             method: 'POST',
             body: form_data,

@@ -32,39 +32,27 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ConditionalVisiblity;
+namespace Glpi\Form\Condition;
 
-use Glpi\Form\ConditionalVisiblity\VisibilityStrategy;
-use JsonException;
+use Glpi\Form\Condition\VisibilityStrategy;
 
-trait ConditionnableTrait
+/**
+ * This interface must be satisfied by any form item for which its visibility
+ * can be toggled depending on some conditions.
+ */
+interface ConditionnableInterface
 {
-    /** @return ConditionData[] */
-    public function getConfiguredConditionsData(): array
-    {
-        parent::post_getFromDB();
+    /**
+     * Get configured condition data from the database.
+     *
+     *  @return ConditionData[]
+     **/
+    public function getConfiguredConditionsData(): array;
 
-        try {
-            $raw_data = json_decode(
-                json       : $this->fields['conditions'],
-                associative: true,
-                flags      : JSON_THROW_ON_ERROR,
-            );
-        } catch (JsonException $e) {
-            $raw_data = [];
-        }
-
-        $form_data = new FormData([
-            'conditions' => $raw_data,
-        ]);
-
-        return $form_data->getConditionsData();
-    }
-
-    public function getConfiguredVisibilityStrategy(): VisibilityStrategy
-    {
-        $strategy_value = $this->fields['visibility_strategy'] ?? "";
-        $strategy = VisibilityStrategy::tryFrom($strategy_value);
-        return $strategy ?? VisibilityStrategy::ALWAYS_VISIBLE;
-    }
+    /**
+     * Get the configured visibility strategy from the database.
+     *
+     * @return VisibilityStrategy
+     */
+    public function getConfiguredVisibilityStrategy(): VisibilityStrategy;
 }

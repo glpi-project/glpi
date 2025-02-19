@@ -32,11 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ConditionalVisiblity;
+namespace Glpi\Form\Condition;
 
 use Override;
 
-trait NumberConditionTrait
+trait StringConditionTrait
 {
     #[Override]
     public function getSupportedValueOperators(): array
@@ -44,17 +44,15 @@ trait NumberConditionTrait
         return [
             ValueOperator::EQUALS,
             ValueOperator::NOT_EQUALS,
-            ValueOperator::GREATER_THAN,
-            ValueOperator::GREATER_THAN_OR_EQUALS,
-            ValueOperator::LESS_THAN,
-            ValueOperator::LESS_THAN_OR_EQUALS,
+            ValueOperator::CONTAINS,
+            ValueOperator::NOT_CONTAINS,
         ];
     }
 
     #[Override]
     public function getInputTemplateKey(): InputTemplateKey
     {
-        return InputTemplateKey::NUMBER;
+        return InputTemplateKey::STRING;
     }
 
     #[Override]
@@ -63,20 +61,19 @@ trait NumberConditionTrait
         ValueOperator $operator,
         mixed $b,
     ): bool {
-        // Normalize values.
-        $a = (float) $a;
-        $b = (float) $b;
+        // Normalize strings.
+        $a = strtolower(strval($a));
+        $b = strtolower(strval($b));
 
         return match ($operator) {
-            ValueOperator::EQUALS                 => $a === $b,
-            ValueOperator::NOT_EQUALS             => $a !== $b,
-            ValueOperator::GREATER_THAN           => $a > $b,
-            ValueOperator::GREATER_THAN_OR_EQUALS => $a >= $b,
-            ValueOperator::LESS_THAN              => $a < $b,
-            ValueOperator::LESS_THAN_OR_EQUALS    => $a <= $b,
+            ValueOperator::EQUALS       => $a === $b,
+            ValueOperator::NOT_EQUALS   => $a !== $b,
+            ValueOperator::CONTAINS     => str_contains($b, $a),
+            ValueOperator::NOT_CONTAINS => !str_contains($b, $a),
 
             // Unsupported operators
-            ValueOperator::CONTAINS, ValueOperator::NOT_CONTAINS => false,
+            ValueOperator::GREATER_THAN, ValueOperator::GREATER_THAN_OR_EQUALS => false,
+            ValueOperator::LESS_THAN, ValueOperator::LESS_THAN_OR_EQUALS => false,
         };
     }
 }

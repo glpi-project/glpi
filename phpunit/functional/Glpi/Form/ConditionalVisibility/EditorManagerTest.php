@@ -32,14 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Form\ConditionalVisiblity;
+namespace tests\units\Glpi\Form\Condition;
 
-use Glpi\Form\ConditionalVisiblity\ConditionData;
-use Glpi\Form\ConditionalVisiblity\EditorManager;
-use Glpi\Form\ConditionalVisiblity\FormData;
-use Glpi\Form\ConditionalVisiblity\InputTemplateKey;
-use Glpi\Form\ConditionalVisiblity\LogicOperator;
-use Glpi\Form\ConditionalVisiblity\ValueOperator;
+use Glpi\Form\Condition\ConditionData;
+use Glpi\Form\Condition\EditorManager;
+use Glpi\Form\Condition\FormData;
+use Glpi\Form\Condition\InputTemplateKey;
+use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeFile;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;

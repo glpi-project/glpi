@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ConditionalVisiblity;
+namespace Glpi\Form\Condition;
 
 final class EditorManager
 {

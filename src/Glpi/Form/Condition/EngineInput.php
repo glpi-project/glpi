@@ -32,27 +32,41 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ConditionalVisiblity;
+namespace Glpi\Form\Condition;
 
-use Glpi\Form\ConditionalVisiblity\VisibilityStrategy;
+use Glpi\Form\Form;
+use Glpi\Form\Question;
 
-/**
- * This interface must be satisfied by any form item for which its visibility
- * can be toggled depending on some conditions.
- */
-interface ConditionnableInterface
+final class EngineInput
 {
-    /**
-     * Get configured condition data from the database.
-     *
-     *  @return ConditionData[]
-     **/
-    public function getConfiguredConditionsData(): array;
+    public function __construct(
+        private array $answers,
+    ) {
+    }
 
     /**
-     * Get the configured visibility strategy from the database.
-     *
-     * @return VisibilityStrategy
+     * Construct an input using default values from the database.
+     * Useful when computing data that was not yet modified by the user.
      */
-    public function getConfiguredVisibilityStrategy(): VisibilityStrategy;
+    public static function fromForm(Form $form): self
+    {
+        $answers = [];
+
+        // Get questions that can be used as a criteria
+        $questions = array_filter(
+            $form->getQuestions(),
+            fn (Question $q): bool => $q->getQuestionType() instanceof UsedAsCriteriaInterface,
+        );
+
+        foreach ($questions as $question) {
+            $answers[$question->getID()] = $question->fields['default_value'];
+        }
+
+        return new self(answers: $answers);
+    }
+
+    public function getAnswers(): array
+    {
+        return $this->answers;
+    }
 }

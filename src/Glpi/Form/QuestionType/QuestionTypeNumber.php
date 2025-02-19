@@ -35,8 +35,8 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Glpi\Form\ConditionalVisiblity\NumberConditionTrait;
-use Glpi\Form\ConditionalVisiblity\UsedAsCriteriaInterface;
+use Glpi\Form\Condition\NumberConditionTrait;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Override;
 
 final class QuestionTypeNumber extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface

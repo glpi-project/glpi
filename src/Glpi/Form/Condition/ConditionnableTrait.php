@@ -32,36 +32,39 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Form\ConditionalVisibility;
+namespace Glpi\Form\Condition;
 
-use Glpi\Controller\AbstractController;
-use Glpi\Form\ConditionalVisiblity\EditorManager;
-use Glpi\Form\ConditionalVisiblity\FormData;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Glpi\Form\Condition\VisibilityStrategy;
+use JsonException;
 
-final class EditorController extends AbstractController
+trait ConditionnableTrait
 {
-    public function __construct(
-        private EditorManager $editor_manager,
-    ) {
+    /** @return ConditionData[] */
+    public function getConfiguredConditionsData(): array
+    {
+        parent::post_getFromDB();
+
+        try {
+            $raw_data = json_decode(
+                json       : $this->fields['conditions'],
+                associative: true,
+                flags      : JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $e) {
+            $raw_data = [];
+        }
+
+        $form_data = new FormData([
+            'conditions' => $raw_data,
+        ]);
+
+        return $form_data->getConditionsData();
     }
 
-    #[Route(
-        "/Form/ConditionalVisibility/Editor",
-        name: "glpi_form_conditional_visibility_editor",
-        methods: "POST"
-    )]
-    public function __invoke(Request $request): Response
+    public function getConfiguredVisibilityStrategy(): VisibilityStrategy
     {
-        $form_data = $request->request->all()['form_data'];
-        $this->editor_manager->setFormData(new FormData($form_data));
-
-        return $this->render('pages/admin/form/conditional_visibility_editor.html.twig', [
-            'manager'            => $this->editor_manager,
-            'defined_conditions' => $this->editor_manager->getDefinedConditions(),
-            'items_values'       => $this->editor_manager->getItemsDropdownValues(),
-        ]);
+        $strategy_value = $this->fields['visibility_strategy'] ?? "";
+        $strategy = VisibilityStrategy::tryFrom($strategy_value);
+        return $strategy ?? VisibilityStrategy::ALWAYS_VISIBLE;
     }
 }

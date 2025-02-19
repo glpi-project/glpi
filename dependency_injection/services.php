@@ -67,8 +67,8 @@ return static function (ContainerConfigurator $container): void {
             $projectDir . '/src/Glpi/Progress/StoredProgressIndicator.php',
         ]);
     $services->load(
-        'Glpi\Form\ConditionalVisiblity\\',
-        $projectDir . '/src/Glpi/Form/ConditionalVisiblity/*Manager.php'
+        'Glpi\Form\Condition\\',
+        $projectDir . '/src/Glpi/Form/Condition/*Manager.php'
     );
 
     // Prevent Symfony to register its own default logger.

@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ConditionalVisiblity;
+namespace Glpi\Form\Condition;
 
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use ReflectionClass;

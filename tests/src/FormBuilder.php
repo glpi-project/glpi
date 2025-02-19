@@ -39,7 +39,7 @@ use AbstractRightsDropdown;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
-use Glpi\Form\ConditionalVisiblity\VisibilityStrategy;
+use Glpi\Form\Condition\VisibilityStrategy;
 
 /**
  * Helper class to ease form creation using DbTestCase::createForm()

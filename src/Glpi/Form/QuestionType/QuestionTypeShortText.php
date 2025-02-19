@@ -35,8 +35,8 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Glpi\Form\ConditionalVisiblity\StringConditionTrait;
-use Glpi\Form\ConditionalVisiblity\UsedAsCriteriaInterface;
+use Glpi\Form\Condition\StringConditionTrait;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Override;
 
 final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface

@@ -32,31 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ConditionalVisiblity;
+namespace Glpi\Form\Condition;
 
-use Glpi\Form\QuestionType\QuestionTypeInterface;
-
-final class QuestionData
+/**
+ * References supported input templates keys in conditional_visibility_editor.html.twig
+ */
+enum InputTemplateKey
 {
-    public function __construct(
-        private string $uuid,
-        private string $name,
-        private QuestionTypeInterface $type,
-    ) {
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getUuid(): string
-    {
-        return $this->uuid;
-    }
-
-    public function getType(): QuestionTypeInterface
-    {
-        return $this->type;
-    }
+    case STRING;
+    case NUMBER;
 }

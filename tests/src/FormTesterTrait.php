@@ -40,7 +40,7 @@ use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Comment;
-use Glpi\Form\ConditionalVisiblity\Type;
+use Glpi\Form\Condition\Type;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;

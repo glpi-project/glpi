@@ -32,14 +32,17 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ConditionalVisiblity;
+namespace Glpi\Form\Condition;
 
-enum VisibilityStrategy: string
+use Override;
+
+enum VisibilityStrategy: string implements StrategyInterface
 {
     case ALWAYS_VISIBLE = 'always_visible';
     case VISIBLE_IF = 'visible_if';
     case HIDDEN_IF = 'hidden_if';
 
+    #[Override]
     public function getLabel(): string
     {
         return match ($this) {
@@ -49,6 +52,7 @@ enum VisibilityStrategy: string
         };
     }
 
+    #[Override]
     public function getIcon(): string
     {
         return match ($this) {
@@ -58,6 +62,7 @@ enum VisibilityStrategy: string
         };
     }
 
+    #[Override]
     public function showEditor(): bool
     {
         return match ($this) {

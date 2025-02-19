@@ -187,12 +187,12 @@ function addNewEmptyCondition() {
 }
 
 function deleteConditon(index) {
-    cy.get("[data-glpi-form-editor-condition]").eq(index).as('condition');
+    cy.get("[data-glpi-conditions-editor-condition]").eq(index).as('condition');
     cy.get('@condition').findByRole('button', {'name': 'Delete criteria'}).click();
 }
 
 function fillCondition(index, logic_operator, question_name, value_operator_name, value, value_type = "string") {
-    cy.get("[data-glpi-form-editor-condition]").eq(index).as('condition');
+    cy.get("[data-glpi-conditions-editor-condition]").eq(index).as('condition');
     if (logic_operator !== null && index > 0) {
         cy.get('@condition')
             .getDropdownByLabelText('Logic operator')
@@ -212,7 +212,7 @@ function fillCondition(index, logic_operator, question_name, value_operator_name
 }
 
 function checkThatConditionExist(index, logic_operator, question_name, value_operator_name, value, value_type = "string") {
-    cy.get("[data-glpi-form-editor-condition]").eq(index).as('condition');
+    cy.get("[data-glpi-conditions-editor-condition]").eq(index).as('condition');
     if (logic_operator !== null && index > 0) {
         cy.get('@condition')
             .getDropdownByLabelText('Logic operator')
@@ -233,7 +233,7 @@ function checkThatConditionExist(index, logic_operator, question_name, value_ope
 }
 
 function checkThatConditionDoNotExist(index) {
-    cy.get("[data-glpi-form-editor-condition]").eq(index).should('not.exist');
+    cy.get("[data-glpi-conditions-editor-condition]").eq(index).should('not.exist');
 }
 
 function setTextAnswer(question, value) {
