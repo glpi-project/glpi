@@ -32,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+declare(strict_types=1);
+
 namespace Glpi\Controller\Rule;
 
 use Glpi\Controller\AbstractController;
@@ -48,6 +50,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class RuleListController extends AbstractController
 {
     use RuleControllerTrait;
+
     private \RuleCollection $ruleCollection;
 
     // @todo route

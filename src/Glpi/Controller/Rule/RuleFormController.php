@@ -32,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+declare(strict_types=1);
+
 namespace Glpi\Controller\Rule;
 
 use Glpi\Controller\AbstractController;
@@ -44,6 +46,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
+
 use function Sabre\HTTP\toDate;
 
 class RuleFormController extends AbstractController
@@ -68,7 +71,6 @@ class RuleFormController extends AbstractController
         $submit_purge = $request->request->get('purge');
 
         try {
-
             // - dispatch
             // actions do the redirection, only displayForm() returns a Response
 
@@ -121,12 +123,17 @@ class RuleFormController extends AbstractController
         });
     }
 
-    private function addRule(array $data): never
+    /**
+     * @param array<string, mixed> $rule_fields
+     * @return never
+     * @throws \Glpi\Exception\RedirectException
+     */
+    private function addRule(array $rule_fields): never
     {
         $this->ruleCollection->checkGlobal(CREATE);
         $rule = $this->ruleCollection->getRuleClass();
 
-        $creation_id = $rule->add($data);
+        $creation_id = $rule->add($rule_fields);
         false === $creation_id && throw new \RuntimeException('Failed to add the rule.');
         $this->logSuccess('add', $creation_id);
         // @todo message de success
@@ -134,7 +141,12 @@ class RuleFormController extends AbstractController
         Html::redirect($rule->getFormURLWithID($creation_id));
     }
 
-    private function updateRule(int $id, array $data): never
+    /**
+     * @param int $rule_id
+     * @param array<string, mixed> $rule_fields
+     * @return never
+     */
+    private function updateRule(int $rule_id, array $rule_fields): never
     {
         $this->ruleCollection->checkGlobal(UPDATE);
         $rule = $this->ruleCollection->getRuleClass();
@@ -142,9 +154,9 @@ class RuleFormController extends AbstractController
         // @todo ajouter un champ 'update' pour traitement spé ? /src/CommonDBTM.php:1686
         // utile juste pour sauvegarder données en session pour réédition.
 
-        $updated = $rule->update(['id' => $id] + $data);
+        $updated = $rule->update(['id' => $rule_id] + $rule_fields);
         false === $updated && throw new \RuntimeException('Failed to update the rule.');
-        $this->logSuccess('update', $id);
+        $this->logSuccess('update', $rule_id);
         // @todo message de success
 //        \Session::addMessageAfterRedirect($message, message_type: ERROR);
 
@@ -159,11 +171,11 @@ class RuleFormController extends AbstractController
     private function purgeRule(int $id, array $data): never
     {
         $this->ruleCollection->checkGlobal(PURGE);
-        $this->ruleCollection->deleteRuleOrder($data['ranking']);
+        $this->ruleCollection->deleteRuleOrder((int) $data['ranking']);
         $rule = $this->ruleCollection->getRuleClass();
         // pass all data in case a plugin hook use it
         // @todo At the moment, as in legacy controller, we receive data from the form, not the data from the database, so unexpected things can happen
-        $purged = $rule->delete(['id' => $id] + $data, 1);
+        $purged = $rule->delete(['id' => $id] + $data, true);
         false === $purged && throw new \RuntimeException('Failed to purge the rule.');
         $this->logSuccess('purge', $id);
         // @todo message de success
@@ -204,7 +216,13 @@ class RuleFormController extends AbstractController
         return array_filter($data);
     }
 
-    private function log(string $message, int $rule_id, ?int $log_level): void
+    private function logSuccess(string $action, int $id): void
+    {
+        $message = sprintf(__('%1$s executes the "%2$s" action on the item %3$s'), $_SESSION["glpiname"], $action, 'Rule #' . $id);
+        $this->log($message, $id);
+    }
+
+    private function log(string $message, int $rule_id, ?int $log_level = null): void
     {
         Event::log(
             $rule_id,
@@ -213,11 +231,5 @@ class RuleFormController extends AbstractController
             \Rule::getLogDefaultServiceName(),
             $message
         );
-    }
-
-    private function logSuccess(string $action, int $id): void
-    {
-        $message = sprintf(__('%1$s executes the "%2$s" action on the item %3$s'), $_SESSION["glpiname"], $action, 'Rule #' . $id);
-        $this->log($message, $id);
     }
 }

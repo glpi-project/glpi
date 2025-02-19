@@ -44,7 +44,6 @@ use Glpi\Asset\AssetType;
 use Glpi\Controller\GenericFormController;
 use Glpi\Controller\GenericListController;
 use Glpi\Controller\DropdownFormController;
-use Glpi\Controller\Rule\RuleFormController;
 use Glpi\Controller\Rule\RuleListController;
 use Glpi\Dropdown\Dropdown;
 use Glpi\Dropdown\DropdownDefinition;
@@ -98,9 +97,7 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
                 $request->attributes->set('_controller', $is_form ? DropdownFormController::class : GenericListController::class);
                 $request->attributes->set('class', $class);
             } elseif (
-                \is_subclass_of($class, \Rule::class, true)
-                || is_subclass_of($class, RuleDictionaryModel::class, true)
-                || is_subclass_of($class, RuleDictionaryType::class, true)
+                \is_subclass_of($class, \Rule::class)
             ) {
                 $request->attributes->set('_controller', $is_form ? GenericFormController::class : RuleListController::class);
                 $request->attributes->set('class', $class);
@@ -359,11 +356,10 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
         $classname = null;
         $definition = new AssetDefinition();
 
-        if($is_form && ($id === null || AssetModel::isNewId($id))) {
+        if ($is_form && ($id === null || AssetModel::isNewId($id))) {
             return null;
         }
-        if($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class')))
-        {
+        if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
             $classname = $definition->getAssetModelDictionaryClassName();
         }
 
@@ -382,11 +378,10 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
         $classname = null;
         $definition = new AssetDefinition();
 
-        if($is_form && ($id === null || AssetModel::isNewId($id))) {
+        if ($is_form && ($id === null || AssetModel::isNewId($id))) {
             return null;
         }
-        if($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class')))
-        {
+        if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
             $classname = $definition->getAssetTypeDictionaryClassName();
         }
 
