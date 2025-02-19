@@ -182,7 +182,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
      *
      * @param ?Question $question
      * @param bool $multiple
-     * @return int
+     * @return array
      */
     public function getDefaultValue(?Question $question, bool $multiple = false): array
     {

@@ -243,7 +243,7 @@ TWIG;
     }
 
     #[Override]
-    public function getExtraDataConfigClass(): ?string
+    public function getExtraDataConfigClass(): string
     {
         return QuestionTypeDropdownExtraDataConfig::class;
     }

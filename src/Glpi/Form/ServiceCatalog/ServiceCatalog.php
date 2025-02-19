@@ -57,7 +57,7 @@ final class ServiceCatalog extends CommonGLPI
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         // This tab is only available for forms
         if (!($item instanceof Form)) {
