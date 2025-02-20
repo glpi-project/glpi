@@ -33,19 +33,32 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Asset\AssetDefinition;
-use Glpi\Exception\Http\BadRequestHttpException;
+/**
+ * Following variables have to be defined before inclusion of this file:
+ * @var RuleCollection $rulecollection
+ * @var LegacyFileLoadController $this
+ */
 
-$definition = new AssetDefinition();
-$classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
-    ? $definition->getAssetClassName()
-    : null;
+use Glpi\Controller\Rule\RuleListController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Controller\LegacyFileLoadController;
 
-if ($classname === null || !class_exists($classname)) {
-    throw new BadRequestHttpException('Bad request');
+if (!($this instanceof LegacyFileLoadController) || !($rulecollection instanceof RuleCollection)) {
+    throw new LogicException('$rulecollection must be an instance of RuleCollection || Not in the context of a LegacyFileLoadController');
 }
 
-$rulecollection_class = $definition->getAssetModelDictionaryCollectionClassName();
-$rulecollection = new $rulecollection_class();
+\Toolbox::deprecated(\sprintf(
+    'Requiring legacy file "' . __FILE__ . '" files is deprecated. You can safely remove the %s file and use the new `%s` route, dedicated for rules.',
+    debug_backtrace()[0]['file'] ?? 'including',
+    'rules.list',
+));
 
-include(GLPI_ROOT . "/front/rule.common.form.php");
+if (!$rulecollection::canView()) {
+    throw new AccessDeniedHttpException();
+}
+
+$request = $this->getRequest(); // @phpstan-ignore method.private
+$request->attributes->set('class', $rulecollection::getRuleClassName());
+$controller = new RuleListController();
+
+return $controller($request);
