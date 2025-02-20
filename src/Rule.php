@@ -2036,6 +2036,10 @@ JS
     {
         parent::post_purgeItem();
 
+        if (empty($this->fields['ranking'])) {
+            return;
+        }
+
         // reorder collection items
         $rule = new static();
         $classname = $rule->getCollectionClassName();

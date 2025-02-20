@@ -755,8 +755,12 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Redirect to the list page from which the item was selected
      * Default to the search engine for the type
+     * @return never
+     * return type not set, atoum will not be able to mock this method.
+     * e.g. tests\\units\\Plugin::testcheckGlpiVersion() fails
+     * can be set when atoum is removed.
      **/
-    public function redirectToList(): never
+    public function redirectToList()
     {
         Html::redirect($this->getRedirectToListUrl());
     }
