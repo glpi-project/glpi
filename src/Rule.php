@@ -2041,8 +2041,7 @@ JS
         }
 
         // reorder collection items
-        $rule = new static();
-        $classname = $rule->getCollectionClassName();
+        $this->getCollectionClassName();
         $rulecollection = new $classname();
         $rulecollection->deleteRuleOrder($this->fields['ranking']);
     }
