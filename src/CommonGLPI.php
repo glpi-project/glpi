@@ -593,7 +593,7 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
     /**
-     * @return array<int, string>
+     * @return array{0?: string, 1?: string, 2?: string}
      */
     public static function getSectorizedDetails(): array
     {
