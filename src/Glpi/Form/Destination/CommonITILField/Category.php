@@ -51,7 +51,7 @@ enum Category: string
         };
     }
 
-    public function getWeight(): string
+    public function getWeight(): int
     {
         return match ($this) {
             self::PROPERTIES     => 10,
