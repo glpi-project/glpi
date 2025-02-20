@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,28 +35,27 @@
 
 namespace Glpi\Console\Migration;
 
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\Migration\FormMigration;
 use Glpi\Migration\AbstractPluginMigration;
+use Glpi\Migration\GenericobjectPluginMigration;
 use Override;
 
-class FormCreatorPluginToCoreCommand extends AbstractPluginMigrationCommand
+class GenericobjectPluginToCoreCommand extends AbstractPluginMigrationCommand
 {
     #[Override]
     public function getName(): string
     {
-        return 'migration:formcreator_plugin_to_core';
+        return 'migration:genericobject_plugin_to_core';
     }
 
     #[Override]
     public function getDescription(): string
     {
-        return __('Migrate Formcreator plugin data into GLPI core tables');
+        return __('Migrate GenericObject plugin data into GLPI core tables');
     }
 
     #[Override]
     public function getMigration(): AbstractPluginMigration
     {
-        return new FormMigration($this->db, FormAccessControlManager::getInstance());
+        return new GenericobjectPluginMigration($this->db);
     }
 }
