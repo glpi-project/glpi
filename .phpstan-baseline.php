@@ -3974,12 +3974,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ObjectLock.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method OlaLevel\\:\\:getSectorizedDetails\\(\\) should return array\\{\'admin\', string, string\\} but returns array\\{\'config\', \'OLA\', \'OlaLevel\'\\}\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/OlaLevel.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$type$#',
 	'identifier' => 'parameter.notFound',
 	'count' => 1,
@@ -4812,12 +4806,6 @@ $ignoreErrors[] = [
 	'identifier' => 'booleanOr.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method SlaLevel\\:\\:getSectorizedDetails\\(\\) should return array\\{\'admin\', string, string\\} but returns array\\{\'config\', \'SLA\', \'SlaLevel\'\\}\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SlaLevel.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Software\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
