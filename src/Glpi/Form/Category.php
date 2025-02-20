@@ -110,6 +110,12 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     }
 
     #[Override]
+    public function isServiceCatalogItemPinned(): bool
+    {
+        return false;
+    }
+
+    #[Override]
     public function getChildrenUrlParameters(): string
     {
         return http_build_query(['category' => $this->getID()]);

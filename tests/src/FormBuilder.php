@@ -82,6 +82,11 @@ class FormBuilder
     protected bool $is_draft;
 
     /**
+     * Is this form pinned ?
+     */
+    protected bool $is_pinned;
+
+    /**
      * Form sections
      */
     protected array $sections;
@@ -130,6 +135,7 @@ class FormBuilder
         $this->header = "";
         $this->description = "";
         $this->is_draft = false;
+        $this->is_pinned = false;
         $this->sections = [];
         $this->destinations = [];
         $this->access_control = [];
@@ -297,6 +303,29 @@ class FormBuilder
     public function setIsDraft(bool $is_draft): self
     {
         $this->is_draft = $is_draft;
+        return $this;
+    }
+
+    /**
+     * Get form pinned status
+     *
+     * @return bool Form pinned status
+     */
+    public function getIsPinned(): bool
+    {
+        return $this->is_pinned;
+    }
+
+    /**
+     * Set form pinned status
+     *
+     * @param bool Form pinned status
+     *
+     * @return self To allow chain calls
+     */
+    public function setIsPinned(bool $is_pinned): self
+    {
+        $this->is_pinned = $is_pinned;
         return $this;
     }
 

@@ -214,6 +214,11 @@ final class ServiceCatalogManager
             ServiceCatalogItemInterface $a,
             ServiceCatalogItemInterface $b,
         ) {
+            // First compare pinned status
+            if ($a->isServiceCatalogItemPinned() !== $b->isServiceCatalogItemPinned()) {
+                return $b->isServiceCatalogItemPinned() <=> $a->isServiceCatalogItemPinned();
+            }
+            // If pinned status is the same, sort by title
             return $a->getServiceCatalogItemTitle() <=> $b->getServiceCatalogItemTitle();
         });
 
@@ -226,12 +231,16 @@ final class ServiceCatalogManager
      */
     private function sortRootItems(array $items): array
     {
-        // Root items are sorted with categories at the end as they will be
-        // displayed differently
         usort($items, function (
             ServiceCatalogItemInterface $a,
             ServiceCatalogItemInterface $b,
         ) {
+            // First compare pinned status
+            if ($a->isServiceCatalogItemPinned() !== $b->isServiceCatalogItemPinned()) {
+                return $b->isServiceCatalogItemPinned() <=> $a->isServiceCatalogItemPinned();
+            }
+
+            // Then handle composite vs non-composite
             if (
                 $a instanceof ServiceCatalogCompositeInterface
                 && !($b instanceof ServiceCatalogCompositeInterface)
@@ -246,6 +255,7 @@ final class ServiceCatalogManager
                 return -1;
             }
 
+            // Finally sort by title
             return $a->getServiceCatalogItemTitle() <=> $b->getServiceCatalogItemTitle();
         });
 

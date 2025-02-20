@@ -74,6 +74,7 @@ if (!$DB->tableExists('glpi_forms_forms')) {
             `is_active` tinyint NOT NULL DEFAULT '0',
             `is_deleted` tinyint NOT NULL DEFAULT '0',
             `is_draft` tinyint NOT NULL DEFAULT '0',
+            `is_pinned` tinyint NOT NULL DEFAULT '0',
             `name` varchar(255) NOT NULL DEFAULT '',
             `header` longtext,
             `illustration` varchar(255) NOT NULL DEFAULT '',
