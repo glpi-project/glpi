@@ -173,16 +173,34 @@ class Contact extends CommonDBTM
     {
 
         $this->initForm($ID, $options);
-        $vcard_url = $this->getFormURL() . '?getvcard=1&id=' . $ID;
+
         TemplateRenderer::getInstance()->display('generic_show_form.html.twig', [
             'item'   => $this,
             'params' => $options,
-            'header_toolbar'  => [
-                '<a href="' . $vcard_url . '" target="_blank" title="' . __('Vcard') . '"><i class="fas fa-address-card"></i></a>'
-            ]
         ]);
 
         return true;
+    }
+
+    protected function getFormHeaderToolbar(): array
+    {
+        $ID = $this->getID();
+        $toolbar = [];
+
+        if ($ID > 0) {
+            $vcard_lbl = __s('Vcard');
+            $vcard_url = htmlspecialchars(self::getFormURLWithID($ID) . "&getvcard=1");
+            $vcard_btn = <<<HTML
+            <a href="{$vcard_url}" target="_blank"
+                     class="btn btn-icon btn-sm btn-ghost-secondary"
+                     title="{$vcard_lbl}"
+                     data-bs-toggle="tooltip" data-bs-placement="bottom">
+               <i class="ti ti-id fs-2"></i>
+            </a>
+HTML;
+            $toolbar[] = $vcard_btn;
+        }
+        return $toolbar;
     }
 
 
