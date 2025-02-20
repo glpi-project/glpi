@@ -36,65 +36,24 @@
 /**
  * Following variables have to be defined before inclusion of this file:
  * @var RuleCollection $rulecollection
+ * @var LegacyFileLoadController $this
  */
 
-use Glpi\Event;
+use Glpi\Controller\GenericFormController;
+use Glpi\Controller\LegacyFileLoadController;
 
-$rule = $rulecollection->getRuleClass();
-$rulecollection->checkGlobal(READ);
 
-if (!isset($_GET["id"])) {
-    $_GET["id"] = "";
-}
-$ruleaction   = new RuleAction(get_class($rule));
-
-if (isset($_POST["add_action"])) {
-    $rulecollection->checkGlobal(CREATE);
-    $ruleaction->add($_POST);
-
-    Html::back();
-} else if (isset($_POST["update"])) {
-    $rulecollection->checkGlobal(UPDATE);
-    $rule->update($_POST);
-
-    Event::log(
-        $_POST['id'],
-        "rules",
-        4,
-        "setup",
-        //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
-    );
-    Html::back();
-} else if (isset($_POST["add"])) {
-    $rulecollection->checkGlobal(CREATE);
-
-    $newID = $rule->add($_POST);
-    Event::log(
-        $newID,
-        "rules",
-        4,
-        "setup",
-        sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID)
-    );
-    Html::redirect($rule->getFormURLWithID($newID));
-} else if (isset($_POST["purge"])) {
-    $rulecollection->checkGlobal(PURGE);
-    $rulecollection->deleteRuleOrder($_POST["ranking"]);
-    $rule->delete($_POST, 1);
-
-    Event::log(
-        $_POST["id"],
-        "rules",
-        4,
-        "setup",
-        //TRANS: %s is the user login
-        sprintf(__('%s purges an item'), $_SESSION["glpiname"])
-    );
-    $rule->redirectToList();
+if (!($this instanceof LegacyFileLoadController) || !($rulecollection instanceof RuleCollection)) {
+    throw new LogicException('$rulecollection must be an instance of RuleCollection || Not in the context of a LegacyFileLoadController');
 }
 
-$menus = ['admin', $rulecollection->menu_type, $rulecollection->menu_option];
-$rule::displayFullPageForItem($_GET["id"], $menus, [
-    'formoptions'  => " data-track-changes='true'"
-]);
+Toolbox::deprecated(sprintf(
+    'Requiring legacy rule files is deprecated. You can safely remove the %s file and use the new `%s` route, dedicated for items (generic).',
+    debug_backtrace()[0]['file'] ?? 'including',
+    'glpi_itemtype_form',
+));
+
+$request = $this->getRequest(); // @phpstan-ignore method.private
+$request->attributes->set('class', $rulecollection::getRuleClassName());
+
+return GenericFormController::handleLegacyFormAction($request);

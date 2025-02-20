@@ -167,6 +167,12 @@ class GenericFormController extends AbstractController
         };
     }
 
+    public static function handleLegacyFormAction(Request $request): Response
+    {
+        $controller = new self();
+        return $controller->handleFormAction($request, $controller->getFormAction($request), $request->attributes->getString('class'));
+    }
+
     private function getFormAction(Request $request): ?string
     {
         if ($request->getMethod() === 'POST') {

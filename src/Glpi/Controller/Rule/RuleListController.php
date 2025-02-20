@@ -32,8 +32,6 @@
  * ---------------------------------------------------------------------
  */
 
-declare(strict_types=1);
-
 namespace Glpi\Controller\Rule;
 
 use Glpi\Controller\AbstractController;
@@ -49,21 +47,18 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RuleListController extends AbstractController
 {
-    use RuleControllerTrait;
-
     private \RuleCollection $ruleCollection;
 
-    // @todo route
-    #[Route("/{class}/Search", name: "fixme", priority: -1)]
+    #[Route("/{class}/Search", name: "rules.list", priority: -1)]
     public function __invoke(Request $request): Response
     {
         $id =           (int) $request->get('id');
         $reinit =       $request->get('reinit');
         $replay_rule =  $request->get('replay_rule');
         $reorder =      $request->request->get('action');
-        $item_class = $request->attributes->getString('class');
+        $rule_classname =   $request->attributes->getString('class');
 
-        $this->ruleCollection = $this->getRuleCollectionInstanceFromRuleSubtype($item_class, (int) $_SESSION['glpiactive_entity']);
+        $this->ruleCollection = $this->getRuleCollectionInstanceFromRuleSubtype($rule_classname, (int) $_SESSION['glpiactive_entity']);
 
         // dispatch
         if (!is_null($reorder)) {
@@ -108,7 +103,6 @@ final class RuleListController extends AbstractController
 
     private function reinitializeRules(): void
     {
-        // @todo droits spécifiques selon le type de collection ?
         $this->ruleCollection->checkGlobal(UPDATE);
 
         $ruleclass = $this->ruleCollection->getRuleClass();
@@ -248,5 +242,27 @@ final class RuleListController extends AbstractController
 
             Html::footer();
         });
+    }
+
+    /**
+     * @param class-string<\Rule> $rule_classname
+     * @param int $entity
+     * @return \RuleCollection
+     * @throw BadRequestHttpException
+     */
+    private function getRuleCollectionInstanceFromRuleSubtype(string $rule_classname, int $entity): \RuleCollection
+    {
+        if (class_exists($rule_classname) === false) {
+            throw new BadRequestHttpException(sprintf('Invalid rule (sub)type "%s"', htmlescape($rule_classname)));
+        }
+        $rule = new $rule_classname();
+        $collection_classname = $rule->getCollectionClassName();
+
+        /**
+         * Not all classes extendending RuleCollection have a constructor.
+         * Only \RuleCommonITILObjectCollection instances, so we can really pass an entity parameter to the constructor.
+         */
+        /* @phpstan-ignore-next-line */
+        return new $collection_classname($entity);
     }
 }

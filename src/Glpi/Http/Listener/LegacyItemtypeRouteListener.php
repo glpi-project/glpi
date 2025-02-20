@@ -91,19 +91,15 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
         }
 
         if ($class = $this->findClass($request)) {
+            $request->attributes->set('class', $class);
             $is_form = \str_ends_with($request->getPathInfo(), '.form.php');
 
             if (\is_a($class, CommonDropdown::class, true)) {
                 $request->attributes->set('_controller', $is_form ? DropdownFormController::class : GenericListController::class);
-                $request->attributes->set('class', $class);
-            } elseif (
-                \is_subclass_of($class, \Rule::class)
-            ) {
+            } elseif (\is_subclass_of($class, \Rule::class)) {
                 $request->attributes->set('_controller', $is_form ? GenericFormController::class : RuleListController::class);
-                $request->attributes->set('class', $class);
             } else {
                 $request->attributes->set('_controller', $is_form ? GenericFormController::class : GenericListController::class);
-                $request->attributes->set('class', $class);
             }
         }
     }
@@ -356,7 +352,7 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
         $classname = null;
         $definition = new AssetDefinition();
 
-        if ($is_form && ($id === null || AssetModel::isNewId($id))) {
+        if ($is_form && !AssetModel::isNewId($id) && $id === null) {
             return null;
         }
         if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {
@@ -378,7 +374,7 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
         $classname = null;
         $definition = new AssetDefinition();
 
-        if ($is_form && ($id === null || AssetModel::isNewId($id))) {
+        if ($is_form && !AssetType::isNewId($id) && $id === null) {
             return null;
         }
         if ($request->query->has('class') && $definition->getFromDBBySystemName((string) $request->query->get('class'))) {

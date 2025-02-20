@@ -592,6 +592,9 @@ class CommonGLPI implements CommonGLPIInterface
         return '';
     }
 
+    /**
+     * @return array<int, string>
+     */
     public static function getSectorizedDetails(): array
     {
         return [];
@@ -752,10 +755,8 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Redirect to the list page from which the item was selected
      * Default to the search engine for the type
-     *
-     * @return void
      **/
-    public function redirectToList(): void
+    public function redirectToList(): never
     {
         Html::redirect($this->getRedirectToListUrl());
     }
