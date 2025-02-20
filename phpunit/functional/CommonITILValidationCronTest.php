@@ -86,9 +86,9 @@ class CommonITILValidationCronTest extends DbTestCase
             )
         );
 
-        // create crontask
+        // retrieve crontask
         $crontask = new \CronTask();
-        $crontask->getFromDBbyName('CommonITILValidationCron', 'approvalreminder');
+        $this->assertTrue($crontask->getFromDBbyName('CommonITILValidationCron', 'approvalreminder'));
 
         // run cron
         $this->assertEquals(1, \CommonITILValidationCron::cronApprovalReminder($crontask));
