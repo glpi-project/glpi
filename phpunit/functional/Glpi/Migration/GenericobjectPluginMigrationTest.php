@@ -32,30 +32,45 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Console\Migration;
+namespace tests\units\Glpi\Migration;
 
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\Migration\FormMigration;
-use Glpi\Migration\AbstractPluginMigration;
-use Override;
+use DbTestCase;
 
-class FormCreatorPluginToCoreCommand extends AbstractPluginMigrationCommand
+class GenericobjectPluginMigrationTest extends DbTestCase
 {
-    #[Override]
-    public function getName(): string
+    public static function setUpBeforeClass(): void
     {
-        return 'migration:formcreator_plugin_to_core';
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        parent::setUpBeforeClass();
+
+        $queries = $DB->getQueriesFromFile(sprintf('%s/tests/fixtures/genericobject-plugin-data.sql', GLPI_ROOT));
+        foreach ($queries as $query) {
+            $DB->doQuery($query);
+        }
     }
 
-    #[Override]
-    public function getDescription(): string
+    public function setUp(): void
     {
-        return __('Migrate Formcreator plugin data into GLPI core tables');
+        parent::setUp();
+
+        $queries = $DB->getQueriesFromFile(sprintf('%s/tests/fixtures/genericobject-glpi-data.sql', GLPI_ROOT));
+        foreach ($queries as $query) {
+            $DB->doQuery($query);
+        }
     }
 
-    #[Override]
-    public function getMigration(): AbstractPluginMigration
+    public static function tearDownAfterClass(): void
     {
-        return new FormMigration($this->db, FormAccessControlManager::getInstance());
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $tables = $DB->listTables('glpi\_plugin\_genericobject\_%');
+        foreach ($tables as $table) {
+            $DB->dropTable($table['TABLE_NAME']);
+        }
+
+        parent::tearDownAfterClass();
     }
 }
