@@ -2069,9 +2069,6 @@ JS
         }
     }
 
-    /**
-     * @return array{'admin', string, string}
-     */
     public static function getSectorizedDetails(): array
     {
         $rule = new static();
