@@ -156,6 +156,12 @@ class RequestTypeField extends AbstractConfigField
     #[Override]
     public function getWeight(): int
     {
-        return 40;
+        return 35;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::PROPERTIES;
     }
 }
