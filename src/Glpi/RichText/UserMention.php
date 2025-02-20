@@ -44,10 +44,15 @@ use DOMDocument;
 use ITILFollowup;
 use ITILSolution;
 use NotificationEvent;
+use Profile;
 use User;
 
 final class UserMention
 {
+    public const USER_MENTION_DISABLED = 0;
+    public const USER_MENTION_FULL = 1;
+    public const USER_MENTION_RESTRICTED = 2;
+
     /**
      * Handle user mentions.
      * Add newly mention users to observers and send them a notification.
@@ -260,5 +265,43 @@ final class UserMention
         }
 
         return $content;
+    }
+
+    /**
+     * Get the options to pass to the `UserMention` javascript module.
+     *
+     * @param CommonITILObject $item
+     *
+     * @return array{enabled: bool, full: bool, users: array<int, int>}
+     */
+    public static function getMentionOptions(CommonITILObject $item): array
+    {
+        $profile = Profile::getById($_SESSION['glpiactiveprofile']['id']);
+        $use_mentions = $profile->fields['use_mentions'];
+
+        $data = [
+            'enabled' => $use_mentions !== self::USER_MENTION_DISABLED,
+            'full'    => $use_mentions === self::USER_MENTION_FULL,
+            'users'   => [],
+        ];
+
+        if ($use_mentions !== self::USER_MENTION_RESTRICTED) {
+            return $data;
+        }
+
+        $items_id = $item->getID();
+
+        //get actors from item
+        $userlink = new $item->userlinkclass();
+        $actors = $userlink->getActors($items_id);
+
+        $data['users'] = [];
+
+        foreach ($actors as $actor) {
+            foreach ($actor as $a) {
+                $data['users'][] = $a['users_id'];
+            }
+        }
+        return $data;
     }
 }

@@ -199,7 +199,7 @@ class RuleRight extends Rule
 
             $criterias['MAIL_SERVER']['table']     = 'glpi_authmails';
             $criterias['MAIL_SERVER']['field']     = 'name';
-            $criterias['MAIL_SERVER']['name']      = __('Email server');
+            $criterias['MAIL_SERVER']['name']      = _n('Email server', 'Email servers', 1);
             $criterias['MAIL_SERVER']['linkfield'] = '';
             $criterias['MAIL_SERVER']['type']      = 'dropdown';
             $criterias['MAIL_SERVER']['virtual']   = true;
@@ -249,7 +249,7 @@ class RuleRight extends Rule
     {
         $crit = $this->getCriteria($ID);
         if (count($crit) && $crit['field'] == 'type') {
-            return Auth::getMethodName($pattern, 0);
+            return Auth::getMethodName((int) $pattern, 0);
         }
         return false;
     }

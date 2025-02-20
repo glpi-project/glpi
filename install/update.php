@@ -54,7 +54,7 @@ $DB->disableTableCaching(); //prevents issues on fieldExists upgrading from old 
 
 $update = new Update($DB);
 
-if (isset($_POST['update_end'])) {
+if (($_SESSION['can_process_update'] ?? false) && isset($_POST['update_end'])) {
     if (isset($_POST['send_stats'])) {
         Telemetry::enable();
     }
@@ -168,32 +168,30 @@ echo "<div id='logo_bloc'></div>";
 echo "<h2>" . __s('GLPI setup') . "</h2>";
 echo "<br><h3>" . __s('Upgrade') . "</h3>";
 
-// step 1    avec bouton de confirmation
+if (($_SESSION['can_process_update'] ?? false) === false) {
+    // Unexpected direct access to the form
+    echo "<div class='center'>";
+    echo "<h3><span class='migred'>" . __s('Impossible to accomplish an update by this way!') . "</span>";
+    echo "<p>";
+    echo "<a class='btn btn-primary' href='../index.php'>
+        " . __s('Go back to GLPI') . "
+     </a></p>";
+    echo "</div>";
+} elseif (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
+    // step 1    avec bouton de confirmation
+    echo "<div class='center'>";
+    echo "<h3 class='my-4'><span class='migred p-2'>" . sprintf(__s('Caution! You will update the GLPI database named: %s'), htmlescape($DB->dbdefault)) . "</h3>";
 
-if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
-    if (empty($from_install) && !isset($_POST["from_update"])) {
-        echo "<div class='center'>";
-        echo "<h3><span class='migred'>" . __s('Impossible to accomplish an update by this way!') . "</span>";
-        echo "<p>";
-        echo "<a class='btn btn-primary' href='../index.php'>
-            " . __s('Go back to GLPI') . "
-         </a></p>";
-        echo "</div>";
-    } else {
-        echo "<div class='center'>";
-        echo "<h3 class='my-4'><span class='migred p-2'>" . sprintf(__s('Caution! You will update the GLPI database named: %s'), htmlescape($DB->dbdefault)) . "</h3>";
-
-        echo "<form action='update.php' method='post'>";
-        if (!VersionParser::isStableRelease(GLPI_VERSION)) {
-            echo Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION));
-        }
-        echo "<button type='submit' class='btn btn-primary' name='continuer' value='1'>
-         " . __s('Continue') . "
-         <i class='fas fa-chevron-right ms-1'></i>
-      </button>";
-        Html::closeForm();
-        echo "</div>";
+    echo "<form action='update.php' method='post'>";
+    if (!VersionParser::isStableRelease(GLPI_VERSION)) {
+        echo Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION));
     }
+    echo "<button type='submit' class='btn btn-primary' name='continuer' value='1'>
+     " . __s('Continue') . "
+     <i class='fas fa-chevron-right ms-1'></i>
+  </button>";
+    Html::closeForm();
+    echo "</div>";
 } else {
    // Step 2
     if ($DB->connected) {

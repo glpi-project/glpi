@@ -42,12 +42,14 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
+use Glpi\Progress\AbstractProgressIndicator;
+use Glpi\Progress\ProgressMessageType;
 use Glpi\Rules\RulesManager;
+use Glpi\Toolbox\URL;
 use Glpi\Toolbox\VersionParser;
 use GuzzleHttp\Client;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -1486,21 +1488,22 @@ class Toolbox
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $matches = [];
+        $parsed_url = parse_url($where);
 
-        // redirect to full url -> check if it's based on glpi url
-        if (preg_match('@(([^:/].+:)?//[^/]+)(/.+)?@', $where, $matches)) {
-            if ($matches[1] !== $CFG_GLPI['url_base']) {
-                return null;
+        if ($parsed_url !== false) {
+            // Target URL contains a hostname, validates that it matches the base GLPI URL
+            if (array_key_exists('host', $parsed_url)) {
+                if (!str_starts_with($where, $CFG_GLPI['url_base'] . '/')) {
+                    return null;
+                } else {
+                    return $where;
+                }
             }
 
-            return $where;
-        }
-
-        // Redirect to relative url
-        if ($where[0] === '/') {
-            // prevent exploit (//example.com) and force a redirect from glpi root
-            return $CFG_GLPI["root_doc"] . "/" . ltrim($where, '/');
+            // Target URL is a relative path
+            if (array_key_exists('path', $parsed_url) && $parsed_url['path'][0] === '/') {
+                return URL::isGLPIRelativeUrl($where) ? $CFG_GLPI["root_doc"] . $where : null;
+            }
         }
 
         // explode with limit 3 to preserve the last part of the url
@@ -1569,7 +1572,7 @@ class Toolbox
                     // no break
                     case "tracking":
                         $data[0] = "Ticket";
-                        // var defined, use default case
+                        //var defined, use default case
 
                     default:
                         // redirect to item
@@ -1665,14 +1668,15 @@ class Toolbox
      *
      * @since 0.84
      *
-     * @param string  $value      connect string
-     * @param boolean $forceport  force compute port if not set
+     * @param string    $value                      connect string
+     * @param bool      $forceport                  force compute port if not set
+     * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
      * @return array  parsed arguments (address, port, mailbox, type, ssl, tls, validate-cert
      *                norsh, secure and debug) : options are empty if not set
      *                and options have boolean values if set
      **/
-    public static function parseMailServerConnectString($value, $forceport = false)
+    public static function parseMailServerConnectString($value, $forceport = false, bool $allow_plugins_protocols = true)
     {
 
         $tab = [];
@@ -1693,7 +1697,7 @@ class Toolbox
        // server string is surrounded by "{}" and can be followed by a folder name
        // i.e. "{mail.domain.org/imap/ssl}INBOX", or "{mail.domain.org/pop}"
         $type = preg_replace('/^\{[^\/]+\/([^\/]+)(?:\/.+)*\}.*/', '$1', $value);
-        $tab['type'] = in_array($type, array_keys(self::getMailServerProtocols())) ? $type : '';
+        $tab['type'] = in_array($type, array_keys(self::getMailServerProtocols($allow_plugins_protocols))) ? $type : '';
 
         $tab['ssl'] = false;
         if (strstr($value, "/ssl")) {
@@ -1802,9 +1806,11 @@ class Toolbox
      *  - 'protocol_class' field is the protocol class to use (see Laminas\Mail\Protocol\Imap | Laminas\Mail\Protocol\Pop3);
      *  - 'storage_class' field is the storage class to use (see Laminas\Mail\Storage\Imap | Laminas\Mail\Storage\Pop3).
      *
+     * @param bool  $allow_plugins_protocols    Whether plugins protocol must be allowed.
+     *
      * @return array
      */
-    public static function getMailServerProtocols(): array
+    public static function getMailServerProtocols(bool $allow_plugins_protocols = true): array
     {
         $protocols = [
             'imap' => [
@@ -1820,6 +1826,10 @@ class Toolbox
                 'storage'  => 'Laminas\Mail\Storage\Pop3',
             ]
         ];
+
+        if ($allow_plugins_protocols === false) {
+            return $protocols;
+        }
 
         $additionnal_protocols = Plugin::doHookFunction('mail_server_protocols', []);
         if (is_array($additionnal_protocols)) {
@@ -1861,13 +1871,14 @@ class Toolbox
      * Class should implements Glpi\Mail\Protocol\ProtocolInterface
      * or should be \Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3 for native protocols.
      *
-     * @param string $protocol_type
+     * @param string    $protocol_type
+     * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
      * @return null|\Glpi\Mail\Protocol\ProtocolInterface|\Laminas\Mail\Protocol\Imap|\Laminas\Mail\Protocol\Pop3
      */
-    public static function getMailServerProtocolInstance(string $protocol_type)
+    public static function getMailServerProtocolInstance(string $protocol_type, bool $allow_plugins_protocols = true)
     {
-        $protocols = self::getMailServerProtocols();
+        $protocols = self::getMailServerProtocols($allow_plugins_protocols);
         if (array_key_exists($protocol_type, $protocols)) {
             $protocol = $protocols[$protocol_type]['protocol'];
             if (is_callable($protocol)) {
@@ -1894,14 +1905,15 @@ class Toolbox
      *
      * Class should extends \Laminas\Mail\Storage\AbstractStorage.
      *
-     * @param string $protocol_type
-     * @param array  $params         Storage constructor params, as defined in AbstractStorage
+     * @param string    $protocol_type
+     * @param array     $params                     Storage constructor params, as defined in AbstractStorage
+     * @param bool      $allow_plugins_protocols    Whether plugins protocol must be allowed.
      *
      * @return null|AbstractStorage
      */
-    public static function getMailServerStorageInstance(string $protocol_type, array $params): ?AbstractStorage
+    public static function getMailServerStorageInstance(string $protocol_type, array $params, bool $allow_plugins_protocols = true): ?AbstractStorage
     {
-        $protocols = self::getMailServerProtocols();
+        $protocols = self::getMailServerProtocols($allow_plugins_protocols);
         if (array_key_exists($protocol_type, $protocols)) {
             $storage = $protocols[$protocol_type]['storage'];
             if (is_callable($storage)) {
@@ -2040,24 +2052,20 @@ class Toolbox
      *
      * @param string   $lang     Language to install
      * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
-     * @param ?Closure $progressCallback
+     * @param ?AbstractProgressIndicator $progress_indicator
      *
      * @return void
      *
      * @internal
      *
      * @since 9.1
-     * @since 9.4.7 Added $database parameter
-     **/
-    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?Closure $progressCallback = null)
+     * @since 9.4.7 Added the `$database` parameter.
+     * @since 11.0.0 Added the `$progress_indicator` parameter.
+     */
+    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?AbstractProgressIndicator $progress_indicator = null)
     {
         /** @var \DBmysql $DB */
         global $DB;
-
-        if (!$progressCallback) {
-            $progressCallback = function (?int $current = null, ?int $max = null, ?string $data = null) {
-            };
-        }
 
         if (null === $database) {
             // Use configured DB if no $db is defined in parameters
@@ -2096,16 +2104,18 @@ class Toolbox
             $number_of_steps += $cron_config_weight;
         }
 
-        $progressCallback($done_steps, $number_of_steps, __('Creating database structure…'));
+        $progress_indicator?->setMaxSteps($number_of_steps);
+        $progress_indicator?->setProgressBarMessage(__('Creating database structure…'));
 
         foreach ($structure_queries as $query) {
             $DB->doQuery($query);
 
             $done_steps++;
-            $progressCallback($done_steps);
+            $progress_indicator?->setCurrentStep($done_steps);
         }
+        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Database structure created.'));
 
-        $progressCallback($done_steps, null, __('Adding empty data…'));
+        $progress_indicator?->setProgressBarMessage(__('Importing default data…'));
 
         foreach ($tables as $table => $data) {
             $reference = array_replace(
@@ -2135,25 +2145,32 @@ class Toolbox
                 }
 
                 $done_steps++;
-                $progressCallback($done_steps);
+                $progress_indicator?->setCurrentStep($done_steps);
             }
         }
+        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Default data imported.'));
 
-        $progressCallback($done_steps, null, __('Creating default forms…'));
+        $progress_indicator?->setProgressBarMessage(__('Creating default forms…'));
         $default_forms_manager = new DefaultDataManager();
         $default_forms_manager->initializeData();
         $done_steps += $init_form_weight;
+        $progress_indicator?->setCurrentStep($done_steps);
+        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Default forms created.'));
 
-        $progressCallback($done_steps, null, __('Initalizing rules…'));
+        $progress_indicator?->setProgressBarMessage(__('Initalizing default rules…'));
         RulesManager::initializeRules();
         $done_steps += $init_rules_weight;
+        $progress_indicator?->setCurrentStep($done_steps);
+        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Default rules initialized.'));
 
-        $progressCallback($done_steps, null, __('Generating keys…'));
+        $progress_indicator?->setProgressBarMessage(__('Generating security keys…'));
         // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
         \Glpi\OAuth\Server::generateKeys();
         $done_steps += $generate_keys_weight;
+        $progress_indicator?->setCurrentStep($done_steps);
+        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Security keys generated.'));
 
-        $progressCallback($done_steps, null, __('Updating default language…'));
+        $progress_indicator?->setProgressBarMessage(__('Defining configuration defaults…'));
         Config::setConfigurationValues(
             'core',
             [
@@ -2163,10 +2180,10 @@ class Toolbox
             ]
         );
         $done_steps += $default_lang_weight;
+        $progress_indicator?->setCurrentStep($done_steps);
 
         if (defined('GLPI_SYSTEM_CRON')) {
-            $progressCallback($done_steps, null, __('Configuring cron tasks…'));
-           // Downstream packages may provide a good system cron
+            // Downstream packages may provide a good system cron
             $DB->update(
                 'glpi_crontasks',
                 [
@@ -2178,9 +2195,13 @@ class Toolbox
                 ]
             );
             $done_steps += $cron_config_weight;
+            $progress_indicator?->setCurrentStep($done_steps);
         }
+        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Configuration defaults defined.'));
 
-        $progressCallback($number_of_steps, $number_of_steps, __('Done!'));
+        $progress_indicator?->setProgressBarMessage('');
+        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Installation done.'));
+        $progress_indicator?->finish();
     }
 
 

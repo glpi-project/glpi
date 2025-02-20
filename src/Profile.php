@@ -41,6 +41,7 @@ use Glpi\Event;
 use Glpi\Form\Form;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Helpdesk\Tile\TilesManager;
+use Glpi\RichText\UserMention;
 use Glpi\Session\SessionInfo;
 use Glpi\Toolbox\ArrayNormalizer;
 
@@ -68,6 +69,7 @@ class Profile extends CommonDBTM
         'reservation',
         'rssfeed_public',
         'show_group_hardware',
+        'use_mentions',
         'task',
         'ticket',
         'ticket_cost',
@@ -1538,6 +1540,10 @@ class Profile extends CommonDBTM
      **/
     public function showFormTracking($openform = true, $closeform = true)
     {
+        /** @var array $CFG_GLPI */
+
+        global $CFG_GLPI;
+
         if (!self::canView()) {
             return false;
         }
@@ -1596,6 +1602,60 @@ class Profile extends CommonDBTM
 
         $matrix_options['title'] = _n('Followup', 'Followups', Session::getPluralNumber()) . " / " . _n('Task', 'Tasks', Session::getPluralNumber());
         $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'tracking', 'followups_tasks'), $matrix_options);
+
+        echo "<div class='mt-n2 mx-n2 mb-4'>";
+        echo "<table class='table table-hover card-table'>";
+        echo "<thead>";
+        echo "<tr><th colspan='2'><h4>" . __s('Users mentions') . "<h4></th></tr>";
+
+        echo "</thead>";
+
+        echo "<tbody>";
+
+        $description = __s('Enables or disables the ability to mention users within the application.') . "<br><br>";
+        $description .= "<b>" . __s('Disabled') . "</b> : " . __('User mentions are disabled for this profile.') . "<br><br>";
+        $description .= "<b>" . __s('Full') . "</b> : " . __('Displays all users. Mentioned users will be added as observers if they are not already actors.') . "<br><br>";
+        $description .= "<b>" . __s('Restricted') . "</b> : " . __('Limits the display to actors directly involved in the ticket.') . "<br><br><br>";
+
+        $disabled = false;
+
+        if ($CFG_GLPI['use_notifications'] == '0') {
+            $disabled = true;
+        }
+
+        echo "<tr>";
+        echo "<td>" . __s('Mentions configuration');
+        echo "<span class='ms-2 form-help'
+              data-bs-toggle='popover'
+              data-bs-placement='top'
+              data-bs-html='true'
+              data-bs-content='" . htmlspecialchars($description) . "'>
+            ?
+        </span>";
+        echo "</td><td>";
+
+        echo Dropdown::showFromArray(
+            'use_mentions',
+            self::getUseMentionsChoices($disabled),
+            [
+                'value' => $this->fields['use_mentions'],
+                'display' => false,
+                'disabled' => $disabled
+            ]
+        );
+
+        if ($disabled) {
+            $warning = __s('Notifications must be enabled to activate mentions.');
+            echo "<span class='form-help ms-2' data-bs-toggle='popover' data-bs-placement='top' data-bs-html='true' data-bs-content='" . $warning . "'>";
+            echo "<i class='fas fa-exclamation-triangle text-danger'></i>";
+            echo "</span>";
+        }
+
+        echo "</td></tr>";
+
+        echo "</tbody>";
+        echo "</table>";
+        echo "</div>";
 
         $matrix_options['title'] = _n('Validation', 'Validations', Session::getPluralNumber());
         $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'tracking', 'validations'), $matrix_options);
@@ -4013,6 +4073,24 @@ class Profile extends CommonDBTM
         $p['multiple'] = true;
         $p['size']     = 3;
         return Dropdown::showFromArray($p['name'], $values, $p);
+    }
+
+    /**
+     * @return array<int, string>
+     **/
+    private static function getUseMentionsChoices(bool $disabled): array
+    {
+        if ($disabled) {
+            return [
+                UserMention::USER_MENTION_DISABLED => __('Disabled'),
+            ];
+        }
+
+        return [
+            UserMention::USER_MENTION_DISABLED     => __('Disabled'),
+            UserMention::USER_MENTION_FULL        => __('Full'),
+            UserMention::USER_MENTION_RESTRICTED  => __('Restricted'),
+        ];
     }
 
     /**

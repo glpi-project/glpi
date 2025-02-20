@@ -60,74 +60,13 @@ final class AnswersSet extends CommonDBChild
     #[Override]
     public static function getTypeName($nb = 0)
     {
-        return __('Form answers');
+        return __('Answers');
     }
 
     #[Override]
     public static function getIcon()
     {
         return "ti ti-circle-check";
-    }
-
-    #[Override]
-    public function defineTabs($options = [])
-    {
-        $tabs = parent::defineTabs();
-
-        // Register each possible destination types
-        $types_manager = FormDestinationTypeManager::getInstance();
-        foreach ($types_manager->getDestinationTypes() as $type) {
-            $this->addStandardTab($type::class, $tabs, []);
-        }
-        $this->addStandardTab(Log::class, $tabs, []);
-
-        return $tabs;
-    }
-
-    #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
-    {
-        if (!($item instanceof Form)) {
-            return "";
-        }
-
-        $count = 0;
-        if ($_SESSION['glpishow_count_on_tabs']) {
-            $count = $this->countAnswers($item);
-        }
-
-        return self::createTabEntry(
-            self::getTypeName(),
-            $count,
-        );
-    }
-
-    #[Override]
-    public static function displayTabContentForItem(
-        CommonGLPI $item,
-        $tabnum = 1,
-        $withtemplate = 0
-    ) {
-        if (!($item instanceof Form)) {
-            return false;
-        }
-
-        Search::showList(self::class, [
-            'criteria' => [
-                [
-                    'link'       => 'AND',
-                    'field'      => 5,  // Parent form
-                    'searchtype' => 'equals',
-                    'value'      => $item->getID()
-                ]
-            ],
-            'showmassiveactions' => false,
-            'hide_controls'      => true,
-            'sort'               => 4,        // Creation date
-            'order'              => 'DESC',
-            'as_map'             => false,
-        ]);
-        return true;
     }
 
     #[Override]
@@ -222,6 +161,13 @@ final class AnswersSet extends CommonDBChild
     }
 
     #[Override]
+    public static function canView(): bool
+    {
+        // Answers set can't be viewed from the UI
+        return false;
+    }
+
+    #[Override]
     public static function canUpdate(): bool
     {
         // Answers set can't be updated from the UI
@@ -238,24 +184,8 @@ final class AnswersSet extends CommonDBChild
     #[Override]
     public static function canDelete(): bool
     {
-        // Any form administrator may delete answers
-        return Form::canUpdate();
-    }
-
-    #[Override]
-    public function showForm($id, array $options = [])
-    {
-        $this->getFromDB($id);
-        $this->initForm($id, $options);
-
-        // Render twig template
-        $twig = TemplateRenderer::getInstance();
-        $twig->display('pages/admin/form/display_answers.html.twig', [
-            'item'    => $this,
-            'answers' => $this->getAnswers(),
-            'params'  => $options,
-        ]);
-        return true;
+        // Answers set can't be deleted from the UI
+        return false;
     }
 
     /**

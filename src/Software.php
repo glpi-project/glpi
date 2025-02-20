@@ -1177,4 +1177,31 @@ TWIG, $twig_params);
             }
         }
     }
+
+    public static function getPurgeTaskDescription(): string
+    {
+        return __("Purge software with no version that are deleted.");
+    }
+
+    public static function getPurgeTaskParameterDescription(): string
+    {
+        return __('Max items to handle in one execution');
+    }
+
+    public static function cronInfo($name)
+    {
+        return [
+            'description' => self::getPurgeTaskDescription(),
+            'parameter'   => self::getPurgeTaskParameterDescription(),
+        ];
+    }
+
+    public static function cronPurgeSoftware(CronTask $task)
+    {
+        $max = $task->fields['param'];
+        $taskInstance = new PurgeSoftwareTask();
+        $total = $taskInstance->run($max);
+        $task->addVolume($total);
+        return 1;
+    }
 }

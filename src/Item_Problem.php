@@ -123,21 +123,7 @@ class Item_Problem extends CommonItilObject_Item
                         && ($item instanceof CommonDBTM)
                     ) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                              // Direct one
-                              $nb = self::countForItem($item);
-                              // Linked items
-                              $linkeditems = $item->getLinkedItems();
-
-                            if (count($linkeditems)) {
-                                foreach ($linkeditems as $type => $tab) {
-                                    $typeitem = new $type();
-                                    foreach ($tab as $ID) {
-                                        if ($typeitem->getFromDB($ID)) {
-                                            $nb += self::countForItem($typeitem);
-                                        }
-                                    }
-                                }
-                            }
+                            $nb = self::countLinkedProblems($item);
                         }
                         return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
@@ -146,6 +132,27 @@ class Item_Problem extends CommonItilObject_Item
         return '';
     }
 
+    public static function countLinkedProblems(CommonDBTM $item): int
+    {
+        // Direct link
+        $nb = self::countForItem($item);
+
+        // Linked items
+        $linkeditems = $item->getLinkedItems();
+
+        if (count($linkeditems)) {
+            foreach ($linkeditems as $type => $tab) {
+                $typeitem = new $type();
+                foreach ($tab as $ID) {
+                    if ($typeitem->getFromDB($ID)) {
+                        $nb += self::countForItem($typeitem);
+                    }
+                }
+            }
+        }
+
+        return $nb;
+    }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {

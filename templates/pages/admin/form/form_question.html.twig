@@ -99,7 +99,7 @@
                 <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
 
                 {% if question is null %}
-                    {% set question_strategy = enum('Glpi\\Form\\QuestionVisibilityStrategy').ALWAYS_VISIBLE %}
+                    {% set question_strategy = enum('Glpi\\Form\\ConditionalVisiblity\\VisibilityStrategy').ALWAYS_VISIBLE %}
                 {% else %}
                     {% set question_strategy = question.getConfiguredVisibilityStrategy() %}
                 {% endif %}

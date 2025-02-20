@@ -32,37 +32,44 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Form\ConditionalVisibilityEditor;
+namespace Glpi\Controller\Form\ConditionalVisibility;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Form\ConditionalVisiblity\EditorManager;
-use Glpi\Form\ConditionalVisiblity\FormData;
+use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Form\ConditionalVisiblity\Engine;
+use Glpi\Form\ConditionalVisiblity\EngineInput;
+use Glpi\Form\Form;
+use Glpi\Http\Firewall;
+use Glpi\Security\Attribute\SecurityStrategy;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class IndexController extends AbstractController
+final class EngineController extends AbstractController
 {
-    public function __construct(
-        private EditorManager $editor_manager,
-    ) {
-    }
-
     #[Route(
-        // Need '/ajax' prefix due to legacy CSRF constraints.
-        "/ajax/Form/ConditionalVisibilityEditor",
-        name: "glpi_form_conditional_visibility_editor",
+        "/Form/ConditionalVisibility/Engine",
+        name: "glpi_form_conditional_visibility_engine",
         methods: "POST"
     )]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function __invoke(Request $request): Response
     {
-        $form_data = $request->request->all()['form_data'];
-        $this->editor_manager->setFormData(new FormData($form_data));
+        // Load target form
+        $form_id = $request->request->getInt('form_id');
+        $form = Form::getById($form_id);
+        if (!$form) {
+            throw new NotFoundHttpException();
+        }
 
-        return $this->render('pages/admin/form/conditional_visibility_editor.html.twig', [
-            'manager'            => $this->editor_manager,
-            'defined_conditions' => $this->editor_manager->getDefinedConditions(),
-            'items_values'       => $this->editor_manager->getItemsDropdownValues(),
-        ]);
+        // Load engine input
+        $input = new EngineInput(
+            answers: $request->request->all()['answers'] ?? [],
+        );
+
+        // Compute visibility
+        $engine = new Engine($form, $input);
+        return new JsonResponse($engine->computeVisibility());
     }
 }

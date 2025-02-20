@@ -319,6 +319,19 @@ class Config extends CommonDBTM
             }
         }
 
+        // Check the validity of `pdffont`
+        if (isset($input['pdffont']) && !in_array($input['pdffont'], array_keys(GLPIPDF::getFontList()), true)) {
+            Session::addMessageAfterRedirect(
+                sprintf(
+                    __s('The following field has an incorrect value: "%s".'),
+                    __s('PDF export font')
+                ),
+                false,
+                ERROR
+            );
+            unset($input['pdffont']);
+        }
+
         $tfa_enforced_changed = isset($input['2fa_enforced']) && $input['2fa_enforced'] !== $CFG_GLPI['2fa_enforced'];
         $tfa_grace_days_changed = isset($input['2fa_grace_days']) && $input['2fa_grace_days'] !== $CFG_GLPI['2fa_grace_days'];
         if ($tfa_grace_days_changed || $tfa_enforced_changed) {

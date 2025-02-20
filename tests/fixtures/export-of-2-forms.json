@@ -25,7 +25,9 @@
                     "description": null,
                     "default_value": "{\"users_ids\":[\"glpi\"],\"groups_ids\":[],\"suppliers_ids\":[]}",
                     "extra_data": "{\"is_multiple_actors\":true}",
-                    "section_rank": 0
+                    "section_rank": 0,
+                    "visibility_strategy": "",
+                    "conditions": []
                 }
             ],
             "data_requirements": [
@@ -63,7 +65,9 @@
                     "description": null,
                     "default_value": "{\"users_ids\":[\"Missing user\"],\"groups_ids\":[],\"suppliers_ids\":[]}",
                     "extra_data": "{\"is_multiple_actors\":true}",
-                    "section_rank": 0
+                    "section_rank": 0,
+                    "visibility_strategy": "",
+                    "conditions": []
                 }
             ],
             "data_requirements": [

@@ -142,11 +142,10 @@ final class QuestionTypesManager
         // Get files in the current directory
         $directory_iterator = new DirectoryIterator(__DIR__);
 
-        /** @var \SplFileObject $file */
-        foreach ($directory_iterator as $file) {
+        while ($directory_iterator->valid()) {
             // Compute class name with the expected namespace
-            $classname = $file->getExtension() === 'php'
-                ? 'Glpi\\Form\\QuestionType\\' . $file->getBasename('.php')
+            $classname = $directory_iterator->getExtension() === 'php'
+                ? 'Glpi\\Form\\QuestionType\\' . $directory_iterator->getBasename('.php')
                 : null;
 
             // Validate that the class is a valid question type
@@ -158,6 +157,8 @@ final class QuestionTypesManager
             ) {
                 $this->question_types[$classname] = new $classname();
             }
+
+            $directory_iterator->next();
         }
 
         // Sort question types by weight

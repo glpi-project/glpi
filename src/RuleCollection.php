@@ -444,11 +444,24 @@ class RuleCollection extends CommonDBTM
 
     final public static function showCollectionsList(): void
     {
-        TemplateRenderer::getInstance()->display('pages/admin/rules/collections_list.html.twig', [
+
+        $rules = self::getRules();
+        // exclude inventory rules from the "others" block
+        $rules = array_filter($rules, function ($rule) {
+            return !in_array($rule['sub_type'], [
+                'RuleImportEntity',
+                'RuleLocation',
+                'RuleImportAsset',
+                'RuleAsset',
+            ]);
+        });
+
+        TemplateRenderer::getInstance()->display('pages/admin/rules/index.html.twig', [
             'rules_group' => [
                 [
-                    'type'    => __('Rule type'),
-                    'entries' => self::getRules(),
+                    'type'    => __('Other rules'),
+                    'icon'    => 'ti ti-book',
+                    'entries' => $rules,
                 ],
             ]
         ]);
@@ -2039,9 +2052,10 @@ TWIG, $twig_params);
                 $ruleClassName = $rulecollection->getRuleClassName();
 
                 $rules[] = [
-                    'label' => $title,
-                    'link'  => $ruleClassName::getSearchURL(),
-                    'icon'  => $ruleClassName::getIcon(),
+                    'label'    => $title,
+                    'link'     => $ruleClassName::getSearchURL(),
+                    'icon'     => $ruleClassName::getIcon(),
+                    'sub_type' => $ruleClassName
                 ];
             }
         }
@@ -2051,17 +2065,19 @@ TWIG, $twig_params);
             && Session::isMultiEntitiesMode()
         ) {
             $rules[] = [
-                'label' => Transfer::getTypeName(),
-                'link'  => Transfer::getSearchURL(),
-                'icon'  => Transfer::getIcon(),
+                'label'    => Transfer::getTypeName(),
+                'link'     => Transfer::getSearchURL(),
+                'icon'     => Transfer::getIcon(),
+                'sub_type' => Transfer::class
             ];
         }
 
         if (Session::haveRight("config", READ)) {
             $rules[] = [
-                'label' => _n('Blacklist', 'Blacklists', Session::getPluralNumber()),
-                'link'  => Blacklist::getSearchURL(),
-                'icon'  => Blacklist::getIcon(),
+                'label'     => _n('Blacklist', 'Blacklists', Session::getPluralNumber()),
+                'link'      => Blacklist::getSearchURL(),
+                'icon'      => Blacklist::getIcon(),
+                'sub_type'  => Blacklist::class,
             ];
         }
 

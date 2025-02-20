@@ -182,7 +182,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
      *
      * @param ?Question $question
      * @param bool $multiple
-     * @return int
+     * @return array
      */
     public function getDefaultValue(?Question $question, bool $multiple = false): array
     {
@@ -333,23 +333,6 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'is_multiple_actors' => $this->isMultipleActors($question),
             'is_multiple_actors_label' => __('Allow multiple actors')
-        ]);
-    }
-
-    #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
-    {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">
-                {% for actors in actors %}
-                    {{ get_item_link(actors.itemtype, actors.items_id) }}
-                {% endfor %}
-            </div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'actors' => $answer
         ]);
     }
 

@@ -506,7 +506,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         echo "<div class='center'>";
         if ($number < 1) {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . __s('No item found') . "</th></tr>";
+            echo "<tr><th>" . __s('No results found') . "</th></tr>";
             echo "</table></div>\n";
             return;
         }
@@ -809,7 +809,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                 Html::closeForm();
             }
         } else { // Not found
-            echo __s('No item found');
+            echo __s('No results found');
         }
         Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
 
@@ -862,7 +862,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "<tr class='tab_bg_1'><td class='center b'>" . __s('Total') . "</td>";
             echo "<td class='numeric b'>" . $tot . "</td></tr>\n";
         } else {
-            echo "<tr class='tab_bg_1'><td colspan='2 b'>" . __s('No item found') . "</td></tr>\n";
+            echo "<tr class='tab_bg_1'><td colspan='2 b'>" . __s('No results found') . "</td></tr>\n";
         }
         echo "</table></div>";
     }
@@ -1197,7 +1197,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                 Html::closeForm();
             }
         } else {
-            echo "<p class='center b'>" . __('No item found') . "</p>";
+            echo "<p class='center b'>" . __('No results found') . "</p>";
         }
         echo "</div>";
         if (
@@ -1331,7 +1331,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                 Html::closeForm();
             }
         } else {
-            echo "<p class='center b'>" . __s('No item found') . "</p>";
+            echo "<p class='center b'>" . __s('No results found') . "</p>";
         }
 
         echo "</div>\n";

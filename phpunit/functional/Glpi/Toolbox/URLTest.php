@@ -134,6 +134,21 @@ class URLTest extends \GLPITestCase
             'sanitized' => '/',
             'relative'  => true,
         ];
+        yield [
+            'url'       => '/.hiddenfile',
+            'sanitized' => '/.hiddenfile',
+            'relative'  => false, // not considered as a valid relative URL, as it exposes an hidden resource
+        ];
+        yield [
+            'url'       => '/front/.hidden.php',
+            'sanitized' => '/front/.hidden.php',
+            'relative'  => false, // not considered as a valid relative URL, as it exposes an hidden resource
+        ];
+        yield [
+            'url'       => '/front/../../oustideglpi.php',
+            'sanitized' => '/front/../../oustideglpi.php',
+            'relative'  => false, // not considered as a valid relative URL, as it contains a `/..` token that may expose paths outside GLPI
+        ];
     }
 
     #[DataProvider('urlProvider')]

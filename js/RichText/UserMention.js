@@ -47,11 +47,13 @@ window.GLPI.RichText.UserMention = class {
     * @param {Editor} editor
     * @param {number} activeEntity
     * @param {string} idorToken
+    * @param {Array} mentionsOptions
     */
-    constructor(editor, activeEntity, idorToken) {
+    constructor(editor, activeEntity, idorToken, mentionsOptions) {
         this.editor = editor;
         this.activeEntity = activeEntity;
         this.idorToken = idorToken;
+        this.mentionsOptions = mentionsOptions;
     }
 
     /**
@@ -99,7 +101,14 @@ window.GLPI.RichText.UserMention = class {
                     }
                 ).done(
                     (data) => {
-                        const items = data.results.map(
+                        let results = data.results;
+
+                        if (!this.mentionsOptions.full) {
+                            const allowedIds = this.mentionsOptions.users;
+                            results = results.filter(user => allowedIds.includes(user.id));
+                        }
+
+                        const items = results.map(
                             (user) => {
                                 return {
                                     type: 'autocompleteitem',

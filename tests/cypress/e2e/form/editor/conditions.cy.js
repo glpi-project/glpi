@@ -90,12 +90,41 @@ function getAndFocusSection(name) {
     });
 }
 
-function saveAndReload() {
+function save() {
     cy.findByRole('button', {'name': "Save"}).click();
     cy.findByRole('alert')
         .should('contain.text', 'Item successfully updated')
     ;
     cy.reload();
+}
+
+function saveAndReload() {
+    save();
+    cy.reload();
+}
+
+function validateThatQuestionIsVisible(name) {
+    cy.findByRole('heading', {'name': name}).should('be.visible');
+}
+
+function validateThatQuestionIsNotVisible(name) {
+    cy.findByRole('heading', {'name': name}).should('not.exist');
+}
+
+function validateThatCommentIsVisible(name) {
+    cy.findByRole('heading', {'name': name}).should('be.visible');
+}
+
+function validateThatCommentIsNotVisible(name) {
+    cy.findByRole('heading', {'name': name}).should('not.exist');
+}
+
+function preview() {
+    cy.findByRole('link', {'name': "Preview"})
+        .invoke('attr', 'target', '_self')
+        .click()
+    ;
+    cy.url().should('include', '/Form/Render');
 }
 
 function checkThatVisibilityOptionsAreHidden() {
@@ -107,6 +136,10 @@ function checkThatVisibilityOptionsAreHidden() {
 function initVisibilityConfiguration() {
     cy.findByRole('button', {'name': 'More actions'}).click();
     cy.findByRole('button', {'name': 'Configure visiblity'}).click();
+}
+
+function closeVisibilityConfiguration() {
+    cy.get('body').type('{esc}');
 }
 
 function openVisibilityOptions() {
@@ -183,6 +216,40 @@ function checkThatConditionExist(index, logic_operator, question_name, value_ope
 
 function checkThatConditionDoNotExist(index) {
     cy.get("[data-glpi-form-editor-condition]").eq(index).should('not.exist');
+}
+
+function setTextAnswer(question, value) {
+    cy.findByRole('textbox', {'name': question}).clear();
+    cy.findByRole('textbox', {'name': question}).type(value);
+}
+
+/**
+ * Must be called only when positioned at the start of a form.
+ */
+function validateSectionOrder(sections) {
+    let back = 0;
+
+    // Validate each sections one by one
+    sections.forEach((section, i) => {
+        cy.findByRole('heading', {'name': section}).should('be.visible');
+
+        // Make sure step label is accurate
+        cy.findByText(`Step ${i + 1} of ${sections.length}`).should('be.visible');
+
+        if (i + 1 === sections.length) {
+            // Last section, do not submit form
+            cy.findByRole('button', {'name': "Send form"}).should('be.visible');
+        } else {
+            // Any other section, go to next.
+            cy.findByRole('button', {'name': "Continue"}).click();
+            back++;
+        }
+    });
+
+    // Go back to first section
+    for (let i=0; i<back; i++) {
+        cy.findByRole('button', {'name': "Back"}).click();
+    }
 }
 
 describe ('Conditions', () => {
@@ -472,5 +539,193 @@ describe ('Conditions', () => {
             );
             checkThatConditionDoNotExist(1);
         });
+    });
+
+    it('conditions are applied on questions', () => {
+        createForm();
+        addQuestion('My question used as a criteria');
+        addQuestion('My question that is always visible');
+        addQuestion('My question that is visible if some criteria are met');
+        addQuestion('My question that is hidden if some criteria are met');
+
+        getAndFocusQuestion('My question that is always visible').within(() => {
+            initVisibilityConfiguration();
+            setVisibilityOption('Always visible');
+        });
+        getAndFocusQuestion('My question that is visible if some criteria are met').within(() => {
+            initVisibilityConfiguration();
+            setVisibilityOption('Visible if...');
+            fillCondition(
+                0,
+                null,
+                'My question used as a criteria',
+                'Is equal to',
+                'Expected answer 1'
+            );
+        });
+        getAndFocusQuestion('My question that is hidden if some criteria are met').within(() => {
+            initVisibilityConfiguration();
+            setVisibilityOption('Hidden if...');
+            fillCondition(
+                0,
+                null,
+                'My question used as a criteria',
+                'Is equal to',
+                'Expected answer 2'
+            );
+        });
+        save();
+        preview();
+
+        // The form questions are all empty, we expect the following default state
+        validateThatQuestionIsVisible("My question that is always visible");
+        validateThatQuestionIsNotVisible("My question that is visible if some criteria are met");
+        validateThatQuestionIsVisible("My question that is hidden if some criteria are met");
+
+        // Note: after changing the answer, make sure that the first value that is being
+        // checked has a different visibility that in the previous assertions.
+        // Indeed, if we don't do that the assertion might be validated instantly
+        // before the UI is updated with the new visibilities.
+        // By checking for a different value, we make sure the first assertion can't
+        // run until the UI is updated - thus making the other assertions safe.
+
+        // Set first answer to "Expected answer 1" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "Expected answer 1");
+        validateThatQuestionIsVisible("My question that is visible if some criteria are met");
+        validateThatQuestionIsVisible("My question that is hidden if some criteria are met");
+        validateThatQuestionIsVisible("My question that is always visible");
+
+        // Set first answer to "Expected answer 2" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "Expected answer 2");
+        validateThatQuestionIsNotVisible("My question that is hidden if some criteria are met");
+        validateThatQuestionIsNotVisible("My question that is visible if some criteria are met");
+        validateThatQuestionIsVisible("My question that is always visible");
+    });
+
+    it('conditions are applied on comments', () => {
+        createForm();
+        addQuestion('My question used as a criteria');
+        addComment('My comment that is always visible');
+        addComment('My comment that is visible if some criteria are met');
+        addComment('My comment that is hidden if some criteria are met');
+
+        getAndFocusComment('My comment that is always visible').within(() => {
+            initVisibilityConfiguration();
+            setVisibilityOption('Always visible');
+        });
+        closeVisibilityConfiguration();
+        getAndFocusComment('My comment that is visible if some criteria are met').within(() => {
+            initVisibilityConfiguration();
+            setVisibilityOption('Visible if...');
+            fillCondition(
+                0,
+                null,
+                'My question used as a criteria',
+                'Is equal to',
+                'Expected answer 1'
+            );
+        });
+        closeVisibilityConfiguration();
+        getAndFocusComment('My comment that is hidden if some criteria are met').within(() => {
+            initVisibilityConfiguration();
+            setVisibilityOption('Hidden if...');
+            fillCondition(
+                0,
+                null,
+                'My question used as a criteria',
+                'Is equal to',
+                'Expected answer 2'
+            );
+        });
+        closeVisibilityConfiguration();
+        save();
+        preview();
+
+        // The form questions are all empty, we expect the following default state
+        validateThatCommentIsVisible("My comment that is always visible");
+        validateThatCommentIsVisible("My comment that is hidden if some criteria are met");
+        validateThatCommentIsNotVisible("My comment that is visible if some criteria are met");
+
+        // Note: after changing the answer, make sure that the first value that is being
+        // checked has a different visibility that in the previous assertions.
+        // Indeed, if we don't do that the assertion might be validated instantly
+        // before the UI is updated with the new visibilities.
+        // By checking for a different value, we make sure the first assertion can't
+        // run until the UI is updated - thus making the other assertions safe.
+
+        // Set first answer to "Expected answer 1" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "Expected answer 1");
+        validateThatCommentIsVisible("My comment that is visible if some criteria are met");
+        validateThatCommentIsVisible("My comment that is hidden if some criteria are met");
+        validateThatCommentIsVisible("My comment that is always visible");
+
+        // Set first answer to "Expected answer 2" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "Expected answer 2");
+        validateThatCommentIsNotVisible("My comment that is hidden if some criteria are met");
+        validateThatCommentIsNotVisible("My comment that is visible if some criteria are met");
+        validateThatCommentIsVisible("My comment that is always visible");
+    });
+
+    it('conditions are applied on sections', () => {
+        createForm();
+        addQuestion('My question used as a criteria');
+        addSection('My section that is always visible');
+        addSection('My section that is visible if some criteria are met');
+        addSection('My section that is hidden if some criteria are met');
+
+        getAndFocusSection('My section that is always visible').within(() => {
+            initVisibilityConfiguration();
+            setVisibilityOption('Always visible');
+        });
+        closeVisibilityConfiguration();
+        getAndFocusSection('My section that is visible if some criteria are met').within(() => {
+            initVisibilityConfiguration();
+            setVisibilityOption('Visible if...');
+            fillCondition(
+                0,
+                null,
+                'My question used as a criteria',
+                'Is equal to',
+                'Expected answer 1'
+            );
+        });
+        closeVisibilityConfiguration();
+        getAndFocusSection('My section that is hidden if some criteria are met').within(() => {
+            initVisibilityConfiguration();
+            setVisibilityOption('Hidden if...');
+            fillCondition(
+                0,
+                null,
+                'My question used as a criteria',
+                'Is equal to',
+                'Expected answer 2'
+            );
+        });
+        closeVisibilityConfiguration();
+        save();
+        preview();
+
+        // The form questions are all empty, we expect the following default state
+        validateSectionOrder([
+            'First section',
+            'My section that is always visible',
+            'My section that is hidden if some criteria are met',
+        ]);
+
+        // Set first answer to "Expected answer 1" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "Expected answer 1");
+        validateSectionOrder([
+            'First section',
+            'My section that is always visible',
+            'My section that is visible if some criteria are met',
+            'My section that is hidden if some criteria are met',
+        ]);
+
+        // Set first answer to "Expected answer 2" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "Expected answer 2");
+        validateSectionOrder([
+            'First section',
+            'My section that is always visible',
+        ]);
     });
 });

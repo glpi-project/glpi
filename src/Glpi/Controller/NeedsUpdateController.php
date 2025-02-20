@@ -62,6 +62,8 @@ class NeedsUpdateController extends AbstractController
         $debug_mode = $_SESSION['glpi_use_mode'];
         Toolbox::setDebugMode(Session::NORMAL_MODE);
 
+        $_SESSION['can_process_update'] = true;
+
         /** @var DBmysql $DB */
         global $DB;
 

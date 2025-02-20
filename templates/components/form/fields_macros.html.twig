@@ -207,7 +207,11 @@
       'enable_richtext': false,
       'enable_images': true,
       'enable_fileupload': false,
-      'enable_mentions': false,
+      'mention_options': {
+         'enabled': options.enable_mentions is defined and options.enable_mentions,
+         'full': true,
+         'users': [],
+      },
       'entities_id': session('glpiactive_entity'),
       'uploads': [],
       'rows': 3,
@@ -825,6 +829,7 @@
       'mb': 'mb-3',
       'add_field_class': '',
       'add_field_attribs': {},
+      'inline_add_field_html': false,
    }|merge(options) %}
 
    {% set class = options.field_class ?? 'col-12 col-sm-6' %}
@@ -839,7 +844,7 @@
       {% set extra_attribs = '' %}
    {% endif %}
 
-   <div class="{{ class }} {{ options.mb }}" {{ extra_attribs|raw }}>
+   <div class="{{ class }} {{ options.mb }} {{ options.inline_add_field_html ? 'd-flex' : '' }}" {{ extra_attribs|raw }}>
       {{ field|raw }}
       {{ add_field_html|raw }}
    </div>

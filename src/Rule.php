@@ -265,7 +265,7 @@ class Rule extends CommonDBTM
             $menu['dictionnary']['title']    = _n('Dictionary', 'Dictionaries', Session::getPluralNumber());
             $menu['dictionnary']['shortcut'] = '';
             $menu['dictionnary']['page']     = '/front/dictionnary.php';
-            $menu['dictionnary']['icon']     = static::getIcon();
+            $menu['dictionnary']['icon']     = RuleDictionnaryDropdownCollection::getIcon();
 
             $menu['dictionnary']['options']['manufacturers']['title']
                            = _n('Manufacturer', 'Manufacturers', Session::getPluralNumber());

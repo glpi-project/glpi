@@ -142,7 +142,7 @@ TWIG;
                 "",
                 {
                     'enable_richtext': true,
-                    'editor_height': "0",
+                    'editor_height': "100",
                     'rows' : 1,
                     'init': question is not null ? true : false,
                     'is_horizontal': false,
@@ -156,19 +156,6 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'question' => $question,
-        ]);
-    }
-
-    #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
-    {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">{{ answer|safe_html }}</div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'answer' => $answer,
         ]);
     }
 

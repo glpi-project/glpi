@@ -199,7 +199,7 @@ final class DefaultDataManagerTest extends DbTestCase
             array_column($ticket->getActorsForType(CommonITILActor::OBSERVER), 'itemtype')
         );
         $this->assertEquals(
-            [Computer::class, Monitor::class, AnswersSet::class],
+            [Computer::class, Monitor::class, Form::class],
             array_keys($ticket->getLinkedItems())
         );
         $this->assertEquals(
@@ -294,7 +294,7 @@ final class DefaultDataManagerTest extends DbTestCase
             array_column($ticket->getActorsForType(CommonITILActor::OBSERVER), 'itemtype')
         );
         $this->assertEquals(
-            [Computer::class, Monitor::class, AnswersSet::class],
+            [Computer::class, Monitor::class, Form::class],
             array_keys($ticket->getLinkedItems())
         );
         $this->assertEquals(

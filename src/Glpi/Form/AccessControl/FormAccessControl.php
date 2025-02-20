@@ -63,7 +63,7 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         // This tab is only available for forms
         if (!($item instanceof Form)) {
@@ -216,7 +216,7 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = $this->prepareConfigInput($input);
 
@@ -311,7 +311,7 @@ final class FormAccessControl extends CommonDBChild
      *
      * @param array $input
      *
-     * @return array|false
+     * @return array
      */
     protected function prepareConfigInput(array $input)
     {

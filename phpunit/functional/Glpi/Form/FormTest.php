@@ -44,6 +44,8 @@ use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Comment;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\FormDestinationChange;
+use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
@@ -54,6 +56,7 @@ use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Log;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
 
 class FormTest extends DbTestCase
@@ -542,5 +545,204 @@ class FormTest extends DbTestCase
         // Ensure the draft form was deleted
         // TODO: test seems weird, shouldn't it be 0 since the form was delete ?
         $this->assertEquals(1 + $forms, countElementsInTable(Form::getTable()));
+    }
+
+    public static function defineTabsProvider_defaultDestinations(): iterable
+    {
+        $default_form = new FormBuilder("My form");
+
+        yield 'Form with default destination and no answers' => [
+            'form' => $default_form,
+            'number_of_answers' => 0,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Access control',
+                'Items to create 1',
+            ],
+        ];
+        yield 'Form with default destination and 1 answers' => [
+            'form' => $default_form,
+            'number_of_answers' => 1,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 1',
+                'Access control',
+                'Items to create 1',
+            ],
+        ];
+        yield 'Form with default destination and 5 answers' => [
+            'form' => $default_form,
+            'number_of_answers' => 5,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 5',
+                'Access control',
+                'Items to create 1',
+            ],
+        ];
+    }
+
+    public static function defineTabsProvider_withAdditionalTickets(): iterable
+    {
+        $form = new FormBuilder("My form");
+        $form->addDestination(FormDestinationTicket::class, 'Destination 1');
+        $form->addDestination(FormDestinationTicket::class, 'Destination 2');
+        $form->addDestination(FormDestinationTicket::class, 'Destination 3');
+
+        yield 'Form with multiple tickets destinations and no answers' => [
+            'form' => $form,
+            'number_of_answers' => 0,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Access control',
+                'Items to create 4',
+            ],
+        ];
+        yield 'Form with multiple tickets destinations and 1 answers' => [
+            'form' => $form,
+            'number_of_answers' => 1,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 4', // (1 (default) + 3) destinations * 1 answer
+                'Access control',
+                'Items to create 4',
+            ],
+        ];
+        yield 'Form with multiple tickets destinations and 5 answers' => [
+            'form' => $form,
+            'number_of_answers' => 5,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 20', // (1 (default) + 3) destinations 5 answers
+                'Access control',
+                'Items to create 4',
+            ],
+        ];
+    }
+
+    public static function defineTabsProvider_withAdditionalChanges(): iterable
+    {
+        $form = new FormBuilder("My form");
+        $form->addDestination(FormDestinationChange::class, 'Destination 1');
+        $form->addDestination(FormDestinationChange::class, 'Destination 2');
+        $form->addDestination(FormDestinationChange::class, 'Destination 3');
+
+        yield 'Form with multiple changes destinations and no answers' => [
+            'form' => $form,
+            'number_of_answers' => 0,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Access control',
+                'Items to create 4',
+            ],
+        ];
+        yield 'Form with multiple changes destinations and 1 answers' => [
+            'form' => $form,
+            'number_of_answers' => 1,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 1',
+                'Changes 3', // 3 destinations * 1 answer
+                'Access control',
+                'Items to create 4',
+            ],
+        ];
+        yield 'Form with multiple changes destinations and 5 answers' => [
+            'form' => $form,
+            'number_of_answers' => 5,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 5',
+                'Changes 15', // 3 destinations * 5 answers
+                'Access control',
+                'Items to create 4',
+            ],
+        ];
+    }
+
+    public static function defineTabsProvider_withAdditionalProblems(): iterable
+    {
+        $form = new FormBuilder("My form");
+        $form->addDestination(FormDestinationProblem::class, 'Destination 1');
+        $form->addDestination(FormDestinationProblem::class, 'Destination 2');
+        $form->addDestination(FormDestinationProblem::class, 'Destination 3');
+
+        yield 'Form with multiple problems destinations and no answers' => [
+            'form' => $form,
+            'number_of_answers' => 0,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Access control',
+                'Items to create 4',
+            ],
+        ];
+        yield 'Form with multiple problems destinations and 1 answers' => [
+            'form' => $form,
+            'number_of_answers' => 1,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 1',
+                'Problems 3', // 3 destinations * 1 answer
+                'Access control',
+                'Items to create 4',
+            ],
+        ];
+        yield 'Form with multiple problems destinations and 5 answers' => [
+            'form' => $form,
+            'number_of_answers' => 5,
+            'expected_tabs' => [
+                'Form',
+                'Service catalog',
+                'Tickets 5',
+                'Problems 15', // 3 destinations * 5 answers
+                'Access control',
+                'Items to create 4',
+            ],
+        ];
+    }
+
+
+    #[DataProvider('defineTabsProvider_defaultDestinations')]
+    #[DataProvider('defineTabsProvider_withAdditionalTickets')]
+    #[DataProvider('defineTabsProvider_withAdditionalChanges')]
+    #[DataProvider('defineTabsProvider_withAdditionalProblems')]
+    public function testDefinedTabs(
+        FormBuilder $form,
+        int $number_of_answers,
+        array $expected_tabs,
+    ): void {
+        $this->login();
+
+        // Arrange: create the form and submit its answers
+        $form = $this->createForm($form);
+        for ($i = 0; $i < $number_of_answers; $i++) {
+            $this->sendFormAndGetAnswerSet($form, []);
+        }
+
+        // Act: get tabs names
+        $tabs = $form->defineTabs();
+        $tabs = array_map('strip_tags', $tabs); // Strip html
+        $tabs = array_values($tabs); // Ignore keys
+
+        // Ignore the historical tab as its number of item keep chaning and make
+        // the test less reliable.
+        $tabs = array_filter(
+            $tabs,
+            fn($tab): bool => !str_contains($tab, 'Historical'),
+        );
+
+        // Assert: the tabs should match the expected data
+        $this->assertEquals($expected_tabs, $tabs);
     }
 }

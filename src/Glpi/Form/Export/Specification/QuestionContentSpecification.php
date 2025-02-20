@@ -46,4 +46,6 @@ final class QuestionContentSpecification implements ContentSpecificationInterfac
     public ?string $default_value;
     public ?string $extra_data;
     public int $section_rank;
+    public string $visibility_strategy;
+    public array $conditions;
 }

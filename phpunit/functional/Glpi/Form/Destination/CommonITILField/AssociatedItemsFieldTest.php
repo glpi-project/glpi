@@ -76,8 +76,9 @@ final class AssociatedItemsFieldTest extends DbTestCase
         );
 
         // Test with no answers
+        $form = $this->createAndGetFormWithMultipleItemQuestions();
         $this->sendFormAndAssertAssociatedItems(
-            form: $this->createAndGetFormWithMultipleItemQuestions(),
+            form: $form,
             config: $specific_values,
             answers: [],
             expected_associated_items: [
@@ -88,12 +89,16 @@ final class AssociatedItemsFieldTest extends DbTestCase
                 Monitor::getType() => [
                     $monitors[0]->getID() => $monitors[0]->getID(),
                 ],
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
+                ],
             ]
         );
 
         // Test with answers
+        $form = $this->createAndGetFormWithMultipleItemQuestions();
         $this->sendFormAndAssertAssociatedItems(
-            form: $this->createAndGetFormWithMultipleItemQuestions(),
+            form: $form,
             config: $specific_values,
             answers: [
                 "Your Computer" => [
@@ -116,6 +121,9 @@ final class AssociatedItemsFieldTest extends DbTestCase
                 ],
                 Monitor::getType() => [
                     $monitors[0]->getID() => $monitors[0]->getID(),
+                ],
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
                 ],
             ]
         );
@@ -144,7 +152,11 @@ final class AssociatedItemsFieldTest extends DbTestCase
             form: $form,
             config: $specific_answers,
             answers: [],
-            expected_associated_items: []
+            expected_associated_items: [
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
+                ],
+            ]
         );
 
         // Test with answers
@@ -173,6 +185,9 @@ final class AssociatedItemsFieldTest extends DbTestCase
                     $monitors[0]->getID() => $monitors[0]->getID(),
                     $monitors[1]->getID() => $monitors[1]->getID(),
                 ],
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
+                ],
             ]
         );
     }
@@ -195,7 +210,11 @@ final class AssociatedItemsFieldTest extends DbTestCase
             form: $form,
             config: $last_valid_answer,
             answers: [],
-            expected_associated_items: []
+            expected_associated_items: [
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
+                ],
+            ]
         );
 
         // Test with answers: match QuestionTypeItem
@@ -218,7 +237,10 @@ final class AssociatedItemsFieldTest extends DbTestCase
             expected_associated_items: [
                 Computer::getType() => [
                     $computers[1]->getID() => $computers[1]->getID(),
-                ]
+                ],
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
+                ],
             ]
         );
 
@@ -239,8 +261,11 @@ final class AssociatedItemsFieldTest extends DbTestCase
                 Monitor::getType() => [
                     $monitors[0]->getID() => $monitors[0]->getID(),
                     $monitors[1]->getID() => $monitors[1]->getID(),
-                ]
-            ]
+                ],
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
+                ],
+            ],
         );
     }
 
@@ -262,7 +287,11 @@ final class AssociatedItemsFieldTest extends DbTestCase
             form: $form,
             config: $all_valid_answers,
             answers: [],
-            expected_associated_items: []
+            expected_associated_items: [
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
+                ],
+            ]
         );
 
         // Test with only one answer
@@ -278,6 +307,9 @@ final class AssociatedItemsFieldTest extends DbTestCase
             expected_associated_items: [
                 Computer::getType() => [
                     $computers[1]->getID() => $computers[1]->getID(),
+                ],
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
                 ],
             ]
         );
@@ -308,6 +340,9 @@ final class AssociatedItemsFieldTest extends DbTestCase
                     $monitors[0]->getID() => $monitors[0]->getID(),
                     $monitors[1]->getID() => $monitors[1]->getID(),
                 ],
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
+                ],
             ]
         );
 
@@ -335,6 +370,9 @@ final class AssociatedItemsFieldTest extends DbTestCase
                 Monitor::getType() => [
                     $monitors[0]->getID() => $monitors[0]->getID(),
                     $monitors[1]->getID() => $monitors[1]->getID(),
+                ],
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
                 ],
             ]
         );
@@ -384,6 +422,9 @@ final class AssociatedItemsFieldTest extends DbTestCase
                     $monitors[0]->getID() => $monitors[0]->getID(),
                     $monitors[1]->getID() => $monitors[1]->getID(),
                 ],
+                Form::getType() => [
+                    $form->getID() => $form->getID(),
+                ],
             ]
         );
     }
@@ -427,10 +468,9 @@ final class AssociatedItemsFieldTest extends DbTestCase
         $ticket = current($created_items);
 
         // Check associated items
-        $this->assertArrayIsEqualToArrayIgnoringListOfKeys(
+        $this->assertEquals(
             $expected_associated_items,
             $ticket->getLinkedItems(),
-            [AnswersSet::getType()]
         );
     }
 

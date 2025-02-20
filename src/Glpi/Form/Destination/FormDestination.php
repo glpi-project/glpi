@@ -40,6 +40,7 @@ use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Form;
 use InvalidArgumentException;
+use LogicException;
 use Override;
 use ReflectionClass;
 
@@ -64,7 +65,7 @@ final class FormDestination extends CommonDBChild
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         // Only for forms
         if (!($item instanceof Form)) {
@@ -169,7 +170,7 @@ final class FormDestination extends CommonDBChild
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): array
     {
         $input = $this->prepareInput($input);
 
@@ -191,7 +192,7 @@ final class FormDestination extends CommonDBChild
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         return $this->prepareInput($input);
     }
@@ -341,5 +342,14 @@ final class FormDestination extends CommonDBChild
         }
 
         return $config;
+    }
+
+    public function isMandatory(): bool
+    {
+        if (!isset($this->fields['is_mandatory'])) {
+            throw new LogicException("Fields are not loaded");
+        }
+
+        return (bool) $this->fields['is_mandatory'];
     }
 }

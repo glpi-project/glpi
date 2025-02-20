@@ -90,19 +90,6 @@ if (isset($_POST["update"])) {
     }
 
     Html::back();
-} else if (isset($_POST["add_action"])) {
-    $item->check($_POST['olalevels_id'], UPDATE);
-
-    $action = new OlaLevelAction();
-    $action->add($_POST);
-
-    Html::back();
-} else if (isset($_POST["add_criteria"])) {
-    $item->check($_POST['olalevels_id'], UPDATE);
-    $criteria = new OlaLevelCriteria();
-    $criteria->add($_POST);
-
-    Html::back();
 } else if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
     $menus = ["config", "slm", "OlaLevel"];
     OlaLevel::displayFullPageForItem($_GET["id"], $menus);

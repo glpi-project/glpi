@@ -1007,6 +1007,9 @@ class EntityTest extends DbTestCase
         $entry = $entries[0];
 
         $entry_contents = array_reduce(array_keys($entry), static function ($carry, $key) use ($entry) {
+            if (is_array($entry[$key]) && array_key_exists('content', $entry[$key])) {
+                return $carry . $entry[$key]['content'];
+            }
             return $carry . $entry[$key];
         }, '');
         foreach ($possible_values as $value) {

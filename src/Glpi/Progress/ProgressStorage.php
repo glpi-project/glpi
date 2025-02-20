@@ -36,25 +36,17 @@ namespace Glpi\Progress;
 
 use Session;
 
-final class ProgressStorage
+/**
+ * @final
+ */
+class ProgressStorage
 {
-    public function startProgress(string $key, int $max = 0): void
-    {
-        if (!isset($_SESSION['progress'])) {
-            $_SESSION['progress'] = [];
-        }
-
-        $progress = new SessionProgress($key, $max);
-
-        $this->save($progress);
-    }
-
     public function hasProgress(string $key): bool
     {
-        return isset($_SESSION['progress'][$key]) && $_SESSION['progress'][$key] instanceof SessionProgress;
+        return isset($_SESSION['progress'][$key]) && $_SESSION['progress'][$key] instanceof StoredProgressIndicator;
     }
 
-    public function getCurrentProgress(string $key): SessionProgress
+    public function getCurrentProgress(string $key): StoredProgressIndicator
     {
         if (!$this->hasProgress($key)) {
             throw new \RuntimeException(\sprintf(
@@ -63,13 +55,9 @@ final class ProgressStorage
             ));
         }
 
-        Session::start();
-
         $progress = $_SESSION['progress'][$key];
 
-        session_write_close();
-
-        if (!$progress instanceof SessionProgress) {
+        if (!$progress instanceof StoredProgressIndicator) {
             throw new \RuntimeException(\sprintf(
                 "Stored progress bar value with key \"%s\" is invalid.",
                 $key,
@@ -79,30 +67,7 @@ final class ProgressStorage
         return $progress;
     }
 
-    public function deleteProgress(string $key): void
-    {
-        Session::start();
-
-        unset($_SESSION['progress'][$key]);
-
-        session_write_close();
-    }
-
-    public function endProgress(string $key): void
-    {
-        $progress = $this->getCurrentProgress($key);
-        $progress->finish();
-        $this->save($progress);
-    }
-
-    public function abortProgress(string $key): void
-    {
-        $progress = $this->getCurrentProgress($key);
-        $progress->fail();
-        $this->save($progress);
-    }
-
-    public function save(SessionProgress $progress): void
+    public function save(StoredProgressIndicator $progress): void
     {
         // Mandatory here:
         // If you execute "save($progress)" several times, PHP will send a "Cookie: ..." HTTP header.
@@ -110,10 +75,13 @@ final class ProgressStorage
         // resulting in a "Header too big" or "File too big" HTTP error response.
         @ini_set('session.use_cookies', 0);
 
+        // Restart the session that may have been closed by a previous call to the current method.
         Session::start();
 
-        $_SESSION['progress'][$progress->key] = $progress;
+        $_SESSION['progress'][$progress->getStorageKey()] = $progress;
 
+        // Close the session to release the lock on its storage file.
+        // This is required to not block the execution of concurrent requests.
         session_write_close();
     }
 }

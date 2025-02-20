@@ -49,17 +49,10 @@
    }
 ) }}
 
-{% set protocols = {} %}
-{% for k, protocol in call('Toolbox::getMailServerProtocols') %}
-   {% set protocols = protocols|merge({
-      ('/' ~ k): protocol['label']
-   }) %}
-{% endfor %}
-
 {% set connection_options_fields %}
    <div class="d-flex">
       {% set type_value = connect_opts['type'] is not empty ? ('/' ~ connect_opts['type']) : '' %}
-      {{ fields.dropdownArrayField('server_type', type_value, protocols, '', {
+      {{ fields.dropdownArrayField('server_type', type_value, protocol_choices, '', {
          no_label: true,
          display_emptychoice: true,
          field_class: 'me-2'

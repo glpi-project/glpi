@@ -412,7 +412,7 @@ class ProjectCost extends CommonDBChild
             echo "<td class='right'>" . __s('Total cost') . '</td>';
             echo "<td class='numeric'>" . Html::formatNumber($total) . '</td></tr>';
         } else {
-            echo "<tr><th colspan='5'>" . __s('No item found') . "</th></tr>";
+            echo "<tr><th colspan='5'>" . __s('No results found') . "</th></tr>";
         }
         echo "</table>";
         echo "</div>";

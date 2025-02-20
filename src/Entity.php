@@ -1967,9 +1967,11 @@ class Entity extends CommonTreeDropdown
     }
 
     /**
+     * Is the entity associated with an AuthLDAP ?
+     *
      * @since 0.84 (before in entitydata.class)
      *
-     * @param $entities_id
+     * @param int $entities_id
      **/
     public static function isEntityDirectoryConfigured($entities_id)
     {
@@ -1983,9 +1985,11 @@ class Entity extends CommonTreeDropdown
         }
 
         // If there's a directory marked as default
-        if (AuthLDAP::getDefault()) {
+        $defaultAuth = Auth::getDefaultAuth();
+        if ($defaultAuth instanceof AuthLDAP) {
             return true;
         }
+
         return false;
     }
 

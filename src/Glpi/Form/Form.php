@@ -35,6 +35,7 @@
 
 namespace Glpi\Form;
 
+use Change_Item;
 use CommonDBTM;
 use CommonGLPI;
 use CronTask;
@@ -52,6 +53,8 @@ use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\UI\IllustrationManager;
 use Html;
+use Item_Problem;
+use Item_Ticket;
 use Log;
 use MassiveAction;
 use Override;
@@ -103,7 +106,15 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     {
         $tabs = parent::defineTabs();
         $this->addStandardTab(ServiceCatalog::getType(), $tabs, $options);
-        $this->addStandardTab(AnswersSet::getType(), $tabs, $options);
+        if (Item_Ticket::countLinkedTickets($this) > 0) {
+            $this->addStandardTab(Item_Ticket::getType(), $tabs, $options);
+        }
+        if (Change_Item::countLinkedChanges($this) > 0) {
+            $this->addStandardTab(Change_Item::getType(), $tabs, $options);
+        }
+        if (Item_Problem::countLinkedProblems($this) > 0) {
+            $this->addStandardTab(Item_Problem::getType(), $tabs, $options);
+        }
         $this->addStandardTab(FormAccessControl::getType(), $tabs, $options);
         $this->addStandardTab(FormDestination::getType(), $tabs, $options);
         $this->addStandardTab(Log::getType(), $tabs, $options);
@@ -252,7 +263,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         // Insert date_mod even if the framework would handle it by itself
         // This avoid "empty" updates when the form itself is not modified but
@@ -263,7 +274,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     }
 
     #[Override]
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var \DBmysql $DB */
         global $DB;

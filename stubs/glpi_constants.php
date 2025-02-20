@@ -75,6 +75,7 @@
     define('GLPI_CENTRAL_WARNINGS', $random_val([false, true]));
     define('GLPI_DOCUMENTATION_ROOT_URL', 'https://links.glpi-project.org');
     define('GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE', $random_val([false, true]));
+    define('GLPI_DISALLOWED_UPLOADS_PATTERN', $random_val(['', '/\.(php\d*|phar)$/i']));
     define('GLPI_ENVIRONMENT_TYPE', $random_val(['development', 'testing', 'staging', 'production']));
     define('GLPI_INSTALL_MODE', $random_val(['GIT', 'TARBALL']));
     define('GLPI_MARKETPLACE_ALLOW_OVERRIDE', $random_val([false, true]));

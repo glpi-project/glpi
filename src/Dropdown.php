@@ -533,6 +533,8 @@ class Dropdown
         /** @var \DBmysql $DB */
         global $DB;
 
+        $id = (int) $id; // Prevent unexpected value type to be sent in the SQL request
+
         $itemtype = getItemTypeForTable($table);
 
         if (!is_a($itemtype, CommonDBTM::class, true)) {

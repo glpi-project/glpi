@@ -900,7 +900,6 @@ class RuleImportAsset extends Rule
     {
         $class = $params['class'] ?? null;
         $rules_id = $this->fields['id'];
-        $output['rules_id'] = $rules_id;
 
         $rulesmatched = new RuleMatchedLog();
         $inputrulelog = [
@@ -1255,5 +1254,11 @@ TWIG, $twig_params);
             $drule = dom_import_simplexml($crule);
             $drules->appendChild($drule->cloneNode(true));
         }
+    }
+
+
+    public static function getIcon()
+    {
+        return "ti ti-database-search";
     }
 }

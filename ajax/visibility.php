@@ -58,21 +58,18 @@ if (
         $_POST['prefix'] = '';
     }
 
-    echo "<table class='tab_format'><tr>";
+    echo "<div class='d-flex'>";
     switch ($_POST['type']) {
         case 'User':
-            echo "<td>";
             $params = [
                 'right' => isset($_POST['allusers']) ? 'all' : $_POST['right'],
                 'name' => $prefix . 'users_id' . $suffix
             ];
             User::dropdown($params);
-            echo "</td>";
             $display = true;
             break;
 
         case 'Group':
-            echo "<td>";
             $params             = ['rand' => $rand,
                 'name' => $prefix . 'groups_id' . $suffix
             ];
@@ -87,30 +84,23 @@ if (
             ];
 
             Group::dropdown($params);
-            echo "</td><td>";
             echo "<span id='subvisibility$rand'></span>";
-            echo "</td>";
             $display = true;
             break;
 
         case 'Entity':
-            echo "<td>";
             Entity::dropdown([
                 'value'       => $_SESSION['glpiactive_entity'],
                 'name'        => $prefix . 'entities_id' . $suffix,
                 'entity'      => $_POST['entity'] ?? -1,
                 'entity_sons' => $_POST['is_recursive'] ?? false,
             ]);
-            echo "</td><td>";
-            echo __s('Child entities');
-            echo "</td><td>";
+            echo '<div class="ms-3">' . __s('Child entities') . '</div>';
             Dropdown::showYesNo($prefix . 'is_recursive' . $suffix);
-            echo "</td>";
             $display = true;
             break;
 
         case 'Profile':
-            echo "<td>";
             $checkright   = (READ | CREATE | UPDATE | PURGE);
             $righttocheck = $_POST['right'];
             if ($_POST['right'] == 'faq') {
@@ -136,19 +126,14 @@ if (
             ];
 
             Profile::dropdown($params);
-            echo "</td><td>";
             echo "<span id='subvisibility$rand'></span>";
-            echo "</td>";
             $display = true;
             break;
     }
 
     if ($display && (!isset($_POST['nobutton']) || !$_POST['nobutton'])) {
-        echo "<td><input type='submit' name='addvisibility' value=\"" . _sx('button', 'Add') . "\"
-                   class='btn btn-primary'></td>";
-    } else {
-       // For table w3c
-        echo "<td>&nbsp;</td>";
+        echo "<input type='submit' name='addvisibility' value=\"" . _sx('button', 'Add') . "\"
+                   class='btn btn-primary ms-3'>";
     }
-    echo "</tr></table>";
+    echo "</div>";
 }

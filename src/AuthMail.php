@@ -47,7 +47,7 @@ class AuthMail extends CommonDBTM
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Mail server', 'Mail servers', $nb);
+        return _n('Email server', 'Email servers', $nb);
     }
 
     public static function getSectorizedDetails(): array
@@ -57,7 +57,7 @@ class AuthMail extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        if (empty($input['name'])) {
+        if (array_key_exists('name', $input) && strlen($input['name']) === 0) {
             Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
 
             return false;
@@ -109,7 +109,7 @@ class AuthMail extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Email server')
+            'name'               => _n('Email server', 'Email servers', 1)
         ];
 
         $tab[] = [
@@ -156,6 +156,15 @@ class AuthMail extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'is_default',
+            'name'               => __('Default server'),
+            'datatype'           => 'bool',
+            'massiveaction'      => false
+        ];
+
+        $tab[] = [
             'id'                 => '19',
             'table'              => static::getTable(),
             'field'              => 'date_mod',
@@ -189,10 +198,40 @@ class AuthMail extends CommonDBTM
             return false;
         }
 
+        $protocol_choices = [];
+        foreach (Toolbox::getMailServerProtocols(allow_plugins_protocols: false) as $key => $protocol) {
+            $protocol_choices['/' . $key] = $protocol['label'];
+        }
+
         TemplateRenderer::getInstance()->display('pages/setup/authentication/mail.html.twig', [
-            'item' => $this,
-            'params' => $options
+            'item'             => $this,
+            'params'           => $options,
+            'protocol_choices' => $protocol_choices,
         ]);
+    }
+
+    /**
+     * @return void
+     */
+    public function post_updateItem($history = true)
+    {
+        if ($this->fields["is_default"] === 1) {
+            $this->removeDefaultFromOtherItems();
+        }
+
+        parent::post_updateItem($history);
+    }
+
+    /**
+     * @return void
+     */
+    public function post_addItem()
+    {
+        if ($this->fields["is_default"] === 1) {
+            $this->removeDefaultFromOtherItems();
+        }
+
+        parent::post_addItem();
     }
 
     /**
@@ -365,5 +404,35 @@ TWIG, $twig_params);
     public static function getIcon()
     {
         return "far fa-envelope";
+    }
+
+    /**
+     * Remove the `is_default` flag from authentication methods that does not match the current item.
+     */
+    private function removeDefaultFromOtherItems(): void
+    {
+        if (isset($this->fields['is_default']) && (int)$this->fields["is_default"] === 1) {
+            // if current default Auth is an AuthMail, remvove it
+            $auth = new self();
+            $defaults = $auth->find(['is_default' => 1, ['NOT' => ['id' => $this->getID()]]]);
+            foreach ($defaults as $default) {
+                $auth = new self();
+                $auth->update([
+                    'id' => $default['id'],
+                    'is_default' => 0
+                ]);
+            }
+
+            // if current default Auth is an AuthLDAP, remvove it
+            $auth = new AuthLDAP();
+            $defaults = $auth->find(['is_default' => 1]);
+            foreach ($defaults as $default) {
+                $auth = new AuthLDAP();
+                $auth->update([
+                    'id' => $default['id'],
+                    'is_default' => 0
+                ]);
+            }
+        }
     }
 }

@@ -54,7 +54,7 @@ interface FormDestinationInterface
     public function createDestinationItems(
         Form $form,
         AnswersSet $answers_set,
-        array $config
+        array $config,
     ): array;
 
 
@@ -73,11 +73,4 @@ interface FormDestinationInterface
      * @return string (Must be a valid CommonDBTM class name)
      */
     public static function getTargetItemtype(): string;
-
-    /**
-     * Get the search option used to filter the target itemtype by answers set.
-     *
-     * @return int
-     */
-    public static function getFilterByAnswsersSetSearchOptionID(): int;
 }

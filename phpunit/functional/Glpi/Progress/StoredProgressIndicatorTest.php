@@ -1,0 +1,141 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2025 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units\Glpi\Log;
+
+use DateTimeImmutable;
+use Glpi\Progress\ProgressMessageType;
+use Glpi\Progress\ProgressStorage;
+use Glpi\Progress\StoredProgressIndicator;
+use GLPITestCase;
+
+class StoredProgressIndicatorTest extends GLPITestCase
+{
+    public function testConstructor(): void
+    {
+        // Arrange
+        $storage_key = $this->getUniqueString();
+
+        $storage = $this->createMock(ProgressStorage::class);
+        $storage->expects($this->once())->method('save'); // Instance constructor must trigger its own saving into the storage
+
+        $date = new DateTimeImmutable();
+
+        // Act
+        $instance = new StoredProgressIndicator($storage, $storage_key);
+
+        // Assert
+        $this->assertEquals($instance->getStartedAt(), $instance->getUpdatedAt());
+
+        $this->assertGreaterThanOrEqual($date, $instance->getStartedAt());
+        $this->assertLessThanOrEqual(new DateTimeImmutable(), $instance->getStartedAt());
+
+        $this->assertGreaterThanOrEqual($date, $instance->getUpdatedAt());
+        $this->assertLessThanOrEqual(new DateTimeImmutable(), $instance->getUpdatedAt());
+
+        $this->assertEquals($storage_key, $instance->getStorageKey());
+    }
+
+    public function testMessagesAccessors(): void
+    {
+        // Arrange
+        $instance = new StoredProgressIndicator(
+            $storage = $this->createMock(ProgressStorage::class),
+            $this->getUniqueString()
+        );
+
+        // Saving into the storage will be triggered during each message adding operation
+        $storage->expects($this->exactly(7))->method('save');
+
+        // Act
+        $instance->addMessage(ProgressMessageType::Error, 'An unexpected error occured.');
+        $instance->addMessage(ProgressMessageType::Warning, 'Invalid foo has been ignored.');
+        $instance->addMessage(ProgressMessageType::Debug, 'Some debug info...');
+        $instance->addMessage(ProgressMessageType::Debug, 'Some other debug info...');
+        $instance->addMessage(ProgressMessageType::Error, 'Another unexpected error occured.');
+        $instance->addMessage(ProgressMessageType::Notice, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.');
+        $instance->addMessage(ProgressMessageType::Success, 'Operation successfully done.');
+
+        // Assert
+        $expected_messages_1 = [
+            [
+                'type'      => ProgressMessageType::Error,
+                'message'   => 'An unexpected error occured.',
+            ],
+            [
+                'type'      => ProgressMessageType::Warning,
+                'message'   => 'Invalid foo has been ignored.',
+            ],
+            [
+                'type'      => ProgressMessageType::Debug,
+                'message'   => 'Some debug info...',
+            ],
+            [
+                'type'      => ProgressMessageType::Debug,
+                'message'   => 'Some other debug info...',
+            ],
+            [
+                'type'      => ProgressMessageType::Error,
+                'message'   => 'Another unexpected error occured.',
+            ],
+            [
+                'type'      => ProgressMessageType::Notice,
+                'message'   => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            ],
+            [
+                'type'      => ProgressMessageType::Success,
+                'message'   => 'Operation successfully done.',
+            ],
+        ];
+        $this->assertEquals($expected_messages_1, $instance->getMessages());
+    }
+
+    public function testUpdate(): void
+    {
+        // Arrange
+        $instance = new StoredProgressIndicator(
+            $storage = $this->createMock(ProgressStorage::class),
+            $this->getUniqueString()
+        );
+
+        // Saving into the storage will be triggered by the `update` call.
+        $storage->expects($this->once())->method('save');
+
+        // Act
+        $this->callPrivateMethod($instance, 'update');
+
+        // Assert
+        // assertions have been done through the $storage mock
+    }
+}

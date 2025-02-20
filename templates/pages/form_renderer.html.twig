@@ -1,4 +1,3 @@
-
 {#
  # ---------------------------------------------------------------------
  #
@@ -59,6 +58,7 @@
                 </div>
             </div>
 
+            {% set section_visible_index = 1 %}
             {% for section in form.getSections() %}
                 {# Is this the first section of a form ? #}
                 {% set is_first_section = loop.index0 == 0 %}
@@ -67,13 +67,25 @@
                 <div
                     class="{{ is_first_section ? "" : "d-none" }}"
                     data-glpi-form-renderer-section="{{ section_index }}"
+                    data-glpi-form-renderer-uuid="{{ section.fields.uuid }}"
+                    data-glpi-form-renderer-id="{{ section.fields.id }}"
+                    {% if not visibility_engine_output.isSectionVisible(section.getID()) %}
+                        data-glpi-form-renderer-hidden-by-condition
+                    {% endif %}
                 >
                     {% if not is_single_section_form %}
                         <div
                             class="bg-primary px-2 py-1 rounded-top "
                             style="width: fit-content;"
+                            data-glpi-form-renderer-step-label
                         >
-                            {{ __("Step %d of %d")|format(loop.index, form.getSections()|length) }}
+                            {% if visibility_engine_output.isSectionVisible(section.getID()) %}
+                                {{ __("Step %d of %d")|format(
+                                    section_visible_index,
+                                    visibility_engine_output.getNumberOfVisibleSections()
+                                ) }}
+                                {% set section_visible_index = section_visible_index + 1 %}
+                            {% endif %}
                         </div>
                     {% endif %}
                     <div
@@ -129,6 +141,24 @@
                                                 class="{{ is_first_section ? "" : "d-none" }}"
                                                 style="flex: 1;"
                                                 data-glpi-form-renderer-parent-section="{{ section_index }}"
+                                                data-glpi-form-renderer-id="{{ form_block.fields.id }}"
+                                                data-glpi-form-renderer-uuid="{{ form_block.fields.uuid }}"
+
+                                                {% if form_block is instanceof('Glpi\\Form\\Question') %}
+                                                    data-glpi-form-renderer-question
+                                                {% elseif form_block is instanceof('Glpi\\Form\\Comment') %}
+                                                    data-glpi-form-renderer-comment
+                                                {% endif %}
+
+                                                {% if form_block is instanceof('Glpi\\Form\\Question') and form_block.getQuestionType() is instanceof('Glpi\\Form\\ConditionalVisiblity\\UsedAsCriteriaInterface') %}
+                                                    data-glpi-form-renderer-criteria
+                                                {% endif %}
+
+                                                {% if form_block is instanceof('Glpi\\Form\\Question') and not visibility_engine_output.isQuestionVisible(form_block.getID()) %}
+                                                    data-glpi-form-renderer-hidden-by-condition
+                                                {% elseif form_block is instanceof('Glpi\\Form\\Comment') and not visibility_engine_output.isCommentVisible(form_block.getID()) %}
+                                                    data-glpi-form-renderer-hidden-by-condition
+                                                {% endif %}
                                             >
                                                 <h3 class="mb-2 {{ not form_block.fields.name ? "text-muted" : "" }}">
                                                     {{ form_block.fields.name|default(__('Untitled question')) }}
@@ -165,7 +195,7 @@
                 <button
                     type="button"
                     data-glpi-form-renderer-action="previous-section"
-                    class="btn btn-ghost-secondary d-none me-2"
+                    class="btn btn-ghost-secondary d-none me-2 pointer-events-none"
                 >
                     {{ __("Back") }}
                 </button>
@@ -173,7 +203,7 @@
                 <button
                     type="button"
                     data-glpi-form-renderer-action="next-section"
-                    class="btn btn-primary {{ is_single_section_form ? "d-none" : "" }}"
+                    class="btn btn-primary pointer-events-none {{ is_single_section_form ? "d-none" : "" }}"
                 >
                     {{ __("Continue") }}
                 </button>
@@ -181,7 +211,7 @@
                 <button
                     type="button"
                     data-glpi-form-renderer-action="submit"
-                    class="btn btn-primary {{ not is_single_section_form ? "d-none" : "" }}"
+                    class="btn btn-primary pointer-events-none {{ not is_single_section_form ? "d-none" : "" }}"
                     disabled
                 >
                     {{ __("Send form") }}
@@ -216,10 +246,17 @@
                     {{ __("Your form has been submitted successfully.") }}
                 </p>
                 <div class="mt-3 d-flex">
-                    <a class="btn btn-outline-secondary me-2" href="{{ path('/Helpdesk') }}">
-                        <i class="ti ti-home me-1"></i>
-                        <span>{{ __("Go home") }}</span>
-                    </a>
+                    {% if get_current_interface() == 'central' %}
+                        <a class="btn btn-outline-secondary me-2" href="{{ path('/ServiceCatalog') }}">
+                            <i class="ti ti-library me-1"></i>
+                            <span>{{ __("Go back to service catalog") }}</span>
+                        </a>
+                    {% else %}
+                        <a class="btn btn-outline-secondary me-2" href="{{ path('/Helpdesk') }}">
+                            <i class="ti ti-home me-1"></i>
+                            <span>{{ __("Take me home") }}</span>
+                        </a>
+                    {% endif %}
                     <a class="btn btn-primary" href="{{ path('/front/ticket.php?' ~ my_tickets_url_param) }}">
                         <i class="ti ti-article me-1"></i>
                         <span>{{ __("See my tickets") }}</span>
@@ -236,10 +273,15 @@
         <input type="hidden" name="token" value="{{ token }}" />
     {% endif %}
 
-    <script>
-        import("{{ js_path('js/modules/Forms/RendererController.js') }}").then((m) => {
-            new m.GlpiFormRendererController($('#forms_form_answers'));
-        });
-    </script>
+    <script>(async () => {
+        // Load renderer controller
+        const mod = await import(
+            "{{ js_path('js/modules/Forms/RendererController.js') }}"
+        );
+        new mod.GlpiFormRendererController(
+            '#forms_form_answers',
+            {{ form.getID() }}
+        );
+    })();</script>
 
 {% endblock content_body %}

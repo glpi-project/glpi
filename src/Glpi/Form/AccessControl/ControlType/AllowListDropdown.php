@@ -155,17 +155,19 @@ final class AllowListDropdown extends AbstractRightsDropdown
         $all_users_are_allowed = in_array(AbstractRightsDropdown::ALL_USERS, $users);
 
         if (!$all_users_are_allowed) {
+            $user_filters = [];
+
             foreach ($users as $user_id) {
-                $criteria[] = [
+                $user_filters[] = [
                     'link'       => 'OR',
-                    'searchtype' => 'is',
-                    'field'      => 2, // ID
+                    'searchtype' => 'equals',
+                    'field'      => 1, // ID
                     'value'      => $user_id,
                 ];
             }
 
             foreach ($groups as $group_id) {
-                $criteria[] = [
+                $user_filters[] = [
                     'link'       => 'OR',
                     'searchtype' => 'equals',
                     'field'      => 13, // Linked group,
@@ -174,13 +176,19 @@ final class AllowListDropdown extends AbstractRightsDropdown
             }
 
             foreach ($profiles as $profile_id) {
-                $criteria[] = [
+                $user_filters[] = [
                     'link'       => 'OR',
                     'searchtype' => 'equals',
                     'field'      => 20, // Profile
                     'value'      => $profile_id,
                 ];
             }
+
+            // Group criteria into a block to ease the addition of new criteria.
+            $criteria[] = [
+                'link' => 'AND',
+                'criteria' => $user_filters,
+            ];
         }
 
         // Exclude system user

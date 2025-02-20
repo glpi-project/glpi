@@ -237,7 +237,7 @@
         {% endif %}
     {% endif %}
 
-    <div class="btn-group flex-grow-1 flatpickr" id="{{ options.id }}">
+    <div class="btn-group flex-grow-1 flatpickr d-flex" id="{{ options.id }}">
         {{ _self.input(name, value, options|merge({
             'type': 'text',
             'id': options.id ~ '_input',
@@ -302,7 +302,11 @@
         'rows': 3,
         'enable_richtext': false,
         'enable_images': true,
-        'enable_mentions': false,
+        'mention_options': {
+            'enabled': options.enable_mentions is defined and options.enable_mentions,
+            'full': true,
+            'users': [],
+        },
         'entities_id': session('glpiactive_entity'),
         'readonly': false,
         'disabled': false,
@@ -354,7 +358,6 @@
             options.content_style,
         ]) %}
    {% endif %}
-
    {% if options.enable_form_tags %}
         <script>
             $(function() {
@@ -367,13 +370,14 @@
         </script>
     {% endif %}
 
-    {% if options.enable_mentions and config('use_notifications') %}
+    {% if options.mention_options.enabled and config('use_notifications') %}
         <script>
             $(function() {
                 const user_mention = new GLPI.RichText.UserMention(
                     tinymce.get('{{ options.id }}'),
                     {{ options.entities_id }},
-                    '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id}) }}'
+                    '{{ idor_token('User', {'right': 'all', 'entity_restrict': options.entities_id}) }}',
+                    {{ options.mention_options|json_encode|raw }}
                 );
                 user_mention.register();
             });
@@ -389,6 +393,7 @@
         'readonly': false,
         'disabled': false,
         'required': false,
+        'additional_attributes': {},
     }|merge(options) %}
 
     <input type="hidden"   name="{{ name }}" value="0" />
@@ -398,7 +403,10 @@
            {{ value == 1 ? 'checked' : '' }}
            {{ options.readonly ? 'readonly' : '' }}
            {{ options.required ? 'required' : '' }}
-           {{ options.disabled ? 'disabled' : '' }} />
+           {{ options.disabled ? 'disabled' : '' }}
+            {% for attr, value in options.additional_attributes %}
+                {{ attr }}="{{ value }}"
+            {% endfor %}/>
 {% endmacro %}
 
 

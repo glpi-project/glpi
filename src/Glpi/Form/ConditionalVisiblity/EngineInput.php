@@ -32,38 +32,41 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form;
+namespace Glpi\Form\ConditionalVisiblity;
 
-enum QuestionVisibilityStrategy: string
+use Glpi\Form\Form;
+use Glpi\Form\Question;
+
+final class EngineInput
 {
-    case ALWAYS_VISIBLE = 'always_visible';
-    case VISIBLE_IF = 'visible_if';
-    case HIDDEN_IF = 'hidden_if';
-
-    public function getLabel(): string
-    {
-        return match ($this) {
-            self::ALWAYS_VISIBLE => __('Always visible'),
-            self::VISIBLE_IF     => __('Visible if...'),
-            self::HIDDEN_IF      => __("Hidden if..."),
-        };
+    public function __construct(
+        private array $answers,
+    ) {
     }
 
-    public function getIcon(): string
+    /**
+     * Construct an input using default values from the database.
+     * Useful when computing data that was not yet modified by the user.
+     */
+    public static function fromForm(Form $form): self
     {
-        return match ($this) {
-            self::ALWAYS_VISIBLE => 'ti ti-eye',
-            self::VISIBLE_IF     => 'ti ti-eye-cog',
-            self::HIDDEN_IF      => 'ti ti-eye-off',
-        };
+        $answers = [];
+
+        // Get questions that can be used as a criteria
+        $questions = array_filter(
+            $form->getQuestions(),
+            fn (Question $q): bool => $q->getQuestionType() instanceof UsedAsCriteriaInterface,
+        );
+
+        foreach ($questions as $question) {
+            $answers[$question->getID()] = $question->fields['default_value'];
+        }
+
+        return new self(answers: $answers);
     }
 
-    public function showEditor(): bool
+    public function getAnswers(): array
     {
-        return match ($this) {
-            self::ALWAYS_VISIBLE => false,
-            self::VISIBLE_IF     => true,
-            self::HIDDEN_IF      => true,
-        };
+        return $this->answers;
     }
 }

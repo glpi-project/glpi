@@ -592,9 +592,7 @@ final class SearchEngine
         $search_input_class = self::getSearchInputClass($params);
         $params = array_merge($params, $search_input_class::manageParams($itemtype, $_GET));
 
-        if (!isset($params['display_type'])) {
-            $params['display_type'] = \Search::HTML_OUTPUT;
-        }
+        $params['display_type'] = \Search::HTML_OUTPUT;
 
         echo "<div class='search_page row'>";
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [

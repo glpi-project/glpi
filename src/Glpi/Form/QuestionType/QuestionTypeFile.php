@@ -118,23 +118,6 @@ TWIG;
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
-    {
-        $template = <<<TWIG
-            {% for document in documents %}
-                <div class="form-control-plaintext">
-                    {{ document.getLink()|raw }}
-                </div>
-            {% endfor %}
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'documents' => array_map(fn($document_id) => (new Document())->getById($document_id), $answer)
-        ]);
-    }
-
-    #[Override]
     public function formatRawAnswer(mixed $answer): string
     {
         return implode(', ', array_map(

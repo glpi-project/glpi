@@ -95,7 +95,8 @@
                                   item.fields[field],
                                   __('As child of'),
                                   specific_field_options|merge({
-                                      'entity': item.fields['entities_id'],
+                                      entity: item.fields['entities_id'],
+                                      used: [item.getID()]
                                   })
                               ) }}
                           {% elseif field is same as 'is_helpdesk_visible' and item_type != 'SoftwareLicense' %}

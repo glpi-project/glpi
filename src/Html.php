@@ -1314,8 +1314,8 @@ TWIG,
             $menu = self::getMenuInfos();
 
            // Permit to plugins to add entry to others sector !
-            if (isset($PLUGIN_HOOKS["menu_toadd"]) && count($PLUGIN_HOOKS["menu_toadd"])) {
-                foreach ($PLUGIN_HOOKS["menu_toadd"] as $plugin => $items) {
+            if (isset($PLUGIN_HOOKS[Hooks::MENU_TOADD]) && count($PLUGIN_HOOKS[Hooks::MENU_TOADD])) {
+                foreach ($PLUGIN_HOOKS[Hooks::MENU_TOADD] as $plugin => $items) {
                     if (!Plugin::isPluginActive($plugin)) {
                         continue;
                     }
@@ -3670,6 +3670,13 @@ JS;
                             // Propagate event to the document to allow other components to listen to it
                             $(document).trigger('tinyMCEChange', [e]);
                         });
+
+                        editor.on('input', function (e) {
+                            // Propagate event to allow other components to listen to it
+                            const textarea = $('#' + e.target.dataset.id);
+                            textarea.trigger('tinyMCEInput', [e]);
+                        });
+
                         // ctrl + enter submit the parent form
                         editor.addShortcut('ctrl+13', 'submit', function() {
                             editor.save();
@@ -6565,5 +6572,16 @@ CSS;
     public static function sanitizeInputName(string $name): string
     {
         return preg_replace('/[^a-z0-9_\[\]\-]/i', '', $name);
+    }
+
+    /**
+     * Sanitize a DOM ID to prevent XSS.
+     *
+     * @param string $name
+     * @return string
+     */
+    public static function sanitizeDomId(string $name): string
+    {
+        return preg_replace('/[^a-z0-9_-]/i', '', $name);
     }
 }

@@ -39,6 +39,7 @@ use AbstractRightsDropdown;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
+use Glpi\Form\ConditionalVisiblity\VisibilityStrategy;
 
 /**
  * Helper class to ease form creation using DbTestCase::createForm()
@@ -101,6 +102,21 @@ class FormBuilder
     protected int $category;
 
     /**
+     * Questions visibilities
+     */
+    protected array $questions_visibilities;
+
+    /**
+     * Comments visibilities
+     */
+    protected array $comments_visibilities;
+
+    /**
+     * Sections visibilities
+     */
+    protected array $sections_visibilities;
+
+    /**
      * Constructor
      *
      * @param string $name Form name
@@ -118,6 +134,9 @@ class FormBuilder
         $this->destinations = [];
         $this->access_control = [];
         $this->category = 0;
+        $this->questions_visibilities = [];
+        $this->comments_visibilities = [];
+        $this->sections_visibilities = [];
     }
 
     /**
@@ -472,5 +491,53 @@ class FormBuilder
     {
         $this->category = $category;
         return $this;
+    }
+
+    public function setQuestionVisibility(
+        string $question_name,
+        VisibilityStrategy $strategy,
+        array $conditions
+    ): void {
+        $this->questions_visibilities[$question_name] = [
+            'strategy' => $strategy->value,
+            'conditions' => $conditions,
+        ];
+    }
+
+    public function getQuestionVisibility(): array
+    {
+        return $this->questions_visibilities;
+    }
+
+    public function setCommentVisibility(
+        string $comment_name,
+        VisibilityStrategy $strategy,
+        array $conditions
+    ): void {
+        $this->comments_visibilities[$comment_name] = [
+            'strategy' => $strategy->value,
+            'conditions' => $conditions,
+        ];
+    }
+
+    public function getCommentVisibility(): array
+    {
+        return $this->comments_visibilities;
+    }
+
+    public function setSectionVisibility(
+        string $section_name,
+        VisibilityStrategy $strategy,
+        array $conditions
+    ): void {
+        $this->sections_visibilities[$section_name] = [
+            'strategy' => $strategy->value,
+            'conditions' => $conditions,
+        ];
+    }
+
+    public function getSectionVisibility(): array
+    {
+        return $this->sections_visibilities;
     }
 }

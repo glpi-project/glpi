@@ -41,7 +41,6 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeInterface;
 
 /**
  * Helper class to handle raw answers data
@@ -266,15 +265,11 @@ final class AnswersHandler
             $items = $concrete_destination->createDestinationItems(
                 $form,
                 $answers_set,
-                $destination->getConfig()
+                $destination->getConfig(),
             );
 
             // Link items to answers by creating a AnswersSet_FormDestinationItem object
             foreach ($items as $item) {
-                if (!($item instanceof CommonDBTM)) {
-                    throw new \Exception("Invalid destination item");
-                }
-
                 $form_item = new AnswersSet_FormDestinationItem();
                 $input = [
                     AnswersSet::getForeignKeyField() => $answers_set->getID(),

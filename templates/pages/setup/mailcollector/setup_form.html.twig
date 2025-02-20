@@ -89,7 +89,8 @@
 
    {{ include('pages/setup/mailcollector/server_config_fields.html.twig', {
       'connect_opts': connect_opts,
-      'connect_string': host
+      'connect_string': host,
+      'protocol_choices': protocol_choices,
    }) }}
 
    {{ fields.smallTitle(__('Authentication')) }}
