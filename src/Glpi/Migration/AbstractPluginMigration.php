@@ -109,7 +109,10 @@ abstract class AbstractPluginMigration
                 $this->result->addMessage(MessageType::Error, __('Migration cannot be done.'));
             }
         } catch (\Throwable $e) {
-            $this->result->addMessage(MessageType::Error, __('An unexpected error occured.'));
+            $this->result->addMessage(
+                MessageType::Error,
+                $e instanceof MigrationException ? $e->getLocalizedMessage() : __('An unexpected error occured.')
+            );
 
             $this->logger->error($e->getMessage(), context: ['exception' => $e]);
 
@@ -240,7 +243,7 @@ abstract class AbstractPluginMigration
                     sprintf(
                         __('%s "%s" (%d) is most recent on GLPI side, its update has been skipped.'),
                         $itemtype::getTypeName(1),
-                        $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
+                        $item->getFriendlyName() ?: NOT_AVAILABLE,
                         $item->getID(),
                     )
                 );
@@ -250,15 +253,30 @@ abstract class AbstractPluginMigration
             // Check if at least one field is updated.
             $has_updates = false;
             foreach ($input as $fieldname => $value) {
-                if (
+                if (!\array_key_exists($fieldname, $item->fields)) {
                     // field is not a real field, we cannot compare the value so it is preferable to trigger the update
-                    !\array_key_exists($fieldname, $item->fields)
-                    // the input value is not identical to the current value, we must trigger the update
-                    || $value !== $item->fields[$fieldname]
-                ) {
                     $has_updates = true;
                     break;
                 }
+
+                if (
+                    \is_array($value)
+                    && \is_string($item->fields[$fieldname])
+                    && \json_validate($item->fields[$fieldname])
+                    && \json_decode($item->fields[$fieldname], associative: true) === $value
+                ) {
+                    // Passed value is an array identical to the JSON encoded value present in DB.
+                    // We consider that the field is not updated.
+                    continue;
+                }
+
+                if ($value === $item->fields[$fieldname]) {
+                    // The value is already up-to-date.
+                    continue;
+                }
+
+                $has_updates = true;
+                break;
             }
             if (!$has_updates) {
                 $this->result->markItemAsReused($itemtype, $item->getID());
@@ -267,24 +285,25 @@ abstract class AbstractPluginMigration
                     sprintf(
                         __('%s "%s" (%d) is already up-to-date, its update has been skipped.'),
                         $itemtype::getTypeName(1),
-                        $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
+                        $item->getFriendlyName() ?: NOT_AVAILABLE,
                         $item->getID(),
                     )
                 );
                 return $item;
             }
 
-            if ($item->update($input) === false) {
-                $this->result->addMessage(
-                    MessageType::Error,
+            $updated = $item->update($input);
+            $this->addSessionMessagesToResult();
+            if ($updated === false) {
+                throw new MigrationException(
                     sprintf(
                         __('Unable to update %s "%s" (%d).'),
                         $itemtype::getTypeName(1),
-                        $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
+                        $item->getFriendlyName() ?: NOT_AVAILABLE,
                         $item->getID(),
-                    )
+                    ),
+                    'Update operation failed.'
                 );
-                throw new \RuntimeException('An error occured during the item update.');
             }
 
             $this->result->markItemAsReused($itemtype, $item->getID());
@@ -293,7 +312,7 @@ abstract class AbstractPluginMigration
                 sprintf(
                     __('%s "%s" (%d) has been updated.'),
                     $itemtype::getTypeName(1),
-                    $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
+                    $item->getFriendlyName() ?: NOT_AVAILABLE,
                     $item->getID(),
                 )
             );
@@ -302,16 +321,17 @@ abstract class AbstractPluginMigration
         }
 
         // Create a new item.
-        if ($item->add($input) === false) {
-            $this->result->addMessage(
-                MessageType::Error,
+        $created = $item->add($input);
+        $this->addSessionMessagesToResult();
+        if ($created === false) {
+            throw new MigrationException(
                 sprintf(
                     __('Unable to create %s "%s".'),
                     $itemtype::getTypeName(1),
                     $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
-                )
+                ),
+                'Add operation failed.'
             );
-            throw new \RuntimeException('An error occured during the item creation.');
         }
 
         $this->result->markItemAsCreated($itemtype, $item->getID());
@@ -369,6 +389,31 @@ abstract class AbstractPluginMigration
         }
 
         return $this->target_items_mapping[$source_itemtype][$source_items_id];
+    }
+
+    /**
+     * Add the session messages from the session to the result object.
+     * Transfered messages will be removed from the session, to prevent output duplicates.
+     */
+    final protected function addSessionMessagesToResult(): void
+    {
+        if (!\array_key_exists('MESSAGE_AFTER_REDIRECT', $_SESSION)) {
+            return;
+        }
+
+        foreach ($_SESSION['MESSAGE_AFTER_REDIRECT'] as $key => $messages) {
+            $type = match ($key) {
+                ERROR   => MessageType::Error,
+                WARNING => MessageType::Warning,
+                default => MessageType::Notice,
+            };
+            foreach ($messages as $message) {
+                $this->result->addMessage($type, $message);
+            }
+        }
+
+        // Clean messages
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
     }
 
     /**

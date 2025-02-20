@@ -54,6 +54,11 @@ final class CustomFieldDefinition extends CommonDBChild
         return _n('Custom field', 'Custom fields', $nb);
     }
 
+    public static function getNameField()
+    {
+        return 'label';
+    }
+
     public static function getIcon()
     {
         return 'ti ti-forms';
@@ -241,7 +246,30 @@ final class CustomFieldDefinition extends CommonDBChild
     public function prepareInputForUpdate($input)
     {
         // Cannot change type or system_name of existing field
-        unset($input['type'], $input['system_name']);
+        if (
+            array_key_exists('system_name', $input)
+            && $input['system_name'] !== $this->fields['system_name']
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('The system name cannot be changed.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        if (
+            array_key_exists('type', $input)
+            && $input['type'] !== $this->fields['type']
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('The field type cannot be changed.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
         $input = $this->prepareInputForAddAndUpdate($input);
         if ($input === false) {
             return false;
