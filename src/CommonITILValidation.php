@@ -1787,9 +1787,16 @@ HTML;
             }
         }
 
+        $accepted = 0;
+        $refused  = 0;
+        if ($total) {
+            $accepted = round($statuses[self::ACCEPTED] * 100 / $total);
+            $refused  = round($statuses[self::REFUSED]  * 100 / $total);
+        }
+
         return self::computeValidation(
-            round($statuses[self::ACCEPTED] * 100 / $total),
-            round($statuses[self::REFUSED]  * 100 / $total),
+            $accepted,
+            $refused,
             $validation_percent
         );
     }
