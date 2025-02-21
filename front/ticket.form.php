@@ -292,7 +292,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
         $track::showKanban(0);
         Html::footer();
     } else {
-        $otpions = $_REQUEST;
+        $options = $_REQUEST;
         $menus = ["helpdesk", "ticket"];
         if ($_GET['_promoted_fup_id']) {
             $followup = new ITILFollowup();
