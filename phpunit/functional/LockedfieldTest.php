@@ -734,8 +734,8 @@ class LockedfieldTest extends DbTestCase
         $this->assertTrue($iav->getFromDBByCrit(['computers_id' => $computers_id]));
         $this->assertSame($newmanufacturers_id, $iav->fields['manufacturers_id']);
 
-        $this->assertSame([
-            'manufacturers_id' => "$origmanufacturers_id"],
+        $this->assertSame(
+            ['manufacturers_id' => "$origmanufacturers_id"],
             $lockedfield->getLockedValues($iav->getType(), $iav->fields['id'])
         );
     }
