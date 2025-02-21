@@ -300,6 +300,12 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
                 $options['content'] = $followup->fields['content'];
             };
         }
+        if ($_GET['_promoted_task_id']) {
+            $ticketask = new TicketTask();
+            if ($ticketask->getFromDB($_GET['_promoted_task_id'])) {
+                $options['content'] = $ticketask->fields['content'];
+            };
+        }
         Ticket::displayFullPageForItem(0, $menus, $options);
     }
 }
