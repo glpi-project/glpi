@@ -183,6 +183,31 @@ final class Question extends CommonDBChild implements BlockInterface, Conditionn
         return parent::prepareInputForUpdate($input);
     }
 
+    public function setDefaultValueFromParameters(array $get): void
+    {
+        $name = $this->fields['name'];
+
+        // Normalize both input and expected values
+        $name = strtolower($name);
+        $name = str_replace(' ', '', $name);
+        $normalized_get = [];
+        foreach ($get as $param => $value) {
+            $param = strtolower($param);
+            $param = str_replace(' ', '', $param);
+            $normalized_get[$param] = $value;
+        }
+
+        // Apply value if defined
+        if (isset($normalized_get[$name])) {
+            $type = $this->getQuestionType();
+            $value = $type->formatPredefinedValue($normalized_get[$name]);
+
+            if ($value !== null) {
+                $this->fields['default_value'] = $value;
+            }
+        }
+    }
+
     private function prepareInput($input): array
     {
         // Set parent UUID

@@ -164,4 +164,19 @@ TWIG;
     {
         return true;
     }
+
+    #[Override]
+    public function formatPredefinedValue(string $value): ?string
+    {
+        $value = strtolower($value);
+
+        return match ($value) {
+            'very low', 'verylow' => "1",
+            'low' => "2",
+            'medium' => "3",
+            'high' => "4",
+            'very high', 'veryhigh' => "5",
+            default => null,
+        };
+    }
 }

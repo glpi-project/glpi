@@ -121,6 +121,7 @@
 
                                         {% if form_block is instanceof('Glpi\\Form\\Question') %}
                                             {% set question_type = form_block.getQuestionType() %}
+                                            {{ form_block.setDefaultValueFromParameters(params) }}
                                         {% endif %}
 
                                         {% set skip_question = false %}
