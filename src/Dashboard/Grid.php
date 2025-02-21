@@ -479,7 +479,9 @@ JAVASCRIPT;
         $_SESSION["glpiactive_entity"]           = $params['entities_id'];
         $_SESSION["glpiactive_entity_recursive"] = $params['is_recursive'];
         $_SESSION["glpiname"]                    = 'embed_dashboard';
-        $_SESSION["glpigroups"]                  = [];
+        if (!isset($_SESSION['glpigroups'])) {
+            $_SESSION['glpigroups'] = [];
+        }
         if ($params['is_recursive']) {
             $entities = getSonsOf("glpi_entities", $params['entities_id']);
         } else {
