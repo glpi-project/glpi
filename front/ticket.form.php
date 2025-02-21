@@ -292,7 +292,14 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
         $track::showKanban(0);
         Html::footer();
     } else {
+        $otpions = $_REQUEST;
         $menus = ["helpdesk", "ticket"];
-        Ticket::displayFullPageForItem(0, $menus, $_REQUEST);
+        if ($_GET['_promoted_fup_id']) {
+            $followup = new ITILFollowup();
+            if ($followup->getFromDB($_GET['_promoted_fup_id'])) {
+                $options['content'] = $followup->fields['content'];
+            };
+        }
+        Ticket::displayFullPageForItem(0, $menus, $options);
     }
 }
