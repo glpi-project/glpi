@@ -420,6 +420,14 @@ class Document extends CommonDBTM
             throw new \InvalidArgumentException();
         } elseif ($linked_item !== null) {
             $link_params = sprintf('&itemtype=%s&items_id=%s', $linked_item::class, $linked_item->getID());
+            if (
+                $linked_item instanceof KnowbaseItem
+                && $linked_item->fields["allow_access_using_token"]
+                && isset($_GET['token'])
+                && hash_equals($linked_item->fields["token"], $_GET['token'])
+            ) {
+                $link_params .= sprintf('&token=%s', $_GET['token']);
+            }
         }
 
         $splitter = $this->fields['filename'] !== null ? explode("/", $this->fields['filename']) : [];

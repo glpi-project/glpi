@@ -57,7 +57,7 @@ if (Session::getLoginUserID()) {
 if (isset($_GET["id"])) {
     $kb = new KnowbaseItem();
     if ($kb->getFromDB($_GET["id"])) {
-        $kb->showFull();
+        $kb->showFull(['token' => $_GET['token'] ?? ""]);
     }
 } else {
    // Manage forcetab : non standard system (file name <> class name)

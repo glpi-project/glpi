@@ -119,6 +119,13 @@
         })) }}
     {% endset %}
 
+    {% if options.can_regenerate %}
+        {% set regenerate_chk %}
+            <input type="checkbox" name="_regenerate_{{ name }}" id="_regenerate_{{ name }}">&nbsp;<label for="_regenerate_{{ name }}">{{ __('Regenerate') }}</label>
+        {% endset %}
+        {% set field = field ~ regenerate_chk %}
+    {% endif %}
+
     {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
