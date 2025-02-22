@@ -168,7 +168,7 @@ class QueuedNotification extends CommonDBTM
                 $input['send_time'] = $_SESSION["glpi_currenttime"];
             }
         }
-        $input['sent_try'] = 0;
+        $input['sent_try'] ??= 0;
         if (isset($input['headers']) && is_array($input['headers']) && count($input['headers'])) {
             $input["headers"] = exportArrayToDB($input['headers']);
         } else {
@@ -495,6 +495,7 @@ class QueuedNotification extends CommonDBTM
     {
         if ($this->getFromDB($ID)) {
             $mode = $this->getField('mode');
+            /** @var class-string<NotificationEventInterface> $eventclass */
             $eventclass = 'NotificationEvent' . ucfirst($mode);
             $conf = Notification_NotificationTemplate::getMode($mode);
             if ($conf['from'] !== 'core') {

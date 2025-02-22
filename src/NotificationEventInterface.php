@@ -113,7 +113,7 @@ interface NotificationEventInterface
     /**
      * Send notification
      *
-     * @param array $data Data to send
+     * @param array $data Notification data to send. Expected an array of data arrays to handle sending multiple notifications.
      *
      * @return false|integer False if something went wrong, number of send notifications otherwise
      */
