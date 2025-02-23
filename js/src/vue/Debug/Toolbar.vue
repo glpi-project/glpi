@@ -415,7 +415,7 @@
         box-shadow: none;
     }
     .debug-toolbar-widgets .debug-toolbar-widget {
-        &.active, &:hover {
+        &.active, &:hover, &[active="true"] {
             border-top: 3px solid var(--tblr-primary) !important;
             margin-top : -3px;
         }

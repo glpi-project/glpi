@@ -369,7 +369,7 @@ class Telemetry extends CommonGLPI
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $out = "<a id='view_telemetry' href='{$CFG_GLPI['root_doc']}/ajax/telemetry.php' class='btn btn-sm btn-info mt-2'>
+        $out = "<a id='view_telemetry' href='{$CFG_GLPI['root_doc']}/ajax/telemetry.php' class='btn btn-sm btn-info'>
          " . __('See what would be sent...') . "
       </a>";
         $out .= Html::scriptBlock("
@@ -457,7 +457,7 @@ class Telemetry extends CommonGLPI
         $out .= __("Once sent, usage statistics are aggregated and made available to a broad range of GLPI developers.") . "<br><br>";
         $out .= __("Let us know your usage to improve future versions of GLPI and its plugins!") . "<br>";
 
-        $out .= self::getViewLink();
+        $out .= '<span class="mt-2">' . self::getViewLink() . '</span>';
         return $out;
     }
 

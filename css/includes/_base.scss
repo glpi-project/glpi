@@ -32,7 +32,7 @@
  */
 
 :root {
-    --tblr-light: #f6f8fb;
+    --tblr-light: #fafbfc;
     --tblr-dark: #101923;
     --tblr-primary-rgb: 254, 201, 92;
     --tblr-primary: rgb(var(--tblr-primary-rgb));
@@ -50,18 +50,10 @@
     --tblr-navbar-color: #2f3f64;
     --tblr-body-bg: #f5f7fb;
     --tblr-bg-surface: #fff;
+    --tblr-bg-surface-secondary: var(--tblr-light);
     --tblr-bg-surface-tertiary: var(--tblr-gray-50);
     --tblr-bg-surface-dark: color-mix(in srgb, var(--tblr-bg-surface), var(--tblr-dark) 1.5%);
-    --tblr-gray-100: var(--tblr-light);
-    --tblr-gray-200: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 4%);
-    --tblr-gray-300: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 6%);
-    --tblr-gray-400: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 12%);
-    --tblr-gray-500: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 22%);
-    --tblr-gray-600: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 40%);
-    --tblr-gray-700: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 64%);
-    --tblr-gray-800: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 84%);
-    --tblr-gray-900: var(--tblr-dark);
-    --tblr-gray-50: var(--tblr-gray-200);
+    --tblr-box-shadow-input: none;
     --glpi-tabs-bg: color-mix(in srgb, var(--tblr-bg-surface), black 1.5%);
     --glpi-tabs-fg: var(--tblr-muted);
     --glpi-tabs-border-color: var(--tblr-border-color);
@@ -87,7 +79,7 @@
     --glpi-fg-secondary: #f4f6fa;
     --glpi-badge-bg: color-mix(in srgb, var(--tblr-link-color), var(--tblr-light) 91%);
     --glpi-badge-fg: var(--tblr-link-color);
-    --glpi-form-header-fg: var(--tblr-blue);
+    --glpi-form-header-fg: #055cad;
     --glpi-form-header-bg: color-mix(in srgb, var(--glpi-form-header-fg), var(--tblr-bg-surface) 90%);
     --glpi-form-header-border-color: color-mix(in srgb, var(--glpi-form-header-fg), var(--tblr-bg-surface) 75%);
     --glpi-form-header-danger-fg: var(--tblr-danger);
@@ -281,6 +273,11 @@ body.in_modal {
     &.btn-link {
         color: var(--tblr-link-color);
     }
+
+    &.btn-sm {
+        --tblr-btn-padding-y: 0.125rem;
+        --tblr-btn-padding-x: 0.5rem;
+    }
 }
 
 .status {
@@ -363,6 +360,11 @@ table {
     border: 1px solid transparent;
     border-radius: 4px;
     font-size: 0.7rem;
+}
+
+.badge {
+    background: var(--glpi-badge-bg);
+    color: var(--glpi-badge-fg) !important;
 }
 
 .entity_tree {
