@@ -236,15 +236,15 @@ class Contact_Supplier extends CommonDBRelation
         $contacttype_cache = [];
         foreach ($contacts as $data) {
             $contact_link = "<a href='" . Contact::getFormURLWithID($data["id"]) . "'>" .
-               htmlescape(sprintf(__('%1$s %2$s'), $data["name"], $data["firstname"])) . "</a></td>";
-             $email_link = "<a href='mailto:" . htmlescape($data["email"]) . "'>" . htmlescape($data["email"]) . "</a>";
+                htmlescape(sprintf(__('%1$s %2$s'), $data["name"], $data["firstname"])) . "</a></td>";
+            $email_link = "<a href='mailto:" . htmlescape($data["email"]) . "'>" . htmlescape($data["email"]) . "</a>";
 
-             if (!isset($contacttype_cache[$data["contacttypes_id"]])) {
-                 $contacttype_cache[$data["contacttypes_id"]] = Dropdown::getDropdownName(
-                     "glpi_contacttypes",
-                     $data["contacttypes_id"]
-                 );
-             }
+            if (!isset($contacttype_cache[$data["contacttypes_id"]])) {
+                $contacttype_cache[$data["contacttypes_id"]] = Dropdown::getDropdownName(
+                    "glpi_contacttypes",
+                    $data["contacttypes_id"]
+                );
+            }
 
             $entry = [
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
