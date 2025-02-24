@@ -142,7 +142,7 @@ class QuestionTypeDateTime extends AbstractQuestionType
     public function isDateEnabled(?Question $question): bool
     {
         if ($question === null) {
-            return false;
+            return true;
         }
 
         /** @var ?QuestionTypeDateTimeExtraDataConfig $config */
@@ -197,6 +197,7 @@ class QuestionTypeDateTime extends AbstractQuestionType
                         name="default_value"
                         placeholder="{{ placeholders.input[input_type_ignore_text] }}"
                         value="{{ default_value }}"
+                        aria-label="{{ __('Default value') }}"
                         {{ is_default_value_current_time ? 'disabled' : '' }}
                     />
                 </div>
@@ -217,7 +218,7 @@ class QuestionTypeDateTime extends AbstractQuestionType
                 function handleDefaultValueCurrentTimeCheckbox_{{ rand }}(input) {
                     const isChecked = $(input).is(':checked');
                     const dateInput = $('#date_input_{{ rand }}').prop('disabled', isChecked);
-                    updateDateAndTimeInputType($(input).closest('div[data-glpi-form-editor-question]'));
+                    updateDateAndTimeInputType($(input).closest('section[data-glpi-form-editor-question]'));
                 }
             </script>
 TWIG;
@@ -315,7 +316,7 @@ TWIG;
                         otherInput.prop('checked', true);
                     }
 
-                    updateDateAndTimeInputType($(input).closest('div[data-glpi-form-editor-question]'));
+                    updateDateAndTimeInputType($(input).closest('section[data-glpi-form-editor-question]'));
                 }
             </script>
 TWIG;
