@@ -132,7 +132,7 @@ class AbstractPluginMigrationTest extends DbTestCase
             protected function processMigration(): bool
             {
                 // ... do something
-                $this->addMessage(MessageType::Success, 'All data has been imported.');
+                $this->result->addMessage(MessageType::Success, 'All data has been imported.');
                 return true;
             }
         };
@@ -166,7 +166,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $instance = new class ($db, $logger) extends AbstractPluginMigration {
             protected function validatePrerequisites(): bool
             {
-                $this->addMessage(MessageType::Notice, 'Plugin\'s data can be imported.');
+                $this->result->addMessage(MessageType::Notice, 'Plugin\'s data can be imported.');
                 return true;
             }
 
@@ -215,7 +215,7 @@ class AbstractPluginMigrationTest extends DbTestCase
             protected function processMigration(): bool
             {
                 // ... do something
-                $this->addMessage(MessageType::Success, 'The migration simulation succeed.');
+                $this->result->addMessage(MessageType::Success, 'The migration simulation succeed.');
                 return true;
             }
         };
@@ -249,7 +249,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $instance = new class ($db, $logger) extends AbstractPluginMigration {
             protected function validatePrerequisites(): bool
             {
-                $this->addMessage(MessageType::Notice, 'Plugin\'s data can be imported.');
+                $this->result->addMessage(MessageType::Notice, 'Plugin\'s data can be imported.');
                 return true;
             }
 
@@ -295,7 +295,7 @@ class AbstractPluginMigrationTest extends DbTestCase
             {
                 $entity_id = \getItemByTypeName(Entity::class, '_test_root_entity', true);
 
-                // Reconciliation criteria matches an existing item, it should be updated
+                // Reconciliation criteria matches an existing item, it should be updated ...
                 $this->importItem(
                     Computer::class,
                     [
@@ -306,6 +306,31 @@ class AbstractPluginMigrationTest extends DbTestCase
                     [
                         'name' => '_test_pc01',
                         'entities_id' => $entity_id,
+                    ]
+                );
+
+                // ... unless the values are identical
+                $this->importItem(
+                    Computer::class,
+                    [
+                        'name' => '_test_pc02',
+                        'comment' => 'Comment for computer _test_pc02',
+                    ],
+                    [
+                        'name' => '_test_pc02',
+                    ]
+                );
+
+                // ... or the plugin item is outdated
+                $this->importItem(
+                    Computer::class,
+                    [
+                        'name' => '_test_pc03',
+                        'comment' => 'Imported from myplugin',
+                        'date_mod' => '2015-12-03 14:56:34',
+                    ],
+                    [
+                        'name' => '_test_pc03',
                     ]
                 );
 
@@ -345,8 +370,10 @@ class AbstractPluginMigrationTest extends DbTestCase
         $result = $instance->execute(simulate: true);
 
         $computer_id_1 = \getItemByTypeName(Computer::class, '_test_pc01', true);
-        $computer_id_2 = \getItemByTypeName(Computer::class, 'a test computer', true);
-        $computer_id_3 = \getItemByTypeName(Computer::class, 'another test computer', true);
+        $computer_id_2 = \getItemByTypeName(Computer::class, '_test_pc02', true);
+        $computer_id_3 = \getItemByTypeName(Computer::class, '_test_pc03', true);
+        $computer_id_4 = \getItemByTypeName(Computer::class, 'a test computer', true);
+        $computer_id_5 = \getItemByTypeName(Computer::class, 'another test computer', true);
 
         // Assert
         $this->assertTrue($result->isFullyProcessed());
@@ -358,17 +385,25 @@ class AbstractPluginMigrationTest extends DbTestCase
             ],
             [
                 'type' => MessageType::Debug,
-                'message' => sprintf('Computer "a test computer" (%d) has been created.', $computer_id_2),
+                'message' => sprintf('Computer "_test_pc02" (%d) is already up-to-date, its update has been skipped.', $computer_id_2),
             ],
             [
                 'type' => MessageType::Debug,
-                'message' => sprintf('Computer "another test computer" (%d) has been created.', $computer_id_3),
+                'message' => sprintf('Computer "_test_pc03" (%d) is most recent on GLPI side, its update has been skipped.', $computer_id_3),
+            ],
+            [
+                'type' => MessageType::Debug,
+                'message' => sprintf('Computer "a test computer" (%d) has been created.', $computer_id_4),
+            ],
+            [
+                'type' => MessageType::Debug,
+                'message' => sprintf('Computer "another test computer" (%d) has been created.', $computer_id_5),
             ],
         ];
         $this->assertEquals($expected_messages, $result->getMessages());
 
-        $this->assertEquals([Computer::class => [$computer_id_2, $computer_id_3]], $result->getCreatedItemsIds());
-        $this->assertEquals([Computer::class => [$computer_id_1]], $result->getUpdatedItemsIds());
+        $this->assertEquals([Computer::class => [$computer_id_4, $computer_id_5]], $result->getCreatedItemsIds());
+        $this->assertEquals([Computer::class => [$computer_id_1, $computer_id_2, $computer_id_3]], $result->getReusedItemsIds());
     }
 
     public function testMapItem(): void
