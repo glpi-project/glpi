@@ -83,20 +83,18 @@ abstract class CommonITILObject extends CommonDBTM
     const STATUS_MATRIX_FIELD  = '';
 
 
-   // STATUS
+   // ITIL Object shared statuses
     const INCOMING      = 1; // new
-    const ASSIGNED      = 2; // assign
-    const PLANNED       = 3; // plan
-    const WAITING       = 4; // waiting
-    const SOLVED        = 5; // solved
-    const CLOSED        = 6; // closed
-    const ACCEPTED      = 7; // accepted
-    const OBSERVED      = 8; // observe
-    const EVALUATION    = 9; // evaluation
-    const APPROVAL      = 10; // approbation
-    const TEST          = 11; // test
-    const QUALIFICATION = 12; // qualification
+    const ASSIGNED      = 2; // processing (assigned)
+    const PLANNED       = 3; // processing (planned)
+    const WAITING       = 4; // pending
+    const SOLVED        = 5;
+    const CLOSED        = 6;
+    const ACCEPTED      = 7;
+    const OBSERVED      = 8;
+    const APPROVAL      = 10; // approval / validation
 
+    // --- timeline position
     const NO_TIMELINE       = -1;
     const TIMELINE_NOTSET   = 0;
     const TIMELINE_LEFT     = 1;
@@ -5132,7 +5130,7 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
     /**
-     * Get status class
+     * Get CSS status class
      *
      * @since 9.3
      *
@@ -5142,12 +5140,12 @@ abstract class CommonITILObject extends CommonDBTM
     {
         $class = match ($status) {
             self::INCOMING, self::WAITING, self::CLOSED => 'circle-filled',
-            self::ASSIGNED, self::SOLVED, self::EVALUATION => 'circle',
+            self::ASSIGNED, self::SOLVED, Change::EVALUATION => 'circle',
             self::PLANNED => 'calendar',
             self::ACCEPTED => 'check-circle-filled',
             self::OBSERVED => 'eye',
-            self::APPROVAL, self::TEST => 'help',
-            self::QUALIFICATION => 'circle',
+            self::APPROVAL, Change::TEST => 'help',
+            Change::QUALIFICATION => 'circle',
             Change::REFUSED => 'circle-x',
             Change::CANCELED => 'ban',
             default => null
@@ -5191,16 +5189,16 @@ abstract class CommonITILObject extends CommonDBTM
             case self::OBSERVED:
                 $key = 'observe';
                 break;
-            case self::EVALUATION:
+            case Change::EVALUATION:
                 $key = 'eval';
                 break;
             case self::APPROVAL:
                 $key = 'approval';
                 break;
-            case self::TEST:
+            case Change::TEST:
                 $key = 'test';
                 break;
-            case self::QUALIFICATION:
+            case Change::QUALIFICATION:
                 $key = 'qualif';
                 break;
         }

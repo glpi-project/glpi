@@ -254,10 +254,10 @@ class Ticket extends CommonITILObject
             return true;
         }
 
-        // Can see incoming tickets
+        // Can see tickets considered as new (incoming status)
         if (
             Session::haveRight(self::$rightname, self::READNEWTICKET)
-            && ($this->fields["status"] == self::INCOMING)
+            && $this->fields["status"] == self::INCOMING
         ) {
             return true;
         }
@@ -3270,19 +3270,11 @@ JAVASCRIPT;
         }
     }
 
-
-    /**
-     * get the Ticket status list
-     *
-     * @param boolean $withmetaforsearch  (false by default)
-     *
-     * @return array
-     **/
     public static function getAllStatusArray($withmetaforsearch = false)
     {
-
-       // To be overridden by class
-        $tab = [self::INCOMING => _x('status', 'New'),
+        $tab = [
+            self::INCOMING => _x('status', 'New'),
+            self::APPROVAL => _n('Approval', 'Approvals', 1),
             self::ASSIGNED => _x('status', 'Processing (assigned)'),
             self::PLANNED  => _x('status', 'Processing (planned)'),
             self::WAITING  => __('Pending'),
@@ -3297,6 +3289,7 @@ JAVASCRIPT;
             $tab['old']       = _x('status', 'Solved + Closed');
             $tab['all']       = __('All');
         }
+
         return $tab;
     }
 

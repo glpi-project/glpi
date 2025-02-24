@@ -1982,7 +1982,16 @@ class TicketTest extends DbTestCase
         );
     }
 
-    public function changeTechRights(array $rights)
+    /**
+     * Update tech user rights (and relogin to apply these rights)
+     *
+     * $rights parameter is an array with the following format:
+     * key : object type (e.g. ticket)
+     * value : right (e.g. \Ticket::READNEWTICKET)
+     * @param array<string, int> $rights
+     * @throws \Exception
+     */
+    public function changeTechRights(array $rights): void
     {
         global $DB;
 
@@ -6846,6 +6855,23 @@ HTML
 
         $this->changeTechRight(\Ticket::READNEWTICKET);
         $this->assertTrue($ticket->canViewItem());
+    }
+
+    /**
+     * The right "View new tickets" should not include those with the "approval" status.
+     */
+    public function testUserCannotViewApprovalTicketsWithReadNewTicketRight()
+    {
+        $this->login();
+
+        $ticket = $this->createItem('Ticket', [
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'status' => CommonITILObject::APPROVAL,
+        ]);
+
+        $this->changeTechRights(['ticket' => \Ticket::READNEWTICKET]);
+        $this->assertFalse($ticket->canViewItem());
     }
 
     public function testAssignToMe()

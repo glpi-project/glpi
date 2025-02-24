@@ -51,7 +51,7 @@ class Change extends CommonITILObject
     public $grouplinkclass              = 'Change_Group';
     public $supplierlinkclass           = 'Change_Supplier';
 
-    public static $rightname                   = 'change';
+    public static $rightname            = 'change';
     protected $usenotepad               = true;
 
     const MATRIX_FIELD                  = 'priority_matrix';
@@ -64,8 +64,11 @@ class Change extends CommonITILObject
     const READALL                       = 1024;
 
    // Specific status for changes
-    const REFUSED                       = 13;
-    const CANCELED                      = 14;
+    public const EVALUATION             = 9;
+    public const TEST                   = 11;
+    public const QUALIFICATION          = 12;
+    public const REFUSED                = 13;
+    public const CANCELED               = 14;
 
     public static function getTypeName($nb = 0)
     {
@@ -703,19 +706,11 @@ class Change extends CommonITILObject
         return $tab;
     }
 
-
-    /**
-     * get the change status list
-     * To be overridden by class
-     *
-     * @param $withmetaforsearch boolean (default false)
-     *
-     * @return array
-     **/
     public static function getAllStatusArray($withmetaforsearch = false)
     {
 
-        $tab = [self::INCOMING      => _x('status', 'New'),
+        $tab = [
+            self::INCOMING      => _x('status', 'New'),
             self::EVALUATION    => __('Evaluation'),
             self::APPROVAL      => _n('Approval', 'Approvals', 1),
             self::ACCEPTED      => _x('status', 'Accepted'),
