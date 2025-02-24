@@ -72,32 +72,22 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-lg-9 col-12">
-                {{ fields.dropdownField(
-                    'Glpi\\Form\\Category',
-                    'forms_categories_id',
-                    form.fields.forms_categories_id,
-                    _n('Category', 'Categories', 1),
-                    {
-                        'is_horizontal': false,
-                        'full_width' : true,
-                    }
-                ) }}
-            </div>
+        {{ fields.dropdownField(
+            'Glpi\\Form\\Category',
+            'forms_categories_id',
+            form.fields.forms_categories_id,
+            _n('Category', 'Categories', 1),
+            {
+                'is_horizontal': false,
+                'full_width' : true,
+            }
+        ) }}
 
-            <div class="col-lg-3 col-12">
-                {{ fields.dropdownYesNo(
-                    'is_pinned',
-                    form.fields.is_pinned,
-                    __('Pin this form'),
-                    {
-                        'is_horizontal': false,
-                        'full_width' : true,
-                    }
-                ) }}
-            </div>
-        </div>
+        <label class="col-form-label form-check form-switch mb-2">
+            <input type="hidden" name="is_pinned" value="0">
+            <input class="form-check-input" type="checkbox" name="is_pinned" value="1" {{ form.fields.is_pinned ? 'checked' : '' }}>
+            <span class="form-check-label">{{ __("Pin to top of the service catalog") }}</span>
+        </label>
 
         {# Hidden values #}
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
