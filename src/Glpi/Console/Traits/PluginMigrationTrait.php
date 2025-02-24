@@ -60,7 +60,7 @@ trait PluginMigrationTrait
         $messages = $result->getMessages();
 
         $created_items_ids = $result->getCreatedItemsIds();
-        $created_count = \array_reduce($created_items_ids, static fn (int $count, array $ids): int => count($ids), 0);
+        $created_count = \array_reduce($created_items_ids, static fn (int $count, array $ids): int => $count + count($ids), 0);
         if ($created_count > 0) {
             $messages[] = [
                 'type'    => MessageType::Success,
@@ -68,17 +68,17 @@ trait PluginMigrationTrait
             ];
         }
 
-        $updated_items_ids = $result->getUpdatedItemsIds();
-        $updated_count = \array_reduce($updated_items_ids, static fn (int $count, array $ids): int => count($ids), 0);
-        if ($updated_count > 0) {
+        $reused_items_ids = $result->getReusedItemsIds();
+        $reused_count = \array_reduce($reused_items_ids, static fn (int $count, array $ids): int => $count + count($ids), 0);
+        if ($reused_count > 0) {
             $messages[] = [
                 'type'    => MessageType::Success,
-                'message' => sprintf('%d items updated.', $updated_count),
+                'message' => sprintf('%d items reused.', $reused_count),
             ];
         }
 
         $ignored_items_ids = $result->getIgnoredItemsIds();
-        $ignored_count = \array_reduce($ignored_items_ids, static fn (int $count, array $ids): int => count($ids), 0);
+        $ignored_count = \array_reduce($ignored_items_ids, static fn (int $count, array $ids): int => $count + count($ids), 0);
         if ($ignored_count > 0) {
             $messages[] = [
                 'type'    => MessageType::Notice,
@@ -88,10 +88,11 @@ trait PluginMigrationTrait
 
         foreach ($messages as $entry) {
             match ($entry['type']) {
-                MessageType::Error => $output->writeln('<error>x</error>' . $entry['message']),
-                MessageType::Warning => $this->outputMessage('<comment>⚠</comment>' . $entry['message']),
-                MessageType::Success => $this->outputMessage('<info>✓</info>' . $entry['message']),
-                MessageType::Notice => $this->outputMessage('🛈' . $entry['message']),
+                MessageType::Error => $output->writeln('<error>x</error> ' . $entry['message'], OutputInterface::VERBOSITY_QUIET),
+                MessageType::Warning => $output->writeln('<comment>⚠</comment> ' . $entry['message'], OutputInterface::VERBOSITY_NORMAL),
+                MessageType::Success => $output->writeln('<info>✓</info> ' . $entry['message'], OutputInterface::VERBOSITY_NORMAL),
+                MessageType::Notice => $output->writeln('🛈 ' . $entry['message'], OutputInterface::VERBOSITY_NORMAL),
+                MessageType::Debug => $output->writeln('[DEBUG] ' . $entry['message'], OutputInterface::VERBOSITY_VERY_VERBOSE),
             };
         }
     }

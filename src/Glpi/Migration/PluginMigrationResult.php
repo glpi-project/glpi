@@ -60,10 +60,10 @@ class PluginMigrationResult
     private array $created_items_ids = [];
 
     /**
-     * IDs of updated items.
+     * IDs of reused items.
      * @var array<class-string<\CommonDBTM>, array<int, int>>
      */
-    private array $updated_items_ids = [];
+    private array $reused_items_ids = [];
 
     /**
      * IDs of ignored items.
@@ -146,28 +146,28 @@ class PluginMigrationResult
     }
 
     /**
-     * Mark an item as updated.
+     * Mark an item as reused.
      *
      * @param class-string<\CommonDBTM> $itemtype
      * @param int $id
      */
-    public function markItemAsUpdated(string $itemtype, int $id): void
+    public function markItemAsReused(string $itemtype, int $id): void
     {
-        if (!\array_key_exists($itemtype, $this->updated_items_ids)) {
-            $this->updated_items_ids[$itemtype] = [];
+        if (!\array_key_exists($itemtype, $this->reused_items_ids)) {
+            $this->reused_items_ids[$itemtype] = [];
         }
 
-        $this->updated_items_ids[$itemtype][] = $id;
+        $this->reused_items_ids[$itemtype][] = $id;
     }
 
     /**
-     * Return the IDs of the updated items.
+     * Return the IDs of the reused items.
      *
      * @return array<class-string<\CommonDBTM>, array<int, int>>
      */
-    public function getUpdatedItemsIds(): array
+    public function getReusedItemsIds(): array
     {
-        return $this->updated_items_ids;
+        return $this->reused_items_ids;
     }
 
     /**
