@@ -726,7 +726,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertSame($newarchs_id, $cos->fields['operatingsystemarchitectures_id']);
 
         $this->assertSame(
-            ['operatingsystemarchitectures_id' => "$archs_id"],
+            ['operatingsystemarchitectures_id' => "x86_64"],
             $lockedfield->getLockedValues($cos->getType(), $cos->fields['id'])
         );
 
@@ -735,7 +735,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertSame($newmanufacturers_id, $iav->fields['manufacturers_id']);
 
         $this->assertSame(
-            ['manufacturers_id' => "$origmanufacturers_id"],
+            ['manufacturers_id' => "Microsoft Corporation"],
             $lockedfield->getLockedValues($iav->getType(), $iav->fields['id'])
         );
     }
@@ -914,7 +914,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertSame('13.2.3', $database->fields['version']);
         $this->assertSame($newmanufacturers_id, $database->fields['manufacturers_id']);
         $this->assertSame(
-            ['manufacturers_id' => "$origmanufacturers_id"],
+            ['manufacturers_id' => "PostgreSQL"],
             $lockedfield->getLockedValues($database->getType(), $database->fields['id'])
         );
     }

@@ -469,6 +469,7 @@ abstract class InventoryAsset
             if (in_array($key, $locks)) {
                 if (isset($this->known_links[$known_key])) {
                     $input[$key] = $this->known_links[$known_key];
+                    $input['_raw' . $key] = $this->raw_links[$known_key];
                 } else {
                     $input[$key] = $this->raw_links[$known_key];
                 }
