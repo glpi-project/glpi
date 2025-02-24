@@ -122,6 +122,64 @@ abstract class AbstractPluginMigration
     }
 
     /**
+     * Check that the given fields exists in database.
+     *
+     * @param array<string, array<int , string>> $required_fields
+     *      List of required fields, in the following format:
+     *          [
+     *              'tablename1' => ['id', 'name', ...],
+     *              'tablename2' => ['id', ...],
+     *          ]
+     */
+    final protected function checkDbFieldsExists(array $required_fields): bool
+    {
+        $missing_tables = [];
+        $missing_fields = [];
+        foreach ($required_fields as $table => $fields) {
+            if (!$this->db->tableExists($table)) {
+                $missing_tables[] = $table;
+                continue;
+            }
+
+            foreach ($fields as $field) {
+                if (!$this->db->fieldExists($table, $field)) {
+                    $missing_fields[] = $table . '.' . $field;
+                }
+            }
+        }
+
+        if (\count($missing_tables) > 0 || \count($missing_fields) > 0) {
+            $this->result->addMessage(
+                MessageType::Error,
+                __('The database structure does not contain all the data required for migration.')
+            );
+
+            if (\count($missing_tables) > 0) {
+                $this->result->addMessage(
+                    MessageType::Error,
+                    sprintf(
+                        __('The following database tables are missing: %s.'),
+                        '`' . implode('`, `', $missing_tables) . '`'
+                    )
+                );
+            }
+            if (\count($missing_fields) > 0) {
+                $this->result->addMessage(
+                    MessageType::Error,
+                    sprintf(
+                        __('The following database fields are missing: %s.'),
+                        '`' . implode('`, `', $missing_fields) . '`'
+                    )
+                );
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Import a plugin item.
      *
      * @template T of CommonDBTM

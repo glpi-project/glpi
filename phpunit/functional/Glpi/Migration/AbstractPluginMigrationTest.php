@@ -40,8 +40,10 @@ use DbTestCase;
 use Entity;
 use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
+use Glpi\Migration\PluginMigrationResult;
 use Monitor;
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 
 class AbstractPluginMigrationTest extends DbTestCase
 {
@@ -277,6 +279,85 @@ class AbstractPluginMigrationTest extends DbTestCase
             ],
         ];
         $this->assertEquals($expected_messages, $result->getMessages());
+    }
+
+    public function testCheckDbFieldsExists(): void
+    {
+        // Arrange
+        $db = $this->createMock(DBmysql::class);
+        $db->method('tableExists')->willReturnCallback(function ($table) {
+            return match ($table) {
+                'glpi_plugins_myplugin_items' => true,
+                'glpi_plugins_myplugin_tickets' => true,
+                'glpi_plugins_myplugin_bars' => true,
+                default => false,
+            };
+        });
+        $db->method('fieldExists')->willReturnCallback(function ($table, $field) {
+            return match ($table . '.' . $field) {
+                'glpi_plugins_myplugin_items.id' => true,
+                'glpi_plugins_myplugin_items.name' => true,
+                'glpi_plugins_myplugin_tickets.id' => true,
+                'glpi_plugins_myplugin_tickets.name' => true,
+                'glpi_plugins_myplugin_tickets.content' => true,
+                'glpi_plugins_myplugin_bars.id' => true,
+                default => false,
+            };
+        });
+
+        $instance = $this->getMockBuilder(AbstractPluginMigration::class)
+            ->setConstructorArgs([$db, $this->createMock(LoggerInterface::class)])
+            ->onlyMethods(['execute', 'validatePrerequisites', 'processMigration'])
+            ->getMock();
+
+        $reflected_class = new ReflectionClass(AbstractPluginMigration::class);
+
+        // Act
+        $reflected_class->getProperty('result')->setValue($instance, $result = new PluginMigrationResult());
+        $return_1 = $this->callPrivateMethod(
+            $instance,
+            'checkDbFieldsExists',
+            [
+                'glpi_plugins_myplugin_items' => ['id', 'name', 'items_id', 'plugin_myplugin_categories_id'],
+                'glpi_plugins_myplugin_tickets' => ['id', 'name', 'content'],
+                'glpi_plugins_myplugin_categories' => ['id', 'name'],
+                'glpi_plugins_myplugin_foos' => ['id', 'name'],
+                'glpi_plugins_myplugin_bars' => ['id', 'name'],
+            ]
+        );
+        $messages_1 = $result->getMessages();
+
+        $reflected_class->getProperty('result')->setValue($instance, $result = new PluginMigrationResult());
+        $return_2 = $this->callPrivateMethod(
+            $instance,
+            'checkDbFieldsExists',
+            [
+                'glpi_plugins_myplugin_items' => ['id', 'name'],
+                'glpi_plugins_myplugin_tickets' => ['id', 'name', 'content'],
+            ]
+        );
+        $messages_2 = $result->getMessages();
+
+        // Assert
+        $this->assertEquals(false, $return_1);
+        $expected_messages = [
+            [
+                'type' => MessageType::Error,
+                'message' => 'The database structure does not contain all the data required for migration.',
+            ],
+            [
+                'type' => MessageType::Error,
+                'message' => 'The following database tables are missing: `glpi_plugins_myplugin_categories`, `glpi_plugins_myplugin_foos`.',
+            ],
+            [
+                'type' => MessageType::Error,
+                'message' => 'The following database fields are missing: `glpi_plugins_myplugin_items.items_id`, `glpi_plugins_myplugin_items.plugin_myplugin_categories_id`, `glpi_plugins_myplugin_bars.name`.',
+            ],
+        ];
+        $this->assertEquals($expected_messages, $messages_1);
+
+        $this->assertEquals(true, $return_2);
+        $this->assertEquals([], $messages_2);
     }
 
     public function testImportItem(): void
