@@ -107,7 +107,7 @@ abstract class AbstractPluginMigration
                 }
             }
         } catch (\Throwable $e) {
-            $this->addMessage(MessageType::Error, __('An unexpected error occured.'));
+            $this->result->addMessage(MessageType::Error, __('An unexpected error occured.'));
 
             $this->logger->error($e->getMessage(), context: ['exception' => $e]);
 
@@ -122,20 +122,78 @@ abstract class AbstractPluginMigration
     }
 
     /**
+     * Check that the given fields exists in database.
+     *
+     * @param array<string, array<int , string>> $required_fields
+     *      List of required fields, in the following format:
+     *          [
+     *              'tablename1' => ['id', 'name', ...],
+     *              'tablename2' => ['id', ...],
+     *          ]
+     */
+    final protected function checkDbFieldsExists(array $required_fields): bool
+    {
+        $missing_tables = [];
+        $missing_fields = [];
+        foreach ($required_fields as $table => $fields) {
+            if (!$this->db->tableExists($table)) {
+                $missing_tables[] = $table;
+                continue;
+            }
+
+            foreach ($fields as $field) {
+                if (!$this->db->fieldExists($table, $field)) {
+                    $missing_fields[] = $table . '.' . $field;
+                }
+            }
+        }
+
+        if (\count($missing_tables) > 0 || \count($missing_fields) > 0) {
+            $this->result->addMessage(
+                MessageType::Error,
+                __('The database structure does not contain all the data required for migration.')
+            );
+
+            if (\count($missing_tables) > 0) {
+                $this->result->addMessage(
+                    MessageType::Error,
+                    sprintf(
+                        __('The following database tables are missing: %s.'),
+                        '`' . implode('`, `', $missing_tables) . '`'
+                    )
+                );
+            }
+            if (\count($missing_fields) > 0) {
+                $this->result->addMessage(
+                    MessageType::Error,
+                    sprintf(
+                        __('The following database fields are missing: %s.'),
+                        '`' . implode('`, `', $missing_fields) . '`'
+                    )
+                );
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Import a plugin item.
      *
-     * @param string $itemtype                      Target itemtype.
+     * @template T of CommonDBTM
+     * @param class-string<T> $itemtype             Target itemtype.
      * @param array $input                          Creation/update input.
      * @param array|null $reconciliation_criteria   Fields used to reconciliate input with a potential existing item.
      *
-     * @return CommonDBTM|null
-     *      The created/update item, or null if the creation/update failed.
+     * @return T    The created/reused item.
      */
     final protected function importItem(
         string $itemtype,
         array $input,
         ?array $reconciliation_criteria = null
-    ): ?CommonDBTM {
+    ): CommonDBTM {
         $item = \getItemForItemtype($itemtype);
         if ($item === false) {
             throw new \RuntimeException(sprintf('Invalid itemtype `%s`.', $itemtype));
@@ -145,8 +203,55 @@ abstract class AbstractPluginMigration
             // Update the corresponding item.
             $input[$itemtype::getIndexName()] = $item->getID();
 
+            if (
+                \array_key_exists('date_mod', $input)
+                && \array_key_exists('date_mod', $item->fields)
+                && \strtotime($input['date_mod']) < \strtotime($item->fields['date_mod'])
+            ) {
+                // The item in GLPI has been modified after the last modification of the plugin item.
+                // We consider the item from the plugin as outdated and preserve the GLPI item.
+                $this->result->markItemAsReused($itemtype, $item->getID());
+                $this->result->addMessage(
+                    MessageType::Debug,
+                    sprintf(
+                        __('%s "%s" (%d) is most recent on GLPI side, its update has been skipped.'),
+                        $itemtype::getTypeName(1),
+                        $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
+                        $item->getID(),
+                    )
+                );
+                return $item;
+            }
+
+            // Check if at least one field is updated.
+            $has_updates = false;
+            foreach ($input as $fieldname => $value) {
+                if (
+                    // field is not a real field, we cannot compare the value so it is preferable to trigger the update
+                    !\array_key_exists($fieldname, $item->fields)
+                    // the input value is not identical to the current value, we must trigger the update
+                    || $value !== $item->fields[$fieldname]
+                ) {
+                    $has_updates = true;
+                    break;
+                }
+            }
+            if (!$has_updates) {
+                $this->result->markItemAsReused($itemtype, $item->getID());
+                $this->result->addMessage(
+                    MessageType::Debug,
+                    sprintf(
+                        __('%s "%s" (%d) is already up-to-date, its update has been skipped.'),
+                        $itemtype::getTypeName(1),
+                        $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
+                        $item->getID(),
+                    )
+                );
+                return $item;
+            }
+
             if ($item->update($input) === false) {
-                $this->addMessage(
+                $this->result->addMessage(
                     MessageType::Error,
                     sprintf(
                         __('Unable to update %s "%s" (%d).'),
@@ -155,44 +260,46 @@ abstract class AbstractPluginMigration
                         $item->getID(),
                     )
                 );
-                return null;
-            } else {
-                $this->result->markItemAsUpdated($itemtype, $item->getID());
-                $this->addMessage(
-                    MessageType::Debug,
-                    sprintf(
-                        __('%s "%s" (%d) has been updated.'),
-                        $itemtype::getTypeName(1),
-                        $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
-                        $item->getID(),
-                    )
-                );
+                throw new \RuntimeException('An error occured during the item update.');
             }
-        } else {
-            // Create a new item.
-            if ($item->add($input) === false) {
-                $this->addMessage(
-                    MessageType::Error,
-                    sprintf(
-                        __('Unable to create %s "%s".'),
-                        $itemtype::getTypeName(1),
-                        $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
-                    )
-                );
-                return null;
-            } else {
-                $this->result->markItemAsCreated($itemtype, $item->getID());
-                $this->addMessage(
-                    MessageType::Debug,
-                    sprintf(
-                        __('%s "%s" (%d) has been created.'),
-                        $itemtype::getTypeName(1),
-                        $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
-                        $item->getID(),
-                    )
-                );
-            }
+
+            $this->result->markItemAsReused($itemtype, $item->getID());
+            $this->result->addMessage(
+                MessageType::Debug,
+                sprintf(
+                    __('%s "%s" (%d) has been updated.'),
+                    $itemtype::getTypeName(1),
+                    $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
+                    $item->getID(),
+                )
+            );
+
+            return $item;
         }
+
+        // Create a new item.
+        if ($item->add($input) === false) {
+            $this->result->addMessage(
+                MessageType::Error,
+                sprintf(
+                    __('Unable to create %s "%s".'),
+                    $itemtype::getTypeName(1),
+                    $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
+                )
+            );
+            throw new \RuntimeException('An error occured during the item creation.');
+        }
+
+        $this->result->markItemAsCreated($itemtype, $item->getID());
+        $this->result->addMessage(
+            MessageType::Debug,
+            sprintf(
+                __('%s "%s" (%d) has been created.'),
+                $itemtype::getTypeName(1),
+                $input[$itemtype::getNameField()] ?? NOT_AVAILABLE,
+                $item->getID(),
+            )
+        );
 
         return $item;
     }
@@ -224,7 +331,7 @@ abstract class AbstractPluginMigration
     }
 
     /**
-     * Return the GLPI core item corresponding to the given plugin item.
+     * Return the GLPI core item specs corresponding to the given plugin item.
      *
      * @return array{itemtype: class-string<\CommonDBTM>, items_id: int}
      */
@@ -238,16 +345,6 @@ abstract class AbstractPluginMigration
         }
 
         return $this->target_items_mapping[$source_itemtype][$source_items_id];
-    }
-
-    /**
-     * Add a message.
-     */
-    final public function addMessage(MessageType $type, string $message): void
-    {
-        $this->result->addMessage($type, $message);
-
-        $this->progress_indicator?->addMessage($type, $message);
     }
 
     /**
