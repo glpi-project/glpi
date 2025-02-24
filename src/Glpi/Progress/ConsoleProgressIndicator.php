@@ -36,6 +36,8 @@ namespace Glpi\Progress;
 
 use Glpi\Message\MessageType;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\ConsoleSectionOutput;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -44,38 +46,36 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ConsoleProgressIndicator extends AbstractProgressIndicator
 {
     /**
-     * Console output.
-     */
-    private readonly OutputInterface $output;
-
-    /**
      * Progress bar.
      */
     private readonly ProgressBar $progress_bar;
 
-    public function __construct(OutputInterface $output, ?ProgressBar $progress_bar = null)
+    /**
+     * Progress feedback section.
+     */
+    private readonly ConsoleSectionOutput $progress_section;
+
+    public function __construct(ConsoleOutputInterface $output)
     {
         parent::__construct();
 
-        $this->output = $output;
-
-        if ($progress_bar === null) {
-            $progress_bar = new ProgressBar($output);
-            $progress_bar->setFormat('[%bar%] %percent:3s%%' . PHP_EOL . '<comment>%message%</comment>' . PHP_EOL);
-        }
-        $this->progress_bar = $progress_bar;
+        $this->progress_bar = new ProgressBar($output->section());
+        $this->progress_bar->setFormat('[%bar%] %percent:3s%%' . PHP_EOL . '<comment>%message%</comment>' . PHP_EOL);
         $this->progress_bar->setMessage(''); // Empty message on iteration start
         $this->progress_bar->start();
+
+        $this->progress_section = $output->section();
+        $this->progress_section->setMaxHeight(25); // Keep only last 25 lines of progress feedback
     }
 
     public function addMessage(MessageType $type, string $message): void
     {
         match ($type) {
-            MessageType::Error => $this->outputMessage('<error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET),
-            MessageType::Warning => $this->outputMessage('<comment>' . $message . '</comment>', OutputInterface::VERBOSITY_QUIET),
-            MessageType::Success => $this->outputMessage('<info>' . $message . '</info>', OutputInterface::VERBOSITY_NORMAL),
-            MessageType::Notice => $this->outputMessage($message, OutputInterface::VERBOSITY_NORMAL),
-            MessageType::Debug => $this->outputMessage('[DEBUG] ' . $message, OutputInterface::VERBOSITY_VERY_VERBOSE),
+            MessageType::Error => $this->progress_section->writeln('> <error>' . $message . '</error>', OutputInterface::VERBOSITY_QUIET),
+            MessageType::Warning => $this->progress_section->writeln('> <comment>' . $message . '</comment>', OutputInterface::VERBOSITY_NORMAL),
+            MessageType::Success => $this->progress_section->writeln('> <info>' . $message . '</info>', OutputInterface::VERBOSITY_NORMAL),
+            MessageType::Notice => $this->progress_section->writeln('> ' . $message, OutputInterface::VERBOSITY_NORMAL),
+            MessageType::Debug => $this->progress_section->writeln('> [DEBUG] ' . $message, OutputInterface::VERBOSITY_VERY_VERBOSE),
         };
     }
 
@@ -87,28 +87,8 @@ class ConsoleProgressIndicator extends AbstractProgressIndicator
 
         if ($this->getEndedAt() !== null) {
             $this->progress_bar->finish();
+            // Blank line between the progress feedback messages and the next messages.
+            $this->progress_section->writeln('', OutputInterface::VERBOSITY_QUIET);
         }
-    }
-
-    /**
-     * Output a message.
-     *
-     * @param string $message
-     * @param \Symfony\Component\Console\Output\OutputInterface::VERBOSITY_* $verbosity
-     */
-    private function outputMessage(
-        string $message,
-        int $verbosity
-    ) {
-        if ($verbosity > $this->output->getVerbosity()) {
-            return; // Do nothing if message will not be output due to its too high verbosity
-        }
-
-        $this->progress_bar->clear();
-        $this->output->writeln(
-            $message,
-            $verbosity
-        );
-        $this->progress_bar->display();
     }
 }
