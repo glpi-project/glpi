@@ -1804,7 +1804,7 @@ JSON;
             $isoft_version->find(['itemtype' => \Computer::class, 'items_id' => $computers_id])
         );
 
-        //check Item_OperatingSystem has been locked locked
+        //check Item_OperatingSystem has been locked
         $locks = $lockedfields->find();
         $this->assertCount(1, $locks);
         $lock = array_pop($locks);
