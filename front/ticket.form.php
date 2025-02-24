@@ -292,20 +292,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
         $track::showKanban(0);
         Html::footer();
     } else {
-        $options = $_REQUEST;
         $menus = ["helpdesk", "ticket"];
-        if ($_GET['_promoted_fup_id']) {
-            $followup = new ITILFollowup();
-            if ($followup->getFromDB($_GET['_promoted_fup_id'])) {
-                $options['content'] = $followup->fields['content'];
-            };
-        }
-        if ($_GET['_promoted_task_id']) {
-            $ticketask = new TicketTask();
-            if ($ticketask->getFromDB($_GET['_promoted_task_id'])) {
-                $options['content'] = $ticketask->fields['content'];
-            };
-        }
-        Ticket::displayFullPageForItem(0, $menus, $options);
+        Ticket::displayFullPageForItem(0, $menus, $_REQUEST);
     }
 }

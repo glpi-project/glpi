@@ -4301,7 +4301,7 @@ JAVASCRIPT;
             $options['entities_id'] = $item->fields['entities_id'];
         }
 
-        $initial_creation = static::isNewID($ID) && !$this->hasSavedInput();
+        $initial_creation = static::isNewID($ID) && $this->hasSavedInput();
 
         $this->restoreInputAndDefaults($ID, $options, null, true);
 
