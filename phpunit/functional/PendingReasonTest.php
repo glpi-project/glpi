@@ -578,7 +578,7 @@ class PendingReasonTest extends DbTestCase
         foreach (
             [
                 Ticket::class => CommonITILObject::ASSIGNED,
-                Change::class => CommonITILObject::EVALUATION,
+                Change::class => Change::EVALUATION,
                 Problem::class => CommonITILObject::OBSERVED
             ] as $itemtype => $status
         ) {
