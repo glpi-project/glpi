@@ -58,7 +58,7 @@ foreach ($itil_type_tables as $table => $fkey_to_add) {
 
 // Add status_allowed field to all ITIL Object template tables
 $itiltemplate_tables = [
-    'glpi_tickettemplates'  => [1, 2, 3, 4, 5, 6],
+    'glpi_tickettemplates'  => [1, 10, 2, 3, 4, 5, 6],
     'glpi_changetemplates'  => [1, 9, 10, 7, 4, 11, 12, 5, 8, 6, 14, 13],
     'glpi_problemtemplates' => [1, 7, 2, 3, 4, 5, 8, 6],
 ];

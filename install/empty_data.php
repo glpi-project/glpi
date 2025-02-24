@@ -9235,6 +9235,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ],
         ];
 
+        // allowed_statuses is set using default value, @see install/mysql/glpi-empty.sql ( table `glpi_tickettemplates` )
         $tables['glpi_tickettemplates'] = [
             [
                 'id' => 1,
