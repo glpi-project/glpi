@@ -51,7 +51,7 @@ class Change extends CommonITILObject
     public $grouplinkclass              = 'Change_Group';
     public $supplierlinkclass           = 'Change_Supplier';
 
-    public static $rightname                   = 'change';
+    public static $rightname            = 'change';
     protected $usenotepad               = true;
 
     const MATRIX_FIELD                  = 'priority_matrix';
@@ -59,13 +59,15 @@ class Change extends CommonITILObject
     const IMPACT_MASK_FIELD             = 'impact_mask';
     const STATUS_MATRIX_FIELD           = 'change_status';
 
-
     const READMY                        = 1;
     const READALL                       = 1024;
 
    // Specific status for changes
-    const REFUSED                       = 13;
-    const CANCELED                      = 14;
+    public const QUALIFICATION          = 12;
+    public const EVALUATION             = 9;
+    public const TEST                   = 11;
+    public const REFUSED                = 13;
+    public const CANCELED               = 14;
 
     public static function getTypeName($nb = 0)
     {
@@ -715,12 +717,13 @@ class Change extends CommonITILObject
     public static function getAllStatusArray($withmetaforsearch = false)
     {
 
-        $tab = [self::INCOMING      => _x('status', 'New'),
-            self::EVALUATION    => __('Evaluation'),
+        $tab = [
+            self::INCOMING      => _x('status', 'New'),
+            self::EVALUATION => __('Evaluation'),
             self::APPROVAL      => _n('Approval', 'Approvals', 1),
             self::ACCEPTED      => _x('status', 'Accepted'),
             self::WAITING       => __('Pending'),
-            self::TEST          => _x('change', 'Testing'),
+            self::TEST => _x('change', 'Testing'),
             self::QUALIFICATION => __('Qualification'),
             self::SOLVED        => __('Applied'),
             self::OBSERVED      => __('Review'),
