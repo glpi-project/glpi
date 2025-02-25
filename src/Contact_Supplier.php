@@ -128,6 +128,8 @@ class Contact_Supplier extends CommonDBRelation
         $entries = [];
         $suppliertype_cache = [];
         $entity_cache = [];
+        $supplier = new Supplier();
+
         foreach ($suppliers as $data) {
             $website           = $data["website"];
 
@@ -139,8 +141,7 @@ class Contact_Supplier extends CommonDBRelation
                 }
                 $website = "<a target=_blank href='$website'>" . htmlescape($data["website"]) . "</a>";
             }
-            $supplier_link = "<a href='" . Supplier::getFormURLWithID($data["id"]) . "'>" .
-               htmlescape(Dropdown::getDropdownName("glpi_suppliers", $data["id"])) . "</a>";
+            $supplier->getFromDB($data["id"]);
             if (!isset($suppliertype_cache[$data["suppliertypes_id"]])) {
                 $suppliertype_cache[$data["suppliertypes_id"]] = Dropdown::getDropdownName(
                     "glpi_suppliertypes",
@@ -152,7 +153,7 @@ class Contact_Supplier extends CommonDBRelation
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
                 'itemtype' => static::class,
                 'id' => $data["linkid"],
-                'supplier' => $supplier_link,
+                'supplier' => $supplier->getLink(),
                 'suppliertypes_id' => $suppliertype_cache[$data["suppliertypes_id"]],
                 'phonenumber' => $data["phonenumber"],
                 'fax' => $data["fax"],
@@ -186,7 +187,6 @@ class Contact_Supplier extends CommonDBRelation
             'columns' => $columns,
             'formatters' => [
                 'supplier' => 'raw_html',
-                'entity' => 'raw_html',
                 'website' => 'raw_html'
             ],
             'entries' => $entries,
@@ -234,9 +234,9 @@ class Contact_Supplier extends CommonDBRelation
         $entries = [];
         $entity_cache = [];
         $contacttype_cache = [];
+        $contact = new Contact();
         foreach ($contacts as $data) {
-            $contact_link = "<a href='" . Contact::getFormURLWithID($data["id"]) . "'>" .
-                htmlescape(sprintf(__('%1$s %2$s'), $data["name"], $data["firstname"])) . "</a></td>";
+            $contact->getFromDB($data["id"]);
             $email_link = "<a href='mailto:" . htmlescape($data["email"]) . "'>" . htmlescape($data["email"]) . "</a>";
 
             if (!isset($contacttype_cache[$data["contacttypes_id"]])) {
@@ -250,7 +250,7 @@ class Contact_Supplier extends CommonDBRelation
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
                 'itemtype' => static::class,
                 'id' => $data["linkid"],
-                'contact' => $contact_link,
+                'contact' => $contact->getLink(),
                 'phone' => $data["phone"],
                 'phone2' => $data["phone2"],
                 'mobile' => $data["mobile"],
@@ -288,7 +288,6 @@ class Contact_Supplier extends CommonDBRelation
             'columns' => $columns,
             'formatters' => [
                 'contact' => 'raw_html',
-                'entity' => 'raw_html',
                 'email' => 'raw_html'
             ],
             'entries' => $entries,
