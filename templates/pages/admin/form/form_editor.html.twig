@@ -383,10 +383,12 @@
 (async () => {
     const modules = await Promise.all([
         import("{{ js_path('js/modules/Forms/EditorController.js') }}"),
-        import("{{ js_path('js/modules/Forms/EditorConvertedExtractedDefaultValue.js') }}")
+        import("{{ js_path('js/modules/Forms/EditorConvertedExtractedDefaultValue.js') }}"),
+        import("{{ js_path('js/modules/Forms/EditorConvertedExtractedSelectableDefaultValue.js') }}")
     ]);
     const GlpiFormEditorController = modules[0].GlpiFormEditorController;
     const EditorConvertedExtractedDefaultValue = modules[1].GlpiFormEditorConvertedExtractedDefaultValue;
+    const EditorConvertedExtractedSelectableDefaultValue = modules[2].GlpiFormEditorConvertedExtractedSelectableDefaultValue;
 
     const container_selector = "[data-glpi-form-editor-container]";
     const controller = new GlpiFormEditorController(
@@ -399,6 +401,7 @@
     // Temporary solution, would be better to import it directly where it is needed but the current
     // design doesn't allow it.
     $(container_selector).data('EditorConvertedExtractedDefaultValue', EditorConvertedExtractedDefaultValue);
+    $(container_selector).data('EditorConvertedExtractedSelectableDefaultValue', EditorConvertedExtractedSelectableDefaultValue);
 
     {% for question_type in question_types_manager.getQuestionTypes() %}
         controller.registerQuestionTypeOptions(
