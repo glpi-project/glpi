@@ -95,6 +95,7 @@ export class GlpiFormConditionEditorController
 
     #initEventHandlers()
     {
+        // Handle add and delete conditions
         this.#container.addEventListener('click', (e) => {
             const target = e.target;
 
@@ -114,6 +115,14 @@ export class GlpiFormConditionEditorController
                 this.#deleteCondition(index);
             }
         });
+
+        // Handle change on selected condition items
+        // Note: need to be jquery else select2 wont work
+        $(this.#container).on(
+            'change',
+            '[data-glpi-conditions-editor-item]',
+            () => this.renderEditor()
+        );
     }
 
     async #addNewEmptyCondition()

@@ -483,16 +483,6 @@ export class GlpiFormEditorController
                 break;
             }
 
-            // Re-render the visibility editor
-            case "render-visibility-editor": {
-                this.#renderVisibilityEditor(
-                    $(target).closest(
-                        '[data-glpi-conditions-editor-container]'
-                    )
-                );
-                break;
-            }
-
             case "add-horizontal-layout":
                 this.#addHorizontalLayout(
                     target.closest(`
