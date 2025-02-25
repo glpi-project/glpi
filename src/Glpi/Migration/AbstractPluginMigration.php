@@ -180,6 +180,28 @@ abstract class AbstractPluginMigration
     }
 
     /**
+     * Count records from a table with optional conditions
+     *
+     * @param string $table Table name
+     * @param array $conditions Optional WHERE conditions
+     *
+     * @return int Count of records
+     */
+    protected function countRecords(string $table, array $conditions = []): int
+    {
+        $criteria = [
+            'FROM'  => $table,
+            'COUNT' => 'cpt'
+        ];
+
+        if (!empty($conditions)) {
+            $criteria['WHERE'] = $conditions;
+        }
+
+        return $this->db->request($criteria)->current()['cpt'];
+    }
+
+    /**
      * Import a plugin item.
      *
      * @template T of CommonDBTM

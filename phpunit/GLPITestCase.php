@@ -198,6 +198,20 @@ class GLPITestCase extends TestCase
         return $instance;
     }
 
+    /**
+     * Get the value of a private property.
+     *
+     * @param mixed     $instance       Class instance
+     * @param string    $propertyName   Property name
+     * @param mixed     $default        Default value if property is not set
+     */
+    protected function setPrivateProperty($instance, string $propertyName, $value)
+    {
+        $property = new \ReflectionProperty($instance, $propertyName);
+        $property->setAccessible(true);
+        $property->setValue($instance, $value);
+    }
+
     protected function resetSession()
     {
         Session::destroy();
