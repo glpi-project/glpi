@@ -193,7 +193,7 @@ switch ($_REQUEST['action']) {
         Session::writeClose();
         if ($embed) {
             Session::destroy();
-            $grid->embed($_REQUEST, false);
+            $grid->initEmbedSession($_REQUEST);
         }
         echo $grid->getCardHtml($_REQUEST['card_id'], $_REQUEST);
         break;

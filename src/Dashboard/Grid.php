@@ -447,34 +447,14 @@ JAVASCRIPT;
 
 
     /**
-     * Show an embeded dashboard.
-     * We must check token validity to avoid displaying dashboard to invalid users
+     * Init embed session
      *
-     * @param array $params contains theses keys:
-     * - dashboard: the dashboard system name
-     * - entities_id: entity to init in session
-     * - is_recursive: do we need to display sub entities
-     * - token: the token to check
-     * @param bool $show if true, display the dashboard
+     * @param array
      *
-     * @return void (display)
+     * @return void
      */
-    public function embed(array $params = [], bool $show = true)
+    public function initEmbedSession(array $params = [])
     {
-        $defaults = [
-            'dashboard'    => '',
-            'entities_id'  => 0,
-            'is_recursive' => 0,
-            'token'        => ''
-        ];
-        $params = array_merge($defaults, $params);
-
-        if (!self::checkToken($params)) {
-            Html::displayRightError();
-            exit;
-        }
-
-        self::$embed = true;
 
         if (!isset($_SESSION['glpi_use_mode'])) {
             $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
@@ -492,11 +472,41 @@ JAVASCRIPT;
         }
         $_SESSION['glpiactiveentities']        = $entities;
         $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
+    }
+
+
+    /**
+     * Show an embeded dashboard.
+     * We must check token validity to avoid displaying dashboard to invalid users
+     *
+     * @param array $params contains theses keys:
+     * - dashboard: the dashboard system name
+     * - entities_id: entity to init in session
+     * - is_recursive: do we need to display sub entities
+     * - token: the token to check
+     *
+     * @return void (display)
+     */
+    public function embed(array $params = [])
+    {
+        $defaults = [
+            'dashboard'    => '',
+            'entities_id'  => 0,
+            'is_recursive' => 0,
+            'token'        => ''
+        ];
+        $params = array_merge($defaults, $params);
+
+        if (!self::checkToken($params)) {
+            Html::displayRightError();
+            exit;
+        }
+
+        self::$embed = true;
+        $this->initEmbedSession($params);
 
         // show embeded dashboard
-        if ($show) {
-            $this->show(true, $params['token']);
-        }
+        $this->show(true, $params['token']);
     }
 
     public static function getToken(string $dasboard = "", int $entities_id = 0, int $is_recursive = 0): string
