@@ -447,6 +447,28 @@ JAVASCRIPT;
 
 
     /**
+     * Init embed session
+     */
+    public function initEmbedSession(array $params = [])
+    {
+        // load minimal session
+        $_SESSION["glpiactive_entity"]           = $params['entities_id'];
+        $_SESSION["glpiactive_entity_recursive"] = $params['is_recursive'];
+        $_SESSION["glpiname"]                    = 'embed_dashboard';
+        $_SESSION['glpigroups']                  = [];
+        if ($params['is_recursive']) {
+            $entities = getSonsOf("glpi_entities", $params['entities_id']);
+        } else {
+            $entities = [$params['entities_id']];
+        }
+        $_SESSION['glpiactiveentities']        = $entities;
+        $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
+
+        $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+    }
+
+
+    /**
      * Show an embeded dashboard.
      * We must check token validity to avoid displaying dashboard to invalid users
      *
@@ -474,21 +496,9 @@ JAVASCRIPT;
         }
 
         self::$embed = true;
+        $this->initEmbedSession($params);
 
-       // load minimal session
-        $_SESSION["glpiactive_entity"]           = $params['entities_id'];
-        $_SESSION["glpiactive_entity_recursive"] = $params['is_recursive'];
-        $_SESSION["glpiname"]                    = 'embed_dashboard';
-        $_SESSION["glpigroups"]                  = [];
-        if ($params['is_recursive']) {
-            $entities = getSonsOf("glpi_entities", $params['entities_id']);
-        } else {
-            $entities = [$params['entities_id']];
-        }
-        $_SESSION['glpiactiveentities']        = $entities;
-        $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
-
-       // show embeded dashboard
+        // show embeded dashboard
         $this->show(true, $params['token']);
     }
 
