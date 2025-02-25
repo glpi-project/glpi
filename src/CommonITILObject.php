@@ -83,7 +83,7 @@ abstract class CommonITILObject extends CommonDBTM
     const STATUS_MATRIX_FIELD  = '';
 
 
-   // ITIL Object shared status
+   // ITIL Object shared statuses
     const INCOMING      = 1; // new
     const ASSIGNED      = 2; // processing (assigned)
     const PLANNED       = 3; // processing (planned)
