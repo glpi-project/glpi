@@ -37,12 +37,10 @@
 namespace Glpi\Inventory\MainAsset;
 
 use Blacklist;
-use Override;
 use RuleDefineItemtypeCollection;
 
 class Itemtype extends MainAsset
 {
-    #[Override]
     public function __construct($data)
     {
         $namespaced = explode('\\', static::class);
