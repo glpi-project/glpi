@@ -33,6 +33,20 @@
  * ---------------------------------------------------------------------
  */
 
+// Parse stringified JSON payload (Used to preserve integers)
+$request_data = array_merge($_REQUEST, json_decode($_UREQUEST['data'] ?? '{}', true));
+unset($request_data['data']);
+
+$embed = false;
+if (
+    in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card', 'get_cards'])
+    && array_key_exists('embed', $request_data)
+    && (bool) $request_data['embed']
+) {
+    ini_set('session.use_cookies', 0);
+    $embed = true;
+}
+
 $SECURITY_STRATEGY = 'no_check'; // specific checks done later to allow anonymous access to embed dashboards
 
 include('../inc/includes.php');
@@ -43,21 +57,11 @@ if (!isset($_REQUEST["action"])) {
     exit;
 }
 
-// Parse stringified JSON payload (Used to preserve integers)
-$request_data = array_merge($_REQUEST, json_decode($_UREQUEST['data'] ?? '{}', true));
-unset($request_data['data']);
-
-$embed = false;
-if (
-    in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card', 'get_cards'])
-    && array_key_exists('embed', $request_data)
-    && (bool)$request_data['embed']
-) {
+if ($embed) {
     if (Grid::checkToken($request_data) === false) {
         http_response_code(403);
         exit;
     }
-    $embed = true;
 } else {
     Session::checkLoginUser();
 }
@@ -192,7 +196,6 @@ switch ($_REQUEST['action']) {
 
         Session::writeClose();
         if ($embed) {
-            Session::destroy();
             $grid->initEmbedSession($_REQUEST);
         }
         echo $grid->getCardHtml($_REQUEST['card_id'], $_REQUEST);

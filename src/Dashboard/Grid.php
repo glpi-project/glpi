@@ -455,12 +455,7 @@ JAVASCRIPT;
      */
     public function initEmbedSession(array $params = [])
     {
-
-        if (!isset($_SESSION['glpi_use_mode'])) {
-            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-        }
-
-       // load minimal session
+        // load minimal session
         $_SESSION["glpiactive_entity"]           = $params['entities_id'];
         $_SESSION["glpiactive_entity_recursive"] = $params['is_recursive'];
         $_SESSION["glpiname"]                    = 'embed_dashboard';
@@ -472,6 +467,10 @@ JAVASCRIPT;
         }
         $_SESSION['glpiactiveentities']        = $entities;
         $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
+
+        if (!isset($_SESSION['glpi_use_mode'])) {
+            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+        }
     }
 
 
