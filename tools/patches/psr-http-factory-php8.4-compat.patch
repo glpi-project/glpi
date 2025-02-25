@@ -1,0 +1,17 @@
+diff --git a/src/UploadedFileFactoryInterface.php b/src/UploadedFileFactoryInterface.php
+index 7db4e30..5eb12ab 100644
+--- a/src/UploadedFileFactoryInterface.php
++++ b/src/UploadedFileFactoryInterface.php
+@@ -26,9 +26,9 @@ interface UploadedFileFactoryInterface
+      */
+     public function createUploadedFile(
+         StreamInterface $stream,
+-        int $size = null,
++        ?int $size = null,
+         int $error = \UPLOAD_ERR_OK,
+-        string $clientFilename = null,
+-        string $clientMediaType = null
++        ?string $clientFilename = null,
++        ?string $clientMediaType = null
+     ): UploadedFileInterface;
+ }
