@@ -33,32 +33,27 @@
 
 {% extends 'pages/setup/general/base_form.html.twig' %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 {% block config_fields %}
     {{ fields.largeTitle(__('Registration')) }}
 
     {% if registration_key is empty %}
-        <div class="alert alert-info">
-            <div class="alert-title">{{ __('A registration key is needed to use some advanced features (like the plugin marketplace) in GLPI') }}</div>
-            <span class="text-secondary">
-                <a href="{{ constant('GLPI_NETWORK_SERVICES') }}">
-                    {{ __('Register on %1$s!')|format(__('GLPI Network')) }}
-                </a>
-                <br>
-                {{ __("And retrieve your key to paste it below") }}
-            </span>
-        </div>
+        {% set register_message %}
+            <a href="{{ constant('GLPI_NETWORK_SERVICES') }}">
+                {{ __('Register on %1$s!')|format(__('GLPI Network')) }}
+            </a>
+            <br>
+            {{ __("And retrieve your key to paste it below") }}
+        {% endset %}
+        {{ alerts.callout_info(__('A registration key is needed to use some advanced features (like the plugin marketplace) in GLPI'), [register_message]) }}
     {% endif %}
 
     {% if not services_available %}
-        <div class="alert alert-warning">
-            <div class="alert-title">{{ __('%1$s services website seems to be unavailable from your network or offline!')|format(__('GLPI Network')) }}</div>
-            <span class="text-secondary">
-                {% if curl_error is not null %}
-                    {{ __('Error was: %s')|format(curl_error) }}
-                {% endif %}
-            </span>
-        </div>
+        {{ alerts.alert_warning(
+            __('%1$s services website seems to be unavailable from your network or offline!')|format(__('GLPI Network')),
+            curl_error is not null ? [__('Error was: %s')|format(curl_error)] : []
+        ) }}
     {% endif %}
 
     {{ fields.textareaField('glpinetwork_registration_key', registration_key, __('Registration key'), {

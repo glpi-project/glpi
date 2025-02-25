@@ -32,6 +32,7 @@
  #}
 
 {% import "components/form/fields_macros.html.twig" as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 {% block more_fields %}
     {% if url is defined %}
@@ -50,14 +51,7 @@
         {% else %}
             {% set message = __('After 12 hours, you can no longer modify your response.') %}
         {% endif %}
-        <div class="alert alert-info d-flex align-items-center" role="alert">
-            <div class="text-dark">
-                <span class="ms-2">
-                    <i class="ti ti-info-circle fs-1"></i>
-                    {{ message }}
-                </span>
-            </div>
-        </div>
+        {{ alerts.callout_info(message) }}
         {% if item.fields['date_answered'] is empty and expired %}
             {{ fields.htmlField(
                 '',

@@ -31,106 +31,105 @@
  # ---------------------------------------------------------------------
  #}
 
-<form method="post" action="#" data-submit-once>
-   <div class="alert alert-info">
-      <h1>{{ __('2FA Enabled') }}</h1>
-      <h2>
-         {% if enforcement == constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD') %}
-            {{ __('2FA grace period ends %s')|format(grace_period_end|relative_datetime) }}
-         {% elseif enforcement == constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY') %}
-            {{ __('Mandatory') }}
-         {% else %}
-            {{ __('Optional') }}
-         {% endif %}
-      </h2>
-   </div>
-   <div id="backup_codes" class="d-none py-2" style="width: fit-content;">
-      <h3 class="mb-2 alert alert-warning">{{ __('Backup codes (This is the only time these will be shown)') }}</h3>
-      <h4 class="mb-2">{{ __('These are one-time use codes in case your authenticator is inaccessible') }}</h4>
-   </div>
-   <div>
-      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-      {% if enforcement != constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY') %}
-         <button type="submit" class="btn btn-danger" name="disable_2fa">
-            {{ __('Disable 2FA') }}
-         </button>
-      {% else %}
-         <button type="submit" class="btn btn-danger" name="reset_2fa">
-            {{ __('Reset 2FA') }}
-         </button>
-      {% endif %}
-      <button type="button" class="btn btn-outline-secondary" name="regenerate_backup_codes">
-         {{ __('Regenerate backup codes') }}
-      </button>
-      <script>
-         $(function() {
-            $('#backup_codes').on('click', 'button[name="copy_backup_codes"]', function() {
-                const codes = [];
-                $('#backup_codes').find('td.backup-code').each(function () {
-                    codes.push($(this).text());
-                });
-                const newline = navigator.platform.match(/Windows/) ? "\r\n" : "\n";
-                navigator.clipboard.writeText(codes.join(newline));
-                const btn = $(this);
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
-                btn.find('i').removeClass('ti ti-copy').addClass('ti ti-check');
-                btn.removeClass('btn-outline-secondary').addClass('btn-success');
-                btn.text('{{ __('Copied') }}');
-            });
-            $('button[name="regenerate_backup_codes"]').on('click', function() {
-               $.ajax({
-                  url: CFG_GLPI.root_doc + '/ajax/2fa.php',
-                  method: 'POST',
-                  data: {
-                      regenerate_backup_codes: 1
-                  },
-                  success: function(data) {
-                     const codes = JSON.parse(data);
-                     const backup_code_container = $('#backup_codes');
-                     if (codes.length === 0) {
-                        // An error occured
-                        backup_code_container.html('{{ __('An error occured') }}');
-                     } else {
-                        //Remove any previous code table
-                        backup_code_container.find('table').remove();
-                        backup_code_container.append(`<table class="table table-bordered mx-auto text-center" style="width: fit-content"><tbody></tbody></table>`);
-                        const table_body = backup_code_container.find('tbody');
-                        $.each(codes, function(index, value) {
-                           let code_item = $('<tr><td class="backup-code"></td></tr>');
-                           // Stylize the codes to make them easier to read and reduce ambiguity
-                           for (let i = 0; i < value.length; i++) {
-                              if (isNaN(value[i])) {
-                                 if (value[i] === value[i].toUpperCase()) {
-                                    code_item.find('td').append($('<u></u>').text(value[i]));
-                                 } else {
-                                     code_item.find('td').append(value[i]);
-                                 }
-                              } else {
-                                  code_item.find('td').append($('<span></span>').addClass('text-info').text(value[i]));
-                              }
-                           }
-                            table_body.append(code_item);
-                        });
-                        table_body.append(`<tr><td>
+<form method="post" action="#" data-submit-once>
+    {% set tfa_status %}
+        {% if enforcement == constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD') %}
+            {{ __('2FA grace period ends %s')|format(grace_period_end|relative_datetime) }}
+        {% elseif enforcement == constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY') %}
+            {{ __('Mandatory') }}
+        {% else %}
+            {{ __('Optional') }}
+        {% endif %}
+    {% endset %}
+    {{ alerts.callout_info(__('2FA Enabled'), [tfa_status]) }}
+    <div id="backup_codes" class="d-none py-2" style="width: fit-content;">
+        {{ alerts.alert_warning(__('Backup codes (This is the only time these will be shown)'), [__('These are one-time use codes in case your authenticator is inaccessible')]) }}
+    </div>
+    <div>
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        {% if enforcement != constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY') %}
+            <button type="submit" class="btn btn-danger" name="disable_2fa">
+                {{ __('Disable 2FA') }}
+            </button>
+        {% else %}
+            <button type="submit" class="btn btn-danger" name="reset_2fa">
+                {{ __('Reset 2FA') }}
+            </button>
+        {% endif %}
+        <button type="button" class="btn btn-outline-secondary" name="regenerate_backup_codes">
+            {{ __('Regenerate backup codes') }}
+        </button>
+        <script>
+            $(function() {
+                $('#backup_codes').on('click', 'button[name="copy_backup_codes"]', function() {
+                    const codes = [];
+                    $('#backup_codes').find('td.backup-code').each(function () {
+                        codes.push($(this).text());
+                    });
+                    const newline = navigator.platform.match(/Windows/) ? "\r\n" : "\n";
+                    navigator.clipboard.writeText(codes.join(newline));
+                    const btn = $(this);
+
+                    btn.find('i').removeClass('ti ti-copy').addClass('ti ti-check');
+                    btn.removeClass('btn-outline-secondary').addClass('btn-success');
+                    btn.text('{{ __('Copied') }}');
+                });
+                $('button[name="regenerate_backup_codes"]').on('click', function() {
+                    $.ajax({
+                        url: CFG_GLPI.root_doc + '/ajax/2fa.php',
+                        method: 'POST',
+                        data: {
+                            regenerate_backup_codes: 1
+                        },
+                        success: function(data) {
+                            const codes = JSON.parse(data);
+                            const backup_code_container = $('#backup_codes');
+                            if (codes.length === 0) {
+                                // An error occured
+                                backup_code_container.html('{{ alerts.alert_danger(__('An error occured'))|e('js') }}');
+                            } else {
+                                //Remove any previous code table
+                                backup_code_container.find('table').remove();
+                                backup_code_container.append(`<table class="table table-bordered mx-auto text-center" style="width: fit-content"><tbody></tbody></table>`);
+                                const table_body = backup_code_container.find('tbody');
+                                $.each(codes, function(index, value) {
+                                    let code_item = $('<tr><td class="backup-code"></td></tr>');
+                                    // Stylize the codes to make them easier to read and reduce ambiguity
+                                    for (let i = 0; i < value.length; i++) {
+                                        if (isNaN(value[i])) {
+                                            if (value[i] === value[i].toUpperCase()) {
+                                                code_item.find('td').append($('<u></u>').text(value[i]));
+                                            } else {
+                                                code_item.find('td').append(value[i]);
+                                            }
+                                        } else {
+                                            code_item.find('td').append($('<span></span>').addClass('text-info').text(value[i]));
+                                        }
+                                    }
+                                    table_body.append(code_item);
+                                });
+                                table_body.append(`<tr><td>
                             <button class="btn btn-outline-secondary" type="button" name="copy_backup_codes">
                                 <i class="ti ti-copy"></i>
                                 {{ __('Copy backup codes') }}
                             </button>
                         </td></tr>`);
-                     }
-                     backup_code_container.removeClass('d-none');
-                  },
-                  error: function() {
-                     const backup_code_container = $('#backup_codes');
-                     backup_code_container.html('{{ __('An error occured') }}');
-                     backup_code_container.removeClass('d-none');
-                  }
-               });
+                            }
+                            backup_code_container.removeClass('d-none');
+                        },
+                        error: function() {
+                            const backup_code_container = $('#backup_codes');
+                            backup_code_container.html('{{ alerts.alert_danger(__('An error occured'))|e('js') }}');
+                            backup_code_container.removeClass('d-none');
+                        }
+                    });
+                });
+                {% if regenerate_backup_codes %}
+                $('button[name="regenerate_backup_codes"]').trigger('click');
+                {% endif %}
             });
-            {% if regenerate_backup_codes %}
-             $('button[name="regenerate_backup_codes"]').trigger('click');
-            {% endif %}
-         });
-      </script>
-   </div>
+        </script>
+    </div>
 </form>

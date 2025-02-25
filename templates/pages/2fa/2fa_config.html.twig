@@ -32,6 +32,7 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 <div class="spaced">
    {% if canedit %}
@@ -47,9 +48,7 @@
       </tr>
       <tr class="tab_bg_1">
          <td colspan="2">
-            <div class="alert alert-info">
-               {{ __('If 2FA is enforced, users with access to this %s will be required to use 2FA at login even if this is not their default')|format(item.getTypeName(1)) }}
-            </div>
+             {{ alerts.callout_info(__('If 2FA is enforced, users with access to this %s will be required to use 2FA at login even if this is not their default')|format(item.getTypeName(1))) }}
          </td>
       </tr>
       <tr class="tab_bg_1">

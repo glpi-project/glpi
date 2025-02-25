@@ -33,67 +33,64 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 {% set transfer_list = transfer_list|default({}) %}
 {% set rand = random() %}
 
 <div class="asset">
-   {% if transfer_list|length > 0 %}
-      <div class="alert alert-info">
-         {{ __('You can continue to add elements to be transferred or execute the transfer now.') }}
-         <br>
-         {{ __('Think of making a backup before transfering items.') }}
-      </div>
-      {{ fields.dropdownField('Transfer', 'id', 0, __('Transfer mode'), {
-         rand: rand,
-         comments: false,
-         toupdate: {
-            value_fieldname: 'id',
-            to_update: 'transfer_form',
-            url: config('root_doc') ~ '/ajax/transfers.php',
-         }
-      }) }}
-      <div id="transfer_form">
-         <form action="{{ config('root_doc') ~ '/front/transfer.action.php' }}" method="post">
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-            {{ inputs.button('clear', __('Clear the list of elements to be transferred'), 'submit', 'clear') }}
-         </form>
-      </div>
-      <table class="table table-striped">
-         <thead>
+    {% if transfer_list|length > 0 %}
+        {{ alerts.callout_info(__('You can continue to add elements to be transferred or execute the transfer now.'), [
+            __('Think of making a backup before transfering items.')
+        ]) }}
+        {{ fields.dropdownField('Transfer', 'id', 0, __('Transfer mode'), {
+            rand: rand,
+            comments: false,
+            toupdate: {
+                value_fieldname: 'id',
+                to_update: 'transfer_form',
+                url: config('root_doc') ~ '/ajax/transfers.php',
+            }
+        }) }}
+        <div id="transfer_form">
+            <form action="{{ config('root_doc') ~ '/front/transfer.action.php' }}" method="post">
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                {{ inputs.button('clear', __('Clear the list of elements to be transferred'), 'submit', 'clear') }}
+            </form>
+        </div>
+        <table class="table table-striped">
+            <thead>
             <tr>
-               <th colspan="4">{{ __('Items to transfer') }}</th>
+                <th colspan="4">{{ __('Items to transfer') }}</th>
             </tr>
             <tr>
-               <th>{{ _n('Type', 'Types', 1) }}</th>
-               <th>{{ 'Entity'|itemtype_name }}</th>
-               <th>{{ __('ID') }}</th>
-               <th>{{ __('Name') }}</th>
+                <th>{{ _n('Type', 'Types', 1) }}</th>
+                <th>{{ 'Entity'|itemtype_name }}</th>
+                <th>{{ __('ID') }}</th>
+                <th>{{ __('Name') }}</th>
             </tr>
-         </thead>
-         <tbody>
+            </thead>
+            <tbody>
             {% for itemtype, items in transfer_list %}
-               {% for item in items %}
-                  <tr>
-                     <td>{{ itemtype|itemtype_name }}</td>
-                     <td>{{ item['locname'] }}</td>
-                     <td>{{ item['id'] }}</td>
-                     <td>{{ item['name']|default('(' ~ item['id'] ~ ')') }}</td>
-                  </tr>
-               {% endfor %}
+                {% for item in items %}
+                    <tr>
+                        <td>{{ itemtype|itemtype_name }}</td>
+                        <td>{{ item['locname'] }}</td>
+                        <td>{{ item['id'] }}</td>
+                        <td>{{ item['name']|default('(' ~ item['id'] ~ ')') }}</td>
+                    </tr>
+                {% endfor %}
             {% endfor %}
-         </tbody>
-      </table>
-      {% do call('Ajax::updateItemOnSelectEvent', [
-         "dropdown_id" ~ rand,
-         "transfer_form",
-         config('root_doc') ~ '/ajax/transfers.php',
-         {
-            "id": "__VALUE__"
-         }
-      ]) %}
-   {% else %}
-      <div class="alert alert-danger">
-         {{ __('No selected element or badly defined operation') }}
-      </div>
-   {% endif %}
+            </tbody>
+        </table>
+        {% do call('Ajax::updateItemOnSelectEvent', [
+            "dropdown_id" ~ rand,
+            "transfer_form",
+            config('root_doc') ~ '/ajax/transfers.php',
+            {
+                "id": "__VALUE__"
+            }
+        ]) %}
+    {% else %}
+        {{ alerts.alert_danger(__('No selected element or badly defined operation')) }}
+    {% endif %}
 </div>

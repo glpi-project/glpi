@@ -32,6 +32,7 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 <div class="asset">
     {{ fields.largeTitle(__('Preview')) }}
@@ -58,10 +59,7 @@
             }) }}
         </div>
     {% else %}
-        <div class="alert alert-info d-flex align-items-center m-0" role="alert">
-            <i class="ti ti-info-circle me-1"></i>
-            {{ __('The preview is not available for the notifications related to %s.')|format(template.fields['itemtype']|itemtype_name(get_plural_number())) }}
-        </div>
+        {{ alerts.callout_info(__('The preview is not available for the notifications related to %s.')|format(template.fields['itemtype']|itemtype_name(get_plural_number()))) }}
     {% endif %}
 
     {% if data is not null %}

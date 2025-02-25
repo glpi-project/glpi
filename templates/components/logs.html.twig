@@ -32,11 +32,10 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 {% if total_number < 1 %}
-   <div class="alert alert-info">
-      {{ __('No historical') }}
-   </div>
+    {{ alerts.callout_info(__('No historical')) }}
 {% else %}
 
    {{ include('components/pager.html.twig', {count: filtered_number}) }}

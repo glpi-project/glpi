@@ -32,6 +32,7 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 {% if (config('notifications_mailing') == 1) %}
     {% set rand = random() %}
@@ -199,10 +200,10 @@
                 <span>{{ 'AuthMail'|itemtype_name }}</span>
             </div>
 
-            <div id="oauth_redirect_alert_{{ rand }}" class="d-flex alert alert-info mx-2">
-                <i class="ti ti-info-circle fs-2x alert-icon"></i>
-                {{ __('Once the form has been validated, you will be redirected to your supplierʼs authentication page if necessary.') }}
-            </div>
+            {{ alerts.callout_info(
+                title: __('Once the form has been validated, you will be redirected to your supplierʼs authentication page if necessary.'),
+                options: {add_class: 'mx-2', id: "oauth_redirect_alert_" ~ rand}
+            ) }}
 
             {{ fields.dropdownArrayField(
                 'smtp_oauth_provider',
@@ -406,13 +407,9 @@
         </div>
     </form>
 {% else %}
-    <div class="row">
-        <div class="col">
-            <div class="alert alert-info">
-                <i class="ti ti-info-circle fs-2x alert-icon"></i>
-                {{ __('Notifications are disabled.') }}
-                <a href="{{ config('root_doc') }}/front/setup.notification.php">{{ __('See configuration') }}</a>
-            </div>
-        </div>
-    </div>
+    {% set alert_content %}
+        {{ __('Notifications are disabled.') }}
+        <a class="link-info" href="{{ config('root_doc') }}/front/setup.notification.php">{{ __('See configuration') }}</a>
+    {% endset %}
+    {{ alerts.alert_info(alert_content) }}
 {% endif %}

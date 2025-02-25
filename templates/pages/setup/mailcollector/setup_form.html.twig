@@ -33,6 +33,7 @@
 
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 {% set params  = params ?? [] %}
 
 {% set params = params|merge({
@@ -49,12 +50,9 @@
 
 {% block form_fields %}
    {% if item.fields['errors'] %}
-      <div class="alert alert-danger">
-         {{ __('%1$s: %2$s')|format(
-               _n('Error', 'Errors', get_plural_number()),
-               item.fields['errors']
-         ) }}
-      </div>
+       {{ alerts.callout_danger(
+           __('%1$s: %2$s')|format(_n('Error', 'Errors', get_plural_number()), item.fields['errors'])
+       ) }}
    {% endif %}
 
    {{ fields.textField(
