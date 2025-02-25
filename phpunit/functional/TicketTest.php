@@ -1982,7 +1982,16 @@ class TicketTest extends DbTestCase
         );
     }
 
-    public function changeTechRights(array $rights)
+    /**
+     * Update tech user rights (and relogin to apply these rights)
+     *
+     * $rights parameter is an array with the following format:
+     * key : object type (e.g. ticket)
+     * value : right (e.g. \Ticket::READNEWTICKET)
+     * @param array<string, int> $rights
+     * @throws \Exception
+     */
+    public function changeTechRights(array $rights): void
     {
         global $DB;
 
