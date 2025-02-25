@@ -77,6 +77,11 @@ export class GlpiFormEditorController
     #question_subtypes_options;
 
     /**
+     * @type {array<GlpiFormConditionEditorController>}
+     */
+    #conditions_editors_controllers;
+
+    /**
      * Create a new GlpiFormEditorController instance for the given target.
      * The target must be a valid form.
      *
@@ -92,6 +97,7 @@ export class GlpiFormEditorController
         this.#templates           = templates;
         this.#options             = {};
         this.#question_subtypes_options    = {};
+        this.#conditions_editors_controllers = [];
 
         // Validate target
         if ($(this.#target).prop("tagName") != "FORM") {
@@ -193,7 +199,7 @@ export class GlpiFormEditorController
                 (e) => this.#renderVisibilityEditor(
                     $(e.target)
                         .parent()
-                        .find('[data-glpi-conditions-editor]')
+                        .find('[data-glpi-conditions-editor-container]')
                 ),
             );
 
@@ -481,7 +487,7 @@ export class GlpiFormEditorController
             case "render-visibility-editor": {
                 this.#renderVisibilityEditor(
                     $(target).closest(
-                        '[data-glpi-conditions-editor]'
+                        '[data-glpi-conditions-editor-container]'
                     )
                 );
                 break;
@@ -490,7 +496,7 @@ export class GlpiFormEditorController
             // Delete the selected conditon and re-render the visibility editor
             case "delete-condition": {
                 this.#deleteCondition(
-                    $(target).closest('[data-glpi-conditions-editor]'),
+                    $(target).closest('[data-glpi-conditions-editor-container]'),
                     $(target)
                         .closest('[data-glpi-conditions-editor-condition]')
                         .data('glpi-conditions-editor-condition-index')
@@ -501,7 +507,7 @@ export class GlpiFormEditorController
             // Add a new empty condition and re-render the visibility editor
             case "add-condition": {
                 this.#addNewEmptyCondition(
-                    $(target).closest('[data-glpi-conditions-editor]')
+                    $(target).closest('[data-glpi-conditions-editor-container]')
                 );
                 break;
             }
@@ -2196,28 +2202,15 @@ export class GlpiFormEditorController
      * This method compute the available questions of the forms, the defined
      * conditions and the current selected item.
      */
-    #getFormStateForVisibilityEditor(container) {
+    #getQuestionStateForConditionEditor() {
         this.computeState();
-
-        const form_data = {
-            'questions': [],
-            'conditions': [],
-            'selected_item_uuid': this.#getItemInput(
-                container.closest('[data-glpi-form-editor-block], [data-glpi-form-editor-section-details]'),
-                'uuid',
-            ),
-            // For now, the type is hardcoded to 'question' but we will support
-            // conditions on section and comments too
-            'selected_item_type': container.closest(
-                '[data-glpi-conditions-editor-condition-type]'
-            ).data('glpi-form-editor-condition-type'),
-        };
+        const questions = [];
 
         // Extract all questions
         $(this.#target)
             .find("[data-glpi-form-editor-question]")
             .each((_index, question) => {
-                form_data.questions.push({
+                questions.push({
                     'uuid': this.#getItemInput($(question), "uuid"),
                     'name': this.#getItemInput($(question), "name"),
                     'type': this.#getItemInput($(question), "type"),
@@ -2225,81 +2218,58 @@ export class GlpiFormEditorController
             })
         ;
 
-        // Extract already defined conditions for the current question
-        container.find('[data-glpi-conditions-editor-condition]')
-            .each((_index, condition) => {
-                const condition_data = {};
-
-                // Try to find a selected logic operator
-                const condition_logic_operator = $(condition).find(
-                    '[data-glpi-conditions-editor-logic-operator]'
-                );
-                if (condition_logic_operator.length > 0) {
-                    condition_data.logic_operator = condition_logic_operator.val();
-                }
-
-                // Try to find a selected item
-                const condition_item = $(condition).find(
-                    '[data-glpi-conditions-editor-item]'
-                );
-                if (condition_item.length > 0) {
-                    condition_data.item = condition_item.val();
-                }
-
-                // Try to find a selected value operator
-                const condition_value_operator = $(condition).find(
-                    '[data-glpi-conditions-editor-value-operator]'
-                );
-                if (condition_value_operator.length > 0) {
-                    condition_data.value_operator = condition_value_operator.val();
-                }
-
-                // Try to find a selected value
-                const condition_value = $(condition).find(
-                    '[data-glpi-conditions-editor-value]'
-                );
-                if (condition_value.length > 0) {
-                    condition_data.value = condition_value.val();
-                }
-
-                form_data.conditions.push(condition_data);
-            })
-        ;
-
-        return form_data;
+        return questions;
     }
 
-    async #renderVisibilityEditor(container, form_data = null) {
-        if (form_data === null) {
-            form_data = this.#getFormStateForVisibilityEditor(container);
+    async #renderVisibilityEditor(container) {
+        let controller = this.#getConditionEditorController(container);
+
+        // Controller lazy loading
+        if (controller === null) {
+            // Read selected item uuid and type
+            const uuid = this.#getItemInput(
+                container.closest(
+                    '[data-glpi-form-editor-block], [data-glpi-form-editor-section-details]'
+                ),
+                'uuid',
+            );
+            const type = container.closest(
+                '[data-glpi-conditions-editor-condition-type]'
+            ).data('glpi-form-editor-condition-type');
+
+            // Init and register controller
+            controller = new GlpiFormConditionEditorController(
+                container[0],
+                uuid,
+                type,
+                this.#getQuestionStateForConditionEditor(),
+            );
+            container.attr(
+                'data-glpi-editor-condition-controller-index',
+                this.#conditions_editors_controllers.length,
+            );
+            this.#conditions_editors_controllers.push(controller);
+        } else {
+            // Refresh question data to make sure it is up to date
+            controller.setFormQuestions(this.#getQuestionStateForConditionEditor());
         }
 
-        const content = await $.post('/Form/ConditionalVisibility/Editor', {
-            form_data: form_data,
-        });
-        container.html(content);
+        controller.renderEditor();
+    }
+
+    #getConditionEditorController(container) {
+        const controller_index = container.data('glpi-editor-condition-controller-index');
+        return this.#conditions_editors_controllers[controller_index] ?? null;
     }
 
     #addNewEmptyCondition(container) {
-        const form_data = this.#getFormStateForVisibilityEditor(container);
-
-        // Add new empty condition
-        form_data.conditions.push({
-            'item': '',
-        });
-
-        this.#renderVisibilityEditor(container, form_data);
+        const controller = this.#getConditionEditorController(container);
+        controller.addNewEmptyCondition();
     }
 
     #deleteCondition(container, condition_index) {
-        const form_data = this.#getFormStateForVisibilityEditor(container);
-
-        // Remove the condition from the list
-        form_data.conditions = form_data.conditions.filter((_condition, index) => {
-            return index != condition_index;
-        });
-
-        this.#renderVisibilityEditor(container, form_data);
+        const controller = this.#getConditionEditorController(container);
+        controller.deleteCondition(condition_index);
     }
 
     #refreshCheckedInputs() {

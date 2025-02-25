@@ -70,14 +70,14 @@ export class GlpiFormConditionEditorController
     async renderEditor()
     {
         const data = this.#computeData();
-        this.#doRenderEditor(data);
+        await this.#doRenderEditor(data);
     }
 
     async addNewEmptyCondition()
     {
         const data = this.#computeData();
         data.conditions.push({'item': ''});
-        this.#doRenderEditor(data);
+        await this.#doRenderEditor(data);
     }
 
     async deleteCondition(condition_index)
@@ -86,7 +86,7 @@ export class GlpiFormConditionEditorController
         data.conditions = data.conditions.filter((_condition, index) => {
             return index != condition_index;
         });
-        this.#doRenderEditor(data);
+        await this.#doRenderEditor(data);
     }
 
     /**
@@ -103,7 +103,9 @@ export class GlpiFormConditionEditorController
         const content = await $.post('/Form/ConditionalVisibility/Editor', {
             form_data: data,
         });
-        this.#container.querySelector('[data-glpi-conditions-editor]').innerHtml(content);
+
+        // Note: must use `$().html` to make sure we trigger scripts
+        $(this.#container.querySelector('[data-glpi-conditions-editor]')).html(content);
     }
 
     #computeData()
