@@ -100,6 +100,36 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         ], $forms_names);
     }
 
+    public function testItemsAreOrderedByPinnedStatus(): void
+    {
+        // Arrange: create forms with pinned status
+        $builders = [
+            (new FormBuilder("Pinned form 1"))->setIsPinned(true),
+            (new FormBuilder("Pinned form 2"))->setIsPinned(true),
+            (new FormBuilder("Not pinned form 1"))->setIsPinned(false),
+            (new FormBuilder("Not pinned form 2"))->setIsPinned(false),
+        ];
+        foreach ($builders as $builder) {
+            $builder->allowAllUsers();
+            $builder->setIsActive(true);
+            $this->createForm($builder);
+        }
+
+        // Act: get the forms from the catalog manager and extract their names
+        $access_parameters = $this->getDefaultParametersForTestUser();
+        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $forms = self::$manager->getItems($item_request);
+        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+
+        // Assert: pinned forms must be displayed first
+        $this->assertEquals([
+            "Pinned form 1",
+            "Pinned form 2",
+            "Not pinned form 1",
+            "Not pinned form 2",
+        ], $forms_names);
+    }
+
     public function testItemsAreOrderedByNames(): void
     {
         // Arrange: create forms and categories with unordered names
@@ -134,6 +164,40 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             // Categories are always at the end
             "BBB",
             "QQQ",
+        ], $forms_names);
+    }
+
+    public function testItemsAreOrderedByPinnedStatusAndNames(): void
+    {
+        // Arrange: create forms with pinned status and unordered names
+        $builders = [
+            (new FormBuilder("C Not pinned form"))->setIsPinned(false),
+            (new FormBuilder("B Pinned form"))->setIsPinned(true),
+            (new FormBuilder("B Not pinned form"))->setIsPinned(false),
+            (new FormBuilder("A Pinned form"))->setIsPinned(true),
+            (new FormBuilder("C Pinned form"))->setIsPinned(true),
+            (new FormBuilder("A Not pinned form"))->setIsPinned(false),
+        ];
+        foreach ($builders as $builder) {
+            $builder->allowAllUsers();
+            $builder->setIsActive(true);
+            $this->createForm($builder);
+        }
+
+        // Act: get the forms from the catalog manager and extract their names
+        $access_parameters = $this->getDefaultParametersForTestUser();
+        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $forms = self::$manager->getItems($item_request);
+        $forms_names = array_map(fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(), $forms);
+
+        // Assert: pinned forms must be displayed first, then forms are ordered by name
+        $this->assertEquals([
+            "A Pinned form",
+            "B Pinned form",
+            "C Pinned form",
+            "A Not pinned form",
+            "B Not pinned form",
+            "C Not pinned form",
         ], $forms_names);
     }
 

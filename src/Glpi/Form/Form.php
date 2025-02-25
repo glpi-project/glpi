@@ -952,6 +952,12 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     }
 
     #[Override]
+    public function isServiceCatalogItemPinned(): bool
+    {
+        return $this->fields['is_pinned'] ?? false;
+    }
+
+    #[Override]
     public function getServiceCatalogLink(): string
     {
         return "/Form/Render/" . $this->getID();

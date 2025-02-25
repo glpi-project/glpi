@@ -53,4 +53,10 @@ interface ServiceCatalogItemInterface
      * @return string
      */
     public function getServiceCatalogItemIllustration(): string;
+
+    /**
+     * Check if the item is pinned
+     * @return bool
+     */
+    public function isServiceCatalogItemPinned(): bool;
 }

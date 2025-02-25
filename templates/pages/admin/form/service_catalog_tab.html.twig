@@ -83,6 +83,12 @@
             }
         ) }}
 
+        <label class="col-form-label form-check form-switch mb-2">
+            <input type="hidden" name="is_pinned" value="0">
+            <input class="form-check-input" type="checkbox" name="is_pinned" value="1" {{ form.fields.is_pinned ? 'checked' : '' }}>
+            <span class="form-check-label">{{ __("Pin to top of the service catalog") }}</span>
+        </label>
+
         {# Hidden values #}
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
         <input type="hidden" name="id" value="{{ form.getID() }}" />
