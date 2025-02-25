@@ -33,6 +33,8 @@
 
 /* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown */
 
+import { GlpiFormConditionEditorController } from './ConditionEditorController.js';
+
 /**
  * Client code to handle users actions on the form_editor template
  */
