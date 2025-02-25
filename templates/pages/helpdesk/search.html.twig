@@ -71,7 +71,7 @@
     </h2>
 
     <div class="list-group list-group-flush list-group-hoverable pb-3">
-        {% for form in forms|slice(0, 20) %}
+        {% for form in forms %}
             <div class="list-group-item border-0 pt-1 pb-1">
                 <a
                     href="{{ path("/Form/Render/" ~ form.getID()) }}"

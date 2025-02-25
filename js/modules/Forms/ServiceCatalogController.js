@@ -44,15 +44,6 @@ export class GlpiFormServiceCatalogController
         );
         input.addEventListener('input', filterFormsDebounced);
 
-        // Load children items when composite items are clicked
-        document
-            .querySelectorAll('[data-children-url-parameters]')
-            .forEach((composite) => composite.addEventListener(
-                'click',
-                (e) => this.#loadChildren(e)
-            ))
-        ;
-
         // Initialize breadcrumb with root level
         this.breadcrumb = [{
             title: __('Service catalog'),
@@ -79,6 +70,44 @@ export class GlpiFormServiceCatalogController
             '',
             window.location.pathname
         );
+
+        // Handle composite, breadcrumb and pagination clicks
+        document.addEventListener('click', (e) => {
+            const compositeItem = $(e.target).closest('[data-composite-item]');
+            if (compositeItem.length === 1) {
+                // Prevent loading the same page again
+                e.preventDefault();
+
+                this.#loadChildren(compositeItem.get(0));
+            }
+
+            const breadcrumbItem = $(e.target).closest('[data-breadcrumb-item]');
+            if (breadcrumbItem.length === 1) {
+                // Prevent loading the same page again
+                e.preventDefault();
+
+                const index = this.breadcrumb.findIndex(item => item.params === breadcrumbItem.data('childrenUrlParameters'));
+                this.breadcrumb = this.breadcrumb.slice(0, index + 1);
+                this.#updateBreadcrumb();
+                this.#loadItems(breadcrumbItem.data('childrenUrlParameters'));
+                history.pushState(
+                    {
+                        url_params: breadcrumbItem.data('childrenUrlParameters'),
+                        breadcrumb: this.breadcrumb
+                    },
+                    '',
+                    window.location.pathname
+                );
+            }
+
+            const pageLink = $(e.target).closest('[data-pagination-item]');
+            if (pageLink.length === 1 && !pageLink.hasClass('disabled')) {
+                // Prevent loading the same page again
+                e.preventDefault();
+
+                this.#loadPage(pageLink.get(0));
+            }
+        });
     }
 
     async #filterItems()
@@ -86,19 +115,17 @@ export class GlpiFormServiceCatalogController
         const input = this.#getFilterInput();
         const url_params = new URLSearchParams({
             filter: input.value,
+            page: 1, // Reset to first page when filtering
         });
         this.#loadItems(url_params);
     }
 
-    async #loadChildren(e)
+    async #loadChildren(element)
     {
-        e.preventDefault();
-
         // Clear search filter
         const search_input = this.#getFilterInput();
         search_input.value = '';
 
-        const element = e.currentTarget;
         const title = element.querySelector('.card-title') ? element.querySelector('.card-title').textContent : '';
         const url_params = element.dataset['childrenUrlParameters'];
 
@@ -130,14 +157,23 @@ export class GlpiFormServiceCatalogController
         const url = `${CFG_GLPI.root_doc}/ServiceCatalog/Items`;
         const response = await fetch(`${url}?${url_params}`);
         this.#getFormsArea().innerHTML = await response.text();
+    }
 
-        // Reattach event listeners to newly loaded elements
-        document
-            .querySelectorAll('[data-children-url-parameters]')
-            .forEach((composite) => composite.addEventListener(
-                'click',
-                (e) => this.#loadChildren(e)
-            ));
+    async #loadPage(element) {
+        const url_params = element.dataset.childrenUrlParameters;
+
+        // Get children items from backend
+        this.#loadItems(url_params);
+
+        // Push state to history with breadcrumb
+        history.pushState(
+            {
+                url_params: url_params,
+                breadcrumb: this.breadcrumb
+            },
+            '',
+            window.location.pathname
+        );
     }
 
     #updateBreadcrumb() {
@@ -156,20 +192,7 @@ export class GlpiFormServiceCatalogController
             a.textContent = item.title;
             if (index < this.breadcrumb.length - 1) {
                 a.dataset.childrenUrlParameters = item.params;
-                a.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    this.breadcrumb = this.breadcrumb.slice(0, index + 1);
-                    this.#updateBreadcrumb();
-                    this.#loadItems(item.params);
-                    history.pushState(
-                        {
-                            url_params: item.params,
-                            breadcrumb: this.breadcrumb
-                        },
-                        '',
-                        window.location.pathname
-                    );
-                });
+                a.dataset.breadcrumbItem = '';
             }
 
             li.appendChild(a);

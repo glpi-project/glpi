@@ -41,9 +41,11 @@ use Glpi\Form\Category;
 final class ItemRequest
 {
     public function __construct(
-        private FormAccessParameters $access_parameters,
-        private string $filter = "",
-        private ?Category $category = null,
+        public FormAccessParameters $access_parameters,
+        public string $filter = "",
+        public ?Category $category = null,
+        public int $page = 1,
+        public int $items_per_page = ServiceCatalogManager::ITEMS_PER_PAGE
     ) {
     }
 
