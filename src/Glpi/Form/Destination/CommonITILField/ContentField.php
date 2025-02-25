@@ -168,4 +168,10 @@ TWIG;
     {
         return 20;
     }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::PROPERTIES;
+    }
 }

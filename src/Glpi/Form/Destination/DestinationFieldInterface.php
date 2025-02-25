@@ -37,6 +37,7 @@ namespace Glpi\Form\Destination;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\CommonITILField\Category;
 use Glpi\Form\Form;
 
 interface DestinationFieldInterface
@@ -141,4 +142,6 @@ interface DestinationFieldInterface
      * @return bool
      */
     public function canHaveMultipleStrategies(): bool;
+
+    public function getCategory(): Category;
 }

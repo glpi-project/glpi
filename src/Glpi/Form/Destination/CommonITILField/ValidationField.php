@@ -243,4 +243,10 @@ class ValidationField extends AbstractConfigField
     {
         return true;
     }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::TIMELINE;
+    }
 }

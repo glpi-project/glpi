@@ -124,4 +124,10 @@ abstract class SLMField extends AbstractConfigField
         }
         return $values;
     }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::SERVICE_LEVEL;
+    }
 }

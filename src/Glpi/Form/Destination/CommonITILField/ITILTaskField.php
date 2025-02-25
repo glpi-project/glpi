@@ -129,7 +129,7 @@ class ITILTaskField extends AbstractConfigField
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 20;
     }
 
     #[Override]
@@ -143,5 +143,11 @@ class ITILTaskField extends AbstractConfigField
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::TIMELINE;
     }
 }

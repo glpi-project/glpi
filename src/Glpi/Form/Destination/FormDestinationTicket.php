@@ -52,9 +52,9 @@ final class FormDestinationTicket extends AbstractCommonITILFormDestination
     }
 
     #[Override]
-    public function getConfigurableFields(): array
+    protected function defineConfigurableFields(): array
     {
-        return array_merge(parent::getConfigurableFields(), [
+        return array_merge(parent::defineConfigurableFields(), [
             new RequestTypeField(),
             new SLATTOField(),
             new SLATTRField(),

@@ -50,7 +50,7 @@ final class SLATTOField extends SLMField
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 0;
     }
 
     #[Override]

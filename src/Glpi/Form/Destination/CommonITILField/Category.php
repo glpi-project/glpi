@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,39 +34,40 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use OLA;
-use Override;
-use SLM;
-
-final class OLATTRField extends SLMField
+enum Category: string
 {
-    #[Override]
+    case PROPERTIES = 'properties';
+    case ACTORS = 'actors';
+    case TIMELINE = 'timeline';
+    case SERVICE_LEVEL = 'service_level';
+
     public function getLabel(): string
     {
-        return __("OLA TTR");
+        return match ($this) {
+            self::PROPERTIES    => "", // No label
+            self::ACTORS        => __("Actors"),
+            self::TIMELINE      => __("Timeline"),
+            self::SERVICE_LEVEL => __("Service levels"),
+        };
     }
 
-    #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return match ($this) {
+            self::PROPERTIES     => 10,
+            self::ACTORS         => 20,
+            self::TIMELINE       => 30,
+            self::SERVICE_LEVEL  => 40,
+        };
     }
 
-    #[Override]
-    public function getSLMClass(): string
+    public function getIcon(): string
     {
-        return OLA::class;
-    }
-
-    #[Override]
-    public function getType(): int
-    {
-        return SLM::TTR;
-    }
-
-    #[Override]
-    public function getConfigClass(): string
-    {
-        return OLATTRFieldConfig::class;
+        return match ($this) {
+            self::PROPERTIES     => '', // No icon
+            self::ACTORS         => 'ti ti-user',
+            self::TIMELINE       => 'ti ti-messages',
+            self::SERVICE_LEVEL  => 'ti ti-stopwatch',
+        };
     }
 }

@@ -224,4 +224,10 @@ abstract class ITILActorField extends AbstractConfigField
     {
         return true;
     }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::ACTORS;
+    }
 }

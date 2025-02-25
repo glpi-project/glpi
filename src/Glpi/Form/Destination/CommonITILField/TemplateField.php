@@ -186,4 +186,10 @@ TWIG;
     {
         return 30;
     }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::PROPERTIES;
+    }
 }
