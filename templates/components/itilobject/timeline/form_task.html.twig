@@ -382,13 +382,11 @@
                               <i class="fas ti ti-calendar-off"></i>
                               <span>{{ __('Unplan') }}</span>
                            </button>
-                        {% else %}
-                           {% if item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::PLANNED')) %}
-                              <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
-                                 <i class="fas fa-calendar"></i>
-                                 <span>{{ __('Plan this task') }}</span>
-                              </button>
-                           {% endif %}
+                        {% elseif item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::PLANNED')) %}
+                           <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
+                              <i class="fas fa-calendar"></i>
+                              <span>{{ __('Plan this task') }}</span>
+                           </button>
                         {% endif %}
                         <div id="viewplan{{ rand }}"></div>
                      </div>
