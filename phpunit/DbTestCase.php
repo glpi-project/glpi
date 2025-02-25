@@ -363,16 +363,19 @@ class DbTestCase extends \GLPITestCase
      */
     protected function createRule(RuleBuilder $builder): Rule
     {
-        $rule = $this->createItem(Rule::class, [
+        $input = [
             'is_active'    => 1,
             'sub_type'     => $builder->getRuleType(),
             'name'         => $builder->getName(),
             'match'        => $builder->getOperator(),
             'condition'    => $builder->getCondition(),
             'is_recursive' => $builder->isRecursive(),
-            'entities_id'  => $builder->getEntity(),
-            'ranking'      => $builder->getRanking(),
-        ]);
+            'entities_id'  => $builder->getEntity()
+        ];
+        if ($ranking = $builder->getRanking()) {
+            $input['ranking'] = $ranking;
+        }
+        $rule = $this->createItem(Rule::class, $input);
 
         foreach ($builder->getCriteria() as $criterion) {
             $this->createItem(RuleCriteria::class, [
