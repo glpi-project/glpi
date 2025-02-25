@@ -1,0 +1,3378 @@
+diff --git a/classes/asserter.php b/classes/asserter.php
+index 617f32a6..d34f0fc8 100644
+--- a/classes/asserter.php
++++ b/classes/asserter.php
+@@ -11,7 +11,7 @@ abstract class asserter implements asserter\definition
+     protected $generator = null;
+     protected $test = null;
+ 
+-    public function __construct(asserter\generator $generator = null, variable\analyzer $analyzer = null, locale $locale = null)
++    public function __construct(?asserter\generator $generator = null, ?variable\analyzer $analyzer = null, ?locale $locale = null)
+     {
+         $this
+             ->setGenerator($generator)
+@@ -51,7 +51,7 @@ abstract class asserter implements asserter\definition
+         return $this;
+     }
+ 
+-    public function setLocale(locale $locale = null)
++    public function setLocale(?locale $locale = null)
+     {
+         $this->locale = $locale ?: new locale();
+ 
+@@ -63,7 +63,7 @@ abstract class asserter implements asserter\definition
+         return $this->locale;
+     }
+ 
+-    public function setGenerator(asserter\generator $generator = null)
++    public function setGenerator(?asserter\generator $generator = null)
+     {
+         $this->generator = $generator ?: new asserter\generator();
+ 
+@@ -75,7 +75,7 @@ abstract class asserter implements asserter\definition
+         return $this->generator;
+     }
+ 
+-    public function setAnalyzer(variable\analyzer $analyzer = null)
++    public function setAnalyzer(?variable\analyzer $analyzer = null)
+     {
+         $this->analyzer = $analyzer ?: new variable\analyzer();
+ 
+diff --git a/classes/asserter/definition.php b/classes/asserter/definition.php
+index 5b9ca280..4d70d5d4 100644
+--- a/classes/asserter/definition.php
++++ b/classes/asserter/definition.php
+@@ -6,8 +6,8 @@ use atoum\atoum;
+ 
+ interface definition
+ {
+-    public function setLocale(atoum\locale $locale = null);
+-    public function setGenerator(atoum\asserter\generator $generator = null);
++    public function setLocale(?atoum\locale $locale = null);
++    public function setGenerator(?atoum\asserter\generator $generator = null);
+     public function setWithTest(atoum\test $test);
+     public function setWith($mixed);
+     public function setWithArguments(array $arguments);
+diff --git a/classes/asserter/generator.php b/classes/asserter/generator.php
+index bd9c3436..be7af32b 100644
+--- a/classes/asserter/generator.php
++++ b/classes/asserter/generator.php
+@@ -11,7 +11,7 @@ class generator
+     protected $locale = null;
+     protected $resolver = null;
+ 
+-    public function __construct(atoum\locale $locale = null, asserter\resolver $resolver = null)
++    public function __construct(?atoum\locale $locale = null, ?asserter\resolver $resolver = null)
+     {
+         $this
+             ->setLocale($locale)
+@@ -58,7 +58,7 @@ class generator
+         return $this->resolver->getNamespaces();
+     }
+ 
+-    public function setLocale(atoum\locale $locale = null)
++    public function setLocale(?atoum\locale $locale = null)
+     {
+         $this->locale = $locale ?: new atoum\locale();
+ 
+@@ -70,7 +70,7 @@ class generator
+         return $this->locale;
+     }
+ 
+-    public function setResolver(asserter\resolver $resolver = null)
++    public function setResolver(?asserter\resolver $resolver = null)
+     {
+         $this->resolver = $resolver ?: new asserter\resolver();
+ 
+@@ -87,7 +87,7 @@ class generator
+         return $this->resolver->resolve($asserter);
+     }
+ 
+-    public function getAsserterInstance($asserter, array $arguments = [], atoum\test $test = null)
++    public function getAsserterInstance($asserter, array $arguments = [], ?atoum\test $test = null)
+     {
+         if (($asserterClass = $this->getAsserterClass($asserter)) === null) {
+             throw new exceptions\logic\invalidArgument('Asserter \'' . $asserter . '\' does not exist');
+diff --git a/classes/asserter/resolver.php b/classes/asserter/resolver.php
+index e6b211d9..9cd9d656 100644
+--- a/classes/asserter/resolver.php
++++ b/classes/asserter/resolver.php
+@@ -14,7 +14,7 @@ class resolver
+     private $analyzer;
+     private $resolved = [];
+ 
+-    public function __construct($baseClass = null, $namespace = null, analyzer $analyzer = null)
++    public function __construct($baseClass = null, $namespace = null, ?analyzer $analyzer = null)
+     {
+         $this
+             ->setBaseClass($baseClass ?: static::defaultBaseClass)
+@@ -23,7 +23,7 @@ class resolver
+         ;
+     }
+ 
+-    public function setAnalyzer(analyzer $analyzer = null)
++    public function setAnalyzer(?analyzer $analyzer = null)
+     {
+         $this->analyzer = $analyzer ?: new analyzer();
+ 
+diff --git a/classes/asserters/adapter/call.php b/classes/asserters/adapter/call.php
+index 0497de3c..1b78289d 100644
+--- a/classes/asserters/adapter/call.php
++++ b/classes/asserters/adapter/call.php
+@@ -18,7 +18,7 @@ abstract class call extends atoum\asserter
+     protected $trace = ['file' => null, 'line' => null];
+     protected $manager = null;
+ 
+-    public function __construct(asserter\generator $generator = null, variable\analyzer $analyzer = null, atoum\locale $locale = null)
++    public function __construct(?asserter\generator $generator = null, ?variable\analyzer $analyzer = null, ?atoum\locale $locale = null)
+     {
+         parent::__construct($generator, $analyzer, $locale);
+ 
+@@ -53,7 +53,7 @@ abstract class call extends atoum\asserter
+         return $this;
+     }
+ 
+-    public function setCall(test\adapter\call $call = null)
++    public function setCall(?test\adapter\call $call = null)
+     {
+         if ($call === null) {
+             $call = new test\adapter\call();
+diff --git a/classes/asserters/castToArray.php b/classes/asserters/castToArray.php
+index e0c87830..bba9a904 100644
+--- a/classes/asserters/castToArray.php
++++ b/classes/asserters/castToArray.php
+@@ -10,14 +10,14 @@ class castToArray extends phpArray
+ {
+     protected $adapter = null;
+ 
+-    public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null, atoum\adapter $adapter = null)
++    public function __construct(?asserter\generator $generator = null, ?tools\variable\analyzer $analyzer = null, ?atoum\locale $locale = null, ?atoum\adapter $adapter = null)
+     {
+         parent::__construct($generator, $analyzer, $locale);
+ 
+         $this->setAdapter($adapter);
+     }
+ 
+-    public function setAdapter(atoum\adapter $adapter = null)
++    public function setAdapter(?atoum\adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new atoum\adapter();
+ 
+diff --git a/classes/asserters/constant.php b/classes/asserters/constant.php
+index c497b181..a738ac75 100644
+--- a/classes/asserters/constant.php
++++ b/classes/asserters/constant.php
+@@ -13,7 +13,7 @@ class constant extends asserter
+     protected $isSet = false;
+     protected $value = null;
+ 
+-    public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
++    public function __construct(?asserter\generator $generator = null, ?tools\variable\analyzer $analyzer = null, ?atoum\locale $locale = null)
+     {
+         parent::__construct($generator, $analyzer, $locale);
+ 
+@@ -36,7 +36,7 @@ class constant extends asserter
+         }
+     }
+ 
+-    public function setDiff(tools\diffs\variable $diff = null)
++    public function setDiff(?tools\diffs\variable $diff = null)
+     {
+         $this->diff = $diff ?: new tools\diffs\variable();
+ 
+diff --git a/classes/asserters/error.php b/classes/asserters/error.php
+index f745df21..422de3e8 100644
+--- a/classes/asserters/error.php
++++ b/classes/asserters/error.php
+@@ -13,7 +13,7 @@ class error extends asserter
+     protected $type = null;
+     protected $messageIsPattern = false;
+ 
+-    public function __construct(asserter\generator $generator = null, test\score $score = null, atoum\locale $locale = null)
++    public function __construct(?asserter\generator $generator = null, ?test\score $score = null, ?atoum\locale $locale = null)
+     {
+         parent::__construct($generator, null, $locale);
+ 
+@@ -49,7 +49,7 @@ class error extends asserter
+         ;
+     }
+ 
+-    public function setScore(test\score $score = null)
++    public function setScore(?test\score $score = null)
+     {
+         $this->score = $score ?: new test\score();
+ 
+diff --git a/classes/asserters/exception.php b/classes/asserters/exception.php
+index 57a5216a..a0f5ec31 100644
+--- a/classes/asserters/exception.php
++++ b/classes/asserters/exception.php
+@@ -97,7 +97,7 @@ class exception extends phpObject
+         return $this;
+     }
+ 
+-    public function hasNestedException(\exception $exception = null, $failMessage = null)
++    public function hasNestedException(?\exception $exception = null, $failMessage = null)
+     {
+         $nestedException = $this->valueIsSet()->value->getPrevious();
+ 
+diff --git a/classes/asserters/extension.php b/classes/asserters/extension.php
+index 046844c4..903cc360 100644
+--- a/classes/asserters/extension.php
++++ b/classes/asserters/extension.php
+@@ -11,7 +11,7 @@ class extension extends asserter
+     protected $name = null;
+     protected $phpExtensionFactory = null;
+ 
+-    public function __construct(asserter\generator $generator = null, atoum\locale $locale = null, \closure $phpExtensionFactory = null)
++    public function __construct(?asserter\generator $generator = null, ?atoum\locale $locale = null, ?\closure $phpExtensionFactory = null)
+     {
+         parent::__construct($generator, null, $locale);
+ 
+@@ -82,7 +82,7 @@ class extension extends asserter
+         return $this;
+     }
+ 
+-    public function setPhpExtensionFactory(\closure $factory = null)
++    public function setPhpExtensionFactory(?\closure $factory = null)
+     {
+         $this->phpExtensionFactory = $factory ?: function ($extensionName) {
+             return new atoum\php\extension($extensionName);
+diff --git a/classes/asserters/generator/asserterProxy.php b/classes/asserters/generator/asserterProxy.php
+index dd914da2..b27e87d2 100644
+--- a/classes/asserters/generator/asserterProxy.php
++++ b/classes/asserters/generator/asserterProxy.php
+@@ -45,12 +45,12 @@ class asserterProxy implements definition, ArrayAccess
+         return $return;
+     }
+ 
+-    public function setLocale(atoum\locale $locale = null)
++    public function setLocale(?atoum\locale $locale = null)
+     {
+         return $this->proxiedAsserter->setLocale($locale);
+     }
+ 
+-    public function setGenerator(atoum\asserter\generator $generator = null)
++    public function setGenerator(?atoum\asserter\generator $generator = null)
+     {
+         return $this->setGenerator($generator);
+     }
+diff --git a/classes/asserters/output.php b/classes/asserters/output.php
+index 21a5a6e7..03053ab3 100644
+--- a/classes/asserters/output.php
++++ b/classes/asserters/output.php
+@@ -8,7 +8,7 @@ use atoum\atoum\tools;
+ 
+ class output extends phpString
+ {
+-    public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
++    public function __construct(?asserter\generator $generator = null, ?tools\variable\analyzer $analyzer = null, ?atoum\locale $locale = null)
+     {
+         parent::__construct($generator, $analyzer, $locale);
+ 
+diff --git a/classes/asserters/phpArray/child.php b/classes/asserters/phpArray/child.php
+index 27cf4767..f8d7823d 100644
+--- a/classes/asserters/phpArray/child.php
++++ b/classes/asserters/phpArray/child.php
+@@ -9,7 +9,7 @@ class child extends asserters\phpArray
+ {
+     private $parent;
+ 
+-    public function __construct(asserters\phpArray $parent = null)
++    public function __construct(?asserters\phpArray $parent = null)
+     {
+         parent::__construct($parent->getGenerator(), $parent->getAnalyzer(), $parent->getLocale());
+ 
+diff --git a/classes/asserters/utf8String.php b/classes/asserters/utf8String.php
+index d12fdc86..7c1a61f3 100644
+--- a/classes/asserters/utf8String.php
++++ b/classes/asserters/utf8String.php
+@@ -11,7 +11,7 @@ class utf8String extends phpString
+ {
+     protected $adapter = null;
+ 
+-    public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
++    public function __construct(?asserter\generator $generator = null, ?tools\variable\analyzer $analyzer = null, ?atoum\locale $locale = null)
+     {
+         if (extension_loaded('mbstring') === false) {
+             throw new exceptions\runtime('mbstring PHP extension is mandatory to use utf8String asserter');
+diff --git a/classes/asserters/variable.php b/classes/asserters/variable.php
+index 99a8e7f2..c75770a4 100644
+--- a/classes/asserters/variable.php
++++ b/classes/asserters/variable.php
+@@ -15,7 +15,7 @@ class variable extends asserter
+     protected $value = null;
+     protected $isSetByReference = false;
+ 
+-    public function __construct(asserter\generator $generator = null, tools\variable\analyzer $analyzer = null, atoum\locale $locale = null)
++    public function __construct(?asserter\generator $generator = null, ?tools\variable\analyzer $analyzer = null, ?atoum\locale $locale = null)
+     {
+         parent::__construct($generator, $analyzer, $locale);
+ 
+@@ -71,7 +71,7 @@ class variable extends asserter
+         return call_user_func_array([$this, $assertion], $arguments);
+     }
+ 
+-    public function setDiff(diffs\variable $diff = null)
++    public function setDiff(?diffs\variable $diff = null)
+     {
+         $this->diff = $diff ?: new diffs\variable();
+ 
+diff --git a/classes/autoloader.php b/classes/autoloader.php
+index c2924950..3d8b58f5 100644
+--- a/classes/autoloader.php
++++ b/classes/autoloader.php
+@@ -160,7 +160,7 @@ class autoloader
+                     $directoryLength = strlen($directory);
+                     $suffixLength = - strlen($suffix);
+ 
+-                    foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO), \recursiveIteratorIterator::LEAVES_ONLY) as $file) {
++                    foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS | \filesystemIterator::CURRENT_AS_FILEINFO), \recursiveIteratorIterator::LEAVES_ONLY) as $file) {
+                         $filePath = $file->getPathname();
+ 
+                         $classes[$namespace . strtolower(str_replace('/', '\\', substr($filePath, $directoryLength, $suffixLength)))] = $filePath;
+diff --git a/classes/autoloader/mock.php b/classes/autoloader/mock.php
+index 645b42c6..4f976712 100644
+--- a/classes/autoloader/mock.php
++++ b/classes/autoloader/mock.php
+@@ -10,7 +10,7 @@ class mock
+     protected $mockGenerator;
+     protected $adapter;
+ 
+-    public function __construct(atoum\mock\generator $generator = null, atoum\adapter $adapter = null)
++    public function __construct(?atoum\mock\generator $generator = null, ?atoum\adapter $adapter = null)
+     {
+         $this
+             ->setAdapter($adapter)
+@@ -18,7 +18,7 @@ class mock
+         ;
+     }
+ 
+-    public function setMockGenerator(atoum\mock\generator $generator = null)
++    public function setMockGenerator(?atoum\mock\generator $generator = null)
+     {
+         $this->mockGenerator = $generator ?: new atoum\mock\generator();
+ 
+@@ -30,7 +30,7 @@ class mock
+         return $this->mockGenerator;
+     }
+ 
+-    public function setAdapter(atoum\adapter $adapter = null)
++    public function setAdapter(?atoum\adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new atoum\adapter();
+ 
+diff --git a/classes/cli.php b/classes/cli.php
+index c92b55c1..bf71bb0d 100644
+--- a/classes/cli.php
++++ b/classes/cli.php
+@@ -8,7 +8,7 @@ class cli
+ 
+     private static $isTerminal = null;
+ 
+-    public function __construct(adapter $adapter = null)
++    public function __construct(?adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new adapter();
+     }
+diff --git a/classes/cli/clear.php b/classes/cli/clear.php
+index cb675493..a87d6bbf 100644
+--- a/classes/cli/clear.php
++++ b/classes/cli/clear.php
+@@ -9,12 +9,12 @@ class clear implements writer\decorator
+ {
+     protected $cli = null;
+ 
+-    public function __construct(atoum\cli $cli = null)
++    public function __construct(?atoum\cli $cli = null)
+     {
+         $this->setCli($cli);
+     }
+ 
+-    public function setCli(atoum\cli $cli = null)
++    public function setCli(?atoum\cli $cli = null)
+     {
+         $this->cli = $cli ?: new atoum\cli();
+ 
+diff --git a/classes/cli/colorizer.php b/classes/cli/colorizer.php
+index 244e07d4..019c2f84 100644
+--- a/classes/cli/colorizer.php
++++ b/classes/cli/colorizer.php
+@@ -12,7 +12,7 @@ class colorizer implements writer\decorator
+     protected $foreground = null;
+     protected $background = null;
+ 
+-    public function __construct($foreground = null, $background = null, atoum\cli $cli = null)
++    public function __construct($foreground = null, $background = null, ?atoum\cli $cli = null)
+     {
+         if ($foreground !== null) {
+             $this->setForeground($foreground);
+@@ -25,7 +25,7 @@ class colorizer implements writer\decorator
+         $this->setCli($cli);
+     }
+ 
+-    public function setCli(atoum\cli $cli = null)
++    public function setCli(?atoum\cli $cli = null)
+     {
+         $this->cli = $cli ?: new atoum\cli();
+ 
+diff --git a/classes/cli/command.php b/classes/cli/command.php
+index 519fd7df..f9e89f20 100644
+--- a/classes/cli/command.php
++++ b/classes/cli/command.php
+@@ -18,7 +18,7 @@ class command
+     private $stdErr = '';
+     private $exitCode = null;
+ 
+-    public function __construct($binaryPath = null, atoum\adapter $adapter = null)
++    public function __construct($binaryPath = null, ?atoum\adapter $adapter = null)
+     {
+         $this
+             ->setAdapter($adapter)
+@@ -103,7 +103,7 @@ class command
+         return $this->adapter;
+     }
+ 
+-    public function setAdapter(atoum\adapter $adapter = null)
++    public function setAdapter(?atoum\adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new atoum\adapter();
+ 
+diff --git a/classes/cli/commands/git.php b/classes/cli/commands/git.php
+index 53c19ae0..d3650c60 100644
+--- a/classes/cli/commands/git.php
++++ b/classes/cli/commands/git.php
+@@ -30,7 +30,7 @@ class git
+         return $this->command->getBinaryPath();
+     }
+ 
+-    public function setCommand(cli\command $command = null)
++    public function setCommand(?cli\command $command = null)
+     {
+         $this->command = $command ?: new cli\command();
+ 
+diff --git a/classes/cli/progressBar.php b/classes/cli/progressBar.php
+index 1471c736..74bec809 100644
+--- a/classes/cli/progressBar.php
++++ b/classes/cli/progressBar.php
+@@ -19,7 +19,7 @@ class progressBar
+     protected $iterations = 0;
+     protected $currentIteration = 0;
+ 
+-    public function __construct($iterations = 0, atoum\cli $cli = null)
++    public function __construct($iterations = 0, ?atoum\cli $cli = null)
+     {
+         $this->iterations = $iterations;
+         $this->progressBarFormat = self::defaultProgressBarFormat;
+diff --git a/classes/cli/prompt.php b/classes/cli/prompt.php
+index 538180c9..839ce5e2 100644
+--- a/classes/cli/prompt.php
++++ b/classes/cli/prompt.php
+@@ -7,7 +7,7 @@ class prompt
+     protected $value = '';
+     protected $colorizer = null;
+ 
+-    public function __construct($value = '', colorizer $colorizer = null)
++    public function __construct($value = '', ?colorizer $colorizer = null)
+     {
+         if ($colorizer === null) {
+             $colorizer = new colorizer();
+diff --git a/classes/fs/path/factory.php b/classes/fs/path/factory.php
+index 1775dc92..a460e271 100644
+--- a/classes/fs/path/factory.php
++++ b/classes/fs/path/factory.php
+@@ -17,7 +17,7 @@ class factory
+         return $this;
+     }
+ 
+-    public function setAdapter(atoum\adapter $adapter = null)
++    public function setAdapter(?atoum\adapter $adapter = null)
+     {
+         $this->adapter = $adapter;
+ 
+diff --git a/classes/includer.php b/classes/includer.php
+index efe45ffe..d3201017 100644
+--- a/classes/includer.php
++++ b/classes/includer.php
+@@ -9,7 +9,7 @@ class includer
+ 
+     private $path = '';
+ 
+-    public function __construct(adapter $adapter = null)
++    public function __construct(?adapter $adapter = null)
+     {
+         $this->setAdapter($adapter);
+     }
+@@ -21,7 +21,7 @@ class includer
+         return $this;
+     }
+ 
+-    public function setAdapter(adapter $adapter = null)
++    public function setAdapter(?adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new adapter();
+ 
+@@ -38,7 +38,7 @@ class includer
+         return $this->errors;
+     }
+ 
+-    public function includePath($path, \closure $closure = null)
++    public function includePath($path, ?\closure $closure = null)
+     {
+         $this->resetErrors();
+ 
+diff --git a/classes/iterators/filters/recursives/dot.php b/classes/iterators/filters/recursives/dot.php
+index 415ee913..82df238e 100644
+--- a/classes/iterators/filters/recursives/dot.php
++++ b/classes/iterators/filters/recursives/dot.php
+@@ -4,7 +4,7 @@ namespace atoum\atoum\iterators\filters\recursives;
+ 
+ class dot extends \recursiveFilterIterator
+ {
+-    public function __construct($mixed, \closure $iteratorFactory = null)
++    public function __construct($mixed, ?\closure $iteratorFactory = null)
+     {
+         if ($mixed instanceof \recursiveIterator) {
+             parent::__construct($mixed);
+diff --git a/classes/iterators/filters/recursives/extension.php b/classes/iterators/filters/recursives/extension.php
+index bc10e463..d1e82591 100644
+--- a/classes/iterators/filters/recursives/extension.php
++++ b/classes/iterators/filters/recursives/extension.php
+@@ -6,7 +6,7 @@ class extension extends \recursiveFilterIterator
+ {
+     protected $acceptedExtensions = [];
+ 
+-    public function __construct($mixed, array $acceptedExtensions = [], \closure $iteratorFactory = null)
++    public function __construct($mixed, array $acceptedExtensions = [], ?\closure $iteratorFactory = null)
+     {
+         if ($mixed instanceof \recursiveIterator) {
+             parent::__construct($mixed);
+diff --git a/classes/iterators/recursives/directory/factory.php b/classes/iterators/recursives/directory/factory.php
+index 3cbc4655..f2dca203 100644
+--- a/classes/iterators/recursives/directory/factory.php
++++ b/classes/iterators/recursives/directory/factory.php
+@@ -12,7 +12,7 @@ class factory
+     protected $extensionFilterFactory = null;
+     protected $acceptedExtensions = ['php'];
+ 
+-    public function __construct(\closure $iteratorFactory = null, \closure $dotFilterFactory = null, \closure $extensionFilterFactory = null)
++    public function __construct(?\closure $iteratorFactory = null, ?\closure $dotFilterFactory = null, ?\closure $extensionFilterFactory = null)
+     {
+         $this
+             ->setIteratorFactory($iteratorFactory)
+@@ -21,7 +21,7 @@ class factory
+         ;
+     }
+ 
+-    public function setIteratorFactory(\closure $factory = null)
++    public function setIteratorFactory(?\closure $factory = null)
+     {
+         $this->iteratorFactory = $factory ?: function ($path) {
+             return new \recursiveDirectoryIterator($path);
+@@ -35,7 +35,7 @@ class factory
+         return $this->iteratorFactory;
+     }
+ 
+-    public function setDotFilterFactory(\closure $factory = null)
++    public function setDotFilterFactory(?\closure $factory = null)
+     {
+         $this->dotFilterFactory = $factory ?: function ($iterator) {
+             return new filters\recursives\dot($iterator);
+@@ -49,7 +49,7 @@ class factory
+         return $this->dotFilterFactory;
+     }
+ 
+-    public function setExtensionFilterFactory(\closure $factory = null)
++    public function setExtensionFilterFactory(?\closure $factory = null)
+     {
+         $this->extensionFilterFactory = $factory ?: function ($iterator, $extensions) {
+             return new filters\recursives\extension($iterator, $extensions);
+diff --git a/classes/mailer.php b/classes/mailer.php
+index d35b3286..6a103330 100644
+--- a/classes/mailer.php
++++ b/classes/mailer.php
+@@ -12,7 +12,7 @@ abstract class mailer
+     protected $contentType = null;
+     protected $adapter = null;
+ 
+-    public function __construct(adapter $adapter = null)
++    public function __construct(?adapter $adapter = null)
+     {
+         $this->setAdapter($adapter ?: new adapter());
+     }
+diff --git a/classes/mock/controller.php b/classes/mock/controller.php
+index d2447473..f7a29835 100644
+--- a/classes/mock/controller.php
++++ b/classes/mock/controller.php
+@@ -66,7 +66,7 @@ class controller extends test\adapter
+         return $this->setInvoker($method);
+     }
+ 
+-    public function setIterator(controller\iterator $iterator = null)
++    public function setIterator(?controller\iterator $iterator = null)
+     {
+         $this->iterator = $iterator ?: new controller\iterator();
+ 
+@@ -97,7 +97,7 @@ class controller extends test\adapter
+         return $this->mockMethods;
+     }
+ 
+-    public function methods(\closure $filter = null)
++    public function methods(?\closure $filter = null)
+     {
+         $this->iterator->resetFilters();
+ 
+@@ -115,7 +115,7 @@ class controller extends test\adapter
+         });
+     }
+ 
+-    public function getCalls(test\adapter\call $call = null, $identical = false)
++    public function getCalls(?test\adapter\call $call = null, $identical = false)
+     {
+         if ($call !== null) {
+             $this->checkMethod($call->getFunction());
+@@ -243,7 +243,7 @@ class controller extends test\adapter
+         return $instance;
+     }
+ 
+-    public static function setLinker(controller\linker $linker = null)
++    public static function setLinker(?controller\linker $linker = null)
+     {
+         self::$linker = $linker ?: new controller\linker();
+     }
+@@ -272,7 +272,7 @@ class controller extends test\adapter
+         return $this;
+     }
+ 
+-    protected function buildInvoker($methodName, \closure $factory = null)
++    protected function buildInvoker($methodName, ?\closure $factory = null)
+     {
+         if ($factory === null) {
+             $factory = function ($methodName, $mock) {
+@@ -283,7 +283,7 @@ class controller extends test\adapter
+         return $factory($methodName, $this->getMock());
+     }
+ 
+-    protected function setInvoker($methodName, \closure $factory = null)
++    protected function setInvoker($methodName, ?\closure $factory = null)
+     {
+         $invoker = parent::setInvoker($methodName, $factory);
+ 
+diff --git a/classes/mock/controller/invoker.php b/classes/mock/controller/invoker.php
+index 67bd8500..53296901 100644
+--- a/classes/mock/controller/invoker.php
++++ b/classes/mock/controller/invoker.php
+@@ -9,7 +9,7 @@ class invoker extends adapter\invoker
+ {
+     protected $mock = null;
+ 
+-    public function __construct($method, mock\aggregator $mock = null)
++    public function __construct($method, ?mock\aggregator $mock = null)
+     {
+         parent::__construct($method);
+ 
+diff --git a/classes/mock/controller/iterator.php b/classes/mock/controller/iterator.php
+index 10e04a5a..a7790e2b 100644
+--- a/classes/mock/controller/iterator.php
++++ b/classes/mock/controller/iterator.php
+@@ -9,7 +9,7 @@ class iterator implements \iteratorAggregate
+     protected $controller = null;
+     protected $filters = [];
+ 
+-    public function __construct(mock\controller $controller = null)
++    public function __construct(?mock\controller $controller = null)
+     {
+         if ($controller != null) {
+             $this->setMockController($controller);
+diff --git a/classes/mock/generator.php b/classes/mock/generator.php
+index 382e7e05..1ec7b4c1 100644
+--- a/classes/mock/generator.php
++++ b/classes/mock/generator.php
+@@ -38,7 +38,7 @@ class generator
+         return $this->shuntParentClassCalls;
+     }
+ 
+-    public function setAdapter(atoum\adapter $adapter = null)
++    public function setAdapter(?atoum\adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new atoum\adapter();
+ 
+@@ -50,7 +50,7 @@ class generator
+         return $this->adapter;
+     }
+ 
+-    public function setParameterAnalyzer(atoum\tools\parameter\analyzer $analyzer = null)
++    public function setParameterAnalyzer(?atoum\tools\parameter\analyzer $analyzer = null)
+     {
+         $this->parameterAnalyzer = $analyzer ?: new atoum\tools\parameter\analyzer();
+ 
+@@ -62,7 +62,7 @@ class generator
+         return $this->parameterAnalyzer;
+     }
+ 
+-    public function setReflectionClassFactory(\closure $factory = null)
++    public function setReflectionClassFactory(?\closure $factory = null)
+     {
+         $this->reflectionClassFactory = $factory ?: function ($class) {
+             return new \reflectionClass($class);
+@@ -771,7 +771,7 @@ class generator
+         $mustBeNull = $this->isOrphanized($method->getName());
+ 
+         foreach ($method->getParameters() as $parameter) {
+-            $typeHintString = $this->parameterAnalyzer->getTypeHintString($parameter);
++            $typeHintString = $this->parameterAnalyzer->getTypeHintString($parameter, $mustBeNull);
+             $parameterCode = (!empty($typeHintString) ? $typeHintString . ' ' : '') . ($parameter->isPassedByReference() == false ? '' : '& ') . ($parameter->isVariadic() == false ? '' : '... ') . '$' . $parameter->getName();
+ 
+             switch (true) {
+@@ -789,7 +789,7 @@ class generator
+         }
+ 
+         if (self::hasVariadic($method) === false && ($method->isConstructor() || $forceMockController)) {
+-            $parameters[] = '\\' . __NAMESPACE__ . '\\controller $mockController = null';
++            $parameters[] = '?\\' . __NAMESPACE__ . '\\controller $mockController = null';
+         }
+ 
+         return implode(', ', $parameters);
+@@ -846,7 +846,7 @@ class generator
+     protected static function generateDefaultConstructor($disableMethodChecking = false, $uniqueId = false)
+     {
+         $defaultConstructor =
+-            "\t" . 'public function __construct(\\' . __NAMESPACE__ . '\\controller $mockController = null)' . PHP_EOL .
++            "\t" . 'public function __construct(?\\' . __NAMESPACE__ . '\\controller $mockController = null)' . PHP_EOL .
+             "\t" . '{' . PHP_EOL;
+ 
+         if ($uniqueId === true) {
+diff --git a/classes/mock/streams/fs/controller.php b/classes/mock/streams/fs/controller.php
+index 2fdadbf1..3c2f0a12 100644
+--- a/classes/mock/streams/fs/controller.php
++++ b/classes/mock/streams/fs/controller.php
+@@ -11,7 +11,7 @@ class controller extends stream\controller
+     protected $exists = true;
+     protected $stat = [];
+ 
+-    public function __construct($path, atoum\adapter $adapter = null)
++    public function __construct($path, ?atoum\adapter $adapter = null)
+     {
+         parent::__construct($path);
+ 
+@@ -51,7 +51,7 @@ class controller extends stream\controller
+         return $this->adapter;
+     }
+ 
+-    public function setAdapter(atoum\adapter $adapter = null)
++    public function setAdapter(?atoum\adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new atoum\adapter();
+ 
+diff --git a/classes/php/call.php b/classes/php/call.php
+index edb983af..6be135d9 100644
+--- a/classes/php/call.php
++++ b/classes/php/call.php
+@@ -12,7 +12,7 @@ class call
+     protected $object = null;
+     protected $decorator = null;
+ 
+-    public function __construct($function, array $arguments = null, $object = null)
++    public function __construct($function, ?array $arguments = null, $object = null)
+     {
+         $this->function = (string) $function;
+         $this->arguments = $arguments;
+@@ -88,7 +88,7 @@ class call
+         return $this->object;
+     }
+ 
+-    public function setDecorator(adapter\call\decorator $decorator = null)
++    public function setDecorator(?adapter\call\decorator $decorator = null)
+     {
+         $this->decorator = $decorator ?: new adapter\call\decorator();
+ 
+diff --git a/classes/php/mocker.php b/classes/php/mocker.php
+index b853b643..fccfdd50 100644
+--- a/classes/php/mocker.php
++++ b/classes/php/mocker.php
+@@ -43,7 +43,7 @@ abstract class mocker
+         return $this->defaultNamespace;
+     }
+ 
+-    public static function setAdapter(atoum\test\adapter $adapter = null)
++    public static function setAdapter(?atoum\test\adapter $adapter = null)
+     {
+         static::$adapter = $adapter ?: new atoum\php\mocker\adapter();
+     }
+@@ -53,7 +53,7 @@ abstract class mocker
+         return static::$adapter;
+     }
+ 
+-    public static function setParameterAnalyzer(atoum\tools\parameter\analyzer $analyzer = null)
++    public static function setParameterAnalyzer(?atoum\tools\parameter\analyzer $analyzer = null)
+     {
+         static::$parameterAnalyzer = $analyzer ?: new atoum\tools\parameter\analyzer();
+     }
+diff --git a/classes/php/mocker/adapter.php b/classes/php/mocker/adapter.php
+index 5f5584a9..8fa30f76 100644
+--- a/classes/php/mocker/adapter.php
++++ b/classes/php/mocker/adapter.php
+@@ -7,7 +7,7 @@ use atoum\atoum\test;
+ 
+ class adapter extends test\adapter
+ {
+-    protected function setInvoker($functionName, \closure $factory = null)
++    protected function setInvoker($functionName, ?\closure $factory = null)
+     {
+         if ($factory === null) {
+             $factory = function ($functionName) {
+diff --git a/classes/php/mocker/funktion.php b/classes/php/mocker/funktion.php
+index 7ad33b70..389cef0a 100644
+--- a/classes/php/mocker/funktion.php
++++ b/classes/php/mocker/funktion.php
+@@ -37,7 +37,7 @@ class funktion extends mocker
+         $this->setDefaultBehavior($this->getFqdn($functionName));
+     }
+ 
+-    public function setReflectedFunctionFactory(\closure $factory = null)
++    public function setReflectedFunctionFactory(?\closure $factory = null)
+     {
+         $this->reflectedFunctionFactory = $factory ?: function ($functionName) {
+             return new \reflectionFunction($functionName);
+@@ -101,7 +101,7 @@ class funktion extends mocker
+         return $this->getFqdn($functionName);
+     }
+ 
+-    protected function setDefaultBehavior($fqdn, \reflectionFunction $reflectedFunction = null)
++    protected function setDefaultBehavior($fqdn, ?\reflectionFunction $reflectedFunction = null)
+     {
+         $function = substr($fqdn, strrpos($fqdn, '\\') + 1);
+ 
+@@ -160,7 +160,7 @@ class funktion extends mocker
+         return 'array(' . implode(',', $parameters) . ')';
+     }
+ 
+-    protected static function defineMockedFunction($namespace, $class, $function, \reflectionFunction $reflectedFunction = null)
++    protected static function defineMockedFunction($namespace, $class, $function, ?\reflectionFunction $reflectedFunction = null)
+     {
+         eval(sprintf(
+             'namespace %s { function %s(%s) { return \\%s::getAdapter()->invoke(__FUNCTION__, %s); } }',
+diff --git a/classes/php/tokenizer/token.php b/classes/php/tokenizer/token.php
+index ee29a0fb..d0063ca6 100644
+--- a/classes/php/tokenizer/token.php
++++ b/classes/php/tokenizer/token.php
+@@ -11,7 +11,7 @@ class token extends iterator\value
+     protected $string = null;
+     protected $line = null;
+ 
+-    public function __construct($tag, $string = null, $line = null, iterator\value $parent = null)
++    public function __construct($tag, $string = null, $line = null, ?iterator\value $parent = null)
+     {
+         $this->tag = $tag;
+         $this->string = $string;
+diff --git a/classes/reader.php b/classes/reader.php
+index b3f4bb94..1c4ad5b2 100644
+--- a/classes/reader.php
++++ b/classes/reader.php
+@@ -6,12 +6,12 @@ abstract class reader
+ {
+     protected $adapter = null;
+ 
+-    public function __construct(adapter $adapter = null)
++    public function __construct(?adapter $adapter = null)
+     {
+         $this->setAdapter($adapter);
+     }
+ 
+-    public function setAdapter(adapter $adapter = null)
++    public function setAdapter(?adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new adapter();
+ 
+diff --git a/classes/report.php b/classes/report.php
+index aff51ed4..1ec7f364 100644
+--- a/classes/report.php
++++ b/classes/report.php
+@@ -30,7 +30,7 @@ class report implements observer
+         return $string;
+     }
+ 
+-    public function setLocale(locale $locale = null)
++    public function setLocale(?locale $locale = null)
+     {
+         $this->locale = $locale ?: new locale();
+ 
+@@ -42,7 +42,7 @@ class report implements observer
+         return $this->locale;
+     }
+ 
+-    public function setAdapter(adapter $adapter = null)
++    public function setAdapter(?adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new adapter();
+ 
+diff --git a/classes/report/field.php b/classes/report/field.php
+index 627d5c45..0da1c03f 100644
+--- a/classes/report/field.php
++++ b/classes/report/field.php
+@@ -9,14 +9,14 @@ abstract class field
+     protected $events = [];
+     protected $locale = null;
+ 
+-    public function __construct(array $events = null)
++    public function __construct(?array $events = null)
+     {
+         $this->events = $events;
+ 
+         $this->setLocale();
+     }
+ 
+-    public function setLocale(atoum\locale $locale = null)
++    public function setLocale(?atoum\locale $locale = null)
+     {
+         $this->locale = $locale ?: new atoum\locale();
+ 
+diff --git a/classes/report/field/decorator.php b/classes/report/field/decorator.php
+index bc453be3..1e7cec80 100644
+--- a/classes/report/field/decorator.php
++++ b/classes/report/field/decorator.php
+@@ -19,7 +19,7 @@ abstract class decorator extends field
+         return $this->decorate($this->field->__toString());
+     }
+ 
+-    public function setLocale(atoum\locale $locale = null)
++    public function setLocale(?atoum\locale $locale = null)
+     {
+         $this->field->setLocale($locale);
+ 
+diff --git a/classes/report/fields/runner/atoum/cli.php b/classes/report/fields/runner/atoum/cli.php
+index ae29610d..e92e17e3 100644
+--- a/classes/report/fields/runner/atoum/cli.php
++++ b/classes/report/fields/runner/atoum/cli.php
+@@ -26,7 +26,7 @@ class cli extends report\fields\runner\atoum
+         return ($this->author === null || $this->version === null ? '' : $this->prompt . $this->colorizer->colorize($this->locale->_('atoum version %s by %s (%s)', $this->version, $this->author, $this->path)) . PHP_EOL);
+     }
+ 
+-    public function setPrompt(prompt $prompt = null)
++    public function setPrompt(?prompt $prompt = null)
+     {
+         $this->prompt = $prompt ?: new prompt();
+ 
+@@ -38,7 +38,7 @@ class cli extends report\fields\runner\atoum
+         return $this->prompt;
+     }
+ 
+-    public function setColorizer(colorizer $colorizer = null)
++    public function setColorizer(?colorizer $colorizer = null)
+     {
+         $this->colorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/atoum/path/cli.php b/classes/report/fields/runner/atoum/path/cli.php
+index e862ba5f..f71f2851 100644
+--- a/classes/report/fields/runner/atoum/path/cli.php
++++ b/classes/report/fields/runner/atoum/path/cli.php
+@@ -36,7 +36,7 @@ class cli extends report\fields\runner\atoum\path
+         ;
+     }
+ 
+-    public function setPrompt(prompt $prompt = null)
++    public function setPrompt(?prompt $prompt = null)
+     {
+         $this->prompt = $prompt ?: new prompt();
+ 
+@@ -48,7 +48,7 @@ class cli extends report\fields\runner\atoum\path
+         return $this->prompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -60,7 +60,7 @@ class cli extends report\fields\runner\atoum\path
+         return $this->titleColorizer;
+     }
+ 
+-    public function setPathColorizer(colorizer $colorizer = null)
++    public function setPathColorizer(?colorizer $colorizer = null)
+     {
+         $this->pathColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/atoum/version/cli.php b/classes/report/fields/runner/atoum/version/cli.php
+index fe694d9a..dcf9c1d3 100644
+--- a/classes/report/fields/runner/atoum/version/cli.php
++++ b/classes/report/fields/runner/atoum/version/cli.php
+@@ -37,7 +37,7 @@ class cli extends report\fields\runner\atoum\version
+         ;
+     }
+ 
+-    public function setTitlePrompt(prompt $prompt = null)
++    public function setTitlePrompt(?prompt $prompt = null)
+     {
+         $this->titlePrompt = $prompt ?: new prompt();
+ 
+@@ -49,7 +49,7 @@ class cli extends report\fields\runner\atoum\version
+         return $this->titlePrompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -61,7 +61,7 @@ class cli extends report\fields\runner\atoum\version
+         return $this->titleColorizer;
+     }
+ 
+-    public function setVersionColorizer(colorizer $colorizer = null)
++    public function setVersionColorizer(?colorizer $colorizer = null)
+     {
+         $this->versionColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/coverage.php b/classes/report/fields/runner/coverage.php
+index d130adf7..7e388fda 100644
+--- a/classes/report/fields/runner/coverage.php
++++ b/classes/report/fields/runner/coverage.php
+@@ -27,7 +27,7 @@ abstract class coverage extends report\field
+         ;
+     }
+ 
+-    public function setPhp(php $php = null)
++    public function setPhp(?php $php = null)
+     {
+         $this->php = $php ?: new php();
+ 
+@@ -39,7 +39,7 @@ abstract class coverage extends report\field
+         return $this->php;
+     }
+ 
+-    public function setAdapter(adapter $adapter = null)
++    public function setAdapter(?adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new adapter();
+ 
+@@ -51,7 +51,7 @@ abstract class coverage extends report\field
+         return $this->adapter;
+     }
+ 
+-    public function addSrcDirectory($srcDirectory, \closure $filterClosure = null)
++    public function addSrcDirectory($srcDirectory, ?\closure $filterClosure = null)
+     {
+         $srcDirectory = (string) $srcDirectory;
+ 
+@@ -74,7 +74,7 @@ abstract class coverage extends report\field
+         $iterators = [];
+ 
+         foreach ($this->srcDirectories as $srcDirectory => $closures) {
+-            $iterators[] = $iterator = new \recursiveIteratorIterator(new iterators\filters\recursives\closure(new \recursiveDirectoryIterator($srcDirectory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO)), \recursiveIteratorIterator::LEAVES_ONLY);
++            $iterators[] = $iterator = new \recursiveIteratorIterator(new iterators\filters\recursives\closure(new \recursiveDirectoryIterator($srcDirectory, \filesystemIterator::SKIP_DOTS | \filesystemIterator::CURRENT_AS_FILEINFO)), \recursiveIteratorIterator::LEAVES_ONLY);
+ 
+             foreach ($closures as $closure) {
+                 $iterator->addClosure($closure);
+diff --git a/classes/report/fields/runner/coverage/cli.php b/classes/report/fields/runner/coverage/cli.php
+index 5fb3483d..33395df9 100644
+--- a/classes/report/fields/runner/coverage/cli.php
++++ b/classes/report/fields/runner/coverage/cli.php
+@@ -41,7 +41,7 @@ class cli extends report\fields\runner\coverage
+         ;
+     }
+ 
+-    public function setPrompt(prompt $prompt = null)
++    public function setPrompt(?prompt $prompt = null)
+     {
+         $this->prompt = $prompt ?: new prompt();
+ 
+@@ -53,7 +53,7 @@ class cli extends report\fields\runner\coverage
+         return $this->prompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -65,7 +65,7 @@ class cli extends report\fields\runner\coverage
+         return $this->titleColorizer;
+     }
+ 
+-    public function setCoverageColorizer(colorizer $colorizer = null)
++    public function setCoverageColorizer(?colorizer $colorizer = null)
+     {
+         $this->coverageColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/coverage/html.php b/classes/report/fields/runner/coverage/html.php
+index 13eb1655..ec091b59 100644
+--- a/classes/report/fields/runner/coverage/html.php
++++ b/classes/report/fields/runner/coverage/html.php
+@@ -290,7 +290,7 @@ class html extends report\fields\runner\coverage\cli
+         return $this->destinationDirectory;
+     }
+ 
+-    public function setUrlPrompt(prompt $prompt = null)
++    public function setUrlPrompt(?prompt $prompt = null)
+     {
+         $this->urlPrompt = $prompt ?: new prompt();
+ 
+@@ -302,7 +302,7 @@ class html extends report\fields\runner\coverage\cli
+         return $this->urlPrompt;
+     }
+ 
+-    public function setUrlColorizer(colorizer $colorizer = null)
++    public function setUrlColorizer(?colorizer $colorizer = null)
+     {
+         $this->urlColorizer = $colorizer ?: new colorizer();
+ 
+@@ -326,7 +326,7 @@ class html extends report\fields\runner\coverage\cli
+         return $this->templatesDirectory;
+     }
+ 
+-    public function setTemplateParser(template\parser $parser = null)
++    public function setTemplateParser(?template\parser $parser = null)
+     {
+         $this->templateParser = $parser ?: new template\parser();
+ 
+diff --git a/classes/report/fields/runner/coverage/treemap.php b/classes/report/fields/runner/coverage/treemap.php
+index 2537ac33..e180ea7d 100644
+--- a/classes/report/fields/runner/coverage/treemap.php
++++ b/classes/report/fields/runner/coverage/treemap.php
+@@ -185,7 +185,7 @@ class treemap extends report\fields\runner\coverage\cli
+         return $this->destinationDirectory;
+     }
+ 
+-    public function setAdapter(atoum\adapter $adapter = null)
++    public function setAdapter(?atoum\adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new atoum\adapter();
+ 
+@@ -197,7 +197,7 @@ class treemap extends report\fields\runner\coverage\cli
+         return $this->adapter;
+     }
+ 
+-    public function setUrlPrompt(prompt $prompt = null)
++    public function setUrlPrompt(?prompt $prompt = null)
+     {
+         $this->urlPrompt = $prompt ?: new prompt();
+ 
+@@ -209,7 +209,7 @@ class treemap extends report\fields\runner\coverage\cli
+         return $this->urlPrompt;
+     }
+ 
+-    public function setUrlColorizer(colorizer $colorizer = null)
++    public function setUrlColorizer(?colorizer $colorizer = null)
+     {
+         $this->urlColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/duration/cli.php b/classes/report/fields/runner/duration/cli.php
+index 6bd72998..4f151329 100644
+--- a/classes/report/fields/runner/duration/cli.php
++++ b/classes/report/fields/runner/duration/cli.php
+@@ -35,7 +35,7 @@ class cli extends duration
+         ;
+     }
+ 
+-    public function setPrompt(prompt $prompt = null)
++    public function setPrompt(?prompt $prompt = null)
+     {
+         $this->prompt = $prompt ?: new prompt();
+ 
+@@ -47,7 +47,7 @@ class cli extends duration
+         return $this->prompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -59,7 +59,7 @@ class cli extends duration
+         return $this->titleColorizer;
+     }
+ 
+-    public function setDurationColorizer(colorizer $colorizer = null)
++    public function setDurationColorizer(?colorizer $colorizer = null)
+     {
+         $this->durationColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/errors/cli.php b/classes/report/fields/runner/errors/cli.php
+index de3d7af7..dd4f9430 100644
+--- a/classes/report/fields/runner/errors/cli.php
++++ b/classes/report/fields/runner/errors/cli.php
+@@ -136,7 +136,7 @@ class cli extends report\fields\runner\errors
+         return $string;
+     }
+ 
+-    public function setTitlePrompt(prompt $prompt = null)
++    public function setTitlePrompt(?prompt $prompt = null)
+     {
+         $this->titlePrompt = $prompt ?: new prompt();
+ 
+@@ -148,7 +148,7 @@ class cli extends report\fields\runner\errors
+         return $this->titlePrompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -160,7 +160,7 @@ class cli extends report\fields\runner\errors
+         return $this->titleColorizer;
+     }
+ 
+-    public function setMethodPrompt(prompt $prompt = null)
++    public function setMethodPrompt(?prompt $prompt = null)
+     {
+         $this->methodPrompt = $prompt ?: new prompt();
+ 
+@@ -172,7 +172,7 @@ class cli extends report\fields\runner\errors
+         return $this->methodPrompt;
+     }
+ 
+-    public function setMethodColorizer(colorizer $colorizer = null)
++    public function setMethodColorizer(?colorizer $colorizer = null)
+     {
+         $this->methodColorizer = $colorizer ?: new colorizer();
+ 
+@@ -184,7 +184,7 @@ class cli extends report\fields\runner\errors
+         return $this->methodColorizer;
+     }
+ 
+-    public function setErrorPrompt(prompt $prompt = null)
++    public function setErrorPrompt(?prompt $prompt = null)
+     {
+         $this->errorPrompt = $prompt ?: new prompt();
+ 
+@@ -196,7 +196,7 @@ class cli extends report\fields\runner\errors
+         return $this->errorPrompt;
+     }
+ 
+-    public function setErrorColorizer(colorizer $colorizer = null)
++    public function setErrorColorizer(?colorizer $colorizer = null)
+     {
+         $this->errorColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/event/cli.php b/classes/report/fields/runner/event/cli.php
+index be832024..eec9df71 100644
+--- a/classes/report/fields/runner/event/cli.php
++++ b/classes/report/fields/runner/event/cli.php
+@@ -11,7 +11,7 @@ class cli extends report\fields\runner\event
+ {
+     protected $progressBar = null;
+ 
+-    public function __construct(progressBar $progressBar = null)
++    public function __construct(?progressBar $progressBar = null)
+     {
+         parent::__construct();
+ 
+diff --git a/classes/report/fields/runner/event/cli/dot.php b/classes/report/fields/runner/event/cli/dot.php
+index b8a21338..423c8e8e 100644
+--- a/classes/report/fields/runner/event/cli/dot.php
++++ b/classes/report/fields/runner/event/cli/dot.php
+@@ -12,7 +12,7 @@ class dot extends report\fields\runner\event
+     protected $count = 0;
+     protected $progressBar;
+ 
+-    public function __construct(progressBar\dot $progressBar = null)
++    public function __construct(?progressBar\dot $progressBar = null)
+     {
+         parent::__construct();
+ 
+diff --git a/classes/report/fields/runner/exceptions/cli.php b/classes/report/fields/runner/exceptions/cli.php
+index 6a407fab..58479f3a 100644
+--- a/classes/report/fields/runner/exceptions/cli.php
++++ b/classes/report/fields/runner/exceptions/cli.php
+@@ -85,7 +85,7 @@ class cli extends report\fields\runner\exceptions
+         return $string;
+     }
+ 
+-    public function setTitlePrompt(prompt $prompt = null)
++    public function setTitlePrompt(?prompt $prompt = null)
+     {
+         $this->titlePrompt = $prompt ?: new prompt();
+ 
+@@ -97,7 +97,7 @@ class cli extends report\fields\runner\exceptions
+         return $this->titlePrompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -109,7 +109,7 @@ class cli extends report\fields\runner\exceptions
+         return $this->titleColorizer;
+     }
+ 
+-    public function setMethodPrompt(prompt $prompt = null)
++    public function setMethodPrompt(?prompt $prompt = null)
+     {
+         $this->methodPrompt = $prompt ?: new prompt();
+ 
+@@ -121,7 +121,7 @@ class cli extends report\fields\runner\exceptions
+         return $this->methodPrompt;
+     }
+ 
+-    public function setMethodColorizer(colorizer $colorizer = null)
++    public function setMethodColorizer(?colorizer $colorizer = null)
+     {
+         $this->methodColorizer = $colorizer ?: new colorizer();
+ 
+@@ -133,7 +133,7 @@ class cli extends report\fields\runner\exceptions
+         return $this->methodColorizer;
+     }
+ 
+-    public function setExceptionPrompt(prompt $prompt = null)
++    public function setExceptionPrompt(?prompt $prompt = null)
+     {
+         $this->exceptionPrompt = $prompt ?: new prompt();
+ 
+@@ -145,7 +145,7 @@ class cli extends report\fields\runner\exceptions
+         return $this->exceptionPrompt;
+     }
+ 
+-    public function setExceptionColorizer(colorizer $colorizer = null)
++    public function setExceptionColorizer(?colorizer $colorizer = null)
+     {
+         $this->exceptionColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/failures/cli.php b/classes/report/fields/runner/failures/cli.php
+index 413b4067..efa6ef3a 100644
+--- a/classes/report/fields/runner/failures/cli.php
++++ b/classes/report/fields/runner/failures/cli.php
+@@ -80,7 +80,7 @@ class cli extends runner\failures
+         return $string;
+     }
+ 
+-    public function setTitlePrompt(prompt $prompt = null)
++    public function setTitlePrompt(?prompt $prompt = null)
+     {
+         $this->titlePrompt = $prompt ?: new prompt();
+ 
+@@ -92,7 +92,7 @@ class cli extends runner\failures
+         return $this->titlePrompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -104,7 +104,7 @@ class cli extends runner\failures
+         return $this->titleColorizer;
+     }
+ 
+-    public function setMethodPrompt(prompt $prompt = null)
++    public function setMethodPrompt(?prompt $prompt = null)
+     {
+         $this->methodPrompt = $prompt ?: new prompt();
+ 
+@@ -116,7 +116,7 @@ class cli extends runner\failures
+         return $this->methodPrompt;
+     }
+ 
+-    public function setMethodColorizer(colorizer $colorizer = null)
++    public function setMethodColorizer(?colorizer $colorizer = null)
+     {
+         $this->methodColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/failures/execute.php b/classes/report/fields/runner/failures/execute.php
+index 6dc5e0ea..de80cedd 100644
+--- a/classes/report/fields/runner/failures/execute.php
++++ b/classes/report/fields/runner/failures/execute.php
+@@ -55,7 +55,7 @@ class execute extends runner\failures
+         return $this->command;
+     }
+ 
+-    public function setAdapter(adapter $adapter = null)
++    public function setAdapter(?adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new adapter();
+ 
+diff --git a/classes/report/fields/runner/outputs/cli.php b/classes/report/fields/runner/outputs/cli.php
+index 18c1bc06..4762678b 100644
+--- a/classes/report/fields/runner/outputs/cli.php
++++ b/classes/report/fields/runner/outputs/cli.php
+@@ -61,7 +61,7 @@ class cli extends outputs
+         return $string;
+     }
+ 
+-    public function setTitlePrompt(prompt $prompt = null)
++    public function setTitlePrompt(?prompt $prompt = null)
+     {
+         $this->titlePrompt = $prompt ?: new prompt();
+ 
+@@ -73,7 +73,7 @@ class cli extends outputs
+         return $this->titlePrompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -85,7 +85,7 @@ class cli extends outputs
+         return $this->titleColorizer;
+     }
+ 
+-    public function setMethodPrompt(prompt $prompt = null)
++    public function setMethodPrompt(?prompt $prompt = null)
+     {
+         $this->methodPrompt = $prompt ?: new prompt();
+ 
+@@ -97,7 +97,7 @@ class cli extends outputs
+         return $this->methodPrompt;
+     }
+ 
+-    public function setMethodColorizer(colorizer $colorizer = null)
++    public function setMethodColorizer(?colorizer $colorizer = null)
+     {
+         $this->methodColorizer = $colorizer ?: new colorizer();
+ 
+@@ -109,7 +109,7 @@ class cli extends outputs
+         return $this->methodColorizer;
+     }
+ 
+-    public function setOutputPrompt(prompt $prompt = null)
++    public function setOutputPrompt(?prompt $prompt = null)
+     {
+         $this->outputPrompt = $prompt ?: new prompt();
+ 
+@@ -121,7 +121,7 @@ class cli extends outputs
+         return $this->outputPrompt;
+     }
+ 
+-    public function setOutputColorizer(colorizer $colorizer = null)
++    public function setOutputColorizer(?colorizer $colorizer = null)
+     {
+         $this->outputColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/php/path/cli.php b/classes/report/fields/runner/php/path/cli.php
+index be02986a..ac3f77cc 100644
+--- a/classes/report/fields/runner/php/path/cli.php
++++ b/classes/report/fields/runner/php/path/cli.php
+@@ -36,7 +36,7 @@ class cli extends report\fields\runner\php\path
+         ;
+     }
+ 
+-    public function setPrompt(prompt $prompt = null)
++    public function setPrompt(?prompt $prompt = null)
+     {
+         $this->prompt = $prompt ?: new prompt();
+ 
+@@ -48,7 +48,7 @@ class cli extends report\fields\runner\php\path
+         return $this->prompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -60,7 +60,7 @@ class cli extends report\fields\runner\php\path
+         return $this->titleColorizer;
+     }
+ 
+-    public function setPathColorizer(colorizer $colorizer = null)
++    public function setPathColorizer(?colorizer $colorizer = null)
+     {
+         $this->pathColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/php/version/cli.php b/classes/report/fields/runner/php/version/cli.php
+index 811d2f70..b16e1b96 100644
+--- a/classes/report/fields/runner/php/version/cli.php
++++ b/classes/report/fields/runner/php/version/cli.php
+@@ -43,7 +43,7 @@ class cli extends report\fields\runner\php\version
+         return $string;
+     }
+ 
+-    public function setTitlePrompt(prompt $prompt = null)
++    public function setTitlePrompt(?prompt $prompt = null)
+     {
+         $this->titlePrompt = $prompt ?: new prompt();
+ 
+@@ -55,7 +55,7 @@ class cli extends report\fields\runner\php\version
+         return $this->titlePrompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -67,7 +67,7 @@ class cli extends report\fields\runner\php\version
+         return $this->titleColorizer;
+     }
+ 
+-    public function setVersionPrompt(prompt $prompt = null)
++    public function setVersionPrompt(?prompt $prompt = null)
+     {
+         $this->versionPrompt = $prompt ?: new prompt();
+ 
+@@ -79,7 +79,7 @@ class cli extends report\fields\runner\php\version
+         return $this->versionPrompt;
+     }
+ 
+-    public function setVersionColorizer(colorizer $colorizer = null)
++    public function setVersionColorizer(?colorizer $colorizer = null)
+     {
+         $this->versionColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/result/cli.php b/classes/report/fields/runner/result/cli.php
+index cbdf4519..808c0668 100644
+--- a/classes/report/fields/runner/result/cli.php
++++ b/classes/report/fields/runner/result/cli.php
+@@ -63,7 +63,7 @@ class cli extends fields\runner\result
+         return $string . PHP_EOL;
+     }
+ 
+-    public function setPrompt(prompt $prompt = null)
++    public function setPrompt(?prompt $prompt = null)
+     {
+         $this->prompt = $prompt ?: new prompt();
+ 
+@@ -75,7 +75,7 @@ class cli extends fields\runner\result
+         return $this->prompt;
+     }
+ 
+-    public function setSuccessColorizer(colorizer $colorizer = null)
++    public function setSuccessColorizer(?colorizer $colorizer = null)
+     {
+         $this->successColorizer = $colorizer ?: new colorizer();
+ 
+@@ -87,7 +87,7 @@ class cli extends fields\runner\result
+         return $this->successColorizer;
+     }
+ 
+-    public function setFailureColorizer(colorizer $colorizer = null)
++    public function setFailureColorizer(?colorizer $colorizer = null)
+     {
+         $this->failureColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/result/notifier.php b/classes/report/fields/runner/result/notifier.php
+index 98279ab4..c0ea550f 100644
+--- a/classes/report/fields/runner/result/notifier.php
++++ b/classes/report/fields/runner/result/notifier.php
+@@ -9,7 +9,7 @@ abstract class notifier extends result
+ {
+     protected $adapter = null;
+ 
+-    public function __construct(atoum\adapter $adapter = null)
++    public function __construct(?atoum\adapter $adapter = null)
+     {
+         parent::__construct();
+ 
+@@ -53,7 +53,7 @@ abstract class notifier extends result
+         return $this->send($title, $message, $this->success);
+     }
+ 
+-    public function setAdapter(atoum\adapter $adapter = null)
++    public function setAdapter(?atoum\adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new atoum\adapter();
+ 
+diff --git a/classes/report/fields/runner/tests/blank/cli.php b/classes/report/fields/runner/tests/blank/cli.php
+index c1eb94bb..5ad3a437 100644
+--- a/classes/report/fields/runner/tests/blank/cli.php
++++ b/classes/report/fields/runner/tests/blank/cli.php
+@@ -53,7 +53,7 @@ class cli extends report\fields\runner\tests\blank
+         return $string;
+     }
+ 
+-    public function setTitlePrompt(prompt $prompt = null)
++    public function setTitlePrompt(?prompt $prompt = null)
+     {
+         $this->titlePrompt = $prompt ?: new prompt();
+ 
+@@ -65,7 +65,7 @@ class cli extends report\fields\runner\tests\blank
+         return $this->titlePrompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -77,7 +77,7 @@ class cli extends report\fields\runner\tests\blank
+         return $this->titleColorizer;
+     }
+ 
+-    public function setMethodPrompt(prompt $prompt = null)
++    public function setMethodPrompt(?prompt $prompt = null)
+     {
+         $this->methodPrompt = $prompt ?: new prompt();
+ 
+@@ -89,7 +89,7 @@ class cli extends report\fields\runner\tests\blank
+         return $this->methodPrompt;
+     }
+ 
+-    public function setMethodColorizer(colorizer $colorizer = null)
++    public function setMethodColorizer(?colorizer $colorizer = null)
+     {
+         $this->methodColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/tests/coverage/cli.php b/classes/report/fields/runner/tests/coverage/cli.php
+index 3635a6bb..a0331f4e 100644
+--- a/classes/report/fields/runner/tests/coverage/cli.php
++++ b/classes/report/fields/runner/tests/coverage/cli.php
+@@ -111,7 +111,7 @@ class cli extends report\fields\runner\tests\coverage
+         return $string;
+     }
+ 
+-    public function setTitlePrompt(prompt $prompt = null)
++    public function setTitlePrompt(?prompt $prompt = null)
+     {
+         $this->titlePrompt = $prompt ?: new prompt();
+ 
+@@ -123,7 +123,7 @@ class cli extends report\fields\runner\tests\coverage
+         return $this->titlePrompt;
+     }
+ 
+-    public function setClassPrompt(prompt $prompt = null)
++    public function setClassPrompt(?prompt $prompt = null)
+     {
+         $this->classPrompt = $prompt ?: new prompt();
+ 
+@@ -135,7 +135,7 @@ class cli extends report\fields\runner\tests\coverage
+         return $this->classPrompt;
+     }
+ 
+-    public function setMethodPrompt(prompt $prompt = null)
++    public function setMethodPrompt(?prompt $prompt = null)
+     {
+         $this->methodPrompt = $prompt ?: new prompt();
+ 
+@@ -147,7 +147,7 @@ class cli extends report\fields\runner\tests\coverage
+         return $this->methodPrompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -159,7 +159,7 @@ class cli extends report\fields\runner\tests\coverage
+         return $this->titleColorizer;
+     }
+ 
+-    public function setCoverageColorizer(colorizer $colorizer = null)
++    public function setCoverageColorizer(?colorizer $colorizer = null)
+     {
+         $this->coverageColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/tests/duration/cli.php b/classes/report/fields/runner/tests/duration/cli.php
+index 019f9ec9..7c605c47 100644
+--- a/classes/report/fields/runner/tests/duration/cli.php
++++ b/classes/report/fields/runner/tests/duration/cli.php
+@@ -40,7 +40,7 @@ class cli extends report\fields\runner\tests\duration
+         ;
+     }
+ 
+-    public function setPrompt(prompt $prompt = null)
++    public function setPrompt(?prompt $prompt = null)
+     {
+         $this->prompt = $prompt ?: new prompt();
+ 
+@@ -52,7 +52,7 @@ class cli extends report\fields\runner\tests\duration
+         return $this->prompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $titleColorizer = null)
++    public function setTitleColorizer(?colorizer $titleColorizer = null)
+     {
+         $this->titleColorizer = $titleColorizer ?: new colorizer();
+ 
+@@ -64,7 +64,7 @@ class cli extends report\fields\runner\tests\duration
+         return $this->titleColorizer;
+     }
+ 
+-    public function setDurationColorizer(colorizer $durationColorizer = null)
++    public function setDurationColorizer(?colorizer $durationColorizer = null)
+     {
+         $this->durationColorizer = $durationColorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/tests/memory/cli.php b/classes/report/fields/runner/tests/memory/cli.php
+index ef190c08..6464f07c 100644
+--- a/classes/report/fields/runner/tests/memory/cli.php
++++ b/classes/report/fields/runner/tests/memory/cli.php
+@@ -36,7 +36,7 @@ class cli extends report\fields\runner\tests\memory
+         return $this->prompt . $this->locale->_('%s: %s.', $this->titleColorizer->colorize($title), $this->memoryColorizer->colorize($memory)) . PHP_EOL;
+     }
+ 
+-    public function setPrompt(prompt $prompt = null)
++    public function setPrompt(?prompt $prompt = null)
+     {
+         $this->prompt = $prompt ?: new prompt();
+ 
+@@ -48,7 +48,7 @@ class cli extends report\fields\runner\tests\memory
+         return $this->prompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -60,7 +60,7 @@ class cli extends report\fields\runner\tests\memory
+         return $this->titleColorizer;
+     }
+ 
+-    public function setMemoryColorizer(colorizer $colorizer = null)
++    public function setMemoryColorizer(?colorizer $colorizer = null)
+     {
+         $this->memoryColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/tests/skipped/cli.php b/classes/report/fields/runner/tests/skipped/cli.php
+index 10fec92d..7b8bfd7e 100644
+--- a/classes/report/fields/runner/tests/skipped/cli.php
++++ b/classes/report/fields/runner/tests/skipped/cli.php
+@@ -56,7 +56,7 @@ class cli extends skipped
+         return $string;
+     }
+ 
+-    public function setTitlePrompt(prompt $prompt = null)
++    public function setTitlePrompt(?prompt $prompt = null)
+     {
+         $this->titlePrompt = $prompt ?: new prompt();
+ 
+@@ -68,7 +68,7 @@ class cli extends skipped
+         return $this->titlePrompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -80,7 +80,7 @@ class cli extends skipped
+         return $this->titleColorizer;
+     }
+ 
+-    public function setMethodPrompt(prompt $prompt = null)
++    public function setMethodPrompt(?prompt $prompt = null)
+     {
+         $this->methodPrompt = $prompt ?: new prompt();
+ 
+@@ -92,7 +92,7 @@ class cli extends skipped
+         return $this->methodPrompt;
+     }
+ 
+-    public function setMethodColorizer(colorizer $colorizer = null)
++    public function setMethodColorizer(?colorizer $colorizer = null)
+     {
+         $this->methodColorizer = $colorizer ?: new colorizer();
+ 
+@@ -104,7 +104,7 @@ class cli extends skipped
+         return $this->methodColorizer;
+     }
+ 
+-    public function setMessageColorizer(colorizer $colorizer = null)
++    public function setMessageColorizer(?colorizer $colorizer = null)
+     {
+         $this->messageColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/runner/tests/uncompleted/cli.php b/classes/report/fields/runner/tests/uncompleted/cli.php
+index 9933243a..9a5bb016 100644
+--- a/classes/report/fields/runner/tests/uncompleted/cli.php
++++ b/classes/report/fields/runner/tests/uncompleted/cli.php
+@@ -74,7 +74,7 @@ class cli extends report\fields\runner\tests\uncompleted
+         return $string;
+     }
+ 
+-    public function setTitlePrompt(prompt $prompt = null)
++    public function setTitlePrompt(?prompt $prompt = null)
+     {
+         $this->titlePrompt = $prompt ?: new prompt();
+ 
+@@ -86,7 +86,7 @@ class cli extends report\fields\runner\tests\uncompleted
+         return $this->titlePrompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -98,7 +98,7 @@ class cli extends report\fields\runner\tests\uncompleted
+         return $this->titleColorizer;
+     }
+ 
+-    public function setMethodPrompt(prompt $prompt = null)
++    public function setMethodPrompt(?prompt $prompt = null)
+     {
+         $this->methodPrompt = $prompt ?: new prompt();
+ 
+@@ -110,7 +110,7 @@ class cli extends report\fields\runner\tests\uncompleted
+         return $this->methodPrompt;
+     }
+ 
+-    public function setMethodColorizer(colorizer $colorizer = null)
++    public function setMethodColorizer(?colorizer $colorizer = null)
+     {
+         $this->methodColorizer = $colorizer ?: new colorizer();
+ 
+@@ -122,7 +122,7 @@ class cli extends report\fields\runner\tests\uncompleted
+         return $this->methodColorizer;
+     }
+ 
+-    public function setOutputPrompt(prompt $prompt = null)
++    public function setOutputPrompt(?prompt $prompt = null)
+     {
+         $this->outputPrompt = $prompt ?: new prompt();
+ 
+@@ -134,7 +134,7 @@ class cli extends report\fields\runner\tests\uncompleted
+         return $this->outputPrompt;
+     }
+ 
+-    public function setOutputColorizer(colorizer $colorizer = null)
++    public function setOutputColorizer(?colorizer $colorizer = null)
+     {
+         $this->outputColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/test/duration/cli.php b/classes/report/fields/test/duration/cli.php
+index 3a05de2f..f0b6752f 100644
+--- a/classes/report/fields/test/duration/cli.php
++++ b/classes/report/fields/test/duration/cli.php
+@@ -44,7 +44,7 @@ class cli extends report\fields\test\duration
+         ;
+     }
+ 
+-    public function setPrompt(prompt $prompt = null)
++    public function setPrompt(?prompt $prompt = null)
+     {
+         $this->prompt = $prompt ?: new prompt();
+ 
+@@ -56,7 +56,7 @@ class cli extends report\fields\test\duration
+         return $this->prompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -68,7 +68,7 @@ class cli extends report\fields\test\duration
+         return $this->titleColorizer;
+     }
+ 
+-    public function setDurationColorizer(colorizer $colorizer = null)
++    public function setDurationColorizer(?colorizer $colorizer = null)
+     {
+         $this->durationColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/test/event/cli.php b/classes/report/fields/test/event/cli.php
+index c6744749..d7b36b83 100644
+--- a/classes/report/fields/test/event/cli.php
++++ b/classes/report/fields/test/event/cli.php
+@@ -74,7 +74,7 @@ class cli extends report\fields\test\event
+         return $string;
+     }
+ 
+-    public function setProgressBar(progressBar $progressBar = null)
++    public function setProgressBar(?progressBar $progressBar = null)
+     {
+         $this->progressBar = $progressBar ?: new progressBar();
+ 
+diff --git a/classes/report/fields/test/memory/cli.php b/classes/report/fields/test/memory/cli.php
+index 39b8d9d8..190d957e 100644
+--- a/classes/report/fields/test/memory/cli.php
++++ b/classes/report/fields/test/memory/cli.php
+@@ -44,7 +44,7 @@ class cli extends report\fields\test\memory
+         ;
+     }
+ 
+-    public function setPrompt(prompt $prompt = null)
++    public function setPrompt(?prompt $prompt = null)
+     {
+         $this->prompt = $prompt ?: new prompt();
+ 
+@@ -56,7 +56,7 @@ class cli extends report\fields\test\memory
+         return $this->prompt;
+     }
+ 
+-    public function setTitleColorizer(colorizer $colorizer = null)
++    public function setTitleColorizer(?colorizer $colorizer = null)
+     {
+         $this->titleColorizer = $colorizer ?: new colorizer();
+ 
+@@ -68,7 +68,7 @@ class cli extends report\fields\test\memory
+         return $this->titleColorizer;
+     }
+ 
+-    public function setMemoryColorizer(colorizer $colorizer = null)
++    public function setMemoryColorizer(?colorizer $colorizer = null)
+     {
+         $this->memoryColorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/report/fields/test/run/cli.php b/classes/report/fields/test/run/cli.php
+index 9812f185..8e5cf074 100644
+--- a/classes/report/fields/test/run/cli.php
++++ b/classes/report/fields/test/run/cli.php
+@@ -35,7 +35,7 @@ class cli extends report\fields\test\run
+         ;
+     }
+ 
+-    public function setPrompt(prompt $prompt = null)
++    public function setPrompt(?prompt $prompt = null)
+     {
+         $this->prompt = $prompt ?: new prompt();
+ 
+@@ -47,7 +47,7 @@ class cli extends report\fields\test\run
+         return $this->prompt;
+     }
+ 
+-    public function setColorizer(colorizer $colorizer = null)
++    public function setColorizer(?colorizer $colorizer = null)
+     {
+         $this->colorizer = $colorizer ?: new colorizer();
+ 
+diff --git a/classes/reports/asynchronous/clover.php b/classes/reports/asynchronous/clover.php
+index bd547414..3d800a1c 100644
+--- a/classes/reports/asynchronous/clover.php
++++ b/classes/reports/asynchronous/clover.php
+@@ -25,7 +25,7 @@ class clover extends atoum\reports\asynchronous
+     protected $classes = 0;
+     protected $package = '';
+ 
+-    public function __construct(atoum\adapter $adapter = null)
++    public function __construct(?atoum\adapter $adapter = null)
+     {
+         parent::__construct();
+ 
+diff --git a/classes/reports/asynchronous/coveralls.php b/classes/reports/asynchronous/coveralls.php
+index 56d79fda..f735de52 100644
+--- a/classes/reports/asynchronous/coveralls.php
++++ b/classes/reports/asynchronous/coveralls.php
+@@ -21,7 +21,7 @@ class coveralls extends atoum\reports\asynchronous
+     protected $serviceName;
+     protected $serviceJobId;
+ 
+-    public function __construct($sourceDir, $repositoryToken = null, atoum\adapter $adapter = null)
++    public function __construct($sourceDir, $repositoryToken = null, ?atoum\adapter $adapter = null)
+     {
+         parent::__construct();
+ 
+@@ -39,7 +39,7 @@ class coveralls extends atoum\reports\asynchronous
+         $this->sourceDir = new atoum\fs\path($sourceDir);
+     }
+ 
+-    public function setBranchFinder(\closure $finder = null)
++    public function setBranchFinder(?\closure $finder = null)
+     {
+         $adapter = $this->adapter;
+ 
+@@ -79,7 +79,7 @@ class coveralls extends atoum\reports\asynchronous
+         return $this->serviceJobId;
+     }
+ 
+-    public function addDefaultWriter(atoum\writers\http $writer = null)
++    public function addDefaultWriter(?atoum\writers\http $writer = null)
+     {
+         $writer = $writer ?: new atoum\writers\http($this->adapter);
+         $writer
+diff --git a/classes/reports/asynchronous/xunit.php b/classes/reports/asynchronous/xunit.php
+index 4765eed7..52844947 100644
+--- a/classes/reports/asynchronous/xunit.php
++++ b/classes/reports/asynchronous/xunit.php
+@@ -12,7 +12,7 @@ class xunit extends atoum\reports\asynchronous
+     protected $score = null;
+     protected $assertions = [];
+ 
+-    public function __construct(atoum\adapter $adapter = null)
++    public function __construct(?atoum\adapter $adapter = null)
+     {
+         parent::__construct();
+ 
+diff --git a/classes/runner.php b/classes/runner.php
+index bda12835..cb820a46 100644
+--- a/classes/runner.php
++++ b/classes/runner.php
+@@ -64,7 +64,7 @@ class runner implements observable
+         $this->extensions = new aggregator();
+     }
+ 
+-    public function setAdapter(adapter $adapter = null)
++    public function setAdapter(?adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new adapter();
+ 
+@@ -76,7 +76,7 @@ class runner implements observable
+         return $this->adapter;
+     }
+ 
+-    public function setLocale(locale $locale = null)
++    public function setLocale(?locale $locale = null)
+     {
+         $this->locale = $locale ?: new locale();
+ 
+@@ -88,7 +88,7 @@ class runner implements observable
+         return $this->locale;
+     }
+ 
+-    public function setIncluder(includer $includer = null)
++    public function setIncluder(?includer $includer = null)
+     {
+         $this->includer = $includer ?: new includer();
+ 
+@@ -100,7 +100,7 @@ class runner implements observable
+         return $this->includer;
+     }
+ 
+-    public function setScore(runner\score $score = null)
++    public function setScore(?runner\score $score = null)
+     {
+         $this->score = $score ?: new runner\score();
+ 
+@@ -112,7 +112,7 @@ class runner implements observable
+         return $this->score;
+     }
+ 
+-    public function setTestGenerator(test\generator $generator = null)
++    public function setTestGenerator(?test\generator $generator = null)
+     {
+         $this->testGenerator = $generator ?: new test\generator();
+ 
+@@ -124,7 +124,7 @@ class runner implements observable
+         return $this->testGenerator;
+     }
+ 
+-    public function setTestDirectoryIterator(iterators\recursives\directory\factory $iterator = null)
++    public function setTestDirectoryIterator(?iterators\recursives\directory\factory $iterator = null)
+     {
+         $this->testDirectoryIterator = $iterator ?: new iterators\recursives\directory\factory();
+ 
+@@ -136,7 +136,7 @@ class runner implements observable
+         return $this->testDirectoryIterator;
+     }
+ 
+-    public function setGlobIteratorFactory(\closure $factory = null)
++    public function setGlobIteratorFactory(?\closure $factory = null)
+     {
+         $this->globIteratorFactory = $factory ?: function ($pattern) {
+             return new \globIterator($pattern);
+@@ -150,7 +150,7 @@ class runner implements observable
+         return $this->globIteratorFactory;
+     }
+ 
+-    public function setReflectionClassFactory(\closure $factory = null)
++    public function setReflectionClassFactory(?\closure $factory = null)
+     {
+         $this->reflectionClassFactory = $factory ?: function ($class) {
+             return new \reflectionClass($class);
+@@ -289,7 +289,7 @@ class runner implements observable
+         return $this->defaultReportTitle;
+     }
+ 
+-    public function setPhp(php $php = null)
++    public function setPhp(?php $php = null)
+     {
+         $this->php = $php ?: new php();
+ 
+@@ -739,7 +739,7 @@ class runner implements observable
+         return $this->removeObserver($report);
+     }
+ 
+-    public function removeReports(report $override = null)
++    public function removeReports(?report $override = null)
+     {
+         if ($override === null) {
+             foreach ($this->reports as $report) {
+@@ -818,7 +818,7 @@ class runner implements observable
+         return $this;
+     }
+ 
+-    public function addExtension(extension $extension, extension\configuration $configuration = null)
++    public function addExtension(extension $extension, ?extension\configuration $configuration = null)
+     {
+         if ($this->extensions->contains($extension) === false) {
+             $extension->setRunner($this);
+diff --git a/classes/score.php b/classes/score.php
+index d39a8e77..018dcaef 100644
+--- a/classes/score.php
++++ b/classes/score.php
+@@ -19,12 +19,12 @@ class score
+ 
+     private static $failId = 0;
+ 
+-    public function __construct(score\coverage $coverage = null)
++    public function __construct(?score\coverage $coverage = null)
+     {
+         $this->setCoverage($coverage);
+     }
+ 
+-    public function setCoverage(score\coverage $coverage = null)
++    public function setCoverage(?score\coverage $coverage = null)
+     {
+         $this->coverage = $coverage ?: new score\coverage();
+ 
+diff --git a/classes/score/coverage.php b/classes/score/coverage.php
+index 78188144..b992aca1 100644
+--- a/classes/score/coverage.php
++++ b/classes/score/coverage.php
+@@ -18,7 +18,7 @@ class coverage implements \countable, \serializable
+     protected $excludedNamespaces = [];
+     protected $excludedDirectories = [];
+ 
+-    public function __construct(atoum\adapter $adapter = null, \closure $reflectionClassFactory = null)
++    public function __construct(?atoum\adapter $adapter = null, ?\closure $reflectionClassFactory = null)
+     {
+         $this
+             ->setAdapter($adapter)
+@@ -26,7 +26,7 @@ class coverage implements \countable, \serializable
+         ;
+     }
+ 
+-    public function setAdapter(atoum\adapter $adapter = null)
++    public function setAdapter(?atoum\adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new atoum\adapter();
+ 
+@@ -38,7 +38,7 @@ class coverage implements \countable, \serializable
+         return $this->adapter;
+     }
+ 
+-    public function setReflectionClassFactory(\closure $factory = null)
++    public function setReflectionClassFactory(?\closure $factory = null)
+     {
+         $this->reflectionClassFactory = $factory ?: function ($class) {
+             return new \reflectionClass($class);
+diff --git a/classes/script.php b/classes/script.php
+index 405b4c01..e98a9d5d 100644
+--- a/classes/script.php
++++ b/classes/script.php
+@@ -22,7 +22,7 @@ abstract class script
+     private $doRun = true;
+     private $help = [];
+ 
+-    public function __construct($name, adapter $adapter = null)
++    public function __construct($name, ?adapter $adapter = null)
+     {
+         $this->name = (string) $name;
+ 
+@@ -51,7 +51,7 @@ abstract class script
+         return rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+     }
+ 
+-    public function setAdapter(adapter $adapter = null)
++    public function setAdapter(?adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new adapter();
+ 
+@@ -63,7 +63,7 @@ abstract class script
+         return $this->adapter;
+     }
+ 
+-    public function setLocale(locale $locale = null)
++    public function setLocale(?locale $locale = null)
+     {
+         $this->locale = $locale ?: new locale();
+ 
+@@ -75,7 +75,7 @@ abstract class script
+         return $this->locale;
+     }
+ 
+-    public function setArgumentsParser(script\arguments\parser $parser = null)
++    public function setArgumentsParser(?script\arguments\parser $parser = null)
+     {
+         $this->argumentsParser = $parser ?: new script\arguments\parser();
+ 
+@@ -89,7 +89,7 @@ abstract class script
+         return $this->argumentsParser;
+     }
+ 
+-    public function setCli(cli $cli = null)
++    public function setCli(?cli $cli = null)
+     {
+         $this->cli = $cli ?: new cli();
+ 
+@@ -106,7 +106,7 @@ abstract class script
+         return (count($this->argumentsParser->getValues()) > 0);
+     }
+ 
+-    public function setOutputWriter(writer $writer = null)
++    public function setOutputWriter(?writer $writer = null)
+     {
+         $this->outputWriter = $writer ?: new writers\std\out($this->cli);
+ 
+@@ -118,7 +118,7 @@ abstract class script
+         return $this->outputWriter;
+     }
+ 
+-    public function setInfoWriter(writer $writer = null)
++    public function setInfoWriter(?writer $writer = null)
+     {
+         if ($writer === null) {
+             $writer = new writers\std\out($this->cli);
+@@ -139,7 +139,7 @@ abstract class script
+         return $this->infoWriter;
+     }
+ 
+-    public function setWarningWriter(writer $writer = null)
++    public function setWarningWriter(?writer $writer = null)
+     {
+         if ($writer === null) {
+             $writer = new writers\std\err($this->cli);
+@@ -161,7 +161,7 @@ abstract class script
+         return $this->warningWriter;
+     }
+ 
+-    public function setErrorWriter(writer $writer = null)
++    public function setErrorWriter(?writer $writer = null)
+     {
+         if ($writer === null) {
+             $writer = new writers\std\err($this->cli);
+@@ -183,7 +183,7 @@ abstract class script
+         return $this->errorWriter;
+     }
+ 
+-    public function setHelpWriter(writer $writer = null)
++    public function setHelpWriter(?writer $writer = null)
+     {
+         if ($writer === null) {
+             $labelColorizer = new cli\colorizer('0;32');
+@@ -216,7 +216,7 @@ abstract class script
+         return $this->helpWriter;
+     }
+ 
+-    public function setPrompt(script\prompt $prompt = null)
++    public function setPrompt(?script\prompt $prompt = null)
+     {
+         if ($prompt === null) {
+             $prompt = new script\prompt();
+diff --git a/classes/script/arguments/parser.php b/classes/script/arguments/parser.php
+index 18bc1635..a4a2873e 100644
+--- a/classes/script/arguments/parser.php
++++ b/classes/script/arguments/parser.php
+@@ -13,7 +13,7 @@ class parser implements \iteratorAggregate
+     protected $priorities = [];
+     protected $superglobals = null;
+ 
+-    public function __construct(atoum\superglobals $superglobals = null)
++    public function __construct(?atoum\superglobals $superglobals = null)
+     {
+         $this->setSuperglobals($superglobals ?: new atoum\superglobals());
+     }
+diff --git a/classes/script/configurable.php b/classes/script/configurable.php
+index 25c2d742..0f4a0eec 100644
+--- a/classes/script/configurable.php
++++ b/classes/script/configurable.php
+@@ -13,14 +13,14 @@ abstract class configurable extends atoum\script
+     protected $includer = null;
+     protected $configFiles = [];
+ 
+-    public function __construct($name, atoum\adapter $adapter = null)
++    public function __construct($name, ?atoum\adapter $adapter = null)
+     {
+         parent::__construct($name, $adapter);
+ 
+         $this->setIncluder();
+     }
+ 
+-    public function setIncluder(atoum\includer $includer = null)
++    public function setIncluder(?atoum\includer $includer = null)
+     {
+         $this->includer = $includer ?: new atoum\includer();
+ 
+@@ -144,7 +144,7 @@ abstract class configurable extends atoum\script
+         return $this;
+     }
+ 
+-    protected function includeConfigFile($path, \closure $callback = null)
++    protected function includeConfigFile($path, ?\closure $callback = null)
+     {
+         if ($callback === null) {
+             $script = $this;
+diff --git a/classes/script/prompt.php b/classes/script/prompt.php
+index 760c1051..7a7621fe 100644
+--- a/classes/script/prompt.php
++++ b/classes/script/prompt.php
+@@ -25,7 +25,7 @@ class prompt
+         return $this->inputReader;
+     }
+ 
+-    public function setInputReader(reader $inputReader = null)
++    public function setInputReader(?reader $inputReader = null)
+     {
+         $this->inputReader = $inputReader ?: new std\in();
+ 
+@@ -37,7 +37,7 @@ class prompt
+         return $this->outputWriter;
+     }
+ 
+-    public function setOutputWriter(writer $writer = null)
++    public function setOutputWriter(?writer $writer = null)
+     {
+         $this->outputWriter = $writer ?: new writers\std\out();
+ 
+diff --git a/classes/scripts/builder.php b/classes/scripts/builder.php
+index 548db018..93fe65ae 100644
+--- a/classes/scripts/builder.php
++++ b/classes/scripts/builder.php
+@@ -31,7 +31,7 @@ class builder extends atoum\script\configurable
+     protected $reportTitle = null;
+     protected $runnerConfigurationFiles = [];
+ 
+-    public function __construct($name, atoum\adapter $adapter = null)
++    public function __construct($name, ?atoum\adapter $adapter = null)
+     {
+         parent::__construct($name, $adapter);
+ 
+@@ -43,7 +43,7 @@ class builder extends atoum\script\configurable
+         ;
+     }
+ 
+-    public function setVcs(builder\vcs $vcs = null)
++    public function setVcs(?builder\vcs $vcs = null)
+     {
+         $this->vcs = $vcs ?: new builder\vcs\svn();
+ 
+@@ -67,7 +67,7 @@ class builder extends atoum\script\configurable
+         return $this->taggerEngine;
+     }
+ 
+-    public function setPhp(atoum\php $php = null)
++    public function setPhp(?atoum\php $php = null)
+     {
+         $this->php = $php ?: new atoum\php();
+ 
+@@ -440,7 +440,7 @@ class builder extends atoum\script\configurable
+         return $this;
+     }
+ 
+-    protected function includeConfigFile($path, \closure $callback = null)
++    protected function includeConfigFile($path, ?\closure $callback = null)
+     {
+         if ($callback === null) {
+             $builder = $this;
+diff --git a/classes/scripts/builder/vcs.php b/classes/scripts/builder/vcs.php
+index cf94a375..f224e2be 100644
+--- a/classes/scripts/builder/vcs.php
++++ b/classes/scripts/builder/vcs.php
+@@ -14,7 +14,7 @@ abstract class vcs
+     protected $password = null;
+     protected $workingDirectory = null;
+ 
+-    public function __construct(atoum\adapter $adapter = null)
++    public function __construct(?atoum\adapter $adapter = null)
+     {
+         $this->setAdapter($adapter ?: new atoum\adapter());
+     }
+diff --git a/classes/scripts/builder/vcs/svn.php b/classes/scripts/builder/vcs/svn.php
+index cabbc289..1da139a5 100644
+--- a/classes/scripts/builder/vcs/svn.php
++++ b/classes/scripts/builder/vcs/svn.php
+@@ -8,7 +8,7 @@ use atoum\atoum\scripts\builder;
+ 
+ class svn extends builder\vcs
+ {
+-    public function __construct(atoum\adapter $adapter = null)
++    public function __construct(?atoum\adapter $adapter = null)
+     {
+         parent::__construct($adapter);
+     }
+diff --git a/classes/scripts/coverage.php b/classes/scripts/coverage.php
+index 8a19feab..7a27d27d 100644
+--- a/classes/scripts/coverage.php
++++ b/classes/scripts/coverage.php
+@@ -14,7 +14,7 @@ class coverage extends runner
+     protected $reportOutputPath;
+     protected $reportFormat;
+ 
+-    public function __construct($name, atoum\adapter $adapter = null)
++    public function __construct($name, ?atoum\adapter $adapter = null)
+     {
+         parent::__construct($name, $adapter);
+ 
+diff --git a/classes/scripts/git/pusher.php b/classes/scripts/git/pusher.php
+index 95a9653a..a49d0ec4 100644
+--- a/classes/scripts/git/pusher.php
++++ b/classes/scripts/git/pusher.php
+@@ -28,7 +28,7 @@ class pusher extends script\configurable
+     protected $tagMinorVersion = false;
+     protected $tagBetaVersion = false;
+ 
+-    public function __construct($name, atoum\adapter $adapter = null)
++    public function __construct($name, ?atoum\adapter $adapter = null)
+     {
+         parent::__construct($name, $adapter);
+ 
+@@ -71,7 +71,7 @@ class pusher extends script\configurable
+         return $this->tagFile;
+     }
+ 
+-    public function setTaggerEngine(scripts\tagger\engine $engine = null)
++    public function setTaggerEngine(?scripts\tagger\engine $engine = null)
+     {
+         $this->taggerEngine = $engine ?: new scripts\tagger\engine();
+ 
+@@ -95,7 +95,7 @@ class pusher extends script\configurable
+         return $this->workingDirectory;
+     }
+ 
+-    public function setGit(commands\git $git = null)
++    public function setGit(?commands\git $git = null)
+     {
+         $this->git = $git ?: new commands\git();
+ 
+@@ -107,7 +107,7 @@ class pusher extends script\configurable
+         return $this->git;
+     }
+ 
+-    public function setForceMode($force=true)
++    public function setForceMode($force = true)
+     {
+         $this->forceMode = $force;
+ 
+diff --git a/classes/scripts/phar/generator.php b/classes/scripts/phar/generator.php
+index 3a5291a1..8ee9175b 100644
+--- a/classes/scripts/phar/generator.php
++++ b/classes/scripts/phar/generator.php
+@@ -17,14 +17,14 @@ class generator extends atoum\script
+     protected $stubFile = null;
+     protected $pharFactory = null;
+ 
+-    public function __construct($name, atoum\adapter $adapter = null)
++    public function __construct($name, ?atoum\adapter $adapter = null)
+     {
+         parent::__construct($name, $adapter);
+ 
+         $this->setPharFactory();
+     }
+ 
+-    public function setPharFactory(\closure $factory = null)
++    public function setPharFactory(?\closure $factory = null)
+     {
+         $this->pharFactory = $factory ?: function ($path) {
+             return new \phar($path);
+diff --git a/classes/scripts/phar/stub.php b/classes/scripts/phar/stub.php
+index f7315f77..dab040f1 100644
+--- a/classes/scripts/phar/stub.php
++++ b/classes/scripts/phar/stub.php
+@@ -15,14 +15,14 @@ class stub extends scripts\runner
+ 
+     protected $pharFactory = null;
+ 
+-    public function __construct($name, atoum\adapter $adapter = null)
++    public function __construct($name, ?atoum\adapter $adapter = null)
+     {
+         parent::__construct($name, $adapter);
+ 
+         $this->setPharFactory();
+     }
+ 
+-    public function setPharFactory(\closure $factory = null)
++    public function setPharFactory(?\closure $factory = null)
+     {
+         $this->pharFactory = $factory ?: function ($path) {
+             return new \phar($path);
+@@ -327,7 +327,7 @@ class stub extends scripts\runner
+         return $this->stopRun();
+     }
+ 
+-    public function enableVersion($versionName, \phar $phar = null)
++    public function enableVersion($versionName, ?\phar $phar = null)
+     {
+         if ($this->adapter->ini_get('phar.readonly') == true) {
+             throw new exceptions\runtime('Unable to update the PHAR, phar.readonly is set, use \'-d phar.readonly=0\'');
+@@ -354,7 +354,7 @@ class stub extends scripts\runner
+         return $this->stopRun();
+     }
+ 
+-    public function deleteVersion($versionName, \phar $phar = null)
++    public function deleteVersion($versionName, ?\phar $phar = null)
+     {
+         if ($this->adapter->ini_get('phar.readonly') == true) {
+             throw new exceptions\runtime('Unable to update the PHAR, phar.readonly is set, use \'-d phar.readonly=0\'');
+diff --git a/classes/scripts/runner.php b/classes/scripts/runner.php
+index f623440c..c0553cad 100644
+--- a/classes/scripts/runner.php
++++ b/classes/scripts/runner.php
+@@ -33,7 +33,7 @@ class runner extends atoum\script\configurable
+     protected static $runnerFile = null;
+     protected static $configurationCallables = [];
+ 
+-    public function __construct($name, atoum\adapter $adapter = null, atoum\scripts\runner\looper $looper = null)
++    public function __construct($name, ?atoum\adapter $adapter = null, ?atoum\scripts\runner\looper $looper = null)
+     {
+         parent::__construct($name, $adapter);
+ 
+@@ -46,7 +46,7 @@ class runner extends atoum\script\configurable
+         ;
+     }
+ 
+-    public function setInfoWriter(atoum\writer $writer = null)
++    public function setInfoWriter(?atoum\writer $writer = null)
+     {
+         parent::setInfoWriter($writer);
+ 
+@@ -57,7 +57,7 @@ class runner extends atoum\script\configurable
+         return $this;
+     }
+ 
+-    public function setWarningWriter(atoum\writer $writer = null)
++    public function setWarningWriter(?atoum\writer $writer = null)
+     {
+         if ($writer === null) {
+             $writer = new writers\std\err();
+@@ -73,7 +73,7 @@ class runner extends atoum\script\configurable
+         return $this;
+     }
+ 
+-    public function setErrorWriter(atoum\writer $writer = null)
++    public function setErrorWriter(?atoum\writer $writer = null)
+     {
+         parent::setErrorWriter($writer);
+ 
+@@ -92,7 +92,7 @@ class runner extends atoum\script\configurable
+         return atoum\directory . '/resources';
+     }
+ 
+-    public function setRunner(atoum\runner $runner = null)
++    public function setRunner(?atoum\runner $runner = null)
+     {
+         $this->runner = $runner ?: new atoum\runner();
+ 
+@@ -104,7 +104,7 @@ class runner extends atoum\script\configurable
+         return $this->runner;
+     }
+ 
+-    public function setConfiguratorFactory(\closure $factory = null)
++    public function setConfiguratorFactory(?\closure $factory = null)
+     {
+         $this->configuratorFactory = $factory ?: function ($test) {
+             return new atoum\configurator($test);
+@@ -118,7 +118,7 @@ class runner extends atoum\script\configurable
+         return $this->configuratorFactory;
+     }
+ 
+-    public function setDefaultReportFactory(\closure $factory = null)
++    public function setDefaultReportFactory(?\closure $factory = null)
+     {
+         $this->defaultReportFactory = $factory ?: function ($script) {
+             $report = new atoum\reports\realtime\cli();
+@@ -140,7 +140,7 @@ class runner extends atoum\script\configurable
+         return $this->defaultReportFactory;
+     }
+ 
+-    public function setLooper(atoum\scripts\runner\looper $looper = null)
++    public function setLooper(?atoum\scripts\runner\looper $looper = null)
+     {
+         $this->looper = $looper ?: new atoum\scripts\runner\loopers\prompt($this->prompt, $this->outputWriter, $this->cli, $this->locale);
+ 
+diff --git a/classes/scripts/runner/loopers/prompt.php b/classes/scripts/runner/loopers/prompt.php
+index 6d3a7930..c64ea13e 100644
+--- a/classes/scripts/runner/loopers/prompt.php
++++ b/classes/scripts/runner/loopers/prompt.php
+@@ -14,7 +14,7 @@ class prompt implements looper
+     private $locale;
+     private $cli;
+ 
+-    public function __construct(script\prompt $prompt = null, atoum\writer $writer = null, atoum\cli $cli = null, atoum\locale $locale = null)
++    public function __construct(?script\prompt $prompt = null, ?atoum\writer $writer = null, ?atoum\cli $cli = null, ?atoum\locale $locale = null)
+     {
+         $this
+             ->setCli($cli)
+@@ -24,7 +24,7 @@ class prompt implements looper
+         ;
+     }
+ 
+-    public function setCli(atoum\cli $cli = null)
++    public function setCli(?atoum\cli $cli = null)
+     {
+         $this->cli = $cli ?: new atoum\cli();
+ 
+@@ -36,7 +36,7 @@ class prompt implements looper
+         return $this->cli;
+     }
+ 
+-    public function setOutputWriter(atoum\writer $writer = null)
++    public function setOutputWriter(?atoum\writer $writer = null)
+     {
+         $this->writer = $writer ?: new writers\std\out($this->cli);
+ 
+@@ -48,7 +48,7 @@ class prompt implements looper
+         return $this->writer;
+     }
+ 
+-    public function setPrompt(script\prompt $prompt = null)
++    public function setPrompt(?script\prompt $prompt = null)
+     {
+         if ($prompt === null) {
+             $prompt = new script\prompt();
+@@ -64,7 +64,7 @@ class prompt implements looper
+         return $this->prompt;
+     }
+ 
+-    public function setLocale(atoum\locale $locale = null)
++    public function setLocale(?atoum\locale $locale = null)
+     {
+         $this->locale = $locale ?: new atoum\locale();
+ 
+diff --git a/classes/scripts/tagger.php b/classes/scripts/tagger.php
+index 27ba5e9d..c4e3dfa6 100644
+--- a/classes/scripts/tagger.php
++++ b/classes/scripts/tagger.php
+@@ -10,14 +10,14 @@ class tagger extends atoum\script
+ {
+     protected $engine = null;
+ 
+-    public function __construct($name, atoum\adapter $adapter = null)
++    public function __construct($name, ?atoum\adapter $adapter = null)
+     {
+         parent::__construct($name, $adapter);
+ 
+         $this->setEngine();
+     }
+ 
+-    public function setEngine(tagger\engine $engine = null)
++    public function setEngine(?tagger\engine $engine = null)
+     {
+         $this->engine = $engine ?: new scripts\tagger\engine();
+ 
+diff --git a/classes/scripts/tagger/engine.php b/classes/scripts/tagger/engine.php
+index 62f4f9bf..c65fa6e0 100644
+--- a/classes/scripts/tagger/engine.php
++++ b/classes/scripts/tagger/engine.php
+@@ -21,7 +21,7 @@ class engine
+     protected $srcIteratorInjector = null;
+     protected $destinationDirectory = null;
+ 
+-    public function __construct(atoum\adapter $adapter = null)
++    public function __construct(?atoum\adapter $adapter = null)
+     {
+         if ($adapter === null) {
+             $adapter = new adapter();
+diff --git a/classes/scripts/treemap.php b/classes/scripts/treemap.php
+index 5a05289e..3cab778d 100644
+--- a/classes/scripts/treemap.php
++++ b/classes/scripts/treemap.php
+@@ -21,7 +21,7 @@ class treemap extends atoum\script\configurable
+     protected $analyzers = [];
+     protected $categorizers = [];
+ 
+-    public function __construct($name, atoum\adapter $adapter = null)
++    public function __construct($name, ?atoum\adapter $adapter = null)
+     {
+         parent::__construct($name, $adapter);
+ 
+diff --git a/classes/scripts/treemap/analyzer/generic.php b/classes/scripts/treemap/analyzer/generic.php
+index 17a2c510..17586591 100644
+--- a/classes/scripts/treemap/analyzer/generic.php
++++ b/classes/scripts/treemap/analyzer/generic.php
+@@ -19,7 +19,7 @@ class generic implements analyzer
+         ;
+     }
+ 
+-    public function setCallback(\closure $callback = null)
++    public function setCallback(?\closure $callback = null)
+     {
+         $this->callback = $callback ?: function () {
+             return 0;
+diff --git a/classes/scripts/treemap/categorizer.php b/classes/scripts/treemap/categorizer.php
+index 8b7b90de..fdeeb931 100644
+--- a/classes/scripts/treemap/categorizer.php
++++ b/classes/scripts/treemap/categorizer.php
+@@ -23,7 +23,7 @@ class categorizer
+         return $this->name;
+     }
+ 
+-    public function setCallback(\closure $callback = null)
++    public function setCallback(?\closure $callback = null)
+     {
+         $this->callback = $callback ?: function () {
+             return false;
+diff --git a/classes/template/parser.php b/classes/template/parser.php
+index 81238e7f..99aaaf90 100644
+--- a/classes/template/parser.php
++++ b/classes/template/parser.php
+@@ -16,7 +16,7 @@ class parser
+     protected $errorOffset = null;
+     protected $errorMessage = null;
+ 
+-    public function __construct($namespace = null, atoum\adapter $adapter = null)
++    public function __construct($namespace = null, ?atoum\adapter $adapter = null)
+     {
+         $this
+             ->setNamespace($namespace ?: self::defaultNamespace)
+@@ -58,14 +58,14 @@ class parser
+         return $this->checkString($this->getFileContents($path));
+     }
+ 
+-    public function parseString($string, atoum\template $root = null)
++    public function parseString($string, ?atoum\template $root = null)
+     {
+         $this->parse((string) $string, $root);
+ 
+         return $root;
+     }
+ 
+-    public function parseFile($path, atoum\template $root = null)
++    public function parseFile($path, ?atoum\template $root = null)
+     {
+         $this->parse($this->getfileContents($path), $root);
+ 
+diff --git a/classes/test.php b/classes/test.php
+index 3874076f..3f6d2458 100644
+--- a/classes/test.php
++++ b/classes/test.php
+@@ -82,7 +82,7 @@ abstract class test implements observable, \countable
+     private static $methodPrefix = null;
+     private static $defaultEngine = self::defaultEngine;
+ 
+-    public function __construct(adapter $adapter = null, annotations\extractor $annotationExtractor = null, asserter\generator $asserterGenerator = null, test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null, \closure $phpExtensionFactory = null, analyzer $analyzer = null)
++    public function __construct(?adapter $adapter = null, ?annotations\extractor $annotationExtractor = null, ?asserter\generator $asserterGenerator = null, ?test\assertion\manager $assertionManager = null, ?\closure $reflectionClassFactory = null, ?\closure $phpExtensionFactory = null, ?analyzer $analyzer = null)
+     {
+         $this
+             ->setAdapter($adapter)
+@@ -194,7 +194,7 @@ abstract class test implements observable, \countable
+         return $this->assertionManager->__call($method, $arguments);
+     }
+ 
+-    public function setAnalyzer(analyzer $analyzer = null)
++    public function setAnalyzer(?analyzer $analyzer = null)
+     {
+         $this->analyzer = $analyzer ?: new analyzer();
+ 
+@@ -206,7 +206,7 @@ abstract class test implements observable, \countable
+         return $this->analyzer;
+     }
+ 
+-    public function setTestAdapterStorage(test\adapter\storage $storage = null)
++    public function setTestAdapterStorage(?test\adapter\storage $storage = null)
+     {
+         $this->testAdapterStorage = $storage ?: new test\adapter\storage();
+ 
+@@ -218,7 +218,7 @@ abstract class test implements observable, \countable
+         return $this->testAdapterStorage;
+     }
+ 
+-    public function setMockControllerLinker(mock\controller\linker $linker = null)
++    public function setMockControllerLinker(?mock\controller\linker $linker = null)
+     {
+         $this->mockControllerLinker = $linker ?: new mock\controller\linker();
+ 
+@@ -230,7 +230,7 @@ abstract class test implements observable, \countable
+         return $this->mockControllerLinker;
+     }
+ 
+-    public function setScore(test\score $score = null)
++    public function setScore(?test\score $score = null)
+     {
+         $this->score = $score ?: new test\score();
+ 
+@@ -242,7 +242,7 @@ abstract class test implements observable, \countable
+         return $this->score;
+     }
+ 
+-    public function setLocale(locale $locale = null)
++    public function setLocale(?locale $locale = null)
+     {
+         $this->locale = $locale ?: new locale();
+ 
+@@ -254,7 +254,7 @@ abstract class test implements observable, \countable
+         return $this->locale;
+     }
+ 
+-    public function setAdapter(adapter $adapter = null)
++    public function setAdapter(?adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new adapter();
+ 
+@@ -266,7 +266,7 @@ abstract class test implements observable, \countable
+         return $this->adapter;
+     }
+ 
+-    public function setPhpMocker(php\mocker $phpMocker = null)
++    public function setPhpMocker(?php\mocker $phpMocker = null)
+     {
+         $phpMocker = $phpMocker ?: new php\mocker();
+ 
+@@ -275,7 +275,7 @@ abstract class test implements observable, \countable
+         return $this;
+     }
+ 
+-    public function setPhpFunctionMocker(php\mocker\funktion $phpFunctionMocker = null)
++    public function setPhpFunctionMocker(?php\mocker\funktion $phpFunctionMocker = null)
+     {
+         $this->phpFunctionMocker = $phpFunctionMocker ?: new php\mocker\funktion();
+ 
+@@ -287,7 +287,7 @@ abstract class test implements observable, \countable
+         return $this->phpFunctionMocker;
+     }
+ 
+-    public function setPhpConstantMocker(php\mocker\constant $phpConstantMocker = null)
++    public function setPhpConstantMocker(?php\mocker\constant $phpConstantMocker = null)
+     {
+         $this->phpConstantMocker = $phpConstantMocker ?: new php\mocker\constant();
+ 
+@@ -299,7 +299,7 @@ abstract class test implements observable, \countable
+         return $this->phpConstantMocker;
+     }
+ 
+-    public function setMockGenerator(test\mock\generator $generator = null)
++    public function setMockGenerator(?test\mock\generator $generator = null)
+     {
+         if ($generator !== null) {
+             $generator->setTest($this);
+@@ -317,7 +317,7 @@ abstract class test implements observable, \countable
+         return $this->mockGenerator;
+     }
+ 
+-    public function setMockAutoloader(autoloader\mock $autoloader = null)
++    public function setMockAutoloader(?autoloader\mock $autoloader = null)
+     {
+         $this->mockAutoloader = $autoloader ?: new autoloader\mock();
+ 
+@@ -329,7 +329,7 @@ abstract class test implements observable, \countable
+         return $this->mockAutoloader;
+     }
+ 
+-    public function setFactoryBuilder(factory\builder $factoryBuilder = null)
++    public function setFactoryBuilder(?factory\builder $factoryBuilder = null)
+     {
+         $this->factoryBuilder = $factoryBuilder ?: new factory\builder\closure();
+ 
+@@ -341,7 +341,7 @@ abstract class test implements observable, \countable
+         return $this->factoryBuilder;
+     }
+ 
+-    public function setReflectionMethodFactory(\closure $factory = null)
++    public function setReflectionMethodFactory(?\closure $factory = null)
+     {
+         $this->reflectionMethodFactory = $factory ?: function ($class, $method) {
+             return new \reflectionMethod($class, $method);
+@@ -350,7 +350,7 @@ abstract class test implements observable, \countable
+         return $this;
+     }
+ 
+-    public function setPhpExtensionFactory(\closure $factory = null)
++    public function setPhpExtensionFactory(?\closure $factory = null)
+     {
+         $this->phpExtensionFactory = $factory ?: function ($extensionName) {
+             return new php\extension($extensionName);
+@@ -359,7 +359,7 @@ abstract class test implements observable, \countable
+         return $this;
+     }
+ 
+-    public function setAsserterGenerator(test\asserter\generator $generator = null)
++    public function setAsserterGenerator(?test\asserter\generator $generator = null)
+     {
+         if ($generator !== null) {
+             $generator->setTest($this);
+@@ -379,7 +379,7 @@ abstract class test implements observable, \countable
+         return $this->asserterGenerator;
+     }
+ 
+-    public function setAssertionManager(test\assertion\manager $assertionManager = null)
++    public function setAssertionManager(?test\assertion\manager $assertionManager = null)
+     {
+         $this->assertionManager = $assertionManager ?: new test\assertion\manager();
+ 
+@@ -410,7 +410,7 @@ abstract class test implements observable, \countable
+             })
+             ->setHandler(
+                 'newMockInstance',
+-                function ($class, $mockNamespace = null, $mockClass = null, array $constructorArguments = null) {
++                function ($class, $mockNamespace = null, $mockClass = null, ?array $constructorArguments = null) {
+                     $mockNamespace = trim($mockNamespace ?: $this->getMockGenerator()->getDefaultNamespace(), '\\');
+                     $mockClass = trim($mockClass ?: $class, '\\');
+                     $className = $mockNamespace . '\\' . $mockClass;
+@@ -567,7 +567,7 @@ abstract class test implements observable, \countable
+         return $this->asserterCallManager;
+     }
+ 
+-    public function setAsserterCallManager(asserters\adapter\call\manager $asserterCallManager = null)
++    public function setAsserterCallManager(?asserters\adapter\call\manager $asserterCallManager = null)
+     {
+         $this->asserterCallManager = $asserterCallManager ?: new asserters\adapter\call\manager();
+ 
+@@ -1642,7 +1642,7 @@ abstract class test implements observable, \countable
+         return self::$defaultEngine ?: self::defaultEngine;
+     }
+ 
+-    public static function getTestedClassNameFromTestClass($fullyQualifiedClassName, $testNamespace = null, analyzer $analyzer = null)
++    public static function getTestedClassNameFromTestClass($fullyQualifiedClassName, $testNamespace = null, ?analyzer $analyzer = null)
+     {
+         $analyzer = $analyzer ?: new analyzer();
+ 
+@@ -1809,7 +1809,7 @@ abstract class test implements observable, \countable
+         return $this;
+     }
+ 
+-    protected function getBacktrace(array $trace = null)
++    protected function getBacktrace(?array $trace = null)
+     {
+         $debugBacktrace = $trace === null ? debug_backtrace(false) : $trace;
+ 
+@@ -1993,7 +1993,7 @@ abstract class test implements observable, \countable
+         return $this;
+     }
+ 
+-    public function addExtension(extension $extension, extension\configuration $configuration = null)
++    public function addExtension(extension $extension, ?extension\configuration $configuration = null)
+     {
+         if ($this->extensions->contains($extension) === false) {
+             $this->extensions->detach($extension);
+diff --git a/classes/test/adapter.php b/classes/test/adapter.php
+index b10b905d..d74125b2 100644
+--- a/classes/test/adapter.php
++++ b/classes/test/adapter.php
+@@ -75,19 +75,19 @@ class adapter extends atoum\adapter
+         return $this->invokers;
+     }
+ 
+-    public function setCalls(adapter\calls $calls = null)
++    public function setCalls(?adapter\calls $calls = null)
+     {
+         $this->calls = $calls ?: new adapter\calls();
+ 
+         return $this->resetCalls();
+     }
+ 
+-    public function getCalls(adapter\call $call = null, $identical = false)
++    public function getCalls(?adapter\call $call = null, $identical = false)
+     {
+         return ($call === null ? $this->calls : $this->calls->get($call, $identical));
+     }
+ 
+-    public function getCallsNumber(adapter\call $call = null, $identical = false)
++    public function getCallsNumber(?adapter\call $call = null, $identical = false)
+     {
+         return count($this->getCalls($call, $identical));
+     }
+@@ -127,12 +127,12 @@ class adapter extends atoum\adapter
+         return $this->calls->hasAfter($call, $position, $identical);
+     }
+ 
+-    public function getCallNumber(adapter\call $call = null, $identical = false)
++    public function getCallNumber(?adapter\call $call = null, $identical = false)
+     {
+         return count($this->getCalls($call, $identical));
+     }
+ 
+-    public function getTimeline(adapter\call $call = null, $identical = false)
++    public function getTimeline(?adapter\call $call = null, $identical = false)
+     {
+         return $this->calls->getTimeline($call, $identical);
+     }
+@@ -183,12 +183,12 @@ class adapter extends atoum\adapter
+         }
+     }
+ 
+-    public static function setStorage(adapter\storage $storage = null)
++    public static function setStorage(?adapter\storage $storage = null)
+     {
+         self::$storage = $storage ?: new adapter\storage();
+     }
+ 
+-    protected function buildInvoker($functionName, \closure $factory = null)
++    protected function buildInvoker($functionName, ?\closure $factory = null)
+     {
+         if ($factory === null) {
+             $factory = function ($functionName) {
+@@ -199,7 +199,7 @@ class adapter extends atoum\adapter
+         return $factory($functionName);
+     }
+ 
+-    protected function setInvoker($functionName, \closure $factory = null)
++    protected function setInvoker($functionName, ?\closure $factory = null)
+     {
+         $key = static::getKey($functionName);
+ 
+diff --git a/classes/test/adapter/call.php b/classes/test/adapter/call.php
+index a1449c10..f887cd24 100644
+--- a/classes/test/adapter/call.php
++++ b/classes/test/adapter/call.php
+@@ -13,7 +13,7 @@ class call
+     protected $decorator = null;
+     protected $verify = null;
+ 
+-    public function __construct($function = null, array $arguments = null, adapter\call\decorator $decorator = null)
++    public function __construct($function = null, ?array $arguments = null, ?adapter\call\decorator $decorator = null)
+     {
+         if ($function !== null) {
+             $this->setFunction($function);
+@@ -94,7 +94,7 @@ class call
+         return $this;
+     }
+ 
+-    public function setDecorator(adapter\call\decorator $decorator = null)
++    public function setDecorator(?adapter\call\decorator $decorator = null)
+     {
+         $this->decorator = $decorator ?: new adapter\call\decorator();
+ 
+diff --git a/classes/test/adapter/call/arguments/decorator.php b/classes/test/adapter/call/arguments/decorator.php
+index 397ac1d5..e40dd976 100644
+--- a/classes/test/adapter/call/arguments/decorator.php
++++ b/classes/test/adapter/call/arguments/decorator.php
+@@ -4,7 +4,7 @@ namespace atoum\atoum\test\adapter\call\arguments;
+ 
+ class decorator
+ {
+-    public function decorate(array $arguments = null)
++    public function decorate(?array $arguments = null)
+     {
+         $string = '';
+ 
+diff --git a/classes/test/adapter/call/decorator.php b/classes/test/adapter/call/decorator.php
+index a6429315..4336733f 100644
+--- a/classes/test/adapter/call/decorator.php
++++ b/classes/test/adapter/call/decorator.php
+@@ -18,7 +18,7 @@ class decorator
+         return $this->argumentsDecorator;
+     }
+ 
+-    public function setArgumentsDecorator(arguments\decorator $decorator = null)
++    public function setArgumentsDecorator(?arguments\decorator $decorator = null)
+     {
+         $this->argumentsDecorator = $decorator ?: new arguments\decorator();
+ 
+diff --git a/classes/test/adapter/calls.php b/classes/test/adapter/calls.php
+index cbde58fc..ad406d15 100644
+--- a/classes/test/adapter/calls.php
++++ b/classes/test/adapter/calls.php
+@@ -82,7 +82,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
+         return $this;
+     }
+ 
+-    public function setDecorator(adapter\calls\decorator $decorator = null)
++    public function setDecorator(?adapter\calls\decorator $decorator = null)
+     {
+         $this->decorator = $decorator ?: new adapter\calls\decorator();
+ 
+@@ -117,7 +117,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
+         return $this;
+     }
+ 
+-    public function toArray(adapter\call $call = null)
++    public function toArray(?adapter\call $call = null)
+     {
+         if ($call === null) {
+             $calls = $this->getTimeline();
+diff --git a/classes/test/asserter/generator.php b/classes/test/asserter/generator.php
+index fdd309e6..525d321b 100644
+--- a/classes/test/asserter/generator.php
++++ b/classes/test/asserter/generator.php
+@@ -9,7 +9,7 @@ class generator extends asserter\generator
+ {
+     protected $test = null;
+ 
+-    public function __construct(atoum\test $test, asserter\resolver $resolver = null)
++    public function __construct(atoum\test $test, ?asserter\resolver $resolver = null)
+     {
+         parent::__construct($test->getLocale(), $resolver);
+ 
+@@ -38,7 +38,7 @@ class generator extends asserter\generator
+         return $this->test;
+     }
+ 
+-    public function getAsserterInstance($asserter, array $arguments = [], atoum\test $test = null)
++    public function getAsserterInstance($asserter, array $arguments = [], ?atoum\test $test = null)
+     {
+         return parent::getAsserterInstance($asserter, $arguments, $test ?: $this->test);
+     }
+diff --git a/classes/test/assertion/aliaser.php b/classes/test/assertion/aliaser.php
+index 57a3cada..b7259fc3 100644
+--- a/classes/test/assertion/aliaser.php
++++ b/classes/test/assertion/aliaser.php
+@@ -12,7 +12,7 @@ class aliaser implements \arrayAccess
+     private $context = null;
+     private $keyword = null;
+ 
+-    public function __construct(asserter\resolver $resolver = null)
++    public function __construct(?asserter\resolver $resolver = null)
+     {
+         $this->setResolver($resolver);
+     }
+@@ -85,7 +85,7 @@ class aliaser implements \arrayAccess
+         return (isset($this->aliases[$this->getContextKey($context)]) === true);
+     }
+ 
+-    public function setResolver(asserter\resolver $resolver = null)
++    public function setResolver(?asserter\resolver $resolver = null)
+     {
+         $this->resolver = $resolver ?: new asserter\resolver();
+ 
+diff --git a/classes/test/assertion/manager.php b/classes/test/assertion/manager.php
+index 54234d4e..d8113144 100644
+--- a/classes/test/assertion/manager.php
++++ b/classes/test/assertion/manager.php
+@@ -11,7 +11,7 @@ class manager
+     protected $methodHandlers = [];
+     protected $defaultHandler = null;
+ 
+-    public function __construct(assertion\aliaser $aliaser = null)
++    public function __construct(?assertion\aliaser $aliaser = null)
+     {
+         $this->setAliaser($aliaser);
+     }
+@@ -31,7 +31,7 @@ class manager
+         return $this->invokeMethodHandler($event, $arguments);
+     }
+ 
+-    public function setAliaser(assertion\aliaser $aliaser = null)
++    public function setAliaser(?assertion\aliaser $aliaser = null)
+     {
+         $this->aliaser = $aliaser ?: new assertion\aliaser();
+ 
+diff --git a/classes/test/data/providers/mock.php b/classes/test/data/providers/mock.php
+index 8665c17a..b73cb4e9 100644
+--- a/classes/test/data/providers/mock.php
++++ b/classes/test/data/providers/mock.php
+@@ -10,7 +10,7 @@ class mock extends phpObject
+ {
+     private $mockGenerator;
+ 
+-    public function __construct(generator $mockGenerator = null)
++    public function __construct(?generator $mockGenerator = null)
+     {
+         $this->setMockGenerator($mockGenerator);
+     }
+@@ -30,7 +30,7 @@ class mock extends phpObject
+         return $this->mockGenerator;
+     }
+ 
+-    public function setMockGenerator(generator $mockGenerator = null)
++    public function setMockGenerator(?generator $mockGenerator = null)
+     {
+         $this->mockGenerator = $mockGenerator ?: new generator();
+     }
+diff --git a/classes/test/engines/concurrent.php b/classes/test/engines/concurrent.php
+index 7fb990c9..43edce7f 100644
+--- a/classes/test/engines/concurrent.php
++++ b/classes/test/engines/concurrent.php
+@@ -21,7 +21,7 @@ class concurrent extends test\engine
+         ;
+     }
+ 
+-    public function setScoreFactory(\closure $factory = null)
++    public function setScoreFactory(?\closure $factory = null)
+     {
+         $this->scoreFactory = $factory ?: function () {
+             return new atoum\score();
+@@ -35,7 +35,7 @@ class concurrent extends test\engine
+         return $this->scoreFactory;
+     }
+ 
+-    public function setPhp(atoum\php $php = null)
++    public function setPhp(?atoum\php $php = null)
+     {
+         $this->php = $php ?: new atoum\php();
+ 
+diff --git a/classes/test/engines/inline.php b/classes/test/engines/inline.php
+index 65d2778b..6f975ba5 100644
+--- a/classes/test/engines/inline.php
++++ b/classes/test/engines/inline.php
+@@ -14,12 +14,12 @@ class inline extends test\engine
+         return false;
+     }
+ 
+-    public function __construct(atoum\test\score $score = null)
++    public function __construct(?atoum\test\score $score = null)
+     {
+         $this->setScore();
+     }
+ 
+-    public function setScore(atoum\test\score $score = null)
++    public function setScore(?atoum\test\score $score = null)
+     {
+         $this->score = $score ?: new atoum\test\score();
+ 
+diff --git a/classes/test/engines/isolate.php b/classes/test/engines/isolate.php
+index 6ffb67fa..e6860da3 100644
+--- a/classes/test/engines/isolate.php
++++ b/classes/test/engines/isolate.php
+@@ -9,12 +9,12 @@ class isolate extends engines\concurrent
+ {
+     protected $score = null;
+ 
+-    public function __construct(atoum\score $score = null)
++    public function __construct(?atoum\score $score = null)
+     {
+         parent::__construct($score);
+     }
+ 
+-    public function setScore(atoum\score $score = null)
++    public function setScore(?atoum\score $score = null)
+     {
+         $this->score = $score ?: new atoum\score();
+ 
+diff --git a/classes/test/generator.php b/classes/test/generator.php
+index 7282a43e..d1e210b0 100644
+--- a/classes/test/generator.php
++++ b/classes/test/generator.php
+@@ -82,7 +82,7 @@ class generator
+         return $this->runnerPath;
+     }
+ 
+-    public function setTemplateParser(template\parser $parser = null)
++    public function setTemplateParser(?template\parser $parser = null)
+     {
+         $this->templateParser = $parser ?: new template\parser();
+ 
+@@ -94,7 +94,7 @@ class generator
+         return $this->templateParser;
+     }
+ 
+-    public function setPathFactory(path\factory $factory = null)
++    public function setPathFactory(?path\factory $factory = null)
+     {
+         $this->pathFactory = $factory ?: new path\factory();
+ 
+@@ -106,7 +106,7 @@ class generator
+         return $this->pathFactory;
+     }
+ 
+-    public function setAdapter(atoum\adapter $adapter = null)
++    public function setAdapter(?atoum\adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new atoum\adapter();
+ 
+@@ -142,7 +142,7 @@ class generator
+         return $this->testClassNamespace;
+     }
+ 
+-    public function setFullyQualifiedTestClassNameExtractor(\closure $extractor = null)
++    public function setFullyQualifiedTestClassNameExtractor(?\closure $extractor = null)
+     {
+         $this->fullyQualifiedTestClassNameExtractor = $extractor ?: function ($generator, $relativeTestClassPath) {
+             return $generator->getTestClassNamespace() . str_replace(DIRECTORY_SEPARATOR, '\\', substr($relativeTestClassPath, 0, -4));
+@@ -156,7 +156,7 @@ class generator
+         return $this->fullyQualifiedTestClassNameExtractor;
+     }
+ 
+-    public function setFullyQualifiedTestedClassNameExtractor(\closure $extractor = null)
++    public function setFullyQualifiedTestedClassNameExtractor(?\closure $extractor = null)
+     {
+         $this->fullyQualifiedTestedClassNameExtractor = $extractor ?: function ($generator, $fullyQualifiedTestClassName) {
+             return $generator->getTestedClassNamespace() . substr($fullyQualifiedTestClassName, strlen($generator->getTestClassNamespace()));
+@@ -170,7 +170,7 @@ class generator
+         return $this->fullyQualifiedTestedClassNameExtractor;
+     }
+ 
+-    public function setTestedClassPathExtractor(\closure $extractor = null)
++    public function setTestedClassPathExtractor(?\closure $extractor = null)
+     {
+         $this->testedClassPathExtractor = $extractor ?: function ($generator, $fullyQualifiedTestedClassName) {
+             return $generator->getTestedClassesDirectory() . substr(str_replace('\\', DIRECTORY_SEPARATOR, $fullyQualifiedTestedClassName), strlen($generator->getTestedClassNamespace())) . '.php';
+diff --git a/classes/tools/diff.php b/classes/tools/diff.php
+index 5fb21647..c032132d 100644
+--- a/classes/tools/diff.php
++++ b/classes/tools/diff.php
+@@ -34,7 +34,7 @@ class diff
+         return $this->decorator->decorate($this);
+     }
+ 
+-    public function setDecorator(diff\decorator $decorator = null)
++    public function setDecorator(?diff\decorator $decorator = null)
+     {
+         $this->decorator = $decorator ?: new diff\decorator();
+         return $this;
+diff --git a/classes/tools/diffs/variable.php b/classes/tools/diffs/variable.php
+index d99c139f..484a2a8e 100644
+--- a/classes/tools/diffs/variable.php
++++ b/classes/tools/diffs/variable.php
+@@ -16,7 +16,7 @@ class variable extends tools\diff
+         parent::__construct($expected, $actual);
+     }
+ 
+-    public function setAnalyzer(tools\variable\analyzer $analyzer = null)
++    public function setAnalyzer(?tools\variable\analyzer $analyzer = null)
+     {
+         $this->analyzer = $analyzer ?: new tools\variable\analyzer();
+ 
+diff --git a/classes/tools/parameter/analyzer.php b/classes/tools/parameter/analyzer.php
+index 3766ca43..453539eb 100644
+--- a/classes/tools/parameter/analyzer.php
++++ b/classes/tools/parameter/analyzer.php
+@@ -4,7 +4,7 @@ namespace atoum\atoum\tools\parameter;
+ 
+ class analyzer
+ {
+-    public function getTypeHintString(\reflectionParameter $parameter): string
++    public function getTypeHintString(\reflectionParameter $parameter, bool $force_nullable = false): string
+     {
+         if (!$parameter->hasType()) {
+             return '';
+@@ -33,7 +33,7 @@ class analyzer
+             $names[] = ($type instanceof \reflectionType && !$type->isBuiltin() ? '\\' : '') . $name;
+         }
+ 
+-        $prefix = $parameter->allowsNull() && !($parameterType instanceof \ReflectionUnionType) ? '?' : '';
++        $prefix = ($force_nullable || $parameter->allowsNull()) && !($parameterType instanceof \ReflectionUnionType) ? '?' : '';
+ 
+         return $prefix . implode('|', $names);
+     }
+diff --git a/classes/writer.php b/classes/writer.php
+index 66702d3b..0f6275f0 100644
+--- a/classes/writer.php
++++ b/classes/writer.php
+@@ -9,12 +9,12 @@ abstract class writer
+     protected $adapter = null;
+     protected $decorators = [];
+ 
+-    public function __construct(adapter $adapter = null)
++    public function __construct(?adapter $adapter = null)
+     {
+         $this->setAdapter($adapter);
+     }
+ 
+-    public function setAdapter(adapter $adapter = null)
++    public function setAdapter(?adapter $adapter = null)
+     {
+         $this->adapter = $adapter ?: new adapter();
+ 
+diff --git a/classes/writers/file.php b/classes/writers/file.php
+index 79151600..02dae30b 100644
+--- a/classes/writers/file.php
++++ b/classes/writers/file.php
+@@ -15,7 +15,7 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
+ 
+     public const defaultFileName = 'atoum.log';
+ 
+-    public function __construct($filename = null, atoum\adapter $adapter = null)
++    public function __construct($filename = null, ?atoum\adapter $adapter = null)
+     {
+         parent::__construct($adapter);
+ 
+diff --git a/classes/writers/http.php b/classes/writers/http.php
+index 1775125e..e857309a 100644
+--- a/classes/writers/http.php
++++ b/classes/writers/http.php
+@@ -14,7 +14,7 @@ class http extends atoum\writer implements writers\asynchronous
+     protected $parameter = null;
+     protected $headers = [];
+ 
+-    public function __construct(atoum\adapter $adapter = null)
++    public function __construct(?atoum\adapter $adapter = null)
+     {
+         parent::__construct($adapter);
+ 
+diff --git a/classes/writers/mail.php b/classes/writers/mail.php
+index 2a5379e7..6ee5681d 100644
+--- a/classes/writers/mail.php
++++ b/classes/writers/mail.php
+@@ -11,7 +11,7 @@ class mail extends atoum\writer implements report\writers\asynchronous
+     protected $mailer = null;
+     protected $locale = null;
+ 
+-    public function __construct(atoum\mailer $mailer = null, atoum\locale $locale = null, atoum\adapter $adapter = null)
++    public function __construct(?atoum\mailer $mailer = null, ?atoum\locale $locale = null, ?atoum\adapter $adapter = null)
+     {
+         parent::__construct($adapter);
+ 
+diff --git a/classes/writers/std.php b/classes/writers/std.php
+index 0328b88a..0d0b5e43 100644
+--- a/classes/writers/std.php
++++ b/classes/writers/std.php
+@@ -11,7 +11,7 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
+     protected $cli = null;
+     protected $resource = null;
+ 
+-    public function __construct(atoum\cli $cli = null, atoum\adapter $adapter = null)
++    public function __construct(?atoum\cli $cli = null, ?atoum\adapter $adapter = null)
+     {
+         parent::__construct($adapter);
+ 
+@@ -25,7 +25,7 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
+         }
+     }
+ 
+-    public function setCli(atoum\cli $cli = null)
++    public function setCli(?atoum\cli $cli = null)
+     {
+         $this->cli = $cli ?: new atoum\cli();
+ 

@@ -1,0 +1,177 @@
+diff --git a/src/Coroutine.php b/src/Coroutine.php
+index 670da47..417af35 100644
+--- a/src/Coroutine.php
++++ b/src/Coroutine.php
+@@ -87,8 +87,8 @@ final class Coroutine implements PromiseInterface
+     }
+ 
+     public function then(
+-        callable $onFulfilled = null,
+-        callable $onRejected = null
++        ?callable $onFulfilled = null,
++        ?callable $onRejected = null
+     ) {
+         return $this->result->then($onFulfilled, $onRejected);
+     }
+diff --git a/src/Each.php b/src/Each.php
+index 1dda354..741e5be 100644
+--- a/src/Each.php
++++ b/src/Each.php
+@@ -25,8 +25,8 @@ final class Each
+      */
+     public static function of(
+         $iterable,
+-        callable $onFulfilled = null,
+-        callable $onRejected = null
++        ?callable $onFulfilled = null,
++        ?callable $onRejected = null
+     ) {
+         return (new EachPromise($iterable, [
+             'fulfilled' => $onFulfilled,
+@@ -52,8 +52,8 @@ final class Each
+     public static function ofLimit(
+         $iterable,
+         $concurrency,
+-        callable $onFulfilled = null,
+-        callable $onRejected = null
++        ?callable $onFulfilled = null,
++        ?callable $onRejected = null
+     ) {
+         return (new EachPromise($iterable, [
+             'fulfilled'   => $onFulfilled,
+@@ -76,7 +76,7 @@ final class Each
+     public static function ofLimitAll(
+         $iterable,
+         $concurrency,
+-        callable $onFulfilled = null
++        ?callable $onFulfilled = null
+     ) {
+         return each_limit(
+             $iterable,
+diff --git a/src/FulfilledPromise.php b/src/FulfilledPromise.php
+index 98f72a6..d879efc 100644
+--- a/src/FulfilledPromise.php
++++ b/src/FulfilledPromise.php
+@@ -24,8 +24,8 @@ class FulfilledPromise implements PromiseInterface
+     }
+ 
+     public function then(
+-        callable $onFulfilled = null,
+-        callable $onRejected = null
++        ?callable $onFulfilled = null,
++        ?callable $onRejected = null
+     ) {
+         // Return itself if there is no onFulfilled function.
+         if (!$onFulfilled) {
+diff --git a/src/Promise.php b/src/Promise.php
+index 7593905..f67b95f 100644
+--- a/src/Promise.php
++++ b/src/Promise.php
+@@ -21,16 +21,16 @@ class Promise implements PromiseInterface
+      * @param callable $cancelFn Fn that when invoked cancels the promise.
+      */
+     public function __construct(
+-        callable $waitFn = null,
+-        callable $cancelFn = null
++        ?callable $waitFn = null,
++        ?callable $cancelFn = null
+     ) {
+         $this->waitFn = $waitFn;
+         $this->cancelFn = $cancelFn;
+     }
+ 
+     public function then(
+-        callable $onFulfilled = null,
+-        callable $onRejected = null
++        ?callable $onFulfilled = null,
++        ?callable $onRejected = null
+     ) {
+         if ($this->state === self::PENDING) {
+             $p = new Promise(null, [$this, 'cancel']);
+diff --git a/src/PromiseInterface.php b/src/PromiseInterface.php
+index e598331..651b2d7 100644
+--- a/src/PromiseInterface.php
++++ b/src/PromiseInterface.php
+@@ -27,8 +27,8 @@ interface PromiseInterface
+      * @return PromiseInterface
+      */
+     public function then(
+-        callable $onFulfilled = null,
+-        callable $onRejected = null
++        ?callable $onFulfilled = null,
++        ?callable $onRejected = null
+     );
+ 
+     /**
+diff --git a/src/RejectedPromise.php b/src/RejectedPromise.php
+index d291846..c347589 100644
+--- a/src/RejectedPromise.php
++++ b/src/RejectedPromise.php
+@@ -24,8 +24,8 @@ class RejectedPromise implements PromiseInterface
+     }
+ 
+     public function then(
+-        callable $onFulfilled = null,
+-        callable $onRejected = null
++        ?callable $onFulfilled = null,
++        ?callable $onRejected = null
+     ) {
+         // If there's no onRejected callback then just return self.
+         if (!$onRejected) {
+diff --git a/src/Utils.php b/src/Utils.php
+index 8647126..957d815 100644
+--- a/src/Utils.php
++++ b/src/Utils.php
+@@ -21,7 +21,7 @@ final class Utils
+      *
+      * @return TaskQueueInterface
+      */
+-    public static function queue(TaskQueueInterface $assign = null)
++    public static function queue(?TaskQueueInterface $assign = null)
+     {
+         static $queue;
+ 
+diff --git a/src/functions.php b/src/functions.php
+index c03d39d..19849d8 100644
+--- a/src/functions.php
++++ b/src/functions.php
+@@ -21,7 +21,7 @@ namespace GuzzleHttp\Promise;
+  *
+  * @deprecated queue will be removed in guzzlehttp/promises:2.0. Use Utils::queue instead.
+  */
+-function queue(TaskQueueInterface $assign = null)
++function queue(?TaskQueueInterface $assign = null)
+ {
+     return Utils::queue($assign);
+ }
+@@ -259,8 +259,8 @@ function settle($promises)
+  */
+ function each(
+     $iterable,
+-    callable $onFulfilled = null,
+-    callable $onRejected = null
++    ?callable $onFulfilled = null,
++    ?callable $onRejected = null
+ ) {
+     return Each::of($iterable, $onFulfilled, $onRejected);
+ }
+@@ -285,8 +285,8 @@ function each(
+ function each_limit(
+     $iterable,
+     $concurrency,
+-    callable $onFulfilled = null,
+-    callable $onRejected = null
++    ?callable $onFulfilled = null,
++    ?callable $onRejected = null
+ ) {
+     return Each::ofLimit($iterable, $concurrency, $onFulfilled, $onRejected);
+ }
+@@ -307,7 +307,7 @@ function each_limit(
+ function each_limit_all(
+     $iterable,
+     $concurrency,
+-    callable $onFulfilled = null
++    ?callable $onFulfilled = null
+ ) {
+     return Each::ofLimitAll($iterable, $concurrency, $onFulfilled);
+ }

@@ -62,7 +62,7 @@ class ErrorHandler
         E_USER_ERROR        => LogLevel::ERROR,
         E_USER_WARNING      => LogLevel::WARNING,
         E_USER_NOTICE       => LogLevel::NOTICE,
-        E_STRICT            => LogLevel::NOTICE,
+        2048                => LogLevel::NOTICE, // E_STRICT, deprecated in PHP 8.4
         E_RECOVERABLE_ERROR => LogLevel::ERROR,
         E_DEPRECATED        => LogLevel::NOTICE,
         E_USER_DEPRECATED   => LogLevel::NOTICE,
@@ -571,7 +571,7 @@ class ErrorHandler
             E_USER_ERROR        => 'User Error',
             E_USER_WARNING      => 'User Warning',
             E_USER_NOTICE       => 'User Notice',
-            E_STRICT            => 'Runtime Notice',
+            2048                => 'Runtime Notice', // E_STRICT, deprecated in PHP 8.4
             E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
             E_DEPRECATED        => 'Deprecated function',
             E_USER_DEPRECATED   => 'User deprecated function',
