@@ -6857,6 +6857,34 @@ HTML
         $this->assertTrue($ticket->canViewItem());
     }
 
+    public function testViewApprovalTicketWithoutReadNewTicketRight()
+    {
+        $this->login();
+
+        $ticket = $this->createItem('Ticket', [
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'status' => CommonITILObject::WAITING,
+        ]);
+
+        $this->changeTechRights(['ticket' => \Ticket::READNEWTICKET]);
+        $this->assertFalse($ticket->canViewItem());
+    }
+
+    public function testViewApprovalTicketWithReadNewTicketRight()
+    {
+        $this->login();
+
+        $ticket = $this->createItem('Ticket', [
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'status' => CommonITILObject::APPROVAL,
+        ]);
+
+        $this->changeTechRights(['ticket' => \Ticket::READNEWTICKET]);
+        $this->assertTrue($ticket->canViewItem());
+    }
+
     public function testAssignToMe()
     {
         $this->login();

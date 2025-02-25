@@ -254,10 +254,10 @@ class Ticket extends CommonITILObject
             return true;
         }
 
-        // Can see incoming tickets
+        // Can see tickets considered as new (incoming or approval)
         if (
             Session::haveRight(self::$rightname, self::READNEWTICKET)
-            && ($this->fields["status"] == self::INCOMING)
+            && ($this->fields["status"] == self::INCOMING || $this->fields["status"] == self::APPROVAL)
         ) {
             return true;
         }
