@@ -171,7 +171,7 @@ class RuleDefineItemtypeTest extends DbTestCase
 
         $input = [
             'itemtype' => \Computer::class,
-            'name'     => 'A Phone that des not know what it is!'
+            'name'     => 'A Phone that does not know what it is!'
         ];
         $data = $ruleCollection->processAllRules($input);
         $this->assertSame(
