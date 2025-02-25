@@ -6848,6 +6848,21 @@ HTML
         $this->assertTrue($ticket->canViewItem());
     }
 
+    // The right "View new tickets" should not include those with the "approval" status.
+    public function testUserCannotViewApprovalTicketsWithReadNewTicketRight()
+    {
+        $this->login();
+
+        $ticket = $this->createItem('Ticket', [
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'status' => CommonITILObject::APPROVAL,
+        ]);
+
+        $this->changeTechRights(['ticket' => \Ticket::READNEWTICKET]);
+        $this->assertFalse($ticket->canViewItem());
+    }
+
     public function testAssignToMe()
     {
         $this->login();
