@@ -130,7 +130,7 @@ class ParserTest extends GLPITestCase
         $search_class->getProperty('flattened_properties')->setValue($search, Schema::flattenProperties($schema['properties']));
         $search_class->getProperty('joins')->setValue($search, Schema::getJoins($schema['properties']));
         $parser = new Parser($search);
-        $this->assertEquals($expected, (string) $parser->parse($tokens)->getSQLCriteria());
+        $this->assertEquals($expected, (string) $parser->parse($tokens)->getSQLWhereCriteria());
     }
 
     /**
@@ -159,21 +159,21 @@ class ParserTest extends GLPITestCase
         $parser = new Parser($search);
 
         $result = $parser->parse([[5, 'test'], [6, '=='], [7, 'test']]);
-        $this->assertEquals('1', (string) $result->getSQLCriteria());
+        $this->assertEquals('1', (string) $result->getSQLWhereCriteria());
         $this->assertEquals(Error::UNKNOWN_PROPERTY, $result->getInvalidFilters()['test']);
         // Test an invalid filter with a valid one
         $result = $parser->parse([[5, 'test'], [6, '=='], [7, 'test'], [1, ';'], [5, 'name'], [6, '=='], [7, 'test']]);
-        $this->assertEquals("(`_`.`name` = 'test')", (string) $result->getSQLCriteria());
+        $this->assertEquals("(`_`.`name` = 'test')", (string) $result->getSQLWhereCriteria());
         $this->assertEquals(Error::UNKNOWN_PROPERTY, $result->getInvalidFilters()['test']);
 
         // Test invalid operator
         $result = $parser->parse([[5, 'name'], [6, '=f='], [7, 'test']]);
-        $this->assertEquals('1', (string) $result->getSQLCriteria());
+        $this->assertEquals('1', (string) $result->getSQLWhereCriteria());
         $this->assertEquals(Error::UNKNOWN_OPERATOR, $result->getInvalidFilters()['name']);
 
         // Mapped properties should be ignored
         $result = $parser->parse([[5, 'mapped'], [6, '=='], [7, 'test']]);
-        $this->assertEquals('1', (string) $result->getSQLCriteria());
+        $this->assertEquals('1', (string) $result->getSQLWhereCriteria());
         $this->assertEquals(Error::MAPPED_PROPERTY, $result->getInvalidFilters()['mapped']);
     }
 }
