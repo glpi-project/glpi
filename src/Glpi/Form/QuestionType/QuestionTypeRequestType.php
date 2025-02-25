@@ -138,4 +138,16 @@ TWIG;
     {
         return true;
     }
+
+    #[Override]
+    public function formatPredefinedValue(string $value): ?string
+    {
+        $value = strtolower($value);
+
+        return match ($value) {
+            'incident' => (string) Ticket::INCIDENT_TYPE,
+            'request' => (string) Ticket::DEMAND_TYPE,
+            default => null,
+        };
+    }
 }
