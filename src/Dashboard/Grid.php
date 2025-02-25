@@ -468,9 +468,7 @@ JAVASCRIPT;
         $_SESSION['glpiactiveentities']        = $entities;
         $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
 
-        if (!isset($_SESSION['glpi_use_mode'])) {
-            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-        }
+        $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
     }
 
 
