@@ -118,7 +118,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         // Act: get the forms from the catalog manager and extract their names
         $access_parameters = $this->getDefaultParametersForTestUser();
         $item_request = new ItemRequest(access_parameters: $access_parameters);
-        $forms = self::$manager->getItems($item_request);
+        $forms = self::$manager->getItems($item_request)['items'];
         $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
 
         // Assert: pinned forms must be displayed first
@@ -187,7 +187,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         // Act: get the forms from the catalog manager and extract their names
         $access_parameters = $this->getDefaultParametersForTestUser();
         $item_request = new ItemRequest(access_parameters: $access_parameters);
-        $forms = self::$manager->getItems($item_request);
+        $forms = self::$manager->getItems($item_request)['items'];
         $forms_names = array_map(fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(), $forms);
 
         // Assert: pinned forms must be displayed first, then forms are ordered by name
