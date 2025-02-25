@@ -36,74 +36,9 @@
 namespace tests\units;
 
 use DbTestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
-
-/* Test for inc/ruleimportcomputer.class.php */
 
 class RuleDefineItemtypeTest extends DbTestCase
 {
-    /**
-     * Adds a new rule
-     *
-     * @param string $name     New rule name
-     * @param array  $criteria Rule criteria
-     * @param array  $action   Rule action
-     *
-     * @return int
-     */
-    protected function addRule(string $name, array $criteria, array $action): int
-    {
-        global $DB;
-
-        $rule = new \RuleDefineItemtype();
-        $rulecriteria = new \RuleCriteria();
-
-        $input = [
-            'is_active' => 1,
-            'name'      => $name,
-            'match'     => 'AND',
-            'sub_type'  => 'RuleDefineItemtype',
-        ];
-
-        $this->assertTrue(
-            $DB->update(
-                'glpi_rules',
-                [
-                    'ranking' => new \Glpi\DBAL\QueryExpression($DB->quoteName('ranking') . ' + 2')
-                ],
-                [
-                    'sub_type'  => 'RuleDefineItemtype'
-                ]
-            )
-        );
-        $input['ranking'] = 1;
-        $rules_id = $rule->add($input);
-        $this->assertGreaterThan(0, $rules_id);
-
-        // Add criteria
-        foreach ($criteria as $crit) {
-            $input = [
-                'rules_id'  => $rules_id,
-                'criteria'  => $crit['criteria'],
-                'pattern'   => $crit['pattern'],
-                'condition' => $crit['condition'],
-            ];
-            $this->assertGreaterThan(0, (int)$rulecriteria->add($input));
-        }
-
-        // Add action
-        $ruleaction = new \RuleAction();
-        $input = [
-            'rules_id'    => $rules_id,
-            'action_type' => $action['action_type'],
-            'field'       => $action['field'],
-            'value'       => $action['value'],
-        ];
-        $this->assertGreaterThan(0, (int)$ruleaction->add($input));
-
-        return $rules_id;
-    }
-
     public function testNoRule()
     {
         $input = [
@@ -125,6 +60,7 @@ class RuleDefineItemtypeTest extends DbTestCase
 
         $ruleCollection = new \RuleDefineItemtypeCollection();
         $rules_id = $this->addRule(
+            \RuleDefineItemtype::class,
             'Change itemtype',
             [
                 [
@@ -154,6 +90,7 @@ class RuleDefineItemtypeTest extends DbTestCase
     {
         $ruleCollection = new \RuleDefineItemtypeCollection();
         $rules_id = $this->addRule(
+            \RuleDefineItemtype::class,
             'Change itemtype',
             [
                 [
@@ -205,6 +142,7 @@ class RuleDefineItemtypeTest extends DbTestCase
 
         $ruleCollection = new \RuleDefineItemtypeCollection();
         $rules_id = $this->addRule(
+            \RuleDefineItemtype::class,
             'Change itemtype',
             [
                 [
@@ -255,6 +193,7 @@ class RuleDefineItemtypeTest extends DbTestCase
 
         $ruleCollection = new \RuleDefineItemtypeCollection();
         $rules_id = $this->addRule(
+            \RuleDefineItemtype::class,
             'Change itemtype',
             [
                 [

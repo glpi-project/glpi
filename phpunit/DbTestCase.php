@@ -327,7 +327,35 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
-     * Helper method to avoid writting the same boilerplate code for rule creation
+     * Adds a new rule
+     *
+     * @param string $name     New rule name
+     * @param array  $criteria Rule criteria
+     * @param array  $action   Rule action
+     *
+     * @return int
+     */
+    protected function addRule(string $type, string $name, array $criteria, array $action, ?int $ranking = null): int
+    {
+        $builder = new \RuleBuilder($name, $type);
+        if ($ranking !== null) {
+            $builder->setRanking($ranking);
+        }
+
+        // Add criteria
+        foreach ($criteria as $crit) {
+            $builder->addCriteria($crit['criteria'], $crit['condition'], $crit['pattern']);
+        }
+
+        // Add action
+        $builder->addAction($action['action_type'], $action['field'], $action['value']);
+
+        $rule = $this->createRule($builder);
+        return $rule->getID();
+    }
+
+    /**
+     * Helper method to avoid writing the same boilerplate code for rule creation
      *
      * @param RuleBuilder $builder RuleConfiguration
      *
@@ -343,6 +371,7 @@ class DbTestCase extends \GLPITestCase
             'condition'    => $builder->getCondition(),
             'is_recursive' => $builder->isRecursive(),
             'entities_id'  => $builder->getEntity(),
+            'ranking'      => $builder->getRanking(),
         ]);
 
         foreach ($builder->getCriteria() as $criterion) {
