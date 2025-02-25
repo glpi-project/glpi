@@ -1,0 +1,168 @@
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2025 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+
+export class GlpiFormConditionEditorController
+{
+    /**
+     * Target containerthat will display the condition editor
+     * @type {HTMLElement}
+     */
+    #container;
+
+    /**
+     * Known form questions
+     * @type {array<{uuid: string, name: string, type: string}>}
+     */
+    #form_questions;
+
+    /** @type {string} */
+    #item_uuid;
+
+    /** @type {string} */
+    #item_type;
+
+    constructor(container, item_uuid, item_type, form_questions)
+    {
+        this.#container = container;
+        if (this.#container.dataset.glpiConditionsEditorContainer === undefined) {
+            console.error(this.#container); // Help debugging by printing the node.
+            throw new Error("Invalid container");
+        }
+
+        // Load item on which the condition will be defined
+        this.#item_uuid = item_uuid;
+        this.#item_type = item_type;
+
+        // Load linked form questions
+        this.#form_questions = form_questions;
+    }
+
+    async renderEditor()
+    {
+        const data = this.#computeData();
+        await this.#doRenderEditor(data);
+    }
+
+    async addNewEmptyCondition()
+    {
+        const data = this.#computeData();
+        data.conditions.push({'item': ''});
+        await this.#doRenderEditor(data);
+    }
+
+    async deleteCondition(condition_index)
+    {
+        const data = this.#computeData();
+        data.conditions = data.conditions.filter((_condition, index) => {
+            return index != condition_index;
+        });
+        await this.#doRenderEditor(data);
+    }
+
+    /**
+     * In a dynamic environement such as the form editor, it might be necessary
+     * to redefine the known list of available questions.
+     */
+    setFormQuestions(form_questions)
+    {
+        this.#form_questions = form_questions;
+    }
+
+    async #doRenderEditor(data)
+    {
+        const content = await $.post('/Form/ConditionalVisibility/Editor', {
+            form_data: data,
+        });
+
+        // Note: must use `$().html` to make sure we trigger scripts
+        $(this.#container.querySelector('[data-glpi-conditions-editor]')).html(content);
+    }
+
+    #computeData()
+    {
+        return {
+            questions: this.#form_questions,
+            conditions: this.#computeDefinedConditions(),
+            selected_item_uuid: this.#item_uuid,
+            selected_item_type: this.#item_type,
+        };
+    }
+
+    #computeDefinedConditions()
+    {
+        const conditions_data = [];
+        const conditions = this.#container.querySelectorAll(
+            '[data-glpi-conditions-editor-condition]'
+        );
+
+        for (const condition of conditions) {
+            const condition_data = {};
+
+            // Try to find a selected logic operator
+            const condition_logic_operator = $(condition).find(
+                '[data-glpi-conditions-editor-logic-operator]'
+            );
+            if (condition_logic_operator.length > 0) {
+                condition_data.logic_operator = condition_logic_operator.val();
+            }
+
+            // Try to find a selected item
+            const condition_item = $(condition).find(
+                '[data-glpi-conditions-editor-item]'
+            );
+            if (condition_item.length > 0) {
+                condition_data.item = condition_item.val();
+            }
+
+            // Try to find a selected value operator
+            const condition_value_operator = $(condition).find(
+                '[data-glpi-conditions-editor-value-operator]'
+            );
+            if (condition_value_operator.length > 0) {
+                condition_data.value_operator = condition_value_operator.val();
+            }
+
+            // Try to find a selected value
+            const condition_value = $(condition).find(
+                '[data-glpi-conditions-editor-value]'
+            );
+            if (condition_value.length > 0) {
+                condition_data.value = condition_value.val();
+            }
+
+            conditions_data.push(condition_data);
+        }
+
+        return conditions_data;
+    }
+}
