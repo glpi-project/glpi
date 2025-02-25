@@ -1,0 +1,139 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% macro getTranslationInput(handler, translation) %}
+    {% set rand = random() %}
+
+    <input type="hidden" name="translations[{{ rand }}][itemtype]" value="{{ handler.getParentItem().getType() }}" />
+    <input type="hidden" name="translations[{{ rand }}][items_id]" value="{{ handler.getParentItem().getID() }}" />
+    <input type="hidden" name="translations[{{ rand }}][key]" value="{{ handler.getKey() }}" />
+
+    <div class="d-flex align-items-center">
+        {% if translation.isPossiblyObsolete() %}
+            <i
+                class="ti ti-alert-circle text-warning me-1"
+                aria-hidden="true"
+                data-bs-toggle="tooltip"
+                title="{{ __('The default value has changed since the last translation') }}"
+                aria-label="{{ __('Translation may be obsolete') }}"
+            ></i>
+        {% endif %}
+
+        <input
+            type="text"
+            name="translations[{{ rand }}][translations][one]"
+            class="form-control form-control-flush"
+            placeholder="{{ __('Enter translation') }}"
+            value="{{ translation.getOneTranslation() }}"
+            aria-label="{{ __('Enter translation') }}"
+        />
+    </div>
+{% endmacro %}
+
+{% set entries = [] %}
+{% for category, handlers in form.listTranslationsHandlers() %}
+    {% set entries = entries|merge([{
+        'type': '<span data-glpi-form-translations-subtitle-row>' ~ category ~ '</span>',
+        'type_colspan': 3,
+        'type_aria_label': _n('Category', 'Categories', 1)
+    }]) %}
+    {% for handler in handlers %}
+        {% set entries = entries|merge([{
+            'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
+            'default': handler.getValue(),
+            'translation': _self.getTranslationInput(
+                handler,
+                form_translation.getTranslation(
+                    handler.getParentItem(),
+                    handler.getKey(),
+                    form_translation.fields['language']
+                )
+            ),
+            'type_aria_label': __('Translation name'),
+            'default_aria_label': __('Default value'),
+            'translation_aria_label': __('Translated value')
+        }]) %}
+    {% endfor %}
+{% endfor %}
+
+<form
+    method="POST"
+>
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+    <input type="hidden" name="form_translation_id" value="{{ form_translation.getID() }}" />
+
+    <div class="card border-bottom-0">
+        {% include "components/datatable.html.twig" with {
+            'datatable_id': 'glpi-form-translations-languages',
+            'datatable_aria_label': __('Form translations'),
+            'columns': {
+                'type': '',
+                'default': __('Default (%s)')|format(call('Dropdown::getLanguageName', [config('language')])),
+                'translation': call('Dropdown::getLanguageName', [form_translation.fields['language']]),
+            },
+            'formatters': {
+                'type': 'raw_html',
+                'translation': 'raw_html',
+            },
+            'entries': entries,
+            'total_number': 1,
+            'nofilter': true,
+            'nopager': true
+        } only %}
+    </div>
+
+    {% if can_update %}
+        <div class="d-flex flex-row-reverse mt-3" role="group" aria-label="{{ __('Form actions') }}">
+            <button
+                class="btn btn-primary ms-2"
+                name="update"
+                type="submit"
+                formaction="{{ path('Form/Translation/' ~ form.getID() ~ '/' ~ form_translation.fields['language']) }}"
+                aria-label="{{ __('Save translation') }}"
+            >
+                <i class="ti ti-device-floppy me-2" aria-hidden="true"></i>
+                {{ __("Save") }}
+            </button>
+            <button
+                class="btn btn-ghost-danger"
+                name="delete"
+                type="submit"
+                formaction="{{ path('Form/Translation/' ~ form.getID() ~ '/' ~ form_translation.fields['language'] ~ '/Delete') }}"
+                aria-label="{{ __('Delete translation') }}"
+            >
+                <i class="ti ti-trash me-2" aria-hidden="true"></i>
+                {{ __("Delete") }}
+            </button>
+        </div>
+    {% endif %}
+</form>

@@ -35,6 +35,7 @@
 
 namespace Glpi\Tests;
 
+use CommonDBTM;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\AnswersHandler\AnswersHandler;
@@ -47,6 +48,7 @@ use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
 use Glpi\Form\Tag\Tag;
+use Glpi\Form\FormTranslation;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Profile;
@@ -482,6 +484,42 @@ trait FormTesterTrait
         ]);
 
         return $comment;
+    }
+
+    protected function addTranslationToForm(
+        CommonDBTM $item,
+        string $language,
+        string $key,
+        string $translation,
+    ): void {
+        $form_translation = new FormTranslation();
+        if (
+            $form_translation->getFromDBByCrit([
+                FormTranslation::$itemtype => $item->getType(),
+                FormTranslation::$items_id  => $item->getID(),
+                'language'                  => $language,
+                'key'                       => $key,
+            ]) === false
+        ) {
+            $form_translation = $this->createItem(FormTranslation::class, [
+                FormTranslation::$itemtype => $item->getType(),
+                FormTranslation::$items_id  => $item->getID(),
+                'language'                  => $language,
+                'key'                       => $key,
+                'translations'              => '',
+            ], ['translations']);
+        }
+
+        $this->updateItem(
+            FormTranslation::class,
+            $form_translation->getID(),
+            [
+                'translations' => [
+                    'one' => $translation,
+                ]
+            ],
+            ['translations']
+        );
     }
 
     protected function sendFormAndGetAnswerSet(
