@@ -158,7 +158,7 @@
                 const url = `${CFG_GLPI.root_doc}/ajax/asset/assetdefinition.php?${url_params}`;
                 window.glpi_ajax_dialog({
                     id: 'core_field_options_editor',
-                    modalclass: 'modal-lg',
+                    modalclass: 'modal-xl',
                     appendTo: `#${$(sortable_fields_container.value).attr('id')}`,
                     title: field_el.text(),
                     url: url,
@@ -242,8 +242,17 @@
                 sortable_field.field_options = {};
                 form_data.entries().forEach(([name, value]) => {
                     if (name.startsWith('field_options[')) {
-                        const option_name = name.replace('field_options[', '').slice(0, -1);
-                        sortable_field.field_options[option_name] = value;
+                        const is_array = name.endsWith('[]');
+                        const option_name = name.replace('field_options[', '').replace(/\[\]/, '');
+                        if (is_array) {
+                            sortable_field.field_options[option_name] = sortable_field.field_options[option_name] ?? [];
+                            if (!Array.isArray(sortable_field.field_options[option_name])) {
+                                sortable_field.field_options[option_name] = [sortable_field.field_options[option_name]];
+                            }
+                            sortable_field.field_options[option_name].push(value);
+                        } else {
+                            sortable_field.field_options[option_name] = value;
+                        }
                     }
                 });
             } else if (btn_submit.attr('name') === 'purge') {

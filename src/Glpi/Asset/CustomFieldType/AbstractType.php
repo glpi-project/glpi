@@ -36,6 +36,7 @@ namespace Glpi\Asset\CustomFieldType;
 
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Asset\CustomFieldOption\BooleanOption;
+use Glpi\Asset\CustomFieldOption\ProfileRestrictOption;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
@@ -70,16 +71,13 @@ abstract class AbstractType implements TypeInterface
     {
         return [
             new BooleanOption($this->custom_field, 'full_width', __('Full width'), false),
-            new BooleanOption($this->custom_field, 'readonly', __('Readonly'), false),
             new BooleanOption($this->custom_field, 'required', __('Mandatory'), false),
-            new BooleanOption($this->custom_field, 'disabled', __('Disabled'), false), // Not exposed in the UI. Only used in field order preview
+            new ProfileRestrictOption($this->custom_field, 'readonly', __('Readonly for these profiles'), false),
+            new ProfileRestrictOption($this->custom_field, 'hidden', __('Hidden for these profiles'), false),
         ];
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getOptionValues(bool $default_field = false): array
+    public function getOptionValues(bool $default_field = false): array
     {
         $values = [];
         foreach ($this->getOptions() as $option) {

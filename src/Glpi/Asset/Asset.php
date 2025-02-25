@@ -337,9 +337,21 @@ abstract class Asset extends CommonDBTM
         $fields_display = static::getDefinition()->getDecodedFieldsField();
         $core_field_options = [];
 
+        // Remove fields that are hidden for the current profile
+        $custom_fields = array_filter($custom_fields, static fn ($f) => !$f->getFieldType()->getOptionValues()['hidden']);
+
+        $core_fields = static::getDefinition()->getAllFields();
         foreach ($fields_display as $field) {
-            $core_field_options[$field['key']] = $field['field_options'] ?? [];
+            $f = new CustomFieldDefinition();
+            $core_field = $core_fields[$field['key']];
+            $f->fields['system_name'] = $field['key'];
+            $f->fields['type'] = $core_field['type'];
+            $f->fields['field_options'] = $field['field_options'] ?? [];
+            $core_field_options[$field['key']] = $f->getFieldType()->getOptionValues();
         }
+
+        $field_order = $this->getFormFields();
+        $field_order = array_filter($field_order, static fn ($f) => $core_field_options[$f]['hidden'] !== true);
 
         TemplateRenderer::getInstance()->display(
             'pages/assets/asset.html.twig',
@@ -347,7 +359,7 @@ abstract class Asset extends CommonDBTM
                 'item'   => $this,
                 'params' => $options,
                 'custom_fields' => $custom_fields,
-                'field_order' => $this->getFormFields(),
+                'field_order' => $field_order,
                 'additional_field_options' => $core_field_options,
             ]
         );
