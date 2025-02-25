@@ -325,12 +325,39 @@ class RuleCollection extends CommonDBTM
      * If needed need to send 'replay_confirm' in POST
      *
      * @return boolean true if confirmation is needed, else false
+     * The returned value must be the same as getWarningBeforeReplayRulesOnExistingDB()
+     * @deprecated use getWarningBeforeReplayRulesOnExistingDB() or hasWarningBeforeReplayRulesOnExistingDB() instead
      *
      * since 11.0.0 The `$target` parameter has been removed and its value is automatically computed.
      */
     public function warningBeforeReplayRulesOnExistingDB()
     {
+        Toolbox::deprecated('The `' . __FUNCTION__ . '` method is deprecated, use `getWarningBeforeReplayRulesOnExistingDB()` or `hasWarningBeforeReplayRulesOnExistingDB()` instead.');
+
         return false;
+    }
+
+    /**
+     * @return bool
+     * @see \RuleCollection::warningBeforeReplayRulesOnExistingDB()
+     */
+    public function hasWarningBeforeReplayRulesOnExistingDB(): bool
+    {
+        // @todo implémenter dans les classes filles
+        return false;
+    }
+
+    /**
+     * @return string Html warning message
+     * Must have content only if hasWarningBeforeReplayRulesOnExistingDB() returns true
+     */
+    public function getWarningBeforeReplayRulesOnExistingDB(): string
+    {
+        if (!$this->hasWarningBeforeReplayRulesOnExistingDB()) {
+            return '';
+        }
+
+        return 'ma réponse';
     }
 
     /**

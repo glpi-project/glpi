@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Http;
 
 use Glpi\Controller\GenericListController;
 use Glpi\Controller\DropdownFormController;
+use Glpi\Controller\Rule\RuleListController;
 use Glpi\Http\Listener\LegacyItemtypeRouteListener;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
@@ -57,7 +58,16 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
 
         $listener->onKernelRequest($event);
 
-        if (\str_contains($path_info, '.form.php')) {
+        $is_a_rule_file = function ($file_path): bool {
+            if (\str_contains($file_path, 'rulerightparameter')) {
+                return false;
+            }
+            return \str_contains($file_path, 'rule') || \str_contains($file_path, 'olalevel.php') || \str_contains($file_path, 'slalevel.php');
+        };
+
+        if ($is_a_rule_file($path_info)) {
+            self::assertSame(RuleListController::class, $request->attributes->get('_controller'));
+        } else if (\str_contains($path_info, '.form.php')) {
             self::assertSame(DropdownFormController::class, $request->attributes->get('_controller'));
         } else {
             self::assertSame(GenericListController::class, $request->attributes->get('_controller'));
