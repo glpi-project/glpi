@@ -54,13 +54,13 @@ abstract class InventoryAsset
     /** @var array */
     protected $data = [];
     /** @var CommonDBTM */
-    protected $item;
+    protected CommonDBTM $item;
     /** @var string */
     protected $itemtype;
     /** @var array */
     protected $extra_data = [];
     /** @var \Agent */
-    protected $agent;
+    protected Agent $agent;
     /** @var integer */
     protected $entities_id = 0;
     /** @var integer */

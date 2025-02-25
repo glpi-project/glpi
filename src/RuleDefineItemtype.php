@@ -258,7 +258,7 @@ TWIG, $twig_params);
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-        if (!is_array($values)) {
+        if (!is_array($values)) { //@phpstan-ignore-line array is an array in phpdoc **only**
             $values = [$field => $values];
         }
         switch ($field) {

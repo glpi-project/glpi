@@ -3061,7 +3061,7 @@ JS
      * @param $name
      * @param $value
      * @param bool $test (false by default)
-     * @return false
+     * @return boolean
      */
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
