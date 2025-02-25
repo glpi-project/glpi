@@ -448,10 +448,6 @@ JAVASCRIPT;
 
     /**
      * Init embed session
-     *
-     * @param array
-     *
-     * @return void
      */
     public function initEmbedSession(array $params = [])
     {
