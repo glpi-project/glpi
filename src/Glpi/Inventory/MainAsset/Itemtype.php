@@ -37,10 +37,20 @@
 namespace Glpi\Inventory\MainAsset;
 
 use Blacklist;
+use Override;
 use RuleDefineItemtypeCollection;
 
 class Itemtype extends MainAsset
 {
+    #[Override]
+    public function __construct($data)
+    {
+        $namespaced = explode('\\', static::class);
+        $this->itemtype = array_pop($namespaced);
+        //store raw data for reference
+        $this->raw_data = $data;
+    }
+
     protected function getModelsFieldName(): string
     {
         return '';

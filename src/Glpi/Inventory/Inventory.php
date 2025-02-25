@@ -334,10 +334,7 @@ class Inventory
 
             //process itemtype definition from rules engine
             $itemtype_string = $this->metadata['itemtype'] ?? 'Computer';
-            $main_itemtype = new Itemtype(
-                new CommonDBTM(),
-                $this->raw_data
-            );
+            $main_itemtype = new Itemtype($this->raw_data);
 
             $main_itemtype
                 ->setDiscovery($this->is_discovery)
