@@ -48,3 +48,12 @@ phpstan.neon
 /phpunit/coverage/
 *.phar
 .env
+
+# Playwright
+ctrf/
+node_modules/
+/tests/playwright/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+

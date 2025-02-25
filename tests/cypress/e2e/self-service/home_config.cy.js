@@ -125,6 +125,7 @@ describe('Helpdesk home page configuration', () => {
         cy.findByRole("region", {'name': destination}).dropDraggedItemAfter();
     }
 
+    // Not yet migrated because I haven't tested drag and drop in playwright yet.
     it('can reorder tiles', () => {
         // Valide default order
         validateTilesOrder([
@@ -180,7 +181,7 @@ describe('Helpdesk home page configuration', () => {
         validateOrderControlsAreHidden();
     });
 
-    it('can remove tiles', () => {
+    it('[already migrated] can remove tiles', () => {
         // Delete tile
         cy.findByRole("region", {'name': "Request a service"}).within(() => {
             cy.findByRole('button', {'name': 'Show more actions'}).click();
@@ -208,7 +209,7 @@ describe('Helpdesk home page configuration', () => {
         ]);
     });
 
-    it('can cancel editing tile', () => {
+    it('[already migrated] can cancel editing tile', () => {
         // Default state
         cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
         cy.findByRole("region", {'name': "Edit tile"}).should('not.exist');
@@ -235,7 +236,7 @@ describe('Helpdesk home page configuration', () => {
         ]);
     });
 
-    it('can edit a tile', () => {
+    it('[already migrated] can edit a tile', () => {
         // Default state
         cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
         cy.findByRole("region", {'name': "Edit tile"}).should('not.exist');
@@ -262,7 +263,7 @@ describe('Helpdesk home page configuration', () => {
         ]);
     });
 
-    it('can add a "Glpi page" tile', () => {
+    it('[already migrated] can add a "Glpi page" tile', () => {
         // Default state
         cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
         cy.findByRole("region", {'name': "Add a new tile"}).should('not.exist');
@@ -295,7 +296,7 @@ describe('Helpdesk home page configuration', () => {
         cy.findByText("My description").should('be.visible');
     });
 
-    it('can add a "External page" tile', () => {
+    it('[already migrated] can add a "External page" tile', () => {
         // Default state
         cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
         cy.findByRole("region", {'name': "Add a new tile"}).should('not.exist');
@@ -328,7 +329,7 @@ describe('Helpdesk home page configuration', () => {
         cy.findByText("My description").should('be.visible');
     });
 
-    it('can add a "Form" tile', () => {
+    it('[already migrated] can add a "Form" tile', () => {
         // Default state
         cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
         cy.findByRole("region", {'name': "Add a new tile"}).should('not.exist');
@@ -354,7 +355,7 @@ describe('Helpdesk home page configuration', () => {
         cy.findByText("Ask for support from our helpdesk team.").should('be.visible');
     });
 
-    it('can cancel addding a tile', () => {
+    it('[already migrated] can cancel addding a tile', () => {
         // Default state
         cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
         cy.findByRole("region", {'name': "Add a new tile"}).should('not.exist');

@@ -4,6 +4,9 @@ services:
     image: "ghcr.io/glpi-project/${PHP_IMAGE:-githubactions-php-apache:8.3}"
     environment:
       CODE_COVERAGE: "${CODE_COVERAGE:-false}"
+      CI: true
+      PLAYWRIGHT_BROWSERS_PATH: /opt/pw-browsers
+      GLPI_BASE_URL: http://localhost:80
     volumes:
       - type: "bind"
         source: "${APPLICATION_ROOT}"
