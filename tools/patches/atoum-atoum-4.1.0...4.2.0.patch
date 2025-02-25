@@ -1,0 +1,70 @@
+diff --git a/classes/mock/generator.php b/classes/mock/generator.php
+index 64263c29..382e7e05 100644
+--- a/classes/mock/generator.php
++++ b/classes/mock/generator.php
+@@ -664,7 +664,7 @@ class generator
+ 
+         $returnType = $this->getReflectionType($method);
+         $returnTypeName = $this->getReflectionTypeName($returnType);
+-        $isNullable = $returnTypeName !== 'mixed' && $this->isNullable($returnType);
++        $isNullable = $returnType->allowsNull() === true;
+ 
+         switch (true) {
+             case $returnTypeName === 'self':
+@@ -685,6 +685,11 @@ class generator
+                 $returnTypeCode = ': ' . implode('|', $types);
+                 break;
+ 
++            case in_array($this->getReflectionTypeName($returnType), ['mixed', 'null']):
++                // 'mixed' and 'null' cannot be marked as nullable
++                $returnTypeCode = ': ' . $returnTypeName;
++                break;
++
+             case $returnTypeName === 'static':
+             case $returnType->isBuiltin():
+                 $returnTypeCode = ': ' . ($isNullable ? '?' : '') . $returnTypeName;
+@@ -697,11 +702,6 @@ class generator
+         return $returnTypeCode;
+     }
+ 
+-    protected function isNullable(\reflectionType $type)
+-    {
+-        return $type->allowsNull() === true;
+-    }
+-
+     protected function hasReturnType(\reflectionMethod $method)
+     {
+         $hasReturnType = $method->hasReturnType() === true;
+diff --git a/classes/test.php b/classes/test.php
+index 3ae710ed..3874076f 100644
+--- a/classes/test.php
++++ b/classes/test.php
+@@ -533,7 +533,7 @@ abstract class test implements observable, \countable
+         $asserterGenerator = $this->asserterGenerator;
+ 
+         $this->assertionManager->setDefaultHandler(
+-            function ($keyword, $arguments) use ($asserterGenerator, $assertionAliaser, & $lastAsserter) {
++            function ($keyword, $arguments) use ($asserterGenerator, $assertionAliaser) {
+                 static $lastAsserter = null;
+ 
+                 if ($lastAsserter !== null) {
+diff --git a/classes/tools/parameter/analyzer.php b/classes/tools/parameter/analyzer.php
+index f2c9d068..3766ca43 100644
+--- a/classes/tools/parameter/analyzer.php
++++ b/classes/tools/parameter/analyzer.php
+@@ -12,9 +12,12 @@ class analyzer
+ 
+         $parameterType = $parameter->getType();
+ 
+-        if ($parameterType instanceof \reflectionNamedType && $parameterType->getName() === 'mixed') {
+-            // 'mixed' cannot be prefixed by nullable flag '?' and cannot be part of union types
+-            return 'mixed';
++        if (
++            $parameterType instanceof \reflectionNamedType
++            && in_array($parameterType->getName(), ['mixed', 'null'])
++        ) {
++            // 'mixed' and 'null' cannot be prefixed by nullable flag '?'
++            return $parameterType->getName();
+         }
+ 
+         $parameterTypes = $parameterType instanceof \ReflectionUnionType

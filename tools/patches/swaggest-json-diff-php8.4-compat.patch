@@ -1,0 +1,65 @@
+diff --git a/src/InvalidFieldTypeException.php b/src/InvalidFieldTypeException.php
+index d807046..37b45bc 100644
+--- a/src/InvalidFieldTypeException.php
++++ b/src/InvalidFieldTypeException.php
+@@ -27,7 +27,7 @@ class InvalidFieldTypeException extends Exception
+         $expectedType,
+         $operation,
+         $code = 0,
+-        Throwable $previous = null
++        ?Throwable $previous = null
+     )
+     {
+         parent::__construct(
+diff --git a/src/MissingFieldException.php b/src/MissingFieldException.php
+index ab87967..d9e746e 100644
+--- a/src/MissingFieldException.php
++++ b/src/MissingFieldException.php
+@@ -22,7 +22,7 @@ class MissingFieldException extends Exception
+         $missingField,
+         $operation,
+         $code = 0,
+-        Throwable $previous = null
++        ?Throwable $previous = null
+     )
+     {
+         parent::__construct('Missing "' . $missingField . '" in operation data', $code, $previous);
+diff --git a/src/PatchTestOperationFailedException.php b/src/PatchTestOperationFailedException.php
+index 7204b7c..d668110 100644
+--- a/src/PatchTestOperationFailedException.php
++++ b/src/PatchTestOperationFailedException.php
+@@ -23,7 +23,7 @@ class PatchTestOperationFailedException extends Exception
+         $operation,
+         $actualValue,
+         $code = 0,
+-        Throwable $previous = null
++        ?Throwable $previous = null
+     )
+     {
+         parent::__construct('Test operation ' . json_encode($operation, JSON_UNESCAPED_SLASHES)
+diff --git a/src/PathException.php b/src/PathException.php
+index 6ccbe91..35c290f 100644
+--- a/src/PathException.php
++++ b/src/PathException.php
+@@ -26,7 +26,7 @@ class PathException extends Exception
+         $operation,
+         $field,
+         $code = 0,
+-        Throwable $previous = null
++        ?Throwable $previous = null
+     )
+     {
+         parent::__construct($message, $code, $previous);
+diff --git a/src/UnknownOperationException.php b/src/UnknownOperationException.php
+index 8d35abb..c0357b7 100644
+--- a/src/UnknownOperationException.php
++++ b/src/UnknownOperationException.php
+@@ -19,7 +19,7 @@ class UnknownOperationException extends Exception
+     public function __construct(
+         $operation,
+         $code = 0,
+-        Throwable $previous = null
++        ?Throwable $previous = null
+     )
+     {
+         // @phpstan-ignore-next-line MissingFieldOperation will be thrown if op is not set
