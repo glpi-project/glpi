@@ -33,12 +33,6 @@
 
 $is-dark: true;
 
-.btn-primary,
-.btn-outline-primary,
-.btn-ghost-primary {
-    --tblr-btn-color-text: red;
-}
-
 :root[data-glpi-theme="midnight"] {
     --tblr-dark: #000;
     --tblr-light: #e6e6e6;
@@ -47,8 +41,8 @@ $is-dark: true;
     --tblr-primary-fg: #232e3c;
     --tblr-secondary: #b0bbd4;
     --tblr-secondary-fg: #262d3d;
-    --tblr-link-color-rgb: 136, 136, 136;
-    --tblr-link-hover-color-rgb: 200, 200, 200;
+    --tblr-link-color-rgb: 200, 200, 200;
+    --tblr-link-hover-color-rgb: 225, 225, 225;
     --tblr-code-color: #B4B4B4;
     --tblr-muted: #c6cad2;
     --tblr-muted-rgb: 198, 202, 210; // #c6cad2
