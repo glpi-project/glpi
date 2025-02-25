@@ -361,7 +361,7 @@ class CommandLoader implements CommandLoaderInterface
             }
 
             $reflectionClass = new ReflectionClass($classname_to_check);
-            if ($reflectionClass->isInstantiable() && $reflectionClass->isSubclassOf(Command::class)) {
+            if ($reflectionClass->isInstantiable() && is_a($classname_to_check, Command::class, true)) {
                 return $classname_to_check;
             }
         }
