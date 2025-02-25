@@ -39,17 +39,24 @@ use Glpi\DBAL\QueryExpression;
 class Result
 {
     /**
-     * @param QueryExpression $sql_criteria
+     * @param QueryExpression $where_criteria
+     * @param QueryExpression $having_criteria
      * @param array<string, Error> $invalid_filters
      */
     public function __construct(
-        private QueryExpression $sql_criteria,
+        private QueryExpression $where_criteria,
+        private QueryExpression $having_criteria,
         private array $invalid_filters = []
     ) {}
 
-    public function getSQLCriteria(): QueryExpression
+    public function getSQLWhereCriteria(): QueryExpression
     {
-        return $this->sql_criteria;
+        return $this->where_criteria;
+    }
+
+    public function getSQLHavingCriteria(): QueryExpression
+    {
+        return $this->having_criteria;
     }
 
     public function getInvalidFilters(): array
