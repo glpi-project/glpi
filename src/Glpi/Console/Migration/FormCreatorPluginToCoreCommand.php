@@ -34,51 +34,26 @@
 
 namespace Glpi\Console\Migration;
 
-use Glpi\Console\AbstractCommand;
-use Glpi\Console\Traits\PluginMigrationTrait;
 use Glpi\Form\Migration\FormMigration;
-use Glpi\Progress\ConsoleProgressIndicator;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use Override;
 
-class FormCreatorPluginToCoreCommand extends AbstractCommand
+class FormCreatorPluginToCoreCommand extends AbstractPluginMigrationCommand
 {
-    use PluginMigrationTrait;
-
-    /**
-     * Version of Formcreator plugin required for this migration.
-     * @var string
-     */
-    public const FORMCREATOR_REQUIRED_VERSION = '2.13.9';
-
-    protected function configure()
+    #[Override]
+    public function getName(): string
     {
-        parent::configure();
-
-        $this->setName('migration:formcreator_plugin_to_core');
-        $this->setDescription(__('Migrate Formcreator plugin data into GLPI core tables'));
-
-        $this->addOption(
-            'dry-run',
-            null,
-            InputOption::VALUE_NONE,
-            __('Simulate the migration')
-        );
+        return 'migration:formcreator_plugin_to_core';
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    #[Override]
+    public function getDescription(): string
     {
-        /** @var LoggerInterface $PHPLOGGER */
-        global $PHPLOGGER;
-        $migration = new FormMigration($this->db, $PHPLOGGER);
-        $migration->setProgressIndicator(new ConsoleProgressIndicator($output));
-        $result = $migration->execute((bool) $input->getOption('dry-run'));
+        return __('Migrate Formcreator plugin data into GLPI core tables');
+    }
 
-        $this->outputPluginMigrationResult($output, $result);
-
-        return $result->isFullyProcessed() && !$result->hasErrors() ? Command::SUCCESS : Command::FAILURE;
+    #[Override]
+    public function getMigrationClass(): string
+    {
+        return FormMigration::class;
     }
 }

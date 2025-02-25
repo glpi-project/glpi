@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,7 +34,6 @@
 
 namespace Glpi\Form\Migration;
 
-use Glpi\Console\Migration\FormCreatorPluginToCoreCommand;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Form\Category;
@@ -63,6 +61,11 @@ use Plugin;
 
 final class FormMigration extends AbstractPluginMigration
 {
+    /**
+     * Version of FormCreator plugin required for the migration
+     */
+    private const FORMCREATOR_REQUIRED_VERSION = '2.13.9';
+
     /**
      * Retrieve the map of types to convert
      *
@@ -120,29 +123,32 @@ final class FormMigration extends AbstractPluginMigration
             return false;
         }
 
-        $is_version_ok = FormCreatorPluginToCoreCommand::FORMCREATOR_REQUIRED_VERSION === $plugin->fields['version'];
+        $is_version_ok = self::FORMCREATOR_REQUIRED_VERSION === $plugin->fields['version'];
         if (!$is_version_ok) {
             $this->result->addMessage(MessageType::Error, sprintf(
                 'Last Formcreator version (%s) is required to be able to continue.',
-                FormCreatorPluginToCoreCommand::FORMCREATOR_REQUIRED_VERSION
+                self::FORMCREATOR_REQUIRED_VERSION
             ));
             return false;
         }
 
-        $formcreator_tables = [
-            'glpi_plugin_formcreator_categories',
-            'glpi_plugin_formcreator_forms',
-            'glpi_plugin_formcreator_sections',
-            'glpi_plugin_formcreator_questions',
+        $formcreator_schema = [
+            'glpi_plugin_formcreator_categories' => [
+                'id', 'name', 'plugin_formcreator_categories_id', 'level'
+            ],
+            'glpi_plugin_formcreator_forms' => [
+                'id', 'name', 'description', 'plugin_formcreator_categories_id', 'entities_id',
+                'is_recursive', 'is_visible'
+            ],
+            'glpi_plugin_formcreator_sections' => [
+                'id', 'name', 'plugin_formcreator_forms_id', 'order', 'uuid'
+            ],
+            'glpi_plugin_formcreator_questions' => [
+                'id', 'name', 'plugin_formcreator_sections_id', 'fieldtype', 'required', 'default_values',
+                'itemtype', 'values', 'description', 'row', 'col', 'uuid'
+            ],
         ];
-        $missing_tables = false;
-        foreach ($formcreator_tables as $table) {
-            if (!$this->db->tableExists($table)) {
-                $this->result->addMessage(MessageType::Error, sprintf('Formcreator plugin table "%s" is missing.', $table));
-                $missing_tables = true;
-            }
-        }
-        if ($missing_tables) {
+        if (!$this->checkDbFieldsExists($formcreator_schema)) {
             $this->result->addMessage(MessageType::Error, 'Migration cannot be done.');
             return false;
         }
@@ -152,23 +158,21 @@ final class FormMigration extends AbstractPluginMigration
 
     protected function processMigration(): bool
     {
-        $categories_iterator = $this->db->request(['FROM' => 'glpi_plugin_formcreator_categories']);
-        $forms_iterator = $this->db->request(['FROM' => 'glpi_plugin_formcreator_forms']);
-        $sections_iterator = $this->db->request(['FROM' => 'glpi_plugin_formcreator_sections']);
-        $questions_iterator = $this->db->request(['FROM' => 'glpi_plugin_formcreator_questions']);
-        $comments_iterator = $this->db->request([
-            'FROM'  => 'glpi_plugin_formcreator_questions',
-            'WHERE' => ['fieldtype' => 'description']
-        ]);
+        // Count all items to migrate
+        $counts = [
+            'categories' => $this->countRecords('glpi_plugin_formcreator_categories'),
+            'forms' => $this->countRecords('glpi_plugin_formcreator_forms'),
+            'sections' => $this->countRecords('glpi_plugin_formcreator_sections'),
+            'questions' => $this->countRecords('glpi_plugin_formcreator_questions', ['NOT' => ['fieldtype' => 'description']]),
+            'comments' => $this->countRecords('glpi_plugin_formcreator_questions', ['fieldtype' => 'description']),
+        ];
 
+        // Set total progress steps
         $this->progress_indicator?->setMaxSteps(
-            $categories_iterator->count()
-                + $forms_iterator->count()
-                + $sections_iterator->count()
-                + $questions_iterator->count()
-                + $comments_iterator->count()
+            array_sum($counts)
         );
 
+        // Process each migration step
         $this->processMigrationOfFormCategories();
         $this->processMigrationOfBasicProperties();
         $this->processMigrationOfSections();
