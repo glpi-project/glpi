@@ -711,7 +711,7 @@ class Toolbox
     /**
      * Compute PHP memory_limit
      *
-     * @param string $ininame  name of the ini ooption to retrieve (since 9.1)
+     * @param string $ininame  name of the ini option to retrieve (since 9.1)
      *
      * @return integer|string memory limit
      **/

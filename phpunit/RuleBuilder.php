@@ -78,6 +78,8 @@ class RuleBuilder
      */
     protected string $rule_type;
 
+    protected ?int $ranking = null;
+
     /**
      * @param string $name Rule name
      */
@@ -149,6 +151,19 @@ class RuleBuilder
     public function setEntity(int $entities_id): self
     {
         $this->entities_id = $entities_id;
+        return $this;
+    }
+
+    /**
+     * Set rule rank
+     *
+     * @param int $ranking
+     *
+     * @return self
+     */
+    public function setRanking(int $ranking): self
+    {
+        $this->ranking = $ranking;
         return $this;
     }
 
@@ -274,5 +289,15 @@ class RuleBuilder
     public function getActions(): array
     {
         return $this->actions;
+    }
+
+    /**
+     * Get rule ranking, if defined
+     *
+     * @return ?int
+     */
+    public function getRanking(): ?int
+    {
+        return $this->ranking;
     }
 }

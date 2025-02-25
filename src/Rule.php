@@ -2475,6 +2475,18 @@ JS
                     $display = true;
                     break;
 
+                case "dropdown_defineitemtype_itemtype":
+                    $itemtypes = [ //itemtypes from inventory.schema.json
+                        Unmanaged::class,
+                        Computer::class,
+                        Phone::class,
+                        NetworkEquipment::class,
+                        Printer::class
+                    ];
+                    Dropdown::showItemTypes($name, $itemtypes, ['value' => $value]);
+                    $display = true;
+                    break;
+
                 case "dropdown_urgency":
                     CommonITILObject::dropdownUrgency(['name'  => $name,
                         'value' => $value
@@ -3049,7 +3061,7 @@ JS
      * @param $name
      * @param $value
      * @param bool $test (false by default)
-     * @return false
+     * @return boolean
      */
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {

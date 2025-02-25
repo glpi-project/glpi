@@ -54,13 +54,13 @@ abstract class InventoryAsset
     /** @var array */
     protected $data = [];
     /** @var CommonDBTM */
-    protected $item;
+    protected CommonDBTM $item;
     /** @var string */
     protected $itemtype;
     /** @var array */
     protected $extra_data = [];
     /** @var \Agent */
-    protected $agent;
+    protected Agent $agent;
     /** @var integer */
     protected $entities_id = 0;
     /** @var integer */
@@ -85,6 +85,9 @@ abstract class InventoryAsset
     protected array $known_links = [];
     /** @var array */
     protected array $raw_links = [];
+    /** @var array<string, mixed> */
+    protected array $metadata = [];
+
 
     /**
      * Constructor
@@ -302,6 +305,19 @@ abstract class InventoryAsset
     }
 
     /**
+     * Set metadata
+     *
+     * @param array<string, mixed> $metadata Metadata
+     *
+     * @return self
+     */
+    public function setMetadata(array $metadata): self
+    {
+        $this->metadata = $metadata;
+        return $this;
+    }
+
+    /**
      * Set agent
      *
      * @param Agent $agent Agent instance
@@ -317,11 +333,11 @@ abstract class InventoryAsset
     /**
      * Get agent
      *
-     * @return Agent
+     * @return ?Agent
      */
-    public function getAgent(): Agent
+    public function getAgent(): ?Agent
     {
-        return $this->agent;
+        return $this->agent ?? null;
     }
 
     /**
@@ -484,9 +500,13 @@ abstract class InventoryAsset
             }
         }
 
-        if (isset($this->agent->fields['tag'])) {
+        $data = $this->metadata;
+        if ($agent = $this->getAgent()) {
+            $data = $agent->fields;
+        }
+        if (isset($data['tag'])) {
             // Pass the tag that can be used in rules criteria
-            $input['_tag'] = $this->agent->fields['tag'];
+            $input['_tag'] = $data['tag'];
         }
 
         return $input;

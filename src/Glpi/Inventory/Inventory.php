@@ -40,6 +40,7 @@ use CommonDBTM;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Inventory\Asset\InventoryAsset;
+use Glpi\Inventory\MainAsset\Itemtype;
 use Glpi\Inventory\MainAsset\MainAsset;
 use Lockedfield;
 use RefusedEquipment;
@@ -331,16 +332,35 @@ class Inventory
 
             $this->data = $data;
 
+            //process itemtype definition from rules engine
+            $itemtype_string = $this->metadata['itemtype'] ?? 'Computer';
+            $main_itemtype = new Itemtype($this->raw_data);
+
+            $main_itemtype
+                ->setDiscovery($this->is_discovery)
+                ->setRequestQuery($this->request_query)
+                ->setMetadata($this->metadata)
+                //->setAgent($this->getAgent())
+                ->setExtraData($this->data);
+            $main_itemtype->prepare();
+            $data_itemtype = $main_itemtype->defineItemtype($itemtype_string);
+
+            if (isset($data_itemtype['new_itemtype']) && $data_itemtype['new_itemtype'] != -1) {
+                $this->metadata['itemtype'] = $data_itemtype['new_itemtype'];
+            }
+
             //create/load agent
             $this->agent = new Agent();
             $this->agent->handleAgent($this->metadata);
 
             $this->item = new $this->agent->fields['itemtype']();
 
+            //load existing itemtype, if any
             if (!empty($this->agent->fields['items_id'])) {
                 $this->item->getFromDB($this->agent->fields['items_id']);
             }
 
+            //instanciate inventory main asset class, and proceed
             $main_class = $this->getMainClass();
             $main = new $main_class($this->item, $this->raw_data);
             $main
@@ -570,9 +590,8 @@ class Inventory
      */
     public function getMainClass()
     {
-        $agent = $this->getAgent();
         $class_ns = '\Glpi\Inventory\MainAsset\\';
-        $main_class = $class_ns . $agent->fields['itemtype'];
+        $main_class = $class_ns . $this->item::class;
         if (class_exists($main_class)) {
             return $main_class;
         }

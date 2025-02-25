@@ -4610,34 +4610,16 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleImportAsset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method RuleImportAsset\\:\\:displayAdditionalRuleCondition\\(\\) should return false but returns true\\.$#',
-	'identifier' => 'return.type',
-	'count' => 3,
-	'path' => __DIR__ . '/src/RuleImportAsset.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Property RuleImportAsset\\:\\:\\$restrict_entity is never read, only written\\.$#',
 	'identifier' => 'property.onlyWritten',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleImportAsset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method RuleImportEntity\\:\\:displayAdditionalRuleCondition\\(\\) should return false but returns true\\.$#',
-	'identifier' => 'return.type',
-	'count' => 4,
-	'path' => __DIR__ . '/src/RuleImportEntity.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleMailCollector.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method RuleRight\\:\\:displayAdditionalRuleCondition\\(\\) should return false but returns true\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleRight.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#',

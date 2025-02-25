@@ -89,19 +89,11 @@ class RuleImportAssetTest extends DbTestCase
      *
      * @return void
      */
-    protected function addRule($name, array $criteria, array $action, $afterRuleName = null)
+    protected function addAssetRule($name, array $criteria, array $action, $afterRuleName = null): int
     {
         global $DB;
 
         $rule = new \RuleImportAsset();
-        $rulecriteria = new \RuleCriteria();
-
-        $input = [
-            'is_active' => 1,
-            'name'      => $name,
-            'match'     => 'AND',
-            'sub_type'  => 'RuleImportAsset',
-        ];
 
         $ruleARN = $rule->find(['name' => $afterRuleName ?? 'Computer constraint (name)'], [], 1);
         $this->assertCount(1, $ruleARN);
@@ -114,34 +106,12 @@ class RuleImportAssetTest extends DbTestCase
                 ],
                 [
                     'ranking'   => ['>', $r['ranking']],
-                    'sub_type'  => 'RuleImportAsset'
+                    'sub_type'  => \RuleImportAsset::class
                 ]
             )
         );
-        $input['ranking'] = ($r['ranking'] + 1);
-        $rules_id = $rule->add($input);
-        $this->assertGreaterThan(0, $rules_id);
 
-        // Add criteria
-        foreach ($criteria as $crit) {
-            $input = [
-                'rules_id'  => $rules_id,
-                'criteria'  => $crit['criteria'],
-                'pattern'   => $crit['pattern'],
-                'condition' => $crit['condition'],
-            ];
-            $this->assertGreaterThan(0, (int)$rulecriteria->add($input));
-        }
-
-        // Add action
-        $ruleaction = new \RuleAction();
-        $input = [
-            'rules_id'    => $rules_id,
-            'action_type' => $action['action_type'],
-            'field'       => $action['field'],
-            'value'       => $action['value'],
-        ];
-        $this->assertGreaterThan(0, (int)$ruleaction->add($input));
+        return parent::addRule(\RuleImportAsset::class, $name, $criteria, $action, $r['ranking'] + 1);
     }
 
     public function testCreateComputerName()
@@ -388,7 +358,7 @@ class RuleImportAssetTest extends DbTestCase
     private function addComputerIPRules()
     {
        // Create rules
-        $this->addRule(
+        $this->addAssetRule(
             "Computer update (by ip)",
             [
                 [
@@ -415,7 +385,7 @@ class RuleImportAssetTest extends DbTestCase
             "Computer update (by mac)"
         );
 
-        $this->addRule(
+        $this->addAssetRule(
             "Computer import (by ip)",
             [
                 [
@@ -518,7 +488,7 @@ class RuleImportAssetTest extends DbTestCase
     private function addComputerIPLinkOnlyRules()
     {
        // Create rules
-        $this->addRule(
+        $this->addAssetRule(
             "Computer update (by ip)",
             [
                 [
@@ -1140,7 +1110,7 @@ class RuleImportAssetTest extends DbTestCase
     private function updateComputerAgentTagRules()
     {
        // Create rules
-        $this->addRule(
+        $this->addAssetRule(
             "Computer update (by name and tag)",
             [
                 [

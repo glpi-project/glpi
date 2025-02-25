@@ -426,6 +426,7 @@ class RuleCollection extends CommonDBTM
                 'RuleLocation',
                 'RuleImportAsset',
                 'RuleAsset',
+                'RuleDefineItemtype'
             ]);
         });
 

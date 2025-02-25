@@ -414,12 +414,16 @@ abstract class MainAsset extends InventoryAsset
     {
         $input = ['_auto' => 1];
 
-        if (isset($this->getAgent()->fields['tag'])) {
-            $input['tag'] = $this->getAgent()->fields['tag'];
+        $data = $this->metadata;
+        if ($agent = $this->getAgent()) {
+            $data = $agent->fields;
+        }
+        if (isset($data['tag'])) {
+            $input['tag'] = $data['tag'];
         }
 
-        if (isset($this->getAgent()->fields['deviceid'])) {
-            $input['deviceid'] = $this->getAgent()->fields['deviceid'];
+        if (isset($data['deviceid'])) {
+            $input['deviceid'] = $data['deviceid'];
         }
 
         $models_id = $this->getModelsFieldName();
@@ -494,7 +498,9 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
-        $input['itemtype'] = $this->item->getType();
+        if (isset($this->item)) {
+            $input['itemtype'] = $this->item->getType();
+        }
 
         if (property_exists($val, 'comment')) {
             $input['oscomment'] = $val->comment;
