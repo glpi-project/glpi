@@ -455,10 +455,11 @@ JAVASCRIPT;
      * - entities_id: entity to init in session
      * - is_recursive: do we need to display sub entities
      * - token: the token to check
+     * @param bool $show if true, display the dashboard
      *
      * @return void (display)
      */
-    public function embed(array $params = [])
+    public function embed(array $params = [], bool $show = true)
     {
         $defaults = [
             'dashboard'    => '',
@@ -475,13 +476,15 @@ JAVASCRIPT;
 
         self::$embed = true;
 
+        if (!isset($_SESSION['glpi_use_mode'])) {
+            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+        }
+
        // load minimal session
         $_SESSION["glpiactive_entity"]           = $params['entities_id'];
         $_SESSION["glpiactive_entity_recursive"] = $params['is_recursive'];
         $_SESSION["glpiname"]                    = 'embed_dashboard';
-        if (!isset($_SESSION['glpigroups'])) {
-            $_SESSION['glpigroups'] = [];
-        }
+        $_SESSION['glpigroups']                  = [];
         if ($params['is_recursive']) {
             $entities = getSonsOf("glpi_entities", $params['entities_id']);
         } else {
@@ -490,8 +493,10 @@ JAVASCRIPT;
         $_SESSION['glpiactiveentities']        = $entities;
         $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
 
-       // show embeded dashboard
-        $this->show(true, $params['token']);
+        // show embeded dashboard
+        if ($show) {
+            $this->show(true, $params['token']);
+        }
     }
 
     public static function getToken(string $dasboard = "", int $entities_id = 0, int $is_recursive = 0): string

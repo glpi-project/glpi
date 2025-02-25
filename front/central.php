@@ -37,6 +37,8 @@
 global $CFG_GLPI;
 
 if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {
+    ini_set('session.use_cookies', 0);
+    $_SESSION = [];
     $SECURITY_STRATEGY = 'no_check'; // Allow anonymous access for embed dashboards.
 }
 
