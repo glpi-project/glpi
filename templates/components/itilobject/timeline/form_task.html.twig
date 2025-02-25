@@ -383,8 +383,7 @@
                               <span>{{ __('Unplan') }}</span>
                            </button>
                         {% else %}
-                           {% set can_plan_task = item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::PLANNED')) %}
-                           {% if can_plan_task %}
+                           {% if item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::PLANNED')) %}
                               <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
                                  <i class="fas fa-calendar"></i>
                                  <span>{{ __('Plan this task') }}</span>
