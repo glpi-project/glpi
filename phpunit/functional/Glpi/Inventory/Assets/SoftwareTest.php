@@ -1720,4 +1720,120 @@ class SoftwareTest extends AbstractInventoryAsset
         $softs = $soft->find(['is_helpdesk_visible' => true, 'name' => 'other_soft']);
         $this->assertCount(1, $softs);
     }
+
+    public function testSoftLockedOSChange()
+    {
+        $json = <<<JSON
+{
+    "action": "inventory",
+    "content": {
+        "hardware": {
+            "chassis_type": "Desktop",
+            "name": "computer-os-change",
+            "uuid": "3a82e620-d7da-11dd-ad0f-klhlhlhjjjvv"
+        },
+        "operatingsystem": {
+            "arch": "x86_64",
+            "full_name": "Fedora 39",
+            "name": "Fedora",
+            "version": "39"
+        },
+        "softwares": [
+            {
+                "arch": "x86_64",
+                "from": "rpm",
+                "install_date": "2025-02-19",
+                "name": "Firefox",
+                "version": "135.0.1"
+            }
+        ],
+        "versionclient": "GLPI-Agent"
+    },
+    "deviceid": "computer-os-change",
+    "itemtype": "Computer"
+}
+JSON;
+
+        $this->login();
+        $this->doInventory(json_decode($json));
+
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDBByCrit(['name' => 'computer-os-change']));
+
+        $computers_id = $computer->getID();
+
+        $os = new \OperatingSystem();
+        $os_item = $this->getMockBuilder(\Item_OperatingSystem::class)
+            ->onlyMethods(['prepareInputForUpdate'])
+            ->getMock();
+        $os_item->method('prepareInputForUpdate')->willReturnCallback(
+            function ($input) {
+                return $input;
+            }
+        );
+        $this->assertTrue($os_item->getFromDBByCrit(['itemtype' => \Computer::class, 'items_id' => $computers_id]));
+        $this->assertTrue($os->getFromDB($os_item->fields['operatingsystems_id']));
+        $this->assertSame('Fedora 39', $os->fields['name']);
+
+        //check software versions count
+        $isoft_version = new \Item_SoftwareVersion();
+        $this->assertCount(
+            2, //OS + one software
+            $isoft_version->find(['itemtype' => \Computer::class, 'items_id' => $computers_id])
+        );
+
+        //check there is no locked field
+        $lockedfields = new \Lockedfield();
+        $this->assertEquals([], $lockedfields->find());
+
+        //change OS by hand
+        $new_osid = $os->add([
+            'name' => 'Fedora 40',
+        ]);
+        $this->assertGreaterThan(0, $new_osid);
+        $this->assertTrue(
+            $os_item->update([
+                'id' => $os_item->getID(),
+                'operatingsystems_id' => $new_osid,
+            ])
+        );
+
+        //check software versions count is still the same
+        $this->assertCount(
+            2, //OS + one software
+            $isoft_version->find(['itemtype' => \Computer::class, 'items_id' => $computers_id])
+        );
+
+        //check Item_OperatingSystem has been locked
+        $locks = $lockedfields->find();
+        $this->assertCount(1, $locks);
+        $lock = array_pop($locks);
+        $this->assertSame('operatingsystems_id', $lock['field']);
+        $this->assertTrue($lockedfields->getFromDB($lock['id']));
+
+        //mocked class name is stored here.
+        $this->assertNotEquals(\Item_OperatingSystem::class, $lock['itemtype']);
+        $this->assertTrue( //fix itemtype
+            $lockedfields->update([
+                'id' => $lock['id'],
+                'itemtype' => \Item_OperatingSystem::class,
+            ])
+        );
+
+        //redo inventory
+        $inventory = json_decode($json);
+        $inventory->content->operatingsystem->full_name = 'Fedora 41';
+        $inventory->content->operatingsystem->version = '41';
+        $this->doInventory($inventory);
+
+        $this->assertTrue($os_item->getFromDBByCrit(['itemtype' => \Computer::class, 'items_id' => $computers_id]));
+        //ensure OS is the one defined by hand
+        $this->assertSame($new_osid, $os_item->fields['operatingsystems_id']);
+
+        //check software versions count is still the same
+        $this->assertCount(
+            2, //OS + one software
+            $isoft_version->find(['itemtype' => \Computer::class, 'items_id' => $computers_id])
+        );
+    }
 }

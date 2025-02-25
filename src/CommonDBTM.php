@@ -1338,7 +1338,7 @@ class CommonDBTM extends CommonGLPI
                     ($key[0] != '_')
                     && isset($table_fields[$key])
                 ) {
-                    $this->fields[$key] = $this->input[$key];
+                    $this->fields[$key] = $this->input['_raw' . $key] ?? $this->input[$key];
                 }
             }
 
@@ -1828,7 +1828,12 @@ class CommonDBTM extends CommonGLPI
                 if ($idx !== false) {
                     //do not update global lock value
                     if (!$lock['is_global']) {
-                        $lockedfield->setLastValue($this->getType(), $this->fields['id'], $lock_field, $this->input[$lock_field]);
+                        $lockedfield->setLastValue(
+                            $this->getType(),
+                            $this->fields['id'],
+                            $lock_field,
+                            $this->input['_raw' . $lock_field] ?? $this->input[$lock_field]
+                        );
                     }
                     unset($this->updates[$idx]);
                     unset($this->input[$lock_field]);

@@ -683,8 +683,8 @@ class LockedfieldTest extends DbTestCase
         //check antivirus manufacturer
         $this->assertTrue($iav->getFromDBByCrit(['computers_id' => $computers_id]));
         $this->assertTrue($manufacturer->getFromDBByCrit(['name' => 'Microsoft Corporation']));
-        $manufacturers_id = $manufacturer->fields['id'];
-        $this->assertSame($manufacturers_id, $iav->fields['manufacturers_id']);
+        $origmanufacturers_id = $manufacturer->fields['id'];
+        $this->assertSame($origmanufacturers_id, $iav->fields['manufacturers_id']);
 
         //manually update OS architecture field
         $newarchs_id = $aos->add(['name' => 'i386']);
@@ -725,13 +725,19 @@ class LockedfieldTest extends DbTestCase
         $this->assertTrue($cos->getFromDBByCrit(['items_id' => $computers_id]));
         $this->assertSame($newarchs_id, $cos->fields['operatingsystemarchitectures_id']);
 
-        $this->assertSame(['operatingsystemarchitectures_id' => 'x86_64'], $lockedfield->getLockedValues($cos->getType(), $cos->fields['id']));
+        $this->assertSame(
+            ['operatingsystemarchitectures_id' => "x86_64"],
+            $lockedfield->getLockedValues($cos->getType(), $cos->fields['id'])
+        );
 
         //make sure manufacturer is still the correct one
         $this->assertTrue($iav->getFromDBByCrit(['computers_id' => $computers_id]));
         $this->assertSame($newmanufacturers_id, $iav->fields['manufacturers_id']);
 
-        $this->assertSame(['manufacturers_id' => 'Microsoft Corporation'], $lockedfield->getLockedValues($iav->getType(), $iav->fields['id']));
+        $this->assertSame(
+            ['manufacturers_id' => "Microsoft Corporation"],
+            $lockedfield->getLockedValues($iav->getType(), $iav->fields['id'])
+        );
     }
 
     public function testLockDatabasesManufacturer()
@@ -872,8 +878,8 @@ class LockedfieldTest extends DbTestCase
 
         $manufacturer = new \Manufacturer();
         $this->assertTrue($manufacturer->getFromDBByCrit(['name' => 'PostgreSQL']));
-        $manufacturers_id = $manufacturer->fields['id'];
-        $this->assertSame($manufacturers_id, $database->fields['manufacturers_id']);
+        $origmanufacturers_id = $manufacturer->fields['id'];
+        $this->assertSame($origmanufacturers_id, $database->fields['manufacturers_id']);
 
         $newmanufacturers_id = $manufacturer->add(['name' => 'For test']);
         $this->assertGreaterThan(0, $newmanufacturers_id);
@@ -907,7 +913,10 @@ class LockedfieldTest extends DbTestCase
         $this->assertTrue($database->getFromDBByCrit(['name' => 'PostgreSQL 13']));
         $this->assertSame('13.2.3', $database->fields['version']);
         $this->assertSame($newmanufacturers_id, $database->fields['manufacturers_id']);
-        $this->assertSame(['manufacturers_id' => 'PostgreSQL'], $lockedfield->getLockedValues($database->getType(), $database->fields['id']));
+        $this->assertSame(
+            ['manufacturers_id' => "PostgreSQL"],
+            $lockedfield->getLockedValues($database->getType(), $database->fields['id'])
+        );
     }
 
     public function testPurgeLockedField()
