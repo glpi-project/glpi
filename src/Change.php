@@ -707,8 +707,7 @@ class Change extends CommonITILObject
 
 
     /**
-     * get the change status list
-     * To be overridden by class
+     * Available Change status
      *
      * @param $withmetaforsearch boolean (default false)
      *
