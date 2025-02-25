@@ -85,6 +85,64 @@ export class GlpiFormQuestionTypeSelectable {
     }
 
     /**
+     * Get the options from the container.
+     *
+     * @returns {Array<{value: string, checked: boolean, uuid: string}>}
+     */
+    getOptions() {
+        const options = [];
+
+        this._container.children().each((index, option) => {
+            const input = $(option).find('input[type="text"]');
+            const selectable = $(option).find(`input[type="${this._inputType}"]`);
+
+            options[index] = {
+                value: input.val(),
+                checked: selectable.is(':checked'),
+                uuid: selectable.val(),
+            };
+        });
+
+        return options;
+    }
+
+    /**
+     * Set the options.
+     *
+     * @param {Array<{value: string, checked: boolean, uuid: string}>} options
+     */
+    setOptions(options) {
+        this._container.empty();
+
+        for (const [, value] of Object.entries(options)) {
+            const template = this._container.closest('div[data-glpi-form-editor-question-type-specific]').find('template').get(0);
+            const clone = template.content.cloneNode(true);
+            const uuid = getUUID(); // Generate a new UUID to avoid duplicates
+
+            $(clone).find('input[type="text"]')
+                .val(value.value)
+                .attr('name', `options[${uuid}]`);
+            $(clone).find(`input[type="${this._inputType}"]`)
+                .val(uuid)
+                .prop('checked', value.checked);
+
+            const insertedElement = $(clone).children().appendTo(this._container);
+
+            // Make option visible
+            this.#showOption($(insertedElement).find('input[type="text"]'));
+
+            // Register the new option listeners
+            this._registerOptionListeners($(insertedElement));
+
+            // Call the onAddOption method
+            this.onAddOption($(insertedElement));
+        }
+
+        this.#getFormController().computeState();
+        this.#enableOptionsSortable();
+    }
+
+    /**
      * Called when an option is added.
      *
      * @param {JQuery<HTMLElement>} option

@@ -31,50 +31,37 @@
  * ---------------------------------------------------------------------
  */
 
-export class GlpiFormEditorConvertedExtractedDefaultValue
-{
+import { GlpiFormEditorConvertedExtractedDefaultValue, DATATYPE } from "./EditorConvertedExtractedDefaultValue.js";
+
+/**
+ * Represents a converted extracted default value for selectable fields (dropdowns, checkboxes, etc.)
+ *
+ * @extends GlpiFormEditorConvertedExtractedDefaultValue
+ */
+export class GlpiFormEditorConvertedExtractedSelectableDefaultValue extends GlpiFormEditorConvertedExtractedDefaultValue {
     /**
-     * Enum for data types
+     * The selectable options with their values and states
+     * @type {Object<string, {value: string, checked: boolean, uuid: string}>}
+     * @private
      */
-    static DATATYPE = {
-        STRING: 'string',
-        ARRAY_OF_STRINGS: 'array_of_strings',
-        DROPDOWN_ID: 'dropdown_id',
-        ARRAY_OF_DROPDOWN_IDS: 'array_of_dropdown_ids',
-    };
+    #options;
 
     /**
-     * @type {string}
+     * Creates a new selectable default value instance
+     *
+     * @param {Object<string, {value: string, checked: boolean, uuid: string}>} options - The selectable options
      */
-    #datatype;
-
-    /**
-     * @type {mixed}
-     */
-    #defaultValue;
-
-    /**
-     * @param {string} datatype
-     * @param {mixed} defaultValue
-     */
-    constructor(datatype, defaultValue) {
-        this.#datatype = datatype;
-        this.#defaultValue = defaultValue;
+    constructor(options) {
+        super(DATATYPE.ARRAY_OF_STRINGS, Object.entries(options).map((values) => values[1].value));
+        this.#options = options;
     }
 
     /**
-     * @returns {string}
+     * Gets the selectable options
+     *
+     * @returns {Object<string, {value: string, checked: boolean, uuid: string}>} The options
      */
-    getDatatype() {
-        return this.#datatype;
-    }
-
-    /**
-     * @returns {mixed}
-     */
-    getDefaultValue() {
-        return this.#defaultValue;
+    getOptions() {
+        return this.#options;
     }
 }
-
-export const DATATYPE = GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE;

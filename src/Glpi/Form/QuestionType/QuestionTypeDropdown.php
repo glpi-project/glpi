@@ -93,12 +93,18 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable
             import("{{ js_path('js/modules/Forms/QuestionDropdown.js') }}").then((m) => {
                 {% if question is not null %}
                     const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
-                    new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container);
+                    container.data(
+                        'manager',
+                        new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container)
+                    );
                 {% else %}
                     $(document).on('glpi-form-editor-question-type-changed', function(e, question, type) {
                         if (type === '{{ question_type|escape('js') }}') {
                             const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
-                            new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container);
+                            container.data(
+                                'manager',
+                                new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container)
+                            );
                         }
                     });
 
@@ -106,7 +112,10 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable
                         const question_type = question.find('input[data-glpi-form-editor-original-name="type"]').val();
                         if (question_type === '{{ question_type|escape('js') }}') {
                             const container = new_question.find('div[data-glpi-form-editor-selectable-question-options]');
-                            new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container);
+                            container.data(
+                                'manager',
+                                new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container)
+                            );
                         }
                     });
                 {% endif %}

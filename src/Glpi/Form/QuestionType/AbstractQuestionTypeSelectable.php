@@ -50,6 +50,37 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
     {
     }
 
+    #[Override]
+    public function getFormEditorJsOptions(): string
+    {
+        return <<<JS
+            {
+                "extractDefaultValue": function (question) {
+                    const options = question.find('[data-glpi-form-editor-selectable-question-options]')
+                        .data('manager').getOptions();
+
+                    return new EditorConvertedExtractedSelectableDefaultValue(options);
+                },
+                "convertDefaultValue": function (question, value) {
+                    if (value == null) {
+                        return '';
+                    }
+
+                    if (!(value instanceof EditorConvertedExtractedSelectableDefaultValue)) {
+                        return '';
+                    }
+
+                    setTimeout(() => {
+                        question.find('[data-glpi-form-editor-selectable-question-options]')
+                            .data('manager').setOptions(value.getOptions());
+                    });
+
+                    return value.getOptions();
+                }
+            }
+        JS;
+    }
+
     /**
      * Specific input type for child classes
      *
@@ -75,12 +106,18 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
             import("{{ js_path('js/modules/Forms/QuestionSelectable.js') }}").then((m) => {
                 {% if question is not null %}
                     const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
-                    new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
+                    container.data(
+                        'manager',
+                        new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container)
+                    );
                 {% else %}
                     $(document).on('glpi-form-editor-question-type-changed', function(e, question, type) {
                         if (type === '{{ question_type|escape('js') }}') {
                             const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
-                            new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
+                            container.data(
+                                'manager',
+                                new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container)
+                            );
                         }
                     });
 
@@ -88,7 +125,10 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
                         const question_type = question.find('input[data-glpi-form-editor-original-name="type"]').val();
                         if (question_type === '{{ question_type|escape('js') }}') {
                             const container = new_question.find('div[data-glpi-form-editor-selectable-question-options]');
-                            new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container);
+                            container.data(
+                                'manager',
+                                new m.GlpiFormQuestionTypeSelectable('{{ input_type|escape('js') }}', container)
+                            );
                         }
                     });
                 {% endif %}
