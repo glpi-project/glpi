@@ -120,7 +120,7 @@
                         role="button"
                         aria-label="{{ __("Delete criteria") }}"
                         class="ti ti-trash text-danger cursor-pointer ms-auto"
-                        data-glpi-form-editor-on-click="delete-condition"
+                        data-glpi-condition-editor-delete-condition
                     ></i>
                 {% endif %}
             </div>
@@ -130,7 +130,7 @@
 
 {% if last_condition_is_filled %}
     <button
-        data-glpi-form-editor-on-click="add-condition"
+        data-glpi-condition-editor-add-condition
         type="button"
         class="d-flex align-items-center btn btn-sm btn-ghost-secondary mt-3"
     >

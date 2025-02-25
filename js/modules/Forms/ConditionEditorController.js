@@ -65,27 +65,12 @@ export class GlpiFormConditionEditorController
 
         // Load linked form questions
         this.#form_questions = form_questions;
+        this.#initEventHandlers();
     }
 
     async renderEditor()
     {
         const data = this.#computeData();
-        await this.#doRenderEditor(data);
-    }
-
-    async addNewEmptyCondition()
-    {
-        const data = this.#computeData();
-        data.conditions.push({'item': ''});
-        await this.#doRenderEditor(data);
-    }
-
-    async deleteCondition(condition_index)
-    {
-        const data = this.#computeData();
-        data.conditions = data.conditions.filter((_condition, index) => {
-            return index != condition_index;
-        });
         await this.#doRenderEditor(data);
     }
 
@@ -106,6 +91,45 @@ export class GlpiFormConditionEditorController
 
         // Note: must use `$().html` to make sure we trigger scripts
         $(this.#container.querySelector('[data-glpi-conditions-editor]')).html(content);
+    }
+
+    #initEventHandlers()
+    {
+        this.#container.addEventListener('click', (e) => {
+            const target = e.target;
+
+            // Available buttons
+            const add_condition = '[data-glpi-condition-editor-add-condition]';
+            const delete_condition = '[data-glpi-condition-editor-delete-condition]';
+
+            if (target.closest(add_condition) !== null) {
+                this.#addNewEmptyCondition();
+                return;
+            } else if (target.closest(delete_condition) !== null) {
+                const index = target
+                    .closest('[data-glpi-conditions-editor-condition]')
+                    .dataset
+                    .glpiConditionsEditorConditionIndex
+                ;
+                this.#deleteCondition(index);
+            }
+        });
+    }
+
+    async #addNewEmptyCondition()
+    {
+        const data = this.#computeData();
+        data.conditions.push({'item': ''});
+        await this.#doRenderEditor(data);
+    }
+
+    async #deleteCondition(condition_index)
+    {
+        const data = this.#computeData();
+        data.conditions = data.conditions.filter((_condition, index) => {
+            return index != condition_index;
+        });
+        await this.#doRenderEditor(data);
     }
 
     #computeData()

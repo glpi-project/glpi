@@ -493,25 +493,6 @@ export class GlpiFormEditorController
                 break;
             }
 
-            // Delete the selected conditon and re-render the visibility editor
-            case "delete-condition": {
-                this.#deleteCondition(
-                    $(target).closest('[data-glpi-conditions-editor-container]'),
-                    $(target)
-                        .closest('[data-glpi-conditions-editor-condition]')
-                        .data('glpi-conditions-editor-condition-index')
-                );
-                break;
-            }
-
-            // Add a new empty condition and re-render the visibility editor
-            case "add-condition": {
-                this.#addNewEmptyCondition(
-                    $(target).closest('[data-glpi-conditions-editor-container]')
-                );
-                break;
-            }
-
             case "add-horizontal-layout":
                 this.#addHorizontalLayout(
                     target.closest(`
@@ -2260,16 +2241,6 @@ export class GlpiFormEditorController
     #getConditionEditorController(container) {
         const controller_index = container.data('glpi-editor-condition-controller-index');
         return this.#conditions_editors_controllers[controller_index] ?? null;
-    }
-
-    #addNewEmptyCondition(container) {
-        const controller = this.#getConditionEditorController(container);
-        controller.addNewEmptyCondition();
-    }
-
-    #deleteCondition(container, condition_index) {
-        const controller = this.#getConditionEditorController(container);
-        controller.deleteCondition(condition_index);
     }
 
     #refreshCheckedInputs() {
