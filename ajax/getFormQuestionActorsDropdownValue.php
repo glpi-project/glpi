@@ -52,7 +52,13 @@ if (Session::getCurrentInterface() !== 'central') {
     ]);
 
     // Check if the user can view at least one question
-    if (array_reduce($questions, fn($acc, $question) => $acc || $question->canViewItem(), false) === false) {
+    if (
+        array_reduce(
+            $questions,
+            fn($acc, $question) => $acc || Question::getById($question['id'])?->canViewItem(),
+            false
+        ) === false
+    ) {
         throw new AccessDeniedHttpException();
     }
 }
