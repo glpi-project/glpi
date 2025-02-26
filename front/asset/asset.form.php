@@ -105,7 +105,7 @@ if (isset($_POST['add'])) {
     $asset->redirectToList();
 } elseif (isset($_POST['purge'])) {
     $asset->check($_POST['id'], PURGE);
-    if ($asset->delete($_POST)) {
+    if ($asset->delete($_POST, 1)) {
         Event::log(
             $_POST['id'],
             $asset::class,
