@@ -59,8 +59,8 @@ final class ServiceCatalog extends CommonGLPI
     #[Override]
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
-        // This tab is only available for forms
-        if (!($item instanceof Form)) {
+        // This tab is only available for service catalog leafs
+        if (!($item instanceof ServiceCatalogLeafInterface)) {
             return "";
         }
 
@@ -73,14 +73,14 @@ final class ServiceCatalog extends CommonGLPI
         $tabnum = 1,
         $withtemplate = 0
     ) {
-        // This tab is only available for forms
-        if (!($item instanceof Form)) {
+        // This tab is only available for service catalog leafs
+        if (!($item instanceof ServiceCatalogLeafInterface)) {
             return false;
         }
 
         $twig = TemplateRenderer::getInstance();
         echo $twig->render('pages/admin/form/service_catalog_tab.html.twig', [
-            'form' => $item,
+            'item' => $item,
             'icon' => self::getIcon(),
         ]);
 
