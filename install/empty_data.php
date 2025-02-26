@@ -9520,6 +9520,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ];
         }
 
+        // initial validation steps
+        foreach (ValidationStep::getDefaults() as $validation_step) {
+            $tables[ValidationStep::getTable()][] = $validation_step;
+        }
+
         return $tables;
     }
 };
