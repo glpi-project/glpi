@@ -143,7 +143,7 @@ function checkThatVisibilityOptionsAreHidden() {
 
 function initVisibilityConfiguration() {
     cy.findByRole('button', {'name': 'More actions'}).click();
-    cy.findByRole('button', {'name': 'Configure visiblity'}).click();
+    cy.findByRole('button', {'name': 'Configure visibility'}).click();
 }
 
 function closeVisibilityConfiguration() {
