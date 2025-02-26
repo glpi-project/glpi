@@ -91,8 +91,10 @@ class Rack extends CommonDBTM
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('Reservation', $ong, $options)
-         ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
+
+        // Get parents tabs
+        $ong = array_merge($ong, parent::defineTabs());
         return $ong;
     }
 

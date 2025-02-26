@@ -59,6 +59,8 @@ final class AssetDefinition extends AbstractDefinition
 {
     use AssetImage;
 
+    protected $usenotepad = false;
+
     public static function getSectorizedDetails(): array
     {
         return ['config', self::class];
