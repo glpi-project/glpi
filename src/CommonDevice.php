@@ -545,6 +545,9 @@ abstract class CommonDevice extends CommonDropdown
         $this->addStandardTab('Document_Item', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 
+        // Get parents tabs
+        $ong = array_merge($ong, parent::defineTabs());
+
         return $ong;
     }
 
