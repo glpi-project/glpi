@@ -170,4 +170,10 @@ TWIG;
     {
         return true;
     }
+
+    #[Override]
+    public function formatPredefinedValue(string $value): string
+    {
+        return $value;
+    }
 }
