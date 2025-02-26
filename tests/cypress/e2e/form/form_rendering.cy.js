@@ -42,24 +42,40 @@ describe('Form rendering', () => {
             const tab = 'Glpi\\Form\\Form$1';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
         });
-        addQuestion('Name');
-        addQuestion('Email', 'Short answer', 'Emails');
-        addQuestion('Age', 'Short answer', 'Number');
-        addQuestion('Prefered software', 'Long answer');
-        addQuestion('Urgency', 'Urgency');
-        addQuestion('Request type', 'Request type');
+        addQuestionAndGetUuuid('Name');
+        addQuestionAndGetUuuid('Email', 'Short answer', 'Emails');
+        addQuestionAndGetUuuid('Age', 'Short answer', 'Number');
+        addQuestionAndGetUuuid('Prefered software', 'Long answer');
+        addQuestionAndGetUuuid('Urgency', 'Urgency');
+        addQuestionAndGetUuuid('Request type', 'Request type');
         cy.findByRole('button', { 'name': 'Save' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to the form and send preset values.
-        cy.get('@form_id').then((form_id) => {
+        cy.getMany([
+            "@form_id",
+            "@Name UUID",
+            "@Email UUID",
+            "@Age UUID",
+            "@Prefered software UUID",
+            "@Urgency UUID",
+            "@Request type UUID",
+        ]).then(([
+            form_id,
+            name_uuid,
+            email_uuid,
+            age_uuid,
+            prefered_software_uuid,
+            urgency_uuid,
+            request_type_uuid,
+        ]) => {
             const params = new URLSearchParams({
-                'nAMe' : 'My name', // case insensitive key
-                'email': 'myemail@teclib.com',
-                'age': 29,
-                'urgency' : 'very loW', // case insentive value
-                'requesttype': 'reQuest', // // case insentive value
-                'preferedsoftware': 'I really like GLPI',
+                [name_uuid] : 'My name',
+                [email_uuid]: 'myemail@teclib.com',
+                [age_uuid]: 29,
+                [urgency_uuid] : 'very loW', // case insentive value
+                [request_type_uuid]: 'reQuest', // // case insentive value
+                [prefered_software_uuid]: 'I really like GLPI',
             });
             cy.visit(`/Form/Render/${form_id}?${params}`);
         });
@@ -74,9 +90,7 @@ describe('Form rendering', () => {
     });
 });
 
-function addQuestion(name, type = null, subtype = null) {
-    // Would be faster do to this with the API but it requires a lot of code right now.
-    // TODO: use API instead
+function addQuestionAndGetUuuid(name, type = null, subtype = null) {
     cy.findByRole('button', { 'name': 'Add a new question' }).click();
     cy.focused().type(name);
     if (type !== null) {
@@ -85,4 +99,19 @@ function addQuestion(name, type = null, subtype = null) {
     if (subtype !== null) {
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue(subtype);
     }
+
+    cy.findAllByRole('button', {'name': "More actions"}).last().click();
+    cy.findByRole('button', {'name': "Copy uuid"}).click();
+
+    cy.window()
+        .its('navigator.clipboard')
+        .invoke('readText')
+        .then((text) => {
+            cy.wrap(text).as(`${name} UUID`);
+        })
+    ;
+
+    cy.findByRole('alert').should('contain.text', "UUID copied successfully to clipboard.");
+    cy.findByRole('button', {'name': "Close"}).click();
+    cy.findByRole('alert').should('not.exist');
 }

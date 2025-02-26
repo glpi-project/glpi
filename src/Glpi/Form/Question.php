@@ -185,22 +185,12 @@ final class Question extends CommonDBChild implements BlockInterface, Conditionn
 
     public function setDefaultValueFromParameters(array $get): void
     {
-        $name = $this->fields['name'];
-
-        // Normalize both input and expected values
-        $name = strtolower($name);
-        $name = str_replace(' ', '', $name);
-        $normalized_get = [];
-        foreach ($get as $param => $value) {
-            $param = strtolower($param);
-            $param = str_replace(' ', '', $param);
-            $normalized_get[$param] = $value;
-        }
+        $uuid = $this->fields['uuid'];
 
         // Apply value if defined
-        if (isset($normalized_get[$name])) {
+        if (isset($get[$uuid])) {
             $type = $this->getQuestionType();
-            $value = $type->formatPredefinedValue($normalized_get[$name]);
+            $value = $type->formatPredefinedValue($get[$uuid]);
 
             if ($value !== null) {
                 $this->fields['default_value'] = $value;
