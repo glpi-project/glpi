@@ -658,7 +658,8 @@ class NetworkPort extends InventoryAsset
         $item = new $itemtype();
 
         if ($items_id == "0") {
-           //not yet existing, create
+            $item->getEmpty();
+            //not yet existing, create
             $input = (array)$port;
             if (property_exists($port, 'mac') && (!property_exists($port, 'name') || empty($port->name) || is_numeric($port->name) || preg_match('@([\w-]+)?(\d+)/\d+(/\d+)?@', $port->name))) {
                 if ($name = $this->getNameForMac($port->mac)) {
