@@ -231,4 +231,9 @@ interface QuestionTypeInterface
      * @return null|string
      */
     public function getSubTypeDefaultValue(?Question $question): ?string;
+
+    /**
+     * Apply a predefined value that will be used when rendering the form.
+     */
+    public function formatPredefinedValue(string $value): ?string;
 }

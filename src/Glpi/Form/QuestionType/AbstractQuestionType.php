@@ -35,14 +35,12 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Question;
 use Override;
 
 abstract class AbstractQuestionType implements QuestionTypeInterface
 {
-    #[Override]
     public function __construct()
     {
     }
@@ -183,5 +181,12 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     public function getSubTypeDefaultValue(?Question $question): ?string
     {
         return '';
+    }
+
+    #[Override]
+    public function formatPredefinedValue(string $value): ?string
+    {
+        // Do nothing by default
+        return null;
     }
 }

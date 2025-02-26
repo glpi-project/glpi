@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown */
+/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_info, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown */
 
 /**
  * Client code to handle users actions on the form_editor template
@@ -531,6 +531,12 @@ export class GlpiFormEditorController
             case "remove-horizontal-layout-slot":
                 this.#removeHorizontalLayoutSlot(
                     target.closest("[data-glpi-form-editor-horizontal-block-placeholder]")
+                );
+                break;
+
+            case "copy-uuid":
+                this.#copyQuestionUuidToClipboard(
+                    target.closest('[data-glpi-form-editor-question')
                 );
                 break;
 
@@ -2409,5 +2415,17 @@ export class GlpiFormEditorController
 
         // Remove default template placeholders
         horizontal_block.find('[data-glpi-form-editor-horizontal-block-placeholder]').remove();
+    }
+
+    #copyQuestionUuidToClipboard(question) {
+        // Generate missing UUIDs
+        this.computeState();
+
+        // Read UUID
+        const uuid = this.#getItemInput(question, 'uuid');
+
+        // Write to clipbaord and show info toast
+        navigator.clipboard.writeText(uuid);
+        glpi_toast_info(__("UUID copied successfully to clipboard."));
     }
 }
