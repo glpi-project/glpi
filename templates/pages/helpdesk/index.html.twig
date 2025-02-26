@@ -32,6 +32,7 @@
  #}
 
 {% extends "layout/page_skeleton.html.twig" %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 {% block content %}
     {# We override the parent width using .force-full-width because we need our background images and colors to bleed
@@ -69,22 +70,18 @@
             <div class="container-xl">
                 {# Display password alerts #}
                 {% if password_alert|length %}
-                    <div class="alert alert-warning alert-dismissible bg-white" role="alert">
-                        <div class="d-flex mb-2">
-                            <div>
-                                <i class="ti ti-alert-triangle me-1"></i>
-                            </div>
-                            <div>
-                                {{ password_alert }}
-                            </div>
-                        </div>
-
+                    {% set reset_password %}
                         <div class="btn-list">
                             <a class="btn btn-outline-warning" href="{{ path('/front/updatepassword.php') }} ">
                                 {{ __('Update my password') }}
                             </a>
                         </div>
-                    </div>
+                    {% endset %}
+                    {{ alerts.alert_warning(
+                        title: password_alert,
+                        messages: [reset_password],
+                        options: {dismissible: true}
+                    ) }}
                 {% endif %}
 
                 {# TODO: deprecate this hook and make a new one that doesn't expect a table as a container #}

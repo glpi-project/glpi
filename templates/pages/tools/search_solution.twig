@@ -31,6 +31,7 @@
  #}
 
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 {% set container_id = 'container' ~ random() %}
 
@@ -74,9 +75,7 @@
                     no_limit_display: true,
                 }) }}
             {% else %}
-                <div class="alert alert-info">
-                    {{ __('No results found') }}
-                </div>
+                {{ alerts.callout_info(__('No results found')) }}
             {% endif %}
 
         </div>

@@ -33,6 +33,7 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 <div class="asset card">
    <form name="cas" action="{{ path('/front/auth.others.php') }}" method="post">
@@ -43,7 +44,7 @@
                   <div class="row flex-row mx-0">
                      {{ fields.smallTitle(__('CAS authentication')) }}
                      {% if config['cas_host'] is not empty %}
-                        <div class="alert alert-info">{{ _x('authentication', 'Enabled') }}</div>
+                        {{ alerts.callout_info(_x('authentication', 'Enabled')) }}
                      {% endif %}
                      {{ fields.textField('cas_host', config['cas_host'], __('CAS Host')) }}
                      {{ fields.htmlField('', call('Auth::dropdownCasVersion', [config['cas_version'], {
@@ -55,7 +56,7 @@
 
                      {{ fields.smallTitle(__('x509 certificate authentication')) }}
                      {% if config['x509_email_field'] is not empty %}
-                        <div class="alert alert-info">{{ _x('authentication', 'Enabled') }}</div>
+                        {{ alerts.callout_info(_x('authentication', 'Enabled')) }}
                      {% endif %}
                      {{ fields.textField(
                         'x509_email_field',
@@ -80,7 +81,7 @@
 
                      {{ fields.smallTitle(__('Other authentication sent in the HTTP request')) }}
                      {% if config['ssovariables_id'] is not empty and config['ssovariables_id'] != 0 %}
-                        <div class="alert alert-info">{{ _x('authentication', 'Enabled') }}</div>
+                        {{ alerts.callout_info(_x('authentication', 'Enabled')) }}
                      {% endif %}
                      {{ fields.dropdownField('SsoVariable', 'ssovariables_id', config['ssovariables_id'], 'SsoVariable'|itemtype_name(1)) }}
                      {{ fields.textField('ssologout_url', config['ssologout_url'], __('SSO logout url')) }}

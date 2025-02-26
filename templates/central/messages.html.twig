@@ -31,35 +31,37 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
 <div class="message-area">
-   {% if messages.errors is defined and messages.errors|length > 0 %}
-      <div class="alert alert-important alert-danger d-flex" role="alert">
-         <i class="ti ti-alert-triangle fs-3x"></i>
-         <ul>
-            {% for error in messages.errors %}
-               <li>{{ error|raw }}</li>
-            {% endfor %}
-         </ul>
-      </div>
-   {% endif %}
-   {% if messages.warnings is defined and messages.warnings|length > 0 %}
-      <div class="alert alert-important alert-warning d-flex" role="alert">
-         <i class="ti ti-alert-triangle fs-3x"></i>
-         <ul>
-            {% for warning in messages.warnings %}
-               <li>{{ warning|raw }}</li>
-            {% endfor %}
-         </ul>
-      </div>
-   {% endif %}
-   {% if messages.infos is defined and messages.infos|length > 0 %}
-      <div class="alert alert-important alert-info d-flex" role="alert">
-         <i class="ti ti-info-circle fs-3x"></i>
-         <ul>
-            {% for info in messages.infos %}
-               <li>{{ info|raw }}</li>
-            {% endfor %}
-         </ul>
-      </div>
-   {% endif %}
+    {% if messages.errors is defined and messages.errors|length > 0 %}
+        {% set alert_messages %}
+            <ul class="m-0">
+                {% for error in messages.errors %}
+                    <li>{{ error|raw }}</li>
+                {% endfor %}
+            </ul>
+        {% endset %}
+        {{ alerts.alert_danger(messages: alert_messages, important: true) }}
+    {% endif %}
+    {% if messages.warnings is defined and messages.warnings|length > 0 %}
+        {% set alert_messages %}
+            <ul class="m-0">
+                {% for warning in messages.warnings %}
+                    <li>{{ warning|raw }}</li>
+                {% endfor %}
+            </ul>
+        {% endset %}
+        {{ alerts.alert_warning(messages: alert_messages, important: true) }}
+    {% endif %}
+    {% if messages.infos is defined and messages.infos|length > 0 %}
+        {% set alert_messages %}
+            <ul class="m-0">
+                {% for info in messages.infos %}
+                    <li>{{ info|raw }}</li>
+                {% endfor %}
+            </ul>
+        {% endset %}
+        {{ alerts.alert_info(messages: alert_messages, important: true) }}
+    {% endif %}
 </div>

@@ -31,6 +31,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
 {% set messages = pull_messages() %}
 {% if messages|length %}
 
@@ -39,21 +41,11 @@
       {% set class = '' %}
       {% set title = '' %}
       {% if type == constant('ERROR') %}
-         {% set class = 'alert-danger' %}
-         {% set title = _n('Error', 'Errors', 1) %}
+          {{ alerts.alert_danger(_n('Error', 'Errors', 1), [mesage|raw], true) }}
       {% elseif type == constant('WARNING') %}
-         {% set class = 'alert-warning' %}
-         {% set title = __('Warning') %}
+          {{ alerts.alert_warning(__('Warning'), [mesage|raw], true) }}
       {% else %}
-         {% set class = 'alert-info' %}
-         {% set title = _n('Information', 'Information', 1) %}
+          {{ alerts.alert_info(_n('Information', 'Information', 1), [mesage|raw], true) }}
       {% endif %}
-
-      <div class="alert alert-important {{ class }}" role="alert">
-         <h3>{{ title }}</h3>
-         <p>
-            {{ message|raw }}
-         </p>
-      </div>
    {% endfor %}
 {% endif %}

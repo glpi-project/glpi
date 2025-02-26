@@ -30,23 +30,16 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
 <div class="card">
     <div class="card-body">
-        <div role="alert" class="alert alert-danger alert-important">
-            <div class="d-flex">
-                <div class="me-2">
-                    <i class="ti ti-alert-triangle fs-2x"></i>
-                </div>
-                <div>
-                    {{ message }}
-                    {% if link_url is not empty %}
-                        <br>
-                        <a href="{{ link_url }}">{{ link_text }}</a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
+        {% set link %}
+            {% if link_url is not empty %}
+                <a href="{{ link_url }}">{{ link_text }}</a>
+            {% endif %}
+        {% endset %}
+        {{ alerts.alert_danger(title: message, messages: link_url is not empty ? [link] : [], important: true) }}
         {% if trace is not empty %}
             <pre data-testid="stack-trace">{{ trace }}</pre>
         {% endif %}

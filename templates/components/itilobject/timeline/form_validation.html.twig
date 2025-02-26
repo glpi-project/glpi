@@ -33,6 +33,7 @@
 
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 {% set params = params|default({}) %}
 
@@ -43,30 +44,26 @@
          {{ entry_i['content']|raw }}
 
          {% if entry_i['comment_submission']|length %}
-            <div class='alert alert-info mt-2'>
-                <div class='d-flex'>
-                    <div><i class='ti ti-quote me-2'></i></div>
-                    <div class="rich_text_container">
-                        {{ entry_i['comment_submission']|enhanced_html({
-                            'user_mentions': true,
-                            'images_gallery': true
-                        }) }}
-                    </div>
-                </div>
-            </div>
+             {% set comment_submission %}
+                 <div class="rich_text_container mb-n3">
+                     {{ entry_i['comment_submission']|enhanced_html({
+                         'user_mentions': true,
+                         'images_gallery': true
+                     }) }}
+                 </div>
+             {% endset %}
+             {{ alerts.callout(callout_type: 'info', messages: [comment_submission], icon: 'ti ti-quote', options: {add_class: 'bg-light mt-2'}) }}
          {% endif %}
          {% if entry_i['comment_validation']|length %}
-            <div class='alert alert-info mt-2'>
-                <div class='d-flex'>
-                    <div><i class='ti ti-quote me-2'></i></div>
-                    <div class="rich_text_container">
-                        {{ entry_i['comment_validation']|enhanced_html({
-                            'user_mentions': true,
-                            'images_gallery': true
-                        }) }}
-                    </div>
-                </div>
-            </div>
+             {% set comment_validation %}
+                 <div class="rich_text_container mb-n3">
+                     {{ entry_i['comment_validation']|enhanced_html({
+                         'user_mentions': true,
+                         'images_gallery': true
+                     }) }}
+                 </div>
+             {% endset %}
+             {{ alerts.callout(callout_type: 'info', messages: [comment_validation], icon: 'ti ti-quote', options: {add_class: 'bg-light mt-2'}) }}
          {% endif %}
 
          {% if entry_i['can_answer'] %}

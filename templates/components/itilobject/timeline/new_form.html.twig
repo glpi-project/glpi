@@ -31,6 +31,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/alerts_macros.html.twig' as alerts %}
 {% set users_id = session('glpiID') %}
 
 <div class="itil-timeline">
@@ -45,28 +46,28 @@
                   <strong>{{ get_item_link('User', users_id) }}</strong>
                </div>
             </div>
-            <span class="mt-2 timeline-content left card">
+            <div class="mt-2 timeline-content left card">
                <div class="card-body">
                   {% if item.isNewItem() %}
-                     <div class="alert alert-info" role="alert">
-                        {% set entitybadge %}
-                           <span class="ms-1">
+                      {% set entity_msg %}
+                          {% set entitybadge %}
+                              <span class="ms-1">
                               {{ call('Entity::badgeCompletenameById', [item.fields['entities_id']])|raw }}
                            </span>
-                        {% endset %}
-
-                        {{ __('%1$s will be added in entity %2$s')|format(
-                           item.getTypeName(1),
-                           entitybadge
-                        )|raw }}
-                     </div>
+                          {% endset %}
+                          {{ __('%1$s will be added in entity %2$s')|format(
+                              item.getTypeName(1),
+                              entitybadge
+                          )|raw }}
+                      {% endset %}
+                      {{ alerts.callout_info(messages: [entity_msg], options: {add_class: 'bg-light'}) }}
                   {% endif %}
 
                   {{ include('components/itilobject/timeline/simple_form.html.twig', {
                      'no_form': true
                   }) }}
                </div>
-            </span>
+            </div>
          </div>
       </div>
    </div>
