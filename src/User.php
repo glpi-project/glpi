@@ -5255,69 +5255,6 @@ HTML;
             }
             echo "</table></div>";
         }
-
-        $itemtype = self::getType();
-        $items_id = $ID;
-
-        $start       = intval(($_GET["start"] ?? 0));
-        $filters     = $_GET['filters'] ?? [];
-        $is_filtered = count($filters) > 0;
-
-        $logs = $DB->request(
-            'glpi_logs',
-            [
-                'SELECT' => [
-                    'glpi_logs.items_id as id',
-                    'glpi_logs.date_mod',
-                    'glpi_logs.user_name',
-                    'glpi_logs.linked_action',
-                    'glpi_computers.name as name',
-                ],
-                'LEFT JOIN' => [
-                    'glpi_computers' => [
-                        'FKEY' => [
-                            'glpi_logs'     => 'items_id',
-                            'glpi_computers' => 'id'
-                        ]
-                    ]
-                ],
-                'WHERE' => [
-                    'glpi_logs.itemtype' => 'Computer',
-                    'glpi_logs.linked_action'   => Log::HISTORY_CREATE_ITEM,
-                    'glpi_logs.user_name' => ['LIKE', '%(' . $items_id . ')%']
-                ],
-            ]
-        );
-
-        $datas = [];
-        foreach ($logs as $key => $data) {
-            $datas[$key]['id']         = $data["id"];
-            $datas[$key]['date_mod']        = Html::convDateTime($data["date_mod"]);
-            $datas[$key]['user_name'] = $data['user_name'];
-            $datas[$key]['change']          = Log::getLinkedActionLabel($data["linked_action"]);
-            $datas[$key]['display_history'] = true;
-        }
-
-        TemplateRenderer::getInstance()->display('components/logs.html.twig', [
-            'total_number'      => $logs->count(),
-            'filtered_number'   => $logs->count(),
-            'logs'              => $datas,
-            'start'             => $start,
-            'href'              => $item::getFormURLWithID($items_id),
-            'additional_params' => $is_filtered ? http_build_query(['filters' => $filters]) : "",
-            'is_tab'            => true,
-            'items_id'          => $items_id,
-            'filters'           => Sanitizer::dbEscapeRecursive($filters),
-            'user_names'        => $is_filtered
-            ? Log::getDistinctUserNamesValuesInItemLog($item)
-            : [],
-            'affected_fields'   => $is_filtered
-            ? Log::getDistinctAffectedFieldValuesInItemLog($item)
-            : [],
-            'linked_actions'    => $is_filtered
-            ? Log::getDistinctLinkedActionValuesInItemLog($item)
-            : [],
-        ]);
     }
 
 
@@ -5337,7 +5274,7 @@ HTML;
         global $CFG_GLPI, $DB;
 
         $iterator = $DB->request([
-            'SELECT'    => 'users_id as id',
+            'SELECT'    => 'users_id AS id',
             'FROM'      => 'glpi_useremails',
             'LEFT JOIN' => [
                 'glpi_users' => [
@@ -5348,9 +5285,9 @@ HTML;
                 ]
             ],
             'WHERE'     => [
-                'glpi_useremails . email' => $DB->escape(stripslashes($email))
+                'glpi_useremails.email' => $DB->escape(stripslashes($email))
             ],
-            'ORDER'     => ['glpi_users . is_active DESC', 'is_deleted ASC']
+            'ORDER'     => ['glpi_users.is_active DESC', 'is_deleted ASC']
         ]);
 
        //User still exists in DB
