@@ -159,6 +159,12 @@ class ITILCategoryField extends AbstractConfigField
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 40;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::PROPERTIES;
     }
 }

@@ -168,11 +168,53 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
     }
 
     /**
+     * Get the sorted configurable fields for this destination type.
+     *
+     * @return \Glpi\Form\Destination\AbstractConfigField[]
+     */
+    final public function getConfigurableFields(): array
+    {
+        $fields = $this->defineConfigurableFields();
+        usort($fields, function (AbstractConfigField $a, AbstractConfigField $b): int {
+            if ($a->getCategory() == $b->getCategory()) {
+                return $a->getWeight() <=> $b->getWeight();
+            } else {
+                return $a->getCategory()->getWeight() <=> $b->getCategory()->getWeight();
+            }
+        });
+
+        return $fields;
+    }
+
+    /**
+     * Get the sorted configurable fields for this destination type, grouped by category
+     */
+    final public function getConfigurableFieldsGroupedByCategory(): array
+    {
+        $fields = $this->getConfigurableFields();
+        $categories = [];
+        foreach ($fields as $field) {
+            $category = $field->getCategory();
+            if (!isset($categories[$category->value])) {
+                $categories[$category->value] = [
+                    'label'  => $category->getLabel(),
+                    'icon'   => $category->getIcon(),
+                    'fields' => [],
+                ];
+            }
+
+            $categories[$category->value]['fields'][] = $field;
+        }
+
+        return $categories;
+    }
+
+    /**
      * List the configurable fields for this destination type.
      *
      * @return \Glpi\Form\Destination\AbstractConfigField[]
      */
-    public function getConfigurableFields(): array
+    protected function defineConfigurableFields(): array
     {
         $target_itemtype = static::getTargetItemtype();
         $template_class = (new $target_itemtype())->getTemplateClass();

@@ -56,7 +56,7 @@ class UrgencyField extends AbstractConfigField
     #[Override]
     public function getWeight(): int
     {
-        return 40;
+        return 70;
     }
 
     #[Override]
@@ -181,5 +181,11 @@ class UrgencyField extends AbstractConfigField
         }
 
         return $values;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::PROPERTIES;
     }
 }

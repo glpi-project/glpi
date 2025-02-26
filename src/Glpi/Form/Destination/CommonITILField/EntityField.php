@@ -174,6 +174,12 @@ class EntityField extends AbstractConfigField
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 20;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::PROPERTIES;
     }
 }

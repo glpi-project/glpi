@@ -195,7 +195,7 @@ class AssociatedItemsField extends AbstractConfigField
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 200;
     }
 
     #[Override]
@@ -251,5 +251,11 @@ class AssociatedItemsField extends AbstractConfigField
     public function canHaveMultipleStrategies(): bool
     {
         return true;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::PROPERTIES;
     }
 }
