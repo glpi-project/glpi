@@ -7636,6 +7636,7 @@ CREATE TABLE `glpi_ticketvalidations` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `tickets_id` int unsigned NOT NULL DEFAULT '0',
+  `validationsteps_id` int unsigned NOT NULL DEFAULT '0',
   `users_id_validate` int unsigned NOT NULL DEFAULT '0',
   `itilvalidationtemplates_id` int unsigned NOT NULL DEFAULT '0',
   `itemtype_target` varchar(255) NOT NULL,
@@ -7656,9 +7657,27 @@ CREATE TABLE `glpi_ticketvalidations` (
   KEY `tickets_id` (`tickets_id`),
   KEY `submission_date` (`submission_date`),
   KEY `validation_date` (`validation_date`),
-  KEY `status` (`status`)
+  KEY `status` (`status`),
+  KEY `validationsteps_id` (`validationsteps_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+
+### Dump table glpi_validationsteps - used by ValidationStep Dropdown
+
+DROP TABLE IF EXISTS `glpi_validationsteps`;
+CREATE TABLE `glpi_validationsteps` (
+    `id`                                  int unsigned NOT NULL AUTO_INCREMENT,
+    `name`                                varchar(255)          DEFAULT NULL,
+    `mininal_required_validation_percent` smallint     NOT NULL DEFAULT '100',
+    `is_default`                          tinyint      NOT NULL DEFAULT '0',
+    `date_mod`                            timestamp    NULL     DEFAULT NULL,
+    `date_creation`                       timestamp    NULL     DEFAULT NULL,
+    `comment`                             text,
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`),
+    KEY `date_mod` (`date_mod`),
+    KEY `date_creation` (`date_creation`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 ### Dump table glpi_transfers
 
@@ -10139,3 +10158,5 @@ CREATE TABLE `glpi_softwarelicenses_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;
+#
+#
