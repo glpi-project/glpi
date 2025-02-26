@@ -55,6 +55,26 @@ describe('Service catalog page', () => {
         });
     }
 
+    function createKnowledgeBaseItem(name, options = {}) {
+        const defaults = {
+            'name': name,
+            'answer': `Content for ${name}`,
+            'description': `Description for ${name}`,
+            'is_faq': 1,
+            'show_in_service_catalog': 1,
+            'forms_categories_id': 0, // Root by default
+            'is_pinned': 0,
+            '_visibility': {
+                '_type': 'Entity',
+                'entities_id': 1,
+                'is_recursive': 1,
+            }
+        };
+
+        const data = {...defaults, ...options};
+        return cy.createWithAPI('KnowbaseItem', data);
+    }
+
     beforeEach(() => {
         cy.login();
     });
@@ -78,6 +98,29 @@ describe('Service catalog page', () => {
         // Go to form
         cy.get('@forms').click();
         cy.url().should('include', '/Form/Render');
+    });
+
+    it('can pick a knowledge base item in the service catalog', () => {
+        const kb_name = `Test KB for service_catalog_page.cy.js ${(new Date()).getTime()}`;
+
+        cy.changeProfile('Super-Admin');
+        createKnowledgeBaseItem(kb_name);
+
+        cy.changeProfile('Self-Service', true);
+        cy.visit('/ServiceCatalog');
+
+        // Validate that the KB item is displayed correctly
+        cy.findByRole('region', {'name': kb_name}).as('kb_item');
+        cy.get('@kb_item').within(() => {
+            cy.findByText(kb_name).should('exist');
+            cy.findByText(`Description for ${kb_name}`).should('exist');
+        });
+
+        // Go to KB item
+        cy.get('@kb_item').click();
+        cy.url().should('include', '/front/helpdesk.faq.php');
+        cy.findByText(kb_name).should('exist');
+        cy.findByText(`Content for ${kb_name}`).should('exist');
     });
 
     it('can filter forms in the service catalog', () => {
@@ -107,6 +150,54 @@ describe('Service catalog page', () => {
         cy.get('@filter_input').clear();
         cy.get('@filter_input').type("aaaaaaaaaaaaaaaaaaaaa");
         cy.findByText('No forms found').should('be.visible');
+    });
+
+    it('can filter knowledge base items in the service catalog', () => {
+        const timestamp = (new Date()).getTime();
+        const kb_name_1 = `Test Technical KB ${timestamp}`;
+        const kb_name_2 = `Test User Guide ${timestamp}`;
+        const kb_name_3 = `Test Hidden KB ${timestamp}`;
+
+        cy.changeProfile('Super-Admin');
+        createKnowledgeBaseItem(kb_name_1, {
+            'description': 'Technical content about servers',
+            'answer': 'Server configuration details'
+        });
+        createKnowledgeBaseItem(kb_name_2, {
+            'description': 'User documentation',
+            'answer': 'How to use the application'
+        });
+        createKnowledgeBaseItem(kb_name_3, {
+            'description': 'Hidden documentation',
+            'show_in_service_catalog': 0
+        });
+
+        cy.changeProfile('Self-Service', true);
+        cy.visit('/ServiceCatalog');
+        cy.findByPlaceholderText('Search for forms...').as('filter_input');
+
+        // Both visible KB items should be displayed
+        cy.findByRole('region', {'name': kb_name_1}).should('exist');
+        cy.findByRole('region', {'name': kb_name_2}).should('exist');
+        // Hidden KB item should not be displayed
+        cy.findByRole('region', {'name': kb_name_3}).should('not.exist');
+
+        // Filter for technical content
+        cy.get('@filter_input').type('technical');
+        cy.findByRole('region', {'name': kb_name_1}).should('exist');
+        cy.findByRole('region', {'name': kb_name_2}).should('not.exist');
+
+        // Filter for user documentation
+        cy.get('@filter_input').clear();
+        cy.get('@filter_input').type('user');
+        cy.findByRole('region', {'name': kb_name_1}).should('not.exist');
+        cy.findByRole('region', {'name': kb_name_2}).should('exist');
+
+        // Filter for content in the answer
+        cy.get('@filter_input').clear();
+        cy.get('@filter_input').type('application');
+        cy.findByRole('region', {'name': kb_name_1}).should('not.exist');
+        cy.findByRole('region', {'name': kb_name_2}).should('exist');
     });
 
     it('can pick a category in the service catalog', () => {
@@ -153,6 +244,60 @@ describe('Service catalog page', () => {
         cy.findByRole('region', {'name': form_name}).should('not.exist');
         cy.get('@child_category').click();
         cy.findByRole('region', {'name': form_name}).should('exist');
+    });
+
+    it('can categorize knowledge base items in the service catalog', () => {
+        const timestamp = (new Date()).getTime();
+        const category_name = `KB Category ${timestamp}`;
+        const kb_name_1 = `KB in category ${timestamp}`;
+        const kb_name_2 = `KB at root ${timestamp}`;
+        const kb_name_3 = `KB in a nested category ${timestamp}`;
+
+        cy.changeProfile('Super-Admin');
+
+        cy.createWithAPI('Glpi\\Form\\Category', {
+            'name': category_name,
+            'description': "Category for KB items",
+        }).then(category_id => {
+            createKnowledgeBaseItem(kb_name_1, {
+                'forms_categories_id': category_id
+            });
+            createKnowledgeBaseItem(kb_name_2);
+
+            cy.createWithAPI('Glpi\\Form\\Category', {
+                'name': `Nested ${category_name}`,
+                'description': "Category for KB items",
+                'forms_categories_id': category_id,
+            }).then(category_id => {
+                createKnowledgeBaseItem(kb_name_3, {
+                    'forms_categories_id': category_id
+                });
+            });
+        });
+
+        cy.changeProfile('Self-Service', true);
+        cy.visit('/ServiceCatalog');
+
+        // Root KB item should be visible
+        cy.findByRole('region', {'name': kb_name_2}).should('exist');
+        // Categorized KB item should be visible at root
+        cy.findByRole('region', {'name': kb_name_1}).should('exist');
+        // Category should be visible
+        cy.findByRole('region', {'name': category_name}).should('exist');
+        // Nested category should be visible
+        cy.findByRole('region', {'name': `Nested ${category_name}`}).should('exist');
+        // Categorized KB item should not be visible here
+        cy.findByRole('region', {'name': kb_name_3}).should('not.exist');
+
+        // Navigate to nested category
+        cy.findByRole('region', {'name': `Nested ${category_name}`}).click();
+
+        // Now the categorized KB item should be visible
+        cy.findByRole('region', {'name': kb_name_3}).should('exist');
+
+        // But other items should not be visible
+        cy.findByRole('region', {'name': kb_name_1}).should('not.exist');
+        cy.findByRole('region', {'name': kb_name_2}).should('not.exist');
     });
 
     it('can use the service catalog on the central interface', () => {
