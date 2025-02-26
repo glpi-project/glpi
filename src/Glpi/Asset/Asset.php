@@ -102,6 +102,11 @@ abstract class Asset extends CommonDBTM
         return ['assets', static::getDefinition()->getAssetClassName()];
     }
 
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
+    }
+
     public function rawSearchOptions()
     {
         $search_options = parent::rawSearchOptions();
