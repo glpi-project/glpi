@@ -43,6 +43,7 @@ use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
+use Glpi\Form\Condition\FormData;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
@@ -530,6 +531,12 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     public function getQuestionsByType(string $type): array
     {
         return $this->getQuestionsByTypes([$type]);
+    }
+
+    /** @return \Glpi\Form\Condition\QuestionData[] */
+    public function getQuestionsStateForConditionEditor(): array
+    {
+        return FormData::createFromForm($this)->getQuestionsData();
     }
 
     /**

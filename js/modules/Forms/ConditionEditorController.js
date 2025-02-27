@@ -45,10 +45,10 @@ export class GlpiFormConditionEditorController
      */
     #form_questions;
 
-    /** @type {string} */
+    /** @type {?string} */
     #item_uuid;
 
-    /** @type {string} */
+    /** @type {?string} */
     #item_type;
 
     constructor(container, item_uuid, item_type, form_questions)
@@ -66,6 +66,14 @@ export class GlpiFormConditionEditorController
         // Load linked form questions
         this.#form_questions = form_questions;
         this.#initEventHandlers();
+
+        // Enable actions
+        const disabled_items = this.#container.querySelectorAll(
+            '[data-glpi-conditions-editor-enable-on-ready]'
+        );
+        for (const disabled_item of disabled_items) {
+            disabled_item.removeAttribute('disabled');
+        }
     }
 
     async renderEditor()

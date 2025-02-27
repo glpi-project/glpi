@@ -40,6 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Condition\ConditionnableInterface;
 use Glpi\Form\Condition\ConditionnableTrait;
+use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
@@ -196,6 +197,13 @@ final class Question extends CommonDBChild implements BlockInterface, Conditionn
                 $this->fields['default_value'] = $value;
             }
         }
+    }
+
+    public function getConfiguredVisibilityStrategy(): VisibilityStrategy
+    {
+        $strategy_value = $this->fields['visibility_strategy'] ?? "";
+        $strategy = VisibilityStrategy::tryFrom($strategy_value);
+        return $strategy ?? VisibilityStrategy::ALWAYS_VISIBLE;
     }
 
     private function prepareInput($input): array

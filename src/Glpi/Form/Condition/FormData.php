@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition;
 
+use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use ReflectionClass;
 
@@ -45,16 +46,37 @@ final class FormData
     /** @var ConditionData[] $conditions_data */
     private array $conditions_data = [];
 
-    private string $selected_item_uuid;
-    private string $selected_item_type;
+    private ?string $selected_item_uuid;
+    private ?string $selected_item_type;
 
     public function __construct(
         array $raw_data
     ) {
         $this->parseRawQuestionsData($raw_data['questions'] ?? []);
         $this->parseRawConditionsData($raw_data['conditions'] ?? []);
-        $this->selected_item_uuid = $raw_data['selected_item_uuid'] ?? '';
-        $this->selected_item_type = $raw_data['selected_item_type'] ?? '';
+        $this->selected_item_uuid = $raw_data['selected_item_uuid'] ?? null;
+        $this->selected_item_type = $raw_data['selected_item_type'] ?? null;
+    }
+
+    public static function createFromForm(Form $form): self
+    {
+        $questions_data = [];
+
+        foreach ($form->getQuestions() as $question) {
+            $questions_data[] = [
+                'uuid' => $question->fields['uuid'],
+                'name' => $question->fields['name'],
+                'type' => $question->getQuestionType(),
+            ];
+        }
+
+        return new self([
+            'questions' => $questions_data,
+
+            // No selected item in this context.
+            'selected_item_uuid' => null,
+            'selected_item_type' => null,
+        ]);
     }
 
     /** @return QuestionData[] */
@@ -69,12 +91,12 @@ final class FormData
         return $this->conditions_data;
     }
 
-    public function getSelectedItemUuid(): string
+    public function getSelectedItemUuid(): ?string
     {
         return $this->selected_item_uuid;
     }
 
-    public function getSelectedItemType(): string
+    public function getSelectedItemType(): ?string
     {
         return $this->selected_item_type;
     }

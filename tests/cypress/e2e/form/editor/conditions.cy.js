@@ -37,12 +37,17 @@ let sections = null;
 
 function createForm() {
     cy.login();
-    cy.createFormWithAPI().visitFormTab('Form');
+    cy.createFormWithAPI().as('form_id').visitFormTab('Form');
     cy.then(() => {
         questions = [];
         comments = [];
         sections = ["First section"];
     });
+}
+
+function goToDestinationTab()
+{
+    cy.get('@form_id').visitFormTab('Destinations');
 }
 
 function addQuestion(name) {
@@ -51,6 +56,12 @@ function addQuestion(name) {
     cy.then(() => {
         questions.push(name);
     });
+}
+
+function addDestination(type) {
+    cy.findByRole('button', {'name': `Add ${type}`}).click();
+    cy.findByRole('alert').should('contains.text', 'Item successfully added');
+    cy.findByRole('button', {'name': 'Close'}).click();
 }
 
 function setQuestionTypeCategory(category) {
@@ -103,7 +114,6 @@ function save() {
     cy.findByRole('alert')
         .should('contain.text', 'Item successfully updated')
     ;
-    cy.reload();
 }
 
 function saveAndReload() {
@@ -163,7 +173,7 @@ function checkThatSelectedVisibilityOptionIs(option) {
     cy.findByRole('button', {'name': option}).should('exist');
 }
 
-function setVisibilityOption(option) {
+function setConditionStrategy(option) {
     // Label is the next node
     cy.findByRole('radio', {'name': option}).next().click();
 }
@@ -270,6 +280,12 @@ function validateSectionOrder(sections) {
     }
 }
 
+function saveDestination() {
+    cy.findByRole('button', {name: "Update item"}).click();
+    cy.findByRole('alert').should('contains.text', 'Item successfully updated');
+    cy.findByRole('button', {'name': 'Close'}).click();
+}
+
 describe ('Conditions', () => {
     beforeEach(() => {
         cy.login();
@@ -287,7 +303,7 @@ describe ('Conditions', () => {
             checkThatVisibilityOptionsAreVisible();
             checkThatSelectedVisibilityOptionIs('Always visible');
             checkThatConditionEditorIsNotDisplayed();
-            setVisibilityOption('Visible if...');
+            setConditionStrategy('Visible if...');
             checkThatSelectedVisibilityOptionIs('Visible if...');
             checkThatConditionEditorIsDisplayed();
         });
@@ -306,7 +322,7 @@ describe ('Conditions', () => {
             checkThatVisibilityOptionsAreVisible();
             checkThatSelectedVisibilityOptionIs('Visible if...');
             checkThatConditionEditorIsDisplayed();
-            setVisibilityOption('Hidden if...');
+            setConditionStrategy('Hidden if...');
             checkThatSelectedVisibilityOptionIs('Hidden if...');
             checkThatConditionEditorIsDisplayed();
         });
@@ -325,7 +341,7 @@ describe ('Conditions', () => {
             checkThatVisibilityOptionsAreVisible();
             checkThatSelectedVisibilityOptionIs('Hidden if...');
             checkThatConditionEditorIsDisplayed();
-            setVisibilityOption('Always visible');
+            setConditionStrategy('Always visible');
             checkThatSelectedVisibilityOptionIs('Always visible');
             checkThatConditionEditorIsNotDisplayed();
         });
@@ -347,7 +363,7 @@ describe ('Conditions', () => {
 
         getAndFocusQuestion('My third question').within(() => {
             initVisibilityConfiguration();
-            setVisibilityOption('Visible if...');
+            setConditionStrategy('Visible if...');
             fillCondition(0, null, 'My second question', 'Is not equal to', 'I love GLPI');
             addNewEmptyCondition();
             fillCondition(1, 'Or', 'My first question', 'Contains', 'GLPI is great');
@@ -403,7 +419,7 @@ describe ('Conditions', () => {
 
         getAndFocusQuestion('My third question').within(() => {
             initVisibilityConfiguration();
-            setVisibilityOption('Visible if...');
+            setConditionStrategy('Visible if...');
             fillCondition(0, null, 'My second question', 'Is not equal to', 'I love GLPI');
             addNewEmptyCondition();
             fillCondition(1, 'Or', 'My first question', 'Contains', 'GLPI is great');
@@ -458,7 +474,7 @@ describe ('Conditions', () => {
 
         getAndFocusComment('My first comment').within(() => {
             initVisibilityConfiguration();
-            setVisibilityOption('Visible if...');
+            setConditionStrategy('Visible if...');
             fillCondition(0, null, 'My second question', 'Contains', 'I love GLPI');
             addNewEmptyCondition();
             fillCondition(1, 'Or', 'My first question', 'Contains', 'GLPI is great');
@@ -513,7 +529,7 @@ describe ('Conditions', () => {
 
         getAndFocusSection('My second section').within(() => {
             initVisibilityConfiguration();
-            setVisibilityOption('Visible if...');
+            setConditionStrategy('Visible if...');
             fillCondition(0, null, 'My second question', 'Do not contains', 'I love GLPI');
             addNewEmptyCondition();
             fillCondition(1, 'Or', 'My first question', 'Contains', 'GLPI is great');
@@ -559,6 +575,61 @@ describe ('Conditions', () => {
         });
     });
 
+    it('can use the editor to add or delete conditions on a destination', () => {
+        // Create the test form
+        createForm();
+        addQuestion('My first question');
+        addQuestion('My second question');
+        saveAndReload();
+
+        // Create a destination and add a few conditions to it
+        goToDestinationTab();
+        addDestination('ticket');
+        setConditionStrategy('Created if');
+        fillCondition(0, null, 'My second question', 'Is not equal to', 'I love GLPI');
+        addNewEmptyCondition();
+        fillCondition(1, 'Or', 'My first question', 'Contains', 'GLPI is great');
+        saveDestination();
+
+        // Check that the conditions are correctly displayed
+        checkThatConditionExist(
+            0,
+            null,
+            'My second question',
+            'Is not equal to',
+            'I love GLPI',
+        );
+        checkThatConditionExist(
+            1,
+            'Or',
+            'My first question',
+            'Contains',
+            'GLPI is great',
+        );
+
+        // Delete the first condition and check that the second one is still there
+        deleteConditon(0);
+        checkThatConditionExist(
+            0,
+            null,
+            'My first question',
+            'Contains',
+            'GLPI is great',
+        );
+        checkThatConditionDoNotExist(1);
+
+        // Reload and make sure only one condition remains
+        saveDestination();
+        checkThatConditionExist(
+            0,
+            null,
+            'My first question',
+            'Contains',
+            'GLPI is great',
+        );
+        checkThatConditionDoNotExist(1);
+    });
+
     it('conditions are applied on questions', () => {
         createForm();
         addQuestion('My question used as a criteria');
@@ -568,11 +639,11 @@ describe ('Conditions', () => {
 
         getAndFocusQuestion('My question that is always visible').within(() => {
             initVisibilityConfiguration();
-            setVisibilityOption('Always visible');
+            setConditionStrategy('Always visible');
         });
         getAndFocusQuestion('My question that is visible if some criteria are met').within(() => {
             initVisibilityConfiguration();
-            setVisibilityOption('Visible if...');
+            setConditionStrategy('Visible if...');
             fillCondition(
                 0,
                 null,
@@ -583,7 +654,7 @@ describe ('Conditions', () => {
         });
         getAndFocusQuestion('My question that is hidden if some criteria are met').within(() => {
             initVisibilityConfiguration();
-            setVisibilityOption('Hidden if...');
+            setConditionStrategy('Hidden if...');
             fillCondition(
                 0,
                 null,
@@ -629,12 +700,12 @@ describe ('Conditions', () => {
 
         getAndFocusComment('My comment that is always visible').within(() => {
             initVisibilityConfiguration();
-            setVisibilityOption('Always visible');
+            setConditionStrategy('Always visible');
         });
         closeVisibilityConfiguration();
         getAndFocusComment('My comment that is visible if some criteria are met').within(() => {
             initVisibilityConfiguration();
-            setVisibilityOption('Visible if...');
+            setConditionStrategy('Visible if...');
             fillCondition(
                 0,
                 null,
@@ -646,7 +717,7 @@ describe ('Conditions', () => {
         closeVisibilityConfiguration();
         getAndFocusComment('My comment that is hidden if some criteria are met').within(() => {
             initVisibilityConfiguration();
-            setVisibilityOption('Hidden if...');
+            setConditionStrategy('Hidden if...');
             fillCondition(
                 0,
                 null,
@@ -693,12 +764,12 @@ describe ('Conditions', () => {
 
         getAndFocusSection('My section that is always visible').within(() => {
             initVisibilityConfiguration();
-            setVisibilityOption('Always visible');
+            setConditionStrategy('Always visible');
         });
         closeVisibilityConfiguration();
         getAndFocusSection('My section that is visible if some criteria are met').within(() => {
             initVisibilityConfiguration();
-            setVisibilityOption('Visible if...');
+            setConditionStrategy('Visible if...');
             fillCondition(
                 0,
                 null,
@@ -710,7 +781,7 @@ describe ('Conditions', () => {
         closeVisibilityConfiguration();
         getAndFocusSection('My section that is hidden if some criteria are met').within(() => {
             initVisibilityConfiguration();
-            setVisibilityOption('Hidden if...');
+            setConditionStrategy('Hidden if...');
             fillCondition(
                 0,
                 null,
@@ -754,7 +825,7 @@ describe ('Conditions', () => {
         addQuestion('Test subject');
         getAndFocusQuestion('Test subject').within(() => {
             initVisibilityConfiguration();
-            setVisibilityOption('Visible if...');
+            setConditionStrategy('Visible if...');
         });
         closeVisibilityConfiguration();
 

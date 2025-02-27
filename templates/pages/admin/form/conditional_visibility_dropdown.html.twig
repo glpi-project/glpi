@@ -93,6 +93,7 @@
                     {# Parent properties #}
                     {% set strategies = 'Glpi\\Form\\Condition\\VisibilityStrategy' %}
                     {% set selected_strategy = question_strategy %}
+                    {% set strategy_input_name = "visibility_strategy" %}
                     {% set conditions = item is not null ? item.getConfiguredConditionsData() : [] %}
                     {{ parent() }}
                 </div>
