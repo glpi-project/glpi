@@ -2837,7 +2837,8 @@ class Toolbox
                             // Avoids creating a link within a link, when the image is already in an <a> tag
                             $add_link_tmp = $add_link;
                             if ($add_link) {
-                                $pattern = '/<a[^>]*>(?![^<]*<a)(?:(?!<\/a>)[\s\S])*?<img[^>]*' . preg_quote($image['tag'], '/') . '[^>]*>[\s\S]*?<\/a>/s';
+                                // Try to detect any unclosed `<a>` tag that preced the `<img>` tag
+                                $pattern = '/<a[^>]*>((?!<\/a>).)*<img[^>]*' . preg_quote($image['tag'], '/') . '/s';
                                 if (preg_match($pattern, $content_text)) {
                                     $add_link_tmp = false;
                                 }
