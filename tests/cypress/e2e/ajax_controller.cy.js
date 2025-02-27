@@ -36,7 +36,7 @@ describe('Ajax Controller', () => {
         cy.login();
         cy.changeProfile('Super-Admin');
     });
-    it('refresh tabs on update', () => {
+    it('[already migrated] refresh tabs on update', () => {
         cy.createWithAPI('Glpi\\Form\\Form', {
             'name': '[Test] Ajax Controller: refresh tabs on update',
         }).then((form_id) => {
