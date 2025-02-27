@@ -40,11 +40,12 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\RequestTypeConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Override;
 use Ticket;
 
-final class QuestionTypeRequestType extends AbstractQuestionType implements UsedAsCriteriaInterface
+final class QuestionTypeRequestType extends AbstractQuestionType implements UsedAsCriteriaInterface, FormQuestionDataConverterInterface
 {
     /**
      * Retrieve the default value for the request type question type
@@ -160,5 +161,17 @@ TWIG;
         ?JsonFieldInterface $question_config
     ): ConditionHandlerInterface {
         return new RequestTypeConditionHandler();
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): ?int
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): null
+    {
+        return null;
     }
 }
