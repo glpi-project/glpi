@@ -162,6 +162,14 @@ describe('Display preferences', () => {
             .findByRole('button', {'name': 'Add'})
             .click()
         ;
+        // Make sure the option isn't still shown in the dropdown
+        cy.get('@iframeBody')
+            .getDropdownByLabelText('Select an option to add')
+            .click();
+        cy.get('@iframeBody')
+            .findByRole('option', {'name': name})
+            .should('not.exist');
+
         cy.wait('@update_request');
     }
 
@@ -173,6 +181,16 @@ describe('Display preferences', () => {
             .findByRole('button', {'name': "Delete permanently"})
             .click()
         ;
+
+        // Make sure the option is available again
+        // Make sure the option isn't still shown in the dropdown
+        cy.get('@iframeBody')
+            .getDropdownByLabelText('Select an option to add')
+            .click();
+        cy.get('@iframeBody')
+            .findByRole('option', {'name': name})
+            .should('be.visible');
+
         cy.wait('@update_request');
     }
 
