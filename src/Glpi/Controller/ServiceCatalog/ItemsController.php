@@ -57,7 +57,7 @@ final class ItemsController extends AbstractController
         $this->service_catalog_manager = new ServiceCatalogManager();
     }
 
-    #[SecurityStrategy(Firewall::STRATEGY_HELPDESK_ACCESS)]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     #[Route(
         "/ServiceCatalog/Items",
         name: "glpi_form_list",
@@ -67,7 +67,7 @@ final class ItemsController extends AbstractController
     {
         // Read category
         $category = null;
-        $category_id = $request->query->getInt('category');
+        $category_id = $request->query->getInt('category', 0);
         if ($category_id > 0) {
             $category = Category::getById($category_id);
             if (!$category) {
@@ -77,6 +77,10 @@ final class ItemsController extends AbstractController
 
         // Read filter
         $filter = $request->query->getString('filter');
+
+        // Read pagination params
+        $page = max(1, $request->query->getInt('page', 1));
+        $items_per_page = ServiceCatalogManager::ITEMS_PER_PAGE;
 
         // Build session + url params
         $parameters = new FormAccessParameters(
@@ -89,13 +93,20 @@ final class ItemsController extends AbstractController
             access_parameters: $parameters,
             filter: $filter,
             category: $category,
+            page: $page,
+            items_per_page: $items_per_page
         );
-        $items = $this->service_catalog_manager->getItems($item_request);
+        $result = $this->service_catalog_manager->getItems($item_request);
 
         return $this->render(
             'components/helpdesk_forms/service_catalog_items.html.twig',
             [
-                'items' => $items,
+                'category_id'       => $category_id,
+                'filter'            => $filter,
+                'items'             => $result['items'],
+                'total'             => $result['total'],
+                'current_page'      => $page,
+                'items_per_page'    => $items_per_page,
                 'is_default_search' => false,
             ]
         );
