@@ -78,6 +78,10 @@ class AbstractPluginMigrationTest extends DbTestCase
                 'type' => MessageType::Error,
                 'message' => 'Appliances plugin table "glpi_plugins_myplugin_items" is missing.',
             ],
+            [
+                'type' => MessageType::Error,
+                'message' => 'Migration cannot be done.',
+            ],
         ];
         $this->assertEquals($expected_messages, $result->getMessages());
     }
@@ -522,22 +526,27 @@ class AbstractPluginMigrationTest extends DbTestCase
     public function testCountRecords(): void
     {
         // Arrange
-        $mock_result = [['cpt' => 42]];
-        $mock_iterator = new \ArrayIterator($mock_result);
-
         $db = $this->createMock(DBmysql::class);
-        $db->method('request')->willReturnCallback(function ($criteria) use ($mock_iterator) {
-            // Verify the request criteria are properly built
-            if ($criteria['FROM'] === 'test_table' && $criteria['COUNT'] === 'cpt') {
-                if (isset($criteria['WHERE']) && $criteria['WHERE']['condition'] === 'value') {
-                    // This matches our test with conditions
-                    return $mock_iterator;
-                } elseif (!isset($criteria['WHERE'])) {
-                    // This matches our test without conditions
-                    return $mock_iterator;
+        $db->method('request')->willReturnCallback(function ($criteria) {
+            $result = ['cpt' => 0]; // Default to 0
+
+            if ($criteria['FROM'] === 'test_table') {
+                if (!isset($criteria['WHERE'])) {
+                    $result = ['cpt' => 42]; // Table without conditions
+                } elseif (isset($criteria['WHERE']['condition']) && $criteria['WHERE']['condition'] === 'value') {
+                    $result = ['cpt' => 15]; // With specific condition
+                } elseif (isset($criteria['WHERE']['other_condition']) && $criteria['WHERE']['other_condition'] === 'other_value') {
+                    $result = ['cpt' => 27]; // With different condition
                 }
             }
-            return new \ArrayIterator([['cpt' => 0]]); // Default fallback
+            // Empty table always returns 0
+            if ($criteria['FROM'] === 'empty_table') {
+                $result = ['cpt' => 0];
+            }
+
+            return new \ArrayIterator([
+                $result
+            ]);
         });
 
         $logger = $this->createMock(LoggerInterface::class);
@@ -554,15 +563,30 @@ class AbstractPluginMigrationTest extends DbTestCase
             'test_table'
         );
 
-        $count_with_conditions = $this->callPrivateMethod(
+        $count_with_condition1 = $this->callPrivateMethod(
             $instance,
             'countRecords',
             'test_table',
             ['condition' => 'value']
         );
 
+        $count_with_condition2 = $this->callPrivateMethod(
+            $instance,
+            'countRecords',
+            'test_table',
+            ['other_condition' => 'other_value']
+        );
+
+        $count_empty_table = $this->callPrivateMethod(
+            $instance,
+            'countRecords',
+            'empty_table'
+        );
+
         // Assert
         $this->assertEquals(42, $count_without_conditions);
-        $this->assertEquals(42, $count_with_conditions);
+        $this->assertEquals(15, $count_with_condition1);
+        $this->assertEquals(27, $count_with_condition2);
+        $this->assertEquals(0, $count_empty_table);
     }
 }

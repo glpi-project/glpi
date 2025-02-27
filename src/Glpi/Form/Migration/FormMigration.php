@@ -55,17 +55,10 @@ use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
-use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
-use Plugin;
 
 final class FormMigration extends AbstractPluginMigration
 {
-    /**
-     * Version of FormCreator plugin required for the migration
-     */
-    private const FORMCREATOR_REQUIRED_VERSION = '2.13.9';
-
     /**
      * Retrieve the map of types to convert
      *
