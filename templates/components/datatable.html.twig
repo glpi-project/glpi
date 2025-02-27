@@ -31,6 +31,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
 {% set datatable_id = datatable_id|default('datatable' ~ random()) %}
 {% if total_number < 1 and filters|length == 0 %}
     <table id="{{ datatable_id }}" class="table">
@@ -72,7 +74,7 @@
                 {% do call('Html::showMassiveActions', [massiveactionparams|default([])]) %}
             </div>
         {% endif %}
-        <table id="{{ datatable_id }}" class="table {{ table_class_style|default('table-hover') }}">
+        <table id="{{ datatable_id }}" class="table {{ table_class_style|default('table-hover') }}" aria-label="{{ datatable_aria_label|default('Data Table') }}">
             <thead>
                 {% if super_header is defined and super_header is not empty %}
                     {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
@@ -219,8 +221,10 @@
                                 </td>
                             {% endif %}
                             {% for colkey, colum in columns %}
-                                <td>
-                                    {% if colkey in entry|keys %}
+                                {% if colkey in entry|keys %}
+                                    {% set colspan = entry[colkey ~ '_colspan']|default(1) %}
+                                    {% set aria_label = entry[colkey ~ '_aria_label']|default('') %}
+                                    <td colspan="{{ colspan }}" aria-label="{{ aria_label }}">
 
                                         {% set formatter = formatters[colkey] %}
 
@@ -283,8 +287,8 @@
                                         {% else %}
                                             {{ entry[colkey] }}
                                         {% endif %}
-                                    {% endif %}
-                                </td>
+                                    </td>
+                                {% endif %}
                             {% endfor %}
                             {% if not nofilter %}
                                 <td></td>
@@ -294,9 +298,7 @@
                 {% else %}
                     <tr>
                         <td colspan="{{ total_cols }}">
-                            <div class="alert alert-info">
-                                {{ __('No results found') }}
-                            </div>
+                            {{ alerts.alert_info(__('No results found')) }}
                         </td>
                     </tr>
                 {% endif %}

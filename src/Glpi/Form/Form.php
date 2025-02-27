@@ -52,6 +52,9 @@ use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\UI\IllustrationManager;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+use Glpi\Form\FormTranslation;
 use Html;
 use Item_Problem;
 use Item_Ticket;
@@ -66,8 +69,12 @@ use Ticket;
 /**
  * Helpdesk form
  */
-final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
+final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, ProvideTranslationsInterface
 {
+    public const TRANSLATION_KEY_NAME = 'form_name';
+    public const TRANSLATION_KEY_HEADER = 'form_header';
+    public const TRANSLATION_KEY_DESCRIPTION = 'form_description';
+
     public static $rightname = 'form';
 
     public $dohistory = true;
@@ -117,6 +124,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
         }
         $this->addStandardTab(FormAccessControl::getType(), $tabs, $options);
         $this->addStandardTab(FormDestination::getType(), $tabs, $options);
+        $this->addStandardTab(FormTranslation::getType(), $tabs, $options);
         $this->addStandardTab(Log::getType(), $tabs, $options);
         return $tabs;
     }
@@ -342,6 +350,46 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
         echo Html::scriptBlock("window.location.href = '$export_url';");
 
         return true;
+    }
+
+    #[Override]
+    public function listTranslationsHandlers(?CommonDBTM $item = null): array
+    {
+        $key = __('Form properties');
+        $handlers = [];
+        if (!empty($this->fields['name'])) {
+            $handlers[$key][] = new TranslationHandler(
+                parent_item: $this,
+                key: self::TRANSLATION_KEY_NAME,
+                name: __('Form title'),
+                value: $this->fields['name'],
+            );
+        }
+
+        if (!empty($this->fields['header'])) {
+            $handlers[$key][] = new TranslationHandler(
+                parent_item: $this,
+                key: self::TRANSLATION_KEY_HEADER,
+                name: __('Form description'),
+                value: $this->fields['header'],
+            );
+        }
+
+        if (!empty($this->fields['description'])) {
+            $handlers[$key][] = new TranslationHandler(
+                parent_item: $this,
+                key: self::TRANSLATION_KEY_DESCRIPTION,
+                name: __('Service catalog description'),
+                value: $this->fields['description'],
+            );
+        }
+
+        $sections_handlers = array_map(
+            fn($section) => $section->listTranslationsHandlers(),
+            $this->getSections()
+        );
+
+        return array_merge($handlers, ...$sections_handlers);
     }
 
     public static function getAdditionalMenuLinks(): array
@@ -936,13 +984,19 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     #[Override]
     public function getServiceCatalogItemTitle(): string
     {
-        return $this->fields['name'] ?? "";
+        return FormTranslation::getLocalizedTranslationForKey(
+            $this,
+            static::TRANSLATION_KEY_NAME
+        );
     }
 
     #[Override]
     public function getServiceCatalogItemDescription(): string
     {
-        return $this->fields['description'] ?? "";
+        return FormTranslation::getLocalizedTranslationForKey(
+            $this,
+            static::TRANSLATION_KEY_DESCRIPTION
+        );
     }
 
     #[Override]

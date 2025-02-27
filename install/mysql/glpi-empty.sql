@@ -10123,4 +10123,18 @@ CREATE TABLE `glpi_softwarelicenses_users` (
   KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_itemtranslations_itemtranslations`;
+CREATE TABLE `glpi_itemtranslations_itemtranslations` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) NOT NULL,
+  `key` varchar(255) NOT NULL,
+  `language` varchar(5) NOT NULL,
+  `translations` JSON NOT NULL,
+  `hash` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_item_key` (`items_id`, `itemtype`, `key`, `language`),
+  KEY `item` (`itemtype`, `items_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS=1;
