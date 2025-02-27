@@ -37,10 +37,11 @@ namespace Glpi\Form\QuestionType;
 
 use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Override;
 
-final class QuestionTypeUrgency extends AbstractQuestionType
+final class QuestionTypeUrgency extends AbstractQuestionType implements FormQuestionDataConverterInterface
 {
     /**
      * Retrieve the default value for the urgency question type
@@ -178,5 +179,17 @@ TWIG;
             'very high', 'veryhigh' => "5",
             default => null,
         };
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): ?int
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): null
+    {
+        return null;
     }
 }

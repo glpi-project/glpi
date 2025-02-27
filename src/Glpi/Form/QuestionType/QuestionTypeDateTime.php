@@ -43,17 +43,37 @@ use Glpi\Form\Condition\ConditionHandler\DateAndTimeConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\DateConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\TimeConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use InvalidArgumentException;
 use Override;
 use RuntimeException;
 
-class QuestionTypeDateTime extends AbstractQuestionType implements UsedAsCriteriaInterface
+/**
+ * Short answers are single line inputs used to answer simple questions.
+ */
+class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionDataConverterInterface, UsedAsCriteriaInterface
 {
     #[Override]
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::DATE_AND_TIME;
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): mixed
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): mixed
+    {
+        return (new QuestionTypeDateTimeExtraDataConfig(
+            is_default_value_current_time: false,
+            is_date_enabled: $rawData['fieldtype'] !== 'time',
+            is_time_enabled: $rawData['fieldtype'] !== 'date',
+        ))->jsonSerialize();
     }
 
     public function getInputType(?Question $question, bool $ignoreDefaultValueIsCurrentTime = false): string
@@ -184,7 +204,11 @@ class QuestionTypeDateTime extends AbstractQuestionType implements UsedAsCriteri
         ];
 
         return empty(array_diff(array_keys($input), $allowed_keys))
-            && array_reduce($input, fn($carry, $value) => $carry && preg_match('/^[01]$/', $value), true);
+            && array_reduce(
+                $input,
+                fn($carry, $value) => $carry && (is_bool($value) || preg_match('/^[01]$/', $value)),
+                true
+            );
     }
 
     #[Override]
