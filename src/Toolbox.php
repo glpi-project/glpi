@@ -2849,7 +2849,7 @@ class Toolbox
                                 $width,
                                 $height,
                                 $add_link_tmp,
-                                $object_url_param,
+                                $object_url_param
                             );
                             if (empty($new_image)) {
                                   $new_image = '#' . $image['tag'] . '#';
