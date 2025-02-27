@@ -76,7 +76,7 @@ final class SearchController extends AbstractController
             ),
             filter: $filter
         );
-        $forms = $this->service_catalog_manager->getItems($items_request);
+        $forms = $this->service_catalog_manager->getItems($items_request)['items'];
 
         // Get FAQ entries
         $query = KnowbaseItem::getListRequest([

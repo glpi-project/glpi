@@ -42,6 +42,9 @@ use Glpi\Form\ServiceCatalog\Provider\LeafProviderInterface;
 
 final class ServiceCatalogManager
 {
+    /** @var int */
+    public const ITEMS_PER_PAGE = 12;
+
     /** @var \Glpi\Form\ServiceCatalog\Provider\ItemProviderInterface[] */
     private array $providers;
 
@@ -56,19 +59,19 @@ final class ServiceCatalogManager
     /**
      * Return all available forms and non empties categories for the given user.
      *
-     * @return ServiceCatalogItemInterface[]
+     * @return array{items: ServiceCatalogItemInterface[], total: int}
      */
     public function getItems(ItemRequest $item_request): array
     {
-        $items = [];
+        $all_items = [];
 
         // Load root items
         foreach ($this->providers as $provider) {
-            array_push($items, ...$provider->getItems($item_request));
+            array_push($all_items, ...$provider->getItems($item_request));
         }
 
         // Load children for composite (non recursive, only for the first level)
-        foreach ($items as $item) {
+        foreach ($all_items as $item) {
             if (!($item instanceof ServiceCatalogCompositeInterface)) {
                 continue;
             }
@@ -89,10 +92,18 @@ final class ServiceCatalogManager
         }
 
         // Remove empty composite, must be done after the children has been loaded.
-        $items = $this->removeRootCompositeWithoutChildren($items);
-        $items = $this->sortRootItems($items);
+        $all_items = $this->removeRootCompositeWithoutChildren($all_items);
+        $all_items = $this->sortRootItems($all_items);
 
-        return $items;
+        // Calculate pagination info
+        $total = count($all_items);
+        $offset = ($item_request->page - 1) * $item_request->items_per_page;
+        $items = array_slice($all_items, $offset, $item_request->items_per_page);
+
+        return [
+            'items' => $items,
+            'total' => $total
+        ];
     }
 
     /**

@@ -39,7 +39,13 @@
     <div class="d-flex">
         <ol class="breadcrumb breadcrumb-alternate" aria-label="{{ __("Service catalog categories") }}" role="navigation">
             <li class="breadcrumb-item text-truncate active">
-                <a href="?category=0" data-children-url-parameters="category=0">{{ __('Service catalog') }}</a>
+                <a
+                    href="?category=0"
+                    data-children-url-parameters="category=0"
+                    data-breadcrumb-item
+                >
+                    {{ __('Service catalog') }}
+                </a>
             </li>
         </ol>
         <div class="ms-auto input-icon">
@@ -64,8 +70,13 @@
         {{ include(
             'components/helpdesk_forms/service_catalog_items.html.twig',
             {
-                items: items,
-                is_default_search: true,
+                'category_id': 0,
+                'filter': '',
+                'items': items.items,
+                'total': items.total,
+                'current_page': 1,
+                'items_per_page': constant('Glpi\\Form\\ServiceCatalog\\ServiceCatalogManager::ITEMS_PER_PAGE'),
+                'is_default_search': true,
             },
             with_context = false
         ) }}
