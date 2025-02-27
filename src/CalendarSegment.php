@@ -65,6 +65,11 @@ class CalendarSegment extends CommonDBChild
         return _n('Time range', 'Time ranges', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-calendar-time';
+    }
+
     public function prepareInputForAdd($input)
     {
 
@@ -381,15 +386,19 @@ class CalendarSegment extends CommonDBChild
 
         $daysofweek = Toolbox::getDaysOfWeekArray();
         if ($canedit) {
+            $segment = new self();
+            $options[self::$items_id] = $ID;
+            $segment->check(-1, CREATE, $options);
             TemplateRenderer::getInstance()->display('pages/setup/calendarsegment.html.twig', [
-                'item' => new self(),
+                'item' => $segment,
                 'calendars_id' => $ID,
                 'days_of_week' => $daysofweek,
                 'begin' => date('H') . ":00",
                 'end' => ((int) date('H') + 1) . ":00",
                 'params' => [
                     'canedit' => true,
-                ]
+                ],
+                'no_header' => true,
             ]);
         }
 
