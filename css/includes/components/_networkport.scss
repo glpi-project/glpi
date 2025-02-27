@@ -32,22 +32,26 @@
  */
 
 html:not([data-glpi-theme-dark="1"]) {
-    --glpi-cotrunk-bg: silver;
-    --glpi-hub-bg: lightsalmon;
-    --glpi-trunk-bg: mediumaquamarine;
-    --glpi-aggregated-bg: darkturquoise;
-    --glpi-network-color: var(--tblr-dark);
+    .netport {
+        --glpi-cotrunk-bg: silver;
+        --glpi-hub-bg: lightsalmon;
+        --glpi-trunk-bg: mediumaquamarine;
+        --glpi-aggregated-bg: darkturquoise;
+        --glpi-network-color: var(--tblr-dark);
+    }
 }
 
 html[data-glpi-theme-dark="1"] {
-    --glpi-cotrunk-bg: dimgray;
-    --glpi-hub-bg: indianred;
-    --glpi-trunk-bg: seagreen;
-    --glpi-aggregated-bg: teal;
-    --glpi-network-color: white;
+    .netport {
+        --glpi-cotrunk-bg: dimgray;
+        --glpi-hub-bg: indianred;
+        --glpi-trunk-bg: seagreen;
+        --glpi-aggregated-bg: teal;
+        --glpi-network-color: white;
 
-    a {
-        color: white;
+        a {
+            color: white;
+        }
     }
 }
 

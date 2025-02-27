@@ -44,7 +44,7 @@
         background-color: var(--tblr-bg-forms);
         border: var(--tblr-border-width) solid var(--tblr-border-color);
         border-radius: var(--tblr-border-radius);
-        box-shadow: var(--tblr-box-shadow);
+        box-shadow: var(--tblr-box-shadow-input);
         transition: $input-transition;
 
         .select2-selection__rendered input[type="search"] {
