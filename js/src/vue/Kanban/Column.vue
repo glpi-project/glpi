@@ -171,18 +171,18 @@
 </script>
 
 <template>
-    <div :id="element_id" :class="`kanban-column card ${column_data.folded ? 'collapsed' : ''} ${column_data['_protected'] ? 'kanban-protected' : ''}`"
+    <div :id="element_id" :class="`kanban-column ${column_data.folded ? 'collapsed' : ''} ${column_data['_protected'] ? 'kanban-protected' : ''}`"
          :data-drop-only="`${column_data.drop_only ? 'true' : false}`">
         <header class="kanban-column-header">
             <div class="kanban-column-header-content p-2 pb-0">
-                <span class="content-left">
+                <span class="content-left d-flex">
                     <i v-if="rights.canModifyView()"
                        class="ti ti-caret-right-filled kanban-collapse-column cursor-pointer" :title="__('Toggle collapse')"
                        @click="toggleFolded()"></i>
                     <span :class="`kanban-column-title badge ${column_data.color_class || ''}`" v-text="column_data.name"
                           :style="`${bg_color ? 'background-color:' + bg_color : 'transparent'}; ${text_color ? 'color:' + text_color : 'color: var(--tblr-body-color)'}`"></span>
                 </span>
-                <span class="content-right">
+                <span class="content-right d-flex">
                     <span class="kanban_nb badge bg-secondary text-secondary-fg" v-text="card_count"></span>
                     <span class="kanban-column-toolbar align-middle">
                         <template v-if="rights.canCreateItem() && (rights.getAllowedColumnsForNewCards().length === 0 || rights.getAllowedColumnsForNewCards().includes(column_id))">
@@ -279,13 +279,20 @@
         }
 
         .kanban-item-content {
-            margin-bottom: 5px;
             padding: 0 10px;
 
             .kanban-core-content {
                 display: flex;
                 flex-wrap: wrap;
-                margin: 10px 0;
+                margin-top: 10px;
+            }
+
+            .kanban-plugin-content:not(:empty) {
+                margin-top: 10px;
+            }
+
+            .progress {
+                height: 10px !important;
             }
         }
 
@@ -329,9 +336,9 @@
 
         .kanban-item-team {
             display: flex;
-            padding-right: 10px;
-            padding-bottom: 10px;
-            margin-right: 10px;
+            padding-bottom: 5px;
+            margin-left: 10px;
+            margin-top: 5px;
 
             @media (prefers-reduced-motion: no-preference) {
                 &:hover {
@@ -359,15 +366,11 @@
             }
 
             > span {
-                margin-right: -15px;
+                margin-right: -25px;
                 border-radius: 50%;
                 border: 3px solid var(--tblr-card-bg);
                 box-sizing: content-box;
                 min-height: 24px;
-
-                &:first-of-type {
-                    margin-left: auto;
-                }
 
                 img {
                     border-radius: 50%;

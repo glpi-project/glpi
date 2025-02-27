@@ -1334,7 +1334,7 @@
 <template>
     <div :id="element_id" class="kanban">
         <div class="kanban-container">
-            <div v-if="show_toolbar" class="kanban-toolbar card flex-column flex-md-row">
+            <div v-if="show_toolbar" class="kanban-toolbar flex-column flex-md-row btn-group">
                 <select name="kanban-board-switcher" v-model="kanban_switcher">
                     <option v-for="(k_name, k_id) in all_kanbans" :value="k_id" :selected="k_id === item.items_id" :key="k_id">{{ k_name }}</option>
                 </select>
@@ -1386,7 +1386,7 @@
                     </div>
                 </div>
                 <div class="dropdown">
-                    <button type="button" class="btn btn-outline-secondary ms-1 kanban-extra-toolbar-options" v-if="rights.canModifyView()"
+                    <button type="button" class="btn btn-outline-secondary btn-icon ms-1 kanban-extra-toolbar-options" v-if="rights.canModifyView()"
                             data-bs-toggle="dropdown" data-bs-auto-close="outside">
                         <i class="ti ti-dots-vertical"></i>
                     </button>
@@ -1452,6 +1452,10 @@
             margin-bottom: 15px;
             font-size: 14px;
             padding: 10px;
+
+            select[name="kanban-board-switcher"] {
+                appearance: auto;
+            }
 
             .fas,
             .fa-solid {

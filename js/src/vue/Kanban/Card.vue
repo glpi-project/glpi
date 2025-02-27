@@ -88,9 +88,9 @@
 </script>
 
 <template>
-    <li :id="id" :class="`kanban-item card ${read_only ? 'readonly' : ''} ${is_deleted ? 'deleted' : ''}`">
+    <li :id="id" :class="`kanban-item card shadow-none ${read_only ? 'readonly' : ''} ${is_deleted ? 'deleted' : ''}`">
         <div class="kanban-item-header d-flex justify-content-between">
-            <span class="kanban-item-title align-self-center">
+            <span class="kanban-item-title d-flex align-items-center">
                 <i :class="icon"></i>
                 <span class="cursor-pointer" v-text="title" :title="title_tooltip" @click="emit('kanban:card_show_details')"></span>
             </span>
