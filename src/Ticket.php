@@ -2586,20 +2586,23 @@ class Ticket extends CommonITILObject
      **/
     public static function getDefaultSearchRequest()
     {
-
-        $search = ['criteria' => [0 => ['field'      => 12,
-            'searchtype' => 'equals',
-            'value'      => 'notclosed'
-        ]
-        ],
-            'sort'     => 19,
+        // Technician don't want to be bothered by already solved items.
+        // On the other hand, it make sense for helpdesk users to see their
+        // own solved tickets.
+        $value = Session::getCurrentInterface() == 'central' ? 'notold' : 'notclosed';
+        $request = [
+            'criteria' => [
+                [
+                    'field'      => 12, // Status
+                    'searchtype' => 'equals',
+                    'value'      => $value
+                ]
+            ],
+            'sort'     => 19, // Last update
             'order'    => 'DESC'
         ];
 
-        if (Session::haveRight(self::$rightname, self::READALL)) {
-            $search['criteria'][0]['value'] = 'notold';
-        }
-        return $search;
+        return $request;
     }
 
 
