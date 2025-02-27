@@ -60,7 +60,8 @@ abstract class CommonDropdown extends CommonDBTM
     /**
      * @since 0.85
      *
-     * @param $nb
+     * @param int $nb
+     * @return string
      **/
     public static function getTypeName($nb = 0)
     {

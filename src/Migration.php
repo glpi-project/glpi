@@ -240,7 +240,7 @@ class Migration
     /**
      * Define field's format
      *
-     * @param string  $type          can be bool, char, string, integer, date, datetime, text, longtext or autoincrement
+     * @param string  $type          can be bool, char, string, int, date, time, datetime, text, autoincrement, fkey, json
      * @param string  $default_value new field's default value,
      *                               if a specific default value needs to be used
      * @param boolean $nodefault     No default value (false by default)
@@ -382,9 +382,9 @@ class Migration
      * @param string $table   Table name
      * @param string $field   Field name
      * @param string $type    Field type, @see Migration::fieldFormat()
-     * @param array  $options Options:
-     *                         - update    : if not empty = value of $field (must be protected)
-     *                         - condition : if needed
+     * @param array{update?: string, condition?: string, value?: string, nodefault?: bool, comment?: string, first?: string, after?: string, null?: bool} $options
+     *                         - update    : value to set after field creation (update query)
+     *                         - condition : sql condition to apply for update query
      *                         - value     : default_value new field's default value, if a specific default value needs to be used
      *                         - nodefault : do not define default value (default false)
      *                         - comment   : comment to be added during field creation
