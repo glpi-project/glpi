@@ -233,6 +233,9 @@ abstract class CommonDropdown extends CommonDBTM
             $this->addStandardTab('DropdownTranslation', $ong, $options);
         }
 
+        // Get parents tabs
+        $ong = array_merge($ong, parent::defineTabs());
+
         return $ong;
     }
 

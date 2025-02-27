@@ -88,6 +88,8 @@ class Config extends CommonDBTM
      */
     private static $loaded = false;
 
+    protected $usenotepad = false;
+
     public static function getTypeName($nb = 0)
     {
         return __('Setup');

@@ -166,7 +166,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @var boolean
      */
-    protected $usenotepad = false;
+    protected $usenotepad = true;
 
     /**
      * Computed/forced values of classes tables.
@@ -624,6 +624,18 @@ class CommonDBTM extends CommonGLPI
         }
 
         return $data;
+    }
+
+    public function defineTabs($options = [])
+    {
+        // Get parents tabs
+        $parent_tabs = parent::defineTabs();
+
+        if ($this->usenotepad) {
+            $this->addStandardTab('Notepad', $parent_tabs, $options);
+        }
+
+        return $parent_tabs;
     }
 
     /**

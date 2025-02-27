@@ -61,6 +61,8 @@ abstract class AbstractDefinition extends CommonDBTM
 
     public static $rightname = 'config';
 
+    protected $usenotepad = false;
+
     /**
      * @var CustomFieldDefinition[]|null
      * @see self::getCustomFieldDefinitions()
