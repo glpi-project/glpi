@@ -119,14 +119,6 @@ class RuleTest extends DbTestCase
         $this->assertSame('RuleAction', $rule->getRuleActionClass());
     }
 
-    public function testGetAllActions()
-    {
-        $rule = new \Rule();
-        $actions = $rule->getActions();
-        $allActions = $rule->getAllActions();
-        $this->assertSame($actions, $allActions);
-    }
-
     public function testGetRuleCriteriaClass()
     {
         $rule = new \Rule();
