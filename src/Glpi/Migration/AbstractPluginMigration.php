@@ -105,6 +105,8 @@ abstract class AbstractPluginMigration
                 } else {
                     $this->db->rollBack();
                 }
+            } else {
+                $this->result->addMessage(MessageType::Error, __('Migration cannot be done.'));
             }
         } catch (\Throwable $e) {
             $this->result->addMessage(MessageType::Error, __('An unexpected error occured.'));

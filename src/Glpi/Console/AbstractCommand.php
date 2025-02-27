@@ -90,11 +90,6 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         return [];
     }
 
-    public function getOutput(): OutputInterface
-    {
-        return $this->output;
-    }
-
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
 

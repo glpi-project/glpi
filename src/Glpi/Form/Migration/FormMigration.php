@@ -115,23 +115,6 @@ final class FormMigration extends AbstractPluginMigration
 
     protected function validatePrerequisites(): bool
     {
-        $this->result->addMessage(MessageType::Notice, 'Checking plugin version...');
-
-        $plugin = new Plugin();
-        if (!$plugin->getFromDBbyDir('formcreator')) {
-            $this->result->addMessage(MessageType::Error, 'Formcreator plugin is not installed.');
-            return false;
-        }
-
-        $is_version_ok = self::FORMCREATOR_REQUIRED_VERSION === $plugin->fields['version'];
-        if (!$is_version_ok) {
-            $this->result->addMessage(MessageType::Error, sprintf(
-                'Last Formcreator version (%s) is required to be able to continue.',
-                self::FORMCREATOR_REQUIRED_VERSION
-            ));
-            return false;
-        }
-
         $formcreator_schema = [
             'glpi_plugin_formcreator_categories' => [
                 'id', 'name', 'plugin_formcreator_categories_id', 'level'
@@ -148,12 +131,8 @@ final class FormMigration extends AbstractPluginMigration
                 'itemtype', 'values', 'description', 'row', 'col', 'uuid'
             ],
         ];
-        if (!$this->checkDbFieldsExists($formcreator_schema)) {
-            $this->result->addMessage(MessageType::Error, 'Migration cannot be done.');
-            return false;
-        }
 
-        return true;
+        return $this->checkDbFieldsExists($formcreator_schema);
     }
 
     protected function processMigration(): bool
@@ -186,9 +165,9 @@ final class FormMigration extends AbstractPluginMigration
         return true;
     }
 
-    public function processMigrationOfFormCategories(): void
+    private function processMigrationOfFormCategories(): void
     {
-        $this->progress_indicator?->setProgressBarMessage('Importing form categories...');
+        $this->progress_indicator?->setProgressBarMessage(__('Importing form categories...'));
 
         // Retrieve data from glpi_plugin_formcreator_categories table
         $raw_form_categories = $this->db->request([
@@ -201,7 +180,7 @@ final class FormMigration extends AbstractPluginMigration
             $data = [
                 'name'                => $raw_form_category['name'],
                 'forms_categories_id' => $this->getMappedItemTarget(
-                    'glpi_plugin_formcreator_categories',
+                    'PluginFormcreatorCategory',
                     $raw_form_category['plugin_formcreator_categories_id']
                 )['items_id'] ?? 0
             ];
@@ -212,19 +191,19 @@ final class FormMigration extends AbstractPluginMigration
             );
 
             $this->mapItem(
-                'glpi_plugin_formcreator_categories',
+                'PluginFormcreatorCategory',
                 $raw_form_category['id'],
                 Category::class,
                 $form_category->getID()
             );
 
-            $this->progress_indicator?->setCurrentStep($this->progress_indicator->getCurrentStep() + 1);
+            $this->progress_indicator?->advance();
         }
     }
 
-    public function processMigrationOfBasicProperties(): void
+    private function processMigrationOfBasicProperties(): void
     {
-        $this->progress_indicator?->setProgressBarMessage('Importing forms...');
+        $this->progress_indicator?->setProgressBarMessage(__('Importing forms...'));
 
         // Retrieve data from glpi_plugin_formcreator_forms table
         $raw_forms = $this->db->request([
@@ -247,7 +226,7 @@ final class FormMigration extends AbstractPluginMigration
                     'name'                  => $raw_form['name'],
                     'header'                => $raw_form['header'],
                     'forms_categories_id'   => $this->getMappedItemTarget(
-                        'glpi_plugin_formcreator_categories',
+                        'PluginFormcreatorCategory',
                         $raw_form['plugin_formcreator_categories_id']
                     )['items_id'] ?? 0,
                     'entities_id'           => $raw_form['entities_id'],
@@ -259,26 +238,26 @@ final class FormMigration extends AbstractPluginMigration
                     'name'                => $raw_form['name'],
                     'entities_id'         => $raw_form['entities_id'],
                     'forms_categories_id' => $this->getMappedItemTarget(
-                        'glpi_plugin_formcreator_categories',
+                        'PluginFormcreatorCategory',
                         $raw_form['plugin_formcreator_categories_id']
                     )['items_id'] ?? 0,
                 ]
             );
 
             $this->mapItem(
-                'glpi_plugin_formcreator_forms',
+                'PluginFormcreatorForm',
                 $raw_form['id'],
                 Form::class,
                 $form->getID()
             );
 
-            $this->progress_indicator?->setCurrentStep($this->progress_indicator->getCurrentStep() + 1);
+            $this->progress_indicator?->advance();
         }
     }
 
-    public function processMigrationOfSections(): void
+    private function processMigrationOfSections(): void
     {
-        $this->progress_indicator?->setProgressBarMessage('Importing sections...');
+        $this->progress_indicator?->setProgressBarMessage(__('Importing sections...'));
 
         // Retrieve data from glpi_plugin_formcreator_sections table
         $raw_sections = $this->db->request([
@@ -291,7 +270,7 @@ final class FormMigration extends AbstractPluginMigration
                 Section::class,
                 [
                     Form::getForeignKeyField() => $this->getMappedItemTarget(
-                        'glpi_plugin_formcreator_forms',
+                        'PluginFormcreatorForm',
                         $raw_section['plugin_formcreator_forms_id']
                     )['items_id'],
                     'name'                     => $raw_section['name'],
@@ -304,19 +283,19 @@ final class FormMigration extends AbstractPluginMigration
             );
 
             $this->mapItem(
-                'glpi_plugin_formcreator_sections',
+                'PluginFormcreatorSection',
                 $raw_section['id'],
                 Section::class,
                 $section->getID()
             );
 
-            $this->progress_indicator?->setCurrentStep($this->progress_indicator->getCurrentStep() + 1);
+            $this->progress_indicator?->advance();
         }
     }
 
-    public function processMigrationOfQuestions(): void
+    private function processMigrationOfQuestions(): void
     {
-        $this->progress_indicator?->setProgressBarMessage('Importing questions...');
+        $this->progress_indicator?->setProgressBarMessage(__('Importing questions...'));
 
         // Process questions
         $raw_questions = array_values(iterator_to_array($this->db->request([
@@ -345,7 +324,7 @@ final class FormMigration extends AbstractPluginMigration
 
             $default_value = null;
             $extra_data = null;
-            if (is_a($type_class, 'Glpi\Form\Migration\FormQuestionDataConverterInterface', true)) {
+            if (is_a($type_class, FormQuestionDataConverterInterface::class, true)) {
                 $converter     = new $type_class();
                 $default_value = $converter->convertDefaultValue($raw_question);
                 $extra_data    = $converter->convertExtraData($raw_question);
@@ -354,7 +333,7 @@ final class FormMigration extends AbstractPluginMigration
             $question = new Question();
             $data = array_filter([
                 Section::getForeignKeyField() => $this->getMappedItemTarget(
-                    'glpi_plugin_formcreator_sections',
+                    'PluginFormcreatorSection',
                     $raw_question['plugin_formcreator_sections_id']
                 )['items_id'],
                 'name'                        => $raw_question['name'],
@@ -379,19 +358,19 @@ final class FormMigration extends AbstractPluginMigration
             );
 
             $this->mapItem(
-                'glpi_plugin_formcreator_questions',
+                'PluginFormcreatorQuestion',
                 $raw_question['id'],
                 Question::class,
                 $question->getID()
             );
 
-            $this->progress_indicator?->setCurrentStep($this->progress_indicator->getCurrentStep() + 1);
+            $this->progress_indicator?->advance();
         }
     }
 
-    public function processMigrationOfComments(): void
+    private function processMigrationOfComments(): void
     {
-        $this->progress_indicator?->setProgressBarMessage('Importing comments...');
+        $this->progress_indicator?->setProgressBarMessage(__('Importing comments...'));
 
         // Retrieve data from glpi_plugin_formcreator_questions table
         $raw_comments = $this->db->request([
@@ -416,7 +395,7 @@ final class FormMigration extends AbstractPluginMigration
                 Comment::class,
                 [
                     Section::getForeignKeyField() => $this->getMappedItemTarget(
-                        'glpi_plugin_formcreator_sections',
+                        'PluginFormcreatorSection',
                         $raw_comment['plugin_formcreator_sections_id']
                     )['items_id'],
                     'name'                        => $raw_comment['name'],
@@ -431,13 +410,13 @@ final class FormMigration extends AbstractPluginMigration
             );
 
             $this->mapItem(
-                'glpi_plugin_formcreator_questions',
+                'PluginFormcreatorQuestion',
                 $raw_comment['id'],
                 Comment::class,
                 $comment->getID()
             );
 
-            $this->progress_indicator?->setCurrentStep($this->progress_indicator->getCurrentStep() + 1);
+            $this->progress_indicator?->advance();
         }
     }
 
@@ -446,31 +425,28 @@ final class FormMigration extends AbstractPluginMigration
      *
      * @return void
      */
-    public function updateBlockHorizontalRank(): void
+    private function updateBlockHorizontalRank(): void
     {
-        $this->progress_indicator?->setProgressBarMessage('Updating horizontal rank...');
+        $this->progress_indicator?->setProgressBarMessage(__('Updating horizontal rank...'));
 
         $tables = [Question::getTable(), Comment::getTable()];
 
         $getSubQuery = function (string $column) {
             return new QuerySubQuery([
-                'SELECT' => '*',
-                'FROM'   => new QuerySubQuery([
-                    'SELECT' => $column,
-                    'FROM'   => new QueryUnion([
-                        [
-                            'SELECT' => ['forms_sections_id', 'vertical_rank', 'horizontal_rank'],
-                            'FROM'   => Question::getTable(),
-                        ],
-                        [
-                            'SELECT' => ['forms_sections_id', 'vertical_rank', 'horizontal_rank'],
-                            'FROM'   => Comment::getTable(),
-                        ]
-                    ]),
-                    'WHERE'   => ['NOT' => ['horizontal_rank' => null]],
-                    'GROUPBY' => ['forms_sections_id', 'vertical_rank'],
-                    'HAVING'  => ['COUNT(*) = 1']
-                ], 'sub_query')
+                'SELECT' => $column,
+                'FROM'   => new QueryUnion([
+                    [
+                        'SELECT' => ['forms_sections_id', 'vertical_rank', 'horizontal_rank'],
+                        'FROM'   => Question::getTable(),
+                    ],
+                    [
+                        'SELECT' => ['forms_sections_id', 'vertical_rank', 'horizontal_rank'],
+                        'FROM'   => Comment::getTable(),
+                    ]
+                ]),
+                'WHERE'   => ['NOT' => ['horizontal_rank' => null]],
+                'GROUPBY' => ['forms_sections_id', 'vertical_rank'],
+                'HAVING'  => ['COUNT(*) = 1']
             ]);
         };
 

@@ -518,4 +518,51 @@ class AbstractPluginMigrationTest extends DbTestCase
             $this->callPrivateMethod($instance, 'getMappedItemTarget', 'PluginMyPluginAnotherItem', 2)
         );
     }
+
+    public function testCountRecords(): void
+    {
+        // Arrange
+        $mock_result = [['cpt' => 42]];
+        $mock_iterator = new \ArrayIterator($mock_result);
+
+        $db = $this->createMock(DBmysql::class);
+        $db->method('request')->willReturnCallback(function ($criteria) use ($mock_iterator) {
+            // Verify the request criteria are properly built
+            if ($criteria['FROM'] === 'test_table' && $criteria['COUNT'] === 'cpt') {
+                if (isset($criteria['WHERE']) && $criteria['WHERE']['condition'] === 'value') {
+                    // This matches our test with conditions
+                    return $mock_iterator;
+                } elseif (!isset($criteria['WHERE'])) {
+                    // This matches our test without conditions
+                    return $mock_iterator;
+                }
+            }
+            return new \ArrayIterator([['cpt' => 0]]); // Default fallback
+        });
+
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $instance = $this->getMockBuilder(AbstractPluginMigration::class)
+            ->setConstructorArgs([$db, $logger])
+            ->onlyMethods(['validatePrerequisites', 'processMigration'])
+            ->getMock();
+
+        // Act
+        $count_without_conditions = $this->callPrivateMethod(
+            $instance,
+            'countRecords',
+            'test_table'
+        );
+
+        $count_with_conditions = $this->callPrivateMethod(
+            $instance,
+            'countRecords',
+            'test_table',
+            ['condition' => 'value']
+        );
+
+        // Assert
+        $this->assertEquals(42, $count_without_conditions);
+        $this->assertEquals(42, $count_with_conditions);
+    }
 }
