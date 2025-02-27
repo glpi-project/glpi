@@ -36,11 +36,12 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Override;
 use Ticket;
 
-final class QuestionTypeRequestType extends AbstractQuestionType
+final class QuestionTypeRequestType extends AbstractQuestionType implements FormQuestionDataConverterInterface
 {
     /**
      * Retrieve the default value for the request type question type
@@ -149,5 +150,17 @@ TWIG;
             'request' => (string) Ticket::DEMAND_TYPE,
             default => null,
         };
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): ?int
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): null
+    {
+        return null;
     }
 }

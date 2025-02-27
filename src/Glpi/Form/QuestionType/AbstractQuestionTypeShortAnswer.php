@@ -36,13 +36,14 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Override;
 
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
+abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType implements FormQuestionDataConverterInterface
 {
     /**
      * Specific input type for child classes
@@ -171,5 +172,17 @@ TWIG;
     public function formatPredefinedValue(string $value): string
     {
         return $value;
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): ?string
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): null
+    {
+        return null;
     }
 }
