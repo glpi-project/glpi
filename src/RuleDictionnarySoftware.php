@@ -159,7 +159,7 @@ class RuleDictionnarySoftware extends Rule
             if ($action->fields["action_type"] == "append_regex_result") {
                 $value = (isset($fields[$action->fields['field']]) ? $fields[$action->fields['field']] : '');
                //Get actions for this type of rule
-                $actions = $this->getActions();
+                $actions = $this->getAllActions();
 
                //display the additionnal field
                 echo "<tr class='tab_bg_1'>";
