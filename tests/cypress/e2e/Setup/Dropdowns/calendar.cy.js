@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Ajax Controller', () => {
+describe('Calendar', () => {
     beforeEach(() => {
         cy.login();
         cy.changeProfile('Super-Admin');
