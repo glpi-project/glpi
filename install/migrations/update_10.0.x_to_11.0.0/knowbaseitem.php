@@ -69,3 +69,20 @@ if (!$DB->fieldExists($table, $field_to_add)) {
     );
     $migration->addKey($table, $field_to_add);
 }
+
+$migration->addField('glpi_knowbaseitems', 'forms_categories_id', 'int unsigned NOT NULL DEFAULT 0', [
+    'after' => 'entities_id',
+]);
+$migration->addKey('glpi_knowbaseitems', 'forms_categories_id');
+$migration->addField('glpi_knowbaseitems', 'description', 'longtext DEFAULT NULL', [
+    'after' => 'view',
+]);
+$migration->addField('glpi_knowbaseitems', 'illustration', 'varchar(255) DEFAULT NULL', [
+    'after' => 'view',
+]);
+$migration->addField('glpi_knowbaseitems', 'is_pinned', 'tinyint NOT NULL DEFAULT 0', [
+    'after' => 'view',
+]);
+$migration->addField('glpi_knowbaseitems', 'show_in_service_catalog', 'tinyint NOT NULL DEFAULT 0', [
+    'after' => 'view',
+]);
