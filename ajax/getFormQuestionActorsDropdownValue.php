@@ -55,7 +55,7 @@ if (Session::getCurrentInterface() !== 'central') {
     if (
         array_reduce(
             $questions,
-            fn($acc, $question) => $acc || Question::getById($question['id'])->canViewItem(),
+            fn($acc, $question) => $acc || (new Question())->can($question['id'], READ),
             false
         ) === false
     ) {
