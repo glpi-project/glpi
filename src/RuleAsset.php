@@ -89,6 +89,9 @@ class RuleAsset extends Rule
             return $criterias;
         }
 
+        $criterias['name']['name']              = __('Name');
+        $criterias['name']['type']              = 'text';
+
         $criterias['_auto']['name']            = __('Automatic inventory');
         $criterias['_auto']['type']            = 'yesno';
         $criterias['_auto']['table']           = '';
@@ -177,6 +180,9 @@ class RuleAsset extends Rule
     public function getActions()
     {
         $actions                                = parent::getActions();
+
+        $actions['name']['name']              = __('Name');
+        $actions['name']['type']              = 'text';
 
         $actions['states_id']['name']           = __('Status');
         $actions['states_id']['type']           = 'dropdown';
