@@ -709,6 +709,7 @@ $RELATION = [
     'glpi_forms_categories' => [
         'glpi_forms_categories' => 'forms_categories_id',
         'glpi_forms_forms' => 'forms_categories_id',
+        'glpi_knowbaseitems' => 'forms_categories_id',
     ],
 
     'glpi_forms_forms' => [
