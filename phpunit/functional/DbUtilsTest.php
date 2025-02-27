@@ -763,6 +763,14 @@ class DbUtilsTest extends DbTestCase
             $it->getSql()
         );
 
+        // Entity value is empty array
+        $it->execute('glpi_entities', $instance->getEntitiesRestrictCriteria('glpi_entities', '', [], true));
+        $this->assertSame(0, $it->count());
+        $this->assertSame(
+            'SELECT * FROM `glpi_entities` WHERE false',
+            $it->getSql()
+        );
+
         //keep testing old method from db.function
         $this->assertSame(
             "WHERE ( `entities_id` IN ('$child2')  OR (`is_recursive`='1' AND `entities_id` IN (0, $root)) ) ",
@@ -783,6 +791,14 @@ class DbUtilsTest extends DbTestCase
         $it->execute(['FROM' => 'glpi_entities', 'WHERE' => getEntitiesRestrictCriteria('glpi_entities', '', 7, true)]);
         $this->assertSame(
             'SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` = \'7\')',
+            $it->getSql()
+        );
+
+        // Entity value is empty array
+        $it->execute('glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', [], true));
+        $this->assertSame(0, $it->count());
+        $this->assertSame(
+            'SELECT * FROM `glpi_entities` WHERE (false)',
             $it->getSql()
         );
     }

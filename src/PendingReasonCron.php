@@ -86,7 +86,7 @@ class PendingReasonCron extends CommonDBTM
             Problem::getType(),
         ];
 
-        $now = date("Y-m-d H:i:s");
+        $now = $_SESSION['glpi_currenttime'];
 
         $data = $DB->request([
             'SELECT' => 'id',
@@ -135,7 +135,7 @@ class PendingReasonCron extends CommonDBTM
                 $success = $pending_item->update([
                     'id'             => $pending_item->getID(),
                     'bump_count'     => $pending_item->fields['bump_count'] + 1,
-                    'last_bump_date' => date("Y-m-d H:i:s"),
+                    'last_bump_date' => $_SESSION['glpi_currenttime'],
                 ]);
 
                 if (!$success) {

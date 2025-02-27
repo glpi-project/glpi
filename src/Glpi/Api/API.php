@@ -2204,7 +2204,7 @@ abstract class API
                 $this->returnError($e->getMessage());
             }
             return [
-                __('If the given email address match an existing GLPI user, you will receive an email containing the information required to reset your password. Please contact your administrator if you do not receive any email.')
+                __('If the given email address corresponds to one and only one GLPI user, you will receive an email containing the information required to reset your password. Please contact your administrator if you do not receive an email.')
             ];
         } else {
             $password = isset($params['password']) ? $params['password'] : '';

@@ -229,6 +229,10 @@ class Dropdown
                 . ($params['width'] ? ' style="width: ' . htmlescape($params["width"]) . '"' : '') . '>'
                 . htmlescape($params['multiple'] ? implode(', ', $names) : $name)
                 . '</span>';
+            if ($params['display']) {
+                echo $output;
+                return $params['rand'];
+            }
             return $output;
         }
 

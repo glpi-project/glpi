@@ -281,7 +281,7 @@
                         <i class="fas ti ti-calendar-off"></i>
                         <span>{{ __('Unplan') }}</span>
                     </button>
-                {% else %}
+                {% elseif item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::PLANNED')) %}
                     <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
                         <i class="ti ti-calendar"></i>
                         <span>{{ __('Plan this task') }}</span>

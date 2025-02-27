@@ -188,6 +188,9 @@ switch ($_REQUEST['action']) {
 
         Session::writeClose();
         \Glpi\Debug\Profiler::getInstance()->start('Get card HTML');
+        if ($embed) {
+            $grid->initEmbedSession($_REQUEST);
+        }
         echo $grid->getCardHtml($_REQUEST['card_id'], $_REQUEST);
         \Glpi\Debug\Profiler::getInstance()->stop('Get card HTML');
         break;

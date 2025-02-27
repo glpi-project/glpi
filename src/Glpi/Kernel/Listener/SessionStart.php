@@ -71,6 +71,19 @@ final readonly class SessionStart implements EventSubscriberInterface
             } elseif (\str_starts_with($path, '/caldav.php')) {
                 // CalDAV clients must not use cookies, as the authentication is expected to be passed in headers.
                 $use_cookies = false;
+            } elseif (
+                (
+                    \str_starts_with($path, '/front/central.php')
+                    && $request->query->has('dashboard')
+                )
+                || (
+                    \str_starts_with($path, '/ajax/dashboard.php')
+                    && \in_array($request->get('action'), ['get_dashboard_items', 'get_card', 'get_cards'], true)
+                    && (bool)$request->get('embed')
+                )
+            ) {
+                // Embed dashboards will need to act in an isolated session context
+                $use_cookies = false;
             } elseif (\str_starts_with($path, '/front/cron.php')) {
                 // The cron endpoint is not expected to use the authenticated user session.
                 $use_cookies = false;

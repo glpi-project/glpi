@@ -99,7 +99,9 @@ class PendingReason_Item extends CommonDBRelation
 
         $fields['itemtype'] = $item::getType();
         $fields['items_id'] = $item->getID();
-        $fields['last_bump_date'] = $_SESSION['glpi_currenttime'];
+        if (!isset($fields['last_bump_date'])) {
+            $fields['last_bump_date'] = $_SESSION['glpi_currenttime'];
+        }
         $success = $em->add($fields);
         if (!$success) {
             trigger_error("Failed to create PendingReason_Item", E_USER_WARNING);
@@ -418,11 +420,16 @@ class PendingReason_Item extends CommonDBRelation
         CommonDBTM $new_timeline_item
     ): void {
         $last_pending = self::getLastPendingTimelineItemDataForItem($new_timeline_item->input['_job']);
+        $ticket_pending_updates = [];
 
         // There is no existing pending data on previous timeline items for this ticket
         // Nothing to be done here since the goal of this method is to update active pending data
         if (!$last_pending) {
             return;
+        }
+
+        if (isset($new_timeline_item->input['last_bump_date'])) {
+            $ticket_pending_updates['last_bump_date'] = $new_timeline_item->input['last_bump_date'];
         }
 
         // The new timeline item is the latest pending reason
@@ -432,6 +439,7 @@ class PendingReason_Item extends CommonDBRelation
             $last_pending->fields['itemtype'] == $new_timeline_item::getType()
             && $last_pending->fields['items_id'] == $new_timeline_item->getID()
         ) {
+            self::updateForItem($new_timeline_item->input['_job'], $ticket_pending_updates);
             return;
         }
 
@@ -446,27 +454,34 @@ class PendingReason_Item extends CommonDBRelation
         // This mean the user might be trying to update the existing pending reason data
 
         // Let's check if there is any real updates before going any further
-        $pending_updates = [];
+        $pending_updates_timeline_item = [];
+
         $fields_to_check_for_updates = ['pendingreasons_id', 'followup_frequency', 'followups_before_resolution'];
         foreach ($fields_to_check_for_updates as $field) {
             if (
                 isset($new_timeline_item->input[$field])
                 && $new_timeline_item->input[$field] != $last_pending->fields[$field]
             ) {
-                $pending_updates[$field] = $new_timeline_item->input[$field];
+                $pending_updates_timeline_item[$field] = $new_timeline_item->input[$field];
             }
         }
 
         // No actual updates -> nothing to be done
-        if (count($pending_updates) == 0) {
+        if (count($pending_updates_timeline_item) == 0) {
             return;
         }
 
+        $ticket_pending_updates += $pending_updates_timeline_item;
+        $pending_updates_timeline_item = $ticket_pending_updates;
+
+        $pending_updates_timeline_item['items_id'] = $new_timeline_item->getID();
+        $pending_updates_timeline_item['itemtype'] = $new_timeline_item::getType();
+
         // Update last pending item and parent
-        $last_pending_timeline_item = new $last_pending->fields['itemtype']();
-        $last_pending_timeline_item->getFromDB($last_pending->fields['items_id']);
-        self::updateForItem($last_pending_timeline_item, $pending_updates);
-        self::updateForItem($new_timeline_item->input['_job'], $pending_updates);
+        if ($ticket_pending_updates['pendingreasons_id'] > 0 || $new_timeline_item::getType() !== $last_pending::getType()) {
+            self::createForItem($new_timeline_item, $pending_updates_timeline_item);
+        }
+        self::updateForItem($new_timeline_item->input['_job'], $ticket_pending_updates);
     }
 
     /**

@@ -752,14 +752,15 @@ class Inventory
      */
     public function handleItem()
     {
-       //inject converted assets
-        $this->mainasset->setExtraData($this->data);
-        $this->mainasset->setAssets($this->assets);
-        $this->mainasset->checkConf($this->conf);
-        $item_start = microtime(true);
-        $this->mainasset->handle();
-        $this->item = $this->mainasset->getItem();
-        $this->addBench($this->item->getType(), 'handle', $item_start);
+        if ($this->mainasset->checkConf($this->conf)) {
+            //inject converted assets
+            $this->mainasset->setExtraData($this->data);
+            $this->mainasset->setAssets($this->assets);
+            $item_start = microtime(true);
+            $this->mainasset->handle();
+            $this->item = $this->mainasset->getItem();
+            $this->addBench($this->item->getType(), 'handle', $item_start);
+        }
         return;
     }
 

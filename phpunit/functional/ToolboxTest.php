@@ -855,6 +855,28 @@ HTML;
             $expected_result,
             \Toolbox::convertTagToImage($content_text, $item, $docs_data)
         );
+
+        $content_text2 = <<<HTML
+            <a href="http://example.org/" target="_blank"><img id="{$img_1_tag}" width="10" height="10" /></a>
+        HTML;
+        $expected_result2 = <<<HTML
+            <a href="http://example.org/" target="_blank"><img alt="{$img_1_tag}" width="10" src="{$image_1_src}" /></a>
+        HTML;
+        $this->assertEquals(
+            $expected_result2,
+            \Toolbox::convertTagToImage($content_text2, $item, $docs_data)
+        );
+
+        $content_text3 = <<<HTML
+            <a href="http://example.org/">Some Content<div><img id="{$img_1_tag}" width="10" height="10" /><p>Content</p></div></a>
+        HTML;
+        $expected_result3 = <<<HTML
+            <a href="http://example.org/">Some Content<div><img alt="{$img_1_tag}" width="10" src="{$image_1_src}" /><p>Content</p></div></a>
+        HTML;
+        $this->assertEquals(
+            $expected_result3,
+            \Toolbox::convertTagToImage($content_text3, $item, $docs_data)
+        );
     }
 
     public static function shortenNumbers()

@@ -1218,4 +1218,87 @@ class OperatingSystemTest extends AbstractInventoryAsset
         $this->assertTrue($lockedfield->isHandled($computer));
         $this->assertEmpty($lockedfield->getLockedValues($computer->getType(), $computers_id));
     }
+
+    public function testOSAsSoftware()
+    {
+        $json = <<<JSON
+{
+    "action": "inventory",
+    "content": {
+        "hardware": {
+            "chassis_type": "Desktop",
+            "name": "computer-os-software",
+            "uuid": "3a82e620-d7da-11dd-ad0f-hjlkjuufnccck"
+        },
+        "operatingsystem": {
+            "arch": "x86_64",
+            "full_name": "Fedora 41",
+            "name": "Fedora",
+            "version": "41"
+        },
+        "versionclient": "GLPI-Agent"
+    },
+    "deviceid": "computer-os-change",
+    "itemtype": "Computer"
+}
+JSON;
+
+        $this->login();
+        $this->doInventory(json_decode($json));
+
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDBByCrit(['name' => 'computer-os-software']));
+
+        $soft = new \Software();
+        $soft_version = new \Item_SoftwareVersion();
+        $this->assertCount(0, $soft->find(['name' => 'Fedora 41']));
+        $this->assertCount(
+            0, //no software - OS as software not created
+            $soft_version->find(['itemtype' => 'Computer', 'items_id' => $computer->getID()])
+        );
+
+        $json = <<<JSON
+{
+    "action": "inventory",
+    "content": {
+        "hardware": {
+            "chassis_type": "Desktop",
+            "name": "computer-os-software-2",
+            "uuid": "3a82e620-d7da-11dd-ad0f-hjlkjuufnccck"
+        },
+        "operatingsystem": {
+            "arch": "x86_64",
+            "full_name": "Fedora 42",
+            "name": "Fedora",
+            "version": "42"
+        },
+        "softwares": [
+            {
+                "arch": "x86_64",
+                "from": "rpm",
+                "install_date": "2025-02-19",
+                "name": "Firefox",
+                "version": "135.0.1"
+            }
+        ],
+        "versionclient": "GLPI-Agent"
+    },
+    "deviceid": "computer-os-change",
+    "itemtype": "Computer"
+}
+JSON;
+
+        $this->login();
+        $this->doInventory(json_decode($json));
+
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDBByCrit(['name' => 'computer-os-software-2']));
+
+        $soft = new \Software();
+        $this->assertCount(1, $soft->find(['name' => 'Fedora 42']));
+        $this->assertCount(
+            2, //one software, plus OS
+            $soft_version->find(['itemtype' => 'Computer', 'items_id' => $computer->getID()])
+        );
+    }
 }

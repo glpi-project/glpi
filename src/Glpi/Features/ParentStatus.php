@@ -66,11 +66,15 @@ trait ParentStatus
                     'followup_frequency'          => $input['followup_frequency'] ?? 0,
                     'followups_before_resolution' => $input['followups_before_resolution'] ?? 0,
                     'previous_status'             => $parentitem->fields['status'],
+                    'last_bump_date'              => $input["last_bump_date"] ?? $_SESSION["glpi_currenttime"],
+                    'bump_count'                  => $input["bump_count"] ?? 0,
                 ]);
                 PendingReason_Item::createForItem($this, [
                     'pendingreasons_id'           => $input['pendingreasons_id'] ?? 0,
                     'followup_frequency'          => $input['followup_frequency'] ?? 0,
                     'followups_before_resolution' => $input['followups_before_resolution'] ?? 0,
+                    'last_bump_date'              => $input["last_bump_date"] ?? $_SESSION["glpi_currenttime"],
+                    'bump_count'                  => $input["bump_count"] ?? 0,
                 ]);
             }
         }

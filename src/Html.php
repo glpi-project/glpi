@@ -1575,12 +1575,12 @@ TWIG,
         self::includeHeader($title, $sector, $item, $option, $add_id);
         \Glpi\Debug\Profiler::getInstance()->stop('Html::includeHeader');
 
+        $menu = self::generateMenuSession();
+        $menu = Plugin::doHookFunction("redefine_menus", $menu);
+
         $tmp_active_item = explode("/", $item);
         $active_item     = array_pop($tmp_active_item);
-        $menu            = self::generateMenuSession();
         $menu_active     = $menu[$sector]['content'][$active_item]['title'] ?? "";
-
-        $menu = Plugin::doHookFunction("redefine_menus", $menu);
 
         $tpl_vars = [
             'menu'        => $menu,

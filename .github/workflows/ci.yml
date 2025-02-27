@@ -112,7 +112,7 @@ jobs:
       - name: "Generate matrix"
         id: "generate-matrix"
         run: |
-          if [[ "${{ github.event_name }}" = "workflow_dispatch" || ( "${{ github.ref_type }}" = "branch" && "${{ github.ref_name }}" =~ ^(main|.*/bugfixes)$ ) || "${{ github.ref_type }}" = "tag" ]]; then
+          if [[ "${{ github.event_name }}" = "workflow_dispatch" || ( "${{ github.ref_type }}" = "branch" && "${{ github.ref_name }}" =~ ^(main|.*/bugfixes|security/.*)$ ) || "${{ github.ref_type }}" = "tag" ]]; then
             MATRIX='
               {
                 "include": [
@@ -120,6 +120,8 @@ jobs:
                   {"php-version": "8.4", "db-image": "mysql:8.4"},
                   {"php-version": "8.2", "db-image": "mariadb:11.4"},
                   {"php-version": "8.4", "db-image": "mariadb:10.5"},
+                  {"php-version": "8.4", "db-image": "mysql:8.0"},
+                  {"php-version": "8.4", "db-image": "percona:8.0"},
                   {"php-version": "8.4", "db-image": "percona:8.4"}
                 ]
               }

@@ -117,6 +117,8 @@ class MailCollectorTest extends DbTestCase
         $instance = new \MailCollector();
 
         $oinput = [
+            'mail_server' => 'test',
+            'server_type' => '/imap',
             'passwd'    => 'Ph34r',
             'is_active' => true
         ];
@@ -128,28 +130,37 @@ class MailCollectorTest extends DbTestCase
 
         //empty password means no password.
         $oinput = [
+            'mail_server' => 'test',
+            'server_type' => '/imap',
             'passwd'    => '',
             'is_active' => true
         ];
 
         $this->assertSame(
-            ['is_active' => true],
+            [
+                'mail_server' => 'test',
+                'server_type' => '/imap',
+                'is_active' => true,
+                'host' => '{test/imap}'
+            ],
             $instance->prepareInput($oinput, 'add')
         );
 
         //manage host
         $oinput = [
-            'mail_server' => 'mail.example.com'
+            'mail_server' => 'mail.example.com',
+            'server_type' => '/imap',
         ];
 
         $this->assertSame(
-            ['mail_server' => 'mail.example.com', 'host' => '{mail.example.com}'],
+            ['mail_server' => 'mail.example.com', 'server_type' => '/imap', 'host' => '{mail.example.com/imap}'],
             $instance->prepareInput($oinput, 'add')
         );
 
         //manage host
         $oinput = [
             'mail_server'     => 'mail.example.com',
+            'server_type' => '/imap',
             'server_port'     => 143,
             'server_mailbox'  => 'bugs'
         ];
@@ -157,21 +168,46 @@ class MailCollectorTest extends DbTestCase
         $this->assertSame(
             [
                 'mail_server'      => 'mail.example.com',
+                'server_type' => '/imap',
                 'server_port'      => 143,
                 'server_mailbox'   => 'bugs',
-                'host'             => '{mail.example.com:143}bugs'
+                'host'             => '{mail.example.com:143/imap}bugs'
             ],
             $instance->prepareInput($oinput, 'add')
         );
 
         $oinput = [
+            'mail_server' => 'mail.example.com',
+            'server_type' => '/imap',
             'passwd'          => 'Ph34r',
-            '_blank_passwd'   => true
+            '_blank_passwd'   => true,
         ];
         $this->assertSame(
-            ['passwd' => '', '_blank_passwd' => true],
+            [
+                'mail_server' => 'mail.example.com',
+                'server_type' => '/imap',
+                'passwd' => '',
+                '_blank_passwd' => true,
+                'host' => '{mail.example.com/imap}'
+            ],
             $instance->prepareInputForUpdate($oinput)
         );
+
+        unset($_SESSION['glpicronuserrunning']);
+        $this->assertFalse($instance->prepareInput(['mail_server' => '', 'server_type' => '/imap']));
+        $this->hasSessionMessages(ERROR, [
+            'Mandatory fields are not filled. Please correct: Server'
+        ]);
+
+        $this->assertFalse($instance->prepareInput(['mail_server' => 'test', 'server_type' => '']));
+        $this->hasSessionMessages(ERROR, [
+            'Mandatory fields are not filled. Please correct: Connection options'
+        ]);
+
+        $this->assertFalse($instance->prepareInput([]));
+        $this->hasSessionMessages(ERROR, [
+            'Mandatory fields are not filled. Please correct: Server, Connection options'
+        ]);
     }
 
     public function testCounts()
@@ -186,6 +222,8 @@ class MailCollectorTest extends DbTestCase
         //Add an active collector
         $nid = (int)$instance->add([
             'name'      => 'Maille name',
+            'mail_server' => 'test',
+            'server_type' => '/imap',
             'is_active' => true
         ]);
         $this->assertGreaterThan(0, $nid);

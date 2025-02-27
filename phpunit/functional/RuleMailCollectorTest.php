@@ -38,6 +38,7 @@ namespace tests\units;
 use DbTestCase;
 use Group;
 use Group_User;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
 use RuleAction;
 use RuleCriteria;
@@ -220,5 +221,157 @@ class RuleMailCollectorTest extends DbTestCase
             ],
             $output
         );
+    }
+
+    public static function headerCriteriasProvider()
+    {
+        return [
+            [
+                'headers' =>
+                [
+                    'auto-submitted' => 'auto-replied',
+                ],
+                'rule_param' => [
+                    'match'     => 'AND',
+                    'criterias' => [
+                        [
+                            'criteria'  => 'auto-submitted',
+                            'condition' => Rule::REGEX_MATCH,
+                            'pattern'   => '/^(?!.*no).+$/i',
+                        ],
+                    ],
+                ],
+                'result_match' => true,
+            ],
+            [
+                'headers' =>
+                [
+                    'auto-submitted' => 'no',
+                ],
+                'rule_param' => [
+                    'match'     => 'AND',
+                    'criterias' => [
+                        [
+                            'criteria'  => 'auto-submitted',
+                            'condition' => Rule::REGEX_MATCH,
+                            'pattern'   => '/^(?!.*no).+$/i',
+                        ],
+                    ],
+                ],
+                'result_match' => false,
+            ],
+            [
+                'headers' =>
+                [
+                    'auto-submitted'                                       => 'auto-replied',
+                    'x-ms-exchange-organization-expirationstarttimereason' => 'QuarantineReleased',
+                ],
+                'rule_param' => [
+                    'match'     => 'AND',
+                    'criterias' => [
+                        [
+                            'criteria'  => 'auto-submitted',
+                            'condition' => Rule::REGEX_MATCH,
+                            'pattern'   => '/^(?!.*no).+$/i',
+                        ],
+                        [
+                            'criteria'  => '_headers',
+                            'condition' => Rule::PATTERN_NOT_CONTAIN,
+                            'pattern'   => 'X-MS-Exchange-Organization-ExpirationStartTimeReason: QuarantineReleased',
+                        ],
+                    ],
+                ],
+                'result_match' => false,
+            ],
+            [
+                'headers' =>
+                [
+                    'auto-submitted' => 'auto-replied',
+                ],
+                'rule_param' => [
+                    'match'     => 'AND',
+                    'criterias' => [
+                        [
+                            'criteria'  => 'auto-submitted',
+                            'condition' => Rule::REGEX_MATCH,
+                            'pattern'   => '/^(?!.*no).+$/i',
+                        ],
+                        [
+                            'criteria'  => '_headers',
+                            'condition' => Rule::PATTERN_NOT_CONTAIN,
+                            'pattern'   => 'X-MS-Exchange-Organization-ExpirationStartTimeReason: QuarantineReleased',
+                        ],
+                    ],
+                ],
+                'result_match' => true,
+            ],
+        ];
+    }
+
+    #[DataProvider('headerCriteriasProvider')]
+    public function testHeaderCriterias(
+        array $headers,
+        array $rule_param,
+        bool $result_match
+    ) {
+        $this->login();
+
+        // Delete all existing rule
+        $rule     = new Rule();
+        $rule->deleteByCriteria(['sub_type' => 'RuleMailCollector']);
+
+        // Create rule
+        $rule     = new \RuleMailCollector();
+        $rule_id = $rule->add($rule_input = [
+            'name'         => __FUNCTION__,
+            'match'        => $rule_param['match'],
+            'is_active'    => 1,
+            'sub_type'     => 'RuleMailCollector',
+        ]);
+        $this->checkInput($rule, $rule_id, $rule_input);
+
+        // Add criterias
+        foreach ($rule_param['criterias'] as $criteria_input) {
+            $criteria = new RuleCriteria();
+            $criteria_input['rules_id'] = $rule_id;
+            $criteria_id = $criteria->add($criteria_input);
+            $this->checkInput($criteria, $criteria_id, $criteria_input);
+        }
+
+        // Create action
+        $action   = new RuleAction();
+        $action_id = $action->add($action_input = [
+            'rules_id'    => $rule_id,
+            'action_type' => 'assign',
+            'field'       => '_refuse_email_no_response',
+            'value'       => 1,
+        ]);
+        $this->checkInput($action, $action_id, $action_input);
+
+        // Check rules output: no rule should match
+        $rulecollection = new RuleMailCollectorCollection();
+        $output         = $rulecollection->processAllRules(
+            [],
+            [],
+            ['headers' => $headers]
+        );
+
+        if ($result_match) {
+            $this->assertEquals(
+                [
+                    '_refuse_email_no_response' => 1,
+                    '_ruleid'     => $rule_id,
+                ],
+                $output
+            );
+        } else {
+            $this->assertEquals(
+                [
+                    '_no_rule_matches' => '1',
+                    '_rule_process'    => '',
+                ],
+                $output
+            );
+        }
     }
 }

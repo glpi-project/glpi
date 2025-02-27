@@ -137,7 +137,10 @@ class Item_Enclosure extends CommonDBRelation
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
+                'specific_actions' => [
+                    'purge' => _x('button', 'Delete permanently the relation with selected elements'),
+                ],
             ],
         ]);
     }

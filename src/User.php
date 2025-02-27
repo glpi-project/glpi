@@ -2908,8 +2908,8 @@ JAVASCRIPT;
             echo "<tr class='tab_bg_1'><td></td><td></td></tr>";
         }
 
+        echo "<tr class='tab_bg_1'>";
         if ((!$simplified_form) && ($DB->use_timezones || Session::haveRight("config", READ))) {
-            echo "<tr class='tab_bg_1'>";
             echo "<td><label for='timezone'>" . __s('Time zone') . "</label></td><td>";
             if ($DB->use_timezones) {
                 $timezones = $DB->getTimezones();
@@ -2928,8 +2928,11 @@ JAVASCRIPT;
                 . ' '
                 . sprintf(__s('Run the "%1$s" command to activate it.'), 'php bin/console database:enable_timezones');
             }
-            echo "</td></tr>";
+            echo "</td>";
+        } else {
+            echo '<td colspan="2"></td>';
         }
+        echo '</tr>';
 
         echo "<tr class='tab_bg_1'>";
         $activerand = mt_rand();
@@ -3401,8 +3404,8 @@ JAVASCRIPT;
                 echo "<tr class='tab_bg_1'><td colspan='2'></td></tr>";
             }
 
+            echo '<tr class="tab_bg_1">';
             if ($DB->use_timezones || Session::haveRight("config", READ)) {
-                echo "<tr class='tab_bg_1'>";
                 echo "<td><label for='timezone'>" . __s('Time zone') . "</label></td><td>";
                 if ($DB->use_timezones) {
                     $timezones = $DB->getTimezones();
@@ -3422,14 +3425,13 @@ JAVASCRIPT;
                     . sprintf(__s('Run the "%1$s" command to activate it.'), 'php bin/console database:enable_timezones');
                 }
                 echo "</td>";
-                if (
-                    $extauth
-                    || !Session::haveRight("password_update", "1")
-                ) {
-                    echo "<td colspan='2'></td>";
-                }
-                echo "</tr>";
+            } else {
+                echo '<td colspan="2"></td>';
             }
+            if ($extauth || !Session::haveRight("password_update", READ)) {
+                echo "<td colspan='2'></td>";
+            }
+            echo '</tr>';
 
             $phonerand = mt_rand();
             echo "<tr class='tab_bg_1'><td><label for='textfield_phone$phonerand'>" .  htmlescape(Phone::getTypeName(1)) . "</label></td><td>";
@@ -3449,7 +3451,7 @@ JAVASCRIPT;
                 );
             }
             echo "</td>";
-            echo "<td class='top'>" . _sn('Email', 'Emails', Session::getPluralNumber());
+            echo "<td class='top align-middle'>" . _sn('Email', 'Emails', Session::getPluralNumber());
             UserEmail::showAddEmailButton($this);
             echo "</td><td>";
             UserEmail::showForUser($this);
@@ -5833,7 +5835,7 @@ JAVASCRIPT;
             Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             return;
         }
-        Session::addMessageAfteRredirect(__s('If the given email address match an existing GLPI user, you will receive an email containing the information required to reset your password. Please contact your administrator if you do not receive any email.'));
+        Session::addMessageAfteRredirect(__s('If the given email address corresponds to one and only one GLPI user, you will receive an email containing the information required to reset your password. Please contact your administrator if you do not receive an email.'));
 
         TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'messages_only' => true,

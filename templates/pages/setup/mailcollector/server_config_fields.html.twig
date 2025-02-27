@@ -36,7 +36,9 @@
 {{ fields.textField(
    'mail_server',
    connect_opts['address'],
-   __('Server')
+   __('Server'), {
+       required: true
+   }
 ) }}
 
 {{ fields.textField(

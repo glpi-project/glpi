@@ -204,6 +204,32 @@ class UnmanagedTest extends AbstractInventoryAsset
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 
+        $unmanaged = new \Unmanaged();
+
+        //disable Unmanaged import
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'import_unmanaged' => 0
+            ])
+        );
+        $this->logout();
+
+        $this->doInventory($xml, true);
+        //check unmanaged has **not** been created
+        $this->assertFalse($unmanaged->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']));
+
+        //enable Unmanaged import
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                'import_unmanaged' => 1
+            ])
+        );
+        $this->logout();
+        //proceed new inventory
         $this->doInventory($xml, true);
 
         //no Agent from discovery
@@ -211,7 +237,6 @@ class UnmanagedTest extends AbstractInventoryAsset
         $this->assertCount(1, $agents);
 
         //check for one Unmanaged
-        $unmanaged = new \Unmanaged();
         $this->assertTrue($unmanaged->getFromDbByCrit(['name' => 'DESKTOP-A3J16LF']));
 
         //check last_inventory_update

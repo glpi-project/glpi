@@ -170,8 +170,28 @@ class MailCollector extends CommonDBTM
         $this->fields['is_active']    = 1;
     }
 
-    public function prepareInput(array $input, $mode = 'add'): array
+    public function prepareInput(array $input, $mode = 'add')
     {
+        $missing_fields = [];
+        if (($mode === 'add' || array_key_exists('mail_server', $input)) && empty($input['mail_server'])) {
+            $missing_fields[] = __('Server');
+        }
+        if (($mode === 'add' || array_key_exists('server_type', $input)) && empty($input['server_type'])) {
+            $missing_fields[] = __('Connection options');
+        }
+        if (!empty($missing_fields)) {
+            Session::addMessageAfterRedirect(
+                htmlspecialchars(
+                    sprintf(
+                        __('Mandatory fields are not filled. Please correct: %s'),
+                        implode(', ', $missing_fields)
+                    )
+                ),
+                false,
+                ERROR
+            );
+            return false;
+        }
 
         if (isset($input["passwd"])) {
             if (empty($input["passwd"])) {
@@ -181,7 +201,7 @@ class MailCollector extends CommonDBTM
             }
         }
 
-        if (isset($input['mail_server']) && !empty($input['mail_server'])) {
+        if (isset($input['mail_server'])) {
             $input["host"] = Toolbox::constructMailServerConfig($input);
         }
 
@@ -191,6 +211,9 @@ class MailCollector extends CommonDBTM
     public function prepareInputForUpdate($input)
     {
         $input = $this->prepareInput($input, 'update');
+        if ($input === false) {
+            return false;
+        }
 
         if (isset($input["_blank_passwd"]) && $input["_blank_passwd"]) {
             $input['passwd'] = '';
@@ -203,6 +226,9 @@ class MailCollector extends CommonDBTM
     public function prepareInputForAdd($input)
     {
         $input = $this->prepareInput($input, 'add');
+        if ($input === false) {
+            return false;
+        }
         return $input;
     }
 
@@ -1392,6 +1418,18 @@ class MailCollector extends CommonDBTM
         if (isset($message->in_reply_to)) {
             if ($inreplyto = $message->getHeader('in_reply_to')) {
                 $mail_details['in_reply_to'] = $inreplyto->getFieldValue();
+            }
+        }
+
+        if (isset($message->threadtopic)) {
+            if ($threadtopic = $message->getHeader('threadtopic')) {
+                $mail_details['threadtopic'] = $threadtopic->getFieldValue();
+            }
+        }
+
+        if (isset($message->threadindex)) {
+            if ($threadindex = $message->getHeader('threadindex')) {
+                $mail_details['threadindex'] = $threadindex->getFieldValue();
             }
         }
 
