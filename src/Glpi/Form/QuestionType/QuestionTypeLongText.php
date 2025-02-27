@@ -40,13 +40,14 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\RichTextConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Override;
 
 /**
  * Long answers are multiple lines inputs used to answer questions with as much details as needed.
  */
-final class QuestionTypeLongText extends AbstractQuestionType implements UsedAsCriteriaInterface
+final class QuestionTypeLongText extends AbstractQuestionType implements FormQuestionDataConverterInterface, UsedAsCriteriaInterface
 {
     #[Override]
     public function getFormEditorJsOptions(): string
@@ -186,5 +187,17 @@ TWIG;
         ?JsonFieldInterface $question_config
     ): ConditionHandlerInterface {
         return new RichTextConditionHandler();
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): ?string
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): null
+    {
+        return null;
     }
 }

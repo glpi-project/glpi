@@ -36,14 +36,14 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
-use Html;
 use Override;
 
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
+abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface
 {
     #[Override]
     public function __construct()
@@ -168,6 +168,31 @@ TWIG;
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): array
+    {
+        $default_values = json_decode($rawData['default_values']) ?? [];
+        $options = json_decode($rawData['values']) ?? [];
+
+        if (empty($default_values) && !empty($rawData['default_values'])) {
+            $default_values = [$rawData['default_values']];
+        }
+
+        // Return the indexes of the default values
+        return array_map(function ($value) use ($options) {
+            return array_search($value, $options);
+        }, $default_values);
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): array
+    {
+        $config = new QuestionTypeSelectableExtraDataConfig(
+            options: json_decode($rawData['values']) ?? []
+        );
+        return $config->jsonSerialize();
     }
 
     public function hideOptionsContainerWhenUnfocused(): bool
