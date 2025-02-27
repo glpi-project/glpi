@@ -105,6 +105,8 @@ abstract class AbstractPluginMigration
                 } else {
                     $this->db->rollBack();
                 }
+            } else {
+                $this->result->addMessage(MessageType::Error, __('Migration cannot be done.'));
             }
         } catch (\Throwable $e) {
             $this->result->addMessage(MessageType::Error, __('An unexpected error occured.'));
@@ -177,6 +179,28 @@ abstract class AbstractPluginMigration
         }
 
         return true;
+    }
+
+    /**
+     * Count records from a table with optional conditions
+     *
+     * @param string $table Table name
+     * @param array $conditions Optional WHERE conditions
+     *
+     * @return int Count of records
+     */
+    protected function countRecords(string $table, array $conditions = []): int
+    {
+        $criteria = [
+            'FROM'  => $table,
+            'COUNT' => 'cpt'
+        ];
+
+        if (!empty($conditions)) {
+            $criteria['WHERE'] = $conditions;
+        }
+
+        return $this->db->request($criteria)->current()['cpt'];
     }
 
     /**

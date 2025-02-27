@@ -37,6 +37,7 @@ namespace Glpi\Form\QuestionType;
 
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Group;
 use Override;
@@ -46,7 +47,7 @@ use User;
 /**
  * "Actors" questions represent an input field for actors (requesters, ...)
  */
-abstract class AbstractQuestionTypeActors extends AbstractQuestionType
+abstract class AbstractQuestionTypeActors extends AbstractQuestionType implements FormQuestionDataConverterInterface
 {
     /**
      * Retrieve the allowed actor types
@@ -154,6 +155,24 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
         }
 
         return $actors;
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): mixed
+    {
+        return array_map(
+            fn ($actor_id) => sprintf('%s-%d', User::getForeignKeyField(), $actor_id),
+            json_decode($rawData['default_values']) ?? []
+        );
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): mixed
+    {
+        // Actors question type was always multiple in FormCreator
+        return (new QuestionTypeActorsExtraDataConfig(
+            is_multiple_actors: true
+        ))->jsonSerialize();
     }
 
     /**
