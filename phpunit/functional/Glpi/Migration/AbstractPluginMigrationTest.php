@@ -38,6 +38,7 @@ use Computer;
 use DBmysql;
 use DbTestCase;
 use Entity;
+use Glpi\Asset\AssetDefinition;
 use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
 use Glpi\Migration\PluginMigrationResult;
@@ -489,6 +490,67 @@ class AbstractPluginMigrationTest extends DbTestCase
 
         $this->assertEquals([Computer::class => [$computer_id_4, $computer_id_5]], $result->getCreatedItemsIds());
         $this->assertEquals([Computer::class => [$computer_id_1, $computer_id_2, $computer_id_3]], $result->getReusedItemsIds());
+    }
+
+    public function testImportItemWithErrorAndSessionMessage(): void
+    {
+        // Arrange
+        $db = $this->createMock(DBmysql::class);
+        $logger = $this->createMock(LoggerInterface::class);
+
+        $instance = new class ($db, $logger) extends AbstractPluginMigration {
+            protected function validatePrerequisites(): bool
+            {
+                return true;
+            }
+
+            protected function processMigration(): bool
+            {
+                $this->importItem(
+                    AssetDefinition::class,
+                    [
+                        'system_name' => 'test',
+                        'label'       => 'Test',
+                    ]
+                );
+                $this->importItem(
+                    AssetDefinition::class,
+                    [
+                        'system_name' => 'test',
+                        'label'       => 'Test duplicate',
+                    ]
+                );
+
+                return true;
+            }
+        };
+
+        // Act
+        $result = $instance->execute(simulate: true);
+
+        $definition_id = \getItemByTypeName(AssetDefinition::class, 'Test', true);
+
+        // Assert
+        $this->assertFalse($result->isFullyProcessed());
+        $this->assertTrue($result->hasErrors());
+        $expected_messages = [
+            [
+                'type' => MessageType::Debug,
+                'message' => sprintf('Asset definition "Test" (%d) has been created.', $definition_id),
+            ],
+            [
+                'type' => MessageType::Error,
+                'message' => 'The system name must be unique.',
+            ],
+            [
+                'type' => MessageType::Error,
+                'message' => 'Unable to create Asset definition "Test duplicate".',
+            ],
+        ];
+        $this->assertEquals($expected_messages, $result->getMessages());
+
+        $this->assertEquals([AssetDefinition::class => [$definition_id]], $result->getCreatedItemsIds());
+        $this->assertEquals([], $result->getReusedItemsIds());
     }
 
     public function testMapItem(): void

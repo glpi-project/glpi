@@ -61,7 +61,7 @@ class ConsoleProgressIndicator extends AbstractProgressIndicator
 
         $this->progress_bar = new ProgressBar($output->section());
         $this->progress_bar->setFormat('[%bar%] %percent:3s%%' . PHP_EOL . '<comment>%message%</comment>' . PHP_EOL);
-        $this->progress_bar->setMessage(''); // Empty message on iteration start
+        $this->progress_bar->setMessage('');
         $this->progress_bar->start();
 
         $this->progress_section = $output->section();
