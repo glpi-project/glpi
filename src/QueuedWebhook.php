@@ -255,10 +255,8 @@ class QueuedWebhook extends CommonDBChild
                 $itemtype = $queued_webhook->fields['itemtype'];
                 $item = new $itemtype();
                 $item->getFromDB($queued_webhook->fields['items_id']);
-                $tabs = $item->defineTabs();
-                $has_history_tab = array_key_exists('Log$1', $tabs);
 
-                if ($has_history_tab) {
+                if ($item->dohistory) {
                     Log::history($queued_webhook->fields['items_id'], $queued_webhook->fields['itemtype'], [
                         30, $queued_webhook->fields['last_status_code'], $response->getStatusCode()
                     ], $queued_webhook->fields['id'], Log::HISTORY_SEND_WEBHOOK);
