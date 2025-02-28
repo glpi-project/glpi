@@ -125,7 +125,7 @@ final class EditorManager
 
         // Load possible value operators
         $dropdown_values = [];
-        foreach ($type->getSupportedValueOperators() as $operator) {
+        foreach ($type->getConditionHandler()->getSupportedValueOperators() as $operator) {
             $dropdown_values[$operator->value] = $operator->getLabel();
         }
 
@@ -144,7 +144,7 @@ final class EditorManager
         $type = $question->getType();
 
         if ($type instanceof UsedAsCriteriaInterface) {
-            return $type->getInputTemplateKey();
+            return $type->getConditionHandler()->getInputTemplateKey();
         }
 
         // Safe fallback

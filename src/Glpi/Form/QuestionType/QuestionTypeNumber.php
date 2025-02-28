@@ -35,14 +35,13 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Glpi\Form\Condition\NumberConditionTrait;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\NumberConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Override;
 
 final class QuestionTypeNumber extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
 {
-    use NumberConditionTrait;
-
     #[Override]
     public function getInputType(): string
     {
@@ -71,5 +70,11 @@ final class QuestionTypeNumber extends AbstractQuestionTypeShortAnswer implement
     public function getInputAttributes(): array
     {
         return ['step' => 'any'];
+    }
+
+    #[Override]
+    public function getConditionHandler(): ConditionHandlerInterface
+    {
+        return new NumberConditionHandler();
     }
 }
