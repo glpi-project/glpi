@@ -32,11 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Condition;
+namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\Form\Condition\InputTemplateKey;
+use Glpi\Form\Condition\ValueOperator;
 use Override;
 
-trait NumberConditionTrait
+final class NumberConditionHandler implements ConditionHandlerInterface
 {
     #[Override]
     public function getSupportedValueOperators(): array
