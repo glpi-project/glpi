@@ -1538,57 +1538,6 @@
             }
         }
 
-        .kanban-color-preview,
-        :deep(.kanban-column-title) {
-            &.itilstatus {
-                &.assigned,
-                &.new {
-                    background-color: #49bf4d !important;
-                    color: #000f01 !important;
-                }
-
-                &.accepted {
-                    background-color: green !important;
-                    color: rgb(255, 255, 255) !important;
-                }
-
-                &.refused {
-                    background-color: rgb(167, 47, 0) !important;
-                    color: rgb(19, 5, 0) !important;
-                }
-
-                &.test,
-                &.qualif,
-                &.waiting {
-                    background-color: orange !important;
-                    color: rgb(27, 18, 0) !important;
-                }
-
-                &.approval {
-                    background-color: #8cabdb !important;
-                    color: rgb(18, 24, 36) !important;
-                }
-
-                &.eval {
-                    background-color: lightblue !important;
-                    color: rgb(30, 38, 41) !important;
-                }
-
-                &.closed,
-                &.solved,
-                &.observe,
-                &.canceled {
-                    background-color: black !important;
-                    color: white !important;
-                }
-
-                &.planned {
-                    background-color: #1b2f62 !important;
-                    color: #f3f3f5 !important;
-                }
-            }
-        }
-
         .kanban-color-preview {
             width: 1em;
             height: 1em;

@@ -10144,6 +10144,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'id'           => $status_id,
                     'name'         => $status,
                     'color_class'  => 'itilstatus ' . static::getStatusKey($status_id),
+                    'header_color' => 'var(--status-color)',
                     'drop_only'    => (int) $status_id === self::CLOSED
                 ];
             }
