@@ -758,7 +758,7 @@ describe ('Conditions', () => {
         });
         closeVisibilityConfiguration();
 
-        // Text condition
+        // Text condition:
         addQuestion('My text question');
         getAndFocusQuestion('Test subject').within(() => {
             openVisibilityOptions();

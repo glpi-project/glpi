@@ -35,15 +35,15 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Glpi\Form\Condition\StringConditionTrait;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\StringConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Override;
 use Session;
 
 final class QuestionTypeEmail extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
 {
-    use StringConditionTrait;
-
     #[Override]
     public function getInputType(): string
     {
@@ -66,5 +66,12 @@ final class QuestionTypeEmail extends AbstractQuestionTypeShortAnswer implements
     public function getWeight(): int
     {
         return 20;
+    }
+
+    #[Override]
+    public function getConditionHandler(
+        ?JsonFieldInterface $question_config
+    ): ConditionHandlerInterface {
+        return new StringConditionHandler();
     }
 }

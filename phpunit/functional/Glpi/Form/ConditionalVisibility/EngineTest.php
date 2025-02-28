@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form\Condition;
 
 use DbTestCase;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\Engine;
 use Glpi\Form\Condition\EngineInput;
 use Glpi\Form\Condition\LogicOperator;
@@ -42,7 +43,10 @@ use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Condition\Type;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeDateTime;
+use Glpi\Form\QuestionType\QuestionTypeDateTimeExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
@@ -863,22 +867,679 @@ final class EngineTest extends DbTestCase
         ];
     }
 
+    public static function conditionsOnRichTextValues(): iterable
+    {
+        $type = QuestionTypeLongText::class;
+
+        // Test rich text answers with the EQUALS operator
+        yield "Equals check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>unexpected answer</p>",
+            'expected_result'    => false,
+        ];
+        yield "Equals check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact</p>",
+            'expected_result'    => false,
+        ];
+        yield "Equals check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>answer</p>",
+            'expected_result'    => false,
+        ];
+        yield "Equals check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact answer</p>",
+            'expected_result'    => true,
+        ];
+        yield "Equals check - case 5 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>exact ANSWER</p>",
+            'expected_result'    => true,
+        ];
+
+        // Test rich text answers with the NOT_EQUALS operator
+        yield "Not equals check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>unexpected answer</p>",
+            'expected_result'    => true,
+        ];
+        yield "Not equals check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact</p>",
+            'expected_result'    => true,
+        ];
+        yield "Not equals check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>answer</p>",
+            'expected_result'    => true,
+        ];
+        yield "Not equals check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact answer</p>",
+            'expected_result'    => false,
+        ];
+        yield "Not equals check - case 5 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>exact ANSWER</p>",
+            'expected_result'    => false,
+        ];
+
+        // Test rich text answers with the CONTAINS operator
+        yield "Contains check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>unexpected answer</p>",
+            'expected_result'    => false,
+        ];
+        yield "Contains check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact</p>",
+            'expected_result'    => true,
+        ];
+        yield "Contains check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>answer</p>",
+            'expected_result'    => true,
+        ];
+        yield "Contains check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact answer</p>",
+            'expected_result'    => true,
+        ];
+        yield "Contains check - case 5 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>exact ANSWER</p>",
+            'expected_result'    => true,
+        ];
+
+        // Test rich text answers with the NOT_CONTAINS operator
+        yield "Not contains check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>unexpected answer</p>",
+            'expected_result'    => true,
+        ];
+        yield "Not contains check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact</p>",
+            'expected_result'    => false,
+        ];
+        yield "Not contains check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>answer</p>",
+            'expected_result'    => false,
+        ];
+        yield "Not contains check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact answer</p>",
+            'expected_result'    => false,
+        ];
+        yield "Not contains check - case 5 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>exact ANSWER</p>",
+            'expected_result'    => false,
+        ];
+    }
+
+    public static function conditionsOnTimeValues(): iterable
+    {
+        $type = QuestionTypeDateTime::class;
+        $extra_data = new QuestionTypeDateTimeExtraDataConfig(
+            is_date_enabled: false,
+            is_time_enabled: true,
+        );
+
+        // Test time answers with the EQUALS operator
+        yield "Equals check - case 1 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::EQUALS,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:31",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Equals check - case 2 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::EQUALS,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:29",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Equals check - case 3 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::EQUALS,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:30",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test time answers with the NOT_EQUALS operator
+        yield "Not equals check - case 1 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_EQUALS,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:31",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Not equals check - case 2 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_EQUALS,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:29",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Not equals check - case 3 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_EQUALS,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:30",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test time answers with the GREATER_THAN operator
+        yield "Greater than check - case 1 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:31",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Greater than check - case 2 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:29",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Greater than check - case 3 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:30",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test time answers with the GREATER_THAN_OR_EQUALS operator
+        yield "Greater than or equals check - case 1 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:31",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Greater than or equals check - case 2 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:29",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Greater than or equals check - case 3 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:30",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test time answers with the LESS_THAN operator
+        yield "Less than check - case 1 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:31",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Less than check - case 2 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:29",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Less than check - case 3 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:30",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test time answers with the LESS_THAN_OR_EQUALS operator
+        yield "Less than or equals check - case 1 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:31",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Less than or equals check - case 2 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:29",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Less than or equals check - case 3 for $type (with time)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'     => "15:30",
+            'submitted_answer'    => "15:30",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+    }
+
+    public static function conditionsOnDateValues(): iterable
+    {
+        $type = QuestionTypeDateTime::class;
+        $extra_data = new QuestionTypeDateTimeExtraDataConfig(
+            is_date_enabled: true,
+            is_time_enabled: false,
+        );
+
+        // Test date answers with the EQUALS operator
+        yield "Equals check - case 1 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::EQUALS,
+            'condition_value'     => "2024-02-27",
+            'submitted_answer'    => "2024-02-28",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Equals check - case 2 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::EQUALS,
+            'condition_value'     => "2024-02-28",
+            'submitted_answer'    => "2024-02-26",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Equals check - case 3 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::EQUALS,
+            'condition_value'     => "2024-02-27",
+            'submitted_answer'    => "2024-02-27",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test date answers with the NOT_EQUALS operator
+        yield "Not equals check - case 1 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_EQUALS,
+            'condition_value'     => "2024-02-27",
+            'submitted_answer'    => "2024-02-28",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Not equals check - case 2 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_EQUALS,
+            'condition_value'     => "2024-02-28",
+            'submitted_answer'    => "2024-02-26",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Not equals check - case 3 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_EQUALS,
+            'condition_value'     => "2024-02-27",
+            'submitted_answer'    => "2024-02-27",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test date answers with the GREATER_THAN operator
+        yield "Greater than check - case 1 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN,
+            'condition_value'     => "2024-02-27",
+            'submitted_answer'    => "2024-02-28",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Greater than check - case 2 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN,
+            'condition_value'     => "2024-02-28",
+            'submitted_answer'    => "2024-02-26",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Greater than check - case 3 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN,
+            'condition_value'     => "2024-02-27",
+            'submitted_answer'    => "2024-02-27",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test date answers with the GREATER_THAN_OR_EQUALS operator
+        yield "Greater than or equals check - case 1 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'     => "2024-02-27",
+            'submitted_answer'    => "2024-02-28",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Greater than or equals check - case 2 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'     => "2024-02-28",
+            'submitted_answer'    => "2024-02-26",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Greater than or equals check - case 3 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'     => "2024-02-27",
+            'submitted_answer'    => "2024-02-27",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test date answers with the LESS_THAN operator
+        yield "Less than check - case 1 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN,
+            'condition_value'     => "2024-02-27",
+            'submitted_answer'    => "2024-02-28",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Less than check - case 2 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN,
+            'condition_value'     => "2024-02-28",
+            'submitted_answer'    => "2024-02-26",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Less than check - case 3 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN,
+            'condition_value'     => "2024-02-27",
+            'submitted_answer'    => "2024-02-27",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test date answers with the LESS_THAN_OR_EQUALS operator
+        yield "Less than or equals check - case 1 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'     => "2024-02-27",
+            'submitted_answer'    => "2024-02-28",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Less than or equals check - case 2 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'     => "2024-02-28",
+            'submitted_answer'    => "2024-02-26",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Less than or equals check - case 3 for $type (with date)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'     => "2024-02-27",
+            'submitted_answer'    => "2024-02-27",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+    }
+
+    public static function conditionsOnDateAndTimeValues(): iterable
+    {
+        $type = QuestionTypeDateTime::class;
+        $extra_data = new QuestionTypeDateTimeExtraDataConfig(
+            is_date_enabled: true,
+            is_time_enabled: true,
+        );
+
+        // Test datetime answers with the EQUALS operator
+        yield "Equals check - case 1 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::EQUALS,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:31",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Equals check - case 2 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::EQUALS,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:29",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Equals check - case 3 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::EQUALS,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:30",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test datetime answers with the NOT_EQUALS operator
+        yield "Not equals check - case 1 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_EQUALS,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:31",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Not equals check - case 2 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_EQUALS,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:29",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Not equals check - case 3 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_EQUALS,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:30",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test datetime answers with the GREATER_THAN operator
+        yield "Greater than check - case 1 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:31",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Greater than check - case 2 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:29",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Greater than check - case 3 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:30",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test datetime answers with the GREATER_THAN_OR_EQUALS operator
+        yield "Greater than or equals check - case 1 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:31",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Greater than or equals check - case 2 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:29",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Greater than or equals check - case 3 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:30",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test datetime answers with the LESS_THAN operator
+        yield "Less than check - case 1 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:31",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Less than check - case 2 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:29",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Less than check - case 3 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:30",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+
+        // Test datetime answers with the LESS_THAN_OR_EQUALS operator
+        yield "Less than or equals check - case 1 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:31",
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Less than or equals check - case 2 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:29",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Less than or equals check - case 3 for $type (with datetime)" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
+            'condition_value'     => "2024-02-28 15:30",
+            'submitted_answer'    => "2024-02-28 15:30",
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+    }
+
     /**
      * Similar to `testComputation` but will always use the same simplified form
      * to reduce boilerplate and focus and what is really being tested.
      */
     #[DataProvider('conditionsOnStringValues')]
     #[DataProvider('conditionsOnNumberValues')]
+    #[DataProvider('conditionsOnRichTextValues')]
+    #[DataProvider('conditionsOnTimeValues')]
+    #[DataProvider('conditionsOnDateValues')]
+    #[DataProvider('conditionsOnDateAndTimeValues')]
     public function testSingleComputation(
         string $question_type,
         ValueOperator $condition_operator,
         mixed $condition_value,
         mixed $submitted_answer,
         bool $expected_result,
+        ?JsonFieldInterface $question_extra_data = null,
     ): void {
         // Arrange: create the given form and build the correct input
         $form = new FormBuilder();
-        $form->addQuestion("My condition", $question_type);
+        $form->addQuestion(
+            name: "My condition",
+            type: $question_type,
+            extra_data: $question_extra_data ? json_encode($question_extra_data) : '',
+        );
         $form->addQuestion("Test subject", QuestionTypeShortText::class);
         $form->setQuestionVisibility("Test subject", VisibilityStrategy::VISIBLE_IF, [
             [

@@ -32,51 +32,27 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Condition;
+namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\Form\Condition\ValueOperator;
 use Override;
 
-trait NumberConditionTrait
+final class RichTextConditionHandler extends StringConditionHandler implements ConditionHandlerInterface
 {
-    #[Override]
-    public function getSupportedValueOperators(): array
-    {
-        return [
-            ValueOperator::EQUALS,
-            ValueOperator::NOT_EQUALS,
-            ValueOperator::GREATER_THAN,
-            ValueOperator::GREATER_THAN_OR_EQUALS,
-            ValueOperator::LESS_THAN,
-            ValueOperator::LESS_THAN_OR_EQUALS,
-        ];
-    }
-
-    #[Override]
-    public function getInputTemplateKey(): InputTemplateKey
-    {
-        return InputTemplateKey::NUMBER;
-    }
-
     #[Override]
     public function applyValueOperator(
         mixed $a,
         ValueOperator $operator,
         mixed $b,
     ): bool {
-        // Normalize values.
-        $a = (float) $a;
-        $b = (float) $b;
+        // Normalize strings.
+        $a = strtolower(strval($a));
+        $b = strtolower(strval($b));
 
-        return match ($operator) {
-            ValueOperator::EQUALS                 => $a === $b,
-            ValueOperator::NOT_EQUALS             => $a !== $b,
-            ValueOperator::GREATER_THAN           => $a > $b,
-            ValueOperator::GREATER_THAN_OR_EQUALS => $a >= $b,
-            ValueOperator::LESS_THAN              => $a < $b,
-            ValueOperator::LESS_THAN_OR_EQUALS    => $a <= $b,
+        // Remove HTML tags.
+        $a = strip_tags($a);
+        $b = strip_tags($b);
 
-            // Unsupported operators
-            ValueOperator::CONTAINS, ValueOperator::NOT_CONTAINS => false,
-        };
+        return parent::applyValueOperator($a, $operator, $b);
     }
 }

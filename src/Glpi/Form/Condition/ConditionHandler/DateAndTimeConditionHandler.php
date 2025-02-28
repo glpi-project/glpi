@@ -32,17 +32,16 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Condition;
+namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\InputTemplateKey;
+use Override;
 
-/**
- * Items that implements this interface can be used as a criteria in a condition.
- */
-interface UsedAsCriteriaInterface
+final class DateAndTimeConditionHandler extends AbstractDateTimeConditionHandler
 {
-    public function getConditionHandler(
-        ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface;
+    #[Override]
+    public function getInputTemplateKey(): InputTemplateKey
+    {
+        return InputTemplateKey::DATE_AND_TIME;
+    }
 }

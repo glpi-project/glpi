@@ -32,17 +32,21 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Condition;
+namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\InputTemplateKey;
+use Glpi\Form\Condition\ValueOperator;
 
-/**
- * Items that implements this interface can be used as a criteria in a condition.
- */
-interface UsedAsCriteriaInterface
+interface ConditionHandlerInterface
 {
-    public function getConditionHandler(
-        ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface;
+    /** @return ValueOperator[] */
+    public function getSupportedValueOperators(): array;
+
+    public function getInputTemplateKey(): InputTemplateKey;
+
+    public function applyValueOperator(
+        mixed $a,
+        ValueOperator $operator,
+        mixed $b,
+    ): bool;
 }
