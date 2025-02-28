@@ -179,11 +179,13 @@
                     <i v-if="rights.canModifyView()"
                        class="ti ti-caret-right-filled kanban-collapse-column cursor-pointer" :title="__('Toggle collapse')"
                        @click="toggleFolded()"></i>
-                    <span :class="`kanban-column-title badge ${column_data.color_class || ''}`" v-text="column_data.name"
-                          :style="`${bg_color ? 'background-color:' + bg_color : 'transparent'}; ${text_color ? 'color:' + text_color : 'color: var(--tblr-body-color)'}`"></span>
+                    <span :class="`kanban-column-title badge_block ${column_data.color_class || ''}`" :style="`border-color: ${bg_color}`">
+                        <span :class="`me-1 ${column_data.color_class || ''}`" :style="`background-color: ${bg_color}`"></span>
+                        {{ column_data.name }}
+                    </span>
                 </span>
                 <span class="content-right d-flex">
-                    <span class="kanban_nb badge bg-secondary text-secondary-fg" v-text="card_count"></span>
+                    <span class="kanban_nb badge bg-secondary text-secondary-fg align-content-center" v-text="card_count"></span>
                     <span class="kanban-column-toolbar align-middle">
                         <template v-if="rights.canCreateItem() && (rights.getAllowedColumnsForNewCards().length === 0 || rights.getAllowedColumnsForNewCards().includes(column_id))">
                             <div class="dropdown d-inline-block">
@@ -391,7 +393,6 @@
         flex-direction: column;
         flex: 0 0 auto;
         text-align: center;
-        border-top: 5px solid v-bind(bg_color);
 
         &[data-drop-only="true"] .kanban-body {
             background: #fffa90;
@@ -426,7 +427,6 @@
                         writing-mode: vertical-lr;
                         margin-top: 10px;
                         margin-left: 0;
-                        padding: 12px 3px;
                     }
 
                     .kanban-collapse-column {
@@ -487,7 +487,7 @@
 
             .kanban-column-title {
                 margin-left: 2px;
-                padding: 3px 12px;
+                color: inherit !important;
             }
 
             .kanban_nb {
