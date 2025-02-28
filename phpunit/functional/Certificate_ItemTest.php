@@ -47,7 +47,7 @@ class Certificate_ItemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasCertificatesCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasCertificatesCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -67,7 +67,7 @@ class Certificate_ItemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasCertificatesCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasCertificatesCapacity::class)]);
 
         foreach ($CFG_GLPI['certificate_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {

@@ -47,7 +47,7 @@ class Item_DiskTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasVolumesCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasVolumesCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -67,7 +67,7 @@ class Item_DiskTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasVolumesCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasVolumesCapacity::class)]);
 
         foreach ($CFG_GLPI['disk_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {

@@ -39,6 +39,7 @@ use CommonDBRelation;
 use DisplayPreference;
 use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\CapacityConfig;
 use Log;
 
 /**
@@ -48,6 +49,8 @@ use Log;
  */
 abstract class AbstractCapacity implements CapacityInterface
 {
+    protected ?CapacityConfig $configuration = null;
+
     /**
      * Constructor.
      *
@@ -191,6 +194,10 @@ abstract class AbstractCapacity implements CapacityInterface
     }
 
     public function onCapacityDisabled(string $classname): void
+    {
+    }
+
+    public function onCapacityUpdated(string $classname, ?CapacityConfig $original_config, ?CapacityConfig $updated_config): void
     {
     }
 
@@ -344,5 +351,20 @@ abstract class AbstractCapacity implements CapacityInterface
                 [$itemtype]
             )
         );
+    }
+
+    public function setConfiguration(?CapacityConfig $capacity_config): void
+    {
+        $this->configuration = $capacity_config;
+    }
+
+    public function getConfiguration(): ?CapacityConfig
+    {
+        return $this->configuration;
+    }
+
+    public function getConfigurationValue(string $entry): mixed
+    {
+        return $this->configuration?->getConfig($entry);
     }
 }

@@ -673,7 +673,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $definition = $this->initAssetDefinition(
             'MyCustomAsset',
             capacities: [
-                HasInfocomCapacity::class,
+                new \Glpi\Asset\Capacity(name: HasInfocomCapacity::class),
             ]
         );
 

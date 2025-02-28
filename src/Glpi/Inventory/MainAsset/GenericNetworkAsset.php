@@ -35,7 +35,7 @@
 
 namespace Glpi\Inventory\MainAsset;
 
-class GenericAsset extends Computer
+class GenericNetworkAsset extends NetworkEquipment
 {
     protected function getModelsFieldName(): string
     {

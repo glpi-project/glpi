@@ -47,7 +47,7 @@ class Item_RemoteManagementTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasRemoteManagementCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasRemoteManagementCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -67,7 +67,7 @@ class Item_RemoteManagementTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasRemoteManagementCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasRemoteManagementCapacity::class)]);
 
         foreach ($CFG_GLPI['remote_management_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {

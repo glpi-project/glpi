@@ -37,6 +37,7 @@
 {% set params = params|merge({'candel': false}) %}
 {# do not display footer with dates #}
 {% set params = params|merge({'formfooter': false}) %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block form_fields %}
     <input type="hidden" name="_update_capacities" value="1" />
@@ -67,8 +68,16 @@
                             <i class="{{ capacity.getIcon() }} fa-2x text-secondary"></i>
                         </span>
                         <div class="text-start">
-                            <div class="fw-bold">
-                                {{ capacity.getLabel() }}
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bold">
+                                    {{ capacity.getLabel() }}
+                                </div>
+
+                                {% if get_class(capacity) == 'Glpi\\Asset\\Capacity\\IsInventoriableCapacity' %}
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#itemtype-modal" class="ms-1 btn btn-icon btn-sm btn-ghost-secondary">
+                                        <i class="ti ti-settings"></i>
+                                    </button>
+                                {% endif %}
                             </div>
                             {% if capacity.getDescription() is not empty %}
                             <small class="form-hint">
@@ -87,6 +96,47 @@
                         </div>
                     </div>
                 </label>
+
+                {% if get_class(capacity) == 'Glpi\\Asset\\Capacity\\IsInventoriableCapacity' %}
+                    <div class="modal fade" id="itemtype-modal" tabindex="-1" aria-labelledby="itemtype-modal-label" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="itemtype-modal-label">
+                                        {{ __('Capacity options') }}
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close") }}"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="alert alert-info alert-important d-flex align-items-center" role="alert">
+                                        <i class="ti ti-info-circle me-3 fa-2x"></i>
+                                        <div>
+                                            <h4 class="alert-title">{{ __("Please select the type that represents the best the asset.") }}</h4>
+                                            {{ __("We need this information to send the inventory file in the correct inventory engine of the GLPI framework.") }}
+                                        </div>
+
+                                    </div>
+
+                                    {{ fields.dropdownArrayField(
+                                        'inventory_mainasset',
+                                        item.getCapacityConfigurationValue(capacity, 'inventory_mainasset'),
+                                        capacity.getConfigurationTypes(),
+                                        '',
+                                        {
+                                            'no_label': true,
+                                        }
+                                    ) }}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                                        <i class="ti ti-device-floppy"></i>
+                                        <span>{{ _x('button', 'OK') }}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         {% endfor %}
     </div>

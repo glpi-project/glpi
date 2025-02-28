@@ -36,6 +36,7 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use Glpi\Inventory\Inventory;
 use Item_Environment;
 use Item_Process;
@@ -57,7 +58,7 @@ class IsInventoriableCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("The GLPI agent can report inventory data for these assets");
+        return __("The GLPI agent can report inventory data for these assets.");
     }
 
     public function getSearchOptions(string $classname): array
@@ -164,5 +165,22 @@ class IsInventoriableCapacity extends AbstractCapacity
             'pattern' => $classname
         ];
         $DB->delete(\RuleImportAsset::getTable(), $where, $joins);
+    }
+
+    public function onCapacityUpdated(string $classname, ?CapacityConfig $original_config, ?CapacityConfig $updated_config): void
+    {
+        if ($original_config->getConfig('inventory_mainasset') != $updated_config->getConfig('inventory_mainasset')) {
+            $rules = new \RuleImportAsset();
+            $rules->initRules(true, $classname);
+        }
+    }
+
+    public function getConfigurationTypes(): array
+    {
+        return [
+            \Glpi\Inventory\MainAsset\GenericAsset::class => __('Generic'),
+            \Glpi\Inventory\MainAsset\GenericNetworkAsset::class => \NetworkEquipment::getTypeName(1),
+            \Glpi\Inventory\MainAsset\GenericPrinterAsset::class => \Printer::getTypeName(1),
+        ];
     }
 }

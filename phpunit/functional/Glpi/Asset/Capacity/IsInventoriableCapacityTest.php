@@ -43,9 +43,9 @@ use ReservationItem;
 
 class IsInventoriableCapacityTest extends DbTestCase
 {
-    protected function getTargetCapacity(): string
+    protected function getTargetCapacity(): \Glpi\Asset\Capacity
     {
-        return \Glpi\Asset\Capacity\IsInventoriableCapacity::class;
+        return new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class);
     }
 
     public function testCapacityActivation(): void
@@ -54,21 +54,21 @@ class IsInventoriableCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class),
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class),
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -104,15 +104,15 @@ class IsInventoriableCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class),
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class),
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -176,7 +176,7 @@ class IsInventoriableCapacityTest extends DbTestCase
         ]);
 
         // Check that the capacity can be disabled
-        $capacity = new ($this->getTargetCapacity());
+        $capacity = new ($this->getTargetCapacity()->getName());
         $this->assertFalse($capacity->isUsed($definition->getAssetClassName()));
 
         // Create a dynamic test subject
@@ -187,7 +187,7 @@ class IsInventoriableCapacityTest extends DbTestCase
         ]);
 
         // Check that the capacity can't be safely disabled
-        $capacity = new ($this->getTargetCapacity());
+        $capacity = new ($this->getTargetCapacity()->getName());
         $this->assertTrue($capacity->isUsed($definition->getAssetClassName()));
     }
 
@@ -201,7 +201,7 @@ class IsInventoriableCapacityTest extends DbTestCase
     {
         global $DB;
 
-        $capacity = new ($this->getTargetCapacity());
+        $capacity = new ($this->getTargetCapacity()->getName());
 
         // Retrieve the test root entity
         $entity_id = $this->getTestRootEntity(true);
@@ -244,5 +244,66 @@ class IsInventoriableCapacityTest extends DbTestCase
             'Used by 2 assets',
             $capacity->getCapacityUsageDescription($definition->getAssetClassName())
         );
+    }
+
+    public function testCapacityConfigUpdate(): void
+    {
+        global $DB;
+
+        $rules = new \RuleImportAsset();
+        $this->assertTrue($rules->initRules());
+
+        $definition = $this->initAssetDefinition(
+            capacities: [
+                new \Glpi\Asset\Capacity(
+                    name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
+                    config: new \Glpi\Asset\CapacityConfig([
+                        'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericAsset::class
+                    ])
+                )
+            ]
+        );
+        $classname  = $definition->getAssetClassName();
+
+        //check for specific computer rules
+        $criteria = [
+            'FROM' => \RuleImportAsset::getTable(),
+            'WHERE' => [
+                'sub_type' => \RuleImportAsset::class,
+                'name' => $classname . ' import (by uuid)',
+            ]
+        ];
+        $iterator = $DB->request($criteria);
+        //specific computer rule should be present
+        $this->assertCount(1, $iterator);
+
+        // Update capacity
+        $this->assertTrue(
+            $definition->update([
+                'id' => $definition->getID(),
+                'capacities' => [
+                    new \Glpi\Asset\Capacity(
+                        name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
+                        config: new \Glpi\Asset\CapacityConfig([
+                            'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericNetworkAsset::class
+                        ])
+                    )
+                ]
+            ])
+        );
+        $this->assertTrue($definition->getFromDB($definition->getID()));
+
+        //make sure configuration has been updated in database
+        $this->assertEquals(
+            \Glpi\Inventory\MainAsset\GenericNetworkAsset::class,
+            $definition->getCapacityConfigurationValue(
+                $definition->getCapacity(\Glpi\Asset\Capacity\IsInventoriableCapacity::class),
+                'inventory_mainasset'
+            )
+        );
+
+        //computer specific rule should no longer be present
+        $iterator = $DB->request($criteria);
+        $this->assertCount(0, $iterator);
     }
 }
