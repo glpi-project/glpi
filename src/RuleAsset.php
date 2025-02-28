@@ -181,9 +181,6 @@ class RuleAsset extends Rule
     {
         $actions                                = parent::getActions();
 
-        $actions['name']['name']              = __('Name');
-        $actions['name']['type']              = 'text';
-
         $actions['states_id']['name']           = __('Status');
         $actions['states_id']['type']           = 'dropdown';
         $actions['states_id']['table']          = 'glpi_states';
