@@ -41,4 +41,7 @@ enum InputTemplateKey
 {
     case STRING;
     case NUMBER;
+    case TIME;
+    case DATE;
+    case DATE_AND_TIME;
 }
