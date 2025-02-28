@@ -387,7 +387,7 @@ class Dashboard extends \CommonDBTM
 
         $this->fields['name'] = sprintf(__('Copy of %s'), $this->fields['name']);
         $this->fields['users_id'] = Session::getLoginUserID();
-        $this->key = \Toolbox::slugify($this->fields['name']);
+        $this->key = \Toolbox::slugify($this->fields['name']) . '-' . Uuid::uuid4()->toString();
 
        // replace gridstack_id (with uuid V4) in the copy, to avoid cache issue
         $this->items = array_map(function (array $item) {
