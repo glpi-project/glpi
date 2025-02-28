@@ -89,6 +89,9 @@ class RuleAsset extends Rule
             return $criterias;
         }
 
+        $criterias['name']['name']              = __('Name');
+        $criterias['name']['type']              = 'text';
+
         $criterias['_auto']['name']            = __('Automatic inventory');
         $criterias['_auto']['type']            = 'yesno';
         $criterias['_auto']['table']           = '';
