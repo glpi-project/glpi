@@ -66,9 +66,9 @@ final class QuestionTypeDateTimeExtraDataConfig implements JsonFieldInterface
     public function jsonSerialize(): array
     {
         return [
-            self::IS_DEFAULT_VALUE_CURRENT_TIME => $this->is_default_value_current_time,
-            self::IS_DATE_ENABLED               => $this->is_date_enabled,
-            self::IS_TIME_ENABLED               => $this->is_time_enabled,
+            self::IS_DEFAULT_VALUE_CURRENT_TIME => (int) $this->is_default_value_current_time,
+            self::IS_DATE_ENABLED               => (int) $this->is_date_enabled,
+            self::IS_TIME_ENABLED               => (int) $this->is_time_enabled,
         ];
     }
 

@@ -94,6 +94,7 @@ final class FormData
                 uuid: $question_data['uuid'],
                 name: $question_data['name'],
                 type: new $type(),
+                extra_data: $question_data['extra_data'] ?? null,
             );
         }
     }
