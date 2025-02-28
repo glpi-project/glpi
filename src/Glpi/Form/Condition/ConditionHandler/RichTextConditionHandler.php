@@ -32,29 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Condition;
+namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\Form\Condition\ValueOperator;
 use Override;
 
-trait StringConditionTrait
+final class RichTextConditionHandler extends StringConditionHandler implements ConditionHandlerInterface
 {
-    #[Override]
-    public function getSupportedValueOperators(): array
-    {
-        return [
-            ValueOperator::EQUALS,
-            ValueOperator::NOT_EQUALS,
-            ValueOperator::CONTAINS,
-            ValueOperator::NOT_CONTAINS,
-        ];
-    }
-
-    #[Override]
-    public function getInputTemplateKey(): InputTemplateKey
-    {
-        return InputTemplateKey::STRING;
-    }
-
     #[Override]
     public function applyValueOperator(
         mixed $a,
@@ -65,15 +49,10 @@ trait StringConditionTrait
         $a = strtolower(strval($a));
         $b = strtolower(strval($b));
 
-        return match ($operator) {
-            ValueOperator::EQUALS       => $a === $b,
-            ValueOperator::NOT_EQUALS   => $a !== $b,
-            ValueOperator::CONTAINS     => str_contains($b, $a),
-            ValueOperator::NOT_CONTAINS => !str_contains($b, $a),
+        // Remove HTML tags.
+        $a = strip_tags($a);
+        $b = strip_tags($b);
 
-            // Unsupported operators
-            ValueOperator::GREATER_THAN, ValueOperator::GREATER_THAN_OR_EQUALS => false,
-            ValueOperator::LESS_THAN, ValueOperator::LESS_THAN_OR_EQUALS => false,
-        };
+        return parent::applyValueOperator($a, $operator, $b);
     }
 }

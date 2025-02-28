@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,42 +32,21 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
-use Glpi\Form\Condition\ConditionHandler\StringConditionHandler;
-use Glpi\Form\Condition\UsedAsCriteriaInterface;
-use Override;
+use Glpi\Form\Condition\InputTemplateKey;
+use Glpi\Form\Condition\ValueOperator;
 
-final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
+interface ConditionHandlerInterface
 {
-    #[Override]
-    public function getInputType(): string
-    {
-        return 'text';
-    }
+    /** @return ValueOperator[] */
+    public function getSupportedValueOperators(): array;
 
-    #[Override]
-    public function getName(): string
-    {
-        return __("Text");
-    }
+    public function getInputTemplateKey(): InputTemplateKey;
 
-    #[Override]
-    public function getIcon(): string
-    {
-        return 'ti ti-text-size';
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 10;
-    }
-
-    #[Override]
-    public function getConditionHandler(): ConditionHandlerInterface
-    {
-        return new StringConditionHandler();
-    }
+    public function applyValueOperator(
+        mixed $a,
+        ValueOperator $operator,
+        mixed $b,
+    ): bool;
 }
