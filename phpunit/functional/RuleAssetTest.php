@@ -852,4 +852,55 @@ class RuleAssetTest extends DbTestCase
 
         $this->assertSame('Comment changed', $computer->fields['comment']);
     }
+
+    public function testFormatInventoryNumberWithName()
+    {
+        $this->login();
+
+        $sub_entity = $this->createItem(
+            \Entity::class,
+            [
+                'name'          => 'Subentity',
+                'entities_id'   => 0
+            ]
+        );
+
+        $ruleasset  = new \RuleAsset();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        $ruleid = $ruleasset->add($ruleinput = [
+            'name'         => "rule asset",
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleAsset',
+            'condition'    => \RuleTicket::ONADD,
+            'is_recursive' => 1
+        ]);
+        $this->checkInput($ruleasset, $ruleid, $ruleinput);
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruleid,
+            'criteria'  => 'name',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => "/(.*)/s"
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+        $act_id = $ruleaction->add($act_input = [
+            'rules_id'    => $ruleid,
+            'action_type' => 'regex_result',
+            'field'       => 'otherserial',
+            'value'       => '#0test'
+        ]);
+        $this->checkInput($ruleaction, $act_id, $act_input);
+
+        $computer = new \Computer();
+        $computers_id = (int)$computer->add([
+            'name'        => 'ComputerSubEntity',
+            'entities_id' => $sub_entity->getID()
+        ]);
+
+        $computer->getFromDB($computers_id);
+
+        $this->assertSame('ComputerSubEntitytest', $computer->fields['otherserial']);
+    }
 }
