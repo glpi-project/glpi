@@ -141,7 +141,7 @@ final class Engine
             return false;
         }
 
-        return $question_type->applyValueOperator(
+        return $question_type->getConditionHandler()->applyValueOperator(
             $answer,
             $condition->getValueOperator(),
             $condition->getValue(),

@@ -32,48 +32,21 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Condition;
+namespace Glpi\Form\Condition\ConditionHandler;
 
-use Override;
+use Glpi\Form\Condition\InputTemplateKey;
+use Glpi\Form\Condition\ValueOperator;
 
-trait StringConditionTrait
+interface ConditionHandlerInterface
 {
-    #[Override]
-    public function getSupportedValueOperators(): array
-    {
-        return [
-            ValueOperator::EQUALS,
-            ValueOperator::NOT_EQUALS,
-            ValueOperator::CONTAINS,
-            ValueOperator::NOT_CONTAINS,
-        ];
-    }
+    /** @return ValueOperator[] */
+    public function getSupportedValueOperators(): array;
 
-    #[Override]
-    public function getInputTemplateKey(): InputTemplateKey
-    {
-        return InputTemplateKey::STRING;
-    }
+    public function getInputTemplateKey(): InputTemplateKey;
 
-    #[Override]
     public function applyValueOperator(
         mixed $a,
         ValueOperator $operator,
         mixed $b,
-    ): bool {
-        // Normalize strings.
-        $a = strtolower(strval($a));
-        $b = strtolower(strval($b));
-
-        return match ($operator) {
-            ValueOperator::EQUALS       => $a === $b,
-            ValueOperator::NOT_EQUALS   => $a !== $b,
-            ValueOperator::CONTAINS     => str_contains($b, $a),
-            ValueOperator::NOT_CONTAINS => !str_contains($b, $a),
-
-            // Unsupported operators
-            ValueOperator::GREATER_THAN, ValueOperator::GREATER_THAN_OR_EQUALS => false,
-            ValueOperator::LESS_THAN, ValueOperator::LESS_THAN_OR_EQUALS => false,
-        };
-    }
+    ): bool;
 }

@@ -34,19 +34,12 @@
 
 namespace Glpi\Form\Condition;
 
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+
 /**
  * Items that implements this interface can be used as a criteria in a condition.
  */
 interface UsedAsCriteriaInterface
 {
-    /** @return ValueOperator[] */
-    public function getSupportedValueOperators(): array;
-
-    public function getInputTemplateKey(): InputTemplateKey;
-
-    public function applyValueOperator(
-        mixed $a,
-        ValueOperator $operator,
-        mixed $b,
-    ): bool;
+    public function getConditionHandler(): ConditionHandlerInterface;
 }

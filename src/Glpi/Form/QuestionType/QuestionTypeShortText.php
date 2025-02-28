@@ -35,14 +35,13 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Glpi\Form\Condition\StringConditionTrait;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\StringConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Override;
 
 final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
 {
-    use StringConditionTrait;
-
     #[Override]
     public function getInputType(): string
     {
@@ -65,5 +64,11 @@ final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implem
     public function getWeight(): int
     {
         return 10;
+    }
+
+    #[Override]
+    public function getConditionHandler(): ConditionHandlerInterface
+    {
+        return new StringConditionHandler();
     }
 }
