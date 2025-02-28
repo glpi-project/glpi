@@ -37,12 +37,15 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
+use Glpi\Form\ServiceCatalog\ServiceCatalog;
+use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\RichText\RichText;
+use Glpi\UI\IllustrationManager;
 
 /**
  * KnowbaseItem Class
  **/
-class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
+class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface
 {
     use Glpi\Features\Clonable;
     use Glpi\Features\TreeBrowse;
@@ -224,6 +227,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
         $this->addStandardTab('Document_Item', $ong, $options);
         $this->addStandardTab('KnowbaseItemTranslation', $ong, $options);
+        $this->addStandardTab(ServiceCatalog::getType(), $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
         $this->addStandardTab('KnowbaseItem_Revision', $ong, $options);
         $this->addStandardTab('KnowbaseItem_Comment', $ong, $options);
@@ -2245,5 +2249,35 @@ TWIG, $twig_params);
             ];
         }
         return $params;
+    }
+
+    #[Override]
+    public function getServiceCatalogItemTitle(): string
+    {
+        return $this->fields['name'] ?? "";
+    }
+
+    #[Override]
+    public function getServiceCatalogItemDescription(): string
+    {
+        return $this->fields['description'] ?? "";
+    }
+
+    #[Override]
+    public function getServiceCatalogItemIllustration(): string
+    {
+        return $this->fields['illustration'] ?: IllustrationManager::DEFAULT_ILLUSTRATION;
+    }
+
+    #[Override]
+    public function isServiceCatalogItemPinned(): bool
+    {
+        return $this->fields['is_pinned'] ?? false;
+    }
+
+    #[Override]
+    public function getServiceCatalogLink(): string
+    {
+        return $this->getLinkURL();
     }
 }

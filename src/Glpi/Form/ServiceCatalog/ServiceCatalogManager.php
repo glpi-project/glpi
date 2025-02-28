@@ -38,6 +38,7 @@ namespace Glpi\Form\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\Provider\CategoryProvider;
 use Glpi\Form\ServiceCatalog\Provider\CompositeProviderInterface;
 use Glpi\Form\ServiceCatalog\Provider\FormProvider;
+use Glpi\Form\ServiceCatalog\Provider\KnowbaseItemProvider;
 use Glpi\Form\ServiceCatalog\Provider\LeafProviderInterface;
 
 final class ServiceCatalogManager
@@ -53,6 +54,7 @@ final class ServiceCatalogManager
         $this->providers = [
             new FormProvider(),
             new CategoryProvider(),
+            new KnowbaseItemProvider(),
         ];
     }
 
