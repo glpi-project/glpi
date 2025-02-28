@@ -483,6 +483,7 @@
             transition: all 200ms ease;
 
             .todo-list-state {
+                margin-top: .8rem;
                 order: inherit !important;
                 margin-left: 0.5rem !important;
             }
@@ -515,6 +516,14 @@
                         flex-direction: row-reverse;
                         justify-content: space-between;
 
+                        .timeline-header {
+                            margin-bottom: 0;
+
+                            .timeline-item-buttons {
+                                margin-top: 0;
+                            }
+                        }
+
                         .read-only-content {
                             .state {
                                 display: none;
@@ -528,6 +537,10 @@
 
                             &.done {
                                 text-decoration: line-through;
+                            }
+
+                            .timeline-badges {
+                                display: none;
                             }
                         }
                     }
