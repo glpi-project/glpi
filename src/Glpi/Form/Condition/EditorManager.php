@@ -34,6 +34,8 @@
 
 namespace Glpi\Form\Condition;
 
+use Glpi\Form\QuestionType\AbstractQuestionType;
+
 final class EditorManager
 {
     private FormData $form_data;
@@ -119,13 +121,20 @@ final class EditorManager
 
         // Make sure the question can be used as a criteria.
         $type = $question->getType();
-        if (!$type instanceof UsedAsCriteriaInterface) {
+        if (
+            !is_subclass_of($type, UsedAsCriteriaInterface::class)
+            || !is_subclass_of($type, AbstractQuestionType::class)
+        ) {
             return [];
         }
 
+        // Load question type config
+        $raw_config = $question->getExtraData();
+        $config = $raw_config ? $type->getExtraDataConfig($raw_config) : null;
+
         // Load possible value operators
         $dropdown_values = [];
-        foreach ($type->getConditionHandler()->getSupportedValueOperators() as $operator) {
+        foreach ($type->getConditionHandler($config)->getSupportedValueOperators() as $operator) {
             $dropdown_values[$operator->value] = $operator->getLabel();
         }
 
@@ -143,12 +152,19 @@ final class EditorManager
         $question = $this->findQuestionDataByUuid($condition->getItemUuid());
         $type = $question->getType();
 
-        if ($type instanceof UsedAsCriteriaInterface) {
-            return $type->getConditionHandler()->getInputTemplateKey();
+        if (
+            !is_subclass_of($type, UsedAsCriteriaInterface::class)
+            || !is_subclass_of($type, AbstractQuestionType::class)
+        ) {
+            // Safe fallback
+            return InputTemplateKey::STRING;
         }
 
-        // Safe fallback
-        return InputTemplateKey::STRING;
+        // Load question type config
+        $raw_config = $question->getExtraData();
+        $config = $raw_config ? $type->getExtraDataConfig($raw_config) : null;
+
+        return $type->getConditionHandler($config)->getInputTemplateKey();
     }
 
     private function findQuestionDataByUuid(string $question_uuid): ?QuestionData

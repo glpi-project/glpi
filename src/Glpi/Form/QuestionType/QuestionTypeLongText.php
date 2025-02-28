@@ -36,6 +36,7 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\RichTextConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
@@ -181,8 +182,9 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionHandler(): ConditionHandlerInterface
-    {
+    public function getConditionHandler(
+        ?JsonFieldInterface $question_config
+    ): ConditionHandlerInterface {
         return new RichTextConditionHandler();
     }
 }

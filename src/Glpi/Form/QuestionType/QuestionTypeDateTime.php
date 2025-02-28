@@ -37,13 +37,18 @@ namespace Glpi\Form\QuestionType;
 
 use DateTime;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\DateAndTimeConditionHandler;
+use Glpi\Form\Condition\ConditionHandler\DateConditionHandler;
+use Glpi\Form\Condition\ConditionHandler\TimeConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
+use InvalidArgumentException;
 use Override;
+use RuntimeException;
 
-/**
- * Short answers are single line inputs used to answer simple questions.
- */
-class QuestionTypeDateTime extends AbstractQuestionType
+class QuestionTypeDateTime extends AbstractQuestionType implements UsedAsCriteriaInterface
 {
     #[Override]
     public function getCategory(): QuestionTypeCategory
@@ -310,7 +315,7 @@ TWIG;
                 {# Both date and time can be checked at the same time, but one of them must be checked #}
                 function handleDateAndTimeCheckbox_{{ rand }}(input) {
                     const isChecked = $(input).is(':checked');
-                    const otherInput = $('input[onchange^="handleDateAndTimeCheckbox_{{ rand }}"]:not([name="' + input.name + '"])');
+                    const otherInput = $(input).parent().parent().find('input[onchange^="handleDateAndTimeCheckbox_{{ rand }}"]:not([name="' + input.name + '"])');
 
                     if (!isChecked && otherInput.not(':checked')) {
                         otherInput.prop('checked', true);
@@ -371,5 +376,27 @@ TWIG;
     public function getExtraDataConfigClass(): ?string
     {
         return QuestionTypeDateTimeExtraDataConfig::class;
+    }
+
+    #[Override]
+    public function getConditionHandler(
+        ?JsonFieldInterface $question_config
+    ): ConditionHandlerInterface {
+        if (!$question_config instanceof QuestionTypeDateTimeExtraDataConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        $use_date = $question_config->isDateEnabled();
+        $use_time = $question_config->isTimeEnabled();
+        if ($use_date && !$use_time) {
+            return new DateConditionHandler();
+        } elseif (!$use_date && $use_time) {
+            return new TimeConditionHandler();
+        } elseif ($use_date && $use_time) {
+            return new DateAndTimeConditionHandler();
+        } else {
+            // Impossible, should never happen.
+            throw new RuntimeException();
+        }
     }
 }
