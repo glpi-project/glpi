@@ -53,6 +53,9 @@ class DeviceCamera extends CommonDevice
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Item_Project', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
+
+        // Get parents tabs
+        $ong = array_merge($ong, parent::defineTabs());
         return $ong;
     }
 
