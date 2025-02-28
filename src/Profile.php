@@ -327,7 +327,7 @@ class Profile extends CommonDBTM
             );
         }
 
-        if (isset($input["_managed_domainrecordtypes"])) {
+        if (isset($input["managed_domainrecordtypes"])) {
             if (is_array($input["managed_domainrecordtypes"]) && in_array(-1, $input['managed_domainrecordtypes'])) {
                //when all selected, keep only all
                 $input['managed_domainrecordtypes'] = [-1];
