@@ -36,13 +36,16 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\RichTextConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 use Override;
 
 /**
  * Long answers are multiple lines inputs used to answer questions with as much details as needed.
  */
-final class QuestionTypeLongText extends AbstractQuestionType
+final class QuestionTypeLongText extends AbstractQuestionType implements UsedAsCriteriaInterface
 {
     #[Override]
     public function getFormEditorJsOptions(): string
@@ -175,5 +178,11 @@ TWIG;
     public function formatPredefinedValue(string $value): string
     {
         return $value;
+    }
+
+    #[Override]
+    public function getConditionHandler(): ConditionHandlerInterface
+    {
+        return new RichTextConditionHandler();
     }
 }
