@@ -119,12 +119,19 @@
             itemtype_data: structuredClone(props.supported_itemtypes[itemtype]),
         };
         if (bulk) {
-            opened_form_data.value.itemtype_data.fields = {
-                bulk_item_list: {
-                    type: 'textarea',
-                    value: '',
+            const new_fields = opened_form_data.value.itemtype_data.fields;
+            // Delete all non-hidden fields
+            $.each(new_fields, (name, options) => {
+                if (options.type !== 'hidden') {
+                    delete new_fields[name];
                 }
+            });
+            // Add a textarea for the bulk item list
+            new_fields.bulk_item_list = {
+                type: 'textarea',
+                value: ''
             };
+            opened_form_data.value.itemtype_data.fields = new_fields;
         }
     }
 
