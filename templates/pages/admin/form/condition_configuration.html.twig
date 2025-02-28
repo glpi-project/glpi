@@ -35,6 +35,7 @@
 
 {# Currently selected strategy #}
 {% set selected_strategy = null %}
+{% set strategy_input_name = null %}
 
 {# Configured conditions #}
 {% set conditions = null %}
@@ -50,7 +51,7 @@
                     id="strategy_{{ rand }}"
                     type="radio"
                     class="btn-check"
-                    name="visibility_strategy"
+                    name="{{ strategy_input_name }}"
                     value="{{ strategy.value }}"
                     autocomplete="off"
                     data-glpi-conditions-editor-strategy
@@ -58,6 +59,9 @@
                         checked
                         data-glpi-editor-refresh-checked
                     {% endif %}
+                    {# Will be enabled by the js controller to prevent actions until it is ready #}
+                    disabled
+                    data-glpi-conditions-editor-enable-on-ready
                 >
                 <label
                     for="strategy_{{ rand }}"

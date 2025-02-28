@@ -38,6 +38,8 @@ namespace Glpi\Form\Destination;
 use CommonDBChild;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Condition\ConditionnableTrait;
+use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Form;
 use InvalidArgumentException;
 use LogicException;
@@ -46,6 +48,8 @@ use ReflectionClass;
 
 final class FormDestination extends CommonDBChild
 {
+    use ConditionnableTrait;
+
     /**
      * Parent item is a Form
      */
@@ -188,6 +192,11 @@ final class FormDestination extends CommonDBChild
             $input['config'] = json_encode([]);
         }
 
+        // JSON fields must have a value when created to prevent SQL errors
+        if (!isset($input['conditions'])) {
+            $input['conditions'] = json_encode([]);
+        }
+
         return $input;
     }
 
@@ -255,6 +264,12 @@ final class FormDestination extends CommonDBChild
             $input['config'] = json_encode($input['config']);
         }
 
+        // Encode conditions
+        if (isset($input['_conditions'])) {
+            $input['conditions'] = json_encode($input['_conditions']);
+            unset($input['_conditions']);
+        }
+
         return $input;
     }
 
@@ -276,6 +291,13 @@ final class FormDestination extends CommonDBChild
         }
 
         return new $class();
+    }
+
+    public function getConfiguredCreationStrategy(): CreationStrategy
+    {
+        $strategy_value = $this->fields['creation_strategy'] ?? "";
+        $strategy = CreationStrategy::tryFrom($strategy_value);
+        return $strategy ?? CreationStrategy::ALWAYS_CREATED;
     }
 
     /**
