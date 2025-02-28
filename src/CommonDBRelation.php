@@ -1864,7 +1864,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 ]
             ],
             'WHERE'     => [
-                static::getTable() . '.' . $where_id => $item->fields['id'] ?? 0
+                static::getTable() . '.' . $where_id => $item->fields['id']
             ],
             'ORDER'     => $link_table . '.name'
         ];
@@ -2120,7 +2120,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         $nb = 0;
 
-        $types_iterator = static::getDistinctTypes($item->fields['id'] ?? 0, $extra_types_where);
+        $types_iterator = static::getDistinctTypes($item->fields['id'], $extra_types_where);
         foreach ($types_iterator as $data) {
             if (!getItemForItemtype($data['itemtype'])) {
                 continue;
