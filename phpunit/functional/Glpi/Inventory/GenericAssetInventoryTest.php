@@ -745,7 +745,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
     }
 
     /**
-     * Inventory a generic smartphone asset
+     * Inventory a generic server asset
      *
      * @param array<class-string> $capacities Capacities to activate
      *
@@ -768,7 +768,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
         );
         $classname  = $definition->getAssetClassName();
 
-        //we take a standard phone inventory and just change itemtype to Smartphone
+        //we take a standard phone inventory and just change itemtype to Server
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
         $json->itemtype = $classname;
         $inventory = $this->doInventory($json);
@@ -834,7 +834,6 @@ class GenericAssetInventoryTest extends InventoryTestCase
             'date_mod' => $asset->fields['date_mod'],
             'autoupdatesystems_id' => $autoupdatesystems_id,
             'locations_id' => 0,
-            //'networks_id' => 0,
             'assets_assetdefinitions_id' => $definition->getID(),
             'assets_assettypes_id' => $types_id,
             'assets_assetmodels_id' => $models_id,
@@ -845,12 +844,10 @@ class GenericAssetInventoryTest extends InventoryTestCase
             'is_dynamic' => 1,
             'users_id' => 0,
             'states_id' => 0,
-            //'ticket_tco' => '0.0000',
             'uuid' => '4c4c4544-0034-3010-8048-b6c04f503732',
             'date_creation' => $asset->fields['date_creation'],
             'is_recursive' => 0,
             'last_inventory_update' => $asset->fields['last_inventory_update'],
-            //'last_boot' => '2020-06-09 07:58:08',
             'groups_id' => [],
             'groups_id_tech' => [],
         ];
@@ -899,7 +896,6 @@ class GenericAssetInventoryTest extends InventoryTestCase
         $computer_criteria['WHERE'] = ['itemtype' => $classname];
         $iterator = $DB->request($computer_criteria);
         $this->assertCount(1, $iterator);
-        //$this->assertSame('Computer import (by serial + uuid)', $iterator->current()['name']);
         $this->assertSame($classname . ' import (by serial + uuid)', $iterator->current()['name']);
         $this->assertSame(\Glpi\Inventory\Request::INVENT_QUERY, $iterator->current()['method']);
 
@@ -1410,7 +1406,6 @@ class GenericAssetInventoryTest extends InventoryTestCase
             ],
             'Item_DeviceNetworkCard' => [],
             'Item_DeviceDrive' => [],
-            // 'Item_DeviceBattery' is not tested here, see self::checkComputer1Batteries()
             'Item_DeviceGraphicCard' => [],
             'Item_DeviceSoundCard' => [
                 [

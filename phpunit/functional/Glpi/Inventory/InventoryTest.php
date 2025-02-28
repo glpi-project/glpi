@@ -1922,13 +1922,13 @@ class InventoryTest extends InventoryTestCase
         $this->assertSame('netinventory', $metadata['action']);
 
         global $DB;
-       //check created agent
+        //check created agent
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
         $agents = $DB->request(['FROM' => \Agent::getTable()]);
-       //no agent with deviceid equals to "foo"
+        //no agent with deviceid equals to "foo"
         $this->assertCount(0, $agents);
 
-       //get model, manufacturer, ...
+        //get model, manufacturer, ...
         $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();
         $this->assertIsArray($autoupdatesystems);
         $autoupdatesystems_id = $autoupdatesystems['id'];
