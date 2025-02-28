@@ -110,6 +110,42 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/notificationmailingsetting.form.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Instanceof between Glpi\\\\Controller\\\\LegacyFileLoadController and Glpi\\\\Controller\\\\LegacyFileLoadController will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/front/rule.common.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instanceof between RuleCollection and RuleCollection will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/front/rule.common.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Result of \\|\\| is always false\\.$#',
+	'identifier' => 'booleanOr.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/front/rule.common.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instanceof between Glpi\\\\Controller\\\\LegacyFileLoadController and Glpi\\\\Controller\\\\LegacyFileLoadController will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/front/rule.common.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instanceof between RuleCollection and RuleCollection will always evaluate to true\\.$#',
+	'identifier' => 'instanceof.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/front/rule.common.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Result of \\|\\| is always false\\.$#',
+	'identifier' => 'booleanOr.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/front/rule.common.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Match expression does not handle remaining value\\: mixed$#',
 	'identifier' => 'match.unhandled',
 	'count' => 1,
