@@ -126,7 +126,7 @@ describe('Entity configuration', () => {
 
         // Fill form
         cy.get('@form_id').then((form_id) => {
-            cy.getDropdownByLabelText("Select an item").selectDropdownValue(`»E2ETestEntityForFormDestinationField-${form_id}`);
+            cy.getDropdownByLabelText("My entity question").selectDropdownValue(`»E2ETestEntityForFormDestinationField-${form_id}`);
         });
         cy.findByRole('button', { 'name': 'Send form' }).click();
         cy.findByRole('link', { 'name': 'My test form' }).click();
