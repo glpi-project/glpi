@@ -1446,12 +1446,14 @@
     .kanban {
         position: relative;
         height: 100%;
+        --toolbar-margin: 15px;
+        --toolbar-padding: 10px;
 
         .kanban-toolbar {
             display: flex;
-            margin-bottom: 15px;
+            margin-bottom: var(--toolbar-margin);
             font-size: 14px;
-            padding: 10px;
+            padding: var(--toolbar-padding);
 
             select[name="kanban-board-switcher"] {
                 appearance: auto;
@@ -1477,8 +1479,9 @@
         }
 
         .kanban-container {
-            overflow: auto;
-            min-height: 400px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            height: calc(100vh - var(--glpi-contextbar-height) - var(--glpi-content-margin) - (var(--toolbar-margin) + var(--toolbar-padding) + (0.5625rem * 2) + 1.2rem + 2px));
 
             .kanban-dropdown {
                 position: fixed;
@@ -1535,6 +1538,7 @@
             .kanban-columns {
                 display: flex;
                 overflow-x: auto;
+                height: calc(100% - 75px);
             }
         }
 
