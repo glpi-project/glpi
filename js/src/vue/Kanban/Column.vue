@@ -387,11 +387,9 @@
 
     .kanban-column {
         margin-right: 16px;
-        width: 400px;
-        height: 600px;
         border-radius: 5px;
         flex-direction: column;
-        flex: 0 0 auto;
+        flex: 0 0 400px;
         text-align: center;
 
         &[data-drop-only="true"] .kanban-body {
