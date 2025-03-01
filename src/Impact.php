@@ -1308,9 +1308,11 @@ JS);
         $tooltip = [__("Name") => $item->getFriendlyName(),
             _n("Type", "Types", 1) => $type,
             __("Status") => $states_id,
-            _n("Business criticity", "Business criticities", 1) => $businesscriticities_id,
-            __("Comments") => $item->fields['comment']
+            _n("Business criticity", "Business criticities", 1) => $businesscriticities_id
         ];
+        if (isset($item->fields['comment'])) {
+            $tooltip[__("Comments")] = $item->fields['comment'];
+        }
 
         return $tooltip;
     }
