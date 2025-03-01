@@ -35,6 +35,7 @@
 namespace Glpi\Controller\Form\Condition;
 
 use Glpi\Controller\AbstractController;
+use Glpi\Controller\Form\Utils\CanCheckAccessPolicies;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\Condition\Engine;
 use Glpi\Form\Condition\EngineInput;
@@ -48,12 +49,14 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class EngineController extends AbstractController
 {
+    use CanCheckAccessPolicies;
+
     #[Route(
         "/Form/Condition/Engine",
         name: "glpi_form_condition_engine",
         methods: "POST"
     )]
-    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
     {
         // Load target form
@@ -62,6 +65,8 @@ final class EngineController extends AbstractController
         if (!$form) {
             throw new NotFoundHttpException();
         }
+
+        $this->checkFormAccessPolicies($form, $request);
 
         // Load engine input
         $input = new EngineInput(
