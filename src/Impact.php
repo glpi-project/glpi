@@ -1338,17 +1338,13 @@ JS);
             return false;
         }
 
-        // Get web path to the image matching the itemtype from config
-        $image_name = $CFG_GLPI["impact_asset_types"][get_class($item)] ?? "";
-        $image_name = self::checkIcon($image_name);
-
         $tooltip = self::addTooltip($item);
 
         // Define basic data of the new node
         $new_node = [
             'id'             => $key,
             'label'          => $item->getFriendlyName(),
-            'image'          => $CFG_GLPI['root_doc'] . "/$image_name",
+            'image'          => self::getImpactIcon($item::class, $item->getID()),
             'ITILObjects'    => $item->getITILTickets(true),
             'itemtype'       => $item::getTypeName(),
             'tooltip'        => $tooltip,
