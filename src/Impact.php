@@ -1342,12 +1342,12 @@ JS);
 
         // Define basic data of the new node
         $new_node = [
-            'id'             => $key,
-            'label'          => $item->getFriendlyName(),
-            'image'          => self::getImpactIcon($item::class, $item->getID()),
-            'ITILObjects'    => $item->getITILTickets(true),
-            'itemtype'       => $item::getTypeName(),
-            'tooltip'        => $tooltip,
+            'id'          => $key,
+            'label'       => $item->getFriendlyName(),
+            'image'       => self::getImpactIcon($item::class, $item->getID()),
+            'ITILObjects' => $item->getITILTickets(true),
+            'itemtype'    => $item::getTypeName(),
+            'tooltip'     => $tooltip,
         ];
 
         // Only set GOTO link if the user have READ rights
