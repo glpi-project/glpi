@@ -1338,8 +1338,6 @@ JS);
             return false;
         }
 
-        $tooltip = self::addTooltip($item);
-
         // Define basic data of the new node
         $new_node = [
             'id'          => $key,
@@ -1347,7 +1345,7 @@ JS);
             'image'       => self::getImpactIcon($item::class, $item->getID()),
             'ITILObjects' => $item->getITILTickets(true),
             'itemtype'    => $item::getTypeName(),
-            'tooltip'     => $tooltip,
+            'tooltip'     => self::addTooltip($item),
         ];
 
         // Only set GOTO link if the user have READ rights
