@@ -1348,7 +1348,7 @@ JS);
         $new_node = [
             'id'             => $key,
             'label'          => $item->getFriendlyName(),
-            'image'          => $CFG_GLPI['root_doc'] . "/$image_name",
+            'image'          => self::getImpactIcon($item::class, $item->getID()),
             'ITILObjects'    => $item->getITILTickets(true),
             'itemtype'       => $item::getTypeName(),
             'tooltip'        => $tooltip,
