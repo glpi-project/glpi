@@ -76,6 +76,16 @@ final class Kernel extends BaseKernel
 
     public function __destruct()
     {
+        $this->shutdown();
+    }
+
+    public function shutdown(): void
+    {
+        parent::shutdown();
+
+        \restore_error_handler();
+        \restore_exception_handler();
+
         $this->triggerGlobalsDeprecation();
     }
 

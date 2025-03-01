@@ -32,13 +32,25 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace tests\units\Glpi\Controller;
 
-use Glpi\Controller\ErrorController;
+use Glpi\Exception\RedirectException;
+use GLPIWebTestCase;
 
-return static function (ContainerConfigurator $container): void {
-    $container->extension('framework', [
-        'error_controller' => ErrorController::class,
-        'test' => $container->env() === 'testing',
-    ]);
-};
+class IndexControllerTest extends GLPIWebTestCase
+{
+    public function testAuthenticatedIndex(): void
+    {
+        $client = static::createAuthenticatedClient();
+
+        try {
+            $client->request('GET', '/');
+        } catch (RedirectException $e) {
+            $response = $e->getResponse();
+            self::assertSame(302, $response->getStatusCode());
+            self::assertSame('/front/central.php', $response->getTargetUrl());
+            return;
+        }
+        self::fail('Expected RedirectException to be thrown');
+    }
+}

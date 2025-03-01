@@ -20,5 +20,7 @@
   <php>
     <!-- Code coverage requires about 1.5GB of memory. -->
     <ini name="memory_limit" value="2G" />
+    <env name="KERNEL_CLASS" value="Glpi\Kernel\Kernel" />
+    <env name="APP_ENV" value="testing" />
   </php>
 </phpunit>
