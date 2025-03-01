@@ -1654,17 +1654,17 @@ var GLPIImpact = {
      */
     bindPopper: function(target) {
 
-        let tooltipId = `popper-target-${target.id()}`;
-        let existingTarget = document.getElementById(tooltipId);
+        const tooltipId = `popper-target-${target.id()}`;
+        const existingTarget = document.getElementById(tooltipId);
         if (existingTarget && existingTarget.length !== 0) {
             existingTarget.remove();
         }
 
-        let popper = target.popper({
+        const popper = target.popper({
 
             content: () => {
                 // create div container
-                let tooltip = document.createElement('div');
+                const tooltip = document.createElement('div');
 
                 // adding id for easier JavaScript control
                 tooltip.id = tooltipId;
@@ -1673,21 +1673,21 @@ var GLPIImpact = {
                     // adding class for easier CSS control
                     tooltip.classList.add('target-popper');
 
-                    let targetData = target.data();
-                    let fields = ['tooltip'];
+                    const targetData = target.data();
+                    const fields = ['tooltip'];
                     // loop through target data
-                    for (let prop in targetData) {
+                    for (const prop in targetData) {
                         if (!fields.includes(prop) || !Object.hasOwn(targetData, 'itemtype')) {
                             continue;
                         }
                         if (typeof targetData[prop] === "object") {
-                            let targetArray = targetData[prop];
+                            const targetArray = targetData[prop];
                             Object.keys(targetArray).forEach(function (key) {
-                                let propname = key;
-                                let targetValue = targetArray[key];
+                                const propname = key;
+                                const targetValue = targetArray[key];
 
                                 if (targetValue != null && targetValue != '' && targetValue != '&nbsp;') {
-                                    let d = document.createElement("div");
+                                    const d = document.createElement("div");
                                     tooltip.append($("<h2 />").html(_.escape(propname)).text(), d);
                                     tooltip.append(": ", d);
                                     tooltip.append($('<textarea />').html(targetValue).text(), d);
