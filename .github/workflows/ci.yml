@@ -130,8 +130,10 @@ jobs:
             MATRIX='
               {
                 "include": [
-                  {"php-version": "8.4", "db-image": "mariadb:11.4"},
-                  {"php-version": "8.4", "db-image": "mysql:8.4"}
+                  {"php-version": "8.4", "db-image": "mariadb:11.4", "shard": 1/2},
+                  {"php-version": "8.4", "db-image": "mariadb:11.4", "shard": 2/2},
+                  {"php-version": "8.4", "db-image": "mysql:8.4", "shard": 1/2},
+                  {"php-version": "8.4", "db-image": "mysql:8.4", "shard": 2/2}
                 ]
               }
             '
@@ -192,10 +194,18 @@ jobs:
         run: |
           .github/actions/init_initialize-9.5-db.sh
           docker compose exec -T app .github/actions/test_update-from-9.5.sh
+      - name: "Find and split phpunit test files"
+        if: "${{ success() || failure() }}"
+        uses: remarkablemark/find-and-split@v1
+        id: split_tests
+        with:
+          chunk: ${{ matrix.shard }}
+          directory: phpunit/functional
+          pattern: '*Test.php'
       - name: "PHPUnit tests"
         if: "${{ success() || failure() }}"
         run: |
-          docker compose exec -T app .github/actions/test_tests-phpunit.sh
+          docker compose exec -T app .github/actions/test_tests-phpunit.sh ${{ steps.split_tests.outputs.files }}
       - name: "Functional tests"
         if: "${{ success() || failure() }}"
         run: |
