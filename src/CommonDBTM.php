@@ -5639,7 +5639,7 @@ TWIG, $twig_params);
         $default_options = [
             'force_update'  => false,
             'content_field' => 'content',
-            'name'          => 'filename',
+            'name'          => array_key_exists('_filename', $input) ? 'filename' : ($options['content_field'] ?? 'content'),
             'date'          => null,
         ];
         $options = array_merge($default_options, $options);
