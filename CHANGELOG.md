@@ -342,6 +342,7 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::$deduplicate_queued_notifications` property.
 - `CommonDBTM::getCacheKeyForFriendlyName()`
 - `CommonDBTM::getSNMPCredential()`
+- `CommonDBTM::hasSavedInput()`
 - `CommonDBTM::showDebugInfo()`
 - `CommonDevice::title()`
 - `CommonDropdown::$first_level_menu`, `CommonDropdown::$second_level_menu` and `CommonDropdown::$third_level_menu` properties.
