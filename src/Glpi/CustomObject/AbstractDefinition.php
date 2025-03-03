@@ -129,6 +129,11 @@ abstract class AbstractDefinition extends CommonDBTM
         return (new $class())->getRights();
     }
 
+    public static function getNameField()
+    {
+        return 'label';
+    }
+
     public static function getIcon()
     {
         return 'ti ti-database-cog';
@@ -473,7 +478,10 @@ abstract class AbstractDefinition extends CommonDBTM
                 $has_errors = true;
             } else {
                 $existing_system_names = array_map(static fn ($d) => strtolower($d->fields['system_name'] ?? ''), static::getDefinitionManagerClass()::getInstance()->getDefinitions());
-                if (in_array(strtolower($input['system_name']), $existing_system_names, true)) {
+                if (
+                    ($this->isNewItem() || ($input['system_name'] !== $this->fields['system_name']))
+                    && in_array(strtolower($input['system_name']), $existing_system_names, true)
+                ) {
                     Session::addMessageAfterRedirect(
                         htmlescape(sprintf(
                             __('The system name must be unique.'),

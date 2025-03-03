@@ -9933,6 +9933,7 @@ CREATE TABLE `glpi_assets_assetdefinitions` (
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `system_name` (`system_name`),
+  KEY `label` (`label`),
   KEY `is_active` (`is_active`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
@@ -10056,6 +10057,7 @@ CREATE TABLE `glpi_dropdowns_dropdowndefinitions` (
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `system_name` (`system_name`),
+  KEY `label` (`label`),
   KEY `is_active` (`is_active`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
@@ -10098,9 +10100,14 @@ CREATE TABLE `glpi_assets_customfielddefinitions` (
   `itemtype` VARCHAR(255) NULL DEFAULT NULL,
   `default_value` text,
   `translations` JSON NOT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`assets_assetdefinitions_id`, `system_name`),
-  KEY `system_name` (`system_name`)
+  KEY `system_name` (`system_name`),
+  KEY `label` (`label`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_contracts_users`;
