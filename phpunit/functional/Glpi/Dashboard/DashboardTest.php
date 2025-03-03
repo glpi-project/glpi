@@ -138,20 +138,17 @@ class DashboardTest extends DbTestCase
     public function testClone()
     {
         $clone_name = sprintf(__('Copy of %s'), "Test_Dashboard");
-        $clone_key  = \Toolbox::slugify($clone_name);
-        $this->assertEquals(
-            [
-                'title' => $clone_name,
-                'key'   => $clone_key
-            ],
-            $this->dashboard->cloneCurrent()
-        );
+        $clone_key_prefix = \Toolbox::slugify($clone_name);
+        $clone = $this->dashboard->cloneCurrent();
 
-        $this->assertTrue($this->dashboard->getFromDB($clone_key));
+        $this->assertEquals($clone_name, $clone['title']);
+
+        $this->assertStringStartsWith($clone_key_prefix, $clone['key']);
+
+        $this->assertTrue($this->dashboard->getFromDB($clone['key']));
         $this->assertEquals('core', $this->dashboard->fields['context']);
 
-        $this->assertEquals($clone_key, $this->getPrivateProperty('key'));
-        $this->assertEquals($clone_key, $this->getPrivateProperty('key'));
+        $this->assertEquals($clone['key'], $this->getPrivateProperty('key'));
         $items = $this->getPrivateProperty('items');
         $this->assertCount(3, $items);
         $this->assertCount(4, $this->getPrivateProperty('rights'));
