@@ -34,8 +34,11 @@
 
 namespace Glpi\Console\Migration;
 
+use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Migration\AbstractPluginMigration;
 use Override;
+use Psr\Log\LoggerInterface;
 
 class FormCreatorPluginToCoreCommand extends AbstractPluginMigrationCommand
 {
@@ -52,8 +55,11 @@ class FormCreatorPluginToCoreCommand extends AbstractPluginMigrationCommand
     }
 
     #[Override]
-    public function getMigrationClass(): string
+    public function getMigration(): AbstractPluginMigration
     {
-        return FormMigration::class;
+        /** @var LoggerInterface $PHPLOGGER */
+        global $PHPLOGGER;
+
+        return new FormMigration($this->db, $PHPLOGGER, FormAccessControlManager::getInstance());
     }
 }

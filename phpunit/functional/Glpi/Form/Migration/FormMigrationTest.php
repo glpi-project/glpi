@@ -144,7 +144,7 @@ final class FormMigrationTest extends DbTestCase
          * LoggerInterface $PHPLOGGER
          */
         global $DB, $PHPLOGGER;
-        $migration = new FormMigration($DB, $PHPLOGGER);
+        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
@@ -199,7 +199,7 @@ final class FormMigrationTest extends DbTestCase
          * LoggerInterface $PHPLOGGER
          */
         global $DB, $PHPLOGGER;
-        $migration = new FormMigration($DB, $PHPLOGGER);
+        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
@@ -242,7 +242,7 @@ final class FormMigrationTest extends DbTestCase
          * LoggerInterface $PHPLOGGER
          */
         global $DB, $PHPLOGGER;
-        $migration = new FormMigration($DB, $PHPLOGGER);
+        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
@@ -537,7 +537,7 @@ final class FormMigrationTest extends DbTestCase
          * LoggerInterface $PHPLOGGER
          */
         global $DB, $PHPLOGGER;
-        $migration = new FormMigration($DB, $PHPLOGGER);
+        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
@@ -558,7 +558,7 @@ final class FormMigrationTest extends DbTestCase
          * LoggerInterface $PHPLOGGER
          */
         global $DB, $PHPLOGGER;
-        $migration = new FormMigration($DB, $PHPLOGGER);
+        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
@@ -587,7 +587,7 @@ final class FormMigrationTest extends DbTestCase
          * LoggerInterface $PHPLOGGER
          */
         global $DB, $PHPLOGGER;
-        $migration = new FormMigration($DB, $PHPLOGGER);
+        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
@@ -677,7 +677,7 @@ final class FormMigrationTest extends DbTestCase
          * LoggerInterface $PHPLOGGER
          */
         global $DB, $PHPLOGGER;
-        $migration = new FormMigration($DB, $PHPLOGGER);
+        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 

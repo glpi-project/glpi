@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Migration;
 
+use DBmysql;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
@@ -65,9 +66,28 @@ use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
 use Glpi\Migration\AbstractPluginMigration;
 use LogicException;
+use Psr\Log\LoggerInterface;
 
 final class FormMigration extends AbstractPluginMigration
 {
+    private FormAccessControlManager $formAccessControlManager;
+
+    /**
+     * Store created forms indexed by plugin form ID for quick access
+     * @var array<int, Form>
+     */
+    private array $forms = [];
+
+    public function __construct(
+        DBmysql $db,
+        LoggerInterface $logger,
+        FormAccessControlManager $formAccessControlManager
+    ) {
+        parent::__construct($db, $logger);
+
+        $this->formAccessControlManager = $formAccessControlManager;
+    }
+
     /**
      * Retrieve the map of types to convert
      *
@@ -299,6 +319,9 @@ final class FormMigration extends AbstractPluginMigration
                     )['items_id'] ?? 0,
                 ]
             );
+
+            // Store the form for later use
+            $this->forms[$raw_form['id']] = $form;
 
             $this->mapItem(
                 'PluginFormcreatorForm',
@@ -557,14 +580,11 @@ final class FormMigration extends AbstractPluginMigration
         ]);
 
         foreach ($raw_form_access_rights as $form_access_rights) {
-            $form = Form::getById(
-                $this->getMappedItemTarget(
-                    'PluginFormcreatorForm',
-                    $form_access_rights['forms_id']
-                )['items_id'] ?? 0
-            );
-            if ($form === false) {
-                throw new LogicException("Form with id {$form_access_rights['forms_id']} not found");
+            // Use the stored form instead of loading it from the database
+            $form = $this->forms[$form_access_rights['forms_id']] ?? null;
+
+            if ($form === null) {
+                throw new LogicException("Form with plugin_id {$form_access_rights['forms_id']} not found in memory");
             }
 
             $strategy_class = $this->getStrategyForAccessTypes()[$form_access_rights['access_rights']] ?? null;
@@ -572,8 +592,8 @@ final class FormMigration extends AbstractPluginMigration
                 throw new LogicException("Strategy class not found for access type {$form_access_rights['access_rights']}");
             }
 
-            $manager = FormAccessControlManager::getInstance();
-            $manager->createMissingAccessControlsForForm($form);
+            // Create missing access controls for the form
+            $this->formAccessControlManager->createMissingAccessControlsForForm($form);
 
             $form_access_control = $this->importItem(
                 FormAccessControl::class,
