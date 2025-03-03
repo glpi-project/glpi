@@ -9850,6 +9850,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public static function getKanbanColumns($ID, $column_field = null, $column_ids = [], $get_default = false)
     {
+        // TODO Make this function only return the card data and leave rendering to Vue components. This will deduplicate the data between display and filters.
         if (!in_array($column_field, ['status'])) {
             return [];
         }

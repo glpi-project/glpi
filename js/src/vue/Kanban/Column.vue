@@ -243,7 +243,7 @@
                       :id="card.id" :title="card.title" :card_content="card.content" :icon="getIcon(card)"
                       :metadata="card._metadata" :team="card._team" :title_tooltip="card.title_tooltip"
                       :read_only="card._readonly" :form_link="card._form_link" :rights="rights"
-                      :team_badge_provider="team_badge_provider"
+                      :team_badge_provider="team_badge_provider" :due_date="card.due_date"
                       @kanban:card_delete="emit('kanban:card_delete', {card_id: card.id})"
                       @kanban:card_restore="emit('kanban:card_restore', {card_id: card.id})"
                       @kanban:card_show_details="emit('kanban:card_show_details', {card_id: card.id})"></Card>
@@ -382,6 +382,10 @@
                     width: 2em;
                 }
             }
+        }
+
+        .kanban-item-due-date {
+            margin-right: 10px;
         }
     }
 

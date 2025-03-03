@@ -1835,6 +1835,7 @@ TWIG, $twig_params);
 
     public static function getKanbanColumns($ID, $column_field = null, $column_ids = [], $get_default = false)
     {
+        // TODO Make this function only return the card data and leave rendering to Vue components. This will deduplicate the data between display and filters.
         if ($column_field !== 'projectstates_id') {
             return [];
         }
@@ -1928,6 +1929,7 @@ TWIG, $twig_params);
             $card['_readonly'] = $item['_readonly'];
             $card['_form_link'] = $itemtype::getFormUrlWithID($item['id']);
             $card['_metadata'] = [];
+            $card['due_date'] = $item['plan_end_date'] ? Html::convDateTime($item['plan_end_date']) : '';
             $metadata_values = ['name', 'content', 'is_milestone', 'plan_start_date', 'plan_end_date', 'real_start_date', 'real_end_date',
                 'planned_duration', 'effective_duration', 'percent_done', 'is_deleted', 'date_creation'
             ];
