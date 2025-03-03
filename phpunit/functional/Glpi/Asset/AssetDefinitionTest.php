@@ -455,6 +455,7 @@ class AssetDefinitionTest extends DbTestCase
                 'label' => 'Test',
             ])
         );
+        $definition = new AssetDefinition();
         $this->assertFalse($definition->add([
             'system_name' => 'test',
             'label' => 'Test',

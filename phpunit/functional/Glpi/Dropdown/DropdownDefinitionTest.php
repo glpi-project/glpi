@@ -389,6 +389,7 @@ class DropdownDefinitionTest extends DbTestCase
                 'label' => 'Test',
             ])
         );
+        $definition = new DropdownDefinition();
         $this->assertFalse($definition->add([
             'system_name' => 'test',
             'label' => 'Test',

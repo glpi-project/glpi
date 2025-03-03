@@ -61,6 +61,7 @@ if (!$DB->tableExists('glpi_assets_assetdefinitions')) {
             `date_mod` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
             UNIQUE `system_name` (`system_name`),
+            KEY `label` (`label`),
             KEY `is_active` (`is_active`),
             KEY `date_creation` (`date_creation`),
             KEY `date_mod` (`date_mod`)
@@ -75,6 +76,7 @@ SQL;
         'after' => 'system_name',
         'update' => $DB::quoteName('system_name'),
     ]);
+    $migration->addKey('glpi_assets_assetdefinitions', 'label');
     $migration->addField('glpi_assets_assetdefinitions', 'picture', 'text');
 }
 
@@ -215,47 +217,23 @@ if (!$DB->tableExists('glpi_assets_customfielddefinitions')) {
           `itemtype` VARCHAR(255) NULL DEFAULT NULL,
           `default_value` text,
           `translations` JSON NOT NULL,
+          `date_creation` timestamp NULL DEFAULT NULL,
+          `date_mod` timestamp NULL DEFAULT NULL,
           PRIMARY KEY (`id`),
           UNIQUE KEY `unicity` (`assets_assetdefinitions_id`, `system_name`),
-          KEY `system_name` (`system_name`)
+          KEY `system_name` (`system_name`),
+          KEY `label` (`label`),
+          KEY `date_creation` (`date_creation`),
+          KEY `date_mod` (`date_mod`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
     $DB->doQuery($query);
 } else {
+    $migration->addKey('glpi_assets_customfielddefinitions', 'label');
     $migration->addField('glpi_assets_customfielddefinitions', 'translations', 'JSON NOT NULL', ['update' => "'[]'"]);
     $migration->changeField('glpi_assets_customfielddefinitions', 'name', 'system_name', 'string');
-}
-
-// Dev migration
-// Convert profile rights in glpi_assets_assetdefinitions from an array to OR'd integer like we use in regular glpi_profilerights table
-// TODO Remove before releasing GLPI 11.0 beta.
-$it = $DB->request([
-    'SELECT' => ['id', 'profiles'],
-    'FROM'   => 'glpi_assets_assetdefinitions'
-]);
-foreach ($it as $data) {
-    $profiles = json_decode($data['profiles'], true);
-    $changed = false;
-    if (is_array($profiles)) {
-        foreach ($profiles as $profile_id => $rights) {
-            if (is_array($rights)) {
-                $new_value = 0;
-                foreach ($rights as $right => $is_enabled) {
-                    if ($is_enabled) {
-                        $new_value |= (int)$right;
-                    }
-                }
-                $profiles[$profile_id] = $new_value;
-                $changed = true;
-            }
-        }
-    }
-    if ($changed) {
-        $DB->update('glpi_assets_assetdefinitions', [
-            'id'       => $data['id'],
-            'profiles' => json_encode($profiles)
-        ], [
-            'id' => $data['id']
-        ]);
-    }
+    $migration->addField('glpi_assets_customfielddefinitions', 'date_creation', 'timestamp');
+    $migration->addKey('glpi_assets_customfielddefinitions', 'date_creation');
+    $migration->addField('glpi_assets_customfielddefinitions', 'date_mod', 'timestamp');
+    $migration->addKey('glpi_assets_customfielddefinitions', 'date_mod');
 }

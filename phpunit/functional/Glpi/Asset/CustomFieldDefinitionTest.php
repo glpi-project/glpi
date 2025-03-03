@@ -584,4 +584,46 @@ class CustomFieldDefinitionTest extends DbTestCase
         $_SESSION['glpilanguage'] = 'fr_FR';
         $this->assertEquals('test_fr', $field->getFriendlyName());
     }
+
+    public function testSystemNameUpdate(): void
+    {
+        $asset_definition = $this->initAssetDefinition();
+
+        $field = $this->createItem(
+            \Glpi\Asset\CustomFieldDefinition::class,
+            [
+                'assets_assetdefinitions_id' => $asset_definition->getID(),
+                'system_name' => 'test',
+                'type' => StringType::class,
+            ]
+        );
+
+        $updated = $field->update([
+            'id' => $field->getID(),
+            'system_name' => 'changed',
+        ]);
+        $this->assertFalse($updated);
+        $this->hasSessionMessages(ERROR, ['The system name cannot be changed.']);
+    }
+
+    public function testTypeUpdate(): void
+    {
+        $asset_definition = $this->initAssetDefinition();
+
+        $field = $this->createItem(
+            \Glpi\Asset\CustomFieldDefinition::class,
+            [
+                'assets_assetdefinitions_id' => $asset_definition->getID(),
+                'system_name' => 'test',
+                'type' => StringType::class,
+            ]
+        );
+
+        $updated = $field->update([
+            'id' => $field->getID(),
+            'type' => BooleanType::class,
+        ]);
+        $this->assertFalse($updated);
+        $this->hasSessionMessages(ERROR, ['The field type cannot be changed.']);
+    }
 }

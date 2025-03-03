@@ -58,6 +58,7 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowndefinitions')) {
             PRIMARY KEY (`id`),
             UNIQUE KEY `system_name` (`system_name`),
             KEY `is_active` (`is_active`),
+            KEY `label` (`label`),
             KEY `date_creation` (`date_creation`),
             KEY `date_mod` (`date_mod`)
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
@@ -68,6 +69,7 @@ SQL;
         'after' => 'system_name',
         'update' => $DB::quoteName('system_name'),
     ]);
+    $migration->addKey('glpi_dropdowns_dropdowndefinitions', 'label');
 }
 
 if (!$DB->tableExists('glpi_dropdowns_dropdowns')) {
@@ -99,6 +101,5 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowns')) {
 SQL;
     $DB->doQuery($query);
 } else {
-    // TODO Remove it before the GLPI 11.0 final release.
     $migration->dropField('glpi_dropdowns_dropdowns', 'is_deleted');
 }
