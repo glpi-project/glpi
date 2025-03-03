@@ -44,6 +44,109 @@ class ValidationStep extends \CommonDropdown
     }
 
     /**
+     * Ensure there is always a default validation step
+     * and eventually set it as default.
+     */
+    public function pre_deleteItem()
+    {
+        if (count($this->find([])) == 1) {
+            return false;
+        }
+
+        return parent::pre_deleteItem();
+    }
+
+    public function post_deleteItem()
+    {
+        throw new LogicException('This method should not be called, not a deletable item');
+//        if($this->isDefault()) {
+//            $this->setAnotherAsDefault();
+//        }
+//
+//        parent::post_deleteItem();
+    }
+
+    public function post_purgeItem()
+    {
+        if ($this->isDefault()) {
+            $this->setAnotherAsDefault();
+        }
+
+        parent::post_purgeItem();
+    }
+
+    public function post_addItem()
+    {
+        if ($this->isDefault()) {
+            $this->removeDefaultToOthers();
+        }
+
+        parent::post_addItem();
+    }
+
+    public function post_updateItem($history = true)
+    {
+        if ($this->isDefault()) {
+            $this->removeDefaultToOthers(); // @todo ajouter condition
+        }
+
+        if (!$this->isDefault() && $this->wasDefault()) {
+            $this->setAnotherAsDefault();
+        }
+
+        parent::post_updateItem($history);
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        $is_input_valid = true;
+        // name is mandatory
+        if (!isset($input['name']) || strlen($input['name']) < 3) {
+            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory'), 'name'), message_type: ERROR);
+            $is_input_valid = false;
+        }
+
+        // percent is mandatory and must be a percentage
+        if (!isset($input['mininal_required_validation_percent']) || !is_numeric($input['mininal_required_validation_percent']) || $input['mininal_required_validation_percent'] < 0 || $input['mininal_required_validation_percent'] > 100) {
+            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory and must be beetween 0 and 100.'), 'mininal_required_validation_percent'), message_type: ERROR);
+            $is_input_valid = false;
+        }
+
+        if (!$is_input_valid) {
+            return false;
+        }
+
+        return parent::prepareInputForAdd($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $is_input_valid = true;
+
+        // name is mandatory
+        if (isset($input['name']) && strlen($input['name']) < 3) {
+            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory'), 'name'), message_type: ERROR);
+            $is_input_valid = false;
+        }
+
+        // percent is mandatory and must be a percentage
+        if (
+            isset($input['mininal_required_validation_percent'])
+            && (!is_numeric($input['mininal_required_validation_percent']) || $input['mininal_required_validation_percent'] < 0 || $input['mininal_required_validation_percent'] > 100)
+        ) {
+            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory and must be beetween 0 and 100.'), 'mininal_required_validation_percent'), message_type: ERROR);
+            $is_input_valid = false;
+        }
+
+        if (!$is_input_valid) {
+            return false;
+        }
+
+        return parent::prepareInputForUpdate($input);
+    }
+
+
+    /**
      * Default Validation steps data
      *
      * @return array<int, array<string, mixed>>
@@ -61,5 +164,40 @@ class ValidationStep extends \CommonDropdown
                 'comment' => '',
             ],
         ];
+    }
+
+    private function removeDefaultToOthers(): void
+    {
+        $all_except_this = $this->find(['is_default' => 1, ['NOT' => ['id' => $this->getID()]]]);
+        foreach ($all_except_this as $to_update) {
+            $vs = new self();
+            $vs->update([
+                'id' => $to_update['id'],
+                'is_default' => 0
+            ]);
+        }
+    }
+
+    private function setAnotherAsDefault(): void
+    {
+        $all_except_this = $this->find([['NOT' => ['id' => $this->getID()]]]);
+        if (empty($all_except_this)) {
+            throw new LogicException('no other validation to set as default but there should always remain a validation step - this should not happen, review the code');
+        }
+        $first = array_shift($all_except_this);
+        (new self())->update([
+            'id' => $first['id'],
+            'is_default' => 1
+        ]);
+    }
+
+    private function isDefault(): bool
+    {
+        return $this->getField('is_default') == 1;
+    }
+
+    private function wasDefault(): bool
+    {
+        return isset($this->oldvalues['is_default']) && $this->oldvalues['is_default'] == 1;
     }
 }
