@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,13 +33,42 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-use Glpi\Controller\ErrorController;
+class GLPIWebTestCase extends WebTestCase
+{
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Session::destroy();
+    }
 
-return static function (ContainerConfigurator $container): void {
-    $container->extension('framework', [
-        'error_controller' => ErrorController::class,
-        'test' => $container->env() === 'testing',
-    ]);
-};
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        Session::destroy();
+    }
+
+    protected static function login(string $user_name = \TU_USER, string $user_pass = \TU_PASS, bool $noauto = true): void
+    {
+        Session::start();
+
+        $auth = new Auth();
+        self::assertTrue($auth->login($user_name, $user_pass, $noauto));
+    }
+
+    protected static function createAuthenticatedClient(
+        string $user_name = \TU_USER,
+        string $user_pass = \TU_PASS,
+        bool $noauto = true,
+        array $options = [],
+        array $server = [],
+    ): KernelBrowser {
+        $client = static::createClient($options, $server);
+
+        self::login($user_name, $user_pass, $noauto);
+
+        return $client;
+    }
+}
