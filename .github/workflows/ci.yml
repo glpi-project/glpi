@@ -130,10 +130,10 @@ jobs:
             MATRIX='
               {
                 "include": [
-                  {"php-version": "8.4", "db-image": "mariadb:11.4", "shard": 1/2},
-                  {"php-version": "8.4", "db-image": "mariadb:11.4", "shard": 2/2},
-                  {"php-version": "8.4", "db-image": "mysql:8.4", "shard": 1/2},
-                  {"php-version": "8.4", "db-image": "mysql:8.4", "shard": 2/2}
+                  {"php-version": "8.4", "db-image": "mariadb:11.4", "shard": "1/2"},
+                  {"php-version": "8.4", "db-image": "mariadb:11.4", "shard": "2/2"},
+                  {"php-version": "8.4", "db-image": "mysql:8.4", "shard": "1/2"},
+                  {"php-version": "8.4", "db-image": "mysql:8.4", "shard": "2/2"}
                 ]
               }
             '
