@@ -123,4 +123,26 @@ class TicketValidation extends CommonITILValidation
 
         return $values;
     }
+
+    public function prepareInputForAdd($input)
+    {
+        // validation step is mandatory
+        if (!isset($input['validationsteps_id'])) {
+            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory'), 'validationsteps_id'), message_type: ERROR);
+            return false;
+        }
+
+        return parent::prepareInputForAdd($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        // validation step is mandatory
+        if (isset($input['validationsteps_id']) && !is_numeric($input['validationsteps_id'])) { // @todo vérifier si existe en base
+            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory'), 'validationsteps_id'), message_type: ERROR);
+            return false;
+        }
+
+        return parent::prepareInputForUpdate($input);
+    }
 }
