@@ -215,8 +215,11 @@ class NetworkEquipment extends MainAsset
             $mports = $this->getManagementPorts();
             $np = new NetworkPort($this->item, $mports);
             if ($np->checkConf($this->conf)) {
-                $np->setAgent($this->getAgent());
-                $np->setEntityID($this->getEntityID());
+                $np
+                    ->setMainAsset($this)
+                    ->setAgent($this->getAgent())
+                    ->setEntityID($this->getEntityID())
+                ;
                 $np->prepare();
                 $np->handleLinks();
                 if (!isset($this->assets['\Glpi\Inventory\Asset\NetworkPort'])) {

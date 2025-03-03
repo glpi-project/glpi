@@ -595,7 +595,16 @@ class Inventory
         if (class_exists($main_class)) {
             return $main_class;
         }
-        return $class_ns . 'GenericAsset';
+
+        //not found, so we have a generic asset. Let's retrieve its MainAsset class
+        if (method_exists($this->item, 'getCapacity')) {
+            $inventoriable_capacity = $this->item->getCapacity(\Glpi\Asset\Capacity\IsInventoriableCapacity::class);
+            $main_class = $inventoriable_capacity->getConfigurationValue('inventory_mainasset');
+        }
+        if ($main_class === null || !class_exists($main_class)) {
+            $main_class = $class_ns . 'GenericAsset';
+        }
+        return $main_class;
     }
 
     /**
