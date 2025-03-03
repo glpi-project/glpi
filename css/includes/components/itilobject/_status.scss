@@ -34,7 +34,9 @@
 .itilstatus,
 .validationstatus {
     --status-color: inherit;
+
     color: var(--status-color);
+
     &.assigned,
     &.new {
         --status-color: #49bf4d;
