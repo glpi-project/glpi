@@ -782,7 +782,7 @@ final class SQLProvider implements SearchProviderInterface
                             ]
                         ];
                     } else {
-                        $criteria['OR'][] = "0";
+                        $criteria['OR'][] = new QueryExpression('false');
                     }
 
                     if (Session::haveRight("ticket", \Ticket::READGROUP)) {
