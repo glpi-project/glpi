@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d2c08a0cf6c15bb89b4f1614a4da3f31",
+    "content-hash": "daa2259e84f68e8234f49f0c619ff6f4",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -1974,16 +1974,16 @@
         },
         {
             "name": "lcobucci/jwt",
-            "version": "5.4.2",
+            "version": "5.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lcobucci/jwt.git",
-                "reference": "ea1ce71cbf9741e445a5914e2f67cdbb484ff712"
+                "reference": "a835af59b030d3f2967725697cf88300f579088e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/ea1ce71cbf9741e445a5914e2f67cdbb484ff712",
-                "reference": "ea1ce71cbf9741e445a5914e2f67cdbb484ff712",
+                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/a835af59b030d3f2967725697cf88300f579088e",
+                "reference": "a835af59b030d3f2967725697cf88300f579088e",
                 "shasum": ""
             },
             "require": {
@@ -2031,7 +2031,7 @@
             ],
             "support": {
                 "issues": "https://github.com/lcobucci/jwt/issues",
-                "source": "https://github.com/lcobucci/jwt/tree/5.4.2"
+                "source": "https://github.com/lcobucci/jwt/tree/5.5.0"
             },
             "funding": [
                 {
@@ -2043,7 +2043,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2024-11-07T12:54:35+00:00"
+            "time": "2025-01-26T21:29:45+00:00"
         },
         {
             "name": "league/commonmark",
@@ -2595,16 +2595,16 @@
         },
         {
             "name": "league/oauth2-server",
-            "version": "9.1.0",
+            "version": "9.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-server.git",
-                "reference": "d511107cb018ead0bd84f86402b086306738c686"
+                "reference": "00323013403e1a1e0f424affafca56c28b60c22c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/d511107cb018ead0bd84f86402b086306738c686",
-                "reference": "d511107cb018ead0bd84f86402b086306738c686",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/00323013403e1a1e0f424affafca56c28b60c22c",
+                "reference": "00323013403e1a1e0f424affafca56c28b60c22c",
                 "shasum": ""
             },
             "require": {
@@ -2679,7 +2679,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/oauth2-server/issues",
-                "source": "https://github.com/thephpleague/oauth2-server/tree/9.1.0"
+                "source": "https://github.com/thephpleague/oauth2-server/tree/9.2.0"
             },
             "funding": [
                 {
@@ -2687,7 +2687,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-11-21T22:47:09+00:00"
+            "time": "2025-02-15T00:49:10+00:00"
         },
         {
             "name": "league/uri",
