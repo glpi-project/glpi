@@ -904,9 +904,7 @@ final class SQLProvider implements SearchProviderInterface
                             ];
                         }
                     } else {
-                        $criteria['OR'][] = [
-                            '0' => '1'
-                        ];
+                        $criteria['OR'][] = new QueryExpression('false');
                     }
                 }
                 break;
@@ -932,9 +930,7 @@ final class SQLProvider implements SearchProviderInterface
 
                 // If the user can't see public and private
                 if (!count($allowed_is_private)) {
-                    $criteria = [
-                        '0' => '1'
-                    ];
+                    $criteria = new QueryExpression('false');
                     break;
                 }
 
@@ -969,9 +965,7 @@ final class SQLProvider implements SearchProviderInterface
 
                 // If the user can't see public and private
                 if (!count($allowed_is_private)) {
-                    $criteria = [
-                        '0' => '1'
-                    ];
+                    $criteria = new QueryExpression('false');
                     break;
                 }
 
