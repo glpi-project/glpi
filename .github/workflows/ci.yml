@@ -221,7 +221,7 @@ jobs:
     # Do not run scheduled tests on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
     name: "E2E and web tests using latest PHP and MariaDB versions"
-    runs-on: "buildjet-8vcpu-ubuntu-2204"
+    runs-on: "buildjet-16vcpu-ubuntu-2204"
     timeout-minutes: 60
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
