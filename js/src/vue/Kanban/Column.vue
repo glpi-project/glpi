@@ -298,6 +298,21 @@
             }
         }
 
+        .kanban-description-preview {
+            padding: 0 10px;
+            white-space: break-spaces;
+            max-height: 3em;
+            overflow: hidden;
+        }
+        @supports (display: -webkit-box) and (-webkit-line-clamp: 7) and (-webkit-box-orient: vertical) {
+            .kanban-description-preview {
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                max-height: none;
+            }
+        }
+
         &.filtered-out {
             display: none;
         }

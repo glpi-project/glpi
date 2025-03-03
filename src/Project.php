@@ -1871,7 +1871,6 @@ TWIG, $twig_params);
             $card = [
                 'id'              => "{$itemtype}-{$item['id']}",
                 'title'           => $item['name'],
-                'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'] ?? "", false, true), 100),
             ];
 
             $content = "<div class='kanban-plugin-content'>";
@@ -1939,7 +1938,7 @@ TWIG, $twig_params);
                 }
             }
             if (isset($card['_metadata']['content']) && is_string($card['_metadata']['content'])) {
-                $card['_metadata']['content'] = Glpi\RichText\RichText::getTextFromHtml($card['_metadata']['content'], false, true);
+                $card['_metadata']['content'] = Glpi\RichText\RichText::getTextFromHtml(content: $card['_metadata']['content'], preserve_line_breaks: true);
             } else {
                 $card['_metadata']['content'] = '';
             }
