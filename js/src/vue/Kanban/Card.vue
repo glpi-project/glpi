@@ -97,7 +97,7 @@
         <div class="kanban-item-header d-flex justify-content-between">
             <span class="kanban-item-title d-flex align-items-center">
                 <i :class="icon"></i>
-                <span class="cursor-pointer" v-text="title" :title="title_tooltip" @click="emit('kanban:card_show_details')"></span>
+                <span class="cursor-pointer" v-text="title" @click="emit('kanban:card_show_details')"></span>
             </span>
             <div class="dropdown">
                 <button type="button" class="kanban-item-overflow-actions cursor-pointer pt-0 b-0"
@@ -125,6 +125,7 @@
                 </ul>
             </div>
         </div>
+        <div v-if="metadata.content" class="kanban-description-preview" v-text="metadata.content"></div>
         <div class="kanban-item-content" v-html="card_content"></div>
         <div class="d-flex justify-content-between">
             <div class="kanban-item-team position-relative">
