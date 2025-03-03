@@ -1209,8 +1209,20 @@ TWIG, $twig_params);
         //add extra rules for active generic assets
         $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
         foreach ($definitions as $definition) {
-            if ($definition->hasCapacityEnabled(new \Glpi\Asset\Capacity\IsInventoriableCapacity())) {
-                $this->addGenericAssetRules($rules, $definition->getAssetClassName());
+            if ($capacity = $definition->getCapacity(\Glpi\Asset\Capacity\IsInventoriableCapacity::class)) {
+                $asset_classname = $definition->getAssetClassName();
+                $main_asset = $capacity->getConfigurationValue('inventory_mainasset');
+
+                $origin_rule_itemtype = \Computer::class;
+                switch ($main_asset) {
+                    case \Glpi\Inventory\MainAsset\GenericNetworkAsset::class:
+                        $origin_rule_itemtype = \NetworkEquipment::class;
+                        break;
+                    case \Glpi\Inventory\MainAsset\GenericPrinterAsset::class:
+                        $origin_rule_itemtype = \Printer::class;
+                        break;
+                }
+                $this->addGenericAssetRules($rules, $asset_classname, $origin_rule_itemtype);
             }
         }
 
@@ -1220,7 +1232,7 @@ TWIG, $twig_params);
     public function addGenericAssetRules(
         SimpleXMLElement $rules,
         string $itemtype_to,
-        string $itemtype_from = \Computer::class
+        string $itemtype_from
     ): void {
         $extra_rules = $rules->xpath(
             sprintf(

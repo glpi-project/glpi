@@ -413,7 +413,7 @@ class DbTestCase extends \GLPITestCase
      * Initialize a definition.
      *
      * @param ?string $system_name
-     * @param array $capacities
+     * @param \Glpi\Asset\Capacity[] $capacities
      * @param ?array $profiles
      *
      * @return AssetDefinition
@@ -446,7 +446,7 @@ class DbTestCase extends \GLPITestCase
         );
         $this->assertEquals(
             $capacities,
-            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+            array_values($this->callPrivateMethod($definition, 'getDecodedCapacities'))
         );
         $this->assertEquals(
             $profiles,
@@ -545,7 +545,7 @@ class DbTestCase extends \GLPITestCase
         // Ensure capacity was added
         $this->assertContains(
             $capacity,
-            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+            $this->callPrivateMethod($definition, 'getDecodedCapacities')
         );
 
         return $definition;
@@ -585,7 +585,7 @@ class DbTestCase extends \GLPITestCase
         // Ensure capacity was deleted
         $this->assertNotContains(
             $capacity,
-            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+            $this->callPrivateMethod($definition, 'getDecodedCapacities')
         );
 
         return $definition;
