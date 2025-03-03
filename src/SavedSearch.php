@@ -87,9 +87,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                      = __('Unset as default');
         $actions[get_called_class() . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_count_method']
                      = __('Change count method');
+        $actions[get_called_class() . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_visibility']
+                     = __('Change visibility');
         if (Session::haveRight('transfer', READ)) {
             $actions[get_called_class() . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_entity']
-                     = __('Change visibility');
+                     = __('Change entity');
         }
         return $actions;
     }
@@ -116,6 +118,21 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 echo __('Child entities');
                 Dropdown::showYesNo('is_recursive');
                 echo '<br/>';
+                break;
+            case 'change_visibility':
+                $rand = mt_rand();
+                echo __('Visibility');
+                Dropdown::showFromArray(
+                    'is_private',
+                    [
+                        1  => __('Private'),
+                        0  => __('Public')
+                    ],
+                    [
+                        'rand' => $rand,
+                        'value' => 0,
+                    ],
+                );
                 break;
         }
         return parent::showMassiveActionsSubForm($ma);
@@ -149,6 +166,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
             case 'change_entity':
                 if ($item->setEntityRecur($ids, $input['entities_id'], $input['is_recursive'])) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
+                } else {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                }
+                break;
+            case 'change_visibility':
+                if ($item->setVibility($ids, $input['is_private'])) {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
                 } else {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
@@ -1187,6 +1211,31 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             [
                 'entities_id'  => $eid,
                 'is_recursive' => $recur
+            ],
+            [
+                'id' => $ids
+            ]
+        );
+        return $result;
+    }
+
+    /**
+     * Set visibility from massive actions
+     *
+     * @param array   $ids   Items IDs
+     * @param integer $is_private   VIsibility
+     *
+     * @return boolean
+     */
+    public function setVibility(array $ids, $is_private)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $result = $DB->update(
+            $this->getTable(),
+            [
+                'is_private'  => $is_private,
             ],
             [
                 'id' => $ids
