@@ -55,20 +55,43 @@ class ValidationStepTest extends \DbTestCase
 
     public function testNameAttributeIsMandatory()
     {
+        // assert on add
         $vs = new \ValidationStep();
         $data = $this->getValidData();
         unset($data['name']);
 
         $this->assertFalse($vs->add($data), 'A validation step without name should not be created');
+        $this->hasSessionMessages(ERROR, [ 'The name field is mandatory']);
+
+        // assert on update
+        $vs = new \ValidationStep();
+        $data = $this->getValidData();
+        $data['id'] = $this->getInitialDefault()->getID();
+        $data['name'] = '';
+
+        $this->assertFalse($vs->update($data), 'A validation step without name should not be updated');
+        $this->hasSessionMessages(ERROR, ['The name field is mandatory']);
     }
 
     public function testMinimalRequiredValidationPercentAttributeIsMandatory()
     {
+        // assert on add
         $vs = new \ValidationStep();
         $data = $this->getValidData();
         unset($data['mininal_required_validation_percent']);
 
         $this->assertFalse($vs->add($data), 'A validation step without minimal required validation percent should not be created');
+        $this->hasSessionMessages(ERROR, [ 'The mininal_required_validation_percent field is mandatory and must be beetween 0 and 100.']);
+
+        // assert on update
+        $vs = new \ValidationStep();
+        $data = $this->getValidData();
+        $data['id'] = $this->getInitialDefault()->getID();
+        $data['mininal_required_validation_percent'] = '';
+
+        $this->assertFalse($vs->add($data), 'A validation step without minimal required validation percent should not be updated');
+        $this->hasSessionMessages(ERROR, [ 'The mininal_required_validation_percent field is mandatory and must be beetween 0 and 100.']);
+
     }
 
     public function testMinimalRequiredValidationPercentAttributeIsAPercentage()
@@ -76,13 +99,31 @@ class ValidationStepTest extends \DbTestCase
         $vs = new \ValidationStep();
         $data = $this->getValidData();
 
-        // act - set a value higher than 100
+        // act add - set a value higher than 100
         $data['mininal_required_validation_percent'] = 101;
-        $this->assertFalse($vs->add($data), 'A validation step with a minimal required validation percent greater than 100 should not be created');
+        $this->assertFalse($vs->add($data), 'A validation step with "mininal_required_validation_percent" greater than 100 should not be created');
+        $this->hasSessionMessages(ERROR, [ 'The mininal_required_validation_percent field is mandatory and must be beetween 0 and 100.']);
 
-        // act - set a value lower than 0
+        // act add - set a value lower than 0
         $data['mininal_required_validation_percent'] = -1;
-        $this->assertFalse($vs->add($data), 'A validation step with a minimal required validation percent lower than 0 should not be created');
+        $this->assertFalse($vs->add($data), 'A validation step with "mininal_required_validation_percent" lower than 0 should not be created');
+        $this->hasSessionMessages(ERROR, [ 'The mininal_required_validation_percent field is mandatory and must be beetween 0 and 100.']);
+
+        // act update - set a value higher than 100
+        $vs = new \ValidationStep();
+        $data = $this->getValidData();
+        $data['id'] = $this->getInitialDefault()->getID();
+        $data['mininal_required_validation_percent'] = 101;
+        $this->assertFalse($vs->update($data), 'A validation step with "mininal_required_validation_percent" greater than 100 should not be updated');
+        $this->hasSessionMessages(ERROR, [ 'The mininal_required_validation_percent field is mandatory and must be beetween 0 and 100.']);
+
+        // act update - set a value lower than 0
+        $vs = new \ValidationStep();
+        $data = $this->getValidData();
+        $data['id'] = $this->getInitialDefault()->getID();
+        $data['mininal_required_validation_percent'] = -1;
+        $this->assertFalse($vs->update($data), 'A validation step with "mininal_required_validation_percent" lower than 0 should not be updated');
+        $this->hasSessionMessages(ERROR, [ 'The mininal_required_validation_percent field is mandatory and must be beetween 0 and 100.']);
     }
 
     private function getInitialDefault(): \ValidationStep
