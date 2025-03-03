@@ -159,6 +159,26 @@ class DashboardTest extends DbTestCase
         }
     }
 
+    public function testCloneKeyUnicity()
+    {
+        $num_clones = 5;
+
+        $keys = [];
+
+        for ($i = 0; $i < $num_clones; $i++) {
+            $this->dashboard = new \Glpi\Dashboard\Dashboard('test_dashboard');
+
+            $clone = $this->dashboard->cloneCurrent();
+            $keys[] = $clone['key'];
+        }
+
+        $unique_keys = array_unique($keys);
+
+        $this->assertCount($num_clones, $unique_keys);
+
+        $this->assertEquals(count($keys), count($unique_keys));
+    }
+
 
     public function testGetAll()
     {
