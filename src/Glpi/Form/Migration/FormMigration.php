@@ -563,7 +563,7 @@ final class FormMigration extends AbstractPluginMigration
                     $form_access_rights['forms_id']
                 )['items_id'] ?? 0
             );
-            if ($form === null) {
+            if ($form === false) {
                 throw new LogicException("Form with id {$form_access_rights['forms_id']} not found");
             }
 
