@@ -171,19 +171,21 @@
 </script>
 
 <template>
-    <div :id="element_id" :class="`kanban-column card ${column_data.folded ? 'collapsed' : ''} ${column_data['_protected'] ? 'kanban-protected' : ''}`"
+    <div :id="element_id" :class="`kanban-column ${column_data.folded ? 'collapsed' : ''} ${column_data['_protected'] ? 'kanban-protected' : ''}`"
          :data-drop-only="`${column_data.drop_only ? 'true' : false}`">
         <header class="kanban-column-header">
             <div class="kanban-column-header-content p-2 pb-0">
-                <span class="content-left">
+                <span class="content-left d-flex">
                     <i v-if="rights.canModifyView()"
                        class="ti ti-caret-right-filled kanban-collapse-column cursor-pointer" :title="__('Toggle collapse')"
                        @click="toggleFolded()"></i>
-                    <span :class="`kanban-column-title badge ${column_data.color_class || ''}`" v-text="column_data.name"
-                          :style="`${bg_color ? 'background-color:' + bg_color : 'transparent'}; ${text_color ? 'color:' + text_color : 'color: var(--tblr-body-color)'}`"></span>
+                    <span :class="`kanban-column-title badge_block ${column_data.color_class || ''}`" :style="`border-color: ${bg_color}`">
+                        <span :class="`me-1 ${column_data.color_class || ''}`" :style="`background-color: ${bg_color}`"></span>
+                        {{ column_data.name }}
+                    </span>
                 </span>
-                <span class="content-right">
-                    <span class="kanban_nb badge bg-secondary text-secondary-fg" v-text="card_count"></span>
+                <span class="content-right d-flex">
+                    <span class="kanban_nb badge bg-secondary text-secondary-fg align-content-center" v-text="card_count"></span>
                     <span class="kanban-column-toolbar align-middle">
                         <template v-if="rights.canCreateItem() && (rights.getAllowedColumnsForNewCards().length === 0 || rights.getAllowedColumnsForNewCards().includes(column_id))">
                             <div class="dropdown d-inline-block">
@@ -241,7 +243,7 @@
                       :id="card.id" :title="card.title" :card_content="card.content" :icon="getIcon(card)"
                       :metadata="card._metadata" :team="card._team" :title_tooltip="card.title_tooltip"
                       :read_only="card._readonly" :form_link="card._form_link" :rights="rights"
-                      :team_badge_provider="team_badge_provider"
+                      :team_badge_provider="team_badge_provider" :due_date="card.due_date"
                       @kanban:card_delete="emit('kanban:card_delete', {card_id: card.id})"
                       @kanban:card_restore="emit('kanban:card_restore', {card_id: card.id})"
                       @kanban:card_show_details="emit('kanban:card_show_details', {card_id: card.id})"></Card>
@@ -279,13 +281,35 @@
         }
 
         .kanban-item-content {
-            margin-bottom: 5px;
             padding: 0 10px;
 
             .kanban-core-content {
                 display: flex;
                 flex-wrap: wrap;
-                margin: 10px 0;
+                margin-top: 10px;
+            }
+
+            .kanban-plugin-content:not(:empty) {
+                margin-top: 10px;
+            }
+
+            .progress {
+                height: 10px !important;
+            }
+        }
+
+        .kanban-description-preview {
+            padding: 0 10px;
+            white-space: break-spaces;
+            max-height: 3em;
+            overflow: hidden;
+        }
+        @supports (display: -webkit-box) and (-webkit-line-clamp: 7) and (-webkit-box-orient: vertical) {
+            .kanban-description-preview {
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                max-height: none;
             }
         }
 
@@ -329,9 +353,9 @@
 
         .kanban-item-team {
             display: flex;
-            padding-right: 10px;
-            padding-bottom: 10px;
-            margin-right: 10px;
+            padding-bottom: 5px;
+            margin-left: 10px;
+            margin-top: 5px;
 
             @media (prefers-reduced-motion: no-preference) {
                 &:hover {
@@ -359,15 +383,11 @@
             }
 
             > span {
-                margin-right: -15px;
+                margin-right: -25px;
                 border-radius: 50%;
                 border: 3px solid var(--tblr-card-bg);
                 box-sizing: content-box;
                 min-height: 24px;
-
-                &:first-of-type {
-                    margin-left: auto;
-                }
 
                 img {
                     border-radius: 50%;
@@ -378,17 +398,18 @@
                 }
             }
         }
+
+        .kanban-item-due-date {
+            margin-right: 10px;
+        }
     }
 
     .kanban-column {
         margin-right: 16px;
-        width: 400px;
-        height: 600px;
         border-radius: 5px;
         flex-direction: column;
-        flex: 0 0 auto;
+        flex: 0 0 400px;
         text-align: center;
-        border-top: 5px solid v-bind(bg_color);
 
         &[data-drop-only="true"] .kanban-body {
             background: #fffa90;
@@ -423,7 +444,6 @@
                         writing-mode: vertical-lr;
                         margin-top: 10px;
                         margin-left: 0;
-                        padding: 12px 3px;
                     }
 
                     .kanban-collapse-column {
@@ -484,7 +504,7 @@
 
             .kanban-column-title {
                 margin-left: 2px;
-                padding: 3px 12px;
+                color: inherit !important;
             }
 
             .kanban_nb {
