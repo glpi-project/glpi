@@ -54,6 +54,11 @@
         team_badge_provider: {
             type: TeamBadgeProvider,
             required: true
+        },
+        due_date: {
+            type: String,
+            required: false,
+            default: undefined
         }
     });
 
@@ -121,11 +126,19 @@
             </div>
         </div>
         <div class="kanban-item-content" v-html="card_content"></div>
-        <div class="kanban-item-team position-relative">
-            <span v-for="member in badges_to_show" :key="member.hash"
-                  v-html="member.content"></span>
-            <span v-if="Object.values(team).length > team_badge_provider.max_team_images"
-                  v-html="team_badge_provider.generateOverflowBadge(Object.values(team).length - team_badge_provider.max_team_images)"></span>
+        <div class="d-flex justify-content-between">
+            <div class="kanban-item-team position-relative">
+                <span v-for="member in badges_to_show" :key="member.hash"
+                      v-html="member.content"></span>
+                <span v-if="Object.values(team).length > team_badge_provider.max_team_images"
+                      v-html="team_badge_provider.generateOverflowBadge(Object.values(team).length - team_badge_provider.max_team_images)"></span>
+            </div>
+            <div class="align-self-center kanban-item-due-date">
+                <span v-if="due_date" :title="__('Planned end date')">
+                    <i class="ti ti-calendar"></i>
+                    <span v-text="due_date"></span>
+                </span>
+            </div>
         </div>
     </li>
 </template>
