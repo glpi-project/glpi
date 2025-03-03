@@ -115,16 +115,16 @@ final class FormMigration extends AbstractPluginMigration
         ];
     }
 
-    public const PUBLIC_ACCESS_TYPE = 0;
-    public const PRIVATE_ACCESS_TYPE = 1;
-    public const RESTRICTED_ACCESS_TYPE = 2;
+    private const PUBLIC_ACCESS_TYPE = 0;
+    private const PRIVATE_ACCESS_TYPE = 1;
+    private const RESTRICTED_ACCESS_TYPE = 2;
 
     /**
      * Get the class strategy to use based on the access type
      *
      * @return array Mapping between access type constants and strategy classes
      */
-    public function getStrategyForAccessTypes(): array
+    private function getStrategyForAccessTypes(): array
     {
         return [
             self::PUBLIC_ACCESS_TYPE => DirectAccess::class,
@@ -140,9 +140,9 @@ final class FormMigration extends AbstractPluginMigration
      * @return JsonFieldInterface The configuration object for the access control strategy
      * @throws LogicException When no strategy config is found for the given access type
      */
-    public function getStrategyConfigForAccessTypes(array $form_access_rights): JsonFieldInterface
+    private function getStrategyConfigForAccessTypes(array $form_access_rights): JsonFieldInterface
     {
-        $clean_ids = fn($ids) => array_unique(array_filter($ids, fn($id) => is_int($id)));
+        $clean_ids = static fn(array $ids) => array_unique(array_filter($ids, fn(mixed $id) => is_int($id)));
 
         if (in_array($form_access_rights['access_rights'], [self::PUBLIC_ACCESS_TYPE, self::PRIVATE_ACCESS_TYPE])) {
             return new DirectAccessConfig(
@@ -150,9 +150,9 @@ final class FormMigration extends AbstractPluginMigration
             );
         } elseif ($form_access_rights['access_rights'] === self::RESTRICTED_ACCESS_TYPE) {
             return new AllowListConfig(
-                user_ids: $clean_ids(json_decode($form_access_rights['user_ids'], true) ?? []),
-                group_ids: $clean_ids(json_decode($form_access_rights['group_ids'], true) ?? []),
-                profile_ids: $clean_ids(json_decode($form_access_rights['profile_ids'], true) ?? [])
+                user_ids: $clean_ids(json_decode($form_access_rights['user_ids'], associative: true, flags: JSON_THROW_ON_ERROR)),
+                group_ids: $clean_ids(json_decode($form_access_rights['group_ids'], associative: true, flags: JSON_THROW_ON_ERROR)),
+                profile_ids: $clean_ids(json_decode($form_access_rights['profile_ids'], associative: true, flags: JSON_THROW_ON_ERROR))
             );
         }
 
@@ -567,7 +567,7 @@ final class FormMigration extends AbstractPluginMigration
                 throw new LogicException("Form with id {$form_access_rights['forms_id']} not found");
             }
 
-            $strategy_class = self::getStrategyForAccessTypes()[$form_access_rights['access_rights']] ?? null;
+            $strategy_class = $this->getStrategyForAccessTypes()[$form_access_rights['access_rights']] ?? null;
             if ($strategy_class === null) {
                 throw new LogicException("Strategy class not found for access type {$form_access_rights['access_rights']}");
             }
