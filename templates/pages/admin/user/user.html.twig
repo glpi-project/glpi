@@ -195,10 +195,12 @@
 
                             {% if not simple_form and not is_preference_form %}
                                 {{ fields.datetimeField('begin_date', item.fields['begin_date'], __('Valid since'), {
-                                    clearable: true
+                                    clearable: true,
+                                    readonly: not higher_rights,
                                 }) }}
                                 {{ fields.datetimeField('end_date', item.fields['end_date'], __('Valid until'), {
-                                    clearable: true
+                                    clearable: true,
+                                    readonly: not higher_rights,
                                 }) }}
                             {% endif %}
 

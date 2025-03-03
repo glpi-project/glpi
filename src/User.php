@@ -1160,6 +1160,8 @@ class User extends CommonDBTM
 
                 // Prevent disabling another user account
                 'is_active',
+                'begin_date',
+                'end_date',
             ];
             if (
                 count(array_intersect($protected_input_keys, array_keys($input))) > 0
