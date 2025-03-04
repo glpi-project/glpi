@@ -120,17 +120,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 echo '<br/>';
                 break;
             case 'change_visibility':
-                $rand = mt_rand();
                 echo __('Visibility');
                 Dropdown::showFromArray(
                     'is_private',
                     [
                         1  => __('Private'),
                         0  => __('Public')
-                    ],
-                    [
-                        'rand' => $rand,
-                        'value' => 0,
                     ],
                 );
                 break;
