@@ -1254,10 +1254,10 @@ class User extends CommonDBTM
             $input['personal_token_date'] = $_SESSION['glpi_currenttime'];
         }
 
-       if (isset($input['_reset_api_token'])) {
-           // Handle old flag
-           $input['_regenerate_api_token'] = $input['_reset_api_token'];
-       }
+        if (isset($input['_reset_api_token'])) {
+            // Handle old flag
+            $input['_regenerate_api_token'] = $input['_reset_api_token'];
+        }
         if (
             isset($input['_regenerate_api_token'])
             && $input['_regenerate_api_token']
