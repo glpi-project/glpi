@@ -38,8 +38,8 @@ namespace Glpi\Form;
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\Condition\ConditionnableVisibilityInterface;
-use Glpi\Form\Condition\ConditionnableVisibilityTrait;
+use Glpi\Form\Condition\ConditionableVisibilityInterface;
+use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
@@ -51,9 +51,9 @@ use RuntimeException;
 /**
  * Question of a given helpdesk form's section
  */
-final class Question extends CommonDBChild implements BlockInterface, ConditionnableVisibilityInterface
+final class Question extends CommonDBChild implements BlockInterface, ConditionableVisibilityInterface
 {
-    use ConditionnableVisibilityTrait;
+    use ConditionableVisibilityTrait;
 
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';

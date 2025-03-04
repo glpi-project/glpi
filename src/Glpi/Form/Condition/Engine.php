@@ -95,7 +95,7 @@ final class Engine
         return $output;
     }
 
-    private function computeItemVisibility(ConditionnableVisibilityInterface $item): bool
+    private function computeItemVisibility(ConditionableVisibilityInterface $item): bool
     {
         // Stop immediatly if the strategy result is forced.
         $strategy = $item->getConfiguredVisibilityStrategy();
@@ -110,7 +110,7 @@ final class Engine
         return $strategy->mustBeVisible($conditions_result);
     }
 
-    private function computeDestinationCreation(ConditionnableCreationInterface $item): bool
+    private function computeDestinationCreation(ConditionableCreationInterface $item): bool
     {
         // Stop immediatly if the strategy result is forced.
         $strategy = $item->getConfiguredCreationStrategy();

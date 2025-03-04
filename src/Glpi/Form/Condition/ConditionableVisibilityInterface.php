@@ -34,14 +34,14 @@
 
 namespace Glpi\Form\Condition;
 
-trait ConditionnableCreationTrait
-{
-    use ConditionnableTrait;
+use Glpi\Form\Condition\VisibilityStrategy;
 
-    public function getConfiguredCreationStrategy(): CreationStrategy
-    {
-        $strategy_value = $this->fields['creation_strategy'] ?? "";
-        $strategy = CreationStrategy::tryFrom($strategy_value);
-        return $strategy ?? CreationStrategy::ALWAYS_CREATED;
-    }
+interface ConditionableVisibilityInterface extends ConditionableInterface
+{
+    /**
+     * Get the configured visibility strategy from the database.
+     *
+     * @return VisibilityStrategy
+     */
+    public function getConfiguredVisibilityStrategy(): VisibilityStrategy;
 }

@@ -38,17 +38,17 @@ namespace Glpi\Form\Destination;
 use CommonDBChild;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Condition\ConditionnableCreationInterface;
-use Glpi\Form\Condition\ConditionnableCreationTrait;
+use Glpi\Form\Condition\ConditionableCreationInterface;
+use Glpi\Form\Condition\ConditionableCreationTrait;
 use Glpi\Form\Form;
 use InvalidArgumentException;
 use LogicException;
 use Override;
 use ReflectionClass;
 
-final class FormDestination extends CommonDBChild implements ConditionnableCreationInterface
+final class FormDestination extends CommonDBChild implements ConditionableCreationInterface
 {
-    use ConditionnableCreationTrait;
+    use ConditionableCreationTrait;
 
     /**
      * Parent item is a Form

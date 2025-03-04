@@ -36,7 +36,7 @@ namespace Glpi\Form\Condition;
 
 use JsonException;
 
-trait ConditionnableTrait
+trait ConditionableTrait
 {
     /** @return ConditionData[] */
     public function getConfiguredConditionsData(): array

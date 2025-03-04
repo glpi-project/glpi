@@ -36,17 +36,17 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
-use Glpi\Form\Condition\ConditionnableVisibilityInterface;
-use Glpi\Form\Condition\ConditionnableVisibilityTrait;
+use Glpi\Form\Condition\ConditionableVisibilityInterface;
+use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Override;
 use Ramsey\Uuid\Uuid;
 
 /**
  * Section of a given helpdesk form
  */
-final class Section extends CommonDBChild implements ConditionnableVisibilityInterface
+final class Section extends CommonDBChild implements ConditionableVisibilityInterface
 {
-    use ConditionnableVisibilityTrait;
+    use ConditionableVisibilityTrait;
 
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';

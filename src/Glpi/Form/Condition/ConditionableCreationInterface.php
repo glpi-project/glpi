@@ -34,14 +34,9 @@
 
 namespace Glpi\Form\Condition;
 
-use Glpi\Form\Condition\VisibilityStrategy;
+use Glpi\Form\Condition\CreationStrategy;
 
-interface ConditionnableVisibilityInterface extends ConditionnableInterface
+interface ConditionableCreationInterface extends ConditionableInterface
 {
-    /**
-     * Get the configured visibility strategy from the database.
-     *
-     * @return VisibilityStrategy
-     */
-    public function getConfiguredVisibilityStrategy(): VisibilityStrategy;
+    public function getConfiguredCreationStrategy(): CreationStrategy;
 }

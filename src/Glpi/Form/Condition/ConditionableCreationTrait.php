@@ -34,9 +34,14 @@
 
 namespace Glpi\Form\Condition;
 
-use Glpi\Form\Condition\CreationStrategy;
-
-interface ConditionnableCreationInterface extends ConditionnableInterface
+trait ConditionableCreationTrait
 {
-    public function getConfiguredCreationStrategy(): CreationStrategy;
+    use ConditionableTrait;
+
+    public function getConfiguredCreationStrategy(): CreationStrategy
+    {
+        $strategy_value = $this->fields['creation_strategy'] ?? "";
+        $strategy = CreationStrategy::tryFrom($strategy_value);
+        return $strategy ?? CreationStrategy::ALWAYS_CREATED;
+    }
 }
