@@ -8851,6 +8851,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $input["_add_validation"] = [$input["_add_validation"]];
             }
 
+            // user/groups assignements
             foreach ($input["_add_validation"] as $key => $value) {
                 switch ($value) {
                     case 'requester_supervisor':
@@ -9027,6 +9028,10 @@ abstract class CommonITILObject extends CommonDBTM
                             && $this->isUserValidationRequested($validation_to_send['items_id_target'], false)
                         ) {
                             continue;
+                        }
+                        // add validation step
+                        if(isset($input['validationsteps_id'])) {
+                            $values['validationsteps_id'] = $input['validationsteps_id'];
                         }
                         $values['itemtype_target'] = $validation_to_send['itemtype_target'];
                         $values['items_id_target'] = $validation_to_send['items_id_target'];
