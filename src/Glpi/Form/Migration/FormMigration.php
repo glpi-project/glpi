@@ -34,8 +34,17 @@
 
 namespace Glpi\Form\Migration;
 
+use DBmysql;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Form\AccessControl\ControlType\AllowList;
+use Glpi\Form\AccessControl\ControlType\AllowListConfig;
+use Glpi\Form\AccessControl\ControlType\DirectAccess;
+use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
+use Glpi\Form\AccessControl\FormAccessControl;
+use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Category;
 use Glpi\Form\Comment;
 use Glpi\Form\Form;
@@ -56,9 +65,29 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
 use Glpi\Migration\AbstractPluginMigration;
+use LogicException;
+use Psr\Log\LoggerInterface;
 
 final class FormMigration extends AbstractPluginMigration
 {
+    private FormAccessControlManager $formAccessControlManager;
+
+    /**
+     * Store created forms indexed by plugin form ID for quick access
+     * @var array<int, Form>
+     */
+    private array $forms = [];
+
+    public function __construct(
+        DBmysql $db,
+        LoggerInterface $logger,
+        FormAccessControlManager $formAccessControlManager
+    ) {
+        parent::__construct($db, $logger);
+
+        $this->formAccessControlManager = $formAccessControlManager;
+    }
+
     /**
      * Retrieve the map of types to convert
      *
@@ -106,6 +135,50 @@ final class FormMigration extends AbstractPluginMigration
         ];
     }
 
+    private const PUBLIC_ACCESS_TYPE = 0;
+    private const PRIVATE_ACCESS_TYPE = 1;
+    private const RESTRICTED_ACCESS_TYPE = 2;
+
+    /**
+     * Get the class strategy to use based on the access type
+     *
+     * @return array Mapping between access type constants and strategy classes
+     */
+    private function getStrategyForAccessTypes(): array
+    {
+        return [
+            self::PUBLIC_ACCESS_TYPE => DirectAccess::class,
+            self::PRIVATE_ACCESS_TYPE => DirectAccess::class,
+            self::RESTRICTED_ACCESS_TYPE => AllowList::class
+        ];
+    }
+
+    /**
+     * Create the appropriate strategy configuration based on form access rights
+     *
+     * @param array $form_access_rights The access rights data from the database
+     * @return JsonFieldInterface The configuration object for the access control strategy
+     * @throws LogicException When no strategy config is found for the given access type
+     */
+    private function getStrategyConfigForAccessTypes(array $form_access_rights): JsonFieldInterface
+    {
+        $clean_ids = static fn(array $ids) => array_unique(array_filter($ids, fn(mixed $id) => is_int($id)));
+
+        if (in_array($form_access_rights['access_rights'], [self::PUBLIC_ACCESS_TYPE, self::PRIVATE_ACCESS_TYPE])) {
+            return new DirectAccessConfig(
+                allow_unauthenticated: $form_access_rights['access_rights'] === self::PUBLIC_ACCESS_TYPE
+            );
+        } elseif ($form_access_rights['access_rights'] === self::RESTRICTED_ACCESS_TYPE) {
+            return new AllowListConfig(
+                user_ids: $clean_ids(json_decode($form_access_rights['user_ids'], associative: true, flags: JSON_THROW_ON_ERROR)),
+                group_ids: $clean_ids(json_decode($form_access_rights['group_ids'], associative: true, flags: JSON_THROW_ON_ERROR)),
+                profile_ids: $clean_ids(json_decode($form_access_rights['profile_ids'], associative: true, flags: JSON_THROW_ON_ERROR))
+            );
+        }
+
+        throw new LogicException("Strategy config not found for access type {$form_access_rights['access_rights']}");
+    }
+
     protected function validatePrerequisites(): bool
     {
         $formcreator_schema = [
@@ -122,6 +195,15 @@ final class FormMigration extends AbstractPluginMigration
             'glpi_plugin_formcreator_questions' => [
                 'id', 'name', 'plugin_formcreator_sections_id', 'fieldtype', 'required', 'default_values',
                 'itemtype', 'values', 'description', 'row', 'col', 'uuid'
+            ],
+            'glpi_plugin_formcreator_forms_users' => [
+                'plugin_formcreator_forms_id', 'users_id'
+            ],
+            'glpi_plugin_formcreator_forms_groups' => [
+                'plugin_formcreator_forms_id', 'groups_id'
+            ],
+            'glpi_plugin_formcreator_forms_profiles' => [
+                'plugin_formcreator_forms_id', 'profiles_id'
             ],
         ];
 
@@ -151,6 +233,7 @@ final class FormMigration extends AbstractPluginMigration
         $this->processMigrationOfQuestions();
         $this->processMigrationOfComments();
         $this->updateBlockHorizontalRank();
+        $this->processMigrationOfAccessControls();
 
         $this->progress_indicator?->setProgressBarMessage('');
         $this->progress_indicator?->finish();
@@ -236,6 +319,9 @@ final class FormMigration extends AbstractPluginMigration
                     )['items_id'] ?? 0,
                 ]
             );
+
+            // Store the form for later use
+            $this->forms[$raw_form['id']] = $form;
 
             $this->mapItem(
                 'PluginFormcreatorForm',
@@ -452,6 +538,85 @@ final class FormMigration extends AbstractPluginMigration
                     'vertical_rank'     => $getSubQuery('vertical_rank'),
                 ]
             );
+        }
+    }
+
+    private function processMigrationOfAccessControls(): void
+    {
+        $this->progress_indicator?->setProgressBarMessage(__('Importing access controls...'));
+
+        // Retrieve data from glpi_plugin_formcreator_forms table
+        $raw_form_access_rights = $this->db->request([
+            'SELECT' => [
+                'access_rights',
+                new QueryExpression('glpi_plugin_formcreator_forms.id', 'forms_id'),
+                'name', // Added to get form name for status reporting
+                new QueryExpression('JSON_ARRAYAGG(users_id)', 'user_ids'),
+                new QueryExpression('JSON_ARRAYAGG(groups_id)', 'group_ids'),
+                new QueryExpression('JSON_ARRAYAGG(profiles_id)', 'profile_ids')
+            ],
+            'FROM'   => 'glpi_plugin_formcreator_forms',
+            'LEFT JOIN'   => [
+                'glpi_plugin_formcreator_forms_users' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_forms_users' => 'plugin_formcreator_forms_id',
+                        'glpi_plugin_formcreator_forms'       => 'id'
+                    ]
+                ],
+                'glpi_plugin_formcreator_forms_groups' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_forms_groups' => 'plugin_formcreator_forms_id',
+                        'glpi_plugin_formcreator_forms'        => 'id'
+                    ]
+                ],
+                'glpi_plugin_formcreator_forms_profiles' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_forms_profiles' => 'plugin_formcreator_forms_id',
+                        'glpi_plugin_formcreator_forms'          => 'id'
+                    ]
+                ]
+            ],
+            'GROUPBY' => ['forms_id', 'access_rights']
+        ]);
+
+        foreach ($raw_form_access_rights as $form_access_rights) {
+            // Use the stored form instead of loading it from the database
+            $form = $this->forms[$form_access_rights['forms_id']] ?? null;
+
+            if ($form === null) {
+                throw new LogicException("Form with plugin_id {$form_access_rights['forms_id']} not found in memory");
+            }
+
+            $strategy_class = $this->getStrategyForAccessTypes()[$form_access_rights['access_rights']] ?? null;
+            if ($strategy_class === null) {
+                throw new LogicException("Strategy class not found for access type {$form_access_rights['access_rights']}");
+            }
+
+            // Create missing access controls for the form
+            $this->formAccessControlManager->createMissingAccessControlsForForm($form);
+
+            $form_access_control = $this->importItem(
+                FormAccessControl::class,
+                [
+                    Form::getForeignKeyField() => $form->getID(),
+                    'strategy'                 => $strategy_class,
+                    '_config'                  => self::getStrategyConfigForAccessTypes($form_access_rights)->jsonSerialize(),
+                    'is_active'                => true
+                ],
+                [
+                    Form::getForeignKeyField() => $form->getID(),
+                    'strategy'                 => $strategy_class,
+                ]
+            );
+
+            $this->mapItem(
+                'PluginFormcreatorFormAccessType',
+                $form_access_rights['forms_id'],
+                FormAccessControl::class,
+                $form_access_control->getID()
+            );
+
+            $this->progress_indicator?->advance();
         }
     }
 }
