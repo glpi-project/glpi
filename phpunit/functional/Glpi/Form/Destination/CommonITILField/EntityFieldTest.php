@@ -35,19 +35,20 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Entity;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\EntityField;
 use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
 use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Override;
 
-final class EntityFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class EntityFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -244,6 +245,96 @@ final class EntityFieldTest extends DbTestCase
             answers: [],
             expected_entity_id: 0
         );
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'Current active entity strategy' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity' => 1
+            ],
+            'field_config' => new EntityFieldConfig(
+                EntityFieldStrategy::FORM_FILLER
+            )
+        ];
+
+        yield 'Default requester user\'s entity' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity' => 2
+            ],
+            'field_config' => new EntityFieldConfig(
+                EntityFieldStrategy::FORM_FILLER
+            )
+        ];
+
+        yield 'First dynamic requester user\'s entity (alphabetical)' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity' => 3
+            ],
+            'field_config' => fn ($migration, $form) => (new EntityField())->getDefaultConfig($form)
+        ];
+
+        yield 'Last dynamic requester user\'s entity (alphabetical)' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity' => 3
+            ],
+            'field_config' => fn ($migration, $form) => (new EntityField())->getDefaultConfig($form)
+        ];
+
+        yield 'The form entity' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity' => 5
+            ],
+            'field_config' => new EntityFieldConfig(
+                EntityFieldStrategy::FROM_FORM
+            )
+        ];
+
+        yield 'Default entity of the validator' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity' => 6
+            ],
+            'field_config' => fn ($migration, $form) => (new EntityField())->getDefaultConfig($form)
+        ];
+
+        yield 'Specific entity' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity'       => 7,
+                'destination_entity_value' => getItemByTypeName(Entity::class, '_test_root_entity', true)
+            ],
+            'field_config' => new EntityFieldConfig(
+                strategy: EntityFieldStrategy::SPECIFIC_VALUE,
+                specific_entity_id: getItemByTypeName(Entity::class, '_test_root_entity', true)
+            )
+        ];
+
+        yield 'Default entity of a user type question answer' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity' => 8
+            ],
+            'field_config' => fn ($migration, $form) => (new EntityField())->getDefaultConfig($form)
+        ];
+
+        yield 'From a GLPI object > Entity type question answer' => [
+            'field_key'     => EntityField::getKey(),
+            'fields_to_set' => [
+                'destination_entity'       => 9,
+                'destination_entity_value' => 71
+            ],
+            'field_config' => fn ($migration, $form) => new EntityFieldConfig(
+                strategy: EntityFieldStrategy::SPECIFIC_ANSWER,
+                specific_question_id: $migration->getMappedItemTarget('PluginFormcreatorQuestion', 71)['items_id'] ?? throw new \Exception("Question not found")
+            )
+        ];
     }
 
     private function sendFormAndAssertTicketEntity(

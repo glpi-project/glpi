@@ -34,10 +34,24 @@
 
 namespace Glpi\Form\Migration;
 
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Form\AccessControl\ControlType\AllowList;
+use Glpi\Form\AccessControl\ControlType\AllowListConfig;
+use Glpi\Form\AccessControl\ControlType\DirectAccess;
+use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\Category;
 use Glpi\Form\Comment;
+use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
+use Glpi\Form\Destination\CommonITILField\ContentField;
+use Glpi\Form\Destination\CommonITILField\ITILActorField;
+use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\FormDestinationChange;
+use Glpi\Form\Destination\FormDestinationProblem;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeCheckbox;
@@ -56,6 +70,7 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
 use Glpi\Migration\AbstractPluginMigration;
+use LogicException;
 
 final class FormMigration extends AbstractPluginMigration
 {
@@ -123,6 +138,15 @@ final class FormMigration extends AbstractPluginMigration
                 'id', 'name', 'plugin_formcreator_sections_id', 'fieldtype', 'required', 'default_values',
                 'itemtype', 'values', 'description', 'row', 'col', 'uuid'
             ],
+            'glpi_plugin_formcreator_forms_users' => [
+                'plugin_formcreator_forms_id', 'users_id'
+            ],
+            'glpi_plugin_formcreator_forms_groups' => [
+                'plugin_formcreator_forms_id', 'groups_id'
+            ],
+            'glpi_plugin_formcreator_forms_profiles' => [
+                'plugin_formcreator_forms_id', 'profiles_id'
+            ],
         ];
 
         return $this->checkDbFieldsExists($formcreator_schema);
@@ -137,6 +161,9 @@ final class FormMigration extends AbstractPluginMigration
             'sections' => $this->countRecords('glpi_plugin_formcreator_sections'),
             'questions' => $this->countRecords('glpi_plugin_formcreator_questions', ['NOT' => ['fieldtype' => 'description']]),
             'comments' => $this->countRecords('glpi_plugin_formcreator_questions', ['fieldtype' => 'description']),
+            'targets_ticket' => $this->countRecords('glpi_plugin_formcreator_targettickets'),
+            'targets_problem' => $this->countRecords('glpi_plugin_formcreator_targetproblems'),
+            'targets_change' => $this->countRecords('glpi_plugin_formcreator_targetchanges'),
         ];
 
         // Set total progress steps
@@ -151,6 +178,8 @@ final class FormMigration extends AbstractPluginMigration
         $this->processMigrationOfQuestions();
         $this->processMigrationOfComments();
         $this->updateBlockHorizontalRank();
+        $this->processMigrationOfFormTargets();
+        $this->handleMandatoryDestination();
 
         $this->progress_indicator?->setProgressBarMessage('');
         $this->progress_indicator?->finish();
@@ -424,34 +453,309 @@ final class FormMigration extends AbstractPluginMigration
 
         $tables = [Question::getTable(), Comment::getTable()];
 
-        $getSubQuery = function (string $column) {
-            return new QuerySubQuery([
-                'SELECT' => $column,
-                'FROM'   => new QueryUnion([
+        foreach ($tables as $table) {
+            // First step: identify sections and vertical ranks with only one element
+            $single_blocks = $this->db->request([
+                'SELECT' => [
+                    'forms_sections_id',
+                    'vertical_rank',
+                ],
+                'FROM' => new QueryUnion([
                     [
-                        'SELECT' => ['forms_sections_id', 'vertical_rank', 'horizontal_rank'],
+                        'SELECT' => ['forms_sections_id', 'vertical_rank'],
                         'FROM'   => Question::getTable(),
+                        'WHERE'  => ['NOT' => ['horizontal_rank' => null]]
                     ],
                     [
-                        'SELECT' => ['forms_sections_id', 'vertical_rank', 'horizontal_rank'],
+                        'SELECT' => ['forms_sections_id', 'vertical_rank'],
                         'FROM'   => Comment::getTable(),
+                        'WHERE'  => ['NOT' => ['horizontal_rank' => null]]
                     ]
                 ]),
-                'WHERE'   => ['NOT' => ['horizontal_rank' => null]],
                 'GROUPBY' => ['forms_sections_id', 'vertical_rank'],
                 'HAVING'  => ['COUNT(*) = 1']
             ]);
-        };
 
-        foreach ($tables as $table) {
-            $this->db->update(
-                $table,
-                ['horizontal_rank' => null],
+            // If no unique blocks are found, move to the next table
+            if (count($single_blocks) === 0) {
+                continue;
+            }
+
+            // Build criteria for the update
+            $sections_ranks = [];
+            foreach ($single_blocks as $block) {
+                $sections_ranks[] = [
+                    'forms_sections_id' => $block['forms_sections_id'],
+                    'vertical_rank'     => $block['vertical_rank']
+                ];
+            }
+
+            // Update corresponding records
+            if (!empty($sections_ranks)) {
+                $this->db->update(
+                    $table,
+                    ['horizontal_rank' => null],
+                    ['OR' => $sections_ranks]
+                );
+            }
+        }
+    }
+
+    /**
+     * Process migration of form targets
+     *
+     * @return void
+     */
+    private function processMigrationOfFormTargets(): void
+    {
+        $this->processMigrationOfTickets();
+        $this->processMigrationOfProblems();
+        $this->processMigrationOfChanges();
+    }
+
+    private function processMigrationOfTickets(): void
+    {
+        $this->progress_indicator?->setProgressBarMessage(__('Importing ticket targets...'));
+
+        $raw_targets = $this->db->request([
+            'SELECT'    => [
+                'glpi_plugin_formcreator_targettickets.*',
+                new QueryExpression(
+                    'JSON_REMOVE(JSON_OBJECTAGG(COALESCE(itemtype, "NULL"), COALESCE(items_id, "NULL")), "$.NULL")',
+                    'associate_items'
+                )
+            ],
+            'FROM'      => 'glpi_plugin_formcreator_targettickets',
+            'LEFT JOIN' => [
+                'glpi_plugin_formcreator_items_targettickets' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_targettickets'       => 'id',
+                        'glpi_plugin_formcreator_items_targettickets' => 'plugin_formcreator_targettickets_id'
+                    ]
+                ]
+            ],
+            'GROUPBY' => 'glpi_plugin_formcreator_targettickets.id'
+        ]);
+
+        $this->processMigrationOfDestination(
+            $raw_targets,
+            FormDestinationTicket::class,
+            'glpi_plugin_formcreator_targettickets'
+        );
+        $this->processMigrationOfITILActorsFields(
+            FormDestinationTicket::class,
+            'glpi_plugin_formcreator_targettickets',
+            'PluginFormcreatorTargetTicket'
+        );
+    }
+
+    private function processMigrationOfProblems(): void
+    {
+        $this->progress_indicator?->setProgressBarMessage(__('Importing problem targets...'));
+
+        $raw_targets = $this->db->request([
+            'FROM' => 'glpi_plugin_formcreator_targetproblems'
+        ]);
+
+        $this->processMigrationOfDestination(
+            $raw_targets,
+            FormDestinationProblem::class,
+            'glpi_plugin_formcreator_targetproblems'
+        );
+        $this->processMigrationOfITILActorsFields(
+            FormDestinationProblem::class,
+            'glpi_plugin_formcreator_targetproblems',
+            'PluginFormcreatorTargetProblem'
+        );
+    }
+
+    private function processMigrationOfChanges(): void
+    {
+        $this->progress_indicator?->setProgressBarMessage(__('Importing change targets...'));
+
+        $raw_targets = $this->db->request([
+            'FROM' => 'glpi_plugin_formcreator_targetchanges'
+        ]);
+
+        $this->processMigrationOfDestination(
+            $raw_targets,
+            FormDestinationChange::class,
+            'glpi_plugin_formcreator_targetchanges'
+        );
+        $this->processMigrationOfITILActorsFields(
+            FormDestinationChange::class,
+            'glpi_plugin_formcreator_targetchanges',
+            'PluginFormcreatorTargetChange'
+        );
+    }
+
+    /**
+     * Process migration of form destinations for a given destination type and target table
+     *
+     * @param \DBmysqlIterator $raw_targets The raw targets to process
+     * @param class-string<AbstractCommonITILFormDestination> $destinationClass The destination class
+     * @param string $targetTable The target table name
+     * @throws LogicException
+     */
+    private function processMigrationOfDestination(
+        \DBmysqlIterator $raw_targets,
+        string $destinationClass,
+        string $targetTable
+    ): void {
+        foreach ($raw_targets as $raw_target) {
+            $form_id = $this->getMappedItemTarget(
+                'PluginFormcreatorForm',
+                $raw_target['plugin_formcreator_forms_id']
+            )['items_id'] ?? 0;
+
+            $form = new Form();
+            if (!$form->getFromDB($form_id)) {
+                throw new LogicException("Form with id {$raw_target['plugin_formcreator_forms_id']} not found");
+            }
+
+            $fields_config = [];
+            $configurable_fields = (new $destinationClass())->getConfigurableFields();
+            foreach ($configurable_fields as $configurable_field) {
+                /** @var AbstractConfigField $configurable_field */
+                if ($configurable_field instanceof DestinationFieldConverterInterface) {
+                    $fields_config[$configurable_field::getKey()] = $configurable_field->convertFieldConfig(
+                        $this,
+                        $form,
+                        $raw_target
+                    )->jsonSerialize();
+                }
+
+                if ($configurable_field instanceof ContentField) {
+                    $fields_config[$configurable_field::getAutoConfigKey()] = strip_tags($raw_target['content']) === '##FULLFORM##';
+                }
+            }
+
+            $destination = $this->importItem(
+                FormDestination::class,
                 [
-                    'forms_sections_id' => $getSubQuery('forms_sections_id'),
-                    'vertical_rank'     => $getSubQuery('vertical_rank'),
+                    Form::getForeignKeyField() => $form->getID(),
+                    'itemtype'                 => $destinationClass,
+                    'name'                     => $raw_target['name'],
+                    'config'                   => $fields_config
+                ],
+                [
+                    Form::getForeignKeyField() => $form->getID(),
+                    'itemtype'                 => $destinationClass,
+                    'name'                     => $raw_target['name']
                 ]
             );
+
+            $this->mapItem(
+                'PluginFormcreatorTarget' . basename($targetTable),
+                $raw_target['id'],
+                FormDestination::class,
+                $destination->getID()
+            );
+
+            $this->progress_indicator?->advance();
+        }
+    }
+
+    /**
+     * Process migration of ITIL actors fields for a given destination type and target table
+     *
+     * @param class-string<AbstractCommonITILFormDestination> $destinationClass The destination class
+     * @param string $targetTable The target table name
+     * @param string $fcDestinationClass The form creator destination class
+     * @throws LogicException
+     */
+    private function processMigrationOfITILActorsFields(
+        string $destinationClass,
+        string $targetTable,
+        string $fcDestinationClass
+    ): void {
+        $targets_actors     = [];
+        $raw_targets_actors = $this->db->request([
+            'SELECT' => [
+                'items_id',
+                'actor_role',
+                'actor_type',
+                'actor_value'
+            ],
+            'FROM' => 'glpi_plugin_formcreator_targets_actors',
+            'WHERE' => [
+                'itemtype' => $fcDestinationClass
+            ]
+        ]);
+
+        foreach ($raw_targets_actors as $raw_target_actor) {
+            $target_id = $this->getMappedItemTarget(
+                'PluginFormcreatorTarget' . basename($targetTable),
+                $raw_target_actor['items_id']
+            )['items_id'] ?? 0;
+
+            if ($target_id === 0) {
+                throw new LogicException("Destination for target id {$raw_target_actor['items_id']} not found");
+            }
+
+            $targets_actors[$target_id][$raw_target_actor['actor_role']][$raw_target_actor['actor_type']][] =
+                $raw_target_actor['actor_value'];
+        }
+
+        foreach ($targets_actors as $destination_id => $actors) {
+            $destination = new FormDestination();
+            if (!$destination->getFromDB($destination_id)) {
+                throw new LogicException("Destination with id {$destination_id} not found");
+            }
+
+            $fields_config = json_decode($destination->fields['config'], true);
+            $configurable_fields = (new $destinationClass())->getConfigurableFields();
+            $configurable_fields = array_filter(
+                $configurable_fields,
+                fn ($field) => $field instanceof ITILActorField
+            );
+
+            foreach ($configurable_fields as $configurable_field) {
+                /** @var ITILActorField $configurable_field */
+                $fields_config[$configurable_field::getKey()] = $configurable_field->convertFieldConfig(
+                    $this,
+                    $destination->getItem(),
+                    $actors
+                )->jsonSerialize();
+            }
+
+            if (
+                !$destination->update([
+                    'id'     => $destination->getID(),
+                    'config' => $fields_config
+                ])
+            ) {
+                throw new LogicException("Failed to update destination with id {$destination->getID()}");
+            }
+        }
+    }
+
+    private function handleMandatoryDestination(): void
+    {
+        $this->progress_indicator?->setProgressBarMessage(__('Handling mandatory destination...'));
+
+        foreach ($this->getMappedItemsForItemtype('PluginFormcreatorForm') as $form) {
+            $form_destination = new FormDestination();
+            $raw_destinations = $form_destination->find([
+                Form::getForeignKeyField() => $form['items_id'],
+                'itemtype'                 => FormDestinationTicket::class,
+                'is_mandatory'             => false
+            ]);
+
+            if (count($raw_destinations) > 0) {
+                // Delete default mandatory destination
+                $form_destination->deleteByCriteria([
+                    Form::getForeignKeyField() => $form['items_id'],
+                    'itemtype'                 => FormDestinationTicket::class,
+                    'is_mandatory'             => 1
+                ], true);
+
+                // Set the first destination as mandatory
+                $form_destination->update([
+                    'id'           => current($raw_destinations)['id'],
+                    'is_mandatory' => 1
+                ]);
+            }
         }
     }
 }

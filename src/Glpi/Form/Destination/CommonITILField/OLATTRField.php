@@ -70,4 +70,10 @@ final class OLATTRField extends SLMField
     {
         return OLATTRFieldConfig::class;
     }
+
+    #[Override]
+    protected function getFieldNameToConvertSpecificSLMID(): string
+    {
+        return 'ola_question_ttr';
+    }
 }

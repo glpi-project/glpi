@@ -33,47 +33,20 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination\CommonITILField;
+namespace Glpi\Form\Migration;
 
-use Override;
-use SLA;
-use SLM;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Form;
 
-final class SLATTRField extends SLMField
+interface DestinationFieldConverterInterface
 {
-    #[Override]
-    public function getLabel(): string
-    {
-        return __("SLA TTR");
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 40;
-    }
-
-    #[Override]
-    public function getSLMClass(): string
-    {
-        return SLA::class;
-    }
-
-    #[Override]
-    public function getType(): int
-    {
-        return SLM::TTR;
-    }
-
-    #[Override]
-    public function getConfigClass(): string
-    {
-        return SLATTRFieldConfig::class;
-    }
-
-    #[Override]
-    protected function getFieldNameToConvertSpecificSLMID(): string
-    {
-        return 'sla_question_ttr';
-    }
+    /**
+     * Convert field config
+     *
+     * @param FormMigration $migration
+     * @param Form $form
+     * @param array $rawData
+     * @return JsonFieldInterface
+     */
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface;
 }
