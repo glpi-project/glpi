@@ -30,66 +30,59 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Default forms', () => {
-    it('can fill and submit the incident form', () => {
-        // Go to form
-        cy.login();
-        cy.visit("/Form/Render/1");
+const uuid = Date.now();
 
-        // Fill form
-        cy.getDropdownByLabelText('Urgency').selectDropdownValue('High');
-        cy.findByRole('textbox', {'name': "Title"}).type("My title");
-        cy.findByLabelText("Description").awaitTinyMCE().type("My description");
-
-        // Submit form
-        cy.findByRole('button', {'name': "Send form"}).click();
-        cy.findByRole('alert')
-            .should('contain.text', 'Item successfully created')
-        ;
-
-        // Validate ticket values using API
-        cy.findByRole('alert')
-            .findByRole('link')
-            .invoke("attr", "href")
-            .then((href) => {
-                const id = /\?id=(.*)/.exec(href)[1];
-                cy.getWithAPI('Ticket', id).then((fields) => {
-                    expect(fields.urgency).to.equal(4);
-                    expect(fields.name).to.equal('My title');
-                    expect(fields.content).to.equal('<p>My description</p>');
-                });
-            })
-        ;
+before(() => {
+    cy.createWithAPI('ITILCategory', {
+        'name': `Test ITILCategory - ${uuid}`,
     });
+    cy.createWithAPI('Computer', {
+        'name': `Test Computer - ${uuid}`,
+        'users_id': 7,
+    });
+    cy.createWithAPI('Location', {
+        'name': `Test Location - ${uuid}`,
+    });
+});
 
-    it('can fill and submit the service form', () => {
-        // Go to form
-        cy.login();
-        cy.visit("/Form/Render/2");
+function testDefaultForm({ profile, formId }) {
+    cy.login();
+    cy.changeProfile(profile);
 
-        // Fill form
-        cy.getDropdownByLabelText('Urgency').selectDropdownValue('High');
-        cy.findByRole('textbox', {'name': "Title"}).type("My title");
-        cy.findByLabelText("Description").awaitTinyMCE().type("My description");
+    cy.visit(`/Form/Render/${formId}`);
+    cy.getDropdownByLabelText('Urgency').selectDropdownValue('High');
+    cy.getDropdownByLabelText('Category').selectDropdownValue(`»Test ITILCategory - ${uuid}`);
+    cy.getDropdownByLabelText('User devices').selectDropdownValue(`Computers - Test Computer - ${uuid}`);
+    cy.getDropdownByLabelText('Watchers').selectDropdownValue('glpi');
+    cy.getDropdownByLabelText('Location').selectDropdownValue(`»Test Location - ${uuid}`);
+    cy.findByRole('textbox', { name: "Title" }).type("My title");
+    cy.findByLabelText("Description").awaitTinyMCE().type("My description");
 
-        // Submit form
-        cy.findByRole('button', {'name': "Send form"}).click();
-        cy.findByRole('alert')
-            .should('contain.text', 'Item successfully created')
-        ;
+    cy.findByRole('button', { name: "Send form" }).click();
+    cy.findByRole('alert').should('contain.text', 'Item successfully created');
 
-        // Validate ticket values using API
-        cy.findByRole('alert')
-            .findByRole('link')
-            .invoke("attr", "href")
-            .then((href) => {
-                const id = /\?id=(.*)/.exec(href)[1];
-                cy.getWithAPI('Ticket', id).then((fields) => {
-                    expect(fields.urgency).to.equal(4);
-                    expect(fields.name).to.equal('My title');
-                    expect(fields.content).to.equal('<p>My description</p>');
-                });
-            })
-        ;
+    cy.findByRole('alert')
+        .findByRole('link')
+        .invoke("attr", "href")
+        .then((href) => {
+            const id = /\?id=(.*)/.exec(href)[1];
+            cy.getWithAPI('Ticket', id).then((fields) => {
+                expect(fields.urgency).to.equal(4);
+                expect(fields.name).to.equal('My title');
+                expect(fields.content).to.equal('<p>My description</p>');
+            });
+        });
+}
+
+describe('Default forms', () => {
+    [
+        { profile: 'Super-Admin', formId: 1 },
+        { profile: 'Self-Service', formId: 1 },
+        { profile: 'Super-Admin', formId: 2 },
+        { profile: 'Self-Service', formId: 2 }
+    ].forEach((scenario) => {
+        it(`can fill and submit form ${scenario.formId} as ${scenario.profile}`, () => {
+            testDefaultForm(scenario);
+        });
     });
 });

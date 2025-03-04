@@ -201,7 +201,7 @@ TWIG;
             'question' => $question,
             'items'    => CommonItilObject_Item::getMyDevices(Session::getLoginUserID(), Session::getActiveEntities()),
             'is_multiple_devices' => $this->isMultipleDevices($question),
-            'aria_label' => _n('Select device...', 'Select devices...', $this->isMultipleDevices($question) ? 2 : 1),
+            'aria_label' => $question->fields['name'],
         ]);
     }
 
