@@ -35,21 +35,22 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\OLATTOField;
 use Glpi\Form\Destination\CommonITILField\OLATTOFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use OLA;
+use Override;
 use SLM;
 use Ticket;
 use TicketTemplatePredefinedField;
 
-final class OLATTOFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class OLATTOFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -152,6 +153,40 @@ final class OLATTOFieldTest extends DbTestCase
             ),
             expected_olas_tto_id: $created_ola_tto->getID()
         );
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'SLA from template or none' => [
+            'field_key'     => OLATTOField::getKey(),
+            'fields_to_set' => [
+                'sla_rule' => 1,
+            ],
+            'field_config' => new OLATTOFieldConfig(
+                strategy: SLMFieldStrategy::FROM_TEMPLATE
+            )
+        ];
+
+        yield 'Specific SLA' => [
+            'field_key'     => OLATTOField::getKey(),
+            'fields_to_set' => [
+                'sla_rule'         => 2,
+                'ola_question_tto' => fn (AbstractDestinationFieldTest $context) => $context->createItem(
+                    OLA::class,
+                    [
+                        'name'            => '_test_ola_tto',
+                        'type'            => SLM::TTO,
+                        'number_time'     => 1,
+                        'definition_time' => 'hour',
+                    ]
+                )->getID(),
+            ],
+            'field_config' => fn ($migration, $form) => new OLATTOFieldConfig(
+                strategy: SLMFieldStrategy::SPECIFIC_VALUE,
+                specific_slm_id: getItemByTypeName(OLA::class, '_test_ola_tto', true)
+            )
+        ];
     }
 
     private function checkOLATTOFieldConfiguration(

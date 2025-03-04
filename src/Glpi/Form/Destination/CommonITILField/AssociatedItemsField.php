@@ -41,12 +41,14 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use InvalidArgumentException;
 use Override;
 
-class AssociatedItemsField extends AbstractConfigField
+class AssociatedItemsField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -257,5 +259,35 @@ class AssociatedItemsField extends AbstractConfigField
     public function getCategory(): Category
     {
         return Category::PROPERTIES;
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        if (isset($rawData['associate_rule'])) {
+            switch ($rawData['associate_rule']) {
+                case 2:
+                    return new AssociatedItemsFieldConfig(
+                        strategies: [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
+                        specific_associated_items: json_decode($rawData['associate_items'], true) ?? []
+                    );
+                case 3:
+                    return new AssociatedItemsFieldConfig(
+                        strategies: [AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS],
+                        specific_question_ids: [
+                            $migration->getMappedItemTarget(
+                                'PluginFormcreatorQuestion',
+                                $rawData['associate_question']
+                            )['items_id']
+                        ],
+                    );
+                case 4:
+                    return new AssociatedItemsFieldConfig(
+                        [AssociatedItemsFieldStrategy::LAST_VALID_ANSWER]
+                    );
+            }
+        }
+
+        return $this->getDefaultConfig($form);
     }
 }

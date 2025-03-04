@@ -40,12 +40,14 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use InvalidArgumentException;
 use Location;
 use Override;
 
-class LocationField extends AbstractConfigField
+class LocationField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -166,5 +168,37 @@ class LocationField extends AbstractConfigField
     public function getCategory(): Category
     {
         return Category::PROPERTIES;
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        if (isset($rawData['location_rule'])) {
+            switch ($rawData['location_rule']) {
+                case 1:
+                    return new LocationFieldConfig(
+                        LocationFieldStrategy::FROM_TEMPLATE
+                    );
+                case 2:
+                    return new LocationFieldConfig(
+                        strategy: LocationFieldStrategy::SPECIFIC_VALUE,
+                        specific_location_id: $rawData['location_question']
+                    );
+                case 3:
+                    return new LocationFieldConfig(
+                        strategy: LocationFieldStrategy::SPECIFIC_ANSWER,
+                        specific_question_id: $migration->getMappedItemTarget(
+                            'PluginFormcreatorQuestion',
+                            $rawData['location_question']
+                        )['items_id'],
+                    );
+                case 4:
+                    return new LocationFieldConfig(
+                        LocationFieldStrategy::LAST_VALID_ANSWER
+                    );
+            }
+        }
+
+        return $this->getDefaultConfig($form);
     }
 }

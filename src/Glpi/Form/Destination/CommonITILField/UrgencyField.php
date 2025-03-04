@@ -41,11 +41,13 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use InvalidArgumentException;
 use Override;
 
-class UrgencyField extends AbstractConfigField
+class UrgencyField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -134,6 +136,32 @@ class UrgencyField extends AbstractConfigField
     public function getDefaultConfig(Form $form): UrgencyFieldConfig
     {
         return new UrgencyFieldConfig(UrgencyFieldStrategy::LAST_VALID_ANSWER);
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        switch ($rawData['urgency_rule']) {
+            case 1:
+                return new UrgencyFieldConfig(
+                    strategy: UrgencyFieldStrategy::FROM_TEMPLATE
+                );
+            case 2:
+                return new UrgencyFieldConfig(
+                    strategy: UrgencyFieldStrategy::SPECIFIC_VALUE,
+                    specific_urgency_value: $rawData['urgency_question']
+                );
+            case 3:
+                return new UrgencyFieldConfig(
+                    strategy: UrgencyFieldStrategy::SPECIFIC_ANSWER,
+                    specific_question_id: $migration->getMappedItemTarget(
+                        'PluginFormcreatorQuestion',
+                        $rawData['urgency_question']
+                    )['items_id']
+                );
+        }
+
+        return $this->getDefaultConfig($form);
     }
 
     /**

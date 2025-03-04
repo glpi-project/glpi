@@ -35,21 +35,22 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\RequestTypeField;
 use Glpi\Form\Destination\CommonITILField\RequestTypeFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequestTypeFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Override;
 use Ticket;
 use TicketTemplate;
 use TicketTemplatePredefinedField;
 
-final class RequestTypeFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class RequestTypeFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -199,6 +200,47 @@ final class RequestTypeFieldTest extends DbTestCase
             answers: [],
             expected_request_type: Ticket::DEMAND_TYPE
         );
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'Default or from a template' => [
+            'field_key'     => RequestTypeField::getKey(),
+            'fields_to_set' => [
+                'type_rule' => 0,
+            ],
+            'field_config' => new RequestTypeFieldConfig(
+                strategy: RequestTypeFieldStrategy::FROM_TEMPLATE
+            )
+        ];
+
+        yield 'Specific type' => [
+            'field_key'     => RequestTypeField::getKey(),
+            'fields_to_set' => [
+                'type_rule' => 1,
+                'type_question' => 4, // High urgency
+            ],
+            'field_config' => new RequestTypeFieldConfig(
+                strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
+                specific_request_type: 4 // High urgency
+            )
+        ];
+
+        yield 'Equals to the answer to the question' => [
+            'field_key'     => RequestTypeField::getKey(),
+            'fields_to_set' => [
+                'type_rule'     => 2,
+                'type_question' => 80
+            ],
+            'field_config' => fn ($migration, $form) => new RequestTypeFieldConfig(
+                strategy: RequestTypeFieldStrategy::SPECIFIC_ANSWER,
+                specific_question_id: $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    80
+                )['items_id'] ?? throw new \Exception("Question not found")
+            )
+        ];
     }
 
     private function sendFormAndAssertTicketType(
