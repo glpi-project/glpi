@@ -280,6 +280,8 @@
                                                     {{ content }}
                                                 </div>
                                             {% endif %}
+                                        {% elseif formatter == 'yesno' %}
+                                            {{ entry[colkey] == 1 ? __('Yes') : __('No') }}
                                         {% else %}
                                             {{ entry[colkey] }}
                                         {% endif %}
