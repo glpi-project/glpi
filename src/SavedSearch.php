@@ -120,17 +120,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 echo '<br/>';
                 break;
             case 'change_visibility':
-                $rand = mt_rand();
                 echo __('Visibility');
                 Dropdown::showFromArray(
                     'is_private',
                     [
                         1  => __('Private'),
                         0  => __('Public')
-                    ],
-                    [
-                        'rand' => $rand,
-                        'value' => 0,
                     ],
                 );
                 break;
@@ -172,7 +167,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 }
                 break;
             case 'change_visibility':
-                if ($item->setVibility($ids, $input['is_private'])) {
+                if ($item->setVisibility($ids, $input['is_private'])) {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
                 } else {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
@@ -1223,11 +1218,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      * Set visibility from massive actions
      *
      * @param array   $ids   Items IDs
-     * @param integer $is_private   VIsibility
+     * @param bool $is_private   Visibility
      *
      * @return boolean
      */
-    public function setVibility(array $ids, $is_private)
+    public function setVisibility(array $ids, bool $is_private)
     {
         /** @var \DBmysql $DB */
         global $DB;
