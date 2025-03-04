@@ -38,9 +38,8 @@ namespace Glpi\Form;
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\Condition\ConditionnableInterface;
-use Glpi\Form\Condition\ConditionnableTrait;
-use Glpi\Form\Condition\VisibilityStrategy;
+use Glpi\Form\Condition\ConditionnableVisibilityInterface;
+use Glpi\Form\Condition\ConditionnableVisibilityTrait;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
@@ -52,9 +51,9 @@ use RuntimeException;
 /**
  * Question of a given helpdesk form's section
  */
-final class Question extends CommonDBChild implements BlockInterface, ConditionnableInterface
+final class Question extends CommonDBChild implements BlockInterface, ConditionnableVisibilityInterface
 {
-    use ConditionnableTrait;
+    use ConditionnableVisibilityTrait;
 
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
@@ -197,13 +196,6 @@ final class Question extends CommonDBChild implements BlockInterface, Conditionn
                 $this->fields['default_value'] = $value;
             }
         }
-    }
-
-    public function getConfiguredVisibilityStrategy(): VisibilityStrategy
-    {
-        $strategy_value = $this->fields['visibility_strategy'] ?? "";
-        $strategy = VisibilityStrategy::tryFrom($strategy_value);
-        return $strategy ?? VisibilityStrategy::ALWAYS_VISIBLE;
     }
 
     private function prepareInput($input): array

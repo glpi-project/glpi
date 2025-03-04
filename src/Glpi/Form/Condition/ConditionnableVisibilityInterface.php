@@ -34,16 +34,14 @@
 
 namespace Glpi\Form\Condition;
 
-/**
- * This interface must be satisfied by any form item for which its visibility
- * can be toggled depending on some conditions.
- */
-interface ConditionnableInterface
+use Glpi\Form\Condition\VisibilityStrategy;
+
+interface ConditionnableVisibilityInterface extends ConditionnableInterface
 {
     /**
-     * Get configured condition data from the database.
+     * Get the configured visibility strategy from the database.
      *
-     *  @return ConditionData[]
-     **/
-    public function getConfiguredConditionsData(): array;
+     * @return VisibilityStrategy
+     */
+    public function getConfiguredVisibilityStrategy(): VisibilityStrategy;
 }

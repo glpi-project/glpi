@@ -36,18 +36,17 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
-use Glpi\Form\Condition\ConditionnableInterface;
-use Glpi\Form\Condition\ConditionnableTrait;
-use Glpi\Form\Condition\VisibilityStrategy;
+use Glpi\Form\Condition\ConditionnableVisibilityInterface;
+use Glpi\Form\Condition\ConditionnableVisibilityTrait;
 use Override;
 use Ramsey\Uuid\Uuid;
 
 /**
  * Section of a given helpdesk form
  */
-final class Section extends CommonDBChild implements ConditionnableInterface
+final class Section extends CommonDBChild implements ConditionnableVisibilityInterface
 {
-    use ConditionnableTrait;
+    use ConditionnableVisibilityTrait;
 
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
@@ -228,13 +227,6 @@ final class Section extends CommonDBChild implements ConditionnableInterface
         }
 
         return $this->comments;
-    }
-
-    public function getConfiguredVisibilityStrategy(): VisibilityStrategy
-    {
-        $strategy_value = $this->fields['visibility_strategy'] ?? "";
-        $strategy = VisibilityStrategy::tryFrom($strategy_value);
-        return $strategy ?? VisibilityStrategy::ALWAYS_VISIBLE;
     }
 
     /**

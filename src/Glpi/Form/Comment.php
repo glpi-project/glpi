@@ -37,9 +37,8 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Condition\ConditionnableInterface;
-use Glpi\Form\Condition\ConditionnableTrait;
-use Glpi\Form\Condition\VisibilityStrategy;
+use Glpi\Form\Condition\ConditionnableVisibilityInterface;
+use Glpi\Form\Condition\ConditionnableVisibilityTrait;
 use Log;
 use Override;
 use Ramsey\Uuid\Uuid;
@@ -48,9 +47,9 @@ use RuntimeException;
 /**
  * Comment of a given helpdesk form's section
  */
-final class Comment extends CommonDBChild implements BlockInterface, ConditionnableInterface
+final class Comment extends CommonDBChild implements BlockInterface, ConditionnableVisibilityInterface
 {
-    use ConditionnableTrait;
+    use ConditionnableVisibilityTrait;
 
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
@@ -154,13 +153,6 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionna
         }
 
         return $form;
-    }
-
-    public function getConfiguredVisibilityStrategy(): VisibilityStrategy
-    {
-        $strategy_value = $this->fields['visibility_strategy'] ?? "";
-        $strategy = VisibilityStrategy::tryFrom($strategy_value);
-        return $strategy ?? VisibilityStrategy::ALWAYS_VISIBLE;
     }
 
     /**
