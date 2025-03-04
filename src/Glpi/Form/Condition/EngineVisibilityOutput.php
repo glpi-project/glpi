@@ -37,7 +37,7 @@ namespace Glpi\Form\Condition;
 use JsonSerializable;
 use Override;
 
-final class EngineOutput implements JsonSerializable
+final class EngineVisibilityOutput implements JsonSerializable
 {
     private array $sections_visibility = [];
     private array $questions_visibility = [];

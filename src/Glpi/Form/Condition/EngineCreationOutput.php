@@ -34,29 +34,33 @@
 
 namespace Glpi\Form\Condition;
 
-use JsonException;
+use Glpi\Form\Destination\FormDestination;
+use JsonSerializable;
+use Override;
 
-trait ConditionnableTrait
+final class EngineCreationOutput implements JsonSerializable
 {
-    /** @return ConditionData[] */
-    public function getConfiguredConditionsData(): array
+    private array $must_be_created = [];
+
+    #[Override]
+    public function jsonSerialize(): array
     {
-        parent::post_getFromDB();
+        return [
+            'must_be_created' => $this->must_be_created,
+        ];
+    }
 
-        try {
-            $raw_data = json_decode(
-                json       : $this->fields['conditions'],
-                associative: true,
-                flags      : JSON_THROW_ON_ERROR,
-            );
-        } catch (JsonException $e) {
-            $raw_data = [];
-        }
+    public function addItemThatMustBeCreated(FormDestination $destination): void
+    {
+        $this->must_be_created[] = $destination->getId();
+    }
 
-        $form_data = new FormData([
-            'conditions' => $raw_data,
-        ]);
-
-        return $form_data->getConditionsData();
+    public function itemMustBeCreated(FormDestination $destination): bool
+    {
+        return in_array(
+            $destination->getId(),
+            $this->must_be_created,
+            true
+        );
     }
 }

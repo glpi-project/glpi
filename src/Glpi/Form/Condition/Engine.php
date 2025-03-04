@@ -47,9 +47,9 @@ final class Engine
     ) {
     }
 
-    public function computeVisibility(): EngineOutput
+    public function computeVisibility(): EngineVisibilityOutput
     {
-        $output = new EngineOutput();
+        $output = new EngineVisibilityOutput();
 
         // Compute questions visibility
         foreach ($this->form->getQuestions() as $question) {
@@ -80,7 +80,22 @@ final class Engine
         return $output;
     }
 
-    private function computeItemVisibility(ConditionnableInterface $item): bool
+    public function computeItemsThatMustBeCreated(): EngineCreationOutput
+    {
+        $output = new EngineCreationOutput();
+
+        // Compute questions visibility
+        foreach ($this->form->getDestinations() as $destination) {
+            $visibility = $this->computeDestinationCreation($destination);
+            if ($visibility) {
+                $output->addItemThatMustBeCreated($destination);
+            }
+        }
+
+        return $output;
+    }
+
+    private function computeItemVisibility(ConditionableVisibilityInterface $item): bool
     {
         // Stop immediatly if the strategy result is forced.
         $strategy = $item->getConfiguredVisibilityStrategy();
@@ -90,6 +105,28 @@ final class Engine
 
         // Compute the conditions
         $conditions = $item->getConfiguredConditionsData();
+        $conditions_result = $this->computeConditions($conditions);
+
+        return $strategy->mustBeVisible($conditions_result);
+    }
+
+    private function computeDestinationCreation(ConditionableCreationInterface $item): bool
+    {
+        // Stop immediatly if the strategy result is forced.
+        $strategy = $item->getConfiguredCreationStrategy();
+        if ($strategy == CreationStrategy::ALWAYS_CREATED) {
+            return true;
+        }
+
+        // Compute the conditions
+        $conditions = $item->getConfiguredConditionsData();
+        $conditions_result = $this->computeConditions($conditions);
+
+        return $strategy->mustBeCreated($conditions_result);
+    }
+
+    private function computeConditions(array $conditions): bool
+    {
         $conditions_result = null;
         foreach ($conditions as $condition) {
             // Apply condition (item + value operator + value)
@@ -114,7 +151,7 @@ final class Engine
             $conditions_result = false;
         }
 
-        return $strategy->mustBeVisible($conditions_result);
+        return $conditions_result;
     }
 
     private function computeCondition(ConditionData $condition): bool
