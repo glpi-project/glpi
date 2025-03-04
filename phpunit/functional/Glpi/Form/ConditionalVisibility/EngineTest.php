@@ -43,6 +43,7 @@ use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Condition\Type;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
@@ -863,12 +864,166 @@ final class EngineTest extends DbTestCase
         ];
     }
 
+    public static function conditionsOnRichTextValues(): iterable
+    {
+        $type = QuestionTypeLongText::class;
+
+        // Test rich text answers with the EQUALS operator
+        yield "Equals check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>unexpected answer</p>",
+            'expected_result'    => false,
+        ];
+        yield "Equals check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact</p>",
+            'expected_result'    => false,
+        ];
+        yield "Equals check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>answer</p>",
+            'expected_result'    => false,
+        ];
+        yield "Equals check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact answer</p>",
+            'expected_result'    => true,
+        ];
+        yield "Equals check - case 5 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>exact ANSWER</p>",
+            'expected_result'    => true,
+        ];
+
+        // Test rich text answers with the NOT_EQUALS operator
+        yield "Not equals check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>unexpected answer</p>",
+            'expected_result'    => true,
+        ];
+        yield "Not equals check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact</p>",
+            'expected_result'    => true,
+        ];
+        yield "Not equals check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>answer</p>",
+            'expected_result'    => true,
+        ];
+        yield "Not equals check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact answer</p>",
+            'expected_result'    => false,
+        ];
+        yield "Not equals check - case 5 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_EQUALS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>exact ANSWER</p>",
+            'expected_result'    => false,
+        ];
+
+        // Test rich text answers with the CONTAINS operator
+        yield "Contains check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>unexpected answer</p>",
+            'expected_result'    => false,
+        ];
+        yield "Contains check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact</p>",
+            'expected_result'    => true,
+        ];
+        yield "Contains check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>answer</p>",
+            'expected_result'    => true,
+        ];
+        yield "Contains check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact answer</p>",
+            'expected_result'    => true,
+        ];
+        yield "Contains check - case 5 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>exact ANSWER</p>",
+            'expected_result'    => true,
+        ];
+
+        // Test rich text answers with the NOT_CONTAINS operator
+        yield "Not contains check - case 1 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>unexpected answer</p>",
+            'expected_result'    => true,
+        ];
+        yield "Not contains check - case 2 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact</p>",
+            'expected_result'    => false,
+        ];
+        yield "Not contains check - case 3 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>answer</p>",
+            'expected_result'    => false,
+        ];
+        yield "Not contains check - case 4 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>Exact answer</p>",
+            'expected_result'    => false,
+        ];
+        yield "Not contains check - case 5 for $type" => [
+            'question_type'      => $type,
+            'condition_operator' => ValueOperator::NOT_CONTAINS,
+            'condition_value'    => "Exact answer",
+            'submitted_answer'   => "<p>exact ANSWER</p>",
+            'expected_result'    => false,
+        ];
+    }
+
     /**
      * Similar to `testComputation` but will always use the same simplified form
      * to reduce boilerplate and focus and what is really being tested.
      */
     #[DataProvider('conditionsOnStringValues')]
     #[DataProvider('conditionsOnNumberValues')]
+    #[DataProvider('conditionsOnRichTextValues')]
     public function testSingleComputation(
         string $question_type,
         ValueOperator $condition_operator,
