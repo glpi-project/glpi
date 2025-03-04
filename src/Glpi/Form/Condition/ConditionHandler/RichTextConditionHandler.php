@@ -32,17 +32,27 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Condition;
+namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ValueOperator;
+use Override;
 
-/**
- * Items that implements this interface can be used as a criteria in a condition.
- */
-interface UsedAsCriteriaInterface
+final class RichTextConditionHandler extends StringConditionHandler implements ConditionHandlerInterface
 {
-    public function getConditionHandler(
-        ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface;
+    #[Override]
+    public function applyValueOperator(
+        mixed $a,
+        ValueOperator $operator,
+        mixed $b,
+    ): bool {
+        // Normalize strings.
+        $a = strtolower(strval($a));
+        $b = strtolower(strval($b));
+
+        // Remove HTML tags.
+        $a = strip_tags($a);
+        $b = strip_tags($b);
+
+        return parent::applyValueOperator($a, $operator, $b);
+    }
 }

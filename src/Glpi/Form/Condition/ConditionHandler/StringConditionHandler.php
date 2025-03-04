@@ -38,7 +38,7 @@ use Glpi\Form\Condition\InputTemplateKey;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
 
-final class StringConditionHandler implements ConditionHandlerInterface
+class StringConditionHandler implements ConditionHandlerInterface
 {
     #[Override]
     public function getSupportedValueOperators(): array
@@ -74,8 +74,7 @@ final class StringConditionHandler implements ConditionHandlerInterface
             ValueOperator::NOT_CONTAINS => !str_contains($b, $a),
 
             // Unsupported operators
-            ValueOperator::GREATER_THAN, ValueOperator::GREATER_THAN_OR_EQUALS => false,
-            ValueOperator::LESS_THAN, ValueOperator::LESS_THAN_OR_EQUALS => false,
+            default => false,
         };
     }
 }

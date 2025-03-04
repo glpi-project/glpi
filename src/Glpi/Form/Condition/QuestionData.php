@@ -42,6 +42,7 @@ final class QuestionData
         private string $uuid,
         private string $name,
         private QuestionTypeInterface $type,
+        private ?array $extra_data,
     ) {
     }
 
@@ -58,5 +59,10 @@ final class QuestionData
     public function getType(): QuestionTypeInterface
     {
         return $this->type;
+    }
+
+    public function getExtraData(): ?array
+    {
+        return $this->extra_data;
     }
 }
