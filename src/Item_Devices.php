@@ -1450,6 +1450,8 @@ class Item_Devices extends CommonDBRelation
         $this->addStandardTab('Log', $ong, $options);
         $this->addStandardTab('Contract_Item', $ong, $options);
 
+        // Get parents tabs
+        $ong = array_merge($ong, parent::defineTabs());
         return $ong;
     }
 
