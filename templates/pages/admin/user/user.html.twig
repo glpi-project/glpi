@@ -31,8 +31,8 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
-{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 {% import 'components/form/modals_macros.html.twig' as modals %}
+
 {% set params  = params ?? [] %}
 {% set rand_field = rand|default(random()) %}
 {% set field_options = {
@@ -71,85 +71,7 @@
                             {% endif %}
 
                             {% if not simple_form and not item.isNewItem() %}
-                                {% set avatar %}
-                                    {{ include('components/user/picture.html.twig', {
-                                        user_object: item,
-                                        with_link: false,
-                                        avatar_size: 'avatar-xl'
-                                    }) }}
-                                {% endset %}
-                                {% set avatar_initials %}
-                                    {{ include('components/user/picture.html.twig', {
-                                        user_object: item,
-                                        with_link: false,
-                                        avatar_size: 'avatar-xl',
-                                        force_initials: true
-                                    }) }}
-                                {% endset %}
-                                {% set modal_content %}
-                                    <div class="text-center">
-                                        <div data-current-avatar>{{ avatar }}</div>
-                                        <div data-default-avatar class="d-none">{{ avatar_initials }}</div>
-                                        <div class="avatar avatar-xl rounded d-none" data-preview-avatar>
-                                            <img src="" alt="{{ __('Preview') }}" class="img-fluid" />
-                                        </div>
-                                        {{ inputs.file('picture', null, {
-                                            onlyimages: true,
-                                            multiple: false,
-                                        }) }}
-                                        {% if item.fields['picture'] is not empty %}
-                                            {{ fields.checkboxField('_blank_picture', 0, __('Clear'), {
-                                                additional_attributes: {
-                                                    onclick: '$(this).closest(".modal").find("[data-current-avatar], [data-default-avatar], .fileupload").toggleClass("d-none");'
-                                                }
-                                            }) }}
-                                        {% endif %}
-                                        <script type="module">
-                                            function updateAvatarVisibilities() {
-                                                // Cannot rely on 'fileuploadprocessstop' event or files property as they flat out don't work. fileupload_info content is not updated fast enough to be seen from change event.
-                                                const has_pending_file = $('#modal_picture_{{ rand_field }} [data-preview-avatar] img').attr('src') !== '';
-                                                const will_clear = $('#modal_picture_{{ rand_field }} input[name=_blank_picture]').is(':checked');
-
-                                                $('[data-preview-avatar]').toggleClass('d-none', !has_pending_file || will_clear);
-                                                $('[data-current-avatar]').toggleClass('d-none', has_pending_file || will_clear);
-                                                $('[data-default-avatar]').toggleClass('d-none', !will_clear);
-                                            }
-
-                                            $('#modal_picture_{{ rand_field }}').on('mouseup', '.remove_file_upload', (e) => {
-                                                // Click handler doesn't work. Don't know. So much wasted time. Some other handler probably blocks it.
-                                                $('#modal_picture_{{ rand_field }} [data-preview-avatar] img').attr('src', '');
-                                                updateAvatarVisibilities();
-                                            });
-                                            $('#modal_picture_{{ rand_field }} input[type=file]').on('change', (e) => {
-                                                // fileuploadprocessstop event doesn't work on the file input or .fileupload. Maybe doesn't work at all.
-                                                const preview_img = URL.createObjectURL(e.target.files[0]);
-                                                $('[data-preview-avatar] img').attr('src', preview_img);
-                                                updateAvatarVisibilities();
-                                            });
-                                            $('#modal_picture_{{ rand_field }} input[name=_blank_picture]').on('change', (e) => {
-                                                updateAvatarVisibilities();
-                                            });
-                                        </script>
-                                    </div>
-                                {% endset %}
-                                {% set picture_field %}
-                                    <div
-                                        {% if item.canUpdateItem() %}
-                                            class="cursor-pointer flex-shrink-1" title="{{ __('Change picture') }}" role="button" data-bs-toggle="modal" data-bs-target="#modal_picture_{{ rand_field }}"
-                                        {% endif %}>
-                                        <div data-current-avatar>{{ avatar }}</div>
-                                        <div data-default-avatar class="d-none">{{ avatar_initials }}</div>
-                                        <div class="avatar avatar-xl rounded d-none" data-preview-avatar>
-                                            <img src="" alt="{{ __('Preview') }}" class="img-fluid" />
-                                        </div>
-                                    </div>
-                                    {{ modals.modal(__('Change picture'), modal_content, {
-                                        id: 'modal_picture_' ~ rand_field,
-                                    }) }}
-                                {% endset %}
-                                {{ fields.htmlField('_picture', picture_field, _n('Picture', 'Pictures', 1), {
-                                    wrapper_class: 'form-control-plaintext d-flex'
-                                }) }}
+                                {{ include('pages/admin/user/user_picture_field.html.twig') }}
                             {% else %}
                                 {{ fields.nullField() }}
                             {% endif %}
