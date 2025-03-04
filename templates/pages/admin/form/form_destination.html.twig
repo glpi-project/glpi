@@ -105,6 +105,23 @@
                                     )|raw }}
                                 </div>
 
+                                {# Display conditions #}
+                                {% if not destination.fields.is_mandatory %}
+                                    <h4 class="d-flex align-items-center mt-4">
+                                        <i class="ti ti-circuit-changeover me-2"></i>
+                                        {{ __("Conditions") }}
+                                    </h4>
+
+                                    {{ include(
+                                        "pages/admin/form/destination_visibility_conditions_configuration.html.twig",
+                                        {
+                                            destination: destination,
+                                            form: form,
+                                        },
+                                        with_context: false
+                                    ) }}
+                                {% endif %}
+
                                 {# Submit button to delete the destination #}
                                 {% if can_update %}
                                     <div class="d-flex flex-row-reverse mt-3">

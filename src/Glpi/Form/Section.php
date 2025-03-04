@@ -38,6 +38,7 @@ namespace Glpi\Form;
 use CommonDBChild;
 use Glpi\Form\Condition\ConditionnableInterface;
 use Glpi\Form\Condition\ConditionnableTrait;
+use Glpi\Form\Condition\VisibilityStrategy;
 use Override;
 use Ramsey\Uuid\Uuid;
 
@@ -227,6 +228,13 @@ final class Section extends CommonDBChild implements ConditionnableInterface
         }
 
         return $this->comments;
+    }
+
+    public function getConfiguredVisibilityStrategy(): VisibilityStrategy
+    {
+        $strategy_value = $this->fields['visibility_strategy'] ?? "";
+        $strategy = VisibilityStrategy::tryFrom($strategy_value);
+        return $strategy ?? VisibilityStrategy::ALWAYS_VISIBLE;
     }
 
     /**
