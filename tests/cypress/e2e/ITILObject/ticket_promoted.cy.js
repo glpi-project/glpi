@@ -37,6 +37,7 @@ describe("Ticket Promoted", () => {
     const requesterID = 2;
     const techID = 4;
     const projectTaskName = 'Project Name';
+    const categoryName = 'CatName';
 
     const checkDescriptionInput = () => {
         cy.get('#itil-form').first().within(() => {
@@ -83,6 +84,9 @@ describe("Ticket Promoted", () => {
                     'groups_id_tech': group_id,
                 }).as('task_id');
             });
+            cy.createWithAPI('ITILCategory', {
+                'name': `${categoryName}-${ticket_id}`,
+            }).as('itilcategory_id');
         });
 
         cy.createWithAPI('Project', {
@@ -111,14 +115,27 @@ describe("Ticket Promoted", () => {
         checTechInput('User', techID);
         checkDescriptionInput();
         checRequesterInput();
-        // cy.get('@group_id').then((group_id) => {
-        //     checTechInput('Group', group_id);
-        // });
+        cy.get('@group_id').then((group_id) => {
+            checTechInput('Group', group_id);
+        });
     });
 
     it('promote project task', () => {
         cy.get('@projecttask_id').then((projecttask_id) => {
             cy.visit(`/front/ticket.form.php?_projecttasks_id=${projecttask_id}`);
+        });
+        checkTitle();
+        checkDescriptionInput();
+    });
+
+    it('promote project task change category', () => {
+        cy.get('@projecttask_id').then((projecttask_id) => {
+            cy.visit(`/front/ticket.form.php?_projecttasks_id=${projecttask_id}`);
+        });
+        checkTitle();
+        checkDescriptionInput();
+        cy.get('@ticket_id').then((ticket_id) => {
+            cy.getDropdownByLabelText('Category').selectDropdownValue(`»${categoryName}-${ticket_id}`);
         });
         checkTitle();
         checkDescriptionInput();
