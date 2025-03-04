@@ -78,7 +78,7 @@ final class NumberConditionHandler implements ConditionHandlerInterface
             ValueOperator::LESS_THAN_OR_EQUALS    => $a <= $b,
 
             // Unsupported operators
-            ValueOperator::CONTAINS, ValueOperator::NOT_CONTAINS => false,
+            default => false,
         };
     }
 }
