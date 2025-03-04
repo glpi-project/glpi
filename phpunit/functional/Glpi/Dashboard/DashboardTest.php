@@ -162,14 +162,17 @@ class DashboardTest extends DbTestCase
     public function testCloneKeyUnicity()
     {
         $num_clones = 5;
+        $original_key = 'test_dashboard';
+        $this->dashboard = new \Glpi\Dashboard\Dashboard($original_key);
 
         $keys = [];
 
         for ($i = 0; $i < $num_clones; $i++) {
-            $this->dashboard = new \Glpi\Dashboard\Dashboard('test_dashboard');
-
+            $this->dashboard->load(true);
             $clone = $this->dashboard->cloneCurrent();
             $keys[] = $clone['key'];
+
+            $this->assertNotEquals($original_key, $clone['key']);
         }
 
         $unique_keys = array_unique($keys);
