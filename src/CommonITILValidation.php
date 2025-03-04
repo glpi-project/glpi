@@ -318,6 +318,7 @@ abstract class CommonITILValidation extends CommonDBChild
             if (
                 ($item->fields['global_validation'] == self::ACCEPTED)
                 || ($item->fields['global_validation'] == self::NONE)
+                || ($item->fields['global_validation'] == self::REFUSED)
             ) {
                 $input = [
                     'id'                    => $this->fields[static::$items_id],
