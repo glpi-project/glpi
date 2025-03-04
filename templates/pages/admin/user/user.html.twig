@@ -92,12 +92,6 @@
                                 readonly: external_auth,
                             }) }}
 
-                            {% if item.isNewItem() %}
-                                <div>
-                                    {{ include('pages/admin/user/change_other_password.html.twig') }}
-                                </div>
-                            {% endif %}
-
                             {% if timezones is not null %}
                                 {{ fields.dropdownArrayField('timezone', item.fields['timezone'], timezones, __('Timezone'), field_options|merge({
                                     display_emptychoice: true,
@@ -294,6 +288,12 @@
                                     {% endset %}
                                     {{ fields.htmlField('_change_pw', change_pw_field, __('Password')) }}
                                 {% endif %}
+                            {% endif %}
+                            {% if item.isNewItem() %}
+                                {{ fields.smallTitle(__('Passwords and access keys')) }}
+                                <div>
+                                    {{ include('pages/admin/user/change_other_password.html.twig') }}
+                                </div>
                             {% endif %}
                         </div>
                     </div>
