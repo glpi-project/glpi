@@ -71,8 +71,7 @@ abstract class AbstractDateTimeConditionHandler implements ConditionHandlerInter
             ValueOperator::LESS_THAN_OR_EQUALS    => $a <= $b,
 
             // Unsupported operators
-            ValueOperator::CONTAINS => false,
-            ValueOperator::NOT_CONTAINS => false,
+            default => false,
         };
     }
 }
