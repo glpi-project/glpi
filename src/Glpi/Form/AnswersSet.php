@@ -37,14 +37,9 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use CommonDBTM;
-use CommonGLPI;
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
-use Glpi\Form\Destination\FormDestinationTypeManager;
-use Log;
 use Override;
 use ReflectionClass;
-use Search;
 use User;
 
 /**
@@ -75,6 +70,18 @@ final class AnswersSet extends CommonDBChild
         return false;
     }
 
+    public function toArray(): array
+    {
+        $answers = $this->getAnswers();
+        $answers_array = [];
+        foreach ($answers as $answer) {
+            $answers_array[$answer->getQuestionId()] = $answer->getRawAnswer();
+        }
+
+        return $answers_array;
+    }
+
+    /** @return Answer[] */
     public function getAnswers(): array
     {
         $answers = [];

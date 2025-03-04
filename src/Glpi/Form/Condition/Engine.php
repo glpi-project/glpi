@@ -80,6 +80,21 @@ final class Engine
         return $output;
     }
 
+    public function computeItemsThatMustBeCreated(): EngineCreationOutput
+    {
+        $output = new EngineCreationOutput();
+
+        // Compute questions visibility
+        foreach ($this->form->getDestinations() as $destination) {
+            $visibility = $this->computeDestinationCreation($destination);
+            if ($visibility) {
+                $output->addItemThatMustBeCreated($destination);
+            }
+        }
+
+        return $output;
+    }
+
     private function computeItemVisibility(ConditionnableVisibilityInterface $item): bool
     {
         // Stop immediatly if the strategy result is forced.
@@ -93,6 +108,21 @@ final class Engine
         $conditions_result = $this->computeConditions($conditions);
 
         return $strategy->mustBeVisible($conditions_result);
+    }
+
+    private function computeDestinationCreation(ConditionnableCreationInterface $item): bool
+    {
+        // Stop immediatly if the strategy result is forced.
+        $strategy = $item->getConfiguredCreationStrategy();
+        if ($strategy == CreationStrategy::ALWAYS_CREATED) {
+            return true;
+        }
+
+        // Compute the conditions
+        $conditions = $item->getConfiguredConditionsData();
+        $conditions_result = $this->computeConditions($conditions);
+
+        return $strategy->mustBeCreated($conditions_result);
     }
 
     private function computeConditions(array $conditions): bool
