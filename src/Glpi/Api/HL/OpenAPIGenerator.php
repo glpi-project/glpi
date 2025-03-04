@@ -443,6 +443,9 @@ EOT;
      */
     private function getSecuritySchemeComponents(): array
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $scopes = Server::getAllowedScopes();
         $scope_descriptions = Server::getScopeDescriptions();
         $scopes = array_combine(array_keys($scopes), $scope_descriptions);
@@ -452,13 +455,13 @@ EOT;
                 'type' => 'oauth2',
                 'flows' => [
                     'authorizationCode' => [
-                        'authorizationUrl' => '/api.php/authorize',
-                        'tokenUrl' => '/api.php/token',
-                        'refreshUrl' => '/api.php/token',
+                        'authorizationUrl' => $CFG_GLPI['root_doc'] . '/api.php/authorize',
+                        'tokenUrl' => $CFG_GLPI['root_doc'] . '/api.php/token',
+                        'refreshUrl' => $CFG_GLPI['root_doc'] . '/api.php/token',
                         'scopes' => $scopes
                     ],
                     'password' => [
-                        'tokenUrl' => '/api.php/token',
+                        'tokenUrl' => $CFG_GLPI['root_doc'] . '/api.php/token',
                         'scopes' => $scopes
                     ]
                 ]
