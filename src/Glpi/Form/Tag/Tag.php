@@ -66,6 +66,6 @@ final readonly class Tag
             array_keys($properties),
             array_values($properties),
         ));
-        $this->html = sprintf('<span %s>%s</span>', $properties, htmlescape($label));
+        $this->html = sprintf('<span %s># %s</span>', $properties, htmlescape($label));
     }
 }
