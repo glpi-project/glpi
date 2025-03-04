@@ -189,6 +189,10 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
                                 $output[$action->fields["field"]] = $action->fields["value"];
                                 break;
 
+                            case 'validationsteps_id':
+                                $output['_add_validation']['validationsteps_id'] = $action->fields["value"];
+                                break;
+
                             default:
                                 $output['_add_validation'][] = $action->fields["value"];
                                 break;
@@ -945,6 +949,12 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
             $actions['users_id_validate_assign_supervisor']['name']     = __('Approval request to technician group manager');
             $actions['users_id_validate_assign_supervisor']['type']     = 'yesno';
             $actions['users_id_validate_assign_supervisor']['force_actions'] = ['add_validation'];
+
+            // @todo on peut définir un type special et pas utiliser type + table
+            $actions['validationsteps_id']['name']                      = __('Approval request to validation step');
+            $actions['validationsteps_id']['type']                      = 'dropdown';
+            $actions['validationsteps_id']['table']                     = 'glpi_validationsteps';
+            $actions['validationsteps_id']['force_actions']             = ['add_validation'];
         }
 
         $actions['requesttypes_id']['name']                         = RequestType::getTypeName(1);

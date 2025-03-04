@@ -126,10 +126,16 @@ class TicketValidation extends CommonITILValidation
 
     public function prepareInputForAdd($input)
     {
+        // @todo choose the best way : error or implicit default values ?
         // validation step is mandatory
+//        if (!isset($input['validationsteps_id'])) {
+//            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory'), 'validationsteps_id'), message_type: ERROR);
+//            return false;
+//        }
+
+        // validation step is mandatory : add default value is not set
         if (!isset($input['validationsteps_id'])) {
-            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory'), 'validationsteps_id'), message_type: ERROR);
-            return false;
+            $input['validationsteps_id'] = ValidationStep::getDefault()->getID();
         }
 
         return parent::prepareInputForAdd($input);
