@@ -145,9 +145,19 @@ class ValidationStep extends \CommonDropdown
         return parent::prepareInputForUpdate($input);
     }
 
+    public static function getDefault(): self
+    {
+        $vs = new self();
+        if (!$vs->getFromDBByCrit(['is_default' => 1])) {
+            throw new LogicException('No default validation step found');
+        };
+
+        return $vs;
+    }
 
     /**
      * Default Validation steps data
+     * Used to populate the database with default values
      *
      * @return array<int, array<string, mixed>>
      */
