@@ -40,12 +40,14 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use InvalidArgumentException;
 use ITILCategory;
 use Override;
 
-class ITILCategoryField extends AbstractConfigField
+class ITILCategoryField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -128,6 +130,32 @@ class ITILCategoryField extends AbstractConfigField
         return new ITILCategoryFieldConfig(
             ITILCategoryFieldStrategy::LAST_VALID_ANSWER
         );
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        switch ($rawData['category_rule']) {
+            case 2:
+                return new ITILCategoryFieldConfig(
+                    strategy: ITILCategoryFieldStrategy::SPECIFIC_VALUE,
+                    specific_itilcategory_id: $rawData['category_question']
+                );
+            case 3:
+                return new ITILCategoryFieldConfig(
+                    strategy: ITILCategoryFieldStrategy::SPECIFIC_ANSWER,
+                    specific_question_id: $migration->getMappedItemTarget(
+                        'PluginFormcreatorQuestion',
+                        $rawData['category_question']
+                    )['items_id'],
+                );
+            case 4:
+                return new ITILCategoryFieldConfig(
+                    ITILCategoryFieldStrategy::LAST_VALID_ANSWER
+                );
+        }
+
+        return $this->getDefaultConfig($form);
     }
 
     public function getStrategiesForDropdown(): array

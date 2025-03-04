@@ -40,12 +40,14 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use InvalidArgumentException;
 use Override;
 use Ticket;
 
-class RequestTypeField extends AbstractConfigField
+class RequestTypeField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -130,6 +132,32 @@ class RequestTypeField extends AbstractConfigField
         return new RequestTypeFieldConfig(
             RequestTypeFieldStrategy::LAST_VALID_ANSWER
         );
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        switch ($rawData['type_rule']) {
+            case 0:
+                return new RequestTypeFieldConfig(
+                    strategy: RequestTypeFieldStrategy::FROM_TEMPLATE
+                );
+            case 1:
+                return new RequestTypeFieldConfig(
+                    strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
+                    specific_request_type: $rawData['type_question']
+                );
+            case 2:
+                return new RequestTypeFieldConfig(
+                    strategy: RequestTypeFieldStrategy::SPECIFIC_ANSWER,
+                    specific_question_id: $migration->getMappedItemTarget(
+                        'PluginFormcreatorQuestion',
+                        $rawData['type_question']
+                    )['items_id'],
+                );
+        }
+
+        return $this->getDefaultConfig($form);
     }
 
     public function getStrategiesForDropdown(): array

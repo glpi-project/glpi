@@ -35,12 +35,10 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\ValidationField;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
@@ -49,9 +47,12 @@ use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Group;
 use Group_User;
+use Override;
 use User;
 
-final class ValidationFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class ValidationFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -307,6 +308,65 @@ final class ValidationFieldTest extends DbTestCase
             ],
             keys_to_be_considered: ['itemtype_target', 'items_id_target']
         );
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'No validation' => [
+            'field_key'     => ValidationField::getKey(),
+            'fields_to_set' => [
+                'commonitil_validation_rule' => 1,
+            ],
+            'field_config' => new ValidationFieldConfig(
+                strategies: [ValidationFieldStrategy::NO_VALIDATION],
+            )
+        ];
+
+        yield 'Specific user or group' => [
+            'field_key'     => ValidationField::getKey(),
+            'fields_to_set' => [
+                'commonitil_validation_rule'     => 2,
+                'commonitil_validation_question' => json_encode([
+                    'type'   => 'user',
+                    'values' => [getItemByTypeName(User::class, 'glpi', true)]
+                ])
+            ],
+            'field_config' => new ValidationFieldConfig(
+                strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
+                specific_actors: ['User' => [getItemByTypeName(User::class, 'glpi', true)]]
+            )
+        ];
+
+        yield 'User from question answer' => [
+            'field_key'     => ValidationField::getKey(),
+            'fields_to_set' => [
+                'commonitil_validation_rule'     => 3,
+                'commonitil_validation_question' => 75
+            ],
+            'field_config' => fn ($migration, $form) => new ValidationFieldConfig(
+                strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 75)['items_id']
+                        ?? throw new \Exception("Question not found")
+                ]
+            )
+        ];
+
+        yield 'Group from question answer' => [
+            'field_key'     => ValidationField::getKey(),
+            'fields_to_set' => [
+                'commonitil_validation_rule'     => 4,
+                'commonitil_validation_question' => 76
+            ],
+            'field_config' => fn ($migration, $form) => new ValidationFieldConfig(
+                strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 76)['items_id']
+                        ?? throw new \Exception("Question not found")
+                ]
+            )
+        ];
     }
 
     private function sendFormAndAssertValidations(

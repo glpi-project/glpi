@@ -41,10 +41,15 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
+use Group;
 use InvalidArgumentException;
 use Override;
+use Supplier;
+use User;
 
-abstract class ITILActorField extends AbstractConfigField
+abstract class ITILActorField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     abstract public function getAllowedQuestionType(): string;
     abstract public function getActorType(): string;
@@ -172,6 +177,78 @@ abstract class ITILActorField extends AbstractConfigField
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        $actor_role = match ($this->getActorType()) {
+            'requester' => 1,
+            'observer'  => 2,
+            'assign'    => 3,
+            default => throw new InvalidArgumentException("Unexpected actor type"),
+        };
+
+        if (isset($rawData[$actor_role])) {
+            $strategies = [];
+            $specific_itilactors_ids = [];
+            $specific_question_ids = [];
+
+            $strategy_map = [
+                1 => ITILActorFieldStrategy::FORM_FILLER,
+                // 2 => Form Validator
+                3 => ITILActorFieldStrategy::SPECIFIC_VALUES,
+                4 => ITILActorFieldStrategy::SPECIFIC_ANSWERS,
+                5 => ITILActorFieldStrategy::SPECIFIC_VALUES,
+                6 => ITILActorFieldStrategy::SPECIFIC_ANSWERS,
+                7 => ITILActorFieldStrategy::SPECIFIC_VALUES,
+                8 => ITILActorFieldStrategy::SPECIFIC_ANSWERS,
+                9 => ITILActorFieldStrategy::SPECIFIC_ANSWERS,
+                // 10 => Group from an object
+                // 11 => Tech group from an object
+                // 12 => Form author supervisor
+            ];
+
+            $itemtype_map = [
+                3 => User::class,
+                5 => Group::class,
+                7 => Supplier::class,
+            ];
+
+            foreach ($rawData[$actor_role] as $raw_strategy => $ids) {
+                if (isset($strategy_map[$raw_strategy])) {
+                    $strategy = $strategy_map[$raw_strategy];
+                    $strategies[] = $strategy;
+
+                    if ($strategy === ITILActorFieldStrategy::SPECIFIC_VALUES && isset($itemtype_map[$raw_strategy])) {
+                        foreach ($ids as $id) {
+                            $specific_itilactors_ids[] = sprintf(
+                                "%s-%s",
+                                getForeignKeyFieldForItemType($itemtype_map[$raw_strategy]),
+                                $id
+                            );
+                        }
+                    }
+
+                    if ($strategy === ITILActorFieldStrategy::SPECIFIC_ANSWERS) {
+                        foreach ($ids as $id) {
+                            $specific_question_ids[] = $migration->getMappedItemTarget(
+                                'PluginFormcreatorQuestion',
+                                $id
+                            )['items_id'];
+                        }
+                    }
+                }
+            }
+
+            return new ($this->getConfigClass())(
+                strategies: $strategies,
+                specific_itilactors_ids: $specific_itilactors_ids,
+                specific_question_ids: $specific_question_ids
+            );
+        }
+
+        return $this->getDefaultConfig($form);
     }
 
     public function getStrategiesForDropdown(): array

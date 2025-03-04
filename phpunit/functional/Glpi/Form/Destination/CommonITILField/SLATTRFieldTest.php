@@ -35,12 +35,10 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\SLATTRField;
 use Glpi\Form\Destination\CommonITILField\SLATTRFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -48,8 +46,11 @@ use SLA;
 use SLM;
 use Ticket;
 use TicketTemplatePredefinedField;
+use Override;
 
-final class SLATTRFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class SLATTRFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -194,5 +195,39 @@ final class SLATTRFieldTest extends DbTestCase
     {
         $builder = new FormBuilder();
         return $this->createForm($builder);
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'SLA from template or none' => [
+            'field_key'     => SLATTRField::getKey(),
+            'fields_to_set' => [
+                'sla_rule' => 1,
+            ],
+            'field_config' => new SLATTRFieldConfig(
+                strategy: SLMFieldStrategy::FROM_TEMPLATE
+            )
+        ];
+
+        yield 'Specific SLA' => [
+            'field_key'     => SLATTRField::getKey(),
+            'fields_to_set' => [
+                'sla_rule'         => 2,
+                'sla_question_ttr' => fn (AbstractDestinationFieldTest $context) => $context->createItem(
+                    SLA::class,
+                    [
+                        'name'            => '_test_sla_ttr',
+                        'type'            => SLM::TTR,
+                        'number_time'     => 1,
+                        'definition_time' => 'hour',
+                    ]
+                )->getID(),
+            ],
+            'field_config' => fn ($migration, $form) => new SLATTRFieldConfig(
+                strategy: SLMFieldStrategy::SPECIFIC_VALUE,
+                specific_slm_id: getItemByTypeName(SLA::class, '_test_sla_ttr', true)
+            )
+        ];
     }
 }

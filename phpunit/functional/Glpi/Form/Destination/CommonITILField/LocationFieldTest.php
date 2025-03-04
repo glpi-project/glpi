@@ -35,21 +35,22 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\LocationField;
 use Glpi\Form\Destination\CommonITILField\LocationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\LocationFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Location;
+use Override;
 use TicketTemplate;
 use TicketTemplatePredefinedField;
 
-final class LocationFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class LocationFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -244,6 +245,69 @@ final class LocationFieldTest extends DbTestCase
             answers: [],
             expected_location_id: $locations[2]->getID()
         );
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        yield 'Location from template or none' => [
+            'field_key'     => LocationField::getKey(),
+            'fields_to_set' => [
+                'location_rule' => 1,
+            ],
+            'field_config' => new LocationFieldConfig(
+                LocationFieldStrategy::FROM_TEMPLATE
+            )
+        ];
+
+        // Start a transaction to rollback changes
+        $DB->beginTransaction();
+        try {
+            $location_id = (new Location())->add([
+                'name' => 'Test Location for specific value',
+            ]);
+            yield 'Specific location' => [
+                'field_key'     => LocationField::getKey(),
+                'fields_to_set' => [
+                    'location_rule'     => 2,
+                    'location_question' => $location_id,
+                ],
+                'field_config' => new LocationFieldConfig(
+                    strategy: LocationFieldStrategy::SPECIFIC_VALUE,
+                    specific_location_id: $location_id
+                ),
+            ];
+        } finally {
+            $DB->rollBack();
+        }
+
+        yield 'Equals to the answer to the question' => [
+            'field_key'     => LocationField::getKey(),
+            'fields_to_set' => [
+                'location_rule'     => 3,
+                'location_question' => 73
+            ],
+            'field_config' => fn ($migration, $form) => new LocationFieldConfig(
+                strategy: LocationFieldStrategy::SPECIFIC_ANSWER,
+                specific_question_id: $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    73
+                )['items_id'] ?? throw new \Exception("Question not found")
+            )
+        ];
+
+        yield 'Last valid answer' => [
+            'field_key'     => LocationField::getKey(),
+            'fields_to_set' => [
+                'location_rule' => 4,
+            ],
+            'field_config' => new LocationFieldConfig(
+                LocationFieldStrategy::LAST_VALID_ANSWER
+            )
+        ];
     }
 
     private function sendFormAndAssertTicketType(

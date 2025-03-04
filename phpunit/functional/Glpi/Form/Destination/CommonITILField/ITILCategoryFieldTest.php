@@ -35,21 +35,22 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use ITILCategory;
+use Override;
 use Ticket;
 use TicketTemplate;
 
-final class ITILCategoryFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -241,6 +242,67 @@ final class ITILCategoryFieldTest extends DbTestCase
             answers: [],
             expected_itilcategory: 0
         );
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        yield 'Category from template or none' => [
+            'field_key'     => ITILCategoryField::getKey(),
+            'fields_to_set' => [
+                'category_rule' => 1,
+            ],
+            'field_config' => fn ($migration, $form) => (new ITILCategoryField())->getDefaultConfig($form)
+        ];
+
+        // Start a transaction to rollback changes
+        $DB->beginTransaction();
+        try {
+            $itilcategory_id = (new ITILCategory())->add([
+                'name' => 'Test ITILCategory for specific value',
+            ]);
+            yield 'Specific category' => [
+                'field_key'     => ITILCategoryField::getKey(),
+                'fields_to_set' => [
+                    'category_rule'     => 2,
+                    'category_question' => $itilcategory_id,
+                ],
+                'field_config' => new ITILCategoryFieldConfig(
+                    strategy: ITILCategoryFieldStrategy::SPECIFIC_VALUE,
+                    specific_itilcategory_id: $itilcategory_id
+                ),
+            ];
+        } finally {
+            $DB->rollback();
+        }
+
+        yield 'Equals to the answer to the question' => [
+            'field_key'     => ITILCategoryField::getKey(),
+            'fields_to_set' => [
+                'category_rule'     => 3,
+                'category_question' => 72
+            ],
+            'field_config' => fn ($migration, $form) => new ITILCategoryFieldConfig(
+                strategy: ITILCategoryFieldStrategy::SPECIFIC_ANSWER,
+                specific_question_id: $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    72
+                )['items_id'] ?? throw new \Exception("Question not found")
+            )
+        ];
+
+        yield 'Last valid answer' => [
+            'field_key'     => ITILCategoryField::getKey(),
+            'fields_to_set' => [
+                'category_rule' => 4,
+            ],
+            'field_config' => new ITILCategoryFieldConfig(
+                ITILCategoryFieldStrategy::LAST_VALID_ANSWER
+            )
+        ];
     }
 
     private function sendFormAndAssertTicketCategory(

@@ -35,21 +35,21 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\RequestSourceField;
 use Glpi\Form\Destination\CommonITILField\RequestSourceFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequestSourceFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Override;
 use RequestType;
 use Ticket;
-use TicketTemplate;
 use TicketTemplatePredefinedField;
 
-final class RequestSourceFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class RequestSourceFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -78,6 +78,30 @@ final class RequestSourceFieldTest extends DbTestCase
         );
 
         $this->assertEquals($source, $created_ticket->fields['requesttypes_id']);
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'Source from template or user default or GLPI default' => [
+            'field_key'     => RequestSourceField::getKey(),
+            'fields_to_set' => [
+                'source_rule' => 0,
+            ],
+            'field_config' => new RequestSourceFieldConfig(
+                strategy: RequestSourceFieldStrategy::FROM_TEMPLATE,
+            )
+        ];
+
+        yield 'Formcreator' => [
+            'field_key'     => RequestSourceField::getKey(),
+            'fields_to_set' => [
+                'source_rule' => 1,
+            ],
+            'field_config' => new RequestSourceFieldConfig(
+                strategy: RequestSourceFieldStrategy::FROM_TEMPLATE,
+            )
+        ];
     }
 
     public function testSpecificSourceWithPredefinedField(): void

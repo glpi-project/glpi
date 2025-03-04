@@ -35,12 +35,10 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\OLATTRField;
 use Glpi\Form\Destination\CommonITILField\OLATTRFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -48,8 +46,11 @@ use OLA;
 use SLM;
 use Ticket;
 use TicketTemplatePredefinedField;
+use Override;
 
-final class OLATTRFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class OLATTRFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -194,5 +195,39 @@ final class OLATTRFieldTest extends DbTestCase
     {
         $builder = new FormBuilder();
         return $this->createForm($builder);
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'SLA from template or none' => [
+            'field_key'     => OLATTRField::getKey(),
+            'fields_to_set' => [
+                'sla_rule' => 1,
+            ],
+            'field_config' => new OLATTRFieldConfig(
+                strategy: SLMFieldStrategy::FROM_TEMPLATE
+            )
+        ];
+
+        yield 'Specific SLA' => [
+            'field_key'     => OLATTRField::getKey(),
+            'fields_to_set' => [
+                'sla_rule'         => 2,
+                'ola_question_ttr' => fn (AbstractDestinationFieldTest $context) => $context->createItem(
+                    OLA::class,
+                    [
+                        'name'            => '_test_ola_ttr',
+                        'type'            => SLM::TTR,
+                        'number_time'     => 1,
+                        'definition_time' => 'hour',
+                    ]
+                )->getID(),
+            ],
+            'field_config' => fn ($migration, $form) => new OLATTRFieldConfig(
+                strategy: SLMFieldStrategy::SPECIFIC_VALUE,
+                specific_slm_id: getItemByTypeName(OLA::class, '_test_ola_ttr', true)
+            )
+        ];
     }
 }

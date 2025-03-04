@@ -36,19 +36,21 @@
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use CommonITILActor;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
 use Glpi\Form\Destination\CommonITILField\AssigneeFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
+use Glpi\PHPUnit\Tests\Glpi\Form\Destination\CommonITILField\AbstractDestinationFieldTest;
 use Glpi\Tests\FormBuilder;
 use Group;
 use Override;
 use Session;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Supplier;
 use Ticket;
 use TicketTemplate;
@@ -435,6 +437,270 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             answers: [],
             expected_actors_ids: [$user1->getID(), $user2->getID(), $group->getID(), $supplier->getID()]
         );
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'Form author' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 1,
+                    'actor_value' => 0,
+                ]
+            ],
+            'field_config' => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::FORM_FILLER],
+            )
+        ];
+
+        yield 'Form validator' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 2,
+                    'actor_value' => 0,
+                ]
+            ],
+            'field_config' => fn ($migration, $form) => (new AssigneeField())->getDefaultConfig($form)
+        ];
+
+        yield 'Specific person' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 3,
+                    'actor_value' => getItemByTypeName(User::class, 'glpi', true),
+                ],
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 3,
+                    'actor_value' => getItemByTypeName(User::class, 'tech', true),
+                ]
+            ],
+            'field_config' => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                specific_itilactors_ids: [
+                    'User' => [
+                        getItemByTypeName(User::class, 'glpi', true),
+                        getItemByTypeName(User::class, 'tech', true),
+                    ]
+                ]
+            )
+        ];
+
+        yield 'Person from the question' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 4,
+                    'actor_value' => 75,
+                ]
+            ],
+            'field_config' => fn ($migration, $form) => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 75)['items_id']
+                    ?? throw new \Exception("Question not found")
+                ]
+            )
+        ];
+
+        yield 'Specific group' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 5,
+                    'actor_value' => getItemByTypeName(Group::class, '_test_group_1', true),
+                ],
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 5,
+                    'actor_value' => getItemByTypeName(Group::class, '_test_group_2', true),
+                ]
+            ],
+            'field_config' => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                specific_itilactors_ids: [
+                    'Group' => [
+                        getItemByTypeName(Group::class, '_test_group_1', true),
+                        getItemByTypeName(Group::class, '_test_group_2', true),
+                    ]
+                ]
+            )
+        ];
+
+        yield 'Group from the question' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 6,
+                    'actor_value' => 76,
+                ]
+            ],
+            'field_config' => fn ($migration, $form) => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 76)['items_id']
+                    ?? throw new \Exception("Question not found")
+                ]
+            )
+        ];
+
+        yield 'Actors from the question' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 9,
+                    'actor_value' => 77,
+                ]
+            ],
+            'field_config' => fn ($migration, $form) => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 77)['items_id']
+                    ?? throw new \Exception("Question not found")
+                ]
+            )
+        ];
+
+        yield 'Group from an object' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 10,
+                    'actor_value' => 0,
+                ]
+            ],
+            'field_config' => fn ($migration, $form) => (new AssigneeField())->getDefaultConfig($form)
+        ];
+
+        yield 'Tech group from an object' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 11,
+                    'actor_value' => 0,
+                ]
+            ],
+            'field_config' => fn ($migration, $form) => (new AssigneeField())->getDefaultConfig($form)
+        ];
+
+        yield 'Form author\'s supervisor' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 12,
+                    'actor_value' => 0,
+                ]
+            ],
+            'field_config' => fn ($migration, $form) => (new AssigneeField())->getDefaultConfig($form)
+        ];
+
+        yield 'Specific supplier' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 7,
+                    'actor_value' => fn(AssigneeFieldTest $context) => $context->createItem(Supplier::class, [
+                        'name' => '_test_supplier_1',
+                        'entities_id' => $context->getTestRootEntity(true),
+                    ])->getID(),
+                ],
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 7,
+                    'actor_value' => fn(AssigneeFieldTest $context) => $context->createItem(Supplier::class, [
+                        'name' => '_test_supplier_2',
+                        'entities_id' => $context->getTestRootEntity(true),
+                    ])->getID(),
+                ]
+            ],
+            'field_config' => fn ($migration, $form) => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                specific_itilactors_ids: [
+                    'Supplier' => [
+                        getItemByTypeName(Supplier::class, '_test_supplier_1', true),
+                        getItemByTypeName(Supplier::class, '_test_supplier_2', true),
+                    ]
+                ]
+            )
+        ];
+
+        yield 'Supplier from the question' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3,
+                    'actor_type'  => 8,
+                    'actor_value' => 78,
+                ]
+            ],
+            'field_config' => fn ($migration, $form) => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 78)['items_id']
+                    ?? throw new \Exception("Question not found")
+                ]
+            )
+        ];
+    }
+
+    #[Override]
+    #[DataProvider('provideConvertFieldConfigFromFormCreator')]
+    public function testConvertFieldConfigFromFormCreator(
+        string $field_key,
+        array $fields_to_set,
+        callable|JsonFieldInterface $field_config
+    ): void {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $destination_id = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => 'glpi_plugin_formcreator_targettickets',
+            'WHERE' => ['name' => 'Test form migration for target ticket'],
+        ])->current()['id'];
+
+        $DB->delete(
+            'glpi_plugin_formcreator_targets_actors',
+            [
+                'itemtype' => 'PluginFormcreatorTargetTicket',
+                'items_id' => $destination_id
+            ]
+        );
+
+        foreach ($fields_to_set as $fields) {
+            // Compute some values
+            foreach ($fields as $key => $value) {
+                if (is_callable($value)) {
+                    $fields[$key] = $value($this);
+                }
+            }
+
+            // Insert the actor
+            $this->assertNotFalse($DB->insert(
+                'glpi_plugin_formcreator_targets_actors',
+                array_merge($fields, [
+                    'itemtype' => 'PluginFormcreatorTargetTicket',
+                    'items_id' => $destination_id
+                ])
+            ));
+        }
+
+        parent::testConvertFieldConfigFromFormCreator($field_key, [], $field_config);
     }
 
     protected function sendFormAndAssertTicketActors(

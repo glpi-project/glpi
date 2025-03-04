@@ -41,11 +41,13 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use InvalidArgumentException;
 use Override;
 
-class EntityField extends AbstractConfigField
+class EntityField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -181,5 +183,49 @@ class EntityField extends AbstractConfigField
     public function getCategory(): Category
     {
         return Category::PROPERTIES;
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        /**
+         * FormCreator implements many strategies to determine the entity.
+         * Some strategies are not 100% supported by the new form system:
+         * - 2. Default requester user's entity
+         *  This strategy take the entity of the first requester user and fallback to the form filler entity.
+         *
+         * Strategies that are supported:
+         * - 3. First dynamic requester user's entity (alphabetical) -- Must be implemented
+         * - 4. Last dynamic requester user's entity (alphabetical) -- Must be implemented
+         * - 6. Default entity of the validator
+         * - 8. Default entity of a user type question answer
+         */
+
+        switch ($rawData['destination_entity']) {
+            case 1:
+            case 2:
+                return new EntityFieldConfig(
+                    EntityFieldStrategy::FORM_FILLER,
+                );
+            case 5:
+                return new EntityFieldConfig(
+                    EntityFieldStrategy::FROM_FORM,
+                );
+            case 7:
+                return new EntityFieldConfig(
+                    strategy: EntityFieldStrategy::SPECIFIC_VALUE,
+                    specific_entity_id: $rawData['destination_entity_value']
+                );
+            case 9:
+                return new EntityFieldConfig(
+                    strategy: EntityFieldStrategy::SPECIFIC_ANSWER,
+                    specific_question_id: $migration->getMappedItemTarget(
+                        'PluginFormcreatorQuestion',
+                        $rawData['destination_entity_value']
+                    )['items_id']
+                );
+        }
+
+        return $this->getDefaultConfig($form);
     }
 }

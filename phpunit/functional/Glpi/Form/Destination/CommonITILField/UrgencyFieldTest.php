@@ -35,19 +35,20 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\Destination\CommonITILField\UrgencyField;
 use Glpi\Form\Destination\CommonITILField\UrgencyFieldConfig;
 use Glpi\Form\Destination\CommonITILField\UrgencyFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Override;
 use TicketTemplate;
 use TicketTemplatePredefinedField;
 
-final class UrgencyFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class UrgencyFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -248,6 +249,47 @@ final class UrgencyFieldTest extends DbTestCase
         ]);
 
         $this->assertEquals($low_urgency, $ticket->fields['urgency']);
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'Urgency from template or Medium' => [
+            'field_key'     => UrgencyField::getKey(),
+            'fields_to_set' => [
+                'urgency_rule' => 1,
+            ],
+            'field_config' => new UrgencyFieldConfig(
+                strategy: UrgencyFieldStrategy::FROM_TEMPLATE
+            )
+        ];
+
+        yield 'Specific urgency' => [
+            'field_key'     => UrgencyField::getKey(),
+            'fields_to_set' => [
+                'urgency_rule' => 2,
+                'urgency_question' => 4, // High urgency
+            ],
+            'field_config' => new UrgencyFieldConfig(
+                strategy: UrgencyFieldStrategy::SPECIFIC_VALUE,
+                specific_urgency_value: 4 // High urgency
+            )
+        ];
+
+        yield 'Equals to the answer to the question' => [
+            'field_key'     => UrgencyField::getKey(),
+            'fields_to_set' => [
+                'urgency_rule'     => 3,
+                'urgency_question' => 79
+            ],
+            'field_config' => fn ($migration, $form) => new UrgencyFieldConfig(
+                strategy: UrgencyFieldStrategy::SPECIFIC_ANSWER,
+                specific_question_id: $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    79
+                )['items_id'] ?? throw new \Exception("Question not found")
+            )
+        ];
     }
 
     private function setUrgencyConfig(

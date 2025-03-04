@@ -40,15 +40,18 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
 use InvalidArgumentException;
 use Override;
 
-abstract class SLMField extends AbstractConfigField
+abstract class SLMField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     abstract public function getSLMClass(): string;
     abstract public function getType(): int;
     /** @return class-string<SLMFieldConfig> */
     abstract public function getConfigClass(): string;
+    abstract protected function getFieldNameToConvertSpecificSLMID(): string;
 
     #[Override]
     public function renderConfigForm(
@@ -114,6 +117,25 @@ abstract class SLMField extends AbstractConfigField
         return new ($this->getConfigClass())(
             SLMFieldStrategy::FROM_TEMPLATE
         );
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        $config_class = $this->getConfigClass();
+        switch ($rawData['sla_rule']) {
+            case 1:
+                return new $config_class(
+                    strategy: SLMFieldStrategy::FROM_TEMPLATE
+                );
+            case 2:
+                return new $config_class(
+                    strategy: SLMFieldStrategy::SPECIFIC_VALUE,
+                    specific_slm_id: $rawData[$this->getFieldNameToConvertSpecificSLMID()]
+                );
+        }
+
+        return $this->getDefaultConfig($form);
     }
 
     public function getStrategiesForDropdown(): array
