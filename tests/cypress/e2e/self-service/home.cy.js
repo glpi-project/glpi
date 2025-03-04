@@ -37,7 +37,7 @@ describe('Helpdesk home page', () => {
         cy.changeProfile('Self-Service');
     });
 
-    it('can search for forms and faq entries', () => {
+    it('[already migrated] can search for forms and faq entries', () => {
         const unique_id = (new Date()).getTime();
         cy.createWithAPI('KnowbaseItem', {
             name: `FAQ: ${unique_id}`,
@@ -82,7 +82,7 @@ describe('Helpdesk home page', () => {
         ;
     });
 
-    it('can use tiles', () => {
+    it('[already migrated] can use tiles', () => {
         cy.visit('/Helpdesk');
         cy.findByRole('region', { name: 'Quick Access' })
             .findAllByRole('link')
@@ -97,7 +97,7 @@ describe('Helpdesk home page', () => {
         });
     });
 
-    it('can use tabs', () => {
+    it('[already migrated] can use tabs', () => {
         const next_year = (new Date().getFullYear() + 1);
 
         // Create test data set

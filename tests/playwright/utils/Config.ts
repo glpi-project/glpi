@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -31,22 +30,13 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Tabs', () => {
-    beforeEach(() => {
-        cy.login();
-        cy.changeProfile('Super-Admin');
-    });
-    it('can use the "forcetab" URL parameter to land on a specific tab', () => {
-        cy.visit("/front/user.form.php?id=2&forcetab=Change_Item$1");
-        cy.findByRole('tab', { name: 'Changes' })
-            .should('have.attr', 'aria-selected', 'true');
-        cy.findByRole('tab', { name: 'Problems' })
-            .should('not.have.attr', 'aria-selected', 'true');
+export class Config
+{
+    public static getBaseUrl(): string {
+        return process.env.GLPI_BASE_URL ?? "http://localhost:80";
+    }
 
-        cy.visit("/front/user.form.php?id=2&forcetab=Item_Problem$1");
-        cy.findByRole('tab', { name: 'Problems' })
-            .should('have.attr', 'aria-selected', 'true');
-        cy.findByRole('tab', { name: 'Changes' })
-            .should('not.have.attr', 'aria-selected', 'true');
-    });
-});
+    public static getPhpCommand(): string {
+        return process.env.PHP ?? "php";
+    }
+}
