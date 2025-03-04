@@ -986,4 +986,42 @@ class LockedfieldTest extends DbTestCase
         // check if massive action is displayed
         $this->assertTrue(\Lockedfield::isMassiveActionAllowed($global_lockedfield->fields['id']));
     }
+
+    public function testCanCreateItem()
+    {
+        $this->login('glpi', 'glpi');
+        $instance = new \Lockedfield();
+
+        $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+        // Global lockedfield
+        $instance->fields = [
+            'itemtype' => '',
+            'items_id' => '0',
+        ];
+        $this->assertEquals(true, $instance->canCreateItem());
+
+        // Create a computer
+        $computer = $this->createItem('Computer', [
+            'name' => __FUNCTION__,
+            'entities_id' => $ent1,
+        ]);
+
+        // Computer lockedfield from computer entity
+        \Session::changeActiveEntities($ent1);
+        $instance->fields = [
+            'itemtype' => 'Computer',
+            'items_id' => $computer->getID(),
+        ];
+        $this->assertEquals(true, $instance->canCreateItem());
+
+        // Computer lockedfield from other entity
+        \Session::changeActiveEntities($ent2);
+        $instance->fields = [
+            'itemtype' => 'Computer',
+            'items_id' => $computer->getID(),
+        ];
+        $this->assertEquals(false, $instance->canCreateItem());
+    }
 }
