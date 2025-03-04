@@ -75,7 +75,6 @@
 
     <script type="module" defer>
         const actorytype = '{{ actortype }}';
-        const actors = '{{ actors|json_encode|raw }}';
 
         // function to display an option in the list or the selected input
         function genericTemplate(option = {}, is_selection = false) {
@@ -89,9 +88,6 @@
 
             let icon = "";
             let fk   = "";
-            console.log(option)
-            console.log(actors)
-            console.log(itemtype)
             switch (itemtype) {
                 case "User":
                     if (items_id == 0) {
@@ -125,7 +121,6 @@
             }
 
             let actions = "";
-            console.log(fk);
             {% if canupdate %}
             if (['User', 'Supplier', 'Email'].includes(itemtype)
                 && is_selection) {
