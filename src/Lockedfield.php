@@ -70,6 +70,9 @@ class Lockedfield extends CommonDBTM
 
     public function canCreateItem()
     {
+        if (empty($this->fields['itemtype'])) {
+            return true;
+        }
         return $this->canAccessItemEntity($this->fields['itemtype'], $this->fields['items_id']);
     }
 
