@@ -1148,6 +1148,7 @@ class User extends CommonDBTM
             $protected_input_keys = [
                 // Security tokens
                 'api_token',
+                '_reset_api_token',
                 '_regenerate_api_token',
                 'cookie_token',
                 'password_forget_token',
