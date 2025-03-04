@@ -987,7 +987,8 @@ class LockedfieldTest extends DbTestCase
         $this->assertTrue(\Lockedfield::isMassiveActionAllowed($global_lockedfield->fields['id']));
     }
 
-    public function testCanCreateItem() {
+    public function testCanCreateItem()
+    {
         $this->login('glpi', 'glpi');
         $instance = new \Lockedfield();
 
