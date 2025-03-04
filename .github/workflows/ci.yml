@@ -221,7 +221,7 @@ jobs:
     # Do not run scheduled tests on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
     name: "E2E and web tests using latest PHP and MariaDB versions"
-    runs-on: "blacksmith-8vcpu-ubuntu-2204"
+    runs-on: "ubuntu-latest"
     timeout-minutes: 60
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
@@ -254,11 +254,6 @@ jobs:
       - name: "Build dependencies / translations"
         run: |
           docker compose exec -T app .github/actions/init_build.sh
-      # Playwright setup
-      - name: Install dependencies
-        run: docker compose exec -T app npm ci
-      - name: Install Playwright Browsers
-        run: docker compose exec -T --user=root app sudo -E npx playwright install chromium --with-deps
       - name: "Install DB tests"
         if: "${{ success() || failure() }}"
         run: |
@@ -278,12 +273,57 @@ jobs:
         with:
           name: cypress-screenshots
           path: tests/cypress/screenshots
-      # Run playwright
-      - name: Run type checks
-        if: "${{ success() || failure() }}"
+
+  playwright:
+    # Do not run scheduled tests on tier repositories
+    if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    name: "Playwright tests using latest PHP and MariaDB versions"
+    runs-on: "buildjet-8vcpu-ubuntu-2204"
+    timeout-minutes: 60
+    env:
+      COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
+      APPLICATION_ROOT: "${{ github.workspace }}"
+      DB_IMAGE: "githubactions-mariadb:10.11"
+      PHP_IMAGE: "githubactions-php-apache:8.3"
+      UPDATE_FILES_ACL: true
+    steps:
+      - name: "Set env"
+        run: |
+          echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
+      - name: "Checkout"
+        uses: "actions/checkout@v4"
+      - name: "Restore dependencies cache"
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
+            ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
+          key: "app_home_deps-8.3-${{ hashFiles('composer.lock', 'package-lock.json') }}"
+          restore-keys: |
+            app_home_deps-8.3-
+            app_home_deps-
+      - name: "Initialize containers"
+        run: |
+          .github/actions/init_containers-start.sh
+      - name: "Show versions"
+        run: |
+          .github/actions/init_show-versions.sh
+      - name: "Build dependencies / translations"
+        run: |
+          docker compose exec -T app .github/actions/init_build.sh
+      - name: Install dependencies
+        run: docker compose exec -T app npm ci
+      - name: Install Playwright Browsers
+        run: docker compose exec -T --user=root app sudo -E npx playwright install chromium --with-deps
+      - name: "Install DB tests"
+        if: ${{ !cancelled() }}
+        run: |
+          docker compose exec -T app .github/actions/test_install.sh
+      - name: Run type checks # Maybe this should be moved to the lint job ?
+        if: ${{ !cancelled() }}
         run: docker compose exec -T app npx tsc -p tsconfig.json --noEmit
       - name: Run Playwright tests
-        if: "${{ success() || failure() }}"
+        if: ${{ !cancelled() }}
         run: docker compose exec -T app npx playwright test
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
@@ -293,4 +333,4 @@ jobs:
           retention-days: 30
       - name: Publish Test Summary Results
         if: ${{ !cancelled() }}
-        run: npx github-actions-ctrf ctrf/ctrf-report.json
+        run: docker compose exec -T app npx github-actions-ctrf ctrf/ctrf-report.json
