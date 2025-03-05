@@ -58,7 +58,7 @@ abstract class AbstractDateTimeConditionHandler implements ConditionHandlerInter
         ValueOperator $operator,
         mixed $b,
     ): bool {
-        // Normalize strings (format should be H:i).
+        // Date can be compared as simple strings.
         $a = strtolower(strval($a));
         $b = strtolower(strval($b));
 
