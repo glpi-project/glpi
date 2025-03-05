@@ -131,6 +131,9 @@
     --glpi-illustrations-header-dark: var(--glpi-mainmenu-bg);
     --glpi-illustrations-header-light: var(--glpi-helpdesk-header);
     --glpi-illustrations-primary: var(--tblr-primary);
+    --glpi-illustrations-gradient-1: hsl(222deg, 36%, 92%);
+    --glpi-illustrations-gradient-2: hsl(222deg, 36%, 72%);
+    --glpi-illustrations-gradient-3: hsl(222deg, 36%, 55%);
 }
 
 @media(prefers-reduced-motion) {
