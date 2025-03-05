@@ -7588,7 +7588,7 @@ CREATE TABLE `glpi_tickettemplates` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `comment` text,
-  `allowed_statuses` varchar(255) NOT NULL DEFAULT '[1,2,3,4,5,6]',
+  `allowed_statuses` varchar(255) NOT NULL DEFAULT '[1,10,2,3,4,5,6]',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),

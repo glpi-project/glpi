@@ -695,9 +695,8 @@ class Problem extends CommonITILObject
      **/
     public static function getAllStatusArray($withmetaforsearch = false)
     {
-
-       // To be overridden by class
-        $tab = [self::INCOMING => _x('status', 'New'),
+        $tab = [
+            self::INCOMING => _x('status', 'New'),
             self::ACCEPTED => _x('status', 'Accepted'),
             self::ASSIGNED => _x('status', 'Processing (assigned)'),
             self::PLANNED  => _x('status', 'Processing (planned)'),
