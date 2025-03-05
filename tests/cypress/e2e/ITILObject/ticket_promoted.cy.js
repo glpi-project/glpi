@@ -100,15 +100,20 @@ describe("Ticket Promoted", () => {
         });
     });
 
-    it('promote followup', () => {
+    it('promote followup and change category', () => {
         cy.get('@followup_id').then((followup_id) => {
             cy.visit(`/front/ticket.form.php?_promoted_fup_id=${followup_id}`);
         });
         checkDescriptionInput();
         checRequesterInput();
+        cy.get('@ticket_id').then((ticket_id) => {
+            cy.getDropdownByLabelText('Category').selectDropdownValue(`»${categoryName}-${ticket_id}`);
+        });
+        checkDescriptionInput();
+        checRequesterInput();
     });
 
-    it('promote task', () => {
+    it('promote task and change category', () => {
         cy.get('@task_id').then((task_id) => {
             cy.visit(`/front/ticket.form.php?_promoted_task_id=${task_id}`);
         });
@@ -118,17 +123,15 @@ describe("Ticket Promoted", () => {
         cy.get('@group_id').then((group_id) => {
             checTechInput('Group', group_id);
         });
-    });
-
-    it('promote project task', () => {
-        cy.get('@projecttask_id').then((projecttask_id) => {
-            cy.visit(`/front/ticket.form.php?_projecttasks_id=${projecttask_id}`);
+        cy.get('@ticket_id').then((ticket_id) => {
+            cy.getDropdownByLabelText('Category').selectDropdownValue(`»${categoryName}-${ticket_id}`);
         });
-        checkTitle();
+        checTechInput('User', techID);
         checkDescriptionInput();
+        checRequesterInput();
     });
 
-    it('promote project task change category', () => {
+    it('promote project task and change category', () => {
         cy.get('@projecttask_id').then((projecttask_id) => {
             cy.visit(`/front/ticket.form.php?_projecttasks_id=${projecttask_id}`);
         });
