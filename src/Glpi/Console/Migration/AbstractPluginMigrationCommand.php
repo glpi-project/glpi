@@ -54,11 +54,11 @@ abstract class AbstractPluginMigrationCommand extends AbstractCommand
     use PluginMigrationTrait;
 
     /**
-     * Returns the migration class to use.
+     * Returns an instance of the migration to use.
      *
-     * @return class-string<\Glpi\Migration\AbstractPluginMigration>
+     * @return AbstractPluginMigration
      */
-    abstract public function getMigrationClass(): string;
+    abstract public function getMigration(): AbstractPluginMigration;
 
     protected function configure()
     {
@@ -78,12 +78,7 @@ abstract class AbstractPluginMigrationCommand extends AbstractCommand
         /** @var LoggerInterface $PHPLOGGER */
         global $PHPLOGGER;
 
-        if (!is_a($this->getMigrationClass(), AbstractPluginMigration::class, true)) {
-            throw new \RuntimeException(sprintf('Invalid migration class `%s`.', $this->getMigrationClass()));
-        }
-
-        $migration_class = $this->getMigrationClass();
-        $migration = new $migration_class($this->db, $PHPLOGGER);
+        $migration = $this->getMigration();
         $migration->setProgressIndicator(new ConsoleProgressIndicator($output));
         $result = $migration->execute((bool) $input->getOption('dry-run'));
 
