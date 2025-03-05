@@ -265,14 +265,12 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-
-    {# Include direct access token if supplied #}
-    {% if token %}
-        <input type="hidden" name="token" value="{{ token }}" />
-    {% endif %}
+        {# Include direct access token if supplied #}
+        {% if token %}
+            <input type="hidden" name="token" value="{{ token }}" />
+        {% endif %}
+    </form>
 
     <script>(async () => {
         // Load renderer controller
