@@ -51,10 +51,17 @@ trait CanCheckAccessPolicies
             // Form administrators can bypass restrictions while previewing forms.
             $parameters = new FormAccessParameters(bypass_restriction: true);
         } else {
+            // URL parameters might be sent in GET or POST requests due to some
+            // technical limitations.
+            $url_parameters = $request->isMethod('POST')
+                ? $request->request->all()
+                : $request->query->all()
+            ;
+
             // Load current user session info and URL parameters.
             $parameters = new FormAccessParameters(
                 session_info: Session::getCurrentSessionInfo(),
-                url_parameters: $request->query->all(),
+                url_parameters: $url_parameters,
             );
         }
 
