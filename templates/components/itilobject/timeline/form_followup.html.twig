@@ -43,6 +43,8 @@
 {% set rand = random() %}
 {% set is_default_pending = call('PendingReason::isDefaultPending') %}
 
+{% set content_field_id = 'solution_content_' ~ rand %}
+
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       <div class="read-only-content">
@@ -109,6 +111,7 @@
                      subitem.fields['content'],
                      '',
                      {
+                        'id': content_field_id,
                         'full_width': true,
                         'no_label': true,
                         'enable_richtext': true,
@@ -123,6 +126,8 @@
                {% if get_current_interface() == 'central' %}
                   <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-0 pe-xxl-auto">
                      <div class="row">
+
+                        {{ include('components/itilobject/timeline/knowledge_item.html.twig') }}
 
                         {% set fup_template_lbl %}
                            <i class="{{ 'ITILFollowupTemplate'|itemtype_icon }} me-1"
@@ -281,7 +286,7 @@
                   : parseInt(data.requesttypes_id);
 
                // set textarea content
-               setRichTextEditorContent("content_{{ rand }}", data.content);
+               setRichTextEditorContent("{{ content_field_id|e('js') }}", data.content);
                // set category
                //need to create new DOM option, because SELECT is remotely-sourced (AJAX)
                //see : https://select2.org/programmatic-control/add-select-clear-items#preselecting-options-in-an-remotely-sourced-ajax-select2
