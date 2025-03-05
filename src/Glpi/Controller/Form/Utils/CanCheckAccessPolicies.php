@@ -65,10 +65,6 @@ trait CanCheckAccessPolicies
             );
         }
 
-        if ($form_access_manager->allowUnauthenticatedAccess($form)) {
-            return;
-        }
-
         // Must be authenticated here
         if (!$form_access_manager->canAnswerForm($form, $parameters)) {
             throw new AccessDeniedHttpException();
