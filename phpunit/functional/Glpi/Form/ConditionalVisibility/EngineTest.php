@@ -35,12 +35,17 @@
 namespace tests\units\Glpi\Form\Condition;
 
 use DbTestCase;
+use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Condition\Engine;
 use Glpi\Form\Condition\EngineInput;
 use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Condition\Type;
+use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\FormDestinationChange;
+use Glpi\Form\Destination\FormDestinationProblem;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
@@ -1060,6 +1065,143 @@ final class EngineTest extends DbTestCase
             $expected_result,
             $output->isQuestionVisible($id),
         );
+    }
+
+    public static function conditionnalCreationProvider(): iterable
+    {
+        yield 'answer 1' => [
+            'answer' => 'answer 1',
+            'expected' => [
+                'Ticket always created' => true,
+                'Ticket created if answer 1' => true,
+                'Ticket created if answer 2' => false,
+                'Ticket created unless answer 1' => false,
+                'Ticket created unless answer 2' => true,
+            ]
+        ];
+
+        yield 'answer 2' => [
+            'answer' => 'answer 2',
+            'expected' => [
+                'Ticket always created' => true,
+                'Ticket created if answer 1' => false,
+                'Ticket created if answer 2' => true,
+                'Ticket created unless answer 1' => true,
+                'Ticket created unless answer 2' => false,
+            ]
+        ];
+
+        yield 'another answer' => [
+            'answer' => 'another answer',
+            'expected' => [
+                'Ticket always created' => true,
+                'Ticket created if answer 1' => false,
+                'Ticket created if answer 2' => false,
+                'Ticket created unless answer 1' => true,
+                'Ticket created unless answer 2' => true,
+            ]
+        ];
+    }
+
+    #[DataProvider('conditionnalCreationProvider')]
+    public function testConditionnalCreation(
+        string $answer,
+        array $expected
+    ): void {
+        // Arrange: create a complex form with multiples conditionnal destinations
+        $form = new FormBuilder();
+        $form->addQuestion("My answer", QuestionTypeShortText::class);
+        $form->addDestination(FormDestinationTicket::class, "Ticket always created");
+        $form->setDestinationCondition(
+            "Ticket always created",
+            CreationStrategy::ALWAYS_CREATED,
+            [],
+        );
+        $form->addDestination(
+            FormDestinationTicket::class,
+            "Ticket created if answer 1"
+        );
+        $form->setDestinationCondition(
+            "Ticket created if answer 1",
+            CreationStrategy::CREATED_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My answer",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "answer 1",
+                ],
+            ],
+        );
+        $form->addDestination(
+            FormDestinationTicket::class,
+            "Ticket created if answer 2"
+        );
+        $form->setDestinationCondition(
+            "Ticket created if answer 2",
+            CreationStrategy::CREATED_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My answer",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "answer 2",
+                ],
+            ],
+        );
+        $form->addDestination(
+            FormDestinationTicket::class,
+            "Ticket created unless answer 1"
+        );
+        $form->setDestinationCondition(
+            "Ticket created unless answer 1",
+            CreationStrategy::CREATED_UNLESS,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My answer",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "answer 1",
+                ],
+            ],
+        );
+        $form->addDestination(
+            FormDestinationTicket::class,
+            "Ticket created unless answer 2"
+        );
+        $form->setDestinationCondition(
+            "Ticket created unless answer 2",
+            CreationStrategy::CREATED_UNLESS,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My answer",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "answer 2",
+                ],
+            ],
+        );
+        $form = $this->createForm($form);
+
+        // Act: compute the conditions
+        $input = $this->mapInput($form, ['answers' => ['My answer' => $answer]]);
+        $engine = new Engine($form, $input);
+        $output = $engine->computeItemsThatMustBeCreated();
+
+        // Assert: validate the created tickets
+        foreach ($expected as $name => $must_be_created) {
+            $destination = FormDestination::getById(
+                $this->getDestinationId($form, $name)
+            );
+            $this->assertEquals(
+                $must_be_created,
+                $output->itemMustBeCreated($destination)
+            );
+        }
     }
 
     /**

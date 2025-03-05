@@ -39,6 +39,10 @@ use CommonITILObject;
 use DbTestCase;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Condition\CreationStrategy;
+use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\Type;
+use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Destination\FormDestinationChange;
 use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Destination\FormDestinationTicket;
@@ -212,5 +216,65 @@ class AnswersHandlerTest extends DbTestCase
             $linked_forms_id = current($linked_forms_ids);
             $this->assertEquals($form->getID(), $linked_forms_id);
         }
+    }
+
+    public function testDestinationWithTrueConditionsAreNotCreated(): void
+    {
+        // Arrange: create a form with an invalid condition
+        $builder = new FormBuilder("My test form");
+        $builder->addQuestion("Name", QuestionTypeShortText::class);
+        $builder->addDestination(FormDestinationTicket::class, "Second ticket");
+        $builder->setDestinationCondition(
+            "Second ticket",
+            CreationStrategy::CREATED_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Name",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "GLPI",
+                ],
+            ],
+        );
+
+        // Act: submit an answer for this form
+        $answers = $this->sendFormAndGetAnswerSet($this->createForm($builder), [
+            'Name' => 'GLPI',
+        ]);
+        $created_items = $answers->getCreatedItems();
+
+        // Assert: the ticket should have been created
+        $this->assertCount(2, $created_items);
+    }
+
+    public function testDestinationWithFalseConditionsAreNotCreated(): void
+    {
+        // Arrange: create a form with an invalid condition
+        $builder = new FormBuilder("My test form");
+        $builder->addQuestion("Name", QuestionTypeShortText::class);
+        $builder->addDestination(FormDestinationTicket::class, "Second ticket");
+        $builder->setDestinationCondition(
+            "Second ticket",
+            CreationStrategy::CREATED_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Name",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "GLPI",
+                ],
+            ],
+        );
+
+        // Act: submit an answer for this form
+        $answers = $this->sendFormAndGetAnswerSet($this->createForm($builder), [
+            'Name' => 'not GLPI',
+        ]);
+        $created_items = $answers->getCreatedItems();
+
+        // Assert: the ticket should not have been created
+        $this->assertCount(1, $created_items);
     }
 }

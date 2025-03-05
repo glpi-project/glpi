@@ -34,25 +34,14 @@
 
 namespace Glpi\Form\Condition;
 
-use Glpi\Form\Condition\VisibilityStrategy;
-
-/**
- * This interface must be satisfied by any form item for which its visibility
- * can be toggled depending on some conditions.
- */
-interface ConditionnableInterface
+trait ConditionableCreationTrait
 {
-    /**
-     * Get configured condition data from the database.
-     *
-     *  @return ConditionData[]
-     **/
-    public function getConfiguredConditionsData(): array;
+    use ConditionableTrait;
 
-    /**
-     * Get the configured visibility strategy from the database.
-     *
-     * @return VisibilityStrategy
-     */
-    public function getConfiguredVisibilityStrategy(): VisibilityStrategy;
+    public function getConfiguredCreationStrategy(): CreationStrategy
+    {
+        $strategy_value = $this->fields['creation_strategy'] ?? "";
+        $strategy = CreationStrategy::tryFrom($strategy_value);
+        return $strategy ?? CreationStrategy::ALWAYS_CREATED;
+    }
 }

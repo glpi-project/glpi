@@ -39,6 +39,7 @@ use AbstractRightsDropdown;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
+use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Condition\VisibilityStrategy;
 
 /**
@@ -122,6 +123,12 @@ class FormBuilder
     protected array $sections_visibilities;
 
     /**
+     * Destinations conditions
+     */
+    protected array $destinations_conditions;
+
+
+    /**
      * Constructor
      *
      * @param string $name Form name
@@ -143,6 +150,7 @@ class FormBuilder
         $this->questions_visibilities = [];
         $this->comments_visibilities = [];
         $this->sections_visibilities = [];
+        $this->destinations_conditions = [];
     }
 
     /**
@@ -568,5 +576,21 @@ class FormBuilder
     public function getSectionVisibility(): array
     {
         return $this->sections_visibilities;
+    }
+
+    public function setDestinationCondition(
+        string $destination_name,
+        CreationStrategy $strategy,
+        array $conditions
+    ): void {
+        $this->destinations_conditions[$destination_name] = [
+            'strategy' => $strategy->value,
+            'conditions' => $conditions,
+        ];
+    }
+
+    public function getDestinationCondition(): array
+    {
+        return $this->destinations_conditions;
     }
 }
