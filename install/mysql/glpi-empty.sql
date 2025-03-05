@@ -7666,7 +7666,7 @@ DROP TABLE IF EXISTS `glpi_validationsteps`;
 CREATE TABLE `glpi_validationsteps` (
     `id`                                  int unsigned NOT NULL AUTO_INCREMENT,
     `name`                                varchar(255)          DEFAULT NULL,
-    `mininal_required_validation_percent` smallint     NOT NULL DEFAULT '100',
+    `minimal_required_validation_percent` smallint     NOT NULL DEFAULT '100',
     `is_default`                          tinyint      NOT NULL DEFAULT '0',
     `date_mod`                            timestamp    NULL     DEFAULT NULL,
     `date_creation`                       timestamp    NULL     DEFAULT NULL,
@@ -10170,5 +10170,13 @@ CREATE TABLE `glpi_itemtranslations_itemtranslations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;
+#
+#
+#
+#
+#
+#
+#
+#
 #
 #
