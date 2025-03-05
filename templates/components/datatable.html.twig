@@ -281,7 +281,7 @@
                                                 </div>
                                             {% endif %}
                                         {% elseif formatter == 'yesno' %}
-                                            {{ entry[colkey] == 1 ? __('Yes') : __('No') }}
+                                            {{ entry[colkey] == 1 ? '<i class="ti ti-circle-check"></i>' : '' }}
                                         {% else %}
                                             {{ entry[colkey] }}
                                         {% endif %}
