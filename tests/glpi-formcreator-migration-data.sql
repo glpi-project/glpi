@@ -157,7 +157,72 @@ CREATE TABLE `glpi_plugin_formcreator_forms` (
 --
 
 LOCK TABLES `glpi_plugin_formcreator_forms` WRITE;
-INSERT INTO `glpi_plugin_formcreator_forms` VALUES (4,'Test form migration for basic properties',0,0,'0','#999999','#e7e7e7',1,'','',0,1,'',0,0,0,0,0,0,1,'Test form migration for basic properties',1,'13d0d449-91f5039d-678638f86ff479.66501068'),(5,'Test form migration for basic properties with form category',0,0,'0','#999999','#e7e7e7',1,'','',1,1,'',0,0,0,0,0,0,1,'Test form migration for basic properties with form category',1,'13d0d449-91f5039d-67865f9ebd9f58.29603668'),(6,'Test form migration for sections',0,0,'0','#999999','#e7e7e7',1,'','',0,0,'',0,0,0,0,0,0,1,'Test form migration for sections',1,'13d0d449-91f5039d-67868bc224e124.20535500'),(7,'Test form migration for questions',0,0,'0','#999999','#e7e7e7',1,'','',0,0,'',0,0,0,0,0,0,1,'Test form migration for questions',1,'13d0d449-91f5039d-67877f5c4ee3c3.90813653');
+INSERT INTO `glpi_plugin_formcreator_forms` VALUES (4,'Test form migration for basic properties',0,0,'0','#999999','#e7e7e7',1,'','',0,1,'',0,0,0,0,0,0,1,'Test form migration for basic properties',1,'13d0d449-91f5039d-678638f86ff479.66501068'),(5,'Test form migration for basic properties with form category',0,0,'0','#999999','#e7e7e7',1,'','',1,1,'',0,0,0,0,0,0,1,'Test form migration for basic properties with form category',1,'13d0d449-91f5039d-67865f9ebd9f58.29603668'),(6,'Test form migration for sections',0,0,'0','#999999','#e7e7e7',1,'','',0,0,'',0,0,0,0,0,0,1,'Test form migration for sections',1,'13d0d449-91f5039d-67868bc224e124.20535500'),(7,'Test form migration for questions',0,0,'0','#999999','#e7e7e7',1,'','',0,0,'',0,0,0,0,0,0,1,'Test form migration for questions',1,'13d0d449-91f5039d-67877f5c4ee3c3.90813653'),(8,'Test form migration for access types with public access',0,0,'0','#999999','#e7e7e7',0,'','',0,0,'',0,0,0,0,0,0,1,'Test form migration for access types',1,'13d0d449-91f5039d-678f630f4a4737.71277458'),(9,'Test form migration for access types with private access',0,0,'0','#999999','#e7e7e7',1,'','',0,0,'',0,0,0,0,0,0,1,'Test form migration for access types with private access',1,'13d0d449-91f5039d-678f634493d8b7.87824440'),(10,'Test form migration for access types with restricted access',0,0,'0','#999999','#e7e7e7',2,'','',0,0,'',0,0,0,0,0,0,1,'Test form migration for access types with restricted access',1,'13d0d449-91f5039d-678f63553754a9.65767968');
 UNLOCK TABLES;
 
--- Dump completed on 2025-01-20 15:12:11
+--
+-- Table structure for table `glpi_plugin_formcreator_forms_profiles`
+--
+
+DROP TABLE IF EXISTS `glpi_plugin_formcreator_forms_profiles`;
+CREATE TABLE `glpi_plugin_formcreator_forms_profiles` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `plugin_formcreator_forms_id` int unsigned NOT NULL DEFAULT '0',
+  `profiles_id` int unsigned NOT NULL DEFAULT '0',
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`plugin_formcreator_forms_id`,`profiles_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `glpi_plugin_formcreator_forms_profiles`
+--
+
+LOCK TABLES `glpi_plugin_formcreator_forms_profiles` WRITE;
+INSERT INTO `glpi_plugin_formcreator_forms_profiles` VALUES (1,10,1,'13d0d449-91f5039d-678f638f4973b2.97182859'),(2,10,4,'13d0d449-91f5039d-678f638f4b51a8.63447592');
+UNLOCK TABLES;
+
+--
+-- Table structure for table `glpi_plugin_formcreator_forms_groups`
+--
+
+DROP TABLE IF EXISTS `glpi_plugin_formcreator_forms_groups`;
+CREATE TABLE `glpi_plugin_formcreator_forms_groups` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `plugin_formcreator_forms_id` int unsigned NOT NULL,
+  `groups_id` int unsigned NOT NULL,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`plugin_formcreator_forms_id`,`groups_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `glpi_plugin_formcreator_forms_groups`
+--
+
+LOCK TABLES `glpi_plugin_formcreator_forms_groups` WRITE;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `glpi_plugin_formcreator_forms_users`
+--
+
+DROP TABLE IF EXISTS `glpi_plugin_formcreator_forms_users`;
+CREATE TABLE `glpi_plugin_formcreator_forms_users` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `plugin_formcreator_forms_id` int unsigned NOT NULL,
+  `users_id` int unsigned NOT NULL,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`plugin_formcreator_forms_id`,`users_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+--
+-- Dumping data for table `glpi_plugin_formcreator_forms_users`
+--
+
+LOCK TABLES `glpi_plugin_formcreator_forms_users` WRITE;
+INSERT INTO `glpi_plugin_formcreator_forms_users` VALUES (1,10,2,'13d0d449-91f5039d-678f638f475179.94375485');
+UNLOCK TABLES;
+
+-- Dump completed on 2025-01-21 11:41:32
