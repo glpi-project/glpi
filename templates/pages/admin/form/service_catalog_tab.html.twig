@@ -35,12 +35,12 @@
 <form method="POST" action="{{ item.getFormURL() }}" data-submit-once>
     <div class="py-2 px-3 container-narrow ms-0">
         <section data-service-catalog-config
-            style="{{ item.fields.show_in_service_catalog ?? true == false ? "opacity: 0.5" : "" }}"
+            style="{{ item.isField('show_in_service_catalog') && item.fields.show_in_service_catalog ? "opacity: 0.5" : "" }}"
         >
             <h2 class="d-flex align-items-center">
                 <i class="{{ icon }} me-2"></i>
                 {{ __("Service catalog configuration") }}
-                {% if item.fields.show_in_service_catalog is not null %}
+                {% if item.isField('show_in_service_catalog') %}
                     <label class="form-check mb-0 ms-auto form-switch">
                         <input type="hidden" value="0" name="show_in_service_catalog">
                         <input aria-label="{{ __(" Active") }}" class="form-check-input" type="checkbox"

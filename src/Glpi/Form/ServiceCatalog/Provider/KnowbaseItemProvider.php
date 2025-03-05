@@ -81,7 +81,7 @@ final class KnowbaseItemProvider implements LeafProviderInterface
 
             /// Note: this is in theory less performant than applying the parameters
             // directly to the SQL query (which would require more complicated code).
-            // However, the number of forms is expected to be low, so this is acceptable.
+            // However, the number of KB items is expected to be low, so this is acceptable.
             // If performance becomes an issue, we can revisit this and/or add a cache.
             if (!$knowbase_item->canViewItem()) {
                 continue;

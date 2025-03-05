@@ -613,6 +613,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
                 'name'                    => 'KB Item 3',
                 'answer'                  => 'KB Item 3 content',
                 'is_faq'                  => 1,
+                'show_in_service_catalog' => 0,
                 'forms_categories_id'     => 0,                            // Root level
                 'users_id'                => \Session::getLoginUserID(),
             ]),
