@@ -3712,7 +3712,13 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
+	'count' => 2,
+	'path' => __DIR__ . '/src/Migration.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_array\\(\\) with array\\{update\\?\\: string, condition\\?\\: string, value\\?\\: string, nodefault\\?\\: bool, comment\\?\\: string, first\\?\\: string, after\\?\\: string, null\\?\\: bool\\} will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Migration.php',
 ];
 $ignoreErrors[] = [
