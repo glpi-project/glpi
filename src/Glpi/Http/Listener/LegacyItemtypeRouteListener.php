@@ -35,6 +35,8 @@
 namespace Glpi\Http\Listener;
 
 use CommonDevice;
+use CommonDeviceModel;
+use CommonDeviceType;
 use CommonDropdown;
 use CommonGLPI;
 use Glpi\Asset\Asset;
@@ -260,7 +262,7 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
         }
 
         $item = \getItemForItemtype($itemtype);
-        if ($item instanceof CommonDevice) {
+        if ($item instanceof CommonDevice || $item instanceof CommonDeviceModel || $item instanceof CommonDeviceType) {
             return $item::class;
         }
 
