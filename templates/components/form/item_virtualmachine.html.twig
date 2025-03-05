@@ -42,7 +42,7 @@
 {% endif %}
 
 {% if not has_vm %}
-    {{ alerts.alert_info(
+    {{ alerts.callout_info(
         __('No virtualized environment associated with the item')
     ) }}
 {% endif %}

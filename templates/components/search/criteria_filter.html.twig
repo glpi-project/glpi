@@ -31,15 +31,14 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
 {# Display the Filter tab #}
 <div class="row">
     {# Add a bit of padding with the container class #}
     <div class="col-12 search-container container">
         {# Info section detailling the purpose of the filter #}
-        <div class="alert alert-info mt-1">
-            <h3 class="fw-normal"><i class="ti ti-info-circle me-1"></i>{{ info_title }}</h3>
-            <p class="text-muted">{{ info_description }}</p>
-        </div>
+        {{ alerts.callout_info(info_title, [info_description]) }}
 
         {# Do not show filters until enabled #}
         <div id="manage_filter_ux" class="{{ filter_enabled ? "" : "d-none" }}">

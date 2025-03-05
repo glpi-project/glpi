@@ -33,6 +33,7 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 {% if input|length %}
    <div class="card">
@@ -68,7 +69,5 @@
       </div>
    </div>
 {% else %}
-   <div class="alert alert-danger">
-      <span>{{ __('No element to be tested') }}</span>
-   </div>
+   {{ alerts.callout_info(__('No element to be tested')) }}
 {% endif %}

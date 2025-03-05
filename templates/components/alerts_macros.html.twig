@@ -31,71 +31,144 @@
  # ---------------------------------------------------------------------
  #}
 
-{% macro alert(alert_type = "", title = "", messages = [], icon = "", important = false) %}
-   <div class="alert alert-{{ alert_type }} {{ important ? "alert-important" : "" }}" role="alert">
-      <div class="d-flex">
-         <div>
-            <i class="{{ icon }} fs-2x alert-icon"></i>
-         </div>
-         <div>
-            {% if title|length %}
-               <h4 class="alert-title">
-                  {{ title }}
-               </h4>
+{#
+    Base alert and callout macro.
+    Options:
+        - id: string - The ID of the main alert element
+        - add_class: string - Additional classes to add to the main alert element
+        - dismissible: bool - Whether the alert should be dismissible
+        - alert: bool - If true, this is an actual alert and it will be announced by screen readers assertively as an alert
+#}
+{% macro alert(alert_type = "", title = "", messages = [], icon = "", important = false, options = {}) %}
+    {% set options = {
+        id: '',
+        add_class: '',
+        dismissible: false,
+        alert: true
+    }|merge(options) %}
+
+    {% set only_title = messages|length == 0 %}
+
+    <div {{ options.id is not empty ? ('id=' ~ options.id) : '' }}
+        class="flex-shrink-1 alert alert-{{ alert_type }} {{ important ? "alert-important" : "" }} {{ options.add_class }} {{ options.dismissible ? "alert-dismissible" : "" }}"
+        {{ options.alert ? 'role=alert' : '' }}>
+        <div class="d-flex {{ only_title ? 'align-items-center' : '' }}">
+            {% if icon is not empty %}
+                <div>
+                    <i class="{{ icon }} fs-2x alert-icon"></i>
+                </div>
             {% endif %}
-            {% if messages|length > 0 %}
-               <div class="text-muted">
-                  {% if messages is iterable %}
-                     {% for message in messages %}
-                        {{ message }}
-                        {% if loop.last %}<br />{% endif %}
-                     {% endfor %}
-                  {% else %}
-                     {{ messages }}
-                  {% endif %}
-               </div>
+            <div>
+                {% if title|length %}
+                    <span class="fs-4 alert-title {{ only_title ? 'mb-0' : '' }}">
+                        {{ title }}
+                    </span>
+                {% endif %}
+                {% if messages|length > 0 %}
+                    <div class="{{ not important ? "text-muted" : "" }}">
+                        {% if messages is iterable %}
+                            {% for message in messages %}
+                                {{ message }}
+                                {% if not loop.last %}<br />{% endif %}
+                            {% endfor %}
+                        {% else %}
+                            {{ messages }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            {% if options.dismissible %}
+                <a class="btn-close" data-bs-dismiss="alert" aria-label="{{ __('Close') }}"></a>
             {% endif %}
-         </div>
-      </div>
-   </div>
+        </div>
+    </div>
 {% endmacro %}
 
-{% macro alert_success(title = "", messages = [], important = false) %}
-   {{ _self.alert(
-      'success',
-      title,
-      messages,
-      "ti ti-check",
-      important
-   ) }}
+{% macro alert_success(title = "", messages = [], important = false, options = {}) %}
+    {{ _self.alert(
+        'success',
+        title,
+        messages,
+        "ti ti-check",
+        important,
+        options,
+    ) }}
 {% endmacro %}
 
-{% macro alert_info(title = "", messages = [], important = false) %}
-   {{ _self.alert(
-      'info',
-      title,
-      messages,
-      "ti ti-info-circle",
-      important
-   ) }}
+{% macro alert_info(title = "", messages = [], important = false, options = {}) %}
+    {{ _self.alert(
+        'info',
+        title,
+        messages,
+        "ti ti-info-circle",
+        important,
+        options,
+    ) }}
 {% endmacro %}
 
-{% macro alert_warning(title = "", messages = [], important = false) %}
-   {{ _self.alert(
-      'warning',
-      title,
-      messages,
-      "ti ti-alert-triangle",
-      important
-   ) }}
+{% macro alert_warning(title = "", messages = [], important = false, options = {}) %}
+    {{ _self.alert(
+        'warning',
+        title,
+        messages,
+        "ti ti-alert-triangle",
+        important,
+        options,
+    ) }}
 {% endmacro %}
 
-{% macro alert_danger(title = "", messages = [], important = false) %}
-   {{ _self.alert(
-      'danger',
-      title,
-      messages,
-      "ti ti-exclamation-circle",
-      important
-   ) }}
+{% macro alert_danger(title = "", messages = [], important = false, options = {}) %}
+    {{ _self.alert(
+        'danger',
+        title,
+        messages,
+        "ti ti-exclamation-circle",
+        important,
+        options,
+    ) }}
+{% endmacro %}
+
+{# Callouts - Like alerts visually (without the icon by default) but without the alert role or live region. Callouts won't be annouced by screen readers until they are focused #}
+{% macro callout_info(title = "", messages = [], important = false, options = {}) %}
+    {{ _self.callout(
+        'info',
+        title,
+        messages,
+        options.icon|default(false) ? "ti ti-info-circle" : '',
+        important,
+        options,
+    ) }}
+{% endmacro %}
+
+{% macro callout_warning(title = "", messages = [], important = false, options = {}) %}
+    {{ _self.callout(
+        'warning',
+        title,
+        messages,
+        options.icon|default(false) ? "ti ti-alert-triangle" : '',
+        important,
+        options,
+    ) }}
+{% endmacro %}
+
+{% macro callout_danger(title = "", messages = [], important = false, options = {}) %}
+    {{ _self.callout(
+        'danger',
+        title,
+        messages,
+        options.icon|default(false) ? "ti ti-exclamation-circle" : '',
+        important,
+        options,
+    ) }}
+{% endmacro %}
+
+{% macro callout(callout_type, title = '', messages = [], icon = '', important = false, options = {}) %}
+    {{ _self.alert(
+        callout_type,
+        title,
+        messages,
+        icon,
+        important,
+        {alert: false}|merge(options),
+    ) }}
 {% endmacro %}

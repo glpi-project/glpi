@@ -33,6 +33,7 @@
 
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 
 {% block form_fields %}
     {% set inheritable_params = {
@@ -109,13 +110,11 @@
 
     {{ fields.smallTitle(__('Automatic closing configuration')) }}
     {% if closeticket_disabled or purgeticket_disabled %}
-        <div class="alert alert-info">
-            <i class="ti ti-info-circle"></i>
-            <div>
-                {{ closeticket_disabled ? __('Close ticket action is disabled.') : '' }}
-                {{ purgeticket_disabled ? __('Purge ticket action is disabled.') : '' }}
-            </div>
-        </div>
+        {% set message %}
+            {{ closeticket_disabled ? __('Close ticket action is disabled.') : '' }}
+            {{ purgeticket_disabled ? __('Purge ticket action is disabled.') : '' }}
+        {% endset %}
+        {{ alerts.callout_info(message) }}
     {% endif %}
     {{ fields.dropdownNumberField('autoclose_delay', item.fields['autoclose_delay'], __('Automatic closing of solved tickets after'), {
         full_width: true,

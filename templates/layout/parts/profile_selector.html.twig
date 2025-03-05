@@ -31,6 +31,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/alerts_macros.html.twig' as alerts %}
 {% set rand = random() %}
 
 <div class="dropdown dropstart">
@@ -83,22 +84,22 @@
         <div class="dropdown-menu p-3">
             <h3>{{ __('Select the desired entity') }}</h3>
 
-            <div class="alert alert-info" role="alert">
-                {% set shortcut = __('Ctrl + Alt + E') %}
-                {% if platform == constant("donatj\\UserAgent\\Platforms::MACINTOSH") %}
-                    {% set shortcut = __('⌥ (option) + ⌘ (command) + E') %}
-                {% endif %}
-                {{ __("Tip: You can call this modal with %s keys combination")|format('<kbd>' ~ shortcut ~ '</kbd>')|raw }}
-            </div>
-            <div class="alert alert-info" role="alert">
-                <i class="ti ti-info-circle-filled"></i>
-                <span class="ms-2">
-                {% set recursive_icon %}
-                    <i class="ti ti-chevrons-down" title="{{ __('+ sub-entities') }}"></i>
-                {% endset %}
-                {{ __('Click on the %s icon to load the elements of the selected entity, as well as its sub-entities.')|format(recursive_icon)|raw }}
-                </span>
-            </div>
+            {% set shortcut = __('Ctrl + Alt + E') %}
+            {% if platform == constant("donatj\\UserAgent\\Platforms::MACINTOSH") %}
+                {% set shortcut = __('⌥ (option) + ⌘ (command) + E') %}
+            {% endif %}
+            {% set kb_message %}
+                {{ __("Tip: You can call this modal with %s keys combination")|e|format('<kbd>' ~ shortcut ~ '</kbd>')|raw }}
+            {% endset %}
+            {{ alerts.callout_info(kb_message) }}
+
+            {% set recursive_icon %}
+                <i class="ti ti-chevrons-down" title="{{ __('+ sub-entities') }}"></i>
+            {% endset %}
+            {% set child_entity_msg %}
+                {{ __('Click on the %s icon to load the elements of the selected entity, as well as its sub-entities.')|e|format(recursive_icon)|raw }}
+            {% endset %}
+            {{ alerts.callout_info(child_entity_msg) }}
 
             {% set switch_to_full_structure_id = 'switch_to_full_structure_' ~ rand %}
             <form

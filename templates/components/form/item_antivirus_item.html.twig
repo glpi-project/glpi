@@ -41,7 +41,7 @@
 {% endif %}
 
 {% if not has_antivirus %}
-    {{ alerts.alert_info(
+    {{ alerts.callout_info(
         __('No antivirus associated with the item')
     ) }}
 {% else %}

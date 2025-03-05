@@ -60,8 +60,6 @@
         'showmassiveactions': canedit,
     }, with_context = false) }}
 {% else %}
-    {{ alerts.alert_info(
-        __('No results found')
-    ) }}
+    {{ alerts.callout_info(__('No results found')) }}
 {% endif %}
 

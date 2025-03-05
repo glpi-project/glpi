@@ -31,6 +31,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
 {# @var \Glpi\Form\Form form #}
 {# @var \Glpi\Form\AccessControl\FormAccessControl[] access_controls #}
 {# @var string[] warnings #}
@@ -47,13 +49,7 @@
             {% if warnings|length > 0 %}
                 <div class="mb-5">
                     {% for warning in warnings %}
-                        <div
-                            class="alert alert-warning d-flex align-items-center"
-                            role="alert"
-                        >
-                            <i class="ti ti-alert-triangle me-2"></i>
-                            {{ warning }}
-                        </div>
+                        {{ alerts.alert_warning(warning) }}
                     {% endfor %}
                 </div>
             {% endif %}

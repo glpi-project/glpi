@@ -31,6 +31,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/alerts_macros.html.twig' as alerts %}
+
 <div class="container">
    <div class="row justify-content-evenly">
       <div class="col-12 col-xxl-4">
@@ -52,10 +54,7 @@
                      <span>{{ 'AuthLDAP'|itemtype_name }}</span>
                   </a>
                {% else %}
-                  <div class="alert alert-important alert-warning m-3">
-                    <i class="ti ti-alert-triangle me-2"></i>
-                    {{ __('The LDAP extension of your PHP parser isn’t installed') }}
-                  </div>
+                   {{ alerts.alert_warning(__('The LDAP extension of your PHP parser isn’t installed')) }}
                {% endif %}
 
                <a class="list-group-item list-group-item-action" href="{{ path('front/authmail.php') }}">

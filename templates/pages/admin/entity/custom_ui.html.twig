@@ -33,6 +33,7 @@
 
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 {% set params  = params ?? [] %}
 
 {% block form_fields %}
@@ -44,7 +45,10 @@
         {% set inherited_value = enabled_css_inherited_value %}
         {% set show_editor = (inherited_value is null or inherited_value == 1) and item.fields['enable_custom_css'] != 0 %}
         <div id="custom_css_container" class="custom_css_container {{ show_editor ? '' : 'd-none' }}" style="height: 400px"></div>
-        <div class="alert alert-info {{ item.fields['enable_custom_css'] == 0 ? '' : 'd-none' }}">{{ __('Custom CSS is disabled') }}</div>
+        {{ alerts.callout_info(
+            title: __('Custom CSS is disabled'),
+            options: {add_class: item.fields['enable_custom_css'] == 0 ? '' : 'd-none'}
+        ) }}
         <script>
             const refreshCustomCSSEditor = () => {
                 if (window.monaco !== undefined) {
