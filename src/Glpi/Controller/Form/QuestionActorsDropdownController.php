@@ -53,7 +53,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class QuestionActorsDropdownController extends AbstractController
 {
     #[Route(
-        "/ajax/Form/Question/ActorsDropdown",
+        "/Form/Question/ActorsDropdown",
         name: "glpi_form_question_actors_dropdown_value",
         methods: "POST"
     )]
