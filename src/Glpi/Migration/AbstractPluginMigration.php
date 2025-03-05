@@ -379,7 +379,7 @@ abstract class AbstractPluginMigration
      *
      * @return array{itemtype: class-string<\CommonDBTM>, items_id: int}
      */
-    final protected function getMappedItemTarget(string $source_itemtype, int $source_items_id): ?array
+    final public function getMappedItemTarget(string $source_itemtype, int $source_items_id): ?array
     {
         if (
             !array_key_exists($source_itemtype, $this->target_items_mapping)
@@ -389,6 +389,20 @@ abstract class AbstractPluginMigration
         }
 
         return $this->target_items_mapping[$source_itemtype][$source_items_id];
+    }
+
+    /**
+     * Return the GLPI core items specs corresponding to the given plugin itemtype.
+     *
+     * @return array<int, array{itemtype: class-string<\CommonDBTM>, items_id: int}>
+     */
+    final public function getMappedItemsForItemtype(string $source_itemtype): array
+    {
+        if (!array_key_exists($source_itemtype, $this->target_items_mapping)) {
+            return [];
+        }
+
+        return $this->target_items_mapping[$source_itemtype];
     }
 
     /**

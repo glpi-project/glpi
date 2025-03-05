@@ -36,21 +36,22 @@
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use Computer;
-use DbTestCase;
+use DBmysql;
 use Glpi\Form\AnswersHandler\AnswersHandler;
-use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldConfig;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Monitor;
+use Override;
 
-final class AssociatedItemsFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -426,6 +427,93 @@ final class AssociatedItemsFieldTest extends DbTestCase
                     $form->getID() => $form->getID(),
                 ],
             ]
+        );
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'None' => [
+            'field_key'     => AssociatedItemsField::getKey(),
+            'fields_to_set' => [
+                'associate_rule' => 1,
+            ],
+            'field_config' => fn ($migration, $form) => (new AssociatedItemsField())->getDefaultConfig($form)
+        ];
+
+        yield 'Equals to the answer to the question' => [
+            'field_key'     => AssociatedItemsField::getKey(),
+            'fields_to_set' => [
+                'associate_rule'     => 3,
+                'associate_question' => 74
+            ],
+            'field_config' => fn ($migration, $form) => new AssociatedItemsFieldConfig(
+                strategies: [AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget(
+                        'PluginFormcreatorQuestion',
+                        74
+                    )['items_id'] ?? throw new \Exception("Question not found")
+                ]
+            )
+        ];
+
+        yield 'Last valid answer' => [
+            'field_key'     => AssociatedItemsField::getKey(),
+            'fields_to_set' => [
+                'associate_rule' => 4,
+            ],
+            'field_config' => new AssociatedItemsFieldConfig(
+                strategies: [AssociatedItemsFieldStrategy::LAST_VALID_ANSWER]
+            )
+        ];
+    }
+
+    public function testConvertSpecificAssetFieldConfigFromFormCreator(): void
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+        $computer_id = (new Computer())->add([
+            'name'        => 'Test Computer for associated items',
+            'entities_id' => $this->getTestRootEntity(true)
+        ]);
+        $DB->insert(
+            'glpi_plugin_formcreator_items_targettickets',
+            [
+                'id'                                  => 1,
+                'plugin_formcreator_targettickets_id' => 12,
+                'link'                                => 0,
+                'itemtype'                            => Computer::getType(),
+                'items_id'                            => $computer_id,
+            ]
+        );
+        $monitor_id = (new Monitor())->add([
+            'name'        => 'Test Monitor for associated items',
+            'entities_id' => $this->getTestRootEntity(true)
+        ]);
+        $DB->insert(
+            'glpi_plugin_formcreator_items_targettickets',
+            [
+                'id'                                  => 2,
+                'plugin_formcreator_targettickets_id' => 12,
+                'link'                                => 0,
+                'itemtype'                            => Monitor::getType(),
+                'items_id'                            => $monitor_id,
+            ]
+        );
+
+        $this->testConvertFieldConfigFromFormCreator(
+            field_key: AssociatedItemsField::getKey(),
+            fields_to_set: [
+                'associate_rule' => 2,
+            ],
+            field_config: new AssociatedItemsFieldConfig(
+                strategies: [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
+                specific_associated_items: [
+                    Computer::getType() => $computer_id,
+                    Monitor::getType()  => $monitor_id,
+                ]
+            )
         );
     }
 

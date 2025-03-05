@@ -70,4 +70,10 @@ final class OLATTOField extends SLMField
     {
         return OLATTOFieldConfig::class;
     }
+
+    #[Override]
+    protected function getFieldNameToConvertSpecificSLMID(): string
+    {
+        return 'ola_question_tto';
+    }
 }
