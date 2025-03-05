@@ -35,13 +35,16 @@
 namespace Glpi\Controller\Form;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Controller\Form\Utils\CanCheckAccessPolicies;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Dropdown\FormActorsDropdown;
 use Glpi\Form\Form;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,8 +52,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class QuestionActorsDropdownController extends AbstractController
 {
-    use CanCheckAccessPolicies;
-
     #[Route(
         "/Form/Question/ActorsDropdown",
         name: "glpi_form_question_actors_dropdown_value",
@@ -59,8 +60,7 @@ final class QuestionActorsDropdownController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
     {
-        $form = $this->loadTargetForm($request);
-        $this->checkFormAccessPolicies($form, $request);
+        $this->checkFormAccessPolicies($request);
 
         $options = [
             'allowed_types'    => $request->request->all('allowed_types'),
@@ -84,5 +84,24 @@ final class QuestionActorsDropdownController extends AbstractController
         }
 
         return $form;
+    }
+
+    private function checkFormAccessPolicies(Request $request)
+    {
+        $form_access_manager = FormAccessControlManager::getInstance();
+
+        if (!Session::haveRight(Form::$rightname, READ)) {
+            $form = $this->loadTargetForm($request);
+
+            // Load current user session info and URL parameters.
+            $parameters = new FormAccessParameters(
+                session_info: Session::getCurrentSessionInfo(),
+                url_parameters: $request->query->all(),
+            );
+
+            if (!$form_access_manager->canAnswerForm($form, $parameters)) {
+                throw new AccessDeniedHttpException();
+            }
+        }
     }
 }
