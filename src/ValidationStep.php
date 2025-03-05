@@ -102,13 +102,15 @@ class ValidationStep extends \CommonDropdown
         $is_input_valid = true;
         // name is mandatory
         if (!isset($input['name']) || strlen($input['name']) < 3) {
-            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory'), 'name'), message_type: ERROR);
+            $message = sprintf(__s('The %s field is mandatory'), $this->getAdditionalField('name')['label'] ?? 'name');
+            Session::addMessageAfterRedirect(msg: $message, message_type: ERROR);
             $is_input_valid = false;
         }
 
         // percent is mandatory and must be a percentage
-        if (!isset($input['mininal_required_validation_percent']) || !is_numeric($input['mininal_required_validation_percent']) || $input['mininal_required_validation_percent'] < 0 || $input['mininal_required_validation_percent'] > 100) {
-            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory and must be beetween 0 and 100.'), 'mininal_required_validation_percent'), message_type: ERROR);
+        if (!isset($input['minimal_required_validation_percent']) || !is_numeric($input['minimal_required_validation_percent']) || $input['minimal_required_validation_percent'] < 0 || $input['minimal_required_validation_percent'] > 100) {
+            $message = sprintf(__s('The %s field is mandatory and must be beetween 0 and 100.'), $this->getAdditionalField('minimal_required_validation_percent')['label'] ?? 'minimal_required_validation_percent');
+            Session::addMessageAfterRedirect(msg: $message, message_type: ERROR);
             $is_input_valid = false;
         }
 
@@ -125,16 +127,18 @@ class ValidationStep extends \CommonDropdown
 
         // name is mandatory
         if (isset($input['name']) && strlen($input['name']) < 3) {
-            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory'), 'name'), message_type: ERROR);
+            $message = sprintf(__s('The %s field is mandatory'), $this->getAdditionalField('name')['label'] ?? 'name');
+            Session::addMessageAfterRedirect(msg: $message, message_type: ERROR);
             $is_input_valid = false;
         }
 
         // percent is mandatory and must be a percentage
         if (
-            isset($input['mininal_required_validation_percent'])
-            && (!is_numeric($input['mininal_required_validation_percent']) || $input['mininal_required_validation_percent'] < 0 || $input['mininal_required_validation_percent'] > 100)
+            isset($input['minimal_required_validation_percent'])
+            && (!is_numeric($input['minimal_required_validation_percent']) || $input['minimal_required_validation_percent'] < 0 || $input['minimal_required_validation_percent'] > 100)
         ) {
-            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory and must be beetween 0 and 100.'), 'mininal_required_validation_percent'), message_type: ERROR);
+            $message = sprintf(__s('The %s field is mandatory and must be beetween 0 and 100.'), $this->getAdditionalField('minimal_required_validation_percent')['label'] ?? 'minimal_required_validation_percent');
+            Session::addMessageAfterRedirect(msg: $message, message_type: ERROR);
             $is_input_valid = false;
         }
 
@@ -144,6 +148,27 @@ class ValidationStep extends \CommonDropdown
 
         return parent::prepareInputForUpdate($input);
     }
+
+    public function getAdditionalFields()
+    {
+        return [
+            [
+                'name'   => 'is_default',
+                'label'  => __('Use as default'),
+                'type'   => 'bool',
+                'required' => true,
+            ],
+            [
+                'name'  => 'minimal_required_validation_percent',
+                'label' => __('Minimal required validation percent'),
+                'type'  => 'integer',
+                'min'   => 0,
+                'max'   => 100
+            ],
+
+        ] + parent::getAdditionalFields();
+    }
+
 
     public static function getDefault(): self
     {
@@ -167,7 +192,7 @@ class ValidationStep extends \CommonDropdown
             [
                 'id' => 1,
                 'name' => 'Validation',
-                'mininal_required_validation_percent' => 100,
+                'minimal_required_validation_percent' => 100,
                 'is_default' => 1,
                 'date_creation' => date('Y-m-d H:i:s'),
                 'date_mod' => date('Y-m-d H:i:s'),
