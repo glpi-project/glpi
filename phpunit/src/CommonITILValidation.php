@@ -167,6 +167,7 @@ abstract class CommonITILValidation extends DbTestCase
     public function testCanValidateUser()
     {
         $this->login();
+        $default_validation_step_id = $this->getInitialDefaultValidationStep()->getID();
 
         $itil_class = $this->getITILObjectClass();
         $itil_item = new $itil_class();
@@ -183,24 +184,31 @@ abstract class CommonITILValidation extends DbTestCase
         $this->assertFalse($validation::canValidate($itil_items_id));
 
         // Add user approval for current user
-        $validations_id_1 = $validation->add([
+        $validations_id_1_data = [
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'User',
             'items_id_target'                   => $_SESSION['glpiID'],
             'comment_submission'                => __FUNCTION__,
-        ]);
-        $this->assertGreaterThan(0, $validations_id_1);
+        ];
+        // additionnal data for TicketValidation (validationsteps)
+        if($validation_class === \TicketValidation::class) {
+            $validations_id_1_data['validationsteps_id'] = $default_validation_step_id;
+        }
+        $validations_id_1 = ($this->createItem($validation_class, $validations_id_1_data))->getID();
         $this->assertTrue($validation::canValidate($itil_items_id));
 
         // Add user approval for other user
-        $validation = new $validation_class();
-        $validations_id_2 = $validation->add([
+        // additionnal data for TicketValidation (validationsteps)
+        $validations_id_2_data = [
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'User',
             'items_id_target'                   => \User::getIdByName('normal'), // Other user.
             'comment_submission'                => __FUNCTION__,
-        ]);
-        $this->assertGreaterThan(0, $validations_id_2);
+        ];
+        if($validation_class === \TicketValidation::class) {
+            $validations_id_2_data['validationsteps_id'] = $default_validation_step_id;
+        }
+        $this->createItem($validation_class, $validations_id_2_data)->getID();
 
         // Test the current user can still approve since they still have an approval
         $this->assertTrue($validation::canValidate($itil_items_id));
@@ -290,6 +298,7 @@ abstract class CommonITILValidation extends DbTestCase
     public function testCanValidateGroup()
     {
         $this->login();
+        $default_validation_step_id = $this->getInitialDefaultValidationStep()->getID();
 
         $itil_class = $this->getITILObjectClass();
         $itil_item = new $itil_class();
@@ -329,24 +338,24 @@ abstract class CommonITILValidation extends DbTestCase
         );
 
         // Add approval for user's group
-        $validations_id_1 = $validation->add([
+        $validations_id_1 = $this->createItem($validation_class, [
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'Group',
             'items_id_target'                   => $groups_id,
             'comment_submission'                => __FUNCTION__,
-        ]);
-        $this->assertGreaterThan(0, $validations_id_1);
+            'validationsteps_id'                => $default_validation_step_id,  // used only on TicketValidation
+        ])->getID();
+
         $this->assertTrue($validation::canValidate($itil_items_id));
 
         // Add approval for other group
-        $validation = new $validation_class();
-        $validations_id_2 = $validation->add([
+        $this->createItem($validation_class, [
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'Group',
             'items_id_target'                   => $other_groups_id, // Other group.
             'comment_submission'                => __FUNCTION__,
-        ]);
-        $this->assertGreaterThan(0, $validations_id_2);
+            'validationsteps_id'                => $default_validation_step_id, // used only on TicketValidation
+        ])->getID();
 
         // Test the current user can still approve since they still have an approval
         $this->assertTrue($validation::canValidate($itil_items_id));
@@ -444,6 +453,8 @@ abstract class CommonITILValidation extends DbTestCase
 
     public static function prepareInputForAddProvider()
     {
+        $validationsteps_id = 1;
+
         $user_validations = [
             [
                 'input' => [
@@ -451,17 +462,20 @@ abstract class CommonITILValidation extends DbTestCase
                     'items_id_target' => 1,
                     'comment_submission' => 'test',
                     '%FK_FIELD%' => 1,
+                    'validationsteps_id' => $validationsteps_id,
                 ],
                 'expected' => [
                     'itemtype_target' => 'User',
                     'items_id_target' => 1,
                     'comment_submission' => 'test',
                     'status' => \CommonITILValidation::WAITING,
+                    'validationsteps_id' => $validationsteps_id,
                 ],
             ],
             [
                 'input' => [ // Invalid input
                     'itemtype_target' => 'User',
+                    'validationsteps_id' => $validationsteps_id,
                 ],
                 'expected' => [],
             ],
@@ -469,6 +483,7 @@ abstract class CommonITILValidation extends DbTestCase
                 'input' => [ // Invalid input
                     'itemtype_target' => 'User',
                     'items_id_target' => -1,
+                    'validationsteps_id' => $validationsteps_id,
                 ],
                 'expected' => [],
             ],
@@ -481,12 +496,14 @@ abstract class CommonITILValidation extends DbTestCase
                     'items_id_target' => 1,
                     'comment_submission' => 'test',
                     '%FK_FIELD%' => 1,
+                    'validationsteps_id' => $validationsteps_id,
                 ],
                 'expected' => [
                     'itemtype_target' => 'Group',
                     'items_id_target' => 1,
                     'comment_submission' => 'test',
                     'status' => \CommonITILValidation::WAITING,
+                    'validationsteps_id' => $validationsteps_id,
                 ],
                 'input_blocklist' => [
                     'users_id_validate',
@@ -495,6 +512,7 @@ abstract class CommonITILValidation extends DbTestCase
             [
                 'input' => [ // Invalid input
                     'itemtype_target' => 'Group',
+                    'validationsteps_id' => $validationsteps_id,
                 ],
                 'expected' => [],
             ],
@@ -541,16 +559,20 @@ abstract class CommonITILValidation extends DbTestCase
 
     public static function prepareInputForUpdateProvider()
     {
+        $validationsteps_id = 1;
+
         return [
             [
                 'input' => [
                     'status' => \CommonITILValidation::WAITING,
                     'itemtype_target' => 'User',
                     'items_id_target' => '_CURRENT_USER_',
+                    'validationsteps_id' => $validationsteps_id,
                 ],
                 'expected' => [
                     'status' => \CommonITILValidation::WAITING,
                     'validation_date' => 'NULL',
+                    'validationsteps_id' => $validationsteps_id,
                 ],
             ],
             [
@@ -559,10 +581,12 @@ abstract class CommonITILValidation extends DbTestCase
                     'validation_date' => $_SESSION["glpi_currenttime"],
                     'itemtype_target' => 'User',
                     'items_id_target' => '_CURRENT_USER_',
+                    'validationsteps_id' => $validationsteps_id,
                 ],
                 'expected' => [
                     'status' => \CommonITILValidation::ACCEPTED,
                     'validation_date' => '_CURRENT_TIME_',
+                    'validationsteps_id' => $validationsteps_id,
                 ],
             ]
         ];
@@ -602,6 +626,7 @@ abstract class CommonITILValidation extends DbTestCase
             'items_id_target' => \Session::getLoginUserID(),
             'status' => $input['status'],
             'timeline_position' => '1',
+            'validationsteps_id' => $input['validationsteps_id'],
         ]);
         $this->assertFalse($validation->isNewItem());
         if (!empty($expected)) {
@@ -722,6 +747,7 @@ abstract class CommonITILValidation extends DbTestCase
     {
         $validation_class = $this->getTestedClass();
         $validation = new $validation_class();
+        $default_validation_step_id = $this->getInitialDefaultValidationStep()->getID();
 
         $user = new \User();
         $user->add([
@@ -750,6 +776,7 @@ abstract class CommonITILValidation extends DbTestCase
             'items_id_target' => $user->getID(),
             'status' => \CommonITILValidation::WAITING,
             'users_id' => 1,
+            'validationsteps_id' => $default_validation_step_id,
         ]);
         $this->assertGreaterThan(0, (int) $validations_id);
         $this->assertEquals(1, $validation_class::getNumberToValidate($user->getID()));
@@ -767,6 +794,7 @@ abstract class CommonITILValidation extends DbTestCase
             'items_id_target' => $group->getID(),
             'status' => \CommonITILValidation::WAITING,
             'users_id' => 1,
+            'validationsteps_id' => $default_validation_step_id,
         ]);
         $this->assertGreaterThan(0, (int) $validations_id);
         $this->assertEquals(2, $validation_class::getNumberToValidate($user->getID()));
@@ -796,5 +824,10 @@ abstract class CommonITILValidation extends DbTestCase
         $this->assertContains(\CommonITILValidation::WAITING, $validation->getAllValidationStatusArray());
         $this->assertContains(\CommonITILValidation::REFUSED, $validation->getAllValidationStatusArray());
         $this->assertContains(\CommonITILValidation::ACCEPTED, $validation->getAllValidationStatusArray());
+    }
+
+    protected function getInitialDefaultValidationStep(): \ValidationStep
+    {
+        return getItemByTypeName(\ValidationStep::class, 'Validation');
     }
 }
