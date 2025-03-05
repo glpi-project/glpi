@@ -319,6 +319,81 @@ class CommonITILValidationTest extends DbTestCase
         $this->assertEquals(\CommonITILValidation::WAITING, (int)$ticket->getField('global_validation'));*/
     }
 
+    public function testValidationStatusAfterRefusedAndNewRequest()
+    {
+        $this->login();
+
+        // Create a ticket
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add(
+            [
+                'name'               => "Test validation status transition",
+                'content'            => "Test content",
+            ]
+        );
+        $this->assertGreaterThan(0, $tickets_id);
+
+        $validation = new \TicketValidation();
+
+        // Add first validation request
+        $validation_id = $validation->add(
+            [
+                'tickets_id'        => $tickets_id,
+                'users_id_validate' => getItemByTypeName('User', 'tech', true),
+                'comment_submission' => 'Please validate this ticket'
+            ]
+        );
+        $this->assertGreaterThan(0, $validation_id);
+
+        // Check that global validation status is WAITING
+        $ticket->getFromDB($tickets_id);
+        $this->assertEquals(
+            \CommonITILValidation::WAITING,
+            (int)$ticket->getField('global_validation')
+        );
+
+        // Login as tech to refuse the validation
+        $this->login('tech', 'tech');
+
+        // Refuse the validation
+        $this->assertTrue(
+            $validation->update(
+                [
+                    'id'                 => $validation_id,
+                    'status'             => \CommonITILValidation::REFUSED,
+                    'comment_validation' => 'I refuse this validation'
+                ]
+            )
+        );
+
+        // Check that global validation status is now REFUSED
+        $ticket->getFromDB($tickets_id);
+        $this->assertEquals(
+            \CommonITILValidation::REFUSED,
+            (int)$ticket->getField('global_validation')
+        );
+
+        // Login back as normal admin
+        $this->login();
+
+        // Add another validation request
+        $new_validation_id = $validation->add(
+            [
+                'tickets_id'        => $tickets_id,
+                'users_id_validate' => getItemByTypeName('User', 'glpi', true),
+                'comment_submission' => 'Please validate this ticket (second attempt)'
+            ]
+        );
+        $this->assertGreaterThan(0, $new_validation_id);
+
+        // Check that global validation status is now back to WAITING
+        $ticket->getFromDB($tickets_id);
+        $this->assertEquals(
+            \CommonITILValidation::WAITING,
+            (int)$ticket->getField('global_validation')
+        );
+    }
+
     public static function testComputeValidationProvider(): array
     {
         return [
