@@ -140,13 +140,6 @@ final class Kernel extends BaseKernel
         if (\is_file($path = $this->getProjectDir() . '/routes/' . $this->environment . '.php')) {
             (require $path)($routes->withPath($path), $this);
         }
-
-        // Plugin-specific routes
-        $routes->add(PluginsRouterListener::ROUTE_NAME, '/plugins/{plugin_name}/{path_rest}')
-            ->requirements([
-                'plugin_name' => '^[a-zA-Z0-9_-]+$',
-                'path_rest' => '.*',
-            ]);
     }
 
     private function triggerGlobalsDeprecation(): void
