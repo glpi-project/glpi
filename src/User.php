@@ -7402,6 +7402,7 @@ JAVASCRIPT;
      */
     public function countComputersForUser(array $sql_filters = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $user_name = $this->getField('name');
 
@@ -7432,6 +7433,7 @@ JAVASCRIPT;
      */
     public function getComputersHistoryForUser(array $sql_filters = []): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $user_name = $this->getField('name');
@@ -7492,16 +7494,14 @@ JAVASCRIPT;
                 }
             }
 
-            if ($data['computer_id']) {
-                $cansee = $item->can($data["computer_id"], READ);
-                $computer_link   = $data[$item->getNameField()];
-                if ($cansee) {
-                    $link_item = $item::getFormURLWithID($data['computer_id']);
-                    if ($_SESSION["glpiis_ids_visible"] || empty($computer_link)) {
-                        $computer_link = sprintf(__('%1$s (%2$s)'), $computer_link, $data["id"]);
-                    }
-                    $computer_link = "<a href='" . $link_item . "'>" . $computer_link . "</a>";
+            $cansee = $item->can($data["computer_id"], READ);
+            $computer_link   = $data[$item->getNameField()];
+            if ($cansee) {
+                $link_item = $item::getFormURLWithID($data['computer_id']);
+                if ($_SESSION["glpiis_ids_visible"] || empty($computer_link)) {
+                    $computer_link = sprintf(__('%1$s (%2$s)'), $computer_link, $data["id"]);
                 }
+                $computer_link = "<a href='" . $link_item . "'>" . $computer_link . "</a>";
             }
 
             $entry = [
