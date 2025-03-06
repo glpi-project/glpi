@@ -482,29 +482,52 @@ class AssetDefinitionTest extends DbTestCase
 
     public function testDelete()
     {
-        /** @var \Glpi\Asset\AssetDefinition $definition */
+        // Create the definition
         $definition = $this->initAssetDefinition('test');
 
-        $this->createItem(
-            $definition->getAssetClassName(),
-            [
-                'name' => 'test',
-                'entities_id' => $this->getTestRootEntity(true),
-            ]
-        );
+        $concrete_classnames = [
+            $definition->getAssetClassName() => true,
+            $definition->getAssetModelClassName() => false,
+            $definition->getAssetTypeClassName() => false,
+        ];
 
+        // Validate that there are display preferences that will have to be deleted
+        foreach ($concrete_classnames as $classname) {
+            $this->assertGreaterThan(
+                0,
+                getAllDataFromTable('glpi_displaypreferences', ['itemtype' => $classname])
+            );
+        }
+
+        // Create some items
+        foreach ($concrete_classnames as $classname => $has_entity) {
+            $input = [
+                'name' => 'test ' . $classname,
+            ];
+            if ($has_entity) {
+                $input['entities_id'] = $this->getTestRootEntity(true);
+            }
+            $this->createItem($classname, $input);
+        }
+
+        // Delete the definition
         $this->assertTrue($definition->delete([
             'id' => $definition->getID(),
         ]));
-        $this->assertCount(
-            0,
-            getAllDataFromTable(
-                'glpi_assets_assets',
-                [
-                    'assets_assetdefinitions_id' => $definition->getID(),
-                ]
-            )
-        );
+
+        foreach (array_keys($concrete_classnames) as $classname) {
+            // Items are deleted
+            $this->assertCount(
+                0,
+                getAllDataFromTable($classname::getTable(), ['assets_assetdefinitions_id' => $definition->getID()])
+            );
+
+            // Display preferences are deleted
+            $this->assertCount(
+                0,
+                getAllDataFromTable('glpi_displaypreferences', ['itemtype' => $classname])
+            );
+        }
     }
 
     public function testUpdateRights()

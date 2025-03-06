@@ -385,19 +385,10 @@ TWIG, $twig_params);
             $this->onCapacityDisabled($capacity_classname);
         }
 
-        $related_classes = [
-            $this->getAssetClassName(),
-            $this->getAssetModelClassName(),
-            $this->getAssetTypeClassName(),
-        ];
-        foreach ($related_classes as $classname) {
-            (new $classname())->deleteByCriteria(
-                ['assets_assetdefinitions_id' => $this->getID()],
-                force: true,
-                history: false
-            );
-            (new \DisplayPreference())->deleteByCriteria(['itemtype' => $classname]);
-        }
+        $this->purgeConcreteClassFromDb($this->getAssetModelClassName());
+        $this->purgeConcreteClassFromDb($this->getAssetTypeClassName());
+
+        parent::cleanDBonPurge();
     }
 
     /**

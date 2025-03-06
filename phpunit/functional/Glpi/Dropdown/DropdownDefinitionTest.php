@@ -416,27 +416,40 @@ class DropdownDefinitionTest extends DbTestCase
 
     public function testDelete()
     {
-        /** @var \Glpi\Dropdown\DropdownDefinition $definition */
+        // Create the definition
         $definition = $this->initDropdownDefinition('test');
 
+        $classname = $definition->getDropdownClassName();
+
+        // Validate that there are display preferences that will have to be deleted
+        $this->assertGreaterThan(
+            0,
+            getAllDataFromTable('glpi_displaypreferences', ['itemtype' => $classname])
+        );
+
+        // Create some items
         $this->createItem(
-            $definition->getDropdownClassName(),
+            $classname,
             [
                 'name' => 'test',
             ]
         );
 
+        // Delete the definition
         $this->assertTrue($definition->delete([
             'id' => $definition->getID(),
         ]));
+
+        // Items are deleted
         $this->assertCount(
             0,
-            getAllDataFromTable(
-                'glpi_dropdowns_dropdowns',
-                [
-                    'dropdowns_dropdowndefinitions_id' => $definition->getID(),
-                ]
-            )
+            getAllDataFromTable('glpi_dropdowns_dropdowns', ['dropdowns_dropdowndefinitions_id' => $definition->getID()])
+        );
+
+        // Display preferences are deleted
+        $this->assertCount(
+            0,
+            getAllDataFromTable('glpi_displaypreferences', ['itemtype' => $classname])
         );
     }
 
