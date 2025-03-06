@@ -240,7 +240,7 @@ class Migration
     /**
      * Get formated SQL field
      *
-     * @param string  $type          can be bool|boolean, char|character, str|string, int|integer, date, time, timestamp|datetime, text|mediumtext|longtext, autoincrement, fkey, json
+     * @param string  $type          can be "bool"|"boolean", "char"|"character", "str"|"string", "int"|"integer", "date", "time", "timestamp"|"datetime", "text"|"mediumtext"|"longtext", "autoincrement", "fkey", "json", or a complete type definition like "decimal(20,4) NOT NULL DEFAULT '0.0000'"
      * @param string  $default_value new field's default value,
      *                               if a specific default value needs to be used
      * @param boolean $nodefault     No default value (false by default)
