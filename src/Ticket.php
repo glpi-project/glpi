@@ -4301,8 +4301,6 @@ JAVASCRIPT;
             $options['entities_id'] = $item->fields['entities_id'];
         }
 
-        $is_promoted = static::isNewID($ID) && $this->hasSavedInput();
-
         $this->restoreInputAndDefaults($ID, $options, null, true);
 
         if (isset($options['content'])) {
@@ -4320,7 +4318,7 @@ JAVASCRIPT;
             $options['_skip_promoted_fields'] = false;
         }
 
-        if ($is_promoted) {
+        if (static::isNewID($ID)) {
             // Override some values only for the initial load of a new ticket
             // Override defaut values from projecttask if needed
             if (isset($options['_projecttasks_id'])) {
