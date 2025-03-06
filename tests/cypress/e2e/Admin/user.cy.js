@@ -52,7 +52,7 @@ describe('User form', () => {
         });
     });
     it('Change user picture', () => {
-        cy.visit('/front/user.form.php?id=4');
+        cy.visit('/front/user.form.php?id=7');
         cy.findByRole('tab', { name: 'User' }).click();
         cy.findByTitle('Change picture').click();
         cy.findByRole('dialog').should('be.visible').within(() => {
