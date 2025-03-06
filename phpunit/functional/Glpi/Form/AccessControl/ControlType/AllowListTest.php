@@ -40,6 +40,7 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
@@ -199,7 +200,7 @@ class AllowListTest extends \DbTestCase
         $allow_list = new AllowList();
         $this->assertEquals(
             $expected,
-            $allow_list->canAnswer($config, $parameters)
+            $allow_list->canAnswer(new Form(), $config, $parameters)
         );
     }
 

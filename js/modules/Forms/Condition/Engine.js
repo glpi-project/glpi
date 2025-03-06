@@ -107,13 +107,6 @@ export class GlpiFormConditionEngine
             form_data.append(`answers[${entry[0]}]`, entry[1]);
         }
 
-        // Included direct access token if needed.
-        // Not great to have to do this normally, TOOD: find a better way.
-        const url_params = new URLSearchParams(window.location.search);
-        if (url_params.has('token')) {
-            form_data.append('token', url_params.get('token'));
-        }
-
         // Send request
         const url = `${CFG_GLPI.root_doc}/Form/Condition/Engine`;
         const response = await fetch(url, {

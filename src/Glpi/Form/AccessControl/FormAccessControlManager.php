@@ -132,6 +132,7 @@ final class FormAccessControlManager
         }
 
         return $this->validateAccessControlsPolicies(
+            $form,
             $access_controls_policies,
             $parameters
         );
@@ -203,6 +204,7 @@ final class FormAccessControlManager
     }
 
     private function validateAccessControlsPolicies(
+        Form $form,
         array $policies,
         FormAccessParameters $parameters
     ): bool {
@@ -212,6 +214,7 @@ final class FormAccessControlManager
         /** @var FormAccessControl[] $policies */
         foreach ($policies as $policiy) {
             $votes[] = $policiy->getStrategy()->canAnswer(
+                $form,
                 $policiy->getConfig(),
                 $parameters
             );
