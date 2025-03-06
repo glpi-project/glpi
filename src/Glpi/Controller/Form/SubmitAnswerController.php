@@ -36,11 +36,9 @@
 namespace Glpi\Controller\Form;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Controller\Form\Utils\CanCheckAccessPolicies;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\EndUserInputNameProvider;
@@ -55,6 +53,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class SubmitAnswerController extends AbstractController
 {
+    use CanCheckAccessPolicies;
+
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)] // Some forms can be accessed anonymously
     #[Route(
         "/Form/SubmitAnswers",
@@ -87,26 +87,6 @@ final class SubmitAnswerController extends AbstractController
         }
 
         return $form;
-    }
-
-    private function checkFormAccessPolicies(Form $form, Request $request)
-    {
-        $form_access_manager = FormAccessControlManager::getInstance();
-
-        if (Session::haveRight(Form::$rightname, READ)) {
-            // Form administrators can bypass restrictions while previewing forms.
-            $parameters = new FormAccessParameters(bypass_restriction: true);
-        } else {
-            // Load current user session info and URL parameters.
-            $parameters = new FormAccessParameters(
-                session_info: Session::getCurrentSessionInfo(),
-                url_parameters: $request->request->all(),
-            );
-        }
-
-        if (!$form_access_manager->canAnswerForm($form, $parameters)) {
-            throw new AccessDeniedHttpException();
-        }
     }
 
     private function saveSubmittedAnswers(
