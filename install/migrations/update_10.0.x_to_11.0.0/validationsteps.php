@@ -54,7 +54,7 @@ function create_validation_steps_table(Migration $migration): void
     $query = "CREATE TABLE IF NOT EXISTS `glpi_validationsteps` (
         `id`                                  int {$pk_sign} NOT NULL AUTO_INCREMENT,
         `name`                                varchar(255)          DEFAULT NULL,
-        `mininal_required_validation_percent` smallint     NOT NULL DEFAULT '100',
+        `minimal_required_validation_percent` smallint     NOT NULL DEFAULT '100',
         `is_default`                          tinyint      NOT NULL DEFAULT '0',
         `date_mod`                            timestamp    NULL     DEFAULT NULL,
         `date_creation`                       timestamp    NULL     DEFAULT NULL,
@@ -113,9 +113,9 @@ function insert_validation_steps_defaults(Migration $migration, \DBmysql $DB): v
         $values = array_map([$DB, 'escape'], $values);
         $migration->addPostQuery(
             sprintf(
-                'INSERT INTO `glpi_validationsteps` (`name`, `mininal_required_validation_percent`, `is_default`, `date_mod`, `date_creation`) VALUES ("%s", "%s", "%s", "%s", "%s")',
+                'INSERT INTO `glpi_validationsteps` (`name`, `minimal_required_validation_percent`, `is_default`, `date_mod`, `date_creation`) VALUES ("%s", "%s", "%s", "%s", "%s")',
                 $values['name'],
-                $values['mininal_required_validation_percent'],
+                $values['minimal_required_validation_percent'],
                 $values['is_default'],
                 $values['date_mod'],
                 $values['date_creation']
@@ -157,31 +157,3 @@ function add_approval_status_to_ticket_templates(Migration $migration): void
  * KEY `is_recursive` (`is_recursive`)
  * ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
  */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
