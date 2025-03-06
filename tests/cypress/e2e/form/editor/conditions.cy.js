@@ -157,7 +157,7 @@ function initVisibilityConfiguration() {
 }
 
 function closeVisibilityConfiguration() {
-    cy.get('body').type('{esc}');
+    cy.get('[data-glpi-form-editor-visibility-dropdown]:visible').click();
 }
 
 function openVisibilityOptions() {
@@ -218,6 +218,8 @@ function fillCondition(index, logic_operator, question_name, value_operator_name
         cy.get('@condition').findByRole('textbox', {'name': 'Value'}).type(value);
     } else if (value_type === "number") {
         cy.get('@condition').findByRole('spinbutton', {'name': 'Value'}).type(value);
+    } else if (value_type === "date") {
+        cy.get('@condition').findByLabelText('Value').type(value);
     }
 }
 
@@ -237,8 +239,10 @@ function checkThatConditionExist(index, logic_operator, question_name, value_ope
 
     if (value_type === "string"){
         cy.get('@condition').findByRole('textbox', {'name': 'Value'}).should('have.value', value);
-    } else {
+    } else if (value_type === "number") {
         cy.get('@condition').findByRole('spinbutton', {'name': 'Value'}).should('have.value', value);
+    } else if (value_type === "date") {
+        cy.get('@condition').findByLabelText('Value').should('have.value', value);
     }
 }
 
@@ -823,17 +827,32 @@ describe ('Conditions', () => {
 
         // Init test question on which we will add our conditions.
         addQuestion('Test subject');
+
+        // Create a question for each conditions type
+        addQuestion('My text question');
+
+        addQuestion('My number question');
+        setQuestionTypeCategory('Short answer');
+        setQuestionType('Number');
+
+        addQuestion('My date question');
+        setQuestionTypeCategory('Date and time');
+
+        addQuestion('My time question');
+        setQuestionTypeCategory('Date and time');
+        cy.findByRole('checkbox', {'name': 'Time'}).check();
+        cy.findByRole('checkbox', {'name': 'Date'}).uncheck();
+
+        addQuestion('My datetime question');
+        setQuestionTypeCategory('Date and time');
+        cy.findByRole('checkbox', {'name': 'Time'}).check();
+
+        // Add a condition for each possible condition types
         getAndFocusQuestion('Test subject').within(() => {
             initVisibilityConfiguration();
             setConditionStrategy('Visible if...');
-        });
-        closeVisibilityConfiguration();
-
-        // Text condition:
-        addQuestion('My text question');
-        getAndFocusQuestion('Test subject').within(() => {
-            openVisibilityOptions();
             cy.waitForNetworkIdle(150);
+
             fillCondition(
                 0,
                 null,
@@ -841,16 +860,6 @@ describe ('Conditions', () => {
                 'Contains',
                 'Expected answer'
             );
-        });
-        closeVisibilityConfiguration();
-
-        // Number condition
-        addQuestion('My number question');
-        setQuestionTypeCategory('Short answer');
-        setQuestionType('Number');
-        getAndFocusQuestion('Test subject').within(() => {
-            openVisibilityOptions();
-            cy.waitForNetworkIdle(150);
             addNewEmptyCondition();
             fillCondition(
                 1,
@@ -860,16 +869,40 @@ describe ('Conditions', () => {
                 10,
                 "number",
             );
+            addNewEmptyCondition();
+            fillCondition(
+                2,
+                'And',
+                'My date question',
+                'Is greater than',
+                '2021-01-01',
+                'date',
+            );
+            addNewEmptyCondition();
+            fillCondition(
+                3,
+                'And',
+                'My time question',
+                'Is greater than',
+                '15:40',
+                'date',
+            );
+            addNewEmptyCondition();
+            fillCondition(
+                4,
+                'And',
+                'My datetime question',
+                'Is greater than',
+                '2021-01-01T15:40',
+                'date',
+            );
         });
-        closeVisibilityConfiguration();
 
         // Reload and check values
         saveAndReload();
 
         getAndFocusQuestion('Test subject').within(() => {
             openVisibilityOptions();
-
-            // Validate text condition
             checkThatConditionExist(
                 0,
                 null,
@@ -877,8 +910,6 @@ describe ('Conditions', () => {
                 'Contains',
                 'Expected answer',
             );
-
-            // Validate number condition
             checkThatConditionExist(
                 1,
                 'And',
@@ -886,6 +917,30 @@ describe ('Conditions', () => {
                 'Is greater than',
                 10,
                 'number',
+            );
+            checkThatConditionExist(
+                2,
+                'And',
+                'My date question',
+                'Is greater than',
+                '2021-01-01',
+                'date',
+            );
+            checkThatConditionExist(
+                3,
+                'And',
+                'My time question',
+                'Is greater than',
+                '15:40',
+                'date',
+            );
+            checkThatConditionExist(
+                4,
+                'And',
+                'My datetime question',
+                'Is greater than',
+                '2021-01-01T15:40',
+                'date',
             );
         });
     });

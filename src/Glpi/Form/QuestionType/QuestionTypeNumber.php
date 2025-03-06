@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\NumberConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
@@ -73,8 +74,9 @@ final class QuestionTypeNumber extends AbstractQuestionTypeShortAnswer implement
     }
 
     #[Override]
-    public function getConditionHandler(): ConditionHandlerInterface
-    {
+    public function getConditionHandler(
+        ?JsonFieldInterface $question_config
+    ): ConditionHandlerInterface {
         return new NumberConditionHandler();
     }
 }

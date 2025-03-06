@@ -37,6 +37,7 @@ namespace Glpi\Form\Condition;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Condition\VisibilityStrategy;
+use Glpi\Form\QuestionType\AbstractQuestionType;
 use RuntimeException;
 
 final class Engine
@@ -173,12 +174,18 @@ final class Engine
 
         // Get UsedForConditionInstance
         $question_type = $question->getQuestionType();
-        if (!($question_type instanceof UsedAsCriteriaInterface)) {
+        if (
+            $question_type == null
+            || !is_subclass_of($question_type, UsedAsCriteriaInterface::class)
+            || !is_subclass_of($question_type, AbstractQuestionType::class)
+        ) {
             // Invalid condition
             return false;
         }
 
-        return $question_type->getConditionHandler()->applyValueOperator(
+        $raw_config = json_decode($question->fields['extra_data'], true);
+        $config = $raw_config ? $question_type->getExtraDataConfig($raw_config) : null;
+        return $question_type->getConditionHandler($config)->applyValueOperator(
             $answer,
             $condition->getValueOperator(),
             $condition->getValue(),

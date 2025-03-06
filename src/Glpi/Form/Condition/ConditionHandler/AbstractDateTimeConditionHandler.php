@@ -34,11 +34,10 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\Form\Condition\InputTemplateKey;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
 
-final class NumberConditionHandler implements ConditionHandlerInterface
+abstract class AbstractDateTimeConditionHandler implements ConditionHandlerInterface
 {
     #[Override]
     public function getSupportedValueOperators(): array
@@ -54,20 +53,14 @@ final class NumberConditionHandler implements ConditionHandlerInterface
     }
 
     #[Override]
-    public function getInputTemplateKey(): InputTemplateKey
-    {
-        return InputTemplateKey::NUMBER;
-    }
-
-    #[Override]
     public function applyValueOperator(
         mixed $a,
         ValueOperator $operator,
         mixed $b,
     ): bool {
-        // Normalize values.
-        $a = (float) $a;
-        $b = (float) $b;
+        // Date can be compared as simple strings.
+        $a = strtolower(strval($a));
+        $b = strtolower(strval($b));
 
         return match ($operator) {
             ValueOperator::EQUALS                 => $a === $b,

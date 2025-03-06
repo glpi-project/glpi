@@ -74,8 +74,7 @@ class StringConditionHandler implements ConditionHandlerInterface
             ValueOperator::NOT_CONTAINS => !str_contains($b, $a),
 
             // Unsupported operators
-            ValueOperator::GREATER_THAN, ValueOperator::GREATER_THAN_OR_EQUALS => false,
-            ValueOperator::LESS_THAN, ValueOperator::LESS_THAN_OR_EQUALS => false,
+            default => false,
         };
     }
 }
