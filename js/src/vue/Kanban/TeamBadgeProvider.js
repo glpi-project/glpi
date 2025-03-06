@@ -46,7 +46,7 @@ export class TeamBadgeProvider {
          * The size in pixels for the team badges
          * @type {number}
          */
-        this.team_image_size = 24;
+        this.team_image_size = 22;
         this.max_team_images = max_team_images;
         this.display_initials = display_initials;
 
