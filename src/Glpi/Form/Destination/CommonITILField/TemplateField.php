@@ -40,11 +40,13 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
 use InvalidArgumentException;
 use ITILTemplate;
 use Override;
 
-class TemplateField extends AbstractConfigField
+class TemplateField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     private string $itil_template_class;
 
@@ -191,5 +193,18 @@ TWIG;
     public function getCategory(): Category
     {
         return Category::PROPERTIES;
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        if (($rawData['tickettemplates_id'] ?? 0) > 0) {
+            return new TemplateFieldConfig(
+                TemplateFieldStrategy::SPECIFIC_TEMPLATE,
+                $rawData['tickettemplates_id']
+            );
+        }
+
+        return $this->getDefaultConfig($form);
     }
 }

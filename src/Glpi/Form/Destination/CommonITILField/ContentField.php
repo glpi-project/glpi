@@ -40,6 +40,8 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\FormTagsManager;
 use Glpi\Form\Tag\QuestionTagProvider;
@@ -47,7 +49,7 @@ use Glpi\Form\Tag\SectionTagProvider;
 use InvalidArgumentException;
 use Override;
 
-class ContentField extends AbstractConfigField
+class ContentField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -173,5 +175,15 @@ TWIG;
     public function getCategory(): Category
     {
         return Category::PROPERTIES;
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        if (isset($rawData['content'])) {
+            return new SimpleValueConfig($rawData['content']);
+        }
+
+        return $this->getDefaultConfig($form);
     }
 }
