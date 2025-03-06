@@ -568,6 +568,26 @@ abstract class AbstractDefinition extends CommonDBTM
         }
     }
 
+    public function cleanDBonPurge()
+    {
+        $this->purgeConcreteClassFromDb($this->getCustomObjectClassName());
+    }
+
+    /**
+     * Delete from the database all the data related to the given concrete class.
+     *
+     * @param class-string<\CommonDBTM> $concrete_classname
+     */
+    final protected function purgeConcreteClassFromDb(string $concrete_classname): void
+    {
+        (new $concrete_classname())->deleteByCriteria(
+            [static::getForeignKeyField() => $this->getID()],
+            force: true,
+            history: false
+        );
+        (new \DisplayPreference())->deleteByCriteria(['itemtype' => $concrete_classname]);
+    }
+
     /**
      * Remove given rights from `profiles` field.
      *
