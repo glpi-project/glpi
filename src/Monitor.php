@@ -68,6 +68,7 @@ class Monitor extends CommonDBTM
             Document_Item::class,
             Asset_PeripheralAsset::class,
             KnowbaseItem_Item::class,
+            Notepad::class,
             Appliance_Item::class,
             Domain_Item::class,
             Item_Project::class,
@@ -499,8 +500,6 @@ class Monitor extends CommonDBTM
             'datatype'           => 'bool',
             'massiveaction'      => false
         ];
-
-        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 

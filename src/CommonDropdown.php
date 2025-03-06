@@ -219,12 +219,19 @@ abstract class CommonDropdown extends CommonDBTM
         return null;
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Notepad::class,
+        ];
+    }
 
     public function defineTabs($options = [])
     {
 
         $ong = [];
         $this->addDefaultFormTab($ong);
+        $this->addStandardTab('Notepad', $ong, $options);
         if ($this->dohistory) {
             $this->addStandardTab('Log', $ong, $options);
         }
@@ -232,9 +239,6 @@ abstract class CommonDropdown extends CommonDBTM
         if ($this->maybeTranslated()) {
             $this->addStandardTab('DropdownTranslation', $ong, $options);
         }
-
-        // Get parents tabs
-        $ong = array_merge($ong, parent::defineTabs());
 
         return $ong;
     }

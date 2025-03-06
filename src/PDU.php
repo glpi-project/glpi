@@ -54,6 +54,7 @@ class PDU extends CommonDBTM
         return [
             Item_Plug::class,
             Item_Devices::class,
+            Notepad::class,
             NetworkPort::class,
             Contract_Item::class,
             Infocom::class,
@@ -89,11 +90,9 @@ class PDU extends CommonDBTM
          ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
+         ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
         ;
-
-        // Get parents tabs
-        $ong = array_merge($ong, parent::defineTabs());
         return $ong;
     }
 

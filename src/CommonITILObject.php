@@ -3178,6 +3178,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         $relations = [
             KnowbaseItem_Item::class,
+            Notepad::class,
         ];
 
         if (is_a($this->userlinkclass, CommonITILActor::class, true)) {

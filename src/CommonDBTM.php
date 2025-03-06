@@ -638,6 +638,16 @@ class CommonDBTM extends CommonGLPI
         return $parent_tabs;
     }
 
+    public function getCloneRelations(): array
+    {
+        $relations = [];
+
+        if ($this->usenotepad) {
+            $relations[] = Notepad::class;
+        }
+        return $relations;
+    }
+
     /**
      * Get the name of the index field
      *
@@ -4045,6 +4055,9 @@ class CommonDBTM extends CommonGLPI
             $tab = array_merge($tab, Project::rawSearchOptionsToAdd(static::class));
         }
 
+        if ($this->usenotepad) {
+            $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
+        }
         return $tab;
     }
 

@@ -71,6 +71,7 @@ class NetworkEquipment extends CommonDBTM
             Document_Item::class,
             KnowbaseItem_Item::class,
             Appliance_Item::class,
+            Notepad::class,
             Certificate_Item::class,
             Domain_Item::class,
             Item_Disk::class,
@@ -542,8 +543,6 @@ class NetworkEquipment extends CommonDBTM
 
        // add operating system search options
         $tab = array_merge($tab, Item_OperatingSystem::rawSearchOptionsToAdd(get_class($this)));
-
-        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, Item_Devices::rawSearchOptionsToAdd(get_class($this)));
 

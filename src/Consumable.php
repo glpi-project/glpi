@@ -60,6 +60,7 @@ class Consumable extends CommonDBChild
     public function getCloneRelations(): array
     {
         return [
+            Notepad::class,
             Infocom::class
         ];
     }

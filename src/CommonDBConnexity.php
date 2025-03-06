@@ -81,8 +81,12 @@ abstract class CommonDBConnexity extends CommonDBTM
 
     public function getCloneRelations(): array
     {
-        return [
-        ];
+        $relations = [];
+
+        if ($this->usenotepad) {
+            $relations[] = Notepad::class;
+        }
+        return $relations;
     }
 
     /**

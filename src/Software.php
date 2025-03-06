@@ -64,6 +64,7 @@ class Software extends CommonDBTM
             Contract_Item::class,
             Document_Item::class,
             KnowbaseItem_Item::class,
+            Notepad::class,
             Appliance_Item::class,
             Domain_Item::class,
             Item_Project::class,
@@ -638,7 +639,6 @@ class Software extends CommonDBTM
             ],
         ];
 
-        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
         $tab = array_merge($tab, Certificate::rawSearchOptionsToAdd());
 
         return $tab;

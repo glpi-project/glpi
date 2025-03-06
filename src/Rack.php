@@ -91,11 +91,17 @@ class Rack extends CommonDBTM
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('Reservation', $ong, $options)
+         ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
 
-        // Get parents tabs
-        $ong = array_merge($ong, parent::defineTabs());
         return $ong;
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Notepad::class,
+        ];
     }
 
     public static function rawSearchOptionsToAdd($itemtype)
@@ -356,8 +362,6 @@ class Rack extends CommonDBTM
                 ]
             ]
         ];
-
-        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 

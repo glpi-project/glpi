@@ -71,6 +71,7 @@ class Peripheral extends CommonDBTM
             Asset_PeripheralAsset::class,
             KnowbaseItem_Item::class,
             Appliance_Item::class,
+            Notepad::class,
             Certificate_Item::class,
             Domain_Item::class,
             Item_Project::class,
@@ -408,8 +409,6 @@ class Peripheral extends CommonDBTM
             'datatype'           => 'bool',
             'massiveaction'      => false
         ];
-
-        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 
