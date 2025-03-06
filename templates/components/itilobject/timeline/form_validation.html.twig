@@ -205,6 +205,7 @@
                     }
                 ) }}
 
+               {# Approver #}
                 {% if subitem.isNewItem() %}
                     {% set validation_right = 'validate' %}
                     {% if item.getType() == 'Ticket' %}
@@ -241,6 +242,17 @@
                     ) }}
                 {% endif %}
 
+               {# Validation step #}
+               {{ fields.dropdownField
+                  (
+                  'ValidationStep',
+                  'validationsteps_id',
+                  call('ValidationStep::getDefault').fields['id'],
+                  __('Validation step'),
+                  {})
+               }}
+
+                {# Comment #}
                 {{ fields.textareaField(
                     'comment_submission',
                     subitem.fields['comment_submission'],
