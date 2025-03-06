@@ -1396,7 +1396,7 @@ class RuleTicketTest extends RuleCommonITILObject
         // arrange
         $new_validationsteps_id = ($this->createItem(\ValidationStep::class, [
             'name' => 'Tech team',
-            'mininal_required_validation_percent' => 100,
+            'minimal_required_validation_percent' => 100,
         ]))->getID();
         $builder = new \RuleBuilder('Add an approval', \RuleTicket::class);
         $builder

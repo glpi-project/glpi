@@ -7668,7 +7668,7 @@ DROP TABLE IF EXISTS `glpi_validationsteps`;
 CREATE TABLE `glpi_validationsteps` (
     `id`                                  int unsigned NOT NULL AUTO_INCREMENT,
     `name`                                varchar(255)          DEFAULT NULL,
-    `mininal_required_validation_percent` smallint     NOT NULL DEFAULT '100',
+    `minimal_required_validation_percent` smallint     NOT NULL DEFAULT '100',
     `is_default`                          tinyint      NOT NULL DEFAULT '0',
     `date_mod`                            timestamp    NULL     DEFAULT NULL,
     `date_creation`                       timestamp    NULL     DEFAULT NULL,
