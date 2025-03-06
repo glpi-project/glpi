@@ -436,7 +436,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
         yield 'None' => [
             'field_key'     => AssociatedItemsField::getKey(),
             'fields_to_set' => [
-                'associate_rule' => 1,
+                'associate_rule' => 1, // PluginFormcreatorAbstractItilTarget::ASSOCIATE_RULE_NONE
             ],
             'field_config' => fn ($migration, $form) => (new AssociatedItemsField())->getDefaultConfig($form)
         ];
@@ -444,7 +444,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
         yield 'Equals to the answer to the question' => [
             'field_key'     => AssociatedItemsField::getKey(),
             'fields_to_set' => [
-                'associate_rule'     => 3,
+                'associate_rule'     => 3, // PluginFormcreatorAbstractItilTarget::ASSOCIATE_RULE_ANSWER
                 'associate_question' => 74
             ],
             'field_config' => fn ($migration, $form) => new AssociatedItemsFieldConfig(
@@ -461,7 +461,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
         yield 'Last valid answer' => [
             'field_key'     => AssociatedItemsField::getKey(),
             'fields_to_set' => [
-                'associate_rule' => 4,
+                'associate_rule' => 4, // PluginFormcreatorAbstractItilTarget::ASSOCIATE_RULE_LAST_ANSWER
             ],
             'field_config' => new AssociatedItemsFieldConfig(
                 strategies: [AssociatedItemsFieldStrategy::LAST_VALID_ANSWER]

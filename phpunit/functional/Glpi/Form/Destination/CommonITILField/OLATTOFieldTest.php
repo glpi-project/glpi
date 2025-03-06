@@ -161,7 +161,7 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
         yield 'SLA from template or none' => [
             'field_key'     => OLATTOField::getKey(),
             'fields_to_set' => [
-                'sla_rule' => 1,
+                'sla_rule' => 1, // PluginFormcreatorAbstractItilTarget::SLA_RULE_NONE
             ],
             'field_config' => new OLATTOFieldConfig(
                 strategy: SLMFieldStrategy::FROM_TEMPLATE
@@ -171,7 +171,7 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
         yield 'Specific SLA' => [
             'field_key'     => OLATTOField::getKey(),
             'fields_to_set' => [
-                'sla_rule'         => 2,
+                'sla_rule'         => 2, // PluginFormcreatorAbstractItilTarget::SLA_RULE_SPECIFIC
                 'ola_question_tto' => fn (AbstractDestinationFieldTest $context) => $context->createItem(
                     OLA::class,
                     [

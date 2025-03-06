@@ -379,8 +379,8 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             'field_key'     => RequesterField::getKey(),
             'fields_to_set' => [
                 [
-                    'actor_role'  => 1,
-                    'actor_type'  => 1,
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 1, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_CREATOR
                     'actor_value' => 0,
                 ]
             ],
@@ -393,8 +393,8 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             'field_key'     => RequesterField::getKey(),
             'fields_to_set' => [
                 [
-                    'actor_role'  => 1,
-                    'actor_type'  => 2,
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 2, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_VALIDATOR
                     'actor_value' => 0,
                 ]
             ],
@@ -405,13 +405,13 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             'field_key'     => RequesterField::getKey(),
             'fields_to_set' => [
                 [
-                    'actor_role'  => 1,
-                    'actor_type'  => 3,
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 3, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_PERSON
                     'actor_value' => getItemByTypeName(User::class, 'glpi', true),
                 ],
                 [
-                    'actor_role'  => 1,
-                    'actor_type'  => 3,
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 3, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_PERSON
                     'actor_value' => getItemByTypeName(User::class, 'tech', true),
                 ]
             ],
@@ -430,8 +430,8 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             'field_key'     => RequesterField::getKey(),
             'fields_to_set' => [
                 [
-                    'actor_role'  => 1,
-                    'actor_type'  => 4,
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 4, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_QUESTION_PERSON
                     'actor_value' => 75,
                 ]
             ],
@@ -448,13 +448,13 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             'field_key'     => RequesterField::getKey(),
             'fields_to_set' => [
                 [
-                    'actor_role'  => 1,
-                    'actor_type'  => 5,
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 5, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP
                     'actor_value' => getItemByTypeName(Group::class, '_test_group_1', true),
                 ],
                 [
-                    'actor_role'  => 1,
-                    'actor_type'  => 5,
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 5, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP
                     'actor_value' => getItemByTypeName(Group::class, '_test_group_2', true),
                 ]
             ],
@@ -473,8 +473,8 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             'field_key'     => RequesterField::getKey(),
             'fields_to_set' => [
                 [
-                    'actor_role'  => 1,
-                    'actor_type'  => 6,
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 6, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_QUESTION_GROUP
                     'actor_value' => 76,
                 ]
             ],
@@ -491,8 +491,8 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             'field_key'     => RequesterField::getKey(),
             'fields_to_set' => [
                 [
-                    'actor_role'  => 1,
-                    'actor_type'  => 9,
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 9, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_QUESTION_ACTORS
                     'actor_value' => 77,
                 ]
             ],
@@ -509,8 +509,8 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             'field_key'     => RequesterField::getKey(),
             'fields_to_set' => [
                 [
-                    'actor_role'  => 1,
-                    'actor_type'  => 10,
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
                     'actor_value' => 0,
                 ]
             ],
@@ -521,8 +521,8 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             'field_key'     => RequesterField::getKey(),
             'fields_to_set' => [
                 [
-                    'actor_role'  => 1,
-                    'actor_type'  => 11,
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
                     'actor_value' => 0,
                 ]
             ],
@@ -533,8 +533,8 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             'field_key'     => RequesterField::getKey(),
             'fields_to_set' => [
                 [
-                    'actor_role'  => 1,
-                    'actor_type'  => 12,
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 12, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_SUPERVISOR
                     'actor_value' => 0,
                 ]
             ],

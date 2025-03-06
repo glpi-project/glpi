@@ -138,16 +138,16 @@ class RequestTypeField extends AbstractConfigField implements DestinationFieldCo
     public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
     {
         switch ($rawData['type_rule']) {
-            case 0:
+            case 0: // PluginFormcreatorAbstractItilTarget::REQUESTTYPE_NONE
                 return new RequestTypeFieldConfig(
                     strategy: RequestTypeFieldStrategy::FROM_TEMPLATE
                 );
-            case 1:
+            case 1: // PluginFormcreatorAbstractItilTarget::REQUESTTYPE_SPECIFIC
                 return new RequestTypeFieldConfig(
                     strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
                     specific_request_type: $rawData['type_question']
                 );
-            case 2:
+            case 2: // PluginFormcreatorAbstractItilTarget::REQUESTTYPE_ANSWER
                 return new RequestTypeFieldConfig(
                     strategy: RequestTypeFieldStrategy::SPECIFIC_ANSWER,
                     specific_question_id: $migration->getMappedItemTarget(

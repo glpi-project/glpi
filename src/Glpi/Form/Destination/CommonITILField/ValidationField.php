@@ -220,17 +220,7 @@ class ValidationField extends AbstractConfigField implements DestinationFieldCon
             ];
             $actors = [];
 
-            foreach ($input[$this->getKey()][ValidationFieldConfig::SPECIFIC_ACTORS] as $key => $actor) {
-                if (
-                    in_array($key, array_keys($available_actor_types))
-                    && is_array($actor)
-                    && ctype_digit(implode($actor))
-                ) {
-                    $itemtype = $key;
-                    $actors[$itemtype] = $actor;
-                    continue;
-                }
-
+            foreach ($input[$this->getKey()][ValidationFieldConfig::SPECIFIC_ACTORS] as $actor) {
                 $actor_parts = explode('-', $actor);
                 if (
                     count($actor_parts) !== 2
@@ -267,11 +257,11 @@ class ValidationField extends AbstractConfigField implements DestinationFieldCon
     {
         if (isset($rawData['commonitil_validation_rule'])) {
             switch ($rawData['commonitil_validation_rule']) {
-                case 1:
+                case 1: // PluginFormcreatorAbstractItilTarget::VALIDATION_NONE
                     return new ValidationFieldConfig(
                         [ValidationFieldStrategy::NO_VALIDATION]
                     );
-                case 2:
+                case 2: // PluginFormcreatorAbstractItilTarget::VALIDATION_SPECIFIC_USER_OR_GROUP
                     $validation_actors = json_decode($rawData['commonitil_validation_question'], true);
                     if (is_array($validation_actors)) {
                         $fk = $validation_actors['type'] == 'user' ? User::getForeignKeyField() : Group::getForeignKeyField();
@@ -285,8 +275,8 @@ class ValidationField extends AbstractConfigField implements DestinationFieldCon
                         strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
                         specific_actors: $actors_ids ?? []
                     );
-                case 3:
-                case 4:
+                case 3: // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_USER
+                case 4: // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_GROUP
                     return new ValidationFieldConfig(
                         strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
                         specific_question_ids: [

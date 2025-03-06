@@ -203,7 +203,7 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
         yield 'SLA from template or none' => [
             'field_key'     => OLATTRField::getKey(),
             'fields_to_set' => [
-                'sla_rule' => 1,
+                'sla_rule' => 1, // PluginFormcreatorAbstractItilTarget::SLA_RULE_NONE
             ],
             'field_config' => new OLATTRFieldConfig(
                 strategy: SLMFieldStrategy::FROM_TEMPLATE
@@ -213,7 +213,7 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
         yield 'Specific SLA' => [
             'field_key'     => OLATTRField::getKey(),
             'fields_to_set' => [
-                'sla_rule'         => 2,
+                'sla_rule'         => 2, // PluginFormcreatorAbstractItilTarget::SLA_RULE_SPECIFIC
                 'ola_question_ttr' => fn (AbstractDestinationFieldTest $context) => $context->createItem(
                     OLA::class,
                     [

@@ -195,18 +195,18 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
             $specific_question_ids = [];
 
             $strategy_map = [
-                1 => ITILActorFieldStrategy::FORM_FILLER,
-                // 2 => Form Validator
-                3 => ITILActorFieldStrategy::SPECIFIC_VALUES,
-                4 => ITILActorFieldStrategy::SPECIFIC_ANSWERS,
-                5 => ITILActorFieldStrategy::SPECIFIC_VALUES,
-                6 => ITILActorFieldStrategy::SPECIFIC_ANSWERS,
-                7 => ITILActorFieldStrategy::SPECIFIC_VALUES,
-                8 => ITILActorFieldStrategy::SPECIFIC_ANSWERS,
-                9 => ITILActorFieldStrategy::SPECIFIC_ANSWERS,
-                // 10 => Group from an object
-                // 11 => Tech group from an object
-                // 12 => Form author supervisor
+                1 => ITILActorFieldStrategy::FORM_FILLER, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_CREATOR
+                // 2 => Form Validator // PluginFormcreatorTarget_Actor::ACTOR_TYPE_VALIDATOR
+                3 => ITILActorFieldStrategy::SPECIFIC_VALUES, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_PERSON
+                4 => ITILActorFieldStrategy::SPECIFIC_ANSWERS, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_QUESTION_PERSON
+                5 => ITILActorFieldStrategy::SPECIFIC_VALUES, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP
+                6 => ITILActorFieldStrategy::SPECIFIC_ANSWERS, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_QUESTION_GROUP
+                7 => ITILActorFieldStrategy::SPECIFIC_VALUES, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_SUPPLIER
+                8 => ITILActorFieldStrategy::SPECIFIC_ANSWERS, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_QUESTION_SUPPLIER
+                9 => ITILActorFieldStrategy::SPECIFIC_ANSWERS, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_QUESTION_ACTORS
+                // 10 => Group from an object // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                // 11 => Tech group from an object // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                // 12 => Form author supervisor // PluginFormcreatorTarget_Actor::ACTOR_TYPE_SUPERVISOR
             ];
 
             $itemtype_map = [

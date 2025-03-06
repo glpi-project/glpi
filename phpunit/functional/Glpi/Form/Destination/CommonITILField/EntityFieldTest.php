@@ -253,7 +253,7 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         yield 'Current active entity strategy' => [
             'field_key'     => EntityField::getKey(),
             'fields_to_set' => [
-                'destination_entity' => 1
+                'destination_entity' => 1 // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_CURRENT
             ],
             'field_config' => new EntityFieldConfig(
                 EntityFieldStrategy::FORM_FILLER
@@ -263,7 +263,7 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         yield 'Default requester user\'s entity' => [
             'field_key'     => EntityField::getKey(),
             'fields_to_set' => [
-                'destination_entity' => 2
+                'destination_entity' => 2 // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_REQUESTER
             ],
             'field_config' => new EntityFieldConfig(
                 EntityFieldStrategy::FORM_FILLER
@@ -273,7 +273,7 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         yield 'First dynamic requester user\'s entity (alphabetical)' => [
             'field_key'     => EntityField::getKey(),
             'fields_to_set' => [
-                'destination_entity' => 3
+                'destination_entity' => 3 // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_REQUESTER_DYN_FIRST
             ],
             'field_config' => fn ($migration, $form) => (new EntityField())->getDefaultConfig($form)
         ];
@@ -281,7 +281,7 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         yield 'Last dynamic requester user\'s entity (alphabetical)' => [
             'field_key'     => EntityField::getKey(),
             'fields_to_set' => [
-                'destination_entity' => 3
+                'destination_entity' => 4 // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_REQUESTER_DYN_LAST
             ],
             'field_config' => fn ($migration, $form) => (new EntityField())->getDefaultConfig($form)
         ];
@@ -289,7 +289,7 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         yield 'The form entity' => [
             'field_key'     => EntityField::getKey(),
             'fields_to_set' => [
-                'destination_entity' => 5
+                'destination_entity' => 5 // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_FORM
             ],
             'field_config' => new EntityFieldConfig(
                 EntityFieldStrategy::FROM_FORM
@@ -299,7 +299,7 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         yield 'Default entity of the validator' => [
             'field_key'     => EntityField::getKey(),
             'fields_to_set' => [
-                'destination_entity' => 6
+                'destination_entity' => 6 // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_VALIDATOR
             ],
             'field_config' => fn ($migration, $form) => (new EntityField())->getDefaultConfig($form)
         ];
@@ -307,7 +307,7 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         yield 'Specific entity' => [
             'field_key'     => EntityField::getKey(),
             'fields_to_set' => [
-                'destination_entity'       => 7,
+                'destination_entity'       => 7, // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_SPECIFIC
                 'destination_entity_value' => getItemByTypeName(Entity::class, '_test_root_entity', true)
             ],
             'field_config' => new EntityFieldConfig(
@@ -319,7 +319,7 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         yield 'Default entity of a user type question answer' => [
             'field_key'     => EntityField::getKey(),
             'fields_to_set' => [
-                'destination_entity' => 8
+                'destination_entity' => 8 // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_USER
             ],
             'field_config' => fn ($migration, $form) => (new EntityField())->getDefaultConfig($form)
         ];
@@ -327,8 +327,8 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         yield 'From a GLPI object > Entity type question answer' => [
             'field_key'     => EntityField::getKey(),
             'fields_to_set' => [
-                'destination_entity'       => 9,
-                'destination_entity_value' => 71
+                'destination_entity'       => 9, // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_ENTITY_FROM_OBJECT
+                'destination_entity_value' => 71 // Question ID
             ],
             'field_config' => fn ($migration, $form) => new EntityFieldConfig(
                 strategy: EntityFieldStrategy::SPECIFIC_ANSWER,

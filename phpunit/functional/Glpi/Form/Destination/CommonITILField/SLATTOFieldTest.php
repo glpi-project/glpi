@@ -203,7 +203,7 @@ final class SLATTOFieldTest extends AbstractDestinationFieldTest
         yield 'SLA from template or none' => [
             'field_key'     => SLATTOField::getKey(),
             'fields_to_set' => [
-                'sla_rule' => 1,
+                'sla_rule' => 1, // PluginFormcreatorAbstractItilTarget::SLA_RULE_NONE
             ],
             'field_config' => new SLATTOFieldConfig(
                 strategy: SLMFieldStrategy::FROM_TEMPLATE
@@ -213,7 +213,7 @@ final class SLATTOFieldTest extends AbstractDestinationFieldTest
         yield 'Specific SLA' => [
             'field_key'     => SLATTOField::getKey(),
             'fields_to_set' => [
-                'sla_rule'         => 2,
+                'sla_rule'         => 2, // PluginFormcreatorAbstractItilTarget::SLA_RULE_SPECIFIC
                 'sla_question_tto' => fn (AbstractDestinationFieldTest $context) => $context->createItem(
                     SLA::class,
                     [

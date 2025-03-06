@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use DbTestCase;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\FormMigration;
@@ -114,7 +115,7 @@ abstract class AbstractDestinationFieldTest extends DbTestCase
         }
 
         // Run migration
-        $migration = new FormMigration($DB, $PHPLOGGER);
+        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 

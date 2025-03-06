@@ -316,7 +316,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         yield 'No validation' => [
             'field_key'     => ValidationField::getKey(),
             'fields_to_set' => [
-                'commonitil_validation_rule' => 1,
+                'commonitil_validation_rule' => 1, // PluginFormcreatorAbstractItilTarget::VALIDATION_NONE
             ],
             'field_config' => new ValidationFieldConfig(
                 strategies: [ValidationFieldStrategy::NO_VALIDATION],
@@ -326,7 +326,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         yield 'Specific user or group' => [
             'field_key'     => ValidationField::getKey(),
             'fields_to_set' => [
-                'commonitil_validation_rule'     => 2,
+                'commonitil_validation_rule'     => 2, // PluginFormcreatorAbstractItilTarget::VALIDATION_SPECIFIC_USER_OR_GROUP
                 'commonitil_validation_question' => json_encode([
                     'type'   => 'user',
                     'values' => [getItemByTypeName(User::class, 'glpi', true)]
@@ -341,8 +341,8 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         yield 'User from question answer' => [
             'field_key'     => ValidationField::getKey(),
             'fields_to_set' => [
-                'commonitil_validation_rule'     => 3,
-                'commonitil_validation_question' => 75
+                'commonitil_validation_rule'     => 3, // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_USER
+                'commonitil_validation_question' => 75 // Question ID
             ],
             'field_config' => fn ($migration, $form) => new ValidationFieldConfig(
                 strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
@@ -356,8 +356,8 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         yield 'Group from question answer' => [
             'field_key'     => ValidationField::getKey(),
             'fields_to_set' => [
-                'commonitil_validation_rule'     => 4,
-                'commonitil_validation_question' => 76
+                'commonitil_validation_rule'     => 4, // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_GROUP
+                'commonitil_validation_question' => 76 // Question ID
             ],
             'field_config' => fn ($migration, $form) => new ValidationFieldConfig(
                 strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],

@@ -253,7 +253,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
         yield 'Category from template or none' => [
             'field_key'     => ITILCategoryField::getKey(),
             'fields_to_set' => [
-                'category_rule' => 1,
+                'category_rule' => 1, // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_NONE
             ],
             'field_config' => fn ($migration, $form) => (new ITILCategoryField())->getDefaultConfig($form)
         ];
@@ -267,7 +267,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             yield 'Specific category' => [
                 'field_key'     => ITILCategoryField::getKey(),
                 'fields_to_set' => [
-                    'category_rule'     => 2,
+                    'category_rule'     => 2, // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_SPECIFIC
                     'category_question' => $itilcategory_id,
                 ],
                 'field_config' => new ITILCategoryFieldConfig(
@@ -282,7 +282,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
         yield 'Equals to the answer to the question' => [
             'field_key'     => ITILCategoryField::getKey(),
             'fields_to_set' => [
-                'category_rule'     => 3,
+                'category_rule'     => 3, // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_ANSWER
                 'category_question' => 72
             ],
             'field_config' => fn ($migration, $form) => new ITILCategoryFieldConfig(
@@ -297,7 +297,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
         yield 'Last valid answer' => [
             'field_key'     => ITILCategoryField::getKey(),
             'fields_to_set' => [
-                'category_rule' => 4,
+                'category_rule' => 4, // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_LAST_ANSWER
             ],
             'field_config' => new ITILCategoryFieldConfig(
                 ITILCategoryFieldStrategy::LAST_VALID_ANSWER

@@ -136,12 +136,12 @@ class ITILCategoryField extends AbstractConfigField implements DestinationFieldC
     public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
     {
         switch ($rawData['category_rule']) {
-            case 2:
+            case 2: // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_SPECIFIC
                 return new ITILCategoryFieldConfig(
                     strategy: ITILCategoryFieldStrategy::SPECIFIC_VALUE,
                     specific_itilcategory_id: $rawData['category_question']
                 );
-            case 3:
+            case 3: // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_ANSWER
                 return new ITILCategoryFieldConfig(
                     strategy: ITILCategoryFieldStrategy::SPECIFIC_ANSWER,
                     specific_question_id: $migration->getMappedItemTarget(
@@ -149,7 +149,7 @@ class ITILCategoryField extends AbstractConfigField implements DestinationFieldC
                         $rawData['category_question']
                     )['items_id'],
                 );
-            case 4:
+            case 4: // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_LAST_ANSWER
                 return new ITILCategoryFieldConfig(
                     ITILCategoryFieldStrategy::LAST_VALID_ANSWER
                 );

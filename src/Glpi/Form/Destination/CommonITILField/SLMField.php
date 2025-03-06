@@ -124,11 +124,11 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
     {
         $config_class = $this->getConfigClass();
         switch ($rawData['sla_rule']) {
-            case 1:
+            case 1: // PluginFormcreatorAbstractItilTarget::SLA_RULE_NONE
                 return new $config_class(
                     strategy: SLMFieldStrategy::FROM_TEMPLATE
                 );
-            case 2:
+            case 2: // PluginFormcreatorAbstractItilTarget::SLA_RULE_SPECIFIC
                 return new $config_class(
                     strategy: SLMFieldStrategy::SPECIFIC_VALUE,
                     specific_slm_id: $rawData[$this->getFieldNameToConvertSpecificSLMID()]

@@ -175,16 +175,16 @@ class LocationField extends AbstractConfigField implements DestinationFieldConve
     {
         if (isset($rawData['location_rule'])) {
             switch ($rawData['location_rule']) {
-                case 1:
+                case 1: // PluginFormcreatorAbstractItilTarget::LOCATION_RULE_NONE
                     return new LocationFieldConfig(
                         LocationFieldStrategy::FROM_TEMPLATE
                     );
-                case 2:
+                case 2: // PluginFormcreatorAbstractItilTarget::LOCATION_RULE_SPECIFIC
                     return new LocationFieldConfig(
                         strategy: LocationFieldStrategy::SPECIFIC_VALUE,
                         specific_location_id: $rawData['location_question']
                     );
-                case 3:
+                case 3: // PluginFormcreatorAbstractItilTarget::LOCATION_RULE_ANSWER
                     return new LocationFieldConfig(
                         strategy: LocationFieldStrategy::SPECIFIC_ANSWER,
                         specific_question_id: $migration->getMappedItemTarget(
@@ -192,7 +192,7 @@ class LocationField extends AbstractConfigField implements DestinationFieldConve
                             $rawData['location_question']
                         )['items_id'],
                     );
-                case 4:
+                case 4: // PluginFormcreatorAbstractItilTarget::LOCATION_RULE_LAST_ANSWER
                     return new LocationFieldConfig(
                         LocationFieldStrategy::LAST_VALID_ANSWER
                     );

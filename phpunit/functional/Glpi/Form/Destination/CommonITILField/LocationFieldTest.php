@@ -256,7 +256,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         yield 'Location from template or none' => [
             'field_key'     => LocationField::getKey(),
             'fields_to_set' => [
-                'location_rule' => 1,
+                'location_rule' => 1, // PluginFormcreatorAbstractItilTarget::LOCATION_RULE_NONE
             ],
             'field_config' => new LocationFieldConfig(
                 LocationFieldStrategy::FROM_TEMPLATE
@@ -272,7 +272,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             yield 'Specific location' => [
                 'field_key'     => LocationField::getKey(),
                 'fields_to_set' => [
-                    'location_rule'     => 2,
+                    'location_rule'     => 2, // PluginFormcreatorAbstractItilTarget::LOCATION_RULE_SPECIFIC
                     'location_question' => $location_id,
                 ],
                 'field_config' => new LocationFieldConfig(
@@ -287,7 +287,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         yield 'Equals to the answer to the question' => [
             'field_key'     => LocationField::getKey(),
             'fields_to_set' => [
-                'location_rule'     => 3,
+                'location_rule'     => 3, // PluginFormcreatorAbstractItilTarget::LOCATION_RULE_ANSWER
                 'location_question' => 73
             ],
             'field_config' => fn ($migration, $form) => new LocationFieldConfig(
@@ -302,7 +302,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         yield 'Last valid answer' => [
             'field_key'     => LocationField::getKey(),
             'fields_to_set' => [
-                'location_rule' => 4,
+                'location_rule' => 4, // PluginFormcreatorAbstractItilTarget::LOCATION_RULE_LAST_ANSWER
             ],
             'field_config' => new LocationFieldConfig(
                 LocationFieldStrategy::LAST_VALID_ANSWER

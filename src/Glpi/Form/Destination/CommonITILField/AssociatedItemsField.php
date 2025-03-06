@@ -266,12 +266,12 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
     {
         if (isset($rawData['associate_rule'])) {
             switch ($rawData['associate_rule']) {
-                case 2:
+                case 2: // PluginFormcreatorAbstractItilTarget::ASSOCIATE_RULE_SPECIFIC
                     return new AssociatedItemsFieldConfig(
                         strategies: [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
                         specific_associated_items: json_decode($rawData['associate_items'], true) ?? []
                     );
-                case 3:
+                case 3: // PluginFormcreatorAbstractItilTarget::ASSOCIATE_RULE_ANSWER
                     return new AssociatedItemsFieldConfig(
                         strategies: [AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS],
                         specific_question_ids: [
@@ -281,7 +281,7 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
                             )['items_id']
                         ],
                     );
-                case 4:
+                case 4: // PluginFormcreatorAbstractItilTarget::ASSOCIATE_RULE_LAST_ANSWER
                     return new AssociatedItemsFieldConfig(
                         [AssociatedItemsFieldStrategy::LAST_VALID_ANSWER]
                     );

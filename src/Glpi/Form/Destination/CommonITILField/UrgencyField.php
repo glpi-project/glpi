@@ -142,16 +142,16 @@ class UrgencyField extends AbstractConfigField implements DestinationFieldConver
     public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
     {
         switch ($rawData['urgency_rule']) {
-            case 1:
+            case 1: // PluginFormcreatorAbstractItilTarget::URGENCY_RULE_NONE
                 return new UrgencyFieldConfig(
                     strategy: UrgencyFieldStrategy::FROM_TEMPLATE
                 );
-            case 2:
+            case 2: // PluginFormcreatorAbstractItilTarget::URGENCY_RULE_SPECIFIC
                 return new UrgencyFieldConfig(
                     strategy: UrgencyFieldStrategy::SPECIFIC_VALUE,
                     specific_urgency_value: $rawData['urgency_question']
                 );
-            case 3:
+            case 3: // PluginFormcreatorAbstractItilTarget::URGENCY_RULE_ANSWER
                 return new UrgencyFieldConfig(
                     strategy: UrgencyFieldStrategy::SPECIFIC_ANSWER,
                     specific_question_id: $migration->getMappedItemTarget(

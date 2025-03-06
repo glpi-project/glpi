@@ -208,7 +208,7 @@ final class RequestTypeFieldTest extends AbstractDestinationFieldTest
         yield 'Default or from a template' => [
             'field_key'     => RequestTypeField::getKey(),
             'fields_to_set' => [
-                'type_rule' => 0,
+                'type_rule' => 0, // PluginFormcreatorAbstractItilTarget::REQUESTTYPE_NONE
             ],
             'field_config' => new RequestTypeFieldConfig(
                 strategy: RequestTypeFieldStrategy::FROM_TEMPLATE
@@ -218,7 +218,7 @@ final class RequestTypeFieldTest extends AbstractDestinationFieldTest
         yield 'Specific type' => [
             'field_key'     => RequestTypeField::getKey(),
             'fields_to_set' => [
-                'type_rule' => 1,
+                'type_rule' => 1, // PluginFormcreatorAbstractItilTarget::REQUESTTYPE_SPECIFIC
                 'type_question' => 4, // High urgency
             ],
             'field_config' => new RequestTypeFieldConfig(
@@ -230,7 +230,7 @@ final class RequestTypeFieldTest extends AbstractDestinationFieldTest
         yield 'Equals to the answer to the question' => [
             'field_key'     => RequestTypeField::getKey(),
             'fields_to_set' => [
-                'type_rule'     => 2,
+                'type_rule'     => 2, // PluginFormcreatorAbstractItilTarget::REQUESTTYPE_ANSWER
                 'type_question' => 80
             ],
             'field_config' => fn ($migration, $form) => new RequestTypeFieldConfig(

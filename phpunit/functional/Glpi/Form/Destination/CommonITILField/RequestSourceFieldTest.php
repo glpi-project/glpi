@@ -86,7 +86,7 @@ final class RequestSourceFieldTest extends AbstractDestinationFieldTest
         yield 'Source from template or user default or GLPI default' => [
             'field_key'     => RequestSourceField::getKey(),
             'fields_to_set' => [
-                'source_rule' => 0,
+                'source_rule' => 0, // PluginFormcreatorAbstractItilTarget::REQUESTSOURCE_NONE
             ],
             'field_config' => new RequestSourceFieldConfig(
                 strategy: RequestSourceFieldStrategy::FROM_TEMPLATE,
@@ -96,7 +96,7 @@ final class RequestSourceFieldTest extends AbstractDestinationFieldTest
         yield 'Formcreator' => [
             'field_key'     => RequestSourceField::getKey(),
             'fields_to_set' => [
-                'source_rule' => 1,
+                'source_rule' => 1, // PluginFormcreatorAbstractItilTarget::REQUESTSOURCE_FORMCREATOR
             ],
             'field_config' => new RequestSourceFieldConfig(
                 strategy: RequestSourceFieldStrategy::FROM_TEMPLATE,

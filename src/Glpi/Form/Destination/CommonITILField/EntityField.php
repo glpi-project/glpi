@@ -194,7 +194,7 @@ class EntityField extends AbstractConfigField implements DestinationFieldConvert
          * - 2. Default requester user's entity
          *  This strategy take the entity of the first requester user and fallback to the form filler entity.
          *
-         * Strategies that are supported:
+         * Strategies that are not supported:
          * - 3. First dynamic requester user's entity (alphabetical) -- Must be implemented
          * - 4. Last dynamic requester user's entity (alphabetical) -- Must be implemented
          * - 6. Default entity of the validator
@@ -202,21 +202,21 @@ class EntityField extends AbstractConfigField implements DestinationFieldConvert
          */
 
         switch ($rawData['destination_entity']) {
-            case 1:
-            case 2:
+            case 1: // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_CURRENT
+            case 2: // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_REQUESTER
                 return new EntityFieldConfig(
                     EntityFieldStrategy::FORM_FILLER,
                 );
-            case 5:
+            case 5: // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_FORM
                 return new EntityFieldConfig(
                     EntityFieldStrategy::FROM_FORM,
                 );
-            case 7:
+            case 7: // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_SPECIFIC
                 return new EntityFieldConfig(
                     strategy: EntityFieldStrategy::SPECIFIC_VALUE,
                     specific_entity_id: $rawData['destination_entity_value']
                 );
-            case 9:
+            case 9: // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_ENTITY_FROM_OBJECT
                 return new EntityFieldConfig(
                     strategy: EntityFieldStrategy::SPECIFIC_ANSWER,
                     specific_question_id: $migration->getMappedItemTarget(

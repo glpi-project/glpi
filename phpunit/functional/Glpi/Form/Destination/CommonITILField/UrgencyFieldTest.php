@@ -257,7 +257,7 @@ final class UrgencyFieldTest extends AbstractDestinationFieldTest
         yield 'Urgency from template or Medium' => [
             'field_key'     => UrgencyField::getKey(),
             'fields_to_set' => [
-                'urgency_rule' => 1,
+                'urgency_rule' => 1, // PluginFormcreatorAbstractItilTarget::URGENCY_RULE_NONE
             ],
             'field_config' => new UrgencyFieldConfig(
                 strategy: UrgencyFieldStrategy::FROM_TEMPLATE
@@ -267,7 +267,7 @@ final class UrgencyFieldTest extends AbstractDestinationFieldTest
         yield 'Specific urgency' => [
             'field_key'     => UrgencyField::getKey(),
             'fields_to_set' => [
-                'urgency_rule' => 2,
+                'urgency_rule' => 2, // PluginFormcreatorAbstractItilTarget::URGENCY_RULE_SPECIFIC
                 'urgency_question' => 4, // High urgency
             ],
             'field_config' => new UrgencyFieldConfig(
@@ -279,7 +279,7 @@ final class UrgencyFieldTest extends AbstractDestinationFieldTest
         yield 'Equals to the answer to the question' => [
             'field_key'     => UrgencyField::getKey(),
             'fields_to_set' => [
-                'urgency_rule'     => 3,
+                'urgency_rule'     => 3, // PluginFormcreatorAbstractItilTarget::URGENCY_RULE_ANSWER
                 'urgency_question' => 79
             ],
             'field_config' => fn ($migration, $form) => new UrgencyFieldConfig(
