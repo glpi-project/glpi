@@ -81,7 +81,7 @@ class UserComputerHistoryTest extends DbTestCase
                 'items_id'         => $this->computer->getID(),
                 'id_search_option' => 70,
                 'old_value'        => '',
-                'new_value'        => self::USER_NAME,
+                'new_value'        => self::USER_NAME . ' (' . $this->user->getID() . ')',
                 'date_mod'         => date('Y-m-d H:i:s', strtotime('-1 hour')),
                 'user_name'        => 'glpi'
             ]
@@ -93,7 +93,7 @@ class UserComputerHistoryTest extends DbTestCase
                 'itemtype'         => 'Computer',
                 'items_id'         => $this->computer->getID(),
                 'id_search_option' => 70,
-                'old_value'        => self::USER_NAME,
+                'old_value'        => self::USER_NAME . ' (' . $this->user->getID() . ')',
                 'new_value'        => '',
                 'date_mod'         => date('Y-m-d H:i:s'),
                 'user_name'        => 'glpi'
