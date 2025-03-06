@@ -338,24 +338,28 @@ abstract class CommonITILValidation extends DbTestCase
         );
 
         // Add approval for user's group
-        $validations_id_1 = $this->createItem($validation_class, [
-            $itil_class::getForeignKeyField()   => $itil_items_id,
-            'itemtype_target'                   => 'Group',
-            'items_id_target'                   => $groups_id,
-            'comment_submission'                => __FUNCTION__,
-            'validationsteps_id'                => $default_validation_step_id,  // used only on TicketValidation
-        ])->getID();
+        $validation_id_1_data = [
+            $itil_class::getForeignKeyField() => $itil_items_id,
+            'itemtype_target' => 'Group',
+            'items_id_target' => $groups_id,
+            'comment_submission' => __FUNCTION__,
+        ];
+        $validation_class === \TicketValidation::class && $validation_id_1_data['validationsteps_id'] = $default_validation_step_id;
+
+        $validations_id_1 = $this->createItem($validation_class, $validation_id_1_data)->getID();
 
         $this->assertTrue($validation::canValidate($itil_items_id));
 
         // Add approval for other group
-        $this->createItem($validation_class, [
-            $itil_class::getForeignKeyField()   => $itil_items_id,
-            'itemtype_target'                   => 'Group',
-            'items_id_target'                   => $other_groups_id, // Other group.
-            'comment_submission'                => __FUNCTION__,
-            'validationsteps_id'                => $default_validation_step_id, // used only on TicketValidation
-        ])->getID();
+        $approval_data = [
+            $itil_class::getForeignKeyField() => $itil_items_id,
+            'itemtype_target' => 'Group',
+            'items_id_target' => $other_groups_id, // Other group.
+            'comment_submission' => __FUNCTION__,
+        ];
+        $validation_class === \TicketValidation::class && $approval_data['validationsteps_id'] = $default_validation_step_id;
+
+        $this->createItem($validation_class, $approval_data)->getID();
 
         // Test the current user can still approve since they still have an approval
         $this->assertTrue($validation::canValidate($itil_items_id));
