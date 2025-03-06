@@ -10160,3 +10160,11 @@ CREATE TABLE `glpi_softwarelicenses_users` (
 SET FOREIGN_KEY_CHECKS=1;
 #
 #
+#
+#
+#
+#
+#
+#
+#
+#
