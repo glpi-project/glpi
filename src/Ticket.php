@@ -2822,9 +2822,7 @@ JAVASCRIPT;
                     'editor_id'         => $content_id,
                     'enable_fileupload' => false,
                     'enable_richtext'   => true,
-                            // Uploaded images processing is not able to handle multiple use of same uploaded file, so until this is fixed,
-                            // it is preferable to disable image pasting in rich text inside massive actions.
-                    'enable_images'     => false,
+                    'enable_images'     => true,
                     'cols'              => 12,
                     'rows'              => 80
                 ]);

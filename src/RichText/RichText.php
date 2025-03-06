@@ -62,10 +62,19 @@ final class RichText
 
         $content = self::normalizeHtmlContent($content, true);
 
+        // Extract <img> id attribute
+        preg_match_all('/<img[^>]*id="[^"]*"[^>]*>/', $content, $matches);
+        $img_tags = $matches[0];
+
        // Remove unsafe HTML using htmLawed
         $config = Toolbox::getHtmLawedSafeConfig();
         $config['keep_bad'] = 6; // remove invalid/disallowed tag but keep content intact
         $content = htmLawed($content, $config);
+
+        // Reinsert <img> id attribute
+        foreach ($img_tags as $img_tag) {
+            $content = preg_replace('/<img[^>]*>/', $img_tag, $content, 1);
+        }
 
        // Special case : remove the 'denied:' for base64 img in case the base64 have characters
        // combinaison introduce false positive

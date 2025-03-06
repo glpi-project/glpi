@@ -505,6 +505,8 @@ class Document_Item extends CommonDBRelation
                     echo "<td class='center'>" .
                         (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
                     echo "</tr>";
+
+                    $item = getItemForItemtype($type_row['itemtype']);
                 }
             }
         }
