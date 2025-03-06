@@ -130,6 +130,7 @@ final class DirectAccess implements ControlTypeInterface
 
     #[Override]
     public function canAnswer(
+        Form $form,
         JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote {
@@ -141,7 +142,7 @@ final class DirectAccess implements ControlTypeInterface
             return AccessVote::Abstain;
         }
 
-        if (!$this->validateToken($config, $parameters)) {
+        if (!$this->validateToken($form, $config, $parameters)) {
             return AccessVote::Abstain;
         };
 
@@ -160,12 +161,26 @@ final class DirectAccess implements ControlTypeInterface
     }
 
     private function validateToken(
+        Form $form,
         DirectAccessConfig $config,
         FormAccessParameters $parameters,
     ): bool {
+        // Note: it is easy to validate the token when an user is accesing the
+        // form for the first time through the /Form/Render/{id} page as the
+        // link will contain the token as a GET parameter.
+        // However, for any subsequent AJAX requests, the token is not present
+        // in the URL. Therefore, we must rely on the session to store the token
+        // and validate it on each request.
         $token = $parameters->getUrlParameters()['token'] ?? null;
         if ($token === null) {
-            return false;
+            $session_token = $_SESSION['helpdesk_form_access_control'][$form->getId()] ?? null;
+            if ($session_token === null) {
+                return false;
+            } else {
+                $token = $session_token;
+            }
+        } else {
+            $_SESSION['helpdesk_form_access_control'][$form->getId()] = $token;
         }
 
         return hash_equals($config->getToken(), $token);

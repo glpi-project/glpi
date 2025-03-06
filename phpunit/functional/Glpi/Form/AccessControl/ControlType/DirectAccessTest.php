@@ -39,6 +39,7 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
@@ -251,7 +252,7 @@ class DirectAccessTest extends \DBTestCase
         $direct_access = new DirectAccess();
         $this->assertEquals(
             $expected,
-            $direct_access->canAnswer($config, $parameters)
+            $direct_access->canAnswer(new Form(), $config, $parameters)
         );
     }
 

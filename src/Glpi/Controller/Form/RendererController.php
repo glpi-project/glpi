@@ -103,10 +103,6 @@ final class RendererController extends AbstractController
             'my_tickets_url_param' => http_build_query($my_tickets_criteria),
             'visibility_engine_output' => $visibility_engine_output,
             'params' => $request->query->all(),
-
-            // Direct access token must be included in the form data as it will
-            // be checked in the submit answers controller.
-            'token' => $request->query->getString('token'),
         ]);
     }
 
