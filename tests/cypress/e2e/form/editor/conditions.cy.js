@@ -220,6 +220,8 @@ function fillCondition(index, logic_operator, question_name, value_operator_name
         cy.get('@condition').findByRole('spinbutton', {'name': 'Value'}).type(value);
     } else if (value_type === "date") {
         cy.get('@condition').findByLabelText('Value').type(value);
+    } else if (value_type === "dropdown") {
+        cy.get('@condition').getDropdownByLabelText('Value').selectDropdownValue(value);
     }
 }
 
@@ -243,6 +245,8 @@ function checkThatConditionExist(index, logic_operator, question_name, value_ope
         cy.get('@condition').findByRole('spinbutton', {'name': 'Value'}).should('have.value', value);
     } else if (value_type === "date") {
         cy.get('@condition').findByLabelText('Value').should('have.value', value);
+    } else if (value_type === "dropdown") {
+        cy.get('@condition').getDropdownByLabelText('Value').should('have.text', value);
     }
 }
 
@@ -847,6 +851,9 @@ describe ('Conditions', () => {
         setQuestionTypeCategory('Date and time');
         cy.findByRole('checkbox', {'name': 'Time'}).check();
 
+        addQuestion('My urgency question');
+        setQuestionTypeCategory('Urgency');
+
         // Add a condition for each possible condition types
         getAndFocusQuestion('Test subject').within(() => {
             initVisibilityConfiguration();
@@ -896,6 +903,15 @@ describe ('Conditions', () => {
                 '2021-01-01T15:40',
                 'date',
             );
+            addNewEmptyCondition();
+            fillCondition(
+                5,
+                'And',
+                'My urgency question',
+                'Is greater than',
+                'Low',
+                'dropdown',
+            );
         });
 
         // Reload and check values
@@ -941,6 +957,14 @@ describe ('Conditions', () => {
                 'Is greater than',
                 '2021-01-01T15:40',
                 'date',
+            );
+            checkThatConditionExist(
+                5,
+                'And',
+                'My urgency question',
+                'Is greater than',
+                'Low',
+                'dropdown',
             );
         });
     });

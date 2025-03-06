@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,17 +33,25 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Condition;
+namespace Glpi;
 
-/**
- * References supported input templates keys in conditional_visibility_editor.html.twig
- */
-enum InputTemplateKey
+// TODO: refactor usage of raw urgency int values with usage of this enum instead
+enum Urgency: int
 {
-    case STRING;
-    case NUMBER;
-    case TIME;
-    case DATE;
-    case DATE_AND_TIME;
-    case URGENCY;
+    case VERY_LOW = 1;
+    case LOW = 2;
+    case MEDIUM = 3;
+    case HIGH = 4;
+    case VERY_HIGH = 5;
+
+    public static function getUrgencyValuesForDropdown(): array
+    {
+        return [
+            self::VERY_LOW->value  => __('Very low'),
+            self::LOW->value       => __('Low'),
+            self::MEDIUM->value    => __('Medium'),
+            self::HIGH->value      => __('High'),
+            self::VERY_HIGH->value => __('Very high'),
+        ];
+    }
 }
