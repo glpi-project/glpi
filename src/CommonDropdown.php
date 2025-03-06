@@ -56,12 +56,6 @@ abstract class CommonDropdown extends CommonDBTM
 
     public static $rightname = 'dropdown';
 
-
-    /**
-     * @since 0.85
-     *
-     * @param $nb
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Dropdown', 'Dropdowns', $nb);
