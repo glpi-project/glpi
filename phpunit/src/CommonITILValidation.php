@@ -191,7 +191,7 @@ abstract class CommonITILValidation extends DbTestCase
             'comment_submission'                => __FUNCTION__,
         ];
         // additionnal data for TicketValidation (validationsteps)
-        if($validation_class === \TicketValidation::class) {
+        if ($validation_class === \TicketValidation::class) {
             $validations_id_1_data['validationsteps_id'] = $default_validation_step_id;
         }
         $validations_id_1 = ($this->createItem($validation_class, $validations_id_1_data))->getID();
@@ -205,7 +205,7 @@ abstract class CommonITILValidation extends DbTestCase
             'items_id_target'                   => \User::getIdByName('normal'), // Other user.
             'comment_submission'                => __FUNCTION__,
         ];
-        if($validation_class === \TicketValidation::class) {
+        if ($validation_class === \TicketValidation::class) {
             $validations_id_2_data['validationsteps_id'] = $default_validation_step_id;
         }
         $this->createItem($validation_class, $validations_id_2_data)->getID();
