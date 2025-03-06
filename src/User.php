@@ -7404,6 +7404,8 @@ JAVASCRIPT;
     {
         /** @var \DBmysql $DB */
         global $DB;
+
+        $user_id = $this->getField('id');
         $user_name = $this->getField('name');
 
         $query = [
@@ -7412,8 +7414,8 @@ JAVASCRIPT;
             'WHERE'      => [
                 'itemtype'         => 'Computer',
                 'OR' => [
-                    'glpi_logs.old_value' => ['LIKE', "%$user_name%"],
-                    'glpi_logs.new_value' => ['LIKE', "%$user_name%"]
+                    'glpi_logs.old_value' => $user_name . ' (' . $user_id . ')',
+                    'glpi_logs.new_value' => $user_name . ' (' . $user_id . ')',
                 ]
             ]
         ];
@@ -7436,6 +7438,7 @@ JAVASCRIPT;
         /** @var \DBmysql $DB */
         global $DB;
 
+        $user_id = $this->getField('id');
         $user_name = $this->getField('name');
         $query = [
             'SELECT'    => [
@@ -7467,8 +7470,8 @@ JAVASCRIPT;
             'WHERE'     => [
                 'glpi_logs.itemtype'      => 'Computer',
                 'OR' => [
-                    'glpi_logs.old_value' => ['LIKE', "%$user_name%"],
-                    'glpi_logs.new_value' => ['LIKE', "%$user_name%"]
+                    'glpi_logs.old_value' => $user_name . ' (' . $user_id . ')',
+                    'glpi_logs.new_value' => $user_name . ' (' . $user_id . ')',
                 ]
             ],
             'ORDER'     => 'glpi_logs.date_mod DESC'
@@ -7532,6 +7535,7 @@ JAVASCRIPT;
         /** @var \DBmysql $DB */
         global $DB;
 
+        $user_id = $this->getField('id');
         $user_name = $this->getField('name');
 
         $iterator = $DB->request([
@@ -7553,8 +7557,8 @@ JAVASCRIPT;
             'WHERE'     => [
                 'glpi_logs.itemtype'      => 'Computer',
                 'OR' => [
-                    'glpi_logs.old_value' => ['LIKE', "%$user_name%"],
-                    'glpi_logs.new_value' => ['LIKE', "%$user_name%"]
+                    'glpi_logs.old_value' => $user_name . ' (' . $user_id . ')',
+                    'glpi_logs.new_value' => $user_name . ' (' . $user_id . ')',
                 ]
             ],
         ]);
@@ -7575,6 +7579,7 @@ JAVASCRIPT;
         /** @var \DBmysql $DB */
         global $DB;
 
+        $user_id = $this->getField('id');
         $user_name = $this->getField('name');
 
         $affected_fields = ['id_search_option'];
@@ -7597,8 +7602,8 @@ JAVASCRIPT;
             'WHERE'     => [
                 'glpi_logs.itemtype'      => 'Computer',
                 'OR' => [
-                    'glpi_logs.old_value' => ['LIKE', "%$user_name%"],
-                    'glpi_logs.new_value' => ['LIKE', "%$user_name%"]
+                    'glpi_logs.old_value' => $user_name . ' (' . $user_id . ')',
+                    'glpi_logs.new_value' => $user_name . ' (' . $user_id . ')',
                 ]
             ],
             'GROUPBY' => $affected_fields,
