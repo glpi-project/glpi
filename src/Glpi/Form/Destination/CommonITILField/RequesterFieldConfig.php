@@ -59,7 +59,7 @@ final class RequesterFieldConfig extends ITILActorFieldConfig
             $data[self::STRATEGIES] ?? []
         );
         if (empty($strategies)) {
-            $strategies = [ITILActorFieldStrategy::FROM_TEMPLATE];
+            $strategies = [ITILActorFieldStrategy::FORM_FILLER];
         }
 
         return new self(

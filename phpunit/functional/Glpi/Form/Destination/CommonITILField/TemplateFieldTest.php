@@ -35,20 +35,21 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\TemplateFieldConfig;
 use Glpi\Form\Destination\CommonITILField\TemplateFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Override;
 use Ticket;
 use TicketTemplate;
 use TicketTemplatePredefinedField;
 
-final class TemplateFieldTest extends DbTestCase
+include_once __DIR__ . '/../../../../../abstracts/AbstractDestinationFieldTest.php';
+
+final class TemplateFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
 
@@ -155,6 +156,31 @@ final class TemplateFieldTest extends DbTestCase
             ),
             expected_tickettemplates_id: $ticket_template->getID()
         );
+    }
+
+    #[Override]
+    public static function provideConvertFieldConfigFromFormCreator(): iterable
+    {
+        yield 'Default strategy' => [
+            'field_key'     => TemplateField::getKey(),
+            'fields_to_set' => [
+                'tickettemplates_id' => 0,
+            ],
+            'field_config' => new TemplateFieldConfig(
+                TemplateFieldStrategy::DEFAULT_TEMPLATE
+            )
+        ];
+
+        yield 'Specific Ticket Template strategy' => [
+            'field_key'     => TemplateField::getKey(),
+            'fields_to_set' => [
+                'tickettemplates_id' => getItemByTypeName(TicketTemplate::class, 'Default', true),
+            ],
+            'field_config' => new TemplateFieldConfig(
+                TemplateFieldStrategy::SPECIFIC_TEMPLATE,
+                getItemByTypeName(TicketTemplate::class, 'Default', true)
+            )
+        ];
     }
 
     private function checkTemplateFieldConfiguration(
