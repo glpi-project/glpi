@@ -238,9 +238,9 @@ class Migration
     }
 
     /**
-     * Define field's format
+     * Get formated SQL field
      *
-     * @param string  $type          can be bool, char, string, int, date, time, datetime, text, autoincrement, fkey, json
+     * @param string  $type          can be bool|boolean, char|character, str|string, int|integer, date, time, timestamp|datetime, text|mediumtext|longtext, autoincrement, fkey, json
      * @param string  $default_value new field's default value,
      *                               if a specific default value needs to be used
      * @param boolean $nodefault     No default value (false by default)
@@ -408,11 +408,7 @@ class Migration
         $params['first']     = '';
         $params['null']      = false;
 
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $params[$key] = $val;
-            }
-        }
+        $params = array_merge($params, $options);
 
         $format = $this->fieldFormat($type, $params['value'], $params['nodefault']);
 
