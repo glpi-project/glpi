@@ -21,7 +21,7 @@
         "@fullcalendar/rrule": "^4.4.2",
         "@fullcalendar/timegrid": "^4.4.2",
         "@fullcalendar/timeline": "^4.4.3",
-        "@glpi-project/illustrations": "^0.2.0",
+        "@glpi-project/illustrations": "^0.3.0",
         "@tabler/core": "^1.0.0-beta20",
         "@tabler/icons-webfont": "^3.30.0",
         "animate.css": "^4.1.1",
