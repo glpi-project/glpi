@@ -315,11 +315,7 @@ abstract class CommonITILValidation extends CommonDBChild
         $mailsend = false;
         if ($item->getFromDB($this->fields[static::$items_id])) {
             // Set global validation to waiting
-            if (
-                ($item->fields['global_validation'] == self::ACCEPTED)
-                || ($item->fields['global_validation'] == self::NONE)
-                || ($item->fields['global_validation'] == self::REFUSED)
-            ) {
+            if (((int) $item->fields['global_validation']) !== self::WAITING) {
                 $input = [
                     'id'                    => $this->fields[static::$items_id],
                     'global_validation'     => self::WAITING,
