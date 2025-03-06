@@ -283,7 +283,7 @@
                                         {% elseif formatter == 'yesno' %}
                                             {% if entry[colkey] == 1 %}
                                                 <div aria-label="{{ __('Yes') }}"><i class="ti ti-circle-check"></i></div>
-                                            {{ else }}
+                                            {% else %}
                                                 <div aria-label="{{ __('No') }}"></div>
                                             {% endif %}
                                         {% else %}
