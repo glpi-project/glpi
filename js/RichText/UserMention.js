@@ -99,7 +99,7 @@ window.GLPI.RichText.UserMention = class {
                         searchText: pattern,
                         _idor_token: this.idorToken,
                     }
-                ).done(
+                ).then(
                     (data) => {
                         let results = data.results;
 
