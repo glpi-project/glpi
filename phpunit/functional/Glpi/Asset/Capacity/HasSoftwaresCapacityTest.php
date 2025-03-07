@@ -230,7 +230,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasSoftwaresCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasSoftwaresCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
@@ -304,7 +304,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
     public function testIsUsed(): void
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasSoftwaresCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasSoftwaresCapacity::class)]
         );
         $class    = $definition->getAssetClassName();
         $capacity = new \Glpi\Asset\Capacity\HasSoftwaresCapacity();
@@ -377,7 +377,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
     public function testGetCapacityUsageDescription(): void
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasSoftwaresCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasSoftwaresCapacity::class)]
         );
         $class    = $definition->getAssetClassName();
         $capacity = new \Glpi\Asset\Capacity\HasSoftwaresCapacity();

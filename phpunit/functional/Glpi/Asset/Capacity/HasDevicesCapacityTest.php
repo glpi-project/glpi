@@ -266,7 +266,7 @@ class HasDevicesCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasDevicesCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDevicesCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
@@ -312,7 +312,7 @@ class HasDevicesCapacityTest extends DbTestCase
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasDevicesCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDevicesCapacity::class)]
         );
 
         $asset = $this->createItem($definition->getAssetClassName(), [
@@ -351,7 +351,7 @@ class HasDevicesCapacityTest extends DbTestCase
 
         $definition = $this->initAssetDefinition(
             system_name: 'TestAsset',
-            capacities: [\Glpi\Asset\Capacity\HasDevicesCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDevicesCapacity::class)]
         );
         $capacity = new \Glpi\Asset\Capacity\HasDevicesCapacity();
 

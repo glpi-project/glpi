@@ -771,9 +771,13 @@ TWIG, $twig_params);
         foreach ($input_capacities as $capacity) {
             if ($capacity instanceof \stdClass) {
                 //on json_decode, we obtain a stdclass
+                $config = null;
+                if ($capacity->config) {
+                    $config = new CapacityConfig((array)$capacity->config);
+                }
                 $capacity = new Capacity(
                     name: $capacity->name,
-                    config: new CapacityConfig((array)$capacity->config)
+                    config: $config
                 );
             }
             if (!($capacity instanceof Capacity)) {

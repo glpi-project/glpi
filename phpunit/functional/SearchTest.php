@@ -4352,10 +4352,10 @@ class SearchTest extends DbTestCase
         $document_2 = $this->createTxtDocument();
         $document_3 = $this->createTxtDocument();
 
-        $definition_1  = $this->initAssetDefinition(capacities: [HasDocumentsCapacity::class]);
+        $definition_1  = $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasDocumentsCapacity::class)]);
         $asset_class_1 = $definition_1->getAssetClassName();
 
-        $definition_2  = $this->initAssetDefinition(capacities: [HasDocumentsCapacity::class]);
+        $definition_2  = $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasDocumentsCapacity::class)]);
         $asset_class_2 = $definition_2->getAssetClassName();
 
         // Assets for first class

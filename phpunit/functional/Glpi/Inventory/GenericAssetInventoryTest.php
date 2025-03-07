@@ -41,7 +41,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
     /**
      * Inventory a generic smartphone asset
      *
-     * @param array<class-string> $capacities Capacities to activate
+     * @param \Glpi\Asset\Capacity[] $capacities Capacities to activate
      *
      * @return \Glpi\Asset\Asset
      */
@@ -56,7 +56,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
             capacities: array_merge(
                 $capacities,
                 [
-                    \Glpi\Asset\Capacity\IsInventoriableCapacity::class
+                    new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class)
                 ]
             )
         );
@@ -234,7 +234,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
     public function testImportSmartphoneWOS()
     {
         //create Smartphone generic asset
-        $asset = $this->inventorySmartphone([\Glpi\Asset\Capacity\HasOperatingSystemCapacity::class]);
+        $asset = $this->inventorySmartphone([new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasOperatingSystemCapacity::class)]);
 
         //operating system
         $ios = new \Item_OperatingSystem();
@@ -261,7 +261,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
     public function testImportSmartphoneWVolumes()
     {
         //create Smartphone generic asset
-        $asset = $this->inventorySmartphone([\Glpi\Asset\Capacity\HasVolumesCapacity::class]);
+        $asset = $this->inventorySmartphone([new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasVolumesCapacity::class)]);
         $classname = $asset::class;
         $assets_id = $asset->getID();
 
@@ -327,7 +327,13 @@ class GenericAssetInventoryTest extends InventoryTestCase
         global $DB;
 
         //create Smartphone generic asset
-        $asset = $this->inventorySmartphone(array_keys(\Glpi\Asset\AssetDefinitionManager::getInstance()->getAvailableCapacities()));
+        $capacities = [];
+        foreach (array_keys(\Glpi\Asset\AssetDefinitionManager::getInstance()->getAvailableCapacities()) as $available_capacity) {
+            if ($available_capacity !== \Glpi\Asset\Capacity\IsInventoriableCapacity::class) {
+                $capacities[] = new \Glpi\Asset\Capacity(name: $available_capacity);
+            }
+        }
+        $asset = $this->inventorySmartphone($capacities);
         $classname = $asset::class;
         $assets_id = $asset->getID();
 
@@ -762,7 +768,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
             capacities: array_merge(
                 $capacities,
                 [
-                    \Glpi\Asset\Capacity\IsInventoriableCapacity::class
+                    new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class)
                 ]
             )
         );
@@ -961,7 +967,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
     public function testImportServerWOS()
     {
         //create Server generic asset
-        $asset = $this->inventoryServer([\Glpi\Asset\Capacity\HasOperatingSystemCapacity::class]);
+        $asset = $this->inventoryServer([new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasOperatingSystemCapacity::class)]);
 
         //operating system
         $ios = new \Item_OperatingSystem();
@@ -986,7 +992,13 @@ class GenericAssetInventoryTest extends InventoryTestCase
         global $DB;
 
         //create Server generic asset
-        $asset = $this->inventoryServer(array_keys(\Glpi\Asset\AssetDefinitionManager::getInstance()->getAvailableCapacities()));
+        $capacities = [];
+        foreach (array_keys(\Glpi\Asset\AssetDefinitionManager::getInstance()->getAvailableCapacities()) as $available_capacity) {
+            if ($available_capacity !== \Glpi\Asset\Capacity\IsInventoriableCapacity::class) {
+                $capacities[] = new \Glpi\Asset\Capacity(name: $available_capacity);
+            }
+        }
+        $asset = $this->inventoryServer($capacities);
         $classname = $asset::class;
         $assets_id = $asset->getID();
 
@@ -2006,7 +2018,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
         //create Server generic asset
         $definition = $this->initAssetDefinition(
             system_name: 'Server' . $this->getUniqueString(),
-            capacities: [\Glpi\Asset\Capacity\IsInventoriableCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class)]
         );
         $classname  = $definition->getAssetClassName();
 

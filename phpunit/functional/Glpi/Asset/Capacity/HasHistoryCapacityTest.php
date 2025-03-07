@@ -175,7 +175,7 @@ class HasHistoryCapacityTest extends DbTestCase
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasHistoryCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class)]
         );
 
         $asset_1 = $this->createItem($definition->getAssetClassName(), [
@@ -213,7 +213,7 @@ class HasHistoryCapacityTest extends DbTestCase
     {
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasHistoryCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class)]
         );
 
         // Check that the capacity can be disabled
