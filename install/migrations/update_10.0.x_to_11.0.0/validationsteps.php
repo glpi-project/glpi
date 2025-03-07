@@ -38,13 +38,14 @@ $migration->log('Preparing ValidationSteps migration', false);
 
 create_validation_steps_table($migration);
 insert_validation_steps_defaults($migration, $DB);
-alter_validations_tables($migration, ['glpi_ticketvalidations']);
+add_validation_steps_in_validations_tables($migration, ['glpi_ticketvalidations']);
 add_approval_status_to_ticket_templates($migration);
+add_validation_steps_in_itilvalidationtemplates($migration);
 
 $migration->executeMigration();
-
 $migration->log('ValidationSteps migration done', false);
 
+return;
 function create_validation_steps_table(Migration $migration): void
 {
     $charset = DBConnection::getDefaultCharset();
@@ -75,13 +76,13 @@ function create_validation_steps_table(Migration $migration): void
 /**
  * Add `validationstep_id` column in $validation_tables, after `id` column
  */
-function alter_validations_tables(Migration $migration, array $validation_tables): void
+function add_validation_steps_in_validations_tables(Migration $migration, array $validation_tables): void
 {
+    $validationsteps_foreign_key = ValidationStep::getForeignKeyField();
     foreach ($validation_tables as $table) {
-        $foreignKeyField = ValidationStep::getForeignKeyField();
         $migration->addField(
             $table,
-            $foreignKeyField,
+            $validationsteps_foreign_key,
             'fkey',
             [
                 'value' => '0',
@@ -89,7 +90,7 @@ function alter_validations_tables(Migration $migration, array $validation_tables
                 'after' => 'id',
             ]
         );
-        $migration->addKey($table, $foreignKeyField);
+        $migration->addKey($table, $validationsteps_foreign_key);
     }
 }
 
@@ -125,9 +126,6 @@ function insert_validation_steps_defaults(Migration $migration, \DBmysql $DB): v
 }
 function add_approval_status_to_ticket_templates(Migration $migration): void
 {
-
-    $migration->log('Adding approval_status to ticket templates', false);
-
     $migration->changeField(
         'glpi_tickettemplates',
         'allowed_statuses',
@@ -140,20 +138,18 @@ function add_approval_status_to_ticket_templates(Migration $migration): void
         ]
     );
 }
-
-
-
-/**
- * CREATE TABLE `glpi_tickettemplates` (
- * `id` int unsigned NOT NULL AUTO_INCREMENT,
- * `name` varchar(255) DEFAULT NULL,
- * `entities_id` int unsigned NOT NULL DEFAULT '0',
- * `is_recursive` tinyint NOT NULL DEFAULT '0',
- * `comment` text,
- * `allowed_statuses` varchar(255) NOT NULL DEFAULT '[1,10,2,3,4,5,6]',
- * PRIMARY KEY (`id`),
- * KEY `name` (`name`),
- * KEY `entities_id` (`entities_id`),
- * KEY `is_recursive` (`is_recursive`)
- * ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
- */
+function add_validation_steps_in_itilvalidationtemplates(Migration $migration): void
+{
+    $validationsteps_foreign_key = ValidationStep::getForeignKeyField();
+    $migration->addField(
+        'glpi_itilvalidationtemplates',
+        $validationsteps_foreign_key,
+        'fkey',
+        [
+            'value' => '0',
+            'null' => false,
+            'after' => 'is_recursive',
+        ]
+    );
+    $migration->addKey('glpi_itilvalidationtemplates', $validationsteps_foreign_key);
+}

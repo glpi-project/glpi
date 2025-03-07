@@ -112,8 +112,7 @@ class ValidationStepTest extends \DbTestCase
         $vs = new \ValidationStep();
         $data = $this->getValidData();
         unset($data['minimal_required_validation_percent']);
-        $validation_error_message = sprintf(__s('The %s field is mandatory and must be beetween 0 and 100.'), $vs->getAdditionalField('minimal_required_validation_percent')['label'] ?? 'minimal_required_validation_percent')
-;
+        $validation_error_message = sprintf(__s('The %s field is mandatory and must be beetween 0 and 100.'), $vs->getAdditionalField('minimal_required_validation_percent')['label'] ?? 'minimal_required_validation_percent');
         $this->assertFalse($vs->add($data), 'A validation step without minimal required validation percent should not be created');
         $this->hasSessionMessages(ERROR, [$validation_error_message]);
 
