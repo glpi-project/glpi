@@ -627,16 +627,16 @@ JAVASCRIPT
         global $DB;
 
         $options = [];
-        foreach (Search::getOptions(get_class($item)) as $id => $field) {
-           //Can only translate name, and fields whose datatype is text or string
+        foreach (Search::getOptions(get_class($item)) as $id => $opt) {
+           //Can only translate name, and fields whose datatype is text or string and only fields directly for this itemtype
+            $field = $opt['field'] ?? null;
+            $type  = $opt['datatype'] ?? '';
             if (
-                isset($field['field'])
-                && ($field['field'] == 'name')
-                && ($field['table'] == getTableForItemType(get_class($item)))
-                || (isset($field['datatype'])
-                 && in_array($field['datatype'], ['text', 'string']))
+                $field !== null
+                && ($field === 'name' || in_array($type, ['text', 'string']))
+                && $opt['table'] === getTableForItemType(get_class($item))
             ) {
-                $options[$field['field']] = $field['name'];
+                $options[$field] = $opt['name'];
             }
         }
 
