@@ -41,6 +41,7 @@ use Domain;
 use Domain_Item;
 use DomainRelation;
 use Entity;
+use Glpi\Asset\Capacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
 
@@ -48,9 +49,9 @@ class HasDomainsCapacityTest extends DbTestCase
 {
     use CapacityUsageTestTrait;
 
-    protected function getTargetCapacity(): string
+    protected function getTargetCapacity(): Capacity
     {
-        return \Glpi\Asset\Capacity\HasDomainsCapacity::class;
+        return new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class);
     }
 
     public function testCapacityActivation(): void
@@ -61,21 +62,21 @@ class HasDomainsCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasDomainsCapacity::class,
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class),
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasDomainsCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class),
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -132,15 +133,15 @@ class HasDomainsCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasDomainsCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class),
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasDomainsCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class),
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();

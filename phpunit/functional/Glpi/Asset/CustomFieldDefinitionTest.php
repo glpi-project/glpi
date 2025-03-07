@@ -57,7 +57,7 @@ class CustomFieldDefinitionTest extends DbTestCase
     {
         $asset_definition = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $asset_classname = $asset_definition->getAssetClassName();
@@ -288,7 +288,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $opt_id_offset = 45000;
         $asset_definition = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
 
@@ -498,7 +498,7 @@ class CustomFieldDefinitionTest extends DbTestCase
     {
         $asset_definition = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $field_1 = new \Glpi\Asset\CustomFieldDefinition();
