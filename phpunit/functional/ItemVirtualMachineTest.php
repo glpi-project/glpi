@@ -48,7 +48,7 @@ class ItemVirtualMachineTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasVirtualMachineCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasVirtualMachineCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -68,7 +68,7 @@ class ItemVirtualMachineTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasVirtualMachineCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasVirtualMachineCapacity::class)]);
 
         foreach ($CFG_GLPI['itemvirtualmachines_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {

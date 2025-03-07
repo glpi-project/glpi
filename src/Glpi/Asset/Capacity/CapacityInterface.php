@@ -36,6 +36,7 @@
 namespace Glpi\Asset\Capacity;
 
 use Glpi\Asset\Asset;
+use Glpi\Asset\CapacityConfig;
 
 interface CapacityInterface
 {
@@ -132,4 +133,29 @@ interface CapacityInterface
      * @return void
      */
     public function onObjectInstanciation(Asset $object): void;
+
+    /**
+     * Set capacity configuration
+     *
+     * @param ?CapacityConfig $capacity_config
+     *
+     * @return void
+     */
+    public function setConfiguration(?CapacityConfig $capacity_config): void;
+
+    /**
+     * Get capacity configuration
+     *
+     * @return ?CapacityConfig
+     */
+    public function getConfiguration(): ?CapacityConfig;
+
+    /**
+     * Get configuration entry from capacity
+     *
+     * @param string $entry
+     *
+     * @return mixed
+     */
+    public function getConfigurationValue(string $entry): mixed;
 }

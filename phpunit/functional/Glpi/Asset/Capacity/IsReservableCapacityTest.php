@@ -38,6 +38,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Asset\Capacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
 use ReservationItem;
@@ -46,9 +47,9 @@ class IsReservableCapacityTest extends DbTestCase
 {
     use CapacityUsageTestTrait;
 
-    protected function getTargetCapacity(): string
+    protected function getTargetCapacity(): Capacity
     {
-        return \Glpi\Asset\Capacity\IsReservableCapacity::class;
+        return new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsReservableCapacity::class);
     }
 
     public function testCapacityActivation(): void
@@ -59,21 +60,21 @@ class IsReservableCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\IsReservableCapacity::class,
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsReservableCapacity::class),
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\IsReservableCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsReservableCapacity::class),
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -123,15 +124,15 @@ class IsReservableCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\IsReservableCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsReservableCapacity::class),
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\IsReservableCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsReservableCapacity::class),
+                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();

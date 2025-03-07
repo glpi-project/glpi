@@ -47,7 +47,7 @@ class Item_PlugTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasPlugCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasPlugCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -67,7 +67,7 @@ class Item_PlugTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasPlugCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasPlugCapacity::class)]);
 
         foreach ($CFG_GLPI['plug_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {

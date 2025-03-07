@@ -51,7 +51,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasSoftwaresCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasSoftwaresCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -71,7 +71,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasSoftwaresCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasSoftwaresCapacity::class)]);
 
         foreach ($CFG_GLPI['software_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
