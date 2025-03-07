@@ -96,6 +96,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Status\StatusChecker::getServiceStatus()` `as_array` parameter.
 - `Sylk` export of search results.
 - `full_width_adapt_column` option for fields macros has been removed.
+- `Picture` search option (ID 150) for Users.
 
 ### API changes
 

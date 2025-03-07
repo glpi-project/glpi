@@ -55,3 +55,6 @@ Config::deleteConfigurationValues('core', ['fold_search']);
 
 // Drop useless field
 $migration->dropField('glpi_users', 'display_options');
+
+// Drop "picture" search option
+$migration->removeSearchOption('User', 150);
