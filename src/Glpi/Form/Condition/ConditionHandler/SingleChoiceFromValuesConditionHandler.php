@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,38 +32,55 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
-use Glpi\Form\Condition\ConditionHandler\SingleChoiceFromValuesConditionHandler;
-use Glpi\Form\Condition\UsedAsCriteriaInterface;
-use Glpi\Form\Question;
-use InvalidArgumentException;
+use Glpi\Form\Condition\ValueOperator;
 use Override;
 
-final class QuestionTypeRadio extends AbstractQuestionTypeSelectable implements UsedAsCriteriaInterface
+final class SingleChoiceFromValuesConditionHandler implements ConditionHandlerInterface
 {
-    #[Override]
-    public function getInputType(?Question $question): string
-    {
-        return 'radio';
+    public function __construct(
+        private array $values,
+    ) {
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getSupportedValueOperators(): array
     {
-        return QuestionTypeCategory::RADIO;
+        return [
+            ValueOperator::EQUALS,
+            ValueOperator::NOT_EQUALS,
+        ];
     }
 
     #[Override]
-    public function getConditionHandler(
-        ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
-        if (!$question_config instanceof QuestionTypeSelectableExtraDataConfig) {
-            throw new InvalidArgumentException();
-        }
+    public function getTemplate(): string
+    {
+        return '/pages/admin/form/condition_handler_templates/dropdown.html.twig';
+    }
 
-        return new SingleChoiceFromValuesConditionHandler($question_config->getOptions());
+    #[Override]
+    public function getTemplateParameters(): array
+    {
+        return ['values' => $this->values];
+    }
+
+    #[Override]
+    public function applyValueOperator(
+        mixed $a,
+        ValueOperator $operator,
+        mixed $b,
+    ): bool {
+        // Normalize values as strings.
+        $a = strtolower(strval($a));
+        $b = strtolower(strval($b));
+
+        return match ($operator) {
+            ValueOperator::EQUALS       => $a === $b,
+            ValueOperator::NOT_EQUALS   => $a !== $b,
+
+            // Unsupported operators
+            default => false,
+        };
     }
 }
