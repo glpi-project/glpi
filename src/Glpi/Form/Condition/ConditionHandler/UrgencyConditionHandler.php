@@ -32,16 +32,28 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Condition;
+namespace Glpi\Form\Condition\ConditionHandler;
+
+use Glpi\Form\Condition\InputTemplateKey;
+use Glpi\Urgency;
+use Override;
 
 /**
- * References supported input templates keys in conditional_visibility_editor.html.twig
+ * Since an urgency is represented by a number, we can reuse the
+ * NumberConditionHandler here with a different input template to properly
+ * display the urgency dropdown.
  */
-enum InputTemplateKey
+final class UrgencyConditionHandler extends NumberConditionHandler
 {
-    case STRING;
-    case NUMBER;
-    case TIME;
-    case DATE;
-    case DATE_AND_TIME;
+    #[Override]
+    public function getTemplate(): string
+    {
+        return '/pages/admin/form/condition_handler_templates/dropdown.html.twig';
+    }
+
+    #[Override]
+    public function getTemplateParameters(): array
+    {
+        return ['values' => Urgency::getUrgencyValuesForDropdown()];
+    }
 }

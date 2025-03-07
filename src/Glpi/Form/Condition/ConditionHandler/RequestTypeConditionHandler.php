@@ -34,13 +34,46 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\Form\Condition\InputTemplateKey;
+use Glpi\Form\Condition\ValueOperator;
 use Override;
+use Ticket;
 
-final class TimeConditionHandler extends AbstractDateTimeConditionHandler
+class RequestTypeConditionHandler implements ConditionHandlerInterface
 {
+    #[Override]
+    public function getSupportedValueOperators(): array
+    {
+        return [ValueOperator::EQUALS];
+    }
+
+    #[Override]
+    public function getTemplate(): string
+    {
+        return '/pages/admin/form/condition_handler_templates/dropdown.html.twig';
+    }
+
     #[Override]
     public function getTemplateParameters(): array
     {
-        return ['attributes' => ['type' => 'time']];
+        return ['values' => Ticket::getTypes()];
+    }
+
+    #[Override]
+    public function applyValueOperator(
+        mixed $a,
+        ValueOperator $operator,
+        mixed $b,
+    ): bool {
+        // Normalize values.
+        $a = (int) $a;
+        $b = (int) $b;
+
+        return match ($operator) {
+            ValueOperator::EQUALS => $a === $b,
+
+            // Unsupported operators
+            default => false,
+        };
     }
 }

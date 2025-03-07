@@ -32,15 +32,25 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Condition\ConditionHandler;
+namespace Glpi;
 
-use Override;
-
-final class TimeConditionHandler extends AbstractDateTimeConditionHandler
+// TODO: refactor usage of raw urgency int values with usage of this enum instead
+enum Urgency: int
 {
-    #[Override]
-    public function getTemplateParameters(): array
+    case VERY_LOW = 1;
+    case LOW = 2;
+    case MEDIUM = 3;
+    case HIGH = 4;
+    case VERY_HIGH = 5;
+
+    public static function getUrgencyValuesForDropdown(): array
     {
-        return ['attributes' => ['type' => 'time']];
+        return [
+            self::VERY_LOW->value  => __('Very low'),
+            self::LOW->value       => __('Low'),
+            self::MEDIUM->value    => __('Medium'),
+            self::HIGH->value      => __('High'),
+            self::VERY_HIGH->value => __('Very high'),
+        ];
     }
 }
