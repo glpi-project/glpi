@@ -242,14 +242,15 @@
                 {% endif %}
 
                {# Validation step #}
-               {{ fields.dropdownField
-                  (
+               {{ fields.dropdownField(
                   'ValidationStep',
                   'validationsteps_id',
                   call('ValidationStep::getDefault').fields['id'],
                   __('Validation step'),
-                  {})
-               }}
+                  {
+                     'rand': rand,
+                  }
+               ) }}
 
                 {# Comment #}
                 {{ fields.textareaField(
@@ -328,6 +329,7 @@
                   setRichTextEditorContent("comment_submission_{{ rand }}", data.content);
                }
 
+                // Validator field
                if (data.validatortype !== undefined) {
                   // set validator type
                   $("#dropdown__validatortype_{{ rand }}").trigger('setValue', "0");
@@ -368,6 +370,12 @@
                      });
                   }
                }
+
+               // Validation step field
+               if( data.validationsteps_id !== undefined ) {
+                  $("#dropdown_validationsteps_id{{ rand }}").trigger('setValue', data.validationsteps_id);
+               }
+
             });
          }
       </script>
