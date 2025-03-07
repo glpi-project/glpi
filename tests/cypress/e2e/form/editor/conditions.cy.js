@@ -854,6 +854,9 @@ describe ('Conditions', () => {
         addQuestion('My urgency question');
         setQuestionTypeCategory('Urgency');
 
+        addQuestion('My request type question');
+        setQuestionTypeCategory('Request type');
+
         // Add a condition for each possible condition types
         getAndFocusQuestion('Test subject').within(() => {
             initVisibilityConfiguration();
@@ -912,6 +915,15 @@ describe ('Conditions', () => {
                 'Low',
                 'dropdown',
             );
+            addNewEmptyCondition();
+            fillCondition(
+                6,
+                'And',
+                'My request type question',
+                'Is equal to',
+                'Request',
+                'dropdown',
+            );
         });
 
         // Reload and check values
@@ -964,6 +976,14 @@ describe ('Conditions', () => {
                 'My urgency question',
                 'Is greater than',
                 'Low',
+                'dropdown',
+            );
+            checkThatConditionExist(
+                6,
+                'And',
+                'My request type question',
+                'Is equal to',
+                'Request',
                 'dropdown',
             );
         });

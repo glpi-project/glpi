@@ -36,11 +36,15 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\RequestTypeConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 use Override;
 use Ticket;
 
-final class QuestionTypeRequestType extends AbstractQuestionType
+final class QuestionTypeRequestType extends AbstractQuestionType implements UsedAsCriteriaInterface
 {
     /**
      * Retrieve the default value for the request type question type
@@ -149,5 +153,12 @@ TWIG;
             'request' => (string) Ticket::DEMAND_TYPE,
             default => null,
         };
+    }
+
+    #[Override]
+    public function getConditionHandler(
+        ?JsonFieldInterface $question_config
+    ): ConditionHandlerInterface {
+        return new RequestTypeConditionHandler();
     }
 }
