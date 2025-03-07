@@ -242,7 +242,7 @@ class IsRackableCapacityTest extends DbTestCase
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\IsRackableCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsRackableCapacity::class)]
         );
 
         $asset = $this->createItem($definition->getAssetClassName(), [
@@ -280,7 +280,7 @@ class IsRackableCapacityTest extends DbTestCase
 
         $definition = $this->initAssetDefinition(
             system_name: 'TestAsset',
-            capacities: [\Glpi\Asset\Capacity\IsRackableCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsRackableCapacity::class)]
         );
         $capacity = new \Glpi\Asset\Capacity\IsRackableCapacity();
 

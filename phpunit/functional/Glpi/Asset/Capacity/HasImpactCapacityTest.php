@@ -172,7 +172,7 @@ class HasImpactCapacityTest extends DbTestCase
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasImpactCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasImpactCapacity::class)]
         );
         $capacity = new \Glpi\Asset\Capacity\HasImpactCapacity();
 
@@ -219,7 +219,7 @@ class HasImpactCapacityTest extends DbTestCase
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasImpactCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasImpactCapacity::class)]
         );
         $capacity = new \Glpi\Asset\Capacity\HasImpactCapacity();
 

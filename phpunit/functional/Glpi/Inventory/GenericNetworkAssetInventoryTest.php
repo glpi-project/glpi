@@ -67,10 +67,6 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
             )
         );
         $classname  = $definition->getAssetClassName();
-        /*$definition->update([
-            'id' => $definition->getID(),
-            'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericNetworkAsset::class,
-        ]);*/
 
         //we take a standard network equipment inventory and just change itemtype to SpecificNetworkEquipment
         //tests are the same than InventoryTest::testImportNetworkEquipment()
@@ -296,8 +292,7 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
         //create Network Equipment generic asset
         $asset = $this->inventoryNetworkEquipment([
             new \Glpi\Asset\Capacity(
-                name: \Glpi\Asset\Capacity\HasNetworkPortCapacity::class,
-                config: new \Glpi\Asset\CapacityConfig([]) //could be null, but harder to test.
+                name: \Glpi\Asset\Capacity\HasNetworkPortCapacity::class
             )
         ]);
 
@@ -479,8 +474,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //create Network Equipment generic asset
         $asset = $this->inventoryNetworkEquipment([
             new \Glpi\Asset\Capacity(
-                name: \Glpi\Asset\Capacity\HasDevicesCapacity::class,
-                config: new \Glpi\Asset\CapacityConfig([]) //could be null, but harder to test.
+                name: \Glpi\Asset\Capacity\HasDevicesCapacity::class
             )
         ]);
 

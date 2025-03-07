@@ -50,9 +50,15 @@ class Capacity implements JsonSerializable
         return $this->name;
     }
 
-    public function getConfig(): CapacityConfig
+    public function getConfig(): ?CapacityConfig
     {
         return $this->config;
+    }
+
+    public function setConfig(CapacityConfig $config): self
+    {
+        $this->config = $config;
+        return $this;
     }
 
     public function jsonSerialize()

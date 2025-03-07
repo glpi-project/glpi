@@ -220,7 +220,7 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
@@ -263,7 +263,7 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
 
         foreach ($CFG_GLPI['directconnect_types'] as $peripheral_itemtype) {
             $definition = $this->initAssetDefinition(
-                capacities: [\Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class]
+                capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class)]
             );
             $class = $definition->getAssetClassName();
 
@@ -306,7 +306,7 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class)]
         );
         $class = $definition->getAssetClassName();
 

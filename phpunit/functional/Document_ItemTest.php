@@ -49,7 +49,7 @@ class Document_ItemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasDocumentsCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \GLpi\Asset\Capacity(name: HasDocumentsCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -69,7 +69,7 @@ class Document_ItemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasDocumentsCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \GLpi\Asset\Capacity(name: HasDocumentsCapacity::class)]);
 
         foreach ($CFG_GLPI['itemdevices_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
