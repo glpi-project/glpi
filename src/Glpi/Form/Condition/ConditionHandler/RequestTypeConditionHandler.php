@@ -37,6 +37,7 @@ namespace Glpi\Form\Condition\ConditionHandler;
 use Glpi\Form\Condition\InputTemplateKey;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
+use Ticket;
 
 class RequestTypeConditionHandler implements ConditionHandlerInterface
 {
@@ -47,9 +48,15 @@ class RequestTypeConditionHandler implements ConditionHandlerInterface
     }
 
     #[Override]
-    public function getInputTemplateKey(): InputTemplateKey
+    public function getTemplate(): string
     {
-        return InputTemplateKey::REQUEST_TYPE;
+        return '/pages/admin/form/condition_handler_templates/dropdown.html.twig';
+    }
+
+    #[Override]
+    public function getTemplateParameters(): array
+    {
+        return ['values' => Ticket::getTypes()];
     }
 
     #[Override]
