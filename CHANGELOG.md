@@ -592,6 +592,7 @@ The present file will list all changes made to the project; according to the
 - Usage of the `$cut` parameter in `formatUserName()` and `DbUtils::formatUserName()`.
 - Handling of the `delegate` right in `User::getSqlSearchResult()`.
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
+- `openform` and `closeform` parameters in `Profile::showForm*` methods.
 
 
 ## [10.0.19] unreleased

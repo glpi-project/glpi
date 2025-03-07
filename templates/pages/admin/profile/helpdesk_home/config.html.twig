@@ -41,7 +41,7 @@
 
             <div class="row ms-n2 me-n2 mb-3" data-glpi-helpdesk-config-tiles>
                 {# The tiles have their own templates as they will be reloaded using AJAX #}
-                {{ include('pages/admin/helpdesk_home_config_tiles.html.twig', {
+                {{ include('pages/admin/profile/helpdesk_home/tiles.html.twig', {
                     'tiles_manager': tiles_manager,
                     'tiles': tiles,
                 }, with_context = false) }}
@@ -56,14 +56,14 @@
                     data-glpi-helpdesk-config-reorder-action-cancel
                 >
                     <i class="ti ti-cancel me-1"></i>
-                    <span>{{ __("Cancel") }}<span>
+                    <span>{{ __("Cancel") }}</span>
                 </button>
                 <button
                     class="btn btn-primary ms-2 w-auto d-flex align-items-center"
                     data-glpi-helpdesk-config-reorder-action-save
                 >
                     <i class="ti ti-device-floppy me-1"></i>
-                    <span>{{ __("Save order") }}<span>
+                    <span>{{ __("Save order") }}</span>
                 </button>
             </div>
         </section>
