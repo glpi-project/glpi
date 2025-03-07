@@ -258,7 +258,7 @@ class KnowbaseItemTranslation extends CommonDBChild
                 }
                 echo "</td></tr>";
             }
-            echo "</table>";
+            echo "</table></div>";
             if ($canedit) {
                 $massiveactionparams['ontop'] = false;
                 Html::showMassiveActions($massiveactionparams);
