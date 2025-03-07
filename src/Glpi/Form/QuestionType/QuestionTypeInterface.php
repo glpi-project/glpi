@@ -132,7 +132,7 @@ interface QuestionTypeInterface
      *
      * @return string
      */
-    public function formatRawAnswer(mixed $answer): string;
+    public function formatRawAnswer(mixed $answer, Question $question): string;
 
     /**
      * Get the name of this questions type.

@@ -36,8 +36,8 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use DbTestCase;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
+use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 
@@ -51,14 +51,18 @@ final class QuestionTypeDropdownTest extends DbTestCase
         $builder->addQuestion(
             name: "Your favorite color",
             type: QuestionTypeDropdown::class,
-            extra_data: json_encode([
-                'options' => ['Blue', 'Green', 'Red', 'Yellow', 'Black'],
-            ])
+            extra_data: json_encode(new QuestionTypeDropdownExtraDataConfig([
+                'blue'   => 'Blue',
+                'green'  => 'Green',
+                'red'    => 'Red',
+                'yellow' => 'Yellow',
+                'black'  => 'Black',
+            ]))
         );
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
-            "Your favorite color" => ['Red'],
+            "Your favorite color" => ['red'],
         ]);
 
         $this->assertStringContainsString(
@@ -73,15 +77,18 @@ final class QuestionTypeDropdownTest extends DbTestCase
         $builder->addQuestion(
             name: "Your favorite colors",
             type: QuestionTypeDropdown::class,
-            extra_data: json_encode([
-                'options' => ['Blue', 'Green', 'Red', 'Yellow', 'Black'],
-                'is_multiple_dropdown' => 1,
-            ])
+            extra_data: json_encode(new QuestionTypeDropdownExtraDataConfig([
+                'blue'   => 'Blue',
+                'green'  => 'Green',
+                'red'    => 'Red',
+                'yellow' => 'Yellow',
+                'black'  => 'Black',
+            ], is_multiple_dropdown: true))
         );
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
-            "Your favorite colors" => ['Red', 'Yellow'],
+            "Your favorite colors" => ['red', 'yellow'],
         ]);
 
         $this->assertStringContainsString(

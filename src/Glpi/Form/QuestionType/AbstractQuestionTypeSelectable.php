@@ -373,7 +373,7 @@ TWIG;
                     <input
                         type="{{ input_type }}"
                         name="{{ question.getEndUserInputName() }}[]"
-                        value="{{ value.value }}"
+                        value="{{ value.uuid }}"
                         class="form-check-input" {{ value.checked ? 'checked' : '' }}
                     >
                     <span class="form-check-label">{{ value.value }}</span>
@@ -390,11 +390,18 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         if (is_string($answer)) {
-            return $answer;
+            $answer = [$answer];
         }
+
+        // Replace uuids by labels
+        $options = $this->getOptions($question);
+        $answer = array_map(
+            fn ($uuid) => $options[$uuid] ?? '',
+            $answer
+        );
 
         return implode(', ', $answer);
     }
