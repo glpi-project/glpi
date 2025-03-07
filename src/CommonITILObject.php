@@ -380,6 +380,18 @@ abstract class CommonITILObject extends CommonDBTM
                         ]);
                     }
                 }
+
+                $groups_id = array_key_exists('_groups_id_' . $actortypestring, $params) && $params['_groups_id_' . $actortypestring] > 0
+                    ? $params['_groups_id_' . $actortypestring] : 0;
+                if ($groups_id > 0) {
+                    $group_obj = new Group();
+                    if ($group_obj->getFromDB($groups_id)) {
+                        $fn_add_actor('Group', $groups_id, [
+                            'text'  => $group_obj->getName(),
+                            'title' => $group_obj->getRawCompleteName(),
+                        ]);
+                    }
+                }
             }
 
             // load default actors from itiltemplate passed from showForm in `params` var
