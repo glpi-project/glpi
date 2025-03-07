@@ -383,6 +383,7 @@ class TicketValidationTest extends CommonITILValidation
             'tickets_id'      => $ticket->getID(),
             'itemtype_target' => 'User',
             'items_id_target' => $user_id,
+            'validationsteps_id' => $this->getInitialDefaultValidationStep()->getID()
         ]);
 
         $this->assertEquals($expected ? ($initial_count + 1) : $initial_count, \TicketValidation::getNumberToValidate($user_id));

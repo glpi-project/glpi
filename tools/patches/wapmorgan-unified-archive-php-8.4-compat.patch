@@ -1,0 +1,13 @@
+diff --git a/src/Drivers/OneFile/OneFileDriver.php b/src/Drivers/OneFile/OneFileDriver.php
+index a517a16..5fe2d6d 100644
+--- a/src/Drivers/OneFile/OneFileDriver.php
++++ b/src/Drivers/OneFile/OneFileDriver.php
+@@ -109,7 +109,7 @@ abstract class OneFileDriver extends BasicExtensionDriver
+      * @return int
+      * @throws ArchiveExtractionException
+      */
+-    public function extractFiles($outputFolder, array $files = null)
++    public function extractFiles($outputFolder, ?array $files = null)
+     {
+         return $this->extractArchive($outputFolder);
+     }

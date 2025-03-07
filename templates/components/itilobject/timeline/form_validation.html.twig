@@ -205,6 +205,7 @@
                     }
                 ) }}
 
+               {# Approver #}
                 {% if subitem.isNewItem() %}
                     {% set validation_right = 'validate' %}
                     {% if item.getType() == 'Ticket' %}
@@ -241,6 +242,18 @@
                     ) }}
                 {% endif %}
 
+               {# Validation step #}
+               {{ fields.dropdownField(
+                  'ValidationStep',
+                  'validationsteps_id',
+                  call('ValidationStep::getDefault').fields['id'],
+                  __('Validation step'),
+                  {
+                     'rand': rand,
+                  }
+               ) }}
+
+                {# Comment #}
                 {{ fields.textareaField(
                     'comment_submission',
                     subitem.fields['comment_submission'],
@@ -317,6 +330,7 @@
                   setRichTextEditorContent("comment_submission_{{ rand }}", data.content);
                }
 
+                // Validator field
                if (data.validatortype !== undefined) {
                   // set validator type
                   $("#dropdown__validatortype_{{ rand }}").trigger('setValue', "0");
@@ -357,6 +371,12 @@
                      });
                   }
                }
+
+               // Validation step field
+               if( data.validationsteps_id !== undefined ) {
+                  $("#dropdown_validationsteps_id{{ rand }}").trigger('setValue', data.validationsteps_id);
+               }
+
             });
          }
       </script>
