@@ -9779,6 +9779,7 @@ CREATE TABLE `glpi_itilvalidationtemplates` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `validationsteps_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL DEFAULT '',
   `content` text,
   `comment` text,
@@ -9788,6 +9789,7 @@ CREATE TABLE `glpi_itilvalidationtemplates` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `name` (`name`),
+  KEY `validationsteps_id` (`validationsteps_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -10170,13 +10172,3 @@ CREATE TABLE `glpi_itemtranslations_itemtranslations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
