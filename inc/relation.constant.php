@@ -1669,7 +1669,8 @@ $RELATION = [
     ],
 
     'glpi_validationsteps' => [
-        'glpi_ticketvalidations' => 'validationsteps_id', // should it be _glpi_tickets ?
+        'glpi_ticketvalidations'       => 'validationsteps_id',
+        'glpi_itilvalidationtemplates' => 'validationsteps_id',
     ],
 
     'glpi_virtualmachinestates' => [
