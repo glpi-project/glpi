@@ -1190,6 +1190,76 @@ class Migration extends \GLPITestCase
         ]);
     }
 
+    public function testRemoveSearchOption()
+    {
+        global $DB;
+        $DB = $this->db;
+
+        $this->calling($this->db)->request = function ($request) {
+            if (isset($request['INNER JOIN'])) {
+                $result = [];
+                if ($request['INNER JOIN'][\DisplayPreference::getTable() . ' AS old']['ON'][0]['AND']['new.itemtype'] === 'Printer') {
+                    // Simulate duplicated search options on 'Printer'
+                    $result = [
+                        [
+                            'id' => 12,
+                        ],
+                        [
+                            'id' => 156,
+                        ],
+                        [
+                            'id' => 421,
+                        ]
+                    ];
+                }
+                return new \ArrayIterator($result);
+            }
+            if ($request['FROM'] === \SavedSearch::getTable()) {
+                return new \ArrayIterator([
+                    [
+                        'id'        => 1,
+                        'itemtype'  => 'Computer',
+                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer'
+                    ],
+                    [
+                        'id'        => 2,
+                        'itemtype'  => 'Budget',
+                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Computer&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=40&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer'
+                    ],
+                    [
+                        'id'        => 3,
+                        'itemtype'  => 'Monitor',
+                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=40&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Monitor'
+                    ]
+                ]);
+            }
+            return new \ArrayIterator([]);
+        };
+
+        $this->migration->removeSearchOption('Computer', 40);
+        $this->migration->removeSearchOption('Printer', 20);
+        $this->migration->removeSearchOption('Ticket', 1);
+
+        $this->calling($this->db)->tableExists = true;
+
+        $this->output(
+            function () {
+                $this->migration->executeMigration();
+            }
+        )->isIdenticalTo('Task completed.');
+
+        $this->array($this->queries)->isIdenticalTo([
+            "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `itemtype` = 'Computer' AND `num` = '40'",
+            "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `itemtype` = 'Printer' AND `num` = '20'",
+            "DELETE `glpi_displaypreferences` FROM `glpi_displaypreferences` WHERE `itemtype` = 'Ticket' AND `num` = '1'",
+            "DELETE `glpi_tickettemplatehiddenfields` FROM `glpi_tickettemplatehiddenfields` WHERE `num` = '1'",
+            "DELETE `glpi_tickettemplatemandatoryfields` FROM `glpi_tickettemplatemandatoryfields` WHERE `num` = '1'",
+            "DELETE `glpi_tickettemplatepredefinedfields` FROM `glpi_tickettemplatepredefinedfields` WHERE `num` = '1'",
+            "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer' WHERE `id` = '1'",
+            "UPDATE `glpi_savedsearches` SET `query` = 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&search=Search&itemtype=Computer' WHERE `id` = '2'",
+        ]);
+    }
+
     public function testReplaceRight()
     {
         global $DB;
