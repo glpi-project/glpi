@@ -37,10 +37,12 @@ namespace Glpi\Form\Condition\ConditionHandler;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Urgency;
+use Override;
 use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class UrgencyConditionHandlerTest extends AbstractConditionHandler
 {
+    #[Override]
     public static function conditionHandlerProvider(): iterable
     {
         $type = QuestionTypeUrgency::class;

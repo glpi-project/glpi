@@ -37,10 +37,12 @@ namespace Glpi\Form\Condition\ConditionHandler;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Override;
 use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class StringConditionHandlerTest extends AbstractConditionHandler
 {
+    #[Override]
     public static function conditionHandlerProvider(): iterable
     {
         $types = [
