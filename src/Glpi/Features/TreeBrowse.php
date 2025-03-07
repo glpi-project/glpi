@@ -85,7 +85,7 @@ trait TreeBrowse
         $no_cat_found  = __s("No category found");
 
         $JS = <<<JAVASCRIPT
-        var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
+        const loadingindicator  = $(`<span class="spinner-border spinner-border position-absolute m-5 start-50" role="status" aria-hidden="true"></span>`);
         $('#items_list').html(loadingindicator);
         window.loadNode = function(cat_id) {
             $('#items_list').html(loadingindicator);

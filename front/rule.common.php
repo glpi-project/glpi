@@ -38,6 +38,8 @@
  * @var RuleCollection $rulecollection
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
@@ -98,17 +100,14 @@ if (isset($_POST["action"])) {
         return;
     }
 
-    echo "<table class='tab_cadrehov'>";
-
-    echo "<tr><th><div class='relative b'>" . htmlescape($rulecollection->getTitle()) . "<br>" .
-         __s('Replay the rules dictionary') . "</div></th></tr>";
-    echo "<tr><td class='center'>";
+    echo "<div class='position-relative fw-bold'>" . htmlescape($rulecollection->getTitle()) . "<br>" .
+         __s('Replay the rules dictionary') . "</div>";
+    echo "<div class='text-center mb-3'>";
     Html::progressBar('doaction_progress', [
         'create' => true,
         'message' => __s('Work in progress...')
     ]);
-    echo "</td></tr>";
-    echo "</table>";
+    echo '</div>';
 
     if (!isset($_GET['offset'])) {
        // First run
