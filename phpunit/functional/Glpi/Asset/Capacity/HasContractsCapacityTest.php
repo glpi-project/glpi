@@ -40,6 +40,7 @@ use Contract_Item;
 use DbTestCase;
 use DisplayPreference;
 use Glpi\Asset\Asset;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
@@ -48,9 +49,9 @@ class HasContractsCapacityTest extends DbTestCase
 {
     use CapacityUsageTestTrait;
 
-    protected function getTargetCapacity(): string
+    protected function getTargetCapacity(): Capacity
     {
-        return \Glpi\Asset\Capacity\HasContractsCapacity::class;
+        return new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasContractsCapacity::class);
     }
 
     /**

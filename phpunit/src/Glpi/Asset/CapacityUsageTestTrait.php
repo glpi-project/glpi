@@ -35,6 +35,7 @@
 
 namespace Glpi\PHPUnit\Tests\Glpi\Asset;
 
+use Glpi\Asset\Capacity;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 trait CapacityUsageTestTrait
@@ -42,9 +43,9 @@ trait CapacityUsageTestTrait
     /**
      * Get the tested capacity class.
      *
-     * @return string
+     * @return Capacity
      */
-    abstract protected function getTargetCapacity(): string;
+    abstract protected function getTargetCapacity(): Capacity;
 
     abstract public static function provideIsUsed(): iterable;
 
@@ -80,7 +81,7 @@ trait CapacityUsageTestTrait
         ]);
 
         // Check that the capacity can be disabled
-        $capacity = new ($this->getTargetCapacity());
+        $capacity = new ($this->getTargetCapacity()->getName());
         $this->assertFalse($capacity->isUsed($definition->getAssetClassName()));
 
         // Create item
@@ -139,7 +140,7 @@ trait CapacityUsageTestTrait
     ): void {
         global $DB;
 
-        $capacity = new ($this->getTargetCapacity());
+        $capacity = new ($this->getTargetCapacity()->getName());
 
         // Retrieve the test root entity
         $entity_id = $this->getTestRootEntity(true);

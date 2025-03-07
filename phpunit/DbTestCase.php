@@ -528,8 +528,8 @@ class DbTestCase extends \GLPITestCase
         string $capacity
     ): AssetDefinition {
         // Add new capacity
-        $capacities = json_decode($definition->fields['capacities']);
-        $capacities[] = $capacity;
+        $capacities = $this->callPrivateMethod($definition, 'getDecodedCapacities');
+        $capacities[] = new \Glpi\Asset\Capacity(name: $capacity);
 
         $this->updateItem(
             AssetDefinition::class,
@@ -564,8 +564,8 @@ class DbTestCase extends \GLPITestCase
         string $capacity
     ): AssetDefinition {
         // Remove capacity
-        $capacities = json_decode($definition->fields['capacities']);
-        $capacities = array_diff($capacities, [$capacity]);
+        $capacities = $this->callPrivateMethod($definition, 'getDecodedCapacities');
+        $capacities = array_diff_key($capacities, [$capacity => $capacity]);
 
         // Reorder keys to ensure json_decode will return an array instead of an
         // object
