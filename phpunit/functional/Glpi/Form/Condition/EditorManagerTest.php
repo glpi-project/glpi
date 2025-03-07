@@ -35,9 +35,10 @@
 namespace tests\units\Glpi\Form\Condition;
 
 use Glpi\Form\Condition\ConditionData;
+use Glpi\Form\Condition\ConditionHandler\NumberConditionHandler;
+use Glpi\Form\Condition\ConditionHandler\StringConditionHandler;
 use Glpi\Form\Condition\EditorManager;
 use Glpi\Form\Condition\FormData;
-use Glpi\Form\Condition\InputTemplateKey;
 use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeFile;
@@ -257,7 +258,7 @@ final class EditorManagerTest extends GLPITestCase
         $this->assertEquals([], $dropdown_values);
     }
 
-    public function testInputTemplateKeyCanBeComputedFromCondition(): void
+    public function testHandlerCanBeComputedFromConditionData(): void
     {
         // Arrange: create an editor manager with some data
         $condition_1 = new ConditionData(
@@ -307,15 +308,15 @@ final class EditorManagerTest extends GLPITestCase
         $editor_manager = $this->getManagerWithData($form_data);
 
         // Act: get the template types using the condition
-        $question_1_template_key = $editor_manager->getInputTemplateKeyForCondition(
+        $question_1_handler = $editor_manager->getHandlerForCondition(
             $condition_1
         );
-        $question_2_template_key = $editor_manager->getInputTemplateKeyForCondition(
+        $question_2_handler = $editor_manager->getHandlerForCondition(
             $condition_2
         );
 
         // Assert: the correct template key must be found
-        $this->assertEquals(InputTemplateKey::STRING, $question_1_template_key);
-        $this->assertEquals(InputTemplateKey::NUMBER, $question_2_template_key);
+        $this->assertInstanceOf(StringConditionHandler::class, $question_1_handler);
+        $this->assertInstanceOf(NumberConditionHandler::class, $question_2_handler);
     }
 }

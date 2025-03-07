@@ -34,6 +34,8 @@
 
 namespace Glpi\Form\Condition;
 
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\StringConditionHandler;
 use Glpi\Form\QuestionType\AbstractQuestionType;
 
 final class EditorManager
@@ -146,9 +148,9 @@ final class EditorManager
         return LogicOperator::getDropdownValues();
     }
 
-    public function getInputTemplateKeyForCondition(
+    public function getHandlerForCondition(
         ConditionData $condition
-    ): InputTemplateKey {
+    ): ConditionHandlerInterface {
         $question = $this->findQuestionDataByUuid($condition->getItemUuid());
         $type = $question->getType();
 
@@ -157,14 +159,14 @@ final class EditorManager
             || !is_subclass_of($type, AbstractQuestionType::class)
         ) {
             // Safe fallback
-            return InputTemplateKey::STRING;
+            return new StringConditionHandler();
         }
 
         // Load question type config
         $raw_config = $question->getExtraData();
         $config = $raw_config ? $type->getExtraDataConfig($raw_config) : null;
 
-        return $type->getConditionHandler($config)->getInputTemplateKey();
+        return $type->getConditionHandler($config);
     }
 
     private function findQuestionDataByUuid(string $question_uuid): ?QuestionData
