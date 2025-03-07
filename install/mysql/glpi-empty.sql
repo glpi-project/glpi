@@ -4294,11 +4294,15 @@ CREATE TABLE `glpi_logs` (
   `id_search_option` int NOT NULL DEFAULT '0' COMMENT 'see search.constant.php for value',
   `old_value` varchar(255) DEFAULT NULL,
   `new_value` varchar(255) DEFAULT NULL,
+  `old_id` int unsigned NULL,
+  `new_id` int unsigned NULL,
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `itemtype_link` (`itemtype_link`),
   KEY `item` (`itemtype`,`items_id`),
-  KEY `id_search_option` (`id_search_option`)
+  KEY `id_search_option` (`id_search_option`),
+  KEY `old_id` (`old_id`),
+  KEY `new_id` (`new_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

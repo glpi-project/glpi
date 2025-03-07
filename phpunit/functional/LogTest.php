@@ -826,4 +826,73 @@ class LogTest extends DbTestCase
             $this->assertSame('2023-11-01 00:00:00', $entry['date_mod']);
         }
     }
+
+    /**
+     * Test that old_id and new_id values are correctly saved in logs
+     */
+    public function testOldIdNewIdValues()
+    {
+        global $DB;
+
+        $computer = new \Computer();
+        $computers_id = $computer->add([
+            'name'        => 'Test computer',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+        ]);
+        $this->assertGreaterThan(0, $computers_id);
+
+        // Find a dropdown field to test relations
+        $manufacturer = new \Manufacturer();
+        $manufacturer_id = $manufacturer->add(['name' => 'Test manufacturer']);
+        $this->assertGreaterThan(0, $manufacturer_id);
+
+        $new_manufacturer = new \Manufacturer();
+        $new_manufacturer_id = $new_manufacturer->add(['name' => 'New manufacturer']);
+        $this->assertGreaterThan(0, $new_manufacturer_id);
+
+        // Update computer with the manufacturer
+        $this->assertTrue(
+            $computer->update(
+                [
+                    'id'              => $computers_id,
+                    'manufacturers_id' => $manufacturer_id
+                ]
+            )
+        );
+
+        // Get last log entry for this update
+        $log_criteria = [
+            'items_id'     => $computers_id,
+            'itemtype'     => 'Computer',
+            'ORDER'        => 'id DESC',
+            'LIMIT'        => 1
+        ];
+
+        $log_iterator = $DB->request('glpi_logs', $log_criteria);
+        $this->assertEquals(1, count($log_iterator));
+
+        $log = $log_iterator->current();
+        $this->assertNotNull($log);
+
+        // Verify old_id is null (no previous value) and new_id is the manufacturer_id
+        $this->assertEquals(0, $log['old_id']);
+        $this->assertEquals($manufacturer_id, $log['new_id']);
+
+        // Now update to a different manufacturer
+        $computer->update([
+            'id'              => $computers_id,
+            'manufacturers_id' => $new_manufacturer_id
+        ]);
+
+        // Get last log entry for this update
+        $log_iterator = $DB->request('glpi_logs', $log_criteria);
+        $this->assertEquals(1, count($log_iterator));
+
+        $log = $log_iterator->current();
+        $this->assertNotNull($log);
+
+        // Verify old_id is old manufacturer_id and new_id is the new manufacturer_id
+        $this->assertEquals($manufacturer_id, $log['old_id']);
+        $this->assertEquals($new_manufacturer_id, $log['new_id']);
+    }
 }
