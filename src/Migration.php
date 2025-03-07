@@ -1768,6 +1768,25 @@ class Migration
     }
 
     /**
+     * Remove a search option from various locations in the database including display preferences and saved searches.
+     * The changes made by this function will only be applied when the migration is finalized through {@link Migration::executeMigration()}.
+     *
+     * @param string $itemtype The itemtype
+     * @param int $search_opt The search option ID to remove
+     * @return void
+     */
+    public function removeSearchOption(string $itemtype, int $search_opt)
+    {
+        if (!isset($this->search_opts[$itemtype])) {
+            $this->search_opts[$itemtype] = [];
+        }
+        $this->search_opts[$itemtype][] = [
+            'old' => $search_opt,
+            'new' => null
+        ];
+    }
+
+    /**
      * Finalize search option migrations
      *
      * @return void
@@ -1787,41 +1806,47 @@ class Migration
                 $old_search_opt = $p['old'];
                 $new_search_opt = $p['new'];
 
-                // Remove duplicates (a display preference exists for both old key and new key for a same user).
-                // Removes existing SO using new ID as they are probably corresponding to an ID that existed before and
-                // was not cleaned correctly.
-                $duplicates_iterator = $DB->request([
-                    'SELECT'     => ['new.id'],
-                    'FROM'       => DisplayPreference::getTable() . ' AS new',
-                    'INNER JOIN' => [
-                        DisplayPreference::getTable() . ' AS old' => [
-                            'ON' => [
-                                'new' => 'itemtype',
-                                'old' => 'itemtype',
-                                [
-                                    'AND' => [
-                                        'new.users_id' => new QueryExpression($DB::quoteName('old.users_id')),
-                                        'new.itemtype' => $itemtype,
-                                        'new.num'      => $new_search_opt,
-                                        'old.num'      => $old_search_opt,
+                if ($new_search_opt !== null) {
+                    // Remove duplicates (a display preference exists for both old key and new key for a same user).
+                    // Removes existing SO using new ID as they are probably corresponding to an ID that existed before and
+                    // was not cleaned correctly.
+                    $duplicates_iterator = $DB->request([
+                        'SELECT' => ['new.id'],
+                        'FROM' => DisplayPreference::getTable() . ' AS new',
+                        'INNER JOIN' => [
+                            DisplayPreference::getTable() . ' AS old' => [
+                                'ON' => [
+                                    'new' => 'itemtype',
+                                    'old' => 'itemtype',
+                                    [
+                                        'AND' => [
+                                            'new.users_id' => new QueryExpression($DB::quoteName('old.users_id')),
+                                            'new.itemtype' => $itemtype,
+                                            'new.num' => $new_search_opt,
+                                            'old.num' => $old_search_opt,
+                                        ],
                                     ],
-                                ],
+                                ]
                             ]
                         ]
-                    ]
-                ]);
-                if ($duplicates_iterator->count() > 0) {
-                    $ids = array_column(iterator_to_array($duplicates_iterator), 'id');
-                    $DB->delete(DisplayPreference::getTable(), ['id' => $ids]);
+                    ]);
+                    if ($duplicates_iterator->count() > 0) {
+                        $ids = array_column(iterator_to_array($duplicates_iterator), 'id');
+                        $DB->delete(DisplayPreference::getTable(), ['id' => $ids]);
+                    }
                 }
 
                 // Update display preferences
-                $DB->update(DisplayPreference::getTable(), [
-                    'num' => $new_search_opt
-                ], [
-                    'itemtype' => $itemtype,
-                    'num'      => $old_search_opt
-                ]);
+                if ($new_search_opt === null) {
+                    $DB->delete(DisplayPreference::getTable(), ['itemtype' => $itemtype, 'num' => $old_search_opt]);
+                } else {
+                    $DB->update(DisplayPreference::getTable(), [
+                        'num' => $new_search_opt
+                    ], [
+                        'itemtype' => $itemtype,
+                        'num' => $old_search_opt
+                    ]);
+                }
 
                 // Update template fields
                 if (is_a($itemtype, 'CommonITILObject', true)) {
@@ -1834,11 +1859,15 @@ class Migration
                         if (!$DB->tableExists($table)) {
                             continue;
                         }
-                        $DB->update($table, [
-                            'num' => $new_search_opt
-                        ], [
-                            'num' => $old_search_opt
-                        ]);
+                        if ($new_search_opt === null) {
+                            $DB->delete($table, ['num' => $old_search_opt]);
+                        } else {
+                            $DB->update($table, [
+                                'num' => $new_search_opt
+                            ], [
+                                'num' => $old_search_opt
+                            ]);
+                        }
                     }
                 }
             }
@@ -1863,7 +1892,11 @@ class Migration
                     if ($data['itemtype'] === $itemtype) {
                         // Fix sort
                         if (isset($query['sort']) && (int)$query['sort'] === $old_search_opt) {
-                            $query['sort'] = $new_search_opt;
+                            if ($new_search_opt === null) {
+                                unset($query['sort']);
+                            } else {
+                                $query['sort'] = $new_search_opt;
+                            }
                             $is_changed = true;
                         }
                     }
@@ -1882,7 +1915,11 @@ class Migration
                                  isset($criterion['field']) &&
                                  (int)$criterion['field'] === $old_search_opt)
                             ) {
-                                $query['criteria'][$cid]['field'] = $new_search_opt;
+                                if ($new_search_opt === null) {
+                                    unset($query['criteria'][$cid]);
+                                } else {
+                                    $query['criteria'][$cid]['field'] = $new_search_opt;
+                                }
                                 $is_changed = true;
                             }
                         }
