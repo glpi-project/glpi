@@ -198,7 +198,9 @@ class Log extends CommonDBTM
                                     $values[$key]
                                 ),
                                 $values[$key]
-                            )
+                            ),
+                            $oldval,
+                            (int)$values[$key]
                         ];
                     }
                     break;
@@ -237,6 +239,8 @@ class Log extends CommonDBTM
         $id_search_option = $changes[0];
         $old_value        = $changes[1] ?? '';
         $new_value        = $changes[2] ?? '';
+        $old_id           = $changes[3] ?? null;
+        $new_id           = $changes[4] ?? null;
 
         // Remove json values
         $decoded_old_value = json_decode($old_value);
@@ -287,7 +291,9 @@ class Log extends CommonDBTM
             'date_mod'          => $date_mod,
             'id_search_option'  => $id_search_option,
             'old_value'         => $old_value,
-            'new_value'         => $new_value
+            'old_id'            => $old_id,
+            'new_value'         => $new_value,
+            'new_id'            => $new_id,
         ];
 
         if (static::$use_queue) {
