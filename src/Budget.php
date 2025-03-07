@@ -59,6 +59,7 @@ class Budget extends CommonDropdown
             Document_Item::class,
             KnowbaseItem_Item::class,
             ManualLink::class,
+            Notepad::class,
         ];
     }
 

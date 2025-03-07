@@ -72,6 +72,7 @@ class Phone extends CommonDBTM
             Item_SoftwareLicense::class,
             Contract_Item::class,
             Document_Item::class,
+            Notepad::class,
             NetworkPort::class,
             Asset_PeripheralAsset::class,
             KnowbaseItem_Item::class,
@@ -521,8 +522,6 @@ class Phone extends CommonDBTM
             'name'               => __('UUID'),
             'datatype'           => 'string',
         ];
-
-        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, ItemAntivirus::rawSearchOptionsToAdd());
 

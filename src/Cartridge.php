@@ -62,6 +62,7 @@ class Cartridge extends CommonDBRelation
     public function getCloneRelations(): array
     {
         return [
+            Notepad::class,
             Infocom::class
         ];
     }

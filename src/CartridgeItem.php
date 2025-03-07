@@ -65,6 +65,7 @@ class CartridgeItem extends CommonDBTM
         return [
             Infocom::class,
             ManualLink::class,
+            Notepad::class,
         ];
     }
 
@@ -385,8 +386,6 @@ class CartridgeItem extends CommonDBTM
                 ]
             ]
         ];
-
-        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         return $tab;
     }

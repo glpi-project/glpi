@@ -320,12 +320,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
      **/
     public function rawSearchOptions()
     {
-        $tab = [];
-
-        $tab[] = [
-            'id'                 => 'common',
-            'name'               => __('Characteristics')
-        ];
 
         $tab[] = [
             'id'                 => '2',
@@ -360,6 +354,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 'datatype'           => 'text',
                 'massiveaction'      => false
             ];
+        }
+
+        if ($this->usenotepad) {
+            $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
         }
 
         return $tab;

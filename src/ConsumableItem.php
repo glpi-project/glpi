@@ -67,6 +67,7 @@ class ConsumableItem extends CommonDBTM
         return [
             Infocom::class,
             ManualLink::class,
+            Notepad::class,
         ];
     }
 
@@ -310,8 +311,6 @@ class ConsumableItem extends CommonDBTM
             'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
-
-        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         return $tab;
     }

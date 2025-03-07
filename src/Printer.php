@@ -72,6 +72,7 @@ class Printer extends CommonDBTM
             Contract_Item::class,
             Document_Item::class,
             Asset_PeripheralAsset::class,
+            Notepad::class,
             KnowbaseItem_Item::class,
             Appliance_Item::class,
             Certificate_Item::class,
@@ -714,8 +715,6 @@ class Printer extends CommonDBTM
             'name'               => __('UUID'),
             'datatype'           => 'string',
         ];
-
-        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, Item_Devices::rawSearchOptionsToAdd(get_class($this)));
 
