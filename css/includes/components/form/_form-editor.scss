@@ -366,6 +366,19 @@
 .value-selector {
     border: 0 !important;
     background-color: var(--tblr-yellow-lt) !important;
+    border-radius: var(--tblr-border-radius) !important;
+
+    .select2-selection {
+        // Fix some border conflicts with tabler/select2
+        border-top-right-radius: var(--tblr-border-radius) !important;
+        border-bottom-right-radius: var(--tblr-border-radius) !important;
+        border: 0 !important;
+        background-color: var(--tblr-yellow-lt) !important;
+    }
+
+    .select2-container {
+        width: 100%;
+    }
 }
 
 .visibility-dropdown-card {

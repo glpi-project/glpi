@@ -32,18 +32,41 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Condition;
+namespace Glpi\Form\Condition\ConditionHandler;
 
-/**
- * References supported input templates keys in conditional_visibility_editor.html.twig
- */
-enum InputTemplateKey
+use Glpi\Form\Condition\InputTemplateKey;
+use Glpi\Form\Condition\ValueOperator;
+use Override;
+
+class RequestTypeConditionHandler implements ConditionHandlerInterface
 {
-    case STRING;
-    case NUMBER;
-    case TIME;
-    case DATE;
-    case DATE_AND_TIME;
-    case URGENCY;
-    case REQUEST_TYPE;
+    #[Override]
+    public function getSupportedValueOperators(): array
+    {
+        return [ValueOperator::EQUALS];
+    }
+
+    #[Override]
+    public function getInputTemplateKey(): InputTemplateKey
+    {
+        return InputTemplateKey::REQUEST_TYPE;
+    }
+
+    #[Override]
+    public function applyValueOperator(
+        mixed $a,
+        ValueOperator $operator,
+        mixed $b,
+    ): bool {
+        // Normalize values.
+        $a = (int) $a;
+        $b = (int) $b;
+
+        return match ($operator) {
+            ValueOperator::EQUALS => $a === $b,
+
+            // Unsupported operators
+            default => false,
+        };
+    }
 }
