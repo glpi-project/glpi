@@ -2784,6 +2784,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $networkEquipment = getItemByTypeName('NetworkEquipment', '_test_networkequipment_1');
 
         $asset = new \Glpi\Inventory\Asset\NetworkPort($networkEquipment, (array)$json->content->network_ports);
+        $asset->setMainAsset(new \Glpi\Inventory\MainAsset\NetworkEquipment($networkEquipment, []));
 
         $result = $asset->prepare();
         $this->assertCount(1, $result);
