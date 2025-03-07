@@ -50,7 +50,7 @@ abstract class AbstractPluginMigration
     /**
      * Logger.
      */
-    protected LoggerInterface $logger;
+    protected ?LoggerInterface $logger = null;
 
     /**
      * Progress indicator.
@@ -69,9 +69,16 @@ abstract class AbstractPluginMigration
      */
     private array $target_items_mapping = [];
 
-    public function __construct(DBmysql $db, LoggerInterface $logger)
+    public function __construct(DBmysql $db)
     {
         $this->db = $db;
+    }
+
+    /**
+     * Defines the logger.
+     */
+    final public function setLogger(LoggerInterface $logger): void
+    {
         $this->logger = $logger;
     }
 
@@ -114,7 +121,7 @@ abstract class AbstractPluginMigration
                 $e instanceof MigrationException ? $e->getLocalizedMessage() : __('An unexpected error occured.')
             );
 
-            $this->logger->error($e->getMessage(), context: ['exception' => $e]);
+            $this->logger?->error($e->getMessage(), context: ['exception' => $e]);
 
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
