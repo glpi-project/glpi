@@ -1679,7 +1679,7 @@ HTML;
 
         $html = <<<HTML
       <style>
-         #{$id} .tab_cadrehov th {
+         #{$id} table th {
             background: {$fg_color2};
          }
       </style>
