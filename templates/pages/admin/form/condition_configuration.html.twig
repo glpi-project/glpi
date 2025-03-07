@@ -131,7 +131,7 @@
                         <input
                             type="hidden"
                             name="_conditions[{{ loop.index0 }}][value]"
-                            value="{{ condition.getValue() }}"
+                            value="{{ condition.getValue() is iterable ? condition.getValue()|json_encode() : condition.getValue() }}"
                             data-glpi-conditions-editor-value
                         />
                     </div>

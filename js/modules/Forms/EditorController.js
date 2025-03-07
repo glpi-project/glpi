@@ -1248,7 +1248,15 @@ export class GlpiFormEditorController
         return copy;
     }
 
-    /** @param {HTMLElement} question  */
+    /**
+     * Extract extra data from a question element by collecting values from specific input elements.
+     *
+     * @param {HTMLElement} question - The question DOM element to extract data from
+     * @returns {Object.<string, string>} An object containing name-value pairs of extra data
+     *    where keys are the original input names (from data-glpi-form-editor-original-name attribute or the input's name)
+     *    and values are the input values. Unchecked checkboxes are excluded.
+     * @private
+     */
     #getQuestionExtraData(question) {
         const extra_data = {};
 
@@ -2196,6 +2204,8 @@ export class GlpiFormEditorController
      *
      * This method compute the available questions of the forms, the defined
      * conditions and the current selected item.
+     *
+     * @returns {array<{uuid: string, name: string, type: string, extra_data: object}>}
      */
     #getQuestionStateForConditionEditor() {
         this.computeState();
@@ -2209,7 +2219,7 @@ export class GlpiFormEditorController
                     'uuid': this.#getItemInput($(question), "uuid"),
                     'name': this.#getItemInput($(question), "name"),
                     'type': this.#getItemInput($(question), "type"),
-                    'extra_data': this.#getQuestionExtraData(question, "extra_data"),
+                    'extra_data': this.#getQuestionExtraData(question),
                 });
             })
         ;

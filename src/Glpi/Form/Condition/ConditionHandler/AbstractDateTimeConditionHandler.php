@@ -37,7 +37,7 @@ namespace Glpi\Form\Condition\ConditionHandler;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
 
-abstract class AbstractDateTimeConditionHandler implements ConditionHandlerInterface
+abstract class AbstractDateTimeConditionHandler extends StringConditionHandler
 {
     #[Override]
     public function getSupportedValueOperators(): array

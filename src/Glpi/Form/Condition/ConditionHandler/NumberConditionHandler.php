@@ -34,11 +34,10 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\Form\Condition\InputTemplateKey;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
 
-final class NumberConditionHandler implements ConditionHandlerInterface
+final class NumberConditionHandler extends StringConditionHandler
 {
     #[Override]
     public function getSupportedValueOperators(): array
@@ -51,12 +50,6 @@ final class NumberConditionHandler implements ConditionHandlerInterface
             ValueOperator::LESS_THAN,
             ValueOperator::LESS_THAN_OR_EQUALS,
         ];
-    }
-
-    #[Override]
-    public function getInputTemplateKey(): InputTemplateKey
-    {
-        return InputTemplateKey::NUMBER;
     }
 
     #[Override]
@@ -80,5 +73,22 @@ final class NumberConditionHandler implements ConditionHandlerInterface
             // Unsupported operators
             default => false,
         };
+    }
+
+    #[Override]
+    public function getInputType(): string
+    {
+        return "number";
+    }
+
+    /**
+     * Get additional HTML attributes for the input field.
+     *
+     * @return array<string, string> Additional HTML attributes
+     */
+    #[Override]
+    public function getInputAdditionalHTMLAttributes(): array
+    {
+        return ['step' => 'any'];
     }
 }

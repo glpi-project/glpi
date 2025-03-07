@@ -35,6 +35,7 @@
 namespace Glpi\Form\Condition;
 
 use Glpi\Form\QuestionType\AbstractQuestionType;
+use LogicException;
 
 final class EditorManager
 {
@@ -128,6 +129,8 @@ final class EditorManager
             return [];
         }
 
+        /** @var UsedAsCriteriaInterface&AbstractQuestionType $type */
+
         // Load question type config
         $raw_config = $question->getExtraData();
         $config = $raw_config ? $type->getExtraDataConfig($raw_config) : null;
@@ -146,9 +149,15 @@ final class EditorManager
         return LogicOperator::getDropdownValues();
     }
 
-    public function getInputTemplateKeyForCondition(
-        ConditionData $condition
-    ): InputTemplateKey {
+    /**
+     * Get input template HTML for a condition
+     *
+     * @param ConditionData $condition
+     * @param string $input_name Name of the input field
+     * @return string HTML for input field
+     */
+    public function getInputTemplateForCondition(ConditionData $condition, string $input_name): string
+    {
         $question = $this->findQuestionDataByUuid($condition->getItemUuid());
         $type = $question->getType();
 
@@ -156,15 +165,15 @@ final class EditorManager
             !is_subclass_of($type, UsedAsCriteriaInterface::class)
             || !is_subclass_of($type, AbstractQuestionType::class)
         ) {
-            // Safe fallback
-            return InputTemplateKey::STRING;
+            throw new LogicException();
         }
+
+        /** @var UsedAsCriteriaInterface&AbstractQuestionType $type */
 
         // Load question type config
         $raw_config = $question->getExtraData();
         $config = $raw_config ? $type->getExtraDataConfig($raw_config) : null;
-
-        return $type->getConditionHandler($config)->getInputTemplateKey();
+        return $type->getConditionHandler($config)->renderInputTemplate($input_name, $condition->getValue());
     }
 
     private function findQuestionDataByUuid(string $question_uuid): ?QuestionData

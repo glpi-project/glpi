@@ -41,7 +41,7 @@ export class GlpiFormConditionEditorController
 
     /**
      * Known form questions
-     * @type {array<{uuid: string, name: string, type: string, extra_data: array}>}
+     * @type {array<{uuid: string, name: string, type: string, extra_data: object}>}
      */
     #form_questions;
 

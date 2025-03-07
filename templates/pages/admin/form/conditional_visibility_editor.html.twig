@@ -32,13 +32,6 @@
 
 {% set last_condition_is_filled = false %}
 
-{# Load enum values for InputTemplateKey #}
-{% set string_input = enum('Glpi\\Form\\Condition\\InputTemplateKey').STRING %}
-{% set number_input = enum('Glpi\\Form\\Condition\\InputTemplateKey').NUMBER %}
-{% set time_input = enum('Glpi\\Form\\Condition\\InputTemplateKey').TIME %}
-{% set date_input = enum('Glpi\\Form\\Condition\\InputTemplateKey').DATE %}
-{% set datetime_input = enum('Glpi\\Form\\Condition\\InputTemplateKey').DATE_AND_TIME %}
-
 {% for condition in defined_conditions %}
     {% set condition_is_filled = condition.getItemUuid() != '' %}
     {% set last_condition_is_filled = loop.last and condition_is_filled %}
@@ -111,40 +104,8 @@
                         ]) %}
                     </span>
 
-                    {# Load the correct template to use #}
-                    {% set template_key = manager.getInputTemplateKeyForCondition(condition) %}
-
-                    {# Load common values that will be used by all templates #}
-                    {% set condition_input_value = condition.getValue() %}
-                    {% set condition_input_name = "_conditions[" ~ loop.index0 ~ "][value]" %}
-                    {% set condition_input_label = __("Value") %}
-
-                    {% if template_key in [
-                        string_input,
-                        number_input,
-                        time_input,
-                        date_input,
-                        datetime_input,
-                    ] %}
-                        <input
-                            class="me-2 form-control value-selector flex-grow-1"
-                            value="{{ condition_input_value }}"
-                            name="{{ condition_input_name }}"
-                            placeholder="{{ __("Enter a value...") }}"
-                            data-glpi-conditions-editor-value
-                            aria-label="{{ condition_input_label }}"
-                            {% if template_key == number_input %}
-                                type="number"
-                                step="any"
-                            {% elseif template_key == time_input %}
-                                type="time"
-                            {% elseif template_key == date_input %}
-                                type="date"
-                            {% elseif template_key == datetime_input %}
-                                type="datetime-local"
-                            {% endif %}
-                        />
-                    {% endif %}
+                    {# Get condition handler's input template #}
+                    {{ manager.getInputTemplateForCondition(condition, "_conditions[" ~ loop.index0 ~ "][value]")|raw }}
                 {% endif %}
 
                 {% if condition_is_filled or loop.index0 > 0 %}

@@ -34,7 +34,6 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\Form\Condition\InputTemplateKey;
 use Glpi\Form\Condition\ValueOperator;
 
 interface ConditionHandlerInterface
@@ -42,11 +41,19 @@ interface ConditionHandlerInterface
     /** @return ValueOperator[] */
     public function getSupportedValueOperators(): array;
 
-    public function getInputTemplateKey(): InputTemplateKey;
-
     public function applyValueOperator(
         mixed $a,
         ValueOperator $operator,
         mixed $b,
     ): bool;
+
+    /**
+     * Render the input template for the condition.
+     *
+     * @param string $name Input name
+     * @param mixed $value Current value
+     * @param array $options Additional options for the template
+     * @return string HTML content
+     */
+    public function renderInputTemplate(string $name, mixed $value, array $options = []): string;
 }

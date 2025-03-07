@@ -61,6 +61,7 @@ export class GlpiFormConditionEngine
     #getQuestionsData(container)
     {
         const questions_data = new Map();
+        const array_values = new Map(); // Store array values temporarily
 
         // Map questions that can be used as condition critera by others items.
         const questions_criteria_ids = [];
@@ -75,25 +76,56 @@ export class GlpiFormConditionEngine
         const data = new FormData(container);
         for (const entry of data.entries()) {
             const key = entry[0];
+            const value = entry[1];
 
             // Skip data unrelated to form answers
-            if (key.indexOf('answers_') == -1) {
+            if (key.indexOf('answers_') !== 0) {
                 continue;
             }
 
-            if (key.indexOf('[') == -1) {
-                // Read simple text value
-                const simple_key_regex = RegExp('answers_(.*)');
-                const match = simple_key_regex.exec(key);
+            if (key.includes('[')) {
+                // Handle array values: answers_questionId[] or answers_questionId[key]
+                const array_key_regex = /^answers_([^[]+)(\[\d*\]|\[[^\]]*\])$/;
+                const match = array_key_regex.exec(key);
 
-                // Extra value if it is from a criteria
-                if (questions_criteria_ids.indexOf(match[1]) != -1) {
-                    questions_data.set(match[1], entry[1]);
+                if (match && match[1]) {
+                    const question_id = match[1];
+
+                    // Check if this question is a criteria
+                    if (questions_criteria_ids.indexOf(question_id) !== -1) {
+                        // Initialize array for this question if needed
+                        if (!array_values.has(question_id)) {
+                            array_values.set(question_id, []);
+                        }
+
+                        // Add value to the array
+                        if (value !== '') {
+                            array_values.get(question_id).push(value);
+                        }
+                    }
                 }
             } else {
-                // Value is an array, not yet supported (TODO)
+                // Handle simple values: answers_questionId
+                const simple_key_regex = /^answers_(.*)$/;
+                const match = simple_key_regex.exec(key);
+
+                if (match && match[1]) {
+                    const question_id = match[1];
+
+                    // Extra value if it is from a criteria
+                    if (questions_criteria_ids.indexOf(question_id) !== -1) {
+                        questions_data.set(question_id, value);
+                    }
+                }
             }
-        };
+        }
+
+        // Add collected array values to questions_data
+        for (const [question_id, values] of array_values.entries()) {
+            if (values.length > 0) {
+                questions_data.set(question_id, values);
+            }
+        }
 
         return questions_data;
     }
@@ -103,8 +135,16 @@ export class GlpiFormConditionEngine
         // Build POST data
         const form_data = new FormData();
         form_data.append('form_id', this.#form_id);
-        for (const entry of data.answers.entries()) {
-            form_data.append(`answers[${entry[0]}]`, entry[1]);
+        for (const [question_id, value] of data.answers.entries()) {
+            if (Array.isArray(value)) {
+                // Handle array values
+                for (const item of value) {
+                    form_data.append(`answers[${question_id}][]`, item);
+                }
+            } else {
+                // Handle single values
+                form_data.append(`answers[${question_id}]`, value);
+            }
         }
 
         // Included direct access token if needed.

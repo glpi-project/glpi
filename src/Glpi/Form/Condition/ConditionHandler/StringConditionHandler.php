@@ -34,7 +34,6 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\Form\Condition\InputTemplateKey;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
 
@@ -49,12 +48,6 @@ class StringConditionHandler implements ConditionHandlerInterface
             ValueOperator::CONTAINS,
             ValueOperator::NOT_CONTAINS,
         ];
-    }
-
-    #[Override]
-    public function getInputTemplateKey(): InputTemplateKey
-    {
-        return InputTemplateKey::STRING;
     }
 
     #[Override]
@@ -76,5 +69,55 @@ class StringConditionHandler implements ConditionHandlerInterface
             // Unsupported operators
             default => false,
         };
+    }
+
+    /**
+     * Render the default input template based on the template key.
+     * This provides a fallback implementation.
+     *
+     * @param string $name Input name
+     * @param mixed $value Current value
+     * @param array $options Additional options for the template
+     * @return string HTML content
+     */
+    #[Override]
+    public function renderInputTemplate(string $name, mixed $value, array $options = []): string
+    {
+        $placeholder        = $options['placeholder'] ?? __("Enter a value...");
+        $label              = $options['label'] ?? __("Value");
+        $additional_classes = $options['class'] ?? "";
+
+        $html_attributes = array_merge([
+            'type'                              => $this->getInputType(),
+            'class'                             => "me-2 form-control value-selector flex-grow-1 {$additional_classes}",
+            'value'                             => $value,
+            'name'                              => $name,
+            'placeholder'                       => $placeholder,
+            'aria-label'                        => $label,
+            'data-glpi-conditions-editor-value' => '',
+        ], $this->getInputAdditionalHTMLAttributes());
+
+        // Generate HTML attributes string
+        $attributes_str = '';
+        foreach ($html_attributes as $attr => $attr_value) {
+            $attributes_str .= ' ' . $attr . '="' . htmlspecialchars($attr_value) . '"';
+        }
+
+        return "<input{$attributes_str} />";
+    }
+
+    public function getInputType(): string
+    {
+        return "text";
+    }
+
+    /**
+     * Get additional HTML attributes for the input field.
+     *
+     * @return array<string, string> Additional HTML attributes
+     */
+    public function getInputAdditionalHTMLAttributes(): array
+    {
+        return [];
     }
 }

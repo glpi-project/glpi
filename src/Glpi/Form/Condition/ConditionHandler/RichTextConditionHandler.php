@@ -37,7 +37,7 @@ namespace Glpi\Form\Condition\ConditionHandler;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
 
-final class RichTextConditionHandler extends StringConditionHandler implements ConditionHandlerInterface
+final class RichTextConditionHandler extends StringConditionHandler
 {
     #[Override]
     public function applyValueOperator(

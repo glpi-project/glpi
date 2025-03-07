@@ -363,9 +363,18 @@
     border-bottom-right-radius: var(--tblr-border-radius) !important;
 }
 
-.value-selector {
+.value-selector:not(:has(.select2-container)) {
     border: 0 !important;
     background-color: var(--tblr-yellow-lt) !important;
+}
+
+.value-selector .select2-selection {
+    border: 0 !important;
+    background-color: var(--tblr-yellow-lt) !important;
+
+    // Fix some border conflicts with tabler/select2
+    border-top-right-radius: var(--tblr-border-radius) !important;
+    border-bottom-right-radius: var(--tblr-border-radius) !important;
 }
 
 .visibility-dropdown-card {

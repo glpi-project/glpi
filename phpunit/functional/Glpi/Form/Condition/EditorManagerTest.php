@@ -257,7 +257,7 @@ final class EditorManagerTest extends GLPITestCase
         $this->assertEquals([], $dropdown_values);
     }
 
-    public function testInputTemplateKeyCanBeComputedFromCondition(): void
+    public function testInputTemplateIsProvidedForCondition(): void
     {
         // Arrange: create an editor manager with some data
         $condition_1 = new ConditionData(
@@ -270,7 +270,7 @@ final class EditorManagerTest extends GLPITestCase
             item_uuid: '2',
             item_type: 'question',
             value_operator: ValueOperator::EQUALS->value,
-            value: "bar",
+            value: 42,
         );
         $form_data = new FormData([
             'questions' => [
@@ -306,16 +306,25 @@ final class EditorManagerTest extends GLPITestCase
         ]);
         $editor_manager = $this->getManagerWithData($form_data);
 
-        // Act: get the template types using the condition
-        $question_1_template_key = $editor_manager->getInputTemplateKeyForCondition(
-            $condition_1
+        // Act: get the input templates for the conditions
+        $text_input_template = $editor_manager->getInputTemplateForCondition(
+            $condition_1,
+            "test_input_name"
         );
-        $question_2_template_key = $editor_manager->getInputTemplateKeyForCondition(
-            $condition_2
+        $number_input_template = $editor_manager->getInputTemplateForCondition(
+            $condition_2,
+            "test_input_name"
         );
 
-        // Assert: the correct template key must be found
-        $this->assertEquals(InputTemplateKey::STRING, $question_1_template_key);
-        $this->assertEquals(InputTemplateKey::NUMBER, $question_2_template_key);
+        // Assert: templates should be valid HTML with appropriate input types
+        $this->assertStringContainsString('<input', $text_input_template);
+        $this->assertStringContainsString('name="test_input_name"', $text_input_template);
+        $this->assertStringContainsString('value="foo"', $text_input_template);
+
+        $this->assertStringContainsString('<input', $number_input_template);
+        $this->assertStringContainsString('name="test_input_name"', $number_input_template);
+        $this->assertStringContainsString('value="42"', $number_input_template);
+        $this->assertStringContainsString('type="number"', $number_input_template);
+        $this->assertStringContainsString('step="any"', $number_input_template);
     }
 }
