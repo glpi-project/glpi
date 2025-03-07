@@ -38,7 +38,7 @@ use Glpi\Form\Condition\InputTemplateKey;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
 
-final class NumberConditionHandler implements ConditionHandlerInterface
+class NumberConditionHandler implements ConditionHandlerInterface
 {
     #[Override]
     public function getSupportedValueOperators(): array
