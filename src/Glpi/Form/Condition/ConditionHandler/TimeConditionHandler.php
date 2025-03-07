@@ -34,14 +34,13 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\Form\Condition\InputTemplateKey;
 use Override;
 
 final class TimeConditionHandler extends AbstractDateTimeConditionHandler
 {
     #[Override]
-    public function getInputTemplateKey(): InputTemplateKey
+    public function getTemplateParameters(): array
     {
-        return InputTemplateKey::TIME;
+        return ['attributes' => ['type' => 'time']];
     }
 }
