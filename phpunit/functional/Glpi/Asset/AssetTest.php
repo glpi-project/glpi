@@ -142,9 +142,14 @@ class AssetTest extends DbTestCase
 
     public function testSearchOptionsUnicity(): void
     {
-        $capacities = AssetDefinitionManager::getInstance()->getAvailableCapacities();
+        $capacities = [];
+        foreach (array_keys(\Glpi\Asset\AssetDefinitionManager::getInstance()->getAvailableCapacities()) as $available_capacity) {
+            if ($available_capacity !== \Glpi\Asset\Capacity\IsInventoriableCapacity::class) {
+                $capacities[] = new \Glpi\Asset\Capacity(name: $available_capacity);
+            }
+        }
         $definition = $this->initAssetDefinition(
-            capacities: array_keys($capacities)
+            capacities: $capacities
         );
 
         $asset = $this->createItem($definition->getAssetClassName(), [

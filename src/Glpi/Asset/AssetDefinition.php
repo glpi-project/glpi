@@ -352,7 +352,7 @@ TWIG, $twig_params);
 
             $added_capacities = array_diff_key($new_capacities, $old_capacities);
             foreach ($added_capacities as $capacity) {
-                $this->onCapacityEnabled($capacity->getName(), $capacity->getConfig()->getConfig());
+                $this->onCapacityEnabled($capacity->getName(), $capacity->getConfig());
             }
 
             $removed_capacities = array_diff_key($old_capacities, $new_capacities);

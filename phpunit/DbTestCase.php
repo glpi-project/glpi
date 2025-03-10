@@ -529,7 +529,7 @@ class DbTestCase extends \GLPITestCase
     ): AssetDefinition {
         // Add new capacity
         $capacities = $this->callPrivateMethod($definition, 'getDecodedCapacities');
-        $capacities[] = new \Glpi\Asset\Capacity(name: $capacity);
+        $capacities[$capacity] = new \Glpi\Asset\Capacity(name: $capacity);
 
         $this->updateItem(
             AssetDefinition::class,
@@ -543,7 +543,7 @@ class DbTestCase extends \GLPITestCase
         $definition->getFromDB($definition->getID());
 
         // Ensure capacity was added
-        $this->assertContains(
+        $this->assertArrayHasKey(
             $capacity,
             $this->callPrivateMethod($definition, 'getDecodedCapacities')
         );

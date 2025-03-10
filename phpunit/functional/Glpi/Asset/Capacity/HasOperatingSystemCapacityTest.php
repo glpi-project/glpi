@@ -228,7 +228,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [
                 $this->getTargetCapacity(),
-                HasHistoryCapacity::class
+                new \Glpi\Asset\Capacity(name: HasHistoryCapacity::class)
             ]
         );
         $class = $definition->getAssetClassName();
