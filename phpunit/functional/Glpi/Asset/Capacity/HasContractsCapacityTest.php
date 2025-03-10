@@ -76,14 +76,14 @@ class HasContractsCapacityTest extends DbTestCase
         // Enable capacity, the itemtype should now be registered
         $definition = $this->enableCapacity(
             $definition,
-            $this->getTargetCapacity()
+            $this->getTargetCapacity()->getName()
         );
         $this->assertContains($class, $CFG_GLPI["contract_types"]);
 
         // Disable capacity, the itemtype should no longer be registered
         $definition = $this->disableCapacity(
             $definition,
-            $this->getTargetCapacity()
+            $this->getTargetCapacity()->getName()
         );
         $this->assertNotContains($class, $CFG_GLPI["contract_types"]);
     }
@@ -118,7 +118,7 @@ class HasContractsCapacityTest extends DbTestCase
         // Enable capacity, the tab should now be registered
         $definition = $this->enableCapacity(
             $definition,
-            $this->getTargetCapacity()
+            $this->getTargetCapacity()->getName()
         );
         $this->assertArrayHasKey($tab_name, $subject->defineAllTabs());
     }
@@ -177,7 +177,7 @@ class HasContractsCapacityTest extends DbTestCase
         // Disable capacity, linked item should be deleted
         $definition = $this->disableCapacity(
             $definition,
-            $this->getTargetCapacity()
+            $this->getTargetCapacity()->getName()
         );
         $items = (new Contract_Item())->find([
             'itemtype' => $subject::getType(),
@@ -198,7 +198,7 @@ class HasContractsCapacityTest extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [
                 $this->getTargetCapacity(),
-                HasHistoryCapacity::class
+                new \Glpi\Asset\Capacity(name: HasHistoryCapacity::class)
             ]
         );
         $class = $definition->getAssetClassName();
@@ -256,7 +256,7 @@ class HasContractsCapacityTest extends DbTestCase
         // be deleted
         $definition = $this->disableCapacity(
             $definition,
-            $this->getTargetCapacity()
+            $this->getTargetCapacity()->getName()
         );
         $count_logs = countElementsInTable(Log::getTable(), [
             'itemtype' => $contract::getType(),
@@ -316,7 +316,7 @@ class HasContractsCapacityTest extends DbTestCase
         // deleted
         $definition = $this->disableCapacity(
             $definition,
-            $this->getTargetCapacity()
+            $this->getTargetCapacity()->getName()
         );
         $count_display_preferences = countElementsInTable(
             DisplayPreference::getTable(),

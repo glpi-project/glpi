@@ -61,7 +61,6 @@ class HasNetworkPortCapacityTest extends DbTestCase
         $definition_1 = $this->initAssetDefinition(
             capacities: [
                 new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasNetworkPortCapacity::class),
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasNetworkPortCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();

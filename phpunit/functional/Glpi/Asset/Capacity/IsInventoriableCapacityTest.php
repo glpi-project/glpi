@@ -44,7 +44,7 @@ use ReservationItem;
 
 class IsInventoriableCapacityTest extends DbTestCase
 {
-    protected function getTargetCapacity(): string
+    protected function getTargetCapacity(): \Glpi\Asset\Capacity
     {
         return new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class);
     }
@@ -177,7 +177,7 @@ class IsInventoriableCapacityTest extends DbTestCase
         ]);
 
         // Check that the capacity can be disabled
-        $capacity = new ($this->getTargetCapacity());
+        $capacity = new ($this->getTargetCapacity()->getName());
         $this->assertFalse($capacity->isUsed($definition->getAssetClassName()));
 
         // Create a dynamic test subject
@@ -188,7 +188,7 @@ class IsInventoriableCapacityTest extends DbTestCase
         ]);
 
         // Check that the capacity can't be safely disabled
-        $capacity = new ($this->getTargetCapacity());
+        $capacity = new ($this->getTargetCapacity()->getName());
         $this->assertTrue($capacity->isUsed($definition->getAssetClassName()));
     }
 
@@ -202,7 +202,7 @@ class IsInventoriableCapacityTest extends DbTestCase
     {
         global $DB;
 
-        $capacity = new ($this->getTargetCapacity());
+        $capacity = new ($this->getTargetCapacity()->getName());
 
         // Retrieve the test root entity
         $entity_id = $this->getTestRootEntity(true);

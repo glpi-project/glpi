@@ -63,7 +63,6 @@ class HasSocketCapacityTest extends DbTestCase
         $definition_1 = $this->initAssetDefinition(
             capacities: [
                 new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasSocketCapacity::class),
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasSocketCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
