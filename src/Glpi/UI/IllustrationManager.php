@@ -109,7 +109,7 @@ final class IllustrationManager
         $icons = array_filter(
             $this->getIconsDefinitions(),
             fn ($icon) => str_contains(
-                strtolower($icon['title']),
+                strtolower(_sx("Icon", $icon['title'])),
                 strtolower($filter),
             )
         );
@@ -121,6 +121,17 @@ final class IllustrationManager
         );
 
         return array_keys($icons);
+    }
+
+    public function getAllIconsTitles(): array
+    {
+        $icons = $this->getIconsDefinitions();
+        $titles = [];
+        foreach ($icons as $icon) {
+            $titles[] = $icon['title'];
+        }
+
+        return $titles;
     }
 
     private function getIconsDefinitions(): array

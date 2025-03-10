@@ -118,4 +118,22 @@ final class IllustrationManagerTest extends GLPITestCase
         // Assert: the expected icons ids are found
         $this->assertEquals($expected, $ids);
     }
+
+    public function testIllustrationsTranslationsAreGenerated(): void
+    {
+        // Assert: a file with translations for each icons should exist in the
+        // ressources folder.
+        $this->assertFileExists(GLPI_ROOT . '/resources/illustrations_translations.php');
+
+        $content = file_get_contents(GLPI_ROOT . '/resources/illustrations_translations.php');
+        $to_check = [
+            "Approve Requests",
+            "Monitoring",
+            "Make a reservation",
+            "New user 3",
+        ];
+        foreach ($to_check as $string) {
+            $this->assertStringContainsString('_sx("Icon", "' . $string . '")', $content);
+        }
+    }
 }

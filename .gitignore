@@ -48,3 +48,4 @@ phpstan.neon
 /phpunit/coverage/
 *.phar
 .env
+/resources/illustrations_translations.php
