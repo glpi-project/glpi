@@ -72,7 +72,7 @@ final class SessionStart implements EventSubscriberInterface
             // Specific configuration related to web context
 
             $request = Request::createFromGlobals();
-            $path = $request->getPathInfo();
+            [$uri_prefix, $path] = $this->extractPathAndPrefix($request);
             $target_file = $this->getTargetFile($path);
 
             $use_cookies = true;
