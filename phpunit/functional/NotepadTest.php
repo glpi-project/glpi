@@ -81,7 +81,6 @@ use Notepad;
  */
 class NotepadTest extends DbTestCase
 {
-
     public function getAssets()
     {
         return [
