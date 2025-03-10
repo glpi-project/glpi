@@ -1,0 +1,105 @@
+{# no entries #}
+{% if entries|length == 0 %}
+    <tr>
+        <td colspan="{{ total_cols }}">
+            <div class="alert alert-info">
+                {{ __('No results found') }}
+            </div>
+        </td>
+    </tr>
+{% endif %}
+
+{# display entries #}
+{% for entry in entries %}
+    <tr class="{{ row_class|default('') }} {{ entry['row_class']|default('') }}"
+        data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
+        {% set row_massiveactions = entry['showmassiveactions']|default(showmassiveactions) %}
+        {% if row_massiveactions %}
+            <td style="width: 10px">
+                {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
+                    <input class="form-check-input massive_action_checkbox" type="checkbox"
+                           data-glpicore-ma-tags="common"
+                           value="1" aria-label="{{ __("Select item") }}"
+                           name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]"/>
+                {% endif %}
+            </td>
+        {% endif %}
+        {% for colkey, colum in columns %}
+            <td>
+                {% if colkey in entry|keys %}
+
+                    {% set formatter = formatters[colkey] %}
+
+                    {% if formatter == "maintext" %}
+                        <span class="d-inline-block bg-blue-lt p-1 text-truncate"
+                              title="{{ entry[colkey] }}"
+                              data-bs-toggle="tooltip"
+                              style="max-width: 250px;">
+                                                {{ entry[colkey] }}
+                                            </span>
+                    {% elseif formatter == "longtext" %}
+                        <span class="d-inline-block text-truncate"
+                              title="{{ entry[colkey] }}"
+                              data-bs-toggle="tooltip"
+                              style="max-width: 250px;">
+                                                {{ entry[colkey] }}
+                                            </span>
+                    {% elseif formatter starts with "progress" %}
+                        {{ progress_bar(entry[colkey]) }}
+                    {% elseif formatter == "date" %}
+                        {{ entry[colkey]|formatted_date }}
+                    {% elseif formatter == "datetime" %}
+                        {{ entry[colkey]|formatted_datetime }}
+                    {% elseif formatter == "duration" %}
+                        {{ entry[colkey]|formatted_duration }}
+                    {% elseif formatter == "bytesize" %}
+                        {{ call("Toolbox::getSize", [entry[colkey]])|raw }}
+                    {% elseif formatter == 'number' %}
+                        {{ entry[colkey]|formatted_number }}
+                    {% elseif formatter == 'integer' %}
+                        {{ entry[colkey]|formatted_integer }}
+                    {% elseif formatter == "raw_html" %}
+                        {{ entry[colkey]|raw }}
+                    {% elseif formatter == 'avatar' %}
+                        {#  Note: Does not support anonymization currently #}
+                        {% set entry_data = entry[colkey] %}
+                        {% set avatar_size = entry_data['avatar_size'] ?? 'avatar-md' %}
+                        {% set img = entry_data['picture'] %}
+                        {% set initials = entry_data['initials'] %}
+                        {% set bg_color = img is not empty ? 'inherit' : entry_data['initials_bg'] %}
+                        <span class="avatar {{ avatar_size }} rounded"
+                              style="{% if img is not null %} background-image: url({{ img }}); {% endif %} background-color: {{ bg_color }}">
+                                                {% if img is empty %}
+                                                    {{ initials }}
+                                                {% endif %}
+                                            </span>
+                    {% elseif formatter == "badge" %}
+                        {% set entry_data = entry[colkey] %}
+                        {% set content = entry_data['content'] %}
+                        {% set color = entry_data['color'] ?? '#BBBBBB' %}
+                        {% if not (color matches '/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/') %}
+                            {% set color = '#BBBBBB' %}
+                        {% endif %}
+                        {% if content is not empty %}
+                            <div class="badge_block" style="border-color: {{ color }}">
+                                <span class="me-1" style="background: {{ color }}"></span>
+                                {{ content }}
+                            </div>
+                        {% endif %}
+                    {% elseif formatter == 'yesno' %}
+                        {% if entry[colkey] == 1 %}
+                            <div aria-label="{{ __('Yes') }}"><i class="ti ti-circle-check"></i></div>
+                        {% else %}
+                            <div aria-label="{{ __('No') }}"></div>
+                        {% endif %}
+                    {% else %}
+                        {{ entry[colkey] }}
+                    {% endif %}
+                {% endif %}
+            </td>
+        {% endfor %}
+        {% if not nofilter %}
+            <td></td>
+        {% endif %}
+    </tr>
+{% endfor %}
