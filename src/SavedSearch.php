@@ -87,9 +87,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                      = __('Unset as default');
         $actions[get_called_class() . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_count_method']
                      = __('Change count method');
+        $actions[get_called_class() . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_visibility']
+                     = __('Change visibility');
         if (Session::haveRight('transfer', READ)) {
             $actions[get_called_class() . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_entity']
-                     = __('Change visibility');
+                     = __('Change entity');
         }
         return $actions;
     }
@@ -116,6 +118,16 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 echo __('Child entities');
                 Dropdown::showYesNo('is_recursive');
                 echo '<br/>';
+                break;
+            case 'change_visibility':
+                echo __('Visibility');
+                Dropdown::showFromArray(
+                    'is_private',
+                    [
+                        1  => __('Private'),
+                        0  => __('Public')
+                    ],
+                );
                 break;
         }
         return parent::showMassiveActionsSubForm($ma);
@@ -152,6 +164,23 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
                 } else {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                }
+                break;
+            case 'change_visibility':
+                $input = $ma->getInput();
+                foreach ($ids as $id) {
+                    if ($item->can($id, UPDATE)) {
+                        if (
+                            $item->update(['id' => $id,
+                                'is_private' => $input['is_private']
+                            ])
+                        ) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        }
+                    }
                 }
                 break;
         }
@@ -1194,7 +1223,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         );
         return $result;
     }
-
 
     public static function cronInfo($name)
     {
