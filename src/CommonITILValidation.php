@@ -950,9 +950,9 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Print the validation list into item
      *
-     * @param CommonDBTM $item
+     * @param CommonITILObject $item
      **/
-    public function showSummary(CommonDBTM $item)
+    public function showSummary(CommonITILObject $item)
     {
         /**
          * @var array $CFG_GLPI

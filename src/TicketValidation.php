@@ -161,7 +161,6 @@ class TicketValidation extends CommonITILValidation
         /**
          * @var array $CFG_GLPI
          * @var \DBmysql $DB
-         * @var CommonITILObject $ticket
          */
         global $CFG_GLPI, $DB;
 
