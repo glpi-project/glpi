@@ -167,10 +167,20 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 }
                 break;
             case 'change_visibility':
-                if ($item->setVisibility($ids, $input['is_private'])) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
-                } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                $input = $ma->getInput();
+                foreach ($ids as $id) {
+                    if ($item->can($id, UPDATE)) {
+                        if (
+                            $item->update(['id' => $id,
+                                'is_private' => $input['is_private']
+                            ])
+                        ) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        }
+                    }
                 }
                 break;
         }
@@ -1213,32 +1223,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         );
         return $result;
     }
-
-    /**
-     * Set visibility from massive actions
-     *
-     * @param array   $ids   Items IDs
-     * @param bool $is_private   Visibility
-     *
-     * @return boolean
-     */
-    public function setVisibility(array $ids, bool $is_private)
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $result = $DB->update(
-            $this->getTable(),
-            [
-                'is_private'  => $is_private,
-            ],
-            [
-                'id' => $ids
-            ]
-        );
-        return $result;
-    }
-
 
     public static function cronInfo($name)
     {
