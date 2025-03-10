@@ -34,14 +34,26 @@
 
 namespace Glpi\Kernel\Listener;
 
+use Glpi\Http\LegacyRouterTrait;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Session;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-final readonly class SessionStart implements EventSubscriberInterface
+final class SessionStart implements EventSubscriberInterface
 {
+    use LegacyRouterTrait;
+
+    public function __construct(
+        #[Autowire('%kernel.project_dir%')] string $glpi_root,
+        array $plugin_directories = PLUGINS_DIRECTORIES,
+    ) {
+        $this->glpi_root = $glpi_root;
+        $this->plugin_directories = $plugin_directories;
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -61,6 +73,7 @@ final readonly class SessionStart implements EventSubscriberInterface
 
             $request = Request::createFromGlobals();
             $path = $request->getPathInfo();
+            $target_file = $this->getTargetFile($path);
 
             $use_cookies = true;
             if (\str_starts_with($path, '/api.php') || \str_starts_with($path, '/apirest.php')) {
@@ -68,8 +81,12 @@ final readonly class SessionStart implements EventSubscriberInterface
                 $use_cookies = false;
                 // The API endpoint is starting the session manually.
                 $start_session = false;
-            } elseif (str_ends_with($path, '.js')) {
-                // JS files loaded by the LegacyAssetsListener must not start a session or it'll prevent them from being cached.
+            } elseif (
+                $target_file !== null
+                && !$this->isTargetAPhpScript($path)
+            ) {
+                // Static files loaded by the LegacyAssetsListener must not start
+                // a session or it'll prevent them from being cached.
                 $start_session = false;
             } elseif (\str_starts_with($path, '/caldav.php')) {
                 // CalDAV clients must not use cookies, as the authentication is expected to be passed in headers.
