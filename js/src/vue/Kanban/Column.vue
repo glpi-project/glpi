@@ -257,7 +257,7 @@
 <style scoped lang="scss">
     :deep(.kanban-form), :deep(.kanban-item) {
         text-align: left;
-        padding-left: 0;
+        padding: 10px;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 10%);
         min-height: 50px;
         margin-top: 10px;
@@ -300,9 +300,11 @@
 
         .kanban-description-preview {
             padding: 0 10px;
+            margin-top: 10px;
             white-space: break-spaces;
             max-height: 3em;
             overflow: hidden;
+            text-indent: 1.5em;
         }
         @supports (display: -webkit-box) and (-webkit-line-clamp: 7) and (-webkit-box-orient: vertical) {
             .kanban-description-preview {
@@ -401,6 +403,7 @@
 
         .kanban-item-due-date {
             margin-right: 10px;
+            margin-top: 10px;
         }
     }
 
@@ -428,7 +431,7 @@
                     flex-direction: column;
 
                     .content-left {
-                        display: contents;
+                        display: contents !important;
                     }
 
                     .kanban-collapse-column {

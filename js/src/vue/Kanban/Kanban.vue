@@ -1334,7 +1334,7 @@
 <template>
     <div :id="element_id" class="kanban">
         <div class="kanban-container">
-            <div v-if="show_toolbar" class="kanban-toolbar flex-column flex-md-row btn-group">
+            <div v-if="show_toolbar" class="kanban-toolbar flex-column flex-md-row btn-group shadow-none">
                 <select name="kanban-board-switcher" v-model="kanban_switcher">
                     <option v-for="(k_name, k_id) in all_kanbans" :value="k_id" :selected="k_id === item.items_id" :key="k_id">{{ k_name }}</option>
                 </select>
