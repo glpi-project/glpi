@@ -50,6 +50,9 @@ use PDU;
 use Rack;
 use Enclosure;
 use Cable;
+use Cluster;
+use Webhook;
+use DatabaseInstance;
 use PassiveDCEquipment;
 use ConsumableItem;
 use DeviceBattery;
@@ -95,7 +98,10 @@ class NotepadTest extends DbTestCase
             Enclosure::class,
             PDU::class,
             PassiveDCEquipment::class,
-            Cable::class
+            Cable::class,
+            Cluster::class,
+            Webhook::class,
+            DatabaseInstance::class,
         ];
     }
 
