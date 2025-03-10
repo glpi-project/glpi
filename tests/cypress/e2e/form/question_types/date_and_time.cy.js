@@ -106,4 +106,54 @@ describe('Date and Time form question type', () => {
             cy.findByLabelText('Default value').should('have.attr', 'type', 'text').should('have.be.disabled');
         });
     });
+
+    it('check date and time value conversions', () => {
+        cy.findByRole('region', { name: 'Question details' }).within(() => {
+            // Start with date input (default)
+            cy.findByRole('checkbox', { name: 'Date' }).should('be.checked');
+            cy.findByRole('checkbox', { name: 'Time' }).should('not.be.checked');
+
+            // Set a date value
+            cy.findByLabelText('Default value').clear();
+            cy.findByLabelText('Default value').type('2023-12-15');
+
+            // Add time - should convert to datetime-local
+            cy.findByRole('checkbox', { name: 'Time' }).check();
+            cy.findByLabelText('Default value').should('have.attr', 'type', 'datetime-local')
+                .invoke('val').should('match', /^2023-12-15T\d{2}:\d{2}$/);
+
+            // Set a specific time with the date
+            cy.findByLabelText('Default value').clear();
+            cy.findByLabelText('Default value').type('2023-12-15T14:30');
+
+            // Remove date - should convert to time only
+            cy.findByRole('checkbox', { name: 'Date' }).uncheck();
+            cy.findByLabelText('Default value').should('have.attr', 'type', 'time')
+                .should('have.value', '14:30');
+
+            // Add date back - should convert back to datetime-local
+            cy.findByRole('checkbox', { name: 'Date' }).check();
+            cy.findByLabelText('Default value').should('have.attr', 'type', 'datetime-local')
+                .invoke('val').should('match', /^\d{4}-\d{2}-\d{2}T14:30$/);
+
+            // Remove time - should convert to date only
+            cy.findByRole('checkbox', { name: 'Time' }).uncheck();
+            cy.findByLabelText('Default value').should('have.attr', 'type', 'date')
+                .invoke('val').should('match', /^\d{4}-\d{2}-\d{2}$/);
+
+            // Check "Current date" - should disable the input
+            cy.findByRole('checkbox', { name: 'Current date' }).check();
+            cy.findByLabelText('Default value').should('be.disabled');
+
+            // Uncheck "Current date" and enable Time
+            cy.findByRole('checkbox', { name: 'Current date' }).uncheck();
+            cy.findByRole('checkbox', { name: 'Time' }).check();
+
+            // Set datetime value then check "Current date and time" - should disable the input
+            cy.findByLabelText('Default value').clear();
+            cy.findByLabelText('Default value').type('2023-12-15T16:45');
+            cy.findByRole('checkbox', { name: 'Current date and time' }).check();
+            cy.findByLabelText('Default value').should('be.disabled');
+        });
+    });
 });
