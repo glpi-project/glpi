@@ -542,7 +542,6 @@ CREATE TABLE `glpi_certificates` (
   `dns_name` varchar(255) DEFAULT NULL,
   `dns_suffix` varchar(255) DEFAULT NULL,
   `users_id_tech` int unsigned NOT NULL DEFAULT '0',
-  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   `locations_id` int unsigned NOT NULL DEFAULT '0',
   `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `contact` varchar(255) DEFAULT NULL,
