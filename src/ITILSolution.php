@@ -300,11 +300,7 @@ class ITILSolution extends CommonDBChild
 
         // Handle rich-text images and uploaded documents
         $this->input["_job"] = $this->item;
-        $options = ['force_update' => true];
-        if (!isset($this->input['_filename']) && isset($this->input['_content'])) {
-            $options['name'] = 'content';
-        }
-        $this->input = $this->addFiles($this->input, $options);
+        $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
         // Add solution to duplicates
         if ($this->item->getType() == 'Ticket' && !isset($this->input['_linked_ticket'])) {
