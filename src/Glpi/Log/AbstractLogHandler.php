@@ -42,9 +42,9 @@ abstract class AbstractLogHandler extends StreamHandler
     public function __construct(string $logfile)
     {
         if (\defined('GLPI_LOG_LVL')) {
-            $log_level = \GLPI_LOG_LVL;
+            $log_level = GLPI_LOG_LVL;
         } else {
-            $log_level = match (\GLPI_ENVIRONMENT_TYPE) {
+            $log_level = match (GLPI_ENVIRONMENT_TYPE) {
                 \GLPI::ENV_DEVELOPMENT => LogLevel::DEBUG,
                 \GLPI::ENV_TESTING => LogLevel::DEBUG,
                 default => LogLevel::WARNING,
