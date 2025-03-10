@@ -8956,11 +8956,8 @@ HTML;
                 /** @var string $PDF_TABLE */
                 global $PDF_TABLE;
 
-                $font       = 'helvetica';
+                $font = 'dejavusans';
                 $fontsize   = 8;
-                if (isset($_SESSION['glpipdffont']) && $_SESSION['glpipdffont']) {
-                    $font       = $_SESSION['glpipdffont'];
-                }
 
                 $pdf = new GLPIPDF(
                     [
