@@ -183,9 +183,9 @@
                         <span :class="`me-1 ${column_data.color_class || ''}`" :style="`background-color: ${bg_color}`"></span>
                         {{ column_data.name }}
                     </span>
+                    <span class="kanban_nb badge bg-secondary text-secondary-fg align-content-center" v-text="card_count"></span>
                 </span>
                 <span class="content-right d-flex">
-                    <span class="kanban_nb badge bg-secondary text-secondary-fg align-content-center" v-text="card_count"></span>
                     <span class="kanban-column-toolbar align-middle">
                         <template v-if="rights.canCreateItem() && (rights.getAllowedColumnsForNewCards().length === 0 || rights.getAllowedColumnsForNewCards().includes(column_id))">
                             <div class="dropdown d-inline-block">
