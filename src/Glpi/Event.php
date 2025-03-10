@@ -212,8 +212,12 @@ class Event extends CommonDBTM
         } else {
             switch ($type) {
                 case "rules":
-                    echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/rule.generic.form.php?id=" .
-                     $items_id . "\">" . $items_id . "</a>";
+                    $rule = \Rule::getRuleObjectByID($items_id);
+                    if ($rule !== null) {
+                        echo "<a href=\"" . $rule->getFormURLWithID($items_id) . "\">" . $items_id . "</a>";
+                    } else {
+                        echo $items_id;
+                    }
                     break;
 
                 case "infocom":

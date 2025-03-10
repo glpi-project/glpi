@@ -592,6 +592,9 @@ class CommonGLPI implements CommonGLPIInterface
         return '';
     }
 
+    /**
+     * @return array{0?: string, 1?: string, 2?: string}
+     */
     public static function getSectorizedDetails(): array
     {
         return [];
@@ -752,10 +755,12 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Redirect to the list page from which the item was selected
      * Default to the search engine for the type
-     *
-     * @return void
+     * @return never
+     * return type not set, atoum will not be able to mock this method.
+     * e.g. tests\\units\\Plugin::testcheckGlpiVersion() fails
+     * can be set when atoum is removed.
      **/
-    public function redirectToList(): void
+    public function redirectToList()
     {
         Html::redirect($this->getRedirectToListUrl());
     }
