@@ -68,6 +68,9 @@ final readonly class SessionStart implements EventSubscriberInterface
                 $use_cookies = false;
                 // The API endpoint is starting the session manually.
                 $start_session = false;
+            } elseif (str_ends_with($path, '.js')) {
+                // JS files loaded by the LegacyAssetsListener must not start a session or it'll prevent them from being cached.
+                $start_session = false;
             } elseif (\str_starts_with($path, '/caldav.php')) {
                 // CalDAV clients must not use cookies, as the authentication is expected to be passed in headers.
                 $use_cookies = false;
