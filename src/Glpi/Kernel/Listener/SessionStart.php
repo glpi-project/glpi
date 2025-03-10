@@ -73,7 +73,6 @@ final class SessionStart implements EventSubscriberInterface
 
             $request = Request::createFromGlobals();
             [$uri_prefix, $path] = $this->extractPathAndPrefix($request);
-            $target_file = $this->getTargetFile($path);
 
             $use_cookies = true;
             if (\str_starts_with($path, '/api.php') || \str_starts_with($path, '/apirest.php')) {
@@ -82,7 +81,7 @@ final class SessionStart implements EventSubscriberInterface
                 // The API endpoint is starting the session manually.
                 $start_session = false;
             } elseif (
-                $target_file !== null
+                $this->getTargetFile($path) !== null
                 && !$this->isTargetAPhpScript($path)
             ) {
                 // Static files loaded by the LegacyAssetsListener must not start
