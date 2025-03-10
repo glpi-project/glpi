@@ -36,9 +36,13 @@
 {% set anonymized = enable_anonymization and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED') %}
 {% set user = user_object ?? get_item('User', users_id) %}
 {% set with_link = with_link ?? true %}
-{% set user_thumbnail = user.getThumbnailPicturePath(enable_anonymization) %}
-{% if user_thumbnail == null and not entity_config('display_users_initials', session('glpiactive_entity')) %}
-    {% set user_thumbnail = user.getPicturePath(enable_anonymization) %}
+{% if not force_initials %}
+    {% set user_thumbnail = user.getThumbnailPicturePath(enable_anonymization) %}
+    {% if user_thumbnail == null and not entity_config('display_users_initials', session('glpiactive_entity')) %}
+        {% set user_thumbnail = user.getPicturePath(enable_anonymization) %}
+    {% endif %}
+{% else %}
+    {% set user_thumbnail = null %}
 {% endif %}
 
 {% if with_link and not anonymized %}

@@ -187,10 +187,10 @@ class UserEmail extends CommonDBChild
     public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var)
     {
 
-        return "<input title=\'" . __s('Default email') . "\' type=\'radio\' name=\'_default_email\'" .
+        return "<div class=\'d-flex\'><input title=\'" . __s('Default email') . "\' type=\'radio\' name=\'_default_email\'" .
              " value=\'-'+" . htmlescape($child_count_js_var) . "+'\'>&nbsp;" .
              "<input type=\'text\' size=\'30\' class=\'form-control\' " . "name=\'" . htmlescape($field_name) .
-             "[-'+" . htmlescape($child_count_js_var) . "+']\'>";
+             "[-'+" . htmlescape($child_count_js_var) . "+']\'></div>";
     }
 
 

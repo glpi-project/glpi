@@ -871,7 +871,7 @@ abstract class CommonDBChild extends CommonDBConnexity
             $result .= "<span id='add" . $lower_name . "button' class='ti ti-plus cursor-pointer'" .
               " title=\"" . __s('Add') . "\"" .
                 "\" onClick=\"var row = $('#" . $div_id . "');
-                             row.append('<br>" .
+                             row.append('" .
                static::getJSCodeToAddForItemChild($field_name, $child_count_js_var) . "');
                             $child_count_js_var++;\"
                ><span class='sr-only'>" . __s('Add')  . "</span></span>";
@@ -956,7 +956,7 @@ abstract class CommonDBChild extends CommonDBConnexity
         }
 
         if ($canedit) {
-            $result .= "<div id='$div_id'>";
+            $result .= "<div id='$div_id' class='d-flex flex-column'>";
            // No Child display field
             if ($count == 0) {
                 $current_item->getEmpty();
