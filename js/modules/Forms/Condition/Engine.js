@@ -79,7 +79,7 @@ export class GlpiFormConditionEngine
             const value = entry[1];
 
             // Skip data unrelated to form answers
-            if (key.indexOf('answers_') == -1) {
+            if (key.indexOf('answers_') !== 0) {
                 continue;
             }
 

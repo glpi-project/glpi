@@ -37,6 +37,7 @@ namespace Glpi\Form\Condition;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\StringConditionHandler;
 use Glpi\Form\QuestionType\AbstractQuestionType;
+use LogicException;
 
 final class EditorManager
 {
@@ -130,6 +131,8 @@ final class EditorManager
             return [];
         }
 
+        /** @var UsedAsCriteriaInterface&AbstractQuestionType $type */
+
         // Load question type config
         $raw_config = $question->getExtraData();
         $config = $raw_config ? $type->getExtraDataConfig($raw_config) : null;
@@ -161,6 +164,8 @@ final class EditorManager
             // Safe fallback
             return new StringConditionHandler();
         }
+
+        /** @var UsedAsCriteriaInterface&AbstractQuestionType $type */
 
         // Load question type config
         $raw_config = $question->getExtraData();
