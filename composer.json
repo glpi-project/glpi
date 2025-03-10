@@ -169,7 +169,6 @@
             "patch -f -p1 -d vendor/michelf/php-markdown/ < tools/patches/michelf-php-markdown-php8-compat.patch || true",
             "patch -f -p1 -d vendor/psr/http-factory/ < tools/patches/psr-http-factory-php8.4-compat.patch || true",
             "patch -f -p1 -d vendor/scssphp/scssphp/ < tools/patches/scssphp-scssphp-php8.4-compat.patch || true",
-            "patch -f -p1 -d vendor/swaggest/json-diff/ < tools/patches/swaggest-json-diff-php8.4-compat.patch || true",
             "patch -f -p1 -d vendor/wapmorgan/unified-archive/ < tools/patches/wapmorgan-unified-archive-php-8.4-compat.patch || true"
         ]
     },
