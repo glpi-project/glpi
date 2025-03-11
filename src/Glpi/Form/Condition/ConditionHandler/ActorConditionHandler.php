@@ -35,27 +35,42 @@
 namespace Glpi\Form\Condition\ConditionHandler;
 
 use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
+use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Override;
 
-abstract class AbstractDateTimeConditionHandler implements ConditionHandlerInterface
+class ActorConditionHandler implements ConditionHandlerInterface
 {
+    public function __construct(
+        private AbstractQuestionTypeActors $question_type,
+        private QuestionTypeActorsExtraDataConfig $extra_data_config,
+    ) {
+    }
+
     #[Override]
     public function getSupportedValueOperators(): array
     {
         return [
             ValueOperator::EQUALS,
             ValueOperator::NOT_EQUALS,
-            ValueOperator::GREATER_THAN,
-            ValueOperator::GREATER_THAN_OR_EQUALS,
-            ValueOperator::LESS_THAN,
-            ValueOperator::LESS_THAN_OR_EQUALS,
+            ValueOperator::CONTAINS,
+            ValueOperator::NOT_CONTAINS,
         ];
     }
 
     #[Override]
     public function getTemplate(): string
     {
-        return '/pages/admin/form/condition_handler_templates/input.html.twig';
+        return '/pages/admin/form/condition_handler_templates/actor.html.twig';
+    }
+
+    #[Override]
+    public function getTemplateParameters(): array
+    {
+        return [
+            'multiple'       => $this->extra_data_config->isMultipleActors(),
+            'allowed_actors' => $this->question_type->getAllowedActorTypes(),
+        ];
     }
 
     #[Override]
@@ -64,17 +79,19 @@ abstract class AbstractDateTimeConditionHandler implements ConditionHandlerInter
         ValueOperator $operator,
         mixed $b,
     ): bool {
-        // Date can be compared as simple strings.
-        $a = strtolower(strval($a));
-        $b = strtolower(strval($b));
+        if (empty($a)) {
+            $a = [];
+        }
+
+        if (!is_array($a) || !is_array($b)) {
+            return false;
+        }
 
         return match ($operator) {
-            ValueOperator::EQUALS                 => $a === $b,
-            ValueOperator::NOT_EQUALS             => $a !== $b,
-            ValueOperator::GREATER_THAN           => $a > $b,
-            ValueOperator::GREATER_THAN_OR_EQUALS => $a >= $b,
-            ValueOperator::LESS_THAN              => $a < $b,
-            ValueOperator::LESS_THAN_OR_EQUALS    => $a <= $b,
+            ValueOperator::EQUALS       => empty(array_diff($a, $b)) && count($a) === count($b),
+            ValueOperator::NOT_EQUALS   => !empty(array_diff($a, $b)) || count($a) !== count($b),
+            ValueOperator::CONTAINS     => !empty(array_intersect($a, $b)),
+            ValueOperator::NOT_CONTAINS => empty(array_intersect($a, $b)),
 
             // Unsupported operators
             default => false,
