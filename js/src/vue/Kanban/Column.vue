@@ -304,7 +304,6 @@
             white-space: break-spaces;
             max-height: 3em;
             overflow: hidden;
-            text-indent: 1.5em;
         }
         @supports (display: -webkit-box) and (-webkit-line-clamp: 7) and (-webkit-box-orient: vertical) {
             .kanban-description-preview {
@@ -505,7 +504,8 @@
             }
 
             .kanban-column-title {
-                font-size: 1.2em;
+                font-size: 1.3em;
+                font-weight: 600;
                 margin-left: 2px;
                 color: inherit !important;
             }
