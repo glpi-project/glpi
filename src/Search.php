@@ -6775,7 +6775,7 @@ JAVASCRIPT;
 
                            // Manage alternative_email for tickets_users
                                 if (
-                                    ($itemtype == 'Ticket')
+                                    is_subclass_of($itemtype, CommonITILObject::class)
                                     && isset($data[$ID][$k][2])
                                 ) {
                                         $split = explode(self::LONGSEP, $data[$ID][$k][2]);
@@ -6797,7 +6797,7 @@ JAVASCRIPT;
                     if ($itemtype != 'User') {
                         $toadd = '';
                         if (
-                            ($itemtype == 'Ticket')
+                            is_subclass_of($itemtype, CommonITILObject::class)
                             && ($data[$ID][0]['id'] > 0)
                         ) {
                             $userdata = getUserName($data[$ID][0]['id'], 2);
