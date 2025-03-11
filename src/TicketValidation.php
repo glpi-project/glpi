@@ -146,7 +146,7 @@ class TicketValidation extends CommonITILValidation
 
         // validation step exists in db
         $vs = new ValidationStep();
-        if(!$vs->getFromDB((int) $input['validationsteps_id'])) {
+        if(isset($input['validationsteps_id']) && !$vs->getFromDB((int) $input['validationsteps_id'])) {
             Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is invalid'), 'validationsteps_id'), message_type: ERROR);
             return false;
         };
