@@ -113,6 +113,7 @@
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpunit/phpunit": "^11.2",
+        "shipmonk/composer-dependency-analyser": "^1.8",
         "squizlabs/php_codesniffer": "^3.11",
         "symfony/browser-kit": "^6.4",
         "symfony/http-client": "^6.4",
@@ -139,7 +140,8 @@
     "suggest": {
         "ext-ldap": "Used to provide LDAP authentication and synchronization",
         "ext-sodium": "Used to provide strong encryption for sensitive data in database",
-        "ext-posix": "Used to detect scripts running as root"
+        "ext-posix": "Used to detect scripts running as root",
+        "ext-exif": "Recommended for security"
     },
     "config": {
         "optimize-autoloader": true,

@@ -78,9 +78,9 @@ final class ErrorHandler extends BaseErrorHandler
 
     public function __construct(LoggerInterface $logger)
     {
-        parent::__construct(debug: \GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT);
+        parent::__construct(debug: GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT);
 
-        $this->env = \GLPI_ENVIRONMENT_TYPE;
+        $this->env = GLPI_ENVIRONMENT_TYPE;
 
         $this->scopeAt(E_ALL, true); // Preserve variables for all errors
         $this->traceAt(E_ALL, true); // Preserve stack trace for all errors
