@@ -427,7 +427,10 @@ class Document_Item extends CommonDBRelation
                 $iterator = self::getTypeItems($instID, $main_itemtype);
 
                 foreach ($iterator as $data) {
-                    $item = getItemForItemtype($main_itemtype);
+                    if (!($item = getItemForItemtype($main_itemtype))) {
+                        continue;
+                    }
+                    $itemtype = $main_itemtype;
                     $linkname_extra = "";
                     if ($item instanceof ITILFollowup || $item instanceof ITILSolution) {
                         $linkname_extra = "(" . $item::getTypeName(1) . ")";
