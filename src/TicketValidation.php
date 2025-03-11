@@ -52,12 +52,11 @@ class TicketValidation extends CommonITILValidation
     const VALIDATEREQUEST             = 4096;
     const VALIDATEINCIDENT            = 8192;
 
-
-
     public static function getCreateRights()
     {
         return [static::CREATEREQUEST, static::CREATEINCIDENT];
     }
+
 
     public static function getTypeName($nb = 0)
     {
@@ -68,7 +67,6 @@ class TicketValidation extends CommonITILValidation
     {
         return [static::VALIDATEREQUEST, static::VALIDATEINCIDENT];
     }
-
 
     /**
      * @since 0.85
@@ -95,6 +93,7 @@ class TicketValidation extends CommonITILValidation
 
         return parent::canCreateItem();
     }
+
 
     /**
      * @since 0.85
@@ -140,10 +139,17 @@ class TicketValidation extends CommonITILValidation
     public function prepareInputForUpdate($input)
     {
         // validation step is mandatory
-        if (isset($input['validationsteps_id']) && !is_numeric($input['validationsteps_id'])) { // @todo vérifier si existe en base
+        if (isset($input['validationsteps_id']) && !is_numeric($input['validationsteps_id'])) {
             Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory'), 'validationsteps_id'), message_type: ERROR);
             return false;
         }
+
+        // validation step exists in db
+        $vs = new ValidationStep();
+        if(!$vs->getFromDB((int) $input['validationsteps_id'])) {
+            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is invalid'), 'validationsteps_id'), message_type: ERROR);
+            return false;
+        };
 
         return parent::prepareInputForUpdate($input);
     }
@@ -152,7 +158,7 @@ class TicketValidation extends CommonITILValidation
      * Differences with the parent method:
      * - validations are grouped by validation step
      * - validations_step are passed to twig
-     * - @todo à completer
+     * - use of a custom template
      * @return false|void
      */
     #[\Override]
@@ -197,29 +203,30 @@ class TicketValidation extends CommonITILValidation
             )
         );
         $validations = [];
-        foreach ($validation_sql_results as $result) {
-            $canedit = $this->canEdit($result["id"]);
-            Session::addToNavigateListItems($this->getType(), $result["id"]); // ??
+        $validationstep_id_inloop = -1;
+        foreach ($validation_sql_results as $validation) {
+            $canedit = $this->canEdit($validation["id"]);
+            Session::addToNavigateListItems($this->getType(), $validation["id"]); // ??
             $status  = sprintf(
                 '<div class="badge fw-normal fs-4 text-wrap" style="border-color: %s;border-width: 2px;">%s</div>',
-                htmlescape(self::getStatusColor($result['status'])),
-                htmlescape(self::getStatus($result['status']))
+                htmlescape(self::getStatusColor($validation['status'])),
+                htmlescape(self::getStatus($validation['status']))
             );
 
             $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
             $type_name   = null;
             $target_name = null;
-            if ($result["itemtype_target"] === User::class) {
+            if ($validation["itemtype_target"] === User::class) {
                 $type_name   = User::getTypeName();
-                $target_name = getUserName($result["items_id_target"]);
-            } elseif (is_a($result["itemtype_target"], CommonDBTM::class, true)) {
-                $target = new $result["itemtype_target"]();
+                $target_name = getUserName($validation["items_id_target"]);
+            } elseif (is_a($validation["itemtype_target"], CommonDBTM::class, true)) {
+                $target = new $validation["itemtype_target"]();
                 $type_name = $target::getTypeName();
-                if ($target->getFromDB($result["items_id_target"])) {
+                if ($target->getFromDB($validation["items_id_target"])) {
                     $target_name = $target->getName();
                 }
             }
-            $is_answered = $result['status'] !== self::WAITING && $result['users_id_validate'] > 0;
+            $is_answered = $validation['status'] !== self::WAITING && $validation['users_id_validate'] > 0;
             $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
 
             $doc_item = new Document_Item();
@@ -245,7 +252,7 @@ class TicketValidation extends CommonITILValidation
             if ($canedit) {
                 $edit_title = __s('Edit');
                 $item_id = (int)$ticket->fields['id'];
-                $row_id = (int)$result["id"];
+                $row_id = (int)$validation["id"];
                 $rand = htmlescape($rand);
                 $view_validation_id = htmlescape($this->fields[static::$items_id]);
                 $root_doc = htmlescape($CFG_GLPI["root_doc"]);
@@ -253,7 +260,7 @@ class TicketValidation extends CommonITILValidation
                     'type'             => static::class,
                     'parenttype'       => static::$itemtype,
                     static::$items_id  => $this->fields[static::$items_id],
-                    'id'               => $result["id"]
+                    'id'               => $validation["id"]
                 ]);
 
                 $script = <<<HTML
@@ -269,7 +276,7 @@ class TicketValidation extends CommonITILValidation
 HTML;
             }
 
-            $validationstep_id = $result['validationsteps_id'];
+            $validationstep_id = $validation['validationsteps_id'];
             $validations[$validationstep_id]['entries'][] = [
                 'edit'                  => $script,
                 'status'                => $status,
@@ -279,29 +286,36 @@ HTML;
                 'comment_submission'    => $comment_submission,
                 'comment_validation'    => $comment_validation,
                 'document'              => $document,
-                'submission_date'       => $result["submission_date"],
-                'validation_date'       => $result["validation_date"],
-                'user'                  => getUserName($result["users_id"]),
+                'submission_date'       => $validation["submission_date"],
+                'validation_date'       => $validation["validation_date"],
+                'user'                  => getUserName($validation["users_id"]),
             ];
 
-            // @todo écraser à chaque itération de la boucle, a optimiser
-            $validations[$validationstep_id]['validationstep'] = [
-                'id' => $result['validationsteps_id'],
-                'name' => 'Validation step name',
-                // @todo fake data
-                // structured to be later replaced by a DTO with getStatus(), Status::isAccepted()|isRefused()|isWaiting()
-                'status' => [
-                    'waiting' => false,
-                    'refused' => false,
-                    'accepted' => true,
-                ],
-                // structured to be later replaced by a DTO with getAchievement()
-                'achievement' => [
-                    'waiting' => 60,
-                    'refused' => 10,
-                    'accepted' => 30,
-                ],
-            ];
+            if ($validationstep_id !== $validationstep_id_inloop) {
+                $validation_step_status = TicketValidation::getValidationStepStatusForTicket($ticket->getID(), $validationstep_id);
+                $validation_step_achievements = TicketValidation::getValidationStepAchievements($ticket->getID(), $validationstep_id);
+                $validation_step = new ValidationStep();
+                $validation_step->getFromDB($validationstep_id);
+
+                $validations[$validationstep_id]['validationstep'] = [
+                    'id' => $validation['validationsteps_id'],
+                    'name' => $validation_step->getField('name'),
+                    // structured to be later replaced by a DTO with Status::isAccepted()|isRefused()|isWaiting() & getStatus()
+                    'status' => [
+                        'waiting' => $validation_step_status === self::WAITING,
+                        'refused' => $validation_step_status === self::REFUSED,
+                        'accepted' => $validation_step_status === self::ACCEPTED,
+                    ],
+                    // structured to be later replaced by a DTO with getAchievement()
+                    'achievement' => [
+                        'waiting' => $validation_step_achievements[self::WAITING],
+                        'refused' => $validation_step_achievements[self::REFUSED],
+                        'accepted' => $validation_step_achievements[self::ACCEPTED],
+                    ],
+                ];
+
+                $validationstep_id_inloop = $validationstep_id;
+            }
         }
 
         TemplateRenderer::getInstance()->display('components/itilobject/validation.html.twig', [
@@ -345,5 +359,104 @@ HTML;
             'total_number' => count($validations),
             'showmassiveactions' => false,
         ]);
+    }
+
+    /**
+     * Get validation step achievements by status for a ticket
+     *
+     * In case of non integer percentages, values will be rounded down (floor) and one of the status will get a have a higher percentage to reach 100%.
+     * The affected status is the one with a non-zero value, the highest decimal part and comming first in the list of statuses (accepted at the moment).
+     *
+     * @return array{2: int, 3: int, 4: int} array keys are the status constants
+     */
+    public static function getValidationStepAchievements(int $ticket_id, int $validationstep_id): array
+    {
+        $validations = self::getValidationsForTicketAndValidationStep($ticket_id, $validationstep_id);
+        $validations_count = count($validations);
+
+        $count_by_status = fn($status) => count(array_filter($validations, fn($v) => $v["status"] === $status));
+
+        $exact_percentages = [
+            self::ACCEPTED => $count_by_status(self::ACCEPTED) / $validations_count * 100,
+            self::REFUSED => $count_by_status(self::REFUSED) / $validations_count * 100,
+            self::WAITING => $count_by_status(self::WAITING) / $validations_count * 100
+        ];
+
+        // result with rounded percentages
+        $result = [
+            self::ACCEPTED => (int) $exact_percentages[self::ACCEPTED],
+            self::REFUSED => (int) $exact_percentages[self::REFUSED],
+            self::WAITING => (int) $exact_percentages[self::WAITING]
+        ];
+
+        // because of rounding, the sum of the percentages may not be 100
+        // -> adjust the result to have a sum of 100 by adding the difference to the status with the highest decimal part
+        $sum = array_sum($result);
+        $difference = 100 - $sum;
+
+        if ($difference > 0) {
+            // compute difference for each status
+            $decimal_parts = [];
+            foreach ($exact_percentages as $status => $value) {
+                $decimal_parts[$status] = $value - floor($value);
+            }
+
+            // sort by decimal part in descending order
+            arsort($decimal_parts);
+
+            // add the difference to the status with the highest decimal part (avoiding statuses with 0%)
+            foreach ($decimal_parts as $status => $decimal_part) {
+                if ($exact_percentages[$status] > 0) {
+                    $result[$status] += $difference;
+                    break;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return int TicketValidation::WAITING|TicketValidation::ACCEPTED|TicketValidation::REFUSED
+     */
+    public static function getValidationStepStatusForTicket(int $ticket_id, int $validationstep_id): int
+    {
+        // get Validation step $required_percent
+        $vs = new ValidationStep();
+        $vs->getFromDB($validationstep_id);
+        $required_percent = $vs->getField('minimal_required_validation_percent');
+
+        $achievements = self::getValidationStepAchievements($ticket_id, $validationstep_id);
+        // required validation threshold is reached
+        if ($achievements[self::ACCEPTED] >= $required_percent) {
+            return self::ACCEPTED;
+        }
+        // required validation threshold can be reached
+        if ($achievements[self::ACCEPTED] + $achievements[self::WAITING] >= $required_percent) {
+            return self::WAITING;
+        }
+
+        return self::REFUSED;
+    }
+
+    /**
+     * @param int $ticket_id
+     * @param int $validationstep_id
+     * @return TicketValidation[]
+     */
+    private static function getValidationsForTicketAndValidationStep(int $ticket_id, int $validationstep_id): array
+    {
+        // collect all validation for the ticket with the given validation step
+        $validations = (new self())->find([
+            'tickets_id' => $ticket_id,
+            'validationsteps_id' => $validationstep_id
+        ]);
+
+        // @todo if no validation found, throw an exception ? return false ?
+        if (empty($validations)) {
+            throw new \LogicException('Get validation step status for a ticket without any validation step');
+        }
+
+        return $validations;
     }
 }

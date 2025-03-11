@@ -87,7 +87,7 @@ class ValidationStep extends \CommonDropdown
     public function post_updateItem($history = true)
     {
         if ($this->isDefault()) {
-            $this->removeDefaultToOthers(); // @todo ajouter condition
+            $this->removeDefaultToOthers();
         }
 
         if (!$this->isDefault() && $this->wasDefault()) {

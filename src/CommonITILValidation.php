@@ -77,7 +77,6 @@ abstract class CommonITILValidation extends CommonDBChild
         return [CREATE];
     }
 
-
     public static function getPurgeRights()
     {
         return [PURGE];
