@@ -586,7 +586,7 @@ TWIG, $twig_params);
     /**
      * Return the decoded value of the `capacities` field.
      *
-     * @return array
+     * @return \Glpi\Asset\Capacity[]
      */
     private function getDecodedCapacities(?string $encoded = null): array
     {
@@ -595,18 +595,9 @@ TWIG, $twig_params);
         }
         $capacities = @json_decode($encoded);
         if (!$this->validateCapacityArray($capacities, false)) {
-            trigger_error(
+            throw new \UnexpectedValueException(
                 sprintf('Invalid `capacities` value (`%s`).', $this->fields['capacities']),
                 E_USER_WARNING
-            );
-            $this->fields['capacities'] = '[]'; // prevent warning to be triggered on each method call
-            $capacities = [];
-        }
-
-        if (!is_array($capacities)) {
-            // should not happen, do not trigger cleaning to prevent unexpected mass deletion of data
-            throw new \UnexpectedValueException(
-                sprintf('Invalid `capacities` value `%s`.', $this->fields['capacities'])
             );
         }
         return $capacities;
