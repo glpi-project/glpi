@@ -123,9 +123,9 @@ final class IllustrationManagerTest extends GLPITestCase
     {
         // Assert: a file with translations for each icons should exist in the
         // ressources folder.
-        $this->assertFileExists(GLPI_ROOT . '/resources/illustrations_translations.php');
+        $this->assertFileExists(IllustrationManager::TRANSLATION_FILE);
 
-        $content = file_get_contents(GLPI_ROOT . '/resources/illustrations_translations.php');
+        $content = file_get_contents(IllustrationManager::TRANSLATION_FILE);
         $to_check = [
             "Approve Requests",
             "Monitoring",

@@ -59,7 +59,7 @@ final class GenerateIllustrationTranslationFileCommand extends Command
         }
 
         file_put_contents(
-            GLPI_ROOT . '/resources/illustrations_translations.php',
+            IllustrationManager::TRANSLATION_FILE,
             $content
         );
 
