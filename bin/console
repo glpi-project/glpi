@@ -65,7 +65,7 @@ if (isset($_SERVER['argv'])) {
       $options[$chunks[0]] = (isset($chunks[1]) ? $chunks[1] : true);
    }
 }
- 
+
 //Handle specific dependencies update command that cannot be made upon symfony console
 if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SERVER['argv'], 1, 2)) {
    chdir(dirname(__FILE__, 2));
@@ -81,6 +81,11 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
       exit($exit_code);
    }
 
+   $exit_code = compileLocales();
+   if ($exit_code > 0) {
+      exit($exit_code);
+   }
+
    $npm_command = 'npm install --no-save';
    passthru($npm_command, $exit_code);
    if ($exit_code > 0) {
@@ -91,8 +96,6 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
    if ($exit_code > 0) {
       exit($exit_code);
    }
-
-   $exit_code = compileLocales();
 
    exit($exit_code);
 }
