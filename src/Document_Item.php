@@ -390,7 +390,7 @@ TWIG, $twig_params);
                 $itemtype_name = $itemtype::getTypeName(1);
 
                 foreach ($iterator as $data) {
-                    $item = getItemForItemtype($itemtype);
+                    $item = getItemForItemtype($type_row['itemtype']);
                     $linkname_extra = "";
                     if ($item instanceof ITILFollowup || $item instanceof ITILSolution) {
                         $linkname_extra = "(" . $itemtype_name . ")";
