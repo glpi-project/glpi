@@ -418,15 +418,16 @@ class Document_Item extends CommonDBRelation
         echo $header_begin . $header_top . $header_end;
 
         foreach ($types_iterator as $type_row) {
-            $itemtype = $type_row['itemtype'];
-            if (!($item = getItemForItemtype($itemtype))) {
+            $main_itemtype = $type_row['itemtype'];
+            if (!is_a($main_itemtype, CommonDBTM::class, true)) {
                 continue;
             }
 
-            if ($item->canView()) {
-                $iterator = self::getTypeItems($instID, $itemtype);
+            if ($main_itemtype::canView()) {
+                $iterator = self::getTypeItems($instID, $main_itemtype);
 
                 foreach ($iterator as $data) {
+                    $item = getItemForItemtype($main_itemtype);
                     $linkname_extra = "";
                     if ($item instanceof ITILFollowup || $item instanceof ITILSolution) {
                         $linkname_extra = "(" . $item::getTypeName(1) . ")";
