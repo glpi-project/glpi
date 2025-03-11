@@ -71,7 +71,7 @@ return $config
         'laminas/laminas-mime', // Required by laminas-mail
         'league/html-to-markdown', // Required by twig/markdown-extra
         'phpdocumentor/reflection-docblock', // Required by phpdocumentor/type-resolver
-        'symfony/css-selector',
+        'symfony/css-selector', // Required by web tests based on the `FrontBaseClass` class
         'symfony/polyfill-ctype',
         'symfony/polyfill-iconv',
         'symfony/polyfill-php83',
