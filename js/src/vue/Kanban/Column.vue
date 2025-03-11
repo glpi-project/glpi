@@ -174,8 +174,8 @@
     <div :id="element_id" :class="`kanban-column ${column_data.folded ? 'collapsed' : ''} ${column_data['_protected'] ? 'kanban-protected' : ''}`"
          :data-drop-only="`${column_data.drop_only ? 'true' : false}`">
         <header class="kanban-column-header">
-            <div class="kanban-column-header-content p-2 pb-0">
-                <span class="content-left d-flex">
+            <div class="kanban-column-header-content p-2 ps-0 pb-0">
+                <span class="content-left d-flex align-items-center">
                     <i v-if="rights.canModifyView()"
                        class="ti ti-caret-right-filled kanban-collapse-column cursor-pointer" :title="__('Toggle collapse')"
                        @click="toggleFolded()"></i>
@@ -183,7 +183,7 @@
                         <span :class="`me-1 ${column_data.color_class || ''}`" :style="`background-color: ${bg_color}`"></span>
                         {{ column_data.name }}
                     </span>
-                    <span class="kanban_nb badge bg-secondary text-secondary-fg align-content-center" v-text="card_count"></span>
+                    <span class="kanban_nb badge badge-outline align-content-center" v-text="card_count"></span>
                 </span>
                 <span class="content-right d-flex">
                     <span class="kanban-column-toolbar align-middle">
@@ -257,7 +257,7 @@
 <style scoped lang="scss">
     :deep(.kanban-form), :deep(.kanban-item) {
         text-align: left;
-        padding: 10px;
+        padding: 10px 0 3px;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 10%);
         min-height: 50px;
         margin-top: 10px;
@@ -342,7 +342,7 @@
             }
 
             padding: 5px 10px 0;
-            font-weight: bold;
+            font-weight: 600;
 
             a:hover {
                 text-decoration: underline;
@@ -364,10 +364,10 @@
                     margin-right: 0;
 
                     > span {
-                        margin-right: -10px;
+                        margin-right: -5px;
 
                         &:last-of-type {
-                            margin-right: -5px;
+                            margin-right: 0;
                         }
                     }
                 }
@@ -385,25 +385,24 @@
             }
 
             > span {
-                margin-right: -25px;
+                margin-right: -15px;
                 border-radius: 50%;
                 border: 3px solid var(--tblr-card-bg);
                 box-sizing: content-box;
-                min-height: 24px;
+                min-height: 20px;
 
                 img {
                     border-radius: 50%;
                 }
 
-                &.fa-stack {
+                &.fa-stack, & .fa-stack {
                     width: 2em;
                 }
             }
         }
 
         .kanban-item-due-date {
-            margin-right: 10px;
-            margin-top: 10px;
+            margin: 10px 10px 10px 0;
         }
     }
 
@@ -411,7 +410,7 @@
         margin-right: 16px;
         border-radius: 5px;
         flex-direction: column;
-        flex: 0 0 400px;
+        flex: 0 0 350px;
         text-align: center;
 
         &[data-drop-only="true"] .kanban-body {
@@ -447,6 +446,7 @@
                         writing-mode: vertical-lr;
                         margin-top: 10px;
                         margin-left: 0;
+                        padding: 10px 2px;
                     }
 
                     .kanban-collapse-column {
@@ -465,7 +465,6 @@
         }
 
         .kanban-column-header {
-            font-size: 1.2em;
             margin-bottom: 5px;
 
             button {
@@ -506,6 +505,7 @@
             }
 
             .kanban-column-title {
+                font-size: 1.2em;
                 margin-left: 2px;
                 color: inherit !important;
             }

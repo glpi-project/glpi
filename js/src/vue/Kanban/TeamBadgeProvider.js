@@ -218,7 +218,7 @@ export class TeamBadgeProvider {
         context.fillText(initials, this.team_image_size / 2, this.team_image_size / 2);
         const src = canvas.toDataURL("image/png");
         const name = team_member['name'].replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-        return `<span><img src='${src}' title='${name}' data-bs-toggle='tooltip' data-placeholder-users-id='${team_member["id"]}'/></span>`;
+        return `<span><img src='${src}' title='${name}' data-bs-toggle='tooltip' data-bs-placement='top' data-placeholder-users-id='${team_member["id"]}'/></span>`;
     }
 
     /**
@@ -234,7 +234,7 @@ export class TeamBadgeProvider {
         return `
             <span class='fa-stack fa-lg' style='font-size: ${(this.team_image_size / 2)}px'>
                 <i class='fas fa-circle fa-stack-2x' style="color: ${bg_color}" title="${team_member['name']}"></i>
-                <i class='fas ${icon} fa-stack-1x' title="${name}" data-bs-toggle='tooltip'></i>
+                <i class='fas ${icon} fa-stack-1x' title="${name}" data-bs-toggle='tooltip' data-bs-placement='top'></i>
             </span>
         `;
     }
@@ -251,6 +251,6 @@ export class TeamBadgeProvider {
         const context = canvas.getContext('2d');
         context.fillText(`+${overflow_count}`, this.team_image_size / 2, this.team_image_size / 2);
         const src = canvas.toDataURL("image/png");
-        return `<span class='position-relative'><img src='${src}' title='${__('%d other team members').replace('%d', overflow_count)}' data-bs-toggle='tooltip'/></span>`;
+        return `<span class='position-relative'><img src='${src}' title='${__('%d other team members').replace('%d', overflow_count)}' data-bs-toggle='tooltip' data-bs-placement='top'></span>`;
     }
 }
