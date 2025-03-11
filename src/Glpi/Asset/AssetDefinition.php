@@ -319,7 +319,7 @@ TWIG, $twig_params);
         // Trigger the `onCapacityEnabled` hooks.
         $added_capacities = $this->getDecodedCapacities();
         foreach ($added_capacities as $capacity) {
-            $this->onCapacityEnabled($capacity->getName(), $capacity->getConfig());
+            $this->onCapacityEnabled($capacity);
         }
 
         // Add default display preferences for the new asset definition
@@ -352,12 +352,12 @@ TWIG, $twig_params);
 
             $added_capacities = array_diff_key($new_capacities, $old_capacities);
             foreach ($added_capacities as $capacity) {
-                $this->onCapacityEnabled($capacity->getName(), $capacity->getConfig());
+                $this->onCapacityEnabled($capacity);
             }
 
             $removed_capacities = array_diff_key($old_capacities, $new_capacities);
             foreach ($removed_capacities as $capacity) {
-                $this->onCapacityDisabled($capacity->getName());
+                $this->onCapacityDisabled($capacity);
             }
         }
     }
@@ -365,8 +365,8 @@ TWIG, $twig_params);
     public function cleanDBonPurge()
     {
         $capacities = $this->getDecodedCapacities();
-        foreach ($capacities as $capacity_classname) {
-            $this->onCapacityDisabled($capacity_classname);
+        foreach ($capacities as $capacity) {
+            $this->onCapacityDisabled($capacity);
         }
 
         $this->purgeConcreteClassFromDb($this->getAssetModelClassName());
@@ -378,35 +378,34 @@ TWIG, $twig_params);
     /**
      * Handle the activation of a capacity.
      *
-     * @phpstan-param class-string<\Glpi\Asset\Capacity\CapacityInterface> $capacity_classname
-     * @param ?CapacityConfig $capacity_config
+     * @param Capacity $capacity
      */
-    private function onCapacityEnabled(string $capacity_classname, ?CapacityConfig $capacity_config = null): void
+    private function onCapacityEnabled(Capacity $capacity): void
     {
-        $capacity = AssetDefinitionManager::getInstance()->getCapacity($capacity_classname);
-        if ($capacity === null) {
+        $capacity_instance = AssetDefinitionManager::getInstance()->getCapacity($capacity->getName());
+        if ($capacity_instance === null) {
             // can be null if provided by a plugin that is no longer active
             return;
         }
-        $capacity->setConfiguration($capacity_config);
-        $capacity->onCapacityEnabled($this->getAssetClassName());
+        $capacity_instance->setConfiguration($capacity->getConfig());
+        $capacity_instance->onCapacityEnabled($this->getAssetClassName());
     }
 
     /**
      * Handle the deactivation of a capacity.
      *
-     * @phpstan-param class-string<\Glpi\Asset\Capacity\CapacityInterface> $capacity_classname
+     * @param Capacity $capacity
      */
-    private function onCapacityDisabled(string $capacity_classname): void
+    private function onCapacityDisabled(Capacity $capacity): void
     {
-        $capacity = AssetDefinitionManager::getInstance()->getCapacity($capacity_classname);
-        if ($capacity === null) {
+        $capacity_instance = AssetDefinitionManager::getInstance()->getCapacity($capacity->getName());
+        if ($capacity_instance === null) {
             // can be null if provided by a plugin that is no longer active
             return;
         }
-        $capacity->onCapacityDisabled($this->getAssetClassName());
+        $capacity_instance->onCapacityDisabled($this->getAssetClassName());
 
-        $rights_to_remove = $capacity->getSpecificRights();
+        $rights_to_remove = $capacity_instance->getSpecificRights();
         if (count($rights_to_remove) > 0) {
             $this->cleanRights($rights_to_remove);
         }
