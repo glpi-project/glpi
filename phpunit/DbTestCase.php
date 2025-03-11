@@ -445,19 +445,11 @@ class DbTestCase extends \GLPITestCase
             skip_fields: ['capacities', 'profiles', 'fields_display'] // JSON encoded fields cannot be automatically checked
         );
 
-        foreach ($capacities as $key => $capacity) {
-            $capacities[$capacity->getName()] = $capacity;
-            unset($capacities[$key]);
-        }
-        $decoded_capacities = $this->callPrivateMethod($definition, 'getDecodedCapacities');
-        // Ensure capacities are sorted by name
-        ksort($capacities);
-        ksort($decoded_capacities);
-        $this->assertEquals(
+        $this->assertEqualsCanonicalizing(
             $capacities,
-            $this->callPrivateMethod($definition, 'getDecodedCapacities')
+            array_values($this->callPrivateMethod($definition, 'getDecodedCapacities'))
         );
-        $this->assertEquals(
+        $this->assertEqualsCanonicalizing(
             $profiles,
             $this->callPrivateMethod($definition, 'getDecodedProfilesField')
         );
