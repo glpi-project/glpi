@@ -593,7 +593,28 @@ TWIG, $twig_params);
         if ($encoded === null) {
             $encoded = $this->fields['capacities'];
         }
-        $capacities = @json_decode($encoded);
+        $decoded_capacities = @json_decode($encoded);
+
+        if ($decoded_capacities instanceof \stdClass) {
+            $decoded_capacities = (array)$decoded_capacities;
+        }
+
+        $capacities = [];
+        foreach ($decoded_capacities as $capacity) {
+            if ($capacity instanceof \stdClass) {
+                //on json_decode, we obtain a stdclass
+                $config = null;
+                if ($capacity->config) {
+                    $config = new CapacityConfig((array)$capacity->config);
+                }
+                $capacity = new Capacity(
+                    name: $capacity->name,
+                    config: $config
+                );
+            }
+            $capacities[$capacity->getName()] = $capacity;
+        }
+
         if (!$this->validateCapacityArray($capacities, false)) {
             throw new \UnexpectedValueException(
                 sprintf('Invalid `capacities` value (`%s`).', $this->fields['capacities']),
@@ -740,36 +761,19 @@ TWIG, $twig_params);
      * @param bool $check_values
      * @return bool
      */
-    private function validateCapacityArray(mixed &$capacities, bool $check_values = true): bool
+    private function validateCapacityArray(mixed $capacities, bool $check_values = true): bool
     {
-        if ($capacities instanceof \stdClass) {
-            $capacities = (array)$capacities;
-        }
         if (!is_array($capacities)) {
             return false;
         }
 
         $is_valid = true;
-        $input_capacities = $capacities;
-        $capacities = [];
 
         $available_capacities = array_map(
             fn ($capacity) => $capacity::class,
             AssetDefinitionManager::getInstance()->getAvailableCapacities()
         );
-        //foreach ($capacities as $classname => $capacities_config) {
-        foreach ($input_capacities as $capacity) {
-            if ($capacity instanceof \stdClass) {
-                //on json_decode, we obtain a stdclass
-                $config = null;
-                if ($capacity->config) {
-                    $config = new CapacityConfig((array)$capacity->config);
-                }
-                $capacity = new Capacity(
-                    name: $capacity->name,
-                    config: $config
-                );
-            }
+        foreach ($capacities as $capacity) {
             if (!($capacity instanceof Capacity)) {
                 $is_valid = false;
                 break;
@@ -778,8 +782,6 @@ TWIG, $twig_params);
                 $is_valid = false;
                 break;
             }
-
-            $capacities[$capacity->getName()] = $capacity;
         }
 
         return $is_valid;
