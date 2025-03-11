@@ -40,7 +40,12 @@ use ConsumableItem;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\ItemConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
+use InvalidArgumentException;
 use Line;
 use Override;
 use PassiveDCEquipment;
@@ -49,7 +54,7 @@ use Session;
 use Software;
 use TicketRecurrent;
 
-class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataConverterInterface
+class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataConverterInterface, UsedAsCriteriaInterface
 {
     protected string $itemtype_aria_label;
     protected string $items_id_aria_label;
@@ -340,5 +345,16 @@ TWIG;
     public function getDefaultValueConfigClass(): ?string
     {
         return QuestionTypeItemDefaultValueConfig::class;
+    }
+
+    #[Override]
+    public function getConditionHandler(
+        ?JsonFieldInterface $question_config
+    ): ConditionHandlerInterface {
+        if (!$question_config instanceof QuestionTypeItemExtraDataConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        return new ItemConditionHandler($question_config->getItemtype());
     }
 }

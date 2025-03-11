@@ -62,6 +62,7 @@ export class GlpiFormConditionEngine
     {
         const questions_data = new Map();
         const array_values = new Map(); // Store array values temporarily
+        const keyed_array_values = new Map(); // Store array values with keys
 
         // Map questions that can be used as condition critera by others items.
         const questions_criteria_ids = [];
@@ -85,22 +86,31 @@ export class GlpiFormConditionEngine
 
             if (key.includes('[')) {
                 // Handle array values: answers_questionId[] or answers_questionId[key]
-                const array_key_regex = /^answers_([^[]+)(\[\d*\]|\[[^\]]*\])$/;
+                const array_key_regex = /^answers_([^[]+)(\[(\d*|[^\]]*)\])$/;
                 const match = array_key_regex.exec(key);
 
                 if (match && match[1]) {
                     const question_id = match[1];
+                    const array_key = match[3];  // Extract the key inside brackets
 
                     // Check if this question is a criteria
                     if (questions_criteria_ids.indexOf(question_id) !== -1) {
-                        // Initialize array for this question if needed
-                        if (!array_values.has(question_id)) {
-                            array_values.set(question_id, []);
-                        }
-
-                        // Add value to the array
-                        if (value !== '') {
-                            array_values.get(question_id).push(value);
+                        if (array_key === '') {
+                            // For answers_questionId[]
+                            if (!array_values.has(question_id)) {
+                                array_values.set(question_id, []);
+                            }
+                            if (value !== '') {
+                                array_values.get(question_id).push(value);
+                            }
+                        } else {
+                            // For answers_questionId[key]
+                            if (!keyed_array_values.has(question_id)) {
+                                keyed_array_values.set(question_id, {});
+                            }
+                            if (value !== '') {
+                                keyed_array_values.get(question_id)[array_key] = value;
+                            }
                         }
                     }
                 }
@@ -127,6 +137,13 @@ export class GlpiFormConditionEngine
             }
         }
 
+        // Add collected keyed array values to questions_data
+        for (const [question_id, values] of keyed_array_values.entries()) {
+            if (Object.keys(values).length > 0) {
+                questions_data.set(question_id, values);
+            }
+        }
+
         return questions_data;
     }
 
@@ -135,14 +152,10 @@ export class GlpiFormConditionEngine
         // Build POST data
         const form_data = new FormData();
         form_data.append('form_id', this.#form_id);
-        for (const [key, value] of data.answers.entries()) {
-            if (Array.isArray(value)) {
-                value.forEach((v, i) => {
-                    form_data.append(`answers[${key}][${i}]`, v);
-                });
-            } else {
-                form_data.append(`answers[${key}]`, value);
-            }
+
+        // Process answers with proper handling of nested structures
+        for (const [question_id, value] of data.answers.entries()) {
+            this.#appendFormDataValue(form_data, `answers[${question_id}]`, value);
         }
 
         // Send request
@@ -162,6 +175,33 @@ export class GlpiFormConditionEngine
         }
 
         return response.json();
+    }
+
+    /**
+     * Recursively append values to FormData with proper key formatting
+     * @param {FormData} form_data - The FormData object
+     * @param {string} key - The current key
+     * @param {*} value - The value to append
+     */
+    #appendFormDataValue(form_data, key, value) {
+        if (value === null || value === undefined) {
+            return;
+        }
+
+        if (Array.isArray(value)) {
+            // Handle array values with empty bracket notation
+            for (const item of value) {
+                this.#appendFormDataValue(form_data, `${key}[]`, item);
+            }
+        } else if (typeof value === 'object' && value !== null) {
+            // Handle object values with key notation
+            for (const [objKey, objValue] of Object.entries(value)) {
+                this.#appendFormDataValue(form_data, `${key}[${objKey}]`, objValue);
+            }
+        } else {
+            // Handle primitive values
+            form_data.append(key, value);
+        }
     }
 }
 

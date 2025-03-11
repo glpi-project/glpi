@@ -75,3 +75,30 @@ Cypress.Commands.add('addSection', (name) => {
     cy.findByRole('button', {'name': 'Add a new section'}).click();
     cy.focused().type(name); // Section name is focused by default
 });
+
+Cypress.Commands.add('addQuestionToDefaultSectionWithAPI', (
+    form_id,
+    name,
+    type,
+    vertical_rank,
+    horizontal_rank = 0,
+    default_value = null,
+    extra_data = null
+) => {
+    cy.initApi().doApiRequest('GET', `Glpi\\Form\\Form/${form_id}/Glpi\\Form\\Section`).then((response) => {
+        const section_id = response.body[0].id;
+        const question = {
+            forms_sections_id: section_id,
+            name             : name,
+            type             : type,
+            vertical_rank    : vertical_rank,
+            horizontal_rank  : horizontal_rank,
+            default_value    : default_value,
+            extra_data       : extra_data,
+        };
+
+        return cy.createWithAPI('Glpi\\Form\\Question', question).then((question_id) => {
+            return question_id;
+        });
+    });
+});
