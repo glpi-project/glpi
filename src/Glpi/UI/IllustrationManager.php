@@ -109,7 +109,7 @@ final class IllustrationManager
         $icons = array_filter(
             $this->getIconsDefinitions(),
             fn ($icon) => str_contains(
-                strtolower(_sx("Icon", $icon['title'])),
+                strtolower(_x("Icon", $icon['title'])),
                 strtolower($filter),
             )
         );
