@@ -6738,7 +6738,7 @@ JAVASCRIPT;
                                     $out .= self::LBBR;
                                 }
 
-                                if ($itemtype == 'Ticket') {
+                                if (is_subclass_of($itemtype, CommonITILObject::class)) {
                                     if (
                                         isset($data[$ID][$k]['name'])
                                         && $data[$ID][$k]['name'] > 0
