@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+const uuid = new Date().getTime();
+
 let questions = null;
 let comments = null;
 let sections = null;
@@ -829,226 +831,246 @@ describe ('Conditions', () => {
     it('can apply all supported conditions types', () => {
         createForm();
 
-        // Init test question on which we will add our conditions.
-        addQuestion('Test subject');
-
-        // Create a question for each conditions type
-        addQuestion('My text question');
-
-        addQuestion('My number question');
-        setQuestionTypeCategory('Short answer');
-        setQuestionType('Number');
-
-        addQuestion('My date question');
-        setQuestionTypeCategory('Date and time');
-
-        addQuestion('My time question');
-        setQuestionTypeCategory('Date and time');
-        cy.findByRole('checkbox', {'name': 'Time'}).check();
-        cy.findByRole('checkbox', {'name': 'Date'}).uncheck();
-
-        addQuestion('My datetime question');
-        setQuestionTypeCategory('Date and time');
-        cy.findByRole('checkbox', {'name': 'Time'}).check();
-
-        addQuestion('My urgency question');
-        setQuestionTypeCategory('Urgency');
-
-        addQuestion('My request type question');
-        setQuestionTypeCategory('Request type');
-
-        addQuestion('My requester question');
-        setQuestionTypeCategory('Actors');
-        setQuestionType('Requesters');
-
-        addQuestion('My observer question');
-        setQuestionTypeCategory('Actors');
-        setQuestionType('Observers');
-
-        addQuestion('My assignee question');
-        setQuestionTypeCategory('Actors');
-        setQuestionType('Assignees');
-
-        // Add a condition for each possible condition types
-        getAndFocusQuestion('Test subject').within(() => {
-            initVisibilityConfiguration();
-            setConditionStrategy('Visible if...');
-            cy.waitForNetworkIdle(150);
-
-            fillCondition(
-                0,
-                null,
-                'My text question',
-                'Contains',
-                'Expected answer'
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                1,
-                'And',
-                'My number question',
-                'Is greater than',
-                10,
-                "number",
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                2,
-                'And',
-                'My date question',
-                'Is greater than',
-                '2021-01-01',
-                'date',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                3,
-                'And',
-                'My time question',
-                'Is greater than',
-                '15:40',
-                'date',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                4,
-                'And',
-                'My datetime question',
-                'Is greater than',
-                '2021-01-01T15:40',
-                'date',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                5,
-                'And',
-                'My urgency question',
-                'Is greater than',
-                'Low',
-                'dropdown',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                6,
-                'And',
-                'My request type question',
-                'Is equal to',
-                'Request',
-                'dropdown',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                7,
-                'And',
-                'My requester question',
-                'Is equal to',
-                'E2E Tests',
-                'dropdown',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                8,
-                'And',
-                'My observer question',
-                'Is equal to',
-                'E2E Tests',
-                'dropdown',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                9,
-                'And',
-                'My assignee question',
-                'Is equal to',
-                'E2E Tests',
-                'dropdown',
-            );
+        // Create test items in GLPI that we'll use in conditions
+        cy.createWithAPI('Computer', {
+            'name': `Computer - ${uuid}`,
+        });
+        cy.createWithAPI('Location', {
+            'name': `Location - ${uuid}`,
         });
 
-        // Reload and check values
+        // Define all question types we need to test different condition operators
+        const testQuestions = [
+            // Main question where we'll add all our conditions
+            { name: 'Test subject', type: 'Glpi\\Form\\QuestionType\\QuestionTypeShortText' },
+
+            // Text type
+            { name: 'My text question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeShortText' },
+
+            // Numeric type
+            { name: 'My number question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeNumber', subType: 'Number'},
+
+            // Date/Time types
+            {
+                name: 'My date question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeDateTime',
+                extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"1","is_time_enabled":"0"}'
+            },
+            {
+                name: 'My time question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeDateTime',
+                extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"0","is_time_enabled":"1"}'
+            },
+            {
+                name: 'My datetime question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeDateTime',
+                extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"1","is_time_enabled":"1"}'
+            },
+
+            // ITIL fields
+            { name: 'My urgency question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeUrgency'},
+            { name: 'My request type question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeRequestType'},
+
+            // User types
+            { name: 'My requester question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeRequester'},
+            { name: 'My observer question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeObserver'},
+            { name: 'My assignee question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeAssignee'},
+
+            // Item reference types
+            {
+                name: 'My item question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeItem',
+                extra_data: '{"itemtype":"Computer"}',
+            },
+            {
+                name: 'My dropdown item question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
+                extra_data: '{"itemtype":"Location"}',
+            }
+        ];
+
+        // Create all questions through API for better performance
+        testQuestions.forEach((question, index) => {
+            cy.get('@form_id').then((formId) => {
+                cy.addQuestionToDefaultSectionWithAPI(
+                    formId,
+                    question.name,
+                    question.type,
+                    index,
+                    0,
+                    null,
+                    question.extra_data,
+                );
+                questions.push(question.name);
+            });
+        });
+
+        cy.reload();
+
+        // Define conditions that will test each question type with appropriate operators
+        const conditionsToTest = [
+            // Text condition
+            {
+                logic: null,
+                question: 'My text question',
+                operator: 'Contains',
+                value: 'Expected answer',
+                valueType: 'string'
+            },
+
+            // Numeric condition
+            {
+                logic: 'And',
+                question: 'My number question',
+                operator: 'Is greater than',
+                value: 10,
+                valueType: 'number'
+            },
+
+            // Date/time conditions
+            {
+                logic: 'And',
+                question: 'My date question',
+                operator: 'Is greater than',
+                value: '2021-01-01',
+                valueType: 'date'
+            },
+            {
+                logic: 'And',
+                question: 'My time question',
+                operator: 'Is greater than',
+                value: '15:40',
+                valueType: 'date'
+            },
+            {
+                logic: 'And',
+                question: 'My datetime question',
+                operator: 'Is greater than',
+                value: '2021-01-01T15:40',
+                valueType: 'date'
+            },
+
+            // ITIL field conditions
+            {
+                logic: 'And',
+                question: 'My urgency question',
+                operator: 'Is greater than',
+                value: 'Low',
+                valueType: 'dropdown'
+            },
+            {
+                logic: 'And',
+                question: 'My request type question',
+                operator: 'Is equal to',
+                value: 'Request',
+                valueType: 'dropdown'
+            },
+
+            // User field conditions
+            {
+                logic: 'And',
+                question: 'My requester question',
+                operator: 'Is equal to',
+                value: 'E2E Tests',
+                valueType: 'dropdown'
+            },
+            {
+                logic: 'And',
+                question: 'My observer question',
+                operator: 'Is equal to',
+                value: 'E2E Tests',
+                valueType: 'dropdown'
+            },
+            {
+                logic: 'And',
+                question: 'My assignee question',
+                operator: 'Is equal to',
+                value: 'E2E Tests',
+                valueType: 'dropdown'
+            },
+
+            // Item reference conditions
+            {
+                logic: 'And',
+                question: 'My item question',
+                operator: 'Is equal to',
+                value: `Computer - ${uuid}`,
+                valueType: 'dropdown'
+            },
+            {
+                logic: 'And',
+                question: 'My dropdown item question',
+                operator: 'Is equal to',
+                value: `»Location - ${uuid}`,
+                valueType: 'dropdown'
+            }
+        ];
+
+        // Configure visibility conditions on the test subject question
+        getAndFocusQuestion('Test subject').within(() => {
+            // Initialize the visibility configuration UI
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+
+            // Add the first condition without a logical operator
+            fillCondition(
+                0,
+                conditionsToTest[0].logic,
+                conditionsToTest[0].question,
+                conditionsToTest[0].operator,
+                conditionsToTest[0].value,
+                conditionsToTest[0].valueType
+            );
+
+            // Add all remaining conditions with their logical operators
+            conditionsToTest.slice(1).forEach((condition, index) => {
+                addNewEmptyCondition();
+                fillCondition(
+                    index + 1,
+                    condition.logic,
+                    condition.question,
+                    condition.operator,
+                    condition.value,
+                    condition.valueType
+                );
+            });
+        });
+
+        // Save and reload to ensure all conditions are properly stored
         saveAndReload();
 
+        // Define expected condition values after saving
+        // Note: some values are adjusted to match how they appear in the UI after saving
+        const expectedConditions = [
+            { logic: null, question: 'My text question', operator: 'Contains', value: 'Expected answer' },
+            { logic: 'And', question: 'My number question', operator: 'Is greater than', value: 10, valueType: 'number' },
+            { logic: 'And', question: 'My date question', operator: 'Is greater than', value: '2021-01-01', valueType: 'date' },
+            { logic: 'And', question: 'My time question', operator: 'Is greater than', value: '15:40', valueType: 'date' },
+            { logic: 'And', question: 'My datetime question', operator: 'Is greater than', value: '2021-01-01T15:40', valueType: 'date' },
+            { logic: 'And', question: 'My urgency question', operator: 'Is greater than', value: 'Low', valueType: 'dropdown' },
+            { logic: 'And', question: 'My request type question', operator: 'Is equal to', value: 'Request', valueType: 'dropdown' },
+            { logic: 'And', question: 'My requester question', operator: 'Is equal to', value: 'e2e_tests', valueType: 'dropdown' },
+            { logic: 'And', question: 'My observer question', operator: 'Is equal to', value: 'e2e_tests', valueType: 'dropdown' },
+            { logic: 'And', question: 'My assignee question', operator: 'Is equal to', value: 'e2e_tests', valueType: 'dropdown' },
+            { logic: 'And', question: 'My item question', operator: 'Is equal to', value: `Computer - ${uuid}`, valueType: 'dropdown' },
+            { logic: 'And', question: 'My dropdown item question', operator: 'Is equal to', value: `Location - ${uuid}`, valueType: 'dropdown' }
+        ];
+
+        // Verify all conditions are correctly saved and displayed
         getAndFocusQuestion('Test subject').within(() => {
             openVisibilityOptions();
-            checkThatConditionExist(
-                0,
-                null,
-                'My text question',
-                'Contains',
-                'Expected answer',
-            );
-            checkThatConditionExist(
-                1,
-                'And',
-                'My number question',
-                'Is greater than',
-                10,
-                'number',
-            );
-            checkThatConditionExist(
-                2,
-                'And',
-                'My date question',
-                'Is greater than',
-                '2021-01-01',
-                'date',
-            );
-            checkThatConditionExist(
-                3,
-                'And',
-                'My time question',
-                'Is greater than',
-                '15:40',
-                'date',
-            );
-            checkThatConditionExist(
-                4,
-                'And',
-                'My datetime question',
-                'Is greater than',
-                '2021-01-01T15:40',
-                'date',
-            );
-            checkThatConditionExist(
-                5,
-                'And',
-                'My urgency question',
-                'Is greater than',
-                'Low',
-                'dropdown',
-            );
-            checkThatConditionExist(
-                6,
-                'And',
-                'My request type question',
-                'Is equal to',
-                'Request',
-                'dropdown',
-            );
-            checkThatConditionExist(
-                7,
-                'And',
-                'My requester question',
-                'Is equal to',
-                'e2e_tests',
-                'dropdown',
-            );
-            checkThatConditionExist(
-                8,
-                'And',
-                'My observer question',
-                'Is equal to',
-                'e2e_tests',
-                'dropdown',
-            );
-            checkThatConditionExist(
-                9,
-                'And',
-                'My assignee question',
-                'Is equal to',
-                'e2e_tests',
-                'dropdown',
-            );
+
+            // Check each condition exists with the correct values
+            expectedConditions.forEach((condition, index) => {
+                checkThatConditionExist(
+                    index,
+                    condition.logic,
+                    condition.question,
+                    condition.operator,
+                    condition.value,
+                    condition.valueType
+                );
+            });
         });
     });
 });

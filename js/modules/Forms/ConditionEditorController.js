@@ -222,8 +222,15 @@ export class GlpiFormConditionEditorController
             const condition_value = $(condition).find(
                 '[data-glpi-conditions-editor-value]'
             );
-            if (condition_value.length > 0) {
+            if (condition_value.length === 1) {
                 condition_data.value = condition_value.val();
+            } else if (condition_value.length > 1) {
+                condition_data.value = {};
+                condition_value.each((index, element) => {
+                    const name_parts = element.name.split(/[[\]]+/);
+                    const last_part = name_parts[name_parts.length - 2]; // Get the last non-empty part
+                    condition_data.value[last_part] = element.value;
+                });
             }
 
             conditions_data.push(condition_data);
