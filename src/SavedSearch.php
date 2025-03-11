@@ -824,7 +824,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (Session::haveRight('config', UPDATE)) {
+        if (Session::haveRight('bookmark_public', UPDATE)) {
             return $DB->delete(
                 'glpi_savedsearches_users',
                 [
