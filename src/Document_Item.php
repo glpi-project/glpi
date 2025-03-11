@@ -381,15 +381,16 @@ TWIG, $twig_params);
         $entity_names = [];
         foreach ($types_iterator as $type_row) {
             $itemtype = $type_row['itemtype'];
-            if (!($item = getItemForItemtype($itemtype))) {
+            if (!($item0 = getItemForItemtype($itemtype))) {
                 continue;
             }
 
-            if ($item::canView()) {
+            if ($item0::canView()) {
                 $iterator = self::getTypeItems($instID, $itemtype);
-                $itemtype_name = $item::getTypeName(1);
+                $itemtype_name = $item0::getTypeName(1);
 
                 foreach ($iterator as $data) {
+                    $item = $item0;
                     $linkname_extra = "";
                     if ($item instanceof ITILFollowup || $item instanceof ITILSolution) {
                         $linkname_extra = "(" . $itemtype_name . ")";

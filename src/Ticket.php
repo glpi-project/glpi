@@ -2291,7 +2291,6 @@ JAVASCRIPT;
                     'editor_id'         => $content_id,
                     'enable_fileupload' => false,
                     'enable_richtext'   => true,
-                    'enable_images'     => true,
                     'cols'              => 12,
                     'rows'              => 80
                 ]);
