@@ -55,7 +55,7 @@ interface ConditionHandlerInterface
      * A specific `data-glpi-conditions-editor-value` attribute must be added to
      * the input to allow the editor to target this input when needed.
      */
-    public function getTemplate(): string;
+    public function getTemplate(): ?string;
 
     public function getTemplateParameters(): array;
 
