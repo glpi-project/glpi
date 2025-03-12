@@ -57,6 +57,9 @@ return $config
     ->ignoreErrorsOnExtensionAndPaths('ext-pcntl', ['src/CronTask.php'], [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnExtensionAndPaths('ext-posix', ['front/cron.php'], [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnExtension('ext-ldap', [ErrorType::SHADOW_DEPENDENCY])
+    ->ignoreErrorsOnExtension('ext-sodium', [ErrorType::SHADOW_DEPENDENCY])
+    ->ignoreErrorsOnExtension('ext-zend-opcache', [ErrorType::SHADOW_DEPENDENCY])
+    ->ignoreErrorsOnPackage('paragonie/sodium_compat', [ErrorType::UNUSED_DEPENDENCY])
 
     // Bundles are only loaded in a conditional block that checks if the environment is dev
     ->ignoreErrorsOnPackages([
