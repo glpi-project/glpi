@@ -1398,12 +1398,6 @@ class CommonDBTM extends CommonGLPI
 
             if ($this->checkUnicity(true, $options)) {
                 if ($this->addToDB() !== false) {
-                    $this->post_addItem();
-                    if ($this instanceof CacheableListInterface) {
-                        $this->invalidateListCache();
-                    }
-                    $this->addMessageOnAddAction();
-
                     if ($this->dohistory && $history) {
                         $changes = [
                             0,
@@ -1418,6 +1412,12 @@ class CommonDBTM extends CommonGLPI
                             Log::HISTORY_CREATE_ITEM
                         );
                     }
+
+                    $this->post_addItem();
+                    if ($this instanceof CacheableListInterface) {
+                        $this->invalidateListCache();
+                    }
+                    $this->addMessageOnAddAction();
 
                     // Auto create infocoms
                     if (

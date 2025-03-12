@@ -857,8 +857,8 @@ class LogTest extends DbTestCase
             [
                 'Update an item: Access control',
                 'Add an item: Access control (Allow direct access ($id))',
-                'Add the item', // TODO: this entry is weird and should not be present
                 'Add an item: Items to create (Ticket ($id))',
+                'Add the item',
             ],
             $this->getChangesForItem($form),
         );
