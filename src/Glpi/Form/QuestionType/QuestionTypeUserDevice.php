@@ -37,11 +37,16 @@ namespace Glpi\Form\QuestionType;
 
 use CommonItilObject_Item;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\UserDevicesConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
+use InvalidArgumentException;
 use Override;
 use Session;
 
-final class QuestionTypeUserDevice extends AbstractQuestionType
+final class QuestionTypeUserDevice extends AbstractQuestionType implements UsedAsCriteriaInterface
 {
     #[Override]
     public function validateExtraDataInput(array $input): bool
@@ -278,5 +283,16 @@ TWIG;
     public function getExtraDataConfigClass(): string
     {
         return QuestionTypeUserDevicesConfig::class;
+    }
+
+    #[Override]
+    public function getConditionHandler(
+        ?JsonFieldInterface $question_config
+    ): ConditionHandlerInterface {
+        if (!$question_config instanceof QuestionTypeUserDevicesConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        return new UserDevicesConditionHandler($question_config->isMultipleDevices());
     }
 }

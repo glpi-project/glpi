@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+const uuid = new Date().getTime();
+
 let questions = null;
 let comments = null;
 let sections = null;
@@ -151,7 +153,7 @@ function closeVisibilityConfiguration() {
 
 function openConditionEditor() {
     cy.findByTitle(/Configure (visibility|creation conditions)/).click();
-    cy.waitForNetworkIdle(0);
+    cy.waitForNetworkIdle(150);
 }
 
 function closeConditionEditor() {
@@ -193,6 +195,11 @@ function deleteConditon(index) {
 
 function fillCondition(index, logic_operator, question_name, value_operator_name, value, value_type = "string") {
     cy.get("[data-glpi-conditions-editor-condition]").eq(index).as('condition');
+
+    // Scroll the condition into view before interacting with it
+    cy.get('@condition').scrollIntoView();
+    cy.get('@condition').should('be.visible');
+
     if (logic_operator !== null && index > 0) {
         cy.get('@condition')
             .getDropdownByLabelText('Logic operator')
@@ -890,6 +897,10 @@ describe ('Conditions', () => {
         cy.createWithAPI('Location', {
             'name': `Location - ${uuid}`,
         });
+        cy.createWithAPI('Computer', {
+            name    : `Assigned Computer - ${uuid}`,
+            users_id: 7, // E2E Tests user id
+        });
 
         // Define all question types we need to test different condition operators
         const testQuestions = [
@@ -960,6 +971,18 @@ describe ('Conditions', () => {
                 name: 'My dropdown item question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
                 extra_data: '{"itemtype":"Location"}',
+            },
+
+            // User device reference types
+            {
+                name: 'My single user devices question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeUserDevice',
+                extra_data: '{"is_multiple_devices":false}',
+            },
+            {
+                name: 'My multiple user devices question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeUserDevice',
+                extra_data: '{"is_multiple_devices":true}',
             }
         ];
 
@@ -1107,6 +1130,22 @@ describe ('Conditions', () => {
                 operator: 'Is equal to',
                 value: `»Location - ${uuid}`,
                 valueType: 'dropdown'
+            },
+
+            // User device reference conditions
+            {
+                logic: 'And',
+                question: 'My single user devices question',
+                operator: 'Is of itemtype',
+                value: 'Computer',
+                valueType: 'dropdown'
+            },
+            {
+                logic: 'And',
+                question: 'My multiple user devices question',
+                operator: 'At least one item of itemtype',
+                value: 'Computer',
+                valueType: 'dropdown'
             }
         ];
 
@@ -1161,7 +1200,9 @@ describe ('Conditions', () => {
             { logic: 'And', question: 'My observer question', operator: 'Is equal to', value: 'e2e_tests', valueType: 'dropdown' },
             { logic: 'And', question: 'My assignee question', operator: 'Is equal to', value: 'e2e_tests', valueType: 'dropdown' },
             { logic: 'And', question: 'My item question', operator: 'Is equal to', value: `Computer - ${uuid}`, valueType: 'dropdown' },
-            { logic: 'And', question: 'My dropdown item question', operator: 'Is equal to', value: `Location - ${uuid}`, valueType: 'dropdown' }
+            { logic: 'And', question: 'My dropdown item question', operator: 'Is equal to', value: `Location - ${uuid}`, valueType: 'dropdown' },
+            { logic: 'And', question: 'My single user devices question', operator: 'Is of itemtype', value: 'Computer', valueType: 'dropdown' },
+            { logic: 'And', question: 'My multiple user devices question', operator: 'At least one item of itemtype', value: ['Computer'], valueType: 'dropdown_multiple' }
         ];
 
         // Verify all conditions are correctly saved and displayed
