@@ -1765,39 +1765,8 @@ HTML;
      **/
     public static function computeValidationStatus(CommonITILObject $item)
     {
-
-       // Percent of validation
-        $validation_percent = $item->fields['validation_percent'];
-
-        $statuses           = [self::ACCEPTED => 0,
-            self::WAITING  => 0,
-            self::REFUSED  => 0
-        ];
-        $validations        = getAllDataFromTable(
-            static::getTable(),
-            [
-                static::$items_id => $item->getID()
-            ]
-        );
-
-        if ($total = count($validations)) {
-            foreach ($validations as $validation) {
-                $statuses[$validation['status']]++;
-            }
-        }
-
-        $accepted = 0;
-        $refused  = 0;
-        if ($total) {
-            $accepted = round($statuses[self::ACCEPTED] * 100 / $total);
-            $refused  = round($statuses[self::REFUSED]  * 100 / $total);
-        }
-
-        return self::computeValidation(
-            $accepted,
-            $refused,
-            $validation_percent
-        );
+        throw new \LogicException('code déplacé dans TicketValidation|ChangeValidation, cette méthode ne devrait jamais être appelée.');
+        // @todo delete
     }
 
     /**
@@ -1815,24 +1784,8 @@ HTML;
         int $refused,
         int $validation_percent
     ): int {
-        if ($validation_percent > 0) {
-            if ($accepted >= $validation_percent) {
-                // We have reached the acceptation threshold
-                return self::ACCEPTED;
-            } else if ($refused + $validation_percent > 100) {
-               // We can no longer reach the acceptation threshold
-                return self::REFUSED;
-            }
-        } else {
-           // No validation threshold set, one approval or denial is enough
-            if ($accepted > 0) {
-                return self::ACCEPTED;
-            } else if ($refused > 0) {
-                return self::REFUSED;
-            }
-        }
-
-        return self::WAITING;
+        throw new \LogicException('code déplacé dans TicketValidation|ChangeValidation, cette méthode ne devrait jamais être appelée.');
+        // @todo delete
     }
 
 
