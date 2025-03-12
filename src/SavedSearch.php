@@ -1080,7 +1080,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function canUpdateItem()
     {
-        return Session::haveRight('bookmark_public', UPDATE) ||
+        return Session::haveRight(self::$rightname, UPDATE) ||
             $this->fields["users_id"] === Session::getLoginUserID();
     }
 
@@ -1191,7 +1191,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Set do_count from massive actions
      *
-     * @param integer   $ids     Items ID
+     * @param integer $id     Item ID
      * @param integer $do_count One of self::COUNT_*
      *
      * @return boolean
