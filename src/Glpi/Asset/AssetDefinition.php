@@ -283,6 +283,7 @@ TWIG, $twig_params);
         if (array_key_exists('capacities', $input)) {
             $capacities = null;
             if (is_array($input['capacities'])) {
+                $capacities = [];
                 foreach ($input['capacities'] as $capacity) {
                     if ($capacity instanceof Capacity) {
                         $capacities[$capacity->getName()] = $capacity;
