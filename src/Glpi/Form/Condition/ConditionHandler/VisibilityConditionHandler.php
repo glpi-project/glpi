@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,50 +32,52 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
-use Glpi\Form\Condition\ConditionHandler\NumberConditionHandler;
-use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\Condition\ValueOperator;
 use Override;
 
-final class QuestionTypeNumber extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
+/**
+ * Handler for conditions that check if another form element is visible or not
+ */
+class VisibilityConditionHandler implements ConditionHandlerInterface
 {
     #[Override]
-    public function getInputType(): string
+    public function getSupportedValueOperators(): array
     {
-        return 'number';
+        return [
+            ValueOperator::VISIBLE,
+            ValueOperator::NOT_VISIBLE,
+        ];
     }
 
     #[Override]
-    public function getName(): string
+    public function getTemplate(): null
     {
-        return __("Number");
+        // No input field needed for visibility conditions
+        return null;
     }
 
     #[Override]
-    public function getIcon(): string
+    public function getTemplateParameters(): array
     {
-        return 'ti ti-number-123';
+        return [];
     }
 
     #[Override]
-    public function getWeight(): int
-    {
-        return 30;
-    }
+    public function applyValueOperator(
+        mixed $a,
+        ValueOperator $operator,
+        mixed $b,
+    ): bool {
+        $is_visible = (bool) $a;
 
-    #[Override]
-    public function getInputAttributes(): array
-    {
-        return ['step' => 'any'];
-    }
+        return match ($operator) {
+            ValueOperator::VISIBLE => $is_visible,
+            ValueOperator::NOT_VISIBLE => !$is_visible,
 
-    #[Override]
-    public function getConditionHandlers(
-        ?JsonFieldInterface $question_config
-    ): array {
-        return array_merge(parent::getConditionHandlers($question_config), [new NumberConditionHandler()]);
+            // Unsupported operators
+            default => false,
+        };
     }
 }

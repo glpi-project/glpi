@@ -38,6 +38,8 @@ namespace Glpi\Form\QuestionType;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
 use Glpi\Form\Question;
 use Override;
 
@@ -226,5 +228,18 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
         DatabaseMapper $mapper,
     ): array|int|float|bool|string|null {
         return $default_value_data;
+    }
+
+    /**
+     * Get all condition handlers that can process this question type
+     *
+     * @param JsonFieldInterface|null $question_config Configuration for the question
+     * @return array<ConditionHandlerInterface> List of applicable condition handlers
+     */
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return [new VisibilityConditionHandler()];
     }
 }

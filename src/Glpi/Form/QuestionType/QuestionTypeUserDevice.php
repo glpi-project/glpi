@@ -286,13 +286,13 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
+    ): array {
         if (!$question_config instanceof QuestionTypeUserDevicesConfig) {
             throw new InvalidArgumentException();
         }
 
-        return new UserDevicesConditionHandler($question_config->isMultipleDevices());
+        return [new UserDevicesConditionHandler($question_config->isMultipleDevices())];
     }
 }

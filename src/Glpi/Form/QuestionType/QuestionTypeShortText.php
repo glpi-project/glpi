@@ -72,10 +72,10 @@ final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implem
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
-        return new StringConditionHandler();
+    ): array {
+        return array_merge(parent::getConditionHandlers($question_config), [new StringConditionHandler()]);
     }
 
     #[Override]

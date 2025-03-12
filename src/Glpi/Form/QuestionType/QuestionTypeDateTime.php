@@ -346,9 +346,9 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
+    ): array {
         if (!$question_config instanceof QuestionTypeDateTimeExtraDataConfig) {
             throw new InvalidArgumentException();
         }
@@ -356,11 +356,11 @@ TWIG;
         $use_date = $question_config->isDateEnabled();
         $use_time = $question_config->isTimeEnabled();
         if ($use_date && !$use_time) {
-            return new DateConditionHandler();
+            return array_merge(parent::getConditionHandlers($question_config), [new DateConditionHandler()]);
         } elseif (!$use_date && $use_time) {
-            return new TimeConditionHandler();
+            return array_merge(parent::getConditionHandlers($question_config), [new TimeConditionHandler()]);
         } elseif ($use_date && $use_time) {
-            return new DateAndTimeConditionHandler();
+            return array_merge(parent::getConditionHandlers($question_config), [new DateAndTimeConditionHandler()]);
         } else {
             // Impossible, should never happen.
             throw new RuntimeException();
