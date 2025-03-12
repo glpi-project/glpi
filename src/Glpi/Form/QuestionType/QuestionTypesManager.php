@@ -56,11 +56,18 @@ final class QuestionTypesManager
     protected array $question_types = [];
 
     /**
+     * Available question categories
+     * @var QuestionTypeCategoryInterface[]
+     */
+    protected array $categories = [];
+
+    /**
      * Private constructor to prevent instantiation (singleton)
      */
     private function __construct()
     {
         self::loadQuestionsTypes();
+        self::loadCategories();
     }
 
     /**
@@ -90,11 +97,11 @@ final class QuestionTypesManager
     /**
      * Get all available question categories
      *
-     * @return iterable<QuestionTypeCategory>
+     * @return QuestionTypeCategoryInterface[]
      */
-    public function getCategories(): iterable
+    public function getCategories(): array
     {
-        return QuestionTypeCategory::cases();
+        return $this->categories;
     }
 
     /**
@@ -114,11 +121,11 @@ final class QuestionTypesManager
      *
      * @return QuestionTypeInterface[]
      */
-    public function getTypesForCategory(QuestionTypeCategory $category): array
+    public function getTypesForCategory(QuestionTypeCategoryInterface $category): array
     {
         $filtered_types = array_filter(
             $this->question_types,
-            fn(QuestionTypeInterface $type) => $type->getCategory() === $category
+            fn(QuestionTypeInterface $type) => $type->getCategory()->getKey() === $category->getKey()
         );
 
         uasort(
@@ -129,54 +136,39 @@ final class QuestionTypesManager
         return $filtered_types;
     }
 
-    /**
-     * Automatically build core questions type list.
-     *
-     * TODO: Would be better to do it with a DI auto-discovery feature, but
-     * it is not possible yet.
-     *
-     * @return void
-     */
-    protected function loadQuestionsTypes(): void
+    /** @param class-string<QuestionTypeCategoryInterface>[] $categories */
+    public function registerPluginCategories(array $categories): void
     {
-        // Get files in the current directory
-        $directory_iterator = new DirectoryIterator(__DIR__);
-
-        while ($directory_iterator->valid()) {
-            // Compute class name with the expected namespace
-            $classname = $directory_iterator->getExtension() === 'php'
-                ? 'Glpi\\Form\\QuestionType\\' . $directory_iterator->getBasename('.php')
-                : null;
-
-            // Validate that the class is a valid question type
-            if (
-                $classname !== null
-                && class_exists($classname)
-                && is_subclass_of($classname, QuestionTypeInterface::class)
-                && (new ReflectionClass($classname))->isAbstract() === false
-            ) {
-                $this->question_types[$classname] = new $classname();
+        foreach ($categories as $category) {
+            if ($this->isQuestionTypeCategoryValid($category)) {
+                $this->categories[] = new $category();
             }
-
-            $directory_iterator->next();
         }
 
-        // Sort question types by weight
-        uasort(
-            $this->question_types,
-            fn(QuestionTypeInterface $a, QuestionTypeInterface $b) => $a->getWeight() <=> $b->getWeight()
-        );
+        $this->sortCategoriesTypes();
+    }
+
+    /** @param class-string<QuestionTypeInterface>[] $types */
+    public function registerPluginTypes(array $types): void
+    {
+        foreach ($types as $type) {
+            if ($this->isQuestionTypeValid($type)) {
+                $this->question_types[$type] = new $type();
+            }
+        }
+
+        $this->sortQuestionTypes();
     }
 
     public function getTemplateSelectionForCategories(): string
     {
         $icons = array_combine(
             array_map(
-                fn(QuestionTypeCategory $type) => $type->value,
+                fn(QuestionTypeCategoryInterface $type) => $type->getKey(),
                 (array) $this->getCategories()
             ),
             array_map(
-                fn(QuestionTypeCategory $type) => $type->getIcon(),
+                fn(QuestionTypeCategoryInterface $type) => $type->getIcon(),
                 (array) $this->getCategories()
             )
         );
@@ -197,11 +189,11 @@ JS;
     {
         $icons = array_combine(
             array_map(
-                fn(QuestionTypeCategory $type) => $type->value,
+                fn(QuestionTypeCategoryInterface $type) => $type->getKey(),
                 (array) $this->getCategories()
             ),
             array_map(
-                fn(QuestionTypeCategory $type) => $type->getIcon(),
+                fn(QuestionTypeCategoryInterface $type) => $type->getIcon(),
                 (array) $this->getCategories()
             )
         );
@@ -266,5 +258,85 @@ JS;
                     + '</span>');
             }
 JS;
+    }
+
+    protected function isQuestionTypeValid(?string $classname): bool
+    {
+        return
+            $classname !== null
+            && class_exists($classname)
+            && is_subclass_of($classname, QuestionTypeInterface::class)
+            && (new ReflectionClass($classname))->isAbstract() === false
+        ;
+    }
+
+    protected function isQuestionTypeCategoryValid(?string $classname): bool
+    {
+        return
+            $classname !== null
+            && class_exists($classname)
+            && is_subclass_of($classname, QuestionTypeCategoryInterface::class)
+            && (new ReflectionClass($classname))->isAbstract() === false
+        ;
+    }
+
+    /**
+     * Automatically build core questions type list.
+     *
+     * TODO: Would be better to do it with a DI auto-discovery feature, but
+     * it is not possible yet.
+     *
+     * @return void
+     */
+    protected function loadQuestionsTypes(): void
+    {
+        // Get files in the current directory
+        $directory_iterator = new DirectoryIterator(__DIR__);
+
+        while ($directory_iterator->valid()) {
+            // Compute class name with the expected namespace
+            $classname = $directory_iterator->getExtension() === 'php'
+                ? 'Glpi\\Form\\QuestionType\\' . $directory_iterator->getBasename('.php')
+                : null;
+
+            // Validate that the class is a valid question type
+            if ($this->isQuestionTypeValid($classname)) {
+                $this->question_types[$classname] = new $classname();
+            }
+
+            $directory_iterator->next();
+        }
+
+        $this->sortQuestionTypes();
+    }
+
+    protected function loadCategories(): void
+    {
+        $this->categories = QuestionTypeCategory::cases();
+        $this->sortCategoriesTypes();
+    }
+
+    protected function sortQuestionTypes()
+    {
+        // Sort question types by weight
+        uasort(
+            $this->question_types,
+            fn(
+                QuestionTypeInterface $a,
+                QuestionTypeInterface $b,
+            ): int => $a->getWeight() <=> $b->getWeight()
+        );
+    }
+
+    protected function sortCategoriesTypes()
+    {
+        // Sort question types by weight
+        uasort(
+            $this->categories,
+            fn(
+                QuestionTypeCategoryInterface $a,
+                QuestionTypeCategoryInterface $b,
+            ): int => $a->getWeight() <=> $b->getWeight()
+        );
     }
 }

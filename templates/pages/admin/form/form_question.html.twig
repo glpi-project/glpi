@@ -208,12 +208,12 @@
                 <div class="question-type-dropdown-group">
                     {% set categories = {} %}
                     {% for category in question_types_manager.getCategories() %}
-                        {% set categories = categories|merge({(category.value): category.getLabel()}) %}
+                        {% set categories = categories|merge({(category.getKey()): category.getLabel()}) %}
                     {% endfor %}
 
                     {{ fields.dropdownArrayField(
                         '_type_category',
-                        question_type.getCategory().value,
+                        question_type.getCategory().getKey(),
                         categories,
                         '',
                         {
