@@ -133,19 +133,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return parent::showMassiveActionsSubForm($ma);
     }
 
-    public function canUpdateItem()
-    {
-
-        if (
-            $this->fields["users_id"] != Session::getLoginUserID()
-        ) {
-            return false;
-        }
-
-        return true;
-    }
-
-
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -155,32 +142,39 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $input = $ma->getInput();
         switch ($ma->getAction()) {
             case 'unset_default':
-                $saved_search_user = new SavedSearch_User();
                 foreach ($ids as $id) {
-                    if ($saved_search_user->can($id, PURGE)) {
-                        if ($item->unmarkDefault($id)) {
-                            $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
-                        } else {
-                            $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
-                        }
+                    if ($item->unmarkDefault($id)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                     }
                 }
                 break;
             case 'change_count_method':
-                if ($item->setDoCount($ids, $input['do_count'])) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
-                } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                foreach ($ids as $id) {
+                    if ($item->can($id, UPDATE)) {
+                        if ($item->setDoCount($id, $input['do_count'])) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        }
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                    }
                 }
                 break;
 
             case 'change_entity':
-                if ($item->setEntityRecur($ids, $input['entities_id'], $input['is_recursive'])) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
-                } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                foreach ($ids as $id) {
+                    if ($item->can($id, UPDATE)) {
+                        if ($item->setEntityRecur($id, $input['entities_id'], $input['is_recursive'])) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        }
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                    }
                 }
                 break;
             case 'change_visibility':
@@ -197,6 +191,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                     }
                 }
                 break;
@@ -791,13 +787,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         }
     }
 
-
     /**
      * Unmark savedsearch as default view for the current user
      *
      * @param integer $ID ID of the saved search
      *
-     * @return void
+     * @return bool
      **/
     public function unmarkDefault($ID)
     {
@@ -823,9 +818,10 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             if ($result = $iterator->current()) {
                 // already exists delete it
                 $deleteID = $result['id'];
-                $dd->delete(['id' => $deleteID]);
+                return $dd->delete(['id' => $deleteID]);
             }
         }
+        return false;
     }
 
 
@@ -1082,6 +1078,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return $types;
     }
 
+    public function canUpdateItem()
+    {
+        return Session::haveRight('bookmark_public', UPDATE) ||
+            $this->fields["users_id"] === Session::getLoginUserID();
+    }
+
 
     /**
      * Update bookmark execution time after it has been loaded
@@ -1189,25 +1191,17 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Set do_count from massive actions
      *
-     * @param array   $ids      Items IDs
+     * @param integer   $ids     Items ID
      * @param integer $do_count One of self::COUNT_*
      *
      * @return boolean
      */
-    public function setDoCount(array $ids, $do_count)
+    public function setDoCount(int $id, $do_count)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $result = $DB->update(
-            $this->getTable(),
-            [
-                'do_count' => $do_count
-            ],
-            [
-                'id' => $ids
-            ]
-        );
+        $result = $this->update([
+            'id'       => $id,
+            'do_count' => $do_count
+        ]);
         return $result;
     }
 
@@ -1215,27 +1209,19 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Set entity and recursivity from massive actions
      *
-     * @param array   $ids   Items IDs
+     * @param integer   $id   Item ID
      * @param integer $eid   Entityy ID
      * @param boolean $recur Recursivity
      *
      * @return boolean
      */
-    public function setEntityRecur(array $ids, $eid, $recur)
+    public function setEntityRecur(int $id, $eid, $recur)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $result = $DB->update(
-            $this->getTable(),
-            [
-                'entities_id'  => $eid,
-                'is_recursive' => $recur
-            ],
-            [
-                'id' => $ids
-            ]
-        );
+        $result = $this->update([
+            'id'           => $id,
+            'entities_id'  => $eid,
+            'is_recursive' => $recur
+        ]);
         return $result;
     }
 
