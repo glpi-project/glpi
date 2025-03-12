@@ -44,6 +44,156 @@ class ValidationStep extends \CommonDropdown
     }
 
     /**
+     * Get validation step achievements by status for a ticket
+     *
+     * In case of non integer percentages, values will be rounded down (floor) and one of the status will get a have a higher percentage to reach 100%.
+     * The affected status is the one with a non-zero value, the highest decimal part and comming first in the list of statuses (accepted at the moment).
+     *
+     * @return array{2: int, 3: int, 4: int} array keys are the status constants
+     */
+    public static function getValidationStepAchievements(int $ticket_id, int $validationstep_id): array
+    {
+        $validations = self::getValidationsForTicketAndValidationStep($ticket_id, $validationstep_id);
+        $validations_count = count($validations);
+
+        $count_by_status = fn($status) => count(array_filter($validations, fn($v) => $v["status"] === $status));
+
+        $exact_percentages = [
+            CommonITILValidation::ACCEPTED => $count_by_status(CommonITILValidation::ACCEPTED) / $validations_count * 100,
+            CommonITILValidation::REFUSED => $count_by_status(CommonITILValidation::REFUSED) / $validations_count * 100,
+            CommonITILValidation::WAITING => $count_by_status(CommonITILValidation::WAITING) / $validations_count * 100
+        ];
+
+        // result with rounded percentages
+        $result = [
+            CommonITILValidation::ACCEPTED => (int)$exact_percentages[CommonITILValidation::ACCEPTED],
+            CommonITILValidation::REFUSED => (int)$exact_percentages[CommonITILValidation::REFUSED],
+            CommonITILValidation::WAITING => (int)$exact_percentages[CommonITILValidation::WAITING]
+        ];
+
+        // because of rounding, the sum of the percentages may not be 100
+        // -> adjust the result to have a sum of 100 by adding the difference to the status with the highest decimal part
+        $sum = array_sum($result);
+        $difference = 100 - $sum;
+
+        if ($difference > 0) {
+            // compute difference for each status
+            $decimal_parts = [];
+            foreach ($exact_percentages as $status => $value) {
+                $decimal_parts[$status] = $value - floor($value);
+            }
+
+            // sort by decimal part in descending order
+            arsort($decimal_parts);
+
+            // add the difference to the status with the highest decimal part (avoiding statuses with 0%)
+            foreach ($decimal_parts as $status => $decimal_part) {
+                if ($exact_percentages[$status] > 0) {
+                    $result[$status] += $difference;
+                    break;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return int TicketValidation::WAITING|TicketValidation::ACCEPTED|TicketValidation::REFUSED
+     */
+    public static function getValidationStepStatusForTicket(int $ticket_id, int $validationstep_id): int
+    {
+        // get Validation step $required_percent
+        $vs = new ValidationStep();
+        $vs->getFromDB($validationstep_id);
+        $required_percent = $vs->getField('minimal_required_validation_percent');
+
+        $achievements = self::getValidationStepAchievements($ticket_id, $validationstep_id);
+        // special case for 0% required validation
+        if($required_percent == 0) {
+            if ($achievements[CommonITILValidation::ACCEPTED] > 0) {
+                return CommonITILValidation::ACCEPTED;
+            }
+            if ($achievements[CommonITILValidation::REFUSED] > 0) {
+                return CommonITILValidation::REFUSED;
+            }
+            return CommonITILValidation::WAITING;
+        }
+
+        // required validation threshold is reached
+        if ($achievements[CommonITILValidation::ACCEPTED] >= $required_percent) {
+            return CommonITILValidation::ACCEPTED;
+        }
+        // required validation threshold can be reached
+        if ($achievements[CommonITILValidation::ACCEPTED] + $achievements[CommonITILValidation::WAITING] >= $required_percent) {
+            return CommonITILValidation::WAITING;
+        }
+
+        return CommonITILValidation::REFUSED;
+    }
+
+    /**
+     * @param int $ticket_id
+     * @param int $validationstep_id
+     * @return TicketValidation[]
+     */
+    private static function getValidationsForTicketAndValidationStep(int $ticket_id, int $validationstep_id): array
+    {
+        // collect all validation for the ticket with the given validation step
+        $validations = (new TicketValidation())->find([
+            'tickets_id' => $ticket_id,
+            'validationsteps_id' => $validationstep_id
+        ]);
+
+        // @todo if no validation found, throw an exception ? return false ?
+        if (empty($validations)) {
+            throw new \LogicException('Get validation step status for a ticket without any validation step');
+        }
+
+        return $validations;
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * No validation for the ticket -> NONE
+     * One validation step is REFUSED -> REFUSED
+     * One validation step is WAITING -> WAITING
+     * All validation steps are ACCEPTED -> ACCEPTED
+     *
+     * @return int Validation status
+     */
+    public static function getValidationStatusForTicket(Ticket $ticket): int
+    {
+        $validation_steps =  (new TicketValidation())->find([
+            'tickets_id' => $ticket->getID(),
+        ]);
+        $validation_steps_status = array_map(
+            fn($vs) => self::getValidationStepStatusForTicket($ticket->getID(), $vs['validationsteps_id']),
+            $validation_steps
+        );
+
+        // No validation for the ticket -> NONE
+        if (empty($validation_steps_status)) {
+            return CommonITILValidation::NONE;
+        }
+        // One validation step is REFUSED -> REFUSED
+        $has_refused = !empty(array_filter($validation_steps_status, fn($status) => $status === CommonITILValidation::REFUSED));
+        if ($has_refused) {
+            return CommonITILValidation::REFUSED;
+        }
+
+        // One validation step is WAITING -> WAITING
+        $has_waiting = !empty(array_filter($validation_steps_status, fn($status) => $status === CommonITILValidation::WAITING));
+        if ($has_waiting) {
+            return CommonITILValidation::WAITING;
+        }
+
+        // All validation steps are ACCEPTED -> ACCEPTED
+        return CommonITILValidation::ACCEPTED;
+    }
+
+    /**
      * Ensure there is always a default validation step
      * and eventually set it as default.
      */

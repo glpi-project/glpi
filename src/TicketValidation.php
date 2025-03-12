@@ -248,7 +248,7 @@ class TicketValidation extends CommonITILValidation
                 }
             }
 
-            $script = "";
+            $edit_button = "";
             if ($canedit) {
                 $edit_title = __s('Edit');
                 $item_id = (int)$ticket->fields['id'];
@@ -263,7 +263,7 @@ class TicketValidation extends CommonITILValidation
                     'id'               => $validation["id"]
                 ]);
 
-                $script = <<<HTML
+                $edit_button = <<<HTML
                     <span class="ti ti-edit" style="cursor:pointer" title="{$edit_title}" 
                           onclick="viewEditValidation{$item_id}{$row_id}{$rand}();" 
                           id="viewvalidation{$view_validation_id}{$row_id}{$rand}">
@@ -278,7 +278,7 @@ HTML;
 
             $validationstep_id = $validation['validationsteps_id'];
             $validations[$validationstep_id]['entries'][] = [
-                'edit'                  => $script,
+                'edit'                  => $edit_button,
                 'status'                => $status,
                 'type_name'             => $type_name,
                 'target_name'           => $target_name,
@@ -292,8 +292,8 @@ HTML;
             ];
 
             if ($validationstep_id !== $validationstep_id_inloop) {
-                $validation_step_status = TicketValidation::getValidationStepStatusForTicket($ticket->getID(), $validationstep_id);
-                $validation_step_achievements = TicketValidation::getValidationStepAchievements($ticket->getID(), $validationstep_id);
+                $validation_step_status = ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $validationstep_id);
+                $validation_step_achievements = ValidationStep::getValidationStepAchievements($ticket->getID(), $validationstep_id);
                 $validation_step = new ValidationStep();
                 $validation_step->getFromDB($validationstep_id);
 
@@ -361,107 +361,8 @@ HTML;
         ]);
     }
 
-    /**
-     * Get validation step achievements by status for a ticket
-     *
-     * In case of non integer percentages, values will be rounded down (floor) and one of the status will get a have a higher percentage to reach 100%.
-     * The affected status is the one with a non-zero value, the highest decimal part and comming first in the list of statuses (accepted at the moment).
-     *
-     * @return array{2: int, 3: int, 4: int} array keys are the status constants
-     */
-    public static function getValidationStepAchievements(int $ticket_id, int $validationstep_id): array
+    public static function computeValidationStatus(CommonITILObject $ticket)
     {
-        $validations = self::getValidationsForTicketAndValidationStep($ticket_id, $validationstep_id);
-        $validations_count = count($validations);
-
-        $count_by_status = fn($status) => count(array_filter($validations, fn($v) => $v["status"] === $status));
-
-        $exact_percentages = [
-            self::ACCEPTED => $count_by_status(self::ACCEPTED) / $validations_count * 100,
-            self::REFUSED => $count_by_status(self::REFUSED) / $validations_count * 100,
-            self::WAITING => $count_by_status(self::WAITING) / $validations_count * 100
-        ];
-
-        // result with rounded percentages
-        $result = [
-            self::ACCEPTED => (int) $exact_percentages[self::ACCEPTED],
-            self::REFUSED => (int) $exact_percentages[self::REFUSED],
-            self::WAITING => (int) $exact_percentages[self::WAITING]
-        ];
-
-        // because of rounding, the sum of the percentages may not be 100
-        // -> adjust the result to have a sum of 100 by adding the difference to the status with the highest decimal part
-        $sum = array_sum($result);
-        $difference = 100 - $sum;
-
-        if ($difference > 0) {
-            // compute difference for each status
-            $decimal_parts = [];
-            foreach ($exact_percentages as $status => $value) {
-                $decimal_parts[$status] = $value - floor($value);
-            }
-
-            // sort by decimal part in descending order
-            arsort($decimal_parts);
-
-            // add the difference to the status with the highest decimal part (avoiding statuses with 0%)
-            foreach ($decimal_parts as $status => $decimal_part) {
-                if ($exact_percentages[$status] > 0) {
-                    $result[$status] += $difference;
-                    break;
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return int TicketValidation::WAITING|TicketValidation::ACCEPTED|TicketValidation::REFUSED
-     */
-    public static function getValidationStepStatusForTicket(int $ticket_id, int $validationstep_id): int
-    {
-        // get Validation step $required_percent
-        $vs = new ValidationStep();
-        $vs->getFromDB($validationstep_id);
-        $required_percent = $vs->getField('minimal_required_validation_percent');
-
-        $achievements = self::getValidationStepAchievements($ticket_id, $validationstep_id);
-        // required validation threshold is reached
-        if ($achievements[self::ACCEPTED] >= $required_percent) {
-            return self::ACCEPTED;
-        }
-        // required validation threshold can be reached
-        if ($achievements[self::ACCEPTED] + $achievements[self::WAITING] >= $required_percent) {
-            return self::WAITING;
-        }
-
-        return self::REFUSED;
-    }
-
-    /**
-     * @param int $ticket_id
-     * @param int $validationstep_id
-     * @return TicketValidation[]
-     */
-    private static function getValidationsForTicketAndValidationStep(int $ticket_id, int $validationstep_id): array
-    {
-        // collect all validation for the ticket with the given validation step
-        $validations = (new self())->find([
-            'tickets_id' => $ticket_id,
-            'validationsteps_id' => $validationstep_id
-        ]);
-
-        // @todo if no validation found, throw an exception ? return false ?
-        if (empty($validations)) {
-            throw new \LogicException('Get validation step status for a ticket without any validation step');
-        }
-
-        return $validations;
-    }
-
-    public static function computeValidationStatus(CommonITILObject $item)
-    {
-        throw new \Exception('implement me');
+        return ValidationStep::getValidationStatusForTicket($ticket);
     }
 }

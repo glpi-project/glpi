@@ -38,6 +38,7 @@ namespace tests\units;
 /* Test for src/ChangeValidation.php */
 
 use Glpi\PHPUnit\Tests\CommonITILValidation;
+use Glpi\PHPUnit\Tests\Glpi\ValidationStepTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class ChangeValidationTest extends CommonITILValidation
