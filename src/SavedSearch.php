@@ -133,6 +133,18 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return parent::showMassiveActionsSubForm($ma);
     }
 
+    public function canUpdateItem()
+    {
+
+        if (
+            $this->fields["users_id"] != Session::getLoginUserID()
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
 
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
@@ -143,14 +155,19 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $input = $ma->getInput();
         switch ($ma->getAction()) {
             case 'unset_default':
-                if ($item->unmarkDefaults($ids)) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
-                } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                $saved_search_user = new SavedSearch_User();
+                foreach ($ids as $id) {
+                    if ($saved_search_user->can($id, PURGE)) {
+                        if ($item->unmarkDefault($id)) {
+                            $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                        }
+                    } else {
+                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                    }
                 }
-                return;
-            break;
-
+                break;
             case 'change_count_method':
                 if ($item->setDoCount($ids, $input['do_count'])) {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
@@ -824,14 +841,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (Session::haveRight('bookmark_public', UPDATE)) {
-            return $DB->delete(
-                'glpi_savedsearches_users',
-                [
-                    'savedsearches_id'   => $ids
-                ]
-            );
-        }
+        return $DB->delete(
+            'glpi_savedsearches_users',
+            [
+                'savedsearches_id'   => $ids
+            ]
+        );
 
         return false;
     }
