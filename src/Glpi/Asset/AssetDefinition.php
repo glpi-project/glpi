@@ -281,7 +281,16 @@ TWIG, $twig_params);
         $has_errors = false;
 
         if (array_key_exists('capacities', $input)) {
-            if (!$this->validateCapacityArray($input['capacities'])) {
+            $capacities = null;
+            if (is_array($input['capacities'])) {
+                foreach ($input['capacities'] as $capacity) {
+                    $capacities[$capacity] = new Capacity(
+                        name: $capacity,
+                        //config: $capacity['config'] ? new CapacityConfig($capacity['config']) : null
+                    );
+                }
+            }
+            if (!$this->validateCapacityArray($capacities)) {
                 Session::addMessageAfterRedirect(
                     htmlescape(sprintf(
                         __('The following field has an incorrect value: "%s".'),
@@ -292,7 +301,7 @@ TWIG, $twig_params);
                 );
                 $has_errors = true;
             } else {
-                $input['capacities'] = json_encode($input['capacities']);
+                $input['capacities'] = json_encode($capacities);
             }
         }
 
