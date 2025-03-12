@@ -52,14 +52,14 @@ class AssetDefinitionTest extends DbTestCase
         yield [
             'input'    => [
                 'capacities' => [
-                    new \Glpi\Asset\Capacity(name: HasDocumentsCapacity::class),
-                    new \Glpi\Asset\Capacity(name: HasInfocomCapacity::class),
+                    HasDocumentsCapacity::class,
+                    HasInfocomCapacity::class,
                 ],
             ],
             'output'   => [
                 'capacities' => json_encode([
-                    new \Glpi\Asset\Capacity(name: HasDocumentsCapacity::class),
-                    new \Glpi\Asset\Capacity(name: HasInfocomCapacity::class),
+                    HasDocumentsCapacity::class => new \Glpi\Asset\Capacity(name: HasDocumentsCapacity::class),
+                    HasInfocomCapacity::class => new \Glpi\Asset\Capacity(name: HasInfocomCapacity::class),
                 ]),
             ],
             'messages' => [],
@@ -68,8 +68,8 @@ class AssetDefinitionTest extends DbTestCase
         yield [
             'input'    => [
                 'capacities' => [
-                    new \Glpi\Asset\Capacity(name: Computer::class), // not a capacity
-                    new \Glpi\Asset\Capacity(name: HasInfocomCapacity::class),
+                    Computer::class, // not a capacity
+                    HasInfocomCapacity::class,
                 ],
             ],
             'output'   => false,
