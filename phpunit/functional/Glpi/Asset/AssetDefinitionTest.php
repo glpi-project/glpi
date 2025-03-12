@@ -58,8 +58,8 @@ class AssetDefinitionTest extends DbTestCase
             ],
             'output'   => [
                 'capacities' => json_encode([
-                    HasDocumentsCapacity::class => new \Glpi\Asset\Capacity(name: HasDocumentsCapacity::class),
-                    HasInfocomCapacity::class => new \Glpi\Asset\Capacity(name: HasInfocomCapacity::class),
+                    new \Glpi\Asset\Capacity(name: HasDocumentsCapacity::class),
+                    new \Glpi\Asset\Capacity(name: HasInfocomCapacity::class),
                 ]),
             ],
             'messages' => [],
