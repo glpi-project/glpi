@@ -282,9 +282,15 @@ class Log extends CommonDBTM
             'id_search_option'  => $id_search_option,
             'old_value'         => $old_value,
             'new_value'         => $new_value,
-            'old_id'            => $old_id,
-            'new_id'            => $new_id
         ];
+
+        if (
+            $DB->fieldExists(self::getTable(), 'old_id')
+            && $DB->fieldExists(self::getTable(), 'new_id')
+        ) {
+            $params['old_id'] = $old_id;
+            $params['new_id'] = $new_id;
+        }
 
         if (static::$use_queue) {
             //use queue rather than direct insert

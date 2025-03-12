@@ -43,21 +43,19 @@ $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 $migration->addField(
     "glpi_logs",
-    "old_id",
+    "new_id",
     "int {$default_key_sign}",
     [
         "null" => true,
-        "after" => "new_value"
     ]
 );
 
 $migration->addField(
     "glpi_logs",
-    "new_id",
+    "old_id",
     "int {$default_key_sign}",
     [
         "null" => true,
-        "after" => "old_id"
     ]
 );
 
