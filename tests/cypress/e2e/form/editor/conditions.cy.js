@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+const uuid = new Date().getTime();
+
 let questions = null;
 let comments = null;
 let sections = null;
@@ -869,6 +871,20 @@ describe ('Conditions', () => {
         setQuestionTypeCategory('Actors');
         setQuestionType('Assignees');
 
+        addQuestion('My single user devices question');
+        setQuestionTypeCategory('Item');
+        setQuestionType('User Devices');
+
+        addQuestion('My multiple user devices question');
+        setQuestionTypeCategory('Item');
+        setQuestionType('User Devices');
+        cy.findByRole('checkbox', {'name': 'Allow multiple devices'}).check();
+
+        cy.createWithAPI('Computer', {
+            name    : `Assigned Computer - ${uuid}`,
+            users_id: 7, // E2E Tests user id
+        });
+
         // Add a condition for each possible condition types
         getAndFocusQuestion('Test subject').within(() => {
             initVisibilityConfiguration();
@@ -963,6 +979,24 @@ describe ('Conditions', () => {
                 'E2E Tests',
                 'dropdown',
             );
+            addNewEmptyCondition();
+            fillCondition(
+                10,
+                'And',
+                'My single user devices question',
+                'Is of itemtype',
+                'Computer',
+                'dropdown',
+            );
+            addNewEmptyCondition();
+            fillCondition(
+                11,
+                'And',
+                'My multiple user devices question',
+                'At least one item of itemtype',
+                'Computer',
+                'dropdown',
+            );
         });
 
         // Reload and check values
@@ -1047,6 +1081,22 @@ describe ('Conditions', () => {
                 'My assignee question',
                 'Is equal to',
                 'e2e_tests',
+                'dropdown',
+            );
+            checkThatConditionExist(
+                10,
+                'And',
+                'My single user devices question',
+                'Is of itemtype',
+                'Computer',
+                'dropdown',
+            );
+            checkThatConditionExist(
+                11,
+                'And',
+                'My multiple user devices question',
+                'At least one item of itemtype',
+                '×Computer',
                 'dropdown',
             );
         });
