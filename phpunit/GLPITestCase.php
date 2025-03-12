@@ -37,8 +37,10 @@ use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Tests\Log\TestHandler;
 use Monolog\Level;
 use org\bovigo\vfs\vfsStreamWrapper;
+use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
+use SebastianBergmann\Comparator\ComparisonFailure;
 
 // Main GLPI test case. All tests should extends this class.
 
@@ -498,5 +500,57 @@ class GLPITestCase extends TestCase
         }
 
         return $input;
+    }
+
+    /**
+     * Assert that an array matches the expected array but ignore keys order.
+     *
+     * This method is usefull to compare multidimentional arrays easilly, when keys order does not matter.
+     */
+    protected function assertArrayIsEqualIgnoringKeysOrder(array $expected, array $actual, ?string $message = null): void
+    {
+        try {
+            if (array_is_list($expected)) {
+                // Array is a list, check that all entries are found in the actual value, ignoring their keys.
+                foreach ($expected as $expected_entry) {
+                    $found = false;
+                    foreach ($actual as $actual_entry) {
+                        try {
+                            if (is_array($expected_entry)) {
+                                $this->assertArrayIsEqualIgnoringKeysOrder($expected_entry, $actual_entry);
+                            } else {
+                                $this->assertEquals($expected_entry, $actual_entry);
+                            }
+                            $found = true; // No exception thrown means that the value matches.
+                            break;
+                        } catch (ExpectationFailedException) {
+                            // Value does not match
+                        }
+                    }
+                    if ($found === false) {
+                        $this->assertTrue($found);
+                    }
+                }
+            } else {
+                // Array is not a list, check that all expected entries are found and are using the same keys.
+                foreach ($expected as $key => $expected_entry) {
+                    $this->assertArrayHasKey($key, $actual);
+                    if (is_array($expected_entry)) {
+                        $this->assertArrayIsEqualIgnoringKeysOrder($expected_entry, $actual[$key]);
+                    } else {
+                        $this->assertEquals($expected_entry, $actual[$key]);
+                    }
+                }
+            }
+
+            // Be sure that there is the same entries count (no missing or extra entries in the actual value).
+            $this->assertEquals(count($expected), count($actual));
+        } catch (ExpectationFailedException $e) {
+            throw new ExpectationFailedException(
+                $message ?? 'Failed asserting that two arrays are equal.',
+                new ComparisonFailure($expected, $actual, json_encode($expected, JSON_PRETTY_PRINT), json_encode($actual, JSON_PRETTY_PRINT)),
+                $e
+            );
+        }
     }
 }
