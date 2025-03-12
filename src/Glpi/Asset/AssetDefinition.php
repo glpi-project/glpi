@@ -284,10 +284,14 @@ TWIG, $twig_params);
             $capacities = null;
             if (is_array($input['capacities'])) {
                 foreach ($input['capacities'] as $capacity) {
-                    $capacities[$capacity] = new Capacity(
-                        name: $capacity,
-                        //config: $capacity['config'] ? new CapacityConfig($capacity['config']) : null
-                    );
+                    if ($capacity instanceof Capacity) {
+                        $capacities[$capacity->getName()] = $capacity;
+                    } else {
+                        $capacities[$capacity] = new Capacity(
+                            name: $capacity,
+                           //config: $capacity['config'] ? new CapacityConfig($capacity['config']) : null
+                        );
+                    }
                 }
             }
             if (!$this->validateCapacityArray($capacities)) {
