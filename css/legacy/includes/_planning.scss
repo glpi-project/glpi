@@ -244,7 +244,7 @@
       .fc-event {
          font-weight: normal;
          display: block;
-         min-height: 13px;
+         min-height: 20px;
 
          .fc-content {
             margin-right: 8px;
@@ -313,14 +313,6 @@
          background-color: rgba(59, 140, 190, 0.5);
       }
 
-      .fc-day-grid-event .fc-resizer {
-         width: 10px;
-      }
-
-      .fc-time-grid-event .fc-resizer {
-         height: 10px;
-      }
-
       .fc-divider {
          border: 1px dashed #cccccc;
       }
@@ -355,6 +347,10 @@
       border: 1px solid #999999;
       background-color: white;
    }
+}
+
+.fc-time-grid .fc-slats td {
+   height: 2.5em;
 }
 
 .available {
