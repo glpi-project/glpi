@@ -1835,6 +1835,7 @@ TWIG, $twig_params);
 
     public static function getKanbanColumns($ID, $column_field = null, $column_ids = [], $get_default = false)
     {
+        // TODO Make this function only return the card data and leave rendering to Vue components. This will deduplicate the data between display and filters.
         if ($column_field !== 'projectstates_id') {
             return [];
         }
@@ -1870,7 +1871,6 @@ TWIG, $twig_params);
             $card = [
                 'id'              => "{$itemtype}-{$item['id']}",
                 'title'           => $item['name'],
-                'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'] ?? "", false, true), 100),
             ];
 
             $content = "<div class='kanban-plugin-content'>";
@@ -1928,6 +1928,7 @@ TWIG, $twig_params);
             $card['_readonly'] = $item['_readonly'];
             $card['_form_link'] = $itemtype::getFormUrlWithID($item['id']);
             $card['_metadata'] = [];
+            $card['due_date'] = $item['plan_end_date'] ? Html::convDateTime($item['plan_end_date']) : '';
             $metadata_values = ['name', 'content', 'is_milestone', 'plan_start_date', 'plan_end_date', 'real_start_date', 'real_end_date',
                 'planned_duration', 'effective_duration', 'percent_done', 'is_deleted', 'date_creation'
             ];
@@ -1937,7 +1938,7 @@ TWIG, $twig_params);
                 }
             }
             if (isset($card['_metadata']['content']) && is_string($card['_metadata']['content'])) {
-                $card['_metadata']['content'] = Glpi\RichText\RichText::getTextFromHtml($card['_metadata']['content'], false, true);
+                $card['_metadata']['content'] = Glpi\RichText\RichText::getTextFromHtml(content: $card['_metadata']['content'], preserve_line_breaks: true);
             } else {
                 $card['_metadata']['content'] = '';
             }

@@ -9862,6 +9862,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public static function getKanbanColumns($ID, $column_field = null, $column_ids = [], $get_default = false)
     {
+        // TODO Make this function only return the card data and leave rendering to Vue components. This will deduplicate the data between display and filters.
         if (!in_array($column_field, ['status'])) {
             return [];
         }
@@ -9908,7 +9909,6 @@ abstract class CommonITILObject extends CommonDBTM
             $card = [
                 'id'              => "{$itemtype}-{$item['id']}",
                 'title'           => $item['name'],
-                'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'], false, true), 100),
                 'is_deleted'      => $item['is_deleted'] ?? false,
             ];
 
@@ -9956,7 +9956,7 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
             if (isset($card['_metadata']['content']) && is_string($card['_metadata']['content'])) {
-                $card['_metadata']['content'] = Glpi\RichText\RichText::getTextFromHtml($card['_metadata']['content'], false, true);
+                $card['_metadata']['content'] = Glpi\RichText\RichText::getTextFromHtml(content: $card['_metadata']['content'], preserve_line_breaks: true);
             } else {
                 $card['_metadata']['content'] = '';
             }
@@ -10154,6 +10154,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'id'           => $status_id,
                     'name'         => $status,
                     'color_class'  => 'itilstatus ' . static::getStatusKey($status_id),
+                    'header_color' => 'var(--status-color)',
                     'drop_only'    => (int) $status_id === self::CLOSED
                 ];
             }

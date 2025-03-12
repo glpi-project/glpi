@@ -33,41 +33,45 @@
 
 .itilstatus,
 .validationstatus {
+    --status-color: inherit;
+
+    color: var(--status-color);
+
     &.assigned,
     &.new {
-        color: #49bf4d;
+        --status-color: #49bf4d;
     }
 
     &.accepted {
-        color: green;
+        --status-color: green;
     }
 
     &.refused {
-        color: rgb(167, 47, 0);
+        --status-color: rgb(167, 47, 0);
     }
 
     &.test,
     &.qualif,
     &.waiting {
-        color: orange;
+        --status-color: orange;
     }
 
     &.approval {
-        color: #8cabdb;
+        --status-color: #8cabdb;
     }
 
     &.eval {
-        color: lightblue;
+        --status-color: lightblue;
     }
 
     &.closed,
     &.solved,
     &.observe,
     &.canceled {
-        color: black;
+        --status-color: black;
     }
 
     &.planned {
-        color: #1b2f62;
+        --status-color: #1b2f62;
     }
 }
