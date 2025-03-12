@@ -37,9 +37,12 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Log;
 use Override;
 use Ramsey\Uuid\Uuid;
@@ -48,7 +51,10 @@ use RuntimeException;
 /**
  * Comment of a given helpdesk form's section
  */
-final class Comment extends CommonDBChild implements BlockInterface, ConditionableVisibilityInterface
+final class Comment extends CommonDBChild implements
+    BlockInterface,
+    ConditionableVisibilityInterface,
+    UsedAsCriteriaInterface
 {
     use ConditionableVisibilityTrait;
 
@@ -154,6 +160,13 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionab
         }
 
         return $handlers;
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return [new VisibilityConditionHandler()];
     }
 
     public function displayBlockForEditor(): void

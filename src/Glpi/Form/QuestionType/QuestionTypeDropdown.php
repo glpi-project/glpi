@@ -276,18 +276,21 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
+    ): array {
         if (!$question_config instanceof QuestionTypeDropdownExtraDataConfig) {
             throw new InvalidArgumentException();
         }
 
         $options = $question_config->getOptions();
         if ($question_config->isMultipleDropdown()) {
-            return new MultipleChoiceFromValuesConditionHandler($options);
+            return [new MultipleChoiceFromValuesConditionHandler($options)];
         } else {
-            return new SingleChoiceFromValuesConditionHandler($options);
+            return array_merge(
+                parent::getConditionHandlers($question_config),
+                [new SingleChoiceFromValuesConditionHandler($options)]
+            );
         }
     }
 }

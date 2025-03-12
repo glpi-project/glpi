@@ -51,9 +51,8 @@ enum ValueOperator: string
     case MATCH_REGEX = 'match_regex';
     case NOT_MATCH_REGEX = 'not_match_regex';
 
-    // Not yet implemented:
-    // case VISIBLE = 'visible';
-    // case NOT_VISIBLE = 'not_visible';
+    case VISIBLE = 'visible';
+    case NOT_VISIBLE = 'not_visible';
 
     public function getLabel(): string
     {
@@ -72,6 +71,9 @@ enum ValueOperator: string
             self::ALL_ITEMS_OF_ITEMTYPE             => __("All items of itemtype"),
             self::MATCH_REGEX            => __("Match regular expression"),
             self::NOT_MATCH_REGEX        => __("Do not match regular expression"),
+
+            self::VISIBLE                => __("Is visible"),
+            self::NOT_VISIBLE            => __("Is not visible"),
         };
     }
 }
