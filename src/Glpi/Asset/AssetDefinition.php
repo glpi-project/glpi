@@ -290,7 +290,7 @@ TWIG, $twig_params);
                     } else {
                         $capacities[$capacity] = new Capacity(
                             name: $capacity,
-                           //config: $capacity['config'] ? new CapacityConfig($capacity['config']) : null
+                            //config: $capacity['config'] ? new CapacityConfig($capacity['config']) : null
                         );
                     }
                 }
