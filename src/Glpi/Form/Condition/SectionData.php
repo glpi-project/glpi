@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,50 +32,23 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Form\Condition;
 
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
-use Glpi\Form\Condition\ConditionHandler\NumberConditionHandler;
-use Glpi\Form\Condition\UsedAsCriteriaInterface;
-use Override;
-
-final class QuestionTypeNumber extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
+final class SectionData
 {
-    #[Override]
-    public function getInputType(): string
-    {
-        return 'number';
+    public function __construct(
+        private string $uuid,
+        private string $name,
+    ) {
     }
 
-    #[Override]
     public function getName(): string
     {
-        return __("Number");
+        return $this->name;
     }
 
-    #[Override]
-    public function getIcon(): string
+    public function getUuid(): string
     {
-        return 'ti ti-number-123';
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 30;
-    }
-
-    #[Override]
-    public function getInputAttributes(): array
-    {
-        return ['step' => 'any'];
-    }
-
-    #[Override]
-    public function getConditionHandlers(
-        ?JsonFieldInterface $question_config
-    ): array {
-        return array_merge(parent::getConditionHandlers($question_config), [new NumberConditionHandler()]);
+        return $this->uuid;
     }
 }

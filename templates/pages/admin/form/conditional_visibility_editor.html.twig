@@ -107,15 +107,19 @@
                     {# Load the correct template to use #}
                     {% set handler = manager.getHandlerForCondition(condition) %}
 
-                    {{ include(
-                        handler.getTemplate(),
-                        {
-                            input_value: condition.getValue(),
-                            input_name: "_conditions[" ~ loop.index0 ~ "][value]",
-                            input_label: __("Value"),
-                        }|merge(handler.getTemplateParameters()),
-                        with_context = false
-                    ) }}
+                    {% if handler is not null %}
+                        {% if handler.getTemplate() is not null %}
+                            {{ include(
+                                handler.getTemplate(),
+                                {
+                                    input_value: condition.getValue(),
+                                    input_name: "_conditions[" ~ loop.index0 ~ "][value]",
+                                    input_label: __("Value"),
+                                }|merge(handler.getTemplateParameters()),
+                                with_context = false
+                            ) }}
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
 
                 {% if condition_is_filled or loop.index0 > 0 %}
