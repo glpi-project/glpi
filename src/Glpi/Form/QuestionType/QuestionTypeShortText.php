@@ -41,7 +41,7 @@ use Glpi\Form\Condition\ConditionHandler\StringConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Override;
 
-final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
+final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer
 {
     #[Override]
     public function getInputType(): string
@@ -68,9 +68,9 @@ final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implem
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
-        return new StringConditionHandler();
+    ): array {
+        return array_merge(parent::getConditionHandlers($question_config), [new StringConditionHandler()]);
     }
 }
