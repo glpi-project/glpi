@@ -206,15 +206,10 @@
                 data-fix-dropdown-flex
             >
                 <div class="question-type-dropdown-group">
-                    {% set categories = {} %}
-                    {% for category in question_types_manager.getCategories() %}
-                        {% set categories = categories|merge({(category.value): category.getLabel()}) %}
-                    {% endfor %}
-
                     {{ fields.dropdownArrayField(
                         '_type_category',
-                        question_type.getCategory().value,
-                        categories,
+                        question_types_manager.getCategoryKey(question_type.getCategory()),
+                        question_types_manager.getCategoriesDropdownValues(),
                         '',
                         {
                             'init'                 : question is not null,
@@ -233,10 +228,7 @@
                         }
                     ) }}
 
-                    {% set types = question_types_manager.getTypesForCategory(question_type.getCategory()) %}
-                    {% for possible_question_type in types %}
-                        {% set types = types|merge({(get_class(possible_question_type)): possible_question_type.getName()}) %}
-                    {% endfor %}
+                    {% set types = question_types_manager.getQuestionTypesDropdownValuesForCategory(question_type.getCategory()) %}
 
                     {{ fields.dropdownArrayField(
                         'type',
