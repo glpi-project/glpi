@@ -115,13 +115,15 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
         if ($id > 0) {
             $targets   = ITILValidationTemplate_Target::getTargets($id);
-            $target    = current($targets);
-            $itemtype  = $target['itemtype'];
-            $items_ids = array_column($targets, 'items_id');
+            if (!empty($targets)) {
+                $target = current($targets);
+                $itemtype = $target['itemtype'];
+                $items_ids = array_column($targets, 'items_id');
 
-            $options['itemtype_target'] = $itemtype;
-            $options['groups_id']       = $target['groups_id'];
-            $options['items_id_target'] = $itemtype == 'Group' && count($items_ids) == 1 ? $items_ids[0] : $items_ids;
+                $options['itemtype_target'] = $itemtype;
+                $options['groups_id'] = $target['groups_id'];
+                $options['items_id_target'] = $itemtype == 'Group' && count($items_ids) == 1 ? $items_ids[0] : $items_ids;
+            }
         }
 
         return CommonITILValidation::dropdownValidator($options);
