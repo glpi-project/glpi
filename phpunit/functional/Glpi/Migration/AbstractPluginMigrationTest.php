@@ -37,13 +37,18 @@ namespace tests\units\Glpi\Migration;
 use Computer;
 use DBmysql;
 use DbTestCase;
+use DropdownTranslation;
 use Entity;
 use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\Capacity\HasInfocomCapacity;
+use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
 use Glpi\Migration\PluginMigrationResult;
+use Infocom;
 use Monitor;
 use ReflectionClass;
+use TaskCategory;
 
 class AbstractPluginMigrationTest extends DbTestCase
 {
@@ -538,6 +543,340 @@ class AbstractPluginMigrationTest extends DbTestCase
 
         $this->assertEquals([AssetDefinition::class => [$definition_id]], $result->getCreatedItemsIds());
         $this->assertEquals([], $result->getReusedItemsIds());
+    }
+
+    public function testCopyItems(): void
+    {
+        // Arrange
+        $definition = $this->initDropdownDefinition('MyCustomCategory');
+
+        $db = $this->createMock(DBmysql::class);
+        $db->method('request')->willReturnCallback(function ($criteria) {
+            if (($criteria['OFFSET'] ?? 0) > 0) {
+                return new \ArrayIterator([]);
+            }
+
+            $cat_1_id = \getItemByTypeName(TaskCategory::class, '_cat_1', true);
+
+            return new \ArrayIterator([
+                [
+                    'items_id'   => $cat_1_id,
+                    'itemtype'   => TaskCategory::class,
+                    'language'   => 'fr_FR',
+                    'field'      => 'name',
+                    'value'      => 'FR - _cat_1'
+                ],
+                [
+                    'items_id'   => $cat_1_id,
+                    'itemtype'   => TaskCategory::class,
+                    'language'   => 'es_SP',
+                    'field'      => 'name',
+                    'value'      => 'ES - _cat_1'
+                ],
+            ]);
+        });
+
+        $instance = new class ($db) extends AbstractPluginMigration {
+            protected function validatePrerequisites(): bool
+            {
+                return true;
+            }
+
+            protected function processMigration(): bool
+            {
+                $definition = \getItemByTypeName(DropdownDefinition::class, 'MyCustomCategory');
+
+                $my_imported_cat = $this->importItem(
+                    $definition->getDropdownClassName(),
+                    [
+                        'name' => 'Test category'
+                    ]
+                );
+
+                $cat_1_id = \getItemByTypeName(TaskCategory::class, '_cat_1', true);
+
+                $this->copyItems(
+                    DropdownTranslation::class,
+                    where: [
+                        'itemtype' => TaskCategory::class,
+                        'items_id' => $cat_1_id,
+                    ],
+                    replacements: [
+                        [
+                            'field' => 'itemtype',
+                            'from'  => TaskCategory::class,
+                            'to'    => $definition->getDropdownClassName(),
+                        ],
+                        [
+                            'field' => 'items_id',
+                            'from'  => $cat_1_id,
+                            'to'    => $my_imported_cat->getID(),
+                        ],
+                    ]
+                );
+
+                return true;
+            }
+        };
+
+        // Act
+        $result = $instance->execute(simulate: true);
+
+        // Assert
+        $custom_cat = \getItemByTypeName($definition->getDropdownClassName(), 'Test category');
+
+        $expected_messages = [
+            [
+                'type' => MessageType::Debug,
+                'message' => sprintf('MyCustomCategory "Test category" (%d) has been created.', $custom_cat->getID()),
+            ],
+        ];
+        $this->assertEquals($expected_messages, $result->getMessages());
+        $this->assertTrue($result->isFullyProcessed());
+        $this->assertFalse($result->hasErrors());
+
+        $copied_translations = \array_map(
+            static function (array $entry): array {
+                unset($entry['id']);
+                return $entry;
+            },
+            \getAllDataFromTable(
+                DropdownTranslation::getTable(),
+                ['itemtype' => $custom_cat::class, 'items_id' => $custom_cat->getID()]
+            )
+        );
+
+        $this->assertEquals(
+            [
+                [
+                    'items_id' => $custom_cat->getID(),
+                    'itemtype' => $custom_cat::class,
+                    'language' => 'es_SP',
+                    'field'    => 'name',
+                    'value'    => 'ES - _cat_1',
+                ],
+                [
+                    'items_id' => $custom_cat->getID(),
+                    'itemtype' => $custom_cat::class,
+                    'language' => 'fr_FR',
+                    'field'    => 'name',
+                    'value'    => 'FR - _cat_1',
+                ]
+            ],
+            \array_values($copied_translations)
+        );
+    }
+
+    public function testCopyPolymorphicConnexityItems(): void
+    {
+        // Arrange
+        $definition = $this->initAssetDefinition(
+            'MyCustomAsset',
+            capacities: [
+                HasInfocomCapacity::class,
+            ]
+        );
+
+        $db = $this->createMock(DBmysql::class);
+        $db->method('request')->willReturnCallback(function ($criteria) {
+            if (($criteria['FROM'] ?? null) === 'information_schema.columns') {
+                return new \ArrayIterator([
+                    [
+                        'TABLE_NAME'  => 'glpi_infocoms',
+                        'COLUMN_NAME' => 'items_id',
+                    ],
+                    [
+                        'TABLE_NAME'  => 'glpi_contracts_items',
+                        'COLUMN_NAME' => 'items_id',
+                    ],
+                ]);
+            }
+
+            if (($criteria['OFFSET'] ?? 0) > 0) {
+                return new \ArrayIterator([]);
+            }
+
+            $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+            $computer_2_id = \getItemByTypeName(Computer::class, '_test_pc02', true);
+
+            if (($criteria['FROM'] ?? null) === 'glpi_infocoms') {
+                if ($criteria['WHERE']['items_id'] === $computer_1_id) {
+                    return new \ArrayIterator([
+                        [
+                            'itemtype'          => Computer::class,
+                            'items_id'          => $computer_1_id,
+                            'warranty_date'     => '2024-12-04',
+                            'warranty_duration' => 3,
+                        ],
+                    ]);
+                } else {
+                    return new \ArrayIterator([
+                        [
+                            'itemtype'          => Computer::class,
+                            'items_id'          => $computer_2_id,
+                            'warranty_date'     => '2025-01-17',
+                            'warranty_duration' => 12,
+                        ],
+                    ]);
+                }
+            }
+
+            if (($criteria['FROM'] ?? null) === 'glpi_contracts_items') {
+                if ($criteria['WHERE']['items_id'] === $computer_1_id) {
+                    return new \ArrayIterator([
+                        [
+                            'itemtype'     => Computer::class,
+                            'items_id'     => $computer_1_id,
+                            'contracts_id' => 3,
+                        ],
+                        [
+                            'itemtype'     => Computer::class,
+                            'items_id'     => $computer_1_id,
+                            'contracts_id' => 9,
+                        ],
+                    ]);
+                } else {
+                    return new \ArrayIterator([
+                        [
+                            'itemtype'     => Computer::class,
+                            'items_id'     => $computer_2_id,
+                            'contracts_id' => 5,
+                        ],
+                    ]);
+                }
+            }
+
+            return new \ArrayIterator([]);
+        });
+        $db->method('fieldExists')->willReturnCallback(function ($table, $field) {
+            return match ($table . '.' . $field) {
+                'glpi_infocoms.itemtype' => true,
+                'glpi_contracts_items.itemtype' => true,
+                default => false,
+            };
+        });
+
+        $instance = new class ($db) extends AbstractPluginMigration {
+            protected function validatePrerequisites(): bool
+            {
+                return true;
+            }
+
+            protected function processMigration(): bool
+            {
+                $definition = \getItemByTypeName(AssetDefinition::class, 'MyCustomAsset');
+
+                $my_asset_1 = $this->importItem(
+                    $definition->getAssetClassName(),
+                    [
+                        'name'        => 'Test asset 1',
+                        'entities_id' => 0,
+                    ]
+                );
+                $computer_1_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
+                $this->copyPolymorphicConnexityItems(Computer::class, $computer_1_id, $my_asset_1::class, $my_asset_1->getID());
+
+                $my_asset_2 = $this->importItem(
+                    $definition->getAssetClassName(),
+                    [
+                        'name'        => 'Test asset 2',
+                        'entities_id' => 0,
+                    ]
+                );
+                $computer_2_id = \getItemByTypeName(Computer::class, '_test_pc02', true);
+                $this->copyPolymorphicConnexityItems(Computer::class, $computer_2_id, $my_asset_2::class, $my_asset_2->getID());
+
+                return true;
+            }
+        };
+
+        // Act
+        global $PHPLOGGER;
+        $instance->setLogger($PHPLOGGER);
+        $result = $instance->execute(simulate: true);
+
+        // Assert
+        $my_asset_1 = \getItemByTypeName($definition->getAssetClassName(), 'Test asset 1');
+        $my_asset_2 = \getItemByTypeName($definition->getAssetClassName(), 'Test asset 2');
+
+        $expected_messages = [
+            [
+                'type' => MessageType::Debug,
+                'message' => sprintf('MyCustomAsset "Test asset 1" (%d) has been created.', $my_asset_1->getID()),
+            ],
+            [
+                'type' => MessageType::Debug,
+                'message' => sprintf('MyCustomAsset "Test asset 2" (%d) has been created.', $my_asset_2->getID()),
+            ],
+        ];
+        $this->assertEquals($expected_messages, $result->getMessages());
+        $this->assertTrue($result->isFullyProcessed());
+        $this->assertFalse($result->hasErrors());
+
+        $copied_infocom = \array_map(
+            static function (array $entry): array {
+                return [
+                    'itemtype'          => $entry['itemtype'],
+                    'items_id'          => $entry['items_id'],
+                    'warranty_date'     => $entry['warranty_date'],
+                    'warranty_duration' => $entry['warranty_duration'],
+                ];
+            },
+            \getAllDataFromTable(
+                Infocom::getTable(),
+                ['itemtype' => $definition->getAssetClassName()]
+            )
+        );
+
+        $this->assertEquals(
+            [
+                [
+                    'items_id'          => $my_asset_1->getID(),
+                    'itemtype'          => $my_asset_1::class,
+                    'warranty_date'     => '2024-12-04',
+                    'warranty_duration' => 3,
+                ],
+                [
+                    'items_id'          => $my_asset_2->getID(),
+                    'itemtype'          => $my_asset_2::class,
+                    'warranty_date'     => '2025-01-17',
+                    'warranty_duration' => 12,
+                ],
+            ],
+            \array_values($copied_infocom)
+        );
+
+        $copied_contract_relations = \array_map(
+            static function (array $entry): array {
+                unset($entry['id']);
+                return $entry;
+            },
+            \getAllDataFromTable(
+                \Contract_Item::getTable(),
+                ['itemtype' => $definition->getAssetClassName()]
+            )
+        );
+
+        $this->assertEquals(
+            [
+                [
+                    'itemtype'     => $my_asset_1::class,
+                    'items_id'     => $my_asset_1->getID(),
+                    'contracts_id' => 3,
+                ],
+                [
+                    'itemtype'     => $my_asset_1::class,
+                    'items_id'     => $my_asset_1->getID(),
+                    'contracts_id' => 9,
+                ],
+                [
+                    'itemtype'     => $my_asset_2::class,
+                    'items_id'     => $my_asset_2->getID(),
+                    'contracts_id' => 5,
+                ],
+            ],
+            \array_values($copied_contract_relations)
+        );
     }
 
     public function testMapItem(): void
