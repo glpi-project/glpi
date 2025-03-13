@@ -373,14 +373,15 @@ HTML;
             function ($count, $step_status) use ($status_to_count) {
                 return $step_status === $status_to_count ? $count + 1 : $count;
             },
-            0);
+            0
+        );
         $accepted = $count(self::ACCEPTED);
         $refused  = $count(self::REFUSED);
         $waiting  = $count(self::WAITING);
 
-        return "Accepted ($accepted): " . round($accepted/$count_total_validations*100)  . "%"
-            . " - Refused ($refused): " . round($refused/$count_total_validations*100). "%"
-            . " - Waiting ($waiting): " . round($waiting/$count_total_validations*100). "%";
+        return "Accepted ($accepted): " . round($accepted / $count_total_validations * 100)  . "%"
+            . " - Refused ($refused): " . round($refused / $count_total_validations * 100) . "%"
+            . " - Waiting ($waiting): " . round($waiting / $count_total_validations * 100) . "%";
     }
 
 

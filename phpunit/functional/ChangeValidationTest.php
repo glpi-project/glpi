@@ -215,5 +215,4 @@ class ChangeValidationTest extends CommonITILValidation
 
         $this->assertEquals(\CommonITILValidation::REFUSED, \ChangeValidation::computeValidationStatus($change));
     }
-
 }

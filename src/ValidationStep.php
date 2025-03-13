@@ -110,7 +110,7 @@ class ValidationStep extends \CommonDropdown
 
         $achievements = self::getValidationStepAchievements($ticket_id, $validationstep_id);
         // special case for 0% required validation
-        if($required_percent == 0) {
+        if ($required_percent == 0) {
             if ($achievements[CommonITILValidation::ACCEPTED] > 0) {
                 return CommonITILValidation::ACCEPTED;
             }

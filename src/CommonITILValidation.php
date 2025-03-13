@@ -332,7 +332,7 @@ abstract class CommonITILValidation extends CommonDBChild
         if ($item->getFromDB($this->fields[static::$items_id])) {
             // always recompute global validation status on ticket
             // keep same behaviour for changes (since they have no validation steps)
-            if(static::$itemtype === TicketValidation::class) {
+            if (static::$itemtype === TicketValidation::class) {
                 $input = [
                     'id'                    => $this->fields[static::$items_id],
                     'global_validation'     => static::computeValidationStatus($item),
@@ -363,9 +363,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 }
             }
 
-            if(isset($input) && !$item->update($input)) {
-                Session::addMessageAfterRedirect(msg: 'Failed to update related '.static::$itemtype. ' approval status', message_type: ERROR);
-            }
+            isset($input) && $item->update($input);
 
             if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
                 $options = ['validation_id'     => $this->fields["id"],
@@ -492,9 +490,8 @@ abstract class CommonITILValidation extends CommonDBChild
                     '_from_itilvalidation'  => true,
                 ];
 
-                if(!$item->update($input))
-                {
-                    Session::addMessageAfterRedirect(msg: 'Failed to update related '.static::$itemtype. ' approval status', message_type: ERROR);
+                if (!$item->update($input)) {
+                    Session::addMessageAfterRedirect(msg: 'Failed to update related ' . static::$itemtype . ' approval status  (case 2)', message_type: ERROR);
                 };
             }
         }
@@ -507,7 +504,7 @@ abstract class CommonITILValidation extends CommonDBChild
         if ($item->getFromDB($this->fields[static::$items_id])) {
             // always recompute global validation status on ticket
             // keep same behaviour for changes (since they have no validation steps)
-            if(static::$itemtype === TicketValidation::class) {
+            if (static::$itemtype === TicketValidation::class) {
                 $input = [
                     'id'                    => $this->fields[static::$items_id],
                     'global_validation'     => static::computeValidationStatus($item),
@@ -523,8 +520,8 @@ abstract class CommonITILValidation extends CommonDBChild
                 ];
             }
 
-            if(isset($input) && !$item->update($input)) {
-                Session::addMessageAfterRedirect(msg: 'Failed to update related '.static::$itemtype. ' approval status', message_type: ERROR);
+            if (isset($input) && !$item->update($input)) {
+                Session::addMessageAfterRedirect(msg: 'Failed to update related ' . static::$itemtype . ' approval status  (case 3)', message_type: ERROR);
             }
         }
 

@@ -2,7 +2,6 @@
 
 namespace Glpi\PHPUnit\Tests\Glpi;
 
-
 use CommonITILValidation;
 use Ticket;
 use TicketValidation;

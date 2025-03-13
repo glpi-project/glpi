@@ -430,7 +430,7 @@ class TicketValidationTest extends CommonITILValidation
 
         $this->assertEquals(\CommonITILValidation::REFUSED, \TicketValidation::computeValidationStatus($ticket));
     }
-    
+
     /**
      * One validation is WAITING : the ticket global_validation is WAITING
      */
