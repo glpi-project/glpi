@@ -39,12 +39,31 @@
    {% set pending_item = pending_item ?? call(entry['type'] ~ "::getById", [entry_i['id']]) %}
    {% set pending_reason_item = pending_item ? call("PendingReason_Item::getForItem", [pending_item]) : false %}
    {% set pending_reason = pending_reason_item ? call("PendingReason::getById", [pending_reason_item.fields['pendingreasons_id']]) : false %}
+   {% set is_latest_pending = call("PendingReason_Item::isLastPendingForItem", [
+      item,
+      pending_item
+   ]) %}
+   {% set active_pending_icon %}
+      <i class="fas fa-pause me-1"></i>
+   {% endset %}
+   {% set done_pending_icon %}
+      <i class="fas fa-solid fa-check"></i>
+   {% endset %}
+   {% set pending_reason_option = is_latest_pending and pending_reason_item_parent != false ? {
+      'className' : 'badge bg-blue-lt',
+      'icon' : active_pending_icon,
+      'text': 'Pending',
+   } : {
+      'className' : 'badge bg-transparent text-muted',
+      'icon' : done_pending_icon,
+      'text' : 'Done',
+   } %}
 {% endif %}
 
 {% if pending_reason %}
-   <span class="badge bg-blue-lt {{ display_for_parent ? "mt-1 w-100 text-truncate" : "" }}">
-      <i class="fas fa-pause me-1"></i>
-      {{ __("Pending: %s")|format(pending_reason.getLink())|raw }}
+   <span class="{{ pending_reason_option.className }} {{ display_for_parent ? "mt-1 w-100 text-truncate" : "" }}">
+      {{ pending_reason_option.icon }}
+      {{ __(pending_reason_option.text ~ ": %s")|format(pending_reason.getLink())|raw }}
 
       {% if display_for_parent or call("PendingReason_Item::isLastPendingForItem", [
          item,
