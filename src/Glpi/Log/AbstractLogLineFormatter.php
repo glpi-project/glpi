@@ -44,7 +44,17 @@ abstract class AbstractLogLineFormatter extends LineFormatter
     {
         $message = \sprintf(
             "\n  Backtrace :\n%s",
-            $this->getTraceAsString($e->getTrace())
+            $this->getTraceAsString(
+                array_merge(
+                    [
+                        [
+                            'file' => $e->getFile(),
+                            'line' => $e->getLine(),
+                        ]
+                    ],
+                    $e->getTrace()
+                )
+            )
         );
 
         if (($previous = $e->getPrevious()) instanceof \Throwable) {
@@ -53,7 +63,17 @@ abstract class AbstractLogLineFormatter extends LineFormatter
                 $message .= sprintf(
                     "  Previous: %s\n%s",
                     $previous->getMessage(),
-                    $this->getTraceAsString($previous->getTrace()),
+                    $this->getTraceAsString(
+                        array_merge(
+                            [
+                                [
+                                    'file' => $previous->getFile(),
+                                    'line' => $previous->getLine(),
+                                ]
+                            ],
+                            $previous->getTrace()
+                        )
+                    ),
                 );
                 if ($depth > $this->maxNormalizeDepth) {
                     break;
