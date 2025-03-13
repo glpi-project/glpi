@@ -50,14 +50,7 @@ class ChangeValidation extends CommonITILValidation
         return _n('Change approval', 'Change approvals', $nb);
     }
 
-    /**
-     * Compute the validation status
-     *
-     * @param $item CommonITILObject
-     *
-     * @return integer
-     **/
-    public static function computeValidationStatus(CommonITILObject $item)
+    public static function computeValidationStatus(CommonITILObject $item): int
     {
         // Percent of validation
         $validation_percent = $item->fields['validation_percent'];

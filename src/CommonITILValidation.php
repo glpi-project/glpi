@@ -1789,35 +1789,12 @@ HTML;
     /**
      * Compute the validation status
      *
+     * Reduced all the Validations of an item to a single status
+     *
+     * @return int CommonITILValidation::VALIDATE|CommonITILValidation::REFUSED|CommonITILValidation::WAITING|CommonITILValidation::NONE
      * @param $item CommonITILObject
-     *
-     * @return integer
      **/
-    public static function computeValidationStatus(CommonITILObject $item)
-    {
-        throw new \LogicException('code déplacé dans TicketValidation|ChangeValidation, cette méthode ne devrait jamais être appelée.');
-        // @todo delete
-    }
-
-    /**
-     * Compute the validation status from the percentage of acceptation, the
-     * percentage of refusals and the target acceptation threshold
-     *
-     * @param int $accepted             0-100 (percentage of acceptation)
-     * @param int $refused              0-100 (percentage of refusals)
-     * @param int $validation_percent   0-100 (target accepation threshold)
-     *
-     * @return int the validation status : ACCEPTED|REFUSED|WAITING
-     */
-    public static function computeValidation(
-        int $accepted,
-        int $refused,
-        int $validation_percent
-    ): int {
-        throw new \LogicException('code déplacé dans TicketValidation|ChangeValidation, cette méthode ne devrait jamais être appelée.');
-        // @todo delete
-    }
-
+    abstract public static function computeValidationStatus(CommonITILObject $item): int;
 
     /**
      * Get the validation statistics

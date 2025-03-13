@@ -384,7 +384,7 @@ HTML;
     }
 
 
-    public static function computeValidationStatus(CommonITILObject $ticket)
+    public static function computeValidationStatus(CommonITILObject $ticket): int
     {
         return ValidationStep::getValidationStatusForTicket($ticket);
     }
