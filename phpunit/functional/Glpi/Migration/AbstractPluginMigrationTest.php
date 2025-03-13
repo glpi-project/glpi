@@ -43,7 +43,6 @@ use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
 use Glpi\Migration\PluginMigrationResult;
 use Monitor;
-use Psr\Log\LoggerInterface;
 use ReflectionClass;
 
 class AbstractPluginMigrationTest extends DbTestCase
@@ -52,9 +51,8 @@ class AbstractPluginMigrationTest extends DbTestCase
     {
         // Arrange
         $db = $this->createMock(DBmysql::class);
-        $logger = $this->createMock(LoggerInterface::class);
 
-        $instance = new class ($db, $logger) extends AbstractPluginMigration {
+        $instance = new class ($db) extends AbstractPluginMigration {
             protected function validatePrerequisites(): bool
             {
                 $this->result->addMessage(MessageType::Error, 'Appliances plugin table "glpi_plugins_myplugin_items" is missing.');
@@ -91,9 +89,8 @@ class AbstractPluginMigrationTest extends DbTestCase
     {
         // Arrange
         $db = $this->createMock(DBmysql::class);
-        $logger = $this->createMock(LoggerInterface::class);
 
-        $instance = new class ($db, $logger) extends AbstractPluginMigration {
+        $instance = new class ($db) extends AbstractPluginMigration {
             protected function validatePrerequisites(): bool
             {
                 throw new \RuntimeException('Something went wrong during prerequisites validation.');
@@ -128,9 +125,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $db->expects($this->once())->method('beginTransaction'); // A transtation will be started ...
         $db->expects($this->once())->method('commit'); // ... and commited.
 
-        $logger = $this->createMock(LoggerInterface::class);
-
-        $instance = new class ($db, $logger) extends AbstractPluginMigration {
+        $instance = new class ($db) extends AbstractPluginMigration {
             protected function validatePrerequisites(): bool
             {
                 return true;
@@ -168,9 +163,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $db->expects($this->once())->method('rollBack'); // ... but a roll-back will be done.
         $db->expects($this->never())->method('commit');
 
-        $logger = $this->createMock(LoggerInterface::class);
-
-        $instance = new class ($db, $logger) extends AbstractPluginMigration {
+        $instance = new class ($db) extends AbstractPluginMigration {
             protected function validatePrerequisites(): bool
             {
                 $this->result->addMessage(MessageType::Notice, 'Plugin\'s data can be imported.');
@@ -211,9 +204,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $db->expects($this->once())->method('rollBack'); // ... but a roll-back will be done.
         $db->expects($this->never())->method('commit');
 
-        $logger = $this->createMock(LoggerInterface::class);
-
-        $instance = new class ($db, $logger) extends AbstractPluginMigration {
+        $instance = new class ($db) extends AbstractPluginMigration {
             protected function validatePrerequisites(): bool
             {
                 return true;
@@ -251,9 +242,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $db->expects($this->once())->method('rollBack'); // ... but a roll-back will be done.
         $db->expects($this->never())->method('commit');
 
-        $logger = $this->createMock(LoggerInterface::class);
-
-        $instance = new class ($db, $logger) extends AbstractPluginMigration {
+        $instance = new class ($db) extends AbstractPluginMigration {
             protected function validatePrerequisites(): bool
             {
                 $this->result->addMessage(MessageType::Notice, 'Plugin\'s data can be imported.');
@@ -311,7 +300,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         });
 
         $instance = $this->getMockBuilder(AbstractPluginMigration::class)
-            ->setConstructorArgs([$db, $this->createMock(LoggerInterface::class)])
+            ->setConstructorArgs([$db])
             ->onlyMethods(['execute', 'validatePrerequisites', 'processMigration'])
             ->getMock();
 
@@ -369,9 +358,8 @@ class AbstractPluginMigrationTest extends DbTestCase
     {
         // Arrange
         $db = $this->createMock(DBmysql::class);
-        $logger = $this->createMock(LoggerInterface::class);
 
-        $instance = new class ($db, $logger) extends AbstractPluginMigration {
+        $instance = new class ($db) extends AbstractPluginMigration {
             protected function validatePrerequisites(): bool
             {
                 return true;
@@ -496,9 +484,8 @@ class AbstractPluginMigrationTest extends DbTestCase
     {
         // Arrange
         $db = $this->createMock(DBmysql::class);
-        $logger = $this->createMock(LoggerInterface::class);
 
-        $instance = new class ($db, $logger) extends AbstractPluginMigration {
+        $instance = new class ($db) extends AbstractPluginMigration {
             protected function validatePrerequisites(): bool
             {
                 return true;
@@ -611,10 +598,8 @@ class AbstractPluginMigrationTest extends DbTestCase
             ]);
         });
 
-        $logger = $this->createMock(LoggerInterface::class);
-
         $instance = $this->getMockBuilder(AbstractPluginMigration::class)
-            ->setConstructorArgs([$db, $logger])
+            ->setConstructorArgs([$db])
             ->onlyMethods(['validatePrerequisites', 'processMigration'])
             ->getMock();
 
