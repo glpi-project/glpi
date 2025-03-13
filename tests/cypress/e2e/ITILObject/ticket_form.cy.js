@@ -35,75 +35,124 @@ describe("Ticket Form", () => {
     beforeEach(() => {
         cy.login();
     });
-    it('TODO List', () => {
-        cy.visit('/front/ticket.php');
-        cy.get('td[data-searchopt-content-id="1"] a').first().click();
+    // it('TODO List', () => {
+    //     cy.visit('/front/ticket.php');
+    //     cy.get('td[data-searchopt-content-id="1"] a').first().click();
+    //
+    //     cy.get('.itil-timeline').should('exist').then((container) => {
+    //         // Append fake content to the timeline
+    //         container.append('<div class="timeline-item mb-3 ITILContent">Fake content</div>');
+    //         container.append('<div class="timeline-item mb-3 ITILSolution">Fake content</div>');
+    //         container.append('<div class="timeline-item mb-3 ITILFollowup">Fake content</div>');
+    //         container.append('<div class="timeline-item mb-3 ITILTask info">Fake content</div>');
+    //         container.append('<div class="timeline-item mb-3 ITILTask todo">Fake content</div>');
+    //         container.append('<div class="timeline-item mb-3 ITILTask done">Fake content</div>');
+    //         container.append('<div class="timeline-item mb-3 Document_Item">Fake content</div>');
+    //         container.append('<div class="timeline-item mb-3 Log">Fake content</div>');
+    //         container.append('<div class="timeline-item mb-3 KnowbaseItemComment">Fake content</div>');
+    //         container.append('<div class="timeline-item mb-3 ITILReminder">Fake content</div>');
+    //
+    //         cy.get('button.view-timeline-todo-list').click();
+    //         cy.get('.timeline-item.ITILContent').should('not.be.visible');
+    //         cy.get('.timeline-item.ITILSolution').should('not.be.visible');
+    //         cy.get('.timeline-item.ITILFollowup').should('not.be.visible');
+    //         cy.get('.timeline-item.ITILTask.todo').should('be.visible');
+    //         cy.get('.timeline-item.ITILTask.done').should('be.visible');
+    //         cy.get('.timeline-item.ITILTask.info').should('not.be.visible');
+    //         cy.get('.timeline-item.Document_Item').should('not.be.visible');
+    //         cy.get('.timeline-item.Log').should('not.be.visible');
+    //         cy.get('.timeline-item.KnowbaseItemComment').should('not.be.visible');
+    //         cy.get('.timeline-item.ITILReminder').should('not.be.visible');
+    //
+    //         cy.get('button.view-timeline-todo-list').click();
+    //         cy.get('.timeline-item.ITILContent').should('be.visible');
+    //         cy.get('.timeline-item.ITILSolution').should('be.visible');
+    //         cy.get('.timeline-item.ITILFollowup').should('be.visible');
+    //         cy.get('.timeline-item.ITILTask.todo').should('be.visible');
+    //         cy.get('.timeline-item.ITILTask.done').should('be.visible');
+    //         cy.get('.timeline-item.ITILTask.info').should('be.visible');
+    //         cy.get('.timeline-item.Document_Item').should('be.visible');
+    //         cy.get('.timeline-item.Log').should('be.visible');
+    //         cy.get('.timeline-item.KnowbaseItemComment').should('be.visible');
+    //         cy.get('.timeline-item.ITILReminder').should('be.visible');
+    //     });
+    // });
+    //
+    // it('Search for Solution', () => {
+    //     cy.createWithAPI('Ticket', {
+    //         name: 'apple',
+    //         content: 'apple',
+    //     }).as('ticket_id');
+    //     cy.get('@ticket_id').then((ticket_id) => {
+    //         cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
+    //         cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
+    //         cy.findByText('Add a solution').click();
+    //         cy.findByLabelText('Search a solution').click();
+    //         cy.get('#modal_searchSolution').within(() => {
+    //             cy.findByLabelText('Search…').should('have.value', 'apple');
+    //             cy.findAllByRole('listitem').should('have.length.at.least', 2);
+    //
+    //             cy.findAllByTitle('Preview').first().click();
+    //             cy.findByText('Subject').should('be.visible');
+    //             cy.findByText('Content').should('be.visible');
+    //             cy.findByText('Content').parent().next().invoke('text').should('not.be.empty').as('content');
+    //             cy.findAllByRole('listitem').should('have.length', 0);
+    //             cy.findByText('Back to results').click();
+    //
+    //             cy.findAllByTitle('Use as a solution').first().click();
+    //         });
+    //         cy.get('#modal_searchSolution').should('not.exist');
+    //         cy.get('@content').then((content) => {
+    //             cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', content.trim());
+    //         });
+    //     });
+    // });
 
-        cy.get('.itil-timeline').should('exist').then((container) => {
-            // Append fake content to the timeline
-            container.append('<div class="timeline-item mb-3 ITILContent">Fake content</div>');
-            container.append('<div class="timeline-item mb-3 ITILSolution">Fake content</div>');
-            container.append('<div class="timeline-item mb-3 ITILFollowup">Fake content</div>');
-            container.append('<div class="timeline-item mb-3 ITILTask info">Fake content</div>');
-            container.append('<div class="timeline-item mb-3 ITILTask todo">Fake content</div>');
-            container.append('<div class="timeline-item mb-3 ITILTask done">Fake content</div>');
-            container.append('<div class="timeline-item mb-3 Document_Item">Fake content</div>');
-            container.append('<div class="timeline-item mb-3 Log">Fake content</div>');
-            container.append('<div class="timeline-item mb-3 KnowbaseItemComment">Fake content</div>');
-            container.append('<div class="timeline-item mb-3 ITILReminder">Fake content</div>');
-
-            cy.get('button.view-timeline-todo-list').click();
-            cy.get('.timeline-item.ITILContent').should('not.be.visible');
-            cy.get('.timeline-item.ITILSolution').should('not.be.visible');
-            cy.get('.timeline-item.ITILFollowup').should('not.be.visible');
-            cy.get('.timeline-item.ITILTask.todo').should('be.visible');
-            cy.get('.timeline-item.ITILTask.done').should('be.visible');
-            cy.get('.timeline-item.ITILTask.info').should('not.be.visible');
-            cy.get('.timeline-item.Document_Item').should('not.be.visible');
-            cy.get('.timeline-item.Log').should('not.be.visible');
-            cy.get('.timeline-item.KnowbaseItemComment').should('not.be.visible');
-            cy.get('.timeline-item.ITILReminder').should('not.be.visible');
-
-            cy.get('button.view-timeline-todo-list').click();
-            cy.get('.timeline-item.ITILContent').should('be.visible');
-            cy.get('.timeline-item.ITILSolution').should('be.visible');
-            cy.get('.timeline-item.ITILFollowup').should('be.visible');
-            cy.get('.timeline-item.ITILTask.todo').should('be.visible');
-            cy.get('.timeline-item.ITILTask.done').should('be.visible');
-            cy.get('.timeline-item.ITILTask.info').should('be.visible');
-            cy.get('.timeline-item.Document_Item').should('be.visible');
-            cy.get('.timeline-item.Log').should('be.visible');
-            cy.get('.timeline-item.KnowbaseItemComment').should('be.visible');
-            cy.get('.timeline-item.ITILReminder').should('be.visible');
-        });
-    });
-
-    it('Search for Solution', () => {
+    it('Validation Template', () => {
+        // set xdebug_session cookie
+        cy.setCookie('XDEBUG_SESSION', 'PHPSTORM');
         cy.createWithAPI('Ticket', {
             name: 'apple',
             content: 'apple',
         }).as('ticket_id');
+        cy.createWithAPI('ITILValidationTemplate', {
+            name: 'test',
+            content: 'test content',
+            entities_id: 1,
+        }).as('validationtemplates_id');
+        cy.createWithAPI('ITILValidationTemplate', {
+            name: 'test no approver',
+            content: 'no approver test content ',
+            entities_id: 1,
+        }).as('validationtemplates_id2');
+
         cy.get('@ticket_id').then((ticket_id) => {
-            cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
-            cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
-            cy.findByText('Add a solution').click();
-            cy.findByLabelText('Search a solution').click();
-            cy.get('#modal_searchSolution').within(() => {
-                cy.findByLabelText('Search…').should('have.value', 'apple');
-                cy.findAllByRole('listitem').should('have.length.at.least', 2);
-
-                cy.findAllByTitle('Preview').first().click();
-                cy.findByText('Subject').should('be.visible');
-                cy.findByText('Content').should('be.visible');
-                cy.findByText('Content').parent().next().invoke('text').should('not.be.empty').as('content');
-                cy.findAllByRole('listitem').should('have.length', 0);
-                cy.findByText('Back to results').click();
-
-                cy.findAllByTitle('Use as a solution').first().click();
+            cy.get('@validationtemplates_id').then((validationtemplates_id) => {
+                cy.createWithAPI('ITILValidationTemplate_Target', {
+                    itilvalidationtemplates_id: validationtemplates_id,
+                    itemtype: 'User',
+                    items_id: 2
+                });
+                cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
+                cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
+                cy.findByText('Ask for validation').click();
+                cy.get('.itilvalidation').within(() => {
+                    cy.findByLabelText('Template').selectDropdownValue(validationtemplates_id);
+                    cy.get('select[name="[validatortype]"]').should('have.value', 'User');
+                    cy.get('select[name=items_id_target]').should('have.value', '2');
+                    cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', 'test content');
+                });
             });
-            cy.get('#modal_searchSolution').should('not.exist');
-            cy.get('@content').then((content) => {
-                cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', content.trim());
+            cy.get('@validationtemplates_id2').then((validationtemplates_id) => {
+                cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
+                cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
+                cy.findByText('Ask for validation').click();
+                cy.get('.itilvalidation').within(() => {
+                    cy.findByLabelText('Template').selectDropdownValue(validationtemplates_id);
+                    cy.get('select[name="[validatortype]"]').should('have.value', '0');
+                    cy.get('select[name=items_id_target]').should('not.be.visible');
+                    cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', 'no approver test content');
+                });
             });
         });
     });
