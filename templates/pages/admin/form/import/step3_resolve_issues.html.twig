@@ -58,10 +58,6 @@
                     {% for issue in issues %}
                         {% set original_name = issue.default_name ?? issue.name %}
 
-                        <script>
-                            console.log("{{ issue|json_encode() }}");
-                        </script>
-
                         <tr>
                             <td class="px-4 align-middle">
                                 <span>{{ original_name }}</span>
