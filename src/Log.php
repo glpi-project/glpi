@@ -281,11 +281,14 @@ class Log extends CommonDBTM
             'date_mod'          => $date_mod,
             'id_search_option'  => $id_search_option,
             'old_value'         => $old_value,
-            'new_value'         => $new_value,
+            'new_value'         => $new_value
         ];
 
+        // This condition prevents errors during migrations from older GLPI versions,
+        // where some steps write logs before the new columns are added.
         if (
-            $DB->fieldExists(self::getTable(), 'old_id')
+            $DB->tableExists(self::getTable())
+            && $DB->fieldExists(self::getTable(), 'old_id')
             && $DB->fieldExists(self::getTable(), 'new_id')
         ) {
             $params['old_id'] = $old_id;
