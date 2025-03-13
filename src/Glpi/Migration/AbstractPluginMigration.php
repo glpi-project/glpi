@@ -37,20 +37,17 @@ namespace Glpi\Migration;
 use CommonDBTM;
 use DBmysql;
 use Glpi\Progress\AbstractProgressIndicator;
-use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareTrait;
 use Glpi\Message\MessageType;
 
 abstract class AbstractPluginMigration
 {
+    use LoggerAwareTrait;
+
     /**
      * Progress indicator.
      */
     protected DBmysql $db;
-
-    /**
-     * Logger.
-     */
-    protected LoggerInterface $logger;
 
     /**
      * Progress indicator.
@@ -69,10 +66,9 @@ abstract class AbstractPluginMigration
      */
     private array $target_items_mapping = [];
 
-    public function __construct(DBmysql $db, LoggerInterface $logger)
+    public function __construct(DBmysql $db)
     {
         $this->db = $db;
-        $this->logger = $logger;
     }
 
     /**
@@ -114,7 +110,7 @@ abstract class AbstractPluginMigration
                 $e instanceof MigrationException ? $e->getLocalizedMessage() : __('An unexpected error occured.')
             );
 
-            $this->logger->error($e->getMessage(), context: ['exception' => $e]);
+            $this->logger?->error($e->getMessage(), context: ['exception' => $e]);
 
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();

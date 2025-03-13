@@ -84,9 +84,8 @@ abstract class AbstractDestinationFieldTest extends DbTestCase
     ): void {
         /**
          * @var \DBmysql $DB
-         * LoggerInterface $PHPLOGGER
          */
-        global $DB, $PHPLOGGER;
+        global $DB;
 
         if (!empty($fields_to_set)) {
             // Compute some values
@@ -115,7 +114,7 @@ abstract class AbstractDestinationFieldTest extends DbTestCase
         }
 
         // Run migration
-        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
