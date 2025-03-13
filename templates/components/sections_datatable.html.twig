@@ -69,13 +69,22 @@
             {% endset %}
 
             {% set progressbar %}
-                <div class="progress-stacked">
+                <div class="progress-stacked position-relative">
                     {# accepted #}
                     {{ macro.stacked_progressbar(step.validationstep.achievement.accepted) }}
                     {# waiting #}
                     {{ macro.stacked_progressbar(step.validationstep.achievement.waiting, 'bg-yellow', true) }}
                     {# refused #}
                     {{ macro.stacked_progressbar(step.validationstep.achievement.refused, 'bg-red') }}
+                    {# threshold  #}
+                    {# sligly move the indicator on edge case (0|100) to be visible #}
+                    {% if step.validationstep.minimal_required_validation_percent == 0 %}
+                        <div class="threshold-indicator" style="position: absolute; width: 5px; height: 100%; background-color: black; left: 0; top: 0; z-index: 10;"></div>
+                    {% elseif step.validationstep.minimal_required_validation_percent == 100 %}
+                        <div class="threshold-indicator" style="position: absolute; width: 5px; height: 100%; background-color: black; right: 0; top: 0; z-index: 10;"></div>
+                    {% else %}
+                        <div class="threshold-indicator" style="position: absolute; width: 3px; height: 100%; background-color: black; left: {{ step.validationstep.minimal_required_validation_percent }}%; top: 0; z-index: 10;"></div>
+                    {% endif %}
                 </div>
             {% endset %}
 

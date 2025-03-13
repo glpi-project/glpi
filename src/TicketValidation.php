@@ -312,6 +312,7 @@ HTML;
                         'refused' => $validation_step_achievements[self::REFUSED],
                         'accepted' => $validation_step_achievements[self::ACCEPTED],
                     ],
+                    'minimal_required_validation_percent' => $validation_step->getField('minimal_required_validation_percent'),
                 ];
 
                 $validationstep_id_inloop = $validationstep_id;
