@@ -34,6 +34,7 @@
 
 namespace Glpi\Migration;
 
+use CommonDBConnexity;
 use CommonDBTM;
 use DBmysql;
 use Glpi\Progress\AbstractProgressIndicator;
@@ -342,6 +343,133 @@ abstract class AbstractPluginMigration
         );
 
         return $item;
+    }
+
+    /**
+     * Copy the items found using the given criteria, after application of the given replacements.
+     *
+     * @param class-string<\CommonDBTM> $itemtype
+     * @param array<mixed, mixed> $where
+     * @param array<int, array{field: string, from: mixed, to: mixed}> $replacements
+     */
+    final protected function copyItems(string $itemtype, array $where, array $replacements): void
+    {
+        $offset = 0;
+        $limit  = 500;
+        do {
+            $iterator = $this->db->request([
+                'FROM'   => $itemtype::getTable(),
+                'WHERE'  => $where,
+                'OFFSET' => $offset,
+                'LIMIT'  => $limit,
+            ]);
+
+            foreach ($iterator as $related_item_data) {
+                unset($related_item_data[$itemtype::getIndexName()]);
+
+                foreach ($replacements as $replacement) {
+                    $field = $replacement['field'];
+                    $from  = $replacement['from'];
+                    $to    = $replacement['to'];
+
+                    if ($related_item_data[$field] === $from) {
+                        $related_item_data[$field] = $to;
+                    }
+                }
+
+                $copied_item = new $itemtype();
+                if ($copied_item->getFromDbByCrit($related_item_data)) {
+                    // The related item already exists, do not create a new one to prevent duplicates.
+                    continue;
+                }
+                $created = $copied_item->add($related_item_data);
+                $this->addSessionMessagesToResult();
+                if ($created === false) {
+                    throw new MigrationException(
+                        sprintf(
+                            __('Unable to copy %s "%s".'),
+                            $itemtype::getTypeName(1),
+                            $related_item_data[$itemtype::getNameField()] ?? NOT_AVAILABLE,
+                        ),
+                        'Copy operation failed.'
+                    );
+                }
+            }
+
+            $offset += $limit;
+        } while ($iterator->count() > 0);
+    }
+
+    /**
+     * Copy the polymorphic relations related to the given source item and attach them to the given target item.
+     *
+     * @param class-string<\CommonDBTM> $source_itemtype
+     * @param int $source_items_id
+     * @param class-string<\CommonDBTM> $target_itemtype
+     * @param int $target_items_id
+     */
+    final protected function copyPolymorphicConnexityItems(
+        string $source_itemtype,
+        int $source_items_id,
+        string $target_itemtype,
+        int $target_items_id
+    ): void {
+        $polymorphic_column_iterator = $this->db->request(
+            [
+                'SELECT' => [
+                    'table_name AS TABLE_NAME',
+                    'column_name AS COLUMN_NAME',
+                ],
+                'FROM'   => 'information_schema.columns',
+                'WHERE'  => [
+                    'table_schema' => $this->db->dbdefault,
+                    'table_name'   => ['LIKE', 'glpi\_%'],
+                    'OR' => [
+                        ['column_name'  => 'items_id'],
+                        ['column_name'  => ['LIKE', 'items_id_%']],
+                    ],
+                ],
+                'ORDER'  => 'TABLE_NAME',
+            ]
+        );
+
+        foreach ($polymorphic_column_iterator as $polymorphic_column_data) {
+            $table = $polymorphic_column_data['TABLE_NAME'];
+            $items_id_field = $polymorphic_column_data['COLUMN_NAME'];
+            $itemtype_field = preg_replace('/^items_id/', 'itemtype', $items_id_field);
+
+            $relation_itemtype = \getItemTypeForTable($table);
+            if (!is_a($relation_itemtype, CommonDBConnexity::class, true)) {
+                // Not a relation class.
+                continue;
+            }
+
+            if (!$this->db->fieldExists($table, $itemtype_field)) {
+                // The `items_id` field exists but the `itemtype` field does not exist.
+                // It is not a polymorphic relation.
+                continue;
+            }
+
+            $this->copyItems(
+                $relation_itemtype,
+                where: [
+                    $itemtype_field => $source_itemtype,
+                    $items_id_field => $source_items_id,
+                ],
+                replacements: [
+                    [
+                        'field' => $itemtype_field,
+                        'from'  => $source_itemtype,
+                        'to'    => $target_itemtype,
+                    ],
+                    [
+                        'field' => $items_id_field,
+                        'from'  => $source_items_id,
+                        'to'    => $target_items_id,
+                    ],
+                ]
+            );
+        }
     }
 
     /**
