@@ -79,6 +79,7 @@ abstract class AbstractPluginMigrationCommand extends AbstractCommand
         global $PHPLOGGER;
 
         $migration = $this->getMigration();
+        $migration->setLogger($PHPLOGGER);
         $migration->setProgressIndicator(new ConsoleProgressIndicator($output));
         $result = $migration->execute((bool) $input->getOption('dry-run'));
 
