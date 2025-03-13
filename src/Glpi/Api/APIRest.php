@@ -93,10 +93,10 @@ class APIRest extends API
                 'print_response' => false
             ]);
             foreach ($upload_result as $uresult) {
-              foreach($uresult as $file_result) {
-                $this->parameters['input']->_filename[]        = $file_result->name;
-                $this->parameters['input']->_prefix_filename[] = $file_result->prefix;
-              }
+                foreach ($uresult as $file_result) {
+                    $this->parameters['input']->_filename[]        = $file_result->name;
+                    $this->parameters['input']->_prefix_filename[] = $file_result->prefix;
+                }
             }
             $this->parameters['upload_result'][] = $upload_result;
         }
