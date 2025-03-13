@@ -5447,7 +5447,6 @@ JAVASCRIPT;
             $child_table = $searchopt[$ID]['table'];
             $link_table = $beforejoin['table'];
             $linked_fk = $beforejoin['joinparams']['linkfield'] ?? getForeignKeyFieldForTable($searchopt[$ID]['table']);
-
             // Handle extra condition (e.g. filtering group type)
             $addcondition = '';
             if (isset($beforejoin['joinparams']['condition'])) {
@@ -5472,6 +5471,9 @@ JAVASCRIPT;
                 //     FROM `glpi_groups_tickets`
                 //     WHERE `groups_id` = '4' AND `glpi_groups_tickets`.`type` = '3'
                 // )
+                if ($beforejoin['table'] === $link_table && isset($beforejoin['joinparams']['field'])) {
+                    $fk = $beforejoin['joinparams']['field'];
+                }
                 if (is_numeric($val) && (int)$val === 0) {
                     // Special case, search criteria is empty
                     $subquery_operator = $subquery_operator == "IN" ? "NOT IN" : "IN";
