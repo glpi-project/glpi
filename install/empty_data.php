@@ -5905,6 +5905,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'itilfollowuptemplate',
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'itilvalidationtemplate',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'calendar',
                 'rights' => self::RIGHT_NONE,
@@ -6193,12 +6197,20 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'itilfollowuptemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'itilvalidationtemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'solutiontemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'itilfollowuptemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'itilvalidationtemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
@@ -6500,12 +6512,20 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'itilfollowuptemplate',
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'itilvalidationtemplate',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'solutiontemplate',
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'itilfollowuptemplate',
+                'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'itilvalidationtemplate',
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
@@ -6801,12 +6821,20 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'itilfollowuptemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'itilvalidationtemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'solutiontemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'itilfollowuptemplate',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'itilvalidationtemplate',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,

@@ -140,6 +140,53 @@ describe("Ticket Form", () => {
         });
     });
 
+    it('Validation Template', { retries: 0 }, () => {
+        const rand = Math.floor(Math.random() * 1000);
+        cy.createWithAPI('Ticket', {
+            name: 'apple',
+            content: 'apple',
+        }).as('ticket_id');
+        cy.createWithAPI('ITILValidationTemplate', {
+            name: `test ${rand}`,
+            content: 'test content',
+            entities_id: 1,
+        }).as('validationtemplates_id');
+        cy.createWithAPI('ITILValidationTemplate', {
+            name: `test no approver ${rand}`,
+            content: 'no approver test content ',
+            entities_id: 1,
+        }).as('validationtemplates_id2');
+
+        cy.get('@ticket_id').then((ticket_id) => {
+            cy.get('@validationtemplates_id').then((validationtemplates_id) => {
+                cy.createWithAPI('ITILValidationTemplate_Target', {
+                    itilvalidationtemplates_id: validationtemplates_id,
+                    itemtype: 'User',
+                    items_id: 2
+                });
+                cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
+                cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
+                cy.findByText('Ask for approval').click();
+                cy.get('.ITILValidation.show').within(() => {
+                    cy.getDropdownByLabelText('Template').selectDropdownValue(`test ${rand}`);
+                    cy.get('select[name="[validatortype]"]').should('have.value', 'User');
+                    cy.waitForNetworkIdle(200);
+                    cy.get('select[name="items_id_target"]').should('have.value', '2');
+                    cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'test content');
+                });
+                cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
+                cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
+                cy.findByText('Ask for approval').click();
+                cy.get('.ITILValidation.show').within(() => {
+                    cy.getDropdownByLabelText('Template').selectDropdownValue(`test no approver ${rand}`);
+                    cy.get('select[name="[validatortype]"]').should('have.value', '0');
+                    cy.get('select[name="items_id_target"]').should('not.exist');
+                    cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'no approver test content');
+                });
+            });
+        });
+    });
+
     it('Enter key in requester field reloads new ticket form', () => {
         cy.visit(`/front/ticket.form.php`);
 
