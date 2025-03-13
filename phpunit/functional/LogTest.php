@@ -835,29 +835,36 @@ class LogTest extends DbTestCase
         global $DB;
 
         $computer = new \Computer();
-        $computers_id = $computer->add([
-            'name'        => 'Test computer',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
-        ]);
-        $this->assertGreaterThan(0, $computers_id);
+        $computers_id = $this->createItem(
+            'Computer',
+            [
+                'name'        => 'Test computer',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+            ]
+        )->getID();
 
         // Find a dropdown field to test relations
-        $manufacturer = new \Manufacturer();
-        $manufacturer_id = $manufacturer->add(['name' => 'Test manufacturer']);
-        $this->assertGreaterThan(0, $manufacturer_id);
+        $manufacturer_id = $this->createItem(
+            'Manufacturer',
+            [
+                'name' => 'Test manufacturer'
+            ]
+        )->getID();
 
-        $new_manufacturer = new \Manufacturer();
-        $new_manufacturer_id = $new_manufacturer->add(['name' => 'New manufacturer']);
-        $this->assertGreaterThan(0, $new_manufacturer_id);
+        $new_manufacturer_id = $this->createItem(
+            'Manufacturer',
+            [
+                'name' => 'New manufacturer'
+            ]
+        )->getID();
 
         // Update computer with the manufacturer
-        $this->assertTrue(
-            $computer->update(
-                [
-                    'id'              => $computers_id,
-                    'manufacturers_id' => $manufacturer_id
-                ]
-            )
+        $this->updateItem(
+            'Computer',
+            $computers_id,
+            [
+                'manufacturers_id' => $manufacturer_id
+            ]
         );
 
         // Get last log entry for this update
