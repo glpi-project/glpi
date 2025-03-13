@@ -243,15 +243,17 @@
                 {% endif %}
 
                {# Validation step #}
-               {{ fields.dropdownField(
-                  'ValidationStep',
-                  'validationsteps_id',
-                  call('ValidationStep::getDefault').fields['id'],
-                  __('Validation step'),
-                  {
-                     'rand': rand,
-                  }
-               ) }}
+               {%  if subitem.isField('validationsteps_id') %}
+                  {{ fields.dropdownField(
+                     'ValidationStep',
+                     'validationsteps_id',
+                     call('ValidationStep::getDefault').fields['id'],
+                     __('Validation step'),
+                     {
+                        'rand': rand,
+                     }
+                  ) }}
+                {% endif %}
 
                 {# Comment #}
                 {{ fields.textareaField(
