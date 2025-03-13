@@ -143,56 +143,87 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         switch ($ma->getAction()) {
             case 'unset_default':
                 foreach ($ids as $id) {
-                    if ($item->unmarkDefault($id)) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $saved_search = new SavedSearch();
+                    if ($saved_search->getFromDB($id)) {
+                        if ($saved_search->unmarkDefault($id)) {
+                            $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->addMessage($saved_search->getErrorMessage(ERROR_ON_ACTION));
+                        }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                         $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                         $ma->addMessage($saved_search->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
                 break;
             case 'change_count_method':
                 foreach ($ids as $id) {
-                    if ($item->can($id, UPDATE)) {
-                        if ($item->setDoCount($id, $input['do_count'])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $saved_search = new SavedSearch();
+                    if ($saved_search->getFromDB($id)) {
+                        if ($saved_search->can($id, UPDATE)) {
+                            if ($saved_search->setDoCount([$id], $input['do_count'])) {
+                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($saved_search->getErrorMessage(ERROR_ON_ACTION));
+                            }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($saved_search->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                         $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                         $ma->addMessage($saved_search->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
                 break;
 
             case 'change_entity':
                 foreach ($ids as $id) {
-                    if ($item->can($id, UPDATE)) {
-                        if ($item->setEntityRecur($id, $input['entities_id'], $input['is_recursive'])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $saved_search = new SavedSearch();
+                    if ($saved_search->getFromDB($id)) {
+                        if ($saved_search->can($id, UPDATE)) {
+                            if ($saved_search->setEntityRecur([$id], $input['entities_id'], $input['is_recursive'])) {
+                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($saved_search->getErrorMessage(ERROR_ON_ACTION));
+                            }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($saved_search->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                         $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                         $ma->addMessage($saved_search->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
                 break;
             case 'change_visibility':
                 $input = $ma->getInput();
                 foreach ($ids as $id) {
-                    if ($item->can($id, UPDATE)) {
-                        if (
-                            $item->update(['id' => $id,
-                                'is_private' => $input['is_private']
-                            ])
-                        ) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $saved_search = new SavedSearch();
+                    if ($saved_search->getFromDB($id)) {
+                        if ($saved_search->can($id, UPDATE)) {
+                            if (
+                                $saved_search->update([
+                                    'id' => $id,
+                                    'is_private' => $input['is_private']
+                                ])
+                            ) {
+                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($saved_search->getErrorMessage(ERROR_ON_ACTION));
+                            }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                            $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($saved_search->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                         $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                         $ma->addMessage($saved_search->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
                 break;
@@ -1191,17 +1222,25 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Set do_count from massive actions
      *
-     * @param integer $id     Item ID
+     * @param array   $ids     Items IDs
      * @param integer $do_count One of self::COUNT_*
      *
      * @return boolean
      */
-    public function setDoCount(int $id, $do_count)
+    public function setDoCount(array $ids, $do_count)
     {
-        $result = $this->update([
-            'id'       => $id,
-            'do_count' => $do_count
-        ]);
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $result = $DB->update(
+            $this->getTable(),
+            [
+                'do_count' => $do_count
+            ],
+            [
+                'id' => $ids
+            ]
+        );
         return $result;
     }
 
@@ -1209,19 +1248,27 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Set entity and recursivity from massive actions
      *
-     * @param integer   $id   Item ID
+     * @param array   $ids   Items IDs
      * @param integer $eid   Entityy ID
      * @param boolean $recur Recursivity
      *
      * @return boolean
      */
-    public function setEntityRecur(int $id, $eid, $recur)
+    public function setEntityRecur(array $ids, $eid, $recur)
     {
-        $result = $this->update([
-            'id'           => $id,
-            'entities_id'  => $eid,
-            'is_recursive' => $recur
-        ]);
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $result = $DB->update(
+            $this->getTable(),
+            [
+                'entities_id'  => $eid,
+                'is_recursive' => $recur
+            ],
+            [
+                'id' => $ids
+            ]
+        );
         return $result;
     }
 
