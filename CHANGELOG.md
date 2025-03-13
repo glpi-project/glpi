@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- Only unsolved/unclosed tickets will be shown in the dropdown when performing the "Merge as Followup" action.
 
 ### Deprecated
 
