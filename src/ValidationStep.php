@@ -165,13 +165,7 @@ class ValidationStep extends \CommonDropdown
      */
     public static function getValidationStatusForTicket(Ticket $ticket): int
     {
-        $validation_steps =  (new TicketValidation())->find([
-            'tickets_id' => $ticket->getID(),
-        ]);
-        $validation_steps_status = array_map(
-            fn($vs) => self::getValidationStepStatusForTicket($ticket->getID(), $vs['validationsteps_id']),
-            $validation_steps
-        );
+        $validation_steps_status = self::getValidationStepsStatus($ticket);
 
         // No validation for the ticket -> NONE
         if (empty($validation_steps_status)) {
@@ -191,6 +185,26 @@ class ValidationStep extends \CommonDropdown
 
         // All validation steps are ACCEPTED -> ACCEPTED
         return CommonITILValidation::ACCEPTED;
+    }
+
+    /**
+     * Array of validation steps status for a ticket
+     *
+     * Return each step status for a ticket in an array
+     *
+     * @param \Ticket $ticket
+     * @return int[] array of validation steps status : ComomITILValidation::WAITING|ComomITILValidation::ACCEPTED|ComomITILValidation::REFUSED
+     */
+    public static function getValidationStepsStatus(Ticket $ticket): array
+    {
+        $validation_steps = (new TicketValidation())->find([
+            'tickets_id' => $ticket->getID(),
+        ]);
+
+        return array_map(
+            fn($vs) => self::getValidationStepStatusForTicket($ticket->getID(), $vs['validationsteps_id']),
+            $validation_steps
+        );
     }
 
     /**

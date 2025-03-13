@@ -362,6 +362,28 @@ HTML;
         ]);
     }
 
+    public static function getValidationStats($tID)
+    {
+        $ticket = new Ticket();
+        $ticket->getFromDB($tID);
+        $validation_steps_status = ValidationStep::getValidationStepsStatus($ticket);
+        $count_total_validations = count($validation_steps_status);
+        $count = fn($status_to_count) => array_reduce(
+            $validation_steps_status,
+            function ($count, $step_status) use ($status_to_count) {
+                return $step_status === $status_to_count ? $count + 1 : $count;
+            },
+            0);
+        $accepted = $count(self::ACCEPTED);
+        $refused  = $count(self::REFUSED);
+        $waiting  = $count(self::WAITING);
+
+        return "Accepted ($accepted): " . round($accepted/$count_total_validations*100)  . "%"
+            . " - Refused ($refused): " . round($refused/$count_total_validations*100). "%"
+            . " - Waiting ($waiting): " . round($waiting/$count_total_validations*100). "%";
+    }
+
+
     public static function computeValidationStatus(CommonITILObject $ticket)
     {
         return ValidationStep::getValidationStatusForTicket($ticket);
