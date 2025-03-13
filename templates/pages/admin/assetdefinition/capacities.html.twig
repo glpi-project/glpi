@@ -38,6 +38,7 @@
 {% set params = params|merge({'candel': false}) %}
 {# do not display footer with dates #}
 {% set params = params|merge({'formfooter': false}) %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block form_fields %}
     <input type="hidden" name="_update_capacities" value="1" />
@@ -82,6 +83,14 @@
                                     {{ capacity.getCapacityUsageDescription(classname) }}
                                 </span>
                             </span>
+                            {% if get_class(capacity) == 'Glpi\\Asset\\Capacity\\IsInventoriableCapacity' %}
+                                {{ fields.dropdownArrayField(
+                                    'inventory_mainasset',
+                                    item.getCapacityConfiguration(capacity, 'inventory_mainasset'),
+                                    capacity.getConfigurationTypes(),
+                                    __('Inventory type')
+                                ) }}
+                            {% endif %}
                         </div>
                         <div class="me-2 ms-auto">
                             <span class="form-selectgroup-check"></span>

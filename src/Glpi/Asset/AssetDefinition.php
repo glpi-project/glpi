@@ -37,6 +37,7 @@ namespace Glpi\Asset;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Asset\CustomFieldType\DropdownType;
 use Glpi\Asset\CustomFieldType\StringType;
 use Glpi\Asset\CustomFieldType\TextType;
@@ -288,9 +289,13 @@ TWIG, $twig_params);
                     if ($capacity instanceof Capacity) {
                         $capacities[$capacity->getName()] = $capacity;
                     } else {
+                        $config = null;
+                        if ($capacity === IsInventoriableCapacity::class && isset($input['inventory_mainasset'])) {
+                            $config = new CapacityConfig(['inventory_mainasset' => $input['inventory_mainasset']]);
+                        }
                         $capacities[$capacity] = new Capacity(
                             name: $capacity,
-                            //config: $capacity['config'] ? new CapacityConfig($capacity['config']) : null
+                            config: $config
                         );
                     }
                 }
@@ -595,6 +600,25 @@ TWIG, $twig_params);
             }
         }
         return $capacities;
+    }
+
+    /**
+     * Get configuration entry for capacity
+     *
+     * @param CapacityInterface $capacity
+     * @param string $entry
+     * @return string
+     *
+     */
+    public function getCapacityConfiguration(CapacityInterface $capacity, string $entry): string
+    {
+        $value = '';
+
+        if (isset($this->getDecodedCapacities()[$capacity::class])) {
+            $value = $this->getDecodedCapacities()[$capacity::class]->getConfig()?->getConfig($entry);
+        }
+
+        return $value;
     }
 
     /**
