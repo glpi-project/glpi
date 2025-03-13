@@ -834,7 +834,6 @@ class LogTest extends DbTestCase
     {
         global $DB;
 
-        $computer = new \Computer();
         $computers_id = $this->createItem(
             'Computer',
             [
@@ -886,10 +885,13 @@ class LogTest extends DbTestCase
         $this->assertEquals($manufacturer_id, $log['new_id']);
 
         // Now update to a different manufacturer
-        $computer->update([
-            'id'              => $computers_id,
-            'manufacturers_id' => $new_manufacturer_id
-        ]);
+        $this->updateItem(
+            'Computer',
+            $computers_id,
+            [
+                'manufacturers_id' => $new_manufacturer_id
+            ]
+        );
 
         // Get last log entry for this update
         $log_iterator = $DB->request('glpi_logs', $log_criteria);
