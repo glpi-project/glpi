@@ -327,17 +327,27 @@ abstract class CommonITILValidation extends CommonDBChild
 
         $item     = new static::$itemtype();
         $mailsend = false;
+
+        // update item (ITILObject) handling the validation
         if ($item->getFromDB($this->fields[static::$items_id])) {
-            // Set global validation to waiting
+            // always recompute global validation status on ticket
+            // keep same behaviour for changes (since they have no validation steps)
+            if(static::$itemtype === TicketValidation::class) {
+                $input = [
+                    'id'                    => $this->fields[static::$items_id],
+                    'global_validation'     => static::computeValidationStatus($item),
+                ];
+            }
+
             if (
                 ($item->fields['global_validation'] == self::ACCEPTED)
                 || ($item->fields['global_validation'] == self::NONE)
             ) {
                 $input = [
                     'id'                    => $this->fields[static::$items_id],
-                    'global_validation'     => self::WAITING,
-                    '_from_itilvalidation'  => true,
+                    'global_validation'     => static::computeValidationStatus($item),
                 ];
+                $input['_from_itilvalidation']  = true;
 
                // to fix lastupdater
                 if (isset($this->input['_auto_update'])) {
@@ -351,7 +361,10 @@ abstract class CommonITILValidation extends CommonDBChild
                 if (isset($this->input["_ticket_add"])) {
                     $input['_disablenotif'] = true;
                 }
-                $item->update($input);
+            }
+
+            if(isset($input) && !$item->update($input)) {
+                Session::addMessageAfterRedirect(msg: 'Failed to update related '.static::$itemtype. ' approval status', message_type: ERROR);
             }
 
             if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -475,10 +488,14 @@ abstract class CommonITILValidation extends CommonDBChild
             if (in_array("status", $this->updates)) {
                 $input = [
                     'id'                    => $this->fields[static::$items_id],
-                    'global_validation'     => self::computeValidationStatus($item),
+                    'global_validation'     => static::computeValidationStatus($item),
                     '_from_itilvalidation'  => true,
                 ];
-                $item->update($input);
+
+                if(!$item->update($input))
+                {
+                    Session::addMessageAfterRedirect(msg: 'Failed to update related '.static::$itemtype. ' approval status', message_type: ERROR);
+                };
             }
         }
         parent::post_updateItem($history);
@@ -486,18 +503,31 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function pre_deleteItem()
     {
-
         $item    = new static::$itemtype();
         if ($item->getFromDB($this->fields[static::$items_id])) {
+            // always recompute global validation status on ticket
+            // keep same behaviour for changes (since they have no validation steps)
+            if(static::$itemtype === TicketValidation::class) {
+                $input = [
+                    'id'                    => $this->fields[static::$items_id],
+                    'global_validation'     => static::computeValidationStatus($item),
+                    '_from_itilvalidation'  => true,
+                ];
+            }
+
             if (($item->fields['global_validation'] == self::WAITING)) {
                 $input = [
                     'id'                    => $this->fields[static::$items_id],
-                    'global_validation'     => self::NONE,
+                    'global_validation'     => static::computeValidationStatus($item),
                     '_from_itilvalidation'  => true,
                 ];
-                $item->update($input);
+            }
+
+            if(isset($input) && !$item->update($input)) {
+                Session::addMessageAfterRedirect(msg: 'Failed to update related '.static::$itemtype. ' approval status', message_type: ERROR);
             }
         }
+
         return true;
     }
 
