@@ -285,12 +285,6 @@ class Plugin extends CommonDBTM
         self::$activated_plugins = [];
         self::$loaded_plugins = [];
 
-        if (!($DB instanceof DBmysql) || !$DB->connected) {
-            // Cannot init plugins list if DB is not connected
-            self::$plugins_state_checked = true;
-            return;
-        }
-
         $this->checkStates(false);
 
         $plugins = $this->find(['state' => [self::ACTIVATED, self::TOBECONFIGURED]]);
@@ -1254,6 +1248,16 @@ class Plugin extends CommonDBTM
             "setup",
             __('All plugins have been disabled.')
         );
+    }
+
+    /**
+     * Unload all plugins.
+     */
+    final public function unloadAll(): void
+    {
+        foreach ($this->getPlugins() as $plugin_key) {
+            $this->unload($plugin_key);
+        }
     }
 
 

@@ -59,7 +59,14 @@ final readonly class InitializePlugins implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
-        if (!DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (
+            !DBConnection::isDbAvailable()
+            || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())
+            || !$DB->tableExists(Plugin::getTable())
+        ) {
             // Requires the database to be available.
             return;
         }
