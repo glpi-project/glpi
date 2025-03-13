@@ -47,8 +47,10 @@ final class ListenersPriority
         KernelListener\LoadLegacyConfiguration::class =>             160,
         KernelListener\LoadLanguage::class =>                        150,
         KernelListener\CustomObjectsAutoloaderRegistration::class => 140,
-        KernelListener\InitializePlugins::class =>                   130,
-        KernelListener\CustomObjectsBootstrap::class =>              120,
+    ];
+
+    public const POST_PLUGIN_LOADED_LISTENERS_PRIORITIES = [
+        KernelListener\CustomObjectsBootstrap::class => 200,
     ];
 
     public const REQUEST_LISTENERS_PRIORITIES = [

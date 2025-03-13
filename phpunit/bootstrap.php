@@ -51,7 +51,11 @@ global $GLPI_CACHE;
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new Kernel('testing');
-$kernel->boot();
+
+// Plugins loading must be delayed until we can activate the "tester" plugin,
+// which require the minimal kernel to be booted as we need access to the
+// database service.
+$kernel->boot(pause_before_loading_plugins: true);
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     echo("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
@@ -61,6 +65,16 @@ if (!defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
     echo 'The GLPI codebase has been updated. The update of the GLPI database is necessary.' . PHP_EOL;
     exit(1);
 }
+
+// Install and activate the "tester" plugin
+$plugin = new Plugin();
+$plugin->checkStates(true);
+$plugin->getFromDBbyDir('tester');
+$plugin->install($plugin->getID());
+$plugin->activate($plugin->getID());
+
+// Load plugins.
+$kernel->loadPlugins();
 
 //init cache
 if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {
