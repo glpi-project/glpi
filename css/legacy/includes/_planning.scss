@@ -335,6 +335,14 @@
    }
 }
 
+.fc-scroller,
+.fc-day-grid-container,
+.fc-time-grid-container {
+    overflow-y: auto !important;
+
+}
+
+
 /* for checkavailable */
 
 .planning {
