@@ -49,6 +49,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '',
                 'keep_stability_flag' => false,
                 'normalized'          => '',
+                'major'               => '',
+                'intermediate'        => '',
                 'stable'              => true,
                 'dev'                 => false,
             ],
@@ -56,6 +58,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '9.5+2.0',
                 'keep_stability_flag' => false,
                 'normalized'          => '9.5+2.0', // not semver compatible, cannot be normalized
+                'major'               => '9',
+                'intermediate'        => '9.5',
                 'stable'              => true,
                 'dev'                 => false,
             ],
@@ -63,6 +67,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '0.89',
                 'keep_stability_flag' => false,
                 'normalized'          => '0.89.0',
+                'major'               => '0',
+                'intermediate'        => '0.89',
                 'stable'              => true,
                 'dev'                 => false,
             ],
@@ -70,6 +76,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '9.2',
                 'keep_stability_flag' => false,
                 'normalized'          => '9.2.0',
+                'major'               => '9',
+                'intermediate'        => '9.2',
                 'stable'              => true,
                 'dev'                 => false,
             ],
@@ -77,6 +85,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '9.2',
                 'keep_stability_flag' => true, // should have no effect
                 'normalized'          => '9.2.0',
+                'major'               => '9',
+                'intermediate'        => '9.2',
                 'stable'              => true,
                 'dev'                 => false,
             ],
@@ -84,6 +94,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '9.4.1.1',
                 'keep_stability_flag' => false,
                 'normalized'          => '9.4.1',
+                'major'               => '9',
+                'intermediate'        => '9.4',
                 'stable'              => true,
                 'dev'                 => false,
             ],
@@ -91,6 +103,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '10.0.0-dev',
                 'keep_stability_flag' => false,
                 'normalized'          => '10.0.0',
+                'major'               => '10',
+                'intermediate'        => '10.0',
                 'stable'              => false,
                 'dev'                 => true,
             ],
@@ -98,6 +112,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '10.0.0-dev',
                 'keep_stability_flag' => true,
                 'normalized'          => '10.0.0-dev',
+                'major'               => '10',
+                'intermediate'        => '10.0',
                 'stable'              => false,
                 'dev'                 => true,
             ],
@@ -105,6 +121,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '10.0.0-alpha',
                 'keep_stability_flag' => false,
                 'normalized'          => '10.0.0',
+                'major'               => '10',
+                'intermediate'        => '10.0',
                 'stable'              => false,
                 'dev'                 => false,
             ],
@@ -112,6 +130,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '10.0.0-alpha2',
                 'keep_stability_flag' => true,
                 'normalized'          => '10.0.0-alpha2',
+                'major'               => '10',
+                'intermediate'        => '10.0',
                 'stable'              => false,
                 'dev'                 => false,
             ],
@@ -119,6 +139,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '10.0.0-beta1',
                 'keep_stability_flag' => false,
                 'normalized'          => '10.0.0',
+                'major'               => '10',
+                'intermediate'        => '10.0',
                 'stable'              => false,
                 'dev'                 => false,
             ],
@@ -126,6 +148,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '10.0.0-beta1',
                 'keep_stability_flag' => true,
                 'normalized'          => '10.0.0-beta1',
+                'major'               => '10',
+                'intermediate'        => '10.0',
                 'stable'              => false,
                 'dev'                 => false,
             ],
@@ -133,6 +157,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '10.0.0-rc3',
                 'keep_stability_flag' => false,
                 'normalized'          => '10.0.0',
+                'major'               => '10',
+                'intermediate'        => '10.0',
                 'stable'              => false,
                 'dev'                 => false,
             ],
@@ -140,6 +166,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '10.0.0-rc',
                 'keep_stability_flag' => true,
                 'normalized'          => '10.0.0-rc',
+                'major'               => '10',
+                'intermediate'        => '10.0',
                 'stable'              => false,
                 'dev'                 => false,
             ],
@@ -147,6 +175,8 @@ class VersionParserTest extends \GLPITestCase
                 'version'             => '10.0.3',
                 'keep_stability_flag' => true,
                 'normalized'          => '10.0.3',
+                'major'               => '10',
+                'intermediate'        => '10.0',
                 'stable'              => true,
                 'dev'                 => false,
             ],
@@ -154,21 +184,36 @@ class VersionParserTest extends \GLPITestCase
     }
 
     #[DataProvider('versionsProvider')]
-    public function testGetNormalizeVersion(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
+    public function testGetNormalizeVersion(string $version, bool $keep_stability_flag, string $normalized, string $major, string $intermediate, bool $stable, bool $dev): void
     {
         $version_parser = new \Glpi\Toolbox\VersionParser();
         $this->assertEquals($normalized, $version_parser->getNormalizedVersion($version, $keep_stability_flag));
     }
 
     #[DataProvider('versionsProvider')]
-    public function testIsStableRelease(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
+    public function testGetMajorVersion(string $version, bool $keep_stability_flag, string $normalized, string $major, string $intermediate, bool $stable, bool $dev): void
+    {
+        $version_parser = new \Glpi\Toolbox\VersionParser();
+        $this->assertEquals($major, $version_parser->getMajorVersion($version));
+    }
+
+    #[DataProvider('versionsProvider')]
+    public function testGetIntermediateVersion(string $version, bool $keep_stability_flag, string $normalized, string $major, string $intermediate, bool $stable, bool $dev): void
+    {
+        $version_parser = new \Glpi\Toolbox\VersionParser();
+        $this->assertEquals($intermediate, $version_parser->getIntermediateVersion($version));
+    }
+
+
+    #[DataProvider('versionsProvider')]
+    public function testIsStableRelease(string $version, bool $keep_stability_flag, string $normalized, string $major, string $intermediate, bool $stable, bool $dev): void
     {
         $version_parser = new \Glpi\Toolbox\VersionParser();
         $this->assertSame($stable, $version_parser->isStableRelease($version));
     }
 
     #[DataProvider('versionsProvider')]
-    public function testIsDevVersion(string $version, bool $keep_stability_flag, string $normalized, bool $stable, bool $dev): void
+    public function testIsDevVersion(string $version, bool $keep_stability_flag, string $normalized, string $major, string $intermediate, bool $stable, bool $dev): void
     {
         $version_parser = new \Glpi\Toolbox\VersionParser();
         $this->assertSame($dev, $version_parser->isDevVersion($version));
