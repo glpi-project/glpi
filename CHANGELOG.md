@@ -399,6 +399,7 @@ The present file will list all changes made to the project; according to the
 - `Entity::getDefaultContractValues()`
 - `Entity::cleanEntitySelectorCache()`
 - `Entity::title()`
+- `FieldUnicity::checkBeforeInsert()`
 - `FieldUnicity::showDebug()`
 - `GLPI::getErrorHandler()`
 - `GLPI::getLogLevel()`

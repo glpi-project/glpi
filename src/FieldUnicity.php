@@ -449,45 +449,44 @@ class FieldUnicity extends CommonDropdown
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    /**
-     * Perform checks to be sure that an itemtype and at least a field are selected
-     *
-     * @param array $input  the values to insert in DB
-     *
-     * @return array the input values to insert, but modified
-     **/
-    public static function checkBeforeInsert($input)
+    private function prepareInput(array $input): array|false
     {
+        if (array_key_exists('_fields', $input)) {
+            // Convert multiple values received from the UI into a coma separated list
+            $input['fields'] = implode(',', $input['_fields']);
+            unset($input['_fields']);
+        }
+
         if (
-            !$input['itemtype']
-            || empty($input['_fields'])
+            (
+                ($this->isNewItem() || array_key_exists('itemtype', $input))
+                && empty($input['itemtype'])
+            )
+            || (
+                ($this->isNewItem() || array_key_exists('fields', $input))
+                && empty($input['fields'])
+            )
         ) {
             Session::addMessageAfterRedirect(
                 __s("It's mandatory to select a type and at least one field"),
                 true,
                 ERROR
             );
-            $input = [];
-        } else {
-            $input['fields'] = implode(',', $input['_fields']);
-            unset($input['_fields']);
+            return false;
         }
+
         return $input;
     }
 
     public function prepareInputForAdd($input)
     {
-        return self::checkBeforeInsert($input);
+        return $this->prepareInput($input);
     }
 
     public function prepareInputForUpdate($input)
     {
-        $input['fields'] = implode(',', $input['_fields']);
-        unset($input['_fields']);
-
-        return $input;
+        return $this->prepareInput($input);
     }
-
     /**
      * Delete all criterias for an itemtype
      *
