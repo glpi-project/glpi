@@ -141,10 +141,10 @@ final class FormMigrationTest extends DbTestCase
     {
         /**
          * @var \DBmysql $DB
-         * LoggerInterface $PHPLOGGER
          */
-        global $DB, $PHPLOGGER;
-        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
+        global $DB;
+
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
@@ -196,10 +196,10 @@ final class FormMigrationTest extends DbTestCase
     {
         /**
          * @var \DBmysql $DB
-         * LoggerInterface $PHPLOGGER
          */
-        global $DB, $PHPLOGGER;
-        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
+        global $DB;
+
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
@@ -239,10 +239,10 @@ final class FormMigrationTest extends DbTestCase
     {
         /**
          * @var \DBmysql $DB
-         * LoggerInterface $PHPLOGGER
          */
-        global $DB, $PHPLOGGER;
-        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
+        global $DB;
+
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
@@ -534,10 +534,10 @@ final class FormMigrationTest extends DbTestCase
     {
         /**
          * @var \DBmysql $DB
-         * LoggerInterface $PHPLOGGER
          */
-        global $DB, $PHPLOGGER;
-        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
+        global $DB;
+
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
@@ -555,10 +555,10 @@ final class FormMigrationTest extends DbTestCase
     {
         /**
          * @var \DBmysql $DB
-         * LoggerInterface $PHPLOGGER
          */
-        global $DB, $PHPLOGGER;
-        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
+        global $DB;
+
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
@@ -584,10 +584,10 @@ final class FormMigrationTest extends DbTestCase
     {
         /**
          * @var \DBmysql $DB
-         * LoggerInterface $PHPLOGGER
          */
-        global $DB, $PHPLOGGER;
-        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
+        global $DB;
+
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
@@ -674,10 +674,10 @@ final class FormMigrationTest extends DbTestCase
     {
         /**
          * @var \DBmysql $DB
-         * LoggerInterface $PHPLOGGER
          */
-        global $DB, $PHPLOGGER;
-        $migration = new FormMigration($DB, $PHPLOGGER, FormAccessControlManager::getInstance());
+        global $DB;
+
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
         $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 

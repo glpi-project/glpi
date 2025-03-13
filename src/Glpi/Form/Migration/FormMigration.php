@@ -73,7 +73,6 @@ use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
 use Glpi\Migration\AbstractPluginMigration;
 use LogicException;
-use Psr\Log\LoggerInterface;
 
 final class FormMigration extends AbstractPluginMigration
 {
@@ -87,10 +86,9 @@ final class FormMigration extends AbstractPluginMigration
 
     public function __construct(
         DBmysql $db,
-        LoggerInterface $logger,
         FormAccessControlManager $formAccessControlManager
     ) {
-        parent::__construct($db, $logger);
+        parent::__construct($db);
 
         $this->formAccessControlManager = $formAccessControlManager;
     }
