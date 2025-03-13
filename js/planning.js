@@ -660,6 +660,8 @@ var GLPIPlanning  = {
         $(document).click(function() {
             $('.planning-context-menu').remove();
         });
+
+        $('.fc-scroller').attr('tabindex', '0');
     },
 
     refresh: function() {
