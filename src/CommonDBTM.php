@@ -166,7 +166,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @var boolean
      */
-    protected $usenotepad = false;
+    protected $usenotepad = true;
 
     /**
      * Computed/forced values of classes tables.
@@ -624,6 +624,28 @@ class CommonDBTM extends CommonGLPI
         }
 
         return $data;
+    }
+
+    public function defineTabs($options = [])
+    {
+        // Get parents tabs
+        $parent_tabs = parent::defineTabs();
+
+        if ($this->usenotepad) {
+            $this->addStandardTab('Notepad', $parent_tabs, $options);
+        }
+
+        return $parent_tabs;
+    }
+
+    public function getCloneRelations(): array
+    {
+        $relations = [];
+
+        if ($this->usenotepad) {
+            $relations[] = Notepad::class;
+        }
+        return $relations;
     }
 
     /**
@@ -4030,6 +4052,9 @@ class CommonDBTM extends CommonGLPI
             $tab = array_merge($tab, Project::rawSearchOptionsToAdd(static::class));
         }
 
+        if ($this->usenotepad) {
+            $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
+        }
         return $tab;
     }
 

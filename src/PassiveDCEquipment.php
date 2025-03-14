@@ -76,6 +76,7 @@ class PassiveDCEquipment extends CommonDBTM
          ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
+         ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
         return $ong;
     }
@@ -264,6 +265,10 @@ class PassiveDCEquipment extends CommonDBTM
 
         $tab = array_merge($tab, DCRoom::rawSearchOptionsToAdd());
 
+        if ($this->usenotepad) {
+            $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
+        }
+
         return $tab;
     }
 
@@ -291,6 +296,7 @@ class PassiveDCEquipment extends CommonDBTM
         return [
             Contract_Item::class,
             Document_Item::class,
+            Notepad::class,
             Infocom::class,
             Socket::class,
         ];

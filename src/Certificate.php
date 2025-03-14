@@ -64,6 +64,7 @@ class Certificate extends CommonDBTM
             Domain_Item::class,
             Item_Project::class,
             ManualLink::class,
+            Notepad::class,
         ];
     }
 

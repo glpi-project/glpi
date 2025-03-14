@@ -76,6 +76,7 @@ class Cable extends CommonDBTM
          ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
+         ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
 
         return $ong;
@@ -92,6 +93,7 @@ class Cable extends CommonDBTM
     {
         return [
             Infocom::class,
+            Notepad::class,
             Item_Ticket::class,
             Item_Problem::class,
             Change_Item::class,
@@ -398,6 +400,10 @@ class Cable extends CommonDBTM
             'nosort'             => true,
             'massiveaction'      => false
         ];
+
+        if ($this->usenotepad) {
+            $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
+        }
 
         return $tab;
     }

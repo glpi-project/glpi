@@ -36,7 +36,6 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
-use Glpi\Search\SearchEngine;
 
 /**
  *  Contract class
@@ -65,6 +64,7 @@ class Contract extends CommonDBTM
             ContractCost::class,
             KnowbaseItem_Item::class,
             ManualLink::class,
+            Notepad::class,
         ];
     }
 

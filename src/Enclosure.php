@@ -57,6 +57,7 @@ class Enclosure extends CommonDBTM
         return [
             Item_Enclosure::class,
             Item_Devices::class,
+            Notepad::class,
             NetworkPort::class,
             Contract_Item::class,
             Document_Item::class,
@@ -93,6 +94,7 @@ class Enclosure extends CommonDBTM
          ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
+         ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
         return $ong;
     }
@@ -250,8 +252,6 @@ class Enclosure extends CommonDBTM
             'name'               => Entity::getTypeName(1),
             'datatype'           => 'dropdown'
         ];
-
-        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 

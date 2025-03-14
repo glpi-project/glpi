@@ -251,6 +251,10 @@ class Item_Devices extends CommonDBRelation
             'datatype'           => 'dropdown'
         ];
 
+        if ($this->usenotepad) {
+            $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
+        }
+
         return $tab;
     }
 
@@ -1447,6 +1451,7 @@ class Item_Devices extends CommonDBRelation
         $this->addStandardTab('Infocom', $ong, $options);
         $this->addStandardTab('Document_Item', $ong, $options);
         $this->addStandardTab('Lock', $ong, $options);
+        $this->addStandardTab('Notepad', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
         $this->addStandardTab('Contract_Item', $ong, $options);
 

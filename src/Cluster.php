@@ -55,6 +55,7 @@ class Cluster extends CommonDBTM
             Appliance_Item::class,
             Contract_Item::class,
             ManualLink::class,
+            Notepad::class,
         ];
     }
 
@@ -87,6 +88,7 @@ class Cluster extends CommonDBTM
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('ManualLink', $ong, $options)
          ->addStandardTab('Appliance_Item', $ong, $options)
+         ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
 
         return $ong;
@@ -179,8 +181,6 @@ class Cluster extends CommonDBTM
             'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
-
-        $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         return $tab;
     }

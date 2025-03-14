@@ -62,7 +62,7 @@ class HasNotepadCapacity extends AbstractCapacity
 
     public function getSearchOptions(string $classname): array
     {
-        return Notepad::rawSearchOptionsToAdd();
+        return [];
     }
 
     public function getSpecificRights(): array
