@@ -127,6 +127,16 @@ interface CapacityInterface
     public function onCapacityDisabled(string $classname): void;
 
     /**
+     * Method executed when capacity is updated on given asset class.
+     *
+     * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param CapacityConfig|null $original_config
+     * @param CapacityConfig|null $updated_config
+     * @return void
+     */
+    public function onCapacityUpdated(string $classname, ?CapacityConfig $original_config, ?CapacityConfig $updated_config): void;
+
+    /**
      * Method executed during creation of an object instance (i.e. during `__construct()` method execution).
      *
      * @param Asset $object

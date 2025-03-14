@@ -378,6 +378,11 @@ TWIG, $twig_params);
             foreach ($removed_capacities as $capacity) {
                 $this->onCapacityDisabled($capacity);
             }
+
+            $updated_capacities = array_intersect_key($new_capacities, $old_capacities);
+            foreach ($updated_capacities as $capacity) {
+                $this->onCapacityUpdated($capacity);
+            }
         }
     }
 
@@ -428,6 +433,17 @@ TWIG, $twig_params);
         if (count($rights_to_remove) > 0) {
             $this->cleanRights($rights_to_remove);
         }
+    }
+
+    private function onCapacityUpdated(Capacity $capacity): void
+    {
+        $capacity_instance = AssetDefinitionManager::getInstance()->getCapacity($capacity->getName());
+        if ($capacity_instance === null) {
+            // can be null if provided by a plugin that is no longer active
+            return;
+        }
+        $updated_capacity = $this->getDecodedCapacities()[$capacity->getName()];
+        $capacity_instance->onCapacityUpdated($this->getAssetClassName(), $capacity_instance->getConfiguration(), $updated_capacity->getConfig());
     }
 
     public function rawSearchOptions()

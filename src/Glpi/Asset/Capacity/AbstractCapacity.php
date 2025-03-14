@@ -197,6 +197,10 @@ abstract class AbstractCapacity implements CapacityInterface
     {
     }
 
+    public function onCapacityUpdated(string $classname, ?CapacityConfig $original_config, ?CapacityConfig $updated_config): void
+    {
+    }
+
     /**
      * Delete logs related to relations between two itemtypes.
      *
