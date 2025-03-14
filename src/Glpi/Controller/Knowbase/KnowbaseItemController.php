@@ -185,7 +185,7 @@ final class KnowbaseItemController extends AbstractController
         ];
 
         return new StreamedResponse(static function () use ($twig_params) {
-            TemplateRenderer::getInstance()->display('pages/tools/search_solution.twig', $twig_params);
+            TemplateRenderer::getInstance()->display('pages/tools/search_itilobject.html.twig', $twig_params);
         });
     }
 }

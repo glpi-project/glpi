@@ -88,7 +88,7 @@ describe("Ticket Form", () => {
             cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
             cy.findByText('Add a solution').click();
             cy.findByLabelText('Search a solution').click();
-            cy.get('#modal_searchSolution').within(() => {
+            cy.get('#modal_searchItilobject').within(() => {
                 cy.findByLabelText('Search…').should('have.value', 'apple');
                 cy.findAllByRole('listitem').should('have.length.at.least', 2);
 
@@ -101,7 +101,7 @@ describe("Ticket Form", () => {
 
                 cy.findAllByTitle('Use as a solution').first().click();
             });
-            cy.get('#modal_searchSolution').should('not.exist');
+            cy.get('#modal_searchItilobject').should('not.exist');
             cy.get('@content').then((content) => {
                 cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', content.trim());
             });
@@ -117,7 +117,7 @@ describe("Ticket Form", () => {
             cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
             cy.findByText('Answer').click();
             cy.findByLabelText('Search a followup').click();
-            cy.get('#modal_searchSolution').within(() => {
+            cy.get('#modal_searchItilobject').within(() => {
                 cy.findByLabelText('Search…').should('have.value', 'apple');
                 cy.findAllByRole('listitem').should('have.length.at.least', 2);
 
@@ -128,9 +128,9 @@ describe("Ticket Form", () => {
                 cy.findAllByRole('listitem').should('have.length', 0);
                 cy.findByText('Back to results').click();
 
-                cy.findAllByTitle('Use as a solution').first().click();
+                cy.findAllByTitle('Use as a followup').first().click();
             });
-            cy.get('#modal_searchSolution').should('not.exist');
+            cy.get('#modal_searchItilobject').should('not.exist');
             cy.get('@content').then((content) => {
                 cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', content.trim());
             });

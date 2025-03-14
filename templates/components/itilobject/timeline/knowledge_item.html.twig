@@ -53,25 +53,25 @@
 <script>
     $('button[name="search_{{ itilobject }}"]').on('click', () => {
     window.glpi_ajax_dialog({
-        id: 'modal_searchSolution',
+        id: 'modal_searchItilobject',
         modalclass: 'modal-xl',
         title: '{{ __('Search a ' ~ itilobject) }}',
         url: '{{ path('/Knowbase/KnowbaseItem/Search/') ~ itilobject ~ '/' ~ (item.getType() ~ '/' ~ item.getID())|e('js') }}'
     });
-    $(document).off('click', '#modal_searchSolution button.use-solution').on('click', '#modal_searchSolution button.use-solution', (e) => {
-        const btn = $(e.target).closest('button.use-solution');
-        const solutions_id = btn.attr('data-solution-id') ?? btn.closest('.list-group-item').attr('data-solution-id');
-        $('#modal_searchSolution').modal('hide');
-        if (solutions_id) {
+    $(document).off('click', '#modal_searchItilobject button.use-itilobject').on('click', '#modal_searchItilobject button.use-itilobject', (e) => {
+        const btn = $(e.target).closest('button.use-itilobject');
+        const itilobject_id = btn.attr('data-itilobject-id') ?? btn.closest('.list-group-item').attr('data-itilobject-id');
+        $('#modal_searchItilobject').modal('hide');
+        if (itilobject_id) {
             $.ajax({
-                url: `{{ path('/Knowbase/KnowbaseItem/') }}${solutions_id}/Content`
+                url: `{{ path('/Knowbase/KnowbaseItem/') }}${itilobject_id}/Content`
             }).then((data) => {
                 if (data) {
                     setRichTextEditorContent("content_{{ rand }}", data);
-                    const link_kb = $('.itilsolution input[type="checkbox"][name="kb_linked_id"]');
-                    link_kb.val(solutions_id);
+                    const link_kb = $('.itilobject input[type="checkbox"][name="kb_linked_id"]');
+                    link_kb.val(itilobject_id);
                     link_kb.removeAttr('disabled');
-                    link_kb.closest('.form-field').find('label.col-form-label > i').attr('data-bs-original-title', __('Link to knowledge base entry #%id').replace('%id', solutions_id));
+                    link_kb.closest('.form-field').find('label.col-form-label > i').attr('data-bs-original-title', __('Link to knowledge base entry #%id').replace('%id', itilobject_id));
                     link_kb.closest('.form-field').removeClass('d-none');
                 }
             });
