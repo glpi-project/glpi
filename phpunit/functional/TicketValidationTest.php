@@ -301,7 +301,11 @@ class TicketValidationTest extends CommonITILValidation
 
         $this->assertEquals(\CommonITILValidation::WAITING, (int)$ticket->getField('global_validation'));
 
-        // accept first validation
+        // accept first validation, second one is still WAITING
+        // update default validation step to require 50%, so next assertion returns WAITING, and the seconde return ACCEPTED
+        $vs = $this->getInitialDefaultValidationStep();
+        $this->updateItem($vs::class, $vs->getID(), ['minimal_required_validation_percent' => 100]);
+
         $this->login('glpi', 'glpi');
         $validation = new \TicketValidation();
         $this->assertTrue(
@@ -322,7 +326,7 @@ class TicketValidationTest extends CommonITILValidation
         $this->assertTrue($ticket->getFromDB($tickets_id_2));
         $this->assertEquals(\CommonITILValidation::WAITING, (int)$ticket->getField('global_validation'));
 
-        // accept second one
+        // accept second one, both are accepted -> global_validation status should be ACCEPTED
         $this->login('approval', 'approval');
         $validation = new \TicketValidation();
         $this->assertTrue(
@@ -338,7 +342,7 @@ class TicketValidationTest extends CommonITILValidation
             'status' => \CommonITILValidation::ACCEPTED
         ]);
 
-        $this->assertTrue($ticket->getFromDB($tid));
+        $this->assertTrue($ticket->getFromDB($tickets_id_2));
         $this->assertEquals(\CommonITILValidation::ACCEPTED, (int)$ticket->getField('global_validation'));
     }
 
