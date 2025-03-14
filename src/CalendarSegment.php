@@ -427,6 +427,7 @@ class CalendarSegment extends CommonDBChild
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
                 'container'     => 'mass' . __CLASS__ . $rand
             ],
         ]);
