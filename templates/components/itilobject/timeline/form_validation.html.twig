@@ -247,7 +247,7 @@
                   {{ fields.dropdownField(
                      'ValidationStep',
                      'validationsteps_id',
-                     call('ValidationStep::getDefault').fields['id'],
+                     subitem.fields['validationsteps_id']|default(call('ValidationStep::getDefault').fields['id']),
                      __('Validation step'),
                      {
                         'rand': rand,
