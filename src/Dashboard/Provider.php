@@ -801,7 +801,6 @@ class Provider
             'label'           => "",
             'searchoption_id' => $found_so_id,
             'icon'            => $fk_item::getIcon() ?? $item::getIcon(),
-            'limit'           => 99999,
             'join_key'        => 'LEFT JOIN',
             'apply_filters'   => [],
         ];
@@ -844,7 +843,6 @@ class Provider
                 ],
                 'GROUPBY'   => "$fk_table.$name",
                 'ORDERBY'   => "cpt DESC",
-                'LIMIT'     => $params['limit'],
             ],
             count($where) ? ['WHERE' => $where] : [],
             self::getFiltersCriteria($c_table, $params['apply_filters']),
