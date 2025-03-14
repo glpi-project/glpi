@@ -36,6 +36,7 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use Glpi\Inventory\Inventory;
 use Item_Environment;
 use Item_Process;
@@ -164,5 +165,23 @@ class IsInventoriableCapacity extends AbstractCapacity
             'pattern' => $classname
         ];
         $DB->delete(\RuleImportAsset::getTable(), $where, $joins);
+    }
+
+    public function onCapacityUpdated(string $classname, ?CapacityConfig $original_config, ?CapacityConfig $updated_config): void
+    {
+        if ($original_config->getConfig('inventory_mainasset') != $updated_config->getConfig('inventory_mainasset')) {
+            //$this->removeRules($classname);
+            $rules = new \RuleImportAsset();
+            $rules->initRules(true, $classname);
+        }
+    }
+
+    public function getConfigurationTypes(): array
+    {
+        return [
+            \Glpi\Inventory\MainAsset\GenericAsset::class => \Computer::getTypeName(1),
+            \Glpi\Inventory\MainAsset\GenericNetworkAsset::class => \NetworkEquipment::getTypeName(1),
+            \Glpi\Inventory\MainAsset\GenericPrinterAsset::class => \Printer::getTypeName(1),
+        ];
     }
 }

@@ -48,7 +48,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasSoftwaresCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasSoftwaresCapacity::class)]);
 
         foreach ($CFG_GLPI['software_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {

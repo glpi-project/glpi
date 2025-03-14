@@ -342,6 +342,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         );
 
         $asset = new \Glpi\Inventory\Asset\NetworkPort($neteq, $json->content->network_ports);
+        $asset->setMainAsset(new \Glpi\Inventory\MainAsset\NetworkEquipment($neteq, []));
         $asset->setExtraData((array)$json->content);
         $results = $asset->prepare();
 

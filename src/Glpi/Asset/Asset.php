@@ -39,6 +39,7 @@ use CommonDBTM;
 use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\CustomObject\CustomObjectTrait;
 use Group;
 use Group_Item;
@@ -502,5 +503,10 @@ abstract class Asset extends CommonDBTM
             $relations = [...$relations, ...$capacity->getCloneRelations()];
         }
         return array_unique($relations);
+    }
+
+    public function getCapacity($capacity_classname): ?CapacityInterface
+    {
+        return static::getDefinition()->getCapacity($capacity_classname);
     }
 }

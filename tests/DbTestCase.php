@@ -351,7 +351,7 @@ class DbTestCase extends \GLPITestCase
             ],
             skip_fields: ['capacities', 'profiles', 'fields_display'] // JSON encoded fields cannot be automatically checked
         );
-        $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->isEqualTo($capacities);
+        $this->array($this->callPrivateMethod($definition, 'getDecodedCapacities'))->isEqualTo($capacities);
         $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
 
         return $definition;
@@ -445,7 +445,7 @@ class DbTestCase extends \GLPITestCase
 
         // Ensure capacity was added
         $this->array(
-            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+            $this->callPrivateMethod($definition, 'getDecodedCapacities')
         )->contains($capacity);
 
         return $definition;
@@ -484,7 +484,7 @@ class DbTestCase extends \GLPITestCase
 
         // Ensure capacity was deleted
         $this->array(
-            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+            $this->callPrivateMethod($definition, 'getDecodedCapacities')
         )->notContains($capacity);
 
         return $definition;

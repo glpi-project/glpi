@@ -33,25 +33,39 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\MainAsset;
+namespace Glpi\Asset;
 
-class GenericAsset extends Computer
+use JsonSerializable;
+
+class Capacity implements JsonSerializable
 {
-    protected function getModelsFieldName(): string
-    {
-        /** @var \Glpi\Asset\Asset $item */
-        $item = $this->item;
-        $model_classname = $item->getDefinition()->getAssetModelClassName();
-
-        return getForeignKeyFieldForItemType($model_classname);
+    public function __construct(
+        private string $name,
+        private ?CapacityConfig $config = null,
+    ) {
     }
 
-    protected function getTypesFieldName(): string
+    public function getName(): string
     {
-        /** @var \Glpi\Asset\Asset $item */
-        $item = $this->item;
-        $type_classname = $item->getDefinition()->getAssetTypeClassName();
+        return $this->name;
+    }
 
-        return getForeignKeyFieldForItemType($type_classname);
+    public function getConfig(): ?CapacityConfig
+    {
+        return $this->config;
+    }
+
+    public function setConfig(CapacityConfig $config): self
+    {
+        $this->config = $config;
+        return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'name' => $this->name,
+            'config' => $this->config,
+        ];
     }
 }
