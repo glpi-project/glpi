@@ -801,7 +801,7 @@ class Provider
             'label'           => "",
             'searchoption_id' => $found_so_id,
             'icon'            => $fk_item::getIcon() ?? $item::getIcon(),
-            'limit'           => 50,
+            'limit'           => 99999,
             'join_key'        => 'LEFT JOIN',
             'apply_filters'   => [],
         ];
