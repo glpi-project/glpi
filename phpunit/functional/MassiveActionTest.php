@@ -632,6 +632,7 @@ class MassiveActionTest extends DbTestCase
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
         $uid = getItemByTypeName('User', TU_USER, true);
         $bk = new \SavedSearch();
+        $bku = new \SavedSearch_User();
         $this->assertTrue(
             (bool)$bk->add([
                 'name'         => 'public root recursive',
@@ -642,6 +643,14 @@ class MassiveActionTest extends DbTestCase
                 'entities_id'  => $entity,
                 'is_recursive' => 1,
                 'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
+            ])
+        );
+
+        $this->assertTrue(
+            (bool)$bku->add([
+                'users_id'          => $uid,
+                'itemtype'          => 'Ticket',
+                'savedsearches_id'  => $bk->getID(),
             ])
         );
 
