@@ -34,9 +34,12 @@
 
 namespace Glpi\Kernel;
 
+use DBConnection;
 use GLPI;
 use Glpi\Application\SystemConfigurator;
-use Glpi\Http\Listener\PluginsRouterListener;
+use Glpi\Debug\Profiler;
+use Glpi\DependencyInjection\PluginContainer;
+use Plugin;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
@@ -49,6 +52,7 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+use Update;
 
 final class Kernel extends BaseKernel
 {
@@ -108,10 +112,15 @@ final class Kernel extends BaseKernel
         return $bundles;
     }
 
-    public function boot(): void
+    /**
+     * @param bool $pause_before_loading_plugins If true, the boot process will
+     * stop before loading plugins. This is only meant as a temporay pause and
+     * the boot process MUST be restarted later using the loadPlugins() method
+     * to correctly initialize GLPI's kernel.
+     */
+    public function boot(bool $pause_before_loading_plugins = false): void
     {
         $dispatch_postboot = !$this->booted;
-
         parent::boot();
 
         // Define synthetic logger service
@@ -119,7 +128,38 @@ final class Kernel extends BaseKernel
 
         if ($dispatch_postboot) {
             $this->container->get('event_dispatcher')->dispatch(new PostBootEvent());
+
+            if (!$pause_before_loading_plugins) {
+                $this->loadPlugins();
+            }
         }
+    }
+
+    public function loadPlugins(): void
+    {
+        $this->doLoadPlugins();
+        $this->container->get('event_dispatcher')->dispatch(
+            new PostPluginLoadedEvent(),
+        );
+    }
+
+    protected function doLoadPlugins(): void
+    {
+        if (
+            // Requires the database to be available.
+            !DBConnection::isDbAvailable()
+            || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())
+        ) {
+            return;
+        }
+
+        Profiler::getInstance()->start('Kernel::loadPlugins', Profiler::CATEGORY_BOOT);
+
+        $plugin = new Plugin();
+        $plugin->init(true);
+        $this->container->get(PluginContainer::class)->initializeContainer();
+
+        Profiler::getInstance()->stop('Kernel::loadPlugins');
     }
 
     protected function configureContainer(ContainerConfigurator $container): void

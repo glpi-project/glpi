@@ -48,11 +48,14 @@ final readonly class CustomObjectsBootstrap implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+            PostBootEvent::class => [
+                'onPostPluginLoaded',
+                ListenersPriority::POST_PLUGIN_LOADED_LISTENERS_PRIORITIES[self::class]
+            ],
         ];
     }
 
-    public function onPostBoot(): void
+    public function onPostPluginLoaded(): void
     {
         if (!DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
             // Requires the database to be available.

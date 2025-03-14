@@ -54,7 +54,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Loader\Psr4DirectoryLoader;
 use Symfony\Component\Routing\Router;
 
-class PluginContainer implements ContainerInterface
+class PluginContainer implements ContainerInterface, PublicService
 {
     private ?ContainerInterface $internal_container = null;
     private Container $symfony_container;
