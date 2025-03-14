@@ -108,18 +108,19 @@ describe("Ticket Form", () => {
         });
     });
 
-    it('Validation Template', () => {
+    it('Validation Template', { retries: 0 }, () => {
+        const rand = Math.floor(Math.random() * 1000);
         cy.createWithAPI('Ticket', {
             name: 'apple',
             content: 'apple',
         }).as('ticket_id');
         cy.createWithAPI('ITILValidationTemplate', {
-            name: 'test',
+            name: `test ${rand}`,
             content: 'test content',
             entities_id: 1,
         }).as('validationtemplates_id');
         cy.createWithAPI('ITILValidationTemplate', {
-            name: 'test no approver',
+            name: `test no approver ${rand}`,
             content: 'no approver test content ',
             entities_id: 1,
         }).as('validationtemplates_id2');
@@ -135,21 +136,19 @@ describe("Ticket Form", () => {
                 cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
                 cy.findByText('Ask for validation').click();
                 cy.get('.itilvalidation').within(() => {
-                    cy.findByLabelText('Template').selectDropdownValue(validationtemplates_id);
+                    cy.getDropdownByLabelText('Template').selectDropdownValue(`test ${rand}`);
                     cy.get('select[name="[validatortype]"]').should('have.value', 'User');
-                    cy.get('select[name=items_id_target]').should('have.value', '2');
-                    cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', 'test content');
+                    cy.get('select[name="items_id_target"]').should('have.value', '2');
+                    cy.get('textarea[name="comment_submission"]').awaitTinyMCE().should('contain.text', 'test content');
                 });
-            });
-            cy.get('@validationtemplates_id2').then((validationtemplates_id) => {
                 cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
                 cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
                 cy.findByText('Ask for validation').click();
                 cy.get('.itilvalidation').within(() => {
-                    cy.findByLabelText('Template').selectDropdownValue(validationtemplates_id);
+                    cy.getDropdownByLabelText('Template').selectDropdownValue(`test no approver ${rand}`);
                     cy.get('select[name="[validatortype]"]').should('have.value', '0');
-                    cy.get('select[name=items_id_target]').should('not.be.visible');
-                    cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', 'no approver test content');
+                    cy.get('select[name="items_id_target"]').should('not.exist');
+                    cy.get('textarea[name="comment_submission"]').awaitTinyMCE().should('contain.text', 'no approver test content');
                 });
             });
         });
