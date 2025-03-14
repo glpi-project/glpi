@@ -246,4 +246,65 @@ class IsInventoriableCapacityTest extends DbTestCase
             $capacity->getCapacityUsageDescription($definition->getAssetClassName())
         );
     }
+
+    public function testCapacityConfigUpdate(): void
+    {
+        global $DB;
+
+        $rules = new \RuleImportAsset();
+        $this->assertTrue($rules->initRules());
+
+        $definition = $this->initAssetDefinition(
+            capacities: [
+                new \Glpi\Asset\Capacity(
+                    name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
+                    config: new \Glpi\Asset\CapacityConfig([
+                        'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericAsset::class
+                    ])
+                )
+            ]
+        );
+        $classname  = $definition->getAssetClassName();
+
+        //check for specific computer rules
+        $criteria = [
+            'FROM' => \RuleImportAsset::getTable(),
+            'WHERE' => [
+                'sub_type' => \RuleImportAsset::class,
+                'name' => $classname . ' import (by uuid)',
+            ]
+        ];
+        $iterator = $DB->request($criteria);
+        //specific computer rule should be present
+        $this->assertCount(1, $iterator);
+
+        // Update capacity
+        $this->assertTrue(
+            $definition->update([
+                'id' => $definition->getID(),
+                'capacities' => [
+                    new \Glpi\Asset\Capacity(
+                        name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
+                        config: new \Glpi\Asset\CapacityConfig([
+                            'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericNetworkAsset::class
+                        ])
+                    )
+                ]
+            ])
+        );
+        $this->assertTrue($definition->getFromDB($definition->getID()));
+
+        //make sure configuration has been updated in database
+        $this->assertEquals(
+            \Glpi\Inventory\MainAsset\GenericNetworkAsset::class,
+            $definition->getCapacityConfiguration(
+                $definition->getCapacity(\Glpi\Asset\Capacity\IsInventoriableCapacity::class),
+                'inventory_mainasset'
+            )
+        );
+
+        //computer specific rule should no longer be present
+        $iterator = $DB->request($criteria);
+        $this->assertCount(0, $iterator);
+    }
 }
