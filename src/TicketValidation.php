@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\RichText\RichText;
+
 /**
  * TicketValidation class
  */
@@ -49,12 +52,11 @@ class TicketValidation extends CommonITILValidation
     const VALIDATEREQUEST             = 4096;
     const VALIDATEINCIDENT            = 8192;
 
-
-
     public static function getCreateRights()
     {
         return [static::CREATEREQUEST, static::CREATEINCIDENT];
     }
+
 
     public static function getTypeName($nb = 0)
     {
@@ -65,7 +67,6 @@ class TicketValidation extends CommonITILValidation
     {
         return [static::VALIDATEREQUEST, static::VALIDATEINCIDENT];
     }
-
 
     /**
      * @since 0.85
@@ -92,6 +93,7 @@ class TicketValidation extends CommonITILValidation
 
         return parent::canCreateItem();
     }
+
 
     /**
      * @since 0.85
@@ -122,5 +124,269 @@ class TicketValidation extends CommonITILValidation
         }
 
         return $values;
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        // validation step is mandatory : add default value is not set
+        if (!isset($input['validationsteps_id'])) {
+            $input['validationsteps_id'] = ValidationStep::getDefault()->getID();
+        }
+
+        return parent::prepareInputForAdd($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        // validation step is mandatory
+        if (isset($input['validationsteps_id']) && !is_numeric($input['validationsteps_id'])) {
+            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory'), 'validationsteps_id'), message_type: ERROR);
+            return false;
+        }
+
+        // validation step exists in db
+        $vs = new ValidationStep();
+        if (isset($input['validationsteps_id']) && !$vs->getFromDB((int) $input['validationsteps_id'])) {
+            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is invalid'), 'validationsteps_id'), message_type: ERROR);
+            return false;
+        };
+
+        return parent::prepareInputForUpdate($input);
+    }
+
+    /**
+     * Differences with the parent method:
+     * - validations are grouped by validation step
+     * - validations_step are passed to twig
+     * - use of a custom template
+     * @return false|void
+     */
+    #[\Override]
+    public function showSummary(CommonITILObject $ticket)
+    {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
+
+        if (
+            !Session::haveRightsOr(
+                static::$rightname,
+                array_merge(
+                    static::getCreateRights(),
+                    static::getValidateRights(),
+                    static::getPurgeRights()
+                )
+            )
+        ) {
+            return false;
+        }
+
+        $tID    = $ticket->fields['id'];
+        $tmp    = [static::$items_id => $tID];
+        $rand   = mt_rand();
+
+        $validation_sql_results = $DB->Request([
+            'FROM'   => $this->getTable(),
+            'WHERE'  => [static::$items_id => $ticket->getField('id')],
+            'ORDER'  => ['validationsteps_id ASC', 'submission_date DESC']
+        ]);
+
+        Session::initNavigateListItems(
+            static::class,
+            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+            sprintf(
+                __('%1$s = %2$s'),
+                $ticket::getTypeName(1),
+                $ticket->fields["name"]
+            )
+        );
+        $validations = [];
+        $validationstep_id_inloop = -1;
+        foreach ($validation_sql_results as $validation) {
+            $canedit = $this->canEdit($validation["id"]);
+            Session::addToNavigateListItems($this->getType(), $validation["id"]); // ??
+            $status  = sprintf(
+                '<div class="badge fw-normal fs-4 text-wrap" style="border-color: %s;border-width: 2px;">%s</div>',
+                htmlescape(self::getStatusColor($validation['status'])),
+                htmlescape(self::getStatus($validation['status']))
+            );
+
+            $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
+            $type_name   = null;
+            $target_name = null;
+            if ($validation["itemtype_target"] === User::class) {
+                $type_name   = User::getTypeName();
+                $target_name = getUserName($validation["items_id_target"]);
+            } elseif (is_a($validation["itemtype_target"], CommonDBTM::class, true)) {
+                $target = new $validation["itemtype_target"]();
+                $type_name = $target::getTypeName();
+                if ($target->getFromDB($validation["items_id_target"])) {
+                    $target_name = $target->getName();
+                }
+            }
+            $is_answered = $validation['status'] !== self::WAITING && $validation['users_id_validate'] > 0;
+            $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
+
+            $doc_item = new Document_Item();
+            $docs = $doc_item->find([
+                "itemtype"          => static::class,
+                "items_id"           => $this->getID(),
+                "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE]
+            ]);
+
+            $document = "";
+            foreach ($docs as $docs_values) {
+                $doc = new Document();
+                if ($doc->getFromDB($docs_values['documents_id'])) {
+                    $document .= sprintf(
+                        '<a href="%s">%s</a><br />',
+                        htmlescape($doc->getLinkURL()),
+                        htmlescape($doc->getName())
+                    );
+                }
+            }
+
+            $edit_button = "";
+            if ($canedit) {
+                $edit_title = __s('Edit');
+                $item_id = (int)$ticket->fields['id'];
+                $row_id = (int)$validation["id"];
+                $rand = htmlescape($rand);
+                $view_validation_id = htmlescape($this->fields[static::$items_id]);
+                $root_doc = htmlescape($CFG_GLPI["root_doc"]);
+                $params_json = json_encode([
+                    'type'             => static::class,
+                    'parenttype'       => static::$itemtype,
+                    static::$items_id  => $this->fields[static::$items_id],
+                    'id'               => $validation["id"]
+                ]);
+
+                $edit_button = <<<HTML
+                    <span class="ti ti-edit" style="cursor:pointer" title="{$edit_title}" 
+                          onclick="viewEditValidation{$item_id}{$row_id}{$rand}();" 
+                          id="viewvalidation{$view_validation_id}{$row_id}{$rand}">
+                    </span>
+                    <script>
+                        function viewEditValidation{$item_id}{$row_id}{$rand}() {
+                            $('#viewvalidation{$item_id}{$rand}').load('$root_doc/ajax/viewsubitem.php', $params_json);
+                        };
+                    </script>
+HTML;
+            }
+
+            $validationstep_id = $validation['validationsteps_id'];
+            $validations[$validationstep_id]['entries'][] = [
+                'edit'                  => $edit_button,
+                'status'                => $status,
+                'type_name'             => $type_name,
+                'target_name'           => $target_name,
+                'is_answered'           => $is_answered,
+                'comment_submission'    => $comment_submission,
+                'comment_validation'    => $comment_validation,
+                'document'              => $document,
+                'submission_date'       => $validation["submission_date"],
+                'validation_date'       => $validation["validation_date"],
+                'user'                  => getUserName($validation["users_id"]),
+            ];
+
+            if ($validationstep_id !== $validationstep_id_inloop) {
+                $validation_step_status = ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $validationstep_id);
+                $validation_step_achievements = ValidationStep::getValidationStepAchievements($ticket->getID(), $validationstep_id);
+                $validation_step = new ValidationStep();
+                $validation_step->getFromDB($validationstep_id);
+
+                $validations[$validationstep_id]['validationstep'] = [
+                    'id' => $validation['validationsteps_id'],
+                    'name' => $validation_step->getField('name'),
+                    // structured to be later replaced by a DTO with Status::isAccepted()|isRefused()|isWaiting() & getStatus()
+                    'status' => [
+                        'waiting' => $validation_step_status === self::WAITING,
+                        'refused' => $validation_step_status === self::REFUSED,
+                        'accepted' => $validation_step_status === self::ACCEPTED,
+                    ],
+                    // structured to be later replaced by a DTO with getAchievement()
+                    'achievement' => [
+                        'waiting' => $validation_step_achievements[self::WAITING],
+                        'refused' => $validation_step_achievements[self::REFUSED],
+                        'accepted' => $validation_step_achievements[self::ACCEPTED],
+                    ],
+                    'minimal_required_validation_percent' => $validation_step->getField('minimal_required_validation_percent'),
+                ];
+
+                $validationstep_id_inloop = $validationstep_id;
+            }
+        }
+
+        TemplateRenderer::getInstance()->display('components/itilobject/validation.html.twig', [
+            'canadd' => $this->can(-1, CREATE, $tmp),
+            'item' => $ticket,
+            'itemtype' => static::$itemtype,
+            'tID' => $tID,
+            'donestatus' => array_merge($ticket->getSolvedStatusArray(), $ticket->getClosedStatusArray()),
+            'validation' => $this,
+            'rand' => $rand,
+            'items_id' => static::$items_id,
+        ]);
+
+        TemplateRenderer::getInstance()->display('components/sections_datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'edit' => '',
+                'status' => _x('item', 'State'),
+                'submission_date' => __('Request date'),
+                'user' => __('Approval requester'),
+                'comment_submission' => __('Request comments'),
+                'validation_date' => __('Approval date'),
+                'type_name' => __('Requested approver type'),
+                'target_name' => __('Requested approver'),
+                'comment_validation' => __('Approval Comment'),
+                'document' => __('Documents'),
+            ],
+            'formatters' => [
+                'edit' => 'raw_html',
+                'status' => 'raw_html',
+                'submission_date' => 'date',
+                'comment_submission' => 'raw_html',
+                'validation_date' => 'date',
+                'comment_validation' => 'raw_html',
+                'document' => 'raw_html',
+            ],
+            'validationsteps' => $validations, // replace 'entries' in parent implementation
+            'total_number' => count($validations),
+            'showmassiveactions' => false,
+        ]);
+    }
+
+    public static function getValidationStats($tID)
+    {
+        $ticket = new Ticket();
+        $ticket->getFromDB($tID);
+        $validation_steps_status = ValidationStep::getValidationStepsStatus($ticket);
+        $count_total_validations = count($validation_steps_status);
+        $count = fn($status_to_count) => array_reduce(
+            $validation_steps_status,
+            function ($count, $step_status) use ($status_to_count) {
+                return $step_status === $status_to_count ? $count + 1 : $count;
+            },
+            0
+        );
+        $accepted = $count(self::ACCEPTED);
+        $refused  = $count(self::REFUSED);
+        $waiting  = $count(self::WAITING);
+
+        return "Accepted ($accepted): " . round($accepted / $count_total_validations * 100)  . "%"
+            . " - Refused ($refused): " . round($refused / $count_total_validations * 100) . "%"
+            . " - Waiting ($waiting): " . round($waiting / $count_total_validations * 100) . "%";
+    }
+
+
+    public static function computeValidationStatus(CommonITILObject $ticket): int
+    {
+        return ValidationStep::getValidationStatusForTicket($ticket);
     }
 }

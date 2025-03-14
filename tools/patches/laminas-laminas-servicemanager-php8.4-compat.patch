@@ -1,0 +1,13 @@
+diff --git a/src/Tool/FactoryCreator.php b/src/Tool/FactoryCreator.php
+index 5405dfc0..471b0afe 100644
+--- a/src/Tool/FactoryCreator.php
++++ b/src/Tool/FactoryCreator.php
+@@ -42,7 +42,7 @@ class FactoryCreator
+              * @param null|array $options
+              * @return %s
+              */
+-            public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
++            public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+             {
+                 return new %s(%s);
+             }

@@ -205,6 +205,7 @@
                     }
                 ) }}
 
+               {# Approver #}
                 {% if subitem.isNewItem() %}
                     {% set validation_right = 'validate' %}
                     {% if item.getType() == 'Ticket' %}
@@ -241,6 +242,20 @@
                     ) }}
                 {% endif %}
 
+               {# Validation step #}
+               {%  if subitem.isField('validationsteps_id') %}
+                  {{ fields.dropdownField(
+                     'ValidationStep',
+                     'validationsteps_id',
+                     subitem.fields['validationsteps_id']|default(call('ValidationStep::getDefault').fields['id']),
+                     __('Validation step'),
+                     {
+                        'rand': rand,
+                     }
+                  ) }}
+                {% endif %}
+
+                {# Comment #}
                 {{ fields.textareaField(
                     'comment_submission',
                     subitem.fields['comment_submission'],
@@ -317,6 +332,7 @@
                   setRichTextEditorContent("comment_submission_{{ rand }}", data.content);
                }
 
+                // Validator field
                if (data.validatortype !== undefined) {
                   // set validator type
                   $("#dropdown__validatortype_{{ rand }}").trigger('setValue', "0");
@@ -357,6 +373,12 @@
                      });
                   }
                }
+
+               // Validation step field
+               if( data.validationsteps_id !== undefined ) {
+                  $("#dropdown_validationsteps_id{{ rand }}").trigger('setValue', data.validationsteps_id);
+               }
+
             });
          }
       </script>
