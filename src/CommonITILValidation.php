@@ -181,7 +181,7 @@ abstract class CommonITILValidation extends CommonDBChild
      */
     public function canUpdateItem(): bool
     {
-        $is_target = static::canValidate($this->fields[static::$items_id]);
+        $is_target = static::canValidate($this->fields[static::$items_id], $this->getID());
         if (
             !$is_target
             && !Session::haveRightsOr(static::$rightname, static::getCreateRights())
@@ -192,32 +192,33 @@ abstract class CommonITILValidation extends CommonDBChild
             || (int) $this->fields['users_id_validate'] === Session::getLoginUserID();
     }
 
-
     /**
-     * @param integer $items_id ID of the item
+     * @param integer $items_id ID of the ITIL item
+     * @param integer|null $validation_id Specific validation to check or null to only check if the user can validate any existing validation
      **/
-    public static function canValidate($items_id)
+    public static function canValidate($items_id, ?int $validation_id = null)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
+        $id_condition = [];
+        if ($validation_id !== null) {
+            $id_condition = [
+                'id' => $validation_id,
+            ];
+        }
         $iterator = $DB->request([
             'SELECT' => [static::getTable() . '.id'],
             'FROM'   => static::getTable(),
-            'WHERE'  => [
-                static::$items_id => $items_id,
-                static::getTargetCriteriaForUser(Session::getLoginUserID()),
-            ],
+            'WHERE'  => $id_condition + [
+                    static::$items_id => $items_id,
+                    static::getTargetCriteriaForUser(Session::getLoginUserID()),
+                ],
             'START'  => 0,
             'LIMIT'  => 1
         ]);
-
-        if (count($iterator) > 0) {
-            return true;
-        }
-        return false;
+        return count($iterator) > 0;
     }
-
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
@@ -389,9 +390,18 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function prepareInputForUpdate($input)
     {
-
+        $can_answer = static::canValidate($this->fields[static::$items_id], $this->getID());
         $forbid_fields = ['entities_id', static::$items_id, 'is_recursive'];
-        if (isset($input["status"]) && static::canValidate($this->fields[static::$items_id])) {
+
+        if (!$can_answer) {
+            array_push($forbid_fields, 'status', 'comment_validation', 'validation_date');
+        }
+
+        foreach ($forbid_fields as $key) {
+            unset($input[$key]);
+        }
+
+        if (isset($input["status"])) {
             if (
                 ($input["status"] == self::REFUSED)
                 && (!isset($input["comment_validation"])
@@ -409,25 +419,6 @@ abstract class CommonITILValidation extends CommonDBChild
                 $input["validation_date"] = 'NULL';
             } else {
                 $input["validation_date"] = $_SESSION["glpi_currenttime"];
-            }
-
-            array_push(
-                $forbid_fields,
-                'users_id',
-                'itemtype_target',
-                'items_id_target',
-                'comment_submission',
-                'submission_date'
-            );
-        } else if (Session::haveRightsOr(static::$rightname, $this->getCreateRights())) { // Update validation request
-            array_push($forbid_fields, 'status', 'comment_validation', 'validation_date');
-        }
-
-        if (count($forbid_fields)) {
-            foreach (array_keys($forbid_fields) as $key) {
-                if (isset($input[$key])) {
-                    unset($input[$key]);
-                }
             }
         }
 

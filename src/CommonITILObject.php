@@ -7711,7 +7711,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $validation->post_getFromDB();
 
                 $canedit = $validation_obj->can($validations_id, UPDATE);
-                $cananswer = $validation_obj->canValidate($this->getID())
+                $cananswer = $validation_obj->canValidate($this->getID(), $validations_id)
                     && $validation_row['status'] == CommonITILValidation::WAITING
                     && !$this->isSolved(true);
                 $user = new User();

@@ -203,6 +203,10 @@ abstract class CommonITILValidation extends DbTestCase
 
         // Test the current user can still approve since they still have an approval
         $this->assertTrue($validation::canValidate($itil_items_id));
+        // Test the current user can specifically approve their own approval
+        $this->assertTrue($validation::canValidate($itil_items_id, $validations_id_1));
+        // Test the current user cannot approve the other user's approval
+        $this->assertFalse($validation::canValidate($itil_items_id, $validations_id_2));
         // Remove user approval for current user
         $this->assertTrue($validation->delete(['id' => $validations_id_1]));
         // Test the current user cannot still approve since the remaining approval isn't for them
@@ -616,6 +620,33 @@ abstract class CommonITILValidation extends DbTestCase
         } else {
             $this->assertFalse($validation->prepareInputForUpdate($input));
         }
+    }
+
+    public function testPrepareInputForUpdateNotMineToAnswer()
+    {
+        $this->login();
+
+        /** @var class-string<\CommonITILValidation> $validation_class */
+        $validation_class = $this->getTestedClass();
+        $itilobject = new ($validation_class::$itemtype)();
+        $itil_id = $itilobject->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $validation = new $validation_class();
+        $notmine_validation = $validation->add([
+            $validation::$items_id => $itil_id,
+            'itemtype_target' => 'User',
+            'items_id_target' => \User::getIdByName('normal'),
+            'status' => \TicketValidation::WAITING,
+        ]);
+        $validation->getFromDB($notmine_validation);
+        $input = $validation->prepareInputForUpdate([
+            'status' => \CommonITILValidation::ACCEPTED,
+            'comment_validation' => 'test',
+        ]);
+        $this->assertEmpty($input);
     }
 
     public static function getHistoryChangeWhenUpdateFieldProvider()
