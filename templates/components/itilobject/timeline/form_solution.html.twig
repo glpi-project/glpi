@@ -121,7 +121,7 @@
                   <div class="row">
                      {% if candedit %}
                         {% if can_read_kb and not nokb %}
-                           {{ include('components/itilobject/timeline/knowledge_item.html.twig', {itiltype: 'solution'}) }}
+                           {{ include('components/itilobject/timeline/knowledge_item.html.twig', {itilobject: 'solution'}) }}
                         {% endif %}
 
                         {% set sol_template_lbl %}

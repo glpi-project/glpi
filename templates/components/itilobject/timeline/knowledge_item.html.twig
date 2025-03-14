@@ -34,8 +34,8 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set search_button %}
-    <button type="button" class="btn btn-secondary overflow-hidden text-nowrap" name="search_{{ itiltype }}"
-        title="{{ __('Search a ' ~ itiltype) }}" data-bs-toggle="tooltip" data-bs-placement="top">
+    <button type="button" class="btn btn-secondary overflow-hidden text-nowrap" name="search_{{ itilobject }}"
+        title="{{ __('Search a ' ~ itilobject) }}" data-bs-toggle="tooltip" data-bs-placement="top">
     <i class="ti ti-search"></i>
     </button>
 {% endset %}
@@ -51,12 +51,12 @@
 }}
 
 <script>
-    $('button[name="search_{{ itiltype }}"]').on('click', () => {
+    $('button[name="search_{{ itilobject }}"]').on('click', () => {
     window.glpi_ajax_dialog({
         id: 'modal_searchSolution',
         modalclass: 'modal-xl',
-        title: '{{ __('Search a ' ~ itiltype) }}',
-        url: '{{ path('/Knowbase/KnowbaseItem/SearchSolution/') ~ (item.getType() ~ '/' ~ item.getID())|e('js') }}'
+        title: '{{ __('Search a ' ~ itilobject) }}',
+        url: '{{ path('/Knowbase/KnowbaseItem/Search/') ~ itilobject ~ '/' ~ (item.getType() ~ '/' ~ item.getID())|e('js') }}'
     });
     $(document).off('click', '#modal_searchSolution button.use-solution').on('click', '#modal_searchSolution button.use-solution', (e) => {
         const btn = $(e.target).closest('button.use-solution');

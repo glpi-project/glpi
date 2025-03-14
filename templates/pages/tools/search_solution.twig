@@ -152,7 +152,7 @@
         function refreshResults() {
             showLoading();
             $.ajax({
-                url: '{{ path('/Knowbase/KnowbaseItem/SearchSolution/') ~ (itemtype ~ '/' ~ items_id)|e('js') }}',
+                url: '{{ path('/Knowbase/KnowbaseItem/Search/') ~ itilobject ~ '/' ~ (itemtype ~ '/' ~ items_id)|e('js') }}',
                 method: 'GET',
                 data: {
                     contains: $('#{{ container_id }} #search_solution_form input[name="contains"]').val(),

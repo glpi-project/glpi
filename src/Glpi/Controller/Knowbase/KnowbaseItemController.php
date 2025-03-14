@@ -95,7 +95,7 @@ final class KnowbaseItemController extends AbstractController
     }
 
     #[Route(
-        "/Knowbase/KnowbaseItem/SearchSolution/{itemtype}/{items_id}",
+        "/Knowbase/KnowbaseItem/Search/{itilobject}/{itemtype}/{items_id}",
         name: "knowbaseitem_search_solution",
         requirements: [
             'items_id' => '\d+',
@@ -110,6 +110,7 @@ final class KnowbaseItemController extends AbstractController
         global $CFG_GLPI, $DB;
 
         $itemtype = $request->get('itemtype');
+        $itilobject = $request->get('itilobject');
         $items_id = $request->get('items_id');
         $start = (int) $request->get('start', 0);
         $contains = $request->get('contains');
@@ -176,6 +177,7 @@ final class KnowbaseItemController extends AbstractController
             'contains' => $contains,
             'results' => $results,
             'itemtype' => $itemtype,
+            'itilobject' => $itilobject,
             'items_id' => $items_id,
             'is_ajax' => $request->get('ajax_reload', 0),
             'count' => $total_count,
