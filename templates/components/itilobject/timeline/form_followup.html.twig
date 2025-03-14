@@ -124,6 +124,8 @@
                   <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-0 pe-xxl-auto">
                      <div class="row">
 
+                        {{ include('components/itilobject/timeline/knowledge_item.html.twig', {itilobject: 'followup'}) }}
+
                         {% set fup_template_lbl %}
                            <i class="{{ 'ITILFollowupTemplate'|itemtype_icon }} me-1"
                               title="{{ _n('Followup template', 'Followup templates', get_plural_number()) }}"></i>
