@@ -56,6 +56,9 @@ trait ValidationStepTrait
         $ticket = $this->createItem(Ticket::class, ['name' => __METHOD__, 'content' => __METHOD__,]);
         $validation_step = $this->addValidationStepWithValidations($mininal_required_validation_percent, $validations_statuses, $ticket);
 
+        // $ticket status changes because of added validation : reload it
+        $ticket->getFromDB($ticket->getID());
+
         return [$ticket, $validation_step];
     }
 

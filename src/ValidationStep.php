@@ -248,6 +248,37 @@ class ValidationStep extends \CommonDropdown
             $this->setAnotherAsDefault();
         }
 
+        // if minimal_required_validation_percent has changed : recompute Tickets validation status
+        if (
+            isset($this->oldvalues['minimal_required_validation_percent'])
+            && $this->oldvalues['minimal_required_validation_percent'] !== $this->fields['minimal_required_validation_percent']
+        ) {
+            // get all tickets with this validation step
+            $tv = new TicketValidation();
+            $ticket_validations = $tv->find(['validationsteps_id' => $this->getID()]);
+            $tickets_id = array_unique(array_column($ticket_validations, 'tickets_id'));
+
+            foreach ($tickets_id as $ticket_id) {
+                $ticket = (new Ticket())->getByID($ticket_id);
+//                dump($ticket);
+                $new_status = ValidationStep::getValidationStatusForTicket($ticket);
+
+                if ($ticket->getField('global_validation_status') !== $new_status) {
+                    if (
+                        !$ticket->update(
+                            [
+                                'id' => $ticket->getID(),
+                                'global_validation' => $new_status,
+                                '_from_itilvalidation' => true // mandatory to allow modification of global_validation @see \CommonITILObject::handleTemplateFields()
+                            ]
+                        )
+                    ) {
+                        Session::addMessageAfterRedirect(msg: 'Failed to update related ticket global validation status on Ticket #' . $ticket->getID(), message_type: ERROR);
+                    }
+                }
+            }
+        }
+
         parent::post_updateItem($history);
     }
 

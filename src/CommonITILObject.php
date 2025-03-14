@@ -2709,6 +2709,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         // Update of the global validation status if the validation percentage has changed
+        // for ITIL objects not having validation with validations steps (e.g. Changes)
         if (in_array("validation_percent", $this->updates)) {
             $this->updates[] = 'global_validation';
             $this->fields['global_validation'] = $this->getValidationClassInstance()->computeValidationStatus($this);

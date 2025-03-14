@@ -482,4 +482,24 @@ class TicketValidationTest extends CommonITILValidation
         assert(\CommonITILValidation::ACCEPTED === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to add validation step with ACCEPTED status');
         $this->assertEquals(\CommonITILValidation::ACCEPTED, \TicketValidation::computeValidationStatus($ticket));
     }
+
+    /**
+     * - create a ticket with a validated state.
+     * - update a validation step
+     * - check ticket validation status has changed
+     */
+    public function testTicketValidationChangesWhenValidationStepPercentageIsChanged(): void
+    {
+        // arrange
+        [$ticket, $vs] = $this->createValidationStepWithValidations(50, [\CommonITILValidation::ACCEPTED, \CommonITILValidation::REFUSED]);
+        assert(\CommonITILValidation::ACCEPTED === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to create validation step with ACCEPTED status');
+        $this->assertEquals(\CommonITILValidation::ACCEPTED, $ticket->getField('global_validation'));
+
+        // act
+        $this->updateItem(\ValidationStep::class, $vs->getID(), ['minimal_required_validation_percent' => 100] + $vs->fields);
+
+        // assert
+        $ticket->getFromDB($ticket->getID());
+        $this->assertEquals(\CommonITILValidation::REFUSED, $ticket->getField('global_validation'));
+    }
 }
