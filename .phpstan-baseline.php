@@ -4238,18 +4238,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Project.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function method_exists\\(\\) with class\\-string\\<static\\(Project\\)\\> and \'getFormUrl\' will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Project.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between false and int\\|string\\|null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Project.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#2 \\$withtemplate \\(int\\) of method ProjectCost\\:\\:showForProject\\(\\) is incompatible with type bool\\.$#',
 	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
