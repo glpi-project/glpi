@@ -34,16 +34,21 @@
 
 namespace Glpi\Form\Condition;
 
-/**
- * References supported input templates keys in conditional_visibility_editor.html.twig
- */
-enum InputTemplateKey
+final class CommentData
 {
-    case STRING;
-    case NUMBER;
-    case TIME;
-    case DATE;
-    case DATE_AND_TIME;
-    case URGENCY;
-    case REQUEST_TYPE;
+    public function __construct(
+        private string $uuid,
+        private string $name,
+    ) {
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getUuid(): string
+    {
+        return $this->uuid;
+    }
 }

@@ -38,7 +38,6 @@ namespace Glpi\Form\QuestionType;
 use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\UrgencyConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
@@ -185,9 +184,9 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
-        return new UrgencyConditionHandler();
+    ): array {
+        return array_merge(parent::getConditionHandlers($question_config), [new UrgencyConditionHandler()]);
     }
 }
