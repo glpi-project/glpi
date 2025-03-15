@@ -368,7 +368,7 @@
         <select data-glpi-form-editor-question-types-values>
             {% for key, question_type in question_types_manager.getQuestionTypes() %}
                 <option
-                    data-glpi-form-editor-question-type="{{ question_type.getCategory().value }}"
+                    data-glpi-form-editor-question-type="{{ question_type.getCategory().getKey() }}"
                     value="{{ key }}"
                 >
                     {{ question_type.getName() }}

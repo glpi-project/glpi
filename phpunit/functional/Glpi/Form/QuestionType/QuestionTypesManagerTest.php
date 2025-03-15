@@ -36,8 +36,12 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use DbTestCase;
+use Glpi\Form\QuestionType\QuestionTypeCategoryInterface;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypeCategory;
+use GlpiPlugin\Tester\Form\QuestionTypeColor;
+use GlpiPlugin\Tester\Form\QuestionTypeRange;
+use GlpiPlugin\Tester\Form\TesterCategory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 final class QuestionTypesManagerTest extends DbTestCase
@@ -88,6 +92,9 @@ final class QuestionTypesManagerTest extends DbTestCase
             QuestionTypeCategory::CHECKBOX,
             QuestionTypeCategory::DROPDOWN,
             QuestionTypeCategory::ITEM,
+
+            // Plugins categories should be detected too
+            new TesterCategory(),
         ];
 
         // Manual array comparison, `isEqualTo`  doesn't seem to work properly
@@ -185,11 +192,19 @@ final class QuestionTypesManagerTest extends DbTestCase
                 new \Glpi\Form\QuestionType\QuestionTypeItemDropdown(),
             ]
         ];
+
+        yield [
+            new TesterCategory(),
+            [
+                new QuestionTypeRange(),
+                new QuestionTypeColor(),
+            ]
+        ];
     }
 
     #[DataProvider('getTypesForCategoryProvider')]
     public function testGetTypesForCategory(
-        QuestionTypeCategory $category,
+        QuestionTypeCategoryInterface $category,
         array $expected_types
     ): void {
         $manager = \Glpi\Form\QuestionType\QuestionTypesManager::getInstance();

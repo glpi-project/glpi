@@ -35,6 +35,7 @@
 namespace Glpi\Kernel\Listener;
 
 use DBConnection;
+use GLPI;
 use Glpi\Debug\Profiler;
 use Glpi\DependencyInjection\PluginContainer;
 use Glpi\Kernel\ListenersPriority;
