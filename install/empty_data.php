@@ -60,9 +60,6 @@ $empty_data_builder = new class
     const PROFILE_READ_ONLY    = 8;
 
     const USER_GLPI            = 2;
-    const USER_POST_ONLY       = 3;
-    const USER_TECH            = 4;
-    const USER_NORMAL          = 5;
     const USER_SYSTEM          = 6;
 
     /** @var int Value indicating no rights */
@@ -9050,27 +9047,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'entities_id' => '0',
                 'is_recursive' => '1',
                 'is_dynamic' => '0',
-            ], [
-                'id' => '3',
-                'users_id' => self::USER_POST_ONLY,
-                'profiles_id' => self::PROFILE_SELF_SERVICE,
-                'entities_id' => '0',
-                'is_recursive' => '1',
-                'is_dynamic' => '0',
-            ], [
-                'id' => '4',
-                'users_id' => self::USER_TECH,
-                'profiles_id' => self::PROFILE_TECHNICIAN,
-                'entities_id' => '0',
-                'is_recursive' => '1',
-                'is_dynamic' => '0',
-            ], [
-                'id' => '5',
-                'users_id' => self::USER_NORMAL,
-                'profiles_id' => self::PROFILE_OBSERVER,
-                'entities_id' => '0',
-                'is_recursive' => '1',
-                'is_dynamic' => '0',
             ],
         ];
 
@@ -9333,33 +9309,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'realname' => null,
                 'password' => password_hash('glpi', PASSWORD_DEFAULT),
                 'language' => null,
-                'list_limit' => '20',
-                'authtype' => '1',
-                'profiles_id' => 0,
-            ], [
-                'id' => self::USER_POST_ONLY,
-                'name' => 'post-only',
-                'realname' => null,
-                'password' => password_hash('postonly', PASSWORD_DEFAULT),
-                'language' => 'en_GB',
-                'list_limit' => '20',
-                'authtype' => '1',
-                'profiles_id' => 0,
-            ], [
-                'id' => self::USER_TECH,
-                'name' => 'tech',
-                'realname' => null,
-                'password' => password_hash('tech', PASSWORD_DEFAULT),
-                'language' => 'en_GB',
-                'list_limit' => '20',
-                'authtype' => '1',
-                'profiles_id' => 0,
-            ], [
-                'id' => self::USER_NORMAL,
-                'name' => 'normal',
-                'realname' => null,
-                'password' => password_hash('normal', PASSWORD_DEFAULT),
-                'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
                 'profiles_id' => 0,
