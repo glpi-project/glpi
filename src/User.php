@@ -3240,16 +3240,6 @@ HTML;
         ];
 
         $tab[] = [
-            'id'                 => '150',
-            'table'              => $this->getTable(),
-            'field'              => 'picture',
-            'name'               => _n('Picture', 'Pictures', 1),
-            'datatype'           => 'specific',
-            'nosearch'           => true,
-            'massiveaction'      => false
-        ];
-
-        $tab[] = [
             'id'                 => '28',
             'table'              => $this->getTable(),
             'field'              => 'sync_field',
