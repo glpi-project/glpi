@@ -1871,17 +1871,19 @@ TWIG, ['msg' => __('Last run list')]);
 
     /**
      * Call cron without time check
-     *
-     * @return boolean : true if launched
      **/
-    public static function callCronForce()
+    public static function callCronForce(bool $returnScript = false): bool | string
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (self::mustRunWebTasks()) {
             $path = $CFG_GLPI['root_doc'] . "/front/cron.php";
-            echo "<div style=\"background-image: url('$path');\"></div>";
+            $out = "<div style=\"background-image: url('$path');\"></div>";
+            if ($returnScript) {
+                return $out;
+            }
+            echo $out;
         }
 
         return true;
