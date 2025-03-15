@@ -281,7 +281,7 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         $item = $answer['itemtype']::getById($answer['items_id']);
         if (!$item) {

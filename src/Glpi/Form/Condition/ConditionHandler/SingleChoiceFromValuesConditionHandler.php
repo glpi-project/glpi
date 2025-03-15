@@ -34,13 +34,53 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\Form\Condition\ValueOperator;
 use Override;
 
-final class TimeConditionHandler extends AbstractDateTimeConditionHandler
+final class SingleChoiceFromValuesConditionHandler implements ConditionHandlerInterface
 {
+    public function __construct(
+        private array $values,
+    ) {
+    }
+
+    #[Override]
+    public function getSupportedValueOperators(): array
+    {
+        return [
+            ValueOperator::EQUALS,
+            ValueOperator::NOT_EQUALS,
+        ];
+    }
+
+    #[Override]
+    public function getTemplate(): string
+    {
+        return '/pages/admin/form/condition_handler_templates/dropdown.html.twig';
+    }
+
     #[Override]
     public function getTemplateParameters(): array
     {
-        return ['attributes' => ['type' => 'time']];
+        return ['values' => $this->values];
+    }
+
+    #[Override]
+    public function applyValueOperator(
+        mixed $a,
+        ValueOperator $operator,
+        mixed $b,
+    ): bool {
+        // Normalize values as strings.
+        $a = strtolower(strval($a));
+        $b = strtolower(strval($b));
+
+        return match ($operator) {
+            ValueOperator::EQUALS       => $a === $b,
+            ValueOperator::NOT_EQUALS   => $a !== $b,
+
+            // Unsupported operators
+            default => false,
+        };
     }
 }

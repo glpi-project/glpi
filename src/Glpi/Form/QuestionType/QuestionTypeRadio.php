@@ -35,10 +35,15 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\SingleChoiceFromValuesConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
+use InvalidArgumentException;
 use Override;
 
-final class QuestionTypeRadio extends AbstractQuestionTypeSelectable
+final class QuestionTypeRadio extends AbstractQuestionTypeSelectable implements UsedAsCriteriaInterface
 {
     #[Override]
     public function getInputType(?Question $question): string
@@ -50,5 +55,16 @@ final class QuestionTypeRadio extends AbstractQuestionTypeSelectable
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::RADIO;
+    }
+
+    #[Override]
+    public function getConditionHandler(
+        ?JsonFieldInterface $question_config
+    ): ConditionHandlerInterface {
+        if (!$question_config instanceof QuestionTypeSelectableExtraDataConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        return new SingleChoiceFromValuesConditionHandler($question_config->getOptions());
     }
 }

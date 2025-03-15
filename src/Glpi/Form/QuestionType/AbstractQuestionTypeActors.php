@@ -340,7 +340,7 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         $formatted_actors = [];
         foreach ($answer as $actor) {

@@ -34,7 +34,6 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\Form\Condition\InputTemplateKey;
 use Glpi\Form\Condition\ValueOperator;
 
 interface ConditionHandlerInterface
@@ -42,7 +41,23 @@ interface ConditionHandlerInterface
     /** @return ValueOperator[] */
     public function getSupportedValueOperators(): array;
 
-    public function getInputTemplateKey(): InputTemplateKey;
+    /**
+     * Path to a valid twig template.
+     *
+     * The template must be able to display the needed input to represent this
+     * condition value, using the following parameters:
+     * - input_value: the value of the input that will be displayed
+     * - input_name: the name that must be applied to the input
+     * - input_label: the label of the input
+     *
+     * It will also receive any parameters returned by getTemplateParameters().
+     *
+     * A specific `data-glpi-conditions-editor-value` attribute must be added to
+     * the input to allow the editor to target this input when needed.
+     */
+    public function getTemplate(): string;
+
+    public function getTemplateParameters(): array;
 
     public function applyValueOperator(
         mixed $a,

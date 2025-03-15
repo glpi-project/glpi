@@ -34,26 +34,61 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\Form\Condition\InputTemplateKey;
-use Glpi\Urgency;
+use Glpi\Form\Condition\ValueOperator;
 use Override;
 
-/**
- * Since an urgency is represented by a number, we can reuse the
- * NumberConditionHandler here with a different input template to properly
- * display the urgency dropdown.
- */
-final class UrgencyConditionHandler extends NumberConditionHandler
+final class MultipleChoiceFromValuesConditionHandler implements ConditionHandlerInterface
 {
+    public function __construct(
+        private array $values,
+    ) {
+    }
+
+    #[Override]
+    public function getSupportedValueOperators(): array
+    {
+        return [
+            ValueOperator::EQUALS,
+            ValueOperator::NOT_EQUALS,
+            ValueOperator::CONTAINS,
+            ValueOperator::NOT_CONTAINS,
+        ];
+    }
+
     #[Override]
     public function getTemplate(): string
     {
-        return '/pages/admin/form/condition_handler_templates/dropdown.html.twig';
+        return '/pages/admin/form/condition_handler_templates/dropdown_multiple.html.twig';
     }
 
     #[Override]
     public function getTemplateParameters(): array
     {
-        return ['values' => Urgency::getUrgencyValuesForDropdown()];
+        return [
+            'values' => $this->values,
+            'multiple' => true,
+        ];
+    }
+
+    #[Override]
+    public function applyValueOperator(
+        mixed $a,
+        ValueOperator $operator,
+        mixed $b,
+    ): bool {
+        // Values must be arrays
+        if (!is_array($a) || !is_array($b)) {
+            return false;
+        }
+
+        return match ($operator) {
+            ValueOperator::EQUALS       => empty(array_diff($b, $a)),
+            ValueOperator::NOT_EQUALS   => !empty(array_diff($b, $a)),
+            ValueOperator::CONTAINS     => empty(array_diff($a, $b)),
+            ValueOperator::NOT_CONTAINS => !empty(array_diff($a, $b)),
+
+            // Unsupported operators
+            default => false,
+        };
     }
 }
