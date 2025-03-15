@@ -110,6 +110,10 @@ class Log extends CommonDBTM
                     'items_id' => $item->getID()
                 ]
             );
+
+            if ($item instanceof User) {
+                $nb += $item->countComputersForUser();
+            }
         }
         return self::createTabEntry(self::getTypeName(1), $nb, $item::getType());
     }
@@ -322,6 +326,11 @@ class Log extends CommonDBTM
        // Total Number of events
         $total_number    = countElementsInTable("glpi_logs", ['items_id' => $items_id, 'itemtype' => $itemtype ]);
         $filtered_number = countElementsInTable("glpi_logs", ['items_id' => $items_id, 'itemtype' => $itemtype ] + $sql_filters);
+
+        if ($item instanceof User) {
+            $total_number += $item->countComputersForUser();
+            $filtered_number += $item->countComputersForUser($sql_filters);
+        }
 
         TemplateRenderer::getInstance()->display('components/logs.html.twig', [
             'total_number'      => $total_number,
@@ -889,6 +898,31 @@ class Log extends CommonDBTM
             }
             $changes[] = $tmp;
         }
+
+        if ($item instanceof User) {
+            $computer_history = $item->getComputersHistoryForUser($sqlfilters);
+
+            $changes = array_merge($changes, $computer_history);
+
+            usort(
+                $changes,
+                function ($a, $b) {
+                    $date_a = DateTime::createFromFormat('Y-m-d H:i:s', $a['date_mod']);
+                    $date_b = DateTime::createFromFormat('Y-m-d H:i:s', $b['date_mod']);
+
+                    if (!$date_a || !$date_b) {
+                        return 0;
+                    }
+
+                    return $date_b <=> $date_a;
+                }
+            );
+
+            if ($limit > 0) {
+                $changes = array_slice($changes, $start, $limit);
+            }
+        }
+
         return $changes;
     }
 
@@ -927,6 +961,10 @@ class Log extends CommonDBTM
                 continue;
             }
             $values[$data['user_name']] = $data['user_name'];
+        }
+
+        if ($item instanceof User) {
+            $values = array_merge($values, $item->getDistinctUserNamesValuesInItemLog());
         }
 
         asort($values, SORT_NATURAL | SORT_FLAG_CASE);
@@ -1090,6 +1128,10 @@ class Log extends CommonDBTM
             if (null !== $key && null !== $value) {
                 $values[$key] = $value;
             }
+        }
+
+        if ($item instanceof User) {
+            $values = array_merge($values, $item->getDistinctAffectedFieldValuesInItemLog());
         }
 
         uasort(

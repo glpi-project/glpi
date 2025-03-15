@@ -6664,4 +6664,243 @@ HTML;
 
         return $input;
     }
+
+    /**
+     * Count the number of computers used by a user
+     *
+     * @param array $sql_filters SQL filters to apply
+     *
+     * @return integer
+     */
+    public function countComputersForUser(array $sql_filters = [])
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $user_id = $this->getField('id');
+        $user_name = $this->getField('name');
+
+        $query = [
+            'COUNT'      => 'cpt',
+            'FROM'       => 'glpi_logs',
+            'WHERE'      => [
+                'itemtype'         => 'Computer',
+                'OR' => [
+                    'glpi_logs.old_value' => $user_name . ' (' . $user_id . ')',
+                    'glpi_logs.new_value' => $user_name . ' (' . $user_id . ')',
+                ]
+            ]
+        ];
+
+        $query['WHERE'] = array_merge($query['WHERE'], $sql_filters);
+
+        $iterator = $DB->request($query);
+        return $iterator->current()['cpt'];
+    }
+
+    /**
+     * Get the history of computers used by a user
+     *
+     * @param array $sql_filters SQL filters to apply
+     *
+     * @return array Array of history entries
+     */
+    public function getComputersHistoryForUser(array $sql_filters = []): array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $user_id = $this->getField('id');
+        $user_name = $this->getField('name');
+        $query = [
+            'SELECT'    => [
+                'glpi_logs.id as log_id',
+                'glpi_logs.date_mod',
+                'glpi_logs.itemtype',
+                'glpi_logs.items_id',
+                'glpi_logs.id_search_option',
+                'glpi_logs.user_name',
+                'glpi_logs.linked_action',
+                'glpi_logs.old_value',
+                'glpi_logs.new_value',
+                'glpi_computers.name',
+                'glpi_computers.id as computer_id'
+            ],
+            'FROM'      => 'glpi_logs',
+            'LEFT JOIN' => [
+                'glpi_computers'   => [
+                    'ON' => [
+                        'glpi_logs'       => 'items_id',
+                        'glpi_computers'  => 'id', [
+                            'AND' => [
+                                'glpi_logs.itemtype' => 'Computer'
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'glpi_logs.itemtype'      => 'Computer',
+                'OR' => [
+                    'glpi_logs.old_value' => $user_name . ' (' . $user_id . ')',
+                    'glpi_logs.new_value' => $user_name . ' (' . $user_id . ')',
+                ]
+            ],
+            'ORDER'     => 'glpi_logs.date_mod DESC'
+        ];
+
+        $query['WHERE'] = array_merge($query['WHERE'], $sql_filters);
+
+        $iterator = $DB->request($query);
+
+        $history = [];
+
+        foreach ($iterator as $data) {
+            $id_search_option = $data['id_search_option'];
+            $item = new $data['itemtype']();
+            $item->getFromDB($data['items_id']);
+            $search_opt = $item->rawSearchOptions();
+
+            $search_option_name = '';
+            foreach ($search_opt as $option) {
+                if ($option['id'] == $id_search_option) {
+                    $search_option_name = $option['name'];
+                    break;
+                }
+            }
+
+            $cansee = $item->can($data["computer_id"], READ);
+            $computer_link   = $data[$item->getNameField()];
+            if ($cansee) {
+                $link_item = $item::getFormURLWithID($data['computer_id']);
+                if ($_SESSION["glpiis_ids_visible"] || empty($computer_link)) {
+                    $computer_link = sprintf(__('%1$s (%2$s)'), $computer_link, $data["id"]);
+                }
+                $computer_link = "<a href='" . $link_item . "'>" . $computer_link . "</a>";
+            }
+
+            $entry = [
+                'display_history' => true,
+                'id'              => $data['log_id'],
+                'date_mod'        => $data['date_mod'],
+                'user_name'       => $data['user_name'],
+                'field'           => $search_option_name,
+                'change'          => '',
+                'datatype'        => ''
+            ];
+
+            $entry['change'] = sprintf(
+                __s('%1$s - Change %2$s to %3$s'),
+                $computer_link,
+                '<del>' . htmlescape($data['old_value']) . '</del>',
+                '<ins>' . htmlescape($data['new_value']) . '</ins>'
+            );
+
+            $history[] = $entry;
+        }
+
+        return $history;
+    }
+
+    public function getDistinctUserNamesValuesInItemLog()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $user_id = $this->getField('id');
+        $user_name = $this->getField('name');
+
+        $iterator = $DB->request([
+            'SELECT'          => 'user_name',
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_logs',
+            'LEFT JOIN' => [
+                'glpi_computers'   => [
+                    'ON' => [
+                        'glpi_logs'       => 'items_id',
+                        'glpi_computers'  => 'id', [
+                            'AND' => [
+                                'glpi_logs.itemtype' => 'Computer'
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'glpi_logs.itemtype'      => 'Computer',
+                'OR' => [
+                    'glpi_logs.old_value' => $user_name . ' (' . $user_id . ')',
+                    'glpi_logs.new_value' => $user_name . ' (' . $user_id . ')',
+                ]
+            ],
+        ]);
+
+        $values = [];
+        foreach ($iterator as $data) {
+            if (empty($data['user_name'])) {
+                continue;
+            }
+            $values[$data['user_name']] = $data['user_name'];
+        }
+
+        return $values;
+    }
+
+    public function getDistinctAffectedFieldValuesInItemLog()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $user_id = $this->getField('id');
+        $user_name = $this->getField('name');
+
+        $affected_fields = ['id_search_option'];
+
+        $iterator = $DB->request([
+            'SELECT'  => $affected_fields,
+            'FROM'    => 'glpi_logs',
+            'LEFT JOIN' => [
+                'glpi_computers'   => [
+                    'ON' => [
+                        'glpi_logs'       => 'items_id',
+                        'glpi_computers'  => 'id', [
+                            'AND' => [
+                                'glpi_logs.itemtype' => 'Computer'
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'glpi_logs.itemtype'      => 'Computer',
+                'OR' => [
+                    'glpi_logs.old_value' => $user_name . ' (' . $user_id . ')',
+                    'glpi_logs.new_value' => $user_name . ' (' . $user_id . ')',
+                ]
+            ],
+            'GROUPBY' => $affected_fields,
+        ]);
+
+        $values = [];
+        foreach ($iterator as $data) {
+            $key = null;
+            $value = null;
+
+            $item = new Computer();
+            $search_opt = $item->rawSearchOptions();
+            foreach ($search_opt as $search_opt_val) {
+                if ($search_opt_val['id'] == $data["id_search_option"]) {
+                    $key = 'id_search_option::' . $data['id_search_option'] . ';';
+                    $value = $search_opt_val["name"];
+                    break;
+                }
+            }
+
+            if (null !== $key && null !== $value) {
+                $values[$key] = $value;
+            }
+        }
+
+        return $values;
+    }
 }
