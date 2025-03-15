@@ -54,9 +54,20 @@ class NumberConditionHandler implements ConditionHandlerInterface
     }
 
     #[Override]
-    public function getInputTemplateKey(): InputTemplateKey
+    public function getTemplate(): string
     {
-        return InputTemplateKey::NUMBER;
+        return '/pages/admin/form/condition_handler_templates/input.html.twig';
+    }
+
+    #[Override]
+    public function getTemplateParameters(): array
+    {
+        return [
+            'attributes' => [
+                'type' => 'number',
+                'step' => 'any',
+            ]
+        ];
     }
 
     #[Override]
