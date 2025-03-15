@@ -80,7 +80,7 @@ final class ShowAddTileFormController extends AbstractController
         }
 
         // Render form
-        return $this->render('pages/admin/helpdesk_home_config_add_tile_form.html.twig', [
+        return $this->render('pages/admin/profile/helpdesk_home/add_tile_form.html.twig', [
             'possible_tiles' => $possible_tiles,
             'possible_tiles_dropdown_values' => $possible_tiles_dropdown_values,
         ]);
