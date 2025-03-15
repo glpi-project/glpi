@@ -81,6 +81,8 @@ class Entity extends CommonTreeDropdown
     public const ANONYMIZE_USE_NICKNAME_USER   = 4;
     /** @var int Replace the group's name with a generic name */
     public const ANONYMIZE_USE_GENERIC_GROUP   = 5;
+    /** @var int Maximum number of days that can be configured for survey validity */
+    public const MAX_INQUEST_DURATION_DAYS = 180;
 
     // Array of "right required to update" => array of fields allowed
     // Missing field here couldn't be update (no right)

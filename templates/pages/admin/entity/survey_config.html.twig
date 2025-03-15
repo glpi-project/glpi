@@ -57,7 +57,7 @@
 {{ fields.dropdownNumberField('inquest_duration' ~ config_suffix, inquest_duration, __('Duration of survey'), {
     full_width: true,
     min: 1,
-    max: 100,
+    max: constant('Entity::MAX_INQUEST_DURATION_DAYS'),
     unit: 'day',
     toadd: {
         0: __('Unspecified')
