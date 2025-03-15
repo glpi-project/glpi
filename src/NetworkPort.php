@@ -1118,6 +1118,7 @@ class NetworkPort extends CommonDBChild
                                     Vlan::getTable() . '.name',
                                     NetworkPort_Vlan::getTable() . '.tagged',
                                     Vlan::getTable() . '.tag',
+                                    NetworkPort_Vlan::getTable() . '.vlans_id'
                                 ],
                                 'FROM'   => NetworkPort_Vlan::getTable(),
                                 'INNER JOIN'   => [
@@ -1138,13 +1139,25 @@ class NetworkPort extends CommonDBChild
                                  );
                             } else {
                                 foreach ($vlans as $row) {
+                                        $output .= '<a href="/front/vlan.form.php?id=' . $row['vlans_id'] . '">';
                                         $output .= $row['name'];
                                     if (!empty($row['tag'])) {
                                         $output .= ' [' . $row['tag'] . ']';
                                     }
                                         $output .= ($row['tagged'] == 1 ? 'T' : 'U');
+                                        $output .= '</a>';
                                     if ($canedit) {
-                                        $output .= "<a title='" . __('Delete') . "' href='" . NetworkPort::getFormURLWithID($row['id']) . "&unassign_vlan=unassigned'> <i class='fas fa-trash'></i> <span class='sr-only'>" . __('Delete') . "</span></a>";
+                                        $output .= '<form method="post" action="/front/massiveaction.php" class="d-inline-flex">';
+                                        $output .= '<input type="hidden" name="massiveaction" value="MassiveAction:purge">';
+                                        $output .= '<input type="hidden" name="action" value="purge">';
+                                        $output .= '<input type="hidden" name="processor" value="MassiveAction">';
+                                        $output .= '<input type="hidden" name="is_delete" value="0">';
+                                        $output .= '<input type="hidden" name="initial_items[NetworkPort_Vlan][' . $row['id'] . ']" value="' . $row['id'] . '">';
+                                        $output .= '<input type="hidden" name="items[NetworkPort_Vlan][' . $row['id'] . ']" value="' . $row['id'] . '">';
+                                        $output .= '<input type="hidden" name="action_name" value="' . __('Delete permanently the relation with selected elements') . '">';
+                                        $output .= '<input type="hidden" name="_glpi_csrf_token" value="' . Session::getNewCSRFToken() . '">';
+                                        $output .= '<button type="submit" title="' . __('Delete') . '" class="btn-link fas fa-trash" onclick="this.disabled=true;this.form.submit();"></button>';
+                                        $output .= '</form>';
                                     }
                                        $output .= '<br/>';
                                 }
