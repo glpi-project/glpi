@@ -149,6 +149,12 @@ describe("Custom Assets - Custom Fields", () => {
                 if (options.has('mandatory')) {
                     cy.findByLabelText('Mandatory').check();
                 }
+                if (options.has('enable_richtext')) {
+                    cy.findByLabelText('Rich text').check();
+                }
+                if (options.has('enable_images')) {
+                    cy.findByLabelText('Allow images').check();
+                }
 
                 cy.findByRole('button', {name: 'Add'}).click();
             });
@@ -175,6 +181,7 @@ describe("Custom Assets - Custom Fields", () => {
         createField('Test MultiDropdown', 'Dropdown', new Map([['item_type', 'Monitor'], ['multiple_values', true]]));
         createField('Test URL', 'URL');
         createField('Test YesNo', 'Yes/No');
+        createField('Test RichText', 'Text', new Map([['enable_richtext', true], ['enable_images', true]]));
 
         // Intercept form submission to check the form display values sent
         cy.intercept('POST', '/front/asset/assetdefinition.form.php').as('saveFieldsDisplay');
