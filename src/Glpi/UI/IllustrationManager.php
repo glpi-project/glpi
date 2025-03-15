@@ -41,6 +41,7 @@ final class IllustrationManager
 {
     private string $icons_definition_file;
     private string $icons_sprites_path;
+    private string $scenes_gradient_sprites_path;
     private ?array $icons_definitions = null;
 
     public const DEFAULT_ILLUSTRATION = "request-service";
@@ -48,6 +49,7 @@ final class IllustrationManager
     public function __construct(
         ?string $icons_definition_file = null,
         ?string $icons_sprites_path = null,
+        ?string $scenes_gradient_sprites_path = null,
     ) {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -55,10 +57,15 @@ final class IllustrationManager
         $this->icons_definition_file = $icons_definition_file ?? GLPI_ROOT
             . '/public/lib/glpi-project/illustrations/icons.json'
         ;
-        $this->icons_sprites_path = $icons_sprites_path ?? '/lib/glpi-project/illustrations/glpi-illustrations-icons.svg'
+        $this->icons_sprites_path = $icons_sprites_path ??
+            '/lib/glpi-project/illustrations/glpi-illustrations-icons.svg'
+        ;
+        $this->scenes_gradient_sprites_path = $scenes_gradient_sprites_path ??
+            '/lib/glpi-project/illustrations/glpi-illustrations-scenes-gradient.svg'
         ;
 
         $this->checkIconFile($this->icons_definition_file);
+        $this->checkIconFile(GLPI_ROOT . "/public/$this->scenes_gradient_sprites_path");
         $this->checkIconFile(GLPI_ROOT . "/public/$this->icons_sprites_path");
     }
 
@@ -74,6 +81,19 @@ final class IllustrationManager
             'icon_id'   => $icon_id,
             'size'      => $this->computeSize($size),
             'title'     => $icons[$icon_id]['title'] ?? "",
+        ]);
+    }
+
+    /**
+     * @param int|null $size Height and width (px). Will be set to 100% if null.
+     */
+    public function renderScene(string $icon_id, ?int $size = null): string
+    {
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render('components/illustration/icon.svg.twig', [
+            'file_path' => $this->scenes_gradient_sprites_path,
+            'icon_id'   => $icon_id,
+            'size'      => $this->computeSize($size),
         ]);
     }
 
