@@ -303,6 +303,13 @@
     margin-bottom: 1rem !important;
 }
 
+// Hide question badge in section when section is not collapsed
+[data-glpi-form-editor-section]:not(.section-collapsed) {
+    [data-glpi-form-editor-section-block-badge] {
+        display: none;
+    }
+}
+
 [data-glpi-form-editor-question] {
     &[data-glpi-form-editor-active-question] {
         .dropdown-border {
