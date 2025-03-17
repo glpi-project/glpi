@@ -35,6 +35,7 @@
 namespace Glpi\Kernel\Listener;
 
 use DBConnection;
+use GLPI;
 use Glpi\Debug\Profiler;
 use Glpi\DependencyInjection\PluginContainer;
 use Glpi\Kernel\ListenersPriority;
@@ -63,6 +64,10 @@ final readonly class InitializePlugins implements EventSubscriberInterface
             return;
         }
 
+        if (GLPI_ENVIRONMENT_TYPE === GLPI::ENV_TESTING) {
+            $this->setupTesterPlugin();
+        }
+
         Profiler::getInstance()->start('InitializePlugins::execute', Profiler::CATEGORY_BOOT);
 
         $plugin = new Plugin();
@@ -71,5 +76,17 @@ final readonly class InitializePlugins implements EventSubscriberInterface
         $this->pluginContainer->initializeContainer();
 
         Profiler::getInstance()->stop('InitializePlugins::execute');
+    }
+
+    private function setupTesterPlugin(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $DB->updateOrInsert(table: Plugin::getTable(), params: [
+            'directory' => 'tester',
+            'name'      => 'tester',
+            'state'     => 1,
+            'version'   => '1.0.0',
+        ], where: ['directory' => 'tester']);
     }
 }

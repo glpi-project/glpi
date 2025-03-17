@@ -654,13 +654,6 @@ function loadDataset()
                 'itemtype'                 => 'Profile',
                 'items_id'                 => 3,
             ]
-        ], 'Plugin' => [
-            [
-                'directory'    => 'tester',
-                'name'         => 'tester',
-                'version'      => '1.0.0',
-                'state'        => 1,
-            ]
         ], 'Change' => [
             [
                 'name'           => '_change01',
