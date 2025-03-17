@@ -42,10 +42,9 @@ abstract class AbstractDefinitionManager
 {
     /**
      * Definitions cache.
-     * @var array
-     * @phpstan-var array<class-string<ConcreteDefinition>, array<int, ConcreteDefinition>>
+     * @var array<int, mixed>
      */
-    private array $definitions_data = [];
+    private ?array $definitions_data = null;
 
     abstract public static function getInstance(): self;
 
@@ -67,7 +66,13 @@ abstract class AbstractDefinitionManager
      */
     final public function registerAutoload(): void
     {
-        spl_autoload_register([$this, 'autoloadClass']);
+        spl_autoload_register(
+            function ($classname) {
+                // Use `static::getInstance()` to be sure that the autoloader will use the current instance in testing context
+                // instead of the instance that was the current one during the GLPI boot.
+                static::getInstance()->autoloadClass($classname);
+            }
+        );
     }
 
     /**
@@ -128,8 +133,7 @@ abstract class AbstractDefinitionManager
      */
     final public function clearDefinitionsCache(): void
     {
-        $definition_class = static::getDefinitionClass();
-        unset($this->definitions_data[$definition_class]);
+        $this->definitions_data = null;
     }
 
     /**
@@ -142,12 +146,13 @@ abstract class AbstractDefinitionManager
     final public function getDefinitions(bool $only_active = false): array
     {
         $definition_class = static::getDefinitionClass();
-        if (!array_key_exists($definition_class, $this->definitions_data)) {
-            $this->definitions_data[$definition_class] = getAllDataFromTable($definition_class::getTable());
+
+        if ($this->definitions_data === null) {
+            $this->definitions_data = getAllDataFromTable($definition_class::getTable());
         }
 
         $definitions = [];
-        foreach ($this->definitions_data[$definition_class] as $definition_data) {
+        foreach ($this->definitions_data as $definition_data) {
             if ($only_active && (bool) $definition_data['is_active'] !== true) {
                 continue;
             }
