@@ -145,11 +145,16 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 foreach ($ids as $id) {
                     $saved_search = new SavedSearch();
                     if ($saved_search->getFromDB($id)) {
-                        if ($saved_search->unmarkDefault($id)) {
-                            $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_OK);
+                        if ($saved_search->can($id, UPDATE)) {
+                            if ($saved_search->unmarkDefaultForAllUsers($id)) {
+                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($saved_search->getErrorMessage(ERROR_ON_ACTION));
+                            }
                         } else {
-                            $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
-                            $ma->addMessage($saved_search->getErrorMessage(ERROR_ON_ACTION));
+                            $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($saved_search->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
                          $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
@@ -823,7 +828,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @param integer $ID ID of the saved search
      *
-     * @return bool
+     * @return void
      **/
     public function unmarkDefault($ID)
     {
@@ -841,6 +846,41 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 'FROM'   => 'glpi_savedsearches_users',
                 'WHERE'  => [
                     'users_id'           => Session::getLoginUserID(),
+                    'savedsearches_id'   => $ID,
+                    'itemtype'           => $this->fields['itemtype']
+                ]
+            ]);
+
+            if ($result = $iterator->current()) {
+                // already exists delete it
+                $deleteID = $result['id'];
+                $dd->delete(['id' => $deleteID]);
+            }
+        }
+    }
+
+    /**
+     * Unmark savedsearch as default view for the current user
+     *
+     * @param integer $ID ID of the saved search
+     *
+     * @return bool
+     **/
+    public function unmarkDefaultForAllUsers($ID)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (
+            $this->getFromDB($ID)
+            && ($this->fields['type'] != self::URI)
+        ) {
+            $dd = new SavedSearch_User();
+           // Is default view for this itemtype already exists ?
+            $iterator = $DB->request([
+                'SELECT' => 'id',
+                'FROM'   => 'glpi_savedsearches_users',
+                'WHERE'  => [
                     'savedsearches_id'   => $ID,
                     'itemtype'           => $this->fields['itemtype']
                 ]
