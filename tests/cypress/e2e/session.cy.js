@@ -31,7 +31,7 @@
  */
 
 describe("Session", () => {
-    it('can login', () => {
+    it('[already migrated] can login', () => {
         cy.blockGLPIDashboards();
 
         // Go to login page
@@ -60,7 +60,7 @@ describe("Session", () => {
         });
     });
 
-    it('can logout', () => {
+    it('[already migrated] can logout', () => {
         // Login and go to any page
         cy.login();
         cy.visit('/front/computer.form.php');
@@ -74,7 +74,7 @@ describe("Session", () => {
         cy.findByText('Your session has expired. Please log in again.').should('exist');
     });
 
-    it("redirect to requested page after login", () => {
+    it("[already migrated] redirect to requested page after login", () => {
         cy.visit('/front/ticket.form.php', {
             failOnStatusCode: false
         });
@@ -89,7 +89,7 @@ describe("Session", () => {
         cy.url().should('contains', "/front/ticket.form.php");
     });
 
-    it("can change profile", () => {
+    it("[already migrated] can change profile", () => {
         // Login and go to any page
         cy.login();
         cy.visit('/front/computer.form.php');
