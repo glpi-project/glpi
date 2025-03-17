@@ -213,11 +213,11 @@ final class FormTranslation extends ItemTranslation
             $translationsHandlers,
             function ($handler) use (&$translatedHandlers, &$totalHandlers) {
                 if (
-                    !empty($this->getTranslation(
+                    !empty($this->getForItemKeyAndLanguage(
                         $handler->getParentItem(),
                         $handler->getKey(),
                         $this->fields['language']
-                    )?->getOneTranslation())
+                    )?->getTranslation())
                 ) {
                     $translatedHandlers++;
                 }
@@ -243,11 +243,11 @@ final class FormTranslation extends ItemTranslation
             $translationsHandlers,
             function ($handler) use (&$translatedHandlers, &$totalHandlers) {
                 if (
-                    !empty($this->getTranslation(
+                    !empty($this->getForItemKeyAndLanguage(
                         $handler->getParentItem(),
                         $handler->getKey(),
                         $this->fields['language']
-                    )?->getOneTranslation())
+                    )?->getTranslation())
                 ) {
                     $translatedHandlers++;
                 }
@@ -311,7 +311,7 @@ final class FormTranslation extends ItemTranslation
 
     public static function getLocalizedTranslationForKey(CommonDBTM $item, string $key): ?string
     {
-        $translation = static::getTranslation($item, $key, Session::getLanguage())?->getOneTranslation();
+        $translation = static::getForItemKeyAndLanguage($item, $key, Session::getLanguage())?->getTranslation();
 
         if (!empty($translation)) {
             return $translation;
