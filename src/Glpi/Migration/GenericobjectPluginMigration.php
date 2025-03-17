@@ -613,7 +613,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
             foreach ($dropdown_iterator as $dropdown_data) {
                 $reconciliation_criteria = [
                     'name' => $dropdown_data['name'],
-                ];
+                ] + $dropdown_class::getSystemSQLCriteria();
 
                 // Check if the dropdown is outdated before trying to import it.
                 // If it is outdated, we must not try to handle its child items (e.g. translations) import.
@@ -739,7 +739,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         'name'          => $asset_data['name'],
                         'entities_id'   => $asset_data['entities_id'],
                         'date_creation' => $asset_data['date_creation'],
-                    ];
+                    ] + $asset_class::getSystemSQLCriteria();
 
                     // Check if the asset is outdated before trying to import it.
                     // If it is outdated, we must not try to handle its child items (e.g. groups and domains relations) import.
