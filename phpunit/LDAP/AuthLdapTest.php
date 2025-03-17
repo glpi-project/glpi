@@ -2175,6 +2175,26 @@ class AuthLDAPTest extends DbTestCase
             'users_id' => $users_id,
         ]);
         $this->assertCount(1, $gus);
+
+        $this->logOut();
+
+        $criteria->update([
+            'rules_id'  => $rules_id,
+            'criteria'  => 'employeenumber',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 7,
+        ]);
+
+        $this->login('brazil6', 'password', false);
+        $users_id = \User::getIdByName('brazil6');
+        $this->assertGreaterThan(0, $users_id);
+
+        $gu = new Group_User();
+        $gus = $gu->find([
+            'groups_id' => $group_id,
+            'users_id' => $users_id,
+        ]);
+        $this->assertCount(0, $gus);
     }
 
     /**
