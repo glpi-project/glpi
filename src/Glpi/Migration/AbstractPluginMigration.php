@@ -38,8 +38,9 @@ use CommonDBConnexity;
 use CommonDBTM;
 use DBmysql;
 use Glpi\Progress\AbstractProgressIndicator;
-use Psr\Log\LoggerAwareTrait;
 use Glpi\Message\MessageType;
+use Glpi\RichText\RichText;
+use Psr\Log\LoggerAwareTrait;
 
 abstract class AbstractPluginMigration
 {
@@ -546,7 +547,7 @@ abstract class AbstractPluginMigration
                 default => MessageType::Notice,
             };
             foreach ($messages as $message) {
-                $this->result->addMessage($type, $message);
+                $this->result->addMessage($type, RichText::getTextFromHtml($message));
             }
         }
 
