@@ -2029,6 +2029,23 @@ export class GlpiFormEditorController
     #collaspeSection(section) {
         // Simple class toggle, hiding the correct parts is handled by CSS rules
         section.toggleClass("section-collapsed");
+
+        // Update the block count
+        this.#updateSectionBlockCount(section);
+    }
+
+    /**
+     * Update the number of blocks for the given section
+     * @param {jQuery} section
+     */
+    #updateSectionBlockCount(section) {
+        const blocks = section
+            .find("[data-glpi-form-editor-block]")
+            .length;
+
+        // Update the badge with the new block count
+        const badge = section.find('span[data-glpi-form-editor-section-block-badge]');
+        badge.html(badge.html().trim().replace(/^\d+\s/, `${blocks} `));
     }
 
     /**

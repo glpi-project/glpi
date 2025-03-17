@@ -98,6 +98,14 @@
                         'type': "Glpi\\Form\\Section",
                     }, with_context = false) }}
 
+                    {# Question count #}
+                    <span
+                        class="badge bg-secondary-lt"
+                        data-glpi-form-editor-section-block-badge
+                    >
+                        {{ _n('%d element', '%d elements', section.getBlocks()|length)|format(section.getBlocks()|length) }}
+                    </span>
+
                     {# Collapse section #}
                     <i
                         role="button"
