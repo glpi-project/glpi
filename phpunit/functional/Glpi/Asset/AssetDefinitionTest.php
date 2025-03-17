@@ -349,6 +349,35 @@ class AssetDefinitionTest extends DbTestCase
             ],
         ];
 
+        // System name can contain an underscore
+        yield [
+            'input'    => [
+                'system_name' => 'Custom_Item',
+            ],
+            'output'   => [
+                'system_name'  => 'Custom_Item',
+                'label'        => 'Custom_Item',
+                'capacities'   => '[]',
+                'profiles'     => '[]',
+                'translations' => '[]',
+                'fields_display' => '[]',
+            ],
+            'messages' => [],
+        ];
+
+        // System name must not end with an underscore
+        yield [
+            'input'    => [
+                'system_name' => 'CustomItem_',
+            ],
+            'output'   => false,
+            'messages' => [
+                ERROR => [
+                    'The following field has an incorrect value: &quot;System name&quot;.',
+                ],
+            ],
+        ];
+
         // System name must not end with `Model` suffix
         yield [
             'input'    => [

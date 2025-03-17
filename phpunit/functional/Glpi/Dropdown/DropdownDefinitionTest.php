@@ -294,6 +294,33 @@ class DropdownDefinitionTest extends DbTestCase
             ],
         ];
 
+        // System name can contain an underscore
+        yield [
+            'input'    => [
+                'system_name' => 'Custom_Dropdown',
+            ],
+            'output'   => [
+                'system_name'  => 'Custom_Dropdown',
+                'label'        => 'Custom_Dropdown',
+                'profiles'     => '[]',
+                'translations' => '[]',
+            ],
+            'messages' => [],
+        ];
+
+        // System name must not end with an underscore
+        yield [
+            'input'    => [
+                'system_name' => 'CustomDropdown_',
+            ],
+            'output'   => false,
+            'messages' => [
+                ERROR => [
+                    'The following field has an incorrect value: &quot;System name&quot;.',
+                ],
+            ],
+        ];
+
         // System name must not end with `Model` suffix
         yield [
             'input'    => [
