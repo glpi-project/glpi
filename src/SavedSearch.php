@@ -860,7 +860,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
     /**
-     * Unmark savedsearch as default view for the current user
+     * Unmark savedsearch as default view for all users
      *
      * @param integer $ID ID of the saved search
      *
