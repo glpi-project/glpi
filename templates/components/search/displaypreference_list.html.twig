@@ -34,33 +34,49 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% if preferences|length > 0 %}
-    <div class="my-3">
+    <div class="m-3">
         {% if massiveactionparams['specific_actions']|length > 0 %}
-        <form id="massDisplayPreference{{ rand }}" method="get" action="{{ path('front/massiveaction.php') }}"
-              data-search-itemtype="DisplayPreference" data-submit-once>
-            {% do call('Html::showMassiveActions', [massiveactionparams]) %}
-            {% endif %}
-            {{ inputs.hidden('users_id', users_id, {
-                'data-glpicore-ma-tags': 'common'
-            }) }}
-            <ul class="list-group display-prefs-list my-2">
-                {% for pref in preferences %}
-                    {% set name = pref['itemtype']|itemtype_name(1)|default(pref['itemtype']) %}
-                    <li class="list-group-item">
-                        {% if massiveactionparams['specific_actions']|length > 0 %}
-                            <span class="me-2">
-                        {% do call('Html::showMassiveActionCheckBox', ['DisplayPreference', pref['itemtype']]) %}
-                     </span>
-                        {% endif %}
-                        <button type="button" class="btn btn-link p-0 btn-itemtype-pref" data-itemtype="{{ pref['itemtype'] }}">{{ name }}</button>
-                    </li>
-                {% endfor %}
-            </ul>
-            {% if massiveactionparams['specific_actions']|length > 0 %}
-            {% do call('Html::showMassiveActions', [massiveactionparams|merge({
-                'ontop': false
-            })]) %}
-        </form>
+            <form id="massDisplayPreference{{ rand }}" method="get" action="{{ path('front/massiveaction.php') }}"
+                data-search-itemtype="DisplayPreference" data-submit-once>
+                <div class="d-flex ms-4">
+                    {% do call('Html::showMassiveActions', [massiveactionparams]) %}
+        {% endif %}
+
+                    <a role="button" class="btn btn-sm btn-ghost-secondary" id="select-all-itemtypes">
+                        <i class="ti ti-copy-check"></i>
+                        <span>{{ __('(Un)select all') }}</span>
+                    </a>
+
+                    <input type="text" placeholder="{{ _x('button', 'Search') }}" class="ms-auto" id="search-itemtype" />
+                </div>
+                {{ inputs.hidden('users_id', users_id, {
+                    'data-glpicore-ma-tags': 'common'
+                }) }}
+                <div class="display-prefs-list row g-2 mt-1">
+                    {% for pref in preferences %}
+                        {% set name = pref['itemtype']|itemtype_name(1)|default(pref['itemtype']) %}
+                        <div class="col-3">
+                            <div class="bg-gray-300 border border-gray-200 p-3 rounded-2">
+                                {% if massiveactionparams['specific_actions']|length > 0 %}
+                                    <span class="me-2">
+                                        {% do call('Html::showMassiveActionCheckBox', ['DisplayPreference', pref['itemtype']]) %}
+                                    </span>
+                                {% endif %}
+                                <button type="button" class="btn btn-ghost-secondary p-0 btn-itemtype-pref" data-itemtype="{{ pref['itemtype'] }}">
+                                    <i class="{{ pref['itemtype']|itemtype_icon }} me-1"></i>
+                                    {{ name }}
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+        {% if massiveactionparams['specific_actions']|length > 0 %}
+                <div class="ms-4 mt-2">
+                    {% do call('Html::showMassiveActions', [massiveactionparams|merge({
+                        'ontop': false
+                    })]) %}
+                </div>
+            </form>
         {% endif %}
     </div>
     <template id="displaypreference_modal_template{{ rand }}">
@@ -71,7 +87,7 @@
     </template>
     <script>
         $(() => {
-            $('ul.display-prefs-list button.btn-itemtype-pref').on('click', (e) => {
+            $('.display-prefs-list button.btn-itemtype-pref').on('click', (e) => {
                 const itemtype = $(e.currentTarget).attr('data-itemtype');
                 const itemtype_name = $(e.currentTarget).text();
                 $('#displayprefence_modal{{ rand }}').remove();
@@ -82,6 +98,39 @@
                 modal.find('iframe').attr('src', default_src.replace('__VALUE__', replacement));
                 modal.find('.modal-header h4').text(modal.find('.modal-header h4').text() + ' - ' + itemtype_name);
                 modal.appendTo('body').modal('show');
+            });
+
+            // filter the list of itemtype
+            let delay_timer = null;
+            $('#search-itemtype').on('input', function() {
+                const search = $(this).val().toLowerCase();
+
+                // delay the search to avoid flickering
+                clearTimeout(delay_timer);
+                delay_timer = setTimeout(function() {
+                    $('[data-itemtype]').each(function() {
+                        const itemtype_search = $(this).html().toLowerCase();
+                        if (itemtype_search.indexOf(search) === -1) {
+                            $(this).closest('.list-group-item').addClass('d-none');
+                        } else {
+                            $(this).closest('.list-group-item').removeClass('d-none');
+                        }
+                    });
+                }, 250);
+            });
+
+            // (un)toggle all capacities button
+            $('#select-all-itemtypes').on('click', function() {
+                var $checkboxes = $('input[type=checkbox]');
+                var $checkedCheckboxes = $checkboxes.filter(':checked');
+
+                if ($checkedCheckboxes.length === $checkboxes.length) {
+                    $checkboxes.prop('checked', false);
+                } else {
+                    $checkboxes.prop('checked', true);
+                }
+
+                $checkboxes.trigger('change');
             });
         });
     </script>
