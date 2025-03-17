@@ -160,6 +160,7 @@ trait Kanban
 
     public static function getGlobalKanbanUrl(bool $full = true): string
     {
+        /** @phpstan-ignore-next-line */
         if (method_exists(static::class, 'getFormUrl')) {
             return static::getFormURL($full) . '?showglobalkanban=1';
         }
@@ -177,6 +178,7 @@ trait Kanban
                 break;
             }
         }
+        /** @phpstan-ignore-next-line */
         if (false === $tab_id || is_null($tab_id)) {
             throw new BadRequestHttpException("Itemtype does not have a Kanban tab!");
         }

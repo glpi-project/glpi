@@ -268,13 +268,16 @@ class RuleTest extends DbTestCase
         $this->assertFalse($rule->getRuleWithCriteriasAndActions(10000));
     }
 
-    public function testMaxActionsCount()
+    /**
+     * Test the number of predefined actions in database.
+     */
+    public function testMaxActionsCount(): void
     {
         $rule = new \Rule();
         $this->assertSame(1, $rule->maxActionsCount());
 
         $rule = new \RuleTicket();
-        $this->assertSame(45, $rule->maxActionsCount());
+        $this->assertSame(46, $rule->maxActionsCount());
 
         $rule = new \RuleDictionnarySoftware();
         $this->assertSame(7, $rule->maxActionsCount());

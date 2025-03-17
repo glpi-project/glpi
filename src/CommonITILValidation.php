@@ -56,11 +56,11 @@ abstract class CommonITILValidation extends CommonDBChild
     const VALIDATE               = 1024;
 
 
-   // STATUS
-    const NONE      = 1; // none
-    const WAITING   = 2; // waiting
-    const ACCEPTED  = 3; // accepted
-    const REFUSED   = 4; // rejected
+   // STATUSES
+    const NONE      = 1; // used for ticket.global_validation
+    const WAITING   = 2;
+    const ACCEPTED  = 3;
+    const REFUSED   = 4;
 
     public static function getIcon()
     {
@@ -76,7 +76,6 @@ abstract class CommonITILValidation extends CommonDBChild
     {
         return [CREATE];
     }
-
 
     public static function getPurgeRights()
     {
@@ -328,17 +327,27 @@ abstract class CommonITILValidation extends CommonDBChild
 
         $item     = new static::$itemtype();
         $mailsend = false;
+
+        // update item (ITILObject) handling the validation
         if ($item->getFromDB($this->fields[static::$items_id])) {
-            // Set global validation to waiting
+            // always recompute global validation status on ticket
+            // keep same behaviour for changes (since they have no validation steps)
+            if (static::$itemtype === TicketValidation::class) {
+                $input = [
+                    'id'                    => $this->fields[static::$items_id],
+                    'global_validation'     => static::computeValidationStatus($item),
+                ];
+            }
+
             if (
                 ($item->fields['global_validation'] == self::ACCEPTED)
                 || ($item->fields['global_validation'] == self::NONE)
             ) {
                 $input = [
                     'id'                    => $this->fields[static::$items_id],
-                    'global_validation'     => self::WAITING,
-                    '_from_itilvalidation'  => true,
+                    'global_validation'     => static::computeValidationStatus($item),
                 ];
+                $input['_from_itilvalidation']  = true;
 
                // to fix lastupdater
                 if (isset($this->input['_auto_update'])) {
@@ -352,8 +361,9 @@ abstract class CommonITILValidation extends CommonDBChild
                 if (isset($this->input["_ticket_add"])) {
                     $input['_disablenotif'] = true;
                 }
-                $item->update($input);
             }
+
+            isset($input) && $item->update($input);
 
             if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
                 $options = ['validation_id'     => $this->fields["id"],
@@ -476,10 +486,13 @@ abstract class CommonITILValidation extends CommonDBChild
             if (in_array("status", $this->updates)) {
                 $input = [
                     'id'                    => $this->fields[static::$items_id],
-                    'global_validation'     => self::computeValidationStatus($item),
+                    'global_validation'     => static::computeValidationStatus($item),
                     '_from_itilvalidation'  => true,
                 ];
-                $item->update($input);
+
+                if (!$item->update($input)) {
+                    Session::addMessageAfterRedirect(msg: 'Failed to update related ' . static::$itemtype . ' approval status  (case 2)', message_type: ERROR);
+                };
             }
         }
         parent::post_updateItem($history);
@@ -487,18 +500,31 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function pre_deleteItem()
     {
-
         $item    = new static::$itemtype();
         if ($item->getFromDB($this->fields[static::$items_id])) {
+            // always recompute global validation status on ticket
+            // keep same behaviour for changes (since they have no validation steps)
+            if (static::$itemtype === TicketValidation::class) {
+                $input = [
+                    'id'                    => $this->fields[static::$items_id],
+                    'global_validation'     => static::computeValidationStatus($item),
+                    '_from_itilvalidation'  => true,
+                ];
+            }
+
             if (($item->fields['global_validation'] == self::WAITING)) {
                 $input = [
                     'id'                    => $this->fields[static::$items_id],
-                    'global_validation'     => self::NONE,
+                    'global_validation'     => static::computeValidationStatus($item),
                     '_from_itilvalidation'  => true,
                 ];
-                $item->update($input);
+            }
+
+            if (isset($input) && !$item->update($input)) {
+                Session::addMessageAfterRedirect(msg: 'Failed to update related ' . static::$itemtype . ' approval status  (case 3)', message_type: ERROR);
             }
         }
+
         return true;
     }
 
@@ -950,9 +976,9 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Print the validation list into item
      *
-     * @param CommonDBTM $item
+     * @param CommonITILObject $item
      **/
-    public function showSummary(CommonDBTM $item)
+    public function showSummary(CommonITILObject $item)
     {
         /**
          * @var array $CFG_GLPI
@@ -1760,82 +1786,12 @@ HTML;
     /**
      * Compute the validation status
      *
+     * Reduced all the Validations of an item to a single status
+     *
+     * @return int CommonITILValidation::VALIDATE|CommonITILValidation::REFUSED|CommonITILValidation::WAITING|CommonITILValidation::NONE
      * @param $item CommonITILObject
-     *
-     * @return integer
      **/
-    public static function computeValidationStatus(CommonITILObject $item)
-    {
-
-       // Percent of validation
-        $validation_percent = $item->fields['validation_percent'];
-
-        $statuses           = [self::ACCEPTED => 0,
-            self::WAITING  => 0,
-            self::REFUSED  => 0
-        ];
-        $validations        = getAllDataFromTable(
-            static::getTable(),
-            [
-                static::$items_id => $item->getID()
-            ]
-        );
-
-        if ($total = count($validations)) {
-            foreach ($validations as $validation) {
-                $statuses[$validation['status']]++;
-            }
-        }
-
-        $accepted = 0;
-        $refused  = 0;
-        if ($total) {
-            $accepted = round($statuses[self::ACCEPTED] * 100 / $total);
-            $refused  = round($statuses[self::REFUSED]  * 100 / $total);
-        }
-
-        return self::computeValidation(
-            $accepted,
-            $refused,
-            $validation_percent
-        );
-    }
-
-    /**
-     * Compute the validation status from the percentage of acceptation, the
-     * percentage of refusals and the target acceptation threshold
-     *
-     * @param int $accepted             0-100 (percentage of acceptation)
-     * @param int $refused              0-100 (percentage of refusals)
-     * @param int $validation_percent   0-100 (target accepation threshold)
-     *
-     * @return int the validation status : ACCEPTED|REFUSED|WAITING
-     */
-    public static function computeValidation(
-        int $accepted,
-        int $refused,
-        int $validation_percent
-    ): int {
-        if ($validation_percent > 0) {
-            if ($accepted >= $validation_percent) {
-                // We have reached the acceptation threshold
-                return self::ACCEPTED;
-            } else if ($refused + $validation_percent > 100) {
-               // We can no longer reach the acceptation threshold
-                return self::REFUSED;
-            }
-        } else {
-           // No validation threshold set, one approval or denial is enough
-            if ($accepted > 0) {
-                return self::ACCEPTED;
-            } else if ($refused > 0) {
-                return self::REFUSED;
-            }
-        }
-
-        return self::WAITING;
-    }
-
+    abstract public static function computeValidationStatus(CommonITILObject $item): int;
 
     /**
      * Get the validation statistics

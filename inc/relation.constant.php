@@ -1668,6 +1668,11 @@ $RELATION = [
         'glpi_users'    => 'usertitles_id',
     ],
 
+    'glpi_validationsteps' => [
+        'glpi_ticketvalidations'       => 'validationsteps_id',
+        'glpi_itilvalidationtemplates' => 'validationsteps_id',
+    ],
+
     'glpi_virtualmachinestates' => [
         'glpi_itemvirtualmachines' => 'virtualmachinestates_id',
     ],

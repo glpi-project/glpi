@@ -37,11 +37,14 @@ namespace tests\units;
 
 use CommonITILObject;
 use Glpi\PHPUnit\Tests\CommonITILValidation;
+use Glpi\PHPUnit\Tests\Glpi\ValidationStepTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for src/TicketValidation.php */
 class TicketValidationTest extends CommonITILValidation
 {
+    use ValidationStepTrait;
+
     /**
      * @return void
      * @todo Move to CommonITILValidation test file when the Change Rule Engine is implemented
@@ -130,7 +133,8 @@ class TicketValidationTest extends CommonITILValidation
         $ticket = new \Ticket();
         $tickets_id = $ticket->add($ticket_input = [
             'name' => "test ticket, will not trigger on rule",
-            'content' => "test"
+            'content' => "test",
+            'validation_percent' => 40
         ]);
         $tid = $tickets_id; //keep trace of this one
         $this->checkInput($ticket, $tickets_id, $ticket_input);
@@ -186,12 +190,16 @@ class TicketValidationTest extends CommonITILValidation
         );
 
         $this->assertTrue($ticket->getFromDB($tid));
-        $this->assertEquals(\CommonITILValidation::WAITING, (int)$ticket->getField('global_validation'));
+        $this->assertValidationStatusEquals(\CommonITILValidation::WAITING, (int)$ticket->getField('global_validation'));
 
         $this->assertTrue($ticket->getFromDB($tid));
 
-        // accept first validation
+        // accept first validation - implies that validation required is at 0%
         $this->login('glpi', 'glpi');
+
+        $vs = $this->getInitialDefaultValidationStep();
+        $this->updateItem($vs::class, $vs->getID(), ['minimal_required_validation_percent' => 0]);
+
         $validation = new \TicketValidation();
         $this->assertTrue(
             $validation->getFromDBByCrit([
@@ -221,12 +229,10 @@ class TicketValidationTest extends CommonITILValidation
                 'items_id_target' => $uid2,
             ])
         );
-
         $res = $validation->update([
             'id' => $validation->fields['id'],
             'status' => \CommonITILValidation::REFUSED
         ]);
-
         $this->hasSessionMessages(ERROR, ['If approval is denied, specify a reason.']);
         $this->assertFalse($res);
 
@@ -236,7 +242,6 @@ class TicketValidationTest extends CommonITILValidation
         $filename_txt = '5e5e92ffd9bd91.11111111' . 'foo.txt';
         copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename_img);
         copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename_txt);
-
         $this->assertTrue(
             $validation->update([
                 'id' => $validation->fields['id'],
@@ -269,7 +274,7 @@ class TicketValidationTest extends CommonITILValidation
         );
 
         $this->assertTrue($ticket->getFromDB($tickets_id));
-        $this->assertEquals(\CommonITILValidation::REFUSED, (int)$ticket->getField('global_validation'));
+        $this->assertValidationStatusEquals(\CommonITILValidation::REFUSED, (int)$ticket->getField('global_validation'));
 
         //require 100% for global status to be changed
         /** Create a ticket, approval requested */
@@ -278,7 +283,7 @@ class TicketValidationTest extends CommonITILValidation
             'name' => "test ticket, approval will be added",
             'content' => "test",
             '_groups_id_assign' => $gid,
-            'validation_percent' => 100
+//            'validation_percent' => 100 // now ignored, defined in validation step
         ]);
         unset($ticket_input['_groups_id_assign']);
         $this->checkInput($ticket, $tickets_id_2, $ticket_input);
@@ -291,9 +296,13 @@ class TicketValidationTest extends CommonITILValidation
             )
         );
 
-        $this->assertEquals(\CommonITILValidation::WAITING, (int)$ticket->getField('global_validation'));
+        $this->assertValidationStatusEquals(\CommonITILValidation::WAITING, (int)$ticket->getField('global_validation'));
 
-        // accept first validation
+        // accept first validation, second one is still WAITING
+        // update default validation step to require 50%, so next assertion returns WAITING, and the seconde return ACCEPTED
+        $vs = $this->getInitialDefaultValidationStep();
+        $this->updateItem($vs::class, $vs->getID(), ['minimal_required_validation_percent' => 100]);
+
         $this->login('glpi', 'glpi');
         $validation = new \TicketValidation();
         $this->assertTrue(
@@ -312,9 +321,9 @@ class TicketValidationTest extends CommonITILValidation
         );
 
         $this->assertTrue($ticket->getFromDB($tickets_id_2));
-        $this->assertEquals(\CommonITILValidation::WAITING, (int)$ticket->getField('global_validation'));
+        $this->assertValidationStatusEquals(\CommonITILValidation::WAITING, (int)$ticket->getField('global_validation'));
 
-        // accept second one
+        // accept second one, both are accepted -> global_validation status should be ACCEPTED
         $this->login('approval', 'approval');
         $validation = new \TicketValidation();
         $this->assertTrue(
@@ -330,8 +339,8 @@ class TicketValidationTest extends CommonITILValidation
             'status' => \CommonITILValidation::ACCEPTED
         ]);
 
-        $this->assertTrue($ticket->getFromDB($tid));
-        $this->assertEquals(\CommonITILValidation::ACCEPTED, (int)$ticket->getField('global_validation'));
+        $this->assertTrue($ticket->getFromDB($tickets_id_2));
+        $this->assertValidationStatusEquals(\CommonITILValidation::ACCEPTED, (int)$ticket->getField('global_validation'));
     }
 
     public static function testgetNumberToValidateProvider(): array
@@ -383,8 +392,114 @@ class TicketValidationTest extends CommonITILValidation
             'tickets_id'      => $ticket->getID(),
             'itemtype_target' => 'User',
             'items_id_target' => $user_id,
+            'validationsteps_id' => $this->getInitialDefaultValidationStep()->getID()
         ]);
 
         $this->assertEquals($expected ? ($initial_count + 1) : $initial_count, \TicketValidation::getNumberToValidate($user_id));
+    }
+
+    public function testcomputeValidationStatusReturnNone(): void
+    {
+        $ticket = $this->createItem(\Ticket::class, ['name' => 'Ticket1', 'content' => 'Ticket1']);
+        $this->assertEquals(\CommonITILValidation::NONE, \TicketValidation::computeValidationStatus($ticket));
+    }
+
+    /**
+     * One validation is REFUSED : the ticket global_validation is REFUSED
+     */
+    public function testComputeValidationStatusReturnRefused(): void
+    {
+        // ticket with one refused validation step
+        [$ticket, $vs] = $this->createValidationStepWithValidations(50, [\CommonITILValidation::REFUSED]);
+        assert(\CommonITILValidation::REFUSED === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to create validation step with REFUSED status');
+        $this->assertValidationStatusEquals(\CommonITILValidation::REFUSED, \TicketValidation::computeValidationStatus($ticket));
+
+        // + an accepted validation step (use previous ticket)
+        $vs = $this->addValidationStepWithValidations(100, [\CommonITILValidation::ACCEPTED], $ticket);
+        assert(\CommonITILValidation::ACCEPTED === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to add validation step with ACCEPTED status');
+        $this->assertValidationStatusEquals(\CommonITILValidation::REFUSED, \TicketValidation::computeValidationStatus($ticket));
+
+        // ticket with a waiting + an accepted + refused validation step
+        [$ticket, $vs] = $this->createValidationStepWithValidations(50, [\CommonITILValidation::WAITING]);
+        assert(\CommonITILValidation::WAITING === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to create validation step with WAITING status');
+
+        $vs = $this->addValidationStepWithValidations(100, [\CommonITILValidation::REFUSED], $ticket);
+        assert(\CommonITILValidation::REFUSED === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to add validation step with REFUSED status');
+
+        $vs = $this->addValidationStepWithValidations(100, [\CommonITILValidation::ACCEPTED], $ticket);
+        assert(\CommonITILValidation::ACCEPTED === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to add validation step with ACCEPTED status');
+
+        $this->assertValidationStatusEquals(\CommonITILValidation::REFUSED, \TicketValidation::computeValidationStatus($ticket));
+    }
+
+    /**
+     * One validation is WAITING : the ticket global_validation is WAITING
+     */
+    public function testComputeValidationStatusReturnWaiting(): void
+    {
+        // ticket with one waiting validation step
+        [$ticket, $vs] = $this->createValidationStepWithValidations(50, [\CommonITILValidation::WAITING]);
+        assert(\CommonITILValidation::WAITING === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to create validation step with WAITING status');
+        $this->assertValidationStatusEquals(\CommonITILValidation::WAITING, \TicketValidation::computeValidationStatus($ticket));
+
+        // + an accepted validation step (use previous ticket)
+        $vs = $this->addValidationStepWithValidations(100, [\CommonITILValidation::ACCEPTED], $ticket);
+        assert(\CommonITILValidation::ACCEPTED === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to add validation step with ACCEPTED status');
+        $this->assertValidationStatusEquals(\CommonITILValidation::WAITING, \TicketValidation::computeValidationStatus($ticket));
+
+        // ticket with an accepted + waiting validation step
+        [$ticket, $vs] = $this->createValidationStepWithValidations(50, [\CommonITILValidation::ACCEPTED]);
+        assert(\CommonITILValidation::ACCEPTED === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to create validation step with ACCEPTED status');
+
+        $vs = $this->addValidationStepWithValidations(100, [\CommonITILValidation::WAITING], $ticket);
+        assert(\CommonITILValidation::WAITING === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to add validation step with WAITING status');
+
+        $this->assertValidationStatusEquals(\CommonITILValidation::WAITING, \TicketValidation::computeValidationStatus($ticket));
+    }
+
+    /**
+     * All validations are ACCEPTED : the ticket global_validation is ACCEPTED
+     */
+    public function testComputeValidationStatusReturnAccepted(): void
+    {
+        // ticket with one ACCEPTED validation step
+        [$ticket, $vs] = $this->createValidationStepWithValidations(50, [\CommonITILValidation::ACCEPTED]);
+        assert(\CommonITILValidation::ACCEPTED === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to create validation step with ACCEPTED status');
+        $this->assertValidationStatusEquals(\CommonITILValidation::ACCEPTED, \TicketValidation::computeValidationStatus($ticket));
+
+        // many validation step  (use previous ticket)
+        $vs = $this->addValidationStepWithValidations(100, [\CommonITILValidation::ACCEPTED], $ticket);
+        assert(\CommonITILValidation::ACCEPTED === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to add validation step with ACCEPTED status');
+        $this->assertValidationStatusEquals(\CommonITILValidation::ACCEPTED, \TicketValidation::computeValidationStatus($ticket));
+
+        // + another one
+        $vs = $this->addValidationStepWithValidations(100, [\CommonITILValidation::ACCEPTED], $ticket);
+        assert(\CommonITILValidation::ACCEPTED === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to add validation step with ACCEPTED status');
+        $this->assertValidationStatusEquals(\CommonITILValidation::ACCEPTED, \TicketValidation::computeValidationStatus($ticket));
+
+        // + another one
+        $vs = $this->addValidationStepWithValidations(100, [\CommonITILValidation::ACCEPTED], $ticket);
+        assert(\CommonITILValidation::ACCEPTED === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to add validation step with ACCEPTED status');
+        $this->assertValidationStatusEquals(\CommonITILValidation::ACCEPTED, \TicketValidation::computeValidationStatus($ticket));
+    }
+
+    /**
+     * - create a ticket with a validated state.
+     * - update a validation step
+     * - check ticket validation status has changed
+     */
+    public function testTicketValidationChangesWhenValidationStepPercentageIsChanged(): void
+    {
+        // arrange
+        [$ticket, $vs] = $this->createValidationStepWithValidations(50, [\CommonITILValidation::ACCEPTED, \CommonITILValidation::REFUSED]);
+        assert(\CommonITILValidation::ACCEPTED === \ValidationStep::getValidationStepStatusForTicket($ticket->getID(), $vs->getID()), 'failed to create validation step with ACCEPTED status');
+        $this->assertValidationStatusEquals(\CommonITILValidation::ACCEPTED, $ticket->getField('global_validation'));
+
+        // act
+        $this->updateItem(\ValidationStep::class, $vs->getID(), ['minimal_required_validation_percent' => 100] + $vs->fields);
+
+        // assert
+        $ticket->getFromDB($ticket->getID());
+        $this->assertValidationStatusEquals(\CommonITILValidation::REFUSED, $ticket->getField('global_validation'));
     }
 }
