@@ -171,20 +171,7 @@ class ValidationStepTest extends \DbTestCase
         [$ticket, $validationstep] = $this->createValidationStepWithValidations($mininal_required_validation_percent, $validation_states);
 
         $result_status = ValidationStep::getValidationStepStatusForTicket($ticket->getId(), $validationstep->getID());
-        $this->assertEquals(
-            $expected_status,
-            $result_status,
-            $this->getValidationFailureMessage($expected_status, $result_status)
-        );
-    }
-
-    public function testgetValidationStepAchievementsThrowsExceptionOnTicketWithoutValidation()
-    {
-        // without any validation step : exception (thrown by getValidationsForTicketAndValidationStep())
-        [$ticket, $validation_step] = $this->createValidationStepWithValidations(100, []);
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('Get validation step status for a ticket without any validation step');
-        ValidationStep::getValidationStepAchievements($ticket->getID(), $validation_step->getID());
+        $this->assertValidationStatusEquals($expected_status, $result_status);
     }
 
     public function testgetValidationStepAchievementsOnSingleValidation(): void

@@ -114,7 +114,7 @@ trait ValidationStepTrait
         ];
     }
 
-    private function getValidationFailureMessage(int $expected_status, int $result): string
+    protected function assertValidationStatusEquals(int $expected_status, int $result_status): void
     {
         $status_to_label = function (int $status) {
             $states = [
@@ -122,9 +122,14 @@ trait ValidationStepTrait
                 CommonITILValidation::ACCEPTED => 'ACCEPTED',
                 CommonITILValidation::REFUSED => 'REFUSED',
             ];
+
             return $states[$status] ?? throw new \InvalidArgumentException("Unexpected status to display : " . var_export($status, true));
         };
 
-        return 'Unexpected validation step status. Expected : ' . $status_to_label($expected_status) . ' - Result : ' . $status_to_label($result);
+        $this->assertEquals(
+            $expected_status,
+            $result_status,
+            'Unexpected validation step status. Expected : ' . $status_to_label($expected_status) . ' - Result : ' . $status_to_label($result_status)
+        );
     }
 }

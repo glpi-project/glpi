@@ -59,7 +59,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
         return [
             [
                 'name' => 'validationsteps_id',
-                'label' => __('Validation step'),
+                'label' => __('Validation step (only for tickets)'),
                 'type' => 'dropdownValue',
                 'required' => true,
             ],

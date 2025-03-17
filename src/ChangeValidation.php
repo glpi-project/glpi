@@ -59,7 +59,6 @@ class ChangeValidation extends CommonITILValidation
             self::WAITING  => 0,
             self::REFUSED  => 0
         ];
-        // @todoseb voir si je reprend ça dans ma fonction de compute
         $validations        = getAllDataFromTable(
             static::getTable(),
             [

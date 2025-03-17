@@ -139,18 +139,11 @@ class ValidationStep extends \CommonDropdown
      */
     private static function getValidationsForTicketAndValidationStep(int $ticket_id, int $validationstep_id): array
     {
-        // collect all validation for the ticket with the given validation step
-        $validations = (new TicketValidation())->find([
+        // collect all validation for the ticket with the given validation step id
+        return (new TicketValidation())->find([
             'tickets_id' => $ticket_id,
             'validationsteps_id' => $validationstep_id
         ]);
-
-        // @todo if no validation found, throw an exception ? return false ?
-        if (empty($validations)) {
-            throw new \LogicException('Get validation step status for a ticket without any validation step');
-        }
-
-        return $validations;
     }
 
     /**
@@ -254,13 +247,13 @@ class ValidationStep extends \CommonDropdown
             && $this->oldvalues['minimal_required_validation_percent'] !== $this->fields['minimal_required_validation_percent']
         ) {
             // get all tickets with this validation step
+            // @todo probably, we should only find ticket which are in APPROVAL status
             $tv = new TicketValidation();
             $ticket_validations = $tv->find(['validationsteps_id' => $this->getID()]);
             $tickets_id = array_unique(array_column($ticket_validations, 'tickets_id'));
 
             foreach ($tickets_id as $ticket_id) {
                 $ticket = (new Ticket())->getByID($ticket_id);
-//                dump($ticket);
                 $new_status = ValidationStep::getValidationStatusForTicket($ticket);
 
                 if ($ticket->getField('global_validation_status') !== $new_status) {
