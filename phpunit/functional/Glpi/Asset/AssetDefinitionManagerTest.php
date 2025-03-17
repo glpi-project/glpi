@@ -60,15 +60,15 @@ class AssetDefinitionManagerTest extends DbTestCase
 
     public function testAutoloader(): void
     {
-        $this->initAssetDefinition('Test123'); // use a name with numbers, to validate it works as expected
+        $this->initAssetDefinition('Test_Item123'); // use a name with numbers and underscore, to validate it works as expected
 
-        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test123'));
-        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test123Model'));
-        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test123Type'));
-        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest123ModelCollection'));
-        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest123Model'));
-        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest123TypeCollection'));
-        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest123Type'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test_Item123'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test_Item123Model'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test_Item123Type'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest_Item123ModelCollection'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest_Item123Model'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest_Item123TypeCollection'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest_Item123Type'));
     }
 
     /**

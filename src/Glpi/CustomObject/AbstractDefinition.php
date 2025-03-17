@@ -55,9 +55,10 @@ abstract class AbstractDefinition extends CommonDBTM
      * System name regex pattern.
      *
      * 1. Must start with a letter.
-     * 2. Must contain only letters or numbers.
+     * 2. Must contain only letters, numbers, or underscores.
+     * 3. Must not end with an underscore.
      */
-    public const SYSTEM_NAME_PATTERN = '[A-Za-z][A-Za-z0-9]*';
+    public const SYSTEM_NAME_PATTERN = '[A-Za-z][A-Za-z0-9_]*[A-Za-z0-9]';
 
     public static $rightname = 'config';
 
