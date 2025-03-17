@@ -1444,6 +1444,13 @@ HTML;
                 ]
             ];
 
+            $cards["items_map"] = [
+                'widgettype' => ["map"],
+                'label'      => __("Location of items"),
+                'group'      => __('Others'),
+                'provider'   => "Glpi\\Dashboard\\Provider::getItemsCoordinates",
+            ];
+
             if (GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT) {
                 // Do not cache dashboard cards on `development` envs
                 $GLPI_CACHE->set(self::getAllDashboardCardsCacheKey(), $cards);
