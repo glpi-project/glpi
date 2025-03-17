@@ -67,7 +67,7 @@ final class ShowFormTranslationController extends AbstractController
     private function displayTranslation(Form $form, string $language): Response
     {
         // Retrieve the form translation for the specified language
-        $formTranslation = FormTranslation::getTranslation($form, Form::TRANSLATION_KEY_NAME, $language);
+        $formTranslation = FormTranslation::getForItemKeyAndLanguage($form, Form::TRANSLATION_KEY_NAME, $language);
         if ($formTranslation === null) {
             throw new BadRequestHttpException('Specified language did not exist for this form');
         }

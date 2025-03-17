@@ -86,7 +86,7 @@ final class UpdateFormTranslationController extends AbstractController
 
             $translation_input = ['language' => $language] + $translation;
 
-            $formTranslation = FormTranslation::getTranslation($item, $translation['key'], $language);
+            $formTranslation = FormTranslation::getForItemKeyAndLanguage($item, $translation['key'], $language);
             if ($formTranslation !== null) {
                 $success = $this->updateTranslation($formTranslation, $translation_input);
             } else {

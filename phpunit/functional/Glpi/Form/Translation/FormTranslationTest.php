@@ -71,8 +71,8 @@ class FormTranslationTest extends \DbTestCase
                 foreach ($handlers as $handler) {
                     $this->assertEquals(
                         $handler->getKey() . ' in ' . $language,
-                        FormTranslation::getTranslation($handler->getParentItem(), $handler->getKey(), $language)
-                            ->getOneTranslation()
+                        FormTranslation::getForItemKeyAndLanguage($handler->getParentItem(), $handler->getKey(), $language)
+                            ->getTranslation()
                     );
                 }
             }

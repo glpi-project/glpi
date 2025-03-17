@@ -54,7 +54,7 @@
             name="translations[{{ rand }}][translations][one]"
             class="form-control form-control-flush"
             placeholder="{{ __('Enter translation') }}"
-            value="{{ translation.getOneTranslation() }}"
+            value="{{ translation.getTranslation() }}"
             aria-label="{{ __('Enter translation') }}"
         />
     </div>
@@ -73,7 +73,7 @@
             'default': handler.getValue(),
             'translation': _self.getTranslationInput(
                 handler,
-                form_translation.getTranslation(
+                form_translation.getForItemKeyAndLanguage(
                     handler.getParentItem(),
                     handler.getKey(),
                     form_translation.fields['language']

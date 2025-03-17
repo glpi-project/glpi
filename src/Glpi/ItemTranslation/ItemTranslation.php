@@ -38,6 +38,7 @@ use CommonDBChild;
 use CommonDBTM;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Override;
+use Gettext\Languages\Language;
 
 abstract class ItemTranslation extends CommonDBChild
 {
@@ -90,19 +91,26 @@ abstract class ItemTranslation extends CommonDBChild
         return $input;
     }
 
-    public function getOneTranslation(): ?string
+    public function getTranslation(int $count = 1): ?string
     {
-        return json_decode($this->fields['translations'], true)['one'] ?? null;
-    }
+        if ($this->isNewItem()) {
+            return '';
+        }
 
-    public function getManyTranslation(): ?string
-    {
-        return json_decode($this->fields['translations'], true)['many'] ?? null;
-    }
+        $translations =  json_decode($this->fields['translations'], true);
 
-    public function getOtherTranslation(): ?string
-    {
-        return json_decode($this->fields['translations'], true)['other'] ?? null;
+        // retrieve the formulas associated to the language
+        $gettext_language = Language::getById($this->fields['language']);
+
+        // compute the formula with the paramater count
+        $formula_to_compute = str_replace('n', $count, $gettext_language->formula);
+        $category_index_number = eval("return $formula_to_compute;");
+
+        // retrieve the category index string (one, few, many, other) based on the index
+        $found_category = $gettext_language->categories[$category_index_number] ?? $gettext_language->categories[0];
+        $category_index_string = $found_category->id;
+
+        return $translations[$category_index_string] ?? null;
     }
 
     /**
@@ -144,7 +152,7 @@ abstract class ItemTranslation extends CommonDBChild
     }
 
     /**
-     * Get translation for a specific key
+     * Get instance for the given item, key and language.
      *
      * @param CommonDBTM $item
      * @param string $key
@@ -152,7 +160,7 @@ abstract class ItemTranslation extends CommonDBChild
      *
      * @return ItemTranslation|null
      */
-    public static function getTranslation(CommonDBTM $item, string $key, string $language): ?ItemTranslation
+    public static function getForItemKeyAndLanguage(CommonDBTM $item, string $key, string $language): ?ItemTranslation
     {
         $translation = (new static())->find([
             static::$items_id => $item->getID(),
