@@ -560,4 +560,69 @@ class ITILTemplateTest extends DbTestCase
         $this->assertGreaterThan(0, $tpl_id);
         return $tpl_id;
     }
+
+    /**
+     * @dataProvider itilProvider
+     */
+    public function testCleanDBonPurge($itiltype)
+    {
+        $this->login();
+
+        //create template
+        $tpl_class = '\\' . $itiltype . 'Template';
+        $tpl = new $tpl_class();
+
+        $tpl_id = $this->createItem(
+            $tpl_class,
+            [
+                'name' => 'Template for ' . $itiltype
+            ]
+        )->getID();
+
+        //add a mandatory field
+        $mandat_class = '\\' . $itiltype . 'TemplateMandatoryField';
+        $mandat = new $mandat_class();
+        $mandat_id = $this->createItem(
+            $mandat_class,
+            [
+                $mandat::$items_id => $tpl_id,
+                'num'              => $mandat->getFieldNum($tpl, 'Title')
+            ]
+        )->getID();
+
+        //add a predefined field
+        $predef_class = '\\' . $itiltype . 'TemplatePredefinedField';
+        $predef = new $predef_class();
+        $predef_id = $this->createItem(
+            $predef_class,
+            [
+                $mandat::$items_id   => $tpl_id,
+                'num'                => $predef->getFieldNum($tpl, 'Description'), //Description
+                'value'              => 'Description from template'
+            ]
+        )->getID();
+
+        //add an hidden field
+        $hidden_class = '\\' . $itiltype . 'TemplateHiddenField';
+        $hidden = new $hidden_class();
+        $hidden_id = $this->createItem(
+            $hidden_class,
+            [
+                $mandat::$items_id => $tpl_id,
+                'num'              => $hidden->getFieldNum($tpl, 'Status')
+            ]
+        )->getID();
+
+        // Delete the template
+        $tpl->delete(['id' => $tpl_id], true);
+
+        // Check that the mandatory field is deleted
+        $this->assertEmpty($mandat->getFromDB($mandat_id));
+
+        // Check that the predefined field is deleted
+        $this->assertEmpty($predef->getFromDB($predef_id));
+
+        // Check that the hidden field is deleted
+        $this->assertEmpty($hidden->getFromDB($hidden_id));
+    }
 }
