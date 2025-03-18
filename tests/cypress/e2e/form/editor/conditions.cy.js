@@ -1460,4 +1460,188 @@ describe ('Conditions', () => {
             'First section',
         ]);
     });
+
+    it('can delete a question used in conditions', () => {
+        createForm();
+        addQuestion('My first question');
+        addQuestion('My second question');
+
+        getAndFocusQuestion('My second question').within(() => {
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            fillCondition(0, null, 'My first question', 'Contains', 'GLPI is great');
+        });
+        saveAndReload();
+
+        // Delete the first question and check that the conditions are still there
+        getAndFocusQuestion('My first question').within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'My second question'}).should('be.visible');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+        saveAndReload();
+
+        getAndFocusQuestion('My second question').within(() => {
+            openVisibilityOptions();
+            checkThatConditionExist(
+                0,
+                null,
+                'Questions - My first question',
+                'Contains',
+                'GLPI is great',
+            );
+        });
+
+        // Delete the first question and check that the conditions are still there
+        getAndFocusQuestion('My first question').within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'My second question'}).should('be.visible');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+
+        // Delete conditions
+        getAndFocusQuestion('My second question').within(() => {
+            openVisibilityOptions();
+            deleteConditon(0);
+        });
+
+        // Delete the first question
+        getAndFocusQuestion('My first question').within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'}).should('not.exist');
+    });
+
+    it('can delete a comment used in conditions', () => {
+        createForm();
+        addComment('My comment');
+        addQuestion('My question');
+
+        getAndFocusQuestion('My question').within(() => {
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            fillCondition(0, null, 'My comment', 'Is visible', null, null);
+        });
+        saveAndReload();
+
+        // Delete the comment and check that the conditions are still there
+        getAndFocusComment('My comment').within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'My question'}).should('be.visible');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+        saveAndReload();
+
+        getAndFocusQuestion('My question').within(() => {
+            openVisibilityOptions();
+            checkThatConditionExist(
+                0,
+                null,
+                'Comments - My comment',
+                'Is visible',
+                null,
+                null,
+            );
+        });
+
+        // Delete the comment and check that the conditions are still there
+        getAndFocusComment('My comment').within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'My question'}).should('be.visible');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+
+        // Delete conditions
+        getAndFocusQuestion('My question').within(() => {
+            openVisibilityOptions();
+            deleteConditon(0);
+        });
+
+        // Delete the commeny
+        getAndFocusComment('My comment').within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'}).should('not.exist');
+    });
+
+    it('can delete a section used in conditions', () => {
+        createForm();
+        addQuestion('My first question');
+        addSection('Second section');
+        addQuestion('My second question');
+
+        getAndFocusSection('Second section').within(() => {
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            fillCondition(0, null, 'First section', 'Is visible', null, null);
+        });
+        saveAndReload();
+
+        // Delete the first section and check that the conditions are still there
+        getAndFocusSection('First section').within(() => {
+            cy.findByRole('button', {'name': 'More actions'}).click();
+            cy.findByRole('button', {'name': 'Delete section'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'Second section'}).should('be.visible');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+        saveAndReload();
+
+        getAndFocusSection('Second section').within(() => {
+            openVisibilityOptions();
+            checkThatConditionExist(
+                0,
+                null,
+                'Steps - First section',
+                'Is visible',
+                null,
+                null,
+            );
+        });
+
+        // Delete the first section and check that the conditions are still there
+        getAndFocusSection('First section').within(() => {
+            cy.findByRole('button', {'name': 'More actions'}).click();
+            cy.findByRole('button', {'name': 'Delete section'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'Second section'}).should('be.visible');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+
+        // Delete conditions
+        getAndFocusSection('Second section').within(() => {
+            openVisibilityOptions();
+            deleteConditon(0);
+        });
+
+        // Delete the section
+        getAndFocusSection('Second section').within(() => {
+            cy.findByRole('button', {'name': 'More actions'}).click();
+            cy.findByRole('button', {'name': 'Delete section'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'})
+            .should('not.exist');
+    });
 });
