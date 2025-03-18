@@ -162,7 +162,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
             && $this->db->fieldExists('glpi_plugin_genericobject_types', 'itemtype')
         ) {
             foreach ($this->getGenericobjectTypesIterator() as $type_data) {
-                $item_table = \getTableForItemType($type_data['itemtype']);
+                $item_table = $this->getExpectedTableForPluginClassName($type_data['itemtype']);
 
                 // Add base fields for main itemtypes
                 $required_fields[$item_table] = [
@@ -184,12 +184,15 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         continue;
                     }
 
-                    $peer_table = \getTableNameForForeignKeyField($item_table_field);
-                    $peer_type  = $this->getExpectedClassNameForPluginTable($peer_table);
+                    $peer_type  = $this->getExpectedClassNameForPluginTable(
+                        \getTableNameForForeignKeyField($item_table_field)
+                    );
 
                     if (!$this->isAGenericObjectDropdownItemtype($peer_type)) {
                         continue;
                     }
+
+                    $peer_table = $this->getExpectedTableForPluginClassName($peer_type);
 
                     if (\array_key_exists($peer_table, $required_fields)) {
                         continue;
@@ -215,7 +218,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
         // Init the progress bar
         $items_count = 0;
         $plugin_tables = \array_column(
-            \iterator_to_array($this->db->listTables()),
+            \iterator_to_array($this->db->listTables('glpi\_plugin\_genericobject\_%')),
             'TABLE_NAME'
         );
         foreach ($plugin_tables as $plugin_table) {
@@ -266,7 +269,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
 
         $profiles_ids = $this->getAllProfilesIds();
 
-        $plugin_tables = \array_column(
+        $plugin_custom_tables = \array_column(
             \iterator_to_array(
                 $this->db->listTables(
                     'glpi\_plugin\_genericobject\_%',
@@ -282,7 +285,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
             ),
             'TABLE_NAME'
         );
-        foreach ($plugin_tables as $plugin_table) {
+        foreach ($plugin_custom_tables as $plugin_table) {
             $itemtype = $this->getExpectedClassNameForPluginTable($plugin_table);
 
             if (!$this->isAGenericObjectDropdownItemtype($itemtype)) {
@@ -375,7 +378,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 'FROM'  => ProfileRight::getTable(),
                 'WHERE' => [
                     // see `PluginGenericobjectProfile::getProfileNameForItemtype()`
-                    'name' => preg_replace('/^glpi_/', '', \getTableForItemType($plugin_itemtype)),
+                    'name' => preg_replace('/^glpi_/', '', $this->getExpectedTableForPluginClassName($plugin_itemtype)),
                 ],
             ]);
             foreach ($profilerights_iterator as $profileright_data) {
@@ -435,7 +438,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 continue;
             }
 
-            $item_table = \getTableForItemType($plugin_itemtype);
+            $item_table = $this->getExpectedTableForPluginClassName($plugin_itemtype);
             $item_table_fields = $this->db->listFields($item_table, false);
 
             // Import the custom fields definition
@@ -593,12 +596,12 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
             }
 
             $plugin_model_itemtype = $type_data['itemtype'] . 'Model';
-            if ($this->db->tableExists(\getTableForItemType($plugin_model_itemtype))) {
+            if ($this->db->tableExists($this->getExpectedTableForPluginClassName($plugin_model_itemtype))) {
                 $dropdown_mapping[$plugin_model_itemtype] = $asset_definition->getAssetModelClassName();
             }
 
             $plugin_type_itemtype = $type_data['itemtype'] . 'Type';
-            if ($this->db->tableExists(\getTableForItemType($plugin_type_itemtype))) {
+            if ($this->db->tableExists($this->getExpectedTableForPluginClassName($plugin_type_itemtype))) {
                 $dropdown_mapping[$plugin_type_itemtype] = $asset_definition->getAssetTypeClassName();
             }
         }
@@ -608,7 +611,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 sprintf(__('Importing "%s"...'), $dropdown_class::getTypeName())
             );
 
-            $dropdown_iterator = $this->db->request(['FROM' => \getTableForItemType($plugin_itemtype)]);
+            $dropdown_iterator = $this->db->request(['FROM' => $this->getExpectedTableForPluginClassName($plugin_itemtype)]);
 
             foreach ($dropdown_iterator as $dropdown_data) {
                 $reconciliation_criteria = [
@@ -647,9 +650,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         'date_mod'      => $dropdown_data['date_mod'],
                         'date_creation' => $dropdown_data['date_creation'],
                     ],
-                    reconciliation_criteria: [
-                        'name' => $dropdown_data['name'],
-                    ]
+                    reconciliation_criteria: $reconciliation_criteria
                 );
 
                 $this->mapItem(
@@ -720,7 +721,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
 
             $asset_class = $asset_definition->getAssetClassName();
 
-            $item_table = \getTableForItemType($type_data['itemtype']);
+            $item_table = $this->getExpectedTableForPluginClassName($type_data['itemtype']);
 
             $count  = 0;
             $offset = 0;
@@ -789,7 +790,11 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                                 continue;
                             }
 
-                            $value = $this->getMappedItemTarget($peer_source_type, (int) $value)['items_id'] ?? null;
+                            $value = $this->getMappedItemTarget($peer_source_type, (int) $value)['items_id'] ?? 0;
+                        } elseif ($value === null && \isForeignKeyField($target_field)) {
+                            // GLPI foreign key fields are most of the time not nullable and takes a `0` value when
+                            // there is no peer item linked.
+                            $value = 0;
                         }
 
                         $input[$target_field] = $value;
@@ -1005,6 +1010,41 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
         $chunks = \array_map('ucfirst', $chunks);
 
         return 'PluginGenericobject' . implode('_', $chunks);
+    }
+
+    /**
+     * Returns the expected table for a genericobject plugin class name.
+     */
+    private function getExpectedTableForPluginClassName(string $classname): string
+    {
+        $classname_matches = [];
+        if (preg_match('/^PluginGenericobject(?<itemtype_chunk>.+)$/', $classname, $classname_matches) !== 1) {
+            throw new \LogicException(
+                sprintf('`%s` is not a Genericobject class.', $classname)
+            );
+        }
+
+        $expected_table = \getTableForItemType($classname);
+
+        if (!$this->db->tableExists($expected_table)) {
+            // Try to match with an existing table.
+            //
+            // Sometimes, the plugin table name has only its last chunk pluralized
+            // (e.g. `glpi_plugin_genericobject_item_states` instead of `glpi_plugin_genericobject_items_states`).
+            // It means that `\getTableForItemType(\getItemTypeForTable($table)))` result differs
+            // from the original `$table` value.
+            //
+            // If the expected table does not exists, but a table exists with only its last chunk pluralized,
+            // then we fallback to this last one.
+            $fallback_table = 'glpi_plugin_genericobject_' . \strtolower(\getPlural($classname_matches['itemtype_chunk']));
+
+            if ($this->db->tableExists($fallback_table)) {
+                return $fallback_table;
+            }
+        }
+
+        // Always return the expected table name, even if it does not exist.
+        return $expected_table;
     }
 
     /**
@@ -1357,7 +1397,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
 
             // Append existing suffix
             $suffix .= \str_replace(
-                \getForeignKeyFieldForItemType($source_type),
+                \getForeignKeyFieldForTable($this->getExpectedTableForPluginClassName($source_type)),
                 '',
                 $field
             );

@@ -225,6 +225,8 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                     ['key' => 'custom_assets_assets_id_tablet', 'order' => 23, 'field_options' => []],
                     ['key' => 'custom_dropdowns_dropdowns_id_bar', 'order' => 24, 'field_options' => []],
                     ['key' => 'custom_dropdowns_dropdowns_id_foo', 'order' => 25, 'field_options' => []],
+                    ['key' => 'custom_dropdowns_dropdowns_id_item_state', 'order' => 26, 'field_options' => []],
+                    ['key' => 'custom_dropdowns_dropdowns_id_test_abc', 'order' => 27, 'field_options' => []],
                 ],
                 'date_creation'  => '2025-03-05 16:28:56',
                 // 'date_mod'       => '2025-03-06 14:19:23',
@@ -320,7 +322,27 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                 'date_mod'      => $_SESSION['glpi_currenttime'],
             ],
             [
+                'label'         => 'Item_State',
+                'icon'          => null,
+                'comment'       => null,
+                'is_active'     => true,
+                'profiles'      => \array_fill_keys([1, 2, 3, 4, 5, 6, 7, 8], 23),
+                'translations'  => [],
+                'date_creation' => $_SESSION['glpi_currenttime'],
+                'date_mod'      => $_SESSION['glpi_currenttime'],
+            ],
+            [
                 'label'         => 'Smartphonecategory',
+                'icon'          => null,
+                'comment'       => null,
+                'is_active'     => true,
+                'profiles'      => \array_fill_keys([1, 2, 3, 4, 5, 6, 7, 8], 23),
+                'translations'  => [],
+                'date_creation' => $_SESSION['glpi_currenttime'],
+                'date_mod'      => $_SESSION['glpi_currenttime'],
+            ],
+            [
+                'label'         => 'Test_Abc',
                 'icon'          => null,
                 'comment'       => null,
                 'is_active'     => true,
@@ -410,6 +432,8 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                     'custom_assets_assets_id_tablet' => \getItemByTypeName('Glpi\\CustomAsset\\Tablet', 'Tablet 1', true),
                     'custom_dropdowns_dropdowns_id_bar' => \getItemByTypeName('Glpi\\CustomDropdown\\Bar', 'Bar 3', true),
                     'custom_dropdowns_dropdowns_id_foo' => \getItemByTypeName('Glpi\\CustomDropdown\\Foo', 'Foo 2', true),
+                    'custom_dropdowns_dropdowns_id_item_state' => 0,
+                    'custom_dropdowns_dropdowns_id_test_abc' => \getItemByTypeName('Glpi\\CustomDropdown\\Test_Abc', 'Test 1', true),
                     'date_creation' => '2025-03-06 10:08:51',
                     // 'date_mod' => '2025-03-06 10:08:51',
                 ],
@@ -441,9 +465,11 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                     'custom_other' => '',
                     'custom_url' => '',
                     'custom_dropdowns_dropdowns_id_smartphonecategory' => \getItemByTypeName('Glpi\\CustomDropdown\\SmartphoneCategory', 'Cat 4', true),
-                    'custom_assets_assets_id_tablet' => null,
+                    'custom_assets_assets_id_tablet' => 0,
                     'custom_dropdowns_dropdowns_id_bar' => \getItemByTypeName('Glpi\\CustomDropdown\\Bar', 'Bar 4', true),
-                    'custom_dropdowns_dropdowns_id_foo' => null,
+                    'custom_dropdowns_dropdowns_id_foo' => 0,
+                    'custom_dropdowns_dropdowns_id_item_state' => \getItemByTypeName('Glpi\\CustomDropdown\\Item_State', 'State 3', true),
+                    'custom_dropdowns_dropdowns_id_test_abc' => 0,
                     'date_creation' => '2025-03-06 10:11:46',
                     // 'date_mod' => '2025-03-06 10:11:46',
                 ],
@@ -474,10 +500,12 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                     'custom_expirationdate' => null,
                     'custom_other' => '',
                     'custom_url' => '',
-                    'custom_dropdowns_dropdowns_id_smartphonecategory' => null,
+                    'custom_dropdowns_dropdowns_id_smartphonecategory' => 0,
                     'custom_assets_assets_id_tablet' => \getItemByTypeName('Glpi\\CustomAsset\\Tablet', 'Tablet 3', true),
-                    'custom_dropdowns_dropdowns_id_bar' => null,
-                    'custom_dropdowns_dropdowns_id_foo' => null,
+                    'custom_dropdowns_dropdowns_id_bar' => 0,
+                    'custom_dropdowns_dropdowns_id_foo' => 0,
+                    'custom_dropdowns_dropdowns_id_item_state' => \getItemByTypeName('Glpi\\CustomDropdown\\Item_State', 'State 1', true),
+                    'custom_dropdowns_dropdowns_id_test_abc' => \getItemByTypeName('Glpi\\CustomDropdown\\Test_Abc', 'Test 2', true),
                     'date_creation' => '2025-03-06 10:12:59',
                     // 'date_mod' => '2025-03-06 10:12:59',
                 ],
@@ -505,7 +533,9 @@ class GenericobjectPluginMigrationTest extends DbTestCase
         // Validate created dropdowns
         $bar_definition = \getItemByTypeName(DropdownDefinition::class, 'Bar');
         $foo_definition = \getItemByTypeName(DropdownDefinition::class, 'Foo');
+        $item_state_definition = \getItemByTypeName(DropdownDefinition::class, 'Item_State');
         $cat_definition = \getItemByTypeName(DropdownDefinition::class, 'SmartphoneCategory');
+        $test_abc_definition = \getItemByTypeName(DropdownDefinition::class, 'Test_Abc');
 
         $this->checkItems(
             $bar_definition->getDropdownClassName(),
@@ -595,6 +625,21 @@ class GenericobjectPluginMigrationTest extends DbTestCase
         );
 
         $this->checkItems(
+            $item_state_definition->getDropdownClassName(),
+            [
+                [
+                    'name'          => 'State 1',
+                ],
+                [
+                    'name'          => 'State 2',
+                ],
+                [
+                    'name'          => 'State 3',
+                ],
+            ]
+        );
+
+        $this->checkItems(
             $cat_definition->getDropdownClassName(),
             [
                 [
@@ -620,6 +665,21 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                 ],
                 [
                     'name'          => 'Cat 8',
+                ],
+            ]
+        );
+
+        $this->checkItems(
+            $test_abc_definition->getDropdownClassName(),
+            [
+                [
+                    'name'          => 'Test 1',
+                ],
+                [
+                    'name'          => 'Test 2',
+                ],
+                [
+                    'name'          => 'Test 3',
                 ],
             ]
         );
@@ -774,7 +834,10 @@ class GenericobjectPluginMigrationTest extends DbTestCase
 
             $name_field = $class::getNameField();
             $name       = $expected_fields[$name_field];
-            $this->assertTrue($item->getFromDBByCrit([$name_field => $name]));
+            $this->assertTrue(
+                $item->getFromDBByCrit([$name_field => $name]),
+                sprintf('`%s` item not found', $name)
+            );
 
             foreach ($expected_fields as $key => $expected_value) {
                 if (\is_array($expected_value)) {
