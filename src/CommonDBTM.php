@@ -40,6 +40,7 @@ use Glpi\DBAL\QueryParam;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Features\AssignableItem;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
@@ -510,6 +511,10 @@ class CommonDBTM extends CommonGLPI
             'comment', 'ram', 'alarm_threshold', 'brand', 'begin_date', 'autoupdatesystems_id', 'pictures', 'is_active', 'last_boot'
         ];
         return array_filter($fields, function ($f) {
+            $assignable_item = Toolbox::hasTrait(static::class, AssignableItem::class);
+            if ($assignable_item && in_array($f, ['groups_id', 'groups_id_tech'], true)) {
+                return true;
+            }
             return $f !== null && (str_starts_with($f, '_') || $this->isField($f));
         });
     }
