@@ -385,10 +385,9 @@ TWIG, $twig_params);
             $this->onCapacityDisabled($capacity_classname);
         }
 
+        $this->purgeConcreteClassFromDb($this->getCustomObjectClassName());
         $this->purgeConcreteClassFromDb($this->getAssetModelClassName());
         $this->purgeConcreteClassFromDb($this->getAssetTypeClassName());
-
-        parent::cleanDBonPurge();
     }
 
     /**
