@@ -86,7 +86,7 @@
                             {% if get_class(capacity) == 'Glpi\\Asset\\Capacity\\IsInventoriableCapacity' %}
                                 {{ fields.dropdownArrayField(
                                     'inventory_mainasset',
-                                    item.getCapacityConfiguration(capacity, 'inventory_mainasset'),
+                                    item.getCapacityConfigurationValue(capacity, 'inventory_mainasset'),
                                     capacity.getConfigurationTypes(),
                                     __('Inventory type')
                                 ) }}

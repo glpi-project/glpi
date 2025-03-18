@@ -297,7 +297,7 @@ class IsInventoriableCapacityTest extends DbTestCase
         //make sure configuration has been updated in database
         $this->assertEquals(
             \Glpi\Inventory\MainAsset\GenericNetworkAsset::class,
-            $definition->getCapacityConfiguration(
+            $definition->getCapacityConfigurationValue(
                 $definition->getCapacity(\Glpi\Asset\Capacity\IsInventoriableCapacity::class),
                 'inventory_mainasset'
             )

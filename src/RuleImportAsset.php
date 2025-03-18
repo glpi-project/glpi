@@ -1211,7 +1211,7 @@ TWIG, $twig_params);
         foreach ($definitions as $definition) {
             if ($capacity = $definition->getCapacity(\Glpi\Asset\Capacity\IsInventoriableCapacity::class)) {
                 $asset_classname = $definition->getAssetClassName();
-                $main_asset = $definition->getCapacityConfiguration($capacity, 'inventory_mainasset');
+                $main_asset = $definition->getCapacityConfigurationValue($capacity, 'inventory_mainasset');
 
                 $origin_rule_itemtype = \Computer::class;
                 switch ($main_asset) {

@@ -626,7 +626,7 @@ TWIG, $twig_params);
      * @return mixed
      *
      */
-    public function getCapacityConfiguration(CapacityInterface $capacity, string $entry): mixed
+    public function getCapacityConfigurationValue(CapacityInterface $capacity, string $entry): mixed
     {
         if (isset($this->getDecodedCapacities()[$capacity::class])) {
             return $this->getDecodedCapacities()[$capacity::class]->getConfig()?->getConfig($entry);

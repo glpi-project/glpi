@@ -170,7 +170,6 @@ class IsInventoriableCapacity extends AbstractCapacity
     public function onCapacityUpdated(string $classname, ?CapacityConfig $original_config, ?CapacityConfig $updated_config): void
     {
         if ($original_config->getConfig('inventory_mainasset') != $updated_config->getConfig('inventory_mainasset')) {
-            //$this->removeRules($classname);
             $rules = new \RuleImportAsset();
             $rules->initRules(true, $classname);
         }
