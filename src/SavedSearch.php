@@ -908,12 +908,14 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         /** @var \DBmysql $DB */
         global $DB;
 
-        return $DB->delete(
-            'glpi_savedsearches_users',
-            [
-                'savedsearches_id'   => $ids
-            ]
-        );
+        if (Session::haveRight('config', UPDATE)) {
+            return $DB->delete(
+                'glpi_savedsearches_users',
+                [
+                    'savedsearches_id'   => $ids
+                ]
+            );
+        }
 
         return false;
     }
@@ -1262,7 +1264,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Set do_count from massive actions
      *
-     * @param array   $ids     Items IDs
+     * @param array   $ids      Items IDs
      * @param integer $do_count One of self::COUNT_*
      *
      * @return boolean
