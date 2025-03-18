@@ -212,10 +212,6 @@ class Update
        // To prevent problem of execution time
         ini_set("max_execution_time", "0");
 
-       // Update process desactivate all plugins
-        $plugin = new Plugin();
-        $plugin->unactivateAll();
-
         if (version_compare($current_version, GLPI_VERSION, '>')) {
             $message = sprintf(
                 __('Unsupported version (%1$s)'),
@@ -228,6 +224,13 @@ class Update
                 $this->migration->displayWarning($message, true);
                 exit(1);
             }
+        }
+
+        // Update process deactivate all plugins when GLPI is upgraded to a new intermediate/major version,
+        // to prevent blocking the GLPI execution if a plugin is incompatible with this new version.
+        if (VersionParser::getIntermediateVersion($current_version) !== VersionParser::getIntermediateVersion(GLPI_VERSION)) {
+            $plugin = new Plugin();
+            $plugin->unactivateAll();
         }
 
         $migrations = $this->getMigrationsToDo($current_version, $force_latest);
