@@ -62,6 +62,17 @@ class ChangeTemplate extends ITILTemplate
         ];
     }
 
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                ChangeTemplateHiddenField::class,
+                ChangeTemplateMandatoryField::class,
+                ChangeTemplatePredefinedField::class,
+            ]
+        );
+    }
+
     public static function getExtraAllowedFields($withtypeandcategory = false, $withitemtype = false)
     {
         $change = new Change();

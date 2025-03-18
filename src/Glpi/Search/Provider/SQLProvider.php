@@ -5136,7 +5136,7 @@ final class SQLProvider implements SearchProviderInterface
                                 }
 
                                 if (isset($data[$ID][$k]['name']) && $data[$ID][$k]['name'] > 0) {
-                                    if ($itemtype == 'Ticket') {
+                                    if (is_subclass_of($itemtype, CommonITILObject::class)) {
                                         if (
                                             Session::getCurrentInterface() == 'helpdesk'
                                             && $orig_id == 5 // -> Assigned user
@@ -5172,7 +5172,7 @@ final class SQLProvider implements SearchProviderInterface
 
                                 // Manage alternative_email for tickets_users
                                 if (
-                                    ($itemtype == 'Ticket')
+                                    is_subclass_of($itemtype, CommonITILObject::class)
                                     && isset($data[$ID][$k][2])
                                 ) {
                                     $split = explode(\Search::LONGSEP, $data[$ID][$k][2]);
@@ -5195,7 +5195,7 @@ final class SQLProvider implements SearchProviderInterface
                         $out = '';
                         if ($data[$ID][0]['id'] > 0) {
                             $toadd = '';
-                            if ($itemtype == 'Ticket') {
+                            if (is_subclass_of($itemtype, CommonITILObject::class)) {
                                 $user = new \User();
                                 if (Session::haveRight('user', READ) && $user->getFromDB($data[$ID][0]['id'])) {
                                     $toadd    = \Html::showToolTip(
@@ -6020,7 +6020,7 @@ final class SQLProvider implements SearchProviderInterface
         //// Default case
 
         if (
-            $itemtype == 'Ticket'
+            is_subclass_of($itemtype, CommonITILObject::class)
             && Session::getCurrentInterface() == 'helpdesk'
             && $orig_id == 8
             && !empty($anon_name = \Group::getAnonymizedName(

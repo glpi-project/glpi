@@ -136,7 +136,7 @@ class RuleDictionnarySoftware extends Rule
             'action_names' => [],
             'type_match'          => $this->fields['match'] === Rule::AND_MATCHING ? __('AND') : __('OR'),
         ];
-        $actions = $this->getActions();
+        $actions = $this->getAllActions();
         foreach ($actions as $key => $action) {
             $twig_params['action_names'][$key] = $action['name'];
         }

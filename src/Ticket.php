@@ -2073,20 +2073,23 @@ class Ticket extends CommonITILObject
      **/
     public static function getDefaultSearchRequest()
     {
-
-        $search = ['criteria' => [0 => ['field'      => 12,
-            'searchtype' => 'equals',
-            'value'      => 'notclosed'
-        ]
-        ],
-            'sort'     => 19,
+        // Technician don't want to be bothered by already solved items.
+        // On the other hand, it make sense for helpdesk users to see their
+        // own solved tickets.
+        $value = Session::getCurrentInterface() == 'central' ? 'notold' : 'notclosed';
+        $request = [
+            'criteria' => [
+                [
+                    'field'      => 12, // Status
+                    'searchtype' => 'equals',
+                    'value'      => $value
+                ]
+            ],
+            'sort'     => 19, // Last update
             'order'    => 'DESC'
         ];
 
-        if (Session::haveRight(self::$rightname, self::READALL)) {
-            $search['criteria'][0]['value'] = 'notold';
-        }
-        return $search;
+        return $request;
     }
 
     public function getSpecificMassiveActions($checkitem = null)
@@ -2175,7 +2178,12 @@ class Ticket extends CommonITILObject
                     'name'         => "_mergeticket",
                     'used'         => $ma->getItems()['Ticket'],
                     'displaywith'  => ['id'],
-                    'rand'         => $rand
+                    'rand'         => $rand,
+                    'condition'    => [
+                        'NOT' => [
+                            'status' => array_merge(self::getSolvedStatusArray(), self::getClosedStatusArray())
+                        ]
+                    ]
                 ];
                 echo "<table class='mx-auto'><tr>";
                 echo "<td><label for='dropdown__mergeticket$rand'>" . htmlescape(Ticket::getTypeName(1)) . "</label></td><td colspan='3'>";

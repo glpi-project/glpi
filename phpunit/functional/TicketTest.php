@@ -35,7 +35,6 @@
 
 namespace tests\units;
 
-use CommonDBTM;
 use CommonITILActor;
 use CommonITILObject;
 use Computer;
@@ -47,14 +46,16 @@ use Group;
 use Group_Ticket;
 use Group_User;
 use ITILCategory;
-use Monolog\Logger;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
 use Profile_User;
+use ProfileRight;
 use Psr\Log\LogLevel;
+use Search;
 use Supplier;
 use Supplier_Ticket;
 use Symfony\Component\DomCrawler\Crawler;
-use Ticket as GlobalTicket;
+use Ticket;
 use Ticket_User;
 use TicketValidation;
 use User;
@@ -2341,7 +2342,7 @@ class TicketTest extends DbTestCase
     {
         $this->login();
         $this->setEntity('Root entity', true);
-        $ticket = new GlobalTicket();
+        $ticket = new Ticket();
         $ticket_id = $ticket->add([
             'name'    => 'Ticket to check cloning',
             'content' => 'Ticket to check cloning',
@@ -8581,5 +8582,80 @@ HTML
         $ticket->getFromDB($tickets_id);
 
         $this->assertEquals(\CommonITILObject::ASSIGNED, $ticket->fields['status']);
+    }
+
+    public function testTechniciansDontSeeSolvedTicketsByDefault(): void
+    {
+        // Make sure the tested profile does not have the right to see all the
+        // tickets to increase the test fidelity.
+        $technician_profile = getItemByTypeName(Profile::class, 'Technician', true);
+        $right = new ProfileRight();
+        $right->getFromDBByCrit([
+            'profiles_id' => $technician_profile,
+            'name'        => Ticket::$rightname,
+        ]);
+        $this->updateItem(ProfileRight::class, $right->getID(), [
+            'rights' => $right->fields['rights'] & ~Ticket::READALL,
+        ]);
+
+        // Need to login before creating the tickets to make sure they will be visible for our user.
+        $this->login('tech', 'tech');
+
+        // Arrange: create 3 open tickets and 2 solved.
+        $entity_id = $this->getTestRootEntity(true);
+        $to_create = [
+            'Ticket 1' => CommonITILObject::INCOMING,
+            'Ticket 2' => CommonITILObject::INCOMING,
+            'Ticket 3' => CommonITILObject::INCOMING,
+            'Ticket 4' => CommonITILObject::SOLVED,
+            'Ticket 5' => CommonITILObject::SOLVED,
+        ];
+        foreach ($to_create as $name => $status) {
+            $this->createItem(Ticket::class, [
+                'name'        => $name,
+                'content'     => '...',
+                'status'      => $status,
+                'entities_id' => $entity_id,
+            ]);
+        }
+
+        // Act: login as "tech" and get tickets using the default search request
+        $criteria = Ticket::getDefaultSearchRequest();
+        $results = Search::getDatas(Ticket::class, $criteria);
+
+        // Assert: only the non solved tickets should be found.
+        $this->assertEquals(3, $results['data']['totalcount']);
+    }
+
+    public function testHelpdeskUsersCanSeeSolvedTicketsByDefault(): void
+    {
+        // Need to login before creating the tickets to make sure they will be visible for our user.
+        $this->login('post-only', 'postonly');
+
+        // Arrange: create 3 open tickets, 2 solved and 1 closed.
+        $entity_id = $this->getTestRootEntity(true);
+        $to_create = [
+            'Ticket 1' => CommonITILObject::INCOMING,
+            'Ticket 2' => CommonITILObject::INCOMING,
+            'Ticket 3' => CommonITILObject::INCOMING,
+            'Ticket 4' => CommonITILObject::SOLVED,
+            'Ticket 5' => CommonITILObject::SOLVED,
+            'Ticket 6' => CommonITILObject::CLOSED,
+        ];
+        foreach ($to_create as $name => $status) {
+            $this->createItem(Ticket::class, [
+                'name'        => $name,
+                'content'     => '...',
+                'status'      => $status,
+                'entities_id' => $entity_id,
+            ]);
+        }
+
+        // Act: Get tickets using the default search request
+        $criteria = Ticket::getDefaultSearchRequest();
+        $results = Search::getDatas(Ticket::class, $criteria);
+
+        // Assert: only the non closed tickets should be found.
+        $this->assertEquals(5, $results['data']['totalcount']);
     }
 }

@@ -339,6 +339,10 @@ $CFG_GLPI['itemdevicemotherboard_types']  = ['Computer', 'Phone'];
 
 $CFG_GLPI['itemdevicecamera_types']  = ['Computer', 'Phone'];
 
+$CFG_GLPI['itemdevicedrive_types']  = ['Computer', 'Peripheral'];
+
+$CFG_GLPI['itemdevicecontrol_types']  = ['Computer', 'Peripheral', 'Phone', 'NetworkEquipment', 'Printer'];
+
 $CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'ConsumableItem',
     'Contract', 'CronTask', 'DBConnection',
     'FieldUnicity', 'Infocom', 'MailCollector',

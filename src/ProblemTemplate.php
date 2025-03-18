@@ -62,6 +62,17 @@ class ProblemTemplate extends ITILTemplate
         ];
     }
 
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                ProblemTemplateHiddenField::class,
+                ProblemTemplateMandatoryField::class,
+                ProblemTemplatePredefinedField::class,
+            ]
+        );
+    }
+
     public static function getExtraAllowedFields($withtypeandcategory = false, $withitemtype = false)
     {
         $problem = new Problem();

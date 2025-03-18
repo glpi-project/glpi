@@ -5100,7 +5100,7 @@ HTML;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $randupload             = mt_rand();
+        $randupload = $options['rand'] ?? mt_rand();
 
         $p['name']                = 'filename';
         $p['onlyimages']          = false;
@@ -5297,10 +5297,13 @@ HTML;
     public static function textarea($options = [])
     {
        //default options
+
+        $rand = $options['rand'] ?? mt_rand();
+
         $p['name']              = 'text';
-        $p['filecontainer']     = 'fileupload_info';
-        $p['rand']              = mt_rand();
-        $p['editor_id']         = 'text' . $p['rand'];
+        $p['rand']              = $rand;
+        $p['filecontainer']     = 'fileupload_info' . $rand;
+        $p['editor_id']         = 'text' . $rand;
         $p['value']             = '';
         $p['enable_richtext']   = false;
         $p['enable_images']     = true;

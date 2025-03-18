@@ -172,6 +172,10 @@
                     font-weight: 500;
                 }
 
+                hr {
+                    margin: 10px 0;
+                }
+
                 @include media-breakpoint-up(lg) {
                     thead:first-child {
                         th {

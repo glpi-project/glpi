@@ -62,6 +62,17 @@ class TicketTemplate extends ITILTemplate
         ];
     }
 
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                TicketTemplateHiddenField::class,
+                TicketTemplateMandatoryField::class,
+                TicketTemplatePredefinedField::class,
+            ]
+        );
+    }
+
     public static function getExtraAllowedFields($withtypeandcategory = false, $withitemtype = false)
     {
         $itil_object = new Ticket();

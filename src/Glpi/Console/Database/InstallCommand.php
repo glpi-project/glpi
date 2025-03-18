@@ -9,6 +9,7 @@
  *
  * @copyright 2015-2025 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2025 Kyndryl Inc.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -231,12 +232,22 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
 
         mysqli_report(MYSQLI_REPORT_OFF);
         $mysqli = new \mysqli();
+        if ($this->db->dbssl) {
+            // set ssl config
+            $mysqli->ssl_set(
+                $this->db->dbsslkey,
+                $this->db->dbsslcert,
+                $this->db->dbsslca,
+                $this->db->dbsslcapath,
+                $this->db->dbsslcacipher
+            );
+        }
         if (intval($db_port) > 0) {
            // Network port
-            @$mysqli->connect($db_host, $db_user, $db_pass, null, $db_port);
+            @$mysqli->real_connect($db_host, $db_user, $db_pass, null, $db_port);
         } else {
            // Unix Domain Socket
-            @$mysqli->connect($db_host, $db_user, $db_pass, null, 0, $db_port);
+            @$mysqli->real_connect($db_host, $db_user, $db_pass, null, 0, $db_port);
         }
 
         if (0 !== $mysqli->connect_errno) {
