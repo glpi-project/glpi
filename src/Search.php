@@ -5409,7 +5409,7 @@ JAVASCRIPT;
                         $numeric_val = floatval($val);
 
                         if (in_array($searchtype, ["notequals", "notcontains"])) {
-                            $nott = !$nott;
+                            $nott = true;
                         }
 
                         if (isset($searchopt[$ID]["width"])) {
