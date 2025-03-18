@@ -588,7 +588,7 @@ abstract class MainAsset extends InventoryAsset
                     //Only main item is stored as refused, not all APs
                     unset($this->data[$key]);
                 } else {
-                    if ($datarules['action'] != RuleImportAsset::LINK_RESULT_DENIED) {
+                    if (isset($datarules['action']) && $datarules['action'] != RuleImportAsset::LINK_RESULT_DENIED) {
                         $input['rules_id'] = $datarules['rules_id'];
                         $this->addRefused($input);
                     }
