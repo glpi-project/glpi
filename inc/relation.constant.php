@@ -1128,7 +1128,7 @@ $RELATION = [
 
     'glpi_printers' => [
         '_glpi_cartridges'              => 'printers_id',
-        '_glpi_printerlogs'             => 'printers_id',
+        '_glpi_printerlogs'             => ['items_id', 'itemtype'],
         '_glpi_printers_cartridgeinfos' => 'printers_id',
     ],
 

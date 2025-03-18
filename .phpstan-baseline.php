@@ -4100,12 +4100,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Printer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$printer$#',
-	'identifier' => 'parameter.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PrinterLog.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with non\\-empty\\-array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
