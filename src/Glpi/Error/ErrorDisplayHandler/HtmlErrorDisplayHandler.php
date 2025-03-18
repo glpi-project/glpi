@@ -69,7 +69,7 @@ final class HtmlErrorDisplayHandler implements ErrorDisplayHandler
     public function displayErrorMessage(string $error_label, string $message, string $log_level): void
     {
         echo \sprintf(
-            '<div class="alert alert-important alert-danger glpi-debug-alert" style="z-index:10000"><span class="fw-bold">%s: </span>%s</div>',
+            '<div class="alert alert-important alert-danger glpi-debug-alert"><span class="fw-bold">%s: </span>%s</div>',
             \htmlescape($error_label),
             \htmlescape($message)
         );
