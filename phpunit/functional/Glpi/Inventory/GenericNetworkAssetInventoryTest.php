@@ -611,7 +611,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame($tpl_rules_count, $iterator->current()['cnt']);
 
         // Disable capacity and check that rules have been cleaned
-        //FIXME: fails for now; but capacities management must be reworked.
         $this->assertTrue($definition->update(['id' => $definition->getID(), 'capacities' => []]));
 
         $iterator = $DB->request($criteria);
