@@ -56,7 +56,8 @@ class PrinterLogTest extends DbTestCase
 
         $cdate1 = (new \DateTime(\Session::getCurrentTime()))->modify('-14 months');
         $input = [
-            'printers_id' => $printers_id,
+            'itemtype' => \Printer::class,
+            'items_id' => $printers_id,
             'total_pages' => 5132,
             'bw_pages' => 3333,
             'color_pages' => 1799,
@@ -68,7 +69,8 @@ class PrinterLogTest extends DbTestCase
 
         $cdate2 = (new \DateTime(\Session::getCurrentTime()))->modify('-6 months');
         $input = [
-            'printers_id' => $printers_id,
+            'itemtype' => \Printer::class,
+            'items_id' => $printers_id,
             'total_pages' => 6521,
             'bw_pages' => 4100,
             'color_pages' => 2151,
@@ -80,7 +82,8 @@ class PrinterLogTest extends DbTestCase
 
         $cdate3 = (new \DateTime(\Session::getCurrentTime()))->modify('first day of previous month');
         $input = [
-            'printers_id' => $printers_id,
+            'itemtype' => \Printer::class,
+            'items_id' => $printers_id,
             'total_pages' => 3464,
             'bw_pages' => 2154,
             'color_pages' => 1310,
@@ -91,7 +94,8 @@ class PrinterLogTest extends DbTestCase
         $this->assertGreaterThan(0, $log->add($input));
 
         $input = [
-            'printers_id' => $printers_id,
+            'itemtype' => \Printer::class,
+            'items_id' => $printers_id,
             'total_pages' => 9299,
             'bw_pages' => 6258,
             'color_pages' => 3041,
@@ -120,7 +124,8 @@ class PrinterLogTest extends DbTestCase
         for ($i = 0; $i < 21; $i++) {
             $datex->sub(new \DateInterval('P1D'));
             $input = [
-                'printers_id' => $printers_id,
+                'itemtype' => \Printer::class,
+                'items_id' => $printers_id,
                 'total_pages' => 9299,
                 'bw_pages' => 6258,
                 'color_pages' => 3041,

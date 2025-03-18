@@ -129,7 +129,9 @@ class IsInventoriableCapacity extends AbstractCapacity
         $this->registerToTypeConfig('process_types', $classname);
         $this->registerToTypeConfig('ruleimportasset_types', $classname);
 
-        //copy rules from "inventory model" (Computer only for now)
+        if ($this->getConfigurationValue('inventory_mainasset') === \Glpi\Inventory\MainAsset\GenericPrinterAsset::class) {
+            $this->registerToTypeConfig('printer_types', $classname);
+        }
 
         CommonGLPI::registerStandardTab($classname, Item_Environment::class, 85);
         CommonGLPI::registerStandardTab($classname, Item_Process::class, 85);
@@ -151,6 +153,7 @@ class IsInventoriableCapacity extends AbstractCapacity
         $this->unregisterFromTypeConfig('environment_types', $classname);
         $this->unregisterFromTypeConfig('process_types', $classname);
         $this->unregisterFromTypeConfig('ruleimportasset_types', $classname);
+        $this->unregisterFromTypeConfig('printer_types', $classname);
 
         $env_item = new Item_Environment();
         $env_item->deleteByCriteria([
