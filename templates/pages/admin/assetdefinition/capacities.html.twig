@@ -88,7 +88,12 @@
                                     'inventory_mainasset',
                                     item.getCapacityConfigurationValue(capacity, 'inventory_mainasset'),
                                     capacity.getConfigurationTypes(),
-                                    __('Inventory type')
+                                    '',
+                                    {
+                                        'field_class': 'col-6',
+                                        'no_label': true,
+                                        'mb': 'my-2'
+                                    }
                                 ) }}
                             {% endif %}
                         </div>
