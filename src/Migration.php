@@ -1734,12 +1734,10 @@ class Migration
             ]
         );
         foreach ($itemtype_column_iterator as $itemtype_column) {
-            $this->addPostQuery(
-                $DB->buildUpdate(
-                    $itemtype_column['TABLE_NAME'],
-                    [$itemtype_column['COLUMN_NAME'] => $new_itemtype],
-                    [$itemtype_column['COLUMN_NAME'] => $old_itemtype]
-                )
+            $DB->update(
+                $itemtype_column['TABLE_NAME'],
+                [$itemtype_column['COLUMN_NAME'] => $new_itemtype],
+                [$itemtype_column['COLUMN_NAME'] => $old_itemtype]
             );
         }
     }
