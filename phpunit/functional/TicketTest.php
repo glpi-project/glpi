@@ -8360,7 +8360,6 @@ HTML
     public function testGlobalValidationUpdate(): void
     {
         $this->login();
-        $uid1 = getItemByTypeName('User', 'glpi', true);
 
         $ticket = $this->createItem('Ticket', [
             'name' => 'Global_Validation_Update',
@@ -8375,7 +8374,7 @@ HTML
         $v1_id = $this->createItem('TicketValidation', [
             'tickets_id'        => $ticket->getID(),
             'itemtype_target'   => User::class,
-            'items_id_target'   => $uid1,
+            'items_id_target'   => $_SESSION['glpiID'],
         ]);
 
         $this->updateItem('TicketValidation', $v1_id->getID(), [
@@ -8395,7 +8394,7 @@ HTML
         $v2_id = $this->createItem('TicketValidation', [
             'tickets_id'        => $ticket->getID(),
             'itemtype_target'   => User::class,
-            'items_id_target'   => $uid1,
+            'items_id_target'   => $_SESSION['glpiID'],
         ]);
 
         $this->updateItem('TicketValidation', $v2_id->getID(), [
@@ -8411,11 +8410,12 @@ HTML
         $v3_id = $this->createItem('TicketValidation', [
             'tickets_id'        => $ticket->getID(),
             'itemtype_target'   => User::class,
-            'items_id_target'   => $uid1,
+            'items_id_target'   => $_SESSION['glpiID'],
         ]);
 
         $this->updateItem('TicketValidation', $v3_id->getID(), [
             'status'  => \CommonITILValidation::REFUSED,
+            'comment_validation' => 'refused request'
         ]);
 
 

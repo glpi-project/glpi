@@ -211,9 +211,9 @@ abstract class CommonITILValidation extends CommonDBChild
             'SELECT' => [static::getTable() . '.id'],
             'FROM'   => static::getTable(),
             'WHERE'  => $id_condition + [
-                    static::$items_id => $items_id,
-                    static::getTargetCriteriaForUser(Session::getLoginUserID()),
-                ],
+                static::$items_id => $items_id,
+                static::getTargetCriteriaForUser(Session::getLoginUserID()),
+            ],
             'START'  => 0,
             'LIMIT'  => 1
         ]);
