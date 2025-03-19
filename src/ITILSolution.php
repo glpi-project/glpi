@@ -80,9 +80,7 @@ class ITILSolution extends CommonDBChild
 
     public static function canView()
     {
-        return Session::haveRightsOr('ticket', [Ticket::READMY, Ticket::READALL, Ticket::READGROUP, Ticket::READASSIGN])
-            || Session::haveRightsOr('change', [Change::READMY, Change::READALL])
-            || Session::haveRightsOr('problem', [Problem::READMY, Problem::READALL]);
+        return Ticket::canView() || Problem::canView() || Change::canView();
     }
 
     public static function canUpdate()
