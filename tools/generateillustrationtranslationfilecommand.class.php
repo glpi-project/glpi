@@ -58,10 +58,13 @@ final class GenerateIllustrationTranslationFileCommand extends Command
             $content .= '_sx("Icon", "' . $title . '");' . PHP_EOL;
         }
 
-        file_put_contents(
+        $written_bytes = file_put_contents(
             IllustrationManager::TRANSLATION_FILE,
             $content
         );
+        if ($written_bytes !== strlen($content)) {
+            throw new \RuntimeException('Unable to write the illustration translations file contents.');
+        }
 
         $output->writeln('Illustration translations file generated successfully.');
 
