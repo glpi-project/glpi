@@ -124,4 +124,62 @@ class AssetModelTest extends DbTestCase
         $asset_2 = new $classname_2();
         $asset_2->update(['id' => $asset_model->getID(), 'name' => 'updated']);
     }
+
+    public function testDelete(): void
+    {
+        $definition      = $this->initAssetDefinition();
+        $asset_classname = $definition->getAssetClassName();
+        $model_classname = $definition->getAssetModelClassName();
+        $model_fkey      = $model_classname::getForeignKeyField();
+
+        $root_entity_id = $this->getTestRootEntity(true);
+
+        $model_1 = $this->createItem($model_classname, ['name' => 'Test model 1']);
+        $model_2 = $this->createItem($model_classname, ['name' => 'Test model 2']);
+        $model_3 = $this->createItem($model_classname, ['name' => 'Test model 3']);
+
+        $asset_1 = $this->createItem(
+            $asset_classname,
+            [
+                'name'        => 'Test asset 1',
+                'entities_id' => $root_entity_id,
+                $model_fkey   => $model_1->getID()
+            ]
+        );
+        $asset_2 = $this->createItem(
+            $asset_classname,
+            [
+                'name'        => 'Test asset 2',
+                'entities_id' => $root_entity_id,
+                $model_fkey   => $model_2->getID()
+            ]
+        );
+        $asset_3 = $this->createItem(
+            $asset_classname,
+            [
+                'name'        => 'Test asset 3',
+                'entities_id' => $root_entity_id,
+                $model_fkey   => $model_3->getID()
+            ]
+        );
+
+        // Validate init state
+        $this->assertEquals($model_1->getID(), $asset_1->fields[$model_fkey]);
+        $this->assertEquals($model_2->getID(), $asset_2->fields[$model_fkey]);
+        $this->assertEquals($model_3->getID(), $asset_3->fields[$model_fkey]);
+
+        // Delete model 1 and validate that asset 1 is unlinked from the model
+        $this->assertTrue($model_1->delete(['id' => $model_1->getID()], force: true));
+        $this->assertTrue($asset_1->getFromDB($asset_1->getID())); // Reload linked asset
+        $this->assertEquals(0, $asset_1->fields[$model_fkey]);
+        $this->assertEquals($model_2->getID(), $asset_2->fields[$model_fkey]);
+        $this->assertEquals($model_3->getID(), $asset_3->fields[$model_fkey]);
+
+        // Delete model 2, with a replacement value, and validate that the asset 2 is updated
+        $this->assertTrue($model_2->delete(['id' => $model_2->getID(), '_replace_by' => $model_3->getID()], force: true));
+        $this->assertTrue($asset_2->getFromDB($asset_2->getID())); // Reload linked asset
+        $this->assertEquals(0, $asset_1->fields[$model_fkey]);
+        $this->assertEquals($model_3->getID(), $asset_2->fields[$model_fkey]);
+        $this->assertEquals($model_3->getID(), $asset_3->fields[$model_fkey]);
+    }
 }
