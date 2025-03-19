@@ -70,6 +70,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return _n('Saved search', 'Saved searches', $nb);
     }
 
+    public function canUpdateItem()
+    {
+        return Session::haveRight(self::$rightname, UPDATE) ||
+            $this->fields["users_id"] === Session::getLoginUserID();
+    }
 
     public function getForbiddenStandardMassiveAction()
     {
@@ -132,6 +137,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         }
         return parent::showMassiveActionsSubForm($ma);
     }
+
 
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
@@ -832,6 +838,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         }
     }
 
+
     /**
      * Unmark savedsearch as default view for the current user
      *
@@ -867,6 +874,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             }
         }
     }
+
 
     /**
      * Unmark savedsearch as default view
@@ -1121,12 +1129,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             $types[] = $data['itemtype'];
         }
         return $types;
-    }
-
-    public function canUpdateItem()
-    {
-        return Session::haveRight(self::$rightname, UPDATE) ||
-            $this->fields["users_id"] === Session::getLoginUserID();
     }
 
 
