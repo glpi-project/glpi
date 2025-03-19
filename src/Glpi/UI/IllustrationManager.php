@@ -74,14 +74,15 @@ final class IllustrationManager
      */
     public function renderIcon(string $icon_id, ?int $size = null): string
     {
-        $icons = $this->getIconsDefinitions();
-        $twig = TemplateRenderer::getInstance();
-        return $twig->render('components/illustration/icon.svg.twig', [
-            'file_path' => $this->icons_sprites_path,
-            'icon_id'   => $icon_id,
-            'size'      => $this->computeSize($size),
-            'title'     => $icons[$icon_id]['title'] ?? "",
-        ]);
+        $custom_icon_prefix = "file://";
+        if (str_starts_with($icon_id, $custom_icon_prefix)) {
+            return $this->renderCustomIcon(
+                substr($icon_id, strlen($custom_icon_prefix)),
+                $size
+            );
+        } else {
+            return $this->renderNativeIcon($icon_id, $size);
+        }
     }
 
     /** @return string[] */
@@ -141,12 +142,33 @@ final class IllustrationManager
         return $titles;
     }
 
+    private function renderNativeIcon(string $icon_id, ?int $size = null): string
+    {
+        $icons = $this->getIconsDefinitions();
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render('components/illustration/icon.svg.twig', [
+            'file_path' => $this->icons_sprites_path,
+            'icon_id'   => $icon_id,
+            'size'      => $this->computeSize($size),
+            'title'     => $icons[$icon_id]['title'] ?? "",
+        ]);
+    }
+
+    private function renderCustomIcon(string $icon_id, ?int $size = null): string
+    {
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render('components/illustration/custom_icon.html.twig', [
+            'url'   => "/front/document.send.php?file=_pictures/illustrations/$icon_id",
+            'size'  => $this->computeSize($size),
+        ]);
+    }
+
     private function getIconsDefinitions(): array
     {
         if ($this->icons_definitions === null) {
             $json = file_get_contents($this->icons_definition_file);
             if ($json === false) {
-                throw new \RuntimeException();
+                throw new RuntimeException();
             }
             $this->icons_definitions = json_decode($json, associative: true, flags: JSON_THROW_ON_ERROR);
         }

@@ -31,10 +31,10 @@
  */
 
 .illustration-selector {
-    padding-bottom: 7px;
-    border-color: var(--tblr-card-border-color);
+    padding-bottom: 16px;
+    border-color: var(--tblr-border-color);
     box-shadow: var(--tblr-box-shadow-input) !important;
-    border-radius: 10px !important; // Must match border radius used for tinymce
+    border-radius: 5px !important; // Must match border radius used for tinymce
 
     &:hover {
         border-color: var(--tblr-secondary);
@@ -43,3 +43,16 @@
 
     transition: border-color 0.3s;
 }
+
+.muted-if-not-active {
+    opacity: 1 !important;
+
+    &:not(.active) {
+        color: var(--tblr-muted) !important;
+    }
+
+    &:hover {
+        color: var(--tblr-dark) !important;
+    }
+}
+
