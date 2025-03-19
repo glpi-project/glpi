@@ -2468,6 +2468,26 @@ class SearchTest extends DbTestCase
             [
                 'link' => ' ',
                 'nott' => 0,
+                'itemtype' => \Ticket::class,
+                'ID' => 2, // ID
+                'searchtype' => 'notequals',
+                'val' => '5',
+                'meta' => false,
+                'expected' => "(`glpi_tickets`.`id` <> 5)",
+            ],
+            [
+                'link' => ' ',
+                'nott' => 0,
+                'itemtype' => \Ticket::class,
+                'ID' => 2, // ID
+                'searchtype' => 'notcontains',
+                'val' => '88',
+                'meta' => false,
+                'expected' => "(`glpi_tickets`.`id` <> 88)",
+            ],
+            [
+                'link' => ' ',
+                'nott' => 0,
                 'itemtype' => \User::class,
                 'ID' => 99,
                 'searchtype' => 'equals',
