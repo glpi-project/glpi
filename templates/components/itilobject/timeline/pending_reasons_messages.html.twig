@@ -33,6 +33,21 @@
 
 {% set pending_reason_item_parent = call("PendingReason_Item::getForItem", [item]) %}
 
+{% set pending_reason_contexts = {
+   'pending': {
+      'className' : 'badge bg-blue-lt',
+      'icon' : '<i class="fas fa-pause me-1"></i>',
+      'text': __('Pending'),
+   },
+   'done': {
+      'className' : 'badge bg-transparent text-muted',
+      'icon' : '<i class="fas fa-solid fa-check"></i>',
+      'text' : __('Done'),
+   }
+} %}
+
+{% set pending_reason_selected_context = 'pending' %}
+
 {% if display_for_parent %}
    {% set pending_reason = pending_reason_item_parent ? call("PendingReason::getById", [pending_reason_item_parent.fields['pendingreasons_id']]) : false %}
 {% else %}
@@ -43,27 +58,13 @@
       item,
       pending_item
    ]) %}
-   {% set active_pending_icon %}
-      <i class="fas fa-pause me-1"></i>
-   {% endset %}
-   {% set done_pending_icon %}
-      <i class="fas fa-solid fa-check"></i>
-   {% endset %}
-   {% set pending_reason_option = is_latest_pending and pending_reason_item_parent != false ? {
-      'className' : 'badge bg-blue-lt',
-      'icon' : active_pending_icon,
-      'text': 'Pending',
-   } : {
-      'className' : 'badge bg-transparent text-muted',
-      'icon' : done_pending_icon,
-      'text' : 'Done',
-   } %}
+   {% set pending_reason_selected_context = is_latest_pending and pending_reason_item_parent != false ? 'pending' : 'done' %}
 {% endif %}
 
 {% if pending_reason %}
-   <span class="{{ pending_reason_option.className }} {{ display_for_parent ? "mt-1 w-100 text-truncate" : "" }}">
-      {{ pending_reason_option.icon }}
-      {{ __(pending_reason_option.text ~ ": %s")|format(pending_reason.getLink())|raw }}
+   <span class="{{ pending_reason_contexts[pending_reason_selected_context].className }} {{ display_for_parent ? "mt-1 w-100 text-truncate" : "" }}">
+      {{ pending_reason_contexts[pending_reason_selected_context].icon|raw }}
+      {{ (pending_reason_contexts[pending_reason_selected_context].text ~ ": %s"|format(pending_reason.getLink()))|raw }}
 
       {% if display_for_parent or call("PendingReason_Item::isLastPendingForItem", [
          item,
