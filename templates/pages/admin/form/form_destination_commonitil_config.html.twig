@@ -245,21 +245,8 @@
     </script>
 {% endmacro %}
 
-{% set left_regular_cls = "col-lg-8" %}
-{% set right_regular_cls = "col-lg-4" %}
-
-{% set left_expanded_cls = "col-xl-5 col-lg-6" %}
-{% set right_expanded_cls = "col-xl-7 col-lg-6" %}
-
-{% set left_side_cls = left_regular_cls %}
-{% set right_side_cls = right_regular_cls %}
-{% if is_expanded %}
-{% set left_side_cls = left_expanded_cls %}
-{% set right_side_cls = right_expanded_cls %}
-{% endif %}
-
 <div class="overflow-x-hidden row d-flex alin-items-stretch mx-0 border-top">
-    <div class="col-12 {{ left_side_cls }} order-last order-lg-first pt-2 pe-2 pe-lg-4 d-flex flex-column">
+    <div class="col-12 col-lg-8 order-last order-lg-first pt-2 pe-2 pe-lg-4 d-flex flex-column">
         <div class="timeline-item mb-3 ITILContent ps-4">
             <div class="row">
                 <div class="col-12 col-sm">
@@ -320,7 +307,7 @@
             </div>
         </div>
     </div>
-    <div class="col-12 {{ right_side_cls }} mt-0 p-0 rounded-0 card-footer border-start border-top-0">
+    <div class="col-12 col-lg-4 mt-0 p-0 rounded-0 card-footer border-start border-top-0">
         <section class="accordion open accordion-flush" aria-label="{{ __('Destination fields accordion') }}">
             {% for category in item.getConfigurableFieldsGroupedByCategory() %}
                 {% set already_rendered_config = [

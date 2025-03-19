@@ -37,18 +37,18 @@ const actorTypes = [
         dataAttr: 'requester',
         defaultValue: 'User who filled the form'
     },
-    // {
-    //     name: 'Assignee',
-    //     type: 'assignee',
-    //     dataAttr: 'assign',
-    //     defaultValue: 'From template'
-    // },
-    // {
-    //     name: 'Observer',
-    //     type: 'observer',
-    //     dataAttr: 'observer',
-    //     defaultValue: 'From template'
-    // }
+    {
+        name: 'Assignee',
+        type: 'assignee',
+        dataAttr: 'assign',
+        defaultValue: 'From template'
+    },
+    {
+        name: 'Observer',
+        type: 'observer',
+        dataAttr: 'observer',
+        defaultValue: 'From template'
+    }
 ];
 
 describe('Actors configuration', () => {
