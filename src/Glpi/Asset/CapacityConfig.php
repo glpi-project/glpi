@@ -55,7 +55,7 @@ class CapacityConfig implements JsonSerializable
         return $this->config[$entry];
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->config;
     }
