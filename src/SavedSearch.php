@@ -146,7 +146,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     $saved_search = new SavedSearch();
                     if ($saved_search->getFromDB($id)) {
                         if ($saved_search->can($id, UPDATE)) {
-                            if ($saved_search->unmarkDefaultForAllUsers($id)) {
+                            $success = (new SavedSearch_User())->deleteByCriteria(['savedsearches_id' => $id]);
+                            if ($success) {
                                 $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
@@ -167,7 +168,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     $saved_search = new SavedSearch();
                     if ($saved_search->getFromDB($id)) {
                         if ($saved_search->can($id, UPDATE)) {
-                            if ($saved_search->setDoCount([$id], $input['do_count'])) {
+                            $success = $saved_search->update([
+                                'id' => $id,
+                                'do_count' => $input['do_count'],
+                            ]);
+                            if ($success) {
                                 $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
@@ -189,7 +194,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     $saved_search = new SavedSearch();
                     if ($saved_search->getFromDB($id)) {
                         if ($saved_search->can($id, UPDATE)) {
-                            if ($saved_search->setEntityRecur([$id], $input['entities_id'], $input['is_recursive'])) {
+                            $success = $saved_search->update([
+                                'id' => $id,
+                                'entities_id' => $input['entities_id'],
+                                'is_recursive' => $input['is_recursive'],
+                            ]);
+                            if ($success) {
                                 $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
@@ -211,12 +221,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                     $saved_search = new SavedSearch();
                     if ($saved_search->getFromDB($id)) {
                         if ($saved_search->can($id, UPDATE)) {
-                            if (
-                                $saved_search->update([
-                                    'id' => $id,
-                                    'is_private' => $input['is_private']
-                                ])
-                            ) {
+                            $success = $saved_search->update([
+                                'id' => $id,
+                                'is_private' => $input['is_private'],
+                            ]);
+                            if ($success) {
                                 $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($saved_search->getType(), $id, MassiveAction::ACTION_KO);
@@ -858,43 +867,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             }
         }
     }
-
-    /**
-     * Unmark savedsearch as default view for all users
-     *
-     * @param integer $ID ID of the saved search
-     *
-     * @return bool
-     **/
-    public function unmarkDefaultForAllUsers($ID)
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        if (
-            $this->getFromDB($ID)
-            && ($this->fields['type'] != self::URI)
-        ) {
-            $dd = new SavedSearch_User();
-           // Is default view for this itemtype already exists ?
-            $iterator = $DB->request([
-                'SELECT' => 'id',
-                'FROM'   => 'glpi_savedsearches_users',
-                'WHERE'  => [
-                    'savedsearches_id'   => $ID,
-                    'itemtype'           => $this->fields['itemtype']
-                ]
-            ]);
-
-            if ($result = $iterator->current()) {
-                // already exists delete it
-                $deleteID = $result['id'];
-                return $dd->delete(['id' => $deleteID]);
-            }
-        }
-        return false;
-    }
-
 
     /**
      * Unmark savedsearch as default view
