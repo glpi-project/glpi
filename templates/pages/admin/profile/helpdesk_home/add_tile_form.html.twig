@@ -30,41 +30,62 @@
  # ---------------------------------------------------------------------
  #}
 
-<section class="container-narrow ms-0 mt-2" aria-labelledby="edit-tile-header">
-    <h1 id="edit-tile-header" class="fs-2 mb-1">
-        {{ __("Edit tile") }}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<section class="container-narrow ms-0 mt-2" aria-labelledby="add-tile-header">
+    <h1 id="add-tile-header" class="fs-2 mb-1">
+        {{ __("Add a new tile") }}
     </h1>
 
     <form>
-        {{ include(tile.getConfigFieldsTemplate(), {tile: tile}, with_context = false) }}
+        {{ fields.dropdownArrayField(
+            '_itemtype',
+            '',
+            possible_tiles_dropdown_values,
+            _n('Type', 'Types', 1),
+            {
+                full_width: true,
+                is_horizontal: false,
+                display_emptychoice: true,
+                add_data_attributes: {'glpi-helpdesk-config-add-tile-type': ''},
+            }
+        ) }}
 
-        <input name="id" type="hidden" value="{{ tile.getDatabaseId() }}">
-        <input name="_itemtype" type="hidden" value="{{ get_class(tile) }}">
+        {% for tile in possible_tiles %}
+            <div
+                class="d-none"
+                data-glpi-helpdesk-config-add-tile-form-for="{{ get_class(tile)|replace({"\\": "-"}) }}"
+            >
+                {{ include(tile.getConfigFieldsTemplate(), {tile: tile}, with_context = false) }}
+            </div>
+        {% endfor %}
+
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 
         <div class="d-flex mt-4 mb-3">
             <button
                 type="button"
                 class="btn btn-outline-secondary ms-auto w-auto d-flex align-items-center"
-                data-glpi-helpdesk-config-edit-tile-cancel
+                data-glpi-helpdesk-config-add-tile-cancel
             >
                 <i class="ti ti-cancel me-1"></i>
-                <span>{{ __("Cancel") }}<span>
+                <span>{{ __("Cancel") }}</span>
             </button>
             <button
                 type="button"
                 class="btn btn-primary ms-2 w-auto d-flex align-items-center"
-                data-glpi-helpdesk-config-edit-tile-save
+                data-glpi-helpdesk-config-add-tile-submit
+                disabled
             >
                 <i
                     class="ti ti-plus me-1"
-                    data-glpi-helpdesk-config-edit-tile-save-plus-icon
+                    data-glpi-helpdesk-config-add-tile-submit-plus-icon
                 ></i>
                 <i
                     class="ti ti-loader-2 fa-spin me-1 d-none"
-                    data-glpi-helpdesk-config-edit-tile-save-spinner-icon
+                    data-glpi-helpdesk-config-add-tile-submit-spinner-icon
                 ></i>
-                <span>{{ __("Save changes") }}<span>
+                <span>{{ __("Add tile") }}</span>
             </button>
         </div>
     </form>
