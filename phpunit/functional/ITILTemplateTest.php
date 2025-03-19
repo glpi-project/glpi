@@ -539,9 +539,7 @@ class ITILTemplateTest extends DbTestCase
         return $tpl_id;
     }
 
-    /**
-     * @dataProvider itilProvider
-     */
+    #[DataProvider('itilProvider')]
     public function testCleanDBonPurge($itiltype)
     {
         $this->login();
