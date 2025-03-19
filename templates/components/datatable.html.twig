@@ -74,7 +74,7 @@
                 {% do call('Html::showMassiveActions', [massiveactionparams|default([])]) %}
             </div>
         {% endif %}
-        <table id="{{ datatable_id }}" class="table {{ table_class_style|default('table-hover') }}" aria-label="{{ datatable_aria_label|default('Data Table') }}">
+        <table id="{{ datatable_id }}" class="table {{ table_class_style|default('table-hover') }}" aria-label="{{ datatable_aria_label|default('') }}">
             <thead>
                 {% if super_header is defined and super_header is not empty %}
                     {% set super_header_label = super_header is array ? super_header['label'] : super_header %}

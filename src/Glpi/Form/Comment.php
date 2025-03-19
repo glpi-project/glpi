@@ -138,7 +138,7 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionab
 
         if (!empty($this->fields['name'])) {
             $handlers[$key][] = new TranslationHandler(
-                parent_item: $this,
+                item: $this,
                 key: self::TRANSLATION_KEY_NAME,
                 name: __('Comment title'),
                 value: $this->fields['name'],
@@ -147,7 +147,7 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionab
 
         if (!empty($this->fields['description'])) {
             $handlers[$key][] = new TranslationHandler(
-                parent_item: $this,
+                item: $this,
                 key: self::TRANSLATION_KEY_DESCRIPTION,
                 name: __('Comment description'),
                 value: $this->fields['description'],

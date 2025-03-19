@@ -106,7 +106,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         $handlers = [];
         if (!empty($this->fields['name'])) {
             $handlers[$key][] = new TranslationHandler(
-                parent_item: $this,
+                item: $this,
                 key: self::TRANSLATION_KEY_NAME,
                 name: __('Question name'),
                 value: $this->fields['name'],
@@ -115,18 +115,18 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
 
         if (!empty($this->fields['description'])) {
             $handlers[$key][] = new TranslationHandler(
-                parent_item: $this,
+                item: $this,
                 key: self::TRANSLATION_KEY_DESCRIPTION,
                 name: __('Question description'),
                 value: $this->fields['description'],
             );
         }
 
-        $questionType = $this->getQuestionType();
-        if ($questionType !== null && $questionType instanceof ProvideTranslationsInterface) {
+        $question_type = $this->getQuestionType();
+        if ($question_type instanceof ProvideTranslationsInterface) {
             $handlers[$key] = array_merge(
                 $handlers[$key] ?? [],
-                array_values($questionType->listTranslationsHandlers($this))
+                array_values($question_type->listTranslationsHandlers($this))
             );
         }
 

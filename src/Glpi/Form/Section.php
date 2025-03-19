@@ -141,7 +141,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         if (count($form->getSections()) > 1) {
             if (!empty($this->fields['name'])) {
                 $handlers[$key][] = new TranslationHandler(
-                    parent_item: $this,
+                    item: $this,
                     key: self::TRANSLATION_KEY_NAME,
                     name: __('Section title'),
                     value: $this->fields['name'],
@@ -150,7 +150,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
 
             if (!empty($this->fields['description'])) {
                 $handlers[$key][] = new TranslationHandler(
-                    parent_item: $this,
+                    item: $this,
                     key: self::TRANSLATION_KEY_DESCRIPTION,
                     name: __('Section description'),
                     value: $this->fields['description'],
