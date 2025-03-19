@@ -36,7 +36,6 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
-use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
@@ -131,7 +130,7 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionab
     }
 
     #[Override]
-    public function listTranslationsHandlers(?CommonDBTM $item = null): array
+    public function listTranslationsHandlers(): array
     {
         $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
         $handlers = [];

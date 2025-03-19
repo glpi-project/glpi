@@ -353,7 +353,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
     }
 
     #[Override]
-    public function listTranslationsHandlers(?CommonDBTM $item = null): array
+    public function listTranslationsHandlers(): array
     {
         $key = __('Form properties');
         $handlers = [];

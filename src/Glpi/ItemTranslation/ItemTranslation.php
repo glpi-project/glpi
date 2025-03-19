@@ -41,20 +41,12 @@ use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Override;
 use Session;
 
-abstract class ItemTranslation extends CommonDBChild
+class ItemTranslation extends CommonDBChild
 {
+    public static $rightname = 'config';
+
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
-
-
-    #[Override]
-    public static function getTable($classname = null)
-    {
-        if (is_a($classname ?? static::class, self::class, true)) {
-            return parent::getTable(self::class);
-        }
-        return parent::getTable($classname);
-    }
 
     #[Override]
     public function prepareInputForAdd($input): array
@@ -183,7 +175,7 @@ abstract class ItemTranslation extends CommonDBChild
             return $translation;
         }
 
-        foreach ($item->listTranslationsHandlers($item) as $handlers) {
+        foreach ($item->listTranslationsHandlers() as $handlers) {
             foreach ($handlers as $handler) {
                 if (
                     $handler->getItem()::class === $item::class

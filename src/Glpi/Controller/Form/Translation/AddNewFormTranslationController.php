@@ -74,7 +74,7 @@ final class AddNewFormTranslationController extends AbstractController
     private function createTranslation(Form $form, string $language): void
     {
         $form_translation = new FormTranslation();
-        $handlers_with_sections = $form->listTranslationsHandlers($form);
+        $handlers_with_sections = $form->listTranslationsHandlers();
         $first_handler = current(current($handlers_with_sections));
 
         $input = [
