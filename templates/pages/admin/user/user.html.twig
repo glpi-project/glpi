@@ -300,22 +300,22 @@
                 </div>
             </div>
         </div>
-    </form>
-    {% if not is_preference_form %}
-        {% if no_form_buttons is not defined or no_form_buttons == false %}
-            {{ include('components/form/buttons.html.twig') }}
-        {% endif %}
-        {% if params['formfooter'] is null or params['formfooter'] == true %}
-            <div class="card-footer mx-n2 mb-n2">
-                {{ include('components/form/dates.html.twig') }}
+        {% if not is_preference_form %}
+            {% if no_form_buttons is not defined or no_form_buttons == false %}
+                {{ include('components/form/buttons.html.twig') }}
+            {% endif %}
+            {% if params['formfooter'] is null or params['formfooter'] == true %}
+                <div class="card-footer mx-n2 mb-n2">
+                    {{ include('components/form/dates.html.twig') }}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
+                <button class="btn btn-primary me-2" type="submit" name="update" value="1">
+                    <i class="ti ti-device-floppy"></i>
+                    <span>{{ _x('button', 'Save') }}</span>
+                </button>
             </div>
         {% endif %}
-    {% else %}
-        <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
-            <button class="btn btn-primary me-2" type="submit" name="update" value="1">
-                <i class="ti ti-device-floppy"></i>
-                <span>{{ _x('button', 'Save') }}</span>
-            </button>
-        </div>
-    {% endif %}
+    </form>
 </div>
