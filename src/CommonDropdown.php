@@ -659,7 +659,7 @@ abstract class CommonDropdown extends CommonDBTM
             $replacement_options['used'] = [$ID];
         }
         Dropdown::show(
-            getItemTypeForTable($this->getTable()),
+            static::class,
             $replacement_options
         );
         echo "<input type='hidden' name='id' value='$ID' />";
