@@ -3220,4 +3220,53 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         $networkport->getFromDB($networkport_id);
         $this->assertEquals(1, $networkport->fields['is_dynamic']);
     }
+
+    public function testKeepManualNetworkPort()
+    {
+        // create NetworkEquipment manually
+        $networkEquipment = new \NetworkEquipment();
+        $networkequipments_id = $networkEquipment->add([
+            'name'        => 'SWITCH.network.teclib.org',
+            'serial'      => 'DKFJG3541DF',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $networkequipments_id);
+
+        // create NetworkPortEthernet manually (which will not be taken over by the inventory and will therefore remain at is_dynamic = 0)
+        $networkport = new \NetworkPort();
+        $networkport_id = $networkport->add([
+            'name'                => 'ETH1254',
+            'logical_number'      => '0',
+            'instantiation_type'  => 'NetworkPortEthernet',
+            'items_id'            => $networkequipments_id,
+            'itemtype'            => 'NetworkEquipment',
+            'mac'                 => '08:f3:fb:a1:04:00',
+            'entities_id'         => 0,
+        ]);
+
+        $this->assertGreaterThan(0, $networkport_id);
+
+        // reload NetworkPortEthernet and check if exist and not dynamic
+        $this->assertTrue($networkport->getFromDB($networkport_id));
+        $this->assertEquals(0, $networkport->fields['is_dynamic']);
+
+        // do inventory
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/cisco-C9300.xml');
+        // Import the switch(es) into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($data);
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        // reload NetworkPortEthernet and check if still exist and not dynamic
+        $this->assertTrue($networkport->getFromDB($networkport_id));
+        $this->assertEquals(0, $networkport->fields['is_dynamic']);
+    }
 }

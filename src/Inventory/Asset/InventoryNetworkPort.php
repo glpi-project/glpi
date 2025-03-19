@@ -527,7 +527,7 @@ trait InventoryNetworkPort
         //delete remaining network ports, if any
         if (count($db_ports)) {
             foreach ($db_ports as $netpid => $netpdata) {
-                if ($netpdata['name'] != 'management') { //prevent removing internal management port
+                if ($netpdata['name'] != 'management' && $netpdata['is_dynamic']) { //prevent removing internal management port or non dynamic ports
                     $networkport->delete(['id' => $netpid], true);
                 }
             }
