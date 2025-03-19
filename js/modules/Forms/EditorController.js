@@ -993,6 +993,10 @@ export class GlpiFormEditorController
      * @param {jQuery} question
      */
     #deleteQuestion(question) {
+        if (!this.#checkBlockConditionDependencies('question', question)) {
+            return;
+        }
+
         // Dispose all tooltips and popovers
         question.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 
@@ -1024,6 +1028,150 @@ export class GlpiFormEditorController
         ) {
             this.#deleteHorizontalLayout(question_container);
         }
+    }
+
+    /**
+     * Check if a block is used in conditions and show modal if needed
+     *
+     * @param {string} type Type of block ('question', 'comment', 'section')
+     * @param {jQuery} block The block element to check
+     * @returns {boolean} True if the block can be deleted, false otherwise
+     */
+    #checkBlockConditionDependencies(type, block) {
+        const uuid = `${type}-${this.#getItemInput(block, "uuid")}`;
+        const conditions_that_use_this_block = $('[data-glpi-conditions-editor-item]')
+            .filter((_index, element) => element.value == uuid);
+
+        // If the block is used in a condition, we can't delete it
+        if (conditions_that_use_this_block.length > 0) {
+            this.#showBlockHasConditionsModal(type, conditions_that_use_this_block);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Show the modal displaying all questions that use the target question in their conditions
+     *
+     * @param {jQuery} conditions_that_use_this_question jQuery object containing condition elements
+     */
+    #showBlockHasConditionsModal(type, conditions_that_use_this_question) {
+        // Only show wanted header
+        $('[data-glpi-form-editor-block-has-conditions-modal-header]')
+            .addClass('d-none')
+            .filter((_index, element) => $(element).data('glpi-form-editor-block-has-conditions-modal-header') === type)
+            .removeClass('d-none');
+
+        // Get the list of questions using this question in their conditions
+        const questions_with_conditions = new Set();
+        const elements_with_conditions = [];
+        conditions_that_use_this_question.each((_index, element) => {
+            // Find the parent question that contains this condition
+            const parent_block = $(element).closest('[data-glpi-form-editor-block]');
+            if (parent_block.length > 0) {
+                const name = this.#getItemInput(parent_block, "name");
+                const uuid = this.#getItemInput(parent_block, "uuid");
+
+                elements_with_conditions.push({
+                    name: name,
+                    uuid: uuid,
+                    type: 'question',
+                    element: parent_block
+                });
+
+                questions_with_conditions.add(name);
+            }
+
+            // Also check for sections using this condition
+            const parent_section = $(element).closest('[data-glpi-form-editor-section-details]');
+            if (parent_section.length > 0) {
+                const name = this.#getItemInput(parent_section, "name");
+                const uuid = this.#getItemInput(parent_section, "uuid");
+
+                elements_with_conditions.push({
+                    name: name,
+                    uuid: uuid,
+                    type: 'section',
+                    element: parent_section
+                });
+
+                questions_with_conditions.add(name);
+            }
+        });
+
+        // Clear and populate the modal list
+        const modal_list = $('[data-glpi-form-editor-block-has-conditions-list]');
+        modal_list.empty();
+
+        // Get the template for list items
+        const template = $('[data-glpi-form-editor-block-has-conditions-item-template]').html();
+
+        // Add each question name to the list
+        elements_with_conditions.forEach(data => {
+            const item = $(template);
+            const nameElement = item.find('[data-glpi-form-editor-block-has-conditions-item-name]');
+
+            nameElement.text(data.name);
+            nameElement.attr('data-glpi-form-editor-block-has-conditions-item-uuid', data.uuid);
+            nameElement.attr('data-glpi-form-editor-block-has-conditions-item-type', data.type);
+
+            modal_list.append(item);
+        });
+
+        // Set up click handlers for the items
+        modal_list.find('[data-glpi-form-editor-block-has-conditions-item-selector]').on('click', (e) => {
+            e.preventDefault();
+
+            // Hide modal
+            $('[data-glpi-form-editor-block-has-conditions-modal]').modal('hide');
+
+            // Get the UUID and type
+            const clickedElement = $(e.currentTarget);
+            const uuid = clickedElement.data('glpi-form-editor-block-has-conditions-item-uuid');
+            const type = clickedElement.data('glpi-form-editor-block-has-conditions-item-type');
+
+            // Find the element with this UUID
+            let targetElement;
+            if (type === 'question') {
+                const allQuestions = $(this.#target).find('[data-glpi-form-editor-question]');
+                allQuestions.each((_index, question) => {
+                    if (this.#getItemInput($(question), "uuid") === uuid) {
+                        targetElement = $(question);
+                    }
+                });
+            } else if (type === 'section') {
+                const allSections = $(this.#target).find('[data-glpi-form-editor-section-details]');
+                allSections.each((_index, section) => {
+                    if (this.#getItemInput($(section), "uuid") === uuid) {
+                        targetElement = $(section);
+                    }
+                });
+            }
+
+            // Make sure we found the element and it's visible (not in a collapsed section)
+            if (targetElement && targetElement.length > 0) {
+                // Make sure parent section is not collapsed
+                const parentSection = targetElement.closest('[data-glpi-form-editor-section]');
+                if (parentSection.hasClass('section-collapsed')) {
+                    // Uncollapse the section
+                    this.#collaspeSection(parentSection);
+                }
+
+                // Set as active
+                this.#setActiveItem(targetElement);
+
+                // Scroll to the element
+                targetElement.get(0).scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                    inline: 'nearest'
+                });
+            }
+        });
+
+        // Show the modal
+        $('[data-glpi-form-editor-block-has-conditions-modal]').modal('show');
     }
 
     /**
@@ -1605,6 +1753,10 @@ export class GlpiFormEditorController
      * @param {jQuery} section
      */
     #deleteSection(section) {
+        if (!this.#checkBlockConditionDependencies('section', section)) {
+            return;
+        }
+
         if (section.prev().length == 0) {
             // If this is the first section of the form, set the next section as active if it exists
             if (section.next().length > 0 && this.#getSectionCount() > 2) {
@@ -1667,6 +1819,10 @@ export class GlpiFormEditorController
      * @param {jQuery} comment
      */
     #deleteComment(comment) {
+        if (!this.#checkBlockConditionDependencies('comment', comment)) {
+            return;
+        }
+
         // Dispose all tooltips and popovers
         comment.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 
@@ -2211,6 +2367,30 @@ export class GlpiFormEditorController
      * To render the condition editor, the unsaved state must be computed
      * and sent to the server.
      *
+     * This method compute the available sections of the forms
+     */
+    #getSectionStateForConditionEditor() {
+        this.computeState();
+        const sections = [];
+
+        // Extract all sections
+        $(this.#target)
+            .find("[data-glpi-form-editor-section]")
+            .each((_index, section) => {
+                sections.push({
+                    'uuid': this.#getItemInput($(section), "uuid"),
+                    'name': this.#getItemInput($(section), "name"),
+                });
+            })
+        ;
+
+        return sections;
+    }
+
+    /**
+     * To render the condition editor, the unsaved state must be computed
+     * and sent to the server.
+     *
      * This method compute the available questions of the forms, the defined
      * conditions and the current selected item.
      */
@@ -2234,6 +2414,30 @@ export class GlpiFormEditorController
         return questions;
     }
 
+    /**
+     * To render the condition editor, the unsaved state must be computed
+     * and sent to the server.
+     *
+     * This method compute the available comments of the forms
+     */
+    #getCommentStateForConditionEditor() {
+        this.computeState();
+        const comments = [];
+
+        // Extract all comments
+        $(this.#target)
+            .find("[data-glpi-form-editor-comment]")
+            .each((_index, comment) => {
+                comments.push({
+                    'uuid': this.#getItemInput($(comment), "uuid"),
+                    'name': this.#getItemInput($(comment), "name"),
+                });
+            })
+        ;
+
+        return comments;
+    }
+
     async #renderVisibilityEditor(container) {
         let controller = this.#getConditionEditorController(container);
 
@@ -2255,7 +2459,9 @@ export class GlpiFormEditorController
                 container[0],
                 uuid,
                 type,
+                this.#getSectionStateForConditionEditor(),
                 this.#getQuestionStateForConditionEditor(),
+                this.#getCommentStateForConditionEditor(),
             );
             container.attr(
                 'data-glpi-editor-condition-controller-index',
@@ -2263,8 +2469,10 @@ export class GlpiFormEditorController
             );
             this.#conditions_editors_controllers.push(controller);
         } else {
-            // Refresh question data to make sure it is up to date
+            // Refresh form data to make sure it is up to date
+            controller.setFormSections(this.#getSectionStateForConditionEditor());
             controller.setFormQuestions(this.#getQuestionStateForConditionEditor());
+            controller.setFormComments(this.#getCommentStateForConditionEditor());
         }
 
         controller.renderEditor();

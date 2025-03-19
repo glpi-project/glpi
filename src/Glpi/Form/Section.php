@@ -36,15 +36,18 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
+use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Override;
 use Ramsey\Uuid\Uuid;
 
 /**
  * Section of a given helpdesk form
  */
-final class Section extends CommonDBChild implements ConditionableVisibilityInterface
+final class Section extends CommonDBChild implements ConditionableVisibilityInterface, UsedAsCriteriaInterface
 {
     use ConditionableVisibilityTrait;
 
@@ -120,6 +123,13 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return [new VisibilityConditionHandler()];
     }
 
     /**

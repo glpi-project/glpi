@@ -157,10 +157,10 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
-        return new RequestTypeConditionHandler();
+    ): array {
+        return array_merge(parent::getConditionHandlers($question_config), [new RequestTypeConditionHandler()]);
     }
 
     #[Override]
