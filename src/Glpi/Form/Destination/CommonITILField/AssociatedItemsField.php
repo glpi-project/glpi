@@ -258,7 +258,7 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
     #[Override]
     public function getCategory(): Category
     {
-        return Category::PROPERTIES;
+        return Category::ASSOCIATED_ITEMS;
     }
 
     #[Override]

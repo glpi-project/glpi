@@ -88,6 +88,12 @@
                                         data-bs-content="{{ __("This is the main item that will be created by this form. It can't be deleted.") }}"
                                     >?</span>
                                 </span>
+                            {% else %}
+                                {% set selected_strategy = destination.getConfiguredCreationStrategy() %}
+                                <span class="badge bg-secondary-lt d-flex ms-2">
+                                    <i class="{{ selected_strategy.getIcon() }} me-1"></i>
+                                    {{ selected_strategy.getLabel() }}
+                                </span>
                             {% endif %}
                         </button>
                     </h3>
@@ -96,59 +102,15 @@
                         class="accordion-collapse collapse {{ is_expanded ? 'show' : '' }}"
                         data-bs-parent="#glpi-destinations-accordion"
                     >
-                        <div class="accordion-body pt-0">
+                        <div class="accordion-body p-0">
                             <form id="form-destination-{{ destination.getID() }}">
-                                <div>
+                                <div class="overflow-x-hidden">
                                     {{ concrete_destination.renderConfigForm(
                                         form,
-                                        destination.getConfig()
+                                        destination,
+                                        destination.getConfig(),
                                     )|raw }}
                                 </div>
-
-                                {# Display conditions #}
-                                {% if not destination.fields.is_mandatory %}
-                                    <h4 class="d-flex align-items-center mt-4">
-                                        <i class="ti ti-circuit-changeover me-2"></i>
-                                        {{ __("Conditions") }}
-                                    </h4>
-
-                                    {{ include(
-                                        "pages/admin/form/destination_visibility_conditions_configuration.html.twig",
-                                        {
-                                            destination: destination,
-                                            form: form,
-                                        },
-                                        with_context: false
-                                    ) }}
-                                {% endif %}
-
-                                {# Submit button to delete the destination #}
-                                {% if can_update %}
-                                    <div class="d-flex flex-row-reverse mt-3">
-                                        <button
-                                            class="btn btn-primary ms-2"
-                                            name="update"
-                                            type="submit"
-                                            formaction="{{ '/Form/%d/Destination/%d/Update'|format(form.getID(), destination.getID()) }}"
-                                            formmethod="post"
-                                        >
-                                            <i class="ti ti-device-floppy me-2"></i>
-                                            {{ __("Update item") }}
-                                        </button>
-                                        {% if destination.canPurgeItem() %}
-                                            <button
-                                                class="btn btn-ghost-danger"
-                                                name="purge"
-                                                type="submit"
-                                                formaction="{{ '/Form/%d/Destination/%d/Purge'|format(form.getID(), destination.getID()) }}"
-                                                formmethod="post"
-                                            >
-                                                <i class="ti ti-trash me-2"></i>
-                                                {{ __("Delete") }}
-                                            </button>
-                                        {% endif %}
-                                    </div>
-                                {% endif %}
 
                                 {# Hidden values #}
                                 <input type="hidden" name="id" value="{{ destination.getID() }}"/>

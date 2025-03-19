@@ -86,6 +86,7 @@ class StatusField extends AbstractConfigField
                 options|merge({
                     'field_class'      : '',
                     'no_label'         : true,
+                    'mb'               : '',
                 })
             ) }}
 TWIG;
