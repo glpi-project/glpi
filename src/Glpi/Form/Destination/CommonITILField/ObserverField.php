@@ -63,7 +63,7 @@ class ObserverField extends ITILActorField
     #[Override]
     public function getWeight(): int
     {
-        return 20;
+        return 110;
     }
 
     #[Override]

@@ -127,7 +127,7 @@ TWIG;
     #[Override]
     public function getWeight(): int
     {
-        return 25;
+        return 50;
     }
 
     #[Override]
