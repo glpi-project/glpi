@@ -765,6 +765,10 @@ class DbUtilsTest extends DbTestCase
 
         // Entity value is empty array
         $it->execute('glpi_entities', $instance->getEntitiesRestrictCriteria('glpi_entities', '', [], true));
+        $this->hasPhpLogRecordThatContains(
+            'User Deprecated: The `DBmysqlIterator::execute()` method signature changed. Its previous signature is deprecated.',
+            LogLevel::INFO
+        );
         $this->assertSame(0, $it->count());
         $this->assertSame(
             'SELECT * FROM `glpi_entities` WHERE false',
@@ -796,6 +800,10 @@ class DbUtilsTest extends DbTestCase
 
         // Entity value is empty array
         $it->execute('glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', [], true));
+        $this->hasPhpLogRecordThatContains(
+            'User Deprecated: The `DBmysqlIterator::execute()` method signature changed. Its previous signature is deprecated.',
+            LogLevel::INFO
+        );
         $this->assertSame(0, $it->count());
         $this->assertSame(
             'SELECT * FROM `glpi_entities` WHERE (false)',

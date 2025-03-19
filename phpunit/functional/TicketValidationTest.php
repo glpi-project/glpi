@@ -407,8 +407,9 @@ class TicketValidationTest extends CommonITILValidation
         // Add first validation request
         $validation_id = $validation->add(
             [
-                'tickets_id'        => $tickets_id,
-                'users_id_validate' => getItemByTypeName('User', 'tech', true),
+                'tickets_id'         => $tickets_id,
+                'itemtype_target'    => 'User',
+                'items_id_target'    => getItemByTypeName('User', 'tech', true),
                 'comment_submission' => 'Please validate this ticket'
             ]
         );
@@ -448,8 +449,9 @@ class TicketValidationTest extends CommonITILValidation
         // Add another validation request
         $new_validation_id = $validation->add(
             [
-                'tickets_id'        => $tickets_id,
-                'users_id_validate' => getItemByTypeName('User', 'glpi', true),
+                'tickets_id'         => $tickets_id,
+                'itemtype_target'    => 'User',
+                'items_id_target'    => getItemByTypeName('User', 'glpi', true),
                 'comment_submission' => 'Please validate this ticket (second attempt)'
             ]
         );

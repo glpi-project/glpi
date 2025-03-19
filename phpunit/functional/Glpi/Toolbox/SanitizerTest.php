@@ -652,18 +652,18 @@ TXT;
     ) {
         $sanitizer = new \Glpi\Toolbox\Sanitizer();
 
-        $this->assertEquals($sanitized_value, $sanitizer->sanitize($value, true));
+        $this->assertEquals($sanitized_value, @$sanitizer->sanitize($value, true));
 
         // Calling sanitize on sanitized value should have no effect
-        $this->assertEquals($sanitized_value, $sanitizer->sanitize($sanitized_value));
+        $this->assertEquals($sanitized_value, @$sanitizer->sanitize($sanitized_value));
 
         // Check HTML encoding only
-        $this->assertEquals($htmlencoded_value, $sanitizer->sanitize($value, false));
-        $this->assertEquals($htmlencoded_value, $sanitizer->encodeHtmlSpecialChars($value));
-        $this->assertEquals([$htmlencoded_value], $sanitizer->encodeHtmlSpecialCharsRecursive([$value]));
+        $this->assertEquals($htmlencoded_value, @$sanitizer->sanitize($value, false));
+        $this->assertEquals($htmlencoded_value, @$sanitizer->encodeHtmlSpecialChars($value));
+        $this->assertEquals([$htmlencoded_value], @$sanitizer->encodeHtmlSpecialCharsRecursive([$value]));
 
         // Check escaping only
-        $this->assertEquals($dbescaped_value, $sanitizer->dbEscape($value));
-        $this->assertEquals([$dbescaped_value], $sanitizer->dbEscapeRecursive([$value]));
+        $this->assertEquals($dbescaped_value, @$sanitizer->dbEscape($value));
+        $this->assertEquals([$dbescaped_value], @$sanitizer->dbEscapeRecursive([$value]));
     }
 }
