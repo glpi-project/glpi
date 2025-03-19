@@ -379,7 +379,7 @@ TWIG, $twig_params);
                 $this->onCapacityDisabled($capacity);
             }
 
-            $updated_capacities = array_intersect_key($new_capacities, $old_capacities);
+            $updated_capacities = array_intersect_key($old_capacities, $new_capacities);
             foreach ($updated_capacities as $capacity) {
                 $this->onCapacityUpdated($capacity);
             }
@@ -443,7 +443,7 @@ TWIG, $twig_params);
             return;
         }
         $updated_capacity = $this->getDecodedCapacities()[$capacity->getName()];
-        $capacity_instance->onCapacityUpdated($this->getAssetClassName(), $capacity_instance->getConfiguration(), $updated_capacity->getConfig());
+        $capacity_instance->onCapacityUpdated($this->getAssetClassName(), $capacity->getConfig(), $updated_capacity->getConfig());
     }
 
     public function rawSearchOptions()
