@@ -38,6 +38,7 @@ use Dropdown;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Session;
@@ -51,25 +52,25 @@ final class UpdateFormTranslationController extends AbstractController
     #[Route("/Form/Translation/{form_id}/{language}", name: "glpi_update_form_translation", methods: "POST")]
     public function __invoke(Request $request, int $form_id, string $language): Response
     {
-        // Validate the language code
-        if (Dropdown::getLanguages()[$language] === null) {
-            throw new BadRequestHttpException('Invalid language code');
-        }
-
         // Retrieve the form from the database
         $form = new Form();
         if (!$form->getFromDB($form_id)) {
-            throw new BadRequestHttpException('Form not found');
+            throw new NotFoundHttpException('Form not found');
+        }
+
+        // Validate the language code
+        if (!\array_key_exists($language, Dropdown::getLanguages())) {
+            throw new BadRequestHttpException('Invalid language code');
         }
 
         $input = $request->request->all();
         if ($this->processTranslations($input['translations'] ?? [], $language)) {
-            $formTranslation = current(array_filter(
+            $form_translation = current(array_filter(
                 FormTranslation::getTranslationsForItem($form),
                 fn($translation) => $translation->fields['language'] === $language
             ));
             Session::addMessageAfterRedirect(
-                $formTranslation->formatSessionMessageAfterAction(__('Item successfully updated'))
+                $form_translation->formatSessionMessageAfterAction(__('Item successfully updated'))
             );
         }
 
@@ -86,9 +87,9 @@ final class UpdateFormTranslationController extends AbstractController
 
             $translation_input = ['language' => $language] + $translation;
 
-            $formTranslation = FormTranslation::getForItemKeyAndLanguage($item, $translation['key'], $language);
-            if ($formTranslation !== null) {
-                $success = $this->updateTranslation($formTranslation, $translation_input);
+            $form_translation = FormTranslation::getForItemKeyAndLanguage($item, $translation['key'], $language);
+            if ($form_translation !== null) {
+                $success = $this->updateTranslation($form_translation, $translation_input);
             } else {
                 $success = $this->createTranslation($translation_input) !== false;
             }
@@ -97,25 +98,25 @@ final class UpdateFormTranslationController extends AbstractController
         return $success;
     }
 
-    private function updateTranslation(FormTranslation $formTranslation, array $translation_input): bool
+    private function updateTranslation(FormTranslation $form_translation, array $translation_input): bool
     {
-        $translation_input['id'] = $formTranslation->getID();
+        $translation_input['id'] = $form_translation->getID();
 
-        if (!$formTranslation->can($formTranslation->getID(), UPDATE, $translation_input)) {
+        if (!$form_translation->can($form_translation->getID(), UPDATE, $translation_input)) {
             throw new AccessDeniedHttpException();
         }
 
-        return $formTranslation->update($translation_input);
+        return $form_translation->update($translation_input);
     }
 
     private function createTranslation(array $translation_input): false|int
     {
-        $formTranslation = new FormTranslation();
+        $form_translation = new FormTranslation();
 
-        if (!$formTranslation->can(-1, CREATE, $translation_input)) {
+        if (!$form_translation->can(-1, CREATE, $translation_input)) {
             throw new AccessDeniedHttpException();
         }
 
-        return $formTranslation->add($translation_input);
+        return $form_translation->add($translation_input);
     }
 }

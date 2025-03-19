@@ -40,16 +40,16 @@ use CommonDBTM;
 final class TranslationHandler
 {
     public function __construct(
-        private CommonDBTM $parent_item,
+        private CommonDBTM $item,
         private string $key,
         private string $name,
         private string $value,
     ) {
     }
 
-    public function getParentItem(): CommonDBTM
+    public function getItem(): CommonDBTM
     {
-        return $this->parent_item;
+        return $this->item;
     }
 
     public function getKey(): string

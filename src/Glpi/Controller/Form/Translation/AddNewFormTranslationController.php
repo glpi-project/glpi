@@ -38,6 +38,7 @@ use Dropdown;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -50,18 +51,18 @@ final class AddNewFormTranslationController extends AbstractController
     #[Route("/Form/Translation/{form_id}/Add", name: "glpi_add_form_translation", methods: "POST")]
     public function __invoke(Request $request, int $form_id): Response
     {
+        // Retrieve the form from the database
+        $form = new Form();
+        if (!$form->getFromDB($form_id)) {
+            throw new NotFoundHttpException('Form not found');
+        }
+
         // Retrieve the language code from the request
         $language = $request->request->get('language');
 
         // Validate the language code
-        if (!isset(Dropdown::getLanguages()[$language])) {
+        if (!\array_key_exists($language, Dropdown::getLanguages())) {
             throw new BadRequestHttpException('Invalid language code');
-        }
-
-        // Retrieve the form from the database
-        $form = new Form();
-        if (!$form->getFromDB($form_id)) {
-            throw new BadRequestHttpException('Form not found');
         }
 
         $this->createTranslation($form, $language);
@@ -72,23 +73,23 @@ final class AddNewFormTranslationController extends AbstractController
 
     private function createTranslation(Form $form, string $language): void
     {
-        $formTranslation = new FormTranslation();
+        $form_translation = new FormTranslation();
         $handlers_with_sections = $form->listTranslationsHandlers($form);
-        $firstHandler = current(current($handlers_with_sections));
+        $first_handler = current(current($handlers_with_sections));
 
         $input = [
             FormTranslation::$itemtype => Form::class,
             FormTranslation::$items_id => $form->getID(),
             'language'                 => $language,
-            'key'                      => $firstHandler->getKey(),
+            'key'                      => $first_handler->getKey(),
             'translations'             => '{}'
         ];
 
         // Right check
-        if (!$formTranslation->can(-1, CREATE, $input)) {
+        if (!$form_translation->can(-1, CREATE, $input)) {
             throw new AccessDeniedHttpException();
         }
 
-        $formTranslation->add($input);
+        $form_translation->add($input);
     }
 }

@@ -36,9 +36,10 @@ namespace Glpi\ItemTranslation;
 
 use CommonDBChild;
 use CommonDBTM;
+use Gettext\Languages\Language;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Override;
-use Gettext\Languages\Language;
+use Session;
 
 abstract class ItemTranslation extends CommonDBChild
 {
@@ -49,7 +50,10 @@ abstract class ItemTranslation extends CommonDBChild
     #[Override]
     public static function getTable($classname = null)
     {
-        return 'glpi_itemtranslations_itemtranslations';
+        if (is_a($classname ?? static::class, self::class, true)) {
+            return parent::getTable(self::class);
+        }
+        return parent::getTable($classname);
     }
 
     #[Override]
@@ -137,8 +141,6 @@ abstract class ItemTranslation extends CommonDBChild
     /**
      * Get translations for an item
      *
-     * @param CommonDBTM $item
-     *
      * @return array<ItemTranslation>
      */
     public static function getTranslationsForItem(CommonDBTM $item): array
@@ -153,12 +155,6 @@ abstract class ItemTranslation extends CommonDBChild
 
     /**
      * Get instance for the given item, key and language.
-     *
-     * @param CommonDBTM $item
-     * @param string $key
-     * @param string $language
-     *
-     * @return ItemTranslation|null
      */
     public static function getForItemKeyAndLanguage(CommonDBTM $item, string $key, string $language): ?ItemTranslation
     {
@@ -174,5 +170,120 @@ abstract class ItemTranslation extends CommonDBChild
         }
 
         return null;
+    }
+
+    /**
+     * Get the translated string for the given object and key in the current session language.
+     */
+    public static function translate(CommonDBTM&ProvideTranslationsInterface $item, string $key, int $count = 1): ?string
+    {
+        $translation = static::getForItemKeyAndLanguage($item, $key, Session::getLanguage())?->getTranslation($count);
+
+        if (!empty($translation)) {
+            return $translation;
+        }
+
+        foreach ($item->listTranslationsHandlers($item) as $handlers) {
+            foreach ($handlers as $handler) {
+                if (
+                    $handler->getItem()::class === $item::class
+                    && $handler->getItem()->getID() === $item->getID()
+                    && $handler->getKey() === $key
+                ) {
+                    return $handler->getValue();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public function getTranslatedPercentage(): int
+    {
+        $item = $this->getItem();
+        if (!($item instanceof ProvideTranslationsInterface)) {
+            throw new \LogicException('Item does not provide translations');
+        }
+
+        $translated_handlers = 0;
+        $total_handlers = 0;
+        $translations_handlers = $item->listTranslationsHandlers();
+        array_walk_recursive(
+            $translations_handlers,
+            function ($handler) use (&$translated_handlers, &$total_handlers) {
+                if (
+                    !empty($this->getForItemKeyAndLanguage(
+                        $handler->getItem(),
+                        $handler->getKey(),
+                        $this->fields['language']
+                    )?->getTranslation())
+                ) {
+                    $translated_handlers++;
+                }
+
+                $total_handlers++;
+            }
+        );
+
+        return $total_handlers > 0 ? (int)(($translated_handlers / $total_handlers) * 100) : 0;
+    }
+
+    public function getTranslationsToDo(): int
+    {
+        $item = $this->getItem();
+        if (!($item instanceof ProvideTranslationsInterface)) {
+            throw new \LogicException('Item does not provide translations');
+        }
+
+        $translated_handlers = 0;
+        $total_handlers = 0;
+        $translations_handlers = $item->listTranslationsHandlers();
+        array_walk_recursive(
+            $translations_handlers,
+            function ($handler) use (&$translated_handlers, &$total_handlers) {
+                if (
+                    !empty($this->getForItemKeyAndLanguage(
+                        $handler->getItem(),
+                        $handler->getKey(),
+                        $this->fields['language']
+                    )?->getTranslation())
+                ) {
+                    $translated_handlers++;
+                }
+
+                $total_handlers++;
+            }
+        );
+
+        return $total_handlers - $translated_handlers;
+    }
+
+    public function getTranslationsToReview(): int
+    {
+        $item = $this->getItem();
+        if (!($item instanceof ProvideTranslationsInterface)) {
+            throw new \LogicException('Item does not provide translations');
+        }
+
+        $translations_to_review = 0;
+        $translations_handlers = $item->listTranslationsHandlers();
+        array_walk_recursive(
+            $translations_handlers,
+            function ($handler) use (&$translations_to_review) {
+                $translation = $this->getFromDBByCrit([
+                    static::$items_id => $handler->getItem()->getID(),
+                    static::$itemtype => $handler->getItem()->getType(),
+                    'language'        => $this->fields['language'],
+                    'key'             => $handler->getKey(),
+                    'hash'            => ['!=', md5($handler->getValue())],
+                ]);
+
+                if (!empty($translation)) {
+                    $translations_to_review++;
+                }
+            }
+        );
+
+        return $translations_to_review;
     }
 }

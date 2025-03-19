@@ -35,16 +35,11 @@
 
 namespace Glpi\Form;
 
-use CommonDBTM;
 use CommonGLPI;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Form;
-use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\ItemTranslation;
-use LogicException;
 use Override;
-use Session;
 
 final class FormTranslation extends ItemTranslation
 {
@@ -116,22 +111,22 @@ final class FormTranslation extends ItemTranslation
                 fn($carry, $translation) => $carry + [$translation->fields['language'] => $translation],
                 []
             );
-            $availableLanguages = self::getLanguagesCanBeAddedToTranslation($item->getID());
+            $available_languages = self::getLanguagesCanBeAddedToTranslation($item->getID());
             TemplateRenderer::getInstance()->display('pages/admin/form/form_translations.html.twig', [
                 'item'                => $item,
                 'translations'        => $translations,
-                'available_languages' => $availableLanguages,
+                'available_languages' => $available_languages,
             ]);
 
             return true;
         } elseif ($item instanceof FormTranslation) {
             // Retrieve good FormTranslation object
-            $formTranslation = new self();
-            if (!$formTranslation->getFromDB($tabnum)) {
+            $form_translation = new self();
+            if (!$form_translation->getFromDB($tabnum)) {
                 return false;
             }
 
-            return $formTranslation->showForm($formTranslation->getID());
+            return $form_translation->showForm($form_translation->getID());
         }
 
         return false;
@@ -141,15 +136,15 @@ final class FormTranslation extends ItemTranslation
     public function defineTabs($options = [])
     {
         $tabs = [];
-        $formTranslations = array_reduce(
+        $form_translations = array_reduce(
             self::getTranslationsForItem(Form::getById($this->fields[static::$items_id])),
             fn($carry, $translation) => $carry + [$translation->fields['language'] => $translation],
             []
         );
-        foreach ($formTranslations as $formTranslation) {
-            $index = $formTranslation->getID();
-            $tabName = $this->getTabNameForItem($formTranslation);
-            if ($this->fields['language'] === $formTranslation->fields['language']) {
+        foreach ($form_translations as $form_translation) {
+            $index = $form_translation->getID();
+            $tabName = $this->getTabNameForItem($form_translation);
+            if ($this->fields['language'] === $form_translation->fields['language']) {
                 $index = 'main';
                 $tabs = array_merge([self::getType() . '$' . $index => $tabName], $tabs);
             } else {
@@ -185,138 +180,17 @@ final class FormTranslation extends ItemTranslation
      */
     public static function getLanguagesCanBeAddedToTranslation(int $form_id): array
     {
-        $formTranslations = array_map(
+        $form_translations = array_map(
             fn(ItemTranslation $translation) => $translation->fields['language'],
             self::getTranslationsForItem(Form::getById($form_id))
         );
 
         return array_combine(
-            array_diff(array_keys(Dropdown::getLanguages()), $formTranslations),
+            array_diff(array_keys(Dropdown::getLanguages()), $form_translations),
             array_map(
                 fn($language) => Dropdown::getLanguageName($language),
-                array_diff(array_keys(Dropdown::getLanguages()), $formTranslations)
+                array_diff(array_keys(Dropdown::getLanguages()), $form_translations)
             )
         );
-    }
-
-    public function getTranslatedPercentage(): int
-    {
-        $item = $this->getItem();
-        if (!($item instanceof ProvideTranslationsInterface)) {
-            throw new LogicException('Item does not provide translations');
-        }
-
-        $translatedHandlers = 0;
-        $totalHandlers = 0;
-        $translationsHandlers = $item->listTranslationsHandlers();
-        array_walk_recursive(
-            $translationsHandlers,
-            function ($handler) use (&$translatedHandlers, &$totalHandlers) {
-                if (
-                    !empty($this->getForItemKeyAndLanguage(
-                        $handler->getParentItem(),
-                        $handler->getKey(),
-                        $this->fields['language']
-                    )?->getTranslation())
-                ) {
-                    $translatedHandlers++;
-                }
-
-                $totalHandlers++;
-            }
-        );
-
-        return $totalHandlers > 0 ? (int)(($translatedHandlers / $totalHandlers) * 100) : 0;
-    }
-
-    public function getTranslationsToDo(): int
-    {
-        $item = $this->getItem();
-        if (!($item instanceof ProvideTranslationsInterface)) {
-            throw new LogicException('Item does not provide translations');
-        }
-
-        $translatedHandlers = 0;
-        $totalHandlers = 0;
-        $translationsHandlers = $item->listTranslationsHandlers();
-        array_walk_recursive(
-            $translationsHandlers,
-            function ($handler) use (&$translatedHandlers, &$totalHandlers) {
-                if (
-                    !empty($this->getForItemKeyAndLanguage(
-                        $handler->getParentItem(),
-                        $handler->getKey(),
-                        $this->fields['language']
-                    )?->getTranslation())
-                ) {
-                    $translatedHandlers++;
-                }
-
-                $totalHandlers++;
-            }
-        );
-
-        return $totalHandlers - $translatedHandlers;
-    }
-
-    public function getTranslationsToReview(): int
-    {
-        $item = $this->getItem();
-        if (!($item instanceof ProvideTranslationsInterface)) {
-            throw new LogicException('Item does not provide translations');
-        }
-
-        $translationsToReview = 0;
-        $translationsHandlers = $item->listTranslationsHandlers();
-        array_walk_recursive(
-            $translationsHandlers,
-            function ($handler) use (&$translationsToReview) {
-                $translation = $this->getFromDBByCrit([
-                    static::$items_id => $handler->getParentItem()->getID(),
-                    static::$itemtype => $handler->getParentItem()->getType(),
-                    'language'        => $this->fields['language'],
-                    'key'             => $handler->getKey(),
-                    'hash'            => ['!=', md5($handler->getValue())],
-                ]);
-
-                if (!empty($translation)) {
-                    $translationsToReview++;
-                }
-            }
-        );
-
-        return $translationsToReview;
-    }
-
-    public static function getDefaultTranslation(CommonDBTM $item, string $key): ?string
-    {
-        if (!($item instanceof ProvideTranslationsInterface)) {
-            throw new LogicException('Item does not provide form translations');
-        }
-
-        foreach ($item->listTranslationsHandlers($item) as $handlers) {
-            foreach ($handlers as $handler) {
-                if (
-                    $handler->getParentItem()->getType() === $item->getType()
-                    && $handler->getParentItem()->getID() === $item->getID()
-                    && $handler->getKey() === $key
-                ) {
-                    return $handler->getValue();
-                }
-            }
-        }
-
-        return null;
-    }
-
-    public static function getLocalizedTranslationForKey(CommonDBTM $item, string $key): ?string
-    {
-        $translation = static::getForItemKeyAndLanguage($item, $key, Session::getLanguage())?->getTranslation();
-
-        if (!empty($translation)) {
-            return $translation;
-        }
-
-        return static::getDefaultTranslation($item, $key);
     }
 }

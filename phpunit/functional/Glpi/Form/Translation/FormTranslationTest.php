@@ -71,7 +71,7 @@ class FormTranslationTest extends \DbTestCase
                 foreach ($handlers as $handler) {
                     $this->assertEquals(
                         $handler->getKey() . ' in ' . $language,
-                        FormTranslation::getForItemKeyAndLanguage($handler->getParentItem(), $handler->getKey(), $language)
+                        FormTranslation::getForItemKeyAndLanguage($handler->getItem(), $handler->getKey(), $language)
                             ->getTranslation()
                     );
                 }
@@ -79,7 +79,7 @@ class FormTranslationTest extends \DbTestCase
         }
     }
 
-    public function testGetLocalizedTranslationForKey()
+    public function testTranslate()
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -93,7 +93,7 @@ class FormTranslationTest extends \DbTestCase
         $_SESSION['glpilanguage'] = $CFG_GLPI['language'];
         foreach ($handlers as $handler) {
             $this->assertEquals(
-                FormTranslation::getLocalizedTranslationForKey($handler->getParentItem(), $handler->getKey()),
+                FormTranslation::translate($handler->getItem(), $handler->getKey()),
                 $handler->getValue()
             );
         }
@@ -102,7 +102,7 @@ class FormTranslationTest extends \DbTestCase
         $_SESSION['glpilanguage'] = 'fr_FR';
         foreach ($handlers as $handler) {
             $this->assertEquals(
-                FormTranslation::getLocalizedTranslationForKey($handler->getParentItem(), $handler->getKey()),
+                FormTranslation::translate($handler->getItem(), $handler->getKey()),
                 $handler->getKey() . ' in ' . Session::getLanguage()
             );
         }
@@ -111,7 +111,7 @@ class FormTranslationTest extends \DbTestCase
         $_SESSION['glpilanguage'] = 'es_ES';
         foreach ($handlers as $handler) {
             $this->assertEquals(
-                FormTranslation::getLocalizedTranslationForKey($handler->getParentItem(), $handler->getKey()),
+                FormTranslation::translate($handler->getItem(), $handler->getKey()),
                 $handler->getKey() . ' in ' . Session::getLanguage()
             );
         }
@@ -120,20 +120,7 @@ class FormTranslationTest extends \DbTestCase
         $_SESSION['glpilanguage'] = 'pt_PT';
         foreach ($handlers as $handler) {
             $this->assertEquals(
-                FormTranslation::getLocalizedTranslationForKey($handler->getParentItem(), $handler->getKey()),
-                $handler->getValue()
-            );
-        }
-    }
-
-    public function testGetDefaultTranslation()
-    {
-        $form = $this->createFormWithTranslations();
-        $handlers = array_merge(...array_values($form->listTranslationsHandlers()));
-
-        foreach ($handlers as $handler) {
-            $this->assertEquals(
-                FormTranslation::getDefaultTranslation($handler->getParentItem(), $handler->getKey()),
+                FormTranslation::translate($handler->getItem(), $handler->getKey()),
                 $handler->getValue()
             );
         }
@@ -166,14 +153,14 @@ class FormTranslationTest extends \DbTestCase
             $handlers,
             function ($handler) {
                 $this->addTranslationToForm(
-                    $handler->getParentItem(),
+                    $handler->getItem(),
                     'fr_FR',
                     $handler->getKey(),
                     $handler->getKey() . ' in fr_FR'
                 );
 
                 $this->addTranslationToForm(
-                    $handler->getParentItem(),
+                    $handler->getItem(),
                     'es_ES',
                     $handler->getKey(),
                     $handler->getKey() . ' in es_ES'

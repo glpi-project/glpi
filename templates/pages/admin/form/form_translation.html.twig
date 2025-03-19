@@ -34,8 +34,8 @@
 {% macro getTranslationInput(handler, translation) %}
     {% set rand = random() %}
 
-    <input type="hidden" name="translations[{{ rand }}][itemtype]" value="{{ handler.getParentItem().getType() }}" />
-    <input type="hidden" name="translations[{{ rand }}][items_id]" value="{{ handler.getParentItem().getID() }}" />
+    <input type="hidden" name="translations[{{ rand }}][itemtype]" value="{{ get_class(handler.getItem()) }}" />
+    <input type="hidden" name="translations[{{ rand }}][items_id]" value="{{ handler.getItem().getID() }}" />
     <input type="hidden" name="translations[{{ rand }}][key]" value="{{ handler.getKey() }}" />
 
     <div class="d-flex align-items-center">
@@ -74,7 +74,7 @@
             'translation': _self.getTranslationInput(
                 handler,
                 form_translation.getForItemKeyAndLanguage(
-                    handler.getParentItem(),
+                    handler.getItem(),
                     handler.getKey(),
                     form_translation.fields['language']
                 )

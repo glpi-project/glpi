@@ -55,7 +55,6 @@ use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\UI\IllustrationManager;
 use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
-use Glpi\Form\FormTranslation;
 use Html;
 use Item_Problem;
 use Item_Ticket;
@@ -360,7 +359,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
         $handlers = [];
         if (!empty($this->fields['name'])) {
             $handlers[$key][] = new TranslationHandler(
-                parent_item: $this,
+                item: $this,
                 key: self::TRANSLATION_KEY_NAME,
                 name: __('Form title'),
                 value: $this->fields['name'],
@@ -369,7 +368,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
 
         if (!empty($this->fields['header'])) {
             $handlers[$key][] = new TranslationHandler(
-                parent_item: $this,
+                item: $this,
                 key: self::TRANSLATION_KEY_HEADER,
                 name: __('Form description'),
                 value: $this->fields['header'],
@@ -378,7 +377,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
 
         if (!empty($this->fields['description'])) {
             $handlers[$key][] = new TranslationHandler(
-                parent_item: $this,
+                item: $this,
                 key: self::TRANSLATION_KEY_DESCRIPTION,
                 name: __('Service catalog description'),
                 value: $this->fields['description'],
@@ -991,7 +990,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
     #[Override]
     public function getServiceCatalogItemTitle(): string
     {
-        return FormTranslation::getLocalizedTranslationForKey(
+        return FormTranslation::translate(
             $this,
             static::TRANSLATION_KEY_NAME
         );
@@ -1000,7 +999,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
     #[Override]
     public function getServiceCatalogItemDescription(): string
     {
-        return FormTranslation::getLocalizedTranslationForKey(
+        return FormTranslation::translate(
             $this,
             static::TRANSLATION_KEY_DESCRIPTION
         );

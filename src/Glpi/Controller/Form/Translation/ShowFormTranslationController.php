@@ -38,6 +38,7 @@ use Dropdown;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -50,15 +51,15 @@ final class ShowFormTranslationController extends AbstractController
     #[Route("/Form/Translation/{form_id}/{language}", name: "glpi_show_form_translation", methods: "GET")]
     public function __invoke(Request $request, int $form_id, string $language): Response
     {
-        // Validate the language code
-        if (!isset(Dropdown::getLanguages()[$language])) {
-            throw new BadRequestHttpException('Invalid language code');
-        }
-
         // Retrieve the form from the database
         $form = new Form();
         if (!$form->getFromDB($form_id)) {
-            throw new BadRequestHttpException('Form not found');
+            throw new NotFoundHttpException('Form not found');
+        }
+
+        // Validate the language code
+        if (!\array_key_exists($language, Dropdown::getLanguages())) {
+            throw new BadRequestHttpException('Invalid language code');
         }
 
         return $this->displayTranslation($form, $language);
@@ -67,18 +68,18 @@ final class ShowFormTranslationController extends AbstractController
     private function displayTranslation(Form $form, string $language): Response
     {
         // Retrieve the form translation for the specified language
-        $formTranslation = FormTranslation::getForItemKeyAndLanguage($form, Form::TRANSLATION_KEY_NAME, $language);
-        if ($formTranslation === null) {
+        $form_translation = FormTranslation::getForItemKeyAndLanguage($form, Form::TRANSLATION_KEY_NAME, $language);
+        if ($form_translation === null) {
             throw new BadRequestHttpException('Specified language did not exist for this form');
         }
 
         // Right check
-        if (!$formTranslation->can($formTranslation->getID(), READ)) {
+        if (!$form_translation->can($form_translation->getID(), READ)) {
             throw new AccessDeniedHttpException();
         }
 
-        return new StreamedResponse(function () use ($formTranslation) {
-            FormTranslation::displayFullPageForItem($formTranslation->getID(), ['admin', Form::getType()], []);
+        return new StreamedResponse(function () use ($form_translation) {
+            FormTranslation::displayFullPageForItem($form_translation->getID(), ['admin', Form::getType()], []);
         });
     }
 }

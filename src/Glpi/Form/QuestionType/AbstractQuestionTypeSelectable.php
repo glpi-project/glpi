@@ -212,7 +212,7 @@ TWIG;
         if (!empty($options)) {
             $handlers = array_map(
                 fn($uuid, $option) => new TranslationHandler(
-                    parent_item: $item,
+                    item: $item,
                     key: sprintf('%s-%s', self::TRANSLATION_KEY_OPTION, $uuid),
                     name: sprintf('%s %s', self::getName(), __('Option')),
                     value: $option,
@@ -407,7 +407,7 @@ TWIG;
                         class="form-check-input" {{ value.checked ? 'checked' : '' }}
                     >
                     <span class="form-check-label">
-                        {{ form_localized_translation(
+                        {{ translate_item_key(
                             question,
                             '%s-%s'|format(
                                 constant('Glpi\\\\Form\\\\QuestionType\\\\AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION'),

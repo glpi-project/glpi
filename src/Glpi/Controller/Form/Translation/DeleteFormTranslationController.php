@@ -34,32 +34,32 @@
 
 namespace Glpi\Controller\Form\Translation;
 
+use Dropdown;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Dropdown;
-use Session;
 
 final class DeleteFormTranslationController extends AbstractController
 {
     #[Route("/Form/Translation/{form_id}/{language}/Delete", name: "glpi_delete_form_translation", methods: "POST")]
     public function __invoke(Request $request, int $form_id, string $language): Response
     {
-        // Validate the language code
-        if (Dropdown::getLanguages()[$language] === null) {
-            throw new BadRequestHttpException('Invalid language code');
-        }
-
         // Retrieve the form from the database
         $form = new Form();
         if (!$form->getFromDB($form_id)) {
-            throw new BadRequestHttpException("Form not found");
+            throw new NotFoundHttpException('Form not found');
+        }
+
+        // Validate the language code
+        if (!\array_key_exists($language, Dropdown::getLanguages())) {
+            throw new BadRequestHttpException('Invalid language code');
         }
 
         $this->processDeletions($form, $language);
@@ -69,27 +69,27 @@ final class DeleteFormTranslationController extends AbstractController
 
     private function processDeletions(Form $form, string $language): void
     {
-        $formTranslation = new FormTranslation();
+        $form_translation = new FormTranslation();
         $handlers_with_sections = $form->listTranslationsHandlers($form);
         foreach ($handlers_with_sections as $handlers) {
             foreach ($handlers as $handler) {
                 $input = [
-                    'itemtype' => $handler->getParentItem()->getType(),
-                    'items_id' => $handler->getParentItem()->getID(),
+                    'itemtype' => $handler->getItem()->getType(),
+                    'items_id' => $handler->getItem()->getID(),
                     'key'      => $handler->getKey(),
                     'language' => $language,
                 ];
 
-                if ($formTranslation->getFromDBByCrit($input)) {
-                    $input['id'] = $formTranslation->getID();
+                if ($form_translation->getFromDBByCrit($input)) {
+                    $input['id'] = $form_translation->getID();
 
                     // Right check
-                    if (!$formTranslation->can($formTranslation->getID(), PURGE, $input)) {
+                    if (!$form_translation->can($form_translation->getID(), PURGE, $input)) {
                         throw new AccessDeniedHttpException();
                     }
 
                     // Delete the form translation
-                    $formTranslation->delete($input + ['purge' => true]);
+                    $form_translation->delete($input + ['purge' => true]);
                 }
             }
         }
