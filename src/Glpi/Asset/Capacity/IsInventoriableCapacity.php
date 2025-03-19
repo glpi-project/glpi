@@ -178,7 +178,7 @@ class IsInventoriableCapacity extends AbstractCapacity
     public function getConfigurationTypes(): array
     {
         return [
-            \Glpi\Inventory\MainAsset\GenericAsset::class => \Computer::getTypeName(1),
+            \Glpi\Inventory\MainAsset\GenericAsset::class => __('Generic'),
             \Glpi\Inventory\MainAsset\GenericNetworkAsset::class => \NetworkEquipment::getTypeName(1),
             \Glpi\Inventory\MainAsset\GenericPrinterAsset::class => \Printer::getTypeName(1),
         ];
