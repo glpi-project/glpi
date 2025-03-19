@@ -615,7 +615,7 @@ var GLPIPlanning  = {
                         bs_focus: false
                     });
                     // Save the original datesRender function which is overwritten by selectable
-                    var originalDatesRender = GLPIPlanning.calendar.getOption('datesRender');
+                    const originalDatesRender = GLPIPlanning.calendar.getOption('datesRender');
                     GLPIPlanning.calendar.setOption('selectable', false);
                     window.setTimeout(function() {
                         GLPIPlanning.calendar.setOption('selectable', true);
