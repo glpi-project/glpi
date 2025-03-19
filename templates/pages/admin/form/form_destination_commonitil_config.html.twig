@@ -122,32 +122,34 @@
                         {% endif %}
                         data-glpi-itildestination-field-config
                     >
-                        {{ fields.dropdownArrayField(
-                            '%s[%s][]'|format(
+                        <div data-glpi-itildestination-field-config-content>
+                            {{ fields.dropdownArrayField(
+                                '%s[%s][]'|format(
+                                    item.formatConfigInputName(field.getKey()),
+                                    config_field.getStrategiesInputName()
+                                ),
+                                strategy.value,
+                                field.getStrategiesForDropdown(),
+                                '',
+                                {
+                                    is_horizontal: false,
+                                    field_class: '',
+                                    no_label: true,
+                                    mb: '',
+                                    rand: rand,
+                                    aria_label: __('Select strategy...'),
+                                }|merge(extra_options)
+                            ) }}
+                            {{ field.renderConfigForm(
+                                form,
+                                config_field,
                                 item.formatConfigInputName(field.getKey()),
-                                config_field.getStrategiesInputName()
-                            ),
-                            strategy.value,
-                            field.getStrategiesForDropdown(),
-                            '',
-                            {
-                                is_horizontal: false,
-                                field_class: '',
-                                no_label: true,
-                                mb: '',
-                                rand: rand,
-                                aria_label: __('Select strategy...'),
-                            }|merge(extra_options)
-                        ) }}
-                        {{ field.renderConfigForm(
-                            form,
-                            config_field,
-                            item.formatConfigInputName(field.getKey()),
-                            {
-                                'is_horizontal': false,
-                                'rand': rand,
-                            }|merge(extra_options)
-                        )|raw }}
+                                {
+                                    'is_horizontal': false,
+                                    'rand': rand,
+                                }|merge(extra_options)
+                            )|raw }}
+                        </div>
                         {% if field.canHaveMultipleStrategies() %}
                             <button
                                 type="button"
@@ -191,33 +193,35 @@
                     class="mb-2"
                     data-glpi-itildestination-field-config
                 >
-                    {{ fields.dropdownArrayField(
-                        '%s[%s][]'|format(
+                    <div data-glpi-itildestination-field-config-content>
+                        {{ fields.dropdownArrayField(
+                            '%s[%s][]'|format(
+                                item.formatConfigInputName(field.getKey()),
+                                config_field.getStrategiesInputName()
+                            ),
+                            '',
+                            field.getStrategiesForDropdown(),
+                            '',
+                            {
+                                is_horizontal: false,
+                                field_class: '',
+                                no_label: true,
+                                mb: '',
+                                display_emptychoice: true,
+                                init: false,
+                                aria_label: __('Select strategy...'),
+                            }|merge(extra_options)
+                        ) }}
+                        {{ field.renderConfigForm(
+                            form,
+                            config_field,
                             item.formatConfigInputName(field.getKey()),
-                            config_field.getStrategiesInputName()
-                        ),
-                        '',
-                        field.getStrategiesForDropdown(),
-                        '',
-                        {
-                            is_horizontal: false,
-                            field_class: '',
-                            no_label: true,
-                            mb: '',
-                            display_emptychoice: true,
-                            init: false,
-                            aria_label: __('Select strategy...'),
-                        }|merge(extra_options)
-                    ) }}
-                    {{ field.renderConfigForm(
-                        form,
-                        config_field,
-                        item.formatConfigInputName(field.getKey()),
-                        {
-                            'is_horizontal': false,
-                            'init': false,
-                        }|merge(extra_options)
-                    )|raw }}
+                            {
+                                'is_horizontal': false,
+                                'init': false,
+                            }|merge(extra_options)
+                        )|raw }}
+                    </div>
                     <button
                         type="button"
                         class="btn btn-outline"
