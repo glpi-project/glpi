@@ -979,7 +979,7 @@ class CommonDBTM extends CommonGLPI
                         ]
                     );
                     foreach ($result as $data) {
-                        $item = new $itemtype();
+                        $item = $itemtype::getById($data[$id_field]);
                         $input =  [
                             $id_field       => $data[$id_field],
                             '_disablenotif' => true,
