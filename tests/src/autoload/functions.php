@@ -189,16 +189,7 @@ function loadDataset()
             ],
         ], 'User' => [
             [
-                'name'          => TU_USER,
-                'password'      => TU_PASS,
-                'password2'     => TU_PASS,
-                'entities_id'   => '_test_root_entity',
-                'profiles_id'   => 4, // TODO manage test profiles
-                '_entities_id'  => 0,
-                '_profiles_id'  => 4,
-                '_is_recursive' => 1,
-            ],
-            [
+                'id'            => 3, // Force id to not break existing tests
                 'name'          => 'post-only',
                 'password'      => 'postonly',
                 'password2'     => 'postonly',
@@ -209,6 +200,7 @@ function loadDataset()
                 '_is_recursive' => 1,
             ],
             [
+                'id'            => 4, // Force id to not break existing tests
                 'name'          => 'tech',
                 'password'      => 'tech',
                 'password2'     => 'tech',
@@ -219,6 +211,7 @@ function loadDataset()
                 '_is_recursive' => 1,
             ],
             [
+                'id'            => 5, // Force id to not break existing tests
                 'name'          => 'normal',
                 'password'      => 'normal',
                 'password2'     => 'normal',
@@ -226,6 +219,16 @@ function loadDataset()
                 'profiles_id'   => 2,
                 '_entities_id'  => 0,
                 '_profiles_id'  => 2,
+                '_is_recursive' => 1,
+            ],
+            [
+                'name'          => TU_USER,
+                'password'      => TU_PASS,
+                'password2'     => TU_PASS,
+                'entities_id'   => '_test_root_entity',
+                'profiles_id'   => 4, // TODO manage test profiles
+                '_entities_id'  => 0,
+                '_profiles_id'  => 4,
                 '_is_recursive' => 1,
             ],
             [
