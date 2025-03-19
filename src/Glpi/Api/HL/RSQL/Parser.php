@@ -70,7 +70,7 @@ final class Parser
         }
 
         // Use CSV parser to handle splitting by comma (not inside quotes) to avoid headache trying to maintain custom regex
-        $items = str_getcsv($matches[1]);
+        $items = str_getcsv($matches[1], escape: "");
         // Strip slashes added by CSV parser
         $items = array_map('stripslashes', $items);
         // Trim outter quotes (' or ") but only if they are present on both sides
