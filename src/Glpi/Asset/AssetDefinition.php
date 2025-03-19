@@ -300,8 +300,8 @@ TWIG, $twig_params);
             foreach ($input['fields_display'] as $field_order => $field_key) {
                 $field_options = $input['field_options'][$field_key] ?? [];
                 $formatted_fields_display[] = [
-                    'order' => $field_order,
                     'key'   => $field_key,
+                    'order' => $field_order,
                     'field_options' => $field_options,
                 ];
             }
@@ -704,6 +704,7 @@ TWIG, $twig_params);
             $default[] = [
                 'key'   => $key,
                 'order' => $order,
+                'field_options' => [],
             ];
             $order++;
         }

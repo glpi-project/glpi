@@ -38,8 +38,9 @@ use CommonDBConnexity;
 use CommonDBTM;
 use DBmysql;
 use Glpi\Progress\AbstractProgressIndicator;
-use Psr\Log\LoggerAwareTrait;
 use Glpi\Message\MessageType;
+use Glpi\RichText\RichText;
+use Psr\Log\LoggerAwareTrait;
 
 abstract class AbstractPluginMigration
 {
@@ -351,9 +352,15 @@ abstract class AbstractPluginMigration
      * @param class-string<\CommonDBTM> $itemtype
      * @param array<mixed, mixed> $where
      * @param array<int, array{field: string, from: mixed, to: mixed}> $replacements
+     * @param bool $disable_unicity_check
      */
-    final protected function copyItems(string $itemtype, array $where, array $replacements): void
+    final protected function copyItems(string $itemtype, array $where, array $replacements, bool $disable_unicity_check = false): void
     {
+        $options = [];
+        if ($disable_unicity_check) {
+            $options['disable_unicity_check'] = true;
+        }
+
         $offset = 0;
         $limit  = 500;
         do {
@@ -382,7 +389,7 @@ abstract class AbstractPluginMigration
                     // The related item already exists, do not create a new one to prevent duplicates.
                     continue;
                 }
-                $created = $copied_item->add($related_item_data);
+                $created = $copied_item->add($related_item_data, $options);
                 $this->addSessionMessagesToResult();
                 if ($created === false) {
                     throw new MigrationException(
@@ -467,7 +474,11 @@ abstract class AbstractPluginMigration
                         'from'  => $source_items_id,
                         'to'    => $target_items_id,
                     ],
-                ]
+                ],
+                // Disable unicity checks when copying connexity items.
+                // These check may fail considering the source item and the copied item are doubles,
+                // but as the source item will no longer be used, it should not be considered as an issue.
+                disable_unicity_check: true,
             );
         }
     }
@@ -546,7 +557,7 @@ abstract class AbstractPluginMigration
                 default => MessageType::Notice,
             };
             foreach ($messages as $message) {
-                $this->result->addMessage($type, $message);
+                $this->result->addMessage($type, RichText::getTextFromHtml($message));
             }
         }
 

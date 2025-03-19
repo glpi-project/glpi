@@ -508,8 +508,8 @@ class AbstractPluginMigrationTest extends DbTestCase
                 $this->importItem(
                     AssetDefinition::class,
                     [
-                        'system_name' => 'test',
-                        'label'       => 'Test duplicate',
+                        'system_name' => 'test_',
+                        'label'       => 'Test with an invalid name',
                     ]
                 );
 
@@ -532,11 +532,11 @@ class AbstractPluginMigrationTest extends DbTestCase
             ],
             [
                 'type' => MessageType::Error,
-                'message' => 'The system name must be unique.',
+                'message' => 'The following field has an incorrect value: "System name".',
             ],
             [
                 'type' => MessageType::Error,
-                'message' => 'Unable to create Asset definition "Test duplicate".',
+                'message' => 'Unable to create Asset definition "Test with an invalid name".',
             ],
         ];
         $this->assertEquals($expected_messages, $result->getMessages());
