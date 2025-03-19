@@ -58,7 +58,7 @@ class IsInventoriableCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("The GLPI agent can report inventory data for these assets. You need to select the family of assets that will be inventoried.");
+        return __("The GLPI agent can report inventory data for these assets.");
     }
 
     public function getSearchOptions(string $classname): array
