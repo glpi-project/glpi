@@ -3268,6 +3268,5 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         // reload NetworkPortEthernet and check if still exist and not dynamic
         $this->assertTrue($networkport->getFromDB($networkport_id));
         $this->assertEquals(0, $networkport->fields['is_dynamic']);
-
     }
 }
