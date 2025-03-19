@@ -528,3 +528,20 @@ Cypress.Commands.add('validateMenuIsActive', (name) => {
         .should('have.class', 'active')
     ;
 });
+
+Cypress.Commands.add('openAccordionItem', (container_label, item_label) => {
+    cy.findAllByRole('region', {name: container_label})
+        .findByRole('button', {name: item_label})
+        .should('have.class', 'collapsed')
+        .click()
+    ;
+});
+
+
+Cypress.Commands.add('closeAccordionItem', (container_label, item_label) => {
+    cy.findAllByRole('region', {name: container_label})
+        .findByRole('button', {name: item_label})
+        .should('not.have.class', 'collapsed')
+        .click()
+    ;
+});

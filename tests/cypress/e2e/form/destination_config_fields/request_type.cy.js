@@ -49,6 +49,7 @@ describe('Request type configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.findByRole('region', {'name': "Request type configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Request type').as("request_type_dropdown");
 
@@ -66,6 +67,7 @@ describe('Request type configuration', () => {
         cy.get('@request_type_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@request_type_dropdown').should('have.text', 'From template');
 
         // Switch to "Specific request type"
@@ -75,6 +77,7 @@ describe('Request type configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@request_type_dropdown').should('have.text', 'Specific request type');
         cy.get('@specific_request_type_dropdown').should('have.text', 'Request');
 
@@ -85,6 +88,7 @@ describe('Request type configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@request_type_dropdown').should('have.text', 'Answer from a specific question');
         cy.get('@specific_answer_type_dropdown').should('have.text', 'My request type question');
     });

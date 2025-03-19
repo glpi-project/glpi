@@ -160,12 +160,12 @@ function closeVisibilityConfiguration() {
     cy.get('[data-glpi-form-editor-visibility-dropdown]:visible').click();
 }
 
-function openVisibilityOptions() {
-    cy.findByTitle('Configure visibility').click();
+function openConditionEditor() {
+    cy.findByTitle(/Configure (visibility|creation conditions)/).click();
 }
 
-function closeVisibilityOptions() {
-    cy.findByTitle('Configure visibility').click();
+function closeConditionEditor() {
+    cy.findByTitle(/Configure (visibility|creation conditions)/).click();
 }
 
 function checkThatSelectedVisibilityOptionIs(option) {
@@ -317,16 +317,16 @@ describe ('Conditions', () => {
         });
         saveAndReload();
         getAndFocusQuestion('My first question').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatSelectedVisibilityOptionIs('Visible if...');
             checkThatConditionEditorIsDisplayed();
-            closeVisibilityOptions();
+            closeConditionEditor();
         });
 
         // Select 'Hidden if...' (editor should be displayed)
         getAndFocusQuestion('My first question').within(() => {
             checkThatVisibilityOptionsAreHidden();
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatVisibilityOptionsAreVisible();
             checkThatSelectedVisibilityOptionIs('Visible if...');
             checkThatConditionEditorIsDisplayed();
@@ -336,16 +336,16 @@ describe ('Conditions', () => {
         });
         saveAndReload();
         getAndFocusQuestion('My first question').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatSelectedVisibilityOptionIs('Hidden if...');
             checkThatConditionEditorIsDisplayed();
-            closeVisibilityOptions();
+            closeConditionEditor();
         });
 
         // Select 'Always visible' (editor should be hidden)
         getAndFocusQuestion('My first question').within(() => {
             checkThatVisibilityOptionsAreHidden();
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatVisibilityOptionsAreVisible();
             checkThatSelectedVisibilityOptionIs('Hidden if...');
             checkThatConditionEditorIsDisplayed();
@@ -358,7 +358,7 @@ describe ('Conditions', () => {
             initVisibilityConfiguration();
             checkThatSelectedVisibilityOptionIs('Always visible');
             checkThatConditionEditorIsNotDisplayed();
-            closeVisibilityOptions();
+            closeConditionEditor();
         });
     });
 
@@ -378,7 +378,7 @@ describe ('Conditions', () => {
         });
         saveAndReload();
         getAndFocusQuestion('My third question').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatConditionExist(
                 0,
                 null,
@@ -405,7 +405,7 @@ describe ('Conditions', () => {
         });
         saveAndReload();
         getAndFocusQuestion('My third question').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatConditionExist(
                 0,
                 null,
@@ -434,7 +434,7 @@ describe ('Conditions', () => {
         });
         saveAndReload();
         getAndFocusQuestion('My third question').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatConditionExist(
                 0,
                 null,
@@ -461,7 +461,7 @@ describe ('Conditions', () => {
         });
         saveAndReload();
         getAndFocusQuestion('My third question').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatConditionExist(
                 0,
                 null,
@@ -489,7 +489,7 @@ describe ('Conditions', () => {
         });
         saveAndReload();
         getAndFocusComment('My first comment').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatConditionExist(
                 0,
                 null,
@@ -516,7 +516,7 @@ describe ('Conditions', () => {
         });
         saveAndReload();
         getAndFocusComment('My first comment').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatConditionExist(
                 0,
                 null,
@@ -544,7 +544,7 @@ describe ('Conditions', () => {
         });
         saveAndReload();
         getAndFocusSection('My second section').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatConditionExist(
                 0,
                 null,
@@ -571,7 +571,7 @@ describe ('Conditions', () => {
         });
         saveAndReload();
         getAndFocusSection('My second section').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatConditionExist(
                 0,
                 null,
@@ -593,11 +593,13 @@ describe ('Conditions', () => {
         // Create a destination and add a few conditions to it
         goToDestinationTab();
         addDestination('ticket');
+        openConditionEditor();
         setConditionStrategy('Created if');
         fillCondition(0, null, 'My second question', 'Is not equal to', 'I love GLPI');
         addNewEmptyCondition();
         fillCondition(1, 'Or', 'My first question', 'Contains', 'GLPI is great');
         saveDestination();
+        openConditionEditor();
 
         // Check that the conditions are correctly displayed
         checkThatConditionExist(
@@ -628,6 +630,7 @@ describe ('Conditions', () => {
 
         // Reload and make sure only one condition remains
         saveDestination();
+        openConditionEditor();
         checkThatConditionExist(
             0,
             null,
@@ -930,7 +933,7 @@ describe ('Conditions', () => {
         saveAndReload();
 
         getAndFocusQuestion('Test subject').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatConditionExist(
                 0,
                 null,

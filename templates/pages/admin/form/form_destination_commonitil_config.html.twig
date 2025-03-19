@@ -359,43 +359,7 @@
         </section>
     </div>
     <div class="itil-footer card-footer p-0 border-top">
-        <div class="d-flex align-items-center justify-content-between m-2">
-            <div>
-                <span
-                    title="{{ __('Conditions') }}"
-                    data-bs-toggle="dropdown"
-                    data-bs-auto-close="outside"
-                    class="dropdown-toggle btn btn-outline-secondary btn px-2"
-                    data-bs-placement="top"
-                    type="button"
-                >
-                    <div class="align-items-center">
-                        <i class="{{ selected_strategy.getIcon() }} me-1"></i>
-                        <span>{{ __('Conditions on creation') }}</span>
-                    </div>
-                </span>
-                <div
-                    class="dropdown-menu dropdown-menu-end dropdown-menu-card animate__animated animate__zoomIn"
-                >
-                    <div class="card visibility-dropdown-card">
-                        <div class="card-body">
-                            <h3 class="card-title d-flex align-items-center">
-                                <i class="ti ti-circuit-changeover me-2"></i>
-                                {{ __('Conditions') }}
-                            </h3>
-
-                            {{ include(
-                                "pages/admin/form/destination_visibility_conditions_configuration.html.twig",
-                                {
-                                    destination: destination,
-                                    form: form,
-                                },
-                                with_context: false
-                            ) }}
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="d-flex flex-row-reverse align-items-center justify-content-between m-2">
             {% if can_update %}
                 <div class="d-flex flex-row-reverse">
                     <button
@@ -420,6 +384,44 @@
                             {{ __("Delete") }}
                         </button>
                     {% endif %}
+                </div>
+            {% endif %}
+            {% if not destination.fields.is_mandatory %}
+                <div>
+                    <button
+                        title="{{ __('Configure creation conditions') }}"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="outside"
+                        class="dropdown-toggle btn btn-outline-secondary btn px-2"
+                        data-bs-placement="top"
+                        type="button"
+                    >
+                        <div class="align-items-center">
+                            <i class="{{ selected_strategy.getIcon() }} me-1"></i>
+                            <span>{{ __('Conditions on creation') }}</span>
+                        </div>
+                    </button>
+                    <div
+                        class="dropdown-menu dropdown-menu-end dropdown-menu-card animate__animated animate__zoomIn"
+                    >
+                        <div class="card visibility-dropdown-card">
+                            <div class="card-body">
+                                <h3 class="card-title d-flex align-items-center">
+                                    <i class="ti ti-circuit-changeover me-2"></i>
+                                    {{ __('Conditions') }}
+                                </h3>
+
+                                {{ include(
+                                    "pages/admin/form/destination_visibility_conditions_configuration.html.twig",
+                                    {
+                                        destination: destination,
+                                        form: form,
+                                    },
+                                    with_context: false
+                                ) }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             {% endif %}
         </div>

@@ -43,6 +43,7 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\CommonITILField\TitleField;
+use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
@@ -120,8 +121,13 @@ abstract class AbstractFormDestinationType extends DbTestCase
      */
     final public function testRenderConfigForm(): void
     {
-        $destination = $this->getTestedInstance();
-        $html = $destination->renderConfigForm($this->getSimpleForm(), []);
+        $form = $this->createForm(
+            (new FormBuilder())
+                ->addDestination($this->getTestedInstance()::class, 'Test destination')
+        );
+        $destination = FormDestination::getById($this->getDestinationId($form, 'Test destination'));
+        $concrete_destination = $this->getTestedInstance();
+        $html = $concrete_destination->renderConfigForm($this->getSimpleForm(), $destination, []);
         $this->assertNotEmpty($html);
     }
 

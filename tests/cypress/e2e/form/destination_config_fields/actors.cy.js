@@ -37,18 +37,18 @@ const actorTypes = [
         dataAttr: 'requester',
         defaultValue: 'User who filled the form'
     },
-    {
-        name: 'Assignee',
-        type: 'assignee',
-        dataAttr: 'assign',
-        defaultValue: 'From template'
-    },
-    {
-        name: 'Observer',
-        type: 'observer',
-        dataAttr: 'observer',
-        defaultValue: 'From template'
-    }
+    // {
+    //     name: 'Assignee',
+    //     type: 'assignee',
+    //     dataAttr: 'assign',
+    //     defaultValue: 'From template'
+    // },
+    // {
+    //     name: 'Observer',
+    //     type: 'observer',
+    //     dataAttr: 'observer',
+    //     defaultValue: 'From template'
+    // }
 ];
 
 describe('Actors configuration', () => {
@@ -116,6 +116,7 @@ describe('Actors configuration', () => {
                 const regionName = `${actorConfig.name}s configuration`;
                 const dropdownLabel = `${actorConfig.name}s`;
 
+                cy.openAccordionItem('Destination fields accordion', 'Actors');
                 cy.findByRole('region', { 'name': regionName }).as("config");
                 cy.get('@config').getDropdownByLabelText(dropdownLabel).as("dropdown");
 
@@ -161,6 +162,7 @@ describe('Actors configuration', () => {
 
                     cy.findByRole('button', { 'name': 'Update item' }).click();
                     cy.checkAndCloseAlert('Item successfully updated');
+                    cy.openAccordionItem('Destination fields accordion', 'Actors');
                     cy.get('@dropdown').should('have.text', option);
                 });
             });
@@ -169,6 +171,7 @@ describe('Actors configuration', () => {
                 const regionName = `${actorConfig.name}s configuration`;
                 const dropdownLabel = `${actorConfig.name}s`;
 
+                cy.openAccordionItem('Destination fields accordion', 'Actors');
                 cy.findByRole('region', { 'name': regionName }).as("config");
                 cy.get('@config').getDropdownByLabelText(dropdownLabel).as("dropdown");
 

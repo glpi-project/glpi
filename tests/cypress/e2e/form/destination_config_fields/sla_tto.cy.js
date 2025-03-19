@@ -60,6 +60,7 @@ describe('SLA TTO configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
         cy.findByRole('region', { 'name': "SLA TTO configuration" }).as("config");
         cy.get('@config').getDropdownByLabelText('SLA TTO').as("sla_tto_dropdown");
 
@@ -73,6 +74,7 @@ describe('SLA TTO configuration', () => {
         cy.get('@sla_tto_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
         cy.get('@sla_tto_dropdown').should('have.text', 'From template');
 
         // Switch to "Specific SLA"
@@ -85,6 +87,7 @@ describe('SLA TTO configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
         cy.get('@sla_tto_dropdown').should('have.text', 'Specific SLA');
         cy.get('@slm_id').then((slm_id) => {
             const sla_name = `SLA TTO - ${slm_id}`;
@@ -94,6 +97,7 @@ describe('SLA TTO configuration', () => {
 
     it('can create ticket using default configuration', () => {
         // Switch to "Specific SLA"
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
         cy.findByRole('region', { 'name': "SLA TTO configuration" }).as("config");
         cy.get('@config').getDropdownByLabelText('SLA TTO').selectDropdownValue('Specific SLA');
         cy.get('@slm_id').then((slm_id) => {

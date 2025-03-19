@@ -60,6 +60,7 @@ describe('OLA TTO configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
         cy.findByRole('region', { 'name': "OLA TTO configuration" }).as("config");
         cy.get('@config').getDropdownByLabelText('OLA TTO').as("ola_tto_dropdown");
 
@@ -73,6 +74,7 @@ describe('OLA TTO configuration', () => {
         cy.get('@ola_tto_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
         cy.get('@ola_tto_dropdown').should('have.text', 'From template');
 
         // Switch to "Specific OLA"
@@ -85,6 +87,7 @@ describe('OLA TTO configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
         cy.get('@ola_tto_dropdown').should('have.text', 'Specific OLA');
         cy.get('@slm_id').then((slm_id) => {
             const ola_name = `OLA TTO - ${slm_id}`;
@@ -94,6 +97,7 @@ describe('OLA TTO configuration', () => {
 
     it('can create ticket using default configuration', () => {
         // Switch to "Specific OLA"
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
         cy.findByRole('region', { 'name': "OLA TTO configuration" }).as("config");
         cy.get('@config').getDropdownByLabelText('OLA TTO').selectDropdownValue('Specific OLA');
         cy.get('@slm_id').then((slm_id) => {

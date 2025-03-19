@@ -57,7 +57,7 @@ describe('ITILFollowup configuration', () => {
 
     it('can use all possibles configuration options', () => {
         cy.findByRole('region', {'name': "Followups configuration"}).as("config");
-        cy.get('@config').getDropdownByLabelText('Followups').as("itilfollowup_dropdown");
+        cy.get('@config').getDropdownByLabelText('Select strategy...').as("itilfollowup_dropdown");
 
         // Default value
         cy.get('@itilfollowup_dropdown').should(
@@ -89,7 +89,7 @@ describe('ITILFollowup configuration', () => {
 
     it('can create ticket using specific followup template', () => {
         cy.findByRole('region', {'name': "Followups configuration"}).as("config");
-        cy.get('@config').getDropdownByLabelText('Followups').as("itilfollowup_dropdown");
+        cy.get('@config').getDropdownByLabelText('Select strategy...').as("itilfollowup_dropdown");
 
         // Switch to "Specific Followup templates"
         cy.get('@form_id').then((form_id) => {

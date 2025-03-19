@@ -49,6 +49,7 @@ describe('Urgency configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.findByRole('region', {'name': "Urgency configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Urgency').as("urgency_dropdown");
 
@@ -66,6 +67,7 @@ describe('Urgency configuration', () => {
         cy.get('@urgency_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@urgency_dropdown').should('have.text', 'From template');
 
         // Switch to "Specific type"
@@ -75,6 +77,7 @@ describe('Urgency configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@urgency_dropdown').should('have.text', 'Specific urgency');
         cy.get('@specific_urgency_dropdown').should('have.text', 'High');
 
@@ -85,6 +88,7 @@ describe('Urgency configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@urgency_dropdown').should('have.text', 'Answer from a specific question');
         cy.get('@specific_answer_type_dropdown').should('have.text', 'My urgency question');
     });
