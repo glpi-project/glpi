@@ -394,14 +394,22 @@
                         title="{{ __('Configure creation conditions') }}"
                         data-bs-toggle="dropdown"
                         data-bs-auto-close="outside"
-                        class="dropdown-toggle btn btn-outline-secondary btn px-2"
+                        class="dropdown-toggle btn btn-outline-secondary btn-sm px-2"
                         data-bs-placement="top"
                         type="button"
                     >
-                        <div class="align-items-center">
-                            <i class="{{ selected_strategy.getIcon() }} me-1"></i>
-                            <span>{{ __('Conditions on creation') }}</span>
-                        </div>
+                        {% set selected_strategy = destination.getConfiguredCreationStrategy() %}
+                        {% for strategy in enum_cases('Glpi\\Form\\Condition\\CreationStrategy') %}
+                            {% set is_visible = selected_strategy == strategy %}
+                            {% set display_class = is_visible ? 'd-flex' : 'd-none' %}
+                            <div
+                                class="{{ display_class }} align-items-center"
+                                data-glpi-editor-condition-badge="{{ strategy.value }}"
+                            >
+                                <i class="{{ strategy.getIcon() }} me-1"></i>
+                                <span>{{ strategy.getLabel() }}</span>
+                            </div>
+                        {% endfor %}
                     </button>
                     <div
                         class="dropdown-menu dropdown-menu-end dropdown-menu-card animate__animated animate__zoomIn"

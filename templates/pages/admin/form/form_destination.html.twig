@@ -90,10 +90,17 @@
                                 </span>
                             {% else %}
                                 {% set selected_strategy = destination.getConfiguredCreationStrategy() %}
-                                <span class="badge bg-secondary-lt d-flex ms-2">
-                                    <i class="{{ selected_strategy.getIcon() }} me-1"></i>
-                                    {{ selected_strategy.getLabel() }}
-                                </span>
+                                {% for strategy in enum_cases('Glpi\\Form\\Condition\\CreationStrategy') %}
+                                    {% set is_visible = selected_strategy == strategy %}
+                                    {% set display_class = is_visible ? 'd-flex' : 'd-none' %}
+                                    <span
+                                        class="{{ display_class }} badge bg-secondary-lt d-flex align-items-center ms-2"
+                                        data-glpi-editor-condition-badge="{{ strategy.value }}"
+                                    >
+                                        <i class="{{ strategy.getIcon() }} me-1"></i>
+                                        <span>{{ strategy.getLabel() }}</span>
+                                    </span>
+                                {% endfor %}
                             {% endif %}
                         </button>
                     </h3>
@@ -153,8 +160,11 @@
     import("{{ js_path('js/modules/Forms/DestinationAutoConfigController.js') }}").then((m) => {
         new m.GlpiFormDestinationAutoConfigController();
     });
-</script>
 
+    import("{{ js_path('js/modules/Forms/DestinationConditionController.js') }}").then((m) => {
+        new m.GlpiFormDestinationConditionController();
+    });
+</script>
 
 <style>
     /* Should be handled by tabler but it doesn't seem to be active */
