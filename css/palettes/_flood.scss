@@ -38,7 +38,7 @@
     --tblr-badge-bg: #d0d9f0;
     --tblr-badge-color: rgb(58, 73, 102);
     --glpi-mainmenu-bg: #006573; // hsl(187deg, 100%, 23%);
-    --glpi-helpdesk-header: hsl(188deg, 92%, 90%);
+    --glpi-helpdesk-header: hsl(188, 40%, 61%);
     --glpi-mainmenu-fg: #f4f6fa;
     --glpi-search-bg: #fcf7f1;
     --glpi-search-fg: #756d61;
@@ -46,4 +46,8 @@
     --glpi-palette-color-2: #005572;
     --glpi-palette-color-3: #81beaa;
     --glpi-palette-color-4: #f4d4ad;
+
+    --glpi-illustrations-gradient-1: hsl(187deg, 50%, 92%);
+    --glpi-illustrations-gradient-2: hsl(187deg, 40%, 70%);
+    --glpi-illustrations-gradient-3: hsl(187deg, 50%, 35%);
 }
