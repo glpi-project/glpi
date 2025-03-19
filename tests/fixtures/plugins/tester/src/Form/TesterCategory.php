@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,22 +32,32 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace GlpiPlugin\Tester\Form;
 
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\AbstractQuestionType;
+use Glpi\Form\QuestionType\QuestionTypeCategory;
+use Glpi\Form\QuestionType\QuestionTypeCategoryInterface;
 use Override;
+use Toolbox;
 
-final class QuestionTypeCheckbox extends AbstractQuestionTypeSelectable
+final class TesterCategory implements QuestionTypeCategoryInterface
 {
     #[Override]
-    public function getInputType(?Question $question): string
+    public function getLabel(): string
     {
-        return 'checkbox';
+        return __('Tester plugin');
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategoryInterface
+    public function getIcon(): string
     {
-        return QuestionTypeCategory::CHECKBOX;
+        return 'ti ti-test-pipe';
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 1000;
     }
 }

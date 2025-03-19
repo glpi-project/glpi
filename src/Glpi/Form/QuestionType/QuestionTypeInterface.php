@@ -151,9 +151,9 @@ interface QuestionTypeInterface
     /**
      * Get the category of this question type.
      *
-     * @return QuestionTypeCategory
+     * @return QuestionTypeCategoryInterface
      */
-    public function getCategory(): QuestionTypeCategory;
+    public function getCategory(): QuestionTypeCategoryInterface;
 
     /**
      * Get the weight of this question type.

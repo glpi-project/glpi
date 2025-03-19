@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,20 +34,20 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Glpi\Form\Question;
-use Override;
-
-final class QuestionTypeCheckbox extends AbstractQuestionTypeSelectable
+/**
+ * Interface that must be implemented by all available questions types
+ */
+interface QuestionTypeCategoryInterface
 {
-    #[Override]
-    public function getInputType(?Question $question): string
-    {
-        return 'checkbox';
-    }
+    public function getLabel(): string;
 
-    #[Override]
-    public function getCategory(): QuestionTypeCategoryInterface
-    {
-        return QuestionTypeCategory::CHECKBOX;
-    }
+    /**
+     * Return an icon class (e.g. 'ti ti-user').
+     */
+    public function getIcon(): string;
+
+    /**
+     * Used for ordering categories (lower weight will be displayed first).
+     */
+    public function getWeight(): int;
 }

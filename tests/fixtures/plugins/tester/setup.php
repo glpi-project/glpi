@@ -33,6 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Form\QuestionType\QuestionTypesManager;
+use GlpiPlugin\Tester\Form\QuestionTypeRange;
+use GlpiPlugin\Tester\Form\QuestionTypeColor;
+use GlpiPlugin\Tester\Form\TesterCategory;
 use GlpiPlugin\Tester\MyPsr4Class;
 
 function plugin_version_tester()
@@ -50,6 +54,17 @@ function plugin_version_tester()
     ];
 }
 
+function plugin_tester_install(): bool
+{
+    return true;
+}
+
+
+function plugin_tester_uninstall(): bool
+{
+    return true;
+}
+
 function plugin_tester_getDropdown(): array
 {
     return [
@@ -57,4 +72,18 @@ function plugin_tester_getDropdown(): array
         PluginTesterMyPseudoPsr4Class::class => PluginTesterMyPseudoPsr4Class::getTypeName(),
         MyPsr4Class::class => MyPsr4Class::getTypeName(),
     ];
+}
+
+function plugin_init_tester(): void
+{
+    $plugin = new Plugin();
+    if (!$plugin->isActivated('tester')) {
+        return;
+    }
+
+    // Register form question types and categories
+    $types_manager = QuestionTypesManager::getInstance();
+    $types_manager->registerPluginCategory(new TesterCategory());
+    $types_manager->registerPluginQuestionType(new QuestionTypeRange());
+    $types_manager->registerPluginQuestionType(new QuestionTypeColor());
 }

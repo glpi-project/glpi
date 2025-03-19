@@ -80,7 +80,7 @@
                      </div>
                   {% endif %}
                   {% if not itiltemplate.isHiddenField('content') %}
-                     <div class="rich_text_container">
+                     <div class="rich_text_container" data-testid="content">
                         {{ item.fields['content']|enhanced_html({
                            'user_mentions': true,
                            'images_gallery': true
