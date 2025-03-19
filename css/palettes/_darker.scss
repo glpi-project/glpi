@@ -33,12 +33,6 @@
 
 $is-dark: true;
 
-.btn-primary,
-.btn-outline-primary,
-.btn-ghost-primary {
-    --tblr-btn-color-text: red;
-}
-
 :root[data-glpi-theme="darker"] {
     --tblr-dark: #242323;
     --tblr-light: #aaa;

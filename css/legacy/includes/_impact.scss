@@ -391,16 +391,6 @@ i.fa-impact-manipulation {
       vertical-align: middle;
       cursor        : pointer;
 
-      i {
-         padding  : 10px 4px;
-         font-size: 1.5em;
-
-         &.ti {
-            font-size: 1.8em;
-            line-height: 1.5em;
-         }
-      }
-
       &:hover {
          background-color: var(--glpi-hover-bg);
       }
@@ -423,7 +413,7 @@ i.fa-impact-manipulation {
 
    &.impact-side-expanded {
       // width : 250px;
-      border-left: 3px solid #f1f1f1;
+      border-left: 3px solid var(--tblr-border-color);
 
       li {
          text-align: right;

@@ -137,7 +137,7 @@
                     {% if current_page - adjacents <= page and current_page + adjacents >= page %}
                         {% set page_start = (page - 1) * limit %}
                         <li class="d-none d-sm-block page-item {% if page == current_page %}active selected{% endif %}">
-                            <a class="page-link d-flex page-link-num" href="{{ href|replace({'%start%': page_start}) }}" data-start="{{ page_start }}">{{ page }}</a>
+                            <a class="page-link page-link-num" href="{{ href|replace({'%start%': page_start}) }}" data-start="{{ page_start }}">{{ page }}</a>
                         </li>
                         {% if current_page + adjacents == page %}
                         {% set skip_adjacents = false %}

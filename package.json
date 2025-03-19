@@ -5,8 +5,8 @@
     "description": "GLPI dependencies",
     "license": "GPL-3.0-or-later",
     "engines": {
-        "node": ">= 18.12",
-        "npm": ">= 8.19"
+        "node": ">= 20.9",
+        "npm": ">= 10.1"
     },
     "dependencies": {
         "@fontsource/inter": "^4.5.15",
@@ -22,7 +22,7 @@
         "@fullcalendar/timegrid": "^4.4.2",
         "@fullcalendar/timeline": "^4.4.3",
         "@glpi-project/illustrations": "^0.2.0",
-        "@tabler/core": "^1.0.0-beta20",
+        "@tabler/core": "^1.0.0",
         "@tabler/icons-webfont": "^3.30.0",
         "animate.css": "^4.1.1",
         "bootstrap": "^5.3.2",

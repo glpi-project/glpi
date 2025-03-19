@@ -292,7 +292,7 @@ JS);
             echo '<thead>';
             echo '<tr class="noHover">';
             echo '<th class="impact-list-header" colspan="6" width="90%"><h3>' . htmlescape($label) . '';
-            echo '<i class="fs-2x ti-caret-down-filled impact-toggle-subitems-master impact-pointer"></i></h3></th>';
+            echo '<i class="fs-2x ti ti-caret-down-filled impact-toggle-subitems-master impact-pointer"></i></h3></th>';
             echo '</tr>';
             echo '<tr class="noHover">';
             echo '<th>' . _sn('Item', 'Items', 1) . '</th>';
@@ -313,7 +313,7 @@ JS);
                 echo '<td class="left subheader impact-left" colspan="6">';
                 $total = count($items);
                 echo '<a>' . htmlescape($itemtype::getTypeName()) . '</a>' . ' (' . $total . ')';
-                echo '<i class="fs-2x ti-caret-down-filled impact-toggle-subitems impact-pointer"></i>';
+                echo '<i class="fs-2x ti ti-caret-down-filled impact-toggle-subitems impact-pointer"></i>';
                 echo '</td>';
                 echo '</tr>';
 
