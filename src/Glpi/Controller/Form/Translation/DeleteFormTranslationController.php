@@ -70,7 +70,7 @@ final class DeleteFormTranslationController extends AbstractController
     private function processDeletions(Form $form, string $language): void
     {
         $form_translation = new FormTranslation();
-        $handlers_with_sections = $form->listTranslationsHandlers($form);
+        $handlers_with_sections = $form->listTranslationsHandlers();
         foreach ($handlers_with_sections as $handlers) {
             foreach ($handlers as $handler) {
                 $input = [

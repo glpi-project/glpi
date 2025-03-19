@@ -36,15 +36,14 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
-use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Form\QuestionType\TranslationAwareQuestionType;
 use Glpi\ItemTranslation\Context\TranslationHandler;
-use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Log;
 use Override;
 use Ramsey\Uuid\Uuid;
@@ -100,7 +99,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     }
 
     #[Override]
-    public function listTranslationsHandlers(?CommonDBTM $item = null): array
+    public function listTranslationsHandlers(): array
     {
         $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
         $handlers = [];
@@ -123,7 +122,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         }
 
         $question_type = $this->getQuestionType();
-        if ($question_type instanceof ProvideTranslationsInterface) {
+        if ($question_type instanceof TranslationAwareQuestionType) {
             $handlers[$key] = array_merge(
                 $handlers[$key] ?? [],
                 array_values($question_type->listTranslationsHandlers($this))

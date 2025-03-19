@@ -35,18 +35,16 @@
 
 namespace Glpi\Form\QuestionType;
 
-use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Glpi\ItemTranslation\Context\TranslationHandler;
-use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Override;
 
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, ProvideTranslationsInterface
+abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType
 {
     public const TRANSLATION_KEY_OPTION = 'option';
 
@@ -201,18 +199,14 @@ TWIG;
     }
 
     #[Override]
-    public function listTranslationsHandlers(?CommonDBTM $item = null): array
+    public function listTranslationsHandlers(Question $question): array
     {
-        if ($item === null || !($item instanceof Question)) {
-            throw new \LogicException('The given item must be a question');
-        }
-
         $handlers = [];
-        $options = $this->getOptions($item);
+        $options = $this->getOptions($question);
         if (!empty($options)) {
             $handlers = array_map(
                 fn($uuid, $option) => new TranslationHandler(
-                    item: $item,
+                    item: $question,
                     key: sprintf('%s-%s', self::TRANSLATION_KEY_OPTION, $uuid),
                     name: sprintf('%s %s', self::getName(), __('Option')),
                     value: $option,

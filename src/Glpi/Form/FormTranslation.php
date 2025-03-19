@@ -43,6 +43,8 @@ use Override;
 
 final class FormTranslation extends ItemTranslation
 {
+    public static $rightname = 'form';
+
     #[Override]
     public static function getTypeName($nb = 0)
     {
@@ -56,21 +58,12 @@ final class FormTranslation extends ItemTranslation
     }
 
     #[Override]
-    public static function canView(): bool
+    public static function getTable($classname = null)
     {
-        return Form::canView();
-    }
-
-    #[Override]
-    public static function canCreate(): bool
-    {
-        return Form::canCreate();
-    }
-
-    #[Override]
-    public static function canUpdate(): bool
-    {
-        return Form::canUpdate();
+        if (is_a($classname ?? static::class, ItemTranslation::class, true)) {
+            return parent::getTable(ItemTranslation::class);
+        }
+        return parent::getTable($classname);
     }
 
     #[Override]

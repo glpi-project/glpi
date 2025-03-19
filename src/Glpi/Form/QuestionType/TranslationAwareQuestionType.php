@@ -33,17 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\ItemTranslation\Context;
+namespace Glpi\Form\QuestionType;
+
+use Glpi\Form\Question;
 
 /**
- * Must be implemented by classes that provide translations.
+ * Must be implemented by question that provide translations.
  */
-interface ProvideTranslationsInterface
+interface TranslationAwareQuestionType
 {
     /**
      * Returns the list of form translations handlers.
      *
-     * @return array<string, array<int, \Glpi\ItemTranslation\Context\TranslationHandler>>
+     * @return array<int, \Glpi\ItemTranslation\Context\TranslationHandler>
      */
-    public function listTranslationsHandlers(): array;
+    public function listTranslationsHandlers(Question $question): array;
 }

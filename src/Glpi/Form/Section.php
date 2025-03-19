@@ -38,7 +38,6 @@ namespace Glpi\Form;
 use CommonDBChild;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
-use CommonDBTM;
 use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Override;
@@ -129,7 +128,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     }
 
     #[Override]
-    public function listTranslationsHandlers(?CommonDBTM $item = null): array
+    public function listTranslationsHandlers(): array
     {
         $form = $this->getItem();
         if (!$form instanceof Form) {
