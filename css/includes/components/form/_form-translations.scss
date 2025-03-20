@@ -31,27 +31,29 @@
  * ---------------------------------------------------------------------
  */
 
-[data-glpi-form-translations-add-language-container] {
-    .select2-container {
-        width: 100% !important;
+#glpi-form-translations-languages {
+    tr {
+        &:has(input.form-control:focus) {
+            box-shadow: inset 2px 0 0 var(--tblr-primary);
+        }
+
+        td {
+            vertical-align: middle;
+            padding: 0.5rem 0.75rem;
+        }
     }
 
-    .select2-selection.select2-selection--single {
-        border-top-right-radius: 0 !important;
-        border-bottom-right-radius: 0 !important;
+    // Apply table header styles to rows containing a span with the data-glpi-form-translations-subtitle-row attribute
+    td:has(> span[data-glpi-form-translations-subtitle-row]) {
+        color: var(--tblr-secondary);
+        background: var(--tblr-bg-surface-tertiary);
+        font-size: 0.625rem;
+        font-weight: var(--tblr-font-weight-bold);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        line-height: 1rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        white-space: nowrap;
     }
-}
-
-// Apply table header styles to rows containing a span with the data-glpi-form-translations-subtitle-row attribute
-td:has(> span[data-glpi-form-translations-subtitle-row]) {
-    color: var(--tblr-secondary);
-    background: var(--tblr-bg-surface-tertiary);
-    font-size: 0.625rem;
-    font-weight: var(--tblr-font-weight-bold);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    line-height: 1rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    white-space: nowrap;
 }

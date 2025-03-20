@@ -33,13 +33,11 @@
 
 function addTranslations() {
     // Add a new language translation
+    cy.findByRole('button', { name: 'Add language' }).click();
     cy.getDropdownByLabelText('Select language to translate').as('languageDropdown');
     cy.get('@languageDropdown').should('have.value', '');
     cy.get('@languageDropdown').selectDropdownValue('Français');
-    cy.findByRole('button', { name: 'Add language' }).click();
-
-    // Go to the French translation page
-    cy.findByRole('link', { name: 'Français' }).click();
+    cy.findByRole('button', { name: 'Add' }).click();
 
     // Provide translations
     cy.findByRole('table', { name: 'Form translations' }).as('formTranslationsTable');
@@ -109,10 +107,21 @@ describe('Edit form translations', () => {
 
     it('can add a new language translation', () => {
         // Add a new language translation
+        cy.findByRole('button', { name: 'Add language' }).click();
         cy.getDropdownByLabelText('Select language to translate').as('languageDropdown');
         cy.get('@languageDropdown').should('have.value', '');
         cy.get('@languageDropdown').selectDropdownValue('Français');
-        cy.findByRole('button', { name: 'Add language' }).click();
+        cy.findByRole('button', { name: 'Add' }).click();
+
+        // Check we are on the form translation page
+        cy.findByRole('table', { name: 'Form translations' }).should('exist').within(() => {
+            cy.findAllByRole('cell', { name: 'Translation name' }).should('have.length', 2);
+            cy.findAllByRole('cell', { name: 'Default value' }).should('have.length', 2);
+            cy.findAllByRole('cell', { name: 'Translated value' }).should('have.length', 2);
+        });
+
+        // Go back to the form translations page
+        cy.findByRole('link', { name: 'List' }).click();
 
         // Check if the language translation is added
         cy.findByRole('link', { name: 'Français' }).should('exist');
@@ -189,11 +198,20 @@ describe('Edit form translations', () => {
 
     it('can add multiples translations and switch between them', () => {
         // Add a new language translation
+        cy.findByRole('button', { name: 'Add language' }).click();
         cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Français');
-        cy.findByRole('button', { name: 'Add language' }).click();
+        cy.findByRole('button', { name: 'Add' }).click();
 
-        cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Deutsch');
+        // Go back to the form translations page
+        cy.findByRole('link', { name: 'List' }).click();
+
+        // Add a new language translation
         cy.findByRole('button', { name: 'Add language' }).click();
+        cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Deutsch');
+        cy.findByRole('button', { name: 'Add' }).click();
+
+        // Go back to the form translations page
+        cy.findByRole('link', { name: 'List' }).click();
 
         // Check if the language translation is added
         cy.findByRole('link', { name: 'Français' }).should('exist');
@@ -251,8 +269,12 @@ describe('Edit form translations', () => {
 
     it('check form translation stats', () => {
         // Add a new language translation
-        cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Français');
         cy.findByRole('button', { name: 'Add language' }).click();
+        cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Français');
+        cy.findByRole('button', { name: 'Add' }).click();
+
+        // Go back to the form translations page
+        cy.findByRole('link', { name: 'List' }).click();
 
         // Check stats
         cy.get('@formTranslations').find('tbody tr').eq(0).find('td').eq(0).contains('Français');
@@ -296,6 +318,14 @@ describe('Edit form translations', () => {
     it('can detect translations to review when default value changes', () => {
         addTranslations();
 
+        // Go back to the form translations page
+        cy.findByRole('link', { name: 'List' }).click();
+
+        // Add a new language translation
+        cy.findByRole('button', { name: 'Add language' }).click();
+        cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Deutsch');
+        cy.findByRole('button', { name: 'Add' }).click();
+
         // Modify the default values of the form
         cy.get('@form_id').then((form_id) => {
             cy.updateWithAPI('Glpi\\Form\\Form', {
@@ -314,13 +344,20 @@ describe('Edit form translations', () => {
         cy.get('@formTranslations').find('tbody tr').eq(0).find('td').eq(3).invoke('text').then((text) => {
             expect(text.trim()).to.equal('1');
         });
+        cy.get('@formTranslations').find('tbody tr').eq(1).find('td').eq(3).invoke('text').then((text) => {
+            expect(text.trim()).to.equal('0');
+        });
 
-        // Go to the French translation page
+        // Go to the French translation page and check that the translation is marked as "to review"
         cy.findByRole('link', { name: 'Français' }).click();
-
-        // Check that the translation is marked as "to review"
         cy.findAllByRole('textbox', { name: 'Enter translation' }).eq(0).parent().within(() => {
             cy.get('.ti-alert-circle').should('exist');
+        });
+
+        // Go to the German translation page and check that the translation isn't marked as "to review"
+        cy.findByRole('tab', { name: 'Deutsch' }).click();
+        cy.findAllByRole('textbox', { name: 'Enter translation' }).eq(0).parent().within(() => {
+            cy.get('.ti-alert-circle').should('not.exist');
         });
     });
 });
