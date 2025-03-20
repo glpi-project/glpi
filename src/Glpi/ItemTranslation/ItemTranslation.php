@@ -120,7 +120,7 @@ class ItemTranslation extends CommonDBChild
         if ($item instanceof ProvideTranslationsInterface) {
             foreach ($item->listTranslationsHandlers() as $handlers) {
                 foreach ($handlers as $handler) {
-                    if ($handler->getKey() === $this->fields['key']) {
+                    if ($handler->getKey() === $this->fields['key'] && $this->getTranslation() != null) {
                         return md5($handler->getValue()) !== $this->fields['hash'];
                     }
                 }

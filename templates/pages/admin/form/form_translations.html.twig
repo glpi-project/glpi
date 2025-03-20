@@ -34,6 +34,18 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 <section aria-label="{{ __('Form translations') }}">
+    <div class="mb-2">
+        <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#addLanguageModal"
+        >
+            <i class="ti ti-plus me-1"></i>
+            {{ __('Add language') }}
+        </button>
+    </div>
+
     <div class="card border-bottom-0">
         {% include "components/datatable.html.twig" with {
             'datatable_id': 'glpi-form-translations-languages',
@@ -64,34 +76,46 @@
         } only %}
     </div>
 
-    <form
-        class="d-flex mt-2"
-        action="{{ path('/Form/Translation/{form_id}/Add'|replace({'{form_id}': item.getId()})) }}"
-        method="POST"
-        data-glpi-form-translations-add-language-container=""
-    >
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-        {{ fields.dropdownArrayField(
-            'language',
-            '',
-            available_languages,
-            '',
-            {
-                'no_label': true,
-                'field_class': 'col-3',
-                'mb': '',
-                'display_emptychoice': true,
-                'emptylabel': __('Select language to translate'),
-                'aria_label': __('Select language to translate'),
-            }
-        ) }}
-        <button
-            type="submit"
-            class="btn btn-ligh-primary border-start-0 rounded-start-0"
-            data-glpi-form-translations-add-language-button=""
-            aria-label="{{ __('Add language') }}"
-        >
-            <i class="ti ti-plus"></i>
-        </button>
-    </form>
+    {# Modal for adding languages #}
+    <div class="modal fade" id="addLanguageModal" tabindex="-1" aria-labelledby="addLanguageModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form
+                    action="{{ path('/Form/Translation/{form_id}/Add'|replace({'{form_id}': item.getId()})) }}"
+                    method="POST"
+                    data-glpi-form-translations-add-language-container=""
+                >
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addLanguageModalLabel">{{ __('Add language') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                        {{ fields.dropdownArrayField(
+                            'language',
+                            __('Select language to translate'),
+                            available_languages,
+                            '',
+                            {
+                                'display_emptychoice': true,
+                                'emptylabel'         : __('Select language to translate'),
+                                'aria_label'         : __('Select language to translate'),
+                                'no_label'           : true,
+                                'full_width'         : true,
+                                'mb'                 : '',
+                            }
+                        ) }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            {{ __('Cancel') }}
+                        </button>
+                        <button type="submit" class="btn btn-primary" data-glpi-form-translations-add-language-button="">
+                            {{ __('Add') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </section>

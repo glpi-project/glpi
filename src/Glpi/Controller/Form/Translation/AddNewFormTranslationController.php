@@ -67,8 +67,8 @@ final class AddNewFormTranslationController extends AbstractController
 
         $this->createTranslation($form, $language);
 
-        // Redirect to the form translation list
-        return new RedirectResponse($form->getFormURLWithID($form_id));
+        // Redirect to the translation editor for this language
+        return new RedirectResponse('/Form/Translation/' . $form_id . '/' . $language);
     }
 
     private function createTranslation(Form $form, string $language): void
