@@ -127,7 +127,7 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         return Ticket::getTicketTypeName($answer);
     }
