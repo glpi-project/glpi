@@ -36,7 +36,7 @@ $is-dark: true;
 :root[data-glpi-theme="auror_dark"] {
     --tblr-dark: #232e3c;
     --tblr-light: #9ca8c0;
-    --tblr-body-bg: #1f2936;
+    --tblr-body-bg: #1f2936; // hsl(213.9deg, 27.1%, 16.7%)
     --tblr-bg-surface: #232e3c;
     --tblr-body-color: #9ca8c0;
     --tblr-primary-rgb: 254, 201, 92;
@@ -51,6 +51,9 @@ $is-dark: true;
     --glpi-form-header-border-color: transparent;
     --glpi-mainmenu-bg: #232e3c;
     --glpi-mainmenu-fg: #ffffffb3;
+    --glpi-helpdesk-header: hsl(213.9deg, 27.1%, 30.7%);
+    --glpi-helpdesk-tiles-section-bg: hsl(213.9deg, 27.1%, 25.7%);
+    --glpi-helpdesk-tabs-section-bg: hsl(213.9deg, 27.1%, 20.7%);
     --glpi-tabs-bg: #1d2531;
     --glpi-tabs-fg: var(--tblr-light);
     --glpi-tabs-border-color: transparent;
@@ -65,4 +68,9 @@ $is-dark: true;
     --glpi-palette-color-2: #131425;
     --glpi-palette-color-3: #3a5693;
     --glpi-palette-color-4: #fec95c;
+
+    // Helpdesk header
+    --glpi-illustrations-gradient-1: hsl(213.9deg, 27.1%, 70%);
+    --glpi-illustrations-gradient-2: hsl(213.9deg, 27.1%, 40%);
+    --glpi-illustrations-gradient-3: hsl(213.9deg, 27.1%, 20%);
 }

@@ -172,13 +172,13 @@ header {
 }
 
 .tiles-banner {
-    background: #f6f8fb;
+    background: var(--glpi-helpdesk-tiles-section-bg);
     padding-top:70px;
     padding-bottom:70px;
 }
 
 .tickets-banner {
-    background: #fff;
+    background: var(--glpi-helpdesk-tabs-section-bg);
     padding-top:70px;
     padding-bottom:70px;
     flex-grow: 1;
@@ -222,4 +222,8 @@ header {
         padding-top: 16px;
         padding-bottom: 8px;
     }
+}
+
+.search-result-container {
+    background-color: var(--glpi-tabs-bg);
 }

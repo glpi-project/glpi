@@ -70,6 +70,8 @@
     --glpi-logo-reduced: var(--glpi-logo-light-reduced);
     --glpi-mainmenu-bg: #2f3f64; // hsl(222, 36%, 29%)
     --glpi-helpdesk-header: hsl(223deg, 31%, 80%);
+    --glpi-helpdesk-tiles-section-bg: #f6f8fb;
+    --glpi-helpdesk-tabs-section-bg: #fff;
     --glpi-mainmenu-fg: #f4f6fa;
     --glpi-mainmenu-fg-muted: #f4f6fa99;
     --glpi-mainmenu-active-bg: color-mix(in srgb, var(--glpi-mainmenu-bg), white 45%);
