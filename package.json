@@ -73,7 +73,8 @@
     "scripts": {
         "build:pack": "webpack --config .webpack.config.js",
         "build:vue": "webpack --config .vue.webpack.config.js",
-        "build": "npm run build:pack && npm run build:vue",
+        "build:illustration-translations": "php bin/console tools:generate_illustration_translations",
+        "build": "npm run build:pack && npm run build:vue && npm run build:illustration-translations",
         "dependencies:postinstall": "php -r \"file_put_contents('.package.hash', sha1_file('package-lock.json'));\"",
         "dependencies": "npm run dependencies:postinstall",
         "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --forceExit --config tests/js/jest.config.js ./tests/js/**",
