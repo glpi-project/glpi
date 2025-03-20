@@ -119,11 +119,9 @@
 
         [data-glpi-itildestination-field-config-content] {
             flex: 1;
-
             display: flex;
             flex-direction: column;
             align-items: stretch;
-
             width: 1%; // Small hack to make the select2 only take the space it available
 
             &:has(div[data-glpi-itildestination-field-config-display-condition]:not(.d-none)) {
