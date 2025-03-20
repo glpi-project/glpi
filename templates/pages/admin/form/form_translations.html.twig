@@ -60,12 +60,11 @@
                 'translated': 'progress'
             },
             'entries': translations|map(translation => {
-                'language': '<a class="fw-medium" href="' ~ path(
-                    '/Form/Translation/' ~ item.getId() ~ '/' ~ translation.fields.language,
-                    {
-                        'forcetab': 'Glpi\\Form\\FormTranslation$main'
-                    }
-                ) ~ '">' ~ translation.getName() ~ '</a>',
+                'language': include('pages/admin/form/form_translation.html.twig', {
+                    'form'            : item,
+                    'can_update'      : true,
+                    'form_translation': translation,
+                }),
                 'translated': translation.getTranslatedPercentage(),
                 'translations_to_do': translation.getTranslationsToDo(),
                 'translations_to_review': translation.getTranslationsToReview()
@@ -119,3 +118,17 @@
         </div>
     </div>
 </section>
+
+<script>
+    $(function() {
+        // Check if we need to open a translation modal on page load
+        // First check URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const openTranslation = urlParams.get('open_translation');
+
+        if (openTranslation) {
+            // Open the modal for the specified language
+            $(`#form-translation-modal-${openTranslation}`).modal('show');
+        }
+    });
+</script>

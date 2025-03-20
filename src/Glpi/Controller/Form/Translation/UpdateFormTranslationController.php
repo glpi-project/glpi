@@ -74,7 +74,7 @@ final class UpdateFormTranslationController extends AbstractController
             );
         }
 
-        return new RedirectResponse($request->getBasePath() . '/Form/Translation/' . $form_id . '/' . $language);
+        return new RedirectResponse($form->getFormURLWithID($form_id));
     }
 
     private function processTranslations(array $translations, string $language): bool
