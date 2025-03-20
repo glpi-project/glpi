@@ -370,6 +370,12 @@
     border-bottom-right-radius: var(--tblr-border-radius) !important;
 }
 
+input.value-selector {
+    // Use extra padding to match height of dropdowns on the same line.
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .value-selector {
     border: 0 !important;
     background-color: var(--tblr-yellow-lt) !important;

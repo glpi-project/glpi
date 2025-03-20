@@ -153,7 +153,6 @@
     }
 
     &.select2-container--disabled .select2-selection {
-        background-color: var(--tblr-disabled-color);
         border-color: var(--tblr-border-color);
         box-shadow: none;
         cursor: not-allowed;
