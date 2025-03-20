@@ -67,8 +67,9 @@ final class AddNewFormTranslationController extends AbstractController
 
         $this->createTranslation($form, $language);
 
-        // Redirect to the translation editor for this language
-        return new RedirectResponse('/Form/Translation/' . $form_id . '/' . $language);
+        // Redirect with a URL parameter to indicate the modal should be opened
+        $redirect_url = $form->getFormURLWithID($form_id) . "&open_translation=$language";
+        return new RedirectResponse($redirect_url);
     }
 
     private function createTranslation(Form $form, string $language): void

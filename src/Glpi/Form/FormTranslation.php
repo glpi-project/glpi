@@ -112,57 +112,9 @@ final class FormTranslation extends ItemTranslation
             ]);
 
             return true;
-        } elseif ($item instanceof FormTranslation) {
-            // Retrieve good FormTranslation object
-            $form_translation = new self();
-            if (!$form_translation->getFromDB($tabnum)) {
-                return false;
-            }
-
-            return $form_translation->showForm($form_translation->getID());
         }
 
         return false;
-    }
-
-    #[Override]
-    public function defineTabs($options = [])
-    {
-        $tabs = [];
-        $form_translations = array_reduce(
-            self::getTranslationsForItem(Form::getById($this->fields[static::$items_id])),
-            fn($carry, $translation) => $carry + [$translation->fields['language'] => $translation],
-            []
-        );
-        foreach ($form_translations as $form_translation) {
-            $index = $form_translation->getID();
-            $tabName = $this->getTabNameForItem($form_translation);
-            if ($this->fields['language'] === $form_translation->fields['language']) {
-                $index = 'main';
-                $tabs = array_merge([self::getType() . '$' . $index => $tabName], $tabs);
-            } else {
-                $tabs[self::getType() . '$' . $index] = $tabName;
-            }
-        }
-
-        return $tabs;
-    }
-
-    #[Override]
-    public function showForm($ID, array $options = [])
-    {
-        $form = $this->getItem();
-        if (!($form instanceof Form)) {
-            return false;
-        }
-
-        TemplateRenderer::getInstance()->display('pages/admin/form/form_translation.html.twig', [
-            'form'             => $form,
-            'can_update'       => self::canUpdate(),
-            'form_translation' => $this,
-        ]);
-
-        return true;
     }
 
     /**
