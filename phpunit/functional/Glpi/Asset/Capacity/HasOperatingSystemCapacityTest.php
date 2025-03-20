@@ -38,6 +38,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use DisplayPreference;
 use Glpi\Asset\Asset;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Item_OperatingSystem;
@@ -47,9 +48,9 @@ class HasOperatingSystemCapacityTest extends DbTestCase
 {
     use CapacityUsageTestTrait;
 
-    protected function getTargetCapacity(): string
+    protected function getTargetCapacity(): Capacity
     {
-        return \Glpi\Asset\Capacity\HasOperatingSystemCapacity::class;
+        return new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasOperatingSystemCapacity::class);
     }
 
     /**
@@ -74,14 +75,14 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         // Enable capacity, the itemtype should now be registered
         $definition = $this->enableCapacity(
             $definition,
-            $this->getTargetCapacity()
+            $this->getTargetCapacity()->getName()
         );
         $this->assertContains($class, $CFG_GLPI["operatingsystem_types"]);
 
         // Disable capacity, the itemtype should no longer be registered
         $definition = $this->disableCapacity(
             $definition,
-            $this->getTargetCapacity()
+            $this->getTargetCapacity()->getName()
         );
         $this->assertNotContains($class, $CFG_GLPI["operatingsystem_types"]);
     }
@@ -112,7 +113,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         // Enable capacity, the tab should now be registered
         $definition = $this->enableCapacity(
             $definition,
-            $this->getTargetCapacity()
+            $this->getTargetCapacity()->getName()
         );
         $this->assertArrayHasKey($tab_name, $subject->defineAllTabs());
 
@@ -151,7 +152,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         // Enable capactity, search option count should increase
         $definition = $this->enableCapacity(
             $definition,
-            $this->getTargetCapacity()
+            $this->getTargetCapacity()->getName()
         );
         $this->assertCount(
             $base_search_options_count + $count_to_add,
@@ -161,7 +162,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         // Disable capacity, search option count should decrease back to base
         $definition = $this->disableCapacity(
             $definition,
-            $this->getTargetCapacity()
+            $this->getTargetCapacity()->getName()
         );
         $this->assertCount(
             $base_search_options_count,
@@ -206,7 +207,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         // Disable capacity, linked item should be deleted
         $definition = $this->disableCapacity(
             $definition,
-            $this->getTargetCapacity()
+            $this->getTargetCapacity()->getName()
         );
         $items = (new Item_OperatingSystem())->find([
             'itemtype' => $subject::getType(),
@@ -227,7 +228,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [
                 $this->getTargetCapacity(),
-                HasHistoryCapacity::class
+                new \Glpi\Asset\Capacity(name: HasHistoryCapacity::class)
             ]
         );
         $class = $definition->getAssetClassName();
@@ -271,7 +272,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         // and "OperatingSystem" should be deleted
         $definition = $this->disableCapacity(
             $definition,
-            $this->getTargetCapacity()
+            $this->getTargetCapacity()->getName()
         );
         $count_logs = countElementsInTable(Log::getTable(), [
             'itemtype' => $class,
@@ -329,7 +330,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         // The two OS search options should be deleted
         $definition = $this->disableCapacity(
             $definition,
-            $this->getTargetCapacity()
+            $this->getTargetCapacity()->getName()
         );
         $count_display_preferences = countElementsInTable(
             DisplayPreference::getTable(),
@@ -343,7 +344,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasOperatingSystemCapacity::class]
+            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasOperatingSystemCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);

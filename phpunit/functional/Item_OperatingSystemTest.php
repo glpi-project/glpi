@@ -48,7 +48,7 @@ class Item_OperatingSystemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasOperatingSystemCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasOperatingSystemCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -68,7 +68,7 @@ class Item_OperatingSystemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasOperatingSystemCapacity::class]);
+        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasOperatingSystemCapacity::class)]);
 
         foreach ($CFG_GLPI['operatingsystem_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
