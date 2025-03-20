@@ -117,4 +117,37 @@ describe('Illustration picker', () => {
             cy.findByRole('img', {'name': name}).should('be.visible');
         });
     });
+
+    it('Can upload and use a custom icon', () => {
+        // The default icon should be selected.
+        cy.findByRole('img', {'name': 'Request a service'}).should('be.visible');
+
+        // Open icon picker
+        openIllustrationPicker();
+
+        // Upload an icon
+        cy.findByRole('tab', {name: "Upload your own illustration"}).click();
+        cy.get('input[type=file]').selectFile("fixtures/uploads/bar.png");
+        cy.findByText("Upload successful").should('be.visible');
+        cy.findByRole('button', {name: "Use selected file"}).click();
+
+        // Make sure the image is displayed and is valid
+        cy
+            .get('div[data-glpi-icon-picker-value-preview-custom]')
+            .find('img:visible')
+            .should('be.visible')
+            .and('have.prop', 'naturalWidth')
+            .should('be.greaterThan', 0)
+        ;
+
+        // Save changes
+        cy.findByRole('button', {name: 'Save changes'}).click();
+        cy
+            .get('div[data-glpi-icon-picker-value-preview-custom]')
+            .find('img:visible')
+            .should('be.visible')
+            .and('have.prop', 'naturalWidth')
+            .should('be.greaterThan', 0)
+        ;
+    });
 });
