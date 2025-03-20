@@ -202,3 +202,10 @@
         }
     }
 }
+
+// Hide the condition on creation badge when accordion is expanded
+.accordion-button:not(.collapsed) {
+    [data-glpi-editor-condition-badge="always_created"] {
+        display: none !important;
+    }
+}
