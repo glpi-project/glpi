@@ -6583,6 +6583,14 @@ HTML;
     public function applyGroupsRules()
     {
         if (!isset($this->input["_ldap_rules"]['groups_id'])) {
+            if (isset($this->input["_ldap_rules"])) {
+                $group_user = new Group_User();
+
+                $groups = $group_user->find(['users_id' => $this->input['id']]);
+                foreach ($groups as $group) {
+                    $group_user->delete($group);
+                }
+            }
             return;
         }
 
