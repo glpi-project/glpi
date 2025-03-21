@@ -65,6 +65,7 @@ describe('Template configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.findByRole('region', {'name': "Template configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Template').as("template_dropdown");
 
@@ -87,6 +88,7 @@ describe('Template configuration', () => {
 
             cy.findByRole('button', {'name': 'Update item'}).click();
             cy.checkAndCloseAlert('Item successfully updated');
+            cy.openAccordionItem('Destination fields accordion', 'Properties');
             cy.get('@template_dropdown').should('have.text', 'Specific template');
             cy.get('@specific_template_id_dropdown').should('have.text', ticket_template_name);
         });

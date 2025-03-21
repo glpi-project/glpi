@@ -44,13 +44,13 @@ final class OLATTOField extends SLMField
     #[Override]
     public function getLabel(): string
     {
-        return __("OLA TTO");
+        return __("Internal TTO");
     }
 
     #[Override]
     public function getWeight(): int
     {
-        return 20;
+        return 220;
     }
 
     #[Override]

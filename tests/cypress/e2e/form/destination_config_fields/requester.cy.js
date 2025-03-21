@@ -83,6 +83,7 @@ describe('Requester configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.findByRole('region', { 'name': "Requesters configuration" }).as("config");
         cy.get('@config').getDropdownByLabelText('Requesters').as("requesters_dropdown");
 
@@ -100,18 +101,21 @@ describe('Requester configuration', () => {
         cy.get('@requesters_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@requesters_dropdown').should('have.text', 'From template');
 
         // Switch to "User who filled the form"
         cy.get('@requesters_dropdown').selectDropdownValue('User who filled the form');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@requesters_dropdown').should('have.text', 'User who filled the form');
 
         // Switch to "Supervisor of the user who filled the form"
         cy.get('@requesters_dropdown').selectDropdownValue('Supervisor of the user who filled the form');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@requesters_dropdown').should('have.text', 'Supervisor of the user who filled the form');
 
         // Switch to "Specific actors"
@@ -124,6 +128,7 @@ describe('Requester configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@requesters_dropdown').should('have.text', 'Specific actors');
         cy.get('@form_id').then((form_id) => {
             const requester_name = `Test Requester - ${form_id}`;
@@ -137,6 +142,7 @@ describe('Requester configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@requesters_dropdown').should('have.text', 'Answer from specific questions');
         cy.get('@specific_answers_type_dropdown').should('have.text', '×My Requester question');
 
@@ -144,6 +150,7 @@ describe('Requester configuration', () => {
         cy.get('@requesters_dropdown').selectDropdownValue('Answer to last "Requesters" question');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@requesters_dropdown').should('have.text', 'Answer to last "Requesters" question');
 
         // Switch to "User from GLPI object answer"
@@ -153,6 +160,7 @@ describe('Requester configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@requesters_dropdown').should('have.text', 'User from GLPI object answer');
         cy.get('@user_object_answer_dropdown').should('have.text', '×My Computer question');
 
@@ -162,6 +170,7 @@ describe('Requester configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@requesters_dropdown').should('have.text', 'Tech user from GLPI object answer');
         cy.get('@tech_user_object_answer_dropdown').should('have.text', '×My Computer question');
 
@@ -171,6 +180,7 @@ describe('Requester configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@requesters_dropdown').should('have.text', 'Group from GLPI object answer');
         cy.get('@group_object_answer_dropdown').should('have.text', '×My Computer question');
 
@@ -180,6 +190,7 @@ describe('Requester configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@requesters_dropdown').should('have.text', 'Tech group from GLPI object answer');
         cy.get('@tech_group_object_answer_dropdown').should('have.text', '×My Computer question');
     });

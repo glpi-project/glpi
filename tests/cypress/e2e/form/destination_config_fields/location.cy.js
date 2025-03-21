@@ -63,6 +63,7 @@ describe('Location configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.findByRole('region', { 'name': "Location configuration" }).as("config");
         cy.get('@config').getDropdownByLabelText('Location').as("location_dropdown");
 
@@ -80,6 +81,7 @@ describe('Location configuration', () => {
         cy.get('@location_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@location_dropdown').should('have.text', 'From template');
 
         // Switch to "Specific location"
@@ -92,6 +94,7 @@ describe('Location configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@location_dropdown').should('have.text', 'Specific location');
         cy.get('@form_id').then((form_id) => {
             const location_name = `Test Location - ${form_id}`;
@@ -105,6 +108,7 @@ describe('Location configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@location_dropdown').should('have.text', 'Answer from a specific question');
         cy.get('@specific_answer_type_dropdown').should('have.text', 'My Location question');
     });

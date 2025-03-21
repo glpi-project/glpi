@@ -44,13 +44,13 @@ final class OLATTRField extends SLMField
     #[Override]
     public function getLabel(): string
     {
-        return __("OLA TTR");
+        return __("Internal TTR");
     }
 
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 230;
     }
 
     #[Override]

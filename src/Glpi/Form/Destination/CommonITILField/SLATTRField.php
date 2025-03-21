@@ -44,13 +44,13 @@ final class SLATTRField extends SLMField
     #[Override]
     public function getLabel(): string
     {
-        return __("SLA TTR");
+        return __("TTR");
     }
 
     #[Override]
     public function getWeight(): int
     {
-        return 40;
+        return 210;
     }
 
     #[Override]

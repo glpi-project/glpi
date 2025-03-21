@@ -161,7 +161,7 @@ class LocationField extends AbstractConfigField implements DestinationFieldConve
     #[Override]
     public function getWeight(): int
     {
-        return 50;
+        return 80;
     }
 
     #[Override]

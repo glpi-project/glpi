@@ -72,6 +72,7 @@ describe('ITILCategory configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.findByRole('region', {'name': "ITIL category configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('ITIL category').as("itilcategory_dropdown");
 
@@ -95,6 +96,7 @@ describe('ITILCategory configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@itilcategory_dropdown').should('have.text', 'Specific ITIL category');
         cy.get('@form_id').then((form_id) => {
             const itilcategory_name = `Test ITIL Category for the ITILCategory configuration suite - ${form_id}`;
@@ -108,6 +110,7 @@ describe('ITILCategory configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@itilcategory_dropdown').should('have.text', 'Answer from a specific question');
         cy.get('@specific_answer_type_dropdown').should('have.text', 'My ITILCategory question');
     });

@@ -36,38 +36,42 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 enum Category: string
 {
-    case PROPERTIES = 'properties';
-    case ACTORS = 'actors';
-    case TIMELINE = 'timeline';
-    case SERVICE_LEVEL = 'service_level';
+    case PROPERTIES       = 'properties';
+    case ACTORS           = 'actors';
+    case TIMELINE         = 'timeline';
+    case SERVICE_LEVEL    = 'service_level';
+    case ASSOCIATED_ITEMS = 'associated_items';
 
     public function getLabel(): string
     {
         return match ($this) {
-            self::PROPERTIES    => "", // No label
-            self::ACTORS        => __("Actors"),
-            self::TIMELINE      => __("Timeline"),
-            self::SERVICE_LEVEL => __("Service levels"),
+            self::PROPERTIES       => __("Properties"),
+            self::ACTORS           => __("Actors"),
+            self::TIMELINE         => __("Timeline"),
+            self::SERVICE_LEVEL    => __("Service levels"),
+            self::ASSOCIATED_ITEMS => __("Associated items"),
         };
     }
 
     public function getWeight(): int
     {
         return match ($this) {
-            self::PROPERTIES     => 10,
-            self::ACTORS         => 20,
-            self::TIMELINE       => 30,
-            self::SERVICE_LEVEL  => 40,
+            self::PROPERTIES       => 10,
+            self::ACTORS           => 20,
+            self::TIMELINE         => 30,
+            self::SERVICE_LEVEL    => 40,
+            self::ASSOCIATED_ITEMS => 50,
         };
     }
 
     public function getIcon(): string
     {
         return match ($this) {
-            self::PROPERTIES     => '', // No icon
-            self::ACTORS         => 'ti ti-user',
-            self::TIMELINE       => 'ti ti-messages',
-            self::SERVICE_LEVEL  => 'ti ti-stopwatch',
+            self::PROPERTIES       => 'ti ti-alert-circle',
+            self::ACTORS           => 'ti ti-user',
+            self::TIMELINE         => 'ti ti-messages',
+            self::SERVICE_LEVEL    => 'ti ti-stopwatch',
+            self::ASSOCIATED_ITEMS => 'ti ti-link',
         };
     }
 }

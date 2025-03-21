@@ -89,6 +89,7 @@ class TitleField extends AbstractConfigField implements DestinationFieldConverte
                     'toolbar'          : false,
                     'editor_height'    : 0,
                     'statusbar'        : false,
+                    'mb'               : '',
                 })
             ) }}
 

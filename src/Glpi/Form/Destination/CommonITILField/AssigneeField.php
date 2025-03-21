@@ -63,7 +63,7 @@ class AssigneeField extends ITILActorField
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 120;
     }
 
     #[Override]

@@ -83,7 +83,7 @@ describe('Form tags', () => {
         cy.findByRole("menuitem", {name: "Comment description: Comment description"}).should('not.exist');
 
         // Remove auto configuration to allow us to type into the content field
-        cy.findByLabelText("Content").awaitTinyMCE().as("rich_text_editor");
+        cy.findByRole('region', {name: 'Content configuration'}).awaitTinyMCE().as("rich_text_editor");
         cy.findByRole('region', {'name': "Content configuration"})
             .findByRole('checkbox', {'name': "Auto config"})
             .uncheck()
@@ -133,7 +133,7 @@ describe('Form tags', () => {
         cy.findByRole("button", {name: "Update item"}).click();
 
         // Rich text content provided by autocompleted values should be displayed properly
-        cy.findByLabelText("Content").awaitTinyMCE()
+        cy.findByRole('region', {name: 'Content configuration'}).awaitTinyMCE()
             .findByText("#Question: Last name")
             .should('have.attr', 'contenteditable', 'false')
             .should('have.attr', 'data-form-tag', 'true')

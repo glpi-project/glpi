@@ -184,7 +184,7 @@ class RequestTypeField extends AbstractConfigField implements DestinationFieldCo
     #[Override]
     public function getWeight(): int
     {
-        return 35;
+        return 30;
     }
 
     #[Override]
