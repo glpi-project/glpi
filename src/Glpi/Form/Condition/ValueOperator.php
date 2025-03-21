@@ -45,9 +45,8 @@ enum ValueOperator: string
     case LESS_THAN = 'less_than';
     case LESS_THAN_OR_EQUALS = 'less_than_or_equals';
 
-    // Not yet implemented:
-    // case VISIBLE = 'visible';
-    // case NOT_VISIBLE = 'not_visible';
+    case VISIBLE = 'visible';
+    case NOT_VISIBLE = 'not_visible';
 
     public function getLabel(): string
     {
@@ -60,6 +59,9 @@ enum ValueOperator: string
             self::GREATER_THAN_OR_EQUALS => __("Is greater than or equals to"),
             self::LESS_THAN              => __("Is less than"),
             self::LESS_THAN_OR_EQUALS    => __("Is less than or equals to"),
+
+            self::VISIBLE                => __("Is visible"),
+            self::NOT_VISIBLE            => __("Is not visible"),
         };
     }
 }

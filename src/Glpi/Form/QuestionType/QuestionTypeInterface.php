@@ -36,12 +36,13 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 
 /**
  * Interface that must be implemented by all available questions types
  */
-interface QuestionTypeInterface
+interface QuestionTypeInterface extends UsedAsCriteriaInterface
 {
     public function __construct();
 

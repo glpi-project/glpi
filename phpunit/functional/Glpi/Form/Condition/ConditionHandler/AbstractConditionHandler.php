@@ -102,7 +102,7 @@ abstract class AbstractConditionHandler extends DbTestCase
      * Transform a simplified raw input that uses questions names by a real
      * EngineInput object with the correct ids.
      */
-    private function mapInput(Form $form, array $raw_input): EngineInput
+    protected function mapInput(Form $form, array $raw_input): EngineInput
     {
         $answers = [];
         foreach ($raw_input['answers'] as $question_name => $answer) {
