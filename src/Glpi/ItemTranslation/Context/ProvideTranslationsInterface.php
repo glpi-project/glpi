@@ -33,11 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form;
+namespace Glpi\ItemTranslation\Context;
 
-use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
-
-interface BlockInterface extends ProvideTranslationsInterface
+/**
+ * Must be implemented by classes that provide translations.
+ */
+interface ProvideTranslationsInterface
 {
-    public function displayBlockForEditor(): void;
+    /**
+     * Returns the list of form translations handlers.
+     *
+     * @return array<string, array<int, \Glpi\ItemTranslation\Context\TranslationHandler>>
+     */
+    public function listTranslationsHandlers(): array;
 }

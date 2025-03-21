@@ -33,11 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form;
+namespace Glpi\Form\QuestionType;
 
-use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+use Glpi\Form\Question;
 
-interface BlockInterface extends ProvideTranslationsInterface
+/**
+ * Must be implemented by question that provide translations.
+ */
+interface TranslationAwareQuestionType
 {
-    public function displayBlockForEditor(): void;
+    /**
+     * Returns the list of form translations handlers.
+     *
+     * @return array<int, \Glpi\ItemTranslation\Context\TranslationHandler>
+     */
+    public function listTranslationsHandlers(Question $question): array;
 }
