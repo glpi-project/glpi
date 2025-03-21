@@ -38,8 +38,13 @@ namespace Glpi\Form\QuestionType;
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ActorConditionHandler;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 use Group;
+use InvalidArgumentException;
 use Override;
 use Supplier;
 use User;
@@ -47,7 +52,7 @@ use User;
 /**
  * "Actors" questions represent an input field for actors (requesters, ...)
  */
-abstract class AbstractQuestionTypeActors extends AbstractQuestionType implements FormQuestionDataConverterInterface
+abstract class AbstractQuestionTypeActors extends AbstractQuestionType implements FormQuestionDataConverterInterface, UsedAsCriteriaInterface
 {
     /**
      * Retrieve the allowed actor types
@@ -419,6 +424,17 @@ TWIG;
             'is_multiple_actors' => $is_multiple_actors,
             'aria_label'         => $question->fields['name']
         ]);
+    }
+
+    #[Override]
+    public function getConditionHandler(
+        ?JsonFieldInterface $question_config
+    ): ConditionHandlerInterface {
+        if (!$question_config instanceof QuestionTypeActorsExtraDataConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        return new ActorConditionHandler($this, $question_config);
     }
 
     #[Override]
