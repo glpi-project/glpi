@@ -42,6 +42,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\Tile\TileInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
+use Glpi\Session\SessionInfo;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -88,8 +89,17 @@ final class DeleteTileController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        // Delete tile and return an empty response
+        // Delete tile
+        $profile_id = $this->tiles_manager->getProfileTileForTile($tile)->fields['profiles_id'];
         $this->tiles_manager->deleteTile($tile);
-        return new Response();
+
+        // Re-render the tile list
+        $tiles = $this->tiles_manager->getTiles(new SessionInfo(
+            profile_id: $profile_id,
+        ), check_availability: false);
+        return $this->render('pages/admin/helpdesk_home_config_tiles.html.twig', [
+            'tiles_manager' => $this->tiles_manager,
+            'tiles' => $tiles,
+        ]);
     }
 }

@@ -111,9 +111,7 @@ final class TilesManager
             'profiles_id' => $profile->getID(),
             'items_id'    => $id,
             'itemtype'    => $tile_class,
-            'rank'        => countElementsInTable(Profile_Tile::getTable(), [
-                'profiles_id' => $profile->getID(),
-            ]),
+            'rank'        => $this->getMaxUsedRankForProfile($profile) + 1,
         ]);
         if (!$id) {
             throw new RuntimeException("Failed to link tile to profile");
