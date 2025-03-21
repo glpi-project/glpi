@@ -744,15 +744,17 @@ class DisplayPreference extends CommonDBTM
             $result = $DB->updateOrInsert(
                 self::getTable(),
                 [
-                    'itemtype' => $itemtype,
-                    'users_id' => 0,
-                    'num'      => $pref['num'],
-                    'rank'     => $pref['rank']
+                    'itemtype'  => $itemtype,
+                    'users_id'  => 0,
+                    'num'       => $pref['num'],
+                    'rank'      => $pref['rank'],
+                    'interface' => $pref['interface'],
                 ],
                 [
-                    'itemtype' => $itemtype,
-                    'users_id' => 0,
-                    'num'      => $pref['num'],
+                    'itemtype'  => $itemtype,
+                    'users_id'  => 0,
+                    'num'       => $pref['num'],
+                    'interface' => $pref['interface'],
                 ]
             );
             if (!$result) {
