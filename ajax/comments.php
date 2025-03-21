@@ -112,7 +112,7 @@ if (
                     ];
                 }
             }
-            echo($tmpname["comment"] ?? '');
+            echo($tmpname["comment"]);
             break;
 
         default:

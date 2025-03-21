@@ -48,7 +48,7 @@ class Ajax
      *
      * @param string   $name    name of the js object
      * @param string   $url     URL to display in modal
-     * @param string[] $options Possible options:
+     * @param array    $options Possible options:
      *     - width      (default 800)
      *     - height     (default 400)
      *     - modal      is a modal window? (default true)
