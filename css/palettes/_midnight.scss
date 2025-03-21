@@ -50,7 +50,9 @@ $is-dark: true;
     --tblr-badge-color: var(--tblr-dark);
     --glpi-mainmenu-bg: var(--tblr-body-bg);
     --glpi-helpdesk-header: #1f1e1e;
-    --glpi-illustrations-header-light: hsl(31deg, 5%, 75%);
+    --glpi-helpdesk-tiles-section-bg: hsl(0deg, 1.6%, 4%);
+    --glpi-helpdesk-tabs-section-bg: #000;
+    --glpi-illustrations-header-light: hsl(40deg, 5%, 4%);
     --glpi-mainmenu-fg: var(--tblr-body-color);
     --glpi-form-header-fg: #6ba8f3;
     --glpi-form-header-border-color: transparent;
@@ -68,4 +70,9 @@ $is-dark: true;
     --glpi-palette-color-2: #1b1b1b;
     --glpi-palette-color-3: #858585;
     --glpi-palette-color-4: #c2c2c2;
+
+    // Helpdesk header
+    --glpi-illustrations-gradient-1: hsl(0deg, 1.6%, 70%);
+    --glpi-illustrations-gradient-2: hsl(0deg, 1.6%, 40%);
+    --glpi-illustrations-gradient-3: hsl(0deg, 1.6%, 20%);
 }

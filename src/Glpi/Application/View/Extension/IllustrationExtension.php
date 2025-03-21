@@ -56,6 +56,9 @@ class IllustrationExtension extends AbstractExtension
             new TwigFunction('render_illustration', [$this, 'renderIllustration'], [
                 'is_safe' => ['html'],
             ]),
+            new TwigFunction('render_scene', [$this, 'renderScene'], [
+                'is_safe' => ['html'],
+            ]),
             new TwigFunction(
                 'searchIcons',
                 [$this->illustration_manager, 'searchIcons'],
@@ -70,5 +73,10 @@ class IllustrationExtension extends AbstractExtension
     public function renderIllustration(string $filename, ?int $size = null): string
     {
         return $this->illustration_manager->renderIcon($filename, $size);
+    }
+
+    public function renderScene(string $filename, ?int $size = null): string
+    {
+        return $this->illustration_manager->renderScene($filename, $size);
     }
 }

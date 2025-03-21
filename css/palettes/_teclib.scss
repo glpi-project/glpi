@@ -36,10 +36,15 @@
     --tblr-primary-fg: #353b17;
     --tblr-link-color-rgb: 169, 88, 185;
     --glpi-mainmenu-bg: #a958b9; // hsl(290deg, 41%, 54%)
-    --glpi-helpdesk-header: hsl(291deg, 37%, 85%);
+    --glpi-helpdesk-header: hsl(291deg, 30%, 85%);
     --glpi-mainmenu-fg: #fff;
     --glpi-palette-color-1: #ba77c8;
     --glpi-palette-color-2: #8e21a1;
     --glpi-palette-color-3: #f1f1f2;
     --glpi-palette-color-4: #bcda1a;
+
+    // Helpdesk header
+    --glpi-illustrations-gradient-1: hsl(290deg, 38%, 92%);
+    --glpi-illustrations-gradient-2: hsl(290deg, 38%, 72%);
+    --glpi-illustrations-gradient-3: hsl(290deg, 38%, 42%);
 }
