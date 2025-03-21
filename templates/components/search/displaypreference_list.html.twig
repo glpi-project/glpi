@@ -55,7 +55,7 @@
                 <div class="display-prefs-list row g-2 mt-1">
                     {% for pref in preferences %}
                         {% set name = pref['itemtype']|itemtype_name(1)|default(pref['itemtype']) %}
-                        <div class="col-3">
+                        <div class="col-3 displayed-itemtype">
                             <div class="bg-gray-300 border border-gray-200 p-3 rounded-2">
                                 {% if massiveactionparams['specific_actions']|length > 0 %}
                                     <span class="me-2">
@@ -111,12 +111,19 @@
                     $('[data-itemtype]').each(function() {
                         const itemtype_search = $(this).html().toLowerCase();
                         if (itemtype_search.indexOf(search) === -1) {
-                            $(this).closest('.list-group-item').addClass('d-none');
+                            $(this).closest('.displayed-itemtype').addClass('d-none');
                         } else {
-                            $(this).closest('.list-group-item').removeClass('d-none');
+                            $(this).closest('.displayed-itemtype').removeClass('d-none');
                         }
                     });
                 }, 250);
+            });
+
+            // prevent Enter key to submit the form in search input field
+            $('#search-itemtype').on('keypress', function(e) {
+                if (e.originalEvent.key === 'Enter') {
+                    e.preventDefault();
+                }
             });
 
             // (un)toggle all capacities button
