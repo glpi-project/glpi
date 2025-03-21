@@ -490,7 +490,7 @@ class Dropdown
      * @param boolean $tooltip      (true by default) returns a tooltip, else returns only 'comment'
      * @param string  $default      default value returned when item not exists
      *
-     * @return string the value of the dropdown
+     * @return string|array the value of the dropdown
      **/
     public static function getDropdownName($table, $id, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;')
     {
