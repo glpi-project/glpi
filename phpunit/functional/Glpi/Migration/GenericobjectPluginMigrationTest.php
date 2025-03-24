@@ -176,16 +176,16 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                 'picture'        => null,
                 'is_active'      => true,
                 'capacities'     => [
-                    AllowedInGlobalSearchCapacity::class,
-                    HasContractsCapacity::class,
-                    HasDevicesCapacity::class,
-                    HasDocumentsCapacity::class,
-                    HasHistoryCapacity::class,
-                    HasInfocomCapacity::class,
-                    HasNetworkPortCapacity::class,
-                    HasNotepadCapacity::class,
-                    IsProjectAssetCapacity::class,
-                    IsReservableCapacity::class,
+                    AllowedInGlobalSearchCapacity::class => new \Glpi\Asset\Capacity(name: AllowedInGlobalSearchCapacity::class),
+                    HasContractsCapacity::class => new \Glpi\Asset\Capacity(HasContractsCapacity::class),
+                    HasDevicesCapacity::class => new \Glpi\Asset\Capacity(HasDevicesCapacity::class),
+                    HasDocumentsCapacity::class => new \Glpi\Asset\Capacity(HasDocumentsCapacity::class),
+                    HasHistoryCapacity::class => new \Glpi\Asset\Capacity(HasHistoryCapacity::class),
+                    HasInfocomCapacity::class => new \Glpi\Asset\Capacity(HasInfocomCapacity::class),
+                    HasNetworkPortCapacity::class => new \Glpi\Asset\Capacity(HasNetworkPortCapacity::class),
+                    HasNotepadCapacity::class => new \Glpi\Asset\Capacity(HasNotepadCapacity::class),
+                    IsProjectAssetCapacity::class => new \Glpi\Asset\Capacity(IsProjectAssetCapacity::class),
+                    IsReservableCapacity::class => new \Glpi\Asset\Capacity(IsReservableCapacity::class),
                 ],
                 'profiles'       => [
                     1 => 33,
@@ -840,7 +840,17 @@ class GenericobjectPluginMigrationTest extends DbTestCase
             );
 
             foreach ($expected_fields as $key => $expected_value) {
-                if (\is_array($expected_value)) {
+                if ($key === 'capacities') {
+                    $this->assertJson(
+                        $item->fields[$key],
+                        sprintf('`%s` field of the `%s` item does not contain a valid JSON string', $key, $name)
+                    );
+                    $this->assertEqualsCanonicalizing(
+                        $expected_value,
+                        $this->callPrivateMethod($item, 'getDecodedCapacities'),
+                        sprintf('`%s` field of the `%s` item does not match the expected value', $key, $name)
+                    );
+                } elseif (\is_array($expected_value)) {
                     $this->assertJson(
                         $item->fields[$key],
                         sprintf('`%s` field of the `%s` item does not contain a valid JSON string', $key, $name)
