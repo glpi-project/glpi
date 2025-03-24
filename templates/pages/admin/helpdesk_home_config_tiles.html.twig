@@ -38,14 +38,17 @@
         aria-label="{{ tile.getTitle() }}"
         data-glpi-draggable-item
         data-glpi-helpdesk-config-tile-container
+        data-glpi-helpdesk-config-action-show-edit-form
+        data-bs-toggle="offcanvas"
+        data-bs-target="#tile-form-offcanvas"
     >
         <div
             data-glpi-helpdesk-config-tile
             data-glpi-helpdesk-config-tile-id="{{ tile.getDatabaseId() }}"
             data-glpi-helpdesk-config-tile-itemtype="{{ get_class(tile) }}"
             data-glpi-helpdesk-config-tile-profile-id="{{ profile_tile_id }}"
-            class="card rounded my-2 flex-grow-1 cursor-grab"
-            draggable="true"
+            data-glpi-helpdesk-config-tile-sortable
+            class="card rounded my-2 flex-grow-1 cursor-pointer"
         >
             <section class="card-body">
                 <div class="d-flex">
@@ -58,40 +61,11 @@
                                 {{ tile.getTitle() }}
                             </h2>
 
-                            <div
-                                data-glpi-helpdesk-config-extra-actions
-                                class="dropdown ms-auto cursor-pointer ms-auto me-n2 mt-n1"
-                            >
-                                <i
-                                    class="ti ti-dots-vertical show"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                    role="button"
-                                    title="{{ __('Show more actions') }}"
-                                ></i>
-                                <ul class="dropdown-menu" data-bs-popper="none">
-                                    <li>
-                                        <button
-                                            type="button"
-                                            class="dropdown-item"
-                                            data-glpi-helpdesk-config-action-show-edit-form
-                                        >
-                                            <i class="ti ti-edit me-2"></i>
-                                            <span>{{ __("Edit tile") }}</span>
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button
-                                            type="button"
-                                            class="dropdown-item"
-                                            data-glpi-helpdesk-config-action-delete
-                                        >
-                                            <i class="ti ti-trash me-2"></i>
-                                            <span>{{ __("Delete tile") }}</span>
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
+                            <i
+                                class="ti ti-grip-horizontal cursor-grab ms-auto opacity-50"
+                                data-glpi-helpdesk-config-tile-handle
+                                draggable="true"
+                            ></i>
                         </div>
                         <div class="text-secondary remove-last-tinymce-margin">
                             {{ tile.getDescription()|safe_html }}
@@ -106,6 +80,8 @@
 <div
     role="button"
     aria-label="{{ __('Add tile') }}"
+    data-bs-toggle="offcanvas"
+    data-bs-target="#tile-form-offcanvas"
     data-glpi-helpdesk-config-action-new-tile
     class="col-12 col-lg-6 col-xl-4 d-flex-soft opacity-80 cursor-pointer opacity-100-hover min-height-110"
 >

@@ -104,23 +104,7 @@ describe('Helpdesk home page configuration', () => {
         });
     }
 
-    function validateOrderControlsAreHidden() {
-        cy.findByRole('button', {'name': "Cancel"}).should('not.exist');
-        cy.findByRole('button', {'name': "Save order"}).should('not.exist');
-        cy.findByRole('button', {'name': "Add tile"}).should('be.visible');
-    }
-
-    function validateOrderControlsAreShown() {
-        cy.findByRole('button', {'name': "Cancel"}).should('be.visible');
-        cy.findByRole('button', {'name': "Save order"}).should('be.visible');
-        cy.findByRole('button', {'name': "Add tile"}).should('not.exist');
-    }
-
     function moveTileAfterTile(subject, destination) {
-        // Because the drag and drop was faked, we need to manually trigger the
-        // sortstart event to display the actions
-        cy.get("[data-glpi-helpdesk-config-tiles]").trigger('sortstart');
-
         cy.findByRole("region", {'name': subject}).startToDrag();
         cy.findByRole("region", {'name': destination}).dropDraggedItemAfter();
     }
@@ -133,7 +117,6 @@ describe('Helpdesk home page configuration', () => {
             "Make a reservation",
             "View approval requests",
         ]);
-        validateOrderControlsAreHidden();
 
         // Change order
         moveTileAfterTile("Browse help articles", "Make a reservation");
@@ -143,48 +126,24 @@ describe('Helpdesk home page configuration', () => {
             "Browse help articles",
             "View approval requests",
         ]);
-        validateOrderControlsAreShown();
-
-        // Revert to original order
-        cy.findByRole('button', {'name': "Cancel"}).click();
-        validateTilesOrder([
-            "Browse help articles",
-            "Request a service",
-            "Make a reservation",
-            "View approval requests",
-        ]);
-        validateOrderControlsAreHidden();
-
-        // Change order again
-        moveTileAfterTile("View approval requests", "Request a service");
-        validateTilesOrder([
-            "Browse help articles",
-            "Request a service",
-            "View approval requests",
-            "Make a reservation",
-        ]);
-        validateOrderControlsAreShown();
 
         // Save new order
-        cy.findByRole('button', {'name': "Save order"}).click();
+        cy.findByRole('button', {'name': "Save tiles order"}).click();
         cy.findByRole('alert').should(
             'contain.text',
             "Configuration updated successfully."
         );
         validateTilesOrder([
-            "Browse help articles",
             "Request a service",
-            "View approval requests",
             "Make a reservation",
+            "Browse help articles",
+            "View approval requests",
         ]);
-        validateOrderControlsAreHidden();
     });
 
     it('can remove tiles', () => {
         // Delete tile
-        cy.findByRole("region", {'name': "Request a service"}).within(() => {
-            cy.findByRole('button', {'name': 'Show more actions'}).click();
-        });
+        cy.findByRole("region", {'name': "Request a service"}).click();
         cy.findByRole('button', {'name': 'Delete tile'}).click();
 
         // Validate deletion
@@ -208,52 +167,16 @@ describe('Helpdesk home page configuration', () => {
         ]);
     });
 
-    it('can cancel editing tile', () => {
-        // Default state
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
-        cy.findByRole("region", {'name': "Edit tile"}).should('not.exist');
-
-        // Enter edit mode
-        cy.findByRole("region", {'name': "Request a service"}).within(() => {
-            cy.findByRole('button', {'name': 'Show more actions'}).click();
-        });
-        cy.findByRole('button', {'name': 'Edit tile'}).click();
-        cy.findByRole("region", {'name': "Edit tile"}).should('be.visible');
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('not.exist');
-
-        // Change a field
-        cy.findByRole("textbox", {'name': 'Title'}).clear();
-        cy.findByRole("textbox", {'name': 'Title'}).type("My new tile name");
-
-        // Cancel
-        cy.findByRole('button', {'name': 'Cancel'}).click();
-        validateTilesOrder([
-            "Browse help articles",
-            "Request a service",
-            "Make a reservation",
-            "View approval requests",
-        ]);
-    });
-
     it('can edit a tile', () => {
-        // Default state
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
-        cy.findByRole("region", {'name': "Edit tile"}).should('not.exist');
-
-        // Enter edit mode
-        cy.findByRole("region", {'name': "Request a service"}).within(() => {
-            cy.findByRole('button', {'name': 'Show more actions'}).click();
-        });
-        cy.findByRole('button', {'name': 'Edit tile'}).click();
-        cy.findByRole("region", {'name': "Edit tile"}).should('be.visible');
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('not.exist');
+        // Go to tile edition form
+        cy.findByRole("region", {'name': "Request a service"}).click();
 
         // Change a field
         cy.findByRole("textbox", {'name': 'Title'}).clear();
         cy.findByRole("textbox", {'name': 'Title'}).type("My new tile name");
 
         // Submit
-        cy.findByRole('button', {'name': 'Save changes'}).click();
+        cy.findByRole('dialog').findByRole('button', {'name': 'Save changes'}).click();
         validateTilesOrder([
             "Browse help articles",
             "My new tile name",
@@ -263,19 +186,13 @@ describe('Helpdesk home page configuration', () => {
     });
 
     it('can add a "Glpi page" tile', () => {
-        // Default state
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
-        cy.findByRole("region", {'name': "Add a new tile"}).should('not.exist');
-
-        // Enter add mode
+        // Go to tile creation form
         cy.findByRole('button', {'name': "Add tile"}).click();
-        cy.findByRole("region", {'name': "Add a new tile"}).should('be.visible');
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('not.exist');
 
         // Set fields
         cy.getDropdownByLabelText('Type').selectDropdownValue('GLPI page');
         cy.findByRole("textbox", {'name': 'Title'}).type("My title");
-        cy.findByRole("region", {'name': "Add a new tile"})
+        cy.findByRole("dialog")
             .find('div[data-glpi-helpdesk-config-add-tile-form-for]:visible') // impossible to target without this due to some limitations
             .findByLabelText('Description')
             .awaitTinyMCE()
@@ -284,7 +201,7 @@ describe('Helpdesk home page configuration', () => {
         cy.getDropdownByLabelText('Target page').selectDropdownValue('Service catalog');
 
         // Submit
-        cy.findByRole('button', {'name': 'Add tile'}).click();
+        cy.findByRole('dialog').findByRole('button', {'name': 'Add tile'}).click();
         validateTilesOrder([
             "Browse help articles",
             "Request a service",
@@ -296,19 +213,13 @@ describe('Helpdesk home page configuration', () => {
     });
 
     it('can add a "External page" tile', () => {
-        // Default state
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
-        cy.findByRole("region", {'name': "Add a new tile"}).should('not.exist');
-
-        // Enter add mode
+        // Go to tile creation form
         cy.findByRole('button', {'name': "Add tile"}).click();
-        cy.findByRole("region", {'name': "Add a new tile"}).should('be.visible');
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('not.exist');
 
         // Set fields
         cy.getDropdownByLabelText('Type').selectDropdownValue('External page');
         cy.findByRole("textbox", {'name': 'Title'}).type("My external tile title");
-        cy.findByRole("region", {'name': "Add a new tile"})
+        cy.findByRole("dialog")
             .find('div[data-glpi-helpdesk-config-add-tile-form-for]:visible') // impossible to target without this due to some limitations
             .findByLabelText('Description')
             .awaitTinyMCE()
@@ -317,7 +228,7 @@ describe('Helpdesk home page configuration', () => {
         cy.findByRole("textbox", {'name': 'Target url'}).type("support.teclib.com");
 
         // Submit
-        cy.findByRole('button', {'name': 'Add tile'}).click();
+        cy.findByRole('dialog').findByRole('button', {'name': 'Add tile'}).click();
         validateTilesOrder([
             "Browse help articles",
             "Request a service",
@@ -329,21 +240,15 @@ describe('Helpdesk home page configuration', () => {
     });
 
     it('can add a "Form" tile', () => {
-        // Default state
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
-        cy.findByRole("region", {'name': "Add a new tile"}).should('not.exist');
-
-        // Enter add mode
+        // Go to tile creation form
         cy.findByRole('button', {'name': "Add tile"}).click();
-        cy.findByRole("region", {'name': "Add a new tile"}).should('be.visible');
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('not.exist');
 
         // Set fields
         cy.getDropdownByLabelText('Type').selectDropdownValue('Form');
         cy.getDropdownByLabelText('Target form').selectDropdownValue('Report an issue');
 
         // Submit
-        cy.findByRole('button', {'name': 'Add tile'}).click();
+        cy.findByRole('dialog').findByRole('button', {'name': 'Add tile'}).click();
         validateTilesOrder([
             "Browse help articles",
             "Request a service",
@@ -352,29 +257,5 @@ describe('Helpdesk home page configuration', () => {
             "Report an issue",
         ]);
         cy.findByText("Ask for support from our helpdesk team.").should('be.visible');
-    });
-
-    it('can cancel addding a tile', () => {
-        // Default state
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
-        cy.findByRole("region", {'name': "Add a new tile"}).should('not.exist');
-
-        // Enter add mode
-        cy.findByRole('button', {'name': "Add tile"}).click();
-        cy.findByRole("region", {'name': "Add a new tile"}).should('be.visible');
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('not.exist');
-
-        // Set fields
-        cy.getDropdownByLabelText('Type').selectDropdownValue('Form');
-        cy.getDropdownByLabelText('Target form').selectDropdownValue('Report an issue');
-
-        // Cancel
-        cy.findByRole('button', {'name': 'Cancel'}).click();
-        validateTilesOrder([
-            "Browse help articles",
-            "Request a service",
-            "Make a reservation",
-            "View approval requests",
-        ]);
     });
 });
