@@ -875,13 +875,16 @@ class LogTest extends DbTestCase
 
         // Get last log entry for this update
         $log_criteria = [
-            'items_id'     => $computers_id,
-            'itemtype'     => 'Computer',
-            'ORDER'        => 'id DESC',
-            'LIMIT'        => 1
+            'FROM'  => \Log::getTable(),
+            'WHERE' => [
+                'items_id' => $computers_id,
+                'itemtype' => 'Computer',
+            ],
+            'ORDER' => 'id DESC',
+            'LIMIT' => 1
         ];
 
-        $log_iterator = $DB->request('glpi_logs', $log_criteria);
+        $log_iterator = $DB->request($log_criteria);
         $this->assertEquals(1, count($log_iterator));
 
         $log = $log_iterator->current();
@@ -901,7 +904,7 @@ class LogTest extends DbTestCase
         );
 
         // Get last log entry for this update
-        $log_iterator = $DB->request('glpi_logs', $log_criteria);
+        $log_iterator = $DB->request($log_criteria);
         $this->assertEquals(1, count($log_iterator));
 
         $log = $log_iterator->current();
