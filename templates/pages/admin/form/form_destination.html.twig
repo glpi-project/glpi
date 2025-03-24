@@ -45,7 +45,7 @@
     </h2>
 
     <div class="d-flex">
-        <form method="POST" action="{{ '/Form/%d/Destination/Add'|format(form.getID) }}">
+        <form method="POST" action="{{ path('/Form/%d/Destination/Add'|format(form.getID())) }}">
             <div class="btn-group me-2">
                 {% for type, label in available_destinations_types %}
                     <button class="btn" name="itemtype" type="submit" value="{{ type }}">

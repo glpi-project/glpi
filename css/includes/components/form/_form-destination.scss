@@ -140,7 +140,7 @@
             display: flex;
             flex-direction: column;
             align-items: stretch;
-            width: 1%; // Small hack to make the select2 only take the space it available
+            width: 1%; // Small hack to make the select2 dropdown only take the available space
 
             &:has(div[data-glpi-itildestination-field-config-display-condition]:not(.d-none)) {
                 &:not(:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none))) {
