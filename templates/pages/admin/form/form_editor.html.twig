@@ -309,8 +309,8 @@
     <div data-glpi-form-editor-templates class="d-none">
 
         {# Load all possible questions types as hidden DOM content that is ready to be copied for a new question #}
-        {% for key, question_type in question_types_manager.getQuestionTypes() %}
-            <div data-glpi-form-editor-question-template="{{ key }}">
+        {% for question_type in question_types_manager.getQuestionTypes() %}
+            <div data-glpi-form-editor-question-template="{{ get_class(question_type) }}">
                 {# Render admin template for the given question type #}
                 {{ include('pages/admin/form/form_question.html.twig', {
                     'form'                        : item,
@@ -366,10 +366,13 @@
 
         {# Load all possible question types values #}
         <select data-glpi-form-editor-question-types-values>
-            {% for key, question_type in question_types_manager.getQuestionTypes() %}
+            {% for question_type in question_types_manager.getQuestionTypes() %}
+                {% set parent_category = question_types_manager.getCategoryKey(
+                    question_type.getCategory()
+                ) %}
                 <option
-                    data-glpi-form-editor-question-type="{{ question_type.getCategory().value }}"
-                    value="{{ key }}"
+                    data-glpi-form-editor-question-type="{{ parent_category }}"
+                    value="{{ get_class(question_type) }}"
                 >
                     {{ question_type.getName() }}
                 </option>

@@ -263,7 +263,7 @@ TWIG;
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::ITEM;
     }
