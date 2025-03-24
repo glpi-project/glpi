@@ -910,6 +910,7 @@ class LogTest extends DbTestCase
         // Verify old_id is old manufacturer_id and new_id is the new manufacturer_id
         $this->assertEquals($manufacturer_id, $log['old_id']);
         $this->assertEquals($new_manufacturer_id, $log['new_id']);
+    }
 
     public function testThatJsonValuesAreNotlogged(): void
     {
