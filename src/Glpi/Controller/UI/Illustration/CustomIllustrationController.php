@@ -34,16 +34,14 @@
 
 namespace Glpi\Controller\UI\Illustration;
 
-use Document;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\UI\IllustrationManager;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class UploadController extends AbstractController
+final class CustomIllustrationController extends AbstractController
 {
     public function __construct(
         private IllustrationManager $illustration_manager
@@ -51,26 +49,18 @@ final class UploadController extends AbstractController
     }
 
     #[Route(
-        "/UI/Illustration/Upload",
-        name: "glpi_ui_illustration_upload",
-        methods: "POST",
+        "/UI/Illustration/CustomIllustration/{id}",
+        name: "glpi_ui_illustration_custom_illustration",
+        methods: "GET",
     )]
-    public function __invoke(Request $request): Response
+    public function __invoke(string $id): Response
     {
-        // Read parameters
-        $file_name = $request->request->getString('filename', "");
-        $file_path = realpath(GLPI_TMP_DIR . "/$file_name");
-
-        if (
-            empty($file_name)
-            || !str_starts_with($file_path, realpath(GLPI_TMP_DIR))
-            || !file_exists($file_path)
-            || !Document::isImage($file_path)
-        ) {
+        $file = $this->illustration_manager->getCustomIllustrationFile($id);
+        if (!$file) {
             throw new BadRequestHttpException();
         }
 
-        $this->illustration_manager->saveCustomIllustration($file_name, $file_path);
-        return new JsonResponse(['file' => $file_name]);
+        // Read parameters
+        return new BinaryFileResponse($file);
     }
 }

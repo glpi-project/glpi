@@ -52,6 +52,8 @@ final class IllustrationManager
      */
     public const TRANSLATION_FILE = GLPI_ROOT . '/resources/.illustrations_translations.php';
 
+    private const CUSTOM_ILLUSTRATION_DIR = GLPI_PICTURE_DIR . "/illustrations";
+
     public function __construct(
         ?string $icons_definition_file = null,
         ?string $icons_sprites_path = null,
@@ -67,6 +69,7 @@ final class IllustrationManager
 
         $this->checkIconFile($this->icons_definition_file);
         $this->checkIconFile(GLPI_ROOT . "/public/$this->icons_sprites_path");
+        $this->validateOrInitCustomIllustrationDir();
     }
 
     /**
@@ -142,6 +145,39 @@ final class IllustrationManager
         return $titles;
     }
 
+    public function saveCustomIllustration(string $id, string $path): void
+    {
+        if (!rename($path, self::CUSTOM_ILLUSTRATION_DIR . "/$id")) {
+            throw new RuntimeException();
+        }
+    }
+
+    public function getCustomIllustrationFile(string $id): ?string
+    {
+        $file_path = realpath(self::CUSTOM_ILLUSTRATION_DIR . "/$id");
+        $custom_dir_path = realpath(self::CUSTOM_ILLUSTRATION_DIR);
+
+        if (
+            // Make sure $id is not maliciously reading from others directories
+            !str_starts_with($file_path, $custom_dir_path)
+            || !file_exists($file_path)
+        ) {
+            return null;
+        }
+
+        return $file_path;
+    }
+
+    private function validateOrInitCustomIllustrationDir(): void
+    {
+        if (
+            !file_exists(self::CUSTOM_ILLUSTRATION_DIR)
+            && !mkdir(self::CUSTOM_ILLUSTRATION_DIR)
+        ) {
+            throw new RuntimeException();
+        }
+    }
+
     private function renderNativeIcon(string $icon_id, ?int $size = null): string
     {
         $icons = $this->getIconsDefinitions();
@@ -158,7 +194,7 @@ final class IllustrationManager
     {
         $twig = TemplateRenderer::getInstance();
         return $twig->render('components/illustration/custom_icon.html.twig', [
-            'url'   => "/front/document.send.php?file=_pictures/illustrations/$icon_id",
+            'url'   => "/UI/Illustration/CustomIllustration/$icon_id",
             'size'  => $this->computeSize($size),
         ]);
     }

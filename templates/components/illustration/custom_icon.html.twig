@@ -30,4 +30,10 @@
  # ---------------------------------------------------------------------
  #}
 
-<img src="{{ path(url) }}" width="{{ size }}" height="{{ size }}" />
+<img
+    {% if url %}
+        src="{{ path(url) }}"
+    {% endif %}
+    width="{{ size }}"
+    height="{{ size }}"
+/>

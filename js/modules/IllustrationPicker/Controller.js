@@ -159,21 +159,11 @@ export class GlpiIllustrationPickerController
         this.#getSelectedIllustrationsInput().value = `file://${file_id}`;
 
         // Update preview
-        const current_src = this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-custom]')
-            .querySelector('img')
-            .src
-        ;
-        const parts = current_src.split('/');
-        parts.pop();
-        parts.push(file_id);
-        const new_src = parts.join('/');
         this.#container
             .querySelector('[data-glpi-icon-picker-value-preview-custom]')
             .querySelector('img')
-            .src = new_src
+            .src = `${CFG_GLPI.root_doc}/UI/Illustration/CustomIllustration/${file_id}`
         ;
-
         this.#container
             .querySelector('[data-glpi-icon-picker-value-preview-custom]')
             .classList
