@@ -995,6 +995,9 @@
 {% endmacro %}
 
 {% macro illustrationField(name, value, label = '', options = {}) %}
+    {% set custom_icon_prefix = constant(
+        'Glpi\\UI\\IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX'
+    ) %}
     {% set field %}
         {% set container_id = "container-" ~ random() %}
 
@@ -1009,7 +1012,7 @@
             {# Display the illustration, trigger the modal on click #}
             {% set modal_id = "illustration-modal-" ~ random() %}
             <div
-                class="illustration-selector d-flex align-items-center card border-1"
+                class="illustration-selector d-flex align-items-center card border-1 aspect-ratio-1"
                 role="button"
                 aria-label="{{ __("Select an illustration") }}"
                 data-bs-toggle="modal"
@@ -1017,7 +1020,35 @@
                 data-glpi-icon-picker-value-preview
             >
                 <div class="card-body">
-                    {{ render_illustration(value, 100) }}
+                    {% set is_custom_file = value starts with custom_icon_prefix %}
+                    <div
+                        {% if is_custom_file %}
+                            data-glpi-icon-picker-value-preview-custom
+                        {% else %}
+                            data-glpi-icon-picker-value-preview-native
+                        {% endif %}
+                    >
+                        {{ render_illustration(value, 100) }}
+                    </div>
+
+                    {# Keep the other format (native/custom) that wasn't used
+                    in a dedicated div that we can show later if the format
+                    is changed #}
+                    {% if is_custom_file %}
+                        <div
+                            class="d-none"
+                            data-glpi-icon-picker-value-preview-native
+                        >
+                           {{ render_illustration('', 100) }}
+                        </div>
+                    {% else %}
+                        <div
+                            class="d-none"
+                            data-glpi-icon-picker-value-preview-custom
+                        >
+                           {{ render_illustration(custom_icon_prefix, 100) }}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -1035,6 +1066,8 @@
                     );
                     new module.GlpiIllustrationPickerController(
                         document.getElementById('{{ container_id }}'),
+                        document.getElementById('{{ modal_id }}'),
+                        "{{ custom_icon_prefix }}",
                     );
                 })();
             </script>

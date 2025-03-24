@@ -1,4 +1,6 @@
-/*!
+<?php
+
+/**
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -30,16 +32,35 @@
  * ---------------------------------------------------------------------
  */
 
-.illustration-selector {
-    padding-bottom: 16px;
-    border-color: var(--tblr-border-color);
-    box-shadow: var(--tblr-box-shadow-input) !important;
-    border-radius: 5px !important; // Must match border radius used for tinymce
+namespace Glpi\Controller\UI\Illustration;
 
-    &:hover {
-        border-color: var(--tblr-secondary);
-        cursor: pointer;
+use Glpi\Controller\AbstractController;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\UI\IllustrationManager;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+final class CustomIllustrationController extends AbstractController
+{
+    public function __construct(
+        private IllustrationManager $illustration_manager
+    ) {
     }
 
-    transition: border-color 0.3s;
+    #[Route(
+        "/UI/Illustration/CustomIllustration/{id}",
+        name: "glpi_ui_illustration_custom_illustration",
+        methods: "GET",
+    )]
+    public function __invoke(string $id): Response
+    {
+        $file = $this->illustration_manager->getCustomIllustrationFile($id);
+        if (!$file) {
+            throw new BadRequestHttpException();
+        }
+
+        // Read parameters
+        return new BinaryFileResponse($file);
+    }
 }

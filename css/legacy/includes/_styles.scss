@@ -181,7 +181,9 @@
    }
 
    .pointer {
-      opacity: .7;
+      &:not(.nav-link) {
+         opacity: .7;
+      }
 
       &:hover {
          opacity: 1;
