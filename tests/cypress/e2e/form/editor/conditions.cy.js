@@ -592,7 +592,7 @@ describe ('Conditions', () => {
 
         // Create a destination and add a few conditions to it
         goToDestinationTab();
-        addDestination('ticket');
+        addDestination('Ticket');
         openConditionEditor();
         setConditionStrategy('Created if');
         fillCondition(0, null, 'My second question', 'Is not equal to', 'I love GLPI');

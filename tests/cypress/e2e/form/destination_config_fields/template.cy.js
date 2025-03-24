@@ -44,6 +44,9 @@ describe('Template configuration', () => {
         cy.focused().type("My test question");
         cy.findByRole('button', {'name': 'Save'}).click();
 
+        // Check alert
+        cy.checkAndCloseAlert('Item successfully updated');
+
         // Create a ticket template
         cy.get('@form_id').then((form_id) => {
             const ticket_template_name = `Test ticket template for the template configuration suite - ${form_id}`;

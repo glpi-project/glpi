@@ -75,6 +75,8 @@ describe('Requester configuration', () => {
 
             // Save form
             cy.findByRole('button', {'name': 'Save'}).click();
+
+            // Check alert
             cy.checkAndCloseAlert('Item successfully updated');
 
             // Go to destination tab

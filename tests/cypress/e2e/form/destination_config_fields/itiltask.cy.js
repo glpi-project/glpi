@@ -42,7 +42,7 @@ describe('ITILTask configuration', () => {
         cy.focused().type("My question");
 
         cy.findByRole('button', {'name': 'Save'}).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully updated');
+        cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to destination tab
         cy.findByRole('tab', { 'name': "Items to create 1" }).click();

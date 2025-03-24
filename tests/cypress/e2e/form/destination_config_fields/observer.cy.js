@@ -78,6 +78,9 @@ describe('Observer configuration', () => {
             // Save form
             cy.findByRole('button', {'name': 'Save'}).click();
 
+            // Check alert
+            cy.checkAndCloseAlert('Item successfully updated');
+
             // Go to destination tab
             cy.findByRole('tab', { 'name': "Items to create 1" }).click();
         });
