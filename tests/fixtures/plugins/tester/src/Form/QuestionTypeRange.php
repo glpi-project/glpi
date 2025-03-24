@@ -77,7 +77,6 @@ final class QuestionTypeRange extends AbstractQuestionType
                 name="default_value"
                 placeholder="{{ input_placeholder }}"
                 value="{{ question is not null ? question.fields.default_value : '' }}"
-                aria-label="{{ __('Default value') }}"
             />
 TWIG;
 

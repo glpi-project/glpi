@@ -202,7 +202,7 @@ class QuestionTypeDateTime extends AbstractQuestionType implements UsedAsCriteri
                         name="default_value"
                         placeholder="{{ placeholders.input[input_type_ignore_text] }}"
                         value="{{ default_value }}"
-                        aria-label="{{ __('Default value') }}"
+                        aria-label="{{ aria_label }}"
                         {{ is_default_value_current_time ? 'disabled' : '' }}
                     />
                 </div>
@@ -236,7 +236,8 @@ TWIG;
             'input_type'        => $this->getInputType($question),
             'input_type_ignore_text'        => $this->getInputType($question, true),
             'is_default_value_current_time' => $this->isDefaultValueCurrentTime($question),
-            'placeholders'      => $this->getPlaceholders()
+            'placeholders'      => $this->getPlaceholders(),
+            'aria_label'        =>  __('Default value'),
         ]);
     }
 

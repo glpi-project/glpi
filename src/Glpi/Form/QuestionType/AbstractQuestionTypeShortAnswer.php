@@ -112,7 +112,7 @@ abstract class AbstractQuestionTypeShortAnswer extends AbstractQuestionType
                 name="default_value"
                 placeholder="{{ input_placeholder }}"
                 value="{{ question is not null ? question.fields.default_value : '' }}"
-                aria-label="{{ __('Default value') }}"
+                aria-label="{{ aria_label }}"
                 {% for key, value in attributes %}
                     {{ key }}="{{ value|e('html_attr') }}"
                 {% endfor %}
@@ -125,6 +125,7 @@ TWIG;
             'input_type'        => $this->getInputType(),
             'input_placeholder' => $this->getName(),
             'attributes'        => $this->getInputAttributes(),
+            'aria_label'        => __('Default value'),
         ]);
     }
 
