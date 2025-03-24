@@ -44,6 +44,8 @@ enum ValueOperator: string
     case GREATER_THAN_OR_EQUALS = 'greater_than_or_equals';
     case LESS_THAN = 'less_than';
     case LESS_THAN_OR_EQUALS = 'less_than_or_equals';
+    case MATCH_REGEX = 'match_regex';
+    case NOT_MATCH_REGEX = 'not_match_regex';
 
     // Not yet implemented:
     // case VISIBLE = 'visible';
@@ -60,6 +62,8 @@ enum ValueOperator: string
             self::GREATER_THAN_OR_EQUALS => __("Is greater than or equals to"),
             self::LESS_THAN              => __("Is less than"),
             self::LESS_THAN_OR_EQUALS    => __("Is less than or equals to"),
+            self::MATCH_REGEX            => __("Match regular expression"),
+            self::NOT_MATCH_REGEX        => __("Do not match regular expression"),
         };
     }
 }

@@ -234,6 +234,8 @@ final class EditorManagerTest extends GLPITestCase
             'not_equals'   => __("Is not equal to"),
             'contains'     => __("Contains"),
             'not_contains' => __("Do not contains"),
+            'match_regex' => __("Match regular expression"),
+            'not_match_regex' => __("Do not match regular expression"),
         ], $dropdown_values);
     }
 
