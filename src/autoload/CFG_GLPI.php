@@ -516,6 +516,7 @@ $CFG_GLPI['javascript'] = [
         ]
     ],
     'assets'    => [
+        'tinymce',
         'dashboard'   => ['dashboard'],
         'rack'        => ['gridstack', 'rack'],
         'printer'     => ['dashboard'],
@@ -546,7 +547,7 @@ $CFG_GLPI['javascript'] = [
         ],
     ],
     'config' => [
-        'assetdefinition'  => ['sortable'],
+        'glpi\asset\assetdefinition'  => ['sortable', 'tinymce'],
         'commondropdown'  => [
             'ITILFollowupTemplate'   => ['tinymce'],
             'ProjectTaskTemplate'    => ['tinymce'],

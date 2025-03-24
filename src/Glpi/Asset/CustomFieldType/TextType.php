@@ -35,12 +35,21 @@
 namespace Glpi\Asset\CustomFieldType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\CustomFieldOption\BooleanOption;
 
 class TextType extends AbstractType
 {
     public static function getName(): string
     {
         return __('Text');
+    }
+
+    public function getOptions(): array
+    {
+        $opts = parent::getOptions();
+        $opts[] = new BooleanOption($this->custom_field, 'enable_richtext', __('Rich text'), true, false);
+        $opts[] = new BooleanOption($this->custom_field, 'enable_images', __('Allow images'), false, false);
+        return $opts;
     }
 
     public function getFormInput(string $name, mixed $value, ?string $label = null, bool $for_default = false): string
@@ -54,7 +63,7 @@ class TextType extends AbstractType
         // language=Twig
         return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
-            {{ fields.textareaField(name, value, label, field_options) }}
+            {{ fields.textareaField(name, field_options.enable_richtext ? value : value|html_to_text, label, field_options) }}
 TWIG, $twig_params);
     }
 
