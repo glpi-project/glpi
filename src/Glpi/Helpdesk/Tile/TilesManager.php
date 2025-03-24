@@ -200,6 +200,6 @@ final class TilesManager
             'WHERE'  => ['profiles_id' => $profile->getID()],
         ])->current();
 
-        return $rank['max_rank'];
+        return $rank['max_rank'] ?? 0;
     }
 }
