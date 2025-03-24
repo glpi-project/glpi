@@ -43,16 +43,3 @@
 
     transition: border-color 0.3s;
 }
-
-.muted-if-not-active {
-    opacity: 1 !important;
-
-    &:not(.active) {
-        color: var(--tblr-muted) !important;
-    }
-
-    &:hover {
-        color: var(--tblr-dark) !important;
-    }
-}
-
