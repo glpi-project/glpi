@@ -37,6 +37,7 @@ namespace Glpi\ItemTranslation;
 use CommonDBChild;
 use CommonDBTM;
 use Gettext\Languages\Language;
+use Glpi\Form\FormTranslation;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Override;
 use Session;
@@ -262,16 +263,19 @@ class ItemTranslation extends CommonDBChild
         array_walk_recursive(
             $translations_handlers,
             function ($handler) use (&$translations_to_review) {
-                $translation = $this->getFromDBByCrit([
-                    static::$items_id => $handler->getItem()->getID(),
-                    static::$itemtype => $handler->getItem()->getType(),
-                    'language'        => $this->fields['language'],
-                    'key'             => $handler->getKey(),
-                    'hash'            => ['!=', md5($handler->getValue())],
-                ]);
-
-                if (!empty($translation)) {
-                    $translations_to_review++;
+                $translation = new FormTranslation();
+                if (
+                    $translation->getFromDBByCrit([
+                        static::$items_id => $handler->getItem()->getID(),
+                        static::$itemtype => $handler->getItem()->getType(),
+                        'language'        => $this->fields['language'],
+                        'key'             => $handler->getKey(),
+                        'hash'            => ['!=', md5($handler->getValue())],
+                    ])
+                ) {
+                    if ($translation->isPossiblyObsolete()) {
+                        $translations_to_review++;
+                    }
                 }
             }
         );
