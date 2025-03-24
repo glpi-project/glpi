@@ -44,6 +44,22 @@
         {{ __("Items to create") }}
     </h2>
 
+    <div class="d-flex">
+        <form method="POST" action="{{ '/Form/%d/Destination/Add'|format(form.getID) }}">
+            <div class="btn-group me-2">
+                {% for type, label in available_destinations_types %}
+                    <button class="btn" name="itemtype" type="submit" value="{{ type }}">
+                        <i class="ti ti-plus me-1"></i> {{ __("Add %s"|format(label|lower)) }}
+                    </button>
+                {% endfor %}
+            </div>
+
+            {# Hidden values #}
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+            <input type="hidden" name="add" value=""/>
+        </form>
+    </div>
+
     {% if destinations|length == 0 %}
         <p class="empty-subtitle text-muted">
             {{ __("No items will be created for this form.") }}
@@ -66,13 +82,20 @@
                             aria-expanded="{{ is_expanded ? 'true' : 'false' }}"
                         >
                             <i class="{{ concrete_destination.getTargetItemtype()|itemtype_icon }} me-2"></i>
+                            <h4
+                                class="m-0"
+                                style="font-weight: inherit;"
+                                data-glpi-form-destination-name
+                            >
+                                {{ destination.getName() }}
+                            </h4>
                             <input
                                 aria-label="{{ __("Form destination name") }}"
                                 type="text"
                                 name="name"
                                 form="form-destination-{{ destination.getID() }}"
                                 value="{{ destination.getName() }}"
-                                class="form-control form-control-flush"
+                                class="form-control"
                                 style="font-weight: inherit;"
                                 data-bs-toggle="collapse"
                                 data-bs-target=""
@@ -138,22 +161,6 @@
             });
         </script>
     {% endif %}
-
-    <div class="d-flex mt-4">
-        {% for type, label in available_destinations_types %}
-            <form method="POST" action="{{ '/Form/%d/Destination/Add'|format(form.getID) }}">
-                {# Title #}
-                {# Submit button to create a new destination #}
-                <button class="btn btn-ligh-secondary ms-2" name="add" type="submit">
-                    <i class="ti ti-plus me-2"></i> {{ __("Add %s"|format(label|lower)) }}
-                </button>
-
-                {# Hidden values #}
-                <input type="hidden" name="itemtype" value="{{ type }}"/>
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
-            </form>
-        {% endfor %}
-    </div>
 </div>
 
 <script>

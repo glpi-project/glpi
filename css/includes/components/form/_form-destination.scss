@@ -31,6 +31,24 @@
  * ---------------------------------------------------------------------
  */
 
+// Hide the dynamic input when the accordion is collapsed
+// and show the name when the accordion is expanded
+#glpi-destinations-accordion {
+    > .accordion-header > .accordion-button {
+        &.collapsed {
+            [data-glpi-form-destination-dynamic-input] {
+                display: none !important;
+            }
+        }
+
+        &:not(.collapsed) {
+            [data-glpi-form-destination-name] {
+                display: none !important;
+            }
+        }
+    }
+}
+
 [data-glpi-associated-items-specific-values-extra-field] {
     [data-glpi-associated-items-specific-values-extra-field-container] {
         [data-glpi-associated-items-specific-values-extra-field-item] {
@@ -205,7 +223,7 @@
 
 // Hide the condition on creation badge when accordion is expanded
 .accordion-button:not(.collapsed) {
-    [data-glpi-editor-condition-badge="always_created"] {
+    [data-glpi-editor-condition-badge] {
         display: none !important;
     }
 }
