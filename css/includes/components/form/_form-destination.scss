@@ -223,7 +223,7 @@
 
 // Hide the condition on creation badge when accordion is expanded
 .accordion-button:not(.collapsed) {
-    [data-glpi-editor-condition-badge] {
+    [data-glpi-editor-destination-badges-container] {
         display: none !important;
     }
 }

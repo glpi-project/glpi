@@ -375,7 +375,17 @@
                     {% endif %}
                 </div>
             {% endif %}
-            {% if not destination.fields.is_mandatory %}
+            {% if destination.fields.is_mandatory %}
+                <span class="badge bg-secondary-lt ms-2">
+                    {{ __("Mandatory") }}
+                    <span
+                        class="form-help"
+                        data-bs-toggle="popover"
+                        data-bs-placement="right"
+                        data-bs-content="{{ __("This is the main item that will be created by this form. It can't be deleted.") }}"
+                    >?</span>
+                </span>
+            {% else %}
                 <div>
                     <button
                         title="{{ __('Configure creation conditions') }}"
