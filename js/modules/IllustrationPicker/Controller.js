@@ -49,10 +49,17 @@ export class GlpiIllustrationPickerController
      */
     #modal_node;
 
-    constructor(container, modal_node)
+    /**
+     * Const value forwarded from backend code
+     * @type {string}
+     */
+    #custom_icon_prefix;
+
+    constructor(container, modal_node, custom_icon_prefix)
     {
         this.#container = container;
         this.#modal_node = modal_node;
+        this.#custom_icon_prefix = custom_icon_prefix;
         this.#initEventListeners();
     }
 
@@ -156,7 +163,8 @@ export class GlpiIllustrationPickerController
 
     #setCustomIllustration(file_id)
     {
-        this.#getSelectedIllustrationsInput().value = `file://${file_id}`;
+        const icon_id = `${this.#custom_icon_prefix}${file_id}`;
+        this.#getSelectedIllustrationsInput().value = icon_id;
 
         // Update preview
         this.#container

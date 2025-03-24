@@ -52,6 +52,8 @@ final class IllustrationManager
      */
     public const TRANSLATION_FILE = GLPI_ROOT . '/resources/.illustrations_translations.php';
 
+    public const CUSTOM_ILLUSTRATION_PREFIX = "custom:";
+
     private const CUSTOM_ILLUSTRATION_DIR = GLPI_PICTURE_DIR . "/illustrations";
 
     public function __construct(
@@ -77,7 +79,7 @@ final class IllustrationManager
      */
     public function renderIcon(string $icon_id, ?int $size = null): string
     {
-        $custom_icon_prefix = "file://";
+        $custom_icon_prefix = self::CUSTOM_ILLUSTRATION_PREFIX;
         if (str_starts_with($icon_id, $custom_icon_prefix)) {
             return $this->renderCustomIcon(
                 substr($icon_id, strlen($custom_icon_prefix)),
