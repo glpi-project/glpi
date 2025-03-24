@@ -275,6 +275,49 @@ trait FormTesterTrait
             ], ['conditions']);
         }
 
+        // Add creation conditions on destinations
+        foreach ($builder->getDestinationCondition() as $name => $params) {
+            // Find the correct comment
+            $id = $this->getDestinationId($form, $name);
+
+            $params['conditions'] = array_map(function ($condition) use ($form) {
+                // Find the correct UUID
+                if ($condition['item_type'] == Type::SECTION) {
+                    $item = Section::getById($this->getSectionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::QUESTION) {
+                    $item = Question::getById($this->getQuestionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::COMMENT) {
+                    $item = Comment::getById($this->getCommentId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } else {
+                    throw new RuntimeException("Unknown type");
+                }
+                $item_uuid = $item->fields['uuid'];
+
+                return [
+                    'item'           => $condition['item_type']->value . "-" . $item_uuid,
+                    'item_type'      => $condition['item_type'],
+                    'item_uuid'      => $item_uuid,
+                    'value'          => $condition['value'],
+                    'value_operator' => $condition['value_operator']->value,
+                    'logic_operator' => $condition['logic_operator']->value,
+                ];
+            }, $params['conditions']);
+
+            $this->updateItem(FormDestination::class, $id, [
+                'creation_strategy' => $params['strategy'],
+                'conditions' => json_encode($params['conditions']),
+            ], ['conditions']);
+        }
+
         // Reload form
         $form->getFromDB($form->getID());
 
@@ -409,6 +452,20 @@ trait FormTesterTrait
             $comment = array_pop($filtered_comments);
             return $comment->getID();
         }
+    }
+
+    protected function getDestinationId(Form $form, string $name): int
+    {
+        $destinations = $form->getDestinations();
+        $destination = array_filter(
+            $destinations,
+            fn($destination) => $destination->fields['name'] === $name
+        );
+        if (count($destination) !== 1) {
+            throw new RuntimeException("Destination not found or ambiguous: $name");
+        }
+        $destination = current($destination);
+        return $destination->getID();
     }
 
     /**

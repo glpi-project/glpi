@@ -7,7 +7,7 @@ from the GLPI root directory.
 
 You can customize the docker services by creating a `docker-compose.override.yaml` file in the GLPI root directory.
 
-## HTTP server
+### HTTP server
 
 By default, the HTTP port is published to on the `8080` port on the host machine.
 You can change it in the `docker-compose.override.yaml` file.
@@ -18,6 +18,21 @@ services:
     ports: !override
       - "9000:80"
 ```
+
+### PHP version
+
+By default, the container runs on the latest available PHP version for the current GLPI branch.
+You can change it using the corresponding build arg in the `docker-compose.override.yaml` file.
+
+```yaml
+services:
+  app:
+    build:
+      args:
+        PHP_VERSION: "7.4"
+```
+
+### Files ownership
 
 The default uid/gid used by the docker container is `1000`. If your host user uses different uid/gid, you may encounter
 file permissions issues. To prevent this, you can customize them using the corresponding build args in

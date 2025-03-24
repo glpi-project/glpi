@@ -114,6 +114,7 @@ class Item_DevicesTest extends DbTestCase
                 'Item_DeviceHardDrive',
                 'Item_DeviceNetworkCard',
                 'Item_DeviceBattery',
+                'Item_DeviceControl',
                 'Item_DevicePci', // matches `*`
                 'Item_DeviceGeneric', // matches `*`
                 'Item_DeviceSimcard',

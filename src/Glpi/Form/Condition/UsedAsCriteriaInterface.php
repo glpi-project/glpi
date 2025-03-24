@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition;
 
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 
 /**
@@ -41,5 +42,7 @@ use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
  */
 interface UsedAsCriteriaInterface
 {
-    public function getConditionHandler(): ConditionHandlerInterface;
+    public function getConditionHandler(
+        ?JsonFieldInterface $question_config
+    ): ConditionHandlerInterface;
 }

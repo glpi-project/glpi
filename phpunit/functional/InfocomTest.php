@@ -309,8 +309,11 @@ class InfocomTest extends DbTestCase
         $CFG_GLPI["use_notifications"] = true;
         \Infocom::cronInfocom();
         $alerts = array_values(getAllDataFromTable(\Alert::getTable(), [
-            'itemtype' => 'Infocom',
-            'items_id' => [$deleted_infocom_id, $deleted_expired_infocom_id, $not_deleted_infocom_id],
+            'WHERE' => [
+                'itemtype' => 'Infocom',
+                'items_id' => [$deleted_infocom_id, $deleted_expired_infocom_id, $not_deleted_infocom_id],
+            ],
+            'ORDER' => 'id',
         ]));
 
         $this->assertCount(2, $alerts);

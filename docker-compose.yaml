@@ -3,6 +3,8 @@ services:
     container_name: "glpi"
     build:
       context: ".docker/app"
+      args:
+        PHP_VERSION: "8.4"
     restart: "unless-stopped"
     volumes:
       - ".:/var/www/glpi:rw"

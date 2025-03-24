@@ -1,4 +1,6 @@
-FROM ghcr.io/glpi-project/glpi-development-env:latest
+ARG PHP_VERSION=latest
+
+FROM ghcr.io/glpi-project/glpi-development-env:$PHP_VERSION
 
 USER root
 

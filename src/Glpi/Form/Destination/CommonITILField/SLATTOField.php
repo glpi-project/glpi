@@ -70,4 +70,10 @@ final class SLATTOField extends SLMField
     {
         return SLATTOFieldConfig::class;
     }
+
+    #[Override]
+    protected function getFieldNameToConvertSpecificSLMID(): string
+    {
+        return 'sla_question_tto';
+    }
 }

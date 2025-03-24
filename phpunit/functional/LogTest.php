@@ -36,12 +36,19 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Form\AccessControl\ControlType\DirectAccess;
+use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
+use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
+use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/log.class.php */
 
 class LogTest extends DbTestCase
 {
+    use FormTesterTrait;
+
     private function createComputer()
     {
         $computer = new \Computer();
@@ -903,5 +910,49 @@ class LogTest extends DbTestCase
         // Verify old_id is old manufacturer_id and new_id is the new manufacturer_id
         $this->assertEquals($manufacturer_id, $log['old_id']);
         $this->assertEquals($new_manufacturer_id, $log['new_id']);
+
+    public function testThatJsonValuesAreNotlogged(): void
+    {
+        // Arrange: create a form with a linked item that contains JSON values
+        $builder = new FormBuilder();
+        $builder->addAccessControl(
+            DirectAccess::class,
+            new DirectAccessConfig(token: 'my_token')
+        );
+        $form = $this->createForm($builder);
+
+        // Act: update a JSON field (the access token)
+        $access_control = $this->getAccessControl($form, DirectAccess::class);
+        $this->updateItem(
+            $access_control::class,
+            $access_control->getID(),
+            ['_config' => new DirectAccessConfig(token: 'my_new_token')],
+        );
+
+        // Assert: the logs should not contains any JSON reference
+        $this->assertEquals(
+            [
+                'Update an item: Access control',
+                'Add an item: Access control (Allow direct access ($id))',
+                'Add an item: Items to create (Ticket ($id))',
+                'Add the item',
+            ],
+            $this->getChangesForItem($form),
+        );
+    }
+
+    private function getChangesForItem($item): array
+    {
+        $log = Log::getHistoryData($item);
+        $changes = array_column($log, 'change');
+
+        // Replace ID from the log entries by static values to make the output
+        // more predictable.
+        $changes = array_map(
+            fn($entry) => preg_replace('/\(\d+\)/', '($id)', $entry),
+            $changes
+        );
+
+        return $changes;
     }
 }

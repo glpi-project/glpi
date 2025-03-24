@@ -82,6 +82,9 @@ class Lockedfield extends CommonDBTM
 
     public function canCreateItem(): bool
     {
+        if (empty($this->fields['itemtype'])) {
+            return true;
+        }
         return $this->canAccessItemEntity($this->fields['itemtype'], $this->fields['items_id']);
     }
 
@@ -103,6 +106,12 @@ class Lockedfield extends CommonDBTM
             return true;
         }
         return false;
+    }
+
+    public static function getPostFormAction(string $form_action): ?string
+    {
+        // Always return to the locked fields list page
+        return 'list';
     }
 
     /**

@@ -49,7 +49,7 @@ use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 final class LegacyItemtypeRouteListenerTest extends TestCase
 {
     #[DataProvider('provideItemtypes')]
-    public function testFindDbClass(string $path_info, string $expected_class_name): void
+    public function testFindGlpiClass(string $path_info, string $expected_class_name): void
     {
         $listener = new LegacyItemtypeRouteListener($this->getUrlMatcherMock());
         $request = $this->createRequest($path_info);
@@ -358,16 +358,7 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
             yield $path => [$path, $class];
         }
 
-        $devices_paths = [
-            '/front/device.php',
-            '/front/devicemodel.php',
-            '/front/devicetype.php',
-            '/front/device.form.php',
-            '/front/devicemodel.form.php',
-            '/front/devicetype.form.php',
-        ];
-
-        $devices_names = [
+        $devices_classes = [
             \DeviceBattery::class,
             \DeviceCamera::class,
             \DeviceCase::class,
@@ -388,10 +379,26 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
             \DeviceSoundCard::class,
         ];
 
-        foreach ($devices_names as $device) {
-            foreach ($devices_paths as $path) {
-                $fullPath = $path . '?itemtype=' . $device;
-                yield $fullPath => [$fullPath, $device];
+        foreach ($devices_classes as $device_class) {
+            $devices_paths = [
+                sprintf('/front/device.php?itemtype=%s', $device_class)      => $device_class,
+                sprintf('/front/device.form.php?itemtype=%s', $device_class) => $device_class,
+            ];
+
+            $model_class = $device_class . 'Model';
+            if (\class_exists($model_class)) {
+                $devices_paths[sprintf('/front/devicemodel.php?itemtype=%s', $model_class)] = $model_class;
+                $devices_paths[sprintf('/front/devicemodel.form.php?itemtype=%s', $model_class)] = $model_class;
+            }
+
+            $type_class = $device_class . 'Type';
+            if (\class_exists($type_class)) {
+                $devices_paths[sprintf('/front/devicetype.php?itemtype=%s', $type_class)] = $type_class;
+                $devices_paths[sprintf('/front/devicetype.form.php?itemtype=%s', $type_class)] = $type_class;
+            }
+
+            foreach ($devices_paths as $path => $class) {
+                yield $path => [$path, $class];
             }
         }
     }

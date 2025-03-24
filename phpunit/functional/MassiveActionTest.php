@@ -840,4 +840,71 @@ class MassiveActionTest extends DbTestCase
         ]);
         $this->assertCount(1, $rows);
     }
+
+    public function testSaveSearchSpecificMassiveActionProvider()
+    {
+        $this->login();
+
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+        $uid = getItemByTypeName('User', TU_USER, true);
+        $bk = new \SavedSearch();
+        $this->assertTrue(
+            (bool)$bk->add([
+                'name'         => 'public root recursive',
+                'type'         => 1,
+                'itemtype'     => 'Ticket',
+                'users_id'     => $uid,
+                'is_private'   => 0,
+                'entities_id'  => $entity,
+                'is_recursive' => 1,
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
+            ])
+        );
+
+        yield [
+            "action"       => "unset_default",
+            "item"         => $bk,
+            "ids"          => [$bk->getID()],
+            "input"        => $bk->input,
+            "ok"           => 1,
+            "ko"           => 0,
+            "action_class" => \SavedSearch::class
+        ];
+
+        yield [
+            "action"       => "change_entity",
+            "item"         => $bk,
+            "ids"          => [$bk->getID()],
+            "input"        => $bk->input,
+            "ok"           => 1,
+            "ko"           => 0,
+            "action_class" => \SavedSearch::class
+        ];
+
+        yield [
+            "action"       => "change_visibility",
+            "item"         => $bk,
+            "ids"          => [$bk->getID()],
+            "input"        => $bk->input,
+            "ok"           => 1,
+            "ko"           => 0,
+            "action_class" => \SavedSearch::class
+        ];
+    }
+
+    public function testaveSearchSpecificmassiveAction()
+    {
+        $provider = $this->testSaveSearchSpecificMassiveActionProvider();
+        foreach ($provider as $row) {
+            $this->processMassiveActionsForOneItemtype(
+                $row["action"],
+                $row["item"],
+                $row["ids"],
+                $row["input"],
+                $row["ok"],
+                $row["ko"],
+                $row["action_class"],
+            );
+        }
+    }
 }

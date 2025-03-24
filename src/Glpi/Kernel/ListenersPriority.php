@@ -82,9 +82,15 @@ final class ListenersPriority
         // requested URI matches an existing file.
         HttpListener\LegacyRouterListener::class        => 400,
 
+        // This listener allows matching plugins routes at runtime.
+        // It must be executed prior to the `LegacyItemtypeRouteListener` to be sure that any legacy route
+        // override in plugins will be taken into account before trying to forward to a generic controller.
+        HttpListener\PluginsRouterListener::class       => 375,
+
         // Map legacy scripts URLS (e.g. `/front/computer.php`) to modern controllers.
-        // Must be executed after the `LegacyRouterListener` to ensure to use the legacy script if it exists.
-        HttpListener\LegacyItemtypeRouteListener::class => 375,
+        // Must be executed after the `LegacyRouterListener` to ensure to use the legacy script if it exists
+        // and after the `PluginsRouterListener` to allow plugin to bypass generic controllers.
+        HttpListener\LegacyItemtypeRouteListener::class => 350,
 
         // Legacy URLs redirections.
         // Must be executed before the Symfony router, to prevent `NotFoundHttpException` to be thrown.
@@ -92,14 +98,6 @@ final class ListenersPriority
         // Symfony's Router priority is 32.
         // @see \Symfony\Component\HttpKernel\EventListener\RouterListener::getSubscribedEvents()
         HttpListener\RedirectLegacyRouteListener::class => 33,
-
-        // This listener allows matching plugins routes at runtime,
-        //   that's why it's executed right after Symfony's Router,
-        //   and also after GLPI's config is set.
-        //
-        // Symfony's Router priority is 32.
-        // @see \Symfony\Component\HttpKernel\EventListener\RouterListener::getSubscribedEvents()
-        HttpListener\PluginsRouterListener::class       => 31,
 
         // Redefine the `$_SERVER['PHP_SELF']` variables that it still used to retrieve the "current path".
         // Must be called as late as possible, just before controllers execution.

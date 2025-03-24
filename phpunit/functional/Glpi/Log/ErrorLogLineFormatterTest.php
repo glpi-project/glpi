@@ -141,7 +141,7 @@ class ErrorLogLineFormatterTest extends TestCase
             datetime: new DateTimeImmutable('2024-08-12 21:45:32'),
             channel: 'glpiphplog',
             level: Level::Critical,
-            message: 'Uncaught PHP Exception RuntimeException: "Operation failed!" at Central.php line 123',
+            message: 'Uncaught PHP Exception RuntimeException: "Operation failed!"',
             context: ['exception' => new \RuntimeException()],
             extra: [],
         );
@@ -151,16 +151,20 @@ class ErrorLogLineFormatterTest extends TestCase
         $lines = explode("\n", $formatted);
 
         $this->assertSame(
-            '[2024-08-12 21:45:32] glpiphplog.CRITICAL:   *** Uncaught PHP Exception RuntimeException: "Operation failed!" at Central.php line 123',
+            '[2024-08-12 21:45:32] glpiphplog.CRITICAL:   *** Uncaught PHP Exception RuntimeException: "Operation failed!"',
             $lines[0]
         );
         $this->assertSame(
             '  Backtrace :',
             $lines[1]
         );
+        $this->assertSame(
+            '  ...onal/Glpi/Log/ErrorLogLineFormatterTest.php:145 ',
+            $lines[2]
+        );
         $this->assertMatchesRegularExpression(
             '#.*phpunit/src/Framework/TestCase\.php:\d+ tests\\\units\\\Glpi\\\Log\\\ErrorLogLineFormatterTest->testFormatExceptionTrace\(\)#',
-            $lines[2]
+            $lines[3]
         );
         // Testing the following lines in the trace would produce an unstable test.
         // Unfortunately, it is imposssible to mock an exception, as all its methods are final.

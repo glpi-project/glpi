@@ -380,19 +380,22 @@ TWIG, $twig_params);
         $entries = [];
         $entity_names = [];
         foreach ($types_iterator as $type_row) {
-            $itemtype = $type_row['itemtype'];
-            if (!($item = getItemForItemtype($itemtype))) {
+            $main_itemtype = $type_row['itemtype'];
+            if (!is_a($main_itemtype, CommonDBTM::class, true)) {
                 continue;
             }
 
-            if ($item::canView()) {
-                $iterator = self::getTypeItems($instID, $itemtype);
-                $itemtype_name = $item::getTypeName(1);
+            if ($main_itemtype::canView()) {
+                $iterator = self::getTypeItems($instID, $main_itemtype);
 
                 foreach ($iterator as $data) {
+                    if (!($item = getItemForItemtype($main_itemtype))) {
+                        continue;
+                    }
+                    $itemtype = $main_itemtype;
                     $linkname_extra = "";
                     if ($item instanceof ITILFollowup || $item instanceof ITILSolution) {
-                        $linkname_extra = "(" . $itemtype_name . ")";
+                        $linkname_extra = "(" . $item::getTypeName(1) . ")";
                         $itemtype = $data['itemtype'];
                         $item = new $itemtype();
                         $item->getFromDB($data['items_id']);
@@ -411,7 +414,7 @@ TWIG, $twig_params);
                     }
 
                     if ($item instanceof CommonITILObject) {
-                        $data["name"] = sprintf(__('%1$s: %2$s'), $itemtype_name, $data["id"]);
+                        $data["name"] = sprintf(__('%1$s: %2$s'), $item::getTypeName(1), $data["id"]);
                     }
 
                     if ($itemtype === SoftwareLicense::class) {
@@ -459,7 +462,7 @@ TWIG, $twig_params);
                         'itemtype' => self::class,
                         'row_class' => $data['is_deleted'] ? 'table-danger' : '',
                         'id'       => $data['linkid'],
-                        'linked_itemtype' => $itemtype_name,
+                        'linked_itemtype' => $item::getTypeName(1),
                         'name'    => $name,
                         'entity'  => $entity_name,
                         'serial'  => $data["serial"] ?? "-",

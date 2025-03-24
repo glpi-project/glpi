@@ -44,7 +44,7 @@
         background-color: var(--tblr-bg-forms);
         border: var(--tblr-border-width) solid var(--tblr-border-color);
         border-radius: var(--tblr-border-radius);
-        box-shadow: var(--tblr-box-shadow);
+        box-shadow: var(--tblr-box-shadow-input);
         transition: $input-transition;
 
         .select2-selection__rendered input[type="search"] {
@@ -153,7 +153,6 @@
     }
 
     &.select2-container--disabled .select2-selection {
-        background-color: var(--tblr-disabled-color);
         border-color: var(--tblr-border-color);
         box-shadow: none;
         cursor: not-allowed;

@@ -5,8 +5,8 @@
     "description": "GLPI dependencies",
     "license": "GPL-3.0-or-later",
     "engines": {
-        "node": ">= 18.12",
-        "npm": ">= 8.19"
+        "node": ">= 20.9",
+        "npm": ">= 10.1"
     },
     "dependencies": {
         "@fontsource/inter": "^4.5.15",
@@ -21,8 +21,8 @@
         "@fullcalendar/rrule": "^4.4.2",
         "@fullcalendar/timegrid": "^4.4.2",
         "@fullcalendar/timeline": "^4.4.3",
-        "@glpi-project/illustrations": "^0.2.0",
-        "@tabler/core": "^1.0.0-beta20",
+        "@glpi-project/illustrations": "^0.3.1",
+        "@tabler/core": "^1.0.0",
         "@tabler/icons-webfont": "^3.30.0",
         "animate.css": "^4.1.1",
         "bootstrap": "^5.3.2",
@@ -73,7 +73,8 @@
     "scripts": {
         "build:pack": "webpack --config .webpack.config.js",
         "build:vue": "webpack --config .vue.webpack.config.js",
-        "build": "npm run build:pack && npm run build:vue",
+        "build:illustration-translations": "php bin/console tools:generate_illustration_translations",
+        "build": "npm run build:pack && npm run build:vue && npm run build:illustration-translations",
         "dependencies:postinstall": "php -r \"file_put_contents('.package.hash', sha1_file('package-lock.json'));\"",
         "dependencies": "npm run dependencies:postinstall",
         "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --forceExit --config tests/js/jest.config.js ./tests/js/**",
@@ -93,7 +94,7 @@
         "@vue/vue3-jest": "^29.2.6",
         "axe-core": "^4.9.1",
         "clean-webpack-plugin": "^4.0.0",
-        "copy-webpack-plugin": "^12.0.2",
+        "copy-webpack-plugin": "^13.0.0",
         "css-loader": "^7.1.2",
         "csso-cli": "^4.0.2",
         "cypress": "^13.8.1",
@@ -117,11 +118,11 @@
         "script-loader": "^0.7.2",
         "strip-sourcemap-loader": "^0.0.1",
         "style-loader": "^3.3.3",
-        "stylelint": "^16.14.1",
+        "stylelint": "^16.15.0",
         "stylelint-config-standard-scss": "^14.0.0",
-        "terser": "^5.37.0",
+        "terser": "^5.39.0",
         "vue-loader": "^17.2.2",
-        "webpack": "^5.97.1",
+        "webpack": "^5.98.0",
         "webpack-cli": "^6.0.1"
     }
 }

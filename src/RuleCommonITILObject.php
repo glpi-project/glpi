@@ -254,7 +254,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
 
                         // Remove values that may have been added by any "append" rule action on same actor field.
                         // Appended actors are stored on `_additional_*` keys.
-                        $actions = $this->getActions();
+                        $actions = $this->getAllActions();
                         $append_key = $actions[$action->fields["field"]]["appendto"] ?? null;
                         if (
                             $append_key !== null
@@ -267,7 +267,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
                         break;
 
                     case "append":
-                        $actions = $this->getActions();
+                        $actions = $this->getAllActions();
                         $value   = $action->fields["value"];
                         if (
                             isset($actions[$action->fields["field"]]["appendtoarray"])

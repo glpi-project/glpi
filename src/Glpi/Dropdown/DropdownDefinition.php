@@ -171,18 +171,4 @@ final class DropdownDefinition extends AbstractDefinition
             ]);
         }
     }
-
-    public function cleanDBonPurge()
-    {
-        $related_classes = [
-            $this->getDropdownClassName(),
-        ];
-        foreach ($related_classes as $classname) {
-            (new $classname())->deleteByCriteria(
-                ['dropdowns_dropdowndefinitions_id' => $this->getID()],
-                force: true,
-                history: false
-            );
-        }
-    }
 }

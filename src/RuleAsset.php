@@ -267,7 +267,7 @@ class RuleAsset extends Rule
                         break;
 
                     case "append":
-                        $actions = $this->getActions();
+                        $actions = $this->getAllActions();
                         $value   = $action->fields["value"];
                         if (
                             isset($actions[$action->fields["field"]]["appendtoarray"])

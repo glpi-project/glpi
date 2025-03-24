@@ -37,18 +37,43 @@ namespace Glpi\Form\QuestionType;
 
 use DateTime;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\DateAndTimeConditionHandler;
+use Glpi\Form\Condition\ConditionHandler\DateConditionHandler;
+use Glpi\Form\Condition\ConditionHandler\TimeConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
+use InvalidArgumentException;
 use Override;
+use RuntimeException;
 
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-class QuestionTypeDateTime extends AbstractQuestionType
+class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionDataConverterInterface, UsedAsCriteriaInterface
 {
     #[Override]
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::DATE_AND_TIME;
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): mixed
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): mixed
+    {
+        return (new QuestionTypeDateTimeExtraDataConfig(
+            is_default_value_current_time: false,
+            is_date_enabled: $rawData['fieldtype'] !== 'time',
+            is_time_enabled: $rawData['fieldtype'] !== 'date',
+        ))->jsonSerialize();
     }
 
     public function getInputType(?Question $question, bool $ignoreDefaultValueIsCurrentTime = false): string
@@ -179,7 +204,11 @@ class QuestionTypeDateTime extends AbstractQuestionType
         ];
 
         return empty(array_diff(array_keys($input), $allowed_keys))
-            && array_reduce($input, fn($carry, $value) => $carry && preg_match('/^[01]$/', $value), true);
+            && array_reduce(
+                $input,
+                fn($carry, $value) => $carry && (is_bool($value) || preg_match('/^[01]$/', $value)),
+                true
+            );
     }
 
     #[Override]
@@ -206,7 +235,6 @@ class QuestionTypeDateTime extends AbstractQuestionType
                         <input type="hidden" name="is_default_value_current_time" value="0"
                             data-glpi-form-editor-specific-question-extra-data>
                         <input id="is_default_value_current_time_{{ rand }}" name="is_default_value_current_time" class="form-check-input"
-                            onchange="handleDefaultValueCurrentTimeCheckbox_{{ rand }}(this)"
                             type="checkbox" value="1" {{ is_default_value_current_time ? 'checked' : '' }}
                             data-glpi-form-editor-specific-question-extra-data>
                         <span>{{ placeholders.default_value[input_type_ignore_text] }}</span>
@@ -214,60 +242,19 @@ class QuestionTypeDateTime extends AbstractQuestionType
                 </div>
             </div>
 
-            <script>
-                function handleDefaultValueCurrentTimeCheckbox_{{ rand }}(input) {
-                    const isChecked = $(input).is(':checked');
-                    const dateInput = $('#date_input_{{ rand }}').prop('disabled', isChecked);
-                    updateDateAndTimeInputType($(input).closest('section[data-glpi-form-editor-question]'));
-                }
-            </script>
-TWIG;
-
-        if ($question === null) {
-            $template .= <<<TWIG
+            {% if question == null %}
                 <script>
-                    window.updateDateAndTimeInputType = function updateDateAndTimeInputType(questionSection) {
-                        const dateInput = questionSection.find('input[id^="date_input_"]');
-                        const isDefaultValueCurrentTime = questionSection
-                            .find('input[id^="is_default_value_current_time_"]');
-                        const isDateEnabled = questionSection
-                            .find('input[id^="is_date_enabled_"]')
-                            .is(':checked');
-                        const isTimeEnabled = questionSection
-                            .find('input[id^="is_time_enabled_"]')
-                            .is(':checked');
-
-                        let inputType = 'date';
-                        let inputPlaceholder = {{ placeholders.input.date|json_encode|raw }};
-                        let defaultValuePlaceholder = {{ placeholders.default_value.date|json_encode|raw }};
-                        if (isDateEnabled && isTimeEnabled) {
-                            inputType = 'datetime-local';
-                            inputPlaceholder = {{ placeholders.input['datetime-local']|json_encode|raw }};
-                            defaultValuePlaceholder = {{ placeholders.default_value['datetime-local']|json_encode|raw }};
-                        } else if (isTimeEnabled) {
-                            inputType = 'time';
-                            inputPlaceholder = {{ placeholders.input.time|json_encode|raw }};
-                            defaultValuePlaceholder = {{ placeholders.default_value.time|json_encode|raw }};
-                        }
-
-                        if (isDefaultValueCurrentTime.is(':checked')) {
-                            inputType = 'text';
-
-                            // Clear the value
-                            dateInput.val('');
-                        }
-
-                        dateInput.prop('type', inputType);
-                        dateInput.prop('placeholder', inputPlaceholder);
-                        isDefaultValueCurrentTime.siblings('span').text(defaultValuePlaceholder);
-                    }
+                    import("{{ js_path('js/modules/Forms/QuestionDateTime.js') }}").then((m) => {
+                        new m.GlpiFormQuestionTypeDateTime({{ placeholders|json_encode|raw }});
+                    });
                 </script>
+            {% endif %}
 TWIG;
-        }
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'question'          => $question,
+            'question_type'     => $this::class,
             'default_value'     => $this->isDefaultValueCurrentTime($question)
                 ? '' : $question->fields['default_value'] ?? '',
             'input_type'        => $this->getInputType($question),
@@ -290,7 +277,6 @@ TWIG;
                     <input class="form-check-input" type="checkbox" name="is_date_enabled"
                         id="is_date_enabled_{{ rand }}"
                         value="1" {{ is_date_enabled ? 'checked' : '' }}
-                        onchange="handleDateAndTimeCheckbox_{{ rand }}(this)"
                         data-glpi-form-editor-specific-question-extra-data>
                     <span class="form-check-label">{{ labels.date }}</span>
                 </label>
@@ -300,25 +286,10 @@ TWIG;
                     <input class="form-check-input" type="checkbox" name="is_time_enabled"
                         id="is_time_enabled_{{ rand }}"
                         value="1" {{ is_time_enabled ? 'checked' : '' }}
-                        onchange="handleDateAndTimeCheckbox_{{ rand }}(this)"
                         data-glpi-form-editor-specific-question-extra-data>
                     <span class="form-check-label">{{ labels.time }}</span>
                 </label>
             </div>
-
-            <script>
-                {# Both date and time can be checked at the same time, but one of them must be checked #}
-                function handleDateAndTimeCheckbox_{{ rand }}(input) {
-                    const isChecked = $(input).is(':checked');
-                    const otherInput = $('input[onchange^="handleDateAndTimeCheckbox_{{ rand }}"]:not([name="' + input.name + '"])');
-
-                    if (!isChecked && otherInput.not(':checked')) {
-                        otherInput.prop('checked', true);
-                    }
-
-                    updateDateAndTimeInputType($(input).closest('section[data-glpi-form-editor-question]'));
-                }
-            </script>
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
@@ -371,5 +342,27 @@ TWIG;
     public function getExtraDataConfigClass(): ?string
     {
         return QuestionTypeDateTimeExtraDataConfig::class;
+    }
+
+    #[Override]
+    public function getConditionHandler(
+        ?JsonFieldInterface $question_config
+    ): ConditionHandlerInterface {
+        if (!$question_config instanceof QuestionTypeDateTimeExtraDataConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        $use_date = $question_config->isDateEnabled();
+        $use_time = $question_config->isTimeEnabled();
+        if ($use_date && !$use_time) {
+            return new DateConditionHandler();
+        } elseif (!$use_date && $use_time) {
+            return new TimeConditionHandler();
+        } elseif ($use_date && $use_time) {
+            return new DateAndTimeConditionHandler();
+        } else {
+            // Impossible, should never happen.
+            throw new RuntimeException();
+        }
     }
 }

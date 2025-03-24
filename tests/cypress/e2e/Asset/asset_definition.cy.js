@@ -65,7 +65,7 @@ describe("Custom Assets - Definitions", () => {
     });
 
     it('Profiles tab', () => {
-        const system_name = `test${Math.random().toString(36).replace(/[^a-z]+/g, '')}`;
+        const system_name = `test${Math.random().toString(36).replace(/[^a-z0-9_]+/g, '')}`;
         cy.createWithAPI('Glpi\\Asset\\AssetDefinition', {
             system_name: system_name,
             is_active: true,

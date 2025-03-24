@@ -254,10 +254,10 @@ class Ticket extends CommonITILObject
             return true;
         }
 
-        // Can see incoming tickets
+        // Can see tickets considered as new (incoming status)
         if (
             Session::haveRight(self::$rightname, self::READNEWTICKET)
-            && ($this->fields["status"] == self::INCOMING)
+            && $this->fields["status"] == self::INCOMING
         ) {
             return true;
         }
@@ -2073,20 +2073,23 @@ class Ticket extends CommonITILObject
      **/
     public static function getDefaultSearchRequest()
     {
-
-        $search = ['criteria' => [0 => ['field'      => 12,
-            'searchtype' => 'equals',
-            'value'      => 'notclosed'
-        ]
-        ],
-            'sort'     => 19,
+        // Technician don't want to be bothered by already solved items.
+        // On the other hand, it make sense for helpdesk users to see their
+        // own solved tickets.
+        $value = Session::getCurrentInterface() == 'central' ? 'notold' : 'notclosed';
+        $request = [
+            'criteria' => [
+                [
+                    'field'      => 12, // Status
+                    'searchtype' => 'equals',
+                    'value'      => $value
+                ]
+            ],
+            'sort'     => 19, // Last update
             'order'    => 'DESC'
         ];
 
-        if (Session::haveRight(self::$rightname, self::READALL)) {
-            $search['criteria'][0]['value'] = 'notold';
-        }
-        return $search;
+        return $request;
     }
 
     public function getSpecificMassiveActions($checkitem = null)
@@ -2175,7 +2178,12 @@ class Ticket extends CommonITILObject
                     'name'         => "_mergeticket",
                     'used'         => $ma->getItems()['Ticket'],
                     'displaywith'  => ['id'],
-                    'rand'         => $rand
+                    'rand'         => $rand,
+                    'condition'    => [
+                        'NOT' => [
+                            'status' => array_merge(self::getSolvedStatusArray(), self::getClosedStatusArray())
+                        ]
+                    ]
                 ];
                 echo "<table class='mx-auto'><tr>";
                 echo "<td><label for='dropdown__mergeticket$rand'>" . htmlescape(Ticket::getTypeName(1)) . "</label></td><td colspan='3'>";
@@ -2291,9 +2299,6 @@ JAVASCRIPT;
                     'editor_id'         => $content_id,
                     'enable_fileupload' => false,
                     'enable_richtext'   => true,
-                            // Uploaded images processing is not able to handle multiple use of same uploaded file, so until this is fixed,
-                            // it is preferable to disable image pasting in rich text inside massive actions.
-                    'enable_images'     => false,
                     'cols'              => 12,
                     'rows'              => 80
                 ]);
@@ -3270,19 +3275,11 @@ JAVASCRIPT;
         }
     }
 
-
-    /**
-     * get the Ticket status list
-     *
-     * @param boolean $withmetaforsearch  (false by default)
-     *
-     * @return array
-     **/
     public static function getAllStatusArray($withmetaforsearch = false)
     {
-
-       // To be overridden by class
-        $tab = [self::INCOMING => _x('status', 'New'),
+        $tab = [
+            self::INCOMING => _x('status', 'New'),
+            self::APPROVAL => _n('Approval', 'Approvals', 1),
             self::ASSIGNED => _x('status', 'Processing (assigned)'),
             self::PLANNED  => _x('status', 'Processing (planned)'),
             self::WAITING  => __('Pending'),
@@ -3297,6 +3294,7 @@ JAVASCRIPT;
             $tab['old']       = _x('status', 'Solved + Closed');
             $tab['all']       = __('All');
         }
+
         return $tab;
     }
 
@@ -3552,15 +3550,13 @@ JAVASCRIPT;
             $options['entities_id'] = $item->fields['entities_id'];
         }
 
-        $initial_creation = static::isNewID($ID) && !$this->hasSavedInput();
-
         $this->restoreInputAndDefaults($ID, $options, null, true);
 
         if (!isset($options['_skip_promoted_fields'])) {
             $options['_skip_promoted_fields'] = false;
         }
 
-        if ($initial_creation) {
+        if (static::isNewID($ID)) {
             // Override some values only for the initial load of a new ticket
             // Override defaut values from projecttask if needed
             if (isset($options['_projecttasks_id'])) {

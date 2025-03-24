@@ -38,17 +38,17 @@ namespace Glpi\Form\Destination;
 use CommonDBChild;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Condition\ConditionnableTrait;
-use Glpi\Form\Condition\CreationStrategy;
+use Glpi\Form\Condition\ConditionableCreationInterface;
+use Glpi\Form\Condition\ConditionableCreationTrait;
 use Glpi\Form\Form;
 use InvalidArgumentException;
 use LogicException;
 use Override;
 use ReflectionClass;
 
-final class FormDestination extends CommonDBChild
+final class FormDestination extends CommonDBChild implements ConditionableCreationInterface
 {
-    use ConditionnableTrait;
+    use ConditionableCreationTrait;
 
     /**
      * Parent item is a Form
@@ -291,13 +291,6 @@ final class FormDestination extends CommonDBChild
         }
 
         return new $class();
-    }
-
-    public function getConfiguredCreationStrategy(): CreationStrategy
-    {
-        $strategy_value = $this->fields['creation_strategy'] ?? "";
-        $strategy = CreationStrategy::tryFrom($strategy_value);
-        return $strategy ?? CreationStrategy::ALWAYS_CREATED;
     }
 
     /**

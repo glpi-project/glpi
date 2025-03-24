@@ -34,11 +34,14 @@
  */
 
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Tests\Log\TestHandler;
 use Monolog\Level;
 use org\bovigo\vfs\vfsStreamWrapper;
+use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
+use SebastianBergmann\Comparator\ComparisonFailure;
 
 // Main GLPI test case. All tests should extends this class.
 
@@ -79,6 +82,10 @@ class GLPITestCase extends TestCase
         $PHPLOGGER->setHandlers([$this->log_handler]);
 
         vfsStreamWrapper::register();
+
+        // Make sure the tester plugin is never deactived by a test as it would
+        // impact others tests that depend on it.
+        $this->assertTrue(Plugin::isPluginActive('tester'));
     }
 
     public function tearDown(): void
@@ -86,6 +93,10 @@ class GLPITestCase extends TestCase
         $this->resetGlobalsAndStaticValues();
 
         vfsStreamWrapper::unregister();
+
+        // Make sure the tester plugin is never deactived by a test as it would
+        // impact others tests that depend on it.
+        $this->assertTrue(Plugin::isPluginActive('tester'));
 
         if (isset($_SESSION['MESSAGE_AFTER_REDIRECT']) && !$this->has_failed) {
             unset($_SESSION['MESSAGE_AFTER_REDIRECT'][INFO]);
@@ -196,6 +207,20 @@ class GLPITestCase extends TestCase
         $constructor->invokeArgs($instance, $args);
 
         return $instance;
+    }
+
+    /**
+     * Get the value of a private property.
+     *
+     * @param mixed     $instance       Class instance
+     * @param string    $propertyName   Property name
+     * @param mixed     $default        Default value if property is not set
+     */
+    protected function setPrivateProperty($instance, string $propertyName, $value)
+    {
+        $property = new \ReflectionProperty($instance, $propertyName);
+        $property->setAccessible(true);
+        $property->setValue($instance, $value);
     }
 
     protected function resetSession()
@@ -426,6 +451,7 @@ class GLPITestCase extends TestCase
         CommonDBTM::clearSearchOptionCache();
         \Glpi\Search\SearchOption::clearSearchOptionCache();
         AssetDefinitionManager::unsetInstance();
+        DropdownDefinitionManager::unsetInstance();
         Dropdown::resetItemtypesStaticCache();
     }
 
@@ -498,5 +524,57 @@ class GLPITestCase extends TestCase
         }
 
         return $input;
+    }
+
+    /**
+     * Assert that an array matches the expected array but ignore keys order.
+     *
+     * This method is usefull to compare multidimentional arrays easilly, when keys order does not matter.
+     */
+    protected function assertArrayIsEqualIgnoringKeysOrder(array $expected, array $actual, ?string $message = null): void
+    {
+        try {
+            if (array_is_list($expected)) {
+                // Array is a list, check that all entries are found in the actual value, ignoring their keys.
+                foreach ($expected as $expected_entry) {
+                    $found = false;
+                    foreach ($actual as $actual_entry) {
+                        try {
+                            if (is_array($expected_entry)) {
+                                $this->assertArrayIsEqualIgnoringKeysOrder($expected_entry, $actual_entry);
+                            } else {
+                                $this->assertEquals($expected_entry, $actual_entry);
+                            }
+                            $found = true; // No exception thrown means that the value matches.
+                            break;
+                        } catch (ExpectationFailedException) {
+                            // Value does not match
+                        }
+                    }
+                    if ($found === false) {
+                        $this->assertTrue($found);
+                    }
+                }
+            } else {
+                // Array is not a list, check that all expected entries are found and are using the same keys.
+                foreach ($expected as $key => $expected_entry) {
+                    $this->assertArrayHasKey($key, $actual);
+                    if (is_array($expected_entry)) {
+                        $this->assertArrayIsEqualIgnoringKeysOrder($expected_entry, $actual[$key]);
+                    } else {
+                        $this->assertEquals($expected_entry, $actual[$key]);
+                    }
+                }
+            }
+
+            // Be sure that there is the same entries count (no missing or extra entries in the actual value).
+            $this->assertEquals(count($expected), count($actual));
+        } catch (ExpectationFailedException $e) {
+            throw new ExpectationFailedException(
+                $message ?? 'Failed asserting that two arrays are equal.',
+                new ComparisonFailure($expected, $actual, json_encode($expected, JSON_PRETTY_PRINT), json_encode($actual, JSON_PRETTY_PRINT)),
+                $e
+            );
+        }
     }
 }

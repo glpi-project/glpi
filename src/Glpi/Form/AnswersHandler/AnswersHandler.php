@@ -35,9 +35,10 @@
 
 namespace Glpi\Form\AnswersHandler;
 
-use CommonDBTM;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Condition\Engine;
+use Glpi\Form\Condition\EngineInput;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
@@ -253,6 +254,10 @@ final class AnswersHandler
         // Get defined destinations
         $destinations = $form->getDestinations();
 
+        // Init the contionnal creation engine
+        $engine = new Engine($form, new EngineInput($answers_set->toArray()));
+        $engine_output = $engine->computeItemsThatMustBeCreated();
+
         /** @var FormDestination $destination */
         foreach ($destinations as $destination) {
             $concrete_destination = $destination->getConcreteDestinationItem();
@@ -260,6 +265,16 @@ final class AnswersHandler
                 // The configured destination might belong to an inactive plugin
                 continue;
             }
+
+            // Skip if the destination is not mandatory and it failed its
+            // required conditions.
+            if (
+                !$destination->fields['is_mandatory']
+                && !$engine_output->itemMustBeCreated($destination)
+            ) {
+                continue;
+            }
+
 
             // Create destination item
             $items = $concrete_destination->createDestinationItems(

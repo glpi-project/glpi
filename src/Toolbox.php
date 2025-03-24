@@ -43,7 +43,7 @@ use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Progress\AbstractProgressIndicator;
-use Glpi\Progress\ProgressMessageType;
+use Glpi\Message\MessageType;
 use Glpi\Rules\RulesManager;
 use Glpi\Toolbox\URL;
 use Glpi\Toolbox\VersionParser;
@@ -2113,7 +2113,7 @@ class Toolbox
             $done_steps++;
             $progress_indicator?->setCurrentStep($done_steps);
         }
-        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Database structure created.'));
+        $progress_indicator?->addMessage(MessageType::Success, __('Database structure created.'));
 
         $progress_indicator?->setProgressBarMessage(__('Importing default data…'));
 
@@ -2148,27 +2148,27 @@ class Toolbox
                 $progress_indicator?->setCurrentStep($done_steps);
             }
         }
-        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Default data imported.'));
+        $progress_indicator?->addMessage(MessageType::Success, __('Default data imported.'));
 
         $progress_indicator?->setProgressBarMessage(__('Creating default forms…'));
         $default_forms_manager = new DefaultDataManager();
         $default_forms_manager->initializeData();
         $done_steps += $init_form_weight;
         $progress_indicator?->setCurrentStep($done_steps);
-        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Default forms created.'));
+        $progress_indicator?->addMessage(MessageType::Success, __('Default forms created.'));
 
         $progress_indicator?->setProgressBarMessage(__('Initalizing default rules…'));
         RulesManager::initializeRules();
         $done_steps += $init_rules_weight;
         $progress_indicator?->setCurrentStep($done_steps);
-        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Default rules initialized.'));
+        $progress_indicator?->addMessage(MessageType::Success, __('Default rules initialized.'));
 
         $progress_indicator?->setProgressBarMessage(__('Generating security keys…'));
         // Make sure keys are generated automatically so OAuth will work when/if they choose to use it
         \Glpi\OAuth\Server::generateKeys();
         $done_steps += $generate_keys_weight;
         $progress_indicator?->setCurrentStep($done_steps);
-        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Security keys generated.'));
+        $progress_indicator?->addMessage(MessageType::Success, __('Security keys generated.'));
 
         $progress_indicator?->setProgressBarMessage(__('Defining configuration defaults…'));
         Config::setConfigurationValues(
@@ -2197,10 +2197,10 @@ class Toolbox
             $done_steps += $cron_config_weight;
             $progress_indicator?->setCurrentStep($done_steps);
         }
-        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Configuration defaults defined.'));
+        $progress_indicator?->addMessage(MessageType::Success, __('Configuration defaults defined.'));
 
         $progress_indicator?->setProgressBarMessage('');
-        $progress_indicator?->addMessage(ProgressMessageType::Success, __('Installation done.'));
+        $progress_indicator?->addMessage(MessageType::Success, __('Installation done.'));
         $progress_indicator?->finish();
     }
 

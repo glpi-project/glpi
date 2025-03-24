@@ -36,11 +36,9 @@
 namespace Glpi\Controller\Form;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Controller\Form\Utils\CanCheckAccessPolicies;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Condition\Engine;
 use Glpi\Form\Condition\EngineInput;
 use Glpi\Form\Form;
@@ -54,6 +52,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RendererController extends AbstractController
 {
+    use CanCheckAccessPolicies;
+
     private string $interface;
 
     public function __construct()
@@ -103,10 +103,6 @@ final class RendererController extends AbstractController
             'my_tickets_url_param' => http_build_query($my_tickets_criteria),
             'visibility_engine_output' => $visibility_engine_output,
             'params' => $request->query->all(),
-
-            // Direct access token must be included in the form data as it will
-            // be checked in the submit answers controller.
-            'token' => $request->query->getString('token'),
         ]);
     }
 
@@ -123,25 +119,5 @@ final class RendererController extends AbstractController
         }
 
         return $form;
-    }
-
-    private function checkFormAccessPolicies(Form $form, Request $request)
-    {
-        $form_access_manager = FormAccessControlManager::getInstance();
-
-        if (Session::haveRight(Form::$rightname, READ)) {
-            // Form administrators can bypass restrictions while previewing forms.
-            $parameters = new FormAccessParameters(bypass_restriction: true);
-        } else {
-            // Load current user session info and URL parameters.
-            $parameters = new FormAccessParameters(
-                session_info: Session::getCurrentSessionInfo(),
-                url_parameters: $request->query->all(),
-            );
-        }
-
-        if (!$form_access_manager->canAnswerForm($form, $parameters)) {
-            throw new AccessDeniedHttpException();
-        }
     }
 }

@@ -101,13 +101,9 @@ interface ControlTypeInterface
 
     /**
      * Check if the current user can answer the given form.
-     *
-     * @param JsonFieldInterface $config
-     * @param FormAccessParameters $parameters
-     *
-     * @return AccessVote
      */
     public function canAnswer(
+        Form $form,
         JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote;

@@ -40,12 +40,6 @@
 {% set params = params|merge({'formfooter': false}) %}
 
 {% block form_fields %}
-    <style>
-        .red-toggle-switch-bg {
-            --tblr-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23d63939'/%3e%3c/svg%3e") !important;
-        }
-    </style>
-
     <input type="hidden" name="_update_capacities" value="1" />
 
     <div class="row flew-row gx-2">
@@ -86,7 +80,7 @@
                                 <i class="ti ti-alert-triangle fs-2"></i>
                                 <span>
                                     {{ capacity.getCapacityUsageDescription(classname) }}
-                                <span
+                                </span>
                             </span>
                         </div>
                         <div class="me-2 ms-auto">
@@ -213,6 +207,10 @@
     </script>
 
     <style>
+        .red-toggle-switch-bg {
+            --tblr-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23d63939'/%3e%3c/svg%3e") !important;
+        }
+
         /* To avoid separator on the last visible item but not the last item of the dom */
         div.list-group-item:not(.d-none):last-of-type {
             border-bottom-width: 0 !important;

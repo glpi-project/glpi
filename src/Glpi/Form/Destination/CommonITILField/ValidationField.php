@@ -40,6 +40,8 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Form;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeItem;
@@ -49,7 +51,7 @@ use InvalidArgumentException;
 use Override;
 use User;
 
-class ValidationField extends AbstractConfigField
+class ValidationField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -248,5 +250,45 @@ class ValidationField extends AbstractConfigField
     public function getCategory(): Category
     {
         return Category::TIMELINE;
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        if (isset($rawData['commonitil_validation_rule'])) {
+            switch ($rawData['commonitil_validation_rule']) {
+                case 1: // PluginFormcreatorAbstractItilTarget::VALIDATION_NONE
+                    return new ValidationFieldConfig(
+                        [ValidationFieldStrategy::NO_VALIDATION]
+                    );
+                case 2: // PluginFormcreatorAbstractItilTarget::VALIDATION_SPECIFIC_USER_OR_GROUP
+                    $validation_actors = json_decode($rawData['commonitil_validation_question'], true);
+                    if (is_array($validation_actors)) {
+                        $fk = $validation_actors['type'] == 'user' ? User::getForeignKeyField() : Group::getForeignKeyField();
+                        $actors_ids = array_map(
+                            fn ($id) => sprintf('%s-%d', $fk, $id),
+                            json_decode($rawData['commonitil_validation_question'], true)['values'] ?? []
+                        );
+                    }
+
+                    return new ValidationFieldConfig(
+                        strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
+                        specific_actors: $actors_ids ?? []
+                    );
+                case 3: // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_USER
+                case 4: // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_GROUP
+                    return new ValidationFieldConfig(
+                        strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
+                        specific_question_ids: [
+                            $migration->getMappedItemTarget(
+                                'PluginFormcreatorQuestion',
+                                $rawData['commonitil_validation_question']
+                            )['items_id']
+                        ]
+                    );
+            }
+        }
+
+        return $this->getDefaultConfig($form);
     }
 }

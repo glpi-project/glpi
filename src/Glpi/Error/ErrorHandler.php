@@ -78,9 +78,9 @@ final class ErrorHandler extends BaseErrorHandler
 
     public function __construct(LoggerInterface $logger)
     {
-        parent::__construct(debug: \GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT);
+        parent::__construct(debug: GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT);
 
-        $this->env = \GLPI_ENVIRONMENT_TYPE;
+        $this->env = GLPI_ENVIRONMENT_TYPE;
 
         $this->scopeAt(E_ALL, true); // Preserve variables for all errors
         $this->traceAt(E_ALL, true); // Preserve stack trace for all errors
@@ -226,25 +226,12 @@ final class ErrorHandler extends BaseErrorHandler
         $reporting_level = E_ALL;
         foreach (self::ERROR_LEVEL_MAP as $value => $log_level) {
             if (
-                $this->env !== GLPI::ENV_DEVELOPMENT
-                && \in_array($log_level, [LogLevel::DEBUG, LogLevel::INFO], true)
-            ) {
-                // Do not report debug and info messages unless in development env.
-                // Suppressing the INFO level will prevent deprecations to be pushed in other environments logs.
-                //
-                // Suppressing the deprecations in the testing environment is mandatory to prevent deprecations
-                // triggered in vendor code to make our test suite fail.
-                // We may review this part once we will have migrate all our test suite on PHPUnit.
-                // For now, we rely on PHPStan to detect usages of deprecated code.
-                $reporting_level &= ~$value;
-            }
-
-            if (
-                $log_level === LogLevel::NOTICE
+                \in_array($log_level, [LogLevel::DEBUG, LogLevel::INFO, LogLevel::NOTICE], true)
                 && !\in_array($this->env, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING], true)
             ) {
-                // Do not report notice messages unless in development/testing env.
+                // Do not report debug, info, and notice messages unless in development/testing env.
                 // Notices are errors with no functional impact, so we do not want people to report them as issues.
+                // Suppressing the INFO level will prevent deprecations to be pushed in other environments logs.
                 $reporting_level &= ~$value;
             }
         }

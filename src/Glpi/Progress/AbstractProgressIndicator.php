@@ -36,6 +36,7 @@ namespace Glpi\Progress;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use Glpi\Message\MessageType;
 
 abstract class AbstractProgressIndicator
 {
@@ -154,6 +155,16 @@ abstract class AbstractProgressIndicator
     }
 
     /**
+     * Advances the progress by the given number of steps.
+     */
+    final public function advance(int $steps = 1): void
+    {
+        $this->current_step += $steps;
+
+        $this->triggerUpdate();
+    }
+
+    /**
      * Define the max steps count.
      */
     final public function setMaxSteps(int $max_steps): void
@@ -192,7 +203,7 @@ abstract class AbstractProgressIndicator
     /**
      * Add a message.
      */
-    abstract public function addMessage(ProgressMessageType $type, string $message): void;
+    abstract public function addMessage(MessageType $type, string $message): void;
 
     /**
      * Trigger the progress indicator update.

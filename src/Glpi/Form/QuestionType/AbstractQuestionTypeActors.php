@@ -37,6 +37,7 @@ namespace Glpi\Form\QuestionType;
 
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Group;
 use Override;
@@ -46,7 +47,7 @@ use User;
 /**
  * "Actors" questions represent an input field for actors (requesters, ...)
  */
-abstract class AbstractQuestionTypeActors extends AbstractQuestionType
+abstract class AbstractQuestionTypeActors extends AbstractQuestionType implements FormQuestionDataConverterInterface
 {
     /**
      * Retrieve the allowed actor types
@@ -156,6 +157,24 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
         return $actors;
     }
 
+    #[Override]
+    public function convertDefaultValue(array $rawData): mixed
+    {
+        return array_map(
+            fn ($actor_id) => sprintf('%s-%d', User::getForeignKeyField(), $actor_id),
+            json_decode($rawData['default_values']) ?? []
+        );
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): mixed
+    {
+        // Actors question type was always multiple in FormCreator
+        return (new QuestionTypeActorsExtraDataConfig(
+            is_multiple_actors: true
+        ))->jsonSerialize();
+    }
+
     /**
      * Check if the question allows multiple actors
      *
@@ -220,6 +239,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
             'default_value',
             values,
             {
+                'form_id'         : question.getForm().getId(),
                 'multiple'        : false,
                 'init'            : init,
                 'allowed_types'   : allowed_types,
@@ -235,6 +255,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
             'default_value',
             values,
             {
+                'form_id'         : question.getForm().getId(),
                 'multiple'        : true,
                 'init'            : init,
                 'allowed_types'   : allowed_types,
@@ -285,6 +306,7 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'init'               => $question != null,
+            'question'           => $question,
             'values'             => $this->getDefaultValue($question, $this->isMultipleActors($question)),
             'allowed_types'      => $this->getAllowedActorTypes(),
             'is_multiple_actors' => $this->isMultipleActors($question),
@@ -364,6 +386,7 @@ TWIG;
             question.getEndUserInputName(),
             value,
             {
+                'form_id'      : question.getForm().getId(),
                 'multiple'     : is_multiple_actors,
                 'allowed_types': allowed_types,
                 'aria_label'   : aria_label,

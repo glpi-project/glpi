@@ -83,20 +83,18 @@ abstract class CommonITILObject extends CommonDBTM
     const STATUS_MATRIX_FIELD  = '';
 
 
-   // STATUS
+   // ITIL Object shared statuses
     const INCOMING      = 1; // new
-    const ASSIGNED      = 2; // assign
-    const PLANNED       = 3; // plan
-    const WAITING       = 4; // waiting
-    const SOLVED        = 5; // solved
-    const CLOSED        = 6; // closed
-    const ACCEPTED      = 7; // accepted
-    const OBSERVED      = 8; // observe
-    const EVALUATION    = 9; // evaluation
-    const APPROVAL      = 10; // approbation
-    const TEST          = 11; // test
-    const QUALIFICATION = 12; // qualification
+    const ASSIGNED      = 2; // processing (assigned)
+    const PLANNED       = 3; // processing (planned)
+    const WAITING       = 4; // pending
+    const SOLVED        = 5;
+    const CLOSED        = 6;
+    const ACCEPTED      = 7;
+    const OBSERVED      = 8;
+    const APPROVAL      = 10; // approval / validation
 
+    // --- timeline position
     const NO_TIMELINE       = -1;
     const TIMELINE_NOTSET   = 0;
     const TIMELINE_LEFT     = 1;
@@ -379,6 +377,18 @@ abstract class CommonITILObject extends CommonDBTM
                             'use_notification'  => $email === '' ? false : ($default_use_notif && $userobj->isUserNotificationEnable()),
                             'default_email'     => $email,
                             'alternative_email' => '',
+                        ]);
+                    }
+                }
+
+                $groups_id = array_key_exists('_groups_id_' . $actortypestring, $params) && $params['_groups_id_' . $actortypestring] > 0
+                    ? $params['_groups_id_' . $actortypestring] : 0;
+                if ($groups_id > 0) {
+                    $group_obj = new Group();
+                    if ($group_obj->getFromDB($groups_id)) {
+                        $fn_add_actor('Group', $groups_id, [
+                            'text'  => $group_obj->getName(),
+                            'title' => $group_obj->getRawCompleteName(),
                         ]);
                     }
                 }
@@ -5132,7 +5142,7 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
     /**
-     * Get status class
+     * Get CSS status class
      *
      * @since 9.3
      *
@@ -5142,12 +5152,12 @@ abstract class CommonITILObject extends CommonDBTM
     {
         $class = match ($status) {
             self::INCOMING, self::WAITING, self::CLOSED => 'circle-filled',
-            self::ASSIGNED, self::SOLVED, self::EVALUATION => 'circle',
+            self::ASSIGNED, self::SOLVED, Change::EVALUATION => 'circle',
             self::PLANNED => 'calendar',
             self::ACCEPTED => 'check-circle-filled',
             self::OBSERVED => 'eye',
-            self::APPROVAL, self::TEST => 'help',
-            self::QUALIFICATION => 'circle',
+            self::APPROVAL, Change::TEST => 'help',
+            Change::QUALIFICATION => 'circle',
             Change::REFUSED => 'circle-x',
             Change::CANCELED => 'ban',
             default => null
@@ -5191,16 +5201,16 @@ abstract class CommonITILObject extends CommonDBTM
             case self::OBSERVED:
                 $key = 'observe';
                 break;
-            case self::EVALUATION:
+            case Change::EVALUATION:
                 $key = 'eval';
                 break;
             case self::APPROVAL:
                 $key = 'approval';
                 break;
-            case self::TEST:
+            case Change::TEST:
                 $key = 'test';
                 break;
-            case self::QUALIFICATION:
+            case Change::QUALIFICATION:
                 $key = 'qualif';
                 break;
         }
@@ -9852,6 +9862,7 @@ abstract class CommonITILObject extends CommonDBTM
 
     public static function getKanbanColumns($ID, $column_field = null, $column_ids = [], $get_default = false)
     {
+        // TODO Make this function only return the card data and leave rendering to Vue components. This will deduplicate the data between display and filters.
         if (!in_array($column_field, ['status'])) {
             return [];
         }
@@ -9898,7 +9909,6 @@ abstract class CommonITILObject extends CommonDBTM
             $card = [
                 'id'              => "{$itemtype}-{$item['id']}",
                 'title'           => $item['name'],
-                'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'], false, true), 100),
                 'is_deleted'      => $item['is_deleted'] ?? false,
             ];
 
@@ -9946,7 +9956,7 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
             if (isset($card['_metadata']['content']) && is_string($card['_metadata']['content'])) {
-                $card['_metadata']['content'] = Glpi\RichText\RichText::getTextFromHtml($card['_metadata']['content'], false, true);
+                $card['_metadata']['content'] = Glpi\RichText\RichText::getTextFromHtml(content: $card['_metadata']['content'], preserve_line_breaks: true);
             } else {
                 $card['_metadata']['content'] = '';
             }
@@ -10144,6 +10154,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'id'           => $status_id,
                     'name'         => $status,
                     'color_class'  => 'itilstatus ' . static::getStatusKey($status_id),
+                    'header_color' => 'var(--status-color)',
                     'drop_only'    => (int) $status_id === self::CLOSED
                 ];
             }

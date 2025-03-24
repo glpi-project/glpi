@@ -102,7 +102,7 @@
                 }
                 // label is made lowercase and spaces are replaced with underscores. All other characters are removed
                 $('#customfield_form_container input[name="system_name"]')
-                    .val($('#customfield_form_container input[name="label"]').val().normalize('NFD').toLowerCase().replace(/ /g, '_').replace(/[^a-z_]/g, ''));
+                    .val($('#customfield_form_container input[name="label"]').val().normalize('NFD').toLowerCase().replace(/ /g, '_').replace(/[^a-z0-9_]/g, ''));
             };
             const updateDefaultValueField = () => {
                 // get all inputs with name starting with field_options and create an object with the values

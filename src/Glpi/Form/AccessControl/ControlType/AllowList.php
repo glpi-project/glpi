@@ -110,6 +110,7 @@ final class AllowList implements ControlTypeInterface
 
     #[Override]
     public function canAnswer(
+        Form $form,
         JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote {

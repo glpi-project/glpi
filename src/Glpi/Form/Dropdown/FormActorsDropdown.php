@@ -50,7 +50,7 @@ final class FormActorsDropdown extends AbstractRightsDropdown
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        return $CFG_GLPI['root_doc'] . "/ajax/getFormQuestionActorsDropdownValue.php";
+        return $CFG_GLPI['root_doc'] . "/Form/Question/ActorsDropdown";
     }
 
     #[Override]

@@ -522,6 +522,95 @@ describe ('Form editor', () => {
         cy.findByRole('region', {'name': 'Question details'}).should('exist');
     });
 
+    it('can display correct element count in section badge', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // Add first question
+        cy.addQuestion("First question");
+
+        // Add a section
+        cy.addSection("Form section");
+
+        // Check badge is not visible when section is not collapsed
+        cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
+        cy.get('@sections').each((section) => {
+            cy.wrap(section).find('[data-glpi-form-editor-section-block-badge]').should('not.be.visible');
+        });
+
+        // Collapse the section
+        cy.get('@sections').eq(0)
+            .findByRole('button', {'name': "Collapse section"})
+            .click();
+
+        // Check that the badge shows "1 element"
+        cy.get('@sections').eq(0)
+            .find('[data-glpi-form-editor-section-block-badge]')
+            .should('be.visible')
+            .and('contain.text', '1 element');
+
+        // Uncollapse the section
+        cy.get('@sections').eq(0)
+            .findByRole('button', {'name': "Collapse section"})
+            .click();
+
+        // Focus the first question to display hidden actions
+        cy.get('@sections').eq(0)
+            .findByRole('option', {'name': 'New question'})
+            .click();
+
+        // Add a second question
+        cy.addQuestion("Second question");
+
+        // Add a comment
+        cy.findByRole('button', {'name': "Add a new comment"}).click();
+        cy.focused().type("My comment");
+
+        // Collapse the section again
+        cy.get('@sections').eq(0)
+            .findByRole('button', {'name': "Collapse section"})
+            .click();
+
+        // Check that the badge shows "3 elements" (2 questions + 1 comment)
+        cy.get('@sections').eq(0)
+            .find('[data-glpi-form-editor-section-block-badge]')
+            .should('be.visible')
+            .and('contain.text', '3 elements');
+
+        // Delete one of the questions
+        cy.get('@sections').eq(0)
+            .findByRole('button', {'name': "Collapse section"})
+            .click();
+        cy.findAllByRole('region', {'name': 'Question details'}).eq(1).click(); // Focus question to display hidden actions
+        cy.findAllByRole('region', {'name': 'Question details'}).eq(1).within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+
+        // Collapse the section again
+        cy.get('@sections').eq(0)
+            .findByRole('button', {'name': "Collapse section"})
+            .click();
+
+        // Check that the badge shows "2 elements" (1 question + 1 comment)
+        cy.get('@sections').eq(0)
+            .find('[data-glpi-form-editor-section-block-badge]')
+            .should('be.visible')
+            .and('contain.text', '2 elements');
+
+        // Save and reload
+        cy.saveFormEditorAndReload();
+
+        // Collapse the section again
+        cy.get('@sections').eq(0)
+            .findByRole('button', {'name': "Collapse section"})
+            .click();
+
+        // Check that the badge shows "2 elements" (1 question + 1 comment)
+        cy.get('@sections').eq(0)
+            .find('[data-glpi-form-editor-section-block-badge]')
+            .should('be.visible')
+            .and('contain.text', '2 elements');
+    });
+
     it('can reorder sections', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 

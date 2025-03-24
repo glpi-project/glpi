@@ -70,4 +70,10 @@ final class SLATTRField extends SLMField
     {
         return SLATTRFieldConfig::class;
     }
+
+    #[Override]
+    protected function getFieldNameToConvertSpecificSLMID(): string
+    {
+        return 'sla_question_ttr';
+    }
 }

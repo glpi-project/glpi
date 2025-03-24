@@ -162,7 +162,7 @@ final class CustomFieldDefinition extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (!is_string($input['system_name']) || preg_match('/^[a-z_]+$/', $input['system_name']) !== 1) {
+        if (!is_string($input['system_name']) || preg_match('/^[a-z0-9_]+$/', $input['system_name']) !== 1) {
             Session::addMessageAfterRedirect(
                 htmlescape(sprintf(
                     __('The following field has an incorrect value: "%s".'),

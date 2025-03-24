@@ -87,8 +87,10 @@ describe("Ticket Form", () => {
             cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
             cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
             cy.findByText('Add a solution').click();
-            cy.findByLabelText('Search a solution').click();
-            cy.get('#modal_searchSolution').within(() => {
+            cy.get('.itilsolution').within(() => {
+                cy.findByLabelText('Search in the knowledge base').click();
+            });
+            cy.get('#modal_search_knowbaseitem').within(() => {
                 cy.findByLabelText('Search…').should('have.value', 'apple');
                 cy.findAllByRole('listitem').should('have.length.at.least', 2);
 
@@ -99,9 +101,40 @@ describe("Ticket Form", () => {
                 cy.findAllByRole('listitem').should('have.length', 0);
                 cy.findByText('Back to results').click();
 
-                cy.findAllByTitle('Use as a solution').first().click();
+                cy.findAllByTitle('Use this entry').first().click();
             });
-            cy.get('#modal_searchSolution').should('not.exist');
+            cy.get('#modal_search_knowbaseitem').should('not.exist');
+            cy.get('@content').then((content) => {
+                cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', content.trim());
+            });
+        });
+    });
+
+    it('Search for Followup', () => {
+        cy.createWithAPI('Ticket', {
+            name: 'apple',
+            content: 'apple',
+        }).as('ticket_id');
+        cy.get('@ticket_id').then((ticket_id) => {
+            cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
+            cy.findByText('Answer').click();
+            cy.get('.itilfollowup').within(() => {
+                cy.findByLabelText('Search in the knowledge base').click();
+            });
+            cy.get('#modal_search_knowbaseitem').within(() => {
+                cy.findByLabelText('Search…').should('have.value', 'apple');
+                cy.findAllByRole('listitem').should('have.length.at.least', 2);
+
+                cy.findAllByTitle('Preview').first().click();
+                cy.findByText('Subject').should('be.visible');
+                cy.findByText('Content').should('be.visible');
+                cy.findByText('Content').parent().next().invoke('text').should('not.be.empty').as('content');
+                cy.findAllByRole('listitem').should('have.length', 0);
+                cy.findByText('Back to results').click();
+
+                cy.findAllByTitle('Use this entry').first().click();
+            });
+            cy.get('#modal_search_knowbaseitem').should('not.exist');
             cy.get('@content').then((content) => {
                 cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', content.trim());
             });

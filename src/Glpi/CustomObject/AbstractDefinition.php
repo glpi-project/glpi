@@ -55,9 +55,10 @@ abstract class AbstractDefinition extends CommonDBTM
      * System name regex pattern.
      *
      * 1. Must start with a letter.
-     * 2. Must contain only letters or numbers.
+     * 2. Must contain only letters, numbers, or underscores.
+     * 3. Must not end with an underscore.
      */
-    public const SYSTEM_NAME_PATTERN = '[A-Za-z][A-Za-z0-9]*';
+    public const SYSTEM_NAME_PATTERN = '[A-Za-z][A-Za-z0-9_]*[A-Za-z0-9]';
 
     public static $rightname = 'config';
 
@@ -566,6 +567,26 @@ abstract class AbstractDefinition extends CommonDBTM
         ) {
             $this->syncProfilesRights();
         }
+    }
+
+    public function cleanDBonPurge()
+    {
+        $this->purgeConcreteClassFromDb($this->getCustomObjectClassName());
+    }
+
+    /**
+     * Delete from the database all the data related to the given concrete class.
+     *
+     * @param class-string<\CommonDBTM> $concrete_classname
+     */
+    final protected function purgeConcreteClassFromDb(string $concrete_classname): void
+    {
+        (new $concrete_classname())->deleteByCriteria(
+            [static::getForeignKeyField() => $this->getID()],
+            force: true,
+            history: false
+        );
+        (new \DisplayPreference())->deleteByCriteria(['itemtype' => $concrete_classname]);
     }
 
     /**

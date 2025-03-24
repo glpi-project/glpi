@@ -57,9 +57,9 @@ class DropdownDefinitionManagerTest extends DbTestCase
 
     public function testAutoloader(): void
     {
-        $this->initDropdownDefinition('Iso3CountryCode'); // use a name with numbers, to validate it works as expected
+        $this->initDropdownDefinition('Iso3Country_Code'); // use a name with numbers and underscore, to validate it works as expected
 
-        $this->assertTrue(\class_exists('Glpi\CustomDropdown\Iso3CountryCode'));
+        $this->assertTrue(\class_exists('Glpi\CustomDropdown\Iso3Country_Code'));
     }
 
     /**

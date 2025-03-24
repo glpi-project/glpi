@@ -47,6 +47,7 @@ use Glpi\Form\Form;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use KnowbaseItem;
 use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
@@ -581,5 +582,257 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             "Category A",
             "Category D",
         ], $items_names);
+    }
+
+    public function testKnowledgeBaseItemsAreDisplayed(): void
+    {
+        $this->login();
+
+        // Create a category for knowledge base items
+        $category = $this->createItem(Category::class, ['name' => 'KB Category']);
+
+        // Create knowledge base items
+        $kb_items = [
+            $this->createItem(KnowbaseItem::class, [
+                'name'                    => 'KB Item 1',
+                'answer'                  => 'KB Item 1 content',
+                'is_faq'                  => 1,
+                'show_in_service_catalog' => 1,
+                'forms_categories_id'     => $category->getID(),
+                'users_id'                => \Session::getLoginUserID(),
+            ]),
+            $this->createItem(KnowbaseItem::class, [
+                'name'                    => 'KB Item 2',
+                'answer'                  => 'KB Item 2 content',
+                'is_faq'                  => 1,
+                'show_in_service_catalog' => 1,
+                'forms_categories_id'     => 0,                            // Root level
+                'users_id'                => \Session::getLoginUserID(),
+            ]),
+            $this->createItem(KnowbaseItem::class, [
+                'name'                    => 'KB Item 3',
+                'answer'                  => 'KB Item 3 content',
+                'is_faq'                  => 1,
+                'show_in_service_catalog' => 0,
+                'forms_categories_id'     => 0,                            // Root level
+                'users_id'                => \Session::getLoginUserID(),
+            ]),
+        ];
+
+        // Get the root items
+        $access_parameters = $this->getDefaultParametersForTestUser();
+        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $items = self::$manager->getItems($item_request)['items'];
+        $items_names = array_map(
+            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            $items
+        );
+
+        // Assert: KB items should be displayed
+        $this->assertContains('KB Item 2', $items_names);
+        $this->assertContains('KB Category', $items_names);
+        $this->assertNotContains('KB Item 1', $items_names);
+        $this->assertNotContains('KB Item 3', $items_names);
+
+        // Get the items from the category
+        $item_request = new ItemRequest(
+            access_parameters: $access_parameters,
+            category: $category,
+        );
+        $items = self::$manager->getItems($item_request)['items'];
+        $items_names = array_map(
+            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            $items
+        );
+
+        // Assert: KB items in the category should be displayed
+        $this->assertContains('KB Item 1', $items_names);
+        $this->assertNotContains('KB Item 2', $items_names);
+        $this->assertNotContains('KB Item 3', $items_names);
+        $this->assertNotContains('KB Category', $items_names);
+    }
+
+    public function testKnowledgeBaseItemsCanBeFiltered(): void
+    {
+        $this->login();
+
+        // Create knowledge base items with different content
+        $kb_items = [
+            $this->createItem(KnowbaseItem::class, [
+                'name'                    => 'Technical KB',
+                'answer'                  => 'Technical content about servers',
+                'description'             => 'Server knowledge',
+                'is_faq'                  => 1,
+                'show_in_service_catalog' => 1,
+                'users_id'                => \Session::getLoginUserID(),
+            ]),
+            $this->createItem(KnowbaseItem::class, [
+                'name'                    => 'User Guide KB',
+                'answer'                  => 'How to use the application',
+                'description'             => 'User documentation',
+                'is_faq'                  => 1,
+                'show_in_service_catalog' => 1,
+                'users_id'                => \Session::getLoginUserID(),
+            ]),
+            $this->createItem(KnowbaseItem::class, [
+                'name'                    => 'Hidden KB',
+                'answer'                  => 'This KB should not be visible in service catalog',
+                'description'             => 'Hidden documentation',
+                'is_faq'                  => 1,
+                'show_in_service_catalog' => 0,  // Not shown in service catalog
+                'users_id'                => \Session::getLoginUserID(),
+            ]),
+        ];
+
+        // Search with a filter matching name
+        $access_parameters = $this->getDefaultParametersForTestUser();
+        $item_request = new ItemRequest(
+            access_parameters: $access_parameters,
+            filter: 'Technical',
+        );
+        $items = self::$manager->getItems($item_request)['items'];
+        $items_names = array_map(
+            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            $items
+        );
+
+        // Assert: Only the technical KB item should be found
+        $this->assertContains('Technical KB', $items_names);
+        $this->assertNotContains('User Guide KB', $items_names);
+        $this->assertNotContains('Hidden KB', $items_names);
+
+        // Search with a filter matching description
+        $item_request = new ItemRequest(
+            access_parameters: $access_parameters,
+            filter: 'documentation',
+        );
+        $items = self::$manager->getItems($item_request)['items'];
+        $items_names = array_map(
+            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            $items
+        );
+
+        // Assert: Only the user guide KB item should be found
+        $this->assertContains('User Guide KB', $items_names);
+        $this->assertNotContains('Technical KB', $items_names);
+        $this->assertNotContains('Hidden KB', $items_names);
+
+        // Search with a filter matching content
+        $item_request = new ItemRequest(
+            access_parameters: $access_parameters,
+            filter: 'servers',
+        );
+        $items = self::$manager->getItems($item_request)['items'];
+        $items_names = array_map(
+            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            $items
+        );
+
+        // Assert: Only the technical KB item should be found
+        $this->assertContains('Technical KB', $items_names);
+        $this->assertNotContains('User Guide KB', $items_names);
+        $this->assertNotContains('Hidden KB', $items_names);
+
+        // Verify hidden KB isn't shown even with matching filter
+        $item_request = new ItemRequest(
+            access_parameters: $access_parameters,
+            filter: 'Hidden',
+        );
+        $items = self::$manager->getItems($item_request)['items'];
+        $items_names = array_map(
+            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            $items
+        );
+
+        // Assert: Hidden KB should not be found regardless of matching filter
+        $this->assertNotContains('Hidden KB', $items_names);
+    }
+
+    public function testKnowledgeBaseItemOrderingByPinnedStatus(): void
+    {
+        $this->login();
+
+        // Create knowledge base items with different pinned status
+        $kb_items = [
+            $this->createItem(KnowbaseItem::class, [
+                'name'                    => 'Not pinned KB',
+                'answer'                  => 'Regular KB item',
+                'is_faq'                  => 1,
+                'is_pinned'               => 0,
+                'show_in_service_catalog' => 1,
+                'users_id'                => \Session::getLoginUserID(),
+            ]),
+            $this->createItem(KnowbaseItem::class, [
+                'name'                    => 'Pinned KB',
+                'answer'                  => 'Important KB item',
+                'is_faq'                  => 1,
+                'is_pinned'               => 1,
+                'show_in_service_catalog' => 1,
+                'users_id'                => \Session::getLoginUserID(),
+            ]),
+            $this->createItem(KnowbaseItem::class, [
+                'name'                    => 'Hidden KB',
+                'answer'                  => 'This should not appear in results',
+                'is_faq'                  => 1,
+                'is_pinned'               => 1,
+                'show_in_service_catalog' => 0, // Not shown in service catalog
+                'users_id'                => \Session::getLoginUserID(),
+            ]),
+        ];
+
+        // Get all items
+        $access_parameters = $this->getDefaultParametersForTestUser();
+        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $items = self::$manager->getItems($item_request)['items'];
+
+        // Extract just the KB items from results (filtering out categories)
+        $kb_items = array_filter($items, function ($item) {
+            return $item instanceof KnowbaseItem;
+        });
+
+        // Get the names in order
+        $items_names = array_map(
+            fn ($item) => $item->getServiceCatalogItemTitle(),
+            array_values($kb_items)
+        );
+
+        // Assert: Pinned item should appear first and hidden item should not appear
+        $this->assertEquals(['Pinned KB', 'Not pinned KB'], $items_names);
+        $this->assertNotContains('Hidden KB', $items_names);
+    }
+
+    public function testMixedFormsAndKnowledgeBaseItems(): void
+    {
+        $this->login();
+
+        // Create a form
+        $builder = new FormBuilder("Test Form");
+        $builder->allowAllUsers();
+        $builder->setIsActive(true);
+        $builder->setIsPinned(true);
+        $this->createForm($builder);
+
+        // Create a KB item
+        $kb_item = $this->createItem(KnowbaseItem::class, [
+            'name'                    => 'Test KB',
+            'answer'                  => 'KB content',
+            'is_faq'                  => 1,
+            'is_pinned'               => 0,
+            'show_in_service_catalog' => 1,
+            'users_id'                => \Session::getLoginUserID(),
+        ]);
+
+        // Get all items
+        $access_parameters = $this->getDefaultParametersForTestUser();
+        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $items = self::$manager->getItems($item_request)['items'];
+        $items_names = array_map(
+            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            $items
+        );
+
+        // Assert: Both forms and KB items should be displayed
+        $this->assertContains('Test Form', $items_names);
+        $this->assertContains('Test KB', $items_names);
     }
 }

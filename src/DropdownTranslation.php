@@ -493,14 +493,16 @@ TWIG, $twig_params);
         global $DB;
 
         $options = [];
-        $opts = SearchOption::getOptionsForItemtype(get_class($item));
-        foreach ($opts as $id => $field) {
-            // Can only translate name, and fields whose datatype is text or string
-            $is_name_field = isset($field['field'])
-                && ($field['field'] === 'name')
-                && ($field['table'] === getTableForItemType(get_class($item)));
-            if ($is_name_field || (isset($field['datatype']) && in_array($field['datatype'], ['text', 'string']))) {
-                $options[$field['field']] = $field['name'];
+        foreach (Search::getOptions(get_class($item)) as $id => $opt) {
+            //Can only translate name, and fields whose datatype is text or string and only fields directly for this itemtype
+            $field = $opt['field'] ?? null;
+            $type  = $opt['datatype'] ?? '';
+            if (
+                $field !== null
+                && ($field === 'name' || in_array($type, ['text', 'string']))
+                && $opt['table'] === getTableForItemType(get_class($item))
+            ) {
+                $options[$field] = $opt['name'];
             }
         }
 

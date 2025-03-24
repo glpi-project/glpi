@@ -158,7 +158,7 @@
             }
 
             $('#mainformtable input[name="system_name"]').val(
-                $('#mainformtable input[name="label"]').val().normalize('NFD').replace(/[^a-z0-9]/gi, '')
+                $('#mainformtable input[name="label"]').val().normalize('NFD').replace(/[^a-z0-9_]/gi, '')
             );
             $('#mainformtable input[name="system_name"]').trigger('input');
         };

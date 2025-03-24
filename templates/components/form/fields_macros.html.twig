@@ -1024,6 +1024,7 @@
             {# Render the modal content #}
             {{ include('components/illustration/icon_picker_modal.html.twig', {
                 'id': modal_id,
+                'backdrop': options.backdrop ?? true,
             }, with_context: false) }}
 
             {# Start js controller #}

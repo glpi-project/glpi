@@ -40,6 +40,7 @@ use Glpi\DBAL\QueryParam;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Features\AssignableItem;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
@@ -510,6 +511,10 @@ class CommonDBTM extends CommonGLPI
             'comment', 'ram', 'alarm_threshold', 'brand', 'begin_date', 'autoupdatesystems_id', 'pictures', 'is_active', 'last_boot'
         ];
         return array_filter($fields, function ($f) {
+            $assignable_item = Toolbox::hasTrait(static::class, AssignableItem::class);
+            if ($assignable_item && in_array($f, ['groups_id', 'groups_id_tech'], true)) {
+                return true;
+            }
             return $f !== null && (str_starts_with($f, '_') || $this->isField($f));
         });
     }
@@ -1216,14 +1221,6 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * @return bool true if input data is saved in the session
-     */
-    protected function hasSavedInput(): bool
-    {
-        return isset($_SESSION['saveInput'][static::class]);
-    }
-
-    /**
      * Get the data saved in the session
      *
      * @since 0.84
@@ -1401,12 +1398,6 @@ class CommonDBTM extends CommonGLPI
 
             if ($this->checkUnicity(true, $options)) {
                 if ($this->addToDB() !== false) {
-                    $this->post_addItem();
-                    if ($this instanceof CacheableListInterface) {
-                        $this->invalidateListCache();
-                    }
-                    $this->addMessageOnAddAction();
-
                     if ($this->dohistory && $history) {
                         $changes = [
                             0,
@@ -1421,6 +1412,12 @@ class CommonDBTM extends CommonGLPI
                             Log::HISTORY_CREATE_ITEM
                         );
                     }
+
+                    $this->post_addItem();
+                    if ($this instanceof CacheableListInterface) {
+                        $this->invalidateListCache();
+                    }
+                    $this->addMessageOnAddAction();
 
                     // Auto create infocoms
                     if (
@@ -5642,7 +5639,7 @@ TWIG, $twig_params);
         $default_options = [
             'force_update'  => false,
             'content_field' => 'content',
-            'name'          => 'filename',
+            'name'          => array_key_exists('_filename', $input) ? 'filename' : ($options['content_field'] ?? 'content'),
             'date'          => null,
         ];
         $options = array_merge($default_options, $options);

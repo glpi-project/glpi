@@ -49,12 +49,6 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
     private static ?DropdownDefinitionManager $instance = null;
 
     /**
-     * Definitions cache.
-     * @var DropdownDefinition[]|null
-     */
-    protected ?array $definitions_data;
-
-    /**
      * Get singleton instance
      *
      * @return DropdownDefinitionManager
@@ -66,6 +60,16 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
         }
 
         return self::$instance;
+    }
+
+    /**
+     * Unset the singleton instance
+     *
+     * @return void
+     */
+    public static function unsetInstance(): void
+    {
+        self::$instance = null;
     }
 
     public static function getDefinitionClass(): string

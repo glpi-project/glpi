@@ -227,7 +227,8 @@ var GLPIPlanning  = {
                 if (!disable_qtip) {
                     // detect ideal position
                     var qtip_position = {
-                        target: 'mouse',
+                        target: element,
+                        at: 'bottom right',
                         adjust: {
                             mouse: false
                         },
@@ -656,6 +657,8 @@ var GLPIPlanning  = {
         $(document).click(function() {
             $('.planning-context-menu').remove();
         });
+
+        $('.fc-scroller').attr('tabindex', '0');
     },
 
     refresh: function() {

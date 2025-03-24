@@ -53,6 +53,16 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable
         return QuestionTypeCategory::DROPDOWN;
     }
 
+    #[Override]
+    public function convertExtraData(array $rawData): array
+    {
+        $config = new QuestionTypeDropdownExtraDataConfig(
+            options: json_decode($rawData['values']) ?? [],
+            is_multiple_dropdown: $rawData['fieldtype'] === 'multiselect'
+        );
+        return $config->jsonSerialize();
+    }
+
     /**
      * Check if the question allows multiple options to be selected
      *

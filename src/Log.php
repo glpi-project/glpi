@@ -242,6 +242,16 @@ class Log extends CommonDBTM
         $old_id           = $changes[3] ?? null;
         $new_id           = $changes[4] ?? null;
 
+        // Remove json values
+        $decoded_old_value = json_decode($old_value);
+        $decoded_new_value = json_decode($new_value);
+        if (is_array($decoded_old_value) || is_object($decoded_old_value)) {
+            $old_value = '';
+        }
+        if (is_array($decoded_new_value) || is_object($decoded_new_value)) {
+            $new_value = '';
+        }
+
         if ($uid = Session::getLoginUserID(false)) {
             if (is_numeric($uid)) {
                 $username = User::getNameForLog($uid);
@@ -733,15 +743,24 @@ class Log extends CommonDBTM
                         if ($item2 = getItemForItemtype($data["itemtype_link"])) {
                             $tmp['field'] = $item2->getTypeName(1);
                         }
-                        $tmp['change'] = sprintf(
-                            __s('%1$s: %2$s'),
-                            htmlescape($action_label),
-                            sprintf(
-                                __s('%1$s (%2$s)'),
+                        if (empty($data["new_value"])) {
+                            $tmp['change'] = sprintf(
+                                __s('%1$s: %2$s'),
+                                htmlescape($action_label),
                                 htmlescape($tmp['field']),
-                                htmlescape($data["new_value"])
-                            )
-                        );
+                            );
+                        } else {
+                            $tmp['change'] = sprintf(
+                                __s('%1$s: %2$s'),
+                                htmlescape($action_label),
+                                sprintf(
+                                    __s('%1$s (%2$s)'),
+                                    htmlescape($tmp['field']),
+                                    htmlescape($data["new_value"])
+                                )
+                            );
+                        }
+
                         break;
 
                     case self::HISTORY_DELETE_SUBITEM:

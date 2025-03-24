@@ -303,6 +303,13 @@
     margin-bottom: 1rem !important;
 }
 
+// Hide question badge in section when section is not collapsed
+[data-glpi-form-editor-section]:not(.section-collapsed) {
+    [data-glpi-form-editor-section-block-badge] {
+        display: none;
+    }
+}
+
 [data-glpi-form-editor-question] {
     &[data-glpi-form-editor-active-question] {
         .dropdown-border {
@@ -363,13 +370,32 @@
     border-bottom-right-radius: var(--tblr-border-radius) !important;
 }
 
+input.value-selector {
+    // Use extra padding to match height of dropdowns on the same line.
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .value-selector {
     border: 0 !important;
     background-color: var(--tblr-yellow-lt) !important;
+    border-radius: var(--tblr-border-radius) !important;
+
+    .select2-selection {
+        // Fix some border conflicts with tabler/select2
+        border-top-right-radius: var(--tblr-border-radius) !important;
+        border-bottom-right-radius: var(--tblr-border-radius) !important;
+        border: 0 !important;
+        background-color: var(--tblr-yellow-lt) !important;
+    }
+
+    .select2-container {
+        width: 100%;
+    }
 }
 
 .visibility-dropdown-card {
-    width: 600px;
+    width: 700px;
 }
 
 [data-glpi-form-editor-block] {

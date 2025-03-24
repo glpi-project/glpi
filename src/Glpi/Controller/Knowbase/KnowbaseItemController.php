@@ -95,13 +95,13 @@ final class KnowbaseItemController extends AbstractController
     }
 
     #[Route(
-        "/Knowbase/KnowbaseItem/SearchSolution/{itemtype}/{items_id}",
-        name: "knowbaseitem_search_solution",
+        "/Knowbase/KnowbaseItem/Search/{itemtype}/{items_id}",
+        name: "knowbaseitem_search",
         requirements: [
             'items_id' => '\d+',
         ]
     )]
-    public function searchSolution(Request $request): Response
+    public function search(Request $request): Response
     {
         /**
          * @var array $CFG_GLPI
@@ -183,7 +183,7 @@ final class KnowbaseItemController extends AbstractController
         ];
 
         return new StreamedResponse(static function () use ($twig_params) {
-            TemplateRenderer::getInstance()->display('pages/tools/search_solution.twig', $twig_params);
+            TemplateRenderer::getInstance()->display('pages/tools/search_knowbaseitem.html.twig', $twig_params);
         });
     }
 }

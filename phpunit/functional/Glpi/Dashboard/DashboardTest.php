@@ -138,20 +138,17 @@ class DashboardTest extends DbTestCase
     public function testClone()
     {
         $clone_name = sprintf(__('Copy of %s'), "Test_Dashboard");
-        $clone_key  = \Toolbox::slugify($clone_name);
-        $this->assertEquals(
-            [
-                'title' => $clone_name,
-                'key'   => $clone_key
-            ],
-            $this->dashboard->cloneCurrent()
-        );
+        $clone_key_prefix = \Toolbox::slugify($clone_name);
+        $clone = $this->dashboard->cloneCurrent();
 
-        $this->assertTrue($this->dashboard->getFromDB($clone_key));
+        $this->assertEquals($clone_name, $clone['title']);
+
+        $this->assertStringStartsWith($clone_key_prefix, $clone['key']);
+
+        $this->assertTrue($this->dashboard->getFromDB($clone['key']));
         $this->assertEquals('core', $this->dashboard->fields['context']);
 
-        $this->assertEquals($clone_key, $this->getPrivateProperty('key'));
-        $this->assertEquals($clone_key, $this->getPrivateProperty('key'));
+        $this->assertEquals($clone['key'], $this->getPrivateProperty('key'));
         $items = $this->getPrivateProperty('items');
         $this->assertCount(3, $items);
         $this->assertCount(4, $this->getPrivateProperty('rights'));
@@ -160,6 +157,29 @@ class DashboardTest extends DbTestCase
             $this->assertArrayHasKey('card_options', $item);
             $this->assertCount(1, $item['card_options']);
         }
+    }
+
+    public function testCloneKeyUnicity()
+    {
+        $num_clones = 5;
+        $original_key = 'test_dashboard';
+        $this->dashboard = new \Glpi\Dashboard\Dashboard($original_key);
+
+        $keys = [];
+
+        for ($i = 0; $i < $num_clones; $i++) {
+            $this->dashboard->load(true);
+            $clone = $this->dashboard->cloneCurrent();
+            $keys[] = $clone['key'];
+
+            $this->assertNotEquals($original_key, $clone['key']);
+        }
+
+        $unique_keys = array_unique($keys);
+
+        $this->assertCount($num_clones, $unique_keys);
+
+        $this->assertEquals(count($keys), count($unique_keys));
     }
 
 

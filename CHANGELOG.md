@@ -36,6 +36,7 @@ The present file will list all changes made to the project; according to the
 - Cloning templates (such as computer templates)
 - Creating a template from an existing item (such as a computer). This action is only available from the Actions menu within the item form (bulk action not allowed).
 - Massive action for users to reapply authorization assignment rules.
+- Massive action for users to send a password reset email.
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
@@ -95,6 +96,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Status\StatusChecker::getServiceStatus()` `as_array` parameter.
 - `Sylk` export of search results.
 - `full_width_adapt_column` option for fields macros has been removed.
+- `Picture` search option (ID 150) for Users.
 
 ### API changes
 
@@ -342,6 +344,7 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::$deduplicate_queued_notifications` property.
 - `CommonDBTM::getCacheKeyForFriendlyName()`
 - `CommonDBTM::getSNMPCredential()`
+- `CommonDBTM::hasSavedInput()`
 - `CommonDBTM::showDebugInfo()`
 - `CommonDevice::title()`
 - `CommonDropdown::$first_level_menu`, `CommonDropdown::$second_level_menu` and `CommonDropdown::$third_level_menu` properties.
@@ -397,6 +400,7 @@ The present file will list all changes made to the project; according to the
 - `Entity::getDefaultContractValues()`
 - `Entity::cleanEntitySelectorCache()`
 - `Entity::title()`
+- `FieldUnicity::checkBeforeInsert()`
 - `FieldUnicity::showDebug()`
 - `GLPI::getErrorHandler()`
 - `GLPI::getLogLevel()`
@@ -599,6 +603,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- Only unsolved/unclosed tickets will be shown in the dropdown when performing the "Merge as Followup" action.
 
 ### Deprecated
 

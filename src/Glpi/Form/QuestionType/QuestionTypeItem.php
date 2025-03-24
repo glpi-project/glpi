@@ -39,6 +39,7 @@ use CartridgeItem;
 use ConsumableItem;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Line;
 use Override;
@@ -48,7 +49,7 @@ use Session;
 use Software;
 use TicketRecurrent;
 
-class QuestionTypeItem extends AbstractQuestionType
+class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataConverterInterface
 {
     protected string $itemtype_aria_label;
     protected string $items_id_aria_label;
@@ -69,7 +70,21 @@ class QuestionTypeItem extends AbstractQuestionType
             return null;
         }
 
-        return json_encode((new QuestionTypeItemDefaultValueConfig($value))->jsonSerialize());
+        return json_encode((new QuestionTypeItemDefaultValueConfig((int) $value))->jsonSerialize());
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): mixed
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): mixed
+    {
+        return (new QuestionTypeItemExtraDataConfig(
+            itemtype: $rawData['itemtype'] ?? null
+        ))->jsonSerialize();
     }
 
     /**
@@ -275,7 +290,7 @@ TWIG;
             'question'         => $question,
             'itemtype'         => $this->getDefaultValueItemtype($question) ?? '0',
             'default_items_id' => $this->getDefaultValueItemId($question),
-            'aria_label'       => $this->items_id_aria_label,
+            'aria_label'       => $question->fields['name'],
             'sub_types'        => $this->getSubTypes(),
         ]);
     }

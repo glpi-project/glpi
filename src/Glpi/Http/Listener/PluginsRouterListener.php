@@ -65,25 +65,24 @@ final readonly class PluginsRouterListener implements EventSubscriberInterface
     public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
-
-        if ($request->attributes->get('_controller')) {
-            // routing is already done
+        if (
+            $request->attributes->get('_controller') !== null
+            || $event->getResponse() !== null
+        ) {
+            // A controller or a response has already been defined for this request, do not override them.
             return;
         }
 
-        $route_name = $request->attributes->get('_route');
-        $route_params = $request->attributes->get('_route_params');
-
-        if ($route_name !== self::ROUTE_NAME) {
-            // not plugins
+        $route_matches = [];
+        if (\preg_match('#^/plugins/(?<plugin_key>[^\/]+)(?<plugin_resource>/.+)$#', $request->getPathInfo(), $route_matches) !== 1) {
             return;
         }
 
-        $plugin_name = $route_params['plugin_name'];
+        $plugin_key = $route_matches['plugin_key'];
 
-        if (!Plugin::isPluginActive($plugin_name)) {
+        if (!Plugin::isPluginActive($plugin_key)) {
             // plugin is inactive, forward to 404 error page
-            throw new NotFoundHttpException(sprintf('Plugin `%s` is not active.', $plugin_name));
+            throw new NotFoundHttpException(sprintf('Plugin `%s` is not active.', $plugin_key));
         }
 
         /** @var Router $router */

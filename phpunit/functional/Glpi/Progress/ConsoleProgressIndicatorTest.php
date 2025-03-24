@@ -34,12 +34,13 @@
 
 namespace tests\units\Glpi\Log;
 
+use Glpi\Message\MessageType;
 use Glpi\Progress\ConsoleProgressIndicator;
-use Glpi\Progress\ProgressMessageType;
 use GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\ConsoleSectionOutput;
 
 class ConsoleProgressIndicatorTest extends GLPITestCase
 {
@@ -56,41 +57,41 @@ class ConsoleProgressIndicatorTest extends GLPITestCase
         foreach ($verbosities as $verbosity) {
             yield [
                 'verbosity'          => $verbosity,
-                'type'               => ProgressMessageType::Error,
+                'type'               => MessageType::Error,
                 'message'            => 'An unexpected error occured.',
-                'expected_output'    => '<error>An unexpected error occured.</error>',
+                'expected_output'    => '> <error>An unexpected error occured.</error>',
                 'expected_verbosity' => OutputInterface::VERBOSITY_QUIET,
             ];
 
             yield [
                 'verbosity'          => $verbosity,
-                'type'               => ProgressMessageType::Warning,
+                'type'               => MessageType::Warning,
                 'message'            => 'Invalid foo has been ignored.',
-                'expected_output'    => '<comment>Invalid foo has been ignored.</comment>',
-                'expected_verbosity' => OutputInterface::VERBOSITY_QUIET,
+                'expected_output'    => '> <comment>Invalid foo has been ignored.</comment>',
+                'expected_verbosity' => OutputInterface::VERBOSITY_NORMAL,
             ];
 
             yield [
                 'verbosity'          => $verbosity,
-                'type'               => ProgressMessageType::Success,
+                'type'               => MessageType::Success,
                 'message'            => 'Bar has been created successfully.',
-                'expected_output'    => '<info>Bar has been created successfully.</info>',
+                'expected_output'    => '> <info>Bar has been created successfully.</info>',
                 'expected_verbosity' => OutputInterface::VERBOSITY_NORMAL,
             ];
 
             yield [
                 'verbosity'          => $verbosity,
-                'type'               => ProgressMessageType::Notice,
+                'type'               => MessageType::Notice,
                 'message'            => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                'expected_output'    => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+                'expected_output'    => '> Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
                 'expected_verbosity' => OutputInterface::VERBOSITY_NORMAL,
             ];
 
             yield [
                 'verbosity'          => $verbosity,
-                'type'               => ProgressMessageType::Debug,
+                'type'               => MessageType::Debug,
                 'message'            => 'Bla bla bla.',
-                'expected_output'    => '[DEBUG] Bla bla bla.',
+                'expected_output'    => '> [DEBUG] Bla bla bla.',
                 'expected_verbosity' => OutputInterface::VERBOSITY_VERY_VERBOSE,
             ];
         }
@@ -99,27 +100,23 @@ class ConsoleProgressIndicatorTest extends GLPITestCase
     #[DataProvider('messageProvider')]
     public function testMessageOuput(
         int $verbosity,
-        ProgressMessageType $type,
+        MessageType $type,
         string $message,
         string $expected_output,
         int $expected_verbosity,
     ): void {
         // Arrange
-        $instance = new ConsoleProgressIndicator(
-            $output = $this->createMock(OutputInterface::class),
-            new ProgressBar($output) // ProgressBar cannot be mocked as it is final
+        $output = $this->createMock(ConsoleOutputInterface::class);
+        $output->method('section')->willReturn(
+            $progress_bar_section = $this->createMock(ConsoleSectionOutput::class),
+            $progress_feedback_section = $this->createMock(ConsoleSectionOutput::class)
         );
 
-        $output->method('getVerbosity')->willReturn($verbosity);
-        if ($verbosity >= $expected_verbosity) {
-            // message will be output
-            $output->expects($this->once())
-                ->method('writeln')
-                ->with($expected_output, $expected_verbosity);
-        } else {
-            // method is not called due to internal filtering if verbosity of the message is lower that the output verbosity
-            $output->expects($this->never())->method('writeln');
-        }
+        $progress_feedback_section->expects($this->once())
+            ->method('writeln')
+            ->with($expected_output, $expected_verbosity);
+
+        $instance = new ConsoleProgressIndicator($output);
 
         // Act
         $instance->addMessage($type, $message);

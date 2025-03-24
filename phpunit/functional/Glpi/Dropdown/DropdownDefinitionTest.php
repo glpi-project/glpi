@@ -294,6 +294,33 @@ class DropdownDefinitionTest extends DbTestCase
             ],
         ];
 
+        // System name can contain an underscore
+        yield [
+            'input'    => [
+                'system_name' => 'Custom_Dropdown',
+            ],
+            'output'   => [
+                'system_name'  => 'Custom_Dropdown',
+                'label'        => 'Custom_Dropdown',
+                'profiles'     => '[]',
+                'translations' => '[]',
+            ],
+            'messages' => [],
+        ];
+
+        // System name must not end with an underscore
+        yield [
+            'input'    => [
+                'system_name' => 'CustomDropdown_',
+            ],
+            'output'   => false,
+            'messages' => [
+                ERROR => [
+                    'The following field has an incorrect value: &quot;System name&quot;.',
+                ],
+            ],
+        ];
+
         // System name must not end with `Model` suffix
         yield [
             'input'    => [
@@ -416,27 +443,40 @@ class DropdownDefinitionTest extends DbTestCase
 
     public function testDelete()
     {
-        /** @var \Glpi\Dropdown\DropdownDefinition $definition */
+        // Create the definition
         $definition = $this->initDropdownDefinition('test');
 
+        $classname = $definition->getDropdownClassName();
+
+        // Validate that there are display preferences that will have to be deleted
+        $this->assertGreaterThan(
+            0,
+            getAllDataFromTable('glpi_displaypreferences', ['itemtype' => $classname])
+        );
+
+        // Create some items
         $this->createItem(
-            $definition->getDropdownClassName(),
+            $classname,
             [
                 'name' => 'test',
             ]
         );
 
+        // Delete the definition
         $this->assertTrue($definition->delete([
             'id' => $definition->getID(),
         ]));
+
+        // Items are deleted
         $this->assertCount(
             0,
-            getAllDataFromTable(
-                'glpi_dropdowns_dropdowns',
-                [
-                    'dropdowns_dropdowndefinitions_id' => $definition->getID(),
-                ]
-            )
+            getAllDataFromTable('glpi_dropdowns_dropdowns', ['dropdowns_dropdowndefinitions_id' => $definition->getID()])
+        );
+
+        // Display preferences are deleted
+        $this->assertCount(
+            0,
+            getAllDataFromTable('glpi_displaypreferences', ['itemtype' => $classname])
         );
     }
 

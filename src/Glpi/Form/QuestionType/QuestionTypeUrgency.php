@@ -37,10 +37,15 @@ namespace Glpi\Form\QuestionType;
 
 use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\UrgencyConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Override;
 
-final class QuestionTypeUrgency extends AbstractQuestionType
+final class QuestionTypeUrgency extends AbstractQuestionType implements UsedAsCriteriaInterface, FormQuestionDataConverterInterface
 {
     /**
      * Retrieve the default value for the urgency question type
@@ -178,5 +183,24 @@ TWIG;
             'very high', 'veryhigh' => "5",
             default => null,
         };
+    }
+
+    #[Override]
+    public function getConditionHandler(
+        ?JsonFieldInterface $question_config
+    ): ConditionHandlerInterface {
+        return new UrgencyConditionHandler();
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): ?int
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): null
+    {
+        return null;
     }
 }

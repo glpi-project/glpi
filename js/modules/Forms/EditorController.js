@@ -1248,6 +1248,32 @@ export class GlpiFormEditorController
         return copy;
     }
 
+    /** @param {HTMLElement} question  */
+    #getQuestionExtraData(question) {
+        const extra_data = {};
+
+        const inputs = question.querySelectorAll(
+            "[data-glpi-form-editor-specific-question-extra-data]"
+        );
+        /** @var {HTMLInputElement} input */
+        for (const input of inputs) {
+            // Ignore unchecked checkboxes
+            if (input.type === "checkbox" && input.checked === false) {
+                continue;
+            }
+
+            // Try to load the original name of the input.
+            let name = input.dataset.glpiFormEditorOriginalName;
+            if (name === undefined) {
+                name = input.name;
+            }
+
+            extra_data[name] = input.value;
+        }
+
+        return extra_data;
+    }
+
     /**
      * Get input value for the given question.
      * @param {jQuery} item Question or section
@@ -2003,6 +2029,23 @@ export class GlpiFormEditorController
     #collaspeSection(section) {
         // Simple class toggle, hiding the correct parts is handled by CSS rules
         section.toggleClass("section-collapsed");
+
+        // Update the block count
+        this.#updateSectionBlockCount(section);
+    }
+
+    /**
+     * Update the number of blocks for the given section
+     * @param {jQuery} section
+     */
+    #updateSectionBlockCount(section) {
+        const blocks = section
+            .find("[data-glpi-form-editor-block]")
+            .length;
+
+        // Update the badge with the new block count
+        const badge = section.find('span[data-glpi-form-editor-section-block-badge]');
+        badge.html(badge.html().trim().replace(/^\d+\s/, `${blocks} `));
     }
 
     /**
@@ -2183,6 +2226,7 @@ export class GlpiFormEditorController
                     'uuid': this.#getItemInput($(question), "uuid"),
                     'name': this.#getItemInput($(question), "name"),
                     'type': this.#getItemInput($(question), "type"),
+                    'extra_data': this.#getQuestionExtraData(question, "extra_data"),
                 });
             })
         ;

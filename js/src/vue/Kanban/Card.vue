@@ -54,6 +54,11 @@
         team_badge_provider: {
             type: TeamBadgeProvider,
             required: true
+        },
+        due_date: {
+            type: String,
+            required: false,
+            default: undefined
         }
     });
 
@@ -88,11 +93,11 @@
 </script>
 
 <template>
-    <li :id="id" :class="`kanban-item card ${read_only ? 'readonly' : ''} ${is_deleted ? 'deleted' : ''}`">
+    <li :id="id" :class="`kanban-item card shadow-none ${read_only ? 'readonly' : ''} ${is_deleted ? 'deleted' : ''}`">
         <div class="kanban-item-header d-flex justify-content-between">
-            <span class="kanban-item-title align-self-center">
+            <span class="kanban-item-title d-flex align-items-center">
                 <i :class="icon"></i>
-                <span class="cursor-pointer" v-text="title" :title="title_tooltip" @click="emit('kanban:card_show_details')"></span>
+                <span class="cursor-pointer" v-text="title" @click="emit('kanban:card_show_details')"></span>
             </span>
             <div class="dropdown">
                 <button type="button" class="kanban-item-overflow-actions cursor-pointer pt-0 b-0"
@@ -120,12 +125,21 @@
                 </ul>
             </div>
         </div>
+        <div v-if="metadata.content" class="kanban-description-preview" v-text="metadata.content"></div>
         <div class="kanban-item-content" v-html="card_content"></div>
-        <div class="kanban-item-team position-relative">
-            <span v-for="member in badges_to_show" :key="member.hash"
-                  v-html="member.content"></span>
-            <span v-if="Object.values(team).length > team_badge_provider.max_team_images"
-                  v-html="team_badge_provider.generateOverflowBadge(Object.values(team).length - team_badge_provider.max_team_images)"></span>
+        <div class="d-flex justify-content-between">
+            <div class="kanban-item-team position-relative">
+                <span v-for="member in badges_to_show" :key="member.hash"
+                      v-html="member.content"></span>
+                <span v-if="Object.values(team).length > team_badge_provider.max_team_images"
+                      v-html="team_badge_provider.generateOverflowBadge(Object.values(team).length - team_badge_provider.max_team_images)"></span>
+            </div>
+            <div class="align-self-center kanban-item-due-date">
+                <span v-if="due_date" :title="__('Planned end date')">
+                    <i class="ti ti-calendar"></i>
+                    <span v-text="due_date"></span>
+                </span>
+            </div>
         </div>
     </li>
 </template>

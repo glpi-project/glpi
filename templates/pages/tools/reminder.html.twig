@@ -114,8 +114,8 @@
                 {% endif %}
             {% else %}
                 {% if params['canedit'] %}
-                    <div id="plan{{ rand }}" onclick="showPlan{{ rand }}()">
-                        <span class="showplan">
+                    <div id="plan{{ rand }} cursor-pointer" onclick="showPlan{{ rand }}()" role="button">
+                        <span class="fw-bold text-decoration-none text-success">
                 {% endif %}
                 {% if item.fields['begin'] is not empty or item.fields['end'] is not empty %}
                     {{ __('From %1$s to %2$s')|format(item.fields['begin']|formatted_datetime, item.fields['end']|formatted_datetime) }}
