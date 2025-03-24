@@ -49,7 +49,7 @@
             <div class="btn-group me-2">
                 {% for type, label in available_destinations_types %}
                     <button class="btn" name="itemtype" type="submit" value="{{ type }}">
-                        <i class="ti ti-plus me-1"></i> {{ __("Add %s"|format(label|lower)) }}
+                        <i class="ti ti-plus me-1"></i> {{ __("Add %s"|format(label)) }}
                     </button>
                 {% endfor %}
             </div>
