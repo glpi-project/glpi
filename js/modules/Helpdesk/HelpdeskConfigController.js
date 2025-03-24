@@ -430,9 +430,11 @@ export class GlpiHelpdeskConfigController
 
         // Enabled submit button if a type is selected
         if (type == 0) {
-            submit_button.disabled = true;
+            submit_button.classList.add('d-none');
+            submit_button.classList.remove('d-flex');
         } else {
-            submit_button.disabled = false;
+            submit_button.classList.remove('d-none');
+            submit_button.classList.add('d-flex');
         }
 
         // Show the correct form
