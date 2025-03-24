@@ -273,6 +273,10 @@ class PendingReason_Item extends CommonDBRelation
     ): bool {
         $pending_item = self::getLastPendingTimelineItemDataForItem($item);
 
+        if (!$pending_item) {
+            return false;
+        }
+
         return
             $pending_item->fields['items_id'] == $timeline_item->fields['id']
             && $pending_item->fields['itemtype'] == $timeline_item::getType()

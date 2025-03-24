@@ -121,9 +121,8 @@
       'min': 1,
       'max': 10000,
       'step': 1,
-      'toadd': {'-1': __('Unlimited')},
-      'add_field_html': validity_msg
-   }) }}
+      'toadd': {'-1': __('Unlimited')}
+   }|merge(item.isNewItem() ? {} : {'add_field_html': validity_msg})) }}
 
    {{ fields.dropdownYesNo('allow_overquota', item.fields['allow_overquota'], __('Allow Over-Quota')) }}
 

@@ -8,12 +8,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/central.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'comment\' on array\\{comment\\: string\\} on left side of \\?\\? always exists and is not nullable\\.$#',
-	'identifier' => 'nullCoalesce.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/comments.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to Html\\:\\:ajaxFooter\\(\\) on a separate line has no effect\\.$#',
 	'identifier' => 'staticMethod.resultUnused',
 	'count' => 1,
@@ -526,12 +520,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'identifier' => 'greater.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ajax.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Right side of && is always false\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Ajax.php',
 ];
@@ -4504,12 +4492,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Return type \\(void\\) of method SavedSearch\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
 	'identifier' => 'method.childReturnType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SavedSearch.php',
 ];
