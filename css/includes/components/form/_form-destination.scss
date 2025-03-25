@@ -34,17 +34,21 @@
 // Hide the dynamic input when the accordion is collapsed
 // and show the name when the accordion is expanded
 #glpi-destinations-accordion {
-    > .accordion-header > .accordion-button {
+    > .accordion-item > .accordion-header > .accordion-button {
         &.collapsed {
-            [data-glpi-form-destination-dynamic-input] {
+            input[data-glpi-form-destination-name] {
                 display: none !important;
             }
         }
 
         &:not(.collapsed) {
-            [data-glpi-form-destination-name] {
+            h4[data-glpi-form-destination-name] {
                 display: none !important;
             }
+
+            // Update vertical padding to match with the collapsed height state
+            padding-top: 11px !important;
+            padding-bottom: 11px !important;
         }
     }
 }
