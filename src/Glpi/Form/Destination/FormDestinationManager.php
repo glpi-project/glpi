@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -46,6 +45,9 @@ final class FormDestinationManager
      */
     private static ?FormDestinationManager $instance = null;
 
+    /** @var FormDestinationInterface[] */
+    private array $plugins_destinations_types = [];
+
     /**
      * Private constructor (singleton)
      */
@@ -74,11 +76,11 @@ final class FormDestinationManager
      */
     public function getDestinationTypes(): array
     {
-        // TODO: support plugin types
         return [
             new FormDestinationTicket(),
             new FormDestinationProblem(),
             new FormDestinationChange(),
+            ...$this->plugins_destinations_types,
         ];
     }
 
@@ -108,6 +110,8 @@ final class FormDestinationManager
 
     /**
      * Default (most common) type.
+     *
+     * @return FormDestinationInterface
      */
     public function getDefaultType(): FormDestinationInterface
     {
@@ -136,5 +140,11 @@ final class FormDestinationManager
         }
 
         return $warnings;
+    }
+
+    public function registerPluginDestinationType(
+        FormDestinationInterface $type
+    ): void {
+        $this->plugins_destinations_types[] = $type;
     }
 }

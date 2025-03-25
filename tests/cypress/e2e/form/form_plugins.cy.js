@@ -95,4 +95,26 @@ describe('Form plugins', () => {
             cy.getDropdownByLabelText('Day').should('have.text', "Thursday");
         });
     });
+
+    it('can configure destinations from plugins', () => {
+        // Create and go to form
+        cy.createFormWithAPI().visitFormTab('Destinations');
+
+        // Add computer destination
+        cy.findByRole('button', {name: "Add Computer"}).click();
+
+        // Set name and save
+        cy.findByRole('textbox', {name: 'Name'}).should(
+            'not.have.value',
+            "My computer name"
+        );
+        cy.findByRole('textbox', {name: 'Name'}).type("My computer name");
+        cy.findByRole('button', {name: 'Update item'}).click();
+
+        // Validate value was saved
+        cy.findByRole('textbox', {name: 'Name'}).should(
+            'have.value',
+            "My computer name"
+        );
+    });
 });

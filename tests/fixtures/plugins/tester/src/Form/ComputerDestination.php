@@ -32,72 +32,82 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination;
+namespace GlpiPlugin\Tester\Form;
 
+use Computer;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\FormDestinationInterface;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
+use Override;
 
-interface FormDestinationInterface
+final class ComputerDestination implements FormDestinationInterface
 {
-    /**
-     * Create one or multiple items for a given form and its answers
-     *
-     * @param Form       $form
-     * @param AnswersSet $answers_set
-     * @param array      $config
-     *
-     * @return \CommonDBTM[]
-     *
-     * @throws \Exception Must be thrown if the item can't be created
-     */
+    #[Override]
     public function createDestinationItems(
         Form $form,
         AnswersSet $answers_set,
         array $config,
-    ): array;
+    ): array {
+        $computer = new Computer();
+        $computer->add([
+            'name'         => $config['name'] ?? "",
+            'entities_id'  => $form->fields['entities_id'],
+            'is_recursive' => $form->fields['is_recursive'],
+        ]);
+        return [$computer];
+    }
 
-
-    /**
-     * Render the configuration form for this destination type.
-     *
-     * @param Form  $form
-     * @param FormDestination $destination
-     * @param array $config
-     * @return string The rendered HTML content
-     */
+    #[Override]
     public function renderConfigForm(
         Form $form,
         FormDestination $destination,
         array $config
-    ): string;
+    ): string {
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render("@tester/computer_destination.html.twig", [
+            'config' => $config,
+        ]);
+    }
 
-    /**
-     * If true, the config form will be populated with a complete layout that
-     * contains the actions buttons and some preset margins.
-     *
-     * If false, the layout will be empty and renderConfigForm() will have the
-     * full responsability of including the actions buttons.
-     */
-    public function useDefaultConfigLayout(): bool;
+    #[Override]
+    public function useDefaultConfigLayout(): bool
+    {
+        return true;
+    }
 
-    /**
-     * Used to ordered items (lowest = first, highest = last)
-     */
-    public function getWeight(): int;
+    #[Override]
+    public function getWeight(): int
+    {
+        return 40;
+    }
 
-    public function getLabel(): string;
+    #[Override]
+    public function getLabel(): string
+    {
+        return Computer::getTypeName(1);
+    }
 
-    /**
-     * @return string Fully qualified tabler icon name (e.g. ti ti-user)
-     */
-    public function getIcon(): string;
+    #[Override]
+    public function getIcon(): string
+    {
+        return Computer::getIcon();
+    }
 
-    public function exportDynamicConfig(array $config): DynamicExportDataField;
+    #[Override]
+    public function exportDynamicConfig(array $config): DynamicExportDataField
+    {
+        return new DynamicExportDataField($config, []);
+    }
 
+    #[Override]
     public static function prepareDynamicConfigDataForImport(
         array $config,
         DatabaseMapper $mapper,
-    ): array;
+    ): array {
+        return $config;
+    }
 }
