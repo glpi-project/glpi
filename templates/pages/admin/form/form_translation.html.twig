@@ -31,9 +31,9 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
-
 {% macro getDefaultValueDisplay(handler) %}
+    {% import 'components/form/fields_macros.html.twig' as fields %}
+
     {% if handler.isRichText() %}
         {{ fields.textareaField(
             '',
@@ -55,6 +55,8 @@
 {% endmacro %}
 
 {% macro getTranslationInput(handler, translation) %}
+    {% import 'components/form/fields_macros.html.twig' as fields %}
+
     {% set rand = random() %}
 
     <input type="hidden" name="translations[{{ rand }}][itemtype]" value="{{ get_class(handler.getItem()) }}" />
