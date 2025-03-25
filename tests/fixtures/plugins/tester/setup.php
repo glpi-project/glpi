@@ -33,7 +33,9 @@
  */
 
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Destination\FormDestinationManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
+use GlpiPlugin\Tester\Form\ComputerDestination;
 use GlpiPlugin\Tester\Form\DayOfTheWeekPolicy;
 use GlpiPlugin\Tester\Form\QuestionTypeRange;
 use GlpiPlugin\Tester\Form\QuestionTypeColor;
@@ -91,4 +93,8 @@ function plugin_init_tester(): void
     // Register access control policies
     $access_manager = FormAccessControlManager::getInstance();
     $access_manager->registerPluginAccessControlPolicy(new DayOfTheWeekPolicy());
+
+    // Register destination type
+    $destination_manager = FormDestinationManager::getInstance();
+    $destination_manager->registerPluginDestinationType(new ComputerDestination());
 }

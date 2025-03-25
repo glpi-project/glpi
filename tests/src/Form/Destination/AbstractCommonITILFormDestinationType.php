@@ -38,6 +38,7 @@ use CommonDBTM;
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\CommonITILField\TitleField;
@@ -55,9 +56,9 @@ abstract class AbstractCommonITILFormDestinationType extends DbTestCase
     /**
      * Get the tested instance
      *
-     * @return \Glpi\Form\Destination\AbstractCommonITILFormDestination
+     * @return AbstractCommonITILFormDestination
      */
-    abstract protected function getTestedInstance(): \Glpi\Form\Destination\AbstractCommonITILFormDestination;
+    abstract protected function getTestedInstance(): AbstractCommonITILFormDestination;
 
     final public function testCreateDestinations(): void
     {

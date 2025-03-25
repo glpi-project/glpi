@@ -245,7 +245,7 @@
     </script>
 {% endmacro %}
 
-<div class="overflow-x-hidden row d-flex mx-0 border-top">
+<div class="overflow-x-hidden row d-flex mx-n4 border-top">
     <div class="col-12 col-lg-8 order-last order-lg-first pt-2 pe-2 pe-lg-4 d-flex flex-column">
         <div class="timeline-item mb-3 ITILContent ps-4">
             <div class="row">
@@ -358,90 +358,12 @@
             {% endfor %}
         </section>
     </div>
-    <div class="itil-footer card-footer p-0 border-top">
-        <div class="d-flex flex-row-reverse align-items-center justify-content-between m-2">
-            {% if can_update %}
-                <div class="d-flex flex-row-reverse">
-                    <button
-                        class="btn btn-primary ms-2"
-                        name="update"
-                        type="submit"
-                        formaction="{{ '/Form/%d/Destination/%d/Update'|format(form.getID(), destination.getID()) }}"
-                        formmethod="post"
-                    >
-                        <i class="ti ti-device-floppy me-2"></i>
-                        {{ __("Update item") }}
-                    </button>
-                    {% if destination.canPurgeItem() %}
-                        <button
-                            class="btn btn-ghost-danger"
-                            name="purge"
-                            type="submit"
-                            formaction="{{ '/Form/%d/Destination/%d/Purge'|format(form.getID(), destination.getID()) }}"
-                            formmethod="post"
-                        >
-                            <i class="ti ti-trash me-2"></i>
-                            {{ __("Delete") }}
-                        </button>
-                    {% endif %}
-                </div>
-            {% endif %}
-            {% if destination.fields.is_mandatory %}
-                <span class="badge bg-secondary-lt ms-2">
-                    {{ __("Mandatory") }}
-                    <span
-                        class="form-help"
-                        data-bs-toggle="popover"
-                        data-bs-placement="right"
-                        data-bs-content="{{ __("This is the main item that will be created by this form. It can't be deleted.") }}"
-                    >?</span>
-                </span>
-            {% else %}
-                <div>
-                    <button
-                        title="{{ __('Configure creation conditions') }}"
-                        data-bs-toggle="dropdown"
-                        data-bs-auto-close="outside"
-                        class="dropdown-toggle btn btn-outline-secondary btn-sm px-2"
-                        data-bs-placement="top"
-                        type="button"
-                    >
-                        {% set selected_strategy = destination.getConfiguredCreationStrategy() %}
-                        {% for strategy in enum_cases('Glpi\\Form\\Condition\\CreationStrategy') %}
-                            {% set is_visible = selected_strategy == strategy %}
-                            {% set display_class = is_visible ? 'd-flex' : 'd-none' %}
-                            <div
-                                class="{{ display_class }} align-items-center"
-                                data-glpi-editor-condition-badge="{{ strategy.value }}"
-                            >
-                                <i class="{{ strategy.getIcon() }} me-1"></i>
-                                <span>{{ strategy.getLabel() }}</span>
-                            </div>
-                        {% endfor %}
-                    </button>
-                    <div
-                        class="dropdown-menu dropdown-menu-end dropdown-menu-card animate__animated animate__zoomIn"
-                    >
-                        <div class="card visibility-dropdown-card">
-                            <div class="card-body">
-                                <h3 class="card-title d-flex align-items-center">
-                                    <i class="ti ti-circuit-changeover me-2"></i>
-                                    {{ __('Conditions') }}
-                                </h3>
-
-                                {{ include(
-                                    "pages/admin/form/destination_visibility_conditions_configuration.html.twig",
-                                    {
-                                        destination: destination,
-                                        form: form,
-                                    },
-                                    with_context: false
-                                ) }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
+    <div class="itil-footer card-footer p-0 border-top p-2 ps-4 pe-4">
+        {% if can_update %}
+            {{ include('pages/admin/form/form_destination_actions.html.twig', {
+                form: form,
+                destination: destination
+            }, with_context = false) }}
+        {% endif %}
     </div>
 </div>

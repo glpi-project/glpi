@@ -143,12 +143,20 @@
                     >
                         <div class="accordion-body p-0">
                             <form id="form-destination-{{ destination.getID() }}">
-                                <div class="overflow-x-hidden">
+                                <div class="overflow-x-hidden px-4">
                                     {{ concrete_destination.renderConfigForm(
                                         form,
                                         destination,
                                         destination.getConfig(),
                                     )|raw }}
+                                    {% if concrete_destination.useDefaultConfigLayout() and can_update %}
+                                        <div class="mt-3 mb-3">
+                                            {{ include('pages/admin/form/form_destination_actions.html.twig', {
+                                                form: form,
+                                                destination: destination
+                                            }, with_context = false) }}
+                                        </div>
+                                    {% endif %}
                                 </div>
 
                                 {# Hidden values #}
