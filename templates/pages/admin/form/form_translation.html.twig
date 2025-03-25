@@ -31,6 +31,29 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% macro getDefaultValueDisplay(handler) %}
+    {% if handler.isRichText() %}
+        {{ fields.textareaField(
+            '',
+            handler.getValue(),
+            '',
+            {
+                'no_label'       : true,
+                'full_width'     : true,
+                'mb'             : '',
+                'enable_richtext': true,
+                'statusbar'      : false,
+                'editor_height'  : 0,
+                'disabled'       : true,
+            }
+        ) }}
+    {% else %}
+        {{ handler.getValue() }}
+    {% endif %}
+{% endmacro %}
+
 {% macro getTranslationInput(handler, translation) %}
     {% set rand = random() %}
 
@@ -49,14 +72,32 @@
             ></i>
         {% endif %}
 
-        <input
-            type="text"
-            name="translations[{{ rand }}][translations][one]"
-            class="form-control"
-            placeholder="{{ __('Enter translation') }}"
-            value="{{ translation.getTranslation() }}"
-            aria-label="{{ __('Enter translation') }}"
-        />
+        {% if handler.isRichText() %}
+            {{ fields.textareaField(
+                'translations[%s][translations][one]'|format(rand),
+                translation.getTranslation(),
+                '',
+                {
+                    'no_label'       : true,
+                    'full_width'     : true,
+                    'mb'             : '',
+                    'aria_label'     : __("Enter translation"),
+                    'placeholder'    : __("Enter translation"),
+                    'enable_richtext': true,
+                    'statusbar'      : false,
+                    'editor_height'  : 0,
+                }
+            ) }}
+        {% else %}
+            <input
+                type="text"
+                name="translations[{{ rand }}][translations][one]"
+                class="form-control"
+                placeholder="{{ __('Enter translation') }}"
+                value="{{ translation.getTranslation() }}"
+                aria-label="{{ __('Enter translation') }}"
+            />
+        {% endif %}
     </div>
 {% endmacro %}
 
@@ -70,7 +111,7 @@
     {% for handler in handlers %}
         {% set entries = entries|merge([{
             'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
-            'default': handler.getValue(),
+            'default': _self.getDefaultValueDisplay(handler),
             'translation': _self.getTranslationInput(
                 handler,
                 form_translation.getForItemKeyAndLanguage(
@@ -120,6 +161,7 @@
                         },
                         'formatters': {
                             'type': 'raw_html',
+                            'default': 'raw_html',
                             'translation': 'raw_html',
                         },
                         'entries': entries,

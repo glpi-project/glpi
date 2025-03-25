@@ -37,33 +37,94 @@ namespace Glpi\ItemTranslation\Context;
 
 use CommonDBTM;
 
-final class TranslationHandler
+/**
+ * Handler for a specific translatable field
+ */
+class TranslationHandler
 {
+    /** @var CommonDBTM The item to translate */
+    private CommonDBTM $item;
+
+    /** @var string The key of the field to translate */
+    private string $key;
+
+    /** @var string The human-readable name of the field */
+    private string $name;
+
+    /** @var string The default value (in the default language) */
+    private string $value;
+
+    /** @var bool Whether this field contains rich text that should be edited in a rich text editor */
+    private bool $is_rich_text;
+
+    /**
+     * @param CommonDBTM $item The item to translate
+     * @param string $key The key of the field to translate
+     * @param string $name The human-readable name of the field
+     * @param string $value The default value (in the default language)
+     * @param bool $is_rich_text Whether this field contains rich text
+     */
     public function __construct(
-        private CommonDBTM $item,
-        private string $key,
-        private string $name,
-        private string $value,
+        CommonDBTM $item,
+        string $key,
+        string $name,
+        string $value,
+        bool $is_rich_text = false
     ) {
+        $this->item = $item;
+        $this->key = $key;
+        $this->name = $name;
+        $this->value = $value;
+        $this->is_rich_text = $is_rich_text;
     }
 
+    /**
+     * Get the item to translate
+     *
+     * @return CommonDBTM
+     */
     public function getItem(): CommonDBTM
     {
         return $this->item;
     }
 
+    /**
+     * Get the key of the field to translate
+     *
+     * @return string
+     */
     public function getKey(): string
     {
         return $this->key;
     }
 
+    /**
+     * Get the human-readable name of the field
+     *
+     * @return string
+     */
     public function getName(): string
     {
         return $this->name;
     }
 
+    /**
+     * Get the default value (in the default language)
+     *
+     * @return string
+     */
     public function getValue(): string
     {
         return $this->value;
+    }
+
+    /**
+     * Check if this field contains rich text that should be edited in a rich text editor
+     *
+     * @return bool
+     */
+    public function isRichText(): bool
+    {
+        return $this->is_rich_text;
     }
 }

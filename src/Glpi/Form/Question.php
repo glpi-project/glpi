@@ -57,8 +57,9 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
 {
     use ConditionableVisibilityTrait;
 
-    public const TRANSLATION_KEY_NAME = 'question_name';
-    public const TRANSLATION_KEY_DESCRIPTION = 'question_description';
+    public const TRANSLATION_KEY_NAME          = 'question_name';
+    public const TRANSLATION_KEY_DESCRIPTION   = 'question_description';
+    public const TRANSLATION_KEY_DEFAULT_VALUE = 'question_default_value';
 
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';

@@ -42,12 +42,17 @@ use Glpi\Form\Condition\ConditionHandler\RichTextConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\ItemTranslation\ItemTranslation;
 use Override;
 
 /**
  * Long answers are multiple lines inputs used to answer questions with as much details as needed.
  */
-final class QuestionTypeLongText extends AbstractQuestionType implements FormQuestionDataConverterInterface, UsedAsCriteriaInterface
+final class QuestionTypeLongText extends AbstractQuestionType implements
+    FormQuestionDataConverterInterface,
+    UsedAsCriteriaInterface,
+    TranslationAwareQuestionType
 {
     #[Override]
     public function getFormEditorJsOptions(): string
@@ -138,12 +143,17 @@ TWIG;
     public function renderEndUserTemplate(Question $question): string
     {
         // TODO: handle required
+        $translated_default_value = ItemTranslation::translate(
+            $question,
+            Question::TRANSLATION_KEY_DEFAULT_VALUE,
+            1
+        );
         $template = <<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
 
             {{ fields.textareaField(
                 question.getEndUserInputName(),
-                question.fields.default_value,
+                default_value,
                 "",
                 {
                     'enable_richtext': true,
@@ -160,7 +170,8 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question' => $question,
+            'question'      => $question,
+            'default_value' => $translated_default_value,
         ]);
     }
 
@@ -199,5 +210,19 @@ TWIG;
     public function convertExtraData(array $rawData): null
     {
         return null;
+    }
+
+    #[Override]
+    public function listTranslationsHandlers(Question $question): array
+    {
+        return [
+            new TranslationHandler(
+                item: $question,
+                key: Question::TRANSLATION_KEY_DEFAULT_VALUE,
+                name: __('Default value'),
+                value: $question->fields['default_value'],
+                is_rich_text: true
+            )
+        ];
     }
 }
