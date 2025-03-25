@@ -56,7 +56,8 @@ function addTranslations() {
         cy.findByRole('cell', { name: 'Translation name' }).contains('Form description');
         cy.findByRole('cell', { name: 'Default value' }).contains('This form is used to test form translations');
         cy.findByRole('cell', { name: 'Translated value' })
-            .findByRole('textbox', { name: 'Enter translation' })
+            .findByLabelText('Enter translation')
+            .awaitTinyMCE()
             .type('Ce formulaire est utilisé pour tester les traductions de formulaire');
     });
 
@@ -158,8 +159,8 @@ describe('Edit form translations', () => {
         cy.get('@formTranslationsRows').eq(3).within(() => {
             cy.findByRole('cell', { name: 'Translation name' }).contains('Form description');
             cy.findByRole('cell', { name: 'Default value' }).contains('This form is used to test form translations');
-            cy.findByRole('cell', { name: 'Translated value' }).findByRole('textbox', { name: 'Enter translation' })
-                .should('have.value', 'Ce formulaire est utilisé pour tester les traductions de formulaire');
+            cy.findByRole('cell', { name: 'Translated value' }).findByLabelText('Enter translation')
+                .should('have.value', '<p>Ce formulaire est utilisé pour tester les traductions de formulaire</p>');
         });
     });
 
@@ -318,5 +319,148 @@ describe('Edit form translations', () => {
         cy.findAllByRole('textbox', { name: 'Enter translation' }).eq(0).parent().within(() => {
             cy.get('.ti-alert-circle').should('not.exist');
         });
+    });
+
+    it('can translate options of a radio question', () => {
+        // Go to the form editor
+        cy.findByRole('tab', { name: 'Form' }).click();
+
+        // Add a new radio question
+        cy.findByRole('button', { name: 'Add a new question' }).click();
+        cy.findByRole('textbox', { name: 'Question name' }).type('Radio question');
+        cy.getDropdownByLabelText('Question type').selectDropdownValue('Radio');
+
+        // Add options to the question
+        cy.findAllByRole('textbox', { name: 'Selectable option' }).eq(-1).type('First option');
+        cy.findAllByRole('textbox', { name: 'Selectable option' }).eq(-1).type('Second option');
+        cy.findAllByRole('textbox', { name: 'Selectable option' }).eq(-1).type('Third option');
+
+        // Save the form
+        cy.findByRole('button', { name: 'Save' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Go to the form translations page
+        cy.findByRole('tab', { name: 'Form translations' }).click();
+
+        // Add a new language translation
+        cy.findByRole('button', { name: 'Add language' }).click();
+        cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Français');
+        cy.findByRole('button', { name: 'Add' }).click();
+        cy.findByRole('dialog').should('have.attr', 'data-cy-shown', 'true');
+
+        // Add translations for options
+        cy.findByRole('table', { name: 'Form translations' }).as('formTranslationsTable');
+        cy.get('@formTranslationsTable').findAllByRole('row').as('formTranslationsRows');
+        cy.get('@formTranslationsRows').eq(-3).within(() => {
+            cy.findByRole('cell', { name: 'Translation name' }).contains('Radio Option');
+            cy.findByRole('cell', { name: 'Default value' }).contains('First option');
+            cy.findByRole('cell', { name: 'Translated value' }).findByRole('textbox', { name: 'Enter translation' })
+                .type('Première option');
+        });
+        cy.get('@formTranslationsRows').eq(-2).within(() => {
+            cy.findByRole('cell', { name: 'Translation name' }).contains('Radio Option');
+            cy.findByRole('cell', { name: 'Default value' }).contains('Second option');
+            cy.findByRole('cell', { name: 'Translated value' }).findByRole('textbox', { name: 'Enter translation' })
+                .type('Deuxième option');
+        });
+        cy.get('@formTranslationsRows').eq(-1).within(() => {
+            cy.findByRole('cell', { name: 'Translation name' }).contains('Radio Option');
+            cy.findByRole('cell', { name: 'Default value' }).contains('Third option');
+            cy.findByRole('cell', { name: 'Translated value' }).findByRole('textbox', { name: 'Enter translation' })
+                .type('Troisième option');
+        });
+
+        // Save the translations
+        cy.findByRole('button', { name: 'Save translation' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Go to the form preview
+        cy.get('@form_id').then((form_id) => {
+            cy.visit(`/Form/Render/${form_id}`);
+        });
+
+        // Check default translations
+        cy.findByRole('heading', { name: 'Form title' }).should('exist').contains('Tests form translations');
+        cy.findByRole('note', { name: 'Form description' }).should('exist').contains('This form is used to test form translations');
+        cy.findByRole('heading', { name: 'Radio question' }).should('exist');
+        cy.findByRole('radio', { name: 'First option' }).should('exist');
+        cy.findByRole('radio', { name: 'Second option' }).should('exist');
+        cy.findByRole('radio', { name: 'Third option' }).should('exist');
+
+        // Change the user language to French
+        changeUserLanguage('fr_FR');
+        cy.reload();
+
+        // Check the translations for the radio question
+        cy.findByRole('heading', { name: 'Form title' }).should('exist').contains('Tests form translations');
+        cy.findByRole('note', { name: 'Form description' }).should('exist').contains('This form is used to test form translations');
+        cy.findByRole('heading', { name: 'Radio question' }).should('exist');
+        cy.findByRole('radio', { name: 'Première option' }).should('exist');
+        cy.findByRole('radio', { name: 'Deuxième option' }).should('exist');
+        cy.findByRole('radio', { name: 'Troisième option' }).should('exist');
+    });
+
+    it('can translate default value of a long answer question', () => {
+        // Go to the form editor
+        cy.findByRole('tab', { name: 'Form' }).click();
+
+        // Add a new long answer question
+        cy.findByRole('button', { name: 'Add a new question' }).click();
+        cy.findByRole('textbox', { name: 'Question name' }).type('Long answer question');
+        cy.getDropdownByLabelText('Question type').selectDropdownValue('Long answer');
+
+        // Set default value
+        cy.findByRole('region', { name: 'Question details' })
+            .findByLabelText('Default value').awaitTinyMCE().type('This is a long answer question');
+
+        // Save the form
+        cy.findByRole('button', { name: 'Save' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Go to the form translations page
+        cy.findByRole('tab', { name: 'Form translations' }).click();
+
+        // Add a new language translation
+        cy.findByRole('button', { name: 'Add language' }).click();
+        cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Français');
+        cy.findByRole('button', { name: 'Add' }).click();
+        cy.findByRole('dialog').should('have.attr', 'data-cy-shown', 'true');
+
+        // Add translations for the long answer question
+        cy.findByRole('table', { name: 'Form translations' }).as('formTranslationsTable');
+        cy.get('@formTranslationsTable').findAllByRole('row').as('formTranslationsRows');
+        cy.get('@formTranslationsRows').eq(-1).within(() => {
+            cy.findByRole('cell', { name: 'Translation name' }).contains('Default value');
+            cy.findByRole('cell', { name: 'Default value' }).contains('This is a long answer question');
+            cy.findByRole('cell', { name: 'Translated value' })
+                .findByLabelText('Enter translation')
+                .awaitTinyMCE()
+                .type('Ceci est une question de texte long');
+        });
+
+        // Save the translations
+        cy.findByRole('button', { name: 'Save translation' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Go to the form preview
+        cy.get('@form_id').then((form_id) => {
+            cy.visit(`/Form/Render/${form_id}`);
+        });
+
+        // Check default translations
+        cy.findByRole('heading', { name: 'Form title' }).should('exist').contains('Tests form translations');
+        cy.findByRole('note', { name: 'Form description' }).should('exist').contains('This form is used to test form translations');
+        cy.findByRole('heading', { name: 'Long answer question' }).should('exist');
+        cy.findAllByLabelText('Long answer question').eq(-1).should('have.value', '<p>This is a long answer question</p>');
+
+        // Change the user language to French
+        changeUserLanguage('fr_FR');
+        cy.reload();
+
+        // Check the translations for the long answer question
+        cy.findByRole('heading', { name: 'Form title' }).should('exist').contains('Tests form translations');
+        cy.findByRole('note', { name: 'Form description' }).should('exist').contains('This form is used to test form translations');
+        cy.findByRole('heading', { name: 'Long answer question' }).should('exist');
+        cy.findAllByLabelText('Long answer question').eq(-1).should('have.value', '<p>Ceci est une question de texte long</p>');
     });
 });
