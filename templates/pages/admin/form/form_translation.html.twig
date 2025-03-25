@@ -31,29 +31,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% macro getDefaultValueDisplay(handler) %}
-    {% import 'components/form/fields_macros.html.twig' as fields %}
-
-    {% if handler.isRichText() %}
-        {{ fields.textareaField(
-            '',
-            handler.getValue(),
-            '',
-            {
-                'no_label'       : true,
-                'full_width'     : true,
-                'mb'             : '',
-                'enable_richtext': true,
-                'statusbar'      : false,
-                'editor_height'  : 0,
-                'disabled'       : true,
-            }
-        ) }}
-    {% else %}
-        {{ handler.getValue() }}
-    {% endif %}
-{% endmacro %}
-
 {% macro getTranslationInput(handler, translation) %}
     {% import 'components/form/fields_macros.html.twig' as fields %}
 
@@ -113,7 +90,7 @@
     {% for handler in handlers %}
         {% set entries = entries|merge([{
             'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
-            'default': _self.getDefaultValueDisplay(handler),
+            'default': handler.getValue(),
             'translation': _self.getTranslationInput(
                 handler,
                 form_translation.getForItemKeyAndLanguage(
