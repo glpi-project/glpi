@@ -2557,8 +2557,8 @@ TWIG,
             </button>"
          : "";
         $clear_btn = $p['clear_btn'] && $p['maybeempty'] && $p['canedit']
-         ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='" . __s('Clear') . "'>
-                    <i class='ti ti-circle-x' data-clear></i>
+         ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle data-clear title='" . __s('Clear') . "'>
+                    <i class='ti ti-circle-x'></i>
                 </button>"
          : "";
 

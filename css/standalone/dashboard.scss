@@ -407,8 +407,9 @@ $break_tablet: 1400px;
                 .flatpickr {
                     position: relative;
 
-                    a[data-clear] {
+                    button[data-clear] {
                         display: none;
+                        border: none;
                     }
 
                     &::after {
@@ -525,7 +526,7 @@ $break_tablet: 1400px;
                             display: none;
                         }
 
-                        a[data-clear] {
+                        button[data-clear] {
                             display: inline-block;
                             color: #509ee3;
                         }
