@@ -466,9 +466,13 @@ class Contract extends CommonDBTM
                 return self::getContractRenewalName($values[$field]);
 
             case '_virtual_expiration':
+                $duration = $values['duration'];
+                if ($values['renewal'] == self::RENEWAL_EXPRESS) {
+                    $duration = $values['duration'] + $values['periodicity'];
+                }
                 return Infocom::getWarrantyExpir(
                     $values['begin_date'],
-                    $values['duration'],
+                    $duration,
                     0,
                     true,
                     ($values['renewal'] == self::RENEWAL_TACIT),
