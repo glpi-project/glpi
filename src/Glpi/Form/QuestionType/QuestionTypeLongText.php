@@ -164,7 +164,6 @@ TWIG;
                     'full_width'     : true,
                     'no_label'       : true,
                     'mb'             : '',
-                    'aria_label'     : question.fields.name,
                 }
             ) }}
 TWIG;

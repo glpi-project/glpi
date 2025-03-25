@@ -451,7 +451,7 @@ describe('Edit form translations', () => {
         cy.findByRole('heading', { name: 'Form title' }).should('exist').contains('Tests form translations');
         cy.findByRole('note', { name: 'Form description' }).should('exist').contains('This form is used to test form translations');
         cy.findByRole('heading', { name: 'Long answer question' }).should('exist');
-        cy.findAllByLabelText('Long answer question').eq(-1).should('have.value', '<p>This is a long answer question</p>');
+        cy.findAllByLabelText('Long answer question').awaitTinyMCE().should('have.text', 'This is a long answer question');
 
         // Change the user language to French
         changeUserLanguage('fr_FR');
@@ -461,6 +461,6 @@ describe('Edit form translations', () => {
         cy.findByRole('heading', { name: 'Form title' }).should('exist').contains('Tests form translations');
         cy.findByRole('note', { name: 'Form description' }).should('exist').contains('This form is used to test form translations');
         cy.findByRole('heading', { name: 'Long answer question' }).should('exist');
-        cy.findAllByLabelText('Long answer question').eq(-1).should('have.value', '<p>Ceci est une question de texte long</p>');
+        cy.findAllByLabelText('Long answer question').awaitTinyMCE().should('have.text', 'Ceci est une question de texte long');
     });
 });
