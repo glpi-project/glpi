@@ -308,7 +308,13 @@
         </div>
     </div>
     <div class="col-12 col-lg-4 mt-0 p-0 rounded-0 card-footer border-start border-top-0">
-        <section class="accordion open accordion-flush" aria-label="{{ __('Destination fields accordion') }}">
+        {% set rand = random() %}
+
+        <section
+            id="glpi-itil-destinations-accordion-{{ rand }}"
+            class="accordion open accordion-flush"
+            aria-label="{{ __('Destination fields accordion') }}"
+        >
             {% for category in item.getConfigurableFieldsGroupedByCategory() %}
                 {% set already_rendered_config = [
                     'glpi-form-destination-commonitilfield-titlefield',
@@ -321,21 +327,26 @@
 
                 {% if fields is not empty %}
                     <section class="accordion-item border-bottom">
-                        <h2 class="accordion-header" id="heading-item-{{ loop.index }}">
+                        <h2 class="accordion-header" id="heading-item-{{ rand }}-{{ loop.index }}">
                             <button
                                 class="accordion-button collapsed"
                                 type="button"
                                 data-bs-toggle="collapse"
-                                data-bs-target="#item-{{ loop.index }}"
+                                data-bs-target="#item-{{ rand }}-{{ loop.index }}"
                                 aria-expanded="true"
-                                aria-controls="item-{{ loop.index }}"
+                                aria-controls="item-{{ rand }}-{{ loop.index }}"
                                 aria-label="{{ category.label }}"
                             >
                                 <i class="{{ category.icon }} me-1 item-icon"></i>
                                 <span class="item-title">{{ category.label }}</span>
                             </button>
                         </h2>
-                        <section id="item-{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="heading-item-{{ loop.index }}">
+                        <section
+                            id="item-{{ rand }}-{{ loop.index }}"
+                            class="accordion-collapse collapse"
+                            aria-labelledby="heading-item-{{ rand }}-{{ loop.index }}"
+                            data-bs-parent="#glpi-itil-destinations-accordion-{{ rand }}"
+                        >
                             <div class="accordion-body d-flex flex-column space-y-3 mt-n2">
                                 {% for field in fields %}
                                     {{ _self.field_config_section(item, field, form, config) }}
