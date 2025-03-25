@@ -62,7 +62,7 @@
       {{ include('components/itilobject/mainform_open.html.twig') }}
    {% endif %}
 
-   <div class="row d-flex flex-column alin-items-stretch itil-object">
+   <div class="row d-flex flex-column itil-object">
       {% set is_timeline_reversed = user_pref('timeline_order') == constant('CommonITILObject::TIMELINE_ORDER_REVERSE') %}
       {% set fl_direction = (item.isNewItem() or is_timeline_reversed ? 'flex-column' : 'flex-column-reverse') %}
       <div class="itil-left-side col-12 {{ left_side_cls }} order-last order-lg-first pt-2 pe-2 pe-lg-4 d-flex {{ fl_direction }} border-top border-4 {{ not show_extra_fields ? "w-100" : "" }}">

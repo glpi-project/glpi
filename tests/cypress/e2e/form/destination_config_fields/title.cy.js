@@ -48,12 +48,12 @@ describe('Title configuration', () => {
     });
 
     it('can configure the title field', () => {
-        cy.findByLabelText("Title").awaitTinyMCE().as("title_field");
+        cy.findByRole('region', {name: 'Title configuration'}).awaitTinyMCE().as("title_field");
         cy.get("@title_field").clear();
         cy.get("@title_field").type("My specific form name");
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
-        cy.findByLabelText("Title").awaitTinyMCE().as("title_field");
+        cy.findByRole('region', {name: 'Title configuration'}).awaitTinyMCE().as("title_field");
         cy.get("@title_field").contains("My specific form name");
     });
 

@@ -43,6 +43,9 @@ describe('Template configuration', () => {
         cy.focused().type("My test question");
         cy.findByRole('button', {'name': 'Save'}).click();
 
+        // Check alert
+        cy.checkAndCloseAlert('Item successfully updated');
+
         // Create a ticket template
         cy.get('@form_id').then((form_id) => {
             const ticket_template_name = `Test ticket template for the template configuration suite - ${form_id}`;
@@ -64,6 +67,7 @@ describe('Template configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.findByRole('region', {'name': "Template configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Template').as("template_dropdown");
 
@@ -86,6 +90,7 @@ describe('Template configuration', () => {
 
             cy.findByRole('button', {'name': 'Update item'}).click();
             cy.checkAndCloseAlert('Item successfully updated');
+            cy.openAccordionItem('Destination fields accordion', 'Properties');
             cy.get('@template_dropdown').should('have.text', 'Specific template');
             cy.get('@specific_template_id_dropdown').should('have.text', ticket_template_name);
         });

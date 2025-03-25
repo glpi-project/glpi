@@ -89,6 +89,7 @@ class ContentField extends AbstractConfigField implements DestinationFieldConver
                     'enable_form_tags' : true,
                     'form_tags_form_id': form_id,
                     'content_style'    : 'body { line-height: 2.3; }',
+                    'mb'               : '',
                 })
             ) }}
 TWIG;

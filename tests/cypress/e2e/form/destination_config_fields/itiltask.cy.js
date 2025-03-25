@@ -41,7 +41,7 @@ describe('ITILTask configuration', () => {
         cy.focused().type("My question");
 
         cy.findByRole('button', {'name': 'Save'}).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully updated');
+        cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to destination tab
         cy.findByRole('tab', { 'name': "Items to create 1" }).click();
@@ -56,7 +56,7 @@ describe('ITILTask configuration', () => {
 
     it('can use all possibles configuration options', () => {
         cy.findByRole('region', {'name': "Tasks configuration"}).as("config");
-        cy.get('@config').getDropdownByLabelText('Tasks').as("itiltask_dropdown");
+        cy.get('@config').getDropdownByLabelText('Select strategy...').as("itiltask_dropdown");
 
         // Default value
         cy.get('@itiltask_dropdown').should(
@@ -88,7 +88,7 @@ describe('ITILTask configuration', () => {
 
     it('can create ticket using specific task template', () => {
         cy.findByRole('region', {'name': "Tasks configuration"}).as("config");
-        cy.get('@config').getDropdownByLabelText('Tasks').as("itiltask_dropdown");
+        cy.get('@config').getDropdownByLabelText('Select strategy...').as("itiltask_dropdown");
 
         // Switch to "Specific Task templates"
         cy.get('@form_id').then((form_id) => {

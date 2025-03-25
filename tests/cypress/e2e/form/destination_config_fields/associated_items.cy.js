@@ -92,6 +92,7 @@ describe('Associated items configuration', () => {
         addQuestionsAndSaveForm();
 
         // Retrieve configuration section
+        cy.openAccordionItem('Destination fields accordion', 'Associated items');
         cy.findByRole('region', {'name': "Associated items configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Associated items').as("associated_items_dropdown");
 
@@ -118,6 +119,7 @@ describe('Associated items configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Associated items');
         cy.get('@associated_items_dropdown').should('have.text', 'Specific items');
         cy.get('@config').getDropdownByLabelText('Select the itemtype of the item to associate...').eq(0).should('have.text', 'Computers');
         cy.get('@form_id').then((form_id) => {
@@ -133,6 +135,7 @@ describe('Associated items configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Associated items');
         cy.get('@associated_items_dropdown').should('have.text', 'Answer from specific questions');
         cy.get('@specific_answers_dropdown').should('have.text', '×My item question×My user device question×My multiple user device question');
 
@@ -141,6 +144,7 @@ describe('Associated items configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Associated items');
         cy.get('@associated_items_dropdown').should('have.text', 'All valid "Item" answers');
     });
 
@@ -187,6 +191,7 @@ describe('Associated items configuration', () => {
         cy.findByRole('tab', { 'name': "Items to create 1" }).click();
 
         // Retrieve configuration section
+        cy.openAccordionItem('Destination fields accordion', 'Associated items');
         cy.findByRole('region', {'name': "Associated items configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Associated items').as("associated_items_dropdown");
 
@@ -225,6 +230,7 @@ describe('Associated items configuration', () => {
         // Update form destination and check persisted values
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Associated items');
         cy.get('@associated_items_dropdown').should('have.text', 'Specific items');
         cy.get('@form_id').then((form_id) => {
             cy.get('@config').find('[data-glpi-associated-items-specific-values-extra-field-item]').eq(0)
@@ -253,6 +259,7 @@ describe('Associated items configuration', () => {
         cy.findByRole('tab', { 'name': "Items to create 1" }).click();
 
         // Retrieve configuration section
+        cy.openAccordionItem('Destination fields accordion', 'Associated items');
         cy.findByRole('region', {'name': "Associated items configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Associated items').as("associated_items_dropdown");
 

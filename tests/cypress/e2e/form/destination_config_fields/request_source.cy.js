@@ -42,11 +42,15 @@ describe('Request source configuration', () => {
         cy.findByRole('button', { 'name': "Add a new question" }).click();
         cy.findByRole('button', { 'name': 'Save' }).click();
 
+        // Check alert
+        cy.checkAndCloseAlert('Item successfully updated');
+
         // Go to destination tab
         cy.findByRole('tab', { 'name': "Items to create 1" }).click();
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.findByRole('region', { 'name': "Request source configuration" }).as("config");
         cy.get('@config').getDropdownByLabelText('Request source').as("source_dropdown");
 
@@ -66,6 +70,7 @@ describe('Request source configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@source_dropdown').should('have.text', 'Specific request source');
         cy.get('@specific_request_source_id_dropdown').should('have.text', 'E-Mail');
     });

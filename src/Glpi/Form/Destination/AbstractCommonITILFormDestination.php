@@ -60,15 +60,20 @@ use Ticket;
 abstract class AbstractCommonITILFormDestination extends AbstractFormDestinationType
 {
     #[Override]
-    final public function renderConfigForm(Form $form, array $config): string
-    {
+    final public function renderConfigForm(
+        Form $form,
+        FormDestination $destination,
+        array $config
+    ): string {
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
             'pages/admin/form/form_destination_commonitil_config.html.twig',
             [
-                'form'   => $form,
-                'item'   => $this,
-                'config' => $config,
+                'form'        => $form,
+                'item'        => $this,
+                'config'      => $config,
+                'destination' => $destination,
+                'can_update'  => FormDestination::canUpdate(),
             ]
         );
     }

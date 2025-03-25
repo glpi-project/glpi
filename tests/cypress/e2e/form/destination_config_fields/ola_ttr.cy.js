@@ -59,8 +59,9 @@ describe('OLA TTR configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
-        cy.findByRole('region', { 'name': "OLA TTR configuration" }).as("config");
-        cy.get('@config').getDropdownByLabelText('OLA TTR').as("ola_ttr_dropdown");
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
+        cy.findByRole('region', { 'name': "Internal TTR configuration" }).as("config");
+        cy.get('@config').getDropdownByLabelText('Internal TTR').as("ola_ttr_dropdown");
 
         // Default value
         cy.get('@ola_ttr_dropdown').should(
@@ -72,6 +73,7 @@ describe('OLA TTR configuration', () => {
         cy.get('@ola_ttr_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
         cy.get('@ola_ttr_dropdown').should('have.text', 'From template');
 
         // Switch to "Specific OLA"
@@ -84,6 +86,7 @@ describe('OLA TTR configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
         cy.get('@ola_ttr_dropdown').should('have.text', 'Specific OLA');
         cy.get('@slm_id').then((slm_id) => {
             const ola_name = `OLA TTR - ${slm_id}`;
@@ -93,8 +96,9 @@ describe('OLA TTR configuration', () => {
 
     it('can create ticket using default configuration', () => {
         // Switch to "Specific OLA"
-        cy.findByRole('region', { 'name': "OLA TTR configuration" }).as("config");
-        cy.get('@config').getDropdownByLabelText('OLA TTR').selectDropdownValue('Specific OLA');
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
+        cy.findByRole('region', { 'name': "Internal TTR configuration" }).as("config");
+        cy.get('@config').getDropdownByLabelText('Internal TTR').selectDropdownValue('Specific OLA');
         cy.get('@slm_id').then((slm_id) => {
             const ola_name = `OLA TTR - ${slm_id}`;
             cy.get('@config').getDropdownByLabelText('Select a OLA...').selectDropdownValue(ola_name);

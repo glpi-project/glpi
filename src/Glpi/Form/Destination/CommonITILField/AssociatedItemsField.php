@@ -197,7 +197,7 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
     #[Override]
     public function getWeight(): int
     {
-        return 200;
+        return 300;
     }
 
     #[Override]
@@ -258,7 +258,7 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
     #[Override]
     public function getCategory(): Category
     {
-        return Category::PROPERTIES;
+        return Category::ASSOCIATED_ITEMS;
     }
 
     #[Override]
