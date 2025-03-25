@@ -47,6 +47,8 @@ use Glpi\Form\Form;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use GlpiPlugin\Tester\Form\DayOfTheWeekPolicy;
+use GlpiPlugin\Tester\Form\DayOfTheWeekPolicyConfig;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
 
@@ -73,7 +75,7 @@ final class FormAccessControlManagerTest extends DbTestCase
         $form = $this->createAndGetFormWithoutAccessControls();
 
         $manager->createMissingAccessControlsForForm($form);
-        $this->assertCount(2, $form->getAccessControls());
+        $this->assertCount(3, $form->getAccessControls()); // 2 from core + 1 from plugins
     }
 
     public function testCreateMisingAccessControlsForFormThatAlreadyHasAccessPolicies(): void
@@ -85,7 +87,7 @@ final class FormAccessControlManagerTest extends DbTestCase
         // If getFormWithActiveAccessControls try to recreate the existing
         // access controls, there will be an SQL unicity constraint error.
         $manager->createMissingAccessControlsForForm($form);
-        $this->assertCount(2, $form->getAccessControls());
+        $this->assertCount(3, $form->getAccessControls()); // 2 from core + 1 from plugins
     }
 
     public function testGetActiveAccessControlsForFormWithoutPolicies(): void
@@ -322,6 +324,44 @@ final class FormAccessControlManagerTest extends DbTestCase
         $this->checkGetWarnings($this->getActiveFormWithInactiveAccessControls(), [
             'This form will not be visible to any users as there are currently no active access policies.',
         ]);
+    }
+
+    public static function accessPoliciesFromPluginsAreTakenIntoAccountProvider(): iterable
+    {
+        yield 'On a wednesday' => [
+            "date"     => "2025-03-18 10:45:00",
+            "expected" => false,
+        ];
+
+        yield 'On a friday' => [
+            "date"     => "2025-03-21 10:45:00",
+            "expected" => true,
+        ];
+    }
+
+    #[DataProvider('accessPoliciesFromPluginsAreTakenIntoAccountProvider')]
+    public function testAccessPoliciesFromPluginsAreTakenIntoAccount(
+        string $date,
+        bool $expected,
+    ): void {
+        // Arrange: create a form with a plugin policy
+        $builder = new FormBuilder();
+        $builder->allowAllUsers();
+        $builder->addAccessControl(
+            DayOfTheWeekPolicy::class,
+            new DayOfTheWeekPolicyConfig("Friday"),
+        );
+        $form = $this->createForm($builder);
+
+        // Act: try to access the form on the given date
+        $_SESSION['glpi_currenttime'] = $date;
+        $can_access = $this->getManager()->canAnswerForm(
+            $form,
+            self::getTechUserParameters(),
+        );
+
+        // Assert
+        $this->assertEquals($expected, $can_access);
     }
 
     private function checkGetWarnings(Form $form, array $expected): void
