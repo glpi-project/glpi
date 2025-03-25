@@ -215,14 +215,18 @@ TWIG;
     #[Override]
     public function listTranslationsHandlers(Question $question): array
     {
-        return [
-            new TranslationHandler(
+        $handlers = [];
+
+        if (!empty($question->fields['default_value'])) {
+            $handlers[] = new TranslationHandler(
                 item: $question,
                 key: Question::TRANSLATION_KEY_DEFAULT_VALUE,
                 name: __('Default value'),
-                value: $question->fields['default_value'] ?? '',
+                value: $question->fields['default_value'],
                 is_rich_text: true
-            )
-        ];
+            );
+        }
+
+        return $handlers;
     }
 }
