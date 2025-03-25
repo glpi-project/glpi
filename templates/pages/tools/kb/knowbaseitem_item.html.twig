@@ -51,7 +51,7 @@
             {{ fields.htmlField('', dropdown, __('Add a linked item')) }}
         {% else %}
             {{ 'KnowbaseItem'|itemtype_dropdown({
-                'entity': item.getEntity(),
+                'entity': item.getEntityID(),
                 'used': used_knowbase_items,
                 'condition': visibility_condition
             }) }}

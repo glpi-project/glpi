@@ -38,7 +38,7 @@
     {{ inputs.hidden('itemtype', get_class(item)) }}
     <div class="d-flex">
         {{ 'Project'|itemtype_dropdown({
-            'entity': item.getEntity(),
+            'entity': item.getEntityID(),
             'used': used,
         }) }}
     </div>

@@ -78,7 +78,7 @@
 {% endmacro %}
 
 {% macro autoNameField(name, item, label = '', withtemplate, options = {}) %}
-   {% set tpl_value = option.value|length > 0 ? option.value : item.fields[name] %}
+   {% set tpl_value = options.value|length > 0 ? options.value : item.fields[name] %}
    {% if item.isTemplate() %} {# TODO exluded types #}
        {% set options = options|merge({
            tpl_mark: item.getAutofillMark(name, {'withtemplate': withtemplate}, tpl_value)
