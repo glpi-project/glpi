@@ -307,6 +307,10 @@ abstract class Asset extends CommonDBTM
 
         $search_options = $this->amendSearchOptions($search_options);
 
+        $search_options[] = [
+            'id' => 'customfields',
+            'name' => _n('Custom field', 'Custom fields', \Session::getPluralNumber())
+        ];
         $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
         foreach ($custom_fields as $custom_field) {
             $opt = $custom_field->getFieldType()->getSearchOption();
