@@ -36,10 +36,16 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\MultipleChoiceFromValuesConditionHandler;
+use Glpi\Form\Condition\ConditionHandler\SingleChoiceFromValuesConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
+use InvalidArgumentException;
 use Override;
 
-final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable
+final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implements UsedAsCriteriaInterface
 {
     #[Override]
     public function getInputType(?Question $question): string
@@ -267,5 +273,21 @@ TWIG;
     public function getExtraDataConfigClass(): string
     {
         return QuestionTypeDropdownExtraDataConfig::class;
+    }
+
+    #[Override]
+    public function getConditionHandler(
+        ?JsonFieldInterface $question_config
+    ): ConditionHandlerInterface {
+        if (!$question_config instanceof QuestionTypeDropdownExtraDataConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        $options = $question_config->getOptions();
+        if ($question_config->isMultipleDropdown()) {
+            return new MultipleChoiceFromValuesConditionHandler($options);
+        } else {
+            return new SingleChoiceFromValuesConditionHandler($options);
+        }
     }
 }

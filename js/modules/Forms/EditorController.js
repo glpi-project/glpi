@@ -1268,7 +1268,25 @@ export class GlpiFormEditorController
                 name = input.name;
             }
 
-            extra_data[name] = input.value;
+            const is_map = name.indexOf("[") !== -1
+                && name.indexOf("]") !== -1
+                && name.indexOf("[]") === -1
+            ;
+
+            if (is_map) {
+                // Handle complex arrays with key and values
+                const matches = name.match(/^(.*)\[(.*)\]$/);
+                if (matches === null) {
+                    throw new Error(`Unexpected input name: ${name}`);
+                }
+                if (extra_data[matches[1]] === undefined) {
+                    extra_data[matches[1]] = {};
+                }
+                extra_data[matches[1]][matches[2]] = input.value;
+            } else {
+                // Simple value
+                extra_data[name] = input.value;
+            }
         }
 
         return extra_data;

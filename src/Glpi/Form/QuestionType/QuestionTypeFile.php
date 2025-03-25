@@ -118,7 +118,7 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         return implode(', ', array_map(
             fn($document_id) => (new Document())->getById($document_id)->fields['filename'],

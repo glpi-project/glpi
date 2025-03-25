@@ -221,6 +221,10 @@ function fillCondition(index, logic_operator, question_name, value_operator_name
         cy.get('@condition').findByLabelText('Value').type(value);
     } else if (value_type === "dropdown") {
         cy.get('@condition').getDropdownByLabelText('Value').selectDropdownValue(value);
+    } else if (value_type === "dropdown_multiple") {
+        for (const option of value) {
+            cy.get('@condition').getDropdownByLabelText('Value').selectDropdownValue(option);
+        }
     }
 }
 
@@ -246,6 +250,11 @@ function checkThatConditionExist(index, logic_operator, question_name, value_ope
         cy.get('@condition').findByLabelText('Value').should('have.value', value);
     } else if (value_type === "dropdown") {
         cy.get('@condition').getDropdownByLabelText('Value').should('have.text', value);
+    } else if (value_type === "dropdown_multiple") {
+        cy.get('@condition').getDropdownByLabelText('Value').should(
+            'have.text',
+            `×${value.join('×')}`
+        );
     }
 }
 
@@ -701,6 +710,53 @@ describe ('Conditions', () => {
         validateThatQuestionIsVisible("My question that is always visible");
     });
 
+    it('conditions are applied on questions that uses array values', () => {
+        // Some kind of conditions use an array for their values (e.g. checkboxes, dropdowns).
+        // We need a dedicated test for them to be sure that the code that deal
+        // with the value can handle arrays correctly.
+        createForm();
+
+        // Add the "array" question
+        addQuestion('My array question used as a criteria');
+        setQuestionTypeCategory('Checkbox');
+        getAndFocusQuestion('My array question used as a criteria').within(() => {
+            cy.findByPlaceholderText('Enter an option').type('Option 1{enter}');
+        });
+        cy.focused().type('Option 2{enter}');
+        cy.focused().type('Option 3{enter}');
+        cy.focused().type('Option 4');
+
+        // Add a question that will be visible depending on the array question value
+        addQuestion('My question that is visible if some criteria are met');
+        getAndFocusQuestion('My question that is visible if some criteria are met').within(() => {
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            fillCondition(
+                0,
+                null,
+                'My array question used as a criteria',
+                'Is equal to',
+                ['Option 1', 'Option 4'],
+                'dropdown_multiple',
+            );
+        });
+        save();
+        preview();
+
+        // The form questions are all empty, we expect the following default state
+        validateThatQuestionIsNotVisible("My question that is visible if some criteria are met");
+
+        // Check the correct values
+        cy.findByRole('checkbox', {'name': 'Option 1'}).check();
+        cy.findByRole('checkbox', {'name': 'Option 4'}).check();
+        validateThatQuestionIsVisible("My question that is visible if some criteria are met");
+
+        // Uncheck one value
+        cy.findByRole('checkbox', {'name': 'Option 1'}).uncheck();
+        validateThatQuestionIsNotVisible("My question that is visible if some criteria are met");
+    });
+
+
     it('conditions are applied on comments', () => {
         createForm();
         addQuestion('My question used as a criteria');
@@ -859,6 +915,43 @@ describe ('Conditions', () => {
         addQuestion('My request type question');
         setQuestionTypeCategory('Request type');
 
+        addQuestion('My radio question');
+        setQuestionTypeCategory('Radio');
+        getAndFocusQuestion('My radio question').within(() => {
+            cy.findByPlaceholderText('Enter an option').type('Option 1{enter}');
+        });
+        cy.focused().type('Option 2{enter}');
+        cy.focused().type('Option 3{enter}');
+        cy.focused().type('Option 4');
+
+        addQuestion('My checkbox question');
+        setQuestionTypeCategory('Checkbox');
+        getAndFocusQuestion('My checkbox question').within(() => {
+            cy.findByPlaceholderText('Enter an option').type('Option 1{enter}');
+        });
+        cy.focused().type('Option 2{enter}');
+        cy.focused().type('Option 3{enter}');
+        cy.focused().type('Option 4');
+
+        addQuestion('My single value dropdown question');
+        setQuestionTypeCategory('Dropdown');
+        getAndFocusQuestion('My single value dropdown question').within(() => {
+            cy.findByPlaceholderText('Enter an option').type('Option 1{enter}');
+        });
+        cy.focused().type('Option 2{enter}');
+        cy.focused().type('Option 3{enter}');
+        cy.focused().type('Option 4');
+
+        addQuestion('My multiple values dropdown question');
+        setQuestionTypeCategory('Dropdown');
+        getAndFocusQuestion('My multiple values dropdown question').within(() => {
+            cy.findByRole('checkbox', {'name': 'Allow multiple options'}).check();
+            cy.findByPlaceholderText('Enter an option').type('Option 1{enter}');
+        });
+        cy.focused().type('Option 2{enter}');
+        cy.focused().type('Option 3{enter}');
+        cy.focused().type('Option 4');
+
         // Add a condition for each possible condition types
         getAndFocusQuestion('Test subject').within(() => {
             initVisibilityConfiguration();
@@ -926,6 +1019,42 @@ describe ('Conditions', () => {
                 'Request',
                 'dropdown',
             );
+            addNewEmptyCondition();
+            fillCondition(
+                7,
+                'And',
+                'My radio question',
+                'Is not equal to',
+                'Option 3',
+                'dropdown',
+            );
+            addNewEmptyCondition();
+            fillCondition(
+                8,
+                'And',
+                'My checkbox question',
+                'Contains',
+                ['Option 2', 'Option 4'],
+                'dropdown_multiple',
+            );
+            addNewEmptyCondition();
+            fillCondition(
+                9,
+                'And',
+                'My single value dropdown question',
+                'Is not equal to',
+                'Option 2',
+                'dropdown',
+            );
+            addNewEmptyCondition();
+            fillCondition(
+                10,
+                'And',
+                'My multiple values dropdown question',
+                'Is not equal to',
+                ['Option 1', 'Option 2'],
+                'dropdown_multiple',
+            );
         });
 
         // Reload and check values
@@ -987,6 +1116,38 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'Request',
                 'dropdown',
+            );
+            checkThatConditionExist(
+                7,
+                'And',
+                'My radio question',
+                'Is not equal to',
+                'Option 3',
+                'dropdown',
+            );
+            checkThatConditionExist(
+                8,
+                'And',
+                'My checkbox question',
+                'Contains',
+                ['Option 2', 'Option 4'],
+                'dropdown_multiple',
+            );
+            checkThatConditionExist(
+                9,
+                'And',
+                'My single value dropdown question',
+                'Is not equal to',
+                'Option 2',
+                'dropdown',
+            );
+            checkThatConditionExist(
+                10,
+                'And',
+                'My multiple values dropdown question',
+                'Is not equal to',
+                ['Option 1', 'Option 2'],
+                'dropdown_multiple',
             );
         });
     });
