@@ -42,6 +42,8 @@ use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Form\QuestionType\TranslationAwareQuestionType;
+use Glpi\ItemTranslation\Context\TranslationHandler;
 use Log;
 use Override;
 use Ramsey\Uuid\Uuid;
@@ -54,6 +56,9 @@ use RuntimeException;
 final class Question extends CommonDBChild implements BlockInterface, ConditionableVisibilityInterface
 {
     use ConditionableVisibilityTrait;
+
+    public const TRANSLATION_KEY_NAME = 'question_name';
+    public const TRANSLATION_KEY_DESCRIPTION = 'question_description';
 
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
@@ -91,6 +96,40 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     {
         // Report logs to the parent form
         $this->logDeleteInParentForm();
+    }
+
+    #[Override]
+    public function listTranslationsHandlers(): array
+    {
+        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $handlers = [];
+        if (!empty($this->fields['name'])) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_NAME,
+                name: __('Question name'),
+                value: $this->fields['name'],
+            );
+        }
+
+        if (!empty($this->fields['description'])) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_DESCRIPTION,
+                name: __('Question description'),
+                value: $this->fields['description'],
+            );
+        }
+
+        $question_type = $this->getQuestionType();
+        if ($question_type instanceof TranslationAwareQuestionType) {
+            $handlers[$key] = array_merge(
+                $handlers[$key] ?? [],
+                array_values($question_type->listTranslationsHandlers($this))
+            );
+        }
+
+        return $handlers;
     }
 
     public function displayBlockForEditor(): void

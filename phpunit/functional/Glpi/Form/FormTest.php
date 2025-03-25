@@ -558,6 +558,7 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Access control',
                 'Items to create 1',
+                'Form translations',
             ],
         ];
         yield 'Form with default destination and 1 answers' => [
@@ -569,6 +570,7 @@ class FormTest extends DbTestCase
                 'Tickets 1',
                 'Access control',
                 'Items to create 1',
+                'Form translations',
             ],
         ];
         yield 'Form with default destination and 5 answers' => [
@@ -580,6 +582,7 @@ class FormTest extends DbTestCase
                 'Tickets 5',
                 'Access control',
                 'Items to create 1',
+                'Form translations',
             ],
         ];
     }
@@ -599,6 +602,7 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Access control',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
         yield 'Form with multiple tickets destinations and 1 answers' => [
@@ -610,6 +614,7 @@ class FormTest extends DbTestCase
                 'Tickets 4', // (1 (default) + 3) destinations * 1 answer
                 'Access control',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
         yield 'Form with multiple tickets destinations and 5 answers' => [
@@ -621,6 +626,7 @@ class FormTest extends DbTestCase
                 'Tickets 20', // (1 (default) + 3) destinations 5 answers
                 'Access control',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
     }
@@ -640,6 +646,7 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Access control',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
         yield 'Form with multiple changes destinations and 1 answers' => [
@@ -652,6 +659,7 @@ class FormTest extends DbTestCase
                 'Changes 3', // 3 destinations * 1 answer
                 'Access control',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
         yield 'Form with multiple changes destinations and 5 answers' => [
@@ -664,6 +672,7 @@ class FormTest extends DbTestCase
                 'Changes 15', // 3 destinations * 5 answers
                 'Access control',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
     }
@@ -683,6 +692,7 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Access control',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
         yield 'Form with multiple problems destinations and 1 answers' => [
@@ -695,6 +705,7 @@ class FormTest extends DbTestCase
                 'Problems 3', // 3 destinations * 1 answer
                 'Access control',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
         yield 'Form with multiple problems destinations and 5 answers' => [
@@ -707,6 +718,7 @@ class FormTest extends DbTestCase
                 'Problems 15', // 3 destinations * 5 answers
                 'Access control',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
     }

@@ -38,15 +38,20 @@ namespace Glpi\Form;
 use CommonDBChild;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Override;
 use Ramsey\Uuid\Uuid;
 
 /**
  * Section of a given helpdesk form
  */
-final class Section extends CommonDBChild implements ConditionableVisibilityInterface
+final class Section extends CommonDBChild implements ConditionableVisibilityInterface, ProvideTranslationsInterface
 {
     use ConditionableVisibilityTrait;
+
+    public const TRANSLATION_KEY_NAME = 'section_name';
+    public const TRANSLATION_KEY_DESCRIPTION = 'section_description';
 
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
@@ -120,6 +125,44 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         }
 
         return $input;
+    }
+
+    #[Override]
+    public function listTranslationsHandlers(): array
+    {
+        $form = $this->getItem();
+        if (!$form instanceof Form) {
+            throw new \LogicException('Section must be attached to a form');
+        }
+
+        $handlers = [];
+        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        if (count($form->getSections()) > 1) {
+            if (!empty($this->fields['name'])) {
+                $handlers[$key][] = new TranslationHandler(
+                    item: $this,
+                    key: self::TRANSLATION_KEY_NAME,
+                    name: __('Section title'),
+                    value: $this->fields['name'],
+                );
+            }
+
+            if (!empty($this->fields['description'])) {
+                $handlers[$key][] = new TranslationHandler(
+                    item: $this,
+                    key: self::TRANSLATION_KEY_DESCRIPTION,
+                    name: __('Section description'),
+                    value: $this->fields['description'],
+                );
+            }
+        }
+
+        $blocks_handlers = array_map(
+            fn(ProvideTranslationsInterface $block) => $block->listTranslationsHandlers(),
+            $this->getBlocks()
+        );
+
+        return array_merge($handlers, ...$blocks_handlers);
     }
 
     /**
