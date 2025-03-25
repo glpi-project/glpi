@@ -377,7 +377,7 @@ class Telemetry extends CommonGLPI
             e.preventDefault();
 
             glpi_ajax_dialog({
-               title: __('Telemetry data'),
+               title: " . json_encode(__('Telemetry data')) . ",
                url: $('#view_telemetry').attr('href'),
                dialogclass: 'modal-lg'
             });

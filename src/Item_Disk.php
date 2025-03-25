@@ -249,16 +249,20 @@ class Item_Disk extends CommonDBChild
             $encryption_label = '';
             if ($data['encryption_status'] !== self::ENCRYPTION_STATUS_NO) {
                 $twig_params = [
-                    'encryption_status' => Dropdown::getYesNo($data['encryption_status'] === self::ENCRYPTION_STATUS_YES),
-                    'encryption_tool' => $data['encryption_tool'],
-                    'encryption_algorithm' => $data['encryption_algorithm'],
-                    'encryption_type' => $data['encryption_type'],
+                    'encryption_status_label'    => __('Partial encryption'),
+                    'encryption_status_value'    => Dropdown::getYesNo($data['encryption_status'] === self::ENCRYPTION_STATUS_YES),
+                    'encryption_tool_label'      => __('Encryption tool'),
+                    'encryption_tool_value'      => $data['encryption_tool'],
+                    'encryption_algorithm_label' => __('Encryption algorithm'),
+                    'encryption_algorithm_value' => $data['encryption_algorithm'],
+                    'encryption_type_label'      => __('Encryption type'),
+                    'encryption_type_value'      => $data['encryption_type'],
                 ];
                 $encryptionTooltip = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                    <strong>{{ __('Partial encryption') }}</strong> : {{ encryption_status }}<br/>
-                    <strong>{{ __('Encryption tool') }}</strong> : {{ encryption_tool }}</br>
-                    <strong>{{ __('Encryption algorithm') }}</strong> : {{ encryption_algorithm }}</br>
-                    <strong>{{ __('Encryption type') }}</strong> : {{ encryption_type }}
+                    <strong>{{ encryption_status_label }}</strong> : {{ encryption_status_value }}<br/>
+                    <strong>{{ encryption_tool_label }}</strong> : {{ encryption_tool_value }}</br>
+                    <strong>{{ encryption_algorithm_label }}</strong> : {{ encryption_algorithm_value }}<br/>
+                    <strong>{{ encryption_type_label }}</strong> : {{ encryption_type_value }}
 TWIG, $twig_params);
 
                 $encryption_label = Html::showTooltip($encryptionTooltip, [

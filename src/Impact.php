@@ -493,7 +493,7 @@ TWIG, $twig_params);
             echo Html::scriptBlock('
             $("#impact-list-settings").click(function() {
                glpi_html_dialog({
-                  title: __("Settings"),
+                  title: ' . json_encode(__("Settings")) . ',
                   body: ' . ($setting_dialog || '{}') . ',
                });
             });

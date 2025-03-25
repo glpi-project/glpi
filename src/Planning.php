@@ -515,20 +515,12 @@ JAVASCRIPT;
         }
 
         // language=Twig
-        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <div {% if  options.full_view %} id="planning_container" {% endif %} class="d-flex flex-wrap flex-sm-nowrap">
-                {% if options.full_view %}
-                    {{ include('pages/assistance/planning/filters.html.twig') }}
-                {% endif %}
-                <div id="planning{{ options.rand }}" class="flex-fill"></div>
-            </div>
-            <script>
-                $(() => {
-                    GLPIPlanning.display({{ options|json_encode|raw }});
-                    GLPIPlanning.planningFilters();
-                });
-            </script>
-TWIG, ['options' => $options]);
+        echo TemplateRenderer::getInstance()->render(
+            'pages/assistance/planning/planning.html.twig',
+            [
+                'options' => $options,
+            ]
+        );
     }
 
     public static function getTimelineResources()

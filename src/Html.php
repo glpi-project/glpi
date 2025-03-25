@@ -5256,8 +5256,8 @@ HTML;
                );
             },
             messages: {
-              acceptFileTypes: __('Filetype not allowed'),
-              maxFileSize: __('File is too big'),
+              acceptFileTypes: " . json_encode(__('Filetype not allowed')) . ",
+              maxFileSize: " . json_encode(__('File is too big')) . ",
             },
             $progressall_js
          });
