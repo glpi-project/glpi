@@ -475,7 +475,8 @@ TWIG, $twig_params);
                 'entities' => $entities,
                 'is_recursive' => $is_recursive,
                 'item'   => $item,
-                'btn_msg' => __('Associate a domain')
+                'btn_msg' => __('Associate a domain'),
+                'helper' => sprintf(__('%s that are already associated are not displayed'), Domain::getTypeName(Session::getPluralNumber())),
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -501,7 +502,7 @@ TWIG, $twig_params);
                                 display: false
                             }]) %}
                             {{ fields.htmlField('', domain_dropdown, 'Domain'|itemtype_name, {
-                                helper: __('%s that are already associated are not displayed')|format('Domain'|itemtype_name(get_plural_number()))
+                                helper: helper
                             }) }}
                             {{ fields.dropdownField('DomainRelation', 'domainrelations_id', constant('DomainRelation::BELONGS'), 'DomainRelation'|itemtype_name, {
                                 display_emptychoice: false

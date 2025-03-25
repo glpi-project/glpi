@@ -49,6 +49,7 @@ class ProfileRestrictOption extends AbstractOption
             'key' => $this->getKey(),
             'label' => $this->getName(),
             'value' => array_filter($value),
+            'all_label' => __('All'),
         ];
         // language=Twig
         return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -56,7 +57,7 @@ class ProfileRestrictOption extends AbstractOption
             {{ fields.dropdownField('Profile', 'field_options[' ~ key ~ ']', value, label, {
                 multiple: true,
                 to_add: {
-                    '-1': __('All')
+                    '-1': all_label
                 },
                 condition: {
                     'interface': 'central'

@@ -160,7 +160,7 @@ TWIG;
                     'display_emptychoice': true,
                     'field_class': 'single-preview-dropdown col-12' ~ (is_multiple_dropdown ? ' d-none' : ''),
                     'mb': '',
-                    'aria_label': __('Default option')
+                    'aria_label': default_option_label
                 }
             ) }}
             {{ fields.dropdownArrayField(
@@ -175,7 +175,7 @@ TWIG;
                     'values': checked_values,
                     'field_class': 'multiple-preview-dropdown col-12' ~ (not is_multiple_dropdown ? ' d-none' : ''),
                     'mb': '',
-                    'aria_label': __('Default options')
+                    'aria_label': default_options_label
                 }
             ) }}
         </div>
@@ -193,11 +193,13 @@ TWIG;
             array_filter($this->getValues($question), fn ($option) => $option['checked'])
         );
         return $twig->renderFromStringTemplate($template, [
-            'question'             => $question,
-            'init'                 => $question != null,
-            'values'               => $values,
-            'checked_values'       => $checked_values,
-            'is_multiple_dropdown' => $this->isMultipleDropdown($question),
+            'question'              => $question,
+            'init'                  => $question != null,
+            'values'                => $values,
+            'checked_values'        => $checked_values,
+            'is_multiple_dropdown'  => $this->isMultipleDropdown($question),
+            'default_option_label'  => __('Default option'),
+            'default_options_label' => __('Default options'),
         ]);
     }
 

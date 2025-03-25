@@ -462,6 +462,13 @@ HTML;
         $items_json = json_encode($imgs);
         $close_json = json_encode($p['controls']['close'] ?? false);
         $zoom_json  = json_encode($p['controls']['zoom'] ?? false);
+
+        $next_title     = json_encode(__('Next (arrow right)'));
+        $prev_title     = json_encode(__('Previous (arrow left)'));
+        $close_title    = json_encode(__('Close (Esc)'));
+        $download_title = json_encode(__('Download'));
+        $zoom_title     = json_encode(__('Zoom in/out'));
+
         $js = <<<JAVASCRIPT
       (function($) {
          $('.pswp-img{$p['rand']}').on('click', 'figure', function(event) {
@@ -476,11 +483,11 @@ HTML;
                 close: {$close_json},
                 zoom: {$zoom_json},
 
-                arrowNextTitle: __('Next (arrow right)'),
-                arrowPrevTitle: __('Previous (arrow left)'),
-                closeTitle: __('Close (Esc)'),
-                downloadTitle: __('Download'),
-                zoomTitle: __('Zoom in/out'),
+                arrowNextTitle: {$next_title},
+                arrowPrevTitle: {$prev_title},
+                closeTitle: {$close_title},
+                downloadTitle: {$download_title},
+                zoomTitle: {$zoom_title},
             };
             const gallery = new PhotoSwipe(options);
             gallery.on(

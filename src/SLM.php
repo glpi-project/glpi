@@ -166,8 +166,10 @@ class SLM extends CommonDBTM
     public function showForm($ID, array $options = [])
     {
         $twig_params = [
-            'item' => $this,
-            'params' => $options,
+            'item'        => $this,
+            'params'      => $options,
+            'empty_label' => __('24/7'),
+            'toadd_label' => __('Calendar of the ticket'),
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -176,9 +178,9 @@ class SLM extends CommonDBTM
             
             {% block more_fields %}
                 {{ fields.dropdownField('Calendar', 'calendars_id', item.fields['use_ticket_calendar'] ? -1 : item.fields['calendars_id'], 'Calendar'|itemtype_name(1), {
-                    emptylabel: __('24/7'),
+                    emptylabel: empty_label,
                     toadd: {
-                        (-1): __('Calendar of the ticket')
+                        (-1): toadd_label
                     }
                 }) }}
             {% endblock %}

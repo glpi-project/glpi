@@ -367,8 +367,8 @@ class ObjectLock extends CommonDBTM
                 $templateContent = <<<TWIG
                     {% set color = is_locked ? 'bg-red-lt' : 'bg-green-lt' %}
                     {% set icon = is_locked ? 'ti-lock' : 'ti-lock-open' %}
-                    {% set text = is_locked ? __('Locked') : __('Free') %}
-                    {% set tooltip = is_locked ? __('Locked by %s at %s')|format(user_name, date) : text %}
+                    {% set text = is_locked ? locked_label : free_label %}
+                    {% set tooltip = is_locked ? locked_by_label|format(user_name, date) : text %}
 
                     <span class="badge {{ color }}" data-bs-toggle="tooltip" title="{{ tooltip }}">
                         <i class="ti {{ icon }}"></i>
@@ -377,9 +377,12 @@ class ObjectLock extends CommonDBTM
 TWIG;
 
                 return TemplateRenderer::getInstance()->renderFromStringTemplate($templateContent, [
-                    'is_locked' => $values['id'] > 0,
-                    'user_name' => getUserName($values['users_id']),
-                    'date'      => $values['date'],
+                    'is_locked'       => $values['id'] > 0,
+                    'user_name'       => getUserName($values['users_id']),
+                    'date'            => $values['date'],
+                    'locked_label'    => __('Locked'),
+                    'free_label'      => __('Free'),
+                    'locked_by_label' => __('Locked by %s at %s'),
                 ]);
         }
 

@@ -269,13 +269,15 @@ class Appliance_Item_Relation extends CommonDBRelation
 
             $crsf_token = Session::getNewCSRFToken();
 
+            $add_button = json_encode(_x('button', "Add an item"));
+
             $js = <<<JAVASCRIPT
          $(function() {
             $(document).on('click', '.add_relation', function() {
                var appliances_items_id = $(this).data('appliances-items-id');
 
                glpi_html_dialog({
-                  title: _x('button', "Add an item"),
+                  title: {$add_button},
                   body: {$modal_html},
                   id: 'add_relation_dialog',
                   show: function() {
