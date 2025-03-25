@@ -124,6 +124,14 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'expected_result'     => true,
             'question_extra_data' => $extra_data
         ];
+        yield "Equals check - case 7 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::EQUALS,
+            'condition_value'     => ["option_a", "option_c"],
+            'submitted_answer'    => ["option_a", "option_c", "option_b"],
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
 
         // Test with the NOT EQUALS operator
         yield "Not equals check - case 1 for $type" => [
@@ -172,6 +180,14 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a", "option_c"],
             'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Not equals check - case 7 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_EQUALS,
+            'condition_value'     => ["option_a", "option_c"],
+            'submitted_answer'    => ["option_a", "option_c", "option_b"],
+            'expected_result'     => true,
             'question_extra_data' => $extra_data
         ];
 

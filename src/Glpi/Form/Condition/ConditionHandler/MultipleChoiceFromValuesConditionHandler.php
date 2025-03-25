@@ -81,9 +81,15 @@ final class MultipleChoiceFromValuesConditionHandler implements ConditionHandler
             return false;
         }
 
+        // Normalize values
+        $a = array_values($a);
+        $b = array_values($b);
+        sort($a);
+        sort($b);
+
         return match ($operator) {
-            ValueOperator::EQUALS       => empty(array_diff($b, $a)),
-            ValueOperator::NOT_EQUALS   => !empty(array_diff($b, $a)),
+            ValueOperator::EQUALS       => $a == $b,
+            ValueOperator::NOT_EQUALS   => $a != $b,
             ValueOperator::CONTAINS     => empty(array_diff($a, $b)),
             ValueOperator::NOT_CONTAINS => !empty(array_diff($a, $b)),
 
