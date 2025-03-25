@@ -59,23 +59,17 @@ class LegacyRouterListener extends \GLPITestCase
                 'js' => [
                     'common.js' => 'console.log("ok");',
                 ],
-                'marketplace' => [
-                    'myplugin' => [
+                'plugins' => [
+                    'tester' => [
                         'front' => [
-                            'test.php' => '<?php echo("/marketplace/myplugin/front/test.php");',
+                            'page.php5' => '<?php echo("/plugins/tester/front/page.php5");',
+                            'test.php' => '<?php echo("/plugins/tester/front/test.php");',
                             'some.dir' => [
-                                'file.test.php' => '<?php echo("/marketplace/myplugin/front/some.dir/file.test.php");',
+                                'file.test.php' => '<?php echo("/plugins/tester/front/some.dir/file.test.php");',
                             ],
                         ],
                         'public' => [
-                            'css.php' => '<?php echo("/marketplace/myplugin/public/css.php");',
-                        ],
-                    ],
-                ],
-                'plugins' => [
-                    'mystaleplugin' => [
-                        'front' => [
-                            'page.php5' => '<?php echo("/plugins/mystaleplugin/front/page.php5");',
+                            'css.php' => '<?php echo("/plugins/tester/public/css.php");',
                         ],
                     ],
                 ],
@@ -166,46 +160,32 @@ class LegacyRouterListener extends \GLPITestCase
             'included'        => false,
         ];
 
-        // Path to a PHP script of a plugin located inside the `/marketplace` dir, but accessed with the `/plugins` path.
-        yield '/plugins/myplugin/front/test.php' => [
-            'path'            => '/plugins/myplugin/front/test.php',
-            'target_path'     => '/marketplace/myplugin/front/test.php',
-            'target_pathinfo' => null,
-            'included'        => true,
-        ];
-        yield '/plugins/myplugin/front/some.dir/file.test.php/path/to/item' => [
-            'path'            => '/plugins/myplugin/front/some.dir/file.test.php/path/to/item',
-            'target_path'     => '/marketplace/myplugin/front/some.dir/file.test.php',
-            'target_pathinfo' => '/path/to/item',
-            'included'        => true,
-        ];
-
         // Path to a PHP script in a directory that has a dot in its name.
-        yield '/plugins/myplugin/front/some.dir/file.test.php' => [
-            'path'            => '/plugins/myplugin/front/some.dir/file.test.php',
-            'target_path'     => '/marketplace/myplugin/front/some.dir/file.test.php',
+        yield '/plugins/tester/front/some.dir/file.test.php' => [
+            'path'            => '/plugins/tester/front/some.dir/file.test.php',
+            'target_path'     => '/plugins/tester/front/some.dir/file.test.php',
             'target_pathinfo' => null,
             'included'        => true,
         ];
-        yield '/plugins/myplugin/front/some.dir/file.test.php/path/to/item' => [
-            'path'            => '/plugins/myplugin/front/some.dir/file.test.php/path/to/item',
-            'target_path'     => '/marketplace/myplugin/front/some.dir/file.test.php',
+        yield '/plugins/tester/front/some.dir/file.test.php/path/to/item' => [
+            'path'            => '/plugins/tester/front/some.dir/file.test.php/path/to/item',
+            'target_path'     => '/plugins/tester/front/some.dir/file.test.php',
             'target_pathinfo' => '/path/to/item',
             'included'        => true,
         ];
 
         // Path to a `.php5` script.
-        yield '/plugins/mystaleplugin/front/page.php5' => [
-            'path'            => '/plugins/mystaleplugin/front/page.php5',
-            'target_path'     => '/plugins/mystaleplugin/front/page.php5',
+        yield '/plugins/tester/front/page.php5' => [
+            'path'            => '/plugins/tester/front/page.php5',
+            'target_path'     => '/plugins/tester/front/page.php5',
             'target_pathinfo' => null,
             'included'        => true,
         ];
 
         // Path to a PHP script located in the `/public` dir of a plugin
-        yield '/plugins/myplugin/front/some.dir/file.test.php/path/to/item' => [
-            'path'            => '/plugins/myplugin/css.php',
-            'target_path'     => '/marketplace/myplugin/public/css.php',
+        yield '/plugins/tester/front/some.dir/file.test.php/path/to/item' => [
+            'path'            => '/plugins/tester/css.php',
+            'target_path'     => '/plugins/tester/public/css.php',
             'target_pathinfo' => null,
             'included'        => true,
         ];
@@ -427,8 +407,8 @@ class LegacyRouterListener extends \GLPITestCase
             '/js/common.js',
             '/locales/en_GB.po',
             '/locales/en_GB.mo',
-            '/locales/myplugin.pot',
-            '/myplugin.xml',
+            '/locales/tester.pot',
+            '/tester.xml',
             '/node_modules/rrule/dist/esm/demo/demo.js',
             '/package.json',
             '/package-lock.json',
@@ -469,44 +449,44 @@ class LegacyRouterListener extends \GLPITestCase
 
         foreach ($plugins_exposed_php_files as $file) {
             // plugin exposed PHP files should be served
-            yield '/plugins/myplugin' . $file => [
-                'url_path'  => '/plugins/myplugin' . $file,
-                'file_path' => '/plugins/myplugin' . $file,
+            yield '/plugins/tester' . $file => [
+                'url_path'  => '/plugins/tester' . $file,
+                'file_path' => '/plugins/tester' . $file,
                 'is_served' => true,
             ];
 
             // extra leading slash should not change result
-            yield '/plugins/myplugin' . '/' . $file => [
-                'url_path'  => '/plugins/myplugin' . '/' . $file,
-                'file_path' => '/plugins/myplugin' . $file,
+            yield '/plugins/tester' . '/' . $file => [
+                'url_path'  => '/plugins/tester' . '/' . $file,
+                'file_path' => '/plugins/tester' . $file,
                 'is_served' => true,
             ];
         }
 
         foreach ($plugins_protected_php_files as $file) {
             // plugin protected PHP files should NOT be served
-            yield '/plugins/myplugin' . $file => [
-                'url_path'  => '/plugins/myplugin' . $file,
-                'file_path' => '/plugins/myplugin' . $file,
+            yield '/plugins/tester' . $file => [
+                'url_path'  => '/plugins/tester' . $file,
+                'file_path' => '/plugins/tester' . $file,
                 'is_served' => false,
             ];
 
             // unless the file is inside the `/public`
-            yield '/plugins/myplugin' . $file . ' (in /public)' => [
-                'url_path'  => '/plugins/myplugin' . $file,
-                'file_path' => '/plugins/myplugin/public' . $file,
+            yield '/plugins/tester' . $file . ' (in /public)' => [
+                'url_path'  => '/plugins/tester' . $file,
+                'file_path' => '/plugins/tester/public' . $file,
                 'is_served' => true,
             ];
 
             // extra leading slash should not change result
-            yield '/plugins/myplugin' . '/' . $file => [
-                'url_path'  => '/plugins/myplugin' . '/' . $file,
-                'file_path' => '/plugins/myplugin' . $file,
+            yield '/plugins/tester' . '/' . $file => [
+                'url_path'  => '/plugins/tester' . '/' . $file,
+                'file_path' => '/plugins/tester' . $file,
                 'is_served' => false,
             ];
-            yield '/plugins/myplugin' . '/' . $file . ' (in /public)' => [
-                'url_path'  => '/plugins/myplugin' . '/' . $file,
-                'file_path' => '/plugins/myplugin/public' . $file,
+            yield '/plugins/tester' . '/' . $file . ' (in /public)' => [
+                'url_path'  => '/plugins/tester' . '/' . $file,
+                'file_path' => '/plugins/tester/public' . $file,
                 'is_served' => true,
             ];
         }
@@ -517,28 +497,28 @@ class LegacyRouterListener extends \GLPITestCase
         );
         foreach ($not_served_files as $file) {
             // file should NOT be served
-            yield '/plugins/myplugin' . $file => [
-                'url_path'  => '/plugins/myplugin' . $file,
-                'file_path' => '/plugins/myplugin' . $file,
+            yield '/plugins/tester' . $file => [
+                'url_path'  => '/plugins/tester' . $file,
+                'file_path' => '/plugins/tester' . $file,
                 'is_served' => false,
             ];
 
             // even if the file is inside the `/public`
-            yield '/plugins/myplugin' . $file . ' (in /public)' => [
-                'url_path'  => '/plugins/myplugin' . $file,
-                'file_path' => '/plugins/myplugin/public' . $file,
+            yield '/plugins/tester' . $file . ' (in /public)' => [
+                'url_path'  => '/plugins/tester' . $file,
+                'file_path' => '/plugins/tester/public' . $file,
                 'is_served' => false,
             ];
 
             // extra leading slash should not change result
-            yield '/plugins/myplugin' . '/' . $file => [
-                'url_path'  => '/plugins/myplugin' . '/' . $file,
-                'file_path' => '/plugins/myplugin' . $file,
+            yield '/plugins/tester' . '/' . $file => [
+                'url_path'  => '/plugins/tester' . '/' . $file,
+                'file_path' => '/plugins/tester' . $file,
                 'is_served' => false,
             ];
-            yield '/plugins/myplugin' . '/' . $file . ' (in /public)' => [
-                'url_path'  => '/plugins/myplugin' . '/' . $file,
-                'file_path' => '/plugins/myplugin/public' . $file,
+            yield '/plugins/tester' . '/' . $file . ' (in /public)' => [
+                'url_path'  => '/plugins/tester' . '/' . $file,
+                'file_path' => '/plugins/tester/public' . $file,
                 'is_served' => false,
             ];
         }
@@ -586,9 +566,9 @@ class LegacyRouterListener extends \GLPITestCase
     {
         $structure = [
             'marketplace' => [
-                'myplugin' => [
+                'tester' => [
                     'front' => [
-                        'test.php' => '<?php echo("/marketplace/myplugin/front/test.php");',
+                        'test.php' => '<?php echo("/marketplace/tester/front/test.php");',
                     ],
                 ],
             ],
@@ -601,7 +581,7 @@ class LegacyRouterListener extends \GLPITestCase
             [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
         );
 
-        $event = $this->getRequestEvent('/marketplace/myplugin/front/test.php');
+        $event = $this->getRequestEvent('/marketplace/tester/front/test.php');
 
         $this->when(
             function () use ($event) {
@@ -615,16 +595,16 @@ class LegacyRouterListener extends \GLPITestCase
             ->exists();
 
         $this->string($event->getRequest()->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
-        $this->string($event->getRequest()->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/marketplace/myplugin/front/test.php'));
+        $this->string($event->getRequest()->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/marketplace/tester/front/test.php'));
     }
 
     public function testRunLegacyRouterFromDeprecatedPublicPath(): void
     {
         $structure = [
             'plugins' => [
-                'myplugin' => [
+                'tester' => [
                     'public' => [
-                        'test.php' => '<?php echo("/plugins/myplugin/public/test.php");',
+                        'test.php' => '<?php echo("/plugins/tester/public/test.php");',
                     ],
                 ],
             ],
@@ -637,7 +617,7 @@ class LegacyRouterListener extends \GLPITestCase
             [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
         );
 
-        $event = $this->getRequestEvent('/plugins/myplugin/public/test.php');
+        $event = $this->getRequestEvent('/plugins/tester/public/test.php');
 
         $this->when(
             function () use ($event) {
@@ -651,23 +631,23 @@ class LegacyRouterListener extends \GLPITestCase
             ->exists();
 
         $this->string($event->getRequest()->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
-        $this->string($event->getRequest()->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/plugins/myplugin/public/test.php'));
+        $this->string($event->getRequest()->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/plugins/tester/public/test.php'));
     }
 
     public function testRunLegacyRouterFromPluginInMultipleDirectories(): void
     {
         $structure = [
             'marketplace' => [
-                'myplugin' => [
+                'tester' => [
                     'front' => [
-                        'test.php' => '<?php echo("/marketplace/myplugin/front/test.php");',
+                        'test.php' => '<?php echo("/marketplace/tester/front/test.php");',
                     ],
                 ],
             ],
             'plugins' => [
-                'myplugin' => [
+                'tester' => [
                     'front' => [
-                        'test.php' => '<?php echo("/marketplace/myplugin/front/test.php");',
+                        'test.php' => '<?php echo("/plugins/tester/front/test.php");',
                     ],
                 ],
             ],
@@ -681,11 +661,11 @@ class LegacyRouterListener extends \GLPITestCase
             [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
         );
 
-        $event = $this->getRequestEvent('/plugins/myplugin/front/test.php');
+        $event = $this->getRequestEvent('/plugins/tester/front/test.php');
         $this->testedInstance->onKernelRequest($event);
 
         $this->string($event->getRequest()->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
-        $this->string($event->getRequest()->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/marketplace/myplugin/front/test.php'));
+        $this->string($event->getRequest()->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/marketplace/tester/front/test.php'));
 
         // Plugin inside `/plugins` should be served when `/plugins` is dir is declared first
         $this->newTestedInstance(
@@ -693,11 +673,11 @@ class LegacyRouterListener extends \GLPITestCase
             [vfsStream::url('glpi/plugins'), vfsStream::url('glpi/marketplace')]
         );
 
-        $event = $this->getRequestEvent('/plugins/myplugin/front/test.php');
+        $event = $this->getRequestEvent('/plugins/tester/front/test.php');
         $this->testedInstance->onKernelRequest($event);
 
         $this->string($event->getRequest()->attributes->get('_controller'))->isEqualTo(LegacyFileLoadController::class);
-        $this->string($event->getRequest()->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/plugins/myplugin/front/test.php'));
+        $this->string($event->getRequest()->attributes->get('_glpi_file_to_load'))->isEqualTo(vfsStream::url('glpi/plugins/tester/front/test.php'));
     }
 
     private function getRequestEvent(string $requested_uri): RequestEvent

@@ -35,8 +35,10 @@
 namespace Glpi\Http\Listener;
 
 use Glpi\Controller\LegacyFileLoadController;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Http\LegacyRouterTrait;
 use Glpi\Kernel\ListenersPriority;
+use Plugin;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -79,6 +81,15 @@ final class LegacyRouterListener implements EventSubscriberInterface
         }
 
         [$uri_prefix, $path] = $this->extractPathAndPrefix($request);
+
+        $path_matches = [];
+        if (
+            preg_match('#^/plugins/(?<plugin_key>[^\/]+)/.*$#', $path, $path_matches) === 1
+            && Plugin::isPluginLoaded($path_matches['plugin_key']) === false
+        ) {
+            // Plugin is not loaded, forward to 404 error page.
+            throw new NotFoundHttpException(sprintf('Plugin `%s` is not loaded.', $path_matches['plugin_key']));
+        }
 
         $target_file = $this->getTargetFile($path);
 

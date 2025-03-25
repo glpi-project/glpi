@@ -49,16 +49,9 @@ class LegacyAssetsListener extends \GLPITestCase
                 'scripts.js' => 'console.log("ok");',
             ],
             'plugins' => [
-                'myplugin' => [
+                'tester' => [
                     'public' => [
                         'resources.json' => '["a","b","c"]',
-                    ],
-                ],
-            ],
-            'marketplace' => [
-                'anotherplugin' => [
-                    'public' => [
-                        'resources.json' => '["b","c","d"]',
                     ],
                 ],
             ],
@@ -171,16 +164,9 @@ class LegacyAssetsListener extends \GLPITestCase
         ];
 
         // JSON file from a plugin located in `/plugins`
-        yield '/plugins/myplugin/public/resources.json' => [
-            'path'  => '/plugins/myplugin/resources.json',
-            'body'  => $structure['plugins']['myplugin']['public']['resources.json'],
-            'type'  => 'application/json',
-        ];
-
-        // JSON file from a plugin located in `/marketplace` but accessed with `/plugins`
-        yield '/plugins/anotherplugin/public/resources.json' => [
-            'path'  => '/plugins/anotherplugin/resources.json',
-            'body'  => $structure['marketplace']['anotherplugin']['public']['resources.json'],
+        yield '/plugins/tester/public/resources.json' => [
+            'path'  => '/plugins/tester/resources.json',
+            'body'  => $structure['plugins']['tester']['public']['resources.json'],
             'type'  => 'application/json',
         ];
 
@@ -425,8 +411,8 @@ class LegacyAssetsListener extends \GLPITestCase
             '/js/common.js',
             '/locales/en_GB.po',
             '/locales/en_GB.mo',
-            '/locales/myplugin.pot',
-            '/myplugin.xml',
+            '/locales/tester.pot',
+            '/tester.xml',
             '/node_modules/rrule/dist/esm/demo/demo.js',
             '/package.json',
             '/package-lock.json',
@@ -466,28 +452,28 @@ class LegacyAssetsListener extends \GLPITestCase
 
         foreach ($plugins_static_files as $file) {
             // plugin static files should NOT be served
-            yield '/plugins/myplugin' . $file => [
-                'url_path'  => '/plugins/myplugin' . $file,
-                'file_path' => '/plugins/myplugin' . $file,
+            yield '/plugins/tester' . $file => [
+                'url_path'  => '/plugins/tester' . $file,
+                'file_path' => '/plugins/tester' . $file,
                 'is_served' => false,
             ];
 
             // unless the file is inside the `/public`
-            yield '/plugins/myplugin' . $file . ' (in /public)' => [
-                'url_path'  => '/plugins/myplugin' . $file,
-                'file_path' => '/plugins/myplugin/public' . $file,
+            yield '/plugins/tester' . $file . ' (in /public)' => [
+                'url_path'  => '/plugins/tester' . $file,
+                'file_path' => '/plugins/tester/public' . $file,
                 'is_served' => true,
             ];
 
             // extra leading slash should not change result
-            yield '/plugins/myplugin' . '/' . $file => [
-                'url_path'  => '/plugins/myplugin' . '/' . $file,
-                'file_path' => '/plugins/myplugin' . $file,
+            yield '/plugins/tester' . '/' . $file => [
+                'url_path'  => '/plugins/tester' . '/' . $file,
+                'file_path' => '/plugins/tester' . $file,
                 'is_served' => false,
             ];
-            yield '/plugins/myplugin' . '/' . $file . ' (in /public)' => [
-                'url_path'  => '/plugins/myplugin' . '/' . $file,
-                'file_path' => '/plugins/myplugin/public' . $file,
+            yield '/plugins/tester' . '/' . $file . ' (in /public)' => [
+                'url_path'  => '/plugins/tester' . '/' . $file,
+                'file_path' => '/plugins/tester/public' . $file,
                 'is_served' => true,
             ];
         }
@@ -498,28 +484,28 @@ class LegacyAssetsListener extends \GLPITestCase
         );
         foreach ($not_served_files as $file) {
             // file should NOT be served
-            yield '/plugins/myplugin' . $file => [
-                'url_path'  => '/plugins/myplugin' . $file,
-                'file_path' => '/plugins/myplugin' . $file,
+            yield '/plugins/tester' . $file => [
+                'url_path'  => '/plugins/tester' . $file,
+                'file_path' => '/plugins/tester' . $file,
                 'is_served' => false,
             ];
 
             // even if the file is inside the `/public`
-            yield '/plugins/myplugin' . $file . ' (in /public)' => [
-                'url_path'  => '/plugins/myplugin' . $file,
-                'file_path' => '/plugins/myplugin/public' . $file,
+            yield '/plugins/tester' . $file . ' (in /public)' => [
+                'url_path'  => '/plugins/tester' . $file,
+                'file_path' => '/plugins/tester/public' . $file,
                 'is_served' => false,
             ];
 
             // extra leading slash should not change result
-            yield '/plugins/myplugin' . '/' . $file => [
-                'url_path'  => '/plugins/myplugin' . '/' . $file,
-                'file_path' => '/plugins/myplugin' . $file,
+            yield '/plugins/tester' . '/' . $file => [
+                'url_path'  => '/plugins/tester' . '/' . $file,
+                'file_path' => '/plugins/tester' . $file,
                 'is_served' => false,
             ];
-            yield '/plugins/myplugin' . '/' . $file . ' (in /public)' => [
-                'url_path'  => '/plugins/myplugin' . '/' . $file,
-                'file_path' => '/plugins/myplugin/public' . $file,
+            yield '/plugins/tester' . '/' . $file . ' (in /public)' => [
+                'url_path'  => '/plugins/tester' . '/' . $file,
+                'file_path' => '/plugins/tester/public' . $file,
                 'is_served' => false,
             ];
         }
@@ -572,7 +558,7 @@ class LegacyAssetsListener extends \GLPITestCase
     {
         $structure = [
             'marketplace' => [
-                'myplugin' => [
+                'tester' => [
                     'public' => [
                         'resources.json' => '["b","c","d"]',
                     ],
@@ -589,7 +575,7 @@ class LegacyAssetsListener extends \GLPITestCase
 
         $request = new Request();
         $request->server->set('SCRIPT_NAME', '/index.php');
-        $request->server->set('REQUEST_URI', '/marketplace/myplugin/resources.json');
+        $request->server->set('REQUEST_URI', '/marketplace/tester/resources.json');
 
         $response = null;
         $this->when(
@@ -613,14 +599,14 @@ class LegacyAssetsListener extends \GLPITestCase
     {
         $structure = [
             'marketplace' => [
-                'myplugin' => [
+                'tester' => [
                     'public' => [
                         'resources.json' => '["b","c","d"]',
                     ],
                 ],
             ],
             'plugins' => [
-                'myplugin' => [
+                'tester' => [
                     'public' => [
                         'resources.json' => '[1, 2, 3]',
                     ],
@@ -632,7 +618,7 @@ class LegacyAssetsListener extends \GLPITestCase
 
         $request = new Request();
         $request->server->set('SCRIPT_NAME', '/index.php');
-        $request->server->set('REQUEST_URI', '/plugins/myplugin/resources.json');
+        $request->server->set('REQUEST_URI', '/plugins/tester/resources.json');
 
         // Plugin inside `/marketplace` should be served when `/marketplace` is dir is declared first
         $this->newTestedInstance(

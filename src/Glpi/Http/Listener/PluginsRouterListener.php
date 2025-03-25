@@ -80,9 +80,9 @@ final readonly class PluginsRouterListener implements EventSubscriberInterface
 
         $plugin_key = $route_matches['plugin_key'];
 
-        if (!Plugin::isPluginActive($plugin_key)) {
-            // plugin is inactive, forward to 404 error page
-            throw new NotFoundHttpException(sprintf('Plugin `%s` is not active.', $plugin_key));
+        if (!Plugin::isPluginLoaded($plugin_key)) {
+            // Plugin is not loaded, forward to 404 error page.
+            throw new NotFoundHttpException(sprintf('Plugin `%s` is not loaded.', $plugin_key));
         }
 
         /** @var Router $router */
