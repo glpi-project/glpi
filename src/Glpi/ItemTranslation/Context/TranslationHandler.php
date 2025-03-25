@@ -40,7 +40,7 @@ use CommonDBTM;
 /**
  * Handler for a specific translatable field
  */
-class TranslationHandler
+final class TranslationHandler
 {
     /** @var CommonDBTM The item to translate */
     private CommonDBTM $item;
