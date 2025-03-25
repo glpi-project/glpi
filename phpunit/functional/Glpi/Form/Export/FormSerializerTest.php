@@ -57,15 +57,18 @@ use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeActorsDefaultValueConfig;
+use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemDefaultValueConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
@@ -697,6 +700,71 @@ final class FormSerializerTest extends \DbTestCase
         $this->assertEquals(
             $this->getQuestionId($imported_form, "My ITIL Category question"),
             $imported_configs[ITILCategoryField::getKey()][ITILCategoryFieldConfig::SPECIFIC_QUESTION_ID]
+        );
+    }
+
+    public function testExportAndImportTranslations(): void
+    {
+        // Arrange: create a form with multiple blocks and sections
+        $builder = new FormBuilder();
+        $builder->addSection("My first section")
+            ->addComment("My first comment", "My first comment in my first section")
+            ->addQuestion(
+                "My text question",
+                QuestionTypeShortText::class,
+                'Test default value',
+                '',
+                'My text question description'
+            )
+            ->addSection("My second section")
+            ->addQuestion(
+                "My multiple choice question",
+                QuestionTypeCheckbox::class,
+                '123456789',
+                json_encode((new QuestionTypeSelectableExtraDataConfig([
+                    '123456789' => 'Option 1',
+                    '987654321' => 'Option 2',
+                ], true))->jsonSerialize()),
+            );
+        $form = $this->createForm($builder);
+
+        // Add translations to the form
+        $handlers = $form->listTranslationsHandlers();
+        array_walk_recursive(
+            $handlers,
+            function ($handler) {
+                $this->addTranslationToForm(
+                    $handler->getItem(),
+                    'fr_FR',
+                    $handler->getKey(),
+                    $handler->getKey() . ' in fr_FR'
+                );
+
+                $this->addTranslationToForm(
+                    $handler->getItem(),
+                    'es_ES',
+                    $handler->getKey(),
+                    $handler->getKey() . ' in es_ES'
+                );
+            }
+        );
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate translations
+        $translations = FormTranslation::getTranslationsForForm($form);
+        $translations_copy = FormTranslation::getTranslationsForForm($form_copy);
+        $keys_to_exclude = ['id' => '', 'items_id' => ''];
+        $this->assertEquals(
+            array_map(
+                fn($translation) => array_diff_key($translation->fields, $keys_to_exclude),
+                $translations
+            ),
+            array_map(
+                fn($translation) => array_diff_key($translation->fields, $keys_to_exclude),
+                $translations_copy
+            ),
         );
     }
 

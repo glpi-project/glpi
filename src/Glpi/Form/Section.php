@@ -165,6 +165,11 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         return array_merge($handlers, ...$blocks_handlers);
     }
 
+    public function getUniqueIDInForm(): string
+    {
+        return $this->fields['rank'];
+    }
+
     /**
      * Get blocks of this section
      * Block can be a question or a comment
