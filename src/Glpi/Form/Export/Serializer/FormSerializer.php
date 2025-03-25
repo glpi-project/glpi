@@ -254,7 +254,6 @@ final class FormSerializer extends AbstractFormSerializer
         FormContentSpecification $form_spec,
         DatabaseMapper $mapper,
     ): Form {
-        // TODO: questions, ...
         $form = $this->importBasicFormProperties($form_spec, $mapper);
         $form = $this->importSections($form, $form_spec, $mapper);
         $form = $this->importComments($form, $form_spec, $mapper);
