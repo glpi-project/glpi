@@ -66,7 +66,6 @@ final class MultipleChoiceFromValuesConditionHandler implements ConditionHandler
     {
         return [
             'values' => $this->values,
-            'multiple' => true,
         ];
     }
 

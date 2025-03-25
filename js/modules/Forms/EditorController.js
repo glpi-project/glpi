@@ -1282,9 +1282,6 @@ export class GlpiFormEditorController
                 if (extra_data[matches[1]] === undefined) {
                     extra_data[matches[1]] = {};
                 }
-                if (extra_data[matches[1]][matches[2]] === undefined) {
-                    extra_data[matches[1]][matches[2]] = {};
-                }
                 extra_data[matches[1]][matches[2]] = input.value;
             } else {
                 // Simple value
