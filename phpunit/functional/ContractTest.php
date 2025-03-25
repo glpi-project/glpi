@@ -174,6 +174,16 @@ class ContractTest extends DbTestCase
                 ],
                 'expected' => '2025-01-01'
             ],
+            [
+                'field' => '_virtual_expiration',
+                'values' => [
+                    'begin_date' => '2025-01-01',
+                    'duration' => 6,
+                    'renewal' => \Contract::RENEWAL_EXPRESS,
+                    'periodicity' => 3
+                ],
+                'expected' => '2025-10-01'
+            ],
         ];
     }
 
