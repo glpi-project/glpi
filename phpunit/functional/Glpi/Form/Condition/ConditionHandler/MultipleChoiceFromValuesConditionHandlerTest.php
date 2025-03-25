@@ -213,7 +213,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_operator'  => ValueOperator::CONTAINS,
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_c"],
-            'expected_result'     => true,
+            'expected_result'     => false,
             'question_extra_data' => $extra_data
         ];
         yield "Contains check - case 4 for $type" => [
@@ -221,7 +221,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_operator'  => ValueOperator::CONTAINS,
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a"],
-            'expected_result'     => true,
+            'expected_result'     => false,
             'question_extra_data' => $extra_data
         ];
         yield "Contains check - case 5 for $type" => [
@@ -237,6 +237,22 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_operator'  => ValueOperator::CONTAINS,
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a", "option_c"],
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Contains check - case 7 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::CONTAINS,
+            'condition_value'     => ["option_a"],
+            'submitted_answer'    => ["option_c", "option_a"],
+            'expected_result'     => true,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Contains check - case 8 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::CONTAINS,
+            'condition_value'     => ["option_a", "option_b"],
+            'submitted_answer'    => ["option_c", "option_b", "option_a"],
             'expected_result'     => true,
             'question_extra_data' => $extra_data
         ];
@@ -263,7 +279,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_operator'  => ValueOperator::NOT_CONTAINS,
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_c"],
-            'expected_result'     => false,
+            'expected_result'     => true,
             'question_extra_data' => $extra_data
         ];
         yield "Not contains check - case 4 for $type" => [
@@ -271,7 +287,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_operator'  => ValueOperator::NOT_CONTAINS,
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a"],
-            'expected_result'     => false,
+            'expected_result'     => true,
             'question_extra_data' => $extra_data
         ];
         yield "Not contains check - case 5 for $type" => [
@@ -287,6 +303,22 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_operator'  => ValueOperator::NOT_CONTAINS,
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a", "option_c"],
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Not contains check - case 7 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_CONTAINS,
+            'condition_value'     => ["option_a"],
+            'submitted_answer'    => ["option_c", "option_a"],
+            'expected_result'     => false,
+            'question_extra_data' => $extra_data
+        ];
+        yield "Not contains check - case 8 for $type" => [
+            'question_type'       => $type,
+            'condition_operator'  => ValueOperator::NOT_CONTAINS,
+            'condition_value'     => ["option_a", "option_b"],
+            'submitted_answer'    => ["option_c", "option_b", "option_a"],
             'expected_result'     => false,
             'question_extra_data' => $extra_data
         ];

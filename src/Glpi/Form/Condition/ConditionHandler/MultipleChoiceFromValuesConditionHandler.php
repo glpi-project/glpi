@@ -89,8 +89,8 @@ final class MultipleChoiceFromValuesConditionHandler implements ConditionHandler
         return match ($operator) {
             ValueOperator::EQUALS       => $a == $b,
             ValueOperator::NOT_EQUALS   => $a != $b,
-            ValueOperator::CONTAINS     => empty(array_diff($a, $b)),
-            ValueOperator::NOT_CONTAINS => !empty(array_diff($a, $b)),
+            ValueOperator::CONTAINS     => empty(array_diff($b, $a)),
+            ValueOperator::NOT_CONTAINS => !empty(array_diff($b, $a)),
 
             // Unsupported operators
             default => false,
