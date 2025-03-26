@@ -34,14 +34,17 @@
 
 namespace tests\units\Glpi\Http\Listener;
 
+use Glpi\Http\Listener\LegacyAssetsListener;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 
-class LegacyAssetsListener extends \GLPITestCase
+class LegacyAssetsListenerTest extends \GLPITestCase
 {
-    protected function assetsProvider(): iterable
+    public static function assetsProvider(): iterable
     {
         $structure = [
             'index.php' => '<php echo(1);',
@@ -107,102 +110,113 @@ class LegacyAssetsListener extends \GLPITestCase
             ],
         ];
 
-        vfsStream::setup('glpi', null, $structure);
-
         // JS file (from the `/js` dir)
         yield '/js/scripts.js' => [
-            'path'  => '/js/scripts.js',
-            'body'  => $structure['js']['scripts.js'],
-            'type'  => 'application/javascript',
+            'structure' => $structure,
+            'path'      => '/js/scripts.js',
+            'body'      => $structure['js']['scripts.js'],
+            'type'      => 'application/javascript',
         ];
 
         // HTML file (inside the `/public` dir)
         yield '/docs/index.html' => [
-            'path'  => '/docs/index.html',
-            'body'  => $structure['public']['docs']['index.html'],
-            'type'  => 'text/html',
+            'structure' => $structure,
+            'path'      => '/docs/index.html',
+            'body'      => $structure['public']['docs']['index.html'],
+            'type'      => 'text/html',
         ];
         yield '/docs/page.htm' => [
-            'path'  => '/docs/page.htm',
-            'body'  => $structure['public']['docs']['page.htm'],
-            'type'  => 'text/html',
+            'structure' => $structure,
+            'path'      => '/docs/page.htm',
+            'body'      => $structure['public']['docs']['page.htm'],
+            'type'      => 'text/html',
         ];
 
         // CSS file (inside the `/public` dir)
         yield '/css/test.css' => [
-            'path'  => '/css/test.css',
-            'body'  => $structure['public']['css']['test.css'],
-            'type'  => 'text/css',
+            'structure' => $structure,
+            'path'      => '/css/test.css',
+            'body'      => $structure['public']['css']['test.css'],
+            'type'      => 'text/css',
         ];
 
         // GIF file (inside the `/public` dir)
         yield '/media/Blank.gif' => [
-            'path'  => '/media/Blank.gif',
-            'body'  => $structure['public']['media']['Blank.gif'],
-            'type'  => 'image/gif',
+            'structure' => $structure,
+            'path'      => '/media/Blank.gif',
+            'body'      => $structure['public']['media']['Blank.gif'],
+            'type'      => 'image/gif',
         ];
 
         // JPG file (inside the `/public` dir)
         yield '/media/Blank.jpeg' => [
-            'path'  => '/media/Blank.jpeg',
-            'body'  => $structure['public']['media']['Blank.jpeg'],
-            'type'  => 'image/jpeg',
+            'structure' => $structure,
+            'path'      => '/media/Blank.jpeg',
+            'body'      => $structure['public']['media']['Blank.jpeg'],
+            'type'      => 'image/jpeg',
         ];
 
         // PNG file (inside the `/public` dir)
         yield '/media/Empty.png' => [
-            'path'  => '/media/Empty.png',
-            'body'  => $structure['public']['media']['Empty.png'],
-            'type'  => 'image/png',
+            'structure' => $structure,
+            'path'      => '/media/Empty.png',
+            'body'      => $structure['public']['media']['Empty.png'],
+            'type'      => 'image/png',
         ];
 
         // SVG file (inside the `/public` dir)
         yield '/media/Sq_blank.svg' => [
-            'path'  => '/media/Sq_blank.svg',
-            'body'  => $structure['public']['media']['Sq_blank.svg'],
-            'type'  => 'image/svg+xml',
+            'structure' => $structure,
+            'path'      => '/media/Sq_blank.svg',
+            'body'      => $structure['public']['media']['Sq_blank.svg'],
+            'type'      => 'image/svg+xml',
         ];
 
         // JSON file from a plugin located in `/plugins`
         yield '/plugins/tester/public/resources.json' => [
-            'path'  => '/plugins/tester/resources.json',
-            'body'  => $structure['plugins']['tester']['public']['resources.json'],
-            'type'  => 'application/json',
+            'structure' => $structure,
+            'path'      => '/plugins/tester/resources.json',
+            'body'      => $structure['plugins']['tester']['public']['resources.json'],
+            'type'      => 'application/json',
         ];
 
         // EOT/OTF file (inside the `/public` dir)
         yield '/public/fonts/myfont.eot' => [
-            'path'  => '/fonts/myfont.eot',
-            'body'  => $structure['public']['fonts']['myfont.eot'],
-            'type'  => 'application/vnd.ms-opentype',
+            'structure' => $structure,
+            'path'      => '/fonts/myfont.eot',
+            'body'      => $structure['public']['fonts']['myfont.eot'],
+            'type'      => 'application/vnd.ms-opentype',
         ];
         yield '/public/fonts/myfont.otf' => [
-            'path'  => '/fonts/myfont.otf',
-            'body'  => $structure['public']['fonts']['myfont.otf'],
-            'type'  => 'application/vnd.ms-opentype',
+            'structure' => $structure,
+            'path'      => '/fonts/myfont.otf',
+            'body'      => $structure['public']['fonts']['myfont.otf'],
+            'type'      => 'application/vnd.ms-opentype',
         ];
 
         // WOFF file (inside the `/public` dir)
         yield '/public/fonts/myfont.woff' => [
-            'path'  => '/fonts/myfont.woff',
-            'body'  => $structure['public']['fonts']['myfont.woff'],
-            'type'  => 'font/woff',
+            'structure' => $structure,
+            'path'      => '/fonts/myfont.woff',
+            'body'      => $structure['public']['fonts']['myfont.woff'],
+            'type'      => 'font/woff',
         ];
 
         // WOFF2 file (inside the `/public` dir)
         yield '/public/fonts/myfont.woff2' => [
-            'path'  => '/fonts/myfont.woff2',
-            'body'  => $structure['public']['fonts']['myfont.woff2'],
-            'type'  => 'font/woff2',
+            'structure' => $structure,
+            'path'      => '/fonts/myfont.woff2',
+            'body'      => $structure['public']['fonts']['myfont.woff2'],
+            'type'      => 'font/woff2',
         ];
     }
 
-    /**
-     * @dataProvider assetsProvider
-     */
-    public function testServeLegacyAssetsResponse(string $path, ?string $body, string $type): void
+    #[DataProvider('assetsProvider')]
+    public function testServeLegacyAssetsResponse(array $structure, string $path, ?string $body, string $type): void
     {
-        $this->newTestedInstance(
+        vfsStream::setup('glpi', null, $structure);
+
+        $instance = new LegacyAssetsListener(
             vfsStream::url('glpi'),
             [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
         );
@@ -211,20 +225,20 @@ class LegacyAssetsListener extends \GLPITestCase
         $request->server->set('SCRIPT_NAME', '/index.php');
         $request->server->set('REQUEST_URI', $path);
 
-        $response = $this->callPrivateMethod($this->testedInstance, 'serveLegacyAssets', $request);
+        $response = $this->callPrivateMethod($instance, 'serveLegacyAssets', $request);
 
         if ($body === null) {
-            $this->variable($response)->isNull();
+            $this->assertNull($response);
         } else {
-            $this->object($response)->isInstanceOf(BinaryFileResponse::class);
+            $this->assertInstanceOf(BinaryFileResponse::class, $response);
             $file = $response->getFile();
-            $this->object($response->getFile())->isInstanceOf(File::class);
-            $this->string($file->getContent())->isEqualTo($body);
-            $this->variable($response->headers->get('Content-Type'))->isEqualTo($type);
+            $this->assertInstanceOf(File::class, $response->getFile());
+            $this->assertEquals($body, $file->getContent());
+            $this->assertEquals($type, $response->headers->get('Content-Type'));
         }
     }
 
-    protected function pathProvider(): iterable
+    public static function pathProvider(): iterable
     {
         $glpi_php_files = [
             '/ajax/script.php',
@@ -511,9 +525,7 @@ class LegacyAssetsListener extends \GLPITestCase
         }
     }
 
-    /**
-     * @dataProvider pathProvider
-     */
+    #[DataProvider('pathProvider')]
     public function testServeLegacyAssetsFirewall(string $url_path, string $file_path, bool $is_served): void
     {
         $random = bin2hex(random_bytes(20));
@@ -534,7 +546,7 @@ class LegacyAssetsListener extends \GLPITestCase
 
         vfsStream::setup('glpi', null, $structure);
 
-        $this->newTestedInstance(
+        $instance = new LegacyAssetsListener(
             vfsStream::url('glpi'),
             [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
         );
@@ -543,14 +555,14 @@ class LegacyAssetsListener extends \GLPITestCase
         $request->server->set('SCRIPT_NAME', '/index.php');
         $request->server->set('REQUEST_URI', $url_path);
 
-        $response = $this->callPrivateMethod($this->testedInstance, 'serveLegacyAssets', $request);
+        $response = $this->callPrivateMethod($instance, 'serveLegacyAssets', $request);
         if ($is_served === false) {
-            $this->variable($response)->isNull();
+            $this->assertNull($response);
         } else {
-            $this->object($response)->isInstanceOf(BinaryFileResponse::class);
+            $this->assertInstanceOf(BinaryFileResponse::class, $response);
             $file = $response->getFile();
-            $this->object($response->getFile())->isInstanceOf(File::class);
-            $this->string($file->getContent())->isEqualTo($random);
+            $this->assertInstanceOf(File::class, $response->getFile());
+            $this->assertEquals($random, $file->getContent());
         }
     }
 
@@ -568,7 +580,7 @@ class LegacyAssetsListener extends \GLPITestCase
 
         vfsStream::setup('glpi', null, $structure);
 
-        $this->newTestedInstance(
+        $instance = new LegacyAssetsListener(
             vfsStream::url('glpi'),
             [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
         );
@@ -577,22 +589,17 @@ class LegacyAssetsListener extends \GLPITestCase
         $request->server->set('SCRIPT_NAME', '/index.php');
         $request->server->set('REQUEST_URI', '/marketplace/tester/resources.json');
 
-        $response = null;
-        $this->when(
-            function () use ($request, &$response) {
-                $reporting_level = \error_reporting(E_ALL); // be sure to report deprecations
-                $response = $this->callPrivateMethod($this->testedInstance, 'serveLegacyAssets', $request);
-                \error_reporting($reporting_level); // restore previous level
-            }
-        )->error
-            ->withMessage('Accessing the plugins resources from the `/marketplace/` path is deprecated. Use the `/plugins/` path instead.')
-            ->withType(E_USER_DEPRECATED)
-            ->exists();
+        $response = $this->callPrivateMethod($instance, 'serveLegacyAssets', $request);
 
-        $this->object($response)->isInstanceOf(BinaryFileResponse::class);
+        $this->hasPhpLogRecordThatContains(
+            'Accessing the plugins resources from the `/marketplace/` path is deprecated. Use the `/plugins/` path instead.',
+            LogLevel::INFO
+        );
+
+        $this->assertInstanceOf(BinaryFileResponse::class, $response);
         $file = $response->getFile();
-        $this->object($response->getFile())->isInstanceOf(File::class);
-        $this->string($file->getContent())->isEqualTo('["b","c","d"]');
+        $this->assertInstanceOf(File::class, $response->getFile());
+        $this->assertEquals('["b","c","d"]', $file->getContent());
     }
 
     public function testServeLegacyAssetsFromPluginInMultipleDirectories(): void
@@ -621,27 +628,27 @@ class LegacyAssetsListener extends \GLPITestCase
         $request->server->set('REQUEST_URI', '/plugins/tester/resources.json');
 
         // Plugin inside `/marketplace` should be served when `/marketplace` is dir is declared first
-        $this->newTestedInstance(
+        $instance = new LegacyAssetsListener(
             vfsStream::url('glpi'),
             [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
         );
 
-        $response = $this->callPrivateMethod($this->testedInstance, 'serveLegacyAssets', $request);
-        $this->object($response)->isInstanceOf(BinaryFileResponse::class);
+        $response = $this->callPrivateMethod($instance, 'serveLegacyAssets', $request);
+        $this->assertInstanceOf(BinaryFileResponse::class, $response);
         $file = $response->getFile();
-        $this->object($response->getFile())->isInstanceOf(File::class);
-        $this->string($file->getContent())->isEqualTo('["b","c","d"]');
+        $this->assertInstanceOf(File::class, $response->getFile());
+        $this->assertEquals('["b","c","d"]', $file->getContent());
 
         // Plugin inside `/plugins` should be served when `/plugins` is dir is declared first
-        $this->newTestedInstance(
+        $instance = new LegacyAssetsListener(
             vfsStream::url('glpi'),
             [vfsStream::url('glpi/plugins'), vfsStream::url('glpi/marketplace')]
         );
 
-        $response = $this->callPrivateMethod($this->testedInstance, 'serveLegacyAssets', $request);
-        $this->object($response)->isInstanceOf(BinaryFileResponse::class);
+        $response = $this->callPrivateMethod($instance, 'serveLegacyAssets', $request);
+        $this->assertInstanceOf(BinaryFileResponse::class, $response);
         $file = $response->getFile();
-        $this->object($response->getFile())->isInstanceOf(File::class);
-        $this->string($file->getContent())->isEqualTo('[1, 2, 3]');
+        $this->assertInstanceOf(File::class, $response->getFile());
+        $this->assertEquals('[1, 2, 3]', $file->getContent());
     }
 }
