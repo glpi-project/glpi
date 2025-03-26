@@ -36,6 +36,8 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Question;
 use Override;
 
@@ -188,5 +190,37 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     {
         // Do nothing by default
         return null;
+    }
+
+    #[Override]
+    public function exportDynamicExtraData(
+        ?JsonFieldInterface $extra_data_config,
+    ): DynamicExportDataField {
+        return new DynamicExportDataField($extra_data_config, []);
+    }
+
+    #[Override]
+    public function exportDynamicDefaultValue(
+        ?JsonFieldInterface $extra_data_config,
+        array|int|float|bool|string|null $default_value_config,
+    ): DynamicExportDataField {
+        return new DynamicExportDataField($default_value_config, []);
+    }
+
+    #[Override]
+    public static function prepareDynamicExtraDataForImport(
+        ?string $extra_data,
+        DatabaseMapper $mapper,
+    ): ?string {
+        return $extra_data;
+    }
+
+    #[Override]
+    public static function prepareDynamicDefaultValueForImport(
+        ?string $extra_data,
+        int|float|bool|string|null $default_value_data,
+        DatabaseMapper $mapper,
+    ): int|float|bool|string|null {
+        return $default_value_data;
     }
 }

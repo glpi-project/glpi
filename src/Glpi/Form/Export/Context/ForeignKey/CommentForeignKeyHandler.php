@@ -62,7 +62,7 @@ final class CommentForeignKeyHandler implements JsonConfigForeignKeyHandlerInter
         if ($item->getFromDB($foreign_key)) {
             $requirements[] = new DataRequirementSpecification(
                 Comment::class,
-                $item->getUniqueIDInForm()
+                $item->getID()
             );
         }
 
@@ -80,7 +80,7 @@ final class CommentForeignKeyHandler implements JsonConfigForeignKeyHandlerInter
         // Replace the foreign key by the name of the item it references and load item
         $item = new Comment();
         if ($item->getFromDB($foreign_key)) {
-            $serialized_data[$this->key] = $item->getUniqueIDInForm();
+            $serialized_data[$this->key] = $item->getID();
         } else {
             unset($serialized_data[$this->key]);
         }
@@ -99,7 +99,7 @@ final class CommentForeignKeyHandler implements JsonConfigForeignKeyHandlerInter
         // Replace name by its database id
         $serialized_data[$this->key] = $mapper->getItemId(
             Comment::class,
-            $serialized_data[$this->key]
+            $serialized_data[$this->key],
         );
 
         return $serialized_data;

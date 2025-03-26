@@ -36,11 +36,17 @@
 namespace Glpi\Form\QuestionType;
 
 use CartridgeItem;
+use CommonDBTM;
 use ConsumableItem;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
+use JsonException;
 use Line;
 use Override;
 use PassiveDCEquipment;
@@ -54,7 +60,6 @@ class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataC
     protected string $itemtype_aria_label;
     protected string $items_id_aria_label;
 
-    #[Override]
     public function __construct()
     {
         parent::__construct();
@@ -340,5 +345,102 @@ TWIG;
     public function getDefaultValueConfigClass(): ?string
     {
         return QuestionTypeItemDefaultValueConfig::class;
+    }
+
+    #[Override]
+    public function exportDynamicDefaultValue(
+        ?JsonFieldInterface $extra_data_config,
+        array|int|float|bool|string|null $default_value_config,
+    ): DynamicExportDataField {
+        $requirements = [];
+        $fallback = parent::exportDynamicDefaultValue(
+            $extra_data_config,
+            $default_value_config
+        );
+
+        // Stop here if one of the parameters is empty or invalid
+        if ($extra_data_config === null || !is_array($default_value_config)) {
+            return $fallback;
+        }
+
+        // Validate configuration values
+        $default_value_config = $this->getDefaultValueConfig($default_value_config);
+        if (
+            !$default_value_config instanceof QuestionTypeItemDefaultValueConfig
+            || !$extra_data_config instanceof QuestionTypeItemExtraDataConfig
+            || $extra_data_config->getItemtype() === null
+            || !is_a($extra_data_config->getItemtype(), CommonDBTM::class, true)
+            || empty($default_value_config->getItemsId())
+        ) {
+            return $fallback;
+        }
+
+        $default_value_data = $default_value_config->jsonSerialize();
+
+        // Load linked item
+        /** @var class-string<\CommonDBTM> $itemtype */
+        $itemtype = $extra_data_config->getItemtype();
+        $item = $itemtype::getById(
+            $default_value_config->getItemsId()
+        );
+
+        // Replace id and register requirement
+        $key = QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID;
+        $default_value_data[$key] = $item->getName();
+        $requirements[] = new DataRequirementSpecification(
+            $itemtype,
+            $item->getName(),
+        );
+
+        return new DynamicExportDataField($default_value_data, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicDefaultValueForImport(
+        ?string $extra_data,
+        int|float|bool|string|null $default_value_data,
+        DatabaseMapper $mapper,
+    ): int|float|bool|string|null {
+        $fallback = parent::prepareDynamicDefaultValueForImport(
+            $extra_data,
+            $default_value_data,
+            $mapper,
+        );
+
+        // Validate we have two valid configs
+        if ($extra_data == null || !is_string($default_value_data)) {
+            return $fallback;
+        }
+
+        try {
+            $extra_data = json_decode(
+                $extra_data,
+                associative: true,
+                flags: JSON_THROW_ON_ERROR,
+            );
+            $default_value_data = json_decode(
+                $default_value_data,
+                associative: true,
+                flags: JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $e) {
+            return $fallback;
+        }
+
+        // Validate config values
+        $itemtype = $extra_data[QuestionTypeItemExtraDataConfig::ITEMTYPE] ?? "";
+        $name = $default_value_data[QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID] ?? "";
+        if (
+            !(getItemForItemtype($itemtype) instanceof CommonDBTM)
+            || empty($name)
+        ) {
+            return $fallback;
+        }
+
+        // Find item id
+        $id = $mapper->getItemId($itemtype, $name);
+        $default_value_data[QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID] = $id;
+
+        return json_encode($default_value_data);
     }
 }

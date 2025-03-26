@@ -10,6 +10,7 @@
             "is_active": false,
             "sections": [
                 {
+                    "id": 1,
                     "name": "First section",
                     "description": "",
                     "rank": 0
@@ -17,6 +18,7 @@
             ],
             "questions": [
                 {
+                    "id": 1,
                     "name": "Watchers",
                     "type": "Glpi\\Form\\QuestionType\\QuestionTypeObserver",
                     "is_mandatory": false,
@@ -25,7 +27,7 @@
                     "description": null,
                     "default_value": "{\"users_ids\":[\"glpi\"],\"groups_ids\":[],\"suppliers_ids\":[]}",
                     "extra_data": "{\"is_multiple_actors\":true}",
-                    "section_rank": 0,
+                    "section_id": 1,
                     "visibility_strategy": "",
                     "conditions": []
                 }
@@ -50,6 +52,7 @@
             "is_active": false,
             "sections": [
                 {
+                    "id": 1,
                     "name": "First section",
                     "description": "",
                     "rank": 0
@@ -57,6 +60,7 @@
             ],
             "questions": [
                 {
+                    "id": 2,
                     "name": "Watchers",
                     "type": "Glpi\\Form\\QuestionType\\QuestionTypeObserver",
                     "is_mandatory": false,
@@ -65,7 +69,7 @@
                     "description": null,
                     "default_value": "{\"users_ids\":[\"Missing user\"],\"groups_ids\":[],\"suppliers_ids\":[]}",
                     "extra_data": "{\"is_multiple_actors\":true}",
-                    "section_rank": 0,
+                    "section_id": 1,
                     "visibility_strategy": "",
                     "conditions": []
                 }

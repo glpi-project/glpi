@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,7 +39,6 @@ use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Category;
 use Glpi\Form\Comment;
 use Glpi\Form\Condition\ConditionData;
-use Glpi\Form\Condition\FormData;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
@@ -65,7 +63,6 @@ use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
-use Glpi\ItemTranslation\ItemTranslation;
 use InvalidArgumentException;
 use RuntimeException;
 use Session;
@@ -218,7 +215,6 @@ final class FormSerializer extends AbstractFormSerializer
 
     private function exportFormToSpec(Form $form, int $form_export_id): FormContentSpecification
     {
-        // TODO: questions, ...
         $form_spec = $this->exportBasicFormProperties($form, $form_export_id);
         $form_spec = $this->exportSections($form, $form_spec);
         $form_spec = $this->exportComments($form, $form_spec);
@@ -317,10 +313,12 @@ final class FormSerializer extends AbstractFormSerializer
         $spec->is_recursive = $form->fields['is_recursive'];
         $spec->is_active    = $form->fields['is_active'];
 
+        // Export entity
         $entity = Entity::getById($form->fields['entities_id']);
         $spec->entity_name = $entity->fields['name'];
         $spec->addDataRequirement(Entity::class, $entity->fields['name']);
 
+        // Export category
         $category = new Category();
         if ($category->getFromDB($form->fields[Category::getForeignKeyField()])) {
             $spec->category_name = $category->fields['name'];
@@ -365,9 +363,10 @@ final class FormSerializer extends AbstractFormSerializer
         FormContentSpecification $form_spec,
     ): FormContentSpecification {
         foreach ($form->getSections() as $section) {
-            $section_spec = new SectionContentSpecification();
-            $section_spec->name = $section->fields['name'];
-            $section_spec->rank = $section->fields['rank'];
+            $section_spec              = new SectionContentSpecification();
+            $section_spec->id          = $section->fields['id'];
+            $section_spec->name        = $section->fields['name'];
+            $section_spec->rank        = $section->fields['rank'];
             $section_spec->description = $section->fields['description'];
 
             $form_spec->sections[] = $section_spec;
@@ -398,7 +397,7 @@ final class FormSerializer extends AbstractFormSerializer
             // Sections can be required for other items, so we need to map them
             $mapper->addMappedItem(
                 Section::class,
-                $section->getUniqueIDInForm(),
+                $section_spec->id,
                 $id
             );
         };
@@ -413,12 +412,13 @@ final class FormSerializer extends AbstractFormSerializer
         FormContentSpecification $form_spec,
     ): FormContentSpecification {
         foreach ($form->getFormComments() as $comment) {
-            $comment_spec = new CommentContentSpecification();
-            $comment_spec->name = $comment->fields['name'];
-            $comment_spec->vertical_rank = $comment->fields['vertical_rank'];
+            $comment_spec                  = new CommentContentSpecification();
+            $comment_spec->id              = $comment->fields['id'];
+            $comment_spec->name            = $comment->fields['name'];
+            $comment_spec->vertical_rank   = $comment->fields['vertical_rank'];
             $comment_spec->horizontal_rank = $comment->fields['horizontal_rank'];
-            $comment_spec->description = $comment->fields['description'];
-            $comment_spec->section_rank = $form->getSections()[$comment->fields['forms_sections_id']]->fields['rank'];
+            $comment_spec->description     = $comment->fields['description'];
+            $comment_spec->section_id      = $comment->fields['forms_sections_id'];
 
             $form_spec->comments[] = $comment_spec;
         }
@@ -434,18 +434,16 @@ final class FormSerializer extends AbstractFormSerializer
         /** @var CommentContentSpecification $comment_spec */
         foreach ($form_spec->comments as $comment_spec) {
             // Retrieve section from their rank
-            $section = current(array_filter(
-                $form->getSections(),
-                fn (Section $section) => $section->fields['rank'] === $comment_spec->section_rank
-            ));
-
             $comment = new Comment();
             $id = $comment->add([
                 'name'               => $comment_spec->name,
                 'description'        => $comment_spec->description,
                 'vertical_rank'      => $comment_spec->vertical_rank,
                 'horizontal_rank'    => $comment_spec->horizontal_rank,
-                'forms_sections_id'  => $section->fields['id'],
+                'forms_sections_id'  => $mapper->getItemId(
+                    Section::class,
+                    $comment_spec->section_id,
+                ),
             ]);
 
             if (!$id) {
@@ -455,7 +453,7 @@ final class FormSerializer extends AbstractFormSerializer
             // Comments can be required for other items, so we need to map them
             $mapper->addMappedItem(
                 Comment::class,
-                $comment->getUniqueIDInForm(),
+                $comment_spec->id,
                 $id
             );
         }
@@ -471,6 +469,7 @@ final class FormSerializer extends AbstractFormSerializer
     ): FormContentSpecification {
         foreach ($form->getQuestions() as $question) {
             $question_spec                      = new QuestionContentSpecification();
+            $question_spec->id                  = $question->fields['id'];
             $question_spec->name                = $question->fields['name'];
             $question_spec->type                = $question->fields['type'];
             $question_spec->is_mandatory        = $question->fields['is_mandatory'];
@@ -479,36 +478,18 @@ final class FormSerializer extends AbstractFormSerializer
             $question_spec->description         = $question->fields['description'];
             $question_spec->default_value       = $question->fields['default_value'];
             $question_spec->extra_data          = $question->fields['extra_data'];
-            $question_spec->section_rank        = $form->getSections()[$question->fields['forms_sections_id']]->fields['rank'];
+            $question_spec->section_id          = $question->fields['forms_sections_id'];
             $question_spec->visibility_strategy = $question->fields['visibility_strategy'];
             $question_spec->conditions          = [];
 
-            $question_type = new $question_spec->type();
-            if ($question_type->getDefaultValueConfigClass() !== null) {
-                $default_value_config = $question_type->getDefaultValueConfig(
-                    json_decode($question_spec->default_value ?? "[]", true)
-                );
-                if ($default_value_config !== null) {
-                    $serialized_default_value = $default_value_config->jsonSerialize();
-                    if (
-                        $default_value_config instanceof ConfigWithForeignKeysInterface
-                    ) {
-                        $requirements = $this->extractDataRequirementsFromSerializedJsonConfig(
-                            $default_value_config::listForeignKeysHandlers($question_spec),
-                            $serialized_default_value
-                        );
-                        array_push($form_spec->data_requirements, ...$requirements);
+            // Handle dynamic fields, we can't know the values that need to be mapped
+            // here so we need to let the question object handle it itself.
+            $dynamic_data = $question->exportDynamicData();
+            $question_spec->default_value = $dynamic_data->getFieldData('default_value');
+            $question_spec->extra_data    = $dynamic_data->getFieldData('extra_data');
+            $form_spec->addRequirementsFromDynamicData($dynamic_data);
 
-                        $question_spec->default_value = json_encode(
-                            $this->replaceForeignKeysByNameInSerializedJsonConfig(
-                                $default_value_config::listForeignKeysHandlers($question_spec),
-                                $serialized_default_value
-                            )
-                        );
-                    }
-                }
-            }
-
+            // TODO: must be done for sections and comments too
             foreach ($question->getConfiguredConditionsData() as $condition_data) {
                 $condition_spec                 = new ConditionDataSpecification();
                 $condition_spec->item_uuid      = $condition_data->getItemUuid();
@@ -544,34 +525,7 @@ final class FormSerializer extends AbstractFormSerializer
     ): Form {
         /** @var QuestionContentSpecification $question_spec */
         foreach ($form_spec->questions as $question_spec) {
-            // Retrieve section from their rank
-            $section = current(array_filter(
-                $form->getSections(),
-                fn (Section $section) => $section->fields['rank'] === $question_spec->section_rank
-            ));
-
-            $question_type = new $question_spec->type();
-            if ($question_type->getDefaultValueConfigClass() !== null) {
-                $default_value_config = $question_type->getDefaultValueConfig(
-                    json_decode($question_spec->default_value ?? "[]", true)
-                );
-                if ($default_value_config !== null) {
-                    $serialized_default_value = json_decode($question_spec->default_value, true);
-                    if (
-                        $default_value_config instanceof ConfigWithForeignKeysInterface
-                    ) {
-                        $serialized_default_value = $this->replaceNamesByForeignKeysInSerializedJsonConfig(
-                            $default_value_config::listForeignKeysHandlers($question_spec),
-                            $serialized_default_value,
-                            $mapper
-                        );
-                    }
-                    $question_spec->default_value = json_encode($serialized_default_value);
-                }
-            }
-
-            $question = new Question();
-            $id = $question->add([
+            $input = [
                 '_from_import'      => true,
                 'name'              => $question_spec->name,
                 'type'              => $question_spec->type,
@@ -581,17 +535,28 @@ final class FormSerializer extends AbstractFormSerializer
                 'description'       => $question_spec->description,
                 'default_value'     => $question_spec->default_value,
                 'extra_data'        => $question_spec->extra_data,
-                'forms_sections_id' => $section->fields['id'],
-            ]);
+                'forms_sections_id' => $mapper->getItemId(
+                    Section::class,
+                    $question_spec->section_id,
+                ),
+            ];
 
-            if (!$id || $question->getFromDB($id) === false) {
+            // Handle dynamic fields, we can't know the values that need to be mapped
+            // here so we need to let the question object handle it itself.
+            $question_type = new $question_spec->type();
+            $input = Question::prepareDynamicImportData($question_type, $input, $mapper);
+
+            // Add question
+            $question = new Question();
+            $id = $question->add($input);
+            if (!$id) {
                 throw new RuntimeException("Failed to create question");
             }
 
             // Questions can be required for other items, so we need to map them
             $mapper->addMappedItem(
                 Question::class,
-                $question->getUniqueIDInForm(),
+                $question_spec->id,
                 $id
             );
         }

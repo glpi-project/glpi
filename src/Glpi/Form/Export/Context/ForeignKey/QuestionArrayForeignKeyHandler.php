@@ -70,7 +70,7 @@ final class QuestionArrayForeignKeyHandler implements JsonConfigForeignKeyHandle
             if ($item->getFromDB($foreign_key)) {
                 $requirements[] = new DataRequirementSpecification(
                     Question::class,
-                    $item->getUniqueIDInForm(),
+                    $item->getID(),
                 );
             }
         }
@@ -100,7 +100,7 @@ final class QuestionArrayForeignKeyHandler implements JsonConfigForeignKeyHandle
             // Load item
             $item = new Question();
             if ($item->getFromDB($foreign_key)) {
-                $data_with_names[] = $item->getUniqueIDInForm();
+                $data_with_names[] = $item->getID();
             }
         }
 

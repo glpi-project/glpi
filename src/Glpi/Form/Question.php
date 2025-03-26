@@ -37,13 +37,17 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportData;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\TranslationAwareQuestionType;
 use Glpi\ItemTranslation\Context\TranslationHandler;
+use JsonException;
 use Log;
 use Override;
 use Ramsey\Uuid\Uuid;
@@ -190,16 +194,6 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         return (new EndUserInputNameProvider())->getEndUserInputName($this);
     }
 
-    public function getUniqueIDInForm(): string
-    {
-        return sprintf(
-            "%s-%s-%s",
-            $this->getItem()->fields['rank'],
-            $this->fields['vertical_rank'],
-            $this->fields['horizontal_rank']
-        );
-    }
-
     #[Override]
     public function prepareInputForAdd($input)
     {
@@ -236,6 +230,41 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
                 $this->fields['default_value'] = $value;
             }
         }
+    }
+
+    public function exportDynamicData(): DynamicExportData
+    {
+        $type = $this->getQuestionType();
+
+        $extra_data = $this->getExtraDataConfig();
+        $default_value = $this->getDefaultValue();
+
+        $data = new DynamicExportData();
+        $data->addField('extra_data', $type->exportDynamicExtraData($extra_data));
+        $data->addField('default_value', $type->exportDynamicDefaultValue(
+            $extra_data,
+            $default_value,
+        ));
+
+        return $data;
+    }
+
+    public static function prepareDynamicImportData(
+        QuestionTypeInterface $type,
+        array $input,
+        DatabaseMapper $mapper,
+    ): array {
+        $input['extra_data'] = $type->prepareDynamicExtraDataForImport(
+            $input['extra_data'],
+            $mapper,
+        );
+        $input['default_value'] = $type->prepareDynamicDefaultValueForImport(
+            $input['extra_data'],
+            $input['default_value'],
+            $mapper,
+        );
+
+        return $input;
     }
 
     private function prepareInput($input): array
@@ -406,5 +435,56 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         );
 
         parent::post_deleteFromDB();
+    }
+
+    private function getExtraDataConfig(): ?JsonFieldInterface
+    {
+        $data = $this->fields['extra_data'];
+
+        // Empty config
+        if ($data === null) {
+            return null;
+        }
+
+        // Specific config
+        try {
+            $decoded_data = json_decode(
+                $data,
+                associative: true,
+                flags: JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $e) {
+            // Invalid format, fallback to null config
+            return null;
+        }
+
+        return $this->getQuestionType()->getExtraDataConfig($decoded_data);
+    }
+
+    private function getDefaultValue(): array|int|float|bool|string|null
+    {
+        $default_value = $this->fields['default_value'];
+
+        // Empty config
+        if ($default_value === null) {
+            return null;
+        }
+
+        // Specific value that is not a string (raw numbers or bool)
+        if (!is_string($default_value)) {
+            return $default_value;
+        }
+
+        // Specific value that may be a string OR a json encoded object/array
+        try {
+            return json_decode(
+                $default_value,
+                associative: true,
+                flags: JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $e) {
+            // Specific value is a simple string
+            return $default_value;
+        }
     }
 }
