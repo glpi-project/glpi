@@ -566,6 +566,37 @@ class LegacyAssetsListenerTest extends \GLPITestCase
         }
     }
 
+    public function testServeLegacyAssetsFromMarketplaceDirWithPluginPath(): void
+    {
+        $structure = [
+            'marketplace' => [
+                'tester' => [
+                    'public' => [
+                        'resources.json' => '["b","c","d"]',
+                    ],
+                ],
+            ],
+        ];
+
+        vfsStream::setup('glpi', null, $structure);
+
+        $instance = new LegacyAssetsListener(
+            vfsStream::url('glpi'),
+            [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
+        );
+
+        $request = new Request();
+        $request->server->set('SCRIPT_NAME', '/index.php');
+        $request->server->set('REQUEST_URI', '/plugins/tester/resources.json');
+
+        $response = $this->callPrivateMethod($instance, 'serveLegacyAssets', $request);
+
+        $this->assertInstanceOf(BinaryFileResponse::class, $response);
+        $file = $response->getFile();
+        $this->assertInstanceOf(File::class, $response->getFile());
+        $this->assertEquals('["b","c","d"]', $file->getContent());
+    }
+
     public function testServeLegacyAssetsFromDeprecatedMarketplacePath(): void
     {
         $structure = [

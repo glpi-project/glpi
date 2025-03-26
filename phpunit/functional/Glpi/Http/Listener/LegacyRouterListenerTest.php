@@ -576,6 +576,33 @@ class LegacyRouterListenerTest extends \GLPITestCase
         }
     }
 
+    public function testRunLegacyRouterFromMarketplaceDirWithPluginPath(): void
+    {
+        $structure = [
+            'marketplace' => [
+                'tester' => [
+                    'front' => [
+                        'test.php' => '<?php echo("/marketplace/tester/front/test.php");',
+                    ],
+                ],
+            ],
+        ];
+
+        vfsStream::setup('glpi', null, $structure);
+
+        $instance = new LegacyRouterListener(
+            vfsStream::url('glpi'),
+            [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
+        );
+
+        $event = $this->getRequestEvent('/plugins/tester/front/test.php');
+
+        $instance->onKernelRequest($event);
+
+        $this->assertEquals(LegacyFileLoadController::class, $event->getRequest()->attributes->get('_controller'));
+        $this->assertEquals(vfsStream::url('glpi/marketplace/tester/front/test.php'), $event->getRequest()->attributes->get('_glpi_file_to_load'));
+    }
+
     public function testRunLegacyRouterFromDeprecatedMarketplacePath(): void
     {
         $structure = [
