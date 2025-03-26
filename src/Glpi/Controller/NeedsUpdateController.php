@@ -88,9 +88,7 @@ class NeedsUpdateController extends AbstractController
             )
         ];
 
-        Html::nullHeader(__('Update needed'));
         TemplateRenderer::getInstance()->display('update/need_update.html.twig', $twig_params);
-        Html::nullFooter();
         $_SESSION['glpi_use_mode'] = $debug_mode;
     }
 }

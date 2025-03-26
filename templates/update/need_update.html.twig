@@ -30,6 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{% do call(['Html', 'nullHeader'], [__('Update needed')]) %}
 <div class="container-fluid mb-4">
     <div class="row justify-content-evenly">
         <div class="col-12 col-xxl-6">
@@ -66,3 +67,5 @@
         </div>
     </div>
 </div>
+
+{% do call(['Html', 'nullFooter']) %}
