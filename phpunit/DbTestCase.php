@@ -129,6 +129,12 @@ class DbTestCase extends \GLPITestCase
 
         if (count($input)) {
             foreach ($input as $k => $v) {
+                $this->assertArrayHasKey(
+                    $k,
+                    $object->fields,
+                    "Object not created as expected, field '$k' not found in object " . get_class($object),
+                );
+
                 $this->assertEquals(
                     $v,
                     $object->fields[$k],
@@ -142,12 +148,15 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
-     * Get all classes in folder inc/
+     * Get classes in src/
      *
-     * @param boolean $function Whether to look for a function
-     * @param array   $excludes List of classes to exclude
+     * Get classes implementing the specified $function, or all classes if $function is false,
+     * excluding classnames matching a pattern in $excludes
      *
-     * @return array
+     * @param string|false $function Whether to look for a function
+     * @param array $excludes List of classes to exclude
+     *
+     * @return array<int, class-string>
      */
     protected static function getClasses($function = false, array $excludes = [])
     {

@@ -151,7 +151,8 @@ abstract class CommonDropdown extends CommonDBTM
     /**
      * Return Additional Fields for this type
      *
-     * @return array
+     * Possible 'type' can be found in templates/dropdown_form.html.twig, @see showForm()
+     * @return array Additional fields
      **/
     public function getAdditionalFields()
     {

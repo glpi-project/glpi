@@ -1382,7 +1382,7 @@ class DbUtilsTest extends DbTestCase
                 . PHP_EOL;
         }
         if (!empty($missing_relations)) {
-            $msg .= 'Following relations are missing:'
+            $msg .= 'Following relations are missing (did you forget to declare them in inc/relation.constant.php ? ):'
                 . PHP_EOL
                 . implode(PHP_EOL, $missing_relations)
                 . PHP_EOL;

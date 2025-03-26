@@ -312,11 +312,11 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * Retrieve an item from the database
+     * Retrieve an item from the database and update $this->fields
      *
      * @param integer $ID ID of the item to get (matched against the index field of the table, not necessarily the ID)
      *
-     * @return boolean true if succeed else false
+     * @return boolean true if succeed to find a single item matching $ID else false (no items or more than one item)
      * @see self::getIndexName()
      **/
     public function getFromDB($ID)
@@ -592,9 +592,9 @@ class CommonDBTM extends CommonGLPI
     /**
      * Retrieve all items from the database
      *
-     * @param array        $condition condition used to search if needed (empty get all) (default '')
-     * @param array|string $order     order field if needed (default '')
-     * @param integer      $limit     limit retrieved data if needed (default '')
+     * @param array        $condition WHERE condition used to filter (can be empty to get all)
+     * @param array|string $order     ORDER field (can be empty)
+     * @param integer      $limit     LIMIT sql clause
      *
      * @return array all retrieved data in an associative array by id
      **/
@@ -2085,7 +2085,6 @@ class CommonDBTM extends CommonGLPI
     {
         return $input;
     }
-
 
     /**
      * Actions done after the UPDATE of the item in the database

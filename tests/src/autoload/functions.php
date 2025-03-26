@@ -772,7 +772,7 @@ function loadDataset()
  * @param class-string<T>   $type
  * @param string            $name
  * @param bool              $onlyid
- * @phpstan-return ($onlyid is true ? Int : T)
+ * @phpstan-return ($onlyid is true ? int : T)
  *      Item of $type class, or its id
  */
 function getItemByTypeName(string $type, string $name, bool $onlyid = false): CommonDBTM|int
