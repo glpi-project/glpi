@@ -55,7 +55,9 @@
                 <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
                     <div class="row flex-row align-items-start flex-grow-1">
                         <div class="row flex-row">
-                            <input type="hidden" name="id" value="{{ is_preference_form ? session('glpiID') : item.getID() }}" />
+                            {% if not item.isNewItem() %}
+                                <input type="hidden" name="id" value="{{ item.getID() }}" />
+                            {% endif %}
                             {% if (item.isNewItem() or internal_auth) and not is_preference_form %}
                                 {{ fields.textField('name', item.fields['name'], __('Login')) }}
                             {% else %}
