@@ -953,7 +953,6 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
             $actions['users_id_validate_assign_supervisor']['type']     = 'yesno';
             $actions['users_id_validate_assign_supervisor']['force_actions'] = ['add_validation'];
 
-            // @todo on peut définir un type special et pas utiliser type + table
             $actions['validationsteps_id']['name']                      = __('Approval request to validation step');
             $actions['validationsteps_id']['type']                      = 'dropdown';
             $actions['validationsteps_id']['table']                     = 'glpi_validationsteps';

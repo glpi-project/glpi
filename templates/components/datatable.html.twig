@@ -30,8 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/alerts_macros.html.twig' as alerts %}
-
 {% set datatable_id = datatable_id|default('datatable' ~ random()) %}
 {% if total_number < 1 and filters|length == 0 %}
     <table id="{{ datatable_id }}" class="table">
@@ -307,6 +305,9 @@
                         </td>
                     </tr>
                 {% endif %}
+            {% block datatable_entries %}
+                {% include ('components/datatable/entries.html.twig') %}
+            {% endblock %}
             </tbody>
             {% if footers %}
                 <tfoot class="{{ footer_class|default('') }}">

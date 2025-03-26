@@ -35,12 +35,15 @@
 namespace Glpi\PHPUnit\Tests;
 
 use DbTestCase;
+use Glpi\PHPUnit\Tests\Glpi\ValidationStepTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/commonitilvalidation.class.php */
 
 abstract class CommonITILValidation extends DbTestCase
 {
+    use ValidationStepTrait;
+
     protected function getTestedClass()
     {
         $test_class = static::class;
@@ -804,7 +807,7 @@ abstract class CommonITILValidation extends DbTestCase
 
         $validation->update([
             'id' => $validations_id,
-            'status' => \CommonITILValidation::ACCEPTED,
+            'status' => \CommonITILValidation::ACCEPTED
         ]);
         $this->assertEquals(1, $validation_class::getNumberToValidate($user->getID()));
     }
@@ -827,10 +830,5 @@ abstract class CommonITILValidation extends DbTestCase
         $this->assertContains(\CommonITILValidation::WAITING, $validation->getAllValidationStatusArray());
         $this->assertContains(\CommonITILValidation::REFUSED, $validation->getAllValidationStatusArray());
         $this->assertContains(\CommonITILValidation::ACCEPTED, $validation->getAllValidationStatusArray());
-    }
-
-    protected function getInitialDefaultValidationStep(): \ValidationStep
-    {
-        return getItemByTypeName(\ValidationStep::class, 'Validation');
     }
 }
