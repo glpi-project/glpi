@@ -39,6 +39,8 @@ use Override;
 
 final class MultipleChoiceFromValuesConditionHandler implements ConditionHandlerInterface
 {
+    use ArrayConditionHandlerTrait;
+
     public function __construct(
         private array $values,
     ) {
@@ -47,12 +49,7 @@ final class MultipleChoiceFromValuesConditionHandler implements ConditionHandler
     #[Override]
     public function getSupportedValueOperators(): array
     {
-        return [
-            ValueOperator::EQUALS,
-            ValueOperator::NOT_EQUALS,
-            ValueOperator::CONTAINS,
-            ValueOperator::NOT_CONTAINS,
-        ];
+        return $this->getSupportedArrayValueOperators();
     }
 
     #[Override]
@@ -75,25 +72,6 @@ final class MultipleChoiceFromValuesConditionHandler implements ConditionHandler
         ValueOperator $operator,
         mixed $b,
     ): bool {
-        // Values must be arrays
-        if (!is_array($a) || !is_array($b)) {
-            return false;
-        }
-
-        // Normalize values
-        $a = array_values($a);
-        $b = array_values($b);
-        sort($a);
-        sort($b);
-
-        return match ($operator) {
-            ValueOperator::EQUALS       => $a == $b,
-            ValueOperator::NOT_EQUALS   => $a != $b,
-            ValueOperator::CONTAINS     => empty(array_diff($b, $a)),
-            ValueOperator::NOT_CONTAINS => !empty(array_diff($b, $a)),
-
-            // Unsupported operators
-            default => false,
-        };
+        return $this->applyArrayValueOperator($a, $operator, $b);
     }
 }

@@ -229,7 +229,7 @@ final class ActorConditionHandlerTest extends AbstractConditionHandler
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
                         sprintf('%s-3', getForeignKeyFieldForItemType($actor_type))
                     ],
-                    'expected_result'     => true,
+                    'expected_result'     => false,
                     'question_extra_data' => $extra_data
                 ];
                 yield "Contains check - case 3 for $type with $actor_type (extra actors)" => [
@@ -298,7 +298,7 @@ final class ActorConditionHandlerTest extends AbstractConditionHandler
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
                         sprintf('%s-3', getForeignKeyFieldForItemType($actor_type))
                     ],
-                    'expected_result'     => false,
+                    'expected_result'     => true,
                     'question_extra_data' => $extra_data
                 ];
                 yield "Not contains check - case 3 for $type with $actor_type (extra actors)" => [

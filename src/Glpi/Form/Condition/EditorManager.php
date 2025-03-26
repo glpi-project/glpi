@@ -37,7 +37,6 @@ namespace Glpi\Form\Condition;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\StringConditionHandler;
 use Glpi\Form\QuestionType\AbstractQuestionType;
-use LogicException;
 
 final class EditorManager
 {

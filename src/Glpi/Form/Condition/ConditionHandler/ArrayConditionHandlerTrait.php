@@ -35,47 +35,42 @@
 namespace Glpi\Form\Condition\ConditionHandler;
 
 use Glpi\Form\Condition\ValueOperator;
-use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
-use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
-use Override;
 
-class ActorConditionHandler implements ConditionHandlerInterface
+trait ArrayConditionHandlerTrait
 {
-    use ArrayConditionHandlerTrait;
-
-    public function __construct(
-        private AbstractQuestionTypeActors $question_type,
-        private QuestionTypeActorsExtraDataConfig $extra_data_config,
-    ) {
-    }
-
-    #[Override]
-    public function getSupportedValueOperators(): array
-    {
-        return $this->getSupportedArrayValueOperators();
-    }
-
-    #[Override]
-    public function getTemplate(): string
-    {
-        return '/pages/admin/form/condition_handler_templates/actor.html.twig';
-    }
-
-    #[Override]
-    public function getTemplateParameters(): array
+    protected function getSupportedArrayValueOperators(): array
     {
         return [
-            'multiple'       => $this->extra_data_config->isMultipleActors(),
-            'allowed_actors' => $this->question_type->getAllowedActorTypes(),
+            ValueOperator::EQUALS,
+            ValueOperator::NOT_EQUALS,
+            ValueOperator::CONTAINS,
+            ValueOperator::NOT_CONTAINS,
         ];
     }
 
-    #[Override]
-    public function applyValueOperator(
+    protected function applyArrayValueOperator(
         mixed $a,
         ValueOperator $operator,
         mixed $b,
     ): bool {
-        return $this->applyArrayValueOperator($a, $operator, $b);
+        if (!is_array($a) || !is_array($b)) {
+            return false;
+        }
+
+        // Normalize values
+        $a = array_values($a);
+        $b = array_values($b);
+        sort($a);
+        sort($b);
+
+        return match ($operator) {
+            ValueOperator::EQUALS       => $a == $b,
+            ValueOperator::NOT_EQUALS   => $a != $b,
+            ValueOperator::CONTAINS     => empty(array_diff($b, $a)),
+            ValueOperator::NOT_CONTAINS => !empty(array_diff($b, $a)),
+
+            // Unsupported operators
+            default => false,
+        };
     }
 }
