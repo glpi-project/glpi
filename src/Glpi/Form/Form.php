@@ -372,6 +372,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
                 key: self::TRANSLATION_KEY_HEADER,
                 name: __('Form description'),
                 value: $this->fields['header'],
+                is_rich_text: true
             );
         }
 
@@ -381,6 +382,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
                 key: self::TRANSLATION_KEY_DESCRIPTION,
                 name: __('Service catalog description'),
                 value: $this->fields['description'],
+                is_rich_text: true
             );
         }
 

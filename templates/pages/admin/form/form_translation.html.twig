@@ -31,6 +31,8 @@
  #}
 
 {% macro getTranslationInput(handler, translation) %}
+    {% import 'components/form/fields_macros.html.twig' as fields %}
+
     {% set rand = random() %}
 
     <input type="hidden" name="translations[{{ rand }}][itemtype]" value="{{ get_class(handler.getItem()) }}" />
@@ -48,14 +50,32 @@
             ></i>
         {% endif %}
 
-        <input
-            type="text"
-            name="translations[{{ rand }}][translations][one]"
-            class="form-control"
-            placeholder="{{ __('Enter translation') }}"
-            value="{{ translation.getTranslation() }}"
-            aria-label="{{ __('Enter translation') }}"
-        />
+        {% if handler.isRichText() %}
+            {{ fields.textareaField(
+                'translations[%s][translations][one]'|format(rand),
+                translation.getTranslation(),
+                '',
+                {
+                    'no_label'       : true,
+                    'full_width'     : true,
+                    'mb'             : '',
+                    'aria_label'     : __("Enter translation"),
+                    'placeholder'    : __("Enter translation"),
+                    'enable_richtext': true,
+                    'statusbar'      : false,
+                    'editor_height'  : 0,
+                }
+            ) }}
+        {% else %}
+            <input
+                type="text"
+                name="translations[{{ rand }}][translations][one]"
+                class="form-control"
+                placeholder="{{ __('Enter translation') }}"
+                value="{{ translation.getTranslation() }}"
+                aria-label="{{ __('Enter translation') }}"
+            />
+        {% endif %}
     </div>
 {% endmacro %}
 
@@ -69,7 +89,7 @@
     {% for handler in handlers %}
         {% set entries = entries|merge([{
             'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
-            'default': handler.getValue(),
+            'default': handler.isRichText() ? handler.getValue()|safe_html : handler.getValue()|e,
             'translation': _self.getTranslationInput(
                 handler,
                 form_translation.getForItemKeyAndLanguage(
@@ -119,6 +139,7 @@
                         },
                         'formatters': {
                             'type': 'raw_html',
+                            'default': 'raw_html',
                             'translation': 'raw_html',
                         },
                         'entries': entries,

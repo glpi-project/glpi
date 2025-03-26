@@ -41,6 +41,10 @@
             vertical-align: middle;
             padding: 0.5rem 0.75rem;
         }
+
+        td:not(:first-child) {
+            width: 35%;
+        }
     }
 
     // Apply table header styles to rows containing a span with the data-glpi-form-translations-subtitle-row attribute
