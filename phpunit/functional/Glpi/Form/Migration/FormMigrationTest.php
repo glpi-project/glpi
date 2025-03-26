@@ -42,9 +42,12 @@ use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Category;
+use Glpi\Form\Comment;
 use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\AbstractQuestionTypeSelectable;
 use Glpi\Form\QuestionType\QuestionTypeActorsDefaultValueConfig;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeCheckbox;
@@ -700,6 +703,187 @@ final class FormMigrationTest extends DbTestCase
             }
 
             $this->assertEqualsCanonicalizing($expected_data, $actual_data);
+        }
+    }
+
+    public static function provideFormMigrationTranslations(): iterable
+    {
+        yield 'Test form migration for translations' => [
+            'form_name'             => 'Test form migration for translations',
+            'raw_translations'      => [
+                'Test form migration for translations' => 'Tester la migration des formulaires pour les traductions',
+                'This is a description to test the translation' => 'Voici une description pour tester la traduction',
+                'First section' => 'Première section',
+                'First question' => 'Première question',
+                '&#60;p&#62;&#60;strong&#62;Test description for &#60;/strong&#62;first&#60;strong&#62; &#60;span style="color: #b96ad9;"&#62;question&#60;/span&#62;&#60;/strong&#62;&#60;/p&#62;' => '&#60;p&#62;&#60;strong&#62;Test de description&#60;/strong&#62; pour la première &#60;span style="color: #b96ad9;"&#62;&#60;strong&#62;question&#60;/strong&#62;&#60;/span&#62;&#60;/p&#62;',
+
+                /**
+                 * TODO: This translation is the default value for the first question of type "Short text"
+                 * Actually, we can't translate the default value of this question type.
+                 */
+                // 'Default value for first question' => 'Valeur par défaut pour la première question',
+
+                'Second question' => 'Deuxième question',
+                'First option' => 'Première option',
+                'Second option' => 'Deuxième option',
+                'Third option' => 'Troisième option',
+                'Second section' => 'Deuxième section',
+                'Description question' => 'Description question',
+                '&#60;p&#62;Description &#60;span style="background-color: #e03e2d; color: #ffffff;"&#62;content&#60;/span&#62;&#60;/p&#62;' => '&#60;p&#62;&#60;span style="background-color: #e03e2d; color: #ffffff;"&#62;Contenu&#60;/span&#62; de la description&#60;/p&#62;',
+            ],
+            'expected_translations' => function () {
+                /** @var Form $form */
+                $form = getItemByTypeName(Form::class, 'Test form migration for translations');
+                $sections = array_combine(
+                    array_map(fn ($section) => $section->getName(), $form->getSections()),
+                    array_values($form->getSections())
+                );
+                $questions = array_combine(
+                    array_map(fn ($question) => $question->getName(), $form->getQuestions()),
+                    array_values($form->getQuestions())
+                );
+                $comments = array_combine(
+                    array_map(fn ($comment) => $comment->getName(), $form->getFormComments()),
+                    array_values($form->getFormComments())
+                );
+
+                return [
+                    [
+                        'items_id' => $form->getID(),
+                        'itemtype' => Form::class,
+                        'key'      => Form::TRANSLATION_KEY_NAME,
+                        'translations' => ['one' => 'Tester la migration des formulaires pour les traductions']
+                    ],
+                    [
+                        'items_id' => $form->getID(),
+                        'itemtype' => Form::class,
+                        'key'      => Form::TRANSLATION_KEY_HEADER,
+                        'translations' => ['one' => 'Voici une description pour tester la traduction']
+                    ],
+                    [
+                        'items_id' => $sections['First section']->getID(),
+                        'itemtype' => Section::class,
+                        'key'      => Section::TRANSLATION_KEY_NAME,
+                        'translations' => ['one' => 'Première section']
+                    ],
+                    [
+                        'items_id' => $questions['First question']->getID(),
+                        'itemtype' => Question::class,
+                        'key'      => Question::TRANSLATION_KEY_NAME,
+                        'translations' => ['one' => 'Première question']
+                    ],
+                    [
+                        'items_id' => $questions['First question']->getID(),
+                        'itemtype' => Question::class,
+                        'key'      => Question::TRANSLATION_KEY_DESCRIPTION,
+                        'translations' => ['one' => '<p><strong>Test de description</strong> pour la première <span style="color: #b96ad9;"><strong>question</strong></span></p>']
+                    ],
+                    [
+                        'items_id' => $sections['Second section']->getID(),
+                        'itemtype' => Section::class,
+                        'key'      => Section::TRANSLATION_KEY_NAME,
+                        'translations' => ['one' => 'Deuxième section']
+                    ],
+                    [
+                        'items_id' => $questions['Second question']->getID(),
+                        'itemtype' => Question::class,
+                        'key'      => Question::TRANSLATION_KEY_NAME,
+                        'translations' => ['one' => 'Deuxième question']
+                    ],
+                    [
+                        'items_id' => $questions['Second question']->getID(),
+                        'itemtype' => Question::class,
+                        'key'      => AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION . '-0',
+                        'translations' => ['one' => 'Première option']
+                    ],
+                    [
+                        'items_id' => $questions['Second question']->getID(),
+                        'itemtype' => Question::class,
+                        'key'      => AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION . '-1',
+                        'translations' => ['one' => 'Deuxième option']
+                    ],
+                    [
+                        'items_id' => $questions['Second question']->getID(),
+                        'itemtype' => Question::class,
+                        'key'      => AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION . '-2',
+                        'translations' => ['one' => 'Troisième option']
+                    ],
+                    [
+                        'items_id' => $comments['Description question']->getID(),
+                        'itemtype' => Comment::class,
+                        'key'      => Comment::TRANSLATION_KEY_NAME,
+                        'translations' => ['one' => 'Description question']
+                    ],
+                    [
+                        'items_id' => $comments['Description question']->getID(),
+                        'itemtype' => Comment::class,
+                        'key'      => Comment::TRANSLATION_KEY_DESCRIPTION,
+                        'translations' => ['one' => '<p><span style="background-color: #e03e2d; color: #ffffff;">Contenu</span> de la description</p>']
+                    ]
+                ];
+            }
+        ];
+    }
+
+    #[DataProvider('provideFormMigrationTranslations')]
+    public function testFormMigrationTranslations($form_name, $raw_translations, $expected_translations): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Create a partial mock of FormMigration that only mocks getTranslationsFromFile method
+        $migration = $this->getMockBuilder(FormMigration::class)
+            ->setConstructorArgs([$DB, FormAccessControlManager::getInstance()])
+            ->onlyMethods(['getTranslationsFromFile'])
+            ->getMock();
+
+        // Configure the mock to return our test translations
+        $migration->method('getTranslationsFromFile')
+            ->willReturnCallback(function (int $form_id, string $language) use ($raw_translations) {
+                // Mock translations for our test case
+                if ($form_id == 19 && $language == 'fr_FR') {
+                    return $raw_translations;
+                }
+                return []; // Return empty array for any other form/language combination
+            });
+
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Compute the expected translations
+        $expected_translations = $expected_translations();
+
+        /** @var Form $form */
+        $form = getItemByTypeName(Form::class, $form_name);
+        $this->assertNotFalse($form);
+        $translations = FormTranslation::getTranslationsForForm($form);
+        $this->assertSameSize($expected_translations, $translations);
+        foreach ($expected_translations as $expected_translation) {
+            $found = false;
+            foreach ($translations as $translation) {
+                if (
+                    $translation->fields['items_id'] === $expected_translation['items_id']
+                    && $translation->fields['itemtype'] === $expected_translation['itemtype']
+                    && $translation->fields['key'] === $expected_translation['key']
+                ) {
+                    $this->assertEquals(
+                        json_decode($translation->fields['translations'], true),
+                        $expected_translation['translations']
+                    );
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                $this->fail(sprintf(
+                    'Translation not found for itemtype: %s and key: %s',
+                    $expected_translation['itemtype'],
+                    $expected_translation['key']
+                ));
+            }
         }
     }
 }

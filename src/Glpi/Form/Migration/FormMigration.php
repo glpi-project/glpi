@@ -55,6 +55,7 @@ use Glpi\Form\Destination\FormDestinationChange;
 use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeDateTime;
@@ -74,7 +75,7 @@ use Glpi\Form\Section;
 use Glpi\Migration\AbstractPluginMigration;
 use LogicException;
 
-final class FormMigration extends AbstractPluginMigration
+class FormMigration extends AbstractPluginMigration
 {
     private FormAccessControlManager $formAccessControlManager;
 
@@ -210,6 +211,9 @@ final class FormMigration extends AbstractPluginMigration
             'glpi_plugin_formcreator_forms_profiles' => [
                 'plugin_formcreator_forms_id', 'profiles_id'
             ],
+            'glpi_plugin_formcreator_forms_languages' => [
+                'plugin_formcreator_forms_id', 'name'
+            ]
         ];
 
         return $this->checkDbFieldsExists($formcreator_schema);
@@ -227,6 +231,7 @@ final class FormMigration extends AbstractPluginMigration
             'targets_ticket' => $this->countRecords('glpi_plugin_formcreator_targettickets'),
             'targets_problem' => $this->countRecords('glpi_plugin_formcreator_targetproblems'),
             'targets_change' => $this->countRecords('glpi_plugin_formcreator_targetchanges'),
+            'translations' => $this->countRecords('glpi_plugin_formcreator_forms_languages')
         ];
 
         // Set total progress steps
@@ -244,6 +249,7 @@ final class FormMigration extends AbstractPluginMigration
         $this->processMigrationOfAccessControls();
         $this->processMigrationOfFormTargets();
         $this->handleMandatoryDestination();
+        $this->processMigrationOfTranslations();
 
         $this->progress_indicator?->setProgressBarMessage('');
         $this->progress_indicator?->finish();
@@ -903,5 +909,96 @@ final class FormMigration extends AbstractPluginMigration
                 ]);
             }
         }
+    }
+
+    private function processMigrationOfTranslations(): void
+    {
+        $this->progress_indicator?->setProgressBarMessage(__('Importing translations...'));
+
+        // Retrieve data from glpi_plugin_formcreator_forms_languages table
+        $raw_languages = $this->db->request([
+            'SELECT' => [
+                'plugin_formcreator_forms_id',
+                'name'
+            ],
+            'FROM'   => 'glpi_plugin_formcreator_forms_languages',
+        ]);
+
+        foreach ($raw_languages as $raw_language) {
+            $translations = $this->getTranslationsFromFile(
+                $raw_language['plugin_formcreator_forms_id'],
+                $raw_language['name']
+            );
+
+            // Skip if no translations found
+            if (empty($translations)) {
+                continue;
+            }
+
+            // Decode HTML entities in the keys
+            $decoded_translations = [];
+            foreach ($translations as $key => $translation) {
+                $decoded_key = html_entity_decode($key);
+                $decoded_translations[$decoded_key] = $translation;
+            }
+            $translations = $decoded_translations;
+
+            $form_id = $this->getMappedItemTarget(
+                'PluginFormcreatorForm',
+                $raw_language['plugin_formcreator_forms_id']
+            )['items_id'] ?? 0;
+
+            $form = new Form();
+            if (!$form->getFromDB($form_id)) {
+                throw new LogicException("Form with id {$raw_language['plugin_formcreator_forms_id']} not found");
+            }
+
+            foreach ($form->listTranslationsHandlers() as $handlers) {
+                foreach ($handlers as $handler) {
+                    if (isset($translations[$handler->getValue()])) {
+                        $this->importItem(
+                            FormTranslation::class,
+                            [
+                                FormTranslation::$items_id => $handler->getItem()->getID(),
+                                FormTranslation::$itemtype => $handler->getItem()->getType(),
+                                'key'                      => $handler->getKey(),
+                                'language'                 => $raw_language['name'],
+                                'translations'             => ['one' => $translations[$handler->getValue()]]
+                            ],
+                            [
+                                FormTranslation::$items_id => $handler->getItem()->getID(),
+                                FormTranslation::$itemtype => $handler->getItem()->getType(),
+                                'key'                      => $handler->getKey(),
+                                'language'                 => $raw_language['name'],
+                            ]
+                        );
+                    }
+                }
+            }
+
+            $this->progress_indicator?->advance();
+        }
+    }
+
+    /**
+     * Get translations from a formcreator translation file
+     *
+     * @param int $form_id The form ID
+     * @param string $language The language code
+     * @return array Translation key-value pairs
+     */
+    protected function getTranslationsFromFile(int $form_id, string $language): array
+    {
+        $file_path = implode('/', [
+            GLPI_LOCAL_I18N_DIR,
+            'formcreator',
+            sprintf('form_%d_%s.php', $form_id, $language)
+        ]);
+
+        if (file_exists($file_path)) {
+            return include $file_path;
+        }
+
+        return [];
     }
 }
