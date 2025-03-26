@@ -559,6 +559,8 @@ class Migration
      * @param string       $type      Index type (index or unique - default 'INDEX')
      * @param integer      $len       Field length (default 0)
      *
+     * The table must exist before calling this function.
+     *
      * @return void
      **/
     public function addKey($table, $fields, $indexname = '', $type = 'INDEX', $len = 0)
