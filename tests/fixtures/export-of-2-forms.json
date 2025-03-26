@@ -2,7 +2,7 @@
     "version": 1,
     "forms": [
         {
-            "id": 0,
+            "id": 1,
             "name": "My valid form",
             "illustration": "report-issue",
             "entity_name": "E2ETestEntity",
@@ -10,23 +10,33 @@
             "is_active": false,
             "sections": [
                 {
+                    "id": 1,
+                    "uuid": "section-1",
                     "name": "First section",
                     "description": "",
-                    "rank": 0
+                    "rank": 0,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
                 }
             ],
             "questions": [
                 {
+                    "id": 1,
+                    "uuid": "question-1",
                     "name": "Watchers",
                     "type": "Glpi\\Form\\QuestionType\\QuestionTypeObserver",
                     "is_mandatory": false,
                     "vertical_rank": 2,
                     "horizontal_rank": null,
                     "description": null,
-                    "default_value": "{\"users_ids\":[\"glpi\"],\"groups_ids\":[],\"suppliers_ids\":[]}",
-                    "extra_data": "{\"is_multiple_actors\":true}",
-                    "section_rank": 0,
-                    "visibility_strategy": "",
+                    "default_value": {
+                        "users_ids": ["glpi"],
+                        "groups_ids": [],
+                        "suppliers_ids": []
+                    },
+                    "extra_data": {"is_multiple_actors": true},
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
                     "conditions": []
                 }
             ],
@@ -42,7 +52,7 @@
             ]
         },
         {
-            "id": 1,
+            "id": 2,
             "name": "My invalid form",
             "illustration": "report-issue",
             "entity_name": "Missing entity",
@@ -50,23 +60,33 @@
             "is_active": false,
             "sections": [
                 {
+                    "id": 2,
+                    "uuid": "section-2",
                     "name": "First section",
                     "description": "",
-                    "rank": 0
+                    "rank": 0,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
                 }
             ],
             "questions": [
                 {
+                    "id": 2,
+                    "uuid": "question-2",
                     "name": "Watchers",
                     "type": "Glpi\\Form\\QuestionType\\QuestionTypeObserver",
                     "is_mandatory": false,
                     "vertical_rank": 2,
                     "horizontal_rank": null,
                     "description": null,
-                    "default_value": "{\"users_ids\":[\"Missing user\"],\"groups_ids\":[],\"suppliers_ids\":[]}",
-                    "extra_data": "{\"is_multiple_actors\":true}",
-                    "section_rank": 0,
-                    "visibility_strategy": "",
+                    "default_value": {
+                        "users_ids": ["Missing user"],
+                        "groups_ids": [],
+                        "suppliers_ids": []
+                    },
+                    "extra_data": {"is_multiple_actors": true},
+                    "section_id": 2,
+                    "visibility_strategy": "always_visible",
                     "conditions": []
                 }
             ],

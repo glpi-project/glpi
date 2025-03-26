@@ -35,6 +35,8 @@
 
 namespace Glpi\Form\Export\Specification;
 
+use Glpi\Form\Export\Serializer\DynamicExportData;
+
 final class FormContentSpecification
 {
     public int $id;
@@ -82,5 +84,10 @@ final class FormContentSpecification
         $requirement->itemtype = $class;
         $requirement->name = $name;
         $this->data_requirements[] = $requirement;
+    }
+
+    public function addRequirementsFromDynamicData(DynamicExportData $data): void
+    {
+        array_push($this->data_requirements, ...$data->getRequirements());
     }
 }

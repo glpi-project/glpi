@@ -37,7 +37,6 @@ namespace Glpi\Form\Export\Specification;
 
 final class ConditionDataSpecification implements ContentSpecificationInterface
 {
-    public string $item;
     public string $item_uuid;
     public string $item_type;
     public ?string $value_operator;

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,8 +37,13 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
@@ -306,5 +310,65 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
     public function getCategory(): Category
     {
         return Category::ACTORS;
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        $requirements = [];
+
+        if (!isset($config[ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS])) {
+            return parent::exportDynamicConfig($config, $destination);
+        }
+
+        $items = $config[ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS];
+        foreach ($items as $itemtype => $items_ids) {
+            foreach ($items_ids as $i => $item_id) {
+                $item = getItemForItemtype($itemtype);
+                if ($item->getFromDB($item_id)) {
+                    // Insert name instead of id and register requirement
+                    $items[$itemtype][$i] = $item->getName();
+                    $requirements[] = new DataRequirementSpecification(
+                        $itemtype,
+                        $item->getName(),
+                    );
+                }
+            }
+        }
+
+        $config[ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS] = $items;
+        return new DynamicExportDataField($config, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        if (isset($config[ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS])) {
+            $items = $config[ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS];
+            foreach ($items as $itemtype => $items_names) {
+                foreach ($items_names as $i => $item_name) {
+                    $id = $mapper->getItemId($itemtype, $item_name);
+                    $items[$itemtype][$i] = $id;
+                }
+            }
+            $config[ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS] = $items;
+        }
+
+        // Check if specific questions are defined
+        if (isset($config[ITILActorFieldConfig::SPECIFIC_QUESTION_IDS])) {
+            $questions = $config[ITILActorFieldConfig::SPECIFIC_QUESTION_IDS];
+            foreach ($questions as $i => $question) {
+                $id = $mapper->getItemId(Question::class, $question);
+                $questions[$i] = $id;
+            }
+            $config[ITILActorFieldConfig::SPECIFIC_QUESTION_IDS] = $questions;
+        }
+
+        return $config;
     }
 }

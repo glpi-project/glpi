@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,15 +38,20 @@ use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use InvalidArgumentException;
 use Override;
 
-class EntityField extends AbstractConfigField implements DestinationFieldConverterInterface
+final class EntityField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -227,5 +231,59 @@ class EntityField extends AbstractConfigField implements DestinationFieldConvert
         }
 
         return $this->getDefaultConfig($form);
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        $fallback = parent::exportDynamicConfig($config, $destination);
+
+        // Check if an entity is defined
+        $entity_id = $config[EntityFieldConfig::SPECIFIC_ENTITY_ID] ?? null;
+        if ($entity_id === null) {
+            return $fallback;
+        }
+
+        // Try to load entity
+        $entity = Entity::getById($entity_id);
+        if (!$entity) {
+            return $fallback;
+        }
+
+        // Insert entity name and requirement
+        $name = $entity->getName();
+        $config[EntityFieldConfig::SPECIFIC_ENTITY_ID] = $name;
+        $requirement = new DataRequirementSpecification(Entity::class, $name);
+
+        return new DynamicExportDataField($config, [$requirement]);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        // Check if an entity is defined
+        if (isset($config[EntityFieldConfig::SPECIFIC_ENTITY_ID])) {
+            // Insert id
+            $config[EntityFieldConfig::SPECIFIC_ENTITY_ID] = $mapper->getItemId(
+                Entity::class,
+                $config[EntityFieldConfig::SPECIFIC_ENTITY_ID],
+            );
+        }
+
+        // Check if a specific question is defined
+        if (isset($config[EntityFieldConfig::SPECIFIC_QUESTION_ID])) {
+            // Insert id
+            $config[EntityFieldConfig::SPECIFIC_QUESTION_ID] = $mapper->getItemId(
+                Question::class,
+                $config[EntityFieldConfig::SPECIFIC_QUESTION_ID],
+            );
+        }
+
+        return $config;
     }
 }

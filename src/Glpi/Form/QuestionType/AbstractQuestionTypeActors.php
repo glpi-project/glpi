@@ -37,8 +37,11 @@ namespace Glpi\Form\QuestionType;
 
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Condition\ConditionHandler\ActorConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
@@ -81,44 +84,35 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
     #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
     {
-        if (empty($value)) {
+        if (empty($value) || !is_array($value)) {
             return null;
         }
 
-        if (!is_array($value)) {
-            $value = [$value];
-        }
+        $actors_ids = [
+            'users_id'     => $value['users_ids'] ?? [],
+            'groups_id'    => $value['groups_ids'] ?? [],
+            'suppliers_id' => $value['suppliers_ids'] ?? [],
+        ];
+        unset($value['users_ids']);
+        unset($value['groups_ids']);
+        unset($value['suppliers_ids']);
 
-        $actors_ids = [];
+        // Handle alternative format used by dropdowns (fkey-id)
         foreach ($value as $actor) {
-            // Skip empty values
-            if (empty($actor)) {
+            $actor_parts = explode('-', $actor);
+            $fkey = $actor_parts[0];
+            if (!isset($actors_ids[$fkey])) {
                 continue;
             }
 
-            $actor_parts = explode('-', $actor);
-            $foreign_key = $actor_parts[0];
-            $id = $actor_parts[1] ?? 0;
-
-            // Check if the foreign key is valid
-            $itemtype = getItemtypeForForeignKeyField($foreign_key);
-            if (!$itemtype || !class_exists($itemtype)) {
-                throw new InvalidArgumentException("Invalid actor type: $foreign_key");
-            }
-
-            // Ensure the ID is a valid integer
-            if (!is_numeric($id) || (int)$id <= 0) {
-                throw new InvalidArgumentException("Invalid actor ID: $id");
-            }
-
-            $actors_ids[$itemtype][] = (int) $id;
+            $actors_ids[$fkey][] = (int) $actor_parts[1];
         }
 
         // Wrap the array in a config object to serialize it
         $config = new QuestionTypeActorsDefaultValueConfig(
-            users_ids: $actors_ids['User'] ?? [],
-            groups_ids: $actors_ids['Group'] ?? [],
-            suppliers_ids: $actors_ids['Supplier'] ?? []
+            users_ids: $actors_ids['users_id'],
+            groups_ids: $actors_ids['groups_id'],
+            suppliers_ids: $actors_ids['suppliers_id'],
         );
 
         return json_encode($config->jsonSerialize());
@@ -184,10 +178,8 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
     #[Override]
     public function convertDefaultValue(array $rawData): mixed
     {
-        return array_map(
-            fn ($actor_id) => sprintf('%s-%d', User::getForeignKeyField(), $actor_id),
-            json_decode($rawData['default_values']) ?? []
-        );
+        $users_ids = json_decode($rawData['default_values'] ?? []);
+        return ['users_ids' => $users_ids];
     }
 
     #[Override]
@@ -477,5 +469,95 @@ TWIG;
     public function getDefaultValueConfigClass(): ?string
     {
         return QuestionTypeActorsDefaultValueConfig::class;
+    }
+
+    #[Override]
+    public function exportDynamicDefaultValue(
+        ?JsonFieldInterface $extra_data_config,
+        array|int|float|bool|string|null $default_value_config,
+    ): DynamicExportDataField {
+        $requirements = [];
+
+        // Fallback to default values if configuration isn't in the expected format
+        if (!is_array($default_value_config)) {
+            return parent::exportDynamicDefaultValue(
+                $extra_data_config,
+                $default_value_config
+            );
+        }
+
+        $to_handle =  [
+            User::class     => QuestionTypeActorsDefaultValueConfig::KEY_USERS_IDS,
+            Group::class    => QuestionTypeActorsDefaultValueConfig::KEY_GROUPS_IDS,
+            Supplier::class => QuestionTypeActorsDefaultValueConfig::KEY_SUPPLIERS_IDS,
+        ];
+
+        // Handler users, groups and suppliers ids.
+        foreach ($to_handle as $itemtype => $data_key) {
+            /** @var class-string<\CommonDBTM> $itemtype */
+
+            // Iterate on ids
+            $ids = $default_value_config[$data_key] ?? [];
+            foreach ($ids as $i => $item_id) {
+                if (intval($item_id) === 0) {
+                    continue;
+                }
+
+                $item = $itemtype::getById($item_id);
+                if (!$item) {
+                    continue;
+                }
+
+                $name = $item->getName();
+                $default_value_config[$data_key][$i] = $name;
+                $requirements[] = new DataRequirementSpecification($itemtype, $name);
+            }
+        }
+
+        return new DynamicExportDataField($default_value_config, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicDefaultValueForImport(
+        ?array $extra_data,
+        array|int|float|bool|string|null $default_value_data,
+        DatabaseMapper $mapper,
+    ): array|int|float|bool|string|null {
+        $fallback = parent::prepareDynamicDefaultValueForImport(
+            $extra_data,
+            $default_value_data,
+            $mapper,
+        );
+
+        // Content should be an array
+        if (!is_array($default_value_data)) {
+            return $fallback;
+        }
+
+        $to_handle =  [
+            User::class     => QuestionTypeActorsDefaultValueConfig::KEY_USERS_IDS,
+            Group::class    => QuestionTypeActorsDefaultValueConfig::KEY_GROUPS_IDS,
+            Supplier::class => QuestionTypeActorsDefaultValueConfig::KEY_SUPPLIERS_IDS,
+        ];
+
+        // Handler users, groups and suppliers ids.
+        foreach ($to_handle as $itemtype => $data_key) {
+            /** @var class-string<\CommonDBTM> $itemtype */
+
+            // Iterate on names
+            $names = $default_value_data[$data_key] ?? [];
+            foreach ($names as $i => $name) {
+                // Exclude special values
+                if ($name == "all") {
+                    continue;
+                }
+
+                // Restore correct id
+                $id = $mapper->getItemId($itemtype, $name);
+                $default_value_data[$data_key][$i] = $id;
+            }
+        }
+
+        return $default_value_data;
     }
 }

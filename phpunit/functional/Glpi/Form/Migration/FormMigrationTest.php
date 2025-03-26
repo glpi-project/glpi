@@ -280,8 +280,8 @@ final class FormMigrationTest extends DbTestCase
                 'vertical_rank'               => 0,
                 'horizontal_rank'             => 2,
                 'description'                 => null,
-                'default_value'               => json_encode($default_value->jsonSerialize()),
-                'extra_data'                  => json_encode($extra_data->jsonSerialize())
+                'default_value'               => json_encode($default_value),
+                'extra_data'                  => json_encode($extra_data)
             ]
         ];
 
@@ -296,7 +296,7 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => 0,
                 'description'                 => null,
                 'default_value'               => '1,4',
-                'extra_data'                  => json_encode($extra_data->jsonSerialize())
+                'extra_data'                  => json_encode($extra_data)
             ]
         ];
 
@@ -315,7 +315,7 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => 1,
                 'description'                 => null,
                 'default_value'               => '2025-01-29',
-                'extra_data'                  => json_encode($extra_data->jsonSerialize())
+                'extra_data'                  => json_encode($extra_data)
             ]
         ];
 
@@ -334,7 +334,7 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => 2,
                 'description'                 => null,
                 'default_value'               => '2025-01-29 12:00:00',
-                'extra_data'                  => json_encode($extra_data->jsonSerialize())
+                'extra_data'                  => json_encode($extra_data)
             ]
         ];
 
@@ -349,8 +349,8 @@ final class FormMigrationTest extends DbTestCase
                 'vertical_rank'               => 2,
                 'horizontal_rank'             => null,
                 'description'                 => null,
-                'default_value'               => json_encode($default_value->jsonSerialize()),
-                'extra_data'                  => json_encode($extra_data->jsonSerialize())
+                'default_value'               => json_encode($default_value),
+                'extra_data'                  => json_encode($extra_data)
             ]
         ];
 
@@ -393,8 +393,8 @@ final class FormMigrationTest extends DbTestCase
                 'vertical_rank'               => 6,
                 'horizontal_rank'             => null,
                 'description'                 => null,
-                'default_value'               => json_encode($default_value->jsonSerialize()),
-                'extra_data'                  => json_encode($extra_data->jsonSerialize())
+                'default_value'               => json_encode($default_value),
+                'extra_data'                  => json_encode($extra_data)
             ]
         ];
 
@@ -423,7 +423,7 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => '2,3',
-                'extra_data'                  => json_encode($extra_data->jsonSerialize())
+                'extra_data'                  => json_encode($extra_data)
             ]
         ];
 
@@ -438,7 +438,7 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => '1',
-                'extra_data'                  => json_encode($extra_data->jsonSerialize())
+                'extra_data'                  => json_encode($extra_data)
             ]
         ];
 
@@ -467,7 +467,7 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => '0',
-                'extra_data'                  => json_encode($extra_data->jsonSerialize())
+                'extra_data'                  => json_encode($extra_data)
             ]
         ];
 
@@ -514,7 +514,7 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => '12:00:00',
-                'extra_data'                  => json_encode($extra_data->jsonSerialize())
+                'extra_data'                  => json_encode($extra_data)
             ]
         ];
 

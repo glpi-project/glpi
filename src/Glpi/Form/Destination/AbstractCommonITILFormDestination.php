@@ -53,6 +53,8 @@ use Glpi\Form\Destination\CommonITILField\RequesterField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\CommonITILField\UrgencyField;
 use Glpi\Form\Destination\CommonITILField\ValidationField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
 use Override;
 use Ticket;
@@ -61,6 +63,10 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
 {
     /** @return class-string<\CommonITILObject>   */
     abstract public function getTargetItemtype(): string;
+
+    final public function __construct()
+    {
+    }
 
     #[Override]
     final public function renderConfigForm(
@@ -281,6 +287,49 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         }
 
         return "config[$field_key]";
+    }
+
+    #[Override]
+    final public function exportDynamicConfig(
+        array $config
+    ): DynamicExportDataField {
+        $requirements = [];
+        foreach ($config as $field_key => $field_config_data) {
+            $field = $this->getConfigurableFieldByKey($field_key);
+            if (!$field instanceof AbstractConfigField) {
+                continue;
+            }
+            $export_data = $field->exportDynamicConfig($field_config_data, $this);
+
+            // Apply config for this field
+            $config[$field_key] = $export_data->getData();
+            array_push($requirements, ...$export_data->getRequirements());
+        }
+
+        return new DynamicExportDataField($config, $requirements);
+    }
+
+    #[Override]
+    final public static function prepareDynamicConfigDataForImport(
+        array $config,
+        DatabaseMapper $mapper,
+    ): array {
+        foreach ($config as $field_key => $field_config_data) {
+            $destination = new static();
+            $field = $destination->getConfigurableFieldByKey($field_key);
+            if (!$field instanceof AbstractConfigField) {
+                continue;
+            }
+
+            // Prepare field config for import
+            $config[$field_key] = $field->prepareDynamicConfigDataForImport(
+                $field_config_data,
+                $destination,
+                $mapper,
+            );
+        }
+
+        return $config;
     }
 
     private function applyPredefinedTemplateFields(array $input): array

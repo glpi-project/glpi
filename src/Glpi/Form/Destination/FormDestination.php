@@ -40,6 +40,8 @@ use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Condition\ConditionableCreationInterface;
 use Glpi\Form\Condition\ConditionableCreationTrait;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportData;
 use Glpi\Form\Form;
 use InvalidArgumentException;
 use LogicException;
@@ -281,6 +283,30 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
         }
 
         return new $class();
+    }
+
+    public function exportDynamicData(): DynamicExportData
+    {
+        $type = $this->getConcreteDestinationItem();
+        $config = $this->getConfig();
+
+        $data = new DynamicExportData();
+        $data->addField('config', $type->exportDynamicConfig($config));
+
+        return $data;
+    }
+
+    public static function prepareDynamicImportData(
+        FormDestinationInterface $type,
+        array $input,
+        DatabaseMapper $mapper,
+    ): array {
+        $input['config'] = $type->prepareDynamicConfigDataForImport(
+            $input['config'],
+            $mapper,
+        );
+
+        return $input;
     }
 
     /**

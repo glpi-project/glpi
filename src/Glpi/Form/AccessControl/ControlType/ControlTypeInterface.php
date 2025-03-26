@@ -39,6 +39,8 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
 
 interface ControlTypeInterface
@@ -114,4 +116,13 @@ interface ControlTypeInterface
      * @return bool
      */
     public function allowUnauthenticated(JsonFieldInterface $config): bool;
+
+    public function exportDynamicConfig(
+        JsonFieldInterface $config
+    ): DynamicExportDataField;
+
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        DatabaseMapper $mapper,
+    ): array;
 }

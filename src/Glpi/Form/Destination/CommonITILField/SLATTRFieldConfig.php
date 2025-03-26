@@ -34,21 +34,10 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
-use SLA;
 
-class SLATTRFieldConfig extends SLMFieldConfig
+final class SLATTRFieldConfig extends SLMFieldConfig
 {
-    #[Override]
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
-    {
-        return [
-            new ForeignKeyHandler(key: self::SLM_ID, itemtype: SLA::class)
-        ];
-    }
-
     #[Override]
     public static function jsonDeserialize(array $data): self
     {

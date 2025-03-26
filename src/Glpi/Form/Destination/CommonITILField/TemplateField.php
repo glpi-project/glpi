@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,7 +37,11 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
@@ -46,7 +49,7 @@ use InvalidArgumentException;
 use ITILTemplate;
 use Override;
 
-class TemplateField extends AbstractConfigField implements DestinationFieldConverterInterface
+final class TemplateField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     private string $itil_template_class;
 
@@ -206,5 +209,60 @@ TWIG;
         }
 
         return $this->getDefaultConfig($form);
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        $fallback = parent::exportDynamicConfig($config, $destination);
+
+        // Check if a template is defined
+        $template_id = $config[TemplateFieldConfig::TEMPLATE_ID] ?? null;
+        if ($template_id === null) {
+            return $fallback;
+        }
+
+        // Try to load template
+        $itil_itemtype = $destination->getTargetItemtype();
+        $template_type = $itil_itemtype::getTemplateClass();
+        $template = $template_type::getById($template_id);
+        if (!$template) {
+            return $fallback;
+        }
+
+        // Insert template name and requirement
+        $name = $template->getName();
+        $config[TemplateFieldConfig::TEMPLATE_ID] = $name;
+        $requirement = new DataRequirementSpecification($template_type, $name);
+
+        return new DynamicExportDataField($config, [$requirement]);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        // Check if a template is defined
+        if (!isset($config[TemplateFieldConfig::TEMPLATE_ID])) {
+            return parent::prepareDynamicConfigDataForImport(
+                $config,
+                $destination,
+                $mapper
+            );
+        }
+
+        // Insert id
+        $itil_itemtype = $destination->getTargetItemtype();
+        $template_type = $itil_itemtype::getTemplateClass();
+        $config[TemplateFieldConfig::TEMPLATE_ID] = $mapper->getItemId(
+            $template_type,
+            $config[TemplateFieldConfig::TEMPLATE_ID],
+        );
+
+        return $config;
     }
 }

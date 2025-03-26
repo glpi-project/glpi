@@ -36,6 +36,8 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Question;
 
 /**
@@ -236,4 +238,38 @@ interface QuestionTypeInterface
      * Apply a predefined value that will be used when rendering the form.
      */
     public function formatPredefinedValue(string $value): ?string;
+
+    /**
+     * Must return a DynamicExportDataField object constructed from the
+     * following values:
+     *  - field_id: "extra_data"
+     *  - data: the extra data content with db names instead of ids
+     *  - requirements: one requirement per database id in the original extra data
+     */
+    public function exportDynamicExtraData(
+        ?JsonFieldInterface $extra_data_config,
+    ): DynamicExportDataField;
+
+     /**
+     * Must return a DynamicExportDataField object constructed from the
+     * following values:
+     *  - field_id: "default_value"
+     *  - data: the default value content with db names instead of ids
+     *  - requirements: one requirement per database id in the original default values
+     */
+    public function exportDynamicDefaultValue(
+        ?JsonFieldInterface $extra_data_config,
+        array|int|float|bool|string|null $default_value_config,
+    ): DynamicExportDataField;
+
+    public static function prepareDynamicExtraDataForImport(
+        ?array $extra_data,
+        DatabaseMapper $mapper,
+    ): ?array;
+
+    public static function prepareDynamicDefaultValueForImport(
+        ?array $extra_data,
+        array|int|float|bool|string|null $default_value_data,
+        DatabaseMapper $mapper,
+    ): array|int|float|bool|string|null;
 }

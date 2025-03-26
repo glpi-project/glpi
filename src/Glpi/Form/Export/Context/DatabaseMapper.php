@@ -79,7 +79,7 @@ final class DatabaseMapper
             // Can't recover from this point, it is the serializer
             // responsability to validate that all requirements are found in the
             // context before attempting to import the forms.
-            throw new \LogicException();
+            throw new \LogicException("Unknown item: {$itemtype}::{$name}");
         }
 
         return $this->values[$itemtype][$name];
