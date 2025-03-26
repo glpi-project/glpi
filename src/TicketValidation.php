@@ -124,5 +124,4 @@ class TicketValidation extends CommonITILValidation
 
         return $values;
     }
-
 }

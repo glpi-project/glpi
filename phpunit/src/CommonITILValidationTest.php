@@ -753,10 +753,12 @@ abstract class CommonITILValidationTest extends DbTestCase
 
         // the itil_validationstep is created
         $itil_validationstep = $itil::getValidationStepInstance();
-        $this->assertTrue($itil_validationstep->getFromDBByCrit(
-            [
-                'id' => $validation->fields['itils_validationsteps_id'],
-                'validationsteps_id' => $this->getInitialDefaultValidationStep()->getID(),]
+        $this->assertTrue(
+            $itil_validationstep->getFromDBByCrit(
+                [
+                    'id' => $validation->fields['itils_validationsteps_id'],
+                    'validationsteps_id' => $this->getInitialDefaultValidationStep()->getID(),
+                ]
             ),
             'Validation step association should be created while creating a Validation'
         );
@@ -770,14 +772,14 @@ abstract class CommonITILValidationTest extends DbTestCase
         $validation_classname = $this->getTestedClass();
         $validationstep_id ??= $this->getInitialDefaultValidationStep()->getID();
 
-        if(!isset($_SESSION['glpiID']))
-        {
+        if (!isset($_SESSION['glpiID'])) {
             throw new \RuntimeException('$_SESSION["glpiID"] is not set, did you forget to call $this->login() ?');
         };
 
         // create itil_validationstep
         $validationstep_classname = $itil::getValidationStepClassName();
-        $itils_validationsteps = $this->createItem($validationstep_classname,
+        $itils_validationsteps = $this->createItem(
+            $validationstep_classname,
             ['validationsteps_id' => $this->getInitialDefaultValidationStep()->getID(), 'minimal_required_validation_percent' => 100]
         );
 
