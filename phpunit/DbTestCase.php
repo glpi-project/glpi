@@ -153,7 +153,7 @@ class DbTestCase extends \GLPITestCase
      * Get classes implementing the specified $function, or all classes if $function is false,
      * excluding classnames matching a pattern in $excludes
      *
-     * @param string|boolean $function Whether to look for a function
+     * @param string|false $function Whether to look for a function
      * @param array $excludes List of classes to exclude
      *
      * @return array<int, class-string>
