@@ -35,12 +35,12 @@
 namespace tests\units\Glpi\Form\Destination;
 
 use Glpi\Form\Destination\FormDestinationTicket;
-use Glpi\Tests\Form\Destination\AbstractFormDestinationType;
+use Glpi\Tests\Form\Destination\AbstractCommonITILFormDestinationType;
 use Glpi\Tests\FormTesterTrait;
 use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class FormDestinationTicketTest extends AbstractFormDestinationType
+class FormDestinationTicketTest extends AbstractCommonITILFormDestinationType
 {
     use FormTesterTrait;
 

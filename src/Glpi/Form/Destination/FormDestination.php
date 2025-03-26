@@ -178,13 +178,6 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
     {
         $input = $this->prepareInput($input);
 
-        // Set default name
-        if (!isset($input['name'])) {
-            // It is safe to access the 'itemtype' key here as it has been
-            // validated by the "prepareInput" method
-            $input['name'] = $input['itemtype']::getTypeName(1);
-        }
-
         // Set default config
         if (!isset($input['config'])) {
             // Is is safe to access the 'itemtype' key here as it has been
@@ -241,7 +234,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
             $type = $input['itemtype'] ?? null;
             if (
                 $type === null
-                || !is_a($type, AbstractFormDestinationType::class, true)
+                || !is_a($type, FormDestinationInterface::class, true)
                 || (new ReflectionClass($type))->isAbstract()
             ) {
                 throw new InvalidArgumentException("Invalid itemtype");
@@ -291,38 +284,6 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
         }
 
         return new $class();
-    }
-
-    /**
-     * Get valid destinations for a given form
-     *
-     * @param Form $form
-     *
-     * @return AbstractFormDestinationType[]
-     */
-    protected function getDestinationsForForm(Form $form): array
-    {
-        $destinations = [];
-        $raw_data = $this->find(['forms_forms_id' => $form->getID()]);
-
-        foreach ($raw_data as $row) {
-            if (
-                !is_a($row['itemtype'], AbstractFormDestinationType::class, true)
-                || (new ReflectionClass($row['itemtype']))->isAbstract()
-            ) {
-                // Invalid itemtype, maybe from a disabled plugin
-                continue;
-            }
-
-            $destination = $row['itemtype']::getById($row['items_id']);
-            if (!$destination) {
-                continue;
-            }
-
-            $destinations[] = $destination;
-        }
-
-        return $destinations;
     }
 
     /**

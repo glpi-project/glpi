@@ -73,9 +73,14 @@ interface FormDestinationInterface
     ): string;
 
     /**
-     * Get itemtype to create
-     *
-     * @return string (Must be a valid CommonDBTM class name)
+     * Used to ordered items (lowest = first, highest = last)
      */
-    public static function getTargetItemtype(): string;
+    public function getWeight(): int;
+
+    public function getLabel(): string;
+
+    /**
+     * @return string Fully qualified tabler icon name (e.g. ti ti-user)
+     */
+    public function getIcon(): string;
 }

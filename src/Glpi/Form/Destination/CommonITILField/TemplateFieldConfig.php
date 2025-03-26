@@ -67,8 +67,8 @@ final class TemplateFieldConfig implements
             );
         }
 
-        $destination_itemtype = $content_spec->itemtype;
-        $destination_target = new ($destination_itemtype::getTargetItemtype())();
+        $destination_item = new $content_spec->itemtype();
+        $destination_target = new ($destination_item->getTargetItemtype())();
         return [
             new ForeignKeyHandler(self::TEMPLATE_ID, $destination_target->getTemplateClass())
         ];

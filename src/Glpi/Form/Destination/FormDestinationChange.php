@@ -41,8 +41,14 @@ use Override;
 final class FormDestinationChange extends AbstractCommonITILFormDestination
 {
     #[Override]
-    public static function getTargetItemtype(): string
+    public function getTargetItemtype(): string
     {
         return Change::class;
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 20;
     }
 }

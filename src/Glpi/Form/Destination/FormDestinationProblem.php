@@ -41,8 +41,14 @@ use Problem;
 final class FormDestinationProblem extends AbstractCommonITILFormDestination
 {
     #[Override]
-    public static function getTargetItemtype(): string
+    public function getTargetItemtype(): string
     {
         return Problem::class;
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 30;
     }
 }

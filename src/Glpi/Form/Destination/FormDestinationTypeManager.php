@@ -67,7 +67,7 @@ final class FormDestinationTypeManager
     /**
      * Get all available destinations types
      *
-     * @return AbstractFormDestinationType[]
+     * @return FormDestinationInterface[]
      */
     public function getDestinationTypes(): array
     {
@@ -86,9 +86,18 @@ final class FormDestinationTypeManager
      */
     public function getDestinationTypesDropdownValues(): array
     {
+        $types = $this->getDestinationTypes();
+        uasort(
+            $types,
+            fn(
+                FormDestinationInterface $a,
+                FormDestinationInterface $b,
+            ): int => $a->getWeight() <=> $b->getWeight()
+        );
+
         $values = [];
         foreach ($this->getDestinationTypes() as $type) {
-            $values[get_class($type)] = $type->getTypeName(1);
+            $values[get_class($type)] = $type->getLabel();
         }
 
         return $values;
@@ -96,10 +105,8 @@ final class FormDestinationTypeManager
 
     /**
      * Default (most common) type.
-     *
-     * @return AbstractFormDestinationType
      */
-    public function getDefaultType(): AbstractFormDestinationType
+    public function getDefaultType(): FormDestinationInterface
     {
         return new FormDestinationTicket();
     }

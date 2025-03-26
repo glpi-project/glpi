@@ -35,11 +35,11 @@
 namespace tests\units\Glpi\Form\Destination;
 
 use Glpi\Form\Destination\FormDestinationProblem;
-use Glpi\Tests\Form\Destination\AbstractFormDestinationType;
+use Glpi\Tests\Form\Destination\AbstractCommonITILFormDestinationType;
 use Glpi\Tests\FormTesterTrait;
 use Override;
 
-class FormDestinationProblemTest extends AbstractFormDestinationType
+class FormDestinationProblemTest extends AbstractCommonITILFormDestinationType
 {
     use FormTesterTrait;
 
