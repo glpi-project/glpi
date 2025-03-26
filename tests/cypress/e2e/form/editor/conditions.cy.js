@@ -952,6 +952,18 @@ describe ('Conditions', () => {
         cy.focused().type('Option 3{enter}');
         cy.focused().type('Option 4');
 
+        addQuestion('My requester question');
+        setQuestionTypeCategory('Actors');
+        setQuestionType('Requesters');
+
+        addQuestion('My observer question');
+        setQuestionTypeCategory('Actors');
+        setQuestionType('Observers');
+
+        addQuestion('My assignee question');
+        setQuestionTypeCategory('Actors');
+        setQuestionType('Assignees');
+
         // Add a condition for each possible condition types
         getAndFocusQuestion('Test subject').within(() => {
             initVisibilityConfiguration();
@@ -1055,6 +1067,33 @@ describe ('Conditions', () => {
                 ['Option 1', 'Option 2'],
                 'dropdown_multiple',
             );
+            addNewEmptyCondition();
+            fillCondition(
+                11,
+                'And',
+                'My requester question',
+                'Is equal to',
+                'E2E Tests',
+                'dropdown',
+            );
+            addNewEmptyCondition();
+            fillCondition(
+                12,
+                'And',
+                'My observer question',
+                'Is equal to',
+                'E2E Tests',
+                'dropdown',
+            );
+            addNewEmptyCondition();
+            fillCondition(
+                13,
+                'And',
+                'My assignee question',
+                'Is equal to',
+                'E2E Tests',
+                'dropdown',
+            );
         });
 
         // Reload and check values
@@ -1148,6 +1187,30 @@ describe ('Conditions', () => {
                 'Is not equal to',
                 ['Option 1', 'Option 2'],
                 'dropdown_multiple',
+            );
+            checkThatConditionExist(
+                11,
+                'And',
+                'My requester question',
+                'Is equal to',
+                'e2e_tests',
+                'dropdown',
+            );
+            checkThatConditionExist(
+                12,
+                'And',
+                'My observer question',
+                'Is equal to',
+                'e2e_tests',
+                'dropdown',
+            );
+            checkThatConditionExist(
+                13,
+                'And',
+                'My assignee question',
+                'Is equal to',
+                'e2e_tests',
+                'dropdown',
             );
         });
     });

@@ -137,11 +137,16 @@ final class FormData
                 $uuid = implode('-', $item_parts);
             }
 
+            $value = $condition_data['value'] ?? null;
+            if (is_string($value) && !empty($value) && json_validate($value)) {
+                $value = json_decode($value, true);
+            }
+
             $this->conditions_data[] = new ConditionData(
                 item_uuid     : $uuid,
                 item_type     : $type,
                 value_operator: $condition_data['value_operator'] ?? null,
-                value         : $condition_data['value'] ?? null,
+                value         : $value,
                 logic_operator: $condition_data['logic_operator'] ?? null,
             );
         }

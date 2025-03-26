@@ -35,14 +35,17 @@
 namespace Glpi\Form\Condition\ConditionHandler;
 
 use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
+use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Override;
 
-final class MultipleChoiceFromValuesConditionHandler implements ConditionHandlerInterface
+class ActorConditionHandler implements ConditionHandlerInterface
 {
     use ArrayConditionHandlerTrait;
 
     public function __construct(
-        private array $values,
+        private AbstractQuestionTypeActors $question_type,
+        private QuestionTypeActorsExtraDataConfig $extra_data_config,
     ) {
     }
 
@@ -55,14 +58,15 @@ final class MultipleChoiceFromValuesConditionHandler implements ConditionHandler
     #[Override]
     public function getTemplate(): string
     {
-        return '/pages/admin/form/condition_handler_templates/dropdown_multiple.html.twig';
+        return '/pages/admin/form/condition_handler_templates/actor.html.twig';
     }
 
     #[Override]
     public function getTemplateParameters(): array
     {
         return [
-            'values' => $this->values,
+            'multiple'       => $this->extra_data_config->isMultipleActors(),
+            'allowed_actors' => $this->question_type->getAllowedActorTypes(),
         ];
     }
 
