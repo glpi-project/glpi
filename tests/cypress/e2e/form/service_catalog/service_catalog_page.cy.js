@@ -32,10 +32,10 @@
 
 describe('Service catalog page', () => {
 
-    function createActiveForm(name, category = 0) {
+    function createActiveForm(name, category = 0, description = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.') {
         cy.createFormWithAPI({
             'name': name,
-            'description': "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+            'description': description,
             'is_active': true,
             'forms_categories_id': category,
         }).as('form_id');
@@ -474,5 +474,28 @@ describe('Service catalog page', () => {
             cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + i)} ${time}`}).should('exist');
         }
         cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + forms_per_page)} ${time}`}).should('not.exist');
+    });
+
+    it('can display service catalog with form that has no description', () => {
+        const form_name = `Test form without description ${(new Date()).getTime()}`;
+
+        cy.changeProfile('Super-Admin');
+        createActiveForm(form_name, 0, null);
+
+        cy.changeProfile('Self-Service', true);
+        cy.visit('/ServiceCatalog');
+
+        // Search for the form
+        cy.findByPlaceholderText('Search for forms...').as('filter_input');
+        cy.get('@filter_input').type(form_name);
+
+        // Validate that the form is displayed correctly.
+        cy.findByRole('region', {'name': form_name}).as('forms');
+        cy.get('@forms').within(() => {
+            cy.findByRole('heading', {'name': form_name}).should('exist');
+            cy.findByRole('heading', {'name': form_name}).next('div').invoke('text').then((text) => {
+                expect(text.trim()).to.be.empty;
+            });
+        });
     });
 });
