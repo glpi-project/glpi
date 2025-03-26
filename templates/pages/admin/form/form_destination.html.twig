@@ -30,12 +30,12 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var string                                        icon #}
-{# @var \Glpi\Form\Desination\AbstractFormDestination default_destination_object #}
-{# @var \Glpi\Form\Form                               form #}
-{# @var \Glpi\Form\Desination\FormDestination         destinations #}
-{# @var int|null                                      active_destination #}
-{# @var boolean                                       can_update #}
+{# @var string                                         icon #}
+{# @var \Glpi\Form\Desination\FormDestinationInterface default_destination_object #}
+{# @var \Glpi\Form\Form                                form #}
+{# @var \Glpi\Form\Desination\FormDestination          destinations #}
+{# @var int|null                                       active_destination #}
+{# @var boolean                                        can_update #}
 
 <div class="py-2 px-3">
     <h2 class="d-flex">
@@ -44,19 +44,32 @@
     </h2>
 
     <div class="d-flex">
-        <form method="POST" action="{{ path('/Form/%d/Destination/Add'|format(form.getID())) }}">
-            <div class="btn-group me-2">
-                {% for type, label in available_destinations_types %}
-                    <button class="btn" name="itemtype" type="submit" value="{{ type }}">
-                        <i class="ti ti-plus me-1"></i> {{ __("Add %s"|format(label)) }}
-                    </button>
-                {% endfor %}
-            </div>
+        {# Add Form #}
+        {% for type, label in available_destinations_types %}
+            <form
+                id="add_destination_{{ type }}"
+                method="POST"
+                action="{{ path('/Form/%d/Destination/Add'|format(form.getID())) }}"
+            >
+                <input type="hidden" name="name" value="{{ label }}"/>
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="add" value=""/>
+            </form>
+        {% endfor %}
 
-            {# Hidden values #}
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
-            <input type="hidden" name="add" value=""/>
-        </form>
+        <div class="btn-group me-2">
+            {% for type, label in available_destinations_types %}
+                <button
+                    form="add_destination_{{ type }}"
+                    class="btn"
+                    name="itemtype"
+                    type="submit"
+                    value="{{ type }}"
+                >
+                    <i class="ti ti-plus me-1"></i> {{ __("Add %s"|format(label)) }}
+                </button>
+            {% endfor %}
+        </div>
     </div>
 
     {% if destinations|length == 0 %}
@@ -80,7 +93,7 @@
                             data-bs-target="#glpi-destinations-accordion-collapse-{{ rand }}-{{ loop.index }}"
                             aria-expanded="{{ is_expanded ? 'true' : 'false' }}"
                         >
-                            <i class="{{ concrete_destination.getTargetItemtype()|itemtype_icon }} me-2"></i>
+                            <i class="{{ concrete_destination.getIcon() }} me-2"></i>
                             <h4
                                 class="m-0"
                                 style="font-weight: inherit;"

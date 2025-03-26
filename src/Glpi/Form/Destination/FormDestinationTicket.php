@@ -47,7 +47,7 @@ use Ticket;
 final class FormDestinationTicket extends AbstractCommonITILFormDestination
 {
     #[Override]
-    public static function getTargetItemtype(): string
+    public function getTargetItemtype(): string
     {
         return Ticket::class;
     }
@@ -63,5 +63,11 @@ final class FormDestinationTicket extends AbstractCommonITILFormDestination
             new OLATTRField(),
             new StatusField(),
         ]);
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 10;
     }
 }

@@ -57,8 +57,11 @@ use Glpi\Form\Form;
 use Override;
 use Ticket;
 
-abstract class AbstractCommonITILFormDestination extends AbstractFormDestinationType
+abstract class AbstractCommonITILFormDestination implements FormDestinationInterface
 {
+    /** @return class-string<\CommonITILObject>   */
+    abstract public function getTargetItemtype(): string;
+
     #[Override]
     final public function renderConfigForm(
         Form $form,
@@ -79,9 +82,15 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
     }
 
     #[Override]
-    final public static function getTypeName($nb = 0)
+    final public function getLabel(): string
     {
-        return static::getTargetItemtype()::getTypeName($nb);
+        return $this->getTargetItemtype()::getTypeName(1);
+    }
+
+    #[Override]
+    final public function getIcon(): string
+    {
+        return $this->getTargetItemtype()::getIcon();
     }
 
     #[Override]
@@ -90,8 +99,8 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         AnswersSet $answers_set,
         array $config,
     ): array {
-        $typename        = static::getTypeName(1);
-        $itemtype        = static::getTargetItemtype();
+        $typename        = $this->getLabel();
+        $itemtype        = $this->getTargetItemtype();
         $fields_to_apply = $this->getConfigurableFields();
 
         // Mandatory values, we must preset defaults values as it can't be
@@ -102,7 +111,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         ];
 
         // Template field must be computed before applying predefined fields
-        $target_itemtype = static::getTargetItemtype();
+        $target_itemtype = $this->getTargetItemtype();
         $template_class = (new $target_itemtype())->getTemplateClass();
         $template_field = new TemplateField($template_class);
         $input = $template_field->applyConfiguratedValueToInputUsingAnswers(
@@ -142,6 +151,10 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
 
         // Create commonitil object
         $itil_object = new $itemtype();
+
+        // It is safer to ignore this phpstan error as plugin code may not be
+        // statically analyzed and we don't want it to create unexpected issues.
+        // @phpstan-ignore-next-line instanceof.alwaysTrue
         if (!($itil_object instanceof CommonITILObject)) {
             throw new \RuntimeException(
                 "The target itemtype must be an instance of CommonITILObject"
@@ -221,7 +234,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
      */
     protected function defineConfigurableFields(): array
     {
-        $target_itemtype = static::getTargetItemtype();
+        $target_itemtype = $this->getTargetItemtype();
         $template_class = (new $target_itemtype())->getTemplateClass();
 
         return [
@@ -272,7 +285,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
 
     private function applyPredefinedTemplateFields(array $input): array
     {
-        $itemtype = static::getTargetItemtype();
+        $itemtype = $this->getTargetItemtype();
 
         /** @var \CommonITILObject $itil */
         $itil = new $itemtype();

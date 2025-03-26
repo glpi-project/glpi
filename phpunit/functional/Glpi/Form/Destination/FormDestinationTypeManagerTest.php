@@ -35,7 +35,7 @@
 namespace tests\units\Glpi\Form\Destination;
 
 use DbTestCase;
-use Glpi\Form\Destination\AbstractFormDestinationType;
+use Glpi\Form\Destination\FormDestinationInterface;
 use Glpi\Form\Destination\FormDestinationTypeManager;
 
 final class FormDestinationTypeManagerTest extends DbTestCase
@@ -55,7 +55,7 @@ final class FormDestinationTypeManagerTest extends DbTestCase
         $this->assertNotEmpty($types);
 
         foreach ($types as $type) {
-            $this->assertInstanceOf(AbstractFormDestinationType::class, $type);
+            $this->assertInstanceOf(FormDestinationInterface::class, $type);
         }
     }
 
@@ -75,17 +75,17 @@ final class FormDestinationTypeManagerTest extends DbTestCase
         foreach ($values as $class => $label) {
             $this->assertNotEmpty($class);
             $item = new $class();
-            $this->assertInstanceOf(AbstractFormDestinationType::class, $item);
+            $this->assertInstanceOf(FormDestinationInterface::class, $item);
             $this->assertNotEmpty($label);
         }
     }
 
     /**
-     * Test for the getDestinationTypesDropdownValues method.
+     * Test for the getDefaultType method.
      *
      * @return void
      */
-    public function getDefaultType(): void
+    public function testGetDefaultType(): void
     {
         $manager = FormDestinationTypeManager::getInstance();
 

@@ -35,7 +35,6 @@
 namespace Glpi\Tests\Form\Destination;
 
 use CommonDBTM;
-use CommonGLPI;
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
@@ -49,23 +48,22 @@ use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use ReflectionClass;
 
-abstract class AbstractFormDestinationType extends DbTestCase
+abstract class AbstractCommonITILFormDestinationType extends DbTestCase
 {
     use FormTesterTrait;
 
     /**
      * Get the tested instance
      *
-     * @return \Glpi\Form\Destination\AbstractFormDestinationType
+     * @return \Glpi\Form\Destination\AbstractCommonITILFormDestination
      */
-    abstract protected function getTestedInstance(): \Glpi\Form\Destination\AbstractFormDestinationType;
+    abstract protected function getTestedInstance(): \Glpi\Form\Destination\AbstractCommonITILFormDestination;
 
     final public function testCreateDestinations(): void
     {
         $this->login();
         $answers_handler = AnswersHandler::getInstance();
-        $itemtype = $this->getTestedInstance()::getTargetItemtype();
-        $link_itemtype = $itemtype::getItemLinkClass();
+        $itemtype = $this->getTestedInstance()->getTargetItemtype();
 
         $title_field = new TitleField();
         $content_field = new ContentField();
@@ -105,7 +103,7 @@ abstract class AbstractFormDestinationType extends DbTestCase
     final public function testGetTargetItemtype(): void
     {
         // Ensure the type defined in the child class is a valid CommonDBTM class
-        $type = $this->getTestedInstance()::getTargetItemtype();
+        $type = $this->getTestedInstance()->getTargetItemtype();
         $is_valid_class = is_a($type, CommonDBTM::class, true)
             && !(new ReflectionClass($type))->isAbstract();
 
