@@ -2215,7 +2215,7 @@ TWIG,
      * @since 0.84
      *
      * @param string  $itemtype  Massive action itemtype
-     * @param integer $id        ID of the item
+     * @param string|integer $id        ID of the item
      * @param array   $options
      *
      * @return string
@@ -2248,7 +2248,7 @@ TWIG,
      * @since 0.84
      *
      * @param string  $itemtype  Massive action itemtype
-     * @param integer $id        ID of the item
+     * @param string|integer $id        ID of the item
      * @param array   $options
      *
      * @return void

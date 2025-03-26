@@ -314,12 +314,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Ajax.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Right side of && is always false\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Ajax.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Appliance\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
