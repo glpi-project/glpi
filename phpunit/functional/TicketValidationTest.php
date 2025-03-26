@@ -371,29 +371,21 @@ class TicketValidationTest extends CommonITILValidationTest
         $this->login();
 
         // Create a ticket
-        $ticket = new \Ticket();
-        $tickets_id = $ticket->add(
-            [
-                'name'               => "Test validation status transition",
-                'content'            => "Test content",
-            ]
-        );
-        $this->assertGreaterThan(0, $tickets_id);
-
-        $validation = new \TicketValidation();
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'               => "Test validation status transition",
+            'content'            => "Test content",
+        ]);
 
         // Add first validation request
-        $validation_id = $validation->add(
-            [
-                'tickets_id'        => $tickets_id,
-                'users_id_validate' => getItemByTypeName('User', 'tech', true),
-                'comment_submission' => 'Please validate this ticket'
-            ]
-        );
-        $this->assertGreaterThan(0, $validation_id);
+        $validation = $this->createItem(\TicketValidation::class, [
+            'tickets_id'        => $ticket->getID(),
+            'itemtype_target' => \User::class,
+            'items_id_target' => getItemByTypeName('User', 'tech', true),
+            'comment_submission' => 'Please validate this ticket'
+        ]);
 
         // Check that global validation status is WAITING
-        $ticket->getFromDB($tickets_id);
+        $ticket->getFromDB($ticket->getID());
         $this->assertEquals(
             \CommonITILValidation::WAITING,
             (int)$ticket->getField('global_validation')
@@ -403,18 +395,13 @@ class TicketValidationTest extends CommonITILValidationTest
         $this->login('tech', 'tech');
 
         // Refuse the validation
-        $this->assertTrue(
-            $validation->update(
-                [
-                    'id'                 => $validation_id,
-                    'status'             => \CommonITILValidation::REFUSED,
-                    'comment_validation' => 'I refuse this validation'
-                ]
-            )
-        );
+        $this->updateItem($validation::class, $validation->getID(), [
+            'status'             => \CommonITILValidation::REFUSED,
+            'comment_validation' => 'I refuse this validation'
+        ]);
 
         // Check that global validation status is now REFUSED
-        $ticket->getFromDB($tickets_id);
+        $ticket->getFromDB($ticket->getID());
         $this->assertEquals(
             \CommonITILValidation::REFUSED,
             (int)$ticket->getField('global_validation')
@@ -424,17 +411,15 @@ class TicketValidationTest extends CommonITILValidationTest
         $this->login();
 
         // Add another validation request
-        $new_validation_id = $validation->add(
-            [
-                'tickets_id'        => $tickets_id,
-                'users_id_validate' => getItemByTypeName('User', 'glpi', true),
-                'comment_submission' => 'Please validate this ticket (second attempt)'
-            ]
-        );
-        $this->assertGreaterThan(0, $new_validation_id);
+        $this->createItem($validation::class, [
+            'tickets_id'        => $ticket->getID(),
+            'itemtype_target' => \User::class,
+            'items_id_target' => getItemByTypeName('User', 'tech', true),
+            'comment_submission' => 'Please validate this ticket (second attempt)'
+        ]);
 
         // Check that global validation status is now back to WAITING
-        $ticket->getFromDB($tickets_id);
+        $ticket->getFromDB($ticket->getID());
         $this->assertEquals(
             \CommonITILValidation::WAITING,
             (int)$ticket->getField('global_validation')
@@ -476,7 +461,7 @@ class TicketValidationTest extends CommonITILValidationTest
         assert(true === $itil->getFromDB($itil->getID()));
         $this->assertValidationStatusEquals(CommonITILValidation::REFUSED, $itil->fields['global_validation']);
         $validation = $itil::getValidationClassInstance();
-        assert(true === $validation->getFromDBByCrit([$itil::getForeignKeyField()=> $itil->getID(), 'itils_validationsteps_id' => $ivs->getID()])); // find validation
+        assert(true === $validation->getFromDBByCrit([$itil::getForeignKeyField() => $itil->getID(), 'itils_validationsteps_id' => $ivs->getID()])); // find validation
         assert(true === $validation->delete(['id' => $validation->getID()])); // delete validation
         assert(true === $itil->getFromDB($itil->getID())); // reload itil
         $this->assertValidationStatusEquals(CommonITILValidation::WAITING, $itil->fields['global_validation']);
@@ -486,7 +471,7 @@ class TicketValidationTest extends CommonITILValidationTest
         [$itil, $ivs] = $this->createITILSValidationStepWithValidations($vs, [\CommonITILValidation::WAITING]);
         $this->assertValidationStatusEquals(CommonITILValidation::WAITING, (int)$itil->fields['global_validation']);
         $validation = $itil::getValidationClassInstance();
-        assert(true === $validation->getFromDBByCrit([$itil::getForeignKeyField()=> $itil->getID()]));
+        assert(true === $validation->getFromDBByCrit([$itil::getForeignKeyField() => $itil->getID()]));
         assert(true === $validation->update(['id' => $validation->getID(), 'status' => CommonITILValidation::ACCEPTED]));
         assert(true === $itil->getFromDB($itil->getID()));
         assert(CommonITILValidation::ACCEPTED === $itil->fields['global_validation']);

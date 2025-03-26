@@ -101,9 +101,8 @@ trait ValidationStepTrait
         if (!is_null($expected_status)) {
             $checked_status = $ivs::getITILValidationStepStatus($ivs->getID(), TicketValidation::class);  // @todo pass validation class as argument to allow usage of these helper with other validation classes
             assert($expected_status === $checked_status, 'failed to create itil_validation step with status ' . $this->statusToLabel($expected_status) . ' it has status ' . $this->statusToLabel($checked_status));
-        }
-        // expected status is implicitely the only status given in argument (except NONE)
-        elseif (count($validations_statuses) === 1 && $validations_statuses[0] !== CommonITILValidation::NONE) {
+        } elseif (count($validations_statuses) === 1 && $validations_statuses[0] !== CommonITILValidation::NONE) {
+            // expected status is implicitely the only status given in argument (except NONE)
             $checked_status = $ivs::getITILValidationStepStatus($ivs->getID(), TicketValidation::class); // @todo pass validation class as argument to allow usage of these helper with other validation classes
             assert($validations_statuses[0] === $checked_status, 'failed to create itil_validation step with status ' . $this->statusToLabel($validations_statuses[0]) . ' it has status ' . $this->statusToLabel($checked_status));
         }
