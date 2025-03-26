@@ -734,35 +734,6 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 ]);
 
                 foreach ($assets_iterator as $asset_data) {
-                    // Consider an asset with the same name, in the same entity, and created at the same datetime
-                    // as the same as the asset we are importing.
-                    $reconciliation_criteria = [
-                        'name'          => $asset_data['name'],
-                        'entities_id'   => $asset_data['entities_id'],
-                        'date_creation' => $asset_data['date_creation'],
-                    ] + $asset_class::getSystemSQLCriteria();
-
-                    // Check if the asset is outdated before trying to import it.
-                    // If it is outdated, we must not try to handle its child items (e.g. groups and domains relations) import.
-                    $existing_asset = new $asset_class();
-                    if (
-                        $existing_asset->getFromDBByCrit($reconciliation_criteria)
-                        && \strtotime($asset_data['date_mod']) < \strtotime($existing_asset->fields['date_mod'])
-                    ) {
-                        $this->result->markItemAsReused($asset_class, $existing_asset->getID());
-                        $this->result->addMessage(
-                            MessageType::Debug,
-                            sprintf(
-                                __('%s "%s" (%d) is most recent on GLPI side, its update has been skipped.'),
-                                $asset_class::getTypeName(1),
-                                $existing_asset->getFriendlyName() ?: NOT_AVAILABLE,
-                                $existing_asset->getID(),
-                            )
-                        );
-                        $this->progress_indicator?->advance();
-                        continue;
-                    }
-
                     $input = [];
 
                     $asset_fkeys_specs = [];
@@ -816,7 +787,6 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                     $asset = $this->importItem(
                         $asset_class,
                         input: $input,
-                        reconciliation_criteria: $reconciliation_criteria
                     );
 
                     $this->mapItem(
@@ -850,7 +820,6 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                             $this->importItem(
                                 Group_Item::class,
                                 input: $group_input,
-                                reconciliation_criteria: $group_input,
                             );
                         }
                     }
@@ -865,7 +834,6 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         $this->importItem(
                             Domain_Item::class,
                             input: $domain_input,
-                            reconciliation_criteria: $domain_input,
                         );
                     }
 
