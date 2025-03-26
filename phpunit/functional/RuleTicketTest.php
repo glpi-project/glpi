@@ -1382,17 +1382,20 @@ class RuleTicketTest extends RuleCommonITILObject
         $validations = (new \TicketValidation())->find();
         $this->assertCount(1, $validations);
         $validation = array_pop($validations);
-        $this->assertEquals(\ValidationStep::getDefault()->getID(), $validation['validationsteps_id']);
+        $itil_validation = new \ITIL_ValidationStep();
+        $itil_validation->getFromDB($validation['itils_validationsteps_id']);
+        $this->assertEquals(\ValidationStep::getDefault()->getID(), $itil_validation->fields['validationsteps_id']);
     }
 
     public function testAssignCreatedValidationStep(): void
     {
+        // arrange
         $this->login();
         $user_id = (int) getItemByTypeName('User', '_test_user', true);
         $entity = getItemByTypeName('Entity', '_test_root_entity', true); // 4
+
         assert(0 === countElementsInTable(\TicketValidation::getTable()), 'test expects no validation at start');
 
-        // arrange
         $new_validationsteps_id = ($this->createItem(\ValidationStep::class, [
             'name' => 'Tech team',
             'minimal_required_validation_percent' => 100,
@@ -1418,6 +1421,8 @@ class RuleTicketTest extends RuleCommonITILObject
         $validations = (new \TicketValidation())->find();
         $this->assertCount(1, $validations, 'There must be only a single Validation created.');
         $validation = array_pop($validations);
-        $this->assertEquals($new_validationsteps_id, $validation['validationsteps_id'], 'The validationstep_id must be the just created one.');
+        $itil_validation = new \ITIL_ValidationStep();
+        $itil_validation->getFromDB($validation['itils_validationsteps_id']);
+        $this->assertEquals($new_validationsteps_id, $itil_validation->fields['validationsteps_id'], 'The validationstep_id must be the just created once.');
     }
 }

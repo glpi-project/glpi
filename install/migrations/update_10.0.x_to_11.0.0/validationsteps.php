@@ -36,9 +36,15 @@
 
 $migration->log('Preparing ValidationSteps migration', false);
 
+// new object : ValidationStep
 create_validation_steps_table($migration);
 insert_validation_steps_defaults($migration, $DB);
-add_validation_steps_in_validations_tables($migration, ['glpi_ticketvalidations']);
+
+// new object : ITIL_ValidationStep - Association between Validations and ValidationSteps + minimal_required_validation_percent
+create_itils_validationsteps_table($migration);
+add_validation_steps_in_validations_tables($migration, ['glpi_ticketvalidations', 'glpi_changevalidations']);
+
+// templates
 add_approval_status_to_ticket_templates($migration);
 add_validation_steps_in_itilvalidationtemplates($migration);
 
@@ -73,27 +79,6 @@ function create_validation_steps_table(Migration $migration): void
     $migration->addKey('glpi_validationsteps', 'date_creation');
 }
 
-/**
- * Add `validationstep_id` column in $validation_tables, after `id` column
- */
-function add_validation_steps_in_validations_tables(Migration $migration, array $validation_tables): void
-{
-    $validationsteps_foreign_key = ValidationStep::getForeignKeyField();
-    foreach ($validation_tables as $table) {
-        $migration->addField(
-            $table,
-            $validationsteps_foreign_key,
-            'fkey',
-            [
-                'value' => '0',
-                'null' => false,
-                'after' => 'id',
-            ]
-        );
-        $migration->addKey($table, $validationsteps_foreign_key);
-    }
-}
-
 function insert_validation_steps_defaults(Migration $migration, \DBmysql $DB): void
 {
     if (!$DB->tableExists(ValidationStep::getTable())) {
@@ -124,6 +109,51 @@ function insert_validation_steps_defaults(Migration $migration, \DBmysql $DB): v
         );
     }
 }
+
+function create_itils_validationsteps_table(Migration $migration): void
+{
+    $charset = DBConnection::getDefaultCharset();
+    $collation = DBConnection::getDefaultCollation();
+    $pk_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
+    $query = "CREATE TABLE  IF NOT EXISTS `glpi_itils_validationsteps` (
+        `id` int {$pk_sign} NOT NULL AUTO_INCREMENT,
+        `minimal_required_validation_percent` smallint NOT NULL,
+        `validationsteps_id` int unsigned NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `validationsteps_id` (`validationsteps_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=$charset COLLATE=$collation ROW_FORMAT=DYNAMIC;";
+
+    $migration->addPreQuery($query);
+}
+
+
+/**
+ * Add `itils_validationsteps_id` column in validation tables (ticketvalidations, changesvalidations), after `id` column
+ */
+function add_validation_steps_in_validations_tables(Migration $migration, array $validation_tables): void
+{
+    $itils_validationsteps_foreign_key = ITIL_ValidationStep::getForeignKeyField();
+    foreach ($validation_tables as $table) {
+        $migration->addField(
+            $table,
+            $itils_validationsteps_foreign_key,
+            'fkey',
+            [
+                'value' => '0',
+                'null' => false,
+                'after' => 'id',
+            ]
+        );
+        $migration->addKey($table, $itils_validationsteps_foreign_key);
+    }
+}
+
+
+/**
+ * Add "Approval' state to tickets status
+ * Not needed for changes templates, already have that value
+ */
 function add_approval_status_to_ticket_templates(Migration $migration): void
 {
     $migration->changeField(
@@ -138,6 +168,10 @@ function add_approval_status_to_ticket_templates(Migration $migration): void
         ]
     );
 }
+
+/**
+ * Validation templates have a validation step field (Changes & Tickets)
+ */
 function add_validation_steps_in_itilvalidationtemplates(Migration $migration): void
 {
     $validationsteps_foreign_key = ValidationStep::getForeignKeyField();

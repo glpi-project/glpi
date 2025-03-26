@@ -56,16 +56,6 @@ class ValidationStep extends \CommonDropdown
         return parent::pre_deleteItem();
     }
 
-    public function post_deleteItem()
-    {
-        throw new LogicException('This method should not be called, not a deletable item');
-//        if($this->isDefault()) {
-//            $this->setAnotherAsDefault();
-//        }
-//
-//        parent::post_deleteItem();
-    }
-
     public function post_purgeItem()
     {
         if ($this->isDefault()) {
@@ -228,7 +218,7 @@ class ValidationStep extends \CommonDropdown
 
     private function isDefault(): bool
     {
-        return $this->getField('is_default') == 1;
+        return $this->fields['is_default'] == 1;
     }
 
     private function wasDefault(): bool

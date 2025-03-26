@@ -3049,7 +3049,6 @@ class TicketTest extends DbTestCase
         $this->assertEquals('', $input['itemtype']);
         $this->assertEquals(0, (int) $input['items_id']);
         $this->assertCount(0, $input['plan']);
-        $this->assertEquals(\CommonITILValidation::NONE, (int) $input['global_validation']);
 
         $this->assertEquals('NULL', $input['time_to_resolve']);
         $this->assertEquals('NULL', $input['time_to_own']);

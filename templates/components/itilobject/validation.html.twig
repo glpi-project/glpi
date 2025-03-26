@@ -49,35 +49,12 @@
     __('Global approval status')
 ) }}
 
-{{ fields.htmlField(
-    '',
-    validation.getValidationStats(tID),
-    __('Approval status details')
-) }}
-
-{% if canadd %}
-    {% set minvalue %}
-        {{ item.getValueToSelect(
-            'validation_percent',
-            'validation_percent',
-            item.fields["validation_percent"]
-        )|raw }}
-        <input type="submit" name="update" class="btn btn-primary" value="{{ _x('button', 'Save') }}">
-        {% if tID is not null %}
-            <input type="hidden" name="id" value="{{ tID }}">
-        {% endif %}
-    {% endset %}
-
+{% set validation_stats = validation.getValidationStats(tID) %}
+{% if validation_stats is not empty %}
     {{ fields.htmlField(
         '',
-        minvalue,
-        __('Minimum validation required')
-    ) }}
-{% else %}
-    {{ fields.htmlField(
-        '',
-        call('Dropdown::getValueWithUnit', [item.fields["validation_percent"], "%"]),
-        __('Minimum validation required')
+        validation_stats,
+        __('Approval status details')
     ) }}
 {% endif %}
 
@@ -89,7 +66,7 @@
 <div class="card border-0 shadow-none p-0 m-0 mt-3">
     <div class="card-header mb-3 pt-2">
         <h4 class="card-title ">
-            {{ __('Approvals for the ticket') }}
+            {{ __('Approvals') }}
         </h4>
     </div>
     {% if canadd %}
