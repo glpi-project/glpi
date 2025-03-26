@@ -90,7 +90,7 @@
     {% for handler in handlers %}
         {% set entries = entries|merge([{
             'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
-            'default': handler.getValue(),
+            'default': handler.isRichText() ? handler.getValue()|safe_html : handler.getValue()|e,
             'translation': _self.getTranslationInput(
                 handler,
                 form_translation.getForItemKeyAndLanguage(
