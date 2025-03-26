@@ -37,6 +37,8 @@ namespace Glpi\Form\AccessControl;
 
 use CommonDBChild;
 use CommonGLPI;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportData;
 use InvalidArgumentException;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
@@ -297,6 +299,30 @@ final class FormAccessControl extends CommonDBChild
             is_a($strategy, ControlTypeInterface::class, true)
             && !(new ReflectionClass($strategy))->isAbstract()
         ;
+    }
+
+    public function exportDynamicData(): DynamicExportData
+    {
+        $strategy = $this->getStrategy();
+        $config = $this->getConfig();
+
+        $data = new DynamicExportData();
+        $data->addField('config', $strategy->exportDynamicConfig($config));
+
+        return $data;
+    }
+
+    public static function prepareDynamicImportData(
+        ControlTypeInterface $strategy,
+        array $input,
+        DatabaseMapper $mapper,
+    ): array {
+        $input['_config'] = $strategy->prepareDynamicConfigDataForImport(
+            $input['_config'],
+            $mapper,
+        );
+
+        return $input;
     }
 
     #[Override]

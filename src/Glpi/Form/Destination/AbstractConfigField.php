@@ -36,6 +36,8 @@
 namespace Glpi\Form\Destination;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
 use LogicException;
 use Override;
@@ -124,5 +126,20 @@ abstract class AbstractConfigField implements DestinationFieldInterface
     public function canHaveMultipleStrategies(): bool
     {
         return false;
+    }
+
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        return new DynamicExportDataField($config, []);
+    }
+
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        return $config;
     }
 }

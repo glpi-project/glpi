@@ -40,6 +40,8 @@ use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
 use InvalidArgumentException;
 use Override;
@@ -121,5 +123,20 @@ final class DayOfTheWeekPolicy implements ControlTypeInterface
             'value'      => $config->getDay(),
             'label'      => __("Day"),
         ]);
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        JsonFieldInterface $config
+    ): DynamicExportDataField {
+        return new DynamicExportDataField($config, []);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        DatabaseMapper $mapper,
+    ): array {
+        return $config;
     }
 }

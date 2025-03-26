@@ -32,26 +32,34 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Context;
+namespace Glpi\Form\Export\Serializer;
 
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 
-/**
- * Must be implemented by all JsonFieldInterface objects that contains references
- * foreign keys.
- *
- * The method of this interface will be used by the form serializer to ensure
- * that form exports can be done correctly as an export can't contains hardcoded
- * database foreign keys.
- */
-interface ConfigWithForeignKeysInterface
+final readonly class DynamicExportDataField
 {
-    /**
-     * Must return one JsonConfigForeignKeyHandlerInterface per serialized key that
-     * will contains foreign keys data.
-     *
-     * @param \Glpi\Form\Export\Specification\ContentSpecificationInterface $content_spec
-     * @return \Glpi\Form\Export\Context\ForeignKey\JsonConfigForeignKeyHandlerInterface[]
-     */
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array;
+    private mixed $data;
+
+    /** @var DataRequirementSpecification[] */
+    private array $requirements;
+
+    public function __construct(
+        mixed $data,
+        array $requirements
+    ) {
+        $this->data = $data;
+        $this->requirements = $requirements;
+    }
+
+    public function getData(): mixed
+    {
+        return $this->data;
+    }
+
+
+    /** @return DataRequirementSpecification[] */
+    public function getRequirements(): array
+    {
+        return $this->requirements;
+    }
 }

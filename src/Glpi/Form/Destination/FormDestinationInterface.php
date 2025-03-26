@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,8 @@
 namespace Glpi\Form\Destination;
 
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
 
 interface FormDestinationInterface
@@ -83,4 +84,11 @@ interface FormDestinationInterface
      * @return string Fully qualified tabler icon name (e.g. ti ti-user)
      */
     public function getIcon(): string;
+
+    public function exportDynamicConfig(array $config): DynamicExportDataField;
+
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        DatabaseMapper $mapper,
+    ): array;
 }

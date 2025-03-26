@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,7 +37,11 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
@@ -52,6 +55,10 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
     /** @return class-string<SLMFieldConfig> */
     abstract public function getConfigClass(): string;
     abstract protected function getFieldNameToConvertSpecificSLMID(): string;
+
+    final public function __construct()
+    {
+    }
 
     #[Override]
     public function renderConfigForm(
@@ -151,5 +158,58 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
     public function getCategory(): Category
     {
         return Category::SERVICE_LEVEL;
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        $fallback = parent::exportDynamicConfig($config, $destination);
+
+        // Check if a service level is defined
+        $slm_id = $config[SLMFieldConfig::SLM_ID] ?? null;
+        if ($slm_id === null) {
+            return $fallback;
+        }
+
+        // Try to load service level
+        $slm_type = $this->getSLMClass();
+        $slm = $slm_type::getById($slm_id);
+        if (!$slm) {
+            return $fallback;
+        }
+
+        // Insert service level name and requirement
+        $name = $slm->getName();
+        $config[SLMFieldConfig::SLM_ID] = $name;
+        $requirement = new DataRequirementSpecification($slm_type, $name);
+
+        return new DynamicExportDataField($config, [$requirement]);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        // Check if a service level is defined
+        if (!isset($config[SLMFieldConfig::SLM_ID])) {
+            return parent::prepareDynamicConfigDataForImport(
+                $config,
+                $destination,
+                $mapper,
+            );
+        }
+
+        // Insert id
+        $slm_type = (new static())->getSLMClass();
+        $config[SLMFieldConfig::SLM_ID] = $mapper->getItemId(
+            $slm_type,
+            $config[SLMFieldConfig::SLM_ID],
+        );
+
+        return $config;
     }
 }

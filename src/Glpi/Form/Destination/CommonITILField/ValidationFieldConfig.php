@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,15 +36,10 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyItemsArrayHandler;
-use Glpi\Form\Export\Context\ForeignKey\QuestionArrayForeignKeyHandler;
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
 
 final class ValidationFieldConfig implements
     JsonFieldInterface,
-    ConfigWithForeignKeysInterface,
     ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
@@ -63,15 +57,6 @@ final class ValidationFieldConfig implements
         private array $specific_question_ids = [],
         private array $specific_actors = [],
     ) {
-    }
-
-    #[Override]
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
-    {
-        return [
-            new ForeignKeyItemsArrayHandler(key: self::SPECIFIC_ACTORS),
-            new QuestionArrayForeignKeyHandler(self::SPECIFIC_QUESTION_IDS)
-        ];
     }
 
     #[Override]

@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Form;
 
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
 use Glpi\Form\Destination\CommonITILField\AssigneeFieldConfig;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
@@ -87,9 +86,6 @@ use Glpi\Form\Destination\CommonITILField\UrgencyFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ValidationField;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
-use Glpi\Form\Destination\FormDestinationManager;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
@@ -221,7 +217,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     ]
                 ]
             ],
-            'keys_to_ignore' => ['specific_question_ids']
+            'keys_to_ignore' => []
         ];
 
         yield 'ITILFollowupField' => [
@@ -281,16 +277,13 @@ final class FormSerializerDestinationTest extends \DbTestCase
             ],
             'check_fn' => function ($imported_destinations, $created_items) {
                 assertEquals(
-                    array_diff_key(
-                        (new ValidationFieldConfig(
-                            strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
-                            specific_actors: [
-                                \User::class => [$created_items[0]->getId()],
-                                \Group::class => [$created_items[1]->getId()],
-                            ]
-                        ))->jsonSerialize(),
-                        ['specific_question_ids' => '']
-                    ),
+                    (new ValidationFieldConfig(
+                        strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
+                        specific_actors: [
+                            \User::class => [$created_items[0]->getId()],
+                            \Group::class => [$created_items[1]->getId()],
+                        ]
+                    ))->jsonSerialize(),
                     end($imported_destinations)->getConfig()[ValidationField::getKey()]
                 );
             }
@@ -344,17 +337,14 @@ final class FormSerializerDestinationTest extends \DbTestCase
             ],
             'check_fn' => function ($imported_destinations, $created_items) {
                 assertEquals(
-                    array_diff_key(
-                        (new RequesterFieldConfig(
-                            strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
-                            specific_itilactors_ids: [
-                                \User::class => [$created_items[0]->getId()],
-                                \Group::class => [$created_items[1]->getId()],
-                                \Supplier::class => [$created_items[2]->getId()],
-                            ]
-                        ))->jsonSerialize(),
-                        ['specific_question_ids' => '']
-                    ),
+                    (new RequesterFieldConfig(
+                        strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                        specific_itilactors_ids: [
+                            \User::class => [$created_items[0]->getId()],
+                            \Group::class => [$created_items[1]->getId()],
+                            \Supplier::class => [$created_items[2]->getId()],
+                        ]
+                    ))->jsonSerialize(),
                     end($imported_destinations)->getConfig()[RequesterField::getKey()]
                 );
             }
@@ -385,16 +375,13 @@ final class FormSerializerDestinationTest extends \DbTestCase
             ],
             'check_fn' => function ($imported_destinations, $created_items) {
                 assertEquals(
-                    array_diff_key(
-                        (new ObserverFieldConfig(
-                            strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
-                            specific_itilactors_ids: [
-                                \User::class => [$created_items[0]->getId()],
-                                \Group::class => [$created_items[1]->getId()],
-                            ]
-                        ))->jsonSerialize(),
-                        ['specific_question_ids' => '']
-                    ),
+                    (new ObserverFieldConfig(
+                        strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                        specific_itilactors_ids: [
+                            \User::class => [$created_items[0]->getId()],
+                            \Group::class => [$created_items[1]->getId()],
+                        ]
+                    ))->jsonSerialize(),
                     end($imported_destinations)->getConfig()[ObserverField::getKey()]
                 );
             }
@@ -425,16 +412,13 @@ final class FormSerializerDestinationTest extends \DbTestCase
             ],
             'check_fn' => function ($imported_destinations, $created_items) {
                 assertEquals(
-                    array_diff_key(
-                        (new AssigneeFieldConfig(
-                            strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
-                            specific_itilactors_ids: [
-                                \User::class => [$created_items[0]->getId()],
-                                \Group::class => [$created_items[1]->getId()],
-                            ]
-                        ))->jsonSerialize(),
-                        ['specific_question_ids' => '']
-                    ),
+                    (new AssigneeFieldConfig(
+                        strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                        specific_itilactors_ids: [
+                            \User::class => [$created_items[0]->getId()],
+                            \Group::class => [$created_items[1]->getId()],
+                        ]
+                    ))->jsonSerialize(),
                     end($imported_destinations)->getConfig()[AssigneeField::getKey()]
                 );
             }
@@ -833,43 +817,6 @@ final class FormSerializerDestinationTest extends \DbTestCase
             $this->assertEquals(
                 $form->getQuestions()[$config->jsonSerialize()[$question_id_key]]->getName(),
                 $imported_form->getQuestions()[end($imported_destinations)->getConfig()[$field_key][$question_id_key]]->getName()
-            );
-        }
-    }
-
-    public function testAllConfigFieldsImplementConfigWithForeignKeysInterface()
-    {
-        $configs_to_exclude = [
-            SimpleValueConfig::class,
-            RequestSourceFieldConfig::class,
-        ];
-
-        /** @var AbstractCommonITILFormDestination[] $destination_types */
-        $destination_types = array_filter(
-            FormDestinationManager::getInstance()->getDestinationTypes(),
-            fn($destination_type) => $destination_type instanceof AbstractCommonITILFormDestination
-        );
-        $destination_fields = array_merge(...array_map(
-            fn($destination_type) => $destination_type->getConfigurableFields(),
-            $destination_types
-        ));
-        $destination_config_fields = array_unique(array_map(
-            fn($field) => $field->getConfigClass(),
-            $destination_fields
-        ));
-
-        // Check that all config fields implement ConfigWithForeignKeysInterface
-        foreach ($destination_config_fields as $config_field) {
-            if (in_array($config_field, $configs_to_exclude)) {
-                continue;
-            }
-
-            $this->assertTrue(
-                is_subclass_of($config_field, ConfigWithForeignKeysInterface::class),
-                sprintf(
-                    "Config field %s must implement ConfigWithForeignKeysInterface",
-                    $config_field
-                )
             );
         }
     }

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,19 +32,36 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Context\ForeignKey;
+namespace Glpi\Form\Export\Serializer;
 
-use Glpi\Form\Export\Context\DatabaseMapper;
-
-interface JsonConfigForeignKeyHandlerInterface
+final class DynamicExportData
 {
+    /** @var DynamicExportDataField[] */
+    private array $fields = [];
+
+    public function addField(string $field_id, DynamicExportDataField $field): void
+    {
+        $this->fields[$field_id] = $field;
+    }
+
+    public function getFieldData(string $field_id): mixed
+    {
+        if (!isset($this->fields[$field_id])) {
+            return null;
+        }
+
+        return $this->fields[$field_id]->getData();
+    }
+
     /** @return \Glpi\Form\Export\Specification\DataRequirementSpecification[] */
-    public function getDataRequirements(array $serialized_data): array;
+    public function getRequirements(): array
+    {
+        $requirements = [];
 
-    public function replaceForeignKeysByNames(array $serialized_data): array;
+        foreach ($this->fields as $field) {
+            array_push($requirements, ...$field->getRequirements());
+        }
 
-    public function replaceNamesByForeignKeys(
-        array $serialized_data,
-        DatabaseMapper $mapper,
-    ): array;
+        return $requirements;
+    }
 }

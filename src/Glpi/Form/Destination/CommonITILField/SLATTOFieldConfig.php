@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,21 +34,10 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
-use SLA;
 
-class SLATTOFieldConfig extends SLMFieldConfig
+final class SLATTOFieldConfig extends SLMFieldConfig
 {
-    #[Override]
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
-    {
-        return [
-            new ForeignKeyHandler(key: self::SLM_ID, itemtype: SLA::class)
-        ];
-    }
-
     #[Override]
     public static function jsonDeserialize(array $data): self
     {

@@ -43,7 +43,7 @@ use Glpi\Form\Form;
 use InvalidArgumentException;
 use Override;
 
-class StatusField extends AbstractConfigField
+final class StatusField extends AbstractConfigField
 {
     public const DEFAULT_STATUS = 'default_status';
 

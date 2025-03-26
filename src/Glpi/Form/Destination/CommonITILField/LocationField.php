@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,16 +37,21 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use InvalidArgumentException;
 use Location;
 use Override;
 
-class LocationField extends AbstractConfigField implements DestinationFieldConverterInterface
+final class LocationField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -200,5 +204,59 @@ class LocationField extends AbstractConfigField implements DestinationFieldConve
         }
 
         return $this->getDefaultConfig($form);
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        $fallback = parent::exportDynamicConfig($config, $destination);
+
+        // Check if a location is defined
+        $location_id = $config[LocationFieldConfig::SPECIFIC_LOCATION_ID] ?? null;
+        if ($location_id === null) {
+            return $fallback;
+        }
+
+        // Try to load location
+        $location = Location::getById($location_id);
+        if (!$location) {
+            return $fallback;
+        }
+
+        // Insert location name and requirement
+        $name = $location->getName();
+        $config[LocationFieldConfig::SPECIFIC_LOCATION_ID] = $name;
+        $requirement = new DataRequirementSpecification(Location::class, $name);
+
+        return new DynamicExportDataField($config, [$requirement]);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        // Check if a location is defined
+        if (isset($config[LocationFieldConfig::SPECIFIC_LOCATION_ID])) {
+            // Insert id
+            $config[LocationFieldConfig::SPECIFIC_LOCATION_ID] = $mapper->getItemId(
+                Location::class,
+                $config[LocationFieldConfig::SPECIFIC_LOCATION_ID],
+            );
+        }
+
+        // Check if a specific question is defined
+        if (isset($config[LocationFieldConfig::SPECIFIC_QUESTION_ID])) {
+            // Insert id
+            $config[LocationFieldConfig::SPECIFIC_QUESTION_ID] = $mapper->getItemId(
+                Question::class,
+                $config[LocationFieldConfig::SPECIFIC_QUESTION_ID],
+            );
+        }
+
+        return $config;
     }
 }

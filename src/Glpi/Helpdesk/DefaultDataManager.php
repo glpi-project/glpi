@@ -331,7 +331,7 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeItemDropdown::class,
             'name' => _n('Category', 'Categories', 1),
-            'default_value' => 0,
+            'default_value' => null,
             'extra_data' => json_encode(['itemtype' => ITILCategory::class]),
         ];
     }
@@ -351,7 +351,7 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeItemDropdown::class,
             'name' => _n('Location', 'Locations', 1),
-            'default_value' => 0,
+            'default_value' => null,
             'extra_data' => json_encode(['itemtype' => Location::class]),
         ];
     }

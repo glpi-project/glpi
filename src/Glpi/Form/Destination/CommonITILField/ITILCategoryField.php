@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,16 +37,21 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use InvalidArgumentException;
 use ITILCategory;
 use Override;
 
-class ITILCategoryField extends AbstractConfigField implements DestinationFieldConverterInterface
+final class ITILCategoryField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -194,5 +198,59 @@ class ITILCategoryField extends AbstractConfigField implements DestinationFieldC
     public function getCategory(): Category
     {
         return Category::PROPERTIES;
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        $fallback = parent::exportDynamicConfig($config, $destination);
+
+        // Check if a category is defined
+        $category_id = $config[ITILCategoryFieldConfig::SPECIFIC_ITILCATEGORY_ID] ?? null;
+        if ($category_id === null) {
+            return $fallback;
+        }
+
+        // Try to load category
+        $category = ITILCategory::getById($category_id);
+        if (!$category) {
+            return $fallback;
+        }
+
+        // Insert category name and requirement
+        $name = $category->getName();
+        $config[ITILCategoryFieldConfig::SPECIFIC_ITILCATEGORY_ID] = $name;
+        $requirement = new DataRequirementSpecification(ITILCategory::class, $name);
+
+        return new DynamicExportDataField($config, [$requirement]);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        // Check if a category is defined
+        if (isset($config[ITILCategoryFieldConfig::SPECIFIC_ITILCATEGORY_ID])) {
+            // Insert id
+            $config[ITILCategoryFieldConfig::SPECIFIC_ITILCATEGORY_ID] = $mapper->getItemId(
+                ITILCategory::class,
+                $config[ITILCategoryFieldConfig::SPECIFIC_ITILCATEGORY_ID],
+            );
+        }
+
+        // Check if a specific question is defined
+        if (isset($config[ITILCategoryFieldConfig::SPECIFIC_QUESTION_ID])) {
+            // Insert id
+            $config[ITILCategoryFieldConfig::SPECIFIC_QUESTION_ID] = $mapper->getItemId(
+                Question::class,
+                $config[ITILCategoryFieldConfig::SPECIFIC_QUESTION_ID],
+            );
+        }
+
+        return $config;
     }
 }

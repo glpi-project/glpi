@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,16 +38,21 @@ use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use InvalidArgumentException;
 use Override;
 
-class AssociatedItemsField extends AbstractConfigField implements DestinationFieldConverterInterface
+final class AssociatedItemsField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -295,5 +299,65 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
         }
 
         return $this->getDefaultConfig($form);
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        $requirements = [];
+
+        if (!isset($config[AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS])) {
+            return parent::exportDynamicConfig($config, $destination);
+        }
+
+        $items = $config[AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS];
+        foreach ($items as $itemtype => $items_ids) {
+            foreach ($items_ids as $i => $item_id) {
+                $item = getItemForItemtype($itemtype);
+                if ($item->getFromDB($item_id)) {
+                    // Insert name instead of id and register requirement
+                    $items[$itemtype][$i] = $item->getName();
+                    $requirements[] = new DataRequirementSpecification(
+                        $itemtype,
+                        $item->getName(),
+                    );
+                }
+            }
+        }
+
+        $config[AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS] = $items;
+        return new DynamicExportDataField($config, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        if (isset($config[AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS])) {
+            $items = $config[AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS];
+            foreach ($items as $itemtype => $items_names) {
+                foreach ($items_names as $i => $item_name) {
+                    $id = $mapper->getItemId($itemtype, $item_name);
+                    $items[$itemtype][$i] = $id;
+                }
+            }
+            $config[AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS] = $items;
+        }
+
+        // Check if specific questions are defined
+        if (isset($config[AssociatedItemsFieldConfig::SPECIFIC_QUESTION_IDS])) {
+            $questions = $config[AssociatedItemsFieldConfig::SPECIFIC_QUESTION_IDS];
+            foreach ($questions as $i => $question) {
+                $id = $mapper->getItemId(Question::class, $question);
+                $questions[$i] = $id;
+            }
+            $config[AssociatedItemsFieldConfig::SPECIFIC_QUESTION_IDS] = $questions;
+        }
+
+        return $config;
     }
 }

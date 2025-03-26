@@ -41,7 +41,10 @@ use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Override;
 
 final class DirectAccess implements ControlTypeInterface
@@ -194,5 +197,20 @@ final class DirectAccess implements ControlTypeInterface
         }
 
         return $config->allowUnauthenticated();
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        JsonFieldInterface $config
+    ): DynamicExportDataField {
+        return new DynamicExportDataField($config->jsonSerialize(), []);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        DatabaseMapper $mapper,
+    ): array {
+        return $config;
     }
 }
