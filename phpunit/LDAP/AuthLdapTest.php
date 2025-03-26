@@ -55,6 +55,17 @@ class AuthLDAPTest extends DbTestCase
      */
     private $ldap;
 
+    /**
+     * Prepare test data
+     *
+     * Data setup is in tests/src/autoload/functions.php::loadDataset() (as usual)
+     *
+     * Ensure that:
+     * - Correct data is present in the LDAP server
+     * - The data is synchronized
+     *
+     * To configure proper LDAP server settings, use .github/actions/init_initialize-ldap-fixtures.sh
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -2468,9 +2479,11 @@ class AuthLDAPTest extends DbTestCase
             )
         );
 
+        // Assert user can't log in if not present in remote LDAP
         $auth = new \Auth();
         $this->assertFalse($auth->login('logintest', 'password'));
 
+        // Assert user is marked "deleted" in GLPI database
         $user->getFromDBbyName('logintest');
         $this->assertEquals(1, $user->fields['is_deleted_ldap']);
     }
