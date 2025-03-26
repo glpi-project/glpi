@@ -651,4 +651,34 @@ class LegacyAssetsListenerTest extends \GLPITestCase
         $this->assertInstanceOf(File::class, $response->getFile());
         $this->assertEquals('[1, 2, 3]', $file->getContent());
     }
+
+    public function testServeLegacyAssetsFromUnloadedPlugin(): void
+    {
+        $structure = [
+            'plugins' => [
+                'notloadedplugin' => [
+                    'public' => [
+                        'resources.json' => '["b","c","d"]',
+                    ],
+                ],
+            ],
+        ];
+
+        vfsStream::setup('glpi', null, $structure);
+
+        $instance = new LegacyAssetsListener(
+            vfsStream::url('glpi'),
+            [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
+        );
+
+        $request = new Request();
+        $request->server->set('SCRIPT_NAME', '/index.php');
+        $request->server->set('REQUEST_URI', '/plugins/notloadedplugin/resources.json');
+
+        $this->expectExceptionObject(
+            new \Glpi\Exception\Http\NotFoundHttpException('Plugin `notloadedplugin` is not loaded.')
+        );
+
+        $this->callPrivateMethod($instance, 'serveLegacyAssets', $request);
+    }
 }

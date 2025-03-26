@@ -686,6 +686,34 @@ class LegacyRouterListenerTest extends \GLPITestCase
         $this->assertEquals(vfsStream::url('glpi/plugins/tester/front/test.php'), $event->getRequest()->attributes->get('_glpi_file_to_load'));
     }
 
+    public function testRunLegacyRouterFromUnloadedPlugin(): void
+    {
+        $structure = [
+            'plugins' => [
+                'notloadedplugin' => [
+                    'front' => [
+                        'test.php' => '<?php echo("/plugins/tester/front/test.php");',
+                    ],
+                ],
+            ],
+        ];
+
+        vfsStream::setup('glpi', null, $structure);
+
+        $instance = new LegacyRouterListener(
+            vfsStream::url('glpi'),
+            [vfsStream::url('glpi/marketplace'), vfsStream::url('glpi/plugins')]
+        );
+
+        $event = $this->getRequestEvent('/plugins/notloadedplugin/front/test.php');
+
+        $this->expectExceptionObject(
+            new \Glpi\Exception\Http\NotFoundHttpException('Plugin `notloadedplugin` is not loaded.')
+        );
+
+        $instance->onKernelRequest($event);
+    }
+
     private function getRequestEvent(string $requested_uri): RequestEvent
     {
         $request = new Request();
