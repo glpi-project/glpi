@@ -75,10 +75,6 @@ class NeedsUpdateController extends AbstractController
 
         $twig_params = [
             'core_requirements' => $requirements,
-            'try_again'         => __('Try again'),
-            'update_needed'     => __('The GLPI codebase has been updated. The update of the GLPI database is necessary.'),
-            'upgrade'           => _sx('button', 'Upgrade'),
-            'outdated_files'    => __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.'),
             'stable_release'    => VersionParser::isStableRelease(GLPI_VERSION),
             'agree_unstable'    => Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION)),
             'outdated'          => version_compare(
@@ -88,47 +84,7 @@ class NeedsUpdateController extends AbstractController
             )
         ];
 
-        Html::nullHeader(__('Update needed'));
-        // language=Twig
-        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <div class="container-fluid mb-4">
-                <div class="row justify-content-evenly">
-                    <div class="col-12 col-xxl-6">
-                        <div class="card text-center mb-4">
-                            {% include 'install/blocks/requirements_table.html.twig' with {'requirements': core_requirements} %}
-                            {% if core_requirements.hasMissingMandatoryRequirements() or core_requirements.hasMissingOptionalRequirements() %}
-                                <form action="{{ path('index.php') }}" method="post">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="ti ti-reload"></i>{{ try_again }}
-                                    </button>
-                                </form>
-                            {% endif %}
-                            {% if not core_requirements.hasMissingMandatoryRequirements() %}
-                                {% if not outdated %}
-                                    <form method="post" action="{{ path('install/update.php') }}">
-                                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-                                        {% if not stable_release %}
-                                            {{ agree_unstable|raw }}
-                                        {% endif %}
-                                        <p class="mt-2 mb-n2 alert alert-important alert-warning">
-                                            {{ update_needed }}
-                                        </p>
-                                        <button type="submit" name="from_update" class="btn btn-primary">
-                                            <i class="ti ti-check"></i>{{ upgrade }}
-                                        </button>
-                                    </form>
-                                {% else %}
-                                    <p class="mt-2 mb-n2 alert alert-important alert-warning">
-                                        {{ outdated_files }}
-                                    </p>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-TWIG, $twig_params);
-        Html::nullFooter();
+        TemplateRenderer::getInstance()->display('update/need_update.html.twig', $twig_params);
         $_SESSION['glpi_use_mode'] = $debug_mode;
     }
 }
