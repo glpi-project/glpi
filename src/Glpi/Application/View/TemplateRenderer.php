@@ -277,7 +277,6 @@ class TemplateRenderer
             $environment->addFunction(new TwigFunction('_n', '_n'));
             $environment->addFunction(new TwigFunction('_x', '_x'));
             $environment->addFunction(new TwigFunction('_nx', '_nx'));
-            $environment->addFunction(new TwigFunction('_sx', '_sx'));
         }
 
         return $environment;
