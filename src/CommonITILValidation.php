@@ -406,6 +406,11 @@ abstract class CommonITILValidation extends CommonDBChild
             array_push($forbid_fields, 'status', 'comment_validation', 'validation_date');
         }
 
+        if ($this->fields["status"] !== self::WAITING) {
+            // Cannot change the approval request comment after it has been answered
+            array_push($forbid_fields, 'comment_submission');
+        }
+
         foreach ($forbid_fields as $key) {
             unset($input[$key]);
         }
