@@ -40,6 +40,7 @@ use Computer;
 use CronTask;
 use DbTestCase;
 use Entity;
+use Glpi\PHPUnit\Tests\Glpi\ValidationStepTrait;
 use Glpi\Team\Team;
 use Group;
 use Group_Ticket;
@@ -64,6 +65,8 @@ use Session;
 
 class TicketTest extends DbTestCase
 {
+    use ValidationStepTrait;
+
     public static function addActorsProvider(): iterable
     {
         $default_use_notifications = 1;
@@ -8376,6 +8379,7 @@ HTML
             'tickets_id'        => $ticket->getID(),
             'itemtype_target'   => User::class,
             'items_id_target'   => $uid1,
+            'validationsteps_id' => $this->getInitialDefaultValidationStep()->getID(),
         ]);
 
         $this->updateItem('TicketValidation', $v1_id->getID(), [
@@ -8396,6 +8400,7 @@ HTML
             'tickets_id'        => $ticket->getID(),
             'itemtype_target'   => User::class,
             'items_id_target'   => $uid1,
+            'validationsteps_id' => $this->getInitialDefaultValidationStep()->getID(),
         ]);
 
         $this->updateItem('TicketValidation', $v2_id->getID(), [

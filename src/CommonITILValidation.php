@@ -56,11 +56,11 @@ abstract class CommonITILValidation extends CommonDBChild
     const VALIDATE               = 1024;
 
 
-   // STATUS
-    const NONE      = 1; // none
-    const WAITING   = 2; // waiting
-    const ACCEPTED  = 3; // accepted
-    const REFUSED   = 4; // rejected
+   // STATUSES
+    const NONE      = 1; // used for ticket.global_validation
+    const WAITING   = 2;
+    const ACCEPTED  = 3;
+    const REFUSED   = 4;
 
     public static function getIcon()
     {
@@ -76,7 +76,6 @@ abstract class CommonITILValidation extends CommonDBChild
     {
         return [CREATE];
     }
-
 
     public static function getPurgeRights()
     {
@@ -947,9 +946,9 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * Print the validation list into item
      *
-     * @param CommonDBTM $item
+     * @param CommonITILObject $item
      **/
-    public function showSummary(CommonDBTM $item)
+    public function showSummary(CommonITILObject $item)
     {
         /**
          * @var array $CFG_GLPI

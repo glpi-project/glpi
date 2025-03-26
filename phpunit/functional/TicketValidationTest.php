@@ -220,12 +220,10 @@ class TicketValidationTest extends CommonITILValidation
                 'items_id_target' => $uid2,
             ])
         );
-
         $res = $validation->update([
             'id' => $validation->fields['id'],
             'status' => \CommonITILValidation::REFUSED
         ]);
-
         $this->hasSessionMessages(ERROR, ['If approval is denied, specify a reason.']);
         $this->assertFalse($res);
 
@@ -235,7 +233,6 @@ class TicketValidationTest extends CommonITILValidation
         $filename_txt = '5e5e92ffd9bd91.11111111' . 'foo.txt';
         copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename_img);
         copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename_txt);
-
         $this->assertTrue(
             $validation->update([
                 'id' => $validation->fields['id'],
