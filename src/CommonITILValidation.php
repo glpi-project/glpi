@@ -391,7 +391,16 @@ abstract class CommonITILValidation extends CommonDBChild
     public function prepareInputForUpdate($input)
     {
         $can_answer = static::canValidate($this->fields[static::$items_id], $this->getID());
+        // Don't allow changing internal entity fields or change the item it is attached to
         $forbid_fields = ['entities_id', static::$items_id, 'is_recursive'];
+        // The following fields shouldn't be changed by anyone after the approval is created
+        array_push(
+            $forbid_fields,
+            'users_id',
+            'itemtype_target',
+            'items_id_target',
+            'submission_date'
+        );
 
         if (!$can_answer) {
             array_push($forbid_fields, 'status', 'comment_validation', 'validation_date');
