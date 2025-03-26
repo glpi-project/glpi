@@ -1669,8 +1669,8 @@ $RELATION = [
     ],
 
     'glpi_validationsteps' => [
-        'glpi_ticketvalidations'       => 'validationsteps_id',
         'glpi_itilvalidationtemplates' => 'validationsteps_id',
+        'glpi_itils_validationsteps' => 'validationsteps_id',
     ],
 
     'glpi_virtualmachinestates' => [
@@ -1707,6 +1707,10 @@ $RELATION = [
         'glpi_changevalidations' => 'itilvalidationtemplates_id',
         'glpi_ticketvalidations' => 'itilvalidationtemplates_id',
     ],
+
+    'glpi_itils_validationsteps' => [
+        'glpi_ticketvalidations' => 'itils_validationsteps_id'
+    ]
 
 ];
 

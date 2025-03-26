@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,20 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * ChangeValidation class
- */
-class ChangeValidation extends CommonITILValidation
+class ChangeValidationStep extends ITIL_ValidationStep
 {
-   // From CommonDBChild
-    public static $itemtype           = 'Change';
-    public static $items_id           = 'changes_id';
-
-    public static $rightname                 = 'changevalidation';
-
+    public static $rightname = 'changevalidation';
+    public static string $validation_classname = ChangeValidation::class;
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Change approval', 'Change approvals', $nb);
+        return _n('Change Validation step', 'Change Validation steps', $nb);
     }
 }

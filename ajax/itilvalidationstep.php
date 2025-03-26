@@ -33,20 +33,33 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * ChangeValidation class
- */
-class ChangeValidation extends CommonITILValidation
-{
-   // From CommonDBChild
-    public static $itemtype           = 'Change';
-    public static $items_id           = 'changes_id';
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\Http\BadRequestHttpException;
 
-    public static $rightname                 = 'changevalidation';
+$itils_validationsteps_id = (int)($_GET['itils_validationsteps_id'] ?: 0);
+$itils_validation_type = $_GET['itils_validation_type'] ?? null;
 
-
-    public static function getTypeName($nb = 0)
-    {
-        return _n('Change approval', 'Change approvals', $nb);
-    }
+if ($itils_validationsteps_id === 0) {
+    throw new BadRequestHttpException("Bad request: invalid 'itils_validationsteps_id' in request parameters (\$_GET)");
 }
+
+if (!in_array($itils_validation_type, [TicketValidationStep::class, ChangeValidationStep::class])) {
+    throw new BadRequestHttpException("Bad request: unexpected ValidationStep type. " . htmlescape($itils_validation_type));
+}
+
+$ivs = new $itils_validation_type();
+
+if ($ivs->getFromDB($itils_validationsteps_id) === false) {
+    throw new BadRequestHttpException("Bad request: no 'ITIL_ValidationStep' found with id #$itils_validationsteps_id");
+}
+
+// form display
+TemplateRenderer::getInstance()->display(
+    'components/itilobject/form_itils_validationstep.html.twig',
+    [
+        'item' => $ivs,
+        'no_header' => true,
+        'params' => [
+        ]
+    ]
+);

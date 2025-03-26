@@ -36,121 +36,11 @@ namespace tests\units;
 
 /* Test for src/ChangeValidation.php */
 
-use Glpi\PHPUnit\Tests\CommonITILValidation;
+use Glpi\PHPUnit\Tests\CommonITILValidationTest;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-class ChangeValidationTest extends CommonITILValidation
+class ChangeValidationTest extends CommonITILValidationTest
 {
-    #[DataProvider('testComputeValidationProvider')]
-    public function testComputeValidation(
-        int $accepted,
-        int $refused,
-        int $validation_percent,
-        int $result
-    ): void {
-        $test_result = \ChangeValidation::computeValidation(
-            $accepted,
-            $refused,
-            $validation_percent
-        );
-
-        $this->assertEquals($result, $test_result);
-    }
-
-    public static function testComputeValidationProvider(): array
-    {
-        return [
-            // 100% validation required
-            [
-                'accepted'           => 0,
-                'refused'            => 0,
-                'validation_percent' => 100,
-                'result'             => \CommonITILValidation::WAITING,
-            ],
-            [
-                'accepted'           => 10,
-                'refused'            => 0,
-                'validation_percent' => 100,
-                'result'             => \CommonITILValidation::WAITING,
-            ],
-            [
-                'accepted'           => 90,
-                'refused'            => 0,
-                'validation_percent' => 100,
-                'result'             => \CommonITILValidation::WAITING,
-            ],
-            [
-                'accepted'           => 100,
-                'refused'            => 0,
-                'validation_percent' => 100,
-                'result'             => \CommonITILValidation::ACCEPTED,
-            ],
-            [
-                'accepted'           => 0,
-                'refused'            => 10,
-                'validation_percent' => 100,
-                'result'             => \CommonITILValidation::REFUSED,
-            ],
-            // 50% validation required
-            [
-                'accepted'           => 0,
-                'refused'            => 0,
-                'validation_percent' => 50,
-                'result'             => \CommonITILValidation::WAITING,
-            ],
-            [
-                'accepted'           => 10,
-                'refused'            => 0,
-                'validation_percent' => 50,
-                'result'             => \CommonITILValidation::WAITING,
-            ],
-            [
-                'accepted'           => 50,
-                'refused'            => 0,
-                'validation_percent' => 50,
-                'result'             => \CommonITILValidation::ACCEPTED,
-            ],
-            [
-                'accepted'           => 0,
-                'refused'            => 10,
-                'validation_percent' => 50,
-                'result'             => \CommonITILValidation::WAITING,
-            ],
-            [
-                'accepted'           => 0,
-                'refused'            => 50,
-                'validation_percent' => 50,
-                'result'             => \CommonITILValidation::WAITING,
-            ],
-            [
-                'accepted'           => 0,
-                'refused'            => 60,
-                'validation_percent' => 50,
-                'result'             => \CommonITILValidation::REFUSED,
-            ],
-            // 0% validation required
-            [
-                'accepted'           => 0,
-                'refused'            => 0,
-                'validation_percent' => 0,
-                'result'             => \CommonITILValidation::WAITING,
-            ],
-            [
-                'accepted'           => 10,
-                'refused'            => 0,
-                'validation_percent' => 0,
-                'result'             => \CommonITILValidation::ACCEPTED,
-            ],
-            [
-                'accepted'           => 0,
-                'refused'            => 10,
-                'validation_percent' => 0,
-                'result'             => \CommonITILValidation::REFUSED,
-            ],
-        ];
-    }
-
-
     public function testGlobalValidationUpdate(): void
     {
         $this->login();
@@ -213,5 +103,4 @@ class ChangeValidationTest extends CommonITILValidation
 
         $this->assertEquals(\CommonITILValidation::REFUSED, \ChangeValidation::computeValidationStatus($change));
     }
-
 }

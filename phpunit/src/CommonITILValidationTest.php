@@ -40,17 +40,25 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/commonitilvalidation.class.php */
 
-abstract class CommonITILValidation extends DbTestCase
+abstract class CommonITILValidationTest extends DbTestCase
 {
     use ValidationStepTrait;
 
-    protected function getTestedClass()
+    /**
+     * Tested classname (eg. TicketValidation, ChangeValidation, ...)
+     */
+    protected function getTestedClass(): string
     {
         $test_class = static::class;
         // Rule class has the same name as the test class but in the global namespace
         return preg_replace('/Test$/', '', substr(strrchr($test_class, '\\'), 1));
     }
 
+    /**
+     * ITIL object classname (eg. Ticket, Change, ...)
+     *
+     * @return class-string<\CommonITILObject>
+     */
     protected function getITILObjectClass(): string
     {
         $tested_class = $this->getTestedClass();
@@ -83,10 +91,11 @@ abstract class CommonITILValidation extends DbTestCase
             'items_id_target'                   => $_SESSION['glpiID'],
             'comment_submission'                => __FUNCTION__,
         ];
-        // additionnal data for TicketValidation (validationsteps)
-        if ($validation_class === \TicketValidation::class) {
-            $validations_id_1_data['validationsteps_id'] = $default_validation_step_id;
-        }
+
+        // create itil_validationstep
+        $validationstep_classname = $itil_class::getValidationStepClassName();
+        $itils_validationsteps = $this->createItem($validationstep_classname, ['validationsteps_id' => $default_validation_step_id, 'minimal_required_validation_percent' => 100]);
+        $validations_id_1_data['itils_validationsteps_id'] = $itils_validationsteps->getID();
         $validations_id_1 = ($this->createItem($validation_class, $validations_id_1_data))->getID();
         $this->assertTrue($validation::canValidate($itil_items_id));
 
@@ -99,7 +108,7 @@ abstract class CommonITILValidation extends DbTestCase
             'comment_submission'                => __FUNCTION__,
         ];
         if ($validation_class === \TicketValidation::class) {
-            $validations_id_2_data['validationsteps_id'] = $default_validation_step_id;
+            $validations_id_2_data['itils_validationsteps_id'] = $itils_validationsteps->getID();
         }
         $this->createItem($validation_class, $validations_id_2_data)->getID();
 
@@ -237,7 +246,10 @@ abstract class CommonITILValidation extends DbTestCase
             'items_id_target' => $groups_id,
             'comment_submission' => __FUNCTION__,
         ];
-        $validation_class === \TicketValidation::class && $validation_id_1_data['validationsteps_id'] = $default_validation_step_id;
+        // create itil_validationstep
+        $validationstep_classname = $itil_class::getValidationStepClassName();
+        $itils_validationsteps = $this->createItem($validationstep_classname, ['validationsteps_id' => $default_validation_step_id, 'minimal_required_validation_percent' => 100]);
+        $validation_id_1_data['itils_validationsteps_id'] = $itils_validationsteps->getID();
 
         $validations_id_1 = $this->createItem($validation_class, $validation_id_1_data)->getID();
 
@@ -250,7 +262,7 @@ abstract class CommonITILValidation extends DbTestCase
             'items_id_target' => $other_groups_id, // Other group.
             'comment_submission' => __FUNCTION__,
         ];
-        $validation_class === \TicketValidation::class && $approval_data['validationsteps_id'] = $default_validation_step_id;
+        $validation_class === \TicketValidation::class &&  $approval_data['itils_validationsteps_id'] = $itils_validationsteps->getID();
 
         $this->createItem($validation_class, $approval_data)->getID();
 
@@ -721,5 +733,59 @@ abstract class CommonITILValidation extends DbTestCase
         $this->assertContains(\CommonITILValidation::WAITING, $validation->getAllValidationStatusArray());
         $this->assertContains(\CommonITILValidation::REFUSED, $validation->getAllValidationStatusArray());
         $this->assertContains(\CommonITILValidation::ACCEPTED, $validation->getAllValidationStatusArray());
+    }
+
+    public function testCreateValidationCreateAnAssociatedITILValidationStep(): void
+    {
+        $this->login();
+        $itil_classname = $this->getITILObjectClass();
+        $itil_validation_classname = $this->getTestedClass();
+        $itil = new $itil_classname();
+
+        $itil->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+        ]);
+        $validation = $this->addValidation($itil);
+
+        // validation has an associated itil_validationstep
+        self::assertGreaterThan(0, $validation->fields['itils_validationsteps_id']);
+
+        // the itil_validationstep is created
+        $itil_validationstep = $itil::getValidationStepInstance();
+        $this->assertTrue($itil_validationstep->getFromDBByCrit(
+            [
+                'id' => $validation->fields['itils_validationsteps_id'],
+                'validationsteps_id' => $this->getInitialDefaultValidationStep()->getID(),]
+            ),
+            'Validation step association should be created while creating a Validation'
+        );
+    }
+
+    /**
+     * Add a validation to the given ITIL object
+     */
+    private function addValidation(\CommonITILObject $itil, ?int $validationstep_id = null): \CommonITILValidation
+    {
+        $validation_classname = $this->getTestedClass();
+        $validationstep_id ??= $this->getInitialDefaultValidationStep()->getID();
+
+        if(!isset($_SESSION['glpiID']))
+        {
+            throw new \RuntimeException('$_SESSION["glpiID"] is not set, did you forget to call $this->login() ?');
+        };
+
+        // create itil_validationstep
+        $validationstep_classname = $itil::getValidationStepClassName();
+        $itils_validationsteps = $this->createItem($validationstep_classname,
+            ['validationsteps_id' => $this->getInitialDefaultValidationStep()->getID(), 'minimal_required_validation_percent' => 100]
+        );
+
+        return $this->createItem($validation_classname, [
+            $itil::getForeignKeyField() => $itil->getID(),
+            'itils_validationsteps_id' => $itils_validationsteps->getID(),
+            'itemtype_target' => 'User',
+            'items_id_target' => $_SESSION['glpiID'],
+        ]);
     }
 }
