@@ -39,7 +39,7 @@
                 {% if core_requirements.hasMissingMandatoryRequirements() or core_requirements.hasMissingOptionalRequirements() %}
                     <form action="{{ path('index.php') }}" method="post">
                         <button type="submit" class="btn btn-primary">
-                            <i class="ti ti-reload"></i>{{ try_again }}
+                            <i class="ti ti-reload"></i>{{ __('Try again') }}
                         </button>
                     </form>
                 {% endif %}
@@ -51,15 +51,15 @@
                                 {{ agree_unstable|raw }}
                             {% endif %}
                             <p class="mt-2 mb-n2 alert alert-important alert-warning">
-                                {{ update_needed }}
+                                {{ __('The GLPI codebase has been updated. The update of the GLPI database is necessary.') }}
                             </p>
                             <button type="submit" name="from_update" class="btn btn-primary">
-                                <i class="ti ti-check"></i>{{ upgrade }}
+                                <i class="ti ti-check"></i>{{ _sx('button', 'Upgrade') }}
                             </button>
                         </form>
                     {% else %}
                         <p class="mt-2 mb-n2 alert alert-important alert-warning">
-                            {{ outdated_files }}
+                            {{ __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.') }}
                         </p>
                     {% endif %}
                 {% endif %}

@@ -75,10 +75,6 @@ class NeedsUpdateController extends AbstractController
 
         $twig_params = [
             'core_requirements' => $requirements,
-            'try_again'         => __('Try again'),
-            'update_needed'     => __('The GLPI codebase has been updated. The update of the GLPI database is necessary.'),
-            'upgrade'           => _sx('button', 'Upgrade'),
-            'outdated_files'    => __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.'),
             'stable_release'    => VersionParser::isStableRelease(GLPI_VERSION),
             'agree_unstable'    => Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION)),
             'outdated'          => version_compare(
