@@ -35,6 +35,7 @@
  */
 
 $migration->log('Preparing ValidationSteps migration', false);
+$validation_tables = ['glpi_ticketvalidations', 'glpi_changevalidations'];
 
 // new object : ValidationStep
 create_validation_steps_table($migration);
@@ -42,7 +43,9 @@ insert_validation_steps_defaults($migration, $DB);
 
 // new object : ITIL_ValidationStep - Association between Validations and ValidationSteps + minimal_required_validation_percent
 create_itils_validationsteps_table($migration);
-add_validation_steps_in_validations_tables($migration, ['glpi_ticketvalidations', 'glpi_changevalidations']);
+add_validation_steps_in_validations_tables($migration, $validation_tables);
+$migration->executeMigration();
+add_itils_validationstep_to_existings_itils($migration, $validation_tables);
 
 // templates
 add_approval_status_to_ticket_templates($migration);
@@ -186,4 +189,34 @@ function add_validation_steps_in_itilvalidationtemplates(Migration $migration): 
         ]
     );
     $migration->addKey('glpi_itilvalidationtemplates', $validationsteps_foreign_key);
+}
+
+/**
+ * Add validation step to existing validations
+ *
+ * Create an ITIL_ValidationStep for each validation (but only one per itil)
+ */
+function add_itils_validationstep_to_existings_itils(Migration $migration, array $validation_tables): void
+{
+    foreach ($validation_tables as $validation_table) {
+        /** @var \CommonITILValidation $change_class */
+        $change_class = getItemTypeForTable($validation_table);
+        $itil_class = $change_class::$itemtype;
+        $itil_fk = getForeignKeyFieldForItemType($itil_class);
+        $default_validation_step = ValidationStep::getDefault(); // previous sql needs to be processed before
+        $validations = getAllDataFromTable($validation_table, ['GROUPBY' => $itil_fk]); // TicketValidation or ChangeValidation data
+        foreach ($validations as $validation) {
+            // create itils_validationsteps
+            $itils_validationstep_id = $migration->insertInTable(
+                ITIL_ValidationStep::getTable(),
+                [
+                    ValidationStep::getForeignKeyField() => $default_validation_step->getID(),
+                    'minimal_required_validation_percent' => $default_validation_step->fields['minimal_required_validation_percent'],
+                ]
+            );
+            // update itils validations (ticket, change) with the created itils_validationsteps
+            $update_validation_query = 'UPDATE ' . $validation_table . ' SET ' . ITIL_ValidationStep::getForeignKeyField() . ' = ' . $itils_validationstep_id . ' WHERE ' . $itil_fk . ' = ' . $validation[$itil_fk];
+            $migration->addPostQuery($update_validation_query);
+        }
+    }
 }
