@@ -1282,6 +1282,14 @@ class SearchTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $monitor_id);
 
+        $monitor = new \Monitor();
+        $monitor_id = $monitor->add([
+            'name' => '',
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->assertGreaterThan(0, $monitor_id);
+
         $expected_counters = [
             [
                 'field'    => 70, //user (itemlink)
@@ -1319,13 +1327,25 @@ class SearchTest extends DbTestCase
                 'empty'    => 2,
                 'notempty' => 1,
             ],
+            [
+                'field'    => 1, //Name (itemlink)
+                'itemtype' => 'Monitor',
+                'empty'    => 1,
+                'notempty' => 1,
+            ],
         ];
 
         foreach ($expected_counters as $expected) {
-            $search_params = [
-                'is_deleted'   => 0,
-                'start'        => 0,
-                'criteria'     => [
+            if ($expected['field'] == 1) {
+                $criteria = [
+                    0 => [
+                        'field'      => $expected['field'],
+                        'searchtype' => 'empty',
+                        'value'      => 'null'
+                    ]
+                ];
+            } else {
+                $criteria = [
                     0 => [
                         'field'      => 'view',
                         'searchtype' => 'contains',
@@ -1336,7 +1356,12 @@ class SearchTest extends DbTestCase
                         'searchtype' => 'empty',
                         'value'      => 'null'
                     ]
-                ]
+                ];
+            }
+            $search_params = [
+                'is_deleted'   => 0,
+                'start'        => 0,
+                'criteria'     => $criteria
             ];
             $data = $this->doSearch($expected['itemtype'], $search_params);
             $this->assertSame($expected['empty'], $data['data']['totalcount']);
