@@ -57,8 +57,6 @@ use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Extra\String\StringExtension;
 use Twig\Loader\FilesystemLoader;
-use Twig\Loader\LoaderInterface;
-use Twig\TwigFunction;
 
 /**
  * @since 10.0.0
@@ -66,95 +64,64 @@ use Twig\TwigFunction;
 class TemplateRenderer
 {
     /**
-     * Templates files rendering environment.
+     * @var Environment
      */
-    private ?Environment $files_environment = null;
-
-    /**
-     * Inline templates rendering environment.
-     */
-    private ?Environment $inline_environment = null;
-
-    /**
-     * Templates loader instance.
-     */
-    private LoaderInterface $templates_loader;
-
-    /**
-     * Templates environments parameters.
-     */
-    private array $environment_params;
-
-    /**
-     * Twig extensions.
-     * @var list<\Twig\Extension\ExtensionInterface>
-     */
-    private array $extensions;
-
-    /**
-     * Twig globals.
-     * @var array<string, mixed>
-     */
-    private array $globals;
+    private $environment;
 
     public function __construct(string $rootdir = GLPI_ROOT, string $cachedir = GLPI_CACHE_DIR)
     {
-        // Initialize the loader
-        $this->templates_loader = new FilesystemLoader($rootdir . '/templates', $rootdir);
+        $loader = new FilesystemLoader($rootdir . '/templates', $rootdir);
 
         $active_plugins = Plugin::getPlugins();
         foreach ($active_plugins as $plugin_key) {
            // Add a dedicated namespace for each active plugin, so templates would be loadable using
            // `@my_plugin/path/to/template.html.twig` where `my_plugin` is the plugin key and `path/to/template.html.twig`
            // is the path of the template inside the `/templates` directory of the plugin.
-            $this->templates_loader->addPath(Plugin::getPhpDir($plugin_key . '/templates'), $plugin_key);
+            $loader->addPath(Plugin::getPhpDir($plugin_key . '/templates'), $plugin_key);
         }
 
-        // Compute environment parameters
-        $this->environment_params = [
+        $env_params = [
             'debug'       => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
             'auto_reload' => GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_PRODUCTION,
         ];
 
-        $tpl_cache_dir = $cachedir . '/templates';
+        $tpl_cachedir = $cachedir . '/templates';
         if (
-            (file_exists($tpl_cache_dir) && !is_writable($tpl_cache_dir))
-            || (!file_exists($tpl_cache_dir) && !is_writable($cachedir))
+            (file_exists($tpl_cachedir) && !is_writable($tpl_cachedir))
+            || (!file_exists($tpl_cachedir) && !is_writable($cachedir))
         ) {
-            trigger_error(sprintf('Cache directory "%s" is not writeable.', $tpl_cache_dir), E_USER_WARNING);
+            trigger_error(sprintf('Cache directory "%s" is not writeable.', $tpl_cachedir), E_USER_WARNING);
         } else {
-            $this->environment_params['cache'] = $tpl_cache_dir;
+            $env_params['cache'] = $tpl_cachedir;
         }
 
-        // Initialize the extensions
-        $this->extensions = [
-            // Vendor extensions
-            new DebugExtension(),
-            new StringExtension(),
+        $this->environment = new Environment(
+            $loader,
+            $env_params
+        );
+       // Vendor extensions
+        $this->environment->addExtension(new DebugExtension());
+        $this->environment->addExtension(new StringExtension());
+       // GLPI extensions
+        $this->environment->addExtension(new ConfigExtension());
+        $this->environment->addExtension(new SecurityExtension());
+        $this->environment->addExtension(new DataHelpersExtension());
+        $this->environment->addExtension(new DocumentExtension());
+        $this->environment->addExtension(new FrontEndAssetsExtension());
+        $this->environment->addExtension(new I18nExtension());
+        $this->environment->addExtension(new IllustrationExtension());
+        $this->environment->addExtension(new ItemtypeExtension());
+        $this->environment->addExtension(new PhpExtension());
+        $this->environment->addExtension(new PluginExtension());
+        $this->environment->addExtension(new RoutingExtension());
+        $this->environment->addExtension(new SearchExtension());
+        $this->environment->addExtension(new SessionExtension());
+        $this->environment->addExtension(new TeamExtension());
 
-            // GLPI extensions
-            new ConfigExtension(),
-            new SecurityExtension(),
-            new DataHelpersExtension(),
-            new DocumentExtension(),
-            new FrontEndAssetsExtension(),
-            new I18nExtension(),
-            new IllustrationExtension(),
-            new ItemtypeExtension(),
-            new PhpExtension(),
-            new PluginExtension(),
-            new RoutingExtension(),
-            new SearchExtension(),
-            new SessionExtension(),
-            new TeamExtension(),
-        ];
-
-        // Initialize the global variables
-        $this->globals = [
-            '_post'    => $_POST,
-            '_get'     => $_GET,
-            '_request' => $_REQUEST,
-        ];
+       // add superglobals
+        $this->environment->addGlobal('_post', $_POST);
+        $this->environment->addGlobal('_get', $_GET);
+        $this->environment->addGlobal('_request', $_REQUEST);
     }
 
     /**
@@ -174,29 +141,13 @@ class TemplateRenderer
     }
 
     /**
-     * Return Twig environment used to handle templates files.
+     * Return Twig environment used to handle templates.
      *
      * @return Environment
      */
     public function getEnvironment(): Environment
     {
-        if ($this->files_environment === null) {
-            $this->files_environment = $this->getNewEnvironment(with_translation_functions: true);
-        }
-        return $this->files_environment;
-    }
-
-    /**
-     * Return Twig environment used to handle inlined templates.
-     *
-     * @return Environment
-     */
-    private function getInlineEnvironment(): Environment
-    {
-        if ($this->inline_environment === null) {
-            $this->inline_environment = $this->getNewEnvironment(with_translation_functions: false);
-        }
-        return $this->inline_environment;
+        return $this->environment;
     }
 
     /**
@@ -211,7 +162,7 @@ class TemplateRenderer
     {
         try {
             Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
-            return $this->getEnvironment()->load($template)->render($variables);
+            return $this->environment->load($template)->render($variables);
         } finally {
             Profiler::getInstance()->stop($template);
         }
@@ -229,7 +180,7 @@ class TemplateRenderer
     {
         try {
             Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
-            $this->getEnvironment()->load($template)->display($variables);
+            $this->environment->load($template)->display($variables);
         } finally {
             Profiler::getInstance()->stop($template);
         }
@@ -245,40 +196,11 @@ class TemplateRenderer
      */
     public function renderFromStringTemplate(string $template, array $variables = []): string
     {
-
         try {
             Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
-            return $this->getInlineEnvironment()->createTemplate($template)->render($variables);
+            return $this->environment->createTemplate($template)->render($variables);
         } finally {
             Profiler::getInstance()->stop($template);
         }
-    }
-
-    /**
-     * Create a new template rendering environment.
-     */
-    private function getNewEnvironment(bool $with_translation_functions): Environment
-    {
-        $environment = new Environment(
-            $this->templates_loader,
-            $this->environment_params
-        );
-
-        foreach ($this->extensions as $extension) {
-            $environment->addExtension($extension);
-        }
-
-        foreach ($this->globals as $name => $value) {
-            $environment->addGlobal($name, $value);
-        }
-
-        if ($with_translation_functions) {
-            $environment->addFunction(new TwigFunction('__', '__'));
-            $environment->addFunction(new TwigFunction('_n', '_n'));
-            $environment->addFunction(new TwigFunction('_x', '_x'));
-            $environment->addFunction(new TwigFunction('_nx', '_nx'));
-        }
-
-        return $environment;
     }
 }
