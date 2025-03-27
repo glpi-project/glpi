@@ -2176,7 +2176,8 @@ class AuthLDAPTest extends DbTestCase
         $this->assertCount(1, $gus);
     }
 
-    * Test if rules targeting ldap criteria are working
+    /**
+     * Test if rules targeting ldap criteria are working
      *
      * @return void
      */
