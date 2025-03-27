@@ -2526,7 +2526,7 @@ class Plugin extends CommonDBTM
                             ['action' => 'activate'],
                             _x('button', 'Enable'),
                             ['id' => $ID],
-                            'ti-toggle-right-filled fs-2x disabled'
+                            'ti-toggle-left-filled fs-2x disabled'
                         ) . '&nbsp;';
                     }
                 }
