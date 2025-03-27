@@ -84,7 +84,9 @@ class Plugin extends CommonDBTM
     const NOTACTIVATED   = 4;
 
     /**
-     * @var int Plugin was previously discovered, but the plugin directory is missing now. The DB needs cleaned.
+     * @var int Plugin has a problem
+     * Plugin was previously discovered but its directory is missing. The DB needs cleaned.
+     * The plugin has code error or throw Exception, should not be loaded.
      */
     const TOBECLEANED    = 5;
 
@@ -227,6 +229,28 @@ class Plugin extends CommonDBTM
         return false;
     }
 
+    private static function isPluginSuspended(string $plugin_key): bool
+    {
+        $plugin_keys = array_column(self::getSuspendedPlugins(), 'directory');
+
+        return in_array($plugin_key, $plugin_keys);
+    }
+
+    /**
+     * List of plugins with state SUSPENDED in database
+     *
+     * @return array<int, array{id: int, directory: string, name: string, version: string, state: int, author: string|null, homepage: string|null, licence: string|null}>
+     */
+    private static function getSuspendedPlugins(): array
+    {
+        $all_plugins = (new self())->getList();
+        $suspended_plugins = array_filter($all_plugins, function ($plugin) {
+            return $plugin['state'] == self::SUSPENDED;
+        });
+
+        return $suspended_plugins;
+    }
+
     public function prepareInputForAdd($input)
     {
         $input = $this->prepareInput($input);
@@ -324,8 +348,10 @@ class Plugin extends CommonDBTM
 
 
     /**
-     * Init a plugin including setup.php file
-     * launching plugin_init_NAME function  after checking compatibility
+     * Init a plugin by including its setup.php file
+     *
+     * Executes plugin_init_<plugin_key> function after checking compatibility.
+     * All plugins are loaded, except plugins that are suspended.
      *
      * @param string  $plugin_key        System name (Plugin directory)
      * @param boolean $withhook   Load hook functions (false by default)
@@ -346,9 +372,19 @@ class Plugin extends CommonDBTM
                 continue;
             }
 
+            /**
+             * @todo maybe we should only load activated (and other state?) plugins
+             * @see \Glpi\Kernel\Listener\LoadPlugin::suspendPlugin()
+             *  at the moment I choose to make the possible modification, so only suspended plugins are excluded
+             */
+            $suspended_plugins = self::getSuspendedPlugins();
+
             if ((new self())->loadPluginSetupFile($plugin_key)) {
                 $loaded = true;
-                if (!in_array($plugin_key, self::$loaded_plugins)) {
+                if (
+                    !in_array($plugin_key, self::$loaded_plugins)
+                    && !in_array($plugin_key, $suspended_plugins)
+                ) {
                     // Register PSR-4 autoloader
                     $psr4_dir = $plugin_directory . '/src/';
                     if (is_dir($psr4_dir)) {
@@ -658,6 +694,8 @@ class Plugin extends CommonDBTM
         }
 
         if (!$is_loadable) {
+            // @todo maybe we should not display this message for SUSPENDED plugins
+            // it creates an entry in log file php-errors, so maybe we should avoid it...
             trigger_error(
                 sprintf(
                     'Unable to load plugin "%s" information.',
@@ -1777,6 +1815,10 @@ class Plugin extends CommonDBTM
             return false;
         }
 
+        if (self::isPluginSuspended($plugin_key)) {
+            return false;
+        };
+
         foreach (PLUGINS_DIRECTORIES as $base_dir) {
             if (!is_dir($base_dir)) {
                 continue;
@@ -1788,11 +1830,30 @@ class Plugin extends CommonDBTM
                 // variables used in this function.
                 // For example, if the included files contains a $key variable, it will
                 // replace the $key variable used here.
-                $include_fct = function () use ($file_path) {
-                    include_once($file_path);
-                };
-                $include_fct();
-                return true;
+
+                // @todo we should catch Exceptions here, as in load()
+                // at the moment, at boottime, postBootEvent, the exceptions throw here are not catched anywhere.
+                try {
+                    $include_fct = function () use ($file_path) {
+                        include_once($file_path);
+                    };
+                    $include_fct();
+                    return true;
+                } catch (\Throwable $e) {
+                    trigger_error(
+                        sprintf('Error while loading plugin setup file `%s`: %s', $file_path, $e->getMessage()),
+                        E_USER_WARNING
+                    );
+
+                    // copied from loadPluginSetupFile()
+                    $plugin = new self();
+                    if ($plugin->isActivated($plugin_key)) {
+                        $plugin->getFromDBbyDir($plugin_key);
+                        $plugin->unactivate($plugin->getID());
+                    }
+
+                    return false;
+                }
             }
         }
         return false;
