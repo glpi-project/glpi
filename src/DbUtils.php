@@ -418,8 +418,9 @@ final class DbUtils
         if ($context === 'glpi-core') {
             $src_dirs[] = $root_dir . '/src';
         } else {
-            $src_dirs[] = $root_dir . '/marketplace/' . $context . '/src';
-            $src_dirs[] = $root_dir . '/plugins/' . $context . '/src';
+            foreach (PLUGINS_DIRECTORIES as $plugins_dir) {
+                $srcdirs[] = $plugins_dir . '/' . $context . '/src';
+            }
         }
 
         foreach ($src_dirs as $srcdir) {
