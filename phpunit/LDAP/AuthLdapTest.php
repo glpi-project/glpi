@@ -2207,6 +2207,20 @@ class AuthLDAPTest extends DbTestCase
             'pattern'   => 'brazil6',
         ]);
         $actions = new \RuleAction();
+
+        $actions->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'profiles_id',
+            'value'       => 5, // 'normal' profile
+        ]);
+        $actions->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => 0, // '_test_child_1' entity
+        ]);
+
         // Create 2 dynamic group
         $group = new Group();
         $group_id = $group->add(["name" => "testgroup1"]);
@@ -2229,6 +2243,7 @@ class AuthLDAPTest extends DbTestCase
         $gu = new Group_User();
         $gus = $gu->find([
             'users_id' => $users_id,
+            'groups_id' => $group_id,
             'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $gus);
