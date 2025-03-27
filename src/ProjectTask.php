@@ -1407,8 +1407,9 @@ TWIG, $twig_params);
                     'delete' => _x('button', 'Put in trashbin'),
                     'restore' => _x('button', 'Restore'),
                     'purge' => _x('button', 'Delete permanently')
-                ]
-            ]
+                ],
+                'action_button_classes' => 'btn btn-sm btn-outline-secondary me-2',
+            ],
         ]);
     }
 
