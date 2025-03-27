@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\IsReservableCapacity;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -45,7 +46,7 @@ class ReservationTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [IsReservableCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: IsReservableCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 

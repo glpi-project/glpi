@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,25 +32,39 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Inventory\MainAsset;
+namespace Glpi\Asset;
 
-class GenericAsset extends Computer
+use JsonSerializable;
+
+class Capacity implements JsonSerializable
 {
-    protected function getModelsFieldName(): string
-    {
-        /** @var \Glpi\Asset\Asset $item */
-        $item = $this->item;
-        $model_classname = $item->getDefinition()->getAssetModelClassName();
-
-        return getForeignKeyFieldForItemType($model_classname);
+    public function __construct(
+        private string $name,
+        private CapacityConfig $config = new CapacityConfig(),
+    ) {
     }
 
-    protected function getTypesFieldName(): string
+    public function getName(): string
     {
-        /** @var \Glpi\Asset\Asset $item */
-        $item = $this->item;
-        $type_classname = $item->getDefinition()->getAssetTypeClassName();
+        return $this->name;
+    }
 
-        return getForeignKeyFieldForItemType($type_classname);
+    public function getConfig(): CapacityConfig
+    {
+        return $this->config;
+    }
+
+    public function setConfig(CapacityConfig $config): self
+    {
+        $this->config = $config;
+        return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'name' => $this->name,
+            'config' => $this->config->jsonSerialize(),
+        ];
     }
 }

@@ -932,7 +932,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
      * Return the list of capacities for the given GenericObject type.
      *
      * @param array<string, mixed> $type_data A row from the `glpi_plugin_genericobject_types` table.
-     * @return array<int, class-string<\Glpi\Asset\Capacity\AbstractCapacity>>
+     * @return array<int, array{name: class-string<\Glpi\Asset\Capacity\AbstractCapacity>}>
      */
     private function getCapacities(array $type_data): array
     {
@@ -954,7 +954,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
         $capacities = [];
         foreach ($mapping as $fieldname => $capacity) {
             if ($type_data[$fieldname]) {
-                $capacities[] = $capacity;
+                $capacities[] = ['name' => $capacity];
             }
         }
 

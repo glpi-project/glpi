@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,8 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\CapacityConfig;
 use Glpi\Inventory\Inventory;
 use Item_Environment;
 use Item_Process;
@@ -57,7 +58,24 @@ class IsInventoriableCapacity extends AbstractCapacity
     #[Override]
     public function getDescription(): string
     {
-        return __("The GLPI agent can report inventory data for these assets");
+        return __("The GLPI agent can report inventory data for these assets.");
+    }
+
+    #[Override]
+    public function getConfigurationForm(string $fieldname_prefix, ?CapacityConfig $current_config): ?string
+    {
+        return TemplateRenderer::getInstance()->render(
+            'pages/admin/assetdefinition/capacity/is_inventoriable_capacity_configuration_form.html.twig',
+            [
+                'fieldname_prefix'    => $fieldname_prefix,
+                'current_config'      => $current_config,
+                'itemtype_choices'    => [
+                    \Glpi\Inventory\MainAsset\GenericAsset::class        => __('Generic'),
+                    \Glpi\Inventory\MainAsset\GenericNetworkAsset::class => \NetworkEquipment::getTypeName(1),
+                    \Glpi\Inventory\MainAsset\GenericPrinterAsset::class => \Printer::getTypeName(1),
+                ]
+            ]
+        );
     }
 
     public function getSearchOptions(string $classname): array
@@ -117,14 +135,14 @@ class IsInventoriableCapacity extends AbstractCapacity
         CommonGLPI::registerStandardTab($classname, Item_Process::class, 85);
     }
 
-    public function onCapacityEnabled(string $classname): void
+    public function onCapacityEnabled(string $classname, CapacityConfig $config): void
     {
         //create rules
         $rules = new \RuleImportAsset();
         $rules->initRules(true, $classname);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -164,5 +182,13 @@ class IsInventoriableCapacity extends AbstractCapacity
             'pattern' => $classname
         ];
         $DB->delete(\RuleImportAsset::getTable(), $where, $joins);
+    }
+
+    public function onCapacityUpdated(string $classname, CapacityConfig $original_config, CapacityConfig $updated_config): void
+    {
+        if ($original_config->getValue('inventory_mainasset') != $updated_config->getValue('inventory_mainasset')) {
+            $rules = new \RuleImportAsset();
+            $rules->initRules(true, $classname);
+        }
     }
 }

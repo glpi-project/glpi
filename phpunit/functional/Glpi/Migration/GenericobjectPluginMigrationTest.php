@@ -40,6 +40,7 @@ use Domain_Item;
 use DropdownTranslation;
 use FieldUnicity;
 use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\AllowedInGlobalSearchCapacity;
 use Glpi\Asset\Capacity\HasContractsCapacity;
 use Glpi\Asset\Capacity\HasDevicesCapacity;
@@ -176,16 +177,16 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                 'picture'        => null,
                 'is_active'      => true,
                 'capacities'     => [
-                    AllowedInGlobalSearchCapacity::class,
-                    HasContractsCapacity::class,
-                    HasDevicesCapacity::class,
-                    HasDocumentsCapacity::class,
-                    HasHistoryCapacity::class,
-                    HasInfocomCapacity::class,
-                    HasNetworkPortCapacity::class,
-                    HasNotepadCapacity::class,
-                    IsProjectAssetCapacity::class,
-                    IsReservableCapacity::class,
+                    ['name' => AllowedInGlobalSearchCapacity::class, 'config' => []],
+                    ['name' => HasContractsCapacity::class, 'config' => []],
+                    ['name' => HasDevicesCapacity::class, 'config' => []],
+                    ['name' => HasDocumentsCapacity::class, 'config' => []],
+                    ['name' => HasHistoryCapacity::class, 'config' => []],
+                    ['name' => HasInfocomCapacity::class, 'config' => []],
+                    ['name' => HasNetworkPortCapacity::class, 'config' => []],
+                    ['name' => HasNotepadCapacity::class, 'config' => []],
+                    ['name' => IsProjectAssetCapacity::class, 'config' => []],
+                    ['name' => IsReservableCapacity::class, 'config' => []],
                 ],
                 'profiles'       => [
                     1 => 33,

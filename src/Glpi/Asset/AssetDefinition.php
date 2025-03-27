@@ -280,7 +280,23 @@ TWIG, $twig_params);
         $has_errors = false;
 
         if (array_key_exists('capacities', $input)) {
-            if (!$this->validateCapacityArray($input['capacities'])) {
+            $capacities = $input['capacities'];
+
+            // Filter capacities submitted by the UI.
+            // A `is_active` field will be present in this case, to be able to remove inactive capacities.
+            if (\is_array($capacities)) {
+                foreach ($capacities as $key => $capacity_specs) {
+                    if (
+                        \is_array($capacity_specs)
+                        && \array_key_exists('is_active', $capacity_specs)
+                        && ((bool) $capacity_specs['is_active']) === false
+                    ) {
+                        unset($capacities[$key]);
+                    }
+                }
+            }
+
+            if (!$this->validateCapacityArray($capacities)) {
                 Session::addMessageAfterRedirect(
                     htmlescape(sprintf(
                         __('The following field has an incorrect value: "%s".'),
@@ -291,7 +307,16 @@ TWIG, $twig_params);
                 );
                 $has_errors = true;
             } else {
-                $input['capacities'] = json_encode($input['capacities']);
+                // Add the config key if not present in the input.
+                $capacities = \array_map(
+                    fn (array $capacity_specs) => new Capacity(
+                        $capacity_specs['name'],
+                        new CapacityConfig($capacity_specs['config'] ?? [])
+                    ),
+                    $capacities
+                );
+
+                $input['capacities'] = json_encode(array_values($capacities));
             }
         }
 
@@ -316,9 +341,9 @@ TWIG, $twig_params);
         parent::post_addItem();
 
         // Trigger the `onCapacityEnabled` hooks.
-        $added_capacities = @json_decode($this->fields['capacities']);
-        foreach ($added_capacities as $capacity_classname) {
-            $this->onCapacityEnabled($capacity_classname);
+        $added_capacities = $this->decodeCapacities($this->fields['capacities']);
+        foreach ($added_capacities as $capacity) {
+            $this->onCapacityEnabled($capacity);
         }
 
         // Add default display preferences for the new asset definition
@@ -346,34 +371,22 @@ TWIG, $twig_params);
         parent::post_updateItem();
 
         if (in_array('capacities', $this->updates)) {
-            $new_capacities = @json_decode($this->fields['capacities']);
-            $old_capacities = @json_decode($this->oldvalues['capacities']);
+            $new_capacities = $this->decodeCapacities($this->fields['capacities']);
+            $old_capacities = $this->decodeCapacities($this->oldvalues['capacities']);
 
-            if (!is_array($new_capacities)) {
-                // should not happen, do not trigger cleaning to prevent unexpected mass deletion of data
-                trigger_error(
-                    sprintf('Invalid `capacities` value `%s`.', $this->fields['capacities']),
-                    E_USER_WARNING
-                );
-                return;
-            }
-            if (!is_array($old_capacities)) {
-                // should not happen, do not trigger cleaning to prevent unexpected mass deletion of data
-                trigger_error(
-                    sprintf('Invalid `capacities` value `%s`.', $this->oldvalues['capacities']),
-                    E_USER_WARNING
-                );
-                return;
+            $added_capacities = array_diff_key($new_capacities, $old_capacities);
+            foreach ($added_capacities as $capacity) {
+                $this->onCapacityEnabled($capacity);
             }
 
-            $added_capacities = array_diff($new_capacities, $old_capacities);
-            foreach ($added_capacities as $capacity_classname) {
-                $this->onCapacityEnabled($capacity_classname);
+            $removed_capacities = array_diff_key($old_capacities, $new_capacities);
+            foreach ($removed_capacities as $capacity) {
+                $this->onCapacityDisabled($capacity);
             }
 
-            $removed_capacities = array_diff($old_capacities, $new_capacities);
-            foreach ($removed_capacities as $capacity_classname) {
-                $this->onCapacityDisabled($capacity_classname);
+            $updated_capacities = array_intersect_key($old_capacities, $new_capacities);
+            foreach ($updated_capacities as $capacity) {
+                $this->onCapacityUpdated($capacity);
             }
         }
     }
@@ -381,8 +394,8 @@ TWIG, $twig_params);
     public function cleanDBonPurge()
     {
         $capacities = $this->getDecodedCapacitiesField();
-        foreach ($capacities as $capacity_classname) {
-            $this->onCapacityDisabled($capacity_classname);
+        foreach ($capacities as $capacity) {
+            $this->onCapacityDisabled($capacity);
         }
 
         $this->purgeConcreteClassFromDb($this->getCustomObjectClassName());
@@ -393,36 +406,52 @@ TWIG, $twig_params);
     /**
      * Handle the activation of a capacity.
      *
-     * @phpstan-param class-string<\Glpi\Asset\Capacity\CapacityInterface> $capacity_classname
+     * @param Capacity $capacity
      */
-    private function onCapacityEnabled(string $capacity_classname): void
+    private function onCapacityEnabled(Capacity $capacity): void
     {
-        $capacity = AssetDefinitionManager::getInstance()->getCapacity($capacity_classname);
-        if ($capacity === null) {
+        $capacity_instance = AssetDefinitionManager::getInstance()->getCapacity($capacity->getName());
+        if ($capacity_instance === null) {
             // can be null if provided by a plugin that is no longer active
             return;
         }
-        $capacity->onCapacityEnabled($this->getAssetClassName());
+        $capacity_instance->onCapacityEnabled($this->getAssetClassName(), $capacity->getConfig());
     }
 
     /**
      * Handle the deactivation of a capacity.
      *
-     * @phpstan-param class-string<\Glpi\Asset\Capacity\CapacityInterface> $capacity_classname
+     * @param Capacity $capacity
      */
-    private function onCapacityDisabled(string $capacity_classname): void
+    private function onCapacityDisabled(Capacity $capacity): void
     {
-        $capacity = AssetDefinitionManager::getInstance()->getCapacity($capacity_classname);
-        if ($capacity === null) {
+        $capacity_instance = AssetDefinitionManager::getInstance()->getCapacity($capacity->getName());
+        if ($capacity_instance === null) {
             // can be null if provided by a plugin that is no longer active
             return;
         }
-        $capacity->onCapacityDisabled($this->getAssetClassName());
+        $capacity_instance->onCapacityDisabled($this->getAssetClassName(), $capacity->getConfig());
 
-        $rights_to_remove = $capacity->getSpecificRights();
+        $rights_to_remove = $capacity_instance->getSpecificRights();
         if (count($rights_to_remove) > 0) {
             $this->cleanRights($rights_to_remove);
         }
+    }
+
+    /**
+     * Handle the update of a capacity.
+     *
+     * @param Capacity $capacity
+     */
+    private function onCapacityUpdated(Capacity $capacity): void
+    {
+        $capacity_instance = AssetDefinitionManager::getInstance()->getCapacity($capacity->getName());
+        if ($capacity_instance === null) {
+            // can be null if provided by a plugin that is no longer active
+            return;
+        }
+        $updated_capacity = $this->getDecodedCapacitiesField()[$capacity->getName()];
+        $capacity_instance->onCapacityUpdated($this->getAssetClassName(), $capacity->getConfig(), $updated_capacity->getConfig());
     }
 
     public function rawSearchOptions()
@@ -568,7 +597,7 @@ TWIG, $twig_params);
     public function hasCapacityEnabled(CapacityInterface $capacity): bool
     {
         $enabled_capacities = $this->getDecodedCapacitiesField();
-        return in_array($capacity::class, $enabled_capacities);
+        return isset($enabled_capacities[$capacity::class]);
     }
 
     /**
@@ -581,28 +610,66 @@ TWIG, $twig_params);
         $capacities = [];
         foreach (AssetDefinitionManager::getInstance()->getAvailableCapacities() as $capacity) {
             if ($this->hasCapacityEnabled($capacity)) {
-                $capacities[] = $capacity;
+                $capacities[$capacity::class] = $capacity;
             }
         }
         return $capacities;
     }
 
     /**
+     * Get configuration for the given capacity.
+     */
+    public function getCapacityConfiguration(string $capacity_classname): CapacityConfig
+    {
+        $capacities = $this->getDecodedCapacitiesField();
+        if (isset($capacities[$capacity_classname])) {
+            return $capacities[$capacity_classname]->getConfig();
+        }
+
+        return new CapacityConfig();
+    }
+
+    /**
      * Return the decoded value of the `capacities` field.
      *
-     * @return array
+     * @return \Glpi\Asset\Capacity[]
      */
     private function getDecodedCapacitiesField(): array
     {
-        $capacities = @json_decode($this->fields['capacities'], associative: true);
-        if (!$this->validateCapacityArray($capacities, false)) {
+        return $this->decodeCapacities($this->fields['capacities']);
+    }
+
+    /**
+     * Decoded the given value of the `capacities` field.
+     *
+     * @return \Glpi\Asset\Capacity[]
+     */
+    private function decodeCapacities(string $encoded): array
+    {
+        $decoded_capacities = json_decode($encoded, associative: true);
+
+        if (!$this->validateCapacityArray($decoded_capacities, false)) {
             trigger_error(
                 sprintf('Invalid `capacities` value (`%s`).', $this->fields['capacities']),
                 E_USER_WARNING
             );
             $this->fields['capacities'] = '[]'; // prevent warning to be triggered on each method call
-            $capacities = [];
+            return [];
         }
+
+        $capacities = [];
+        foreach ($decoded_capacities as $capacity_specs) {
+            $name   = $capacity_specs['name'];
+            $config = $capacity_specs['config'] ?? [];
+
+            if (!\is_a($name, CapacityInterface::class, true)) {
+                // May be a previously enabled capacity from a disabled plugin.
+                continue;
+            }
+
+            $capacities[$name] = new Capacity($name, new CapacityConfig($config));
+        }
+
         return $capacities;
     }
 
@@ -756,12 +823,23 @@ TWIG, $twig_params);
             fn ($capacity) => $capacity::class,
             AssetDefinitionManager::getInstance()->getAvailableCapacities()
         );
-        foreach ($capacities as $classname) {
-            if (!is_string($classname)) {
+        foreach ($capacities as $capacity_specs) {
+            if (!is_array($capacity_specs)) {
                 $is_valid = false;
                 break;
             }
-            if ($check_values && !in_array($classname, $available_capacities)) {
+
+            if (!\array_key_exists('name', $capacity_specs) || !\is_string($capacity_specs['name'])) {
+                $is_valid = false;
+                break;
+            }
+            if (\array_key_exists('config', $capacity_specs) && !\is_array($capacity_specs['config'])) {
+                // FIXME A configuration check delegated to the capacity class would be safer.
+                $is_valid = false;
+                break;
+            }
+
+            if ($check_values && !in_array($capacity_specs['name'], $available_capacities)) {
                 $is_valid = false;
                 break;
             }

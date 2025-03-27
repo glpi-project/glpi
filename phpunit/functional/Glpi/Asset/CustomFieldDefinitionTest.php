@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Asset;
 
 use DbTestCase;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\CustomFieldType\BooleanType;
 use Glpi\Asset\CustomFieldType\DateTimeType;
 use Glpi\Asset\CustomFieldType\DateType;
@@ -57,7 +58,7 @@ class CustomFieldDefinitionTest extends DbTestCase
     {
         $asset_definition = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $asset_classname = $asset_definition->getAssetClassName();
@@ -288,7 +289,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $opt_id_offset = 45000;
         $asset_definition = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
 
@@ -498,7 +499,7 @@ class CustomFieldDefinitionTest extends DbTestCase
     {
         $asset_definition = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $field_1 = new \Glpi\Asset\CustomFieldDefinition();

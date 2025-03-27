@@ -34,6 +34,7 @@
 
 namespace Glpi\PHPUnit\Tests\Glpi\Asset;
 
+use Glpi\Asset\Capacity;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 trait CapacityUsageTestTrait
@@ -41,7 +42,7 @@ trait CapacityUsageTestTrait
     /**
      * Get the tested capacity class.
      *
-     * @return string
+     * @return class-string<\Glpi\Asset\Capacity\CapacityInterface>
      */
     abstract protected function getTargetCapacity(): string;
 
@@ -69,7 +70,7 @@ trait CapacityUsageTestTrait
 
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [new Capacity(name: $this->getTargetCapacity())]
         );
 
         // Create our test subject
@@ -145,7 +146,7 @@ trait CapacityUsageTestTrait
 
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [new Capacity(name: $this->getTargetCapacity())]
         );
 
         // Create our test subject

@@ -36,6 +36,8 @@ namespace tests\units\Glpi\Asset;
 
 use DbTestCase;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\Asset\CustomFieldType\DropdownType;
 use Glpi\Asset\CustomFieldType\StringType;
 
@@ -141,9 +143,12 @@ class AssetTest extends DbTestCase
 
     public function testSearchOptionsUnicity(): void
     {
-        $capacities = AssetDefinitionManager::getInstance()->getAvailableCapacities();
+        $capacities = array_map(
+            fn (CapacityInterface $capacity) => new Capacity(name: $capacity::class),
+            AssetDefinitionManager::getInstance()->getAvailableCapacities()
+        );
         $definition = $this->initAssetDefinition(
-            capacities: array_keys($capacities)
+            capacities: $capacities
         );
 
         $asset = $this->createItem($definition->getAssetClassName(), [

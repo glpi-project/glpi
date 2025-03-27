@@ -39,6 +39,7 @@ use Contract_Item;
 use DbTestCase;
 use DisplayPreference;
 use Glpi\Asset\Asset;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
@@ -131,7 +132,7 @@ class HasContractsCapacityTest extends DbTestCase
     {
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [new Capacity(name: $this->getTargetCapacity())]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
@@ -195,8 +196,8 @@ class HasContractsCapacityTest extends DbTestCase
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
             capacities: [
-                $this->getTargetCapacity(),
-                HasHistoryCapacity::class
+                new Capacity(name: $this->getTargetCapacity()),
+                new Capacity(name: HasHistoryCapacity::class)
             ]
         );
         $class = $definition->getAssetClassName();
@@ -276,7 +277,7 @@ class HasContractsCapacityTest extends DbTestCase
     {
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [new Capacity(name: $this->getTargetCapacity())]
         );
         $class = $definition->getAssetClassName();
 
@@ -328,7 +329,7 @@ class HasContractsCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasContractsCapacity::class]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasContractsCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);

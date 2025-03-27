@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Asset\Capacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
 use NetworkPort;
@@ -58,21 +59,20 @@ class HasNetworkPortCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasNetworkPortCapacity::class,
-                \Glpi\Asset\Capacity\HasNetworkPortCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasNetworkPortCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasNetworkPortCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasNetworkPortCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -126,17 +126,17 @@ class HasNetworkPortCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-                \Glpi\Asset\Capacity\HasDomainsCapacity::class,
-                \Glpi\Asset\Capacity\HasNetworkPortCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNetworkPortCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-                \Glpi\Asset\Capacity\HasDomainsCapacity::class,
-                \Glpi\Asset\Capacity\HasNetworkPortCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNetworkPortCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -227,7 +227,7 @@ class HasNetworkPortCapacityTest extends DbTestCase
     {
         $definition = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasNetworkPortCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasNetworkPortCapacity::class),
             ]
         );
         $class = $definition->getAssetClassName();

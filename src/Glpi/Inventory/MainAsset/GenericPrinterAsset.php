@@ -35,7 +35,7 @@
 
 namespace Glpi\Inventory\MainAsset;
 
-class GenericAsset extends Computer
+class GenericPrinterAsset extends Printer
 {
     protected function getModelsFieldName(): string
     {

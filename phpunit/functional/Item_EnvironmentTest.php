@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Features\Clonable;
 use Item_Environment;
@@ -47,7 +48,7 @@ class Item_EnvironmentTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [IsInventoriableCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: IsInventoriableCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -77,7 +78,7 @@ class Item_EnvironmentTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [IsInventoriableCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: IsInventoriableCapacity::class)]);
 
         foreach ($CFG_GLPI['environment_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {

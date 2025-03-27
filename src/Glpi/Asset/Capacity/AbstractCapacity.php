@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,6 +38,7 @@ use CommonDBRelation;
 use DisplayPreference;
 use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\CapacityConfig;
 use Log;
 
 /**
@@ -60,6 +60,11 @@ abstract class AbstractCapacity implements CapacityInterface
     public function getDescription(): string
     {
         return '';
+    }
+
+    public function getConfigurationForm(string $fieldname_prefix, ?CapacityConfig $current_config): ?string
+    {
+        return null;
     }
 
     public function getSearchOptions(string $classname): array
@@ -186,11 +191,15 @@ abstract class AbstractCapacity implements CapacityInterface
     {
     }
 
-    public function onCapacityEnabled(string $classname): void
+    public function onCapacityEnabled(string $classname, CapacityConfig $config): void
     {
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
+    {
+    }
+
+    public function onCapacityUpdated(string $classname, CapacityConfig $old_config, CapacityConfig $new_config): void
     {
     }
 

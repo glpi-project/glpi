@@ -77,6 +77,29 @@ SQL;
     ]);
     $migration->addKey('glpi_assets_assetdefinitions', 'label');
     $migration->addField('glpi_assets_assetdefinitions', 'picture', 'text');
+
+    // Convert capacities for a classname list to an object list.
+    $definitions_iterator = $DB->request(['FROM' => 'glpi_assets_assetdefinitions']);
+    foreach ($definitions_iterator as $definition_data) {
+        $capacities_current = json_decode($definition_data['capacities']);
+        if (!is_array($capacities_current)) {
+            continue; // Unexpected value
+        }
+
+        $capacities_normalized = array_map(
+            fn ($capacity) => is_string($capacity) ? ['name' => $capacity, 'config' => []] : $capacity,
+            $capacities_current
+        );
+        if ($capacities_normalized !== $capacities_current) {
+            $migration->addPostQuery(
+                $DB->buildUpdate(
+                    'glpi_assets_assetdefinitions',
+                    ['capacities' => json_encode($capacities_normalized)],
+                    ['id' => $definition_data['id']]
+                )
+            );
+        }
+    }
 }
 
 $ADDTODISPLAYPREF['Glpi\\Asset\\AssetDefinition'] = [2, 3, 4, 5, 6];
