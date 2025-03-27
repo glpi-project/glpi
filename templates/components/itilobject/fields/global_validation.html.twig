@@ -76,7 +76,7 @@
             field_options
          ) }}
 
-         {# Validation step - si pas inclu dans dropdownValidator au dessus #}
+         {# Validation step #}
          {{ fields.dropdownField(
             'ValidationStep',
             '_validationsteps_id',
@@ -85,7 +85,7 @@
             {
                'rand': rand,
                'value': call('ValidationStep::getDefault').id,
-            }
+            }|merge(field_options)
          ) }}
 
          <script type="text/javascript">
