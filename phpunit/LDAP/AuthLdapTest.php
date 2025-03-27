@@ -2186,7 +2186,7 @@ class AuthLDAPTest extends DbTestCase
         //prepare rules
         $rules = new \RuleRight();
         $rules_id = $rules->add([
-            'sub_type'     => 'GroupRuleRight',
+            'sub_type'     => 'RuleRight',
             'name'         => 'test ldap groupruleright',
             'match'        => 'AND',
             'is_active'    => 1,
