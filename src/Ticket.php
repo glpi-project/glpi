@@ -6080,9 +6080,9 @@ JAVASCRIPT;
             ];
         }
         if ($valid) {
-            $join_profile['glpi_ticketvalidations as tv'] = [
+            $join_profile['glpi_ticketvalidations'] = [
                 'ON' => [
-                    'tv'           => 'tickets_id',
+                    'glpi_ticketvalidations' => 'tickets_id',
                     'glpi_tickets' => 'id'
                 ]
             ];
