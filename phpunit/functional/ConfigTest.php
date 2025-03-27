@@ -798,6 +798,8 @@ class ConfigTest extends DbTestCase
             'user_name'        => Session::getLoginUserID(false),
             'date_mod'         => $_SESSION['glpi_currenttime'],
             'id_search_option' => 1,
+            'old_id' => null,
+            'new_id' => null
         ];
 
         $clean_ids = function (&$value, $key) {

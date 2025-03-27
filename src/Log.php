@@ -198,7 +198,9 @@ class Log extends CommonDBTM
                                     $values[$key]
                                 ),
                                 $values[$key]
-                            )
+                            ),
+                            $oldval,
+                            (int)$values[$key]
                         ];
                     }
                     break;
@@ -237,6 +239,8 @@ class Log extends CommonDBTM
         $id_search_option = $changes[0];
         $old_value        = $changes[1] ?? '';
         $new_value        = $changes[2] ?? '';
+        $old_id           = $changes[3] ?? null;
+        $new_id           = $changes[4] ?? null;
 
         // Remove json values
         $decoded_old_value = json_decode($old_value);
@@ -289,6 +293,17 @@ class Log extends CommonDBTM
             'old_value'         => $old_value,
             'new_value'         => $new_value
         ];
+
+        // This condition prevents errors during migrations from older GLPI versions,
+        // where some steps write logs before the new columns are added.
+        if (
+            $DB->tableExists(self::getTable())
+            && $DB->fieldExists(self::getTable(), 'old_id')
+            && $DB->fieldExists(self::getTable(), 'new_id')
+        ) {
+            $params['old_id'] = $old_id;
+            $params['new_id'] = $new_id;
+        }
 
         if (static::$use_queue) {
             //use queue rather than direct insert
