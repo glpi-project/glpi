@@ -32,11 +32,36 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var \DBmysql $DB
- * @var \Migration $migration
- */
+namespace GlpiPlugin\Tester\Form;
 
-// Drop useless field
-$migration->dropKey('glpi_ticketrecurrents', 'is_recursive');
-$migration->dropField('glpi_ticketrecurrents', 'is_recursive');
+use Glpi\DBAL\JsonFieldInterface;
+use Override;
+
+final class DayOfTheWeekPolicyConfig implements JsonFieldInterface
+{
+    public function __construct(
+        private string $day_of_the_week = "Monday",
+    ) {
+    }
+
+    #[Override]
+    public static function jsonDeserialize(array $data): self
+    {
+        return new self(
+            day_of_the_week: $data['day_of_the_week'] ?? "Monday",
+        );
+    }
+
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return [
+            'day_of_the_week' => $this->day_of_the_week,
+        ];
+    }
+
+    public function getDay(): string
+    {
+        return $this->day_of_the_week;
+    }
+}

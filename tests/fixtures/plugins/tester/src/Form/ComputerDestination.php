@@ -32,41 +32,56 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination;
+namespace GlpiPlugin\Tester\Form;
 
-use Glpi\Form\Destination\CommonITILField\RequestTypeField;
-use Glpi\Form\Destination\CommonITILField\SLATTOField;
-use Glpi\Form\Destination\CommonITILField\SLATTRField;
-use Glpi\Form\Destination\CommonITILField\OLATTOField;
-use Glpi\Form\Destination\CommonITILField\OLATTRField;
-use Glpi\Form\Destination\CommonITILField\StatusField;
+use Computer;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\FormDestinationInterface;
+use Glpi\Form\Form;
 use Override;
-use Ticket;
 
-final class FormDestinationTicket extends AbstractCommonITILFormDestination
+final class ComputerDestination implements FormDestinationInterface
 {
     #[Override]
-    public function getTargetItemtype(): string
-    {
-        return Ticket::class;
+    public function createDestinationItems(
+        Form $form,
+        AnswersSet $answers_set,
+        array $config,
+    ): array {
+        $computer = new Computer();
+        $computer->add([
+            'name'         => $config['name'] ?? "",
+            'entities_id'  => $form->fields['entities_id'],
+            'is_recursive' => $form->fields['is_recursive'],
+        ]);
+        return [$computer];
     }
 
     #[Override]
-    protected function defineConfigurableFields(): array
+    public function renderConfigForm(Form $form, array $config): string
     {
-        return array_merge(parent::defineConfigurableFields(), [
-            new RequestTypeField(),
-            new SLATTOField(),
-            new SLATTRField(),
-            new OLATTOField(),
-            new OLATTRField(),
-            new StatusField(),
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render("@tester/computer_destination.html.twig", [
+            'config' => $config,
         ]);
     }
 
     #[Override]
     public function getWeight(): int
     {
-        return 10;
+        return 40;
+    }
+
+    #[Override]
+    public function getLabel(): string
+    {
+        return Computer::getTypeName(1);
+    }
+
+    #[Override]
+    public function getIcon(): string
+    {
+        return Computer::getIcon();
     }
 }
