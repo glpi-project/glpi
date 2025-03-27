@@ -36,6 +36,8 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
 use Glpi\Form\Question;
 use Override;
 
@@ -188,5 +190,18 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     {
         // Do nothing by default
         return null;
+    }
+
+    /**
+     * Get all condition handlers that can process this question type
+     *
+     * @param JsonFieldInterface|null $question_config Configuration for the question
+     * @return array<ConditionHandlerInterface> List of applicable condition handlers
+     */
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return [new VisibilityConditionHandler()];
     }
 }

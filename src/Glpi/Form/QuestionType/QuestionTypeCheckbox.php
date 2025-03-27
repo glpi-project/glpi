@@ -58,13 +58,16 @@ final class QuestionTypeCheckbox extends AbstractQuestionTypeSelectable implemen
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
+    ): array {
         if (!$question_config instanceof QuestionTypeSelectableExtraDataConfig) {
             throw new InvalidArgumentException();
         }
 
-        return new MultipleChoiceFromValuesConditionHandler($question_config->getOptions());
+        return array_merge(
+            parent::getConditionHandlers($question_config),
+            [new MultipleChoiceFromValuesConditionHandler($question_config->getOptions())]
+        );
     }
 }

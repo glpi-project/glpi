@@ -58,13 +58,16 @@ final class QuestionTypeRadio extends AbstractQuestionTypeSelectable implements 
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
+    ): array {
         if (!$question_config instanceof QuestionTypeSelectableExtraDataConfig) {
             throw new InvalidArgumentException();
         }
 
-        return new SingleChoiceFromValuesConditionHandler($question_config->getOptions());
+        return array_merge(
+            parent::getConditionHandlers($question_config),
+            [new SingleChoiceFromValuesConditionHandler($question_config->getOptions())]
+        );
     }
 }
