@@ -413,8 +413,19 @@ final class DbUtils
 
         // Fetch filenames from "src" directory of context (GLPI core or given plugin).
         $mapping[$context] = [];
-        $srcdir = $root_dir . ($context === 'glpi-core' ? '' : '/plugins/' . $context) . '/src';
-        if (is_dir($srcdir)) {
+
+        $src_dirs = [];
+        if ($context === 'glpi-core') {
+            $src_dirs[] = $root_dir . '/src';
+        } else {
+            $src_dirs[] = $root_dir . '/marketplace/' . $context . '/src';
+            $src_dirs[] = $root_dir . '/plugins/' . $context . '/src';
+        }
+
+        foreach ($src_dirs as $srcdir) {
+            if (!is_dir($srcdir)) {
+                continue;
+            }
             $files_iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($srcdir),
                 RecursiveIteratorIterator::SELF_FIRST
@@ -428,7 +439,7 @@ final class DbUtils
 
                 // Store entry into mapping:
                 // - key is the lowercased filepath;
-                // - value is the classname with correct case.
+                // - value is the classname with correct case
                 $mapping[$context][strtolower($relative_path)] = str_replace(
                     [DIRECTORY_SEPARATOR, '.php'],
                     ['\\',                ''],
