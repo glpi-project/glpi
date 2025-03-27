@@ -135,9 +135,9 @@ TWIG;
     public function renderEndUserTemplate(
         Question $question,
     ): string {
-        $defaul_value = $question->fields['default_value'] ?? '';
+        $default_value = $question->fields['default_value'] ?? '';
         if ($this instanceof TranslationAwareQuestionType) {
-            $defaul_value = ItemTranslation::translate(
+            $default_value = ItemTranslation::translate(
                 $question,
                 Question::TRANSLATION_KEY_DEFAULT_VALUE,
                 1
@@ -149,7 +149,7 @@ TWIG;
                 type="{{ input_type }}"
                 class="form-control"
                 name="{{ question.getEndUserInputName() }}"
-                value="{{ defaul_value }}"
+                value="{{ default_value }}"
                 aria-label="{{ label }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
                 {% for key, value in attributes %}
@@ -160,11 +160,11 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question'     => $question,
-            'defaul_value' => $defaul_value,
-            'input_type'   => $this->getInputType(),
-            'label'        => $question->fields['name'],
-            'attributes'   => $this->getInputAttributes(),
+            'question'      => $question,
+            'default_value' => $default_value,
+            'input_type'    => $this->getInputType(),
+            'label'         => $question->fields['name'],
+            'attributes'    => $this->getInputAttributes(),
         ]);
     }
 
