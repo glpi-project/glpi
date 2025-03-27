@@ -1407,8 +1407,8 @@ TWIG, $twig_params);
                     'delete' => _x('button', 'Put in trashbin'),
                     'restore' => _x('button', 'Restore'),
                     'purge' => _x('button', 'Delete permanently')
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 

@@ -2327,6 +2327,7 @@ TWIG,
      *    - confirm          : string of confirm message before massive action
      *    - item             : CommonDBTM object that has to be passed to the actions
      *    - tag_to_send      : the tag of the elements to send to the ajax window (default: common)
+     *    - action_button_classes : string of classes to add to the action button
      *    - display          : display or return the generated html (default true)
      *
      * @return bool|string     the html if display parameter is false, or true
@@ -2338,25 +2339,26 @@ TWIG,
 
        /// TODO : permit to pass several itemtypes to show possible actions of all types : need to clean visibility management after
 
-        $p['ontop']             = true;
-        $p['num_displayed']     = -1;
-        $p['forcecreate']       = false;
-        $p['check_itemtype']    = '';
-        $p['check_items_id']    = '';
-        $p['is_deleted']        = false;
-        $p['extraparams']       = [];
-        $p['width']             = 800;
-        $p['height']            = 400;
-        $p['specific_actions']  = [];
-        $p['add_actions']       = [];
-        $p['confirm']           = '';
-        $p['rand']              = '';
-        $p['container']         = '';
-        $p['display_arrow']     = true;
-        $p['title']             = _n('Action', 'Actions', Session::getPluralNumber());
-        $p['item']              = false;
-        $p['tag_to_send']       = 'common';
-        $p['display']           = true;
+        $p['ontop']                 = true;
+        $p['num_displayed']         = -1;
+        $p['forcecreate']           = false;
+        $p['check_itemtype']        = '';
+        $p['check_items_id']        = '';
+        $p['is_deleted']            = false;
+        $p['extraparams']           = [];
+        $p['width']                 = 800;
+        $p['height']                = 400;
+        $p['specific_actions']      = [];
+        $p['add_actions']           = [];
+        $p['confirm']               = '';
+        $p['rand']                  = '';
+        $p['container']             = '';
+        $p['display_arrow']         = true;
+        $p['title']                 = _n('Action', 'Actions', Session::getPluralNumber());
+        $p['item']                  = false;
+        $p['tag_to_send']           = 'common';
+        $p['action_button_classes'] = 'btn btn-sm btn-primary me-2';
+        $p['display']               = true;
 
         foreach ($options as $key => $val) {
             if (isset($p[$key])) {
@@ -2454,7 +2456,7 @@ TWIG,
             }
             $out .= "<a role=\"button\" title='" . __s('Massive actions') . "'
                      data-bs-toggle='tooltip' data-bs-placement='" . ($p['ontop'] ? "bottom" : "top") . "'
-                     class='btn btn-sm btn-primary me-2' ";
+                     class='{$p['action_button_classes']}' ";
             if (is_array($p['confirm'] || strlen($p['confirm']))) {
                 $out .= self::addConfirmationOnAction($p['confirm'], "modal_massiveaction_window$identifier.show();");
             } else {
