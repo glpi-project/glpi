@@ -6581,6 +6581,13 @@ HTML;
     public function applyGroupsRules()
     {
         if (!isset($this->input["_ldap_rules"]['groups_id'])) {
+            if (isset($this->input["_ldap_rules"]) && isset($this->input['id'])) {
+                $group_user = new Group_User();
+                $groups = $group_user->find(['users_id' => $this->input['id'], 'is_dynamic' => 1]);
+                foreach ($groups as $group) {
+                    $group_user->delete($group);
+                }
+            }
             return;
         }
 
@@ -6594,7 +6601,7 @@ HTML;
             ];
 
             if (!$group_user->getFromDBByCrit($data)) {
-                $group_user->add($data);
+                $group_user->add(array_merge($data, ['is_dynamic' => 1]));
             }
         }
     }

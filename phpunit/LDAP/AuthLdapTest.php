@@ -2176,6 +2176,113 @@ class AuthLDAPTest extends DbTestCase
         $this->assertCount(1, $gus);
     }
 
+    * Test if rules targeting ldap criteria are working
+     *
+     * @return void
+     */
+    public function testGroupRuleRight()
+    {
+        //prepare rules
+        $rules = new \RuleRight();
+        $rules_id = $rules->add([
+            'sub_type'     => 'GroupRuleRight',
+            'name'         => 'test ldap groupruleright',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $criteria = new \RuleCriteria();
+        $criteria->add([
+            'rules_id'  => $rules_id,
+            'criteria'  => 'LDAP_SERVER',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => $this->ldap->getID(),
+        ]);
+        $crit_id = $criteria->add([
+            'rules_id'  => $rules_id,
+            'criteria'  => 'LOGIN',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 'brazil6',
+        ]);
+        $actions = new \RuleAction();
+        // Create 2 dynamic group
+        $group = new Group();
+        $group_id = $group->add(["name" => "testgroup1"]);
+        $this->assertGreaterThan(0, $group_id);
+
+        // Add groups with a rule
+        $actions->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'specific_groups_id',
+            'value'       => $group_id, // '_test_child_1' entity
+        ]);
+
+        // login the user to force a real synchronisation and get it's glpi id
+        $this->login('brazil6', 'password', false);
+        $users_id = \User::getIdByName('brazil6');
+        $this->assertGreaterThan(0, $users_id);
+
+        // Check group
+        $gu = new Group_User();
+        $gus = $gu->find([
+            'users_id' => $users_id,
+            'is_dynamic' => 1,
+        ]);
+        $this->assertCount(1, $gus);
+
+        // Create 2 manual groups
+        $mgroup = new Group();
+        $mgroup_id = $mgroup->add(["name" => "manualgroup1"]);
+        $this->assertGreaterThan(0, $mgroup_id);
+        $mgroup2 = new Group();
+        $mgroup2_id = $mgroup2->add(["name" => "manualgroup2"]);
+        $this->assertGreaterThan(0, $mgroup2_id);
+
+        // Add 2 groups manualy
+        $gu = new Group_User();
+        $gu_id = $gu->add([
+            'users_id' => $users_id,
+            'groups_id' => $mgroup_id,
+        ]);
+        $this->assertGreaterThan(0, $gu_id);
+        $gu_id = $gu->add([
+            'users_id' => $users_id,
+            'groups_id' => $mgroup2_id,
+        ]);
+        $this->assertGreaterThan(0, $gu_id);
+
+        // Check group
+        $gu = new Group_User();
+        $gus = $gu->find([
+            'users_id' => $users_id,
+            'is_dynamic' => 0,
+        ]);
+        $this->assertCount(2, $gus);
+
+        // update criteria
+        $criteria = new \RuleCriteria();
+        $crit_id = $criteria->update([
+            'id'  => $crit_id,
+            'pattern'   => 'brazil7',
+        ]);
+
+        // Check the user got the entity/profiles unassigned
+        $this->login('brazil6', 'password', false);
+        $users_id = \User::getIdByName('brazil6');
+        $this->assertGreaterThan(0, $users_id);
+
+        // Check group not assigned
+        $gu = new Group_User();
+        $gus = $gu->find([
+            'groups_id' => $group_id,
+            'users_id' => $users_id,
+        ]);
+
+        $this->assertCount(2, $gus);
+    }
+
     /**
      * @requires extension ldap
      */
