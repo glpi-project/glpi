@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -41,7 +40,7 @@ class Capacity implements JsonSerializable
 {
     public function __construct(
         private string $name,
-        private ?CapacityConfig $config = null,
+        private CapacityConfig $config = new CapacityConfig(),
     ) {
     }
 
@@ -50,7 +49,7 @@ class Capacity implements JsonSerializable
         return $this->name;
     }
 
-    public function getConfig(): ?CapacityConfig
+    public function getConfig(): CapacityConfig
     {
         return $this->config;
     }
@@ -65,7 +64,7 @@ class Capacity implements JsonSerializable
     {
         return [
             'name' => $this->name,
-            'config' => $this->config,
+            'config' => $this->config->jsonSerialize(),
         ];
     }
 }

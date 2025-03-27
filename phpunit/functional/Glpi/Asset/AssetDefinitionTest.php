@@ -38,6 +38,7 @@ use Computer;
 use DbTestCase;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\Asset\Capacity\HasInfocomCapacity;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -51,14 +52,18 @@ class AssetDefinitionTest extends DbTestCase
         yield [
             'input'    => [
                 'capacities' => [
-                    HasDocumentsCapacity::class,
-                    HasInfocomCapacity::class,
+                    [
+                        'name' => HasDocumentsCapacity::class,
+                    ],
+                    [
+                        'name' => HasInfocomCapacity::class,
+                    ],
                 ],
             ],
             'output'   => [
                 'capacities' => json_encode([
-                    HasDocumentsCapacity::class => new \Glpi\Asset\Capacity(name: HasDocumentsCapacity::class),
-                    HasInfocomCapacity::class => new \Glpi\Asset\Capacity(name: HasInfocomCapacity::class),
+                    new Capacity(name: HasDocumentsCapacity::class),
+                    new Capacity(name: HasInfocomCapacity::class),
                 ]),
             ],
             'messages' => [],
@@ -67,8 +72,12 @@ class AssetDefinitionTest extends DbTestCase
         yield [
             'input'    => [
                 'capacities' => [
-                    Computer::class, // not a capacity
-                    HasInfocomCapacity::class,
+                    [
+                        'name' => Computer::class, // not a capacity
+                    ],
+                    [
+                        'name' => HasInfocomCapacity::class,
+                    ],
                 ],
             ],
             'output'   => false,

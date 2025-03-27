@@ -35,6 +35,7 @@
 namespace test\units;
 
 use DbTestCase;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasKnowbaseCapacity;
 use Glpi\Features\Clonable;
 use KnowbaseItem_Item;
@@ -47,7 +48,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasKnowbaseCapacity::class)]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasKnowbaseCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -67,7 +68,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasKnowbaseCapacity::class)]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasKnowbaseCapacity::class)]);
 
         foreach ($CFG_GLPI['kb_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {

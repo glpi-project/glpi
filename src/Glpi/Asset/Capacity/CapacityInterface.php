@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -114,27 +113,22 @@ interface CapacityInterface
      * Method executed when capacity is enabled on given asset class.
      *
      * @param class-string<\Glpi\Asset\Asset> $classname
-     * @return void
      */
-    public function onCapacityEnabled(string $classname): void;
+    public function onCapacityEnabled(string $classname, CapacityConfig $config): void;
 
     /**
      * Method executed when capacity is disabled on given asset class.
      *
      * @param class-string<\Glpi\Asset\Asset> $classname
-     * @return void
      */
-    public function onCapacityDisabled(string $classname): void;
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void;
 
     /**
      * Method executed when capacity is updated on given asset class.
      *
      * @param class-string<\Glpi\Asset\Asset> $classname
-     * @param CapacityConfig|null $original_config
-     * @param CapacityConfig|null $updated_config
-     * @return void
      */
-    public function onCapacityUpdated(string $classname, ?CapacityConfig $original_config, ?CapacityConfig $updated_config): void;
+    public function onCapacityUpdated(string $classname, CapacityConfig $old_config, CapacityConfig $new_config): void;
 
     /**
      * Method executed during creation of an object instance (i.e. during `__construct()` method execution).
@@ -143,29 +137,4 @@ interface CapacityInterface
      * @return void
      */
     public function onObjectInstanciation(Asset $object): void;
-
-    /**
-     * Set capacity configuration
-     *
-     * @param ?CapacityConfig $capacity_config
-     *
-     * @return void
-     */
-    public function setConfiguration(?CapacityConfig $capacity_config): void;
-
-    /**
-     * Get capacity configuration
-     *
-     * @return ?CapacityConfig
-     */
-    public function getConfiguration(): ?CapacityConfig;
-
-    /**
-     * Get configuration entry from capacity
-     *
-     * @param string $entry
-     *
-     * @return mixed
-     */
-    public function getConfigurationValue(string $entry): mixed;
 }

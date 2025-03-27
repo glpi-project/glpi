@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -49,8 +48,6 @@ use Log;
  */
 abstract class AbstractCapacity implements CapacityInterface
 {
-    protected ?CapacityConfig $configuration = null;
-
     /**
      * Constructor.
      *
@@ -189,15 +186,15 @@ abstract class AbstractCapacity implements CapacityInterface
     {
     }
 
-    public function onCapacityEnabled(string $classname): void
+    public function onCapacityEnabled(string $classname, CapacityConfig $config): void
     {
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
     }
 
-    public function onCapacityUpdated(string $classname, ?CapacityConfig $original_config, ?CapacityConfig $updated_config): void
+    public function onCapacityUpdated(string $classname, CapacityConfig $old_config, CapacityConfig $new_config): void
     {
     }
 
@@ -351,20 +348,5 @@ abstract class AbstractCapacity implements CapacityInterface
                 [$itemtype]
             )
         );
-    }
-
-    public function setConfiguration(?CapacityConfig $capacity_config): void
-    {
-        $this->configuration = $capacity_config;
-    }
-
-    public function getConfiguration(): ?CapacityConfig
-    {
-        return $this->configuration;
-    }
-
-    public function getConfigurationValue(string $entry): mixed
-    {
-        return $this->configuration?->getConfig($entry);
     }
 }

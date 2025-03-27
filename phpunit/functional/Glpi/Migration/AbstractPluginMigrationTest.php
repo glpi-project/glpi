@@ -40,6 +40,7 @@ use DbTestCase;
 use DropdownTranslation;
 use Entity;
 use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasInfocomCapacity;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Message\MessageType;
@@ -673,7 +674,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $definition = $this->initAssetDefinition(
             'MyCustomAsset',
             capacities: [
-                new \Glpi\Asset\Capacity(name: HasInfocomCapacity::class),
+                new Capacity(name: HasInfocomCapacity::class),
             ]
         );
 

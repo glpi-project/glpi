@@ -36,6 +36,7 @@ namespace tests\units;
 
 use DatabaseInstance;
 use DbTestCase;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDatabaseInstanceCapacity;
 use Glpi\Features\Clonable;
 use Toolbox;
@@ -47,7 +48,7 @@ class DatabaseInstanceTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasDatabaseInstanceCapacity::class)]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasDatabaseInstanceCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -67,7 +68,7 @@ class DatabaseInstanceTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasDatabaseInstanceCapacity::class)]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasDatabaseInstanceCapacity::class)]);
 
         foreach ($CFG_GLPI['databaseinstance_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {

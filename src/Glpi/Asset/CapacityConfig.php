@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,23 +39,23 @@ use JsonSerializable;
 class CapacityConfig implements JsonSerializable
 {
     public function __construct(
-        private array $config = []
+        private array $values = []
     ) {
     }
 
-    public function setConfig(string $name, mixed $value): self
+    public function setValue(string $key, mixed $value): self
     {
-        $this->config[$name] = $value;
+        $this->values[$key] = $value;
         return $this;
     }
 
-    public function getConfig(string $entry): mixed
+    public function getValue(string $key, mixed $default = null): mixed
     {
-        return $this->config[$entry];
+        return \array_key_exists($key, $this->values) ? $this->values[$key] : $default;
     }
 
     public function jsonSerialize(): array
     {
-        return $this->config;
+        return $this->values;
     }
 }

@@ -42,9 +42,9 @@ trait CapacityUsageTestTrait
     /**
      * Get the tested capacity class.
      *
-     * @return Capacity
+     * @return class-string<\Glpi\Asset\Capacity\CapacityInterface>
      */
-    abstract protected function getTargetCapacity(): Capacity;
+    abstract protected function getTargetCapacity(): string;
 
     abstract public static function provideIsUsed(): iterable;
 
@@ -70,7 +70,7 @@ trait CapacityUsageTestTrait
 
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [new Capacity(name: $this->getTargetCapacity())]
         );
 
         // Create our test subject
@@ -80,7 +80,7 @@ trait CapacityUsageTestTrait
         ]);
 
         // Check that the capacity can be disabled
-        $capacity = new ($this->getTargetCapacity()->getName());
+        $capacity = new ($this->getTargetCapacity());
         $this->assertFalse($capacity->isUsed($definition->getAssetClassName()));
 
         // Create item
@@ -139,14 +139,14 @@ trait CapacityUsageTestTrait
     ): void {
         global $DB;
 
-        $capacity = new ($this->getTargetCapacity()->getName());
+        $capacity = new ($this->getTargetCapacity());
 
         // Retrieve the test root entity
         $entity_id = $this->getTestRootEntity(true);
 
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [new Capacity(name: $this->getTargetCapacity())]
         );
 
         // Create our test subject

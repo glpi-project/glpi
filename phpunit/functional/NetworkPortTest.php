@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasNetworkPortCapacity;
 use Glpi\Features\Clonable;
 use NetworkPort;
@@ -47,7 +48,7 @@ class NetworkPortTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasNetworkPortCapacity::class)]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasNetworkPortCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -67,7 +68,7 @@ class NetworkPortTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [new \Glpi\Asset\Capacity(name: HasNetworkPortCapacity::class)]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasNetworkPortCapacity::class)]);
 
         foreach ($CFG_GLPI['networkport_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {

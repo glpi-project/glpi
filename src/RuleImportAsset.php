@@ -36,6 +36,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
 
 class RuleImportAsset extends Rule
 {
@@ -1209,9 +1210,9 @@ TWIG, $twig_params);
         //add extra rules for active generic assets
         $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
         foreach ($definitions as $definition) {
-            if ($capacity = $definition->getCapacity(\Glpi\Asset\Capacity\IsInventoriableCapacity::class)) {
+            if ($definition->hasCapacityEnabled(new IsInventoriableCapacity())) {
                 $asset_classname = $definition->getAssetClassName();
-                $main_asset = $definition->getCapacityConfigurationValue($capacity, 'inventory_mainasset');
+                $main_asset = $definition->getCapacityConfigurationValue(IsInventoriableCapacity::class, 'inventory_mainasset');
 
                 $origin_rule_itemtype = \Computer::class;
                 switch ($main_asset) {

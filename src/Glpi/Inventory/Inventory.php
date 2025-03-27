@@ -598,8 +598,10 @@ class Inventory
 
         //not found, so we have a generic asset. Let's retrieve its MainAsset class
         if ($this->item instanceof \Glpi\Asset\Asset) {
-            $inventoriable_capacity = $this->item->getCapacity(\Glpi\Asset\Capacity\IsInventoriableCapacity::class);
-            $main_class = $inventoriable_capacity->getConfigurationValue('inventory_mainasset');
+            $main_class = $this->item->getDefinition()->getCapacityConfigurationValue(
+                \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
+                'inventory_mainasset'
+            );
         }
         if ($main_class === null || !class_exists($main_class)) {
             $main_class = $class_ns . 'GenericAsset';

@@ -47,9 +47,9 @@ class HasVolumesCapacityTest extends DbTestCase
 {
     use CapacityUsageTestTrait;
 
-    protected function getTargetCapacity(): Capacity
+    protected function getTargetCapacity(): string
     {
-        return new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasVolumesCapacity::class);
+        return \Glpi\Asset\Capacity\HasVolumesCapacity::class;
     }
 
     public function testCapacityActivation(): void
@@ -60,21 +60,21 @@ class HasVolumesCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasVolumesCapacity::class),
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasVolumesCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasVolumesCapacity::class),
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasVolumesCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -136,15 +136,15 @@ class HasVolumesCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasVolumesCapacity::class),
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasVolumesCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasVolumesCapacity::class),
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasVolumesCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -231,7 +231,7 @@ class HasVolumesCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasVolumesCapacity::class)]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasVolumesCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);

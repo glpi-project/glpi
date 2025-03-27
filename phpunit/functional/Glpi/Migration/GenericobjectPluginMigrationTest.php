@@ -40,6 +40,7 @@ use Domain_Item;
 use DropdownTranslation;
 use FieldUnicity;
 use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\AllowedInGlobalSearchCapacity;
 use Glpi\Asset\Capacity\HasContractsCapacity;
 use Glpi\Asset\Capacity\HasDevicesCapacity;
@@ -176,16 +177,16 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                 'picture'        => null,
                 'is_active'      => true,
                 'capacities'     => [
-                    AllowedInGlobalSearchCapacity::class => new \Glpi\Asset\Capacity(name: AllowedInGlobalSearchCapacity::class),
-                    HasContractsCapacity::class => new \Glpi\Asset\Capacity(HasContractsCapacity::class),
-                    HasDevicesCapacity::class => new \Glpi\Asset\Capacity(HasDevicesCapacity::class),
-                    HasDocumentsCapacity::class => new \Glpi\Asset\Capacity(HasDocumentsCapacity::class),
-                    HasHistoryCapacity::class => new \Glpi\Asset\Capacity(HasHistoryCapacity::class),
-                    HasInfocomCapacity::class => new \Glpi\Asset\Capacity(HasInfocomCapacity::class),
-                    HasNetworkPortCapacity::class => new \Glpi\Asset\Capacity(HasNetworkPortCapacity::class),
-                    HasNotepadCapacity::class => new \Glpi\Asset\Capacity(HasNotepadCapacity::class),
-                    IsProjectAssetCapacity::class => new \Glpi\Asset\Capacity(IsProjectAssetCapacity::class),
-                    IsReservableCapacity::class => new \Glpi\Asset\Capacity(IsReservableCapacity::class),
+                    ['name' => AllowedInGlobalSearchCapacity::class, 'config' => []],
+                    ['name' => HasContractsCapacity::class, 'config' => []],
+                    ['name' => HasDevicesCapacity::class, 'config' => []],
+                    ['name' => HasDocumentsCapacity::class, 'config' => []],
+                    ['name' => HasHistoryCapacity::class, 'config' => []],
+                    ['name' => HasInfocomCapacity::class, 'config' => []],
+                    ['name' => HasNetworkPortCapacity::class, 'config' => []],
+                    ['name' => HasNotepadCapacity::class, 'config' => []],
+                    ['name' => IsProjectAssetCapacity::class, 'config' => []],
+                    ['name' => IsReservableCapacity::class, 'config' => []],
                 ],
                 'profiles'       => [
                     1 => 33,
@@ -840,17 +841,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
             );
 
             foreach ($expected_fields as $key => $expected_value) {
-                if ($key === 'capacities') {
-                    $this->assertJson(
-                        $item->fields[$key],
-                        sprintf('`%s` field of the `%s` item does not contain a valid JSON string', $key, $name)
-                    );
-                    $this->assertEqualsCanonicalizing(
-                        $expected_value,
-                        $this->callPrivateMethod($item, 'getDecodedCapacities'),
-                        sprintf('`%s` field of the `%s` item does not match the expected value', $key, $name)
-                    );
-                } elseif (\is_array($expected_value)) {
+                if (\is_array($expected_value)) {
                     $this->assertJson(
                         $item->fields[$key],
                         sprintf('`%s` field of the `%s` item does not contain a valid JSON string', $key, $name)

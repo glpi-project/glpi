@@ -48,9 +48,9 @@ class HasContractsCapacityTest extends DbTestCase
 {
     use CapacityUsageTestTrait;
 
-    protected function getTargetCapacity(): Capacity
+    protected function getTargetCapacity(): string
     {
-        return new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasContractsCapacity::class);
+        return \Glpi\Asset\Capacity\HasContractsCapacity::class;
     }
 
     /**
@@ -75,14 +75,14 @@ class HasContractsCapacityTest extends DbTestCase
         // Enable capacity, the itemtype should now be registered
         $definition = $this->enableCapacity(
             $definition,
-            $this->getTargetCapacity()->getName()
+            $this->getTargetCapacity()
         );
         $this->assertContains($class, $CFG_GLPI["contract_types"]);
 
         // Disable capacity, the itemtype should no longer be registered
         $definition = $this->disableCapacity(
             $definition,
-            $this->getTargetCapacity()->getName()
+            $this->getTargetCapacity()
         );
         $this->assertNotContains($class, $CFG_GLPI["contract_types"]);
     }
@@ -117,7 +117,7 @@ class HasContractsCapacityTest extends DbTestCase
         // Enable capacity, the tab should now be registered
         $definition = $this->enableCapacity(
             $definition,
-            $this->getTargetCapacity()->getName()
+            $this->getTargetCapacity()
         );
         $this->assertArrayHasKey($tab_name, $subject->defineAllTabs());
     }
@@ -132,7 +132,7 @@ class HasContractsCapacityTest extends DbTestCase
     {
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [new Capacity(name: $this->getTargetCapacity())]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
@@ -176,7 +176,7 @@ class HasContractsCapacityTest extends DbTestCase
         // Disable capacity, linked item should be deleted
         $definition = $this->disableCapacity(
             $definition,
-            $this->getTargetCapacity()->getName()
+            $this->getTargetCapacity()
         );
         $items = (new Contract_Item())->find([
             'itemtype' => $subject::getType(),
@@ -196,8 +196,8 @@ class HasContractsCapacityTest extends DbTestCase
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
             capacities: [
-                $this->getTargetCapacity(),
-                new \Glpi\Asset\Capacity(name: HasHistoryCapacity::class)
+                new Capacity(name: $this->getTargetCapacity()),
+                new Capacity(name: HasHistoryCapacity::class)
             ]
         );
         $class = $definition->getAssetClassName();
@@ -255,7 +255,7 @@ class HasContractsCapacityTest extends DbTestCase
         // be deleted
         $definition = $this->disableCapacity(
             $definition,
-            $this->getTargetCapacity()->getName()
+            $this->getTargetCapacity()
         );
         $count_logs = countElementsInTable(Log::getTable(), [
             'itemtype' => $contract::getType(),
@@ -277,7 +277,7 @@ class HasContractsCapacityTest extends DbTestCase
     {
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [new Capacity(name: $this->getTargetCapacity())]
         );
         $class = $definition->getAssetClassName();
 
@@ -315,7 +315,7 @@ class HasContractsCapacityTest extends DbTestCase
         // deleted
         $definition = $this->disableCapacity(
             $definition,
-            $this->getTargetCapacity()->getName()
+            $this->getTargetCapacity()
         );
         $count_display_preferences = countElementsInTable(
             DisplayPreference::getTable(),
@@ -329,7 +329,7 @@ class HasContractsCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasContractsCapacity::class)]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasContractsCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);

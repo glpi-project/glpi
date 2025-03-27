@@ -52,13 +52,17 @@
         </div>
 
         {% for capacity in capacities %}
+            {% set index = loop.index0 %}
             <div class="col-12 col-lg-6 col-xxl-4 mb-2 capacity-box">
+                <input type="hidden" name="capacities[{{ index }}][name]" value="{{ get_class(capacity) }}" />
                 <label class="form-selectgroup-boxes flex-fill w-100 h-100" style="min-height: 70px;">
+                    <input type="hidden" name="capacities[{{ index }}][is_active]" value="0">
                     <input type="checkbox"
-                            name="capacities[]"
-                            value="{{ get_class(capacity) }}"
+                            name="capacities[{{ index }}][is_active]"
+                            value="1"
                             class="form-selectgroup-input"
                             id="{{ get_class(capacity) }}"
+                            data-capacity-checkbox="1"
                             data-capacity="{{ get_class(capacity) }}"
                             data-capacity-search="{{ capacity.getLabel() ~ ' ' ~ capacity.getDescription() }}"
                             data-is-used="{{ capacity.isUsed(classname) ? 1 : 0 }}"
@@ -118,8 +122,8 @@
                                     </div>
 
                                     {{ fields.dropdownArrayField(
-                                        'inventory_mainasset',
-                                        item.getCapacityConfigurationValue(capacity, 'inventory_mainasset'),
+                                        'capacities[' ~ index ~ '][config][inventory_mainasset]',
+                                        item.getDefinition().getCapacityConfigurationValue(get_class(capacity), 'inventory_mainasset'),
                                         capacity.getConfigurationTypes(),
                                         '',
                                         {
@@ -197,7 +201,7 @@
 
                 if (
                     data.is_from_modal !== true
-                    && $('input[name="capacities[]"][data-is-used="1"]:not(:checked)').length > 0
+                    && $('input[data-capacity-checkbox="1"][data-is-used="1"]:not(:checked)').length > 0
                 ) {
                     event.preventDefault();
                     $('#capacityWarningModal').modal('show');
@@ -215,7 +219,7 @@
             });
 
             // warn user about the consequences of disabling a capacity
-            $('input[name="capacities[]"][data-is-used=1]').on('change', function() {
+            $('input[data-capacity-checkbox="1"][data-is-used=1]').on('change', function() {
                 $(this).toggleClass('red-toggle-switch-bg');
                 $('.alert-capacity[data-capacity="' + $.escapeSelector($(this).data('capacity')) + '"]').toggleClass('d-none', $(this).is(':checked'));
             });
@@ -228,7 +232,7 @@
                 // delay the search to avoid flickering
                 clearTimeout(delay_timer);
                 delay_timer = setTimeout(function() {
-                    $('input[name="capacities[]"]').each(function() {
+                    $('input[data-capacity-checkbox="1"]').each(function() {
                         const capacity_search = $(this).data('capacity-search').toLowerCase();
                         if (capacity_search.indexOf(search) === -1) {
                             $(this).closest('.capacity-box').addClass('d-none');
@@ -241,7 +245,7 @@
 
             // (un)toggle all capacities button
             $('#select-all-capacities').on('click', function() {
-                var $checkboxes = $('input[name="capacities[]"]');
+                var $checkboxes = $('input[data-capacity-checkbox="1"]');
                 var $checkedCheckboxes = $checkboxes.filter(':checked');
 
                 if ($checkedCheckboxes.length === $checkboxes.length) {

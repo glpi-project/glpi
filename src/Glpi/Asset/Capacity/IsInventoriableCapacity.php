@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -118,14 +117,14 @@ class IsInventoriableCapacity extends AbstractCapacity
         CommonGLPI::registerStandardTab($classname, Item_Process::class, 85);
     }
 
-    public function onCapacityEnabled(string $classname): void
+    public function onCapacityEnabled(string $classname, CapacityConfig $config): void
     {
         //create rules
         $rules = new \RuleImportAsset();
         $rules->initRules(true, $classname);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -167,9 +166,9 @@ class IsInventoriableCapacity extends AbstractCapacity
         $DB->delete(\RuleImportAsset::getTable(), $where, $joins);
     }
 
-    public function onCapacityUpdated(string $classname, ?CapacityConfig $original_config, ?CapacityConfig $updated_config): void
+    public function onCapacityUpdated(string $classname, CapacityConfig $original_config, CapacityConfig $updated_config): void
     {
-        if ($original_config->getConfig('inventory_mainasset') != $updated_config->getConfig('inventory_mainasset')) {
+        if ($original_config->getValue('inventory_mainasset') != $updated_config->getValue('inventory_mainasset')) {
             $rules = new \RuleImportAsset();
             $rules->initRules(true, $classname);
         }

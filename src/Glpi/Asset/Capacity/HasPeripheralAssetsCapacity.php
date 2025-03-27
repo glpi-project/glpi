@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,6 +36,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Asset\CapacityConfig;
 use Override;
 use Session;
 
@@ -124,7 +124,7 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
         CommonGLPI::registerStandardTab($classname, Asset_PeripheralAsset::class, 55);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from peripheral hosts types
         $this->unregisterFromTypeConfig('peripheralhost_types', $classname);

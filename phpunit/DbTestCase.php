@@ -36,6 +36,7 @@
 
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Asset\Capacity;
 use Glpi\Dropdown\DropdownDefinition;
 
 class DbTestCase extends \GLPITestCase
@@ -441,12 +442,17 @@ class DbTestCase extends \GLPITestCase
             ];
         }
 
+        $capacity_input = array_map(
+            fn (Capacity $capacity) => $capacity->jsonSerialize(),
+            $capacities
+        );
+
         $definition = $this->createItem(
             AssetDefinition::class,
             [
                 'system_name' => $system_name ?? $this->getUniqueString(),
                 'is_active'   => true,
-                'capacities'  => $capacities,
+                'capacities'  => $capacity_input,
                 'profiles'    => $profiles,
                 'fields_display' => [],
             ],
@@ -455,7 +461,7 @@ class DbTestCase extends \GLPITestCase
 
         $this->assertEqualsCanonicalizing(
             $capacities,
-            array_values($this->callPrivateMethod($definition, 'getDecodedCapacities'))
+            array_values($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))
         );
         $this->assertEqualsCanonicalizing(
             $profiles,
@@ -527,23 +533,25 @@ class DbTestCase extends \GLPITestCase
     /**
      * Helper method to enable a capacity on the given asset definition
      *
-     * @param AssetDefinition $definition Asset definition
-     * @param string          $capacity   Capacity to enable
+     * @param AssetDefinition $definition           Asset definition
+     * @param string          $capacity_classname   Capacity to enable
      *
      * @return AssetDefinition Updated asset definition
      */
     protected function enableCapacity(
         AssetDefinition $definition,
-        string $capacity
+        string $capacity_classname
     ): AssetDefinition {
         // Add new capacity
-        $capacities = $this->callPrivateMethod($definition, 'getDecodedCapacities');
-        $capacities[$capacity] = new \Glpi\Asset\Capacity(name: $capacity);
+        $existing_capacities = $this->callPrivateMethod($definition, 'getDecodedCapacitiesField');
+
+        $capacity_input = array_map(fn (Capacity $capacity) => $capacity->jsonSerialize(), $existing_capacities);
+        $capacity_input[] = ['name' => $capacity_classname];
 
         $this->updateItem(
             AssetDefinition::class,
             $definition->getID(),
-            ['capacities' => $capacities],
+            ['capacities' => $capacity_input],
             // JSON encoded fields cannot be automatically checked
             skip_fields: ['capacities']
         );
@@ -553,8 +561,8 @@ class DbTestCase extends \GLPITestCase
 
         // Ensure capacity was added
         $this->assertArrayHasKey(
-            $capacity,
-            $this->callPrivateMethod($definition, 'getDecodedCapacities')
+            $capacity_classname,
+            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
         );
 
         return $definition;
@@ -563,27 +571,30 @@ class DbTestCase extends \GLPITestCase
     /**
      * Helper method to disable a capacity on the given asset definition
      *
-     * @param AssetDefinition $definition Asset definition
-     * @param string          $capacity   Capacity to disable
+     * @param AssetDefinition $definition           Asset definition
+     * @param string          $capacity_classname   Capacity to disable
      *
      * @return AssetDefinition Updated asset definition
      */
     protected function disableCapacity(
         AssetDefinition $definition,
-        string $capacity
+        string $capacity_classname
     ): AssetDefinition {
-        // Remove capacity
-        $capacities = $this->callPrivateMethod($definition, 'getDecodedCapacities');
-        $capacities = array_diff_key($capacities, [$capacity => $capacity]);
+        $existing_capacities = $this->callPrivateMethod($definition, 'getDecodedCapacitiesField');
 
-        // Reorder keys to ensure json_decode will return an array instead of an
-        // object
-        $capacities = array_values($capacities);
+        $capacity_input = [];
+        foreach ($existing_capacities as $capacity) {
+            if ($capacity->getName() === $capacity_classname) {
+                continue;
+            }
+
+            $capacity_input[] = $capacity->jsonSerialize();
+        }
 
         $this->updateItem(
             AssetDefinition::class,
             $definition->getID(),
-            ['capacities' => $capacities],
+            ['capacities' => $capacity_input],
             // JSON encoded fields cannot be automatically checked
             skip_fields: ['capacities']
         );
@@ -592,9 +603,9 @@ class DbTestCase extends \GLPITestCase
         $definition->getFromDB($definition->getID());
 
         // Ensure capacity was deleted
-        $this->assertNotContains(
-            $capacity,
-            $this->callPrivateMethod($definition, 'getDecodedCapacities')
+        $this->assertArrayNotHasKey(
+            $capacity_classname,
+            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
         );
 
         return $definition;

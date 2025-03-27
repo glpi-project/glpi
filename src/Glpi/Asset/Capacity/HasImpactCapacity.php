@@ -36,6 +36,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Config;
+use Glpi\Asset\CapacityConfig;
 use Impact;
 use ImpactItem;
 use ImpactRelation;
@@ -117,7 +118,7 @@ class HasImpactCapacity extends AbstractCapacity
         CommonGLPI::registerStandardTab($classname, Impact::class, 2);
     }
 
-    public function onCapacityEnabled(string $classname): void
+    public function onCapacityEnabled(string $classname, CapacityConfig $config): void
     {
         $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED)) ?? [];
         if (!in_array($classname, $enabled_types, true)) {
@@ -126,7 +127,7 @@ class HasImpactCapacity extends AbstractCapacity
         }
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

@@ -48,9 +48,9 @@ class HasNotepadCapacityTest extends DbTestCase
 {
     use CapacityUsageTestTrait;
 
-    protected function getTargetCapacity(): Capacity
+    protected function getTargetCapacity(): string
     {
-        return new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class);
+        return \Glpi\Asset\Capacity\HasNotepadCapacity::class;
     }
 
     public function testCapacityActivation(): void
@@ -65,23 +65,23 @@ class HasNotepadCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ],
             profiles: $profiles
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDocumentsCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasDocumentsCapacity::class),
             ],
             profiles: $profiles
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDocumentsCapacity::class),
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasDocumentsCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ],
             profiles: $profiles
         );
@@ -128,15 +128,15 @@ class HasNotepadCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -223,7 +223,7 @@ class HasNotepadCapacityTest extends DbTestCase
 
         $definition = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname  = $definition->getAssetClassName();
@@ -287,7 +287,7 @@ class HasNotepadCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class)]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);

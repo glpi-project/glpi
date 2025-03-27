@@ -48,9 +48,9 @@ class HasDomainsCapacityTest extends DbTestCase
 {
     use CapacityUsageTestTrait;
 
-    protected function getTargetCapacity(): Capacity
+    protected function getTargetCapacity(): string
     {
-        return new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class);
+        return \Glpi\Asset\Capacity\HasDomainsCapacity::class;
     }
 
     public function testCapacityActivation(): void
@@ -61,21 +61,21 @@ class HasDomainsCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class),
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class),
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -132,15 +132,15 @@ class HasDomainsCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class),
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class),
-                new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasDomainsCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();

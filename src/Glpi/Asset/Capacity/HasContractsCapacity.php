@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Contract;
 use Contract_Item;
+use Glpi\Asset\CapacityConfig;
 use Override;
 
 class HasContractsCapacity extends AbstractCapacity
@@ -96,7 +96,7 @@ class HasContractsCapacity extends AbstractCapacity
     }
 
     // #Override
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from contracts types
         $this->unregisterFromTypeConfig('contract_types', $classname);

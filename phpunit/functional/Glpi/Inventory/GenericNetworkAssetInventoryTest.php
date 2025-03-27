@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\Inventory;
 
-use Glpi\Asset\Capacity;
 use InventoryTestCase;
 
 class GenericNetworkAssetInventoryTest extends InventoryTestCase
