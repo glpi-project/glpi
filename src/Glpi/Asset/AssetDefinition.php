@@ -341,7 +341,7 @@ TWIG, $twig_params);
         parent::post_addItem();
 
         // Trigger the `onCapacityEnabled` hooks.
-        $added_capacities = $this->decodedCapacities($this->fields['capacities']);
+        $added_capacities = $this->decodeCapacities($this->fields['capacities']);
         foreach ($added_capacities as $capacity) {
             $this->onCapacityEnabled($capacity);
         }
@@ -371,8 +371,8 @@ TWIG, $twig_params);
         parent::post_updateItem();
 
         if (in_array('capacities', $this->updates)) {
-            $new_capacities = $this->decodedCapacities($this->fields['capacities']);
-            $old_capacities = $this->decodedCapacities($this->oldvalues['capacities']);
+            $new_capacities = $this->decodeCapacities($this->fields['capacities']);
+            $old_capacities = $this->decodeCapacities($this->oldvalues['capacities']);
 
             $added_capacities = array_diff_key($new_capacities, $old_capacities);
             foreach ($added_capacities as $capacity) {
@@ -617,16 +617,16 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get configuration value for capacity.
+     * Get configuration for the given capacity.
      */
-    public function getCapacityConfigurationValue(string $capacity_classname, string $key, mixed $default = null): mixed
+    public function getCapacityConfiguration(string $capacity_classname): CapacityConfig
     {
         $capacities = $this->getDecodedCapacitiesField();
         if (isset($capacities[$capacity_classname])) {
-            return $capacities[$capacity_classname]->getConfig()->getValue($key, $default);
+            return $capacities[$capacity_classname]->getConfig();
         }
 
-        return null;
+        return new CapacityConfig();
     }
 
     /**
@@ -636,7 +636,7 @@ TWIG, $twig_params);
      */
     private function getDecodedCapacitiesField(): array
     {
-        return $this->decodedCapacities($this->fields['capacities']);
+        return $this->decodeCapacities($this->fields['capacities']);
     }
 
     /**
@@ -644,7 +644,7 @@ TWIG, $twig_params);
      *
      * @return \Glpi\Asset\Capacity[]
      */
-    private function decodedCapacities(string $encoded): array
+    private function decodeCapacities(string $encoded): array
     {
         $decoded_capacities = json_decode($encoded, associative: true);
 

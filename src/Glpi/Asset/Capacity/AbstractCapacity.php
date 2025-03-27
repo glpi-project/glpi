@@ -62,6 +62,11 @@ abstract class AbstractCapacity implements CapacityInterface
         return '';
     }
 
+    public function getConfigurationForm(string $fieldname_prefix, ?CapacityConfig $current_config): ?string
+    {
+        return null;
+    }
+
     public function getSearchOptions(string $classname): array
     {
         return [];

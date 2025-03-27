@@ -63,6 +63,15 @@ interface CapacityInterface
     public function getIcon(): string;
 
     /**
+     * Get the capacity configuration form.
+     *
+     * @param string $fieldname_prefix  The field name prefix to add to the fields (`name="{$fieldname_prefix}[my_config_key]"`).
+     *
+     * @return string|null The configuration form in HTML format, or `null` if there is no configuration form.
+     */
+    public function getConfigurationForm(string $fieldname_prefix, ?CapacityConfig $current_config): ?string;
+
+    /**
      * Get the search options related to the capacity.
      *
      * @param class-string<\Glpi\Asset\Asset> $classname

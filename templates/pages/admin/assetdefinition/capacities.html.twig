@@ -37,7 +37,6 @@
 {% set params = params|merge({'candel': false}) %}
 {# do not display footer with dates #}
 {% set params = params|merge({'formfooter': false}) %}
-{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block form_fields %}
     <input type="hidden" name="_update_capacities" value="1" />
@@ -53,6 +52,7 @@
 
         {% for capacity in capacities %}
             {% set index = loop.index0 %}
+            {% set configuration_form = capacity.getConfigurationForm('capacities[' ~ index ~ '][config]', item.getCapacityConfiguration(get_class(capacity))) %}
             <div class="col-12 col-lg-6 col-xxl-4 mb-2 capacity-box">
                 <input type="hidden" name="capacities[{{ index }}][name]" value="{{ get_class(capacity) }}" />
                 <label class="form-selectgroup-boxes flex-fill w-100 h-100" style="min-height: 70px;">
@@ -61,7 +61,6 @@
                             name="capacities[{{ index }}][is_active]"
                             value="1"
                             class="form-selectgroup-input"
-                            id="{{ get_class(capacity) }}"
                             data-capacity-checkbox="1"
                             data-capacity="{{ get_class(capacity) }}"
                             data-capacity-search="{{ capacity.getLabel() ~ ' ' ~ capacity.getDescription() }}"
@@ -77,8 +76,8 @@
                                     {{ capacity.getLabel() }}
                                 </div>
 
-                                {% if get_class(capacity) == 'Glpi\\Asset\\Capacity\\IsInventoriableCapacity' %}
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#itemtype-modal" class="ms-1 btn btn-icon btn-sm btn-ghost-secondary">
+                                {% if configuration_form is not null %}
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#{{ get_class(capacity)|slug }}-modal" class="ms-1 btn btn-icon btn-sm btn-ghost-secondary">
                                         <i class="ti ti-settings"></i>
                                     </button>
                                 {% endif %}
@@ -101,36 +100,17 @@
                     </div>
                 </label>
 
-                {% if get_class(capacity) == 'Glpi\\Asset\\Capacity\\IsInventoriableCapacity' %}
-                    <div class="modal fade" id="itemtype-modal" tabindex="-1" aria-labelledby="itemtype-modal-label" aria-hidden="true">
+                {% if configuration_form is not null %}
+                    <div class="modal fade" id="{{ get_class(capacity)|slug }}-modal" tabindex="-1" aria-labelledby="{{ get_class(capacity)|slug }}-modal-label" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="itemtype-modal-label">
+                                    <h5 class="modal-title" id="{{ get_class(capacity)|slug }}-modal-label">
                                         {{ __('Capacity options') }}
                                     </h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close") }}"></button>
                                 </div>
-                                <div class="modal-body">
-                                    <div class="alert alert-info alert-important d-flex align-items-center" role="alert">
-                                        <i class="ti ti-info-circle me-3 fa-2x"></i>
-                                        <div>
-                                            <h4 class="alert-title">{{ __("Please select the type that represents the best the asset.") }}</h4>
-                                            {{ __("We need this information to send the inventory file in the correct inventory engine of the GLPI framework.") }}
-                                        </div>
-
-                                    </div>
-
-                                    {{ fields.dropdownArrayField(
-                                        'capacities[' ~ index ~ '][config][inventory_mainasset]',
-                                        item.getDefinition().getCapacityConfigurationValue(get_class(capacity), 'inventory_mainasset'),
-                                        capacity.getConfigurationTypes(),
-                                        '',
-                                        {
-                                            'no_label': true,
-                                        }
-                                    ) }}
-                                </div>
+                                <div class="modal-body">{{ configuration_form|raw }}</div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
                                         <i class="ti ti-device-floppy"></i>

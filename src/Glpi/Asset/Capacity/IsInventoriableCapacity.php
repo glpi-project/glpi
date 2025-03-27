@@ -35,6 +35,7 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CapacityConfig;
 use Glpi\Inventory\Inventory;
 use Item_Environment;
@@ -58,6 +59,23 @@ class IsInventoriableCapacity extends AbstractCapacity
     public function getDescription(): string
     {
         return __("The GLPI agent can report inventory data for these assets.");
+    }
+
+    #[Override]
+    public function getConfigurationForm(string $fieldname_prefix, ?CapacityConfig $current_config): ?string
+    {
+        return TemplateRenderer::getInstance()->render(
+            'pages/admin/assetdefinition/capacity/is_inventoriable_capacity_configuration_form.html.twig',
+            [
+                'fieldname_prefix'    => $fieldname_prefix,
+                'current_config'      => $current_config,
+                'itemtype_choices'    => [
+                    \Glpi\Inventory\MainAsset\GenericAsset::class        => __('Generic'),
+                    \Glpi\Inventory\MainAsset\GenericNetworkAsset::class => \NetworkEquipment::getTypeName(1),
+                    \Glpi\Inventory\MainAsset\GenericPrinterAsset::class => \Printer::getTypeName(1),
+                ]
+            ]
+        );
     }
 
     public function getSearchOptions(string $classname): array
@@ -172,14 +190,5 @@ class IsInventoriableCapacity extends AbstractCapacity
             $rules = new \RuleImportAsset();
             $rules->initRules(true, $classname);
         }
-    }
-
-    public function getConfigurationTypes(): array
-    {
-        return [
-            \Glpi\Inventory\MainAsset\GenericAsset::class => __('Generic'),
-            \Glpi\Inventory\MainAsset\GenericNetworkAsset::class => \NetworkEquipment::getTypeName(1),
-            \Glpi\Inventory\MainAsset\GenericPrinterAsset::class => \Printer::getTypeName(1),
-        ];
     }
 }
