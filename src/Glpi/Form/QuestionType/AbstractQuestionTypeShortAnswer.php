@@ -38,6 +38,7 @@ namespace Glpi\Form\QuestionType;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
+use Glpi\ItemTranslation\ItemTranslation;
 use Override;
 
 /**
@@ -134,12 +135,21 @@ TWIG;
     public function renderEndUserTemplate(
         Question $question,
     ): string {
+        $default_value = $question->fields['default_value'] ?? '';
+        if ($this instanceof TranslationAwareQuestionType) {
+            $default_value = ItemTranslation::translate(
+                $question,
+                Question::TRANSLATION_KEY_DEFAULT_VALUE,
+                1
+            );
+        }
+
         $template = <<<TWIG
             <input
                 type="{{ input_type }}"
                 class="form-control"
                 name="{{ question.getEndUserInputName() }}"
-                value="{{ question.fields.default_value }}"
+                value="{{ default_value }}"
                 aria-label="{{ label }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
                 {% for key, value in attributes %}
@@ -150,10 +160,11 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question'   => $question,
-            'input_type' => $this->getInputType(),
-            'label'      => $question->fields['name'],
-            'attributes' => $this->getInputAttributes(),
+            'question'      => $question,
+            'default_value' => $default_value,
+            'input_type'    => $this->getInputType(),
+            'label'         => $question->fields['name'],
+            'attributes'    => $this->getInputAttributes(),
         ]);
     }
 
