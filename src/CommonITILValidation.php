@@ -1091,30 +1091,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
             $edit_button = "";
             if ($canedit) {
-                $edit_title = __s('Edit');
-                $item_id = (int)$itil->fields['id'];
-                $row_id = (int)$validation["id"];
-                $rand = htmlescape($rand);
-                $view_validation_id = htmlescape($this->fields[static::$items_id]);
-                $root_doc = htmlescape($CFG_GLPI["root_doc"]);
-                $params_json = json_encode([
-                    'type'             => static::class,
-                    'parenttype'       => static::$itemtype,
-                    static::$items_id  => $this->fields[static::$items_id],
-                    'id'               => $validation["id"]
-                ]);
-
-                $edit_button = <<<HTML
-                    <span class="ti ti-edit" style="cursor:pointer" title="{$edit_title}" 
-                          onclick="viewEditValidation{$item_id}{$row_id}{$rand}();" 
-                          id="viewvalidation{$view_validation_id}{$row_id}{$rand}">
-                    </span>
-                    <script>
-                        function viewEditValidation{$item_id}{$row_id}{$rand}() {
-                            $('#viewvalidation{$item_id}{$rand}').load('$root_doc/ajax/viewsubitem.php', $params_json);
-                        };
-                    </script>
-HTML;
+                $edit_button = $this->getModalFormHtmlElements('editapproval_modal', __('Edit Approval'), $itil->getID(), $validation["id"]) + ['anchor_title' => __('Edit') ];
             }
 
             $itils_validationsteps_id = $validation['itils_validationsteps_id'];
@@ -1191,6 +1168,7 @@ HTML;
             'validation' => $this,
             'rand' => $rand,
             'items_id' => static::$items_id,
+            'sendapproval_modal' => $this->getModalFormHtmlElements('sendapproval_modal', __('Send approval request'), $itil->getID()),
         ]);
 
         TemplateRenderer::getInstance()->display('components/sections_datatable.html.twig', [
@@ -1211,7 +1189,7 @@ HTML;
                 'document' => __('Documents'),
             ],
             'formatters' => [
-                'edit' => 'raw_html',
+                'edit' => 'html_modal',
                 'status' => 'raw_html',
                 'submission_date' => 'date',
                 'comment_submission' => 'raw_html',
@@ -2021,6 +1999,46 @@ HTML;
     public static function getAllValidationStatusArray()
     {
         return [self::NONE, self::WAITING, self::REFUSED, self::ACCEPTED];
+    }
+
+    /**
+     * Elements to create a modal to edit/send an approval request
+     *
+     * @param string $dom_identifier The $itilvalidation_id parameter is happened to this identifier (unlesss it is -1)
+     * @param string $modal_title
+     * @param int $itil_id
+     * @param int $itilvalidation_id
+     * @return array{js: string, onclick: string, target: string}
+     */
+    private function getModalFormHtmlElements(string $dom_identifier, string $modal_title, int $itil_id, int $itilvalidation_id = -1): array
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $dom_identifier .= $itilvalidation_id === -1 ?: (string) $itilvalidation_id;
+
+        $uri_params = [
+            'type' => static::class,
+            'parenttype' => static::$itemtype,
+            static::$items_id => $itil_id,
+            'id' => $itilvalidation_id
+        ];
+
+        $modal['js'] = Ajax::createModalWindow(
+            $dom_identifier,
+            $CFG_GLPI['root_doc'] . "/ajax/viewsubitem.php",
+            [
+                'title'           => htmlescape($modal_title),
+                'reloadonclose'   => true,
+                'display'         => false,
+                'modal_class'     => "modal-lg",
+                'extraparams'     => $uri_params
+            ]
+        );
+        $modal['onclick'] = 'onclick="' . $dom_identifier . '.show();"';
+        $modal['target'] = "$dom_identifier";
+
+        return $modal;
     }
 
     /**

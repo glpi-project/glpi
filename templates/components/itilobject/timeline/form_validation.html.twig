@@ -177,9 +177,6 @@
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
             <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
 
-            <div class="card-header">
-                <h3 class="cart-title">{{ __("Validation request") }}</h3>
-            </div>
             <div class="card-body">
                {# Validation template #}
                {{ fields.dropdownField(
