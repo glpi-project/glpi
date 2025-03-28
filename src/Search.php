@@ -5472,6 +5472,9 @@ JAVASCRIPT;
                 //     FROM `glpi_groups_tickets`
                 //     WHERE `groups_id` = '4' AND `glpi_groups_tickets`.`type` = '3'
                 // )
+                if ($beforejoin['table'] === $link_table && isset($beforejoin['joinparams']['field'])) {
+                    $fk = $beforejoin['joinparams']['field'];
+                }
                 if (is_numeric($val) && (int)$val === 0) {
                     // Special case, search criteria is empty
                     $subquery_operator = $subquery_operator == "IN" ? "NOT IN" : "IN";
