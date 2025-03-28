@@ -44,8 +44,8 @@ describe('Ajax Controller', () => {
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
             // Load the history tab
-            cy.findByRole('tab', {'name': "Historical 3"}).click();
-            cy.findAllByRole('row').should('have.length', 4); // 3 entries + header
+            cy.findByRole('tab', {'name': "Historical 4"}).click();
+            cy.findAllByRole('row').should('have.length', 5); // 4 entries + header
             cy.findByRole('tab', {'name': "Form"}).click();
 
             // Modify and save form
@@ -57,8 +57,8 @@ describe('Ajax Controller', () => {
             );
 
             // Go to history tab, it must be updated with a new entry
-            cy.findByRole('tab', {'name': "Historical 3"}).click();
-            cy.findAllByRole('row').should('have.length', 5); // 4 entries + header
+            cy.findByRole('tab', {'name': "Historical 4"}).click();
+            cy.findAllByRole('row').should('have.length', 6); // 5 entries + header
         });
     });
 });

@@ -126,6 +126,7 @@ class FormBuilder
      */
     protected array $destinations_conditions;
 
+    protected bool $use_default_access_policies;
 
     /**
      * Constructor
@@ -150,6 +151,7 @@ class FormBuilder
         $this->comments_visibilities = [];
         $this->sections_visibilities = [];
         $this->destinations_conditions = [];
+        $this->use_default_access_policies = true;
     }
 
     /**
@@ -490,23 +492,6 @@ class FormBuilder
     }
 
     /**
-     * Shorthand to add an allow list without restrictions to the form.
-     *
-     * @return self
-     */
-    public function allowAllUsers(): self
-    {
-        $this->addAccessControl(
-            strategy: AllowList::class,
-            config: new AllowListConfig(
-                user_ids: [AbstractRightsDropdown::ALL_USERS]
-            ),
-            is_active: true,
-        );
-        return $this;
-    }
-
-    /**
      * Get form category
      *
      * @return int Form category
@@ -591,5 +576,16 @@ class FormBuilder
     public function getDestinationCondition(): array
     {
         return $this->destinations_conditions;
+    }
+
+    public function setUseDefaultAccessPolicies(bool $use_default_access_policies): self
+    {
+        $this->use_default_access_policies = $use_default_access_policies;
+        return $this;
+    }
+
+    public function getUseDefaultAccessPolicies(): bool
+    {
+        return $this->use_default_access_policies;
     }
 }

@@ -37,6 +37,7 @@ describe('Access Control', () => {
 
         cy.createWithAPI('Glpi\\Form\\Form', {
             'name': '[Tests] Access Control',
+            '_init_access_policies': false,
         }).then((form_id) => {
             const tab = 'Glpi\\Form\\AccessControl\\FormAccessControl$1';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);

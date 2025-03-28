@@ -241,7 +241,7 @@ class FormAccessControlTest extends DbTestCase
     public function testGetTabNameForEmptyForm(): void
     {
         $form = $this->createAndGetSimpleForm();
-        $this->checkGetTabNameForItem($form, "Access control");
+        $this->checkGetTabNameForItem($form, "Access control 1"); // 1 for default policy
     }
 
     public function testGetTabNameWithActivePolicies(): void
@@ -392,6 +392,7 @@ class FormAccessControlTest extends DbTestCase
         $form = $this->createForm(
             (new FormBuilder())
                 ->addQuestion("Name", QuestionTypeShortText::class)
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                     allow_unauthenticated: true,
@@ -453,6 +454,7 @@ class FormAccessControlTest extends DbTestCase
         $form = $this->createForm(
             (new FormBuilder())
                 ->addQuestion("Name", QuestionTypeShortText::class)
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
         return $this->getAccessControl($form, DirectAccess::class);
@@ -471,6 +473,7 @@ class FormAccessControlTest extends DbTestCase
         return $this->createForm(
             (new FormBuilder())
                 ->addQuestion("Name", QuestionTypeShortText::class)
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                     allow_unauthenticated: true,

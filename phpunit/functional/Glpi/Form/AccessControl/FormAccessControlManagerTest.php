@@ -188,7 +188,9 @@ final class FormAccessControlManagerTest extends DbTestCase
 
     public function testFormWithoutRestrictionCantBeAnswered(): void
     {
-        $form = $this->createForm(new FormBuilder());
+        $builder = new FormBuilder();
+        $builder->setUseDefaultAccessPolicies(false);
+        $form = $this->createForm($builder);
         $access_parameters = $this->getEmptyParameters();
 
         $this->assertFalse(
@@ -274,7 +276,10 @@ final class FormAccessControlManagerTest extends DbTestCase
 
     public function testGetWarningForInactiveFormWithoutAccessControlPolicies(): void
     {
-        $form = $this->createForm((new FormBuilder())->setIsActive(false));
+        $builder = new FormBuilder();
+        $builder->setIsActive(false);
+        $builder->setUseDefaultAccessPolicies(false);
+        $form = $this->createForm($builder);
         $this->checkGetWarnings($form, [
             'This form is not visible to anyone because it is not active.',
             'This form will not be visible to any users as there are currently no active access policies.',
@@ -283,7 +288,10 @@ final class FormAccessControlManagerTest extends DbTestCase
 
     public function testGetWarningForActiveFormWithoutAccessControlPolicies(): void
     {
-        $form = $this->createForm((new FormBuilder())->setIsActive(true));
+        $builder = new FormBuilder();
+        $builder->setIsActive(true);
+        $builder->setUseDefaultAccessPolicies(false);
+        $form = $this->createForm($builder);
         $this->checkGetWarnings($form, [
             'This form will not be visible to any users as there are currently no active access policies.',
         ]);
@@ -330,6 +338,7 @@ final class FormAccessControlManagerTest extends DbTestCase
     {
         return $this->createForm(
             (new FormBuilder())
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(AllowList::class, new AllowListConfig(
                     user_ids: [
                         getItemByTypeName(User::class, "tech", true),
@@ -343,6 +352,7 @@ final class FormAccessControlManagerTest extends DbTestCase
         return $this->createForm(
             (new FormBuilder())
                 ->setIsActive(true)
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                 ))
@@ -354,6 +364,7 @@ final class FormAccessControlManagerTest extends DbTestCase
         return $this->createForm(
             (new FormBuilder())
                 ->setIsActive(false)
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                 ))
@@ -365,6 +376,7 @@ final class FormAccessControlManagerTest extends DbTestCase
         $form = $this->createForm(
             (new FormBuilder())
                 ->setIsActive(true)
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                 ))
@@ -382,6 +394,7 @@ final class FormAccessControlManagerTest extends DbTestCase
         $form = $this->createForm(
             (new FormBuilder())
                 ->setIsActive(false)
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                 ))
@@ -396,13 +409,16 @@ final class FormAccessControlManagerTest extends DbTestCase
 
     private function createAndGetFormWithoutAccessControls(): Form
     {
-        return $this->createForm(new FormBuilder());
+        $builder = new FormBuilder();
+        $builder->setUseDefaultAccessPolicies(false);
+        return $this->createForm($builder);
     }
 
     private function createAndGetFormWithActiveAccessControls(): Form
     {
         return $this->createForm(
             (new FormBuilder())
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(AllowList::class, new AllowListConfig(
                     user_ids: [
                         getItemByTypeName(User::class, "tech", true),
@@ -418,6 +434,7 @@ final class FormAccessControlManagerTest extends DbTestCase
     {
         $form = $this->createForm(
             (new FormBuilder())
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(AllowList::class, new AllowListConfig(
                     user_ids: [
                         getItemByTypeName(User::class, "tech", true),
@@ -439,6 +456,7 @@ final class FormAccessControlManagerTest extends DbTestCase
     {
         return $this->createForm(
             (new FormBuilder())
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(AllowList::class, new AllowListConfig(
                     user_ids: [
                         getItemByTypeName(User::class, "tech", true),

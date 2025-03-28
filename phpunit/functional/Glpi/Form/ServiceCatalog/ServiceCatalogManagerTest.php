@@ -83,7 +83,6 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("Inactive form 3"))->setIsActive(false),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $this->createForm($builder);
         }
 
@@ -110,7 +109,6 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("Not pinned form 2"))->setIsPinned(false),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
@@ -145,7 +143,6 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("child 2"))->setCategory($category_2->getID()),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
@@ -179,7 +176,6 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("A Not pinned form"))->setIsPinned(false),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
@@ -205,6 +201,8 @@ final class ServiceCatalogManagerTest extends \DbTestCase
     {
         // Arrange: create a form with an active policy
         $builder = new FormBuilder("Form with active policy");
+        $builder->setUseDefaultAccessPolicies(false);
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(
             strategy: AllowList::class,
             config: new AllowListConfig(
@@ -230,6 +228,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         // Arrange: create a form without any policies
         $builder = new FormBuilder("Form without policies");
         $builder->setIsActive(true);
+        $builder->setUseDefaultAccessPolicies(false);
         $this->createForm($builder);
 
         // Act: get the forms from the catalog manager and extract their names
@@ -246,6 +245,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
     {
         // Arrange: create a form with an inactive policy
         $builder = new FormBuilder("Form with inactive policy");
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(
             strategy: AllowList::class,
             config: new AllowListConfig(
@@ -304,6 +304,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
     ): void {
         // Arrange: create a form with an allow list
         $builder = new FormBuilder();
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(
             strategy: AllowList::class,
             config: $config,
@@ -406,7 +407,6 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         foreach ($forms_data as $form_data) {
             $builder = new FormBuilder($form_data['name']);
             $builder->setDescription($form_data['description']);
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
@@ -439,7 +439,6 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("Form from category B"))->setCategory($category_b->getID()),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
@@ -476,7 +475,6 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("Form from category B"))->setCategory($category_b->getID()),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
@@ -514,7 +512,6 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("Form from category C2"))->setCategory($category_c2->getID()),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
@@ -562,7 +559,6 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("Form from category D1"))->setCategory($category_d1->getID()),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
@@ -806,7 +802,6 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Create a form
         $builder = new FormBuilder("Test Form");
-        $builder->allowAllUsers();
         $builder->setIsActive(true);
         $builder->setIsPinned(true);
         $this->createForm($builder);

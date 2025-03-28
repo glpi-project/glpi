@@ -134,13 +134,11 @@ final class TilesManagerTest extends DbTestCase
         $builder = new FormBuilder("Inactive form");
         $builder->setIsActive(false);
         $builder->setEntitiesId($test_entity_id);
-        $builder->allowAllUsers();
         $forms[] = $this->createForm($builder);
 
         $builder = new FormBuilder("Active form");
         $builder->setIsActive(true);
         $builder->setEntitiesId($test_entity_id);
-        $builder->allowAllUsers();
         $forms[] = $this->createForm($builder);
 
         foreach ($forms as $form) {
@@ -175,13 +173,13 @@ final class TilesManagerTest extends DbTestCase
 
         $builder = new FormBuilder("Form without access policies");
         $builder->setIsActive(true);
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->setEntitiesId($test_entity_id);
         $forms[] = $this->createForm($builder);
 
         $builder = new FormBuilder("Form with access policies");
         $builder->setIsActive(true);
         $builder->setEntitiesId($test_entity_id);
-        $builder->allowAllUsers();
         $forms[] = $this->createForm($builder);
 
         foreach ($forms as $form) {
@@ -217,21 +215,18 @@ final class TilesManagerTest extends DbTestCase
         $builder = new FormBuilder("Form inside current entity");
         $builder->setIsActive(true);
         $builder->setEntitiesId($test_entity_id);
-        $builder->allowAllUsers();
         $forms[] = $this->createForm($builder);
 
         $builder = new FormBuilder("Form outside current entity");
         $builder->setIsActive(true);
         $builder->setEntitiesId(0);
         $builder->setIsRecursive(false);
-        $builder->allowAllUsers();
         $forms[] = $this->createForm($builder);
 
         $builder = new FormBuilder("Form inside recursive parent entity");
         $builder->setIsActive(true);
         $builder->setEntitiesId(0);
         $builder->setIsRecursive(true);
-        $builder->allowAllUsers();
         $forms[] = $this->createForm($builder);
 
         foreach ($forms as $form) {

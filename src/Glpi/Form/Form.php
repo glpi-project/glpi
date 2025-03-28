@@ -35,12 +35,15 @@
 
 namespace Glpi\Form;
 
+use AbstractRightsDropdown;
 use Change_Item;
 use CommonDBTM;
 use CommonGLPI;
 use CronTask;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AccessControl\ControlType\AllowList;
+use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Condition\FormData;
@@ -259,14 +262,26 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
     #[Override]
     public function post_addItem()
     {
+        $from_import    = $this->input['_from_import']    ?? false;
+        $from_migration = $this->input['_from_migration'] ?? false;
+        if ($from_import || $from_migration) {
+            // Do not run extra process as it is not a real item creation
+            return;
+        }
+
         // Automatically create the first form section unless specified otherwise
-        if (!isset($this->input['_do_not_init_sections'])) {
+        $init_sections = $this->input['_init_sections'] ?? true;
+        if ($init_sections) {
             $this->createFirstSection();
         }
 
-        // Add the mandatory destinations, unless we are importing a form
-        if (!isset($this->input['_from_import'])) {
-            $this->addMandatoryDestinations();
+        // Add the mandatory destinations
+        $this->addMandatoryDestinations();
+
+        // Add the default access policies unless specified otherwise
+        $init_policies = $this->input['_init_access_policies'] ?? true;
+        if ($init_policies) {
+            $this->addDefaultAccessPolicies();
         }
     }
 
@@ -1033,6 +1048,19 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
             'itemtype'                 => FormDestinationTicket::class,
             'name'                     => Ticket::getTypeName(1),
             'is_mandatory'             => true,
+        ]);
+    }
+
+    private function addDefaultAccessPolicies(): void
+    {
+        $policy = new FormAccessControl();
+        $policy->add([
+            Form::getForeignKeyField() => $this->getID(),
+            'strategy' => AllowList::class,
+            '_config'   => new AllowListConfig(
+                user_ids: [AbstractRightsDropdown::ALL_USERS]
+            ),
+            'is_active' => 1,
         ]);
     }
 }

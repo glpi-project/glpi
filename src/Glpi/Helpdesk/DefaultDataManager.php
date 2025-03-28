@@ -35,10 +35,6 @@
 
 namespace Glpi\Helpdesk;
 
-use AbstractRightsDropdown;
-use Glpi\Form\AccessControl\ControlType\AllowList;
-use Glpi\Form\AccessControl\ControlType\AllowListConfig;
-use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ObserverField;
@@ -48,8 +44,6 @@ use Glpi\Form\Destination\CommonITILField\RequestTypeFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequestTypeFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\CommonITILField\TitleField;
-use Glpi\Form\Destination\FormDestination;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
@@ -207,9 +201,6 @@ final class DefaultDataManager
         // Add ticket destination
         $this->setMandatoryTicketDestination($form, $config);
 
-        // Allow all users
-        $this->allowAllUsers($form);
-
         return $form;
     }
 
@@ -269,9 +260,6 @@ final class DefaultDataManager
 
         // Add ticket destination
         $this->setMandatoryTicketDestination($form, $config);
-
-        // Allow all users
-        $this->allowAllUsers($form);
     }
 
     private function createForm(
@@ -395,23 +383,6 @@ final class DefaultDataManager
 
         if (!$success) {
             throw new \RuntimeException("Failed configure destination");
-        }
-    }
-
-    private function allowAllUsers(Form $form): void
-    {
-        $form_access_control = new FormAccessControl();
-        $id = $form_access_control->add([
-            Form::getForeignKeyField() => $form->getID(),
-            'strategy' => AllowList::class,
-            '_config'   => new AllowListConfig(
-                user_ids: [AbstractRightsDropdown::ALL_USERS]
-            ),
-            'is_active' => 1,
-        ]);
-
-        if (!$id) {
-            throw new \RuntimeException("Failed to create access policy");
         }
     }
 }
