@@ -112,16 +112,19 @@
                 </div>
             {% endset %}
 
-            <tr class="table-secondary">
-                <td colspan="{{ total_cols }}">
-                    <div class="d-flex align-items-center gap-2 mx-auto" style="max-width: 650px;">
-                        <div class="flex-shrink-0"> <strong>{{ step.validationstep.name }}</strong> </div>
-                        <div class="flex-shrink-0"> {{ icon|raw }} </div>
-                        <div class="flex-grow-1"> {{ progressbar|raw }} </div>
-                        <div class="flex-shrink-0"> {{ edit_step_button|raw }} </div>
-                    </div>
-                </td>
-            </tr>
+            <thead>
+                <tr>
+                    <th colspan="{{ total_cols }}">
+                        <div class="d-flex align-items-center gap-2 mx-auto" style="max-width: 650px;">
+                            <div class="flex-shrink-0"><strong>{{ step.validationstep.name }}</strong></div>
+                            <div class="flex-shrink-0"> {{ icon|raw }} </div>
+                            <div class="flex-grow-1"> {{ progressbar|raw }} </div>
+                            <div class="flex-shrink-0"> {{ edit_step_button|raw }} </div>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+
             {{ include('components/datatable/entries.html.twig', {'entries': step.entries}) }}
         {% endif %}
     {% endfor %}
