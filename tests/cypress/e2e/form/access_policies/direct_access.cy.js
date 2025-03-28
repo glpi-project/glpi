@@ -35,6 +35,7 @@ describe('Form access policy', () => {
         cy.createWithAPI('Glpi\\Form\\Form', {
             'name': 'Test form for the access policy form suite',
             'is_active': true,
+            '_init_access_policies': false,
         }).as('form_id');
 
         cy.login();

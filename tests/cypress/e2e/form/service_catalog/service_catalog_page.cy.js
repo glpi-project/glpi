@@ -39,19 +39,6 @@ describe('Service catalog page', () => {
             'is_active': true,
             'forms_categories_id': category,
         }).as('form_id');
-
-        cy.get('@form_id').then(form_id => {
-            cy.createWithAPI('Glpi\\Form\\AccessControl\\FormAccessControl', {
-                'forms_forms_id': form_id,
-                'strategy'      : 'Glpi\\Form\\AccessControl\\ControlType\\AllowList',
-                '_config'        : {
-                    'user_ids': ['all'],
-                    'groups_ids': [],
-                    'profiles_ids': [],
-                },
-                'is_active'     : true,
-            });
-        });
     }
 
     function createKnowledgeBaseItem(name, options = {}) {
@@ -357,6 +344,9 @@ describe('Service catalog page', () => {
         // Go to the service catalog
         cy.changeProfile('Self-Service', true);
         cy.visit('/ServiceCatalog');
+
+        // Filter forms to show only the ones created in this test
+        cy.findByPlaceholderText('Search for forms...').type(time);
 
         // Check breadcrumb
         cy.findByRole('navigation', {'name': 'Service catalog categories'}).within(() => {

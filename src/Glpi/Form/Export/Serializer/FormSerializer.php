@@ -351,7 +351,7 @@ final class FormSerializer extends AbstractFormSerializer
             'entities_id'           => $entities_id,
             'is_recursive'          => $spec->is_recursive,
             'is_active'             => $spec->is_active,
-            '_do_not_init_sections' => true,
+            '_init_sections'        => false,
         ]);
         if (!$form->getFromDB($id)) {
             throw new RuntimeException("Failed to create form");

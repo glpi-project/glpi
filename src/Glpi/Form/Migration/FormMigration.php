@@ -318,7 +318,7 @@ final class FormMigration extends AbstractPluginMigration
                     'entities_id'           => $raw_form['entities_id'],
                     'is_recursive'          => $raw_form['is_recursive'],
                     'is_active'             => $raw_form['is_active'],
-                    '_do_not_init_sections' => true
+                    '_from_migration'       =>  true
                 ],
                 [
                     'name'                => $raw_form['name'],

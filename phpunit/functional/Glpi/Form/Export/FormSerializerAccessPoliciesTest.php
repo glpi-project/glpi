@@ -89,6 +89,7 @@ final class FormSerializerAccessPoliciesTest extends \DbTestCase
     ): void {
         // Arrange: create a form with a direct access policy
         $builder = new FormBuilder("My test form");
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(
             strategy: DirectAccess::class,
             config: new DirectAccessConfig(
@@ -176,6 +177,7 @@ final class FormSerializerAccessPoliciesTest extends \DbTestCase
     ): void {
         // Arrange: Create a form with an allow list policy
         $builder = new FormBuilder("My test form");
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(
             strategy: AllowList::class,
             config: new AllowListConfig(
@@ -224,6 +226,7 @@ final class FormSerializerAccessPoliciesTest extends \DbTestCase
         );
 
         $builder = new FormBuilder("My test form");
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(AllowList::class, new AllowListConfig(
             user_ids: [$user_1->getID(), $user_2->getID(), AbstractRightsDropdown::ALL_USERS],
             group_ids: [$group_1->getID(), $group_2->getID()],
@@ -283,6 +286,7 @@ final class FormSerializerAccessPoliciesTest extends \DbTestCase
         );
 
         $builder = new FormBuilder("My test form");
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(AllowList::class, new AllowListConfig(
             user_ids: [$user_1->getID(), $user_2->getID(), AbstractRightsDropdown::ALL_USERS],
             group_ids: [$group_1->getID(), $group_2->getID()],

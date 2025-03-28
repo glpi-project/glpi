@@ -82,7 +82,8 @@ trait FormTesterTrait
             'is_draft'              => $builder->getIsDraft(),
             'is_pinned'             => $builder->getIsPinned(),
             'forms_categories_id'   => $builder->getCategory(),
-            '_do_not_init_sections' => true, // We will handle sections ourselves
+            '_init_sections'        => false,  // We will handle sections ourselves
+            '_init_access_policies' => $builder->getUseDefaultAccessPolicies(),
         ]);
 
         $section_rank = 0;
