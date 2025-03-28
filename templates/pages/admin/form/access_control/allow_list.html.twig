@@ -70,5 +70,12 @@
             .replace("%d", response.count))
         ;
     });
+
+    // Make sure this doens't trigger the "unsaved changes" detection if the form
+    // was not actually changed when this code is reached.
+    let restore_unsaved_form_status = window.glpiUnsavedFormChanges == false;
     $select.trigger('change');
+    if (restore_unsaved_form_status) {
+        window.glpiUnsavedFormChanges = false;
+    }
 </script>
