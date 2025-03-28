@@ -455,6 +455,8 @@ $CFG_GLPI['inventory_lockable_objects'] = [Asset_PeripheralAsset::class,  'Item_
     'DatabaseInstance', 'Item_RemoteManagement','Monitor', 'Domain_Item'
 ];
 
+$CFG_GLPI['printer_types'] = ['Printer'];
+
 $CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',
     'Contract', 'Entity',
     'Monitor', 'NetworkEquipment',

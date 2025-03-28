@@ -41,9 +41,9 @@ use Glpi\Dashboard\Widget;
  */
 class PrinterLog extends CommonDBChild
 {
-    public static $itemtype        = 'Printer';
-    public static $items_id        = 'printers_id';
-    public $dohistory              = false;
+    public static $itemtype = 'itemtype';
+    public static $items_id = 'items_id';
+    public $dohistory       = false;
 
 
     /**
@@ -72,10 +72,13 @@ class PrinterLog extends CommonDBChild
      */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
         $array_ret = [];
 
-        if ($item instanceof Printer) {
+        /** @var Printer|\Glpi\Asset\Asset $item */
+        if (in_array($item::class, $CFG_GLPI['printer_types'])) {
             $cnt = countElementsInTable([static::getTable()], [static::$items_id => $item->getField('id')]);
             $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::getType());
         }
@@ -93,7 +96,11 @@ class PrinterLog extends CommonDBChild
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if (get_class($item) == Printer::class && $item->getID() > 0) {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        /** @var Printer|\Glpi\Asset\Asset $item */
+        if (in_array($item::class, $CFG_GLPI['printer_types']) && $item->getID() > 0) {
             $printerlog = new self();
             $printerlog->showMetrics($item);
             return true;
@@ -104,7 +111,7 @@ class PrinterLog extends CommonDBChild
     /**
      * Get metrics
      *
-     * @param Printer       $printer      Printer instance
+     * @param array|Printer|\Glpi\Asset\Asset $printers      Printer instance
      * @param array         $user_filters User filters
      * @param string        $interval     Date interval string (e.g. 'P1Y' for 1 year)
      * @param DateTime|null $start_date   Start date for the metrics range
@@ -114,7 +121,7 @@ class PrinterLog extends CommonDBChild
      * @return array An array of printer metrics data
      */
     final public static function getMetrics(
-        array|Printer $printers,
+        array|Printer|\Glpi\Asset\Asset $printers,
         array $user_filters = [],
         string $interval = 'P1Y',
         ?DateTime $start_date = null,
@@ -157,7 +164,8 @@ class PrinterLog extends CommonDBChild
             $iterator = $DB->request([
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
-                    'printers_id'  => $printer->fields['id']
+                    'itemtype' => $printer::class,
+                    'items_id'  => $printer->fields['id']
                 ] + $filters,
                 'ORDER'  => 'date ASC',
             ]);
@@ -209,9 +217,9 @@ class PrinterLog extends CommonDBChild
     /**
      * Display form for agent
      *
-     * @param Printer $printer Printer instance
+     * @param Printer|\Glpi\Asset\Asset $printer Printer instance
      */
-    public function showMetrics(Printer $printer)
+    public function showMetrics(Printer|\Glpi\Asset\Asset $printer)
     {
         $printers = array_map(
             fn ($id) => Printer::getById($id),
