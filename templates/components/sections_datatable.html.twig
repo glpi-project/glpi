@@ -47,7 +47,14 @@
                    data-bs-target="#{{ step.edit_link_js.target }}"
                    {{ step.edit_link_js.onclick|raw }}
                 >
-                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"/>
+                        <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"/>
+                        <path d="M16 5l3 3"/>
+                    </svg>
                 </a>
             {% endset %}
 
@@ -56,28 +63,30 @@
                     <span class="text-green">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="icon icon-tabler icons-tabler-outline icon-tabler-check"><path stroke="none"
-                                                                                                   d="M0 0h24v24H0z"
-                                                                                                   fill="none"/><path
-                                    d="M5 12l5 5l10 -10"/></svg>
+                             class="icon icon-tabler icons-tabler-outline icon-tabler-check">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M5 12l5 5l10 -10"/>
+                        </svg>
                     </span>
                 {% elseif step.validationstep.status.refused %}
                     <span class="text-red">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="icon icon-tabler icons-tabler-outline icon-tabler-ban"><path stroke="none"
-                                                                                                 d="M0 0h24v24H0z"
-                                                                                                 fill="none"/><path
-                                    d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M5.7 5.7l12.6 12.6"/></svg>
+                             class="icon icon-tabler icons-tabler-outline icon-tabler-ban">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>
+                            <path d="M5.7 5.7l12.6 12.6"/>
+                        </svg>
                     </span>
                 {% elseif step.validationstep.status.waiting %}
                     <span class="text-yellow">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="icon icon-tabler icons-tabler-outline icon-tabler-clock"><path stroke="none"
-                                                                                                   d="M0 0h24v24H0z"
-                                                                                                   fill="none"/><path
-                                    d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 7v5l3 3"/></svg>
+                             class="icon icon-tabler icons-tabler-outline icon-tabler-clock">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/>
+                            <path d="M12 7v5l3 3"/>
+                        </svg>
                     </span>
                 {% endif %}
             {% endset %}
@@ -105,11 +114,10 @@
             <tr class="table-secondary">
                 <td colspan="{{ total_cols }}">
                     <div class="d-flex align-items-center gap-2 mx-auto" style="max-width: 650px;">
-
-                        <div class="flex-shrink-0"> {{ edit_step_button|raw }} </div>
                         <div class="flex-shrink-0"> <strong>{{ step.validationstep.name }}</strong> </div>
                         <div class="flex-shrink-0"> {{ icon|raw }} </div>
                         <div class="flex-grow-1"> {{ progressbar|raw }} </div>
+                        <div class="flex-shrink-0"> {{ edit_step_button|raw }} </div>
                     </div>
                 </td>
             </tr>
