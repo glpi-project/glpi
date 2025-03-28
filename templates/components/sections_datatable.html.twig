@@ -60,7 +60,7 @@
 
             {% set icon %}
                 {% if step.validationstep.status.accepted %}
-                    <span class="text-green">
+                    <span class="text-green" data-bs-toogle="tooltip" title="{{ __("Approval step accepted") }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                              class="icon icon-tabler icons-tabler-outline icon-tabler-check">
@@ -69,7 +69,7 @@
                         </svg>
                     </span>
                 {% elseif step.validationstep.status.refused %}
-                    <span class="text-red">
+                    <span class="text-red" data-bs-toggle="tooltip" title="{{ __("Approval step refused") }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                              class="icon icon-tabler icons-tabler-outline icon-tabler-ban">
@@ -79,7 +79,7 @@
                         </svg>
                     </span>
                 {% elseif step.validationstep.status.waiting %}
-                    <span class="text-yellow">
+                    <span class="text-yellow" data-bs-toggle="tooltip" title="{{ __("Approval step pending") }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                              class="icon icon-tabler icons-tabler-outline icon-tabler-clock">
@@ -92,7 +92,8 @@
             {% endset %}
 
             {% set progressbar %}
-                <div class="progress-stacked position-relative">
+                <div class="progress-stacked position-relative" data-bs-toggle="tooltip"
+                     title="{{ __('Progress: %1$s%% of %2$s%% required')|format(step.validationstep.achievement.accepted, step.validationstep.minimal_required_validation_percent) }}">
                     {# accepted #}
                     {{ macro.stacked_progressbar(step.validationstep.achievement.accepted) }}
                     {# waiting #}
