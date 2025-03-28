@@ -90,14 +90,15 @@ class AllowListTest extends \DbTestCase
         // The rendered content should be validated by an E2E test.
         $form = $this->createForm(
             (new FormBuilder())
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(
-                    \Glpi\Form\AccessControl\ControlType\AllowList::class,
+                    AllowList::class,
                     $this->getFullyConfiguredAllowListConfig()
                 )
         );
         $access_control = $this->getAccessControl(
             $form,
-            \Glpi\Form\AccessControl\ControlType\AllowList::class
+            AllowList::class
         );
         $this->assertNotEmpty($allow_list->renderConfigForm($access_control));
     }

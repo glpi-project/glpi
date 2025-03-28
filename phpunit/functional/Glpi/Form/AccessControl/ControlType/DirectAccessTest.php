@@ -96,6 +96,7 @@ class DirectAccessTest extends \DBTestCase
         // The rendered content should be validated by an E2E test.
         $form = $this->createForm(
             (new FormBuilder())
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(
                     DirectAccess::class,
                     new DirectAccessConfig(
@@ -259,6 +260,7 @@ class DirectAccessTest extends \DBTestCase
     {
         yield 'form without blacklisted question types' => [
             (new FormBuilder())
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                     allow_unauthenticated: true,
@@ -269,6 +271,7 @@ class DirectAccessTest extends \DBTestCase
         yield 'form with blacklisted question types' => [
             (new FormBuilder())
                 ->addQuestion('My observer question', QuestionTypeObserver::class)
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                     allow_unauthenticated: true,
@@ -282,6 +285,7 @@ class DirectAccessTest extends \DBTestCase
             (new FormBuilder())
                 ->setIsActive(false)
                 ->addQuestion('My observer question', QuestionTypeObserver::class)
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                     allow_unauthenticated: true,

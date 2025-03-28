@@ -837,6 +837,7 @@ class LogTest extends DbTestCase
     {
         // Arrange: create a form with a linked item that contains JSON values
         $builder = new FormBuilder();
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(
             DirectAccess::class,
             new DirectAccessConfig(token: 'my_token')
