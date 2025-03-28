@@ -35,6 +35,7 @@
 
 {% block more_fields %}
 
+    {# not possible to use 'full_width' because label get truncated, too long for 20%, so used label_class + input_class + field_class #}
     {{ fields.numberField(
         'minimal_required_validation_percent',
         item.fields['minimal_required_validation_percent'],
@@ -42,9 +43,12 @@
         {
             'min': 0,
             'max': 100,
-            'step': 10,
+            'step': 1,
             'rand': rand,
             'required': true,
+            'label_class': 'col-6',
+            'input_class': 'col-6',
+            'field_class': 'full-width',
         }
     ) }}
 

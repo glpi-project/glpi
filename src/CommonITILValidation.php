@@ -1139,10 +1139,8 @@ HTML;
                 [
                     'title'           => __('Update validation step'),
                     'reloadonclose'   => true,
-                    'width'           => 500,
-                    'height'          => 250,
                     'display'         => false,
-                    'modal_class'     => "modal-xl",
+                    'modal_class'     => "modal-lg",
                 ]
             );
             $validations[$itils_validationsteps_id]['edit_link_js']['onclick'] = 'onclick="' . $itil_edit_js_identifier . '.show();"';
