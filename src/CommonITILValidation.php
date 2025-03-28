@@ -2073,9 +2073,11 @@ HTML;
 
         if ($itils_validationstep_id_with_validationstep_id_exists) {
             $itils_validationsteps_id = $ivs->fields['id'];
-            if (!$this->update(['id' => $this->getID(), 'itils_validationsteps_id' => $itils_validationsteps_id])) {
+            $_validation = new static();
+            if (!$_validation->update(['id' => $this->getID(), 'itils_validationsteps_id' => $itils_validationsteps_id])) {
                 Session::addMessageAfterRedirect('Failed to update associated validation step while adding validation.');
             };
+            unset($_validation);
         } else {
             // addValidationStep also update the current Validation
             // load referenced ValidationStep
