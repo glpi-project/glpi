@@ -897,7 +897,7 @@ describe ('Conditions', () => {
         ]);
     });
 
-    it.only('can apply all supported conditions types', () => {
+    it('can apply all supported conditions types', () => {
         createForm();
 
         // Init test question on which we will add our conditions.
