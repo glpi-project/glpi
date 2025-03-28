@@ -5446,6 +5446,7 @@ JAVASCRIPT;
             $child_table = $searchopt[$ID]['table'];
             $link_table = $beforejoin['table'];
             $linked_fk = $beforejoin['joinparams']['linkfield'] ?? getForeignKeyFieldForTable($searchopt[$ID]['table']);
+
             // Handle extra condition (e.g. filtering group type)
             $addcondition = '';
             if (isset($beforejoin['joinparams']['condition'])) {

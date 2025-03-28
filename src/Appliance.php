@@ -314,19 +314,22 @@ class Appliance extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'                 => '1210',
-            'table'              => self::getTable(),
-            'field'              => 'name',
-            'name'               => __('Name'),
-            'forcegroupby'       => true,
-            'datatype'           => 'itemlink',
-            'itemlink_type'      => 'Appliance',
-            'massiveaction'      => false,
-            'joinparams'         => [
-                'condition'  => ['NEWTABLE.is_deleted' => 0],
+            'id'            => '1210',
+            'table'         => self::getTable(),
+            'field'         => 'name',
+            'name'          => __('Name'),
+            'datatype'      => 'dropdown',
+            'searchtype'    => ['equals','notequals','contains'],
+            'massiveaction' => false,
+            'forcegroupby'  => true,
+            'use_subquery'  => true,
+            'joinparams'    =>  [
                 'beforejoin' => [
                     'table'      => Appliance_Item::getTable(),
-                    'joinparams' => ['jointype' => 'itemtype_item']
+                    'joinparams' => [
+                        'jointype' => 'itemtype_item',
+                        'field'    => 'items_id',
+                    ],
                 ]
             ]
         ];
