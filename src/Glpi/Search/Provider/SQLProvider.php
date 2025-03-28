@@ -1703,7 +1703,7 @@ final class SQLProvider implements SearchProviderInterface
                             $val = preg_replace("/:00$/", '', $val);
                             $val = '^' . $val;
                             if ($searchtype === 'notequals') {
-                                $nott = !$nott; 
+                                $nott = !$nott;
                             }
                             return [new QueryExpression(self::makeTextCriteria("`$table`.`$field`", $val, $nott, ''))];
                         }
