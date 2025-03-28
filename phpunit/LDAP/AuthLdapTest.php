@@ -2228,8 +2228,12 @@ class AuthLDAPTest extends DbTestCase
         $group_id = $group->add(["name" => "testgroup1"]);
         $this->assertGreaterThan(0, $group_id);
 
+        $group = new Group();
+        $group2_id = $group->add(["name" => "testgroup2"]);
+        $this->assertGreaterThan(0, $group2_id);
+
         // Add groups with a rule
-        $actions->add([
+        $act_id = $actions->add([
             'rules_id'    => $rules_id,
             'action_type' => 'assign',
             'field'       => 'specific_groups_id',
@@ -2248,6 +2252,27 @@ class AuthLDAPTest extends DbTestCase
             'groups_id' => $group_id,
             'is_dynamic' => 1,
         ]);
+        $this->assertCount(1, $gus);
+
+        // update criteria
+        $action = new \RuleAction();
+        $action->update([
+            'id'    => $act_id,
+            'value' => $group2_id,
+        ]);
+
+        // Login
+        $this->login('brazil6', 'password', false);
+        $users_id = \User::getIdByName('brazil6');
+        $this->assertGreaterThan(0, $users_id);
+
+        // Check the dynamic group is deleted without losing the manual groups
+        $gu = new Group_User();
+        $gus = $gu->find([
+            'users_id' => $users_id,
+            'groups_id' => $group2_id,
+        ]);
+
         $this->assertCount(1, $gus);
 
         // Create 2 manual groups
@@ -2278,6 +2303,12 @@ class AuthLDAPTest extends DbTestCase
             'is_dynamic' => false,
         ]);
         $this->assertCount(2, $gus);
+
+        foreach ($gus as $group_user) {
+            if ($group_user['groups_id'] != $mgroup_id && $group_user['groups_id'] != $mgroup2_id) {
+                $this->assertFalse(true);
+            }
+        }
 
         // update criteria
         $criteria = new \RuleCriteria();
