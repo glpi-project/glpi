@@ -45,7 +45,7 @@ export class GlpiIllustrationPickerController
     #running_search_requests_count = 0;
 
     /**
-     * @type {bootstrap.Modal}
+     * @type {HTMLElement}
      */
     #modal_node;
 
@@ -120,6 +120,11 @@ export class GlpiIllustrationPickerController
                 bootstrap.Modal.getInstance(this.#modal_node).hide();
             })
         ;
+
+        // Autofocus search input when the modal is opened
+        this.#modal_node.addEventListener('shown.bs.modal', () => {
+            this.#container.querySelector("[data-glpi-icon-picker-filter]").focus();
+        });
     }
 
     #setNativeIllustration(illustration)
