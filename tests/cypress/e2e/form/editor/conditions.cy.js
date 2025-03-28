@@ -887,7 +887,6 @@ describe ('Conditions', () => {
     });
 
     it('can apply all supported conditions types', () => {
-        const uuid = new Date().getTime();
         createForm();
 
         // Create test items in GLPI that we'll use in conditions
