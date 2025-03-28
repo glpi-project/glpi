@@ -2292,7 +2292,6 @@ class AuthLDAPTest extends DbTestCase
         // Check group not assigned
         $gu = new Group_User();
         $gus = $gu->find([
-            'groups_id' => $group_id,
             'users_id' => $users_id,
         ]);
 
