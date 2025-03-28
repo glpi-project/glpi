@@ -181,6 +181,7 @@
                 <h3 class="cart-title">{{ __("Validation request") }}</h3>
             </div>
             <div class="card-body">
+               {# Validation template #}
                {{ fields.dropdownField(
                   'ITILValidationTemplate',
                   'itilvalidationtemplates_id',
@@ -194,6 +195,19 @@
                   },
                 ) }}
 
+               {# Validation step #}
+               {{ fields.dropdownField(
+                  'ValidationStep',
+                  '_validationsteps_id',
+                  _validationsteps_id,
+                  __('Validation step'),
+                  {
+                     'full_width': true,
+                     'rand': rand,
+                  }
+               ) }}
+
+                {# Requester #}
                 {{ fields.readOnlyField(
                     'approval_requester',
                     get_current_user().getFriendlyName(),
@@ -240,17 +254,6 @@
                         }
                     ) }}
                 {% endif %}
-
-               {# Validation step #}
-               {{ fields.dropdownField(
-                  'ValidationStep',
-                  '_validationsteps_id',
-                  _validationsteps_id,
-                  __('Validation step'),
-                  {
-                     'rand': rand,
-                  }
-               ) }}
 
                 {# Comment #}
                 {{ fields.textareaField(
@@ -313,29 +316,6 @@
          </script>
       {% endif %}
       <script type="text/javascript">
-         // --- show/hide validation step field depending on validation type seleted
-         $(
-                 () => {
-                    // if it's possible to choose a validator, then hide the validation step field
-                    // (until a validator is choosen, see below)
-                    if( $("#dropdown__validatortype_{{ rand }}").length !== 0) {
-                       let validationstep_wrapper = $('#dropdown__validationsteps_id{{ rand }}').closest('.form-field');
-                       validationstep_wrapper.hide();
-                    }
-                 }
-         );
-
-         // if a validator is choosen, then show the validation step field
-         $("#dropdown__validatortype_{{ rand }}").on(
-                 'change',
-                 function() {
-                    let validationstep_wrapper = $('#dropdown__validationsteps_id{{ rand }}').closest('.form-field');
-                    let validation_activated = $(this).val() !== '0';
-                    validation_activated
-                            ? validationstep_wrapper.show()
-                            : validationstep_wrapper.hide();
-                 });
-
          // --- fill form with template data
          function itilvalidationtemplate_update{{ rand }}(value) {
             $.ajax({
