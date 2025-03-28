@@ -103,6 +103,8 @@ class DCBreadcrumbTest extends DbTestCase
                 [
                     'entities_id'   => $root_entity_id,
                     'name'          => 'DC room',
+                    'vis_cols'      => 1,
+                    'vis_rows'      => 1
                 ]
             );
             $rack = $this->createItem(
@@ -280,6 +282,8 @@ class DCBreadcrumbTest extends DbTestCase
             [
                 'entities_id'   => $root_entity_id,
                 'name'          => 'DC room',
+                'vis_cols'      => 1,
+                'vis_rows'      => 1
             ]
         );
         $rack = $this->createItem(
@@ -382,6 +386,8 @@ class DCBreadcrumbTest extends DbTestCase
             [
                 'entities_id'   => $root_entity_id,
                 'name'          => 'DC room',
+                'vis_cols'      => 1,
+                'vis_rows'      => 1
             ]
         );
 
