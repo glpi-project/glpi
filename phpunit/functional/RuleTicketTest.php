@@ -1346,4 +1346,83 @@ class RuleTicketTest extends RuleCommonITILObject
 
         $this->assertEquals(\CommonITILObject::ASSIGNED, $ticket->fields['status']);
     }
+
+    /**
+     * - create rule on ticket creation
+     *      - criterions : date after now
+     *      - actions :
+     *          - add a validation for user
+     */
+//    public function testAssignValidationStepByDefault(): void
+//    {
+//        $this->login();
+//        $user_id = (int) getItemByTypeName('User', '_test_user', true);
+//        $entity = getItemByTypeName('Entity', '_test_root_entity', true); // 4
+//        assert(0 === countElementsInTable(\TicketValidation::getTable()), 'test expects no validation at start');
+//
+//        // arrange
+//        $rule_builder = new \RuleBuilder('Add an approval', \RuleTicket::class);
+//        $rule_builder
+//            ->setEntity($entity)
+//            ->setCondtion(\RuleTicket::ONADD)
+//            ->setIsRecursive(false)
+//            ->addCriteria('date', \Rule::PATTERN_DATE_IS_AFTER, date('2024-m-d'))
+//            ->addAction('add_validation', 'users_id_validate', $user_id);
+////            ->addAction('validationsteps_id', 'validationsteps_id', 1)
+//        $this->createRule($rule_builder);
+//
+//        // act
+//        $this->createItem(\Ticket::class, [
+//            'name' => __METHOD__,
+//            'content' => __METHOD__,
+//            'entities_id' => $entity,
+//        ]);
+//
+//        // assert : a validation is created and the validation step is set to the default value.
+//        $validations = (new \TicketValidation())->find();
+//        $this->assertCount(1, $validations);
+//        $validation = array_pop($validations);
+//        $itil_validation = new \TicketValidationStep();
+//        $itil_validation->getFromDB($validation['itils_validationsteps_id']);
+//        $this->assertEquals(\ValidationStep::getDefault()->getID(), $itil_validation->fields['validationsteps_id']);
+//    }
+
+//    public function testAssignCreatedValidationStep(): void
+//    {
+//        // arrange
+//        $this->login();
+//        $user_id = (int) getItemByTypeName('User', '_test_user', true);
+//        $entity = getItemByTypeName('Entity', '_test_root_entity', true); // 4
+//
+//        assert(0 === countElementsInTable(\TicketValidation::getTable()), 'test expects no validation at start');
+//
+//        $new_validationsteps_id = ($this->createItem(\ValidationStep::class, [
+//            'name' => 'Tech team',
+//            'minimal_required_validation_percent' => 100,
+//        ]))->getID();
+//        $builder = new \RuleBuilder('Add an approval', \RuleTicket::class);
+//        $builder
+//            ->setEntity($entity)
+//            ->setCondtion(\RuleTicket::ONADD)
+//            ->setIsRecursive(false)
+//            ->addCriteria('date', \Rule::PATTERN_DATE_IS_AFTER, date('2024-m-d'))
+//            ->addAction('add_validation', 'users_id_validate', $user_id)
+//            ->addAction('assign', 'validationsteps_id', $new_validationsteps_id);
+//        $this->createRule($builder);
+//
+//        // act
+//        $this->createItem(\Ticket::class, [
+//            'name' => __METHOD__,
+//            'content' => __METHOD__,
+//            'entities_id' => $entity,
+//        ]);
+//
+//        // assert : a validation is created and the validation step is set to the default value.
+//        $validations = (new \TicketValidation())->find();
+//        $this->assertCount(1, $validations, 'There must be only a single Validation created.');
+//        $validation = array_pop($validations);
+//        $itil_validation = new \TicketValidationStep();
+//        $itil_validation->getFromDB($validation['itils_validationsteps_id']);
+//        $this->assertEquals($new_validationsteps_id, $itil_validation->fields['validationsteps_id'], 'The validationstep_id must be the just created once.');
+//    }
 }

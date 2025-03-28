@@ -834,6 +834,7 @@ CREATE TABLE `glpi_changetasks` (
 DROP TABLE IF EXISTS `glpi_changevalidations`;
 CREATE TABLE `glpi_changevalidations` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itils_validationsteps_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `users_id` int unsigned NOT NULL DEFAULT '0',
@@ -859,7 +860,8 @@ CREATE TABLE `glpi_changevalidations` (
   KEY `changes_id` (`changes_id`),
   KEY `submission_date` (`submission_date`),
   KEY `validation_date` (`validation_date`),
-  KEY `status` (`status`)
+  KEY `status` (`status`),
+  KEY `itils_validationsteps_id` (`itils_validationsteps_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7631,6 +7633,7 @@ CREATE TABLE `glpi_problemtemplates` (
 DROP TABLE IF EXISTS `glpi_ticketvalidations`;
 CREATE TABLE `glpi_ticketvalidations` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itils_validationsteps_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `tickets_id` int unsigned NOT NULL DEFAULT '0',
@@ -7654,9 +7657,38 @@ CREATE TABLE `glpi_ticketvalidations` (
   KEY `tickets_id` (`tickets_id`),
   KEY `submission_date` (`submission_date`),
   KEY `validation_date` (`validation_date`),
-  KEY `status` (`status`)
+  KEY `status` (`status`),
+  KEY `itils_validationsteps_id` (`itils_validationsteps_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+
+### Dump table glpi_validationsteps - used by ValidationStep Dropdown
+
+DROP TABLE IF EXISTS `glpi_validationsteps`;
+CREATE TABLE `glpi_validationsteps` (
+    `id`                                  int unsigned NOT NULL AUTO_INCREMENT,
+    `name`                                varchar(255)          DEFAULT NULL,
+    `minimal_required_validation_percent` smallint     NOT NULL DEFAULT '100',
+    `is_default`                          tinyint      NOT NULL DEFAULT '0',
+    `date_mod`                            timestamp    NULL     DEFAULT NULL,
+    `date_creation`                       timestamp    NULL     DEFAULT NULL,
+    `comment`                             text,
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`),
+    KEY `date_mod` (`date_mod`),
+    KEY `date_creation` (`date_creation`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+
+### Dump table glpi_itils_validationsteps - used by ValidationStep Dropdown
+
+DROP TABLE IF EXISTS `glpi_itils_validationsteps`;
+CREATE TABLE `glpi_itils_validationsteps` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `minimal_required_validation_percent` smallint NOT NULL, #, DEFAULT '100',
+    `validationsteps_id` int unsigned NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    KEY `validationsteps_id` (`validationsteps_id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 ### Dump table glpi_transfers
 
@@ -9760,6 +9792,7 @@ CREATE TABLE `glpi_itilvalidationtemplates` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `validationsteps_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL DEFAULT '',
   `content` text,
   `comment` text,
@@ -9769,6 +9802,7 @@ CREATE TABLE `glpi_itilvalidationtemplates` (
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `name` (`name`),
+  KEY `validationsteps_id` (`validationsteps_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

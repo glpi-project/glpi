@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\RichText\RichText;
+
 /**
  * TicketValidation class
  */
@@ -42,14 +45,12 @@ class TicketValidation extends CommonITILValidation
     public static $itemtype           = 'Ticket';
     public static $items_id           = 'tickets_id';
 
-    public static $rightname                 = 'ticketvalidation';
+    public static $rightname          = 'ticketvalidation';
 
     const CREATEREQUEST               = 1024;
     const CREATEINCIDENT              = 2048;
     const VALIDATEREQUEST             = 4096;
     const VALIDATEINCIDENT            = 8192;
-
-
 
     public static function getCreateRights()
     {
@@ -65,7 +66,6 @@ class TicketValidation extends CommonITILValidation
     {
         return [static::VALIDATEREQUEST, static::VALIDATEINCIDENT];
     }
-
 
     /**
      * @since 0.85
@@ -92,6 +92,7 @@ class TicketValidation extends CommonITILValidation
 
         return parent::canCreateItem();
     }
+
 
     /**
      * @since 0.85

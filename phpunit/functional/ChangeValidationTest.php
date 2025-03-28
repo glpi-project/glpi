@@ -36,8 +36,71 @@ namespace tests\units;
 
 /* Test for src/ChangeValidation.php */
 
-use Glpi\PHPUnit\Tests\CommonITILValidation;
+use Glpi\PHPUnit\Tests\CommonITILValidationTest;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class ChangeValidationTest extends CommonITILValidation
+class ChangeValidationTest extends CommonITILValidationTest
 {
+    public function testGlobalValidationUpdate(): void
+    {
+        $this->login();
+        $uid1 = getItemByTypeName('User', 'glpi', true);
+
+        $change = $this->createItem('Change', [
+            'name' => 'Global_Validation_Update',
+            'content' => 'Global_Validation_Update',
+            'validation_percent' => 100,
+        ]);
+
+        $v1_id = $this->createItem('ChangeValidation', [
+            'changes_id'        => $change->getID(),
+            'itemtype_target'   => \User::class,
+            'items_id_target'   => $uid1,
+//            'validationsteps_id' => $this->getInitialDefaultValidationStep()->getID(),
+        ]);
+
+        $this->updateItem('ChangeValidation', $v1_id->getID(), [
+            'status'  => \CommonITILValidation::ACCEPTED,
+        ]);
+
+        $this->updateItem('Change', $change->getID(), [
+            'validation_percent' => 0,
+        ]);
+
+        $this->assertEquals(\CommonITILValidation::ACCEPTED, \ChangeValidation::computeValidationStatus($change));
+
+        $this->updateItem('Change', $change->getID(), [
+            'validation_percent' => 50,
+        ]);
+
+        $v2_id = $this->createItem('ChangeValidation', [
+            'changes_id'        => $change->getID(),
+            'itemtype_target'   => \User::class,
+            'items_id_target'   => $uid1,
+//            'validationsteps_id' => $this->getInitialDefaultValidationStep()->getID(),
+        ]);
+
+        $this->updateItem('ChangeValidation', $v2_id->getID(), [
+            'status'  => \CommonITILValidation::WAITING,
+        ]);
+
+        $this->assertEquals(\CommonITILValidation::WAITING, \ChangeValidation::computeValidationStatus($change));
+
+        $this->updateItem('Change', $change->getID(), [
+            'validation_percent' => 100,
+        ]);
+
+        $v3_id = $this->createItem('ChangeValidation', [
+            'changes_id'        => $change->getID(),
+            'itemtype_target'   => \User::class,
+            'items_id_target'   => $uid1,
+        ]);
+
+        $this->updateItem('ChangeValidation', $v3_id->getID(), [
+            'status'  => \CommonITILValidation::REFUSED,
+        ]);
+
+
+        $this->assertEquals(\CommonITILValidation::REFUSED, \ChangeValidation::computeValidationStatus($change));
+    }
 }
