@@ -59,7 +59,5 @@ TemplateRenderer::getInstance()->display(
     [
         'item' => $ivs,
         'no_header' => true,
-        'params' => [
-        ]
     ]
 );
