@@ -100,7 +100,8 @@ describe('Illustration picker', () => {
 
     it('Can search for icons', () => {
         openIllustrationPicker();
-        cy.findByRole('textbox', {'name': "Search"}).type("Business Intelligence and Reporting");
+        cy.findByRole('textbox', {'name': "Search"}).should('be.focused');
+        cy.focused().type("Business Intelligence and Reporting");
 
         const expected_icons = [
             'Business Intelligence and Reporting 1',
