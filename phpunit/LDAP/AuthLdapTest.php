@@ -2184,15 +2184,17 @@ class AuthLDAPTest extends DbTestCase
     public function testGroupRuleRight()
     {
         //prepare rules
-        $rules = new \RuleRight();
-        $rules_id = $rules->add([
-            'sub_type'     => 'RuleRight',
-            'name'         => 'test ldap groupruleright',
-            'match'        => 'AND',
-            'is_active'    => 1,
-            'entities_id'  => 0,
-            'is_recursive' => 1,
-        ]);
+        $rules_id = $this->createItem(
+            'RuleRight',
+            [
+                'sub_type'     => 'RuleRight',
+                'name'         => 'test ldap groupruleright',
+                'match'        => 'AND',
+                'is_active'    => 1,
+                'entities_id'  => 0,
+                'is_recursive' => 1,
+            ]
+        )->getID();
         $criteria = new \RuleCriteria();
         $criteria->add([
             'rules_id'  => $rules_id,
@@ -2231,7 +2233,7 @@ class AuthLDAPTest extends DbTestCase
             'rules_id'    => $rules_id,
             'action_type' => 'assign',
             'field'       => 'specific_groups_id',
-            'value'       => $group_id, // '_test_child_1' entity
+            'value'       => $group_id,
         ]);
 
         // login the user to force a real synchronisation and get it's glpi id
@@ -2284,12 +2286,12 @@ class AuthLDAPTest extends DbTestCase
             'pattern'   => 'brazil7',
         ]);
 
-        // Check the user got the entity/profiles unassigned
+        // Login
         $this->login('brazil6', 'password', false);
         $users_id = \User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
 
-        // Check group not assigned
+        // Check the dynamic group is deleted without losing the manual groups
         $gu = new Group_User();
         $gus = $gu->find([
             'users_id' => $users_id,
