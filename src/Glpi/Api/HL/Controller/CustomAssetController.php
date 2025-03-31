@@ -131,9 +131,10 @@ final class CustomAssetController extends AbstractController
             $custom_fields = $definition->getCustomFieldDefinitions();
             foreach ($custom_fields as $field) {
                 $field_name = $field->fields['system_name'];
+                $default_value = is_array($field->fields['default_value']) ? exportArrayToDB($field->fields['default_value']) : $field->fields['default_value'];
                 $custom_assets[$schema_name]['properties']['custom_fields']['properties'][$field_name] = [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'x-readonly' => true,
+                    'x-field' => "custom_$field_name",
                     'computation' =>  QueryFunction::coalesce([
                         QueryFunction::jsonUnquote(
                             expression: QueryFunction::jsonExtract([
@@ -141,7 +142,7 @@ final class CustomAssetController extends AbstractController
                                 new QueryExpression($DB::quoteValue('$."' . $field->fields['id'] . '"'))
                             ])
                         ),
-                        new QueryExpression($DB::quoteValue($field->fields['default_value']))
+                        new QueryExpression($DB::quoteValue($default_value))
                     ]),
                 ];
             }
