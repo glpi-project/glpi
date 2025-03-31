@@ -136,6 +136,8 @@ interface CapacityInterface
      * Method executed when capacity is updated on given asset class.
      *
      * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param CapacityConfig $old_config
+     * @param CapacityConfig $new_config
      */
     public function onCapacityUpdated(string $classname, CapacityConfig $old_config, CapacityConfig $new_config): void;
 
@@ -146,4 +148,20 @@ interface CapacityInterface
      * @return void
      */
     public function onObjectInstanciation(Asset $object): void;
+
+    /**
+     * Set configuration
+     *
+     * @param CapacityConfig $config
+     *
+     * @return self
+     */
+    public function setConfiguration(CapacityConfig $config): self;
+
+    /**
+     * Get configuration
+     *
+     * @return CapacityConfig
+     */
+    public function getConfiguration(): CapacityConfig;
 }

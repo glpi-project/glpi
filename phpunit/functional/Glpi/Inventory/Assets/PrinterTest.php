@@ -162,7 +162,10 @@ class PrinterTest extends AbstractInventoryAsset
         global $DB;
         $iterator = $DB->request([
             'FROM'   => \PrinterLog::getTable(),
-            'WHERE'  => ['printers_id' => $printer->fields['id']]
+            'WHERE'  => [
+                'itemtype' => $printer::class,
+                'items_id' => $printer->fields['id']
+            ]
         ]);
         $this->assertCount(1, $iterator);
 
@@ -172,7 +175,8 @@ class PrinterTest extends AbstractInventoryAsset
 
         $this->assertEquals(
             [
-                'printers_id' => $printer->fields['id'],
+                'itemtype' => $printer::class,
+                'items_id' => $printer->fields['id'],
                 'total_pages' => 1802,
                 'bw_pages' => 0,
                 'color_pages' => 0,
