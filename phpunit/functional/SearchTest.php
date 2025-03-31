@@ -4015,7 +4015,6 @@ class SearchTest extends DbTestCase
             'contains',
             'appliance',
         );
-
     }
 
     public function testCriteriaWithSubqueries(): void
