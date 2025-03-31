@@ -412,10 +412,67 @@ final class EngineTest extends DbTestCase
         ];
     }
 
+    public static function conditionsOnQuestionWithNullExtraData(): iterable
+    {
+        $form = new FormBuilder();
+        $form->addQuestion(
+            name: "Question 1",
+            type: QuestionTypeShortText::class,
+            extra_data: null
+        );
+        $form->addQuestion("Question 2", QuestionTypeShortText::class);
+        $form->setQuestionVisibility(
+            "Question 2",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question 1",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "correct value",
+                ]
+            ]
+        );
+
+        yield [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "",
+                    'Question 2' => "",
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'Question 1' => true,
+                    'Question 2' => false,
+                ],
+            ],
+        ];
+
+        yield [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "correct value",
+                    'Question 2' => "",
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'Question 1' => true,
+                    'Question 2' => true,
+                ],
+            ],
+        ];
+    }
+
     #[DataProvider('conditionsOnQuestions')]
     #[DataProvider('conditionsOnComments')]
     #[DataProvider('conditionsOnSections')]
     #[DataProvider('firstSectionShouldAlwaysBeVisible')]
+    #[DataProvider('conditionsOnQuestionWithNullExtraData')]
     public function testComputation(
         FormBuilder $form,
         array $input,

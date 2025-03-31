@@ -516,6 +516,51 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
         );
     }
 
+    /**
+     * Test that we can submit an empty value for a specific values strategy.
+     * A peculiarity of the front-end integration returns the value "0" if no
+     * itemtype is selected.
+     *
+     * However, no corresponding id is returned, so we need to ensure
+     * that the "0" value is properly ignored.
+     */
+    public function testSubmitEmptyValueForSpecificValuesStrategy(): void
+    {
+        $this->login();
+
+        // Create a computer
+        $computer = $this->createItem(Computer::class, [
+            'name' => "Computer",
+            'entities_id' => $this->getTestRootEntity(true)
+        ]);
+
+        // Create a form
+        $form = $this->createForm(new FormBuilder());
+
+        $destination = current($form->getDestinations());
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    AssociatedItemsField::getKey() => [
+                        'strategies' => [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
+                        'specific_associated_items' => [
+                            'itemtype' => [
+                                \Computer::getType(),
+                                '0'
+                            ],
+                            'items_id' => [
+                                $computer->getID(),
+                            ]
+                        ],
+                    ]
+                ]
+            ],
+            ["config"],
+        );
+    }
+
     private function sendFormAndAssertAssociatedItems(
         Form $form,
         AssociatedItemsFieldConfig $config,
