@@ -1340,17 +1340,18 @@ abstract class CommonITILValidation extends CommonDBChild
             'name'               => CommonITILValidation::getTypeName(1)
         ];
 
-        $tab[] = [
-            'id'                 => '51',
-            'table'              => getTableForItemType(static::$itemtype),
-            'field'              => 'validation_percent',
-            'name'               => __('Minimum validation required'),
-            'datatype'           => 'number',
-            'unit'               => '%',
-            'min'                => 0,
-            'max'                => 100,
-            'step'               => 50
-        ];
+        // validation_percent field removed from ITIL objects : moved to ITIL_Validation_Step
+//        $tab[] = [
+//            'id'                 => '51',
+//            'table'              => getTableForItemType(static::$itemtype),
+//            'field'              => 'validation_percent',
+//            'name'               => __('Minimum validation required'),
+//            'datatype'           => 'number',
+//            'unit'               => '%',
+//            'min'                => 0,
+//            'max'                => 100,
+//            'step'               => 50
+//        ];
 
         $tab[] = [
             'id'                 => '52',

@@ -188,9 +188,9 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
                                 $output['_add_validation'][] = 'requester_responsible';
                                 break;
 
-                            case 'validation_percent':
-                                $output[$action->fields["field"]] = $action->fields["value"];
-                                break;
+//                            case 'validation_percent':
+//                                $output[$action->fields["field"]] = $action->fields["value"];
+//                                break;
 
                             case 'validationsteps_id':
                                 $output['validationsteps_id'] = $action->fields["value"];
@@ -938,12 +938,12 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
             $actions['groups_id_validate_any']['force_actions']             = ['add_validation'];
             $actions['groups_id_validate_any']['permitseveral']             = ['add_validation'];
 
-            $actions['validation_percent']['name']                      = sprintf(
-                __('%1$s - %2$s'),
-                __('Send an approval request'),
-                __('Minimum validation required')
-            );
-            $actions['validation_percent']['type']                      = 'dropdown_validation_percent';
+//            $actions['validation_percent']['name']                      = sprintf(
+//                __('%1$s - %2$s'),
+//                __('Send an approval request'),
+//                __('Minimum validation required')
+//            );
+//            $actions['validation_percent']['type']                      = 'dropdown_validation_percent';
 
             $actions['users_id_validate_requester_supervisor']['name']  = __('Approval request to requester group manager');
             $actions['users_id_validate_requester_supervisor']['type']  = 'yesno';
