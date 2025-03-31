@@ -158,7 +158,7 @@ final class Search
 
         // Computed fields may be used in HAVING clauses so we have no refer to the fields by the alias
         if ($is_computed) {
-            return str_replace('.', chr(0x1F), trim($sql_field, '.'));
+            return str_replace('.', chr(0x1F), trim($prop_name, '.'));
         }
 
         if (!$is_join) {
@@ -1238,12 +1238,15 @@ final class Search
         $params = [];
         $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
         //Get top level properties (do not contain "." in the key)
-        $top_level_properties = array_filter($flattened_properties, static function ($k) {
-            $is_dropdown_identifier = preg_match('/^(\w+)\.id$/', $k);
-            return $is_dropdown_identifier || !str_contains($k, '.');
-        }, ARRAY_FILTER_USE_KEY);
+        $top_level_properties = array_filter($flattened_properties, static function ($v, $k) {
+            $is_join = isset($v['x-join']);
+            $is_dropdown_identifier = $is_join && preg_match('/^(\w+)\.id$/', $k);
+            return $is_dropdown_identifier || !$is_join;
+        }, ARRAY_FILTER_USE_BOTH);
         foreach ($top_level_properties as $prop_name => $prop) {
-            if (str_contains($prop_name, '.')) {
+            $is_join = isset($v['x-join']);
+            $is_dropdown_identifier = $is_join && preg_match('/^(\w+)\.id$/', $prop_name);
+            if ($is_dropdown_identifier) {
                 // This is a dropdown identifier, we need to get the id from the request
                 $prop_name = strstr($prop_name, '.', true);
                 $prop = $schema['properties'][$prop_name];
@@ -1262,8 +1265,8 @@ final class Search
             } else {
                 $internal_name = $prop_name;
             }
-            if (isset($request_params[$prop_name])) {
-                $params[$internal_name] = $request_params[$prop_name];
+            if (ArrayPathAccessor::hasElementByArrayPath($request_params, $prop_name)) {
+                $params[$internal_name] = ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name);
             }
         }
         return $params;
