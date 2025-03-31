@@ -253,19 +253,19 @@ final class ServiceCatalogManager
                 return $b->isServiceCatalogItemPinned() <=> $a->isServiceCatalogItemPinned();
             }
 
-            // Then handle composite vs non-composite
+            // Then handle composite vs non-composite (composite first)
             if (
                 $a instanceof ServiceCatalogCompositeInterface
                 && !($b instanceof ServiceCatalogCompositeInterface)
             ) {
-                return 1;
+                return -1;
             }
 
             if (
                 !($a instanceof ServiceCatalogCompositeInterface)
                 && $b instanceof ServiceCatalogCompositeInterface
             ) {
-                return -1;
+                return 1;
             }
 
             // Finally sort by title
