@@ -82,7 +82,7 @@ abstract class CommonITILValidationTest extends DbTestCase
      */
     protected function getITILValidationStepClassname(): string
     {
-        return $this->getITILClassname().'ValidationStep';
+        return $this->getITILClassname() . 'ValidationStep';
     }
 
     public function testCanValidateUser()

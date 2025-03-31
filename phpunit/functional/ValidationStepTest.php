@@ -167,8 +167,7 @@ class ValidationStepTest extends \DbTestCase
     #[DataProvider('getValidationStepStatusProvider')]
     public function testGetValidationStepStatus(int $mininal_required_validation_percent, array $validation_states, int $expected_status)
     {
-        foreach ([\Ticket::class, \Change::class] as $itil_class)
-        {
+        foreach ([\Ticket::class, \Change::class] as $itil_class) {
             $validation_step = $this->createValidationStep($mininal_required_validation_percent);
             // single itil_validation step with 100% required
             [$itil, $itils_validationstep] = $this->createITILSValidationStepWithValidations($validation_step, $validation_states, itil_classname: $itil_class);
@@ -201,8 +200,7 @@ class ValidationStepTest extends \DbTestCase
 
     public function testgetValidationStepAchievementsOnMultipleValidation(): void
     {
-        foreach ([\Ticket::class, \Change::class] as $itil_class)
-        {
+        foreach ([\Ticket::class, \Change::class] as $itil_class) {
             $vs = $this->createValidationStep(100);
             // 2 validations with same status
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
@@ -254,8 +252,7 @@ class ValidationStepTest extends \DbTestCase
 
     public function testItilValidationStepIsRemovedWhenValidationIsDeleted(): void
     {
-        foreach ([\Ticket::class, \Change::class] as $itil_class)
-        {
+        foreach ([\Ticket::class, \Change::class] as $itil_class) {
             // arrange - create a validation (+ an itils_validationstep)
             $vs = $this->createValidationStep(100);
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
@@ -274,8 +271,7 @@ class ValidationStepTest extends \DbTestCase
     }
     public function testItilValidationStepIsRemovedWhenValidationIsUpdated(): void
     {
-        foreach ([\Ticket::class, \Change::class] as $itil_class)
-        {
+        foreach ([\Ticket::class, \Change::class] as $itil_class) {
             // arrange - create a validation (+ an itils_validationstep)
             $vs = $this->createValidationStep(100);
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::ACCEPTED], itil_classname: $itil_class);

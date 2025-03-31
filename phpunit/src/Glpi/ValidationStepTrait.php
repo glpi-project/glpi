@@ -70,12 +70,11 @@ trait ValidationStepTrait
     }
 
     private function addITILValidationStepWithValidations(
-        ValidationStep    $validation_step,
-        array             $validations_statuses,
+        ValidationStep $validation_step,
+        array $validations_statuses,
         CommonITILObject $itil,
-        ?int              $expected_status = null
-    )    : TicketValidationStep|ChangeValidationStep
-    {
+        ?int $expected_status = null
+    ): TicketValidationStep|ChangeValidationStep {
         assert(!empty($validations_statuses), '$validations_statuses must not be empty');
 
         $itil_validationstep_id = null;
@@ -83,7 +82,7 @@ trait ValidationStepTrait
             // itil validation can only be created with Waiting status
             $validation = $this->createItem(
                 $itil::getValidationClassName(),
-//                $this->getValidationClassname(),
+                //                $this->getValidationClassname(),
                 $this->getValidITILValidationData($itil, $validation_step, CommonITILValidation::WAITING)
             );
             // update status if needed
@@ -163,8 +162,8 @@ trait ValidationStepTrait
      */
     public function getValidITILValidationData(
         CommonITILObject $itil,
-        ValidationStep    $validation_step,
-        int               $validation_status
+        ValidationStep $validation_step,
+        int $validation_status
     ): array {
         return [
             $itil::getForeignKeyField() => $itil->getID(),
