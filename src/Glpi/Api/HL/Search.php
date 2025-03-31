@@ -1238,14 +1238,16 @@ final class Search
     {
         $params = [];
         $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
-        //Get top level properties (do not contain "." in the key)
-        $top_level_properties = array_filter($flattened_properties, static function ($v, $k) {
-            $is_join = isset($v['x-join']);
-            $is_dropdown_identifier = $is_join && preg_match('/^(\w+)\.id$/', $k);
+        $joins = Doc\Schema::getJoins($schema['properties']);
+        $writable_props = array_filter($flattened_properties, static function ($v, $k) use ($joins) {
+            $base_k = strstr($k, '.', true) ?: $k;
+            $is_join = isset($joins[$base_k]);
+            $is_dropdown_identifier = preg_match('/^(\w+)\.id$/', $k);
             return $is_dropdown_identifier || !$is_join;
         }, ARRAY_FILTER_USE_BOTH);
-        foreach ($top_level_properties as $prop_name => $prop) {
-            $is_join = isset($v['x-join']);
+        foreach ($writable_props as $prop_name => $prop) {
+            $base_prop_name = strstr($prop_name, '.', true) ?: $prop_name;
+            $is_join = isset($joins[$base_prop_name]);
             $is_dropdown_identifier = $is_join && preg_match('/^(\w+)\.id$/', $prop_name);
             if ($is_dropdown_identifier) {
                 // This is a dropdown identifier, we need to get the id from the request
