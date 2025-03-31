@@ -36,6 +36,7 @@
 
 $migration->log('Preparing ValidationSteps migration', false);
 $validation_tables = ['glpi_ticketvalidations', 'glpi_changevalidations'];
+$itil_tables = ['glpi_tickets', 'glpi_changes'];
 
 // new object : ValidationStep
 create_validation_steps_table($migration);
@@ -50,6 +51,8 @@ add_itils_validationstep_to_existings_itils($migration, $validation_tables);
 // templates
 add_approval_status_to_ticket_templates($migration);
 add_validation_steps_in_itilvalidationtemplates($migration);
+
+remove_validation_percent_on_itils($migration, $itil_tables);
 
 $migration->executeMigration();
 $migration->log('ValidationSteps migration done', false);
@@ -206,17 +209,30 @@ function add_itils_validationstep_to_existings_itils(Migration $migration, array
         $default_validation_step = ValidationStep::getDefault(); // previous sql needs to be processed before
         $validations = getAllDataFromTable($validation_table, ['GROUPBY' => $itil_fk]); // TicketValidation or ChangeValidation data
         foreach ($validations as $validation) {
+            // get current required percent on itil
+            $itil = new $itil_class();
+            $itil->getFromDB($validation[$itil_fk]);
+            $required_percent = $itil->fields['validation_percent'];
+
             // create itils_validationsteps
             $itils_validationstep_id = $migration->insertInTable(
                 ITIL_ValidationStep::getTable(),
                 [
                     ValidationStep::getForeignKeyField() => $default_validation_step->getID(),
-                    'minimal_required_validation_percent' => $default_validation_step->fields['minimal_required_validation_percent'],
+                    'minimal_required_validation_percent' => $required_percent,
                 ]
             );
             // update itils validations (ticket, change) with the created itils_validationsteps
             $update_validation_query = 'UPDATE ' . $validation_table . ' SET ' . ITIL_ValidationStep::getForeignKeyField() . ' = ' . $itils_validationstep_id . ' WHERE ' . $itil_fk . ' = ' . $validation[$itil_fk];
             $migration->addPostQuery($update_validation_query);
         }
+    }
+}
+
+function remove_validation_percent_on_itils(Migration $migration, array $itil_tables): void
+{
+    foreach ($itil_tables as $table) {
+        dump($table);
+        $migration->dropField($table, 'validation_percent');
     }
 }

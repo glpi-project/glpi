@@ -46,49 +46,50 @@ class ChangeValidationTest extends CommonITILValidationTest
         $this->login();
         $uid1 = getItemByTypeName('User', 'glpi', true);
 
+        // --- single ACCEPTED validation & 100% required -> \ChangeValidation::computeValidationStatus($change) returns ACCEPTED
         $change = $this->createItem('Change', [
             'name' => 'Global_Validation_Update',
             'content' => 'Global_Validation_Update',
-            'validation_percent' => 100,
         ]);
 
-        $v1_id = $this->createItem('ChangeValidation', [
+        $validation_1 = $this->createItem('ChangeValidation', [
             'changes_id'        => $change->getID(),
             'itemtype_target'   => \User::class,
             'items_id_target'   => $uid1,
-//            'validationsteps_id' => $this->getInitialDefaultValidationStep()->getID(),
         ]);
+        $this->updateITIL_ValidationStepOfItil($validation_1, 100); // 100% required is default, added to be explicit
 
-        $this->updateItem('ChangeValidation', $v1_id->getID(), [
+        $this->updateItem('ChangeValidation', $validation_1->getID(), [
             'status'  => \CommonITILValidation::ACCEPTED,
         ]);
 
-        $this->updateItem('Change', $change->getID(), [
-            'validation_percent' => 0,
-        ]);
+        // --- 0% required -> \ChangeValidation::computeValidationStatus($change) returns ACCEPTED
+        $this->updateITIL_ValidationStepOfItil($validation_1, 0);
+        $this->assertValidationStatusEquals(\CommonITILValidation::ACCEPTED, \ChangeValidation::computeValidationStatus($change));
 
-        $this->assertEquals(\CommonITILValidation::ACCEPTED, \ChangeValidation::computeValidationStatus($change));
+        // ---- add a second WAITING validation & 50% required -> \ChangeValidation::computeValidationStatus($change) returns WAITING
+        // 1 ACCEPTED validation + 1 WAITING validation
+        $this->updateITIL_ValidationStepOfItil($validation_1, 50);
 
-        $this->updateItem('Change', $change->getID(), [
-            'validation_percent' => 50,
-        ]);
-
-        $v2_id = $this->createItem('ChangeValidation', [
+        $validation_2 = $this->createItem('ChangeValidation', [
             'changes_id'        => $change->getID(),
             'itemtype_target'   => \User::class,
             'items_id_target'   => $uid1,
-//            'validationsteps_id' => $this->getInitialDefaultValidationStep()->getID(),
         ]);
-
-        $this->updateItem('ChangeValidation', $v2_id->getID(), [
+        $this->updateItem('ChangeValidation', $validation_2->getID(), [
             'status'  => \CommonITILValidation::WAITING,
         ]);
 
-        $this->assertEquals(\CommonITILValidation::WAITING, \ChangeValidation::computeValidationStatus($change));
+        $this->assertValidationStatusEquals(\CommonITILValidation::ACCEPTED, \ChangeValidation::computeValidationStatus($change));
 
-        $this->updateItem('Change', $change->getID(), [
-            'validation_percent' => 100,
-        ]);
+        // ---- 100% required -> \ChangeValidation::computeValidationStatus($change) returns WAITING
+        // unchanged : 1 ACCEPTED validation + 1 WAITING validation
+        $this->updateITIL_ValidationStepOfItil($validation_1, 100);
+        $this->assertValidationStatusEquals(\CommonITILValidation::WAITING, \ChangeValidation::computeValidationStatus($change));
+
+        // --- add a third validation & update itils_validationstep to 100% required -> \ChangeValidation::computeValidationStatus($change) returns WAITING
+        // 1 ACCEPTED validation + 1 WAITING validation + 1 REFUSED validation
+        $this->updateITIL_ValidationStepOfItil($validation_1, 0);
 
         $v3_id = $this->createItem('ChangeValidation', [
             'changes_id'        => $change->getID(),
@@ -100,7 +101,21 @@ class ChangeValidationTest extends CommonITILValidationTest
             'status'  => \CommonITILValidation::REFUSED,
         ]);
 
+        $this->assertValidationStatusEquals(\CommonITILValidation::ACCEPTED, \ChangeValidation::computeValidationStatus($change));
 
-        $this->assertEquals(\CommonITILValidation::REFUSED, \ChangeValidation::computeValidationStatus($change));
+        // ---- 100% required -> \ChangeValidation::computeValidationStatus($change) returns REFUSED
+        // 1 ACCEPTED validation + 1 WAITING validation + 1 REFUSED validation (unchanged)
+        $this->updateITIL_ValidationStepOfItil($validation_1, 100);
+        $this->assertValidationStatusEquals(\CommonITILValidation::REFUSED, \ChangeValidation::computeValidationStatus($change));
+
+        // ---- 50% required -> \ChangeValidation::computeValidationStatus($change) returns WAITING
+        // 1 ACCEPTED validation + 1 WAITING validation + 1 REFUSED validation (unchanged)
+        $this->updateITIL_ValidationStepOfItil($validation_1, 50);
+        $this->assertValidationStatusEquals(\CommonITILValidation::WAITING, \ChangeValidation::computeValidationStatus($change));
+
+        // ---- 33% required -> \ChangeValidation::computeValidationStatus($change) returns WAITING
+        // 1 ACCEPTED validation + 1 WAITING validation + 1 REFUSED validation (unchanged)
+        $this->updateITIL_ValidationStepOfItil($validation_1, 33);
+        $this->assertValidationStatusEquals(\CommonITILValidation::ACCEPTED, \ChangeValidation::computeValidationStatus($change));
     }
 }

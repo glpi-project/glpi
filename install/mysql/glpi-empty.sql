@@ -666,7 +666,6 @@ CREATE TABLE `glpi_changes` (
   `backoutplancontent` longtext,
   `checklistcontent` longtext,
   `global_validation` int NOT NULL DEFAULT '1',
-  `validation_percent` int NOT NULL DEFAULT '0',
   `actiontime` int NOT NULL DEFAULT '0',
   `begin_waiting_date` timestamp NULL DEFAULT NULL,
   `waiting_duration` int NOT NULL DEFAULT '0',
@@ -7308,7 +7307,6 @@ CREATE TABLE `glpi_tickets` (
   `actiontime` int NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `locations_id` int unsigned NOT NULL DEFAULT '0',
-  `validation_percent` int NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `tickettemplates_id` int unsigned NOT NULL DEFAULT '0',
   `externalid` varchar(255) DEFAULT NULL,
@@ -10185,3 +10183,12 @@ CREATE TABLE `glpi_itemtranslations_itemtranslations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;
+#
+#
+#
+#
+#
+#
+#
+#
+#

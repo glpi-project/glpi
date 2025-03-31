@@ -122,6 +122,20 @@ trait ValidationStepTrait
     }
 
     /**
+     * Update an existing ITIL_ValidationStep related to a Change with a new validation percent
+     *
+     * @param \CommonITILValidation $validation
+     * @param int $validation_percent
+     * @return void
+     */
+    protected function updateITIL_ValidationStepOfItil(CommonITILValidation $validation, int $validation_percent): void
+    {
+        $itils_validationsteps_id = $validation->fields['itils_validationsteps_id'];
+        $itils_validationsteps = $validation::$itemtype::getValidationStepClassName();
+        $this->updateItem($itils_validationsteps, $itils_validationsteps_id, ['minimal_required_validation_percent' => $validation_percent]);
+    }
+
+    /**
      * Fields for a valid validation step
      *
      * @return array<string, mixed>
