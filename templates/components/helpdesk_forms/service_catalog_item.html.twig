@@ -35,7 +35,7 @@
 
 <div class="col-12 col-sm-6 col-md-4 d-flex">
     <a
-        class="card mx-1 my-2 flex-grow-1 {{ is_pinned ? "border-menu" : ""}}"
+        class="card mx-1 my-2 flex-grow-1 {{ is_pinned ? "border-menu" : "" }}"
         {% if item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogLeafInterface") %}
             href="{{ path(item.getServiceCatalogLink()) }}"
         {% endif %}
@@ -61,7 +61,10 @@
                             <i class="ti ti-pin ms-auto"></i>
                         {% endif %}
                     </div>
-                    <div class="text-secondary remove-last-tinymce-margin">
+                    <div
+                        class="text-secondary remove-last-tinymce-margin"
+                        data-testid="service-catalog-description"
+                    >
                         {{ item.getServiceCatalogItemDescription()|safe_html }}
                     </div>
                 </div>
