@@ -201,7 +201,6 @@ if (!$DB->tableExists('glpi_forms_destinations_formdestinations')) {
             `itemtype` varchar(255) NOT NULL,
             `name` varchar(255) NOT NULL,
             `config` JSON NOT NULL COMMENT 'Extra configuration field(s) depending on the destination type',
-            `is_mandatory` tinyint NOT NULL DEFAULT '0',
             `creation_strategy` varchar(30) NOT NULL DEFAULT '',
             `conditions` JSON NOT NULL,
             PRIMARY KEY (`id`),

@@ -40,5 +40,4 @@ final class DestinationContentSpecification implements ContentSpecificationInter
     public string $itemtype;
     public string $name;
     public array $config;
-    public bool $is_mandatory;
 }

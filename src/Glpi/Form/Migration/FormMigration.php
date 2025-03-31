@@ -248,7 +248,6 @@ class FormMigration extends AbstractPluginMigration
         $this->updateBlockHorizontalRank();
         $this->processMigrationOfAccessControls();
         $this->processMigrationOfFormTargets();
-        $this->handleMandatoryDestination();
         $this->processMigrationOfTranslations();
 
         $this->progress_indicator?->setProgressBarMessage('');
@@ -878,35 +877,6 @@ class FormMigration extends AbstractPluginMigration
                 ])
             ) {
                 throw new LogicException("Failed to update destination with id {$destination->getID()}");
-            }
-        }
-    }
-
-    private function handleMandatoryDestination(): void
-    {
-        $this->progress_indicator?->setProgressBarMessage(__('Handling mandatory destination...'));
-
-        foreach ($this->getMappedItemsForItemtype('PluginFormcreatorForm') as $form) {
-            $form_destination = new FormDestination();
-            $raw_destinations = $form_destination->find([
-                Form::getForeignKeyField() => $form['items_id'],
-                'itemtype'                 => FormDestinationTicket::class,
-                'is_mandatory'             => false
-            ]);
-
-            if (count($raw_destinations) > 0) {
-                // Delete default mandatory destination
-                $form_destination->deleteByCriteria([
-                    Form::getForeignKeyField() => $form['items_id'],
-                    'itemtype'                 => FormDestinationTicket::class,
-                    'is_mandatory'             => 1
-                ], true);
-
-                // Set the first destination as mandatory
-                $form_destination->update([
-                    'id'           => current($raw_destinations)['id'],
-                    'is_mandatory' => 1
-                ]);
             }
         }
     }

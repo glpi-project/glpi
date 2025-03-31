@@ -35,13 +35,16 @@
 
 namespace Glpi\Form\Destination;
 
+use Glpi\Form\Condition\CreationStrategy;
+use Glpi\Form\Form;
+
 // singleton
-final class FormDestinationTypeManager
+final class FormDestinationManager
 {
     /**
      * Singleton instance
      */
-    private static ?FormDestinationTypeManager $instance = null;
+    private static ?FormDestinationManager $instance = null;
 
     /**
      * Private constructor (singleton)
@@ -53,12 +56,12 @@ final class FormDestinationTypeManager
     /**
      * Singleton access method
      *
-     * @return FormDestinationTypeManager
+     * @return FormDestinationManager
      */
-    public static function getInstance(): FormDestinationTypeManager
+    public static function getInstance(): FormDestinationManager
     {
         if (self::$instance === null) {
-            self::$instance = new FormDestinationTypeManager();
+            self::$instance = new FormDestinationManager();
         }
 
         return self::$instance;
@@ -109,5 +112,29 @@ final class FormDestinationTypeManager
     public function getDefaultType(): FormDestinationInterface
     {
         return new FormDestinationTicket();
+    }
+
+    public function getWarnings(Form $form): array
+    {
+        $warnings = [];
+        $destinations = $form->getDestinations();
+        $destinations_without_conditions = array_filter(
+            $destinations,
+            fn($d) => !in_array($d->fields['creation_strategy'], [
+                CreationStrategy::CREATED_IF->value,
+                CreationStrategy::CREATED_UNLESS->value,
+            ]),
+        );
+
+        if (count($destinations) == 0) {
+            // Add a warning if a form does not have at least one destination.
+            $warnings[] = __("This form is invalid, it must create at least one item.");
+        } elseif (count($destinations_without_conditions) == 0) {
+            // Add a warning if a form does not have at least one destination that
+            // is always created.
+            $warnings[] = __("You have defined conditions for all the items below. This may be dangerous, please make sure that in every situation at least one item will be created.");
+        }
+
+        return $warnings;
     }
 }
