@@ -37,15 +37,10 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
-use Glpi\Form\Export\Specification\DestinationContentSpecification;
 use Override;
 
 final class TemplateFieldConfig implements
     JsonFieldInterface,
-    ConfigWithForeignKeysInterface,
     ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names

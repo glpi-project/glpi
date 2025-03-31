@@ -93,6 +93,7 @@
                             data-bs-target="#glpi-destinations-accordion-collapse-{{ rand }}-{{ loop.index }}"
                             aria-expanded="{{ is_expanded ? 'true' : 'false' }}"
                         >
+<<<<<<< HEAD
                             <i class="{{ concrete_destination.getIcon() }} me-2"></i>
                             <h4
                                 class="m-0"
@@ -101,6 +102,9 @@
                             >
                                 {{ destination.getName() }}
                             </h4>
+=======
+                            <i class="{{ concrete_destination.getIcon()}} me-2"></i>
+>>>>>>> e38f1fcf0f (Forms: allow plugins to define their own destinations types)
                             <input
                                 aria-label="{{ __("Form destination name") }}"
                                 type="text"

@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Destination;
 use DbTestCase;
 use Glpi\Form\Destination\FormDestinationInterface;
 use Glpi\Form\Destination\FormDestinationTypeManager;
+use GlpiPlugin\Tester\Form\ComputerDestination;
 
 final class FormDestinationTypeManagerTest extends DbTestCase
 {
@@ -78,6 +79,9 @@ final class FormDestinationTypeManagerTest extends DbTestCase
             $this->assertInstanceOf(FormDestinationInterface::class, $item);
             $this->assertNotEmpty($label);
         }
+
+        // Make sure plugin types are found
+        $this->assertArrayHasKey(ComputerDestination::class, $values);
     }
 
     /**
