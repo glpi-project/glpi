@@ -187,9 +187,9 @@ class IsInventoriableCapacity extends AbstractCapacity
         $DB->delete(\RuleImportAsset::getTable(), $where, $joins);
     }
 
-    public function onCapacityUpdated(string $classname, CapacityConfig $original_config, CapacityConfig $updated_config): void
+    public function onCapacityUpdated(string $classname, CapacityConfig $old_config, CapacityConfig $new_config): void
     {
-        if ($original_config->getValue('inventory_mainasset') != $updated_config->getValue('inventory_mainasset')) {
+        if ($old_config->getValue('inventory_mainasset') != $new_config->getValue('inventory_mainasset')) {
             $rules = new \RuleImportAsset();
             $rules->initRules(true, $classname);
         }

@@ -357,24 +357,12 @@ abstract class AbstractCapacity implements CapacityInterface
         );
     }
 
-    /**
-     * Set configuration
-     *
-     * @param CapacityConfig $config
-     *
-     * @return self
-     */
     public function setConfiguration(CapacityConfig $config): self
     {
         $this->config = $config;
         return $this;
     }
 
-    /**
-     * Get configuration
-     *
-     * @return CapacityConfig
-     */
     public function getConfiguration(): CapacityConfig
     {
         return $this->config ?? new CapacityConfig();
