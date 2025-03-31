@@ -97,7 +97,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
             }
 
             $actor_parts = explode('-', $actor);
-            $foreign_key = $actor_parts[0] ?? '';
+            $foreign_key = $actor_parts[0];
             $id = $actor_parts[1] ?? 0;
 
             // Check if the foreign key is valid
