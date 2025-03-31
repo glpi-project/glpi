@@ -39,6 +39,10 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Event;
+use Glpi\Features\Clonable;
+use Glpi\Features\Kanban;
+use Glpi\Features\Teamwork;
+use Glpi\Features\Timeline;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Plugin\Hooks;
@@ -55,10 +59,10 @@ use Glpi\Team\Team;
  **/
 abstract class CommonITILObject extends CommonDBTM
 {
-    use \Glpi\Features\Clonable;
-    use \Glpi\Features\Timeline;
-    use \Glpi\Features\Kanban;
-    use \Glpi\Features\Teamwork;
+    use Clonable;
+    use Timeline;
+    use Kanban;
+    use Teamwork;
 
    /// Users by type
     protected $lazy_loaded_users = null;
@@ -8603,7 +8607,7 @@ abstract class CommonITILObject extends CommonDBTM
         } else if (isset($this->fields['status'])) {
             $status = $this->fields['status'];
         } else {
-            throw new \LogicException("Can't get status value: no object loaded");
+            throw new LogicException("Can't get status value: no object loaded");
         }
 
         return $status == CommonITILObject::INCOMING;
@@ -8626,7 +8630,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 'Ticket':
                 return 'glpi_items_tickets';
             default:
-                throw new \RuntimeException('Unknown ITIL type ' . static::getType());
+                throw new RuntimeException('Unknown ITIL type ' . static::getType());
         }
     }
 
@@ -9387,7 +9391,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $actor = new $this->supplierlinkclass();
                 break;
             default:
-                throw new \RuntimeException('Unexpected actor type.');
+                throw new RuntimeException('Unexpected actor type.');
         }
         return $actor;
     }
@@ -10412,7 +10416,10 @@ abstract class CommonITILObject extends CommonDBTM
         return null;
     }
 
-    public static function getValidationStepInstance(): ?ITIL_ValidationStep
+    /**
+     * @return ChangeValidationStep|\TicketValidationStep|null
+     */
+    public static function getValidationStepInstance()
     {
         $class = self::getValidationStepClassName();
 

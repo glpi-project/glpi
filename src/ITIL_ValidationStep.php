@@ -91,22 +91,12 @@ abstract class ITIL_ValidationStep extends CommonDBTM
             && $this->oldvalues['minimal_required_validation_percent'] !== $this->fields['minimal_required_validation_percent']
         ) {
             // find if these itil validation steps are used in ticket validation or in change validation
-            $itil_classname = Ticket::class;
-            $tv = new TicketValidation();
-            $ticket_validations = $tv->find(['itils_validationsteps_id' => $this->getID()]);
-            $itils_id = array_unique(array_column($ticket_validations, 'tickets_id'));
-            if (empty($itils_id)) {
-                $itil_classname = Change::class;
-                $cv = new ChangeValidation();
-                $change_validations = $cv->find(['itils_validationsteps_id' => $this->getID()]);
-                $changes_id = array_unique(array_column($change_validations, 'changes_id'));
-                if (empty($changes_id)) {
-                    throw new \Exception('No ITIL object found for ITILValidationStep #' . $this->getID());
-                }
-            }
+            $validation = new (static::$validation_classname);
+            $validations = $validation->find(['itils_validationsteps_id' => $this->getID()]);
+            $itils_id = array_unique(array_column($validations, $validation::$itemtype::getForeignKeyField()));
 
             foreach ($itils_id as $itil_id) {
-                $itil = (new $itil_classname())->getByID($itil_id);
+                $itil = (new $validation::$itemtype())->getByID($itil_id);
                 $vs = $itil::getValidationStepInstance();
                 $new_status = $vs::getValidationStatusForITIL($itil);
 
@@ -120,7 +110,7 @@ abstract class ITIL_ValidationStep extends CommonDBTM
                             ]
                         )
                     ) {
-                        Session::addMessageAfterRedirect(msg: 'Failed to update related ticket global validation status on Ticket #' . $itil->getID(), message_type: ERROR);
+                        Session::addMessageAfterRedirect(msg: 'Failed to update related ' . $validation::$itemtype . ' global validation status on Itil #' . $itil->getID(), message_type: ERROR);
                     }
                 }
             }
@@ -140,7 +130,7 @@ abstract class ITIL_ValidationStep extends CommonDBTM
         // get Validation step $required_percent
         $vs = new static();
         if (!$vs->getFromDB($itils_validationsteps_id)) {
-            throw new \InvalidArgumentException('ITILValidation step not found #' . $itils_validationsteps_id);
+            throw new InvalidArgumentException('ITILValidation step not found #' . $itils_validationsteps_id);
         }
 
         $required_percent = $vs->fields['minimal_required_validation_percent'];

@@ -35,9 +35,13 @@
 
 namespace Glpi\PHPUnit\Tests\Glpi;
 
+use ChangeValidationStep;
+use CommonITILObject;
 use CommonITILValidation;
+use InvalidArgumentException;
 use Ticket;
 use TicketValidation;
+use TicketValidationStep;
 use User;
 use ValidationStep;
 
@@ -49,34 +53,38 @@ trait ValidationStepTrait
     }
 
     /**
-     * @return array{\Ticket, \TicketValidationStep}
+     * @return array{\Ticket|\Change, \TicketValidationStep|\ChangeValidationStep}
+     *
      * Also create the related itilobject
      */
-    private function createITILSValidationStepWithValidations(ValidationStep $validation_step, array $validations_statuses, ?int $expected_status = null): array
+    private function createITILSValidationStepWithValidations(ValidationStep $validation_step, array $validations_statuses, ?int $expected_status = null, ?string $itil_classname = null): array
     {
-        $ticket = $this->createItem(Ticket::class, ['name' => __METHOD__, 'content' => __METHOD__,]);
-        $itils_validation_step = $this->addITILValidationStepWithValidations($validation_step, $validations_statuses, $ticket, $expected_status);
+        $itil_classname ??= $this->getITILClassname();
+        $itil = $this->createItem($itil_classname, ['name' => __METHOD__, 'content' => __METHOD__,]);
+        $itils_validation_step = $this->addITILValidationStepWithValidations($validation_step, $validations_statuses, $itil, $expected_status);
 
-        // $ticket status changes because of added validation : reload it
-        $ticket->getFromDB($ticket->getID());
+        // $itil status changes because of added validation : reload it
+        $itil->getFromDB($itil->getID());
 
-        return [$ticket, $itils_validation_step];
+        return [$itil, $itils_validation_step];
     }
 
     private function addITILValidationStepWithValidations(
-        ValidationStep $validation_step,
-        array $validations_statuses,
-        Ticket $ticket,
-        ?int $expected_status = null
-    ): \TicketValidationStep {
+        ValidationStep    $validation_step,
+        array             $validations_statuses,
+        CommonITILObject $itil,
+        ?int              $expected_status = null
+    )    : TicketValidationStep|ChangeValidationStep
+    {
         assert(!empty($validations_statuses), '$validations_statuses must not be empty');
 
         $itil_validationstep_id = null;
         foreach ($validations_statuses as $status) {
-            // ticket validation can only be created with Waiting status
+            // itil validation can only be created with Waiting status
             $validation = $this->createItem(
-                TicketValidation::class,
-                $this->getValidTicketValidationData($ticket, $validation_step, CommonITILValidation::WAITING)
+                $itil::getValidationClassName(),
+//                $this->getValidationClassname(),
+                $this->getValidITILValidationData($itil, $validation_step, CommonITILValidation::WAITING)
             );
             // update status if needed
             if ($status != CommonITILValidation::WAITING) {
@@ -91,7 +99,7 @@ trait ValidationStepTrait
             $itil_validationstep_id = $validation->fields['itils_validationsteps_id'];
         }
 
-        $ivs = new \TicketValidationStep();
+        $ivs = $itil::getValidationStepInstance();
         // rely on the last created validation, not a problem,
         // the itils_validation_step is the same for all validations because we use a single validation step
         $ivs->getFromDB($validation->fields['itils_validationsteps_id']);
@@ -99,20 +107,17 @@ trait ValidationStepTrait
         // check created itil validation step has the exepected status
         // expected status is explicitely given in argument
         if (!is_null($expected_status)) {
-            $checked_status = $ivs::getITILValidationStepStatus($ivs->getID(), TicketValidation::class);  // @todo pass validation class as argument to allow usage of these helper with other validation classes
+            $checked_status = $ivs::getITILValidationStepStatus($ivs->getID());
             assert($expected_status === $checked_status, 'failed to create itil_validation step with status ' . $this->statusToLabel($expected_status) . ' it has status ' . $this->statusToLabel($checked_status));
         } elseif (count($validations_statuses) === 1 && $validations_statuses[0] !== CommonITILValidation::NONE) {
             // expected status is implicitely the only status given in argument (except NONE)
-            $checked_status = $ivs::getITILValidationStepStatus($ivs->getID(), TicketValidation::class); // @todo pass validation class as argument to allow usage of these helper with other validation classes
+            $checked_status = $ivs::getITILValidationStepStatus($ivs->getID());
             assert($validations_statuses[0] === $checked_status, 'failed to create itil_validation step with status ' . $this->statusToLabel($validations_statuses[0]) . ' it has status ' . $this->statusToLabel($checked_status));
         }
 
         return $ivs;
     }
 
-    /**
-     * @param int $mininal_required_validation_percent
-     */
     private function createValidationStep(int $mininal_required_validation_percent): ValidationStep
     {
         $data = $this->getValidValidationStepData();
@@ -148,13 +153,21 @@ trait ValidationStepTrait
         ];
     }
 
-    public function getValidTicketValidationData(
-        Ticket $ticket,
-        ValidationStep $validation_step,
-        int $validation_status
+    /**
+     * Data for itil validation step creation (->update() method)
+     *
+     * @param \CommonITILObject $itil
+     * @param ValidationStep $validation_step
+     * @param int $validation_status
+     * @return array
+     */
+    public function getValidITILValidationData(
+        CommonITILObject $itil,
+        ValidationStep    $validation_step,
+        int               $validation_status
     ): array {
         return [
-            'tickets_id' => $ticket->getID(),
+            $itil::getForeignKeyField() => $itil->getID(),
             'itemtype_target' => 'User',
             'items_id_target' => getItemByTypeName(User::class, TU_USER)->getID(),
             '_validationsteps_id' => $validation_step->getID(),
@@ -180,6 +193,6 @@ trait ValidationStepTrait
             CommonITILValidation::REFUSED => 'REFUSED',
         ];
 
-        return $states[$status] ?? throw new \InvalidArgumentException("Unexpected status to convert to human readable label : " . var_export($status, true));
+        return $states[$status] ?? throw new InvalidArgumentException("Unexpected status to convert to human readable label : " . var_export($status, true));
     }
 }
