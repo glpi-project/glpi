@@ -366,66 +366,6 @@ class TicketValidationTest extends CommonITILValidationTest
         $this->assertValidationStatusEquals(\CommonITILValidation::ACCEPTED, (int)$ticket->fields['global_validation']);
     }
 
-    public function testValidationStatusAfterRefusedAndNewRequest()
-    {
-        $this->login();
-
-        // Create a ticket
-        $ticket = $this->createItem(\Ticket::class, [
-            'name'               => "Test validation status transition",
-            'content'            => "Test content",
-        ]);
-
-        // Add first validation request
-        $validation = $this->createItem(\TicketValidation::class, [
-            'tickets_id'        => $ticket->getID(),
-            'itemtype_target' => \User::class,
-            'items_id_target' => getItemByTypeName('User', 'tech', true),
-            'comment_submission' => 'Please validate this ticket'
-        ]);
-
-        // Check that global validation status is WAITING
-        $ticket->getFromDB($ticket->getID());
-        $this->assertEquals(
-            \CommonITILValidation::WAITING,
-            (int)$ticket->getField('global_validation')
-        );
-
-        // Login as tech to refuse the validation
-        $this->login('tech', 'tech');
-
-        // Refuse the validation
-        $this->updateItem($validation::class, $validation->getID(), [
-            'status'             => \CommonITILValidation::REFUSED,
-            'comment_validation' => 'I refuse this validation'
-        ]);
-
-        // Check that global validation status is now REFUSED
-        $ticket->getFromDB($ticket->getID());
-        $this->assertEquals(
-            \CommonITILValidation::REFUSED,
-            (int)$ticket->getField('global_validation')
-        );
-
-        // Login back as normal admin
-        $this->login();
-
-        // Add another validation request
-        $this->createItem($validation::class, [
-            'tickets_id'        => $ticket->getID(),
-            'itemtype_target' => \User::class,
-            'items_id_target' => getItemByTypeName('User', 'tech', true),
-            'comment_submission' => 'Please validate this ticket (second attempt)'
-        ]);
-
-        // Check that global validation status is now back to WAITING
-        $ticket->getFromDB($ticket->getID());
-        $this->assertEquals(
-            \CommonITILValidation::WAITING,
-            (int)$ticket->getField('global_validation')
-        );
-    }
-
     /**
      * Status computation is done on testComputeXXXTests()
      * Here, test that ticket global_validation is updated when a validation status is updated

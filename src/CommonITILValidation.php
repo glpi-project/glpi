@@ -346,26 +346,17 @@ abstract class CommonITILValidation extends CommonDBChild
             '_from_itilvalidation' => true,
         ];
 
-        if (((int) $itilobject_type->fields['global_validation']) !== self::WAITING) {
-            $input = [
-                'id' => $itilobject_id,
-                'global_validation' => self::WAITING, // why ?
-                // static::computeValidationStatus($itilobject_type),
-            ];
-            $input['_from_itilvalidation'] = true;
-
-            // to fix lastupdater
-            if (isset($this->input['_auto_update'])) {
-                $input['_auto_update'] = $this->input['_auto_update'];
-            }
-            // to know update by rules
-            if (isset($this->input["_rule_process"])) {
-                $input['_rule_process'] = $this->input["_rule_process"];
-            }
-            // No update ticket notif on ticket add
-            if (isset($this->input["_ticket_add"])) {
-                $input['_disablenotif'] = true;
-            }
+        // to fix lastupdater
+        if (isset($this->input['_auto_update'])) {
+            $input['_auto_update'] = $this->input['_auto_update'];
+        }
+        // to know update by rules
+        if (isset($this->input["_rule_process"])) {
+            $input['_rule_process'] = $this->input["_rule_process"];
+        }
+        // No update ticket notif on ticket add
+        if (isset($this->input["_ticket_add"])) {
+            $input['_disablenotif'] = true;
         }
         $itilobject_type->update($input);
 

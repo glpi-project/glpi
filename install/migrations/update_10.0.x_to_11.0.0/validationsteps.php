@@ -232,7 +232,6 @@ function add_itils_validationstep_to_existings_itils(Migration $migration, array
 function remove_validation_percent_on_itils(Migration $migration, array $itil_tables): void
 {
     foreach ($itil_tables as $table) {
-        dump($table);
         $migration->dropField($table, 'validation_percent');
     }
 }
