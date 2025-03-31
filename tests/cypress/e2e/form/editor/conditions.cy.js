@@ -57,12 +57,6 @@ function addQuestion(name) {
     });
 }
 
-function addDestination(type) {
-    cy.findByRole('button', {'name': `Add ${type}`}).click();
-    cy.findByRole('alert').should('contains.text', 'Item successfully added');
-    cy.findByRole('button', {'name': 'Close'}).click();
-}
-
 function setQuestionTypeCategory(category) {
     cy.getDropdownByLabelText('Question type').selectDropdownValue(category);
 }
