@@ -318,12 +318,12 @@ class Appliance extends CommonDBTM
             'table'         => self::getTable(),
             'field'         => 'name',
             'name'          => __('Name'),
-            'datatype'      => 'dropdown',
-            'searchtype'    => ['equals','notequals','contains'],
+            'datatype'      => 'itemlink',
             'massiveaction' => false,
             'forcegroupby'  => true,
             'use_subquery'  => true,
             'joinparams'    =>  [
+                'condition'  => ['NEWTABLE.is_deleted' => 0],
                 'beforejoin' => [
                     'table'      => Appliance_Item::getTable(),
                     'joinparams' => [

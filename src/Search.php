@@ -5461,6 +5461,9 @@ JAVASCRIPT;
                 $addcondition = $addcondition . " ";
             }
 
+            if ($beforejoin['table'] === $link_table && isset($beforejoin['joinparams']['field'])) {
+                $fk = $beforejoin['joinparams']['field'];
+            }
             if ($use_subquery_on_id_search) {
                 // Subquery for "Is not", "Not + is", "Not under" and "Not + Under" search types
                 // As an example, when looking for tickets that don't have a
@@ -5471,9 +5474,6 @@ JAVASCRIPT;
                 //     FROM `glpi_groups_tickets`
                 //     WHERE `groups_id` = '4' AND `glpi_groups_tickets`.`type` = '3'
                 // )
-                if ($beforejoin['table'] === $link_table && isset($beforejoin['joinparams']['field'])) {
-                    $fk = $beforejoin['joinparams']['field'];
-                }
                 if (is_numeric($val) && (int)$val === 0) {
                     // Special case, search criteria is empty
                     $subquery_operator = $subquery_operator == "IN" ? "NOT IN" : "IN";
