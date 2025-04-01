@@ -62,6 +62,7 @@ class Hooks
     const POST_INIT                   = 'post_init';
     const CONFIG_PAGE                 = 'config_page';
     const USE_MASSIVE_ACTION          = 'use_massive_action';
+    const IMPORT_ITEM                 = 'import_item';
 
    // Specific function hooks with parameters
     const RULE_MATCHED          = 'rule_matched';
