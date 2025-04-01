@@ -531,7 +531,7 @@ class NotificationTarget extends CommonDBChild
             }
         }
 
-        if (isset($input['_exclusions']) && count($input['_exclusions'])) {
+        if (isset($input['_exclusions']) && is_array($input['_exclusions']) && count($input['_exclusions'])) {
             $input['_exclusions'] = array_unique($input['_exclusions']);
             // Remove exclusions already set in _targets
             $input['_exclusions'] = array_diff($input['_exclusions'], $input['_targets'] ?? []);
