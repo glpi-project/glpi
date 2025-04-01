@@ -37,6 +37,7 @@ namespace test\units\Glpi\Helpdesk;
 use CommonITILActor;
 use Computer;
 use DbTestCase;
+use Entity;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Helpdesk\DefaultDataManager;
@@ -351,6 +352,13 @@ final class DefaultDataManagerTest extends DbTestCase
     public function testsTilesAreAddedAfterInstallation(): void
     {
         $this->assertEquals(5, countElementsInTable(Item_Tile::getTable()));
+
+        // Default tiles must be attached to the root entity
+        $profile_tiles = (new Item_Tile())->find([]);
+        foreach ($profile_tiles as $row) {
+            $this->assertEquals(Entity::class, $row['itemtype_item']);
+            $this->assertEquals(0, $row['items_id_item']);
+        }
     }
 
     public function testNoTilesAreCreatedWhenDatabaseIsNotEmpty(): void

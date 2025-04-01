@@ -32,10 +32,32 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Helpdesk\Tile;
+namespace Glpi\Controller\Config\Helpdesk;
 
-interface LinkableToTilesInterface
+use Entity;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Html;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+final class CopyParentEntityController extends AbstractTileController
 {
-    public function acceptTiles(): bool;
-    public function getConfigInformationText(): ?string;
+    #[Route(
+        "/Config/Helpdesk/CopyParentEntity",
+        name: "glpi_config_helpdesk_copy_parent_entity",
+        methods: "POST"
+    )]
+    public function __invoke(Request $request): Response
+    {
+        // Validate itemtype
+        $entity = $this->getAndValidateLinkedItemFromRequest(
+            Entity::class,
+            $request->request->getInt('entities_id'),
+        );
+        $this->tiles_manager->copyTilesFromParentEntity($entity);
+
+        return new RedirectResponse(Html::getBackUrl());
+    }
 }

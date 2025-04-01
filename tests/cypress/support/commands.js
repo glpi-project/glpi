@@ -357,6 +357,11 @@ Cypress.Commands.add("createWithAPI", (url, values) => {
             throw new Error('Failed to create item');
         }
 
+        // Session can't be re-used as active entities will be invalid...
+        if (url == "Entity") {
+            api_token = null;
+        }
+
         return response.body.id;
     });
 });

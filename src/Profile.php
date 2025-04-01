@@ -4461,7 +4461,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return true;
     }
 
-    private function showHelpdeskHomeConfig(): bool
+    public function showHelpdeskHomeConfig(): bool
     {
         $tiles_manager = new TilesManager();
         $tiles_manager->showConfigFormForItem($this);
@@ -4473,5 +4473,11 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     public function acceptTiles(): bool
     {
         return $this->fields['interface'] === 'helpdesk';
+    }
+
+    #[Override]
+    public function getConfigInformationText(): ?string
+    {
+        return __("Users with this profile will see the tiles below if defined, overriding the one found in the entities configuration.");
     }
 }
