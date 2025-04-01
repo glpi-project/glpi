@@ -339,6 +339,7 @@ class NetworkEquipment extends MainAsset
                         // as it can change after a component is removed and so component
                         // numbers can no more be ordered from 1
                         if (
+                            property_exists($component, 'name') &&
                             preg_match('/^Unit\s(\d+)$/', $component->name, $matches)
                         ) {
                             $stack_number = (int) $matches[1];
