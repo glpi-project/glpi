@@ -31,7 +31,6 @@
  */
 
 .illustration-selector {
-    padding-bottom: 16px;
     border-color: var(--tblr-border-color);
     box-shadow: var(--tblr-box-shadow-input) !important;
     border-radius: 5px !important; // Must match border radius used for tinymce
@@ -42,4 +41,8 @@
     }
 
     transition: border-color 0.3s;
+}
+
+.illustration-selector-extra-margin {
+    padding-bottom: 10px;
 }
