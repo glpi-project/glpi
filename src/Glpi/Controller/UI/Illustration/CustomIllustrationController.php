@@ -36,6 +36,7 @@ namespace Glpi\Controller\UI\Illustration;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\UI\IllustrationManager;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
