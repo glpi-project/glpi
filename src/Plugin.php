@@ -1914,7 +1914,7 @@ class Plugin extends CommonDBTM
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
-        return (isset($PLUGIN_HOOKS['import_item']) && count($PLUGIN_HOOKS['import_item']));
+        return (isset($PLUGIN_HOOKS[Hooks::IMPORT_ITEM]) && count($PLUGIN_HOOKS[Hooks::IMPORT_ITEM]));
     }
 
     /**
