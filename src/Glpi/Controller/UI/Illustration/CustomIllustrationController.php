@@ -36,6 +36,8 @@ namespace Glpi\Controller\UI\Illustration;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Http\Firewall;
+use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\UI\IllustrationManager;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,6 +50,7 @@ final class CustomIllustrationController extends AbstractController
     ) {
     }
 
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     #[Route(
         "/UI/Illustration/CustomIllustration/{id}",
         name: "glpi_ui_illustration_custom_illustration",
