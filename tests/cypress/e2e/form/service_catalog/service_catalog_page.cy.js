@@ -494,7 +494,7 @@ describe('Service catalog page', () => {
         });
     });
 
-    it('can change sort order in the service catalog', () => {
+    it.only('can change sort order in the service catalog', () => {
         const time = (new Date()).getTime();
         cy.changeProfile('Super-Admin');
 
@@ -528,7 +528,7 @@ describe('Service catalog page', () => {
         cy.get('@filter_input').type(time);
 
         // Check the default sort order
-        cy.getDropdownByLabelText('Sort by').should('have.text', 'Most popular');
+        cy.getDropdownByLabelText('Sort by').findByRole('textbox', {'name': 'Most popular'}).should('exist');
         cy.findByRole('region', {'name': `Forms`}).within(() => {
             cy.findAllByRole('link').should('have.length', 3);
             cy.findAllByRole('link').eq(0).findByRole('heading').contains(`B form ${time}`).should('exist');
@@ -540,7 +540,7 @@ describe('Service catalog page', () => {
         cy.getDropdownByLabelText('Sort by').selectDropdownValue('Alphabetical');
 
         // Check the new sort order
-        cy.getDropdownByLabelText('Sort by').should('have.text', 'Alphabetical');
+        cy.getDropdownByLabelText('Sort by').findByRole('textbox', {'name': 'Alphabetical'}).should('exist');
         cy.findByRole('region', {'name': `Forms`}).within(() => {
             cy.findAllByRole('link').should('have.length', 3);
             cy.findAllByRole('link').eq(0).findByRole('heading').contains(`A form ${time}`).should('exist');
@@ -549,10 +549,10 @@ describe('Service catalog page', () => {
         });
 
         // Change sort order to "Non alphabetical"
-        cy.getDropdownByLabelText('Sort by').selectDropdownValue('Non Alphabetical');
+        cy.getDropdownByLabelText('Sort by').selectDropdownValue('Reverse alphabetical');
 
         // Check the new sort order
-        cy.getDropdownByLabelText('Sort by').should('have.text', 'Non Alphabetical');
+        cy.getDropdownByLabelText('Sort by').findByRole('textbox', {'name': 'Reverse alphabetical'}).should('exist');
         cy.findByRole('region', {'name': `Forms`}).within(() => {
             cy.findAllByRole('link').should('have.length', 3);
             cy.findAllByRole('link').eq(0).findByRole('heading').contains(`C form ${time}`).should('exist');

@@ -74,7 +74,7 @@ final class ReverseAlphabeticalSort implements SortStrategyInterface
 
     public function getLabel(): string
     {
-        return __('Reverse Alphabetical');
+        return __('Reverse alphabetical');
     }
 
     public function getIcon(): string
