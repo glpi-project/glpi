@@ -35,6 +35,7 @@
 namespace Glpi\Helpdesk\Tile;
 
 use CommonDBTM;
+use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Session\SessionInfo;
 use InvalidArgumentException;
@@ -55,10 +56,21 @@ final class TilesManager
         ];
     }
 
+    /** @return array<TileInterface&CommonDBTM> */
     public function getVisibleTilesForSession(SessionInfo $session_info): array
     {
+        // First, try to load tiles from the current profile
         $current_profile = Profile::getById($session_info->getProfileId());
         $tiles = $this->getTilesForItem($current_profile);
+
+        // If no tiles are found in the profile, look for tiles in the current
+        // entity and its parents (until we reach the root entity).
+        if (empty($tiles)) {
+            $entity = Entity::getById($session_info->getCurrentEntityId());
+            $tiles = $this->getTilesForEntityRecursive($entity);
+        }
+
+        // Remove unavailables tiles
         $available_forms = array_filter(
             $tiles,
             fn (TileInterface $tile): bool => $tile->isAvailable($session_info),
@@ -67,7 +79,21 @@ final class TilesManager
         return array_values($available_forms);
     }
 
-    /** @return TileInterface[] */
+    /** @return array<TileInterface&CommonDBTM> */
+    public function getTilesForEntityRecursive(Entity $entity): array
+    {
+        $tiles = $this->getTilesForItem($entity);
+
+        // Stop recursion when a tile is found or if we reached the root entity.
+        if (!empty($tiles) || $entity->getID() === 0) {
+            return $tiles;
+        }
+
+        $parent_entity = Entity::getById($entity->fields['entities_id']);
+        return $this->getTilesForEntityRecursive($parent_entity);
+    }
+
+    /** @return array<TileInterface&CommonDBTM> */
     public function getTilesForItem(
         CommonDBTM&LinkableToTilesInterface $item
     ): array {
@@ -211,7 +237,19 @@ final class TilesManager
             'tiles'         => $this->getTilesForItem($item),
             'itemtype_item' => $item::class,
             'items_id_item' => $item->getID(),
+            'editable'      => $item::canUpdate() && $item->canUpdateItem(),
+            'info_text'     => $item->getConfigInformationText(),
         ]);
+    }
+
+    public function copyTilesFromParentEntity(Entity $entity): void
+    {
+        $parent_entity = Entity::getById($entity->fields['entities_id']);
+        $tiles = $this->getTilesForEntityRecursive($parent_entity);
+        foreach ($tiles as $tile) {
+            unset($tile->fields['id']);
+            $this->addTile($entity, $tile::class, $tile->fields);
+        }
     }
 
     private function getMaxUsedRankForItem(

@@ -2349,6 +2349,7 @@ class Session
             group_ids : $_SESSION['glpigroups'] ?? [],
             profile_id: $_SESSION['glpiactiveprofile']['id'],
             active_entities_ids: $_SESSION['glpiactiveentities'],
+            current_entity_id: self::getActiveEntity(),
         );
     }
 

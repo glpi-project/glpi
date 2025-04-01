@@ -31,24 +31,27 @@
  #}
 
 {% for tile in tiles %}
-    {% set item_tile_id = tiles_manager.getItemTileForTile(tile).getID() %}
-
     <section
         class="col-12 col-lg-6 col-xl-4 d-flex-soft"
         aria-label="{{ tile.getTitle() }}"
-        data-glpi-draggable-item
-        data-glpi-helpdesk-config-tile-container
-        data-glpi-helpdesk-config-action-show-edit-form
-        data-bs-toggle="offcanvas"
-        data-bs-target="#tile-form-offcanvas"
+        {% if editable %}
+            data-glpi-draggable-item
+            data-glpi-helpdesk-config-tile-container
+            data-glpi-helpdesk-config-action-show-edit-form
+            data-bs-toggle="offcanvas"
+            data-bs-target="#tile-form-offcanvas"
+        {% endif %}
     >
         <div
-            data-glpi-helpdesk-config-tile
-            data-glpi-helpdesk-config-tile-id="{{ tile.getDatabaseId() }}"
-            data-glpi-helpdesk-config-tile-itemtype="{{ get_class(tile) }}"
-            data-glpi-helpdesk-config-item-tile-id="{{ item_tile_id }}"
-            data-glpi-helpdesk-config-tile-sortable
-            class="card rounded my-2 flex-grow-1 cursor-pointer"
+            {% if editable %}
+                {% set item_tile_id = tiles_manager.getItemTileForTile(tile).getID() %}
+                data-glpi-helpdesk-config-tile
+                data-glpi-helpdesk-config-tile-id="{{ tile.getDatabaseId() }}"
+                data-glpi-helpdesk-config-tile-itemtype="{{ get_class(tile) }}"
+                data-glpi-helpdesk-config-item-tile-id="{{ item_tile_id }}"
+                data-glpi-helpdesk-config-tile-sortable
+            {% endif %}
+            class="card rounded my-2 flex-grow-1 {{ editable ? "cursor-pointer" : "" }}"
         >
             <section class="card-body">
                 <div class="d-flex">
@@ -61,11 +64,13 @@
                                 {{ tile.getTitle() }}
                             </h2>
 
-                            <i
-                                class="ti ti-grip-horizontal cursor-grab ms-auto opacity-50"
-                                data-glpi-helpdesk-config-tile-handle
-                                draggable="true"
-                            ></i>
+                            {% if editable %}
+                                <i
+                                    class="ti ti-grip-horizontal cursor-grab ms-auto opacity-50"
+                                    data-glpi-helpdesk-config-tile-handle
+                                    draggable="true"
+                                ></i>
+                            {% endif %}
                         </div>
                         <div class="text-secondary remove-last-tinymce-margin">
                             {{ tile.getDescription()|safe_html }}
@@ -75,22 +80,32 @@
             </section>
         </div>
     </section>
+{% else %}
+    {# If the content is not editable and the list is empty, we need to add
+    a empty state text as the user will not see the "Add tile" button #}
+    {% if not editable %}
+        <span class="text-muted">
+            {{ __("There are no tiles defined for this item.") }}
+        </span>
+    {% endif %}
 {% endfor %}
 
-<div
-    role="button"
-    aria-label="{{ __('Add tile') }}"
-    data-bs-toggle="offcanvas"
-    data-bs-target="#tile-form-offcanvas"
-    data-glpi-helpdesk-config-action-new-tile
-    class="col-12 col-lg-6 col-xl-4 d-flex-soft opacity-80 cursor-pointer opacity-100-hover min-height-110"
->
-    <div class="card rounded my-2 flex-grow-1 border-dashed">
-        <div class="card-body d-flex justify-content-center">
-            <div class="d-flex align-items-center">
-                <i class="ti ti-plus me-1"></i>
-                <span class="fs-3">{{ __('Add tile') }}</span>
+{% if editable %}
+    <div
+        role="button"
+        aria-label="{{ __('Add tile') }}"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#tile-form-offcanvas"
+        data-glpi-helpdesk-config-action-new-tile
+        class="col-12 col-lg-6 col-xl-4 d-flex-soft opacity-80 cursor-pointer opacity-100-hover min-height-110"
+    >
+        <div class="card rounded my-2 flex-grow-1 border-dashed">
+            <div class="card-body d-flex justify-content-center">
+                <div class="d-flex align-items-center">
+                    <i class="ti ti-plus me-1"></i>
+                    <span class="fs-3">{{ __('Add tile') }}</span>
+                </div>
             </div>
         </div>
     </div>
-</div>
+{% endif %}

@@ -34,11 +34,14 @@
 
 namespace tests\units\Glpi\Form\Helpdesk\TilesManagerTest;
 
+use CommonDBTM;
 use DbTestCase;
+use Entity;
 use Glpi\Helpdesk\Tile\ExternalPageTile;
 use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Helpdesk\Tile\Item_Tile;
+use Glpi\Helpdesk\Tile\TileInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
@@ -150,6 +153,7 @@ final class TilesManagerTest extends DbTestCase
         $session = new SessionInfo(
             profile_id: $profile->getID(),
             active_entities_ids: [$test_entity_id],
+            current_entity_id: $test_entity_id,
         );
         $tiles = $manager->getVisibleTilesForSession($session);
 
@@ -191,6 +195,7 @@ final class TilesManagerTest extends DbTestCase
         $session = new SessionInfo(
             profile_id: $profile->getID(),
             active_entities_ids: [$test_entity_id],
+            current_entity_id: $test_entity_id,
         );
         $tiles = $manager->getVisibleTilesForSession($session);
 
@@ -238,6 +243,7 @@ final class TilesManagerTest extends DbTestCase
         $session = new SessionInfo(
             profile_id: $profile->getID(),
             active_entities_ids: [$test_entity_id],
+            current_entity_id: $test_entity_id,
         );
         $tiles = $manager->getVisibleTilesForSession($session);
 
@@ -411,5 +417,96 @@ final class TilesManagerTest extends DbTestCase
 
         $this->assertFalse(Item_Tile::getById($profile_tile_id_2));
         $this->assertFalse(GlpiPageTile::getById($tile_id));
+    }
+
+    public function testTilesFromRootEntityAreFoundWhenCurrentProfileHasNoConfig(): void
+    {
+        $test_entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Arrange: create a self service profile without tiles
+        $manager = $this->getManager();
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Helpdesk profile',
+            'interface' => 'helpdesk',
+        ]);
+
+        // Act: get tiles
+        $session = new SessionInfo(
+            profile_id: $profile->getID(),
+            active_entities_ids: [$test_entity_id],
+            current_entity_id: $test_entity_id,
+        );
+        $tiles = $manager->getVisibleTilesForSession($session);
+
+        // Assert: the default tiles from the root entity should be found
+        $this->assertCount(3, $tiles);
+    }
+
+    public function testTilesFromSubEntityAreFoundWhenCurrentProfileHasNoConfig(): void
+    {
+        $test_entity = $this->getTestRootEntity();
+        $test_entity_id = $test_entity->getID();
+
+        // Arrange: create a self service profile without tiles
+        $manager = $this->getManager();
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Helpdesk profile',
+            'interface' => 'helpdesk',
+        ]);
+
+        // Create a tile for the current entity
+        $manager->addTile($test_entity, ExternalPageTile::class, [
+            'title'        => "GLPI project",
+            'description'  => "Link to GLPI project website",
+            'illustration' => "request-service",
+            'url'          => "https://glpi-project.org",
+        ]);
+
+        // Act: get tiles
+        $session = new SessionInfo(
+            profile_id: $profile->getID(),
+            active_entities_ids: [$test_entity_id],
+            current_entity_id: $test_entity_id,
+        );
+        $tiles = $manager->getVisibleTilesForSession($session);
+
+        // Assert: the unique tile from the current entity should be found
+        $this->assertCount(1, $tiles);
+    }
+
+    public function testCanCopyTilesFromParentEntity(): void
+    {
+        $test_entity = $this->getTestRootEntity();
+
+        // Need an active session to create entities
+        $this->login();
+
+        // Arrange: create an entity
+        $my_entity = $this->createItem(Entity::class, [
+            'name' => "My test entity",
+            'entities_id' => $test_entity->getID(),
+        ]);
+
+        // Act: copy parent entity tiles into the new entity
+        $manager = $this->getManager();
+        $before_copy = $manager->getTilesForItem($my_entity);
+        $manager->copyTilesFromParentEntity($my_entity);
+        $after_copy = $manager->getTilesForItem($my_entity);
+
+        // Asset: tiles should be empty before copy and identical to root entity after copy.
+        $this->assertEmpty($before_copy);
+        $this->assertNotEmpty($after_copy);
+        $root_tiles = $manager->getTilesForItem(Entity::getById(0));
+
+        // Normalize values for comparison by remove ids
+        $normalize = function (CommonDBTM&TileInterface $tile): array {
+            $fields = $tile->fields;
+            unset($fields['id']);
+            return $fields;
+        };
+        $root_tiles_fields = array_map($normalize, $root_tiles);
+        $after_copy_fields = array_map($normalize, $after_copy);
+
+        $this->assertEquals($root_tiles_fields, $after_copy_fields);
     }
 }
