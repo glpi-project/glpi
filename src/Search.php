@@ -5461,6 +5461,12 @@ JAVASCRIPT;
                 $addcondition = $addcondition . " ";
             }
 
+            // If the purpose of the search is to verify whether an item of type ‘itemtype1’ is related to an item of type ‘itemtype2’
+            // (e.g. : computer and application) and that this relationship is saved in a table via a pair (‘items_id’, ‘itemtype’),
+            // the target field in the relational table will not be `items_id` but `itemtype2_id`.
+
+            // This will result in an error, because the `itemtype2_id` does not exist.
+            // To resolve this issue, the name of the target field must be explicitly declared in order to correctly retrieve the ID of `itemtype'.
             if ($beforejoin['table'] === $link_table && isset($beforejoin['joinparams']['field'])) {
                 $fk = $beforejoin['joinparams']['field'];
             }
