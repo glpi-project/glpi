@@ -2217,10 +2217,10 @@ class AuthLDAPTest extends DbTestCase
         ]);
 
         // Create 2 dynamic group
-        $group_id = $this->createItem(Group::class, ["name" => "testgroup1"]);
+        $group_id = $this->createItem(Group::class, ["name" => "testgroup1"])->getID();
         $this->assertGreaterThan(0, $group_id);
 
-        $group2_id = $this->createItem(Group::class, ["name" => "testgroup2"]);
+        $group2_id = $this->createItem(Group::class, ["name" => "testgroup2"])->getID();
         $this->assertGreaterThan(0, $group2_id);
 
         // Add groups with a rule
@@ -2229,7 +2229,7 @@ class AuthLDAPTest extends DbTestCase
             'action_type' => 'assign',
             'field'       => 'specific_groups_id',
             'value'       => $group_id,
-        ]);
+        ])->getID();
 
         // login the user to force a real synchronisation and get it's glpi id
         $this->login('brazil6', 'password', false);
@@ -2259,9 +2259,9 @@ class AuthLDAPTest extends DbTestCase
         $this->assertTrue(\Group_User::isUserInGroup($users_id, $group2_id));
 
         // Create 2 manual groups
-        $mgroup_id = $this->createItem(Group::class, ["name" => "manualgroup1"]);
+        $mgroup_id = $this->createItem(Group::class, ["name" => "manualgroup1"])->getID();
         $this->assertGreaterThan(0, $mgroup_id);
-        $mgroup2_id = $this->createItem(Group::class, ["name" => "manualgroup2"]);
+        $mgroup2_id = $this->createItem(Group::class, ["name" => "manualgroup2"])->getID();
         $this->assertGreaterThan(0, $mgroup2_id);
 
         // Add 2 groups manualy
@@ -2269,12 +2269,12 @@ class AuthLDAPTest extends DbTestCase
         $gu_id = $this->createItem(Group_User::class, [
             'users_id' => $users_id,
             'groups_id' => $mgroup_id,
-        ]);
+        ])->getID();
         $this->assertGreaterThan(0, $gu_id);
         $gu_id = $this->createItem(Group_User::class, [
             'users_id' => $users_id,
             'groups_id' => $mgroup2_id,
-        ]);
+        ])->getID();
         $this->assertGreaterThan(0, $gu_id);
 
         // Check group
