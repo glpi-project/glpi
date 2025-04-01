@@ -236,6 +236,6 @@ export class GlpiFormServiceCatalogController
 
     getTemplateForSortSelect(data) {
         const icon = this.sort_icons[data.id];
-        return $(`<span><i class="me-2 ${icon}"></i>${data.text}</span>`);
+        return $(`<span class="d-block w-full" title="${data.text}"><i class="${icon}"></i></span>`);
     }
 }

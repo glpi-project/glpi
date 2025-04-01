@@ -39,7 +39,7 @@ use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
 use Glpi\Form\Form;
 use KnowbaseItem;
 
-class PopularitySort implements SortStrategyInterface
+final class PopularitySort implements SortStrategyInterface
 {
     public function sort(array $items): array
     {

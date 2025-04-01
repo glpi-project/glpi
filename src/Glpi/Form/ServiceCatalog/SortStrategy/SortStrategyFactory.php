@@ -34,16 +34,16 @@
 
 namespace Glpi\Form\ServiceCatalog\SortStrategy;
 
-class SortStrategyFactory
+final class SortStrategyFactory
 {
     /** @var string */
     public const DEFAULT_STRATEGY = 'popularity';
 
     /** @var string[] */
-    public const AVAILABLE_STRATEGIES = [
-        'alphabetical'     => AlphabeticalSort::class,
-        'non_alphabetical' => NonAlphabeticalSort::class,
-        'popularity'       => PopularitySort::class,
+    private const AVAILABLE_STRATEGIES = [
+        'alphabetical'         => AlphabeticalSort::class,
+        'reverse_alphabetical' => ReverseAlphabeticalSort::class,
+        'popularity'           => PopularitySort::class,
     ];
 
     /**

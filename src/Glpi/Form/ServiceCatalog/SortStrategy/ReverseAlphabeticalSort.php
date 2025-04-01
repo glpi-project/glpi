@@ -37,7 +37,7 @@ namespace Glpi\Form\ServiceCatalog\SortStrategy;
 use Glpi\Form\ServiceCatalog\ServiceCatalogCompositeInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
 
-class NonAlphabeticalSort implements SortStrategyInterface
+final class ReverseAlphabeticalSort implements SortStrategyInterface
 {
     public function sort(array $items): array
     {
@@ -74,7 +74,7 @@ class NonAlphabeticalSort implements SortStrategyInterface
 
     public function getLabel(): string
     {
-        return __('Non Alphabetical');
+        return __('Reverse Alphabetical');
     }
 
     public function getIcon(): string

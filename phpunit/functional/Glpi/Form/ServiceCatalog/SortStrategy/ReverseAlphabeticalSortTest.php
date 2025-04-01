@@ -36,11 +36,11 @@ namespace tests\units\Glpi\Form;
 
 include_once __DIR__ . '/../../../../../abstracts/SortStrategyTestCase.php';
 
-class NonAlphabeticalSortTest extends SortStrategyTestCase
+class ReverseAlphabeticalSortTest extends SortStrategyTestCase
 {
     protected function getSortStrategyKey(): string
     {
-        return 'non_alphabetical';
+        return 'reverse_alphabetical';
     }
 
     protected function provideExpectedSortedItems(): array

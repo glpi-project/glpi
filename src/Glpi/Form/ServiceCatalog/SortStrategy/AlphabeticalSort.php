@@ -37,7 +37,7 @@ namespace Glpi\Form\ServiceCatalog\SortStrategy;
 use Glpi\Form\ServiceCatalog\ServiceCatalogCompositeInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
 
-class AlphabeticalSort implements SortStrategyInterface
+final class AlphabeticalSort implements SortStrategyInterface
 {
     public function sort(array $items): array
     {
