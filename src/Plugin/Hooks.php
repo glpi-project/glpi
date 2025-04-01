@@ -37,10 +37,10 @@ namespace Glpi\Plugin;
 
 class Hooks
 {
-   // Boolean hooks
+    // Boolean hooks
     const CSRF_COMPLIANT = 'csrf_compliant';
 
-   // File hooks
+    // File hooks
     const ADD_CSS               = 'add_css';
     const ADD_JAVASCRIPT        = 'add_javascript';
     const ADD_JAVASCRIPT_MODULE = 'add_javascript_module';
@@ -52,7 +52,7 @@ class Hooks
     const ADD_JAVASCRIPT_MODULE_ANONYMOUS_PAGE = 'add_javascript_module_anonymous_page';
     const ADD_HEADER_TAG_ANONYMOUS_PAGE        = 'add_header_tag_anonymous_page';
 
-   // Function hooks with no parameters
+    // Function hooks with no parameters
     const CHANGE_ENTITY               = 'change_entity';
     const CHANGE_PROFILE              = 'change_profile';
     const DISPLAY_LOGIN               = 'display_login';
@@ -62,8 +62,10 @@ class Hooks
     const POST_INIT                   = 'post_init';
     const CONFIG_PAGE                 = 'config_page';
     const USE_MASSIVE_ACTION          = 'use_massive_action';
+    const IMPORT_ITEM                 = 'import_item';
+    const MENU_TOADD                  = 'menu_toadd';
 
-   // Specific function hooks with parameters
+    // Specific function hooks with parameters
     const RULE_MATCHED          = 'rule_matched';
     const VCARD_DATA            = 'vcard_data';
     const POST_PLUGIN_DISABLE   = 'post_plugin_disable';
@@ -72,7 +74,7 @@ class Hooks
     const POST_PLUGIN_UNINSTALL = 'post_plugin_uninstall';
     const POST_PLUGIN_ENABLE    = 'post_plugin_enable' ;
 
-   // Function hooks with parameters and output
+    // Function hooks with parameters and output
     const DISPLAY_LOCKED_FIELDS         = 'display_locked_fields';
     const MIGRATE_TYPES                 = 'migratetypes';
     const POST_KANBAN_CONTENT           = 'post_kanban_content';
@@ -87,7 +89,7 @@ class Hooks
     const UNDISCLOSED_CONFIG_VALUE      = 'undiscloseConfigValue';
     const FILTER_ACTORS                 = 'filter_actors';
 
-   // Item hooks expecting an 'item' parameter
+    // Item hooks expecting an 'item' parameter
     const ADD_RECIPIENT_TO_TARGET   = 'add_recipient_to_target';
     const AUTOINVENTORY_INFORMATION = 'autoinventory_information';
     const INFOCOM                   = 'infocom';
@@ -110,7 +112,7 @@ class Hooks
     const PRE_ITEM_RESTORE          = 'pre_item_restore';
     const SHOW_ITEM_STATS           = 'show_item_stats';
 
-   // Item hooks expecting an array parameter (available keys: item, options)
+    // Item hooks expecting an array parameter (available keys: item, options)
     const ITEM_TRANSFER           = 'item_transfer';
     const POST_ITEM_FORM          = 'post_item_form';
     const POST_SHOW_ITEM          = 'post_show_item';
@@ -122,17 +124,17 @@ class Hooks
     const TIMELINE_ANSWER_ACTIONS = 'timeline_answer_actions';  // (keys: item)
     const SHOW_IN_TIMELINE        = 'show_in_timeline';  // (keys: item)
 
-   // Security hooks (data to encypt)
+    // Security hooks (data to encypt)
     const SECURED_FIELDS  = 'secured_fields';
     const SECURED_CONFIGS = 'secured_configs';
 
-   // Inventory hooks
+    // Inventory hooks
     const PROLOG_RESPONSE = 'prolog_response';
     const NETWORK_DISCOVERY = 'network_discovery';
     const NETWORK_INVENTORY = 'network_inventory';
     const INVENTORY_GET_PARAMS = 'inventory_get_params';
 
-   // Agent contact request related hooks
+    // Agent contact request related hooks
     const HANDLE_INVENTORY_TASK    = 'handle_inventory_task';
     const HANDLE_NETDISCOVERY_TASK = 'handle_netdiscovery_task';
     const HANDLE_NETINVENTORY_TASK = 'handle_netinventory_task';
