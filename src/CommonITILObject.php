@@ -1681,6 +1681,7 @@ abstract class CommonITILObject extends CommonDBTM
                // probably transfer
                 $allowed_fields[] = 'entities_id';
                 $allowed_fields[] = 'itilcategories_id';
+                $allowed_fields[] = 'locations_id';
             } else {
                 if (
                     $this->canApprove()
