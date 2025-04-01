@@ -140,6 +140,6 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     #[Override]
     public function getChildren(): array
     {
-        return $this->children;
+        return $this->children ?? [];
     }
 }

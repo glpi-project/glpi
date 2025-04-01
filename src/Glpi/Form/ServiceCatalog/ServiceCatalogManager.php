@@ -40,6 +40,7 @@ use Glpi\Form\ServiceCatalog\Provider\CompositeProviderInterface;
 use Glpi\Form\ServiceCatalog\Provider\FormProvider;
 use Glpi\Form\ServiceCatalog\Provider\KnowbaseItemProvider;
 use Glpi\Form\ServiceCatalog\Provider\LeafProviderInterface;
+use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyFactory;
 
 final class ServiceCatalogManager
 {
@@ -89,13 +90,13 @@ final class ServiceCatalogManager
                 $children_request,
                 $children
             );
-            $children = $this->sortChildItems($children);
+            $children = $this->sortItems($children, $item_request->getSortStrategy());
             $item->setChildren($children);
         }
 
         // Remove empty composite, must be done after the children has been loaded.
         $all_items = $this->removeRootCompositeWithoutChildren($all_items);
-        $all_items = $this->sortRootItems($all_items);
+        $all_items = $this->sortItems($all_items, $item_request->getSortStrategy());
 
         // Calculate pagination info
         $total = count($all_items);
@@ -218,60 +219,15 @@ final class ServiceCatalogManager
     }
 
     /**
+     * Sort items using the specified sort strategy
+     *
      * @param ServiceCatalogItemInterface[] $items
+     * @param string $strategy_name The name of the sort strategy to use
      * @return ServiceCatalogItemInterface[]
      */
-    private function sortChildItems(array $items): array
+    private function sortItems(array $items, string $strategy_name): array
     {
-        usort($items, function (
-            ServiceCatalogItemInterface $a,
-            ServiceCatalogItemInterface $b,
-        ) {
-            // First compare pinned status
-            if ($a->isServiceCatalogItemPinned() !== $b->isServiceCatalogItemPinned()) {
-                return $b->isServiceCatalogItemPinned() <=> $a->isServiceCatalogItemPinned();
-            }
-            // If pinned status is the same, sort by title
-            return $a->getServiceCatalogItemTitle() <=> $b->getServiceCatalogItemTitle();
-        });
-
-        return $items;
-    }
-
-    /**
-     * @param ServiceCatalogItemInterface[] $items
-     * @return ServiceCatalogItemInterface[]
-     */
-    private function sortRootItems(array $items): array
-    {
-        usort($items, function (
-            ServiceCatalogItemInterface $a,
-            ServiceCatalogItemInterface $b,
-        ) {
-            // First compare pinned status
-            if ($a->isServiceCatalogItemPinned() !== $b->isServiceCatalogItemPinned()) {
-                return $b->isServiceCatalogItemPinned() <=> $a->isServiceCatalogItemPinned();
-            }
-
-            // Then handle composite vs non-composite (composite first)
-            if (
-                $a instanceof ServiceCatalogCompositeInterface
-                && !($b instanceof ServiceCatalogCompositeInterface)
-            ) {
-                return -1;
-            }
-
-            if (
-                !($a instanceof ServiceCatalogCompositeInterface)
-                && $b instanceof ServiceCatalogCompositeInterface
-            ) {
-                return 1;
-            }
-
-            // Finally sort by title
-            return $a->getServiceCatalogItemTitle() <=> $b->getServiceCatalogItemTitle();
-        });
-
-        return $items;
+        $strategy = SortStrategyFactory::create($strategy_name);
+        return $strategy->sort($items);
     }
 }

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,41 +32,31 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ServiceCatalog;
+namespace Glpi\Form\ServiceCatalog\SortStrategy;
 
-use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Form\Category;
-use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyFactory;
+use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
 
-final class ItemRequest
+interface SortStrategyInterface
 {
-    public function __construct(
-        public FormAccessParameters $access_parameters,
-        public string $filter = "",
-        public ?Category $category = null,
-        public int $page = 1,
-        public int $items_per_page = ServiceCatalogManager::ITEMS_PER_PAGE,
-        public ?string $sort_strategy = null
-    ) {
-    }
+    /**
+     * Sort an array of service catalog items
+     *
+     * @param ServiceCatalogItemInterface[] $items
+     * @return ServiceCatalogItemInterface[]
+     */
+    public function sort(array $items): array;
 
-    public function getFormAccessParameters(): FormAccessParameters
-    {
-        return $this->access_parameters;
-    }
+    /**
+     * Get the label of the sort strategy
+     *
+     * @return string
+     */
+    public function getLabel(): string;
 
-    public function getFilter(): string
-    {
-        return $this->filter;
-    }
-
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function getSortStrategy(): string
-    {
-        return $this->sort_strategy ?? SortStrategyFactory::DEFAULT_STRATEGY;
-    }
+    /**
+     * Get the icon of the sort strategy
+     *
+     * @return string
+     */
+    public function getIcon(): string;
 }
