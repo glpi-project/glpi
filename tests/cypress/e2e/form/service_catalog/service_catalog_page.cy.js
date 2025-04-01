@@ -483,9 +483,14 @@ describe('Service catalog page', () => {
         cy.findByRole('region', {'name': form_name}).as('forms');
         cy.get('@forms').within(() => {
             cy.findByRole('heading', {'name': form_name}).should('exist');
-            cy.findByRole('heading', {'name': form_name}).next('div').invoke('text').then((text) => {
-                expect(text.trim()).to.be.empty;
-            });
+            cy.findByRole('heading', {'name': form_name})
+                .closest('section')
+                .findByTestId('service-catalog-description')
+                .invoke('text')
+                .then((text) => {
+                    expect(text.trim()).to.be.empty;
+                })
+            ;
         });
     });
 });

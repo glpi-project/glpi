@@ -88,3 +88,7 @@
 .pointer-events-none {
     pointer-events: none;
 }
+
+.border-menu {
+    border-color: var(--glpi-mainmenu-bg) !important;
+}
