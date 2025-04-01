@@ -275,8 +275,11 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
             $this->createFirstSection();
         }
 
-        // Add the mandatory destinations
-        $this->addMandatoryDestinations();
+        // Add the default destinations
+        $add_default_destinations = $this->input['_init_destinations'] ?? true;
+        if ($add_default_destinations) {
+            $this->addDefaultDestinations();
+        }
 
         // Add the default access policies unless specified otherwise
         $init_policies = $this->input['_init_access_policies'] ?? true;
@@ -1040,15 +1043,17 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
         return "/Form/Render/" . $this->getID();
     }
 
-    private function addMandatoryDestinations(): void
+    private function addDefaultDestinations(): void
     {
         $destination = new FormDestination();
-        $destination->add([
+        $id = $destination->add([
             self::getForeignKeyField() => $this->getId(),
             'itemtype'                 => FormDestinationTicket::class,
             'name'                     => Ticket::getTypeName(1),
-            'is_mandatory'             => true,
         ]);
+        if (!$id) {
+            throw new RuntimeException("Failed to initialize destinations");
+        }
     }
 
     private function addDefaultAccessPolicies(): void

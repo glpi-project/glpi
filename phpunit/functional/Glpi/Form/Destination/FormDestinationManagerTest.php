@@ -35,11 +35,16 @@
 namespace tests\units\Glpi\Form\Destination;
 
 use DbTestCase;
+use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Destination\FormDestinationInterface;
-use Glpi\Form\Destination\FormDestinationTypeManager;
+use Glpi\Form\Destination\FormDestinationManager;
+use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 
-final class FormDestinationTypeManagerTest extends DbTestCase
+final class FormDestinationManagerTest extends DbTestCase
 {
+    use FormTesterTrait;
+
     /**
      * Test for the getDestinationTypes method.
      *
@@ -47,7 +52,7 @@ final class FormDestinationTypeManagerTest extends DbTestCase
      */
     public function testGetDestinationTypes(): void
     {
-        $manager = FormDestinationTypeManager::getInstance();
+        $manager = FormDestinationManager::getInstance();
 
         // Validate that type list is not empty and that each types are correct
         // AbstractFormDestinationType objects.
@@ -66,7 +71,7 @@ final class FormDestinationTypeManagerTest extends DbTestCase
      */
     public function testGetDestinationTypesDropdownValues(): void
     {
-        $manager = FormDestinationTypeManager::getInstance();
+        $manager = FormDestinationManager::getInstance();
 
         // Validate that each key => value couple are what we expect.
         $values = $manager->getDestinationTypesDropdownValues();
@@ -87,10 +92,58 @@ final class FormDestinationTypeManagerTest extends DbTestCase
      */
     public function testGetDefaultType(): void
     {
-        $manager = FormDestinationTypeManager::getInstance();
+        $manager = FormDestinationManager::getInstance();
 
         // Not much to test here beside running the function to make sure there
         // are no errors.
         $manager->getDefaultType();
+    }
+
+    public function testDefaultFormHasNoWarnings(): void
+    {
+        // Arrange: create a form with default values
+        $form = $this->createForm(new FormBuilder());
+
+        // Act: get warnings for this form
+        $warnings = FormDestinationManager::getInstance()->getWarnings($form);
+
+        // Assert: there should be no warnings
+        $this->assertEmpty($warnings);
+    }
+
+    public function testFormWithoutDestinationHasWarning(): void
+    {
+        // Arrange: create a form and remove its default destination
+        $form = $this->createForm(new FormBuilder());
+        $destinations = $form->getDestinations();
+        foreach ($destinations as $destination) {
+            $this->deleteItem($destination::class, $destination->getId(), true);
+        }
+
+        // Act: get warnings for this form
+        $warnings = FormDestinationManager::getInstance()->getWarnings($form);
+
+        // Assert: there should be a single warning
+        $message = "This form is invalid, it must create at least one item.";
+        $this->assertEquals([$message], $warnings);
+    }
+
+    public function testFormWithOnlyConditionalDestinationHasWarning(): void
+    {
+        // Arrange: create a form and make its default destinations as conditional
+        $form = $this->createForm(new FormBuilder());
+        $destinations = $form->getDestinations();
+        foreach ($destinations as $destination) {
+            $this->updateItem($destination::class, $destination->getId(), [
+                'creation_strategy' => CreationStrategy::CREATED_IF->value
+            ]);
+        }
+
+        // Act: get warnings for this form
+        $warnings = FormDestinationManager::getInstance()->getWarnings($form);
+
+        // Assert: there should be a single warning
+        $message = "You have defined conditions for all the items below. This may be dangerous, please make sure that in every situation at least one item will be created.";
+        $this->assertEquals([$message], $warnings);
     }
 }

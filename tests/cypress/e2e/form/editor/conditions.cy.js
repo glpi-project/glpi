@@ -57,12 +57,6 @@ function addQuestion(name) {
     });
 }
 
-function addDestination(type) {
-    cy.findByRole('button', {'name': `Add ${type}`}).click();
-    cy.findByRole('alert').should('contains.text', 'Item successfully added');
-    cy.findByRole('button', {'name': 'Close'}).click();
-}
-
 function setQuestionTypeCategory(category) {
     cy.getDropdownByLabelText('Question type').selectDropdownValue(category);
 }
@@ -598,9 +592,8 @@ describe ('Conditions', () => {
         addQuestion('My second question');
         saveAndReload();
 
-        // Create a destination and add a few conditions to it
+        // Add a few conditions to the default destination
         goToDestinationTab();
-        addDestination('Ticket');
         openConditionEditor();
         setConditionStrategy('Created if');
         fillCondition(0, null, 'My second question', 'Is not equal to', 'I love GLPI');

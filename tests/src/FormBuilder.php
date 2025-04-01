@@ -34,10 +34,7 @@
 
 namespace Glpi\Tests;
 
-use AbstractRightsDropdown;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\AccessControl\ControlType\AllowList;
-use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Condition\VisibilityStrategy;
 
@@ -446,7 +443,6 @@ class FormBuilder
         string $itemtype,
         string $name,
         array $config = [],
-        bool $is_mandatory = false,
     ): self {
         // If first destination of the given itemtype, init its key
         if (!isset($this->destinations[$itemtype])) {
@@ -456,7 +452,6 @@ class FormBuilder
         $this->destinations[$itemtype][] = [
             'name'         => $name,
             'config'       => $config,
-            'is_mandatory' => $is_mandatory,
         ];
         return $this;
     }

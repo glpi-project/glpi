@@ -133,7 +133,6 @@ trait FormTesterTrait
                     'itemtype'       => $itemtype,
                     'name'           => $destination_data['name'],
                     'config'         => $destination_data['config'],
-                    'is_mandatory'   => $destination_data['is_mandatory'],
                 ], ['config']);
             }
         }

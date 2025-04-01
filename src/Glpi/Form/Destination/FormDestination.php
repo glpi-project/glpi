@@ -108,7 +108,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
             $active = null;
         }
 
-        $manager = FormDestinationTypeManager::getInstance();
+        $manager = FormDestinationManager::getInstance();
 
         $renderer = TemplateRenderer::getInstance();
         $renderer->display('pages/admin/form/form_destination.html.twig', [
@@ -119,6 +119,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
             'available_destinations_types' => $manager->getDestinationTypesDropdownValues(),
             'active_destination'           => $active,
             'can_update'                   => self::canUpdate(),
+            'warnings'                     => $manager->getWarnings($item),
         ]);
 
         return true;
@@ -160,10 +161,6 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
     #[Override]
     public function canPurgeItem(): bool
     {
-        if ($this->fields['is_mandatory']) {
-            return false;
-        }
-
         $form = Form::getByID($this->fields['forms_forms_id']);
         if (!$form) {
             return false;

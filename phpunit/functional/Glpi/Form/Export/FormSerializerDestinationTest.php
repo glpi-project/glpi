@@ -88,7 +88,7 @@ use Glpi\Form\Destination\CommonITILField\ValidationField;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategy;
 use Glpi\Form\Destination\FormDestinationTicket;
-use Glpi\Form\Destination\FormDestinationTypeManager;
+use Glpi\Form\Destination\FormDestinationManager;
 use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
@@ -846,7 +846,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
 
         /** @var AbstractCommonITILFormDestination[] $destination_types */
         $destination_types = array_filter(
-            FormDestinationTypeManager::getInstance()->getDestinationTypes(),
+            FormDestinationManager::getInstance()->getDestinationTypes(),
             fn($destination_type) => $destination_type instanceof AbstractCommonITILFormDestination
         );
         $destination_fields = array_merge(...array_map(

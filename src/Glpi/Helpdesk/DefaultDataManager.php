@@ -199,7 +199,7 @@ final class DefaultDataManager
         ];
 
         // Add ticket destination
-        $this->setMandatoryTicketDestination($form, $config);
+        $this->setDefaultDestinationConfig($form, $config);
 
         return $form;
     }
@@ -259,7 +259,7 @@ final class DefaultDataManager
         ];
 
         // Add ticket destination
-        $this->setMandatoryTicketDestination($form, $config);
+        $this->setDefaultDestinationConfig($form, $config);
     }
 
     private function createForm(
@@ -373,7 +373,7 @@ final class DefaultDataManager
         ];
     }
 
-    private function setMandatoryTicketDestination(Form $form, array $config): void
+    private function setDefaultDestinationConfig(Form $form, array $config): void
     {
         $destination = current($form->getDestinations());
         $success = $destination->update([

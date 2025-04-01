@@ -266,12 +266,8 @@ final class AnswersHandler
                 continue;
             }
 
-            // Skip if the destination is not mandatory and it failed its
-            // required conditions.
-            if (
-                !$destination->fields['is_mandatory']
-                && !$engine_output->itemMustBeCreated($destination)
-            ) {
+            // Skip if the destination failed its required conditions.
+            if (!$engine_output->itemMustBeCreated($destination)) {
                 continue;
             }
 
