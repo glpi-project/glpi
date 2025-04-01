@@ -126,6 +126,11 @@ class FormBuilder
     protected bool $use_default_access_policies;
 
     /**
+     * Form usage count
+     */
+    protected int $usage_count;
+
+    /**
      * Constructor
      *
      * @param string $name Form name
@@ -149,6 +154,7 @@ class FormBuilder
         $this->sections_visibilities = [];
         $this->destinations_conditions = [];
         $this->use_default_access_policies = true;
+        $this->usage_count = 0;
     }
 
     /**
@@ -582,5 +588,28 @@ class FormBuilder
     public function getUseDefaultAccessPolicies(): bool
     {
         return $this->use_default_access_policies;
+    }
+
+    /**
+     * Set form usage count
+     *
+     * @param int $usage_count Form usage count
+     *
+     * @return self To allow chain calls
+     */
+    public function setUsageCount(int $usage_count): self
+    {
+        $this->usage_count = $usage_count;
+        return $this;
+    }
+
+    /**
+     * Get form usage count
+     *
+     * @return int Form usage count
+     */
+    public function getUsageCount(): int
+    {
+        return $this->usage_count;
     }
 }
