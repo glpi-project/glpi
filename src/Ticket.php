@@ -60,6 +60,8 @@ class Ticket extends CommonITILObject
 
     public static $rightname                   = 'ticket';
 
+    protected $userentity_oncreate      = true;
+
     public const MATRIX_FIELD                  = 'priority_matrix';
     public const URGENCY_MASK_FIELD            = 'urgency_mask';
     public const IMPACT_MASK_FIELD             = 'impact_mask';
@@ -2065,6 +2067,53 @@ class Ticket extends CommonITILObject
             )
             || $this->isUserValidationRequested($user_id, true)
         );
+    }
+
+
+    /**
+     * Check current user can create a ticket for another given user
+     *
+     * @since 9.5.4
+     *
+     * @param int $requester_id the user for which we want to create the ticket
+     * @param int $entity_restrict check entity when search users
+     *            (keep null to check with current session entities)
+     *
+     * @return bool
+     */
+    public static function canDelegateeCreateTicket(int $requester_id, ?int $entity_restrict = null): bool
+    {
+       // if the user is a technician, no need to check delegates
+        if (Session::getCurrentInterface() == "central") {
+            return true;
+        }
+
+       // if the connected user is the ticket requester, we can create
+        if ($requester_id == $_SESSION['glpiID']) {
+            return true;
+        }
+
+        if ($entity_restrict === null) {
+            $entity_restrict = $_SESSION["glpiactive_entity"] ?? 0;
+        }
+
+       // if user has no delegate groups, he can't create ticket for another user
+        $delegate_groups = User::getDelegateGroupsForUser($entity_restrict);
+        if (count($delegate_groups) == 0) {
+            return false;
+        }
+
+       // retrieve users to check if given requester is part of them
+        $users_delegatee_iterator = User::getSqlSearchResult(false, 'delegate', $entity_restrict);
+        foreach ($users_delegatee_iterator as $user_data) {
+            if ($user_data['id'] == $requester_id) {
+               // user found
+                return true;
+            }
+        }
+
+       // user not found
+        return false;
     }
 
 

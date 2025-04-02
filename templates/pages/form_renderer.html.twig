@@ -64,6 +64,10 @@
                 </div>
             </div>
 
+            <div data-glpi-form-renderer-delegation-container>
+                {% include "components/helpdesk_forms/delegation_alert.html.twig" %}
+            </div>
+
             {% set section_visible_index = 1 %}
             {% for section in form.getSections() %}
                 {# Is this the first section of a form ? #}
