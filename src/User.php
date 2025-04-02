@@ -6565,11 +6565,12 @@ HTML;
         $alias  = DBmysql::quoteName($alias);
         $name   = DBmysql::quoteName($table . '.' . self::getNameField());
 
-        return new QueryExpression("IF(
-            $first <> '' && $second <> '',
-            CONCAT($first, ' ', $second),
-            $name
-         ) AS $alias");
+        return new QueryExpression("CASE
+            WHEN $first <> '' AND $second <> '' THEN CONCAT($first, ' ', $second)
+            WHEN $first <> '' THEN $first
+            WHEN $second <> '' THEN $second
+            ELSE $name
+        END AS $alias");
     }
 
     public static function getIcon()
