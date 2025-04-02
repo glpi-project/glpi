@@ -1213,7 +1213,7 @@ final class Search
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage(), $e->getDetails()));
         } catch (\Throwable $e) {
             $message = (new APIException())->getUserMessage();
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message));
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getMessage()));
         }
         $has_more = $results['start'] + $results['limit'] < $results['total'];
         $end = max(0, ($results['start'] + $results['limit'] - 1));

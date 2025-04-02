@@ -44,9 +44,11 @@ use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Group;
+use Group_Item;
 use Location;
 use Manufacturer;
 use State;
@@ -109,9 +111,65 @@ final class CustomAssetController extends AbstractController
                     'contact' => ['type' => Doc\Schema::TYPE_STRING],
                     'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
                     'user' => self::getDropdownTypeSchema(class: User::class, field: 'users_id', full_schema: 'User'),
-                    'group' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id', full_schema: 'Group'),
+                    'group' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'Group',
+                            'x-join' => [
+                                'table' => 'glpi_groups', // The table with the desired data
+                                'fkey' => 'groups_id',
+                                'field' => 'id',
+                                'ref-join' => [
+                                    'table' => 'glpi_groups_items',
+                                    'fkey' => 'id',
+                                    'field' => 'items_id',
+                                    'condition' => [
+                                        'itemtype' => $asset_class,
+                                        'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                    ]
+                                ]
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'description' => 'ID',
+                                ],
+                                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                            ]
+                        ]
+                    ],
                     'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                    'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
+                    'group_tech' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'Group',
+                            'x-join' => [
+                                'table' => 'glpi_groups', // The table with the desired data
+                                'fkey' => 'groups_id',
+                                'field' => 'id',
+                                'ref-join' => [
+                                    'table' => 'glpi_groups_items',
+                                    'fkey' => 'id',
+                                    'field' => 'items_id',
+                                    'condition' => [
+                                        'itemtype' => $asset_class,
+                                        'type' => Group_Item::GROUP_TYPE_TECH,
+                                    ]
+                                ]
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'description' => 'ID',
+                                ],
+                                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                            ]
+                        ]
+                    ],
                     'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
                     'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                     'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
@@ -239,6 +297,42 @@ final class CustomAssetController extends AbstractController
             }
         }
         return $classes_only ? array_keys($assets) : $assets;
+    }
+
+    #[Route(path: '/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\Route(
+        description: 'Get all available custom asset types',
+        methods: ['GET'],
+        responses: [
+            '200' => [
+                'description' => 'List of custom asset types',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'properties' => [
+                            'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                            'href' => ['type' => Doc\Schema::TYPE_STRING],
+                        ],
+                    ],
+                ]
+            ]
+        ]
+    )]
+    public function index(Request $request): Response
+    {
+        $asset_types = self::getAssetTypes(false);
+        $asset_paths = [];
+        foreach ($asset_types as $asset_type => $asset_name) {
+            $asset_paths[] = [
+                'itemtype'  => $asset_type,
+                'name'      => $asset_name,
+                'href'      => self::getAPIPathForRouteFunction(self::class, 'search', ['itemtype' => $asset_type]),
+            ];
+        }
+        return new JSONResponse($asset_paths);
     }
 
     #[RouteVersion(introduced: '2.0')]
