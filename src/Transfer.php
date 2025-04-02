@@ -1561,7 +1561,7 @@ class Transfer extends CommonDBTM
                                     unset($carttype->fields['id']);
                                     $input                = $carttype->fields;
                                     $input['entities_id'] = $this->to;
-                                    unset($carttype->fields);
+                                    $carttype->fields = [];
                                     $newcarttypeID        = $carttype->add(Toolbox::addslashes_deep($input));
                                  // 2 - transfer as copy
                                     $this->transferItem(
@@ -1673,7 +1673,7 @@ class Transfer extends CommonDBTM
                     unset($soft->fields['id']);
                     $input                = $soft->fields;
                     $input['entities_id'] = $this->to;
-                    unset($soft->fields);
+                    $soft->fields = [];
                     $newsoftID            = $soft->add(Toolbox::addslashes_deep($input));
                 }
             }
@@ -2123,7 +2123,7 @@ class Transfer extends CommonDBTM
                             unset($certificate->fields['id']);
                             $input                = $certificate->fields;
                             $input['entities_id'] = $this->to;
-                            unset($certificate->fields);
+                            $certificate->fields = [];
                             $newcertificateID     = $certificate->add(Toolbox::addslashes_deep($input));
                            // 2 - transfer as copy
                             $this->transferItem('Certificate', $item_ID, $newcertificateID);
@@ -2313,7 +2313,7 @@ class Transfer extends CommonDBTM
                             unset($contract->fields['id']);
                             $input                = $contract->fields;
                             $input['entities_id'] = $this->to;
-                            unset($contract->fields);
+                            $contract->fields = [];
                             $newcontractID        = $contract->add(Toolbox::addslashes_deep($input));
                            // 2 - transfer as copy
                             $this->transferItem('Contract', $item_ID, $newcontractID);
@@ -2506,13 +2506,13 @@ class Transfer extends CommonDBTM
                        // found : use it
                        // not found : copy doc
                         if ($newdocID < 0) {
-                           // 1 - create new item
+                            // 1 - create new item
                             unset($document->fields['id']);
                             $input    = $document->fields;
-                           // Not set new entity Do by transferItem
-                            unset($document->fields);
+                            // Not set new entity Do by transferItem
+                            $document->fields = [];
                             $newdocID = $document->add(Toolbox::addslashes_deep($input));
-                           // 2 - transfer as copy
+                            // 2 - transfer as copy
                             $this->transferItem('Document', $item_ID, $newdocID);
                         }
                     }
@@ -2988,12 +2988,12 @@ class Transfer extends CommonDBTM
                           $newID = $result['id'];
                     }
                     if ($newID < 0) {
-                       // 1 - create new item
+                        // 1 - create new item
                         unset($supplier->fields['id']);
                         $input                 = $supplier->fields;
                         $input['entities_id']  = $this->to;
-                       // Not set new entity Do by transferItem
-                        unset($supplier->fields);
+                        // Not set new entity Do by transferItem
+                        $supplier->fields = [];
                         $newID                 = $supplier->add(Toolbox::addslashes_deep($input));
                     }
 
@@ -3239,7 +3239,7 @@ class Transfer extends CommonDBTM
                         $input['items_id']     = $newID;
                         $input['suppliers_id'] = $suppliers_id;
                         unset($input['id']);
-                        unset($ic->fields);
+                        $ic->fields = [];
                         $ic->add(Toolbox::addslashes_deep($input));
                     } else {
                      // Same Item : manage only supplier move
@@ -3356,7 +3356,7 @@ class Transfer extends CommonDBTM
                     unset($ent->fields['id']);
                     $input                = $ent->fields;
                     $input['entities_id'] = $this->to;
-                    unset($ent->fields);
+                    $ent->fields = [];
                     $newID                = $ent->add(Toolbox::addslashes_deep($input));
                    // 2 - transfer as copy
                     $this->transferItem('Supplier', $ID, $newID);
@@ -3466,7 +3466,7 @@ class Transfer extends CommonDBTM
                             unset($contact->fields['id']);
                             $input                = $contact->fields;
                             $input['entities_id'] = $this->to;
-                            unset($contact->fields);
+                            $contact->fields = [];
                             $newcontactID         = $contact->add(Toolbox::addslashes_deep($input));
                            // 2 - transfer as copy
                             $this->transferItem('Contact', $item_ID, $newcontactID);
@@ -3573,7 +3573,7 @@ class Transfer extends CommonDBTM
                         $input['itemtype']  = $itemtype;
                         $input['items_id']  = $newID;
                         $input['is_active'] = $ri->fields['is_active'];
-                        unset($ri->fields);
+                        $ri->fields = [];
                         $ri->add(Toolbox::addslashes_deep($input));
                     }
                    // Same item -> nothing to do
@@ -3836,7 +3836,7 @@ class Transfer extends CommonDBTM
                             }
                             unset($data['id']);
                             $data['items_id'] = $newID;
-                            unset($np->fields);
+                            $np->fields = [];
                             $np->add(Toolbox::addslashes_deep($data));
                         }
                     }
@@ -3855,7 +3855,7 @@ class Transfer extends CommonDBTM
                             }
                             unset($data['id']);
                             $data['items_id'] = $newID;
-                            unset($np->fields);
+                            $np->fields = [];
                             $np->add(Toolbox::addslashes_deep($data));
                         }
                     } else {
