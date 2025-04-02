@@ -55,5 +55,5 @@ if (!($this instanceof LegacyFileLoadController) || !($dropdown instanceof Commo
 DropdownFormController::loadDropdownForm(
     $this->getRequest(), // @phpstan-ignore method.private
     $dropdown,
-    $options ?? []
+    $options ?? null
 );
