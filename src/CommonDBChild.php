@@ -865,7 +865,7 @@ abstract class CommonDBChild extends CommonDBConnexity
             $lower_name         = strtolower(get_called_class());
             $child_count_js_var = htmlescape('nb' . $lower_name . 's');
             $div_id             = htmlescape("add_" . $lower_name . "_to_" . $item->getType() . "_" . $items_id);
-            $add_label          = sprintf(__('Add a new %s'), call_user_func([get_called_class(), 'getTypeName']));
+            $add_label          = sprintf(__s('Add a new %s'), static::getTypeName());
 
             // Beware : -1 is for the first element added ...
             $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";

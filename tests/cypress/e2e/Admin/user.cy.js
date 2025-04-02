@@ -86,9 +86,9 @@ describe('User form', () => {
         cy.findByRole('button', { name: /Save/ }).click();
 
         // Check emails
-        cy.findAllByRole('textbox', { name: 'Email address' }).eq(0).should('have.value', 'test@test.test');
-        cy.findAllByRole('textbox', { name: 'Email address' }).eq(1).should('have.value', 'anothertest@test.test');
-        cy.findAllByRole('radio', { name: 'Set as default email' }).eq(0).should('be.checked');
-        cy.findAllByRole('radio', { name: 'Set as default email' }).eq(1).should('not.be.checked');
+        cy.findAllByRole('textbox', { name: 'Email address' }).eq(0).should('have.value', 'anothertest@test.test');
+        cy.findAllByRole('textbox', { name: 'Email address' }).eq(1).should('have.value', 'test@test.test');
+        cy.findAllByRole('radio', { name: 'Set as default email' }).eq(0).should('not.be.checked');
+        cy.findAllByRole('radio', { name: 'Set as default email' }).eq(1).should('be.checked');
     });
 });
