@@ -122,6 +122,9 @@ export class GlpiFormRendererController
 
             debouncedComputeItemsVisibilities();
         });
+
+        // Handle delegation form update
+        this.#initDelegationEventHandlers();
     }
 
     /**
@@ -160,6 +163,7 @@ export class GlpiFormRendererController
             $(this.#target)
                 .find(`
                     [data-glpi-form-renderer-form-header],
+                    [data-glpi-form-renderer-delegation-container],
                     [data-glpi-form-renderer-section=${this.#section_index}],
                     [data-glpi-form-renderer-parent-section=${this.#section_index}],
                     [data-glpi-form-renderer-actions]
@@ -446,5 +450,39 @@ export class GlpiFormRendererController
             .find("button[data-glpi-form-renderer-action]")
             .removeClass("pointer-events-none")
         ;
+    }
+
+    #initDelegationEventHandlers()
+    {
+        $(this.#target)
+            .find('[data-glpi-form-renderer-delegation-container]')
+            .find('select[name="delegation_users_id"]')
+            .on('change', (e) => this.#renderDelegation(e))
+        ;
+    }
+
+    async #renderDelegation()
+    {
+        const selected_user_id = $(this.#target)
+            .find('[data-glpi-form-renderer-delegation-container]')
+            .find('select[name="delegation_users_id"]')
+            .val();
+
+        const response = await $.get('/Form/Delegation', {
+            'selected_user_id': selected_user_id,
+        });
+
+        // Create a temporary element to parse the AJAX response
+        const $temp = $('<div>').html(response);
+        // Extract the inner content of the delegation container from the response
+        const innerContent = $temp.find('[data-glpi-form-renderer-delegation-container]').html();
+
+        // Replace only the inner content of the delegation container
+        $(this.#target)
+            .find('[data-glpi-form-renderer-delegation-container]')
+            .html(innerContent);
+
+        // Re-init event handlers
+        this.#initDelegationEventHandlers();
     }
 }

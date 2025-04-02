@@ -134,17 +134,10 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
 
         // Compute value according to strategies
         foreach ($config->getStrategies() as $strategy) {
-            $itilactors_ids = $strategy->getITILActorsIDs($this, $config, $answers_set);
+            $itilactors = $strategy->getITILActors($this, $config, $answers_set);
 
-            if (!empty($itilactors_ids)) {
-                foreach ($itilactors_ids as $itemtype => $ids) {
-                    foreach ($ids as $id) {
-                        $input['_actors'][$this->getActorType()][] = [
-                            'itemtype' => $itemtype,
-                            'items_id' => $id,
-                        ];
-                    }
-                }
+            if (!empty($itilactors)) {
+                $input['_actors'][$this->getActorType()] = $itilactors;
             }
         }
 

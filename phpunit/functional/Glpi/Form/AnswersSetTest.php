@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form;
 
 use CommonGLPI;
+use CommonITILActor;
 use DbTestCase;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
@@ -46,7 +47,10 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Group;
+use Group_User;
 use Ticket;
+use User;
 
 class AnswersSetTest extends DbTestCase
 {
@@ -133,6 +137,113 @@ class AnswersSetTest extends DbTestCase
 
         // User can't see problems, still there is one fallback link to the answers
         $this->assertCount(1, $answers->getLinksToCreatedItems());
+    }
+
+    public function testGetDelegationWihoutRights()
+    {
+        $this->login("post-only", "postonly");
+        $form = $this->createForm(new FormBuilder());
+
+        $answers_handler = AnswersHandler::getInstance();
+        $answers = $answers_handler->saveAnswers(
+            $form,
+            [],
+            \Session::getLoginUserID(),
+            [],
+            [
+                'users_id'          => getitemByTypeName(User::class, 'glpi')->getID(),
+                'use_notification'  => true,
+                'alternative_email' => ''
+            ]
+        );
+
+        /** @var Ticket $ticket */
+        $ticket = current($answers->getCreatedItems());
+        $this->assertInstanceOf(Ticket::class, $ticket);
+        $requesters = $ticket->getActorsForType(CommonITILActor::REQUESTER);
+        $this->assertCount(1, $requesters);
+        $this->assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys(
+            [
+                'itemtype'          => User::class,
+                'items_id'          => getitemByTypeName(User::class, 'post-only')->getID(),
+                'use_notification'  => 1,
+                'alternative_email' => '',
+            ],
+            current($requesters),
+            [
+                'itemtype',
+                'items_id',
+                'use_notification',
+                'alternative_email',
+            ]
+        );
+    }
+
+    public function testGetDelegation()
+    {
+        $this->login("post-only", "postonly");
+
+        // Create a group
+        $group = $this->createItem(
+            Group::class,
+            [
+                'name'        => 'Test group',
+                'entities_id' => 0
+            ]
+        );
+
+        // Add users to the group
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id'       => $group->getID(),
+                'users_id'        => getItemByTypeName(User::class, 'post-only')->getID(),
+                'is_userdelegate' => 1
+            ]
+        );
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id'  => getItemByTypeName(User::class, 'glpi')->getID()
+            ]
+        );
+
+        $form = $this->createForm(new FormBuilder());
+
+        $answers_handler = AnswersHandler::getInstance();
+        $answers = $answers_handler->saveAnswers(
+            $form,
+            [],
+            \Session::getLoginUserID(),
+            [],
+            [
+                'users_id'          => getitemByTypeName(User::class, 'glpi')->getID(),
+                'use_notification'  => true,
+                'alternative_email' => ''
+            ]
+        );
+
+        /** @var Ticket $ticket */
+        $ticket = current($answers->getCreatedItems());
+        $this->assertInstanceOf(Ticket::class, $ticket);
+        $requesters = $ticket->getActorsForType(CommonITILActor::REQUESTER);
+        $this->assertCount(1, $requesters);
+        $this->assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys(
+            [
+                'itemtype'          => User::class,
+                'items_id'          => getitemByTypeName(User::class, 'glpi')->getID(),
+                'use_notification'  => 1,
+                'alternative_email' => '',
+            ],
+            current($requesters),
+            [
+                'itemtype',
+                'items_id',
+                'use_notification',
+                'alternative_email',
+            ]
+        );
     }
 
     private function createAndGetFormWithTwoAnswers(): Form
