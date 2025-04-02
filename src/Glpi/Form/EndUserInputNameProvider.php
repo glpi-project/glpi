@@ -54,7 +54,6 @@ final class EndUserInputNameProvider
         return sprintf(self::END_USER_INPUT_NAME, $question->getID());
     }
 
-
     public function getFiles(array $inputs, array $answers): array
     {
         $files = [

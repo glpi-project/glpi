@@ -96,8 +96,13 @@ final class SubmitAnswerController extends AbstractController
         $post = $request->request->all();
         $provider = new EndUserInputNameProvider();
 
-        $answers = $provider->getAnswers($post);
-        $files = $provider->getFiles($post, $answers);
+        $delegation = [
+            'users_id'          => $post['delegation_users_id'],
+            'use_notification'  => $post['delegation_use_notification'],
+            'alternative_email' => $post['delegation_alternative_email'],
+        ];
+        $answers    = $provider->getAnswers($post);
+        $files      = $provider->getFiles($post, $answers);
         if (empty($answers)) {
             throw new BadRequestHttpException();
         }
@@ -108,6 +113,7 @@ final class SubmitAnswerController extends AbstractController
             $answers,
             Session::getLoginUserID(),
             $files,
+            $delegation
         );
 
         return $answers;

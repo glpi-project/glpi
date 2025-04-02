@@ -76,8 +76,8 @@ enum ITILActorFieldStrategy: string
     ): ?array {
         return match ($this) {
             self::FROM_TEMPLATE          => null,
-            self::FORM_FILLER            => $this->getActorsIdsFromCurrentUser(),
-            self::FORM_FILLER_SUPERVISOR => $this->getActorsIdsFromSupervisorOfCurrentUser(),
+            self::FORM_FILLER            => $this->getActorsIdsFromCurrentUser($answers_set),
+            self::FORM_FILLER_SUPERVISOR => $this->getActorsIdsFromSupervisorOfCurrentUser($answers_set),
             self::SPECIFIC_VALUES        => $config->getSpecificITILActorsIds(),
             self::SPECIFIC_ANSWERS       => $this->getActorsIdsForSpecificAnswers(
                 $config->getSpecificQuestionIds(),
@@ -111,21 +111,27 @@ enum ITILActorFieldStrategy: string
         };
     }
 
-    private function getActorsIdsFromCurrentUser(): ?array
+    private function getActorsIdsFromCurrentUser(AnswersSet $answers_set): ?array
     {
-        $users_id = Session::getLoginUserID();
+        $users_id = $answers_set->getDelegation()['users_id'] ?? Session::getLoginUserID();
         if (!is_numeric($users_id)) {
             return null;
         }
 
         return [
-            User::class => [(int) $users_id],
+            User::class => [
+                [
+                    'items_id'          => (int) $users_id,
+                    'use_notification'  => $answers_set->getDelegation()['use_notification'] ?? 0,
+                    'alternative_email' => $answers_set->getDelegation()['alternative_email'] ?? '',
+                ]
+            ],
         ];
     }
 
-    private function getActorsIdsFromSupervisorOfCurrentUser(): ?array
+    private function getActorsIdsFromSupervisorOfCurrentUser(AnswersSet $answers_set): ?array
     {
-        $users_id = Session::getLoginUserID();
+        $users_id = $answers_set->getDelegation()['users_id'] ?? Session::getLoginUserID();
         if (!is_numeric($users_id)) {
             return null;
         }
@@ -139,7 +145,7 @@ enum ITILActorFieldStrategy: string
         }
 
         return [
-            User::class => [(int) $supervisor_id],
+            User::class => [['items_id' => (int) $supervisor_id]],
         ];
     }
 
@@ -191,7 +197,7 @@ enum ITILActorFieldStrategy: string
                 return $carry;
             }
 
-            $carry[$value['itemtype']][] = (int) $value['items_id'];
+            $carry[$value['itemtype']][] = ['items_id' => (int) $value['items_id']];
             return $carry;
         }, []);
     }
@@ -275,6 +281,8 @@ enum ITILActorFieldStrategy: string
         if (!is_array($actors_ids)) {
             $actors_ids = [$actors_ids];
         }
+
+        $actors_ids = array_map(fn($actor_id) => ['items_id' => (int) $actor_id], $actors_ids);
 
         return [
             getItemtypeForForeignKeyField(str_replace('_tech', '', $fk_field)) => $actors_ids,

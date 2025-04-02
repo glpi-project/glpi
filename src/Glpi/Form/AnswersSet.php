@@ -51,6 +51,7 @@ final class AnswersSet extends CommonDBChild
     public static $items_id = 'forms_forms_id';
 
     public array $files = [];
+    public array $delegation = [];
 
     #[Override]
     public static function getTypeName($nb = 0)
@@ -263,6 +264,16 @@ final class AnswersSet extends CommonDBChild
     public function setSubmittedFiles(array $files): void
     {
         $this->files = $files;
+    }
+
+    public function getDelegation(): array
+    {
+        return $this->delegation;
+    }
+
+    public function setDelegation(array $delegation): void
+    {
+        $this->delegation = $delegation;
     }
 
     /**

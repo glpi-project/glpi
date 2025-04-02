@@ -1,0 +1,130 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{# @var selected_user \User #}
+
+{% if selected_user is empty %}
+    {% set selected_user = get_current_user() %}
+{% endif %}
+
+{% set users = get_current_user().getDelegateGroupsForUser()|map(
+        groups_id => call('Group_User::getGroupUsers', [groups_id])
+    )|reduce(
+        (carry, group_users) => carry|merge(group_users), []
+    ) %}
+
+{% if users is not empty %}
+    <div
+        class="alert d-flex align-items-center justify-content-start"
+        data-glpi-form-renderer-delegation-container
+    >
+        {% if users is not empty %}
+            <span class="text-nowrap text-muted mx-2">This ticket is for</span>
+            {{ fields.dropdownArrayField(
+                'delegation_users_id',
+                selected_user.getID(),
+                {
+                    (get_current_user().getID()): __('Myself'),
+                } + users|reduce((carry, user) => carry + {(user.id): call('User::getFriendlyNameById', [user.id])}, {}),
+                '',
+                {
+                    'no_label'   : true,
+                    'width'      : 'auto',
+                    'field_class': '',
+                    'mb'         : '',
+                }
+            ) }}
+        {% endif %}
+        {% if users is not empty %}
+            <span class="text-nowrap text-muted mx-2">and</span>
+        {% endif %}
+        <span class="me-2 input-group d-inline-flex w-auto">
+            {% if selected_user.getID() == get_current_user().getID() %}
+                {{ fields.dropdownArrayField(
+                    'delegation_use_notification',
+                    '1',
+                    {
+                        '0': __('I don\'t want'),
+                        '1': __('I want'),
+                    },
+                    '',
+                    {
+                        'no_label'   : true,
+                        'width'      : 'auto',
+                        'field_class': '',
+                        'mb'         : '',
+                    }
+                ) }}
+            {% else %}
+                {{ fields.dropdownArrayField(
+                    'delegation_use_notification',
+                    '1',
+                    {
+                        '0': __('He doesn\'t want'),
+                        '1': __('He wants'),
+                    },
+                    '',
+                    {
+                        'no_label'   : true,
+                        'width'      : 'auto',
+                        'field_class': '',
+                        'mb'         : '',
+                    }
+                ) }}
+            {% endif %}
+            <button
+                type="button"
+                class="btn btn-icon rounded-end"
+                data-bs-toggle="dropdown"
+                data-bs-auto-close="outside"
+                aria-expanded="false"
+            >
+                <i class="ti ti-mail-cog"></i>
+            </button>
+            <div class="dropdown-menu p-3 pt-1 rounded-3" style="width: 250px">
+                {{ fields.textField(
+                    'delegation_alternative_email',
+                    selected_user.getDefaultEmail(),
+                    __('Address to send the notification'),
+                    {
+                        'is_horizontal'        : false,
+                        'field_class'          : '',
+                        'mb'                   : '',
+                    }
+                ) }}
+            </div>
+        </span>
+        <span class="text-nowrap text-muted ms-1">to be notified of future events of this ticket</span><span></span>
+    </div>
+{% endif %}
