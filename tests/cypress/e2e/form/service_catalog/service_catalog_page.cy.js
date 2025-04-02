@@ -494,7 +494,7 @@ describe('Service catalog page', () => {
         });
     });
 
-    it.only('can change sort order in the service catalog', () => {
+    it('can change sort order in the service catalog', () => {
         const time = (new Date()).getTime();
         cy.changeProfile('Super-Admin');
 
