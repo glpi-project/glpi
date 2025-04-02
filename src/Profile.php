@@ -274,8 +274,7 @@ class Profile extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-        $rights = ProfileRight::getAllPossibleRights();
-        ProfileRight::updateProfileRights($this->fields['id'], $rights);
+        ProfileRight::fillProfileRights($this->fields['id']);
         $this->profileRight = null;
 
         if (isset($this->fields['is_default']) && ((int) $this->fields["is_default"] === 1)) {
@@ -508,6 +507,8 @@ class Profile extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        $input['last_rights_update'] = Session::getCurrentTime();
+
         if (isset($input["helpdesk_item_type"])) {
             $input["helpdesk_item_type"] = exportArrayToDB(
                 ArrayNormalizer::normalizeValues($input["helpdesk_item_type"] ?: [], 'strval')
