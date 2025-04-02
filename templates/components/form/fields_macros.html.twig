@@ -994,6 +994,10 @@
 {% endmacro %}
 
 {% macro illustrationField(name, value, label = '', options = {}) %}
+    {% set options = {
+        extra_css_classes: "",
+        backdrop: true,
+    }|merge(options) %}
     {% set custom_icon_prefix = constant(
         'Glpi\\UI\\IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX'
     ) %}
@@ -1011,14 +1015,14 @@
             {# Display the illustration, trigger the modal on click #}
             {% set modal_id = "illustration-modal-" ~ random() %}
             <div
-                class="illustration-selector d-flex align-items-center card border-1 aspect-ratio-1"
+                class="illustration-selector d-flex align-items-center card border-1 {{ options.extra_css_classes }}"
                 role="button"
                 aria-label="{{ __("Select an illustration") }}"
                 data-bs-toggle="modal"
                 data-bs-target="#{{ modal_id }}"
                 data-glpi-icon-picker-value-preview
             >
-                <div class="card-body">
+                <div class="card-body aspect-ratio-1">
                     {% set is_custom_file = value starts with custom_icon_prefix %}
                     <div
                         {% if is_custom_file %}
@@ -1054,7 +1058,7 @@
             {# Render the modal content #}
             {{ include('components/illustration/icon_picker_modal.html.twig', {
                 'id': modal_id,
-                'backdrop': options.backdrop ?? true,
+                'backdrop': options.backdrop,
             }, with_context: false) }}
 
             {# Start js controller #}
