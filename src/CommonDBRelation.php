@@ -83,7 +83,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * Value is defined during logging process and unset after it.
      * @var int
      */
-    protected $_force_log_option;
+    protected $_force_log_option = 0;
 
     /**
      * Get request cirteria to search for an item
@@ -851,7 +851,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 && static::$logs_for_item_1
             ) {
                 $changes = [
-                    (isset($this->_force_log_option) ? $this->_force_log_option : 0),
+                    $this->_force_log_option,
                     '',
                     addslashes($this->getHistoryNameForItem1($item2, 'add')),
                 ];
