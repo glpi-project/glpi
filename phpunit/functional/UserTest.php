@@ -1012,6 +1012,84 @@ class UserTest extends \DbTestCase
         $this->assertSame($rawname, $user->getFriendlyName());
     }
 
+    public function testGetFriendlyNameFields()
+    {
+        global $DB;
+
+        // Create test users with different combinations of name/firstname
+        $users_data = [
+            // User with both firstname and realname
+            [
+                'name' => 'user1',
+                'realname' => 'Doe',
+                'firstname' => 'John',
+                'expected' => 'Doe John' // Or 'John Doe' depending on names_format config
+            ],
+            // User with only realname
+            [
+                'name' => 'user2',
+                'realname' => 'Smith',
+                'firstname' => '',
+                'expected' => 'Smith'
+            ],
+            // User with only firstname
+            [
+                'name' => 'user3',
+                'realname' => '',
+                'firstname' => 'Alice',
+                'expected' => 'Alice'
+            ],
+            // User with neither realname nor firstname
+            [
+                'name' => 'user4',
+                'realname' => '',
+                'firstname' => '',
+                'expected' => 'user4'
+            ]
+        ];
+
+        $this->login();
+
+        // Check names_format to adjust expected results if necessary
+        $config = \Config::getConfigurationValues('core');
+        if ($config['names_format'] == User::FIRSTNAME_BEFORE) {
+            $users_data[0]['expected'] = 'John Doe';
+        }
+
+        // Create all test users
+        $user = new \User();
+        $user_ids = [];
+
+        foreach ($users_data as &$user_data) {
+            $id = (int)$user->add([
+                'name' => $user_data['name'],
+                'realname' => $user_data['realname'],
+                'firstname' => $user_data['firstname'],
+            ]);
+            $this->assertGreaterThan(0, $id);
+            $user_ids[] = $id;
+        }
+
+        // Test the SQL query properly using the GLPI query API
+        $alias = 'test_name';
+        $field_expr = User::getFriendlyNameFields($alias);
+
+        $iterator = $DB->request([
+            'SELECT' => ['id', new \QueryExpression($field_expr)],
+            'FROM'   => 'glpi_users',
+            'WHERE'  => ['id' => $user_ids],
+            'ORDER'  => 'id'
+        ]);
+
+        $index = 0;
+        foreach ($iterator as $row) {
+            // Verify we get the expected friendly name based on our test data
+            $this->assertEquals($users_data[$index]['expected'], $row[$alias],
+                "Failed for user with name={$users_data[$index]['name']}, realname={$users_data[$index]['realname']}, firstname={$users_data[$index]['firstname']}");
+            $index++;
+        }
+    }
+
     public function testBlankPassword()
     {
         $input = [
