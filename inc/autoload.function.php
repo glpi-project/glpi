@@ -60,7 +60,7 @@ function isAPI()
     /** @var array $CFG_GLPI */
     global $CFG_GLPI;
 
-    $called_url = (!empty($_SERVER['HTTPS'] ?? "") && ($_SERVER['HTTPS'] ?? "") !== 'off'
+    $called_url = (($_SERVER['HTTPS'] ?? "") !== 'off'
                      ? 'https'
                      : 'http') .
                  '://' . ($_SERVER['HTTP_HOST'] ?? "") .
@@ -71,7 +71,7 @@ function isAPI()
         return true;
     }
 
-    $script = isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '';
+    $script = $_SERVER['SCRIPT_FILENAME'] ?? '';
     if (strpos($script, 'apirest.php') !== false) {
         return true;
     }

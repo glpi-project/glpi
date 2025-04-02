@@ -58,9 +58,7 @@ if (isset($_POST["projects_id"])) {
     ];
 
     if (isset($_POST["used"]) && !empty($_POST["used"])) {
-        if (isset($_POST["used"])) {
-            $p["used"] = $_POST["used"];
-        }
+        $p["used"] = $_POST["used"];
     }
 
     ProjectTask::dropdown($p);

@@ -138,8 +138,7 @@ echo "</table>";
 echo "</form>";
 
 if (
-    empty($_GET["dropdown"])
-    || !($item = getItemForItemtype($_GET["dropdown"]))
+    !($item = getItemForItemtype($_GET["dropdown"]))
 ) {
    // Do nothing
     Html::footer();

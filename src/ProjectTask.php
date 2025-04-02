@@ -1041,7 +1041,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $_GET["sort"] = "plan_start_date";
         }
 
-        if (isset($_GET["sort"]) && !empty($_GET["sort"]) && isset($columns[$_GET["sort"]])) {
+        if (isset($columns[$_GET["sort"]])) {
             $sort = [$_GET["sort"] . " $order"];
             $ui_sort = $_GET['sort'];
         } else {

@@ -1795,8 +1795,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 }
                 return;
         }
-
-        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
     /**

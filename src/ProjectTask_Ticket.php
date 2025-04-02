@@ -395,7 +395,7 @@ class ProjectTask_Ticket extends CommonDBRelation
                 $_GET["sort"] = "plan_start_date";
             }
 
-            if (isset($_GET["sort"]) && !empty($_GET["sort"]) && isset($columns[$_GET["sort"]])) {
+            if (isset($columns[$_GET["sort"]])) {
                 $sort = $_GET["sort"];
             } else {
                 $sort = ["plan_start_date $order", 'name'];
