@@ -56,7 +56,7 @@ if (
 $track = new Ticket();
 
 // Security check
-if (empty($_POST) || (count($_POST) == 0)) {
+if (count($_POST) == 0) {
     Html::redirect($CFG_GLPI["root_doc"] . "/front/helpdesk.public.php");
 }
 

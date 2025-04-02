@@ -52,11 +52,8 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
     echo "<div class='center spaced'><h2>" . sprintf(__('Network report by location: %s'), $name) .
         "</h2></div>";
 
-    $where = [];
-    if (!empty($_POST['locations_id'])) {
-        $sons = getSonsOf('glpi_locations', $_POST['locations_id']);
-        $where = ['glpi_locations.id' => $sons];
-    }
+    $sons = getSonsOf('glpi_locations', $_POST['locations_id']);
+    $where = ['glpi_locations.id' => $sons];
 
     Report::reportForNetworkInformations(
         'glpi_locations', //from

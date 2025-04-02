@@ -201,11 +201,12 @@ if (isset($_POST["add"])) {
         $change::showKanban(0);
     } else {
         $menus = ["helpdesk", "change"];
-        Change::displayFullPageForItem($_REQUEST['id'] ?? 0, $menus, $_REQUEST);
+        Change::displayFullPageForItem((int)($_REQUEST['id'] ?? 0), $menus, $_REQUEST);
     }
 
-    if (isset($_GET['id']) && ($_GET['id'] > 0)) {
-        $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Change&item_items_id=' . $_GET['id'];
+    $id = (int)$_GET['id'];
+    if ($id > 0) {
+        $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Change&item_items_id=' . $id;
         if (strpos($url, '_to_kb=') !== false) {
             Ajax::createIframeModalWindow(
                 'savetokb',

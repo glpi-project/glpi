@@ -234,7 +234,8 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
+$id = (int)$_GET['id'];
+if ($id > 0) {
     $available_options = ['load_kb_sol', '_openfollowup'];
     $options = [];
 
@@ -244,7 +245,7 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
         }
     }
 
-    $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $_GET['id'];
+    $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $id;
     if (strpos($url, '_to_kb=') !== false) {
         $options['after_display'] = Ajax::createIframeModalWindow(
             'savetokb',

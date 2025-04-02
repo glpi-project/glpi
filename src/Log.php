@@ -536,6 +536,7 @@ class Log extends CommonDBTM
                         $tmp['change'] = sprintf(__('%1$s: %2$s'), $action_label, $data["new_value"]);
 
                         if ($data['itemtype'] == 'Ticket') {
+                            /** @var CommonITILObject $item */
                             if ($data['id_search_option']) { // Recent record - see CommonITILObject::getSearchOptionsActors()
                                 $as = $SEARCHOPTION[$data['id_search_option']]['name'];
                             } else { // Old record
@@ -559,7 +560,7 @@ class Log extends CommonDBTM
                                     $isa = $item->$is(CommonITILActor::ASSIGN, $iditem);
                                     $iso = $item->$is(CommonITILActor::OBSERVER, $iditem);
                                 }
-                            // Simple Heuristic, of course not enough
+                                // Simple Heuristic, of course not enough
                                 if ($isr && !$isa && !$iso) {
                                     $as = _n('Requester', 'Requesters', 1);
                                 } else if (!$isr && $isa && !$iso) {
@@ -567,7 +568,7 @@ class Log extends CommonDBTM
                                 } else if (!$isr && !$isa && $iso) {
                                     $as = _n('Watcher', 'Watchers', 1);
                                 } else {
-                      // Deleted or Ambiguous
+                                    // Deleted or Ambiguous
                                     $as = false;
                                 }
                             }
@@ -584,11 +585,9 @@ class Log extends CommonDBTM
                         break;
 
                     case self::HISTORY_UPDATE_RELATION:
-                        $tmp['field']   = NOT_AVAILABLE;
-                        if ($linktype_field = explode('#', $data["itemtype_link"])) {
-                            $linktype     = $linktype_field[0];
-                            $tmp['field'] = is_a($linktype, CommonGLPI::class, true) ? $linktype::getTypeName() : $linktype;
-                        }
+                        $linktype_field = explode('#', $data["itemtype_link"]);
+                        $linktype     = $linktype_field[0];
+                        $tmp['field'] = is_a($linktype, CommonGLPI::class, true) ? $linktype::getTypeName() : $linktype;
                         $tmp['change'] = sprintf(
                             __('%1$s: %2$s'),
                             $action_label,

@@ -120,7 +120,7 @@ if (isset($_POST["add"])) {
 
    // Copy solution to KB redirect to KB
     if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
-        Html::redirect(KnowbaseItem::getFormURL() . "?id=new&item_itemtype=Problem&item_items_id=" . $_POST["id"]);
+        Html::redirect(KnowbaseItem::getFormURL() . "?id=new&item_itemtype=Problem&item_items_id=" . (int)$_POST["id"]);
     } else {
         Html::back();
     }
@@ -205,8 +205,9 @@ if (isset($_POST["add"])) {
         Html::footer();
     } else {
         $options = $_REQUEST;
-        if (isset($_GET['id']) && ($_GET['id'] > 0)) {
-            $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Problem&item_items_id=' . $_GET['id'];
+        $id = (int)$_GET['id'];
+        if ($id > 0) {
+            $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Problem&item_items_id=' . $id;
             if (strpos($url, '_to_kb=') !== false) {
                 $options['after_display'] = Ajax::createIframeModalWindow(
                     'savetokb',
@@ -222,7 +223,7 @@ if (isset($_POST["add"])) {
         }
 
         $menus = ["helpdesk", "problem"];
-        Problem::displayFullPageForItem($_GET['id'] ?? 0, $menus, $options);
+        Problem::displayFullPageForItem($id, $menus, $options);
     }
 
     Html::footer();

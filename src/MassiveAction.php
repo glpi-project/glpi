@@ -1571,12 +1571,12 @@ class MassiveAction
                                         if (!$ic->getFromDBforDevice($item->getType(), $key)) {
                                             $input2["items_id"] = $key;
                                             $input2["itemtype"] = $item->getType();
-                                            unset($ic->fields);
+                                            $ic->fields = [];
                                             $ic->add($input2);
                                             $ic->getFromDBforDevice($item->getType(), $key);
                                         }
                                         $id = $ic->fields["id"];
-                                        unset($ic->fields);
+                                        $ic->fields = [];
                                         if (
                                             $ic->update(['id'            => $id,
                                                 $input["field"] => $input[$input["field"]]

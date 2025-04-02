@@ -4466,10 +4466,10 @@ class CommonDBTM extends CommonGLPI
 
         foreach ($doubles as $double) {
             if ($this instanceof CommonDBChild) {
-                if ($this->getField($this->itemtype)) {
+                if ($this->getField($this::$itemtype)) {
                     $item = new $double['itemtype']();
                 } else {
-                    $item = new $this->itemtype();
+                    $item = new $this::$itemtype();
                 }
 
                 $item->getFromDB($double['items_id']);

@@ -64,6 +64,6 @@ class Group_Ticket extends CommonITILActor
                 break;
         }
         parent::post_addItem();
-        unset($this->_force_log_option);
+        $this->_force_log_option = 0;
     }
 }
