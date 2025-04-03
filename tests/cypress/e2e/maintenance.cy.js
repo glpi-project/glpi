@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -32,25 +30,15 @@
  * ---------------------------------------------------------------------
  */
 
-declare(strict_types=1);
-
-namespace Glpi\Controller;
-
-use Glpi\Http\Firewall;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Response;
-
-class MaintenanceController extends AbstractController
-{
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    public function __invoke(): Response
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        return $this->render('maintenance.html.twig', [
-            'title'            => "MAINTENANCE MODE",
-            'maintenance_text' => $CFG_GLPI["maintenance_text"] ?? "",
-        ]);
-    }
-}
+describe('Maintenance', () => {
+    before(() => {
+        cy.exec('php ../bin/console maintenance:enable');
+    });
+    after(() => {
+        cy.exec('php ../bin/console maintenance:disable');
+    });
+    it('GLPI is not accessible during maintenance', () => {
+        cy.visit('/');
+        cy.findByText("Temporarily down for maintenance").should('be.visible');
+    });
+});
