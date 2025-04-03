@@ -1011,6 +1011,112 @@ class UserTest extends \DbTestCase
         $this->assertSame($rawname, $user->getFriendlyName());
     }
 
+    public static function friendlyNameFieldsProvider(): array
+    {
+        return [
+            'REALNAME_BEFORE with both names' => [
+                'name_format' => User::REALNAME_BEFORE,
+                'name' => 'user1',
+                'realname' => 'Doe',
+                'firstname' => 'John',
+                'expected' => 'Doe John'
+            ],
+            'REALNAME_BEFORE with only realname' => [
+                'name_format' => User::REALNAME_BEFORE,
+                'name' => 'user2',
+                'realname' => 'Smith',
+                'firstname' => '',
+                'expected' => 'Smith'
+            ],
+            'REALNAME_BEFORE with only firstname' => [
+                'name_format' => User::REALNAME_BEFORE,
+                'name' => 'user3',
+                'realname' => '',
+                'firstname' => 'Alice',
+                'expected' => 'Alice'
+            ],
+            'REALNAME_BEFORE with neither' => [
+                'name_format' => User::REALNAME_BEFORE,
+                'name' => 'user4',
+                'realname' => '',
+                'firstname' => '',
+                'expected' => 'user4'
+            ],
+            'FIRSTNAME_BEFORE with both names' => [
+                'name_format' => User::FIRSTNAME_BEFORE,
+                'name' => 'user1',
+                'realname' => 'Doe',
+                'firstname' => 'John',
+                'expected' => 'John Doe'
+            ],
+            'FIRSTNAME_BEFORE with only realname' => [
+                'name_format' => User::FIRSTNAME_BEFORE,
+                'name' => 'user2',
+                'realname' => 'Smith',
+                'firstname' => '',
+                'expected' => 'Smith'
+            ],
+            'FIRSTNAME_BEFORE with only firstname' => [
+                'name_format' => User::FIRSTNAME_BEFORE,
+                'name' => 'user3',
+                'realname' => '',
+                'firstname' => 'Alice',
+                'expected' => 'Alice'
+            ],
+            'FIRSTNAME_BEFORE with neither' => [
+                'name_format' => User::FIRSTNAME_BEFORE,
+                'name' => 'user4',
+                'realname' => '',
+                'firstname' => '',
+                'expected' => 'user4'
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider friendlyNameFieldsProvider
+     */
+    public function testGetFriendlyNameFields(int $name_format, string $name, string $realname, string $firstname, string $expected)
+    {
+        global $DB;
+
+        $this->login();
+
+        // Set the name format configuration
+        \Config::setConfigurationValues('core', ['names_format' => $name_format]);
+
+        // Create test user
+        $user = new \User();
+        $id = (int)$user->add([
+            'name' => $name,
+            'realname' => $realname,
+            'firstname' => $firstname,
+        ]);
+        $this->assertGreaterThan(0, $id);
+
+        // Test the SQL query using the GLPI query API
+        $alias = 'test_name';
+        $field_expr = User::getFriendlyNameFields($alias);
+
+        // Use GLPI query API instead of direct SQL
+        $iterator = $DB->request([
+            'SELECT' => ['id', new \QueryExpression($field_expr)],
+            'FROM'   => 'glpi_users',
+            'WHERE'  => ['id' => $id]
+        ]);
+
+        $this->assertEquals(1, count($iterator));
+        $row = $iterator->current();
+
+        // Verify we get the expected friendly name
+        $format_label = $name_format == User::FIRSTNAME_BEFORE ? 'FIRSTNAME_BEFORE' : 'REALNAME_BEFORE';
+        $this->assertEquals(
+            $expected,
+            $row[$alias],
+            "Failed with format {$format_label} for user with name={$name}, realname={$realname}, firstname={$firstname}"
+        );
+    }
+
     public function testBlankPassword()
     {
         $input = [
