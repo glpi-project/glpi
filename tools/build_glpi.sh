@@ -80,6 +80,7 @@ find $WORKING_DIR -depth -iname ".*" -exec rm -rf {} \;
 dev_nodes=(
     "composer.json"
     "composer.lock"
+    "composer-dependency-analyser.php"
     "docker-compose.yaml"
     "eslint.config.mjs"
     "js"
