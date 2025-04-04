@@ -49,7 +49,7 @@ define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:8088');
 define('GLPI_STRICT_DEPRECATED', true); //enable strict depreciations
 
 define('FIXTURE_DIR', __DIR__ . "/../tests/fixtures");
-define('MARKETPLACE_DIR',  __DIR__ . "/../tests/marketplace");
+define('MARKETPLACE_DIR', __DIR__ . "/../tests/marketplace");
 define(
     'PLUGINS_DIRECTORIES',
     [
