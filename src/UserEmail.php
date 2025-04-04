@@ -188,9 +188,9 @@ class UserEmail extends CommonDBChild
     {
 
         return "<div class=\'d-flex\'><input title=\'" . __s('Default email') . "\' type=\'radio\' name=\'_default_email\'" .
-             " value=\'-'+" . htmlescape($child_count_js_var) . "+'\'>&nbsp;" .
+             " value=\'-'+" . htmlescape($child_count_js_var) . "+'\' aria-label=\'" . __s('Set as default email') . "\'>&nbsp;" .
              "<input type=\'text\' size=\'30\' class=\'form-control\' " . "name=\'" . htmlescape($field_name) .
-             "[-'+" . htmlescape($child_count_js_var) . "+']\'></div>";
+             "[-'+" . htmlescape($child_count_js_var) . "+']\'  aria-label=\'" . __s('Email address') . "\'></div>";
     }
 
 
@@ -220,12 +220,12 @@ class UserEmail extends CommonDBChild
         if ($this->fields['is_default']) {
             $result .= " checked";
         }
-        $result .= ">&nbsp;";
+        $result .= " aria-label='" . __s('Set as default email') . "'>&nbsp;";
         if (!$canedit || $this->fields['is_dynamic']) {
             $result .= "<input type='hidden' name='$field_name' value='$value'>";
             $result .= sprintf('%s <span class="b">(%s)</span>', $value, __s('D'));
         } else {
-            $result .= "<input type='text' size=30 class='form-control' name='$field_name' value='$value' >";
+            $result .= "<input type='text' size=30 class='form-control' name='$field_name' value='$value' aria-label='" . __s('Email address') . "'>";
         }
         $result .= "</div>";
 
