@@ -1044,6 +1044,16 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
         return "/Form/Render/" . $this->getID();
     }
 
+    /**
+     * Get the number of times this form has been used
+     *
+     * @return int
+     */
+    public function getUsageCount(): int
+    {
+        return $this->fields['usage_count'] ?? 0;
+    }
+
     private function addDefaultDestinations(): void
     {
         $destination = new FormDestination();

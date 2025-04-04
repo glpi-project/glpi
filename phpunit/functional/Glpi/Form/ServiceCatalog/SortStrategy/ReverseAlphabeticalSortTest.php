@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,41 +32,34 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ServiceCatalog;
+namespace tests\units\Glpi\Form;
 
-use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Form\Category;
-use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyFactory;
+include_once __DIR__ . '/../../../../../abstracts/SortStrategyTestCase.php';
 
-final class ItemRequest
+class ReverseAlphabeticalSortTest extends SortStrategyTestCase
 {
-    public function __construct(
-        public FormAccessParameters $access_parameters,
-        public string $filter = "",
-        public ?Category $category = null,
-        public int $page = 1,
-        public int $items_per_page = ServiceCatalogManager::ITEMS_PER_PAGE,
-        public ?string $sort_strategy = null
-    ) {
+    protected function getSortStrategyKey(): string
+    {
+        return 'reverse_alphabetical';
     }
 
-    public function getFormAccessParameters(): FormAccessParameters
+    protected function provideExpectedSortedItems(): array
     {
-        return $this->access_parameters;
-    }
-
-    public function getFilter(): string
-    {
-        return $this->filter;
-    }
-
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function getSortStrategy(): string
-    {
-        return $this->sort_strategy ?? SortStrategyFactory::DEFAULT_STRATEGY;
+        return [
+            'Pinned KnowbaseItem',
+            'Pinned Form',
+            'Category with nested category',
+            'C Category',
+            'B Category',
+            'A Category',
+            'Popular KnowbaseItem',
+            'Popular Form',
+            'C KnowbaseItem',
+            'C Form',
+            'B KnowbaseItem',
+            'B Form',
+            'A KnowbaseItem',
+            'A Form',
+        ];
     }
 }
