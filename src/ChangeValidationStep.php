@@ -32,12 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
-
-/* Tests for src/ChangeValidation.php */
-
-use Glpi\PHPUnit\Tests\CommonITILValidationTest;
-
-class ChangeValidationTest extends CommonITILValidationTest
+class ChangeValidationStep extends ITIL_ValidationStep
 {
+    public static $rightname = 'changevalidation';
+    public static string $validation_classname = ChangeValidation::class;
+
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Change Validation step', 'Change Validation steps', $nb);
+    }
 }

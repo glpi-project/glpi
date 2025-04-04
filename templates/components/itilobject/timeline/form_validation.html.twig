@@ -177,10 +177,8 @@
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
             <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
 
-            <div class="card-header">
-                <h3 class="cart-title">{{ __("Validation request") }}</h3>
-            </div>
             <div class="card-body">
+               {# Validation template #}
                {{ fields.dropdownField(
                   'ITILValidationTemplate',
                   'itilvalidationtemplates_id',
@@ -194,6 +192,19 @@
                   },
                 ) }}
 
+               {# Validation step #}
+               {{ fields.dropdownField(
+                  'ValidationStep',
+                  '_validationsteps_id',
+                  _validationsteps_id,
+                  __('Validation step'),
+                  {
+                     'full_width': true,
+                     'rand': rand,
+                  }
+               ) }}
+
+                {# Requester #}
                 {{ fields.readOnlyField(
                     'approval_requester',
                     get_current_user().getFriendlyName(),
@@ -204,6 +215,7 @@
                     }
                 ) }}
 
+               {# Approver #}
                 {% if subitem.isNewItem() %}
                     {% set validation_right = 'validate' %}
                     {% if item.getType() == 'Ticket' %}
@@ -240,6 +252,7 @@
                     ) }}
                 {% endif %}
 
+                {# Comment #}
                 {{ fields.textareaField(
                     'comment_submission',
                     subitem.fields['comment_submission'],
@@ -299,8 +312,8 @@
             window.scrollTo(0,document.body.scrollHeight);
          </script>
       {% endif %}
-
       <script type="text/javascript">
+         // --- fill form with template data
          function itilvalidationtemplate_update{{ rand }}(value) {
             $.ajax({
                url: '{{ path('/ajax/itilvalidation.php') }}',
@@ -316,6 +329,7 @@
                   setRichTextEditorContent("comment_submission_{{ rand }}", data.content);
                }
 
+                // Validator field
                if (data.validatortype !== undefined) {
                   // set validator type
                   $("#dropdown__validatortype_{{ rand }}").trigger('setValue', "0");
@@ -356,6 +370,12 @@
                      });
                   }
                }
+
+               // Validation step field
+               if( data.validationsteps_id !== undefined ) {
+                  $("#dropdown__validationsteps_id{{ rand }}").trigger('setValue', data.validationsteps_id);
+               }
+
             });
          }
       </script>

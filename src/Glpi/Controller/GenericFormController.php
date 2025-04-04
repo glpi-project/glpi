@@ -150,7 +150,7 @@ class GenericFormController extends AbstractController
                 $class,
                 $object::getLogDefaultLevel(),
                 $object::getLogDefaultServiceName(),
-                sprintf(__('%1$s executes the "%2$s" action on the item %3$s'), $_SESSION["glpiname"], $form_action, $post_data["name"])
+                sprintf(__('%1$s executes the "%2$s" action on the item %3$s'), $_SESSION["glpiname"], $form_action, $post_data["name"] ?? 'N/A')
             );
         }
 
