@@ -36,13 +36,14 @@
 namespace Glpi\Helpdesk\Tile;
 
 use CommonDBRelation;
-use Profile;
 
-final class Profile_Tile extends CommonDBRelation
+final class Item_Tile extends CommonDBRelation
 {
-    public static $itemtype_1 = Profile::class;
-    public static $items_id_1 = 'profiles_id';
+    // Linked CommonDBTM item
+    public static $itemtype_1 = 'itemtype_item';
+    public static $items_id_1 = 'items_id_item';
 
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
+    // Linked CommonDBTM&TileInterface item
+    public static $itemtype_2 = 'itemtype_tile';
+    public static $items_id_2 = 'items_id_tile';
 }

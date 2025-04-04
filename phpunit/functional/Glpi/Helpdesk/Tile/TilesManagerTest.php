@@ -38,7 +38,7 @@ use DbTestCase;
 use Glpi\Helpdesk\Tile\ExternalPageTile;
 use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
-use Glpi\Helpdesk\Tile\Profile_Tile;
+use Glpi\Helpdesk\Tile\Item_Tile;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
@@ -79,8 +79,7 @@ final class TilesManagerTest extends DbTestCase
         ]);
 
         // Assert: there should be two tiles defined for our profile
-        $session = new SessionInfo(profile_id: $profile->getID());
-        $tiles = $manager->getTiles($session);
+        $tiles = $manager->getTilesForItem($profile);
         $this->assertCount(2, $tiles);
 
         $first_tile = $tiles[0];
@@ -152,7 +151,7 @@ final class TilesManagerTest extends DbTestCase
             profile_id: $profile->getID(),
             active_entities_ids: [$test_entity_id],
         );
-        $tiles = $manager->getTiles($session);
+        $tiles = $manager->getVisibleTilesForSession($session);
 
         // Assert: only the active form tile should be found
         $form_names = array_map(fn($tile) => $tile->getTitle(), $tiles);
@@ -193,7 +192,7 @@ final class TilesManagerTest extends DbTestCase
             profile_id: $profile->getID(),
             active_entities_ids: [$test_entity_id],
         );
-        $tiles = $manager->getTiles($session);
+        $tiles = $manager->getVisibleTilesForSession($session);
 
         // Assert: only the form with a valid access policy should be found
         $form_names = array_map(fn($tile) => $tile->getTitle(), $tiles);
@@ -240,7 +239,7 @@ final class TilesManagerTest extends DbTestCase
             profile_id: $profile->getID(),
             active_entities_ids: [$test_entity_id],
         );
-        $tiles = $manager->getTiles($session);
+        $tiles = $manager->getVisibleTilesForSession($session);
 
         // Assert: only the form with a valid access policy should be found
         $form_names = array_map(fn($tile) => $tile->getTitle(), $tiles);
@@ -278,13 +277,12 @@ final class TilesManagerTest extends DbTestCase
         ]);
 
         // Get the second tile and move it at the end
-        $this->updateItem(Profile_Tile::class, $profile_tile_id, [
+        $this->updateItem(Item_Tile::class, $profile_tile_id, [
             'rank' => 10,
         ]);
 
         // Act: get tiles
-        $session = new SessionInfo(profile_id: $profile->getID());
-        $tiles = $manager->getTiles($session);
+        $tiles = $manager->getTilesForItem($profile);
 
         // Assert: tiles must be in the expected order
         $this->assertCount(3, $tiles);
@@ -339,15 +337,14 @@ final class TilesManagerTest extends DbTestCase
         ]);
 
         // Act: set a new order
-        $manager->setOrderForProfile($profile, [
+        $manager->setOrderForItem($profile, [
             $profile_tile_id_3,
             $profile_tile_id_1,
             $profile_tile_id_2,
         ]);
 
         // Assert: confirm the new order
-        $session = new SessionInfo(profile_id: $profile->getID());
-        $tiles = $manager->getTiles($session);
+        $tiles = $manager->getTilesForItem($profile);
 
         $first_tile = $tiles[0];
         $this->assertInstanceOf(ExternalPageTile::class, $first_tile);
@@ -399,13 +396,12 @@ final class TilesManagerTest extends DbTestCase
         ]);
 
         // Act: delete the second tile
-        $profile_tile = Profile_Tile::getById($profile_tile_id_2);
-        $tile_id = $profile_tile->fields['items_id'];
+        $item_tile = Item_Tile::getById($profile_tile_id_2);
+        $tile_id = $item_tile->fields['items_id_tile'];
         $this->getManager()->deleteTile(GlpiPageTile::getById($tile_id));
 
         // Assert: the tile must not be found and must be cleared from the DB
-        $session = new SessionInfo(profile_id: $profile->getID());
-        $tiles = $manager->getTiles($session);
+        $tiles = $manager->getTilesForItem($profile);
         $this->assertCount(2, $tiles);
 
         $first_tile = $tiles[0];
@@ -413,7 +409,7 @@ final class TilesManagerTest extends DbTestCase
         $this->assertNotEquals("FAQ", $first_tile->getTitle());
         $this->assertNotEquals("FAQ", $second_tile->getTitle());
 
-        $this->assertFalse(Profile_Tile::getById($profile_tile_id_2));
+        $this->assertFalse(Item_Tile::getById($profile_tile_id_2));
         $this->assertFalse(GlpiPageTile::getById($tile_id));
     }
 }

@@ -102,7 +102,8 @@
         );
         new module.GlpiHelpdeskConfigController(
             document.getElementById("{{ container_id }}"),
-            {{ profile_id }},
+            "{{ itemtype_item|escape('js') }}",
+            {{ items_id_item }},
         );
     })();
 </script>

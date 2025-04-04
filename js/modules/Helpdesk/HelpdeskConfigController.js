@@ -35,12 +35,14 @@
 export class GlpiHelpdeskConfigController
 {
     #container;
-    #profile_id;
+    #itemtype_item;
+    #items_id_item;
 
-    constructor(container, profile_id)
+    constructor(container, itemtype_item, items_id_item)
     {
         this.#container = container;
-        this.#profile_id = profile_id;
+        this.#itemtype_item = itemtype_item;
+        this.#items_id_item = items_id_item;
         this.#enableSortable();
         this.#initEventsHandlers();
     }
@@ -144,7 +146,8 @@ export class GlpiHelpdeskConfigController
         try {
             // Set up form data
             const form_data = new FormData();
-            form_data.append('profile_id', this.#profile_id);
+            form_data.append('itemtype_item', this.#itemtype_item);
+            form_data.append('items_id_item', this.#items_id_item);
             this.#getTilesOrder()
                 .forEach((id) => form_data.append("order[]", id))
             ;
@@ -177,11 +180,11 @@ export class GlpiHelpdeskConfigController
     #getTilesOrder()
     {
         const nodes = this.#container
-            .querySelectorAll('[data-glpi-helpdesk-config-tile-profile-id]')
+            .querySelectorAll('[data-glpi-helpdesk-config-item-tile-id]')
         ;
 
         return [...nodes].map((node) => {
-            return node.dataset.glpiHelpdeskConfigTileProfileId;
+            return node.dataset.glpiHelpdeskConfigItemTileId;
         });
     }
 
@@ -393,7 +396,8 @@ export class GlpiHelpdeskConfigController
 
             // Set up form data
             const form_data = new FormData(form);
-            form_data.append('_profile_id', this.#profile_id);
+            form_data.append('_itemtype_item', this.#itemtype_item);
+            form_data.append('_items_id_item', this.#items_id_item);
 
             // Send request
             const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/AddTile`;
