@@ -33,9 +33,9 @@
 <span class="me-2 value-selector flex-grow-1">
     {% do call('Dropdown::showFromArray', [
         input_name,
-        values,
+        values|default([]),
         {
-            'values': input_value,
+            'values': input_value|default([]),
             'aria_label': input_label,
             'add_data_attributes': {
                 'glpi-conditions-editor-value': '',

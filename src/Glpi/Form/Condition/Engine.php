@@ -183,8 +183,13 @@ final class Engine
             return false;
         }
 
-        $raw_config = json_decode($question->fields['extra_data'], true);
-        $config = $raw_config ? $question_type->getExtraDataConfig($raw_config) : null;
+        // Retrieve the configuration for the question type if any.
+        $config = null;
+        if ($question->fields['extra_data'] != null) {
+            $raw_config = json_decode($question->fields['extra_data'], true);
+            $config = $question_type->getExtraDataConfig($raw_config);
+        }
+
         return $question_type->getConditionHandler($config)->applyValueOperator(
             $answer,
             $condition->getValueOperator(),
