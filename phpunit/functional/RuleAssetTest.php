@@ -560,6 +560,17 @@ class RuleAssetTest extends DbTestCase
         //Load user tech
         $user = getItemByTypeName('User', 'tech');
 
+        // Check case where user is not in any group
+        $computer = $this->createItem(
+            'Computer',
+            [
+                'name'        => 'test no groups',
+                'entities_id' => 0,
+                'users_id'    => $user->getID(),
+            ]
+        );
+        $this->assertEquals(0, $computer->getField('groups_id'));
+
         //add user to group
         $group_user    = new \Group_User();
         $group_user_id = $group_user->add($group_user_input = [

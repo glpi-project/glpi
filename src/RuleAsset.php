@@ -295,7 +295,7 @@ class RuleAsset extends Rule
                             ($action->fields['field'] == 'groups_id')
                             && isset($input['_groups_id_of_user'])
                         ) {
-                            $output['groups_id'] = reset($input['_groups_id_of_user']);
+                            $output['groups_id'] = (int) reset($input['_groups_id_of_user']);
                         }
                         break;
 
