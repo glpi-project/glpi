@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+const uuid = new Date().getTime();
+
 let questions = null;
 let comments = null;
 let sections = null;
@@ -155,6 +157,7 @@ function closeVisibilityConfiguration() {
 
 function openConditionEditor() {
     cy.findByTitle(/Configure (visibility|creation conditions)/).click();
+    cy.waitForNetworkIdle(150);
 }
 
 function closeConditionEditor() {
@@ -196,6 +199,11 @@ function deleteConditon(index) {
 
 function fillCondition(index, logic_operator, question_name, value_operator_name, value, value_type = "string") {
     cy.get("[data-glpi-conditions-editor-condition]").eq(index).as('condition');
+
+    // Scroll the condition into view before interacting with it
+    cy.get('@condition').scrollIntoView();
+    cy.get('@condition').should('be.visible');
+
     if (logic_operator !== null && index > 0) {
         cy.get('@condition')
             .getDropdownByLabelText('Logic operator')
@@ -224,6 +232,11 @@ function fillCondition(index, logic_operator, question_name, value_operator_name
 
 function checkThatConditionExist(index, logic_operator, question_name, value_operator_name, value, value_type = "string") {
     cy.get("[data-glpi-conditions-editor-condition]").eq(index).as('condition');
+
+    // Scroll the condition into view before interacting with it
+    cy.get('@condition').scrollIntoView();
+    cy.get('@condition').should('be.visible');
+
     if (logic_operator !== null && index > 0) {
         cy.get('@condition')
             .getDropdownByLabelText('Logic operator')
@@ -957,6 +970,20 @@ describe ('Conditions', () => {
         setQuestionTypeCategory('Actors');
         setQuestionType('Assignees');
 
+        addQuestion('My single user devices question');
+        setQuestionTypeCategory('Item');
+        setQuestionType('User Devices');
+
+        addQuestion('My multiple user devices question');
+        setQuestionTypeCategory('Item');
+        setQuestionType('User Devices');
+        cy.findByRole('checkbox', {'name': 'Allow multiple devices'}).check();
+
+        cy.createWithAPI('Computer', {
+            name    : `Assigned Computer - ${uuid}`,
+            users_id: 7, // E2E Tests user id
+        });
+
         // Add a condition for each possible condition types
         getAndFocusQuestion('Test subject').within(() => {
             initVisibilityConfiguration();
@@ -1087,6 +1114,24 @@ describe ('Conditions', () => {
                 'E2E Tests',
                 'dropdown',
             );
+            addNewEmptyCondition();
+            fillCondition(
+                14,
+                'And',
+                'My single user devices question',
+                'Is of itemtype',
+                'Computer',
+                'dropdown',
+            );
+            addNewEmptyCondition();
+            fillCondition(
+                15,
+                'And',
+                'My multiple user devices question',
+                'At least one item of itemtype',
+                'Computer',
+                'dropdown',
+            );
         });
 
         // Reload and check values
@@ -1203,6 +1248,22 @@ describe ('Conditions', () => {
                 'My assignee question',
                 'Is equal to',
                 'e2e_tests',
+                'dropdown',
+            );
+            checkThatConditionExist(
+                14,
+                'And',
+                'My single user devices question',
+                'Is of itemtype',
+                'Computer',
+                'dropdown',
+            );
+            checkThatConditionExist(
+                15,
+                'And',
+                'My multiple user devices question',
+                'At least one item of itemtype',
+                '×Computer',
                 'dropdown',
             );
         });
