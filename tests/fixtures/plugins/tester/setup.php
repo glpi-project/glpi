@@ -32,7 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\QuestionType\QuestionTypesManager;
+use GlpiPlugin\Tester\Form\DayOfTheWeekPolicy;
 use GlpiPlugin\Tester\Form\QuestionTypeRange;
 use GlpiPlugin\Tester\Form\QuestionTypeColor;
 use GlpiPlugin\Tester\Form\TesterCategory;
@@ -85,4 +87,8 @@ function plugin_init_tester(): void
     $types_manager->registerPluginCategory(new TesterCategory());
     $types_manager->registerPluginQuestionType(new QuestionTypeRange());
     $types_manager->registerPluginQuestionType(new QuestionTypeColor());
+
+    // Register access control policies
+    $access_manager = FormAccessControlManager::getInstance();
+    $access_manager->registerPluginAccessControlPolicy(new DayOfTheWeekPolicy());
 }
