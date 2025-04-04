@@ -570,7 +570,7 @@ JAVASCRIPT;
                 }
             } else {
                 $itemtype   = $exploded[0];
-                $object = new $itemtype();
+                $object = getItemForItemtype($itemtype);
                 $users_id = (int) $exploded[1];
                 $object->getFromDB($users_id);
 
