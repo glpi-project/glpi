@@ -418,8 +418,8 @@ final class ObserverFieldTest extends AbstractActorFieldTest
                 strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                 specific_itilactors_ids: [
                     'User' => [
-                        getItemByTypeName(User::class, 'glpi', true),
-                        getItemByTypeName(User::class, 'tech', true),
+                        ['items_id' => getItemByTypeName(User::class, 'glpi', true)],
+                        ['items_id' => getItemByTypeName(User::class, 'tech', true)],
                     ]
                 ]
             )
@@ -461,8 +461,8 @@ final class ObserverFieldTest extends AbstractActorFieldTest
                 strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                 specific_itilactors_ids: [
                     'Group' => [
-                        getItemByTypeName(Group::class, '_test_group_1', true),
-                        getItemByTypeName(Group::class, '_test_group_2', true),
+                        ['items_id' => getItemByTypeName(Group::class, '_test_group_1', true)],
+                        ['items_id' => getItemByTypeName(Group::class, '_test_group_2', true)],
                     ]
                 ]
             )
@@ -564,8 +564,8 @@ final class ObserverFieldTest extends AbstractActorFieldTest
                 strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                 specific_itilactors_ids: [
                     'Supplier' => [
-                        getItemByTypeName(Supplier::class, '_test_supplier_1', true),
-                        getItemByTypeName(Supplier::class, '_test_supplier_2', true),
+                        ['items_id' => getItemByTypeName(Supplier::class, '_test_supplier_1', true)],
+                        ['items_id' => getItemByTypeName(Supplier::class, '_test_supplier_2', true)],
                     ]
                 ]
             )

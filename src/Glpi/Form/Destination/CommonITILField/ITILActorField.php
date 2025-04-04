@@ -135,10 +135,9 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
             if (!empty($itilactors_ids)) {
                 foreach ($itilactors_ids as $itemtype => $ids) {
                     foreach ($ids as $id) {
-                        $input['_actors'][$this->getActorType()][] = [
+                        $input['_actors'][$this->getActorType()][] = array_merge([
                             'itemtype' => $itemtype,
-                            'items_id' => $id,
-                        ];
+                        ], $id);
                     }
                 }
             }
@@ -164,7 +163,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                 $input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS],
                 function ($carry, $value) {
                     $parts = explode("-", $value);
-                    $carry[getItemtypeForForeignKeyField($parts[0])][] = (int) $parts[1];
+                    $carry[getItemtypeForForeignKeyField($parts[0])][] = ['items_id' => (int) $parts[1]];
                     return $carry;
                 },
                 []
