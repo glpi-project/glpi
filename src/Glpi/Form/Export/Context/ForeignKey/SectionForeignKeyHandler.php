@@ -62,7 +62,7 @@ final class SectionForeignKeyHandler implements JsonConfigForeignKeyHandlerInter
         if ($item->getFromDB($foreign_key)) {
             $requirements[] = new DataRequirementSpecification(
                 Section ::class,
-                $item->getUniqueIDInForm()
+                $item->getID()
             );
         }
 
@@ -80,7 +80,7 @@ final class SectionForeignKeyHandler implements JsonConfigForeignKeyHandlerInter
         // Replace the foreign key by the name of the item it references and load item
         $item = new Section();
         if ($item->getFromDB($foreign_key)) {
-            $serialized_data[$this->key] = $item->getUniqueIDInForm();
+            $serialized_data[$this->key] = $item->getID();
         } else {
             unset($serialized_data[$this->key]);
         }

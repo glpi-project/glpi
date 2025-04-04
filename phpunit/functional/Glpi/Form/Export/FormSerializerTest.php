@@ -32,14 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Form;
+namespace tests\units\Glpi\Form\Export;
 
 use Computer;
 use Entity;
 use Glpi\Form\Category;
 use Glpi\Form\Comment;
-use Glpi\Form\Condition\ConditionData;
-use Glpi\Form\Condition\FormData;
 use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\Type;
 use Glpi\Form\Condition\ValueOperator;
@@ -485,10 +483,7 @@ final class FormSerializerTest extends \DbTestCase
                 'vertical_rank'     => 1,
                 'horizontal_rank'   => null,
                 'description'       => '',
-                'default_value'     => json_encode(array_intersect_key(
-                    $actors_default_value_config->jsonSerialize(),
-                    ['users_ids' => '']
-                )),
+                'default_value'     => json_encode($actors_default_value_config->jsonSerialize()),
                 'extra_data'        => json_encode($actors_extra_data_config->jsonSerialize()),
                 'forms_sections_id' => array_values($form_copy->getSections())[1]->fields['id'],
             ]

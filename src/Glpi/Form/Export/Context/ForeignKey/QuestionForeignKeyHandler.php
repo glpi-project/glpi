@@ -70,7 +70,7 @@ final class QuestionForeignKeyHandler implements JsonConfigForeignKeyHandlerInte
         if ($question !== null) {
             $requirements[] = new DataRequirementSpecification(
                 Question::class,
-                $question->getUniqueIDInForm()
+                $question->getID()
             );
         }
 
@@ -88,7 +88,7 @@ final class QuestionForeignKeyHandler implements JsonConfigForeignKeyHandlerInte
         // Replace the foreign key by the name of the item it references and load item
         $question = $this->getQuestionByCriteria([$this->column_key ?? 'id' => $foreign_key]);
         if ($question !== null) {
-            $serialized_data[$this->key] = $question->getUniqueIDInForm();
+            $serialized_data[$this->key] = $question->getID();
         } else {
             unset($serialized_data[$this->key]);
         }

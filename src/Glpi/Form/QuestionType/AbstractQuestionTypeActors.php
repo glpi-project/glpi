@@ -37,14 +37,18 @@ namespace Glpi\Form\QuestionType;
 
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Condition\ConditionHandler\ActorConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 use Group;
 use InvalidArgumentException;
+use JsonException;
 use Override;
 use Supplier;
 use User;
@@ -458,5 +462,105 @@ TWIG;
     public function getDefaultValueConfigClass(): ?string
     {
         return QuestionTypeActorsDefaultValueConfig::class;
+    }
+
+    #[Override]
+    public function exportDynamicDefaultValue(
+        ?JsonFieldInterface $extra_data_config,
+        array|int|float|bool|string|null $default_value_config,
+    ): DynamicExportDataField {
+        $requirements = [];
+
+        // Fallback to default values if configuration isn't in the expected format
+        if (!is_array($default_value_config)) {
+            return parent::exportDynamicDefaultValue(
+                $extra_data_config,
+                $default_value_config
+            );
+        }
+
+        $to_handle =  [
+            User::class     => QuestionTypeActorsDefaultValueConfig::KEY_USERS_IDS,
+            Group::class    => QuestionTypeActorsDefaultValueConfig::KEY_GROUPS_IDS,
+            Supplier::class => QuestionTypeActorsDefaultValueConfig::KEY_SUPPLIERS_IDS,
+        ];
+
+        // Handler users, groups and suppliers ids.
+        foreach ($to_handle as $itemtype => $data_key) {
+            /** @var class-string<\CommonDBTM> $itemtype */
+
+            // Iterate on ids
+            $ids = $default_value_config[$data_key] ?? [];
+            foreach ($ids as $i => $item_id) {
+                if (intval($item_id) === 0) {
+                    continue;
+                }
+
+                $item = $itemtype::getById($item_id);
+                if (!$item) {
+                    continue;
+                }
+
+                $name = $item->getName();
+                $default_value_config[$data_key][$i] = $name;
+                $requirements[] = new DataRequirementSpecification($itemtype, $name);
+            }
+        }
+
+        return new DynamicExportDataField($default_value_config, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicDefaultValueForImport(
+        ?string $extra_data,
+        int|float|bool|string|null $default_value_data,
+        DatabaseMapper $mapper,
+    ): int|float|bool|string|null {
+        $fallback = parent::prepareDynamicDefaultValueForImport(
+            $extra_data,
+            $default_value_data,
+            $mapper,
+        );
+
+        // Content should be a JSON encoded string
+        if (!is_string($default_value_data)) {
+            return $fallback;
+        }
+
+        try {
+            $default_value_data = json_decode(
+                $default_value_data,
+                associative: true,
+                flags: JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $e) {
+            return $fallback;
+        }
+
+        $to_handle =  [
+            User::class     => QuestionTypeActorsDefaultValueConfig::KEY_USERS_IDS,
+            Group::class    => QuestionTypeActorsDefaultValueConfig::KEY_GROUPS_IDS,
+            Supplier::class => QuestionTypeActorsDefaultValueConfig::KEY_SUPPLIERS_IDS,
+        ];
+
+        // Handler users, groups and suppliers ids.
+        foreach ($to_handle as $itemtype => $data_key) {
+            /** @var class-string<\CommonDBTM> $itemtype */
+
+            // Iterate on names
+            $names = $default_value_data[$data_key] ?? [];
+            foreach ($names as $i => $name) {
+                // Exclude special values
+                if ($name == "all") {
+                    continue;
+                }
+
+                // Restore correct id
+                $id = $mapper->getItemId($itemtype, $name);
+                $default_value_data[$data_key][$i] = $id;
+            }
+        }
+
+        return json_encode($default_value_data);
     }
 }

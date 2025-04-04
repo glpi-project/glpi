@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,12 +32,39 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Export\Specification;
+namespace Glpi\Form\Export\Serializer;
 
-final class SectionContentSpecification
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
+
+final readonly class DynamicExportDataField
 {
-    public int $id;
-    public string $name;
-    public ?string $description;
-    public int $rank;
+    private ?string $data;
+
+    /** @var DataRequirementSpecification[] */
+    private array $requirements;
+
+    public function __construct(
+        mixed $data,
+        array $requirements
+    ) {
+        if (is_array($data) || is_object($data)) {
+            $this->data = json_encode($data);
+        } else {
+            $this->data = $data;
+        }
+
+        $this->requirements = $requirements;
+    }
+
+    public function getData(): ?string
+    {
+        return $this->data;
+    }
+
+
+    /** @return DataRequirementSpecification[] */
+    public function getRequirements(): array
+    {
+        return $this->requirements;
+    }
 }
