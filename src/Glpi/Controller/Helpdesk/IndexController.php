@@ -67,7 +67,7 @@ final class IndexController extends AbstractController
         return $this->render('pages/helpdesk/index.html.twig', [
             'title' => __("Home"),
             'menu'  => ['helpdesk-home'],
-            'tiles' => $this->tiles_manager->getTiles(Session::getCurrentSessionInfo()),
+            'tiles' => $this->tiles_manager->getVisibleTilesForSession(Session::getCurrentSessionInfo()),
             'tabs'  => new HomePageTabs(),
             'password_alert' => $user->getPasswordExpirationMessage(),
         ]);

@@ -1,6 +1,4 @@
-<?php
-
-/**
+/*!
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,16 +31,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Helpdesk\Tile;
-
-use CommonDBRelation;
-use Profile;
-
-final class Profile_Tile extends CommonDBRelation
-{
-    public static $itemtype_1 = Profile::class;
-    public static $items_id_1 = 'profiles_id';
-
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
+.helpdesk-home-config-for-empty-entity-wrapper {
+    // Hide the tiles and actions
+    [data-glpi-helpdesk-config-tiles], [data-glpi-helpdesk-config-actions] {
+        display: none !important;
+    }
 }

@@ -34,44 +34,30 @@
 
 namespace Glpi\Controller\Config\Helpdesk;
 
-use Config;
-use Glpi\Controller\AbstractController;
+use Entity;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Helpdesk\Tile\TilesManager;
-use Glpi\Session\SessionInfo;
-use Session;
+use Html;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class FetchTilesController extends AbstractController
+final class CopyParentEntityController extends AbstractTileController
 {
-    private TilesManager $tiles_manager;
-
-    public function __construct()
-    {
-        $this->tiles_manager = new TilesManager();
-    }
-
     #[Route(
-        "/Config/Helpdesk/FetchTiles",
-        name: "glpi_config_helpdesk_fetch_tiles",
-        methods: "GET"
+        "/Config/Helpdesk/CopyParentEntity",
+        name: "glpi_config_helpdesk_copy_parent_entity",
+        methods: "POST"
     )]
     public function __invoke(Request $request): Response
     {
-        if (!Session::haveRight(Config::$rightname, READ)) {
-            throw new AccessDeniedHttpException();
-        }
+        // Validate itemtype
+        $entity = $this->getAndValidateLinkedItemFromRequest(
+            Entity::class,
+            $request->request->getInt('entities_id'),
+        );
+        $this->tiles_manager->copyTilesFromParentEntity($entity);
 
-        $profile_id = $request->query->getInt('profile_id');
-        $tiles = $this->tiles_manager->getTiles(new SessionInfo(
-            profile_id: $profile_id,
-        ), check_availability: false);
-
-        return $this->render('pages/admin/helpdesk_home_config_tiles.html.twig', [
-            'tiles_manager' => $this->tiles_manager,
-            'tiles' => $tiles,
-        ]);
+        return new RedirectResponse(Html::getBackUrl());
     }
 }

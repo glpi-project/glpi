@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,34 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Config\Helpdesk;
+namespace Glpi\Helpdesk\Tile;
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use CommonDBRelation;
 
-final class ShowEditTileFormController extends AbstractTileController
+final class Item_Tile extends CommonDBRelation
 {
-    #[Route(
-        "/Config/Helpdesk/ShowEditTileForm",
-        name: "glpi_config_helpdesk_show_edit_tile_form",
-        methods: "GET"
-    )]
-    public function __invoke(Request $request): Response
-    {
-        // Validate itemtype
-        $tile = $this->getAndValidateTileFromRequest(
-            $request->query->getString('tile_itemtype'),
-            $request->query->getInt('tile_id'),
-        );
-        if (!$tile::canUpdate() || !$tile->canUpdateItem()) {
-            throw new AccessDeniedHttpException();
-        }
+    // Linked CommonDBTM item
+    public static $itemtype_1 = 'itemtype_item';
+    public static $items_id_1 = 'items_id_item';
 
-        // Render form
-        return $this->render('pages/admin/helpdesk_home_config_edit_tile_form.html.twig', [
-            'tile' => $tile,
-        ]);
-    }
+    // Linked CommonDBTM&TileInterface item
+    public static $itemtype_2 = 'itemtype_tile';
+    public static $items_id_2 = 'items_id_tile';
 }
