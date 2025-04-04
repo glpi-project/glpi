@@ -61,10 +61,6 @@ function setQuestionTypeCategory(category) {
     cy.getDropdownByLabelText('Question type').selectDropdownValue(category);
 }
 
-function setQuestionType(type) {
-    cy.getDropdownByLabelText('Question sub type').selectDropdownValue(type);
-}
-
 function addComment(name) {
     cy.findByRole('button', {'name': "Add a new comment"}).click();
     cy.focused().type(name);
@@ -155,6 +151,7 @@ function closeVisibilityConfiguration() {
 
 function openConditionEditor() {
     cy.findByTitle(/Configure (visibility|creation conditions)/).click();
+    cy.waitForNetworkIdle(0);
 }
 
 function closeConditionEditor() {
@@ -224,6 +221,11 @@ function fillCondition(index, logic_operator, question_name, value_operator_name
 
 function checkThatConditionExist(index, logic_operator, question_name, value_operator_name, value, value_type = "string") {
     cy.get("[data-glpi-conditions-editor-condition]").eq(index).as('condition');
+
+    // Scroll the condition into view before interacting with it
+    cy.get('@condition').scrollIntoView();
+    cy.get('@condition').should('be.visible');
+
     if (logic_operator !== null && index > 0) {
         cy.get('@condition')
             .getDropdownByLabelText('Logic operator')
@@ -878,333 +880,320 @@ describe ('Conditions', () => {
     });
 
     it('can apply all supported conditions types', () => {
+        const uuid = new Date().getTime();
         createForm();
 
-        // Init test question on which we will add our conditions.
-        addQuestion('Test subject');
-
-        // Create a question for each conditions type
-        addQuestion('My text question');
-
-        addQuestion('My number question');
-        setQuestionTypeCategory('Short answer');
-        setQuestionType('Number');
-
-        addQuestion('My date question');
-        setQuestionTypeCategory('Date and time');
-
-        addQuestion('My time question');
-        setQuestionTypeCategory('Date and time');
-        cy.findByRole('checkbox', {'name': 'Time'}).check();
-        cy.findByRole('checkbox', {'name': 'Date'}).uncheck();
-
-        addQuestion('My datetime question');
-        setQuestionTypeCategory('Date and time');
-        cy.findByRole('checkbox', {'name': 'Time'}).check();
-
-        addQuestion('My urgency question');
-        setQuestionTypeCategory('Urgency');
-
-        addQuestion('My request type question');
-        setQuestionTypeCategory('Request type');
-
-        addQuestion('My radio question');
-        setQuestionTypeCategory('Radio');
-        getAndFocusQuestion('My radio question').within(() => {
-            cy.findByPlaceholderText('Enter an option').type('Option 1{enter}');
+        // Create test items in GLPI that we'll use in conditions
+        cy.createWithAPI('Computer', {
+            'name': `Computer - ${uuid}`,
         });
-        cy.focused().type('Option 2{enter}');
-        cy.focused().type('Option 3{enter}');
-        cy.focused().type('Option 4');
-
-        addQuestion('My checkbox question');
-        setQuestionTypeCategory('Checkbox');
-        getAndFocusQuestion('My checkbox question').within(() => {
-            cy.findByPlaceholderText('Enter an option').type('Option 1{enter}');
+        cy.createWithAPI('Location', {
+            'name': `Location - ${uuid}`,
         });
-        cy.focused().type('Option 2{enter}');
-        cy.focused().type('Option 3{enter}');
-        cy.focused().type('Option 4');
 
-        addQuestion('My single value dropdown question');
-        setQuestionTypeCategory('Dropdown');
-        getAndFocusQuestion('My single value dropdown question').within(() => {
-            cy.findByPlaceholderText('Enter an option').type('Option 1{enter}');
+        // Define all question types we need to test different condition operators
+        const testQuestions = [
+            // Main question where we'll add all our conditions
+            { name: 'Test subject', type: 'Glpi\\Form\\QuestionType\\QuestionTypeShortText' },
+
+            // Text type
+            { name: 'My text question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeShortText' },
+
+            // Numeric type
+            { name: 'My number question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeNumber', subType: 'Number'},
+
+            // Date/Time types
+            {
+                name: 'My date question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeDateTime',
+                extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"1","is_time_enabled":"0"}'
+            },
+            {
+                name: 'My time question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeDateTime',
+                extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"0","is_time_enabled":"1"}'
+            },
+            {
+                name: 'My datetime question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeDateTime',
+                extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"1","is_time_enabled":"1"}'
+            },
+
+            // ITIL fields
+            { name: 'My urgency question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeUrgency'},
+            { name: 'My request type question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeRequestType'},
+
+            // Selectable types
+            {
+                name: 'My radio question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeRadio',
+                extra_data: '{"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}'
+            },
+            {
+                name: 'My checkbox question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeCheckbox',
+                extra_data: '{"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}'
+            },
+            {
+                name: 'My single value dropdown question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeDropdown',
+                extra_data: '{"is_multiple_dropdown":false,"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}'
+            },
+            {
+                name: 'My multiple value dropdown question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeDropdown',
+                extra_data: '{"is_multiple_dropdown":true,"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}'
+            },
+
+            // User types
+            { name: 'My requester question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeRequester'},
+            { name: 'My observer question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeObserver'},
+            { name: 'My assignee question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeAssignee'},
+
+            // Item reference types
+            {
+                name: 'My item question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeItem',
+                extra_data: '{"itemtype":"Computer"}',
+            },
+            {
+                name: 'My dropdown item question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
+                extra_data: '{"itemtype":"Location"}',
+            }
+        ];
+
+        // Create all questions through API for better performance
+        testQuestions.forEach((question, index) => {
+            cy.get('@form_id').then((formId) => {
+                cy.addQuestionToDefaultSectionWithAPI(
+                    formId,
+                    question.name,
+                    question.type,
+                    index,
+                    null,
+                    null,
+                    question.extra_data,
+                );
+                questions.push(question.name);
+            });
         });
-        cy.focused().type('Option 2{enter}');
-        cy.focused().type('Option 3{enter}');
-        cy.focused().type('Option 4');
 
-        addQuestion('My multiple values dropdown question');
-        setQuestionTypeCategory('Dropdown');
-        getAndFocusQuestion('My multiple values dropdown question').within(() => {
-            cy.findByRole('checkbox', {'name': 'Allow multiple options'}).check();
-            cy.findByPlaceholderText('Enter an option').type('Option 1{enter}');
-        });
-        cy.focused().type('Option 2{enter}');
-        cy.focused().type('Option 3{enter}');
-        cy.focused().type('Option 4');
+        cy.reload();
 
-        addQuestion('My requester question');
-        setQuestionTypeCategory('Actors');
-        setQuestionType('Requesters');
+        // Define conditions that will test each question type with appropriate operators
+        const conditionsToTest = [
+            // Text condition
+            {
+                logic: null,
+                question: 'My text question',
+                operator: 'Contains',
+                value: 'Expected answer',
+                valueType: 'string'
+            },
 
-        addQuestion('My observer question');
-        setQuestionTypeCategory('Actors');
-        setQuestionType('Observers');
+            // Numeric condition
+            {
+                logic: 'And',
+                question: 'My number question',
+                operator: 'Is greater than',
+                value: 10,
+                valueType: 'number'
+            },
 
-        addQuestion('My assignee question');
-        setQuestionTypeCategory('Actors');
-        setQuestionType('Assignees');
+            // Date/time conditions
+            {
+                logic: 'And',
+                question: 'My date question',
+                operator: 'Is greater than',
+                value: '2021-01-01',
+                valueType: 'date'
+            },
+            {
+                logic: 'And',
+                question: 'My time question',
+                operator: 'Is greater than',
+                value: '15:40',
+                valueType: 'date'
+            },
+            {
+                logic: 'And',
+                question: 'My datetime question',
+                operator: 'Is greater than',
+                value: '2021-01-01T15:40',
+                valueType: 'date'
+            },
 
-        // Add a condition for each possible condition types
+            // ITIL field conditions
+            {
+                logic: 'And',
+                question: 'My urgency question',
+                operator: 'Is greater than',
+                value: 'Low',
+                valueType: 'dropdown'
+            },
+            {
+                logic: 'And',
+                question: 'My request type question',
+                operator: 'Is equal to',
+                value: 'Request',
+                valueType: 'dropdown'
+            },
+
+            // Selectable field conditions
+            {
+                logic: 'And',
+                question: 'My radio question',
+                operator: 'Is not equal to',
+                value: 'Option 3',
+                valueType: 'dropdown'
+            },
+            {
+                logic: 'And',
+                question: 'My checkbox question',
+                operator: 'Contains',
+                value: ['Option 2', 'Option 4'],
+                valueType: 'dropdown_multiple'
+            },
+            {
+                logic: 'And',
+                question: 'My single value dropdown question',
+                operator: 'Is not equal to',
+                value: 'Option 2',
+                valueType: 'dropdown'
+            },
+            {
+                logic: 'And',
+                question: 'My multiple value dropdown question',
+                operator: 'Is not equal to',
+                value: ['Option 1', 'Option 2'],
+                valueType: 'dropdown_multiple'
+            },
+
+            // User field conditions
+            {
+                logic: 'And',
+                question: 'My requester question',
+                operator: 'Is equal to',
+                value: 'E2E Tests',
+                valueType: 'dropdown'
+            },
+            {
+                logic: 'And',
+                question: 'My observer question',
+                operator: 'Is equal to',
+                value: 'E2E Tests',
+                valueType: 'dropdown'
+            },
+            {
+                logic: 'And',
+                question: 'My assignee question',
+                operator: 'Is equal to',
+                value: 'E2E Tests',
+                valueType: 'dropdown'
+            },
+
+            // Item reference conditions
+            {
+                logic: 'And',
+                question: 'My item question',
+                operator: 'Is equal to',
+                value: `Computer - ${uuid}`,
+                valueType: 'dropdown'
+            },
+            {
+                logic: 'And',
+                question: 'My dropdown item question',
+                operator: 'Is equal to',
+                value: `»Location - ${uuid}`,
+                valueType: 'dropdown'
+            }
+        ];
+
+        // Configure visibility conditions on the test subject question
         getAndFocusQuestion('Test subject').within(() => {
+            // Initialize the visibility configuration UI
             initVisibilityConfiguration();
             setConditionStrategy('Visible if...');
-            cy.waitForNetworkIdle(150);
 
+            // Add the first condition without a logical operator
             fillCondition(
                 0,
-                null,
-                'My text question',
-                'Contains',
-                'Expected answer'
+                conditionsToTest[0].logic,
+                conditionsToTest[0].question,
+                conditionsToTest[0].operator,
+                conditionsToTest[0].value,
+                conditionsToTest[0].valueType
             );
-            addNewEmptyCondition();
-            fillCondition(
-                1,
-                'And',
-                'My number question',
-                'Is greater than',
-                10,
-                "number",
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                2,
-                'And',
-                'My date question',
-                'Is greater than',
-                '2021-01-01',
-                'date',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                3,
-                'And',
-                'My time question',
-                'Is greater than',
-                '15:40',
-                'date',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                4,
-                'And',
-                'My datetime question',
-                'Is greater than',
-                '2021-01-01T15:40',
-                'date',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                5,
-                'And',
-                'My urgency question',
-                'Is greater than',
-                'Low',
-                'dropdown',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                6,
-                'And',
-                'My request type question',
-                'Is equal to',
-                'Request',
-                'dropdown',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                7,
-                'And',
-                'My radio question',
-                'Is not equal to',
-                'Option 3',
-                'dropdown',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                8,
-                'And',
-                'My checkbox question',
-                'Contains',
-                ['Option 2', 'Option 4'],
-                'dropdown_multiple',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                9,
-                'And',
-                'My single value dropdown question',
-                'Is not equal to',
-                'Option 2',
-                'dropdown',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                10,
-                'And',
-                'My multiple values dropdown question',
-                'Is not equal to',
-                ['Option 1', 'Option 2'],
-                'dropdown_multiple',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                11,
-                'And',
-                'My requester question',
-                'Is equal to',
-                'E2E Tests',
-                'dropdown',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                12,
-                'And',
-                'My observer question',
-                'Is equal to',
-                'E2E Tests',
-                'dropdown',
-            );
-            addNewEmptyCondition();
-            fillCondition(
-                13,
-                'And',
-                'My assignee question',
-                'Is equal to',
-                'E2E Tests',
-                'dropdown',
-            );
+
+            // Add all remaining conditions with their logical operators
+            conditionsToTest.slice(1).forEach((condition, index) => {
+                addNewEmptyCondition();
+                fillCondition(
+                    index + 1,
+                    condition.logic,
+                    condition.question,
+                    condition.operator,
+                    condition.value,
+                    condition.valueType
+                );
+            });
         });
 
-        // Reload and check values
+        // Save and reload to ensure all conditions are properly stored
         saveAndReload();
 
+        // Define expected condition values after saving
+        // Note: some values are adjusted to match how they appear in the UI after saving
+        const expectedConditions = [
+            { logic: null, question: 'My text question', operator: 'Contains', value: 'Expected answer' },
+            { logic: 'And', question: 'My number question', operator: 'Is greater than', value: 10, valueType: 'number' },
+            { logic: 'And', question: 'My date question', operator: 'Is greater than', value: '2021-01-01', valueType: 'date' },
+            { logic: 'And', question: 'My time question', operator: 'Is greater than', value: '15:40', valueType: 'date' },
+            { logic: 'And', question: 'My datetime question', operator: 'Is greater than', value: '2021-01-01T15:40', valueType: 'date' },
+            { logic: 'And', question: 'My urgency question', operator: 'Is greater than', value: 'Low', valueType: 'dropdown' },
+            { logic: 'And', question: 'My request type question', operator: 'Is equal to', value: 'Request', valueType: 'dropdown' },
+            { logic: 'And', question: 'My radio question', operator: 'Is not equal to', value: 'Option 3', valueType: 'dropdown' },
+            { logic: 'And', question: 'My checkbox question', operator: 'Contains', value: ['Option 2', 'Option 4'], valueType: 'dropdown_multiple' },
+            { logic: 'And', question: 'My single value dropdown question', operator: 'Is not equal to', value: 'Option 2', valueType: 'dropdown' },
+            { logic: 'And', question: 'My multiple value dropdown question', operator: 'Is not equal to', value: ['Option 1', 'Option 2'], valueType: 'dropdown_multiple' },
+            { logic: 'And', question: 'My requester question', operator: 'Is equal to', value: 'e2e_tests', valueType: 'dropdown' },
+            { logic: 'And', question: 'My observer question', operator: 'Is equal to', value: 'e2e_tests', valueType: 'dropdown' },
+            { logic: 'And', question: 'My assignee question', operator: 'Is equal to', value: 'e2e_tests', valueType: 'dropdown' },
+            { logic: 'And', question: 'My item question', operator: 'Is equal to', value: `Computer - ${uuid}`, valueType: 'dropdown' },
+            { logic: 'And', question: 'My dropdown item question', operator: 'Is equal to', value: `Location - ${uuid}`, valueType: 'dropdown' }
+        ];
+
+        // Verify all conditions are correctly saved and displayed
         getAndFocusQuestion('Test subject').within(() => {
             openConditionEditor();
-            checkThatConditionExist(
-                0,
-                null,
-                'My text question',
-                'Contains',
-                'Expected answer',
-            );
-            checkThatConditionExist(
-                1,
-                'And',
-                'My number question',
-                'Is greater than',
-                10,
-                'number',
-            );
-            checkThatConditionExist(
-                2,
-                'And',
-                'My date question',
-                'Is greater than',
-                '2021-01-01',
-                'date',
-            );
-            checkThatConditionExist(
-                3,
-                'And',
-                'My time question',
-                'Is greater than',
-                '15:40',
-                'date',
-            );
-            checkThatConditionExist(
-                4,
-                'And',
-                'My datetime question',
-                'Is greater than',
-                '2021-01-01T15:40',
-                'date',
-            );
-            checkThatConditionExist(
-                5,
-                'And',
-                'My urgency question',
-                'Is greater than',
-                'Low',
-                'dropdown',
-            );
-            checkThatConditionExist(
-                6,
-                'And',
-                'My request type question',
-                'Is equal to',
-                'Request',
-                'dropdown',
-            );
-            checkThatConditionExist(
-                7,
-                'And',
-                'My radio question',
-                'Is not equal to',
-                'Option 3',
-                'dropdown',
-            );
-            checkThatConditionExist(
-                8,
-                'And',
-                'My checkbox question',
-                'Contains',
-                ['Option 2', 'Option 4'],
-                'dropdown_multiple',
-            );
-            checkThatConditionExist(
-                9,
-                'And',
-                'My single value dropdown question',
-                'Is not equal to',
-                'Option 2',
-                'dropdown',
-            );
-            checkThatConditionExist(
-                10,
-                'And',
-                'My multiple values dropdown question',
-                'Is not equal to',
-                ['Option 1', 'Option 2'],
-                'dropdown_multiple',
-            );
-            checkThatConditionExist(
-                11,
-                'And',
-                'My requester question',
-                'Is equal to',
-                'e2e_tests',
-                'dropdown',
-            );
-            checkThatConditionExist(
-                12,
-                'And',
-                'My observer question',
-                'Is equal to',
-                'e2e_tests',
-                'dropdown',
-            );
-            checkThatConditionExist(
-                13,
-                'And',
-                'My assignee question',
-                'Is equal to',
-                'e2e_tests',
-                'dropdown',
-            );
+
+            // Check each condition exists with the correct values
+            // Adding a timeout increase for complex condition checks
+            cy.wrap(null).then(() => {
+                // Use a loop with cy.then() to ensure each check completes before starting the next
+                const checkConditionSequentially = (index) => {
+                    if (index >= expectedConditions.length) {
+                        return; // Done checking all conditions
+                    }
+
+                    const condition = expectedConditions[index];
+                    checkThatConditionExist(
+                        index,
+                        condition.logic,
+                        condition.question,
+                        condition.operator,
+                        condition.value,
+                        condition.valueType
+                    );
+
+                    // Check the next condition after the current one is verified
+                    cy.then(() => checkConditionSequentially(index + 1));
+                };
+
+                // Start the sequential checking
+                checkConditionSequentially(0);
+            });
         });
     });
 });
