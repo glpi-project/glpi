@@ -188,6 +188,39 @@ function loadDataset()
             ],
         ], 'User' => [
             [
+                'id'            => 3, // Force id to not break existing tests
+                'name'          => 'post-only',
+                'password'      => 'postonly',
+                'password2'     => 'postonly',
+                'entities_id'   => 0,
+                'profiles_id'   => 1,
+                '_entities_id'  => 0,
+                '_profiles_id'  => 1,
+                '_is_recursive' => 1,
+            ],
+            [
+                'id'            => 4, // Force id to not break existing tests
+                'name'          => 'tech',
+                'password'      => 'tech',
+                'password2'     => 'tech',
+                'entities_id'   => 0,
+                'profiles_id'   => 6,
+                '_entities_id'  => 0,
+                '_profiles_id'  => 6,
+                '_is_recursive' => 1,
+            ],
+            [
+                'id'            => 5, // Force id to not break existing tests
+                'name'          => 'normal',
+                'password'      => 'normal',
+                'password2'     => 'normal',
+                'entities_id'   => 0,
+                'profiles_id'   => 2,
+                '_entities_id'  => 0,
+                '_profiles_id'  => 2,
+                '_is_recursive' => 1,
+            ],
+            [
                 'name'          => TU_USER,
                 'password'      => TU_PASS,
                 'password2'     => TU_PASS,
