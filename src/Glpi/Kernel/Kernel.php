@@ -36,13 +36,15 @@ namespace Glpi\Kernel;
 
 use GLPI;
 use Glpi\Application\SystemConfigurator;
-use Glpi\Http\Listener\PluginsRouterListener;
+use Override;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -120,6 +122,29 @@ final class Kernel extends BaseKernel
         if ($dispatch_postboot) {
             $this->container->get('event_dispatcher')->dispatch(new PostBootEvent());
         }
+    }
+
+    #[Override()]
+    protected function buildContainer(): ContainerBuilder
+    {
+        // Exit with a clear message if there is a missing write access that would prevent the Symfony container
+        // to be built. This prevent to have a useless generic messages and no available logs when both the cache
+        // and the log dirs are not writable.
+        foreach ([$this->getCacheDir(), $this->getBuildDir(), $this->getLogDir()] as $dir) {
+            if (
+                (is_dir($dir) === false && @mkdir($dir, recursive: true) === false)
+                || is_writable($dir) === false
+            ) {
+                $filesystem = new Filesystem();
+                $relative_path = $filesystem->makePathRelative($dir, $this->getProjectDir());
+
+                echo sprintf('Unable to write in the `%s` directory.', $relative_path) . PHP_EOL;
+                echo 'Files ACL must be fixed.' . PHP_EOL;
+                exit(1);
+            }
+        }
+
+        return parent::buildContainer();
     }
 
     protected function configureContainer(ContainerConfigurator $container): void
