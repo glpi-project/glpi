@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryFunction;
+
 /**
  * Item_Problem Class
  *
@@ -107,7 +109,9 @@ class Item_Problem extends CommonItilObject_Item
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $from = $item->getType() == 'Group' ? 'glpi_groups_problems' : 'glpi_problems_' . strtolower($item->getType() . 's');
                         $result = $DB->request([
-                            'COUNT'  => 'cpt',
+                            'SELECT' => [
+                                QueryFunction::count('problems_id', true, 'cpt')
+                            ],
                             'FROM'   => $from,
                             'WHERE'  => [
                                 $item->getForeignKeyField()   => $item->fields['id']
