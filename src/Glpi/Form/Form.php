@@ -130,13 +130,13 @@ final class Form extends CommonDBTM implements
     {
         $tabs = parent::defineTabs();
         $this->addStandardTab(ServiceCatalog::class, $tabs, $options);
-        if (Item_Ticket::countLinkedTickets($this) > 0) {
+        if (Item_Ticket::countForItemAndLinked($this) > 0) {
             $this->addStandardTab(Item_Ticket::class, $tabs, $options);
         }
-        if (Change_Item::countLinkedChanges($this) > 0) {
+        if (Change_Item::countForItemAndLinked($this) > 0) {
             $this->addStandardTab(Change_Item::class, $tabs, $options);
         }
-        if (Item_Problem::countLinkedProblems($this) > 0) {
+        if (Item_Problem::countForItemAndLinked($this) > 0) {
             $this->addStandardTab(Item_Problem::class, $tabs, $options);
         }
         $this->addStandardTab(FormAccessControl::class, $tabs, $options);

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,23 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * Change_Item Class
- *
- * Relation between Changes and Items
- **/
-class Change_Item extends CommonItilObject_Item
+namespace tests\units;
+
+class ItemTicket_Test extends AbstractCommonItilObject_ItemTest
 {
-    // From CommonDBRelation
-    public static $itemtype_1          = 'Change';
-    public static $items_id_1          = 'changes_id';
 
-    public static $itemtype_2          = 'itemtype';
-    public static $items_id_2          = 'items_id';
-    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
-
-    public static function getTypeName($nb = 0)
-    {
-        return _n('Change item', 'Change items', $nb);
-    }
 }
