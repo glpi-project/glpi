@@ -576,32 +576,24 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         $criteria = static::$itemtype_1::getCommonCriteria();
         $params  = [
-            'criteria' => $options['criteria'] ?? [],
+            'criteria' => [],
+            'metacriteria' => $options['metacriteria'] ?? [
+                [
+                    'itemtype' => $item::class,
+                    'field'    => Search::getOptionNumber($item::class, 'id'),
+                    'searchtype' => 'equals',
+                    'value'    => $item->getID(),
+                    'link'     => 'AND'
+                ]
+            ],
             'reset'    => 'reset',
-            'restrict' => $options['restrict'] ?? [],
         ];
-        foreach ($options as $key => $val) {
-            $params[$key] = $val;
-        }
-        $restrict = $params['restrict'];
+        $restrict = static::$itemtype_1::getListForItemRestrict($item);
 
         $params['criteria'][0]['field']      = 12;
         $params['criteria'][0]['searchtype'] = 'equals';
         $params['criteria'][0]['value']      = 'all';
         $params['criteria'][0]['link']       = 'AND';
-
-        $params['metacriteria'][0]['itemtype']   = $item->getType();
-        $params['metacriteria'][0]['field']      = Search::getOptionNumber(
-            $item->getType(),
-            'id'
-        );
-        $params['metacriteria'][0]['searchtype'] = 'equals';
-        $params['metacriteria'][0]['value']      = $item->getID();
-        $params['metacriteria'][0]['link']       = 'AND';
-        // overide value from options
-        foreach ($options as $key => $val) {
-            $params[$key] = $val;
-        }
 
         $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(static::$itemtype_1::getTable());
         $criteria['WHERE'][static::$itemtype_1::getTable() . ".is_deleted"] = 0;
