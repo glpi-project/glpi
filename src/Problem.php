@@ -60,10 +60,6 @@ class Problem extends CommonITILObject
     public const IMPACT_MASK_FIELD    = 'impact_mask';
     public const STATUS_MATRIX_FIELD  = 'problem_status';
 
-    public const READMY               = 1;
-    public const READALL              = 1024;
-
-
     /**
      * Name of the type
      *
@@ -1342,16 +1338,8 @@ class Problem extends CommonITILObject
             return false;
         }
 
-        $restrict = self::getListForItemRestrict($item);
-        $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable());
-        $criteria['WHERE']['glpi_problems.is_deleted'] = 0;
-        $criteria['LIMIT'] = (int) $_SESSION['glpilist_limit'];
-
         $options = [
             'metacriteria' => [],
-            'restrict' => $restrict,
-            'criteria' => $criteria,
-            'reset'    => 'reset',
         ];
 
         switch (get_class($item)) {

@@ -88,6 +88,7 @@ include_once __DIR__ . '/CsvTestCase.php';
 include_once __DIR__ . '/FrontBaseClass.php';
 include_once __DIR__ . '/RuleBuilder.php';
 include_once __DIR__ . '/InventoryTestCase.php';
+include_once __DIR__ . '/abstracts/AbstractCommonItilObject_ItemTest.php';
 include_once __DIR__ . '/abstracts/CommonITILRecurrentTest.php';
 //include_once __DIR__ . '/functional/Glpi/ContentTemplates/Parameters/AbstractParameters.php';
 include_once __DIR__ . '/AbstractRightsDropdown.php';

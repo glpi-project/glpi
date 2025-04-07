@@ -1700,30 +1700,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILValidationCron.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method CommonDBTM\\:\\:getClosedStatusArray\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Comparison operation "\\>" between 0 and 0 is always false\\.$#',
-	'identifier' => 'greater.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#3 \\$itemtype \\(int\\) of method CommonItilObject_Item\\:\\:dropdownMyDevices\\(\\) is incompatible with type string\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Function ob_get_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_get_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 2,
@@ -1736,20 +1712,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonItilObject_Item\\:\\:displayItemAddForm\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 2,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method CommonItilObject_Item\\:\\:dropdown\\(\\) should return int\\|string\\|false but empty return statement found\\.$#',
 	'identifier' => 'return.empty',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @param has invalid value \\(integer type \\$obj_id ITIL object on which the used item are attached\\)\\: Unexpected token "type", expected variable at offset 76 on line 4$#',
-	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
@@ -6414,12 +6378,6 @@ $ignoreErrors[] = [
 	'identifier' => 'equal.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_SoftwareVersion.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Item_Ticket\\:\\:displayTabContentForItem\\(\\) should return bool but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Ticket.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Itil_Project\\:\\:showForItil\\(\\) with return type void returns false but should not return anything\\.$#',
