@@ -69,6 +69,7 @@ use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
+use Glpi\Message\MessageType;
 use Glpi\Migration\PluginMigrationResult;
 use Glpi\Tests\FormTesterTrait;
 use Location;
@@ -885,5 +886,67 @@ final class FormMigrationTest extends DbTestCase
                 ));
             }
         }
+    }
+
+    public function testFormMigrationWithOrphanSection(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Insert a section with no form
+        $DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'name' => 'Orphan section',
+            ]
+        );
+
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = new PluginMigrationResult();
+        $this->setPrivateProperty($migration, 'result', $result);
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        $errors = array_filter(
+            $result->getMessages(),
+            static fn (array $entry) => $entry['type'] === MessageType::Error
+        );
+        $this->assertCount(1, $errors);
+        $this->assertEquals(
+            current($errors)['message'],
+            'Section "Orphan section" has no form. It will not be migrated.'
+        );
+    }
+
+    public function testFormMigrationWithOrphanQuestion(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Insert a question with no form
+        $DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name' => 'Orphan question',
+            ]
+        );
+
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = new PluginMigrationResult();
+        $this->setPrivateProperty($migration, 'result', $result);
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        $errors = array_filter(
+            $result->getMessages(),
+            static fn (array $entry) => $entry['type'] === MessageType::Error
+        );
+        $this->assertCount(1, $errors);
+        $this->assertEquals(
+            current($errors)['message'],
+            'Question "Orphan question" has no section. It will not be migrated.'
+        );
     }
 }

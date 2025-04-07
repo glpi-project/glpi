@@ -72,6 +72,7 @@ use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
+use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
 use LogicException;
 
@@ -360,13 +361,22 @@ class FormMigration extends AbstractPluginMigration
         ]);
 
         foreach ($raw_sections as $raw_section) {
+            $form_id = $this->getMappedItemTarget(
+                'PluginFormcreatorForm',
+                $raw_section['plugin_formcreator_forms_id']
+            )['items_id'] ?? 0;
+            if ($form_id === 0) {
+                $this->result->addMessage(MessageType::Error, sprintf(
+                    'Section "%s" has no form. It will not be migrated.',
+                    $raw_section['name']
+                ));
+                continue;
+            }
+
             $section = $this->importItem(
                 Section::class,
                 [
-                    Form::getForeignKeyField() => $this->getMappedItemTarget(
-                        'PluginFormcreatorForm',
-                        $raw_section['plugin_formcreator_forms_id']
-                    )['items_id'],
+                    Form::getForeignKeyField() => $form_id,
                     'name'                     => $raw_section['name'],
                     'rank'                     => $raw_section['order'] - 1, // New rank is 0-based
                     'uuid'                     => $raw_section['uuid']
@@ -413,6 +423,18 @@ class FormMigration extends AbstractPluginMigration
         ])));
 
         foreach ($raw_questions as $raw_question) {
+            $section_id = $this->getMappedItemTarget(
+                'PluginFormcreatorSection',
+                $raw_question['plugin_formcreator_sections_id']
+            )['items_id'] ?? 0;
+            if ($section_id === 0) {
+                $this->result->addMessage(MessageType::Error, sprintf(
+                    'Question "%s" has no section. It will not be migrated.',
+                    $raw_question['name']
+                ));
+                continue;
+            }
+
             $fieldtype = $raw_question['fieldtype'];
             $type_class = $this->getTypesConvertMap()[$fieldtype] ?? null;
 
@@ -426,10 +448,7 @@ class FormMigration extends AbstractPluginMigration
 
             $question = new Question();
             $data = array_filter([
-                Section::getForeignKeyField() => $this->getMappedItemTarget(
-                    'PluginFormcreatorSection',
-                    $raw_question['plugin_formcreator_sections_id']
-                )['items_id'],
+                Section::getForeignKeyField() => $section_id,
                 'name'                        => $raw_question['name'],
                 'type'                        => $type_class,
                 'is_mandatory'                => $raw_question['required'],
