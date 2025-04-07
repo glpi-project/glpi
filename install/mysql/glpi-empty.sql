@@ -3163,16 +3163,17 @@ CREATE TABLE `glpi_groups_users` (
 
 ### Dump table glpi_helpdesks_tiles_profiles_tiles
 
-DROP TABLE IF EXISTS `glpi_helpdesks_tiles_profiles_tiles`;
-CREATE TABLE `glpi_helpdesks_tiles_profiles_tiles` (
+DROP TABLE IF EXISTS `glpi_helpdesks_tiles_items_tiles`;
+CREATE TABLE `glpi_helpdesks_tiles_items_tiles` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `profiles_id` int unsigned NOT NULL DEFAULT '0',
-  `itemtype` varchar(255) DEFAULT NULL,
-  `items_id` int unsigned NOT NULL DEFAULT '0',
+  `itemtype_item` varchar(255) DEFAULT NULL,
+  `items_id_item` int unsigned NOT NULL DEFAULT '0',
+  `itemtype_tile` varchar(255) DEFAULT NULL,
+  `items_id_tile` int unsigned NOT NULL DEFAULT '0',
   `rank` int NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`profiles_id`, `rank`),
-  KEY `item` (`itemtype`,`items_id`),
+  UNIQUE KEY `unicity` (`itemtype_item`, `items_id_item`, `rank`),
+  UNIQUE KEY `item` (`itemtype_tile`,`items_id_tile`),
   KEY `rank` (`rank`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 

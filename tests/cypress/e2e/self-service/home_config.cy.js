@@ -70,10 +70,11 @@ describe('Helpdesk home page configuration', () => {
                     'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
                     tile
                 ).then((tile_id) => {
-                    cy.createWithAPI('Glpi\\Helpdesk\\Tile\\Profile_Tile', {
-                        'profiles_id': profile_id,
-                        'itemtype': 'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
-                        'items_id': tile_id,
+                    cy.createWithAPI('Glpi\\Helpdesk\\Tile\\Item_Tile', {
+                        'itemtype_item': "Profile",
+                        'items_id_item': profile_id,
+                        'itemtype_tile': 'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
+                        'items_id_tile': tile_id,
                         'rank': i,
                     });
                 });

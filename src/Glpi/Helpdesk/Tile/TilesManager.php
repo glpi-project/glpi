@@ -35,10 +35,11 @@
 namespace Glpi\Helpdesk\Tile;
 
 use CommonDBTM;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Session\SessionInfo;
 use InvalidArgumentException;
-use RuntimeException;
 use Profile;
+use RuntimeException;
 
 final class TilesManager
 {
@@ -54,20 +55,32 @@ final class TilesManager
         ];
     }
 
+    public function getVisibleTilesForSession(SessionInfo $session_info): array
+    {
+        $current_profile = Profile::getById($session_info->getProfileId());
+        $tiles = $this->getTilesForItem($current_profile);
+        $available_forms = array_filter(
+            $tiles,
+            fn (TileInterface $tile): bool => $tile->isAvailable($session_info),
+        );
+
+        return array_values($available_forms);
+    }
+
     /** @return TileInterface[] */
-    public function getTiles(
-        SessionInfo $session_info,
-        bool $check_availability = true
+    public function getTilesForItem(
+        CommonDBTM&LinkableToTilesInterface $item
     ): array {
         // Load tiles for the given profile
-        $profile_tiles = (new Profile_Tile())->find([
-            'profiles_id' => $session_info->getProfileId(),
+        $item_tiles = (new Item_Tile())->find([
+            'itemtype_item' => $item::class,
+            'items_id_item' => $item->getID(),
         ], ['rank']);
 
         $tiles = [];
-        foreach ($profile_tiles as $row) {
+        foreach ($item_tiles as $row) {
             // Validate tile itemtype
-            $itemtype = $row['itemtype'];
+            $itemtype = $row['itemtype_tile'];
             $tile = getItemForItemtype($itemtype);
             if (!($tile instanceof TileInterface)) {
                 continue;
@@ -75,16 +88,11 @@ final class TilesManager
 
             // Try to load tile from database
             $tile = new $itemtype();
-            if (!$tile->getFromDb($row['items_id'])) {
+            if (!$tile->getFromDb($row['items_id_tile'])) {
                 continue;
             }
 
-            // Make sure the tile is valid for the given session and entity details
-            if ($check_availability && !$tile->isAvailable($session_info)) {
-                continue;
-            }
-
-            // The tile is valid, add it to the list
+            // Add the tile to the list
             $tiles[] = $tile;
         }
 
@@ -92,12 +100,12 @@ final class TilesManager
     }
 
     public function addTile(
-        Profile $profile,
+        CommonDBTM&LinkableToTilesInterface $item,
         string $tile_class,
         array $params
     ): int {
-        if ($profile->fields['interface'] !== 'helpdesk') {
-            throw new InvalidArgumentException("Only helpdesk profiles can have tiles");
+        if (!$item->acceptTiles()) {
+            throw new InvalidArgumentException();
         }
 
         $tile = new $tile_class();
@@ -106,50 +114,54 @@ final class TilesManager
             throw new RuntimeException("Failed to create tile");
         }
 
-        $profile_tile = new Profile_Tile();
-        $id = $profile_tile->add([
-            'profiles_id' => $profile->getID(),
-            'items_id'    => $id,
-            'itemtype'    => $tile_class,
-            'rank'        => $this->getMaxUsedRankForProfile($profile) + 1,
+        $item_tile = new Item_Tile();
+        $id = $item_tile->add([
+            'items_id_item' => $item->getID(),
+            'itemtype_item' => $item::class,
+            'items_id_tile' => $id,
+            'itemtype_tile' => $tile_class,
+            'rank'          => $this->getMaxUsedRankForItem($item) + 1,
         ]);
         if (!$id) {
-            throw new RuntimeException("Failed to link tile to profile");
+            throw new RuntimeException("Failed to link tile to item");
         }
 
         return $id;
     }
 
-    public function getProfileTileForTile(TileInterface $tile): Profile_Tile
+    public function getItemTileForTile(TileInterface $tile): Item_Tile
     {
-        $profile_tile = new Profile_Tile();
-        $get_by_crit_success = $profile_tile->getFromDBByCrit([
-            'itemtype' => $tile::class,
-            'items_id' => $tile->getDatabaseId(),
+        $item_tile = new Item_Tile();
+        $get_by_crit_success = $item_tile->getFromDBByCrit([
+            'itemtype_tile' => $tile::class,
+            'items_id_tile' => $tile->getDatabaseId(),
         ]);
 
         if (!$get_by_crit_success) {
-            throw new RuntimeException("Missing Profile_Tile data");
+            throw new RuntimeException("Missing Item_Tile data");
         }
 
-        return $profile_tile;
+        return $item_tile;
     }
 
     /**
-     * @param int[] $order Ids of the Profile_Tile entries, sorted into the desired ranks
+     * @param int[] $order Ids of the Item_Tile entries, sorted into the desired ranks
      */
-    public function setOrderForProfile(Profile $profile, array $order): void
-    {
+    public function setOrderForItem(
+        CommonDBTM&LinkableToTilesInterface $item,
+        array $order
+    ): void {
         // Increase the original ranks to avoid unicity conflicts when setting
         // the new ranks.
-        $max_rank = $this->getMaxUsedRankForProfile($profile);
-        $profile_tiles = (new Profile_Tile())->find([
-            'profiles_id' => $profile->getID()
+        $max_rank = $this->getMaxUsedRankForItem($item);
+        $items_tiles = (new Item_Tile())->find([
+            'itemtype_item' => $item::class,
+            'items_id_item' => $item->getID(),
         ]);
-        $profile_tiles_ids = array_column($profile_tiles, 'id');
-        foreach ($profile_tiles_ids as $i => $id) {
-            $profile_tile = new Profile_Tile();
-            $profile_tile->update([
+        $items_tiles_ids = array_column($items_tiles, 'id');
+        foreach ($items_tiles_ids as $i => $id) {
+            $item_tile = new Item_Tile();
+            $item_tile->update([
                 'id' => $id,
                 'rank' => $i + ++$max_rank,
             ]);
@@ -158,8 +170,8 @@ final class TilesManager
         // Set new ranks
         foreach (array_values($order) as $rank => $id) {
             // Find the associated Profile_Tile
-            $profile_tile = new Profile_Tile();
-            $profile_tile->update([
+            $item_tile = new Item_Tile();
+            $item_tile->update([
                 'id' => $id,
                 'rank' => $rank,
             ]);
@@ -169,35 +181,52 @@ final class TilesManager
     public function deleteTile(CommonDBTM&TileInterface $tile): void
     {
         // First, find and delete the relevant Profile_Tile row
-        $profile_tiles = (new Profile_Tile())->find([
-            'items_id' => $tile->getDatabaseId(),
-            'itemtype' => $tile::class,
-        ]);
-        foreach ($profile_tiles as $profile_tile_row) {
-            $id = $profile_tile_row['id'];
-            $delete = (new Profile_Tile())->delete(['id' => $id]);
-            if (!$delete) {
-                throw new RuntimeException("Failed to delete profile tile ($id)");
-            }
+        $item_tile = new Item_Tile();
+        $fields = [
+            'itemtype_tile' => $tile::class,
+            'items_id_tile' => $tile->getDatabaseId(),
+        ];
+        if (!$item_tile->getFromDBByCrit($fields)) {
+            throw new RuntimeException("Failed to delete, missing Item_Tile data");
+        }
+        $id = $item_tile->getID();
+        if (!$item_tile->delete(['id' => $id])) {
+            throw new RuntimeException("Failed to delete item tile ($id)");
         }
 
         // Then delete the tile itself
-        $id =  $tile->getDatabaseId();
-        $delete = $tile->delete(['id' => $id]);
-        if (!$delete) {
-            throw new RuntimeException("Failed to delete tile ($id)");
+        $items_id_tile = $tile->getDatabaseId();
+        if (!$tile->delete(['id' => $items_id_tile])) {
+            throw new RuntimeException("Failed to delete tile ($items_id_tile)");
         }
     }
 
-    private function getMaxUsedRankForProfile(Profile $profile): int
-    {
+    public function showConfigFormForItem(
+        CommonDBTM&LinkableToTilesInterface $item
+    ): void {
+        // Render content
+        $twig = TemplateRenderer::getInstance();
+        $twig->display('pages/admin/helpdesk_home_config.html.twig', [
+            'tiles_manager' => $this,
+            'tiles'         => $this->getTilesForItem($item),
+            'itemtype_item' => $item::class,
+            'items_id_item' => $item->getID(),
+        ]);
+    }
+
+    private function getMaxUsedRankForItem(
+        CommonDBTM&LinkableToTilesInterface $item
+    ): int {
         /** @var \DBmysql $DB */
         global $DB;
 
         $rank = $DB->request([
             'SELECT' => ['MAX' => "rank AS max_rank"],
-            'FROM'   => Profile_Tile::getTable(),
-            'WHERE'  => ['profiles_id' => $profile->getID()],
+            'FROM'   => Item_Tile::getTable(),
+            'WHERE'  => [
+                'itemtype_item' => $item::class,
+                'items_id_item' => $item->getID(),
+            ],
         ])->current();
 
         return $rank['max_rank'] ?? 0;

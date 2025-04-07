@@ -45,11 +45,11 @@ $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
 if (!$DB->tableExists('glpi_forms_categories')) {
     $DB->doQuery(
         "CREATE TABLE `glpi_forms_categories` (
-            `id` int unsigned NOT NULL AUTO_INCREMENT,
+            `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `name` varchar(255) NOT NULL DEFAULT '',
             `description` longtext,
             `illustration` varchar(255) NOT NULL DEFAULT '',
-            `forms_categories_id` int unsigned NOT NULL DEFAULT '0',
+            `forms_categories_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `completename` text,
             `level` int NOT NULL DEFAULT '0',
             `ancestors_cache` longtext,
@@ -78,7 +78,7 @@ if (!$DB->tableExists('glpi_forms_forms')) {
             `header` longtext,
             `illustration` varchar(255) NOT NULL DEFAULT '',
             `description` longtext,
-            `forms_categories_id` int unsigned NOT NULL DEFAULT '0',
+            `forms_categories_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `date_mod` timestamp NULL DEFAULT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
@@ -224,17 +224,18 @@ if (!$DB->tableExists('glpi_forms_accesscontrols_formaccesscontrols')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
-if (!$DB->tableExists('glpi_helpdesks_tiles_profiles_tiles')) {
+if (!$DB->tableExists('glpi_helpdesks_tiles_items_tiles')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_helpdesks_tiles_profiles_tiles` (
-            `id` int unsigned NOT NULL AUTO_INCREMENT,
-            `profiles_id` int unsigned NOT NULL DEFAULT '0',
-            `itemtype` varchar(255) DEFAULT NULL,
-            `items_id` int unsigned NOT NULL DEFAULT '0',
+        "CREATE TABLE `glpi_helpdesks_tiles_items_tiles` (
+            `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+            `itemtype_item` varchar(255) DEFAULT NULL,
+            `items_id_item` int {$default_key_sign} NOT NULL DEFAULT '0',
+            `itemtype_tile` varchar(255) DEFAULT NULL,
+            `items_id_tile` int {$default_key_sign} NOT NULL DEFAULT '0',
             `rank` int NOT NULL DEFAULT 0,
             PRIMARY KEY (`id`),
-            UNIQUE KEY `unicity` (`profiles_id`, `rank`),
-            KEY `item` (`itemtype`,`items_id`),
+            UNIQUE KEY `unicity` (`itemtype_item`, `items_id_item`, `rank`),
+            UNIQUE KEY `item` (`itemtype_tile`,`items_id_tile`),
             KEY `rank` (`rank`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
@@ -242,8 +243,8 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_profiles_tiles')) {
 if (!$DB->tableExists('glpi_helpdesks_tiles_formtiles')) {
     $DB->doQuery(
         "CREATE TABLE `glpi_helpdesks_tiles_formtiles` (
-            `id` int unsigned NOT NULL AUTO_INCREMENT,
-            `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
+            `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+            `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`),
             KEY `forms_forms_id` (`forms_forms_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
@@ -252,7 +253,7 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_formtiles')) {
 if (!$DB->tableExists('glpi_helpdesks_tiles_glpipagetiles')) {
     $DB->doQuery(
         "CREATE TABLE `glpi_helpdesks_tiles_glpipagetiles` (
-            `id` int unsigned NOT NULL AUTO_INCREMENT,
+            `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `title` varchar(255) DEFAULT NULL,
             `description` varchar(255) DEFAULT NULL,
             `illustration` varchar(255) DEFAULT NULL,
@@ -264,7 +265,7 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_glpipagetiles')) {
 if (!$DB->tableExists('glpi_helpdesks_tiles_externalpagetiles')) {
     $DB->doQuery(
         "CREATE TABLE `glpi_helpdesks_tiles_externalpagetiles` (
-            `id` int unsigned NOT NULL AUTO_INCREMENT,
+            `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `title` varchar(255) DEFAULT NULL,
             `description` varchar(255) DEFAULT NULL,
             `illustration` varchar(255) DEFAULT NULL,

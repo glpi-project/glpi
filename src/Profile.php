@@ -39,16 +39,15 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\Form\Form;
-use Glpi\Helpdesk\DefaultDataManager;
+use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\RichText\UserMention;
-use Glpi\Session\SessionInfo;
 use Glpi\Toolbox\ArrayNormalizer;
 
 /**
  * Profile class
  **/
-class Profile extends CommonDBTM
+class Profile extends CommonDBTM implements LinkableToTilesInterface
 {
     use \Glpi\Features\Clonable;
 
@@ -4464,20 +4463,15 @@ class Profile extends CommonDBTM
 
     private function showHelpdeskHomeConfig(): bool
     {
-        // Load tiles of the current profile
         $tiles_manager = new TilesManager();
-        $tiles = $tiles_manager->getTiles(new SessionInfo(
-            profile_id: $this->getID(),
-        ), check_availability: false);
-
-        // Render content
-        $twig = TemplateRenderer::getInstance();
-        $twig->display('pages/admin/helpdesk_home_config.html.twig', [
-            'tiles_manager' => $tiles_manager,
-            'tiles' => $tiles,
-            'profile_id' => $this->getID(),
-        ]);
+        $tiles_manager->showConfigFormForItem($this);
 
         return true;
+    }
+
+    #[Override]
+    public function acceptTiles(): bool
+    {
+        return $this->fields['interface'] === 'helpdesk';
     }
 }

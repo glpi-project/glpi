@@ -1168,7 +1168,6 @@ $RELATION = [
     ],
 
     'glpi_profiles' => [
-        '_glpi_helpdesks_tiles_profiles_tiles' => 'profiles_id',
         '_glpi_knowbaseitems_profiles'         => 'profiles_id',
         '_glpi_profilerights'                  => 'profiles_id',
         '_glpi_profiles_reminders'             => 'profiles_id',

@@ -31,7 +31,7 @@
  #}
 
 {% for tile in tiles %}
-    {% set profile_tile_id = tiles_manager.getProfileTileForTile(tile).getID() %}
+    {% set item_tile_id = tiles_manager.getItemTileForTile(tile).getID() %}
 
     <section
         class="col-12 col-lg-6 col-xl-4 d-flex-soft"
@@ -46,7 +46,7 @@
             data-glpi-helpdesk-config-tile
             data-glpi-helpdesk-config-tile-id="{{ tile.getDatabaseId() }}"
             data-glpi-helpdesk-config-tile-itemtype="{{ get_class(tile) }}"
-            data-glpi-helpdesk-config-tile-profile-id="{{ profile_tile_id }}"
+            data-glpi-helpdesk-config-item-tile-id="{{ item_tile_id }}"
             data-glpi-helpdesk-config-tile-sortable
             class="card rounded my-2 flex-grow-1 cursor-pointer"
         >
