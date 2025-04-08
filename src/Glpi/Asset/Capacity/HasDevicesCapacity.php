@@ -128,7 +128,7 @@ class HasDevicesCapacity extends AbstractCapacity
         return $count;
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

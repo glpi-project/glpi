@@ -65,7 +65,7 @@ class AllowedInGlobalSearchCapacity extends AbstractCapacity
         return '';
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('globalsearch_types', $classname);
     }

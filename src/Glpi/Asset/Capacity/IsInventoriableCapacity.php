@@ -121,7 +121,7 @@ class IsInventoriableCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('inventory_types', $classname);
         $this->registerToTypeConfig('agent_types', $classname);
@@ -129,7 +129,7 @@ class IsInventoriableCapacity extends AbstractCapacity
         $this->registerToTypeConfig('process_types', $classname);
         $this->registerToTypeConfig('ruleimportasset_types', $classname);
 
-        if ($this->getConfiguration()->getValue('inventory_mainasset') === \Glpi\Inventory\MainAsset\GenericPrinterAsset::class) {
+        if ($config->getValue('inventory_mainasset') === \Glpi\Inventory\MainAsset\GenericPrinterAsset::class) {
             $this->registerToTypeConfig('printer_types', $classname);
         }
 

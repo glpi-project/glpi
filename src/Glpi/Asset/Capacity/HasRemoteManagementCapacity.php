@@ -80,7 +80,7 @@ class HasRemoteManagementCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('remote_management_types', $classname);
 

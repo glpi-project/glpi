@@ -92,12 +92,12 @@ class HasNotepadCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         CommonGLPI::registerStandardTab($classname, Notepad::class, 80);
     }
 
-    public function onObjectInstanciation(Asset $object): void
+    public function onObjectInstanciation(Asset $object, CapacityConfig $config): void
     {
         $reflected_class = new ReflectionClass($object);
         $reflected_property = $reflected_class->getProperty('usenotepad');

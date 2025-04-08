@@ -75,7 +75,7 @@ class HasOperatingSystemCapacity extends AbstractCapacity
     }
 
     // #Override
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('operatingsystem_types', $classname);
 

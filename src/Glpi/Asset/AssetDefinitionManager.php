@@ -213,8 +213,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
         foreach ($capacities as $capacity) {
             if ($definition->hasCapacityEnabled($capacity)) {
                 Profiler::getInstance()->start('Bootstrap ' . $capacity::class . ' on ' . $asset_class_name, Profiler::CATEGORY_CUSTOMOBJECTS);
-                $capacity->setConfiguration($definition->getCapacityConfiguration($capacity::class));
-                $capacity->onClassBootstrap($asset_class_name);
+                $capacity->onClassBootstrap($asset_class_name, $definition->getCapacityConfiguration($capacity::class));
                 Profiler::getInstance()->stop('Bootstrap ' . $capacity::class . ' on ' . $asset_class_name);
             }
         }

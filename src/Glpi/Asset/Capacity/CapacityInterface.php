@@ -114,14 +114,17 @@ interface CapacityInterface
      * Method executed during asset classes bootstraping.
      *
      * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param CapacityConfig $config
      * @return void
      */
-    public function onClassBootstrap(string $classname): void;
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void;
 
     /**
      * Method executed when capacity is enabled on given asset class.
      *
      * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param CapacityConfig $config
+     * @return void
      */
     public function onCapacityEnabled(string $classname, CapacityConfig $config): void;
 
@@ -129,6 +132,8 @@ interface CapacityInterface
      * Method executed when capacity is disabled on given asset class.
      *
      * @param class-string<\Glpi\Asset\Asset> $classname
+     * @param CapacityConfig $config
+     * @return void
      */
     public function onCapacityDisabled(string $classname, CapacityConfig $config): void;
 
@@ -138,6 +143,7 @@ interface CapacityInterface
      * @param class-string<\Glpi\Asset\Asset> $classname
      * @param CapacityConfig $old_config
      * @param CapacityConfig $new_config
+     * @return void
      */
     public function onCapacityUpdated(string $classname, CapacityConfig $old_config, CapacityConfig $new_config): void;
 
@@ -145,23 +151,8 @@ interface CapacityInterface
      * Method executed during creation of an object instance (i.e. during `__construct()` method execution).
      *
      * @param Asset $object
+     * @param CapacityConfig $config
      * @return void
      */
-    public function onObjectInstanciation(Asset $object): void;
-
-    /**
-     * Set configuration
-     *
-     * @param CapacityConfig $config
-     *
-     * @return self
-     */
-    public function setConfiguration(CapacityConfig $config): self;
-
-    /**
-     * Get configuration
-     *
-     * @return CapacityConfig
-     */
-    public function getConfiguration(): CapacityConfig;
+    public function onObjectInstanciation(Asset $object, CapacityConfig $config): void;
 }

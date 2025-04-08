@@ -48,8 +48,6 @@ use Log;
  */
 abstract class AbstractCapacity implements CapacityInterface
 {
-    protected CapacityConfig $config;
-
     /**
      * Constructor.
      *
@@ -185,11 +183,11 @@ abstract class AbstractCapacity implements CapacityInterface
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
     }
 
-    public function onObjectInstanciation(Asset $object): void
+    public function onObjectInstanciation(Asset $object, CapacityConfig $config): void
     {
     }
 
@@ -355,16 +353,5 @@ abstract class AbstractCapacity implements CapacityInterface
                 [$itemtype]
             )
         );
-    }
-
-    public function setConfiguration(CapacityConfig $config): self
-    {
-        $this->config = $config;
-        return $this;
-    }
-
-    public function getConfiguration(): CapacityConfig
-    {
-        return $this->config ?? new CapacityConfig();
     }
 }

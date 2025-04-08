@@ -81,7 +81,7 @@ class HasAppliancesCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('appliance_types', $classname);
         CommonGLPI::registerStandardTab($classname, Appliance_Item::class, 85);
