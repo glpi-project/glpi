@@ -2663,7 +2663,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'empty',
                 'val' => 'null',
                 'meta' => false,
-                'expected' => "(`glpi_computer`.`name` = '')",
+                'expected' => "((`glpi_computers`.`name` = '') OR `glpi_computers`.`name` IS NULL)",
             ],
         ];
     }
