@@ -196,26 +196,29 @@
                 <button
                     type="button"
                     data-glpi-form-renderer-action="previous-section"
-                    class="btn btn-ghost-secondary d-none me-2 pointer-events-none"
+                    class="btn btn-ghost-secondary d-none d-flex align-items-end me-2 pointer-events-none"
                 >
+                    <i class="ti ti-arrow-narrow-left-dashed me-2"></i>
                     {{ __("Back") }}
                 </button>
 
                 <button
                     type="button"
                     data-glpi-form-renderer-action="next-section"
-                    class="btn btn-primary pointer-events-none {{ is_single_section_form ? "d-none" : "" }}"
+                    class="btn btn-primary pointer-events-none {{ is_single_section_form ? "d-none" : "" }} d-flex align-items-end"
                 >
+                    <i class="ti ti-arrow-narrow-right-dashed me-2"></i>
                     {{ __("Continue") }}
                 </button>
 
                 <button
                     type="button"
                     data-glpi-form-renderer-action="submit"
-                    class="btn btn-primary pointer-events-none {{ not is_single_section_form ? "d-none" : "" }}"
+                    class="btn btn-primary pointer-events-none {{ not is_single_section_form ? "d-none" : "" }} d-flex align-items-end"
                     disabled
                 >
-                    {{ __("Send form") }}
+                    <i class="ti ti-check me-2"></i>
+                    {{ __("Submit") }}
                 </button>
             </div>
 
