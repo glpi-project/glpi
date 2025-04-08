@@ -82,6 +82,11 @@ export class GlpiFormEditorController
     #conditions_editors_controllers;
 
     /**
+     * @type {boolean}
+     */
+    #do_preview_after_save = false;
+
+    /**
      * Create a new GlpiFormEditorController instance for the given target.
      * The target must be a valid form.
      *
@@ -218,13 +223,21 @@ export class GlpiFormEditorController
 
         // Handle form submit success event
         $(this.#target).on('glpi-ajax-controller-submit-success', () => {
+            const save_and_preview_button = $(this.#target).find(
+                '[data-glpi-form-editor-save-and-preview-action]'
+            );
+
             // Reset unsaved changes
             this.#updatePreviewButton();
 
-            const save_and_preview_button = $(this.#target).find('[data-glpi-form-editor-save-and-preview-action]');
-            if (save_and_preview_button.get(0) === $(document.activeElement).get(0)) {
+            // Check if a preview action was queued
+            if (this.#do_preview_after_save) {
                 // Open the preview page in a new tab
-                window.open(save_and_preview_button.data('glpi-form-editor-preview-url'), '_blank');
+                window.open(
+                    save_and_preview_button.data('glpi-form-editor-preview-url'),
+                    '_blank'
+                );
+                this.#do_preview_after_save = false;
             }
         });
 
@@ -518,6 +531,10 @@ export class GlpiFormEditorController
                 this.#copyQuestionUuidToClipboard(
                     target.closest('[data-glpi-form-editor-question')
                 );
+                break;
+
+            case "queue-preview":
+                this.#do_preview_after_save = true;
                 break;
 
             // Unknown action

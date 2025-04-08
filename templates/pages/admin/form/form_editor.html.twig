@@ -198,6 +198,7 @@
                 name="update"
                 form="main-form"
                 title="{{ __("Save and preview") }}"
+                data-glpi-form-editor-on-click="queue-preview"
                 data-glpi-form-editor-save-and-preview-action
                 data-glpi-form-editor-preview-url="{{ path('/Form/Render/' ~ item.fields.id) }}"
             >
