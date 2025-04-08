@@ -167,7 +167,6 @@ final class PasswordHistoryTest extends DbTestCase
             'user' => $user,
             'password' => "",
             'expected' => [],
-            'warning' => 'Unexpected empty password has not been added to passwords history.',
         ];
 
         // Update password with history disabled

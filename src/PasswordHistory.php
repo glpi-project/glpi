@@ -119,16 +119,16 @@ final class PasswordHistory
      * Must be called after a user password is updated
      *
      * @param User   $user
-     * @param string $password Previous user's password, which has just been replaced
+     * @param string|null $password Previous user's password, which has just been replaced
      *
      * @return bool
      */
-    public function updatePasswordHistory(User $user, string $password): bool
+    public function updatePasswordHistory(User $user, ?string $password): bool
     {
-        // No password change
         if (empty($password)) {
-            trigger_error("Unexpected empty password has not been added to passwords history.", E_USER_WARNING);
-            return false;
+            // There is no previous password to store. This is a normal case if a user is created without setting the password.
+            // Login attempts with an empty password are not accepted by Auth::validateLogin()
+            return true;
         }
 
         // Here $password should always be a hash and not a "real" password
