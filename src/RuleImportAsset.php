@@ -506,6 +506,13 @@ class RuleImportAsset extends Rule
                 'WHERE'  => [] //to fill
             ];
 
+            // do not reconcile if it's a template
+            if (is_a($item, CommonDBTM::class, true)) {
+                if ($item->maybeTemplate()) {
+                    $it_criteria['WHERE'][] = ['is_template' =>  0];
+                }
+            }
+
             if ($this->link_criteria_port) {
                 $this->handleLinkCriteriaPort($item, $it_criteria);
             } else {
