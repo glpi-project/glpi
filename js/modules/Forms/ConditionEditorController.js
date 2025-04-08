@@ -225,9 +225,11 @@ export class GlpiFormConditionEditorController
             if (condition_value.length === 1) {
                 condition_data.value = condition_value.val();
             } else if (condition_value.length > 1) {
-                condition_data.value = [];
-                condition_value.each((_index, element) => {
-                    condition_data.value.push(element.value);
+                condition_data.value = {};
+                condition_value.each((index, element) => {
+                    const name_parts = element.name.split(/[[\]]+/);
+                    const last_part = name_parts[name_parts.length - 2]; // Get the last non-empty part
+                    condition_data.value[last_part] = element.value;
                 });
             }
 
