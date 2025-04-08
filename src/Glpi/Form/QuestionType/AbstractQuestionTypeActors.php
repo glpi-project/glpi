@@ -91,8 +91,27 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
 
         $actors_ids = [];
         foreach ($value as $actor) {
+            // Skip empty values
+            if (empty($actor)) {
+                continue;
+            }
+
             $actor_parts = explode('-', $actor);
-            $actors_ids[getItemtypeForForeignKeyField($actor_parts[0])][] = (int) $actor_parts[1];
+            $foreign_key = $actor_parts[0];
+            $id = $actor_parts[1] ?? 0;
+
+            // Check if the foreign key is valid
+            $itemtype = getItemtypeForForeignKeyField($foreign_key);
+            if (!$itemtype || !class_exists($itemtype)) {
+                throw new InvalidArgumentException("Invalid actor type: $foreign_key");
+            }
+
+            // Ensure the ID is a valid integer
+            if (!is_numeric($id) || (int)$id <= 0) {
+                throw new InvalidArgumentException("Invalid actor ID: $id");
+            }
+
+            $actors_ids[$itemtype][] = (int) $id;
         }
 
         // Wrap the array in a config object to serialize it

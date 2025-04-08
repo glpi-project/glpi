@@ -226,6 +226,12 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
             $result = [];
 
             foreach ($itemtypes as $index => $itemtype) {
+                // If no itemtype is selected, a 0 value is returned but not corresponding item_id is set.
+                // So we skip this case to avoid having undefined index error.
+                if (isset($items_ids[$index]) === false) {
+                    continue;
+                }
+
                 $item_id = $items_ids[$index];
 
                 // Ensure that itemtype and item_id are valid

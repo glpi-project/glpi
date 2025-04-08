@@ -370,7 +370,7 @@ class FormBuilder
      * @param string $name          Question name
      * @param string $type          Question type
      * @param mixed  $default_value Question default value
-     * @param string $extra_data    Question extra data
+     * @param ?string $extra_data    Question extra data
      * @param string $description   Question description
      * @param bool   $is_mandatory  Is the question mandatory ?
      *
@@ -380,7 +380,7 @@ class FormBuilder
         string $name,
         string $type,
         mixed $default_value = "",
-        string $extra_data = "",
+        ?string $extra_data = "",
         string $description = "",
         bool $is_mandatory = false,
     ): self {

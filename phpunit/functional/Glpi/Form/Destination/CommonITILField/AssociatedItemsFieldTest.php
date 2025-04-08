@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 use Computer;
 use DBmysql;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldConfig;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldStrategy;
@@ -513,6 +514,75 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                     Monitor::getType()  => $monitor_id,
                 ]
             )
+        );
+    }
+
+    /**
+     * Test that we can submit an empty value for a specific values strategy.
+     * A peculiarity of the front-end integration returns the value "0" if no
+     * itemtype is selected.
+     *
+     * However, no corresponding id is returned, so we need to ensure
+     * that the "0" value is properly ignored.
+     */
+    public function testSubmitEmptyValueForSpecificValuesStrategy(): void
+    {
+        $this->login();
+
+        // Create a computer
+        $computer = $this->createItem(Computer::class, [
+            'name' => "Computer",
+            'entities_id' => $this->getTestRootEntity(true)
+        ]);
+
+        // Create a form
+        $form = $this->createForm(new FormBuilder());
+
+        $destination = current($form->getDestinations());
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    AssociatedItemsField::getKey() => [
+                        'strategies' => [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
+                        'specific_associated_items' => [
+                            'itemtype' => [
+                                \Computer::getType(),
+                                '0'
+                            ],
+                            'items_id' => [
+                                $computer->getID(),
+                            ]
+                        ],
+                    ]
+                ]
+            ],
+            ["config"],
+        );
+
+        $destination = current($form->getDestinations());
+        $concrete_destination = $destination->getConcreteDestinationItem();
+        $this->assertInstanceOf(
+            AbstractCommonITILFormDestination::class,
+            $concrete_destination
+        );
+
+        /**
+         * @var AbstractCommonITILFormDestination $concrete_destination
+         * @var AssociatedItemsFieldConfig $config
+         */
+        $config = $concrete_destination->getConfigurableFieldByKey(
+            AssociatedItemsField::getKey()
+        )->getConfig($form, $destination->getConfig());
+
+        $this->assertEquals(
+            [
+                Computer::getType() => [
+                    $computer->getID(),
+                ],
+            ],
+            $config->getSpecificAssociatedItems()
         );
     }
 
