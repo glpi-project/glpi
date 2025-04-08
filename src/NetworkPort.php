@@ -1138,15 +1138,12 @@ class NetworkPort extends CommonDBChild
                                  );
                             } else {
                                 foreach ($vlans as $row) {
-                                        $output .= $row['name'];
+                                    $output .= $row['name'];
                                     if (!empty($row['tag'])) {
                                         $output .= ' [' . $row['tag'] . ']';
                                     }
-                                        $output .= ($row['tagged'] == 1 ? 'T' : 'U');
-                                    if ($canedit) {
-                                        $output .= "<a title='" . __('Delete') . "' href='" . NetworkPort::getFormURLWithID($row['id']) . "&unassign_vlan=unassigned'> <i class='fas fa-trash'></i> <span class='sr-only'>" . __('Delete') . "</span></a>";
-                                    }
-                                       $output .= '<br/>';
+                                    $output .= ($row['tagged'] == 1 ? 'T' : 'U');
+                                    $output .= '<br/>';
                                 }
                             }
                             break;
