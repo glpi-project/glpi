@@ -1112,7 +1112,7 @@ class Auth extends CommonGLPI
                 } else if ($CFG_GLPI["is_users_auto_add"]) {
                     // Auto add user
                     $input = $this->user->fields;
-                    unset($this->user->fields);
+                    $this->user->fields = [];
                     if ($this->auth_type == self::EXTERNAL && !isset($input["authtype"])) {
                         $input["authtype"] = $this->auth_type;
                     }

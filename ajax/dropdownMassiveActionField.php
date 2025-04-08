@@ -61,8 +61,7 @@ if (isset($_POST['submitname']) && $_POST['submitname']) {
 
 
 if (
-    isset($_POST["itemtype"])
-    && isset($_POST["id_field"]) && $_POST["id_field"]
+    isset($_POST["id_field"]) && $_POST["id_field"]
 ) {
     $search = SearchOption::getOptionsForItemtype($_POST["itemtype"]);
     if (!isset($search[$_POST["id_field"]])) {

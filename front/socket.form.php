@@ -142,11 +142,11 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
     }
 
     $options = [];
-    if (isset($_GET["id"])) {
+    if ($_GET["id"]) {
         $options['id'] = $_GET["id"];
     }
 
-    if (isset($_GET["items_id"])) {
+    if ($_GET["items_id"]) {
         $options['items_id'] = $_GET["items_id"];
     }
 

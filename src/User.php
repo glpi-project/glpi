@@ -6003,15 +6003,18 @@ HTML;
         }
 
         $table  = self::getTable();
-        return QueryFunction::if(
-            condition: [
-                "$table.$first" => ['<>', ''],
-                "$table.$second" => ['<>', '']
-            ],
-            true_expression: QueryFunction::concat(["$table.$first", new QueryExpression($DB::quoteValue(' ')), "$table.$second"]),
-            false_expression: $table . '.' . self::getNameField(),
-            alias: $alias
-        );
+
+        $first  = DBmysql::quoteName("$table.$first");
+        $second = DBmysql::quoteName("$table.$second");
+        $alias  = DBmysql::quoteName($alias);
+        $name   = DBmysql::quoteName($table . '.' . self::getNameField());
+
+        return new QueryExpression("CASE
+            WHEN $first <> '' AND $second <> '' THEN CONCAT($first, ' ', $second)
+            WHEN $first <> '' THEN $first
+            WHEN $second <> '' THEN $second
+            ELSE $name
+        END AS $alias");
     }
 
     public static function getIcon()

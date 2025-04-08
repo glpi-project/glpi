@@ -8,6 +8,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/dropdownItilActors.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset \'action\' on non\\-empty\\-array on left side of \\?\\? always exists and is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.offset',
+	'count' => 2,
+	'path' => __DIR__ . '/ajax/kanban.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type null\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
@@ -98,10 +104,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/form/access_control.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type array\\<mixed\\>\\.$#',
-	'identifier' => 'varTag.nativeType',
+	'message' => '#^Offset \'knowbaseitems_id\' on non\\-empty\\-array in isset\\(\\) always exists and is not nullable\\.$#',
+	'identifier' => 'isset.offset',
 	'count' => 2,
-	'path' => __DIR__ . '/front/item_device.php',
+	'path' => __DIR__ . '/front/knowbaseitem_comment.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Glpi\\\\Mail\\\\SMTP\\\\OauthProvider\\\\ProviderInterface\\:\\:getState\\(\\)\\.$#',
@@ -114,6 +120,12 @@ $ignoreErrors[] = [
 	'identifier' => 'match.unhandled',
 	'count' => 1,
 	'path' => __DIR__ . '/front/stat.graph.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'showgraph\' on non\\-empty\\-array on left side of \\?\\? always exists and is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/front/stat.location.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type DBmysql is not subtype of native type DB\\.$#',
@@ -238,6 +250,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'identifier' => 'greater.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Ajax.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Ternary operator condition is always true\\.$#',
+	'identifier' => 'ternary.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Ajax.php',
 ];
@@ -602,8 +620,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property CommonDBRelation\\:\\:\\$_force_log_option \\(int\\) in isset\\(\\) is not nullable\\.$#',
-	'identifier' => 'isset.property',
+	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
+	'identifier' => 'deadCode.unreachable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
@@ -1848,12 +1866,6 @@ $ignoreErrors[] = [
 	'identifier' => 'booleanAnd.rightAlwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Middleware/DebugRequestMiddleware.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type array\\{type\\: string, format\\?\\: string, pattern\\?\\: string, properties\\?\\: array\\<string, array\\{type\\: string, format\\?\\: string\\}\\>\\} is not subtype of native type array\\{type\\: \'integer\', pattern\\: \'\\\\\\\\d\\+\'\\}\\|array\\{type\\: \'string\', pattern\\: mixed\\}\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\<" between 0 and 0 is always false\\.$#',
@@ -3326,12 +3338,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Rack.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type int is not subtype of native type mixed\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Rack.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Loose comparison using \\=\\= between \'e\'\\|\'g\'\\|\'i\'\\|\'l\'\\|\'o\'\\|\'s\'\\|\'u\' and \'_\' will always evaluate to false\\.$#',
 	'identifier' => 'equal.alwaysFalse',
 	'count' => 1,
@@ -3508,12 +3514,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Log.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Log.php',
 ];
@@ -4194,6 +4194,12 @@ $ignoreErrors[] = [
 	'identifier' => 'greater.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ProjectTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'sort\' on non\\-empty\\-array in empty\\(\\) always exists and is not falsy\\.$#',
+	'identifier' => 'empty.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/ProjectTask_Ticket.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method CommonDBTM\\:\\:setVolume\\(\\)\\.$#',

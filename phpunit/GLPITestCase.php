@@ -502,6 +502,10 @@ class GLPITestCase extends TestCase
             case Consumable::class:
                 $input['consumableitems_id'] = getItemByTypeName(ConsumableItem::class, '_test_consumableitem01', true);
                 break;
+            case DCRoom::class:
+                $input['vis_cols'] = 20;
+                $input['vis_rows'] = 20;
+                break;
             case Item_DeviceSimcard::class:
                 $input['itemtype']          = Computer::class;
                 $input['items_id']          = getItemByTypeName(Computer::class, '_test_pc01', true);

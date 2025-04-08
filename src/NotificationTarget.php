@@ -81,7 +81,7 @@ class NotificationTarget extends CommonDBChild
      * Variable contains `itemtype` and `items_id` keys and is set only during hook execution.
      * @var array
      */
-    public $recipient_data;
+    public $recipient_data              = [];
 
     private $allow_response             = true;
     private $mode                       = null;
@@ -123,8 +123,8 @@ class NotificationTarget extends CommonDBChild
 
         $this->addAdditionalTargets($event);
 
-       // add new target by plugin
-        unset($this->data);
+        // add new target by plugin
+        $this->data = [];
         Plugin::doHook(Hooks::ITEM_ADD_TARGETS, $this);
         asort($this->notification_targets);
 
@@ -697,7 +697,7 @@ class NotificationTarget extends CommonDBChild
                 'items_id' => $data['users_id'],
             ];
             Plugin::doHook(Hooks::ADD_RECIPIENT_TO_TARGET, $this);
-            unset($this->recipient_data);
+            $this->recipient_data = [];
         }
     }
 
@@ -935,7 +935,7 @@ class NotificationTarget extends CommonDBChild
                 'items_id' => $group_id,
             ];
             Plugin::doHook(Hooks::ADD_RECIPIENT_TO_TARGET, $this);
-            unset($this->recipient_data);
+            $this->recipient_data = [];
         }
     }
 
@@ -1246,7 +1246,7 @@ class NotificationTarget extends CommonDBChild
             'items_id' => $profiles_id,
         ];
         Plugin::doHook(Hooks::ADD_RECIPIENT_TO_TARGET, $this);
-        unset($this->recipient_data);
+        $this->recipient_data = [];
     }
 
 

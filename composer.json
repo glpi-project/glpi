@@ -114,7 +114,7 @@
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpunit/phpunit": "^11.2",
         "shipmonk/composer-dependency-analyser": "^1.8",
-        "squizlabs/php_codesniffer": "^3.11",
+        "squizlabs/php_codesniffer": "^3.12",
         "symfony/browser-kit": "^6.4",
         "symfony/http-client": "^6.4",
         "symfony/stopwatch": "^6.4",

@@ -100,10 +100,6 @@ if (isset($_GET['_in_modal'])) {
     $alias->showForm($_GET["id"], $_GET);
     Html::popFooter();
 } else {
-    if (!isset($_GET["id"])) {
-        $_GET["id"] = "";
-    }
-
     Session::checkRight("internet", UPDATE);
 
     $menus = ['assets'];

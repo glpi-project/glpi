@@ -92,6 +92,8 @@ class TransferTest extends DbTestCase
             'definition_time' => 'hour',
             'number_time'     => 4,
             'begin_date'      => '2020-01-01',
+            'vis_cols'        => 1,
+            'vis_rows'        => 1,
         ];
 
         $count = 0;

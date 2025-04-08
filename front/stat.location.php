@@ -111,8 +111,7 @@ TemplateRenderer::getInstance()->display('pages/assistance/stats/form.html.twig'
 ]);
 
 if (
-    empty($_GET["dropdown"])
-    || !($item = getItemForItemtype($_GET["dropdown"]))
+    !($item = getItemForItemtype($_GET["dropdown"]))
 ) {
    // Do nothing
     Html::footer();

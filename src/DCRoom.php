@@ -88,11 +88,47 @@ class DCRoom extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        if ((int)($input['vis_rows'] ?? 0) < 1) {
+            Session::addMessageAfterRedirect(
+                __('Number of rows must be >= 1'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
+        if ((int)($input['vis_cols'] ?? 0) < 1) {
+            Session::addMessageAfterRedirect(
+                __('Number of columns must be >= 1'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
         return $this->manageBlueprint($input);
     }
 
     public function prepareInputForUpdate($input)
     {
+        if (isset($input['vis_rows']) && (int)($input['vis_rows']) < 1) {
+            Session::addMessageAfterRedirect(
+                __('Number of rows must be >= 1'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
+        if (isset($input['vis_cols']) && (int)($input['vis_cols']) < 1) {
+            Session::addMessageAfterRedirect(
+                __('Number of columns must be >= 1'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
         return $this->manageBlueprint($input);
     }
 

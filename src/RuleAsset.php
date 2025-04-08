@@ -366,7 +366,7 @@ class RuleAsset extends Rule
                             ($action->fields['field'] == 'groups_id')
                             && isset($input['_groups_id_of_user'])
                         ) {
-                            $output['_groups_id'] = count($input['_groups_id_of_user']) > 0 ? [reset($input['_groups_id_of_user'])] : [];
+                            $output['_groups_id'] = count($input['_groups_id_of_user']) > 0 ? [(int) reset($input['_groups_id_of_user'])] : [];
                         }
                         break;
 

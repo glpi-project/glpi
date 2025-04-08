@@ -2212,7 +2212,7 @@ class UserTest extends \DbTestCase
                     'firstname' => 'firstname',
                 ],
                 'names_format' => User::REALNAME_BEFORE,
-                'expected' => 'firstname_only',
+                'expected' => 'firstname',
             ],
             [
                 'input' => [
@@ -2220,7 +2220,7 @@ class UserTest extends \DbTestCase
                     'realname'  => 'lastname',
                 ],
                 'names_format' => User::REALNAME_BEFORE,
-                'expected' => 'lastname_only',
+                'expected' => 'lastname',
             ],
             [
                 'input' => [
@@ -2244,7 +2244,7 @@ class UserTest extends \DbTestCase
                     'firstname' => 'firstname',
                 ],
                 'names_format' => User::FIRSTNAME_BEFORE,
-                'expected' => 'firstname_only',
+                'expected' => 'firstname',
             ],
             [
                 'input' => [
@@ -2252,7 +2252,7 @@ class UserTest extends \DbTestCase
                     'realname'  => 'lastname',
                 ],
                 'names_format' => User::FIRSTNAME_BEFORE,
-                'expected' => 'lastname_only',
+                'expected' => 'lastname',
             ],
             [
                 'input' => [

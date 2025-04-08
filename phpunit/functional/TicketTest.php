@@ -2916,19 +2916,31 @@ class TicketTest extends DbTestCase
     public function testClosedTicketTransfer()
     {
 
-       // 1- create a category
+       // 1- create a category and location
         $itilcat      = new \ITILCategory();
         $first_cat_id = $itilcat->add([
             'name' => 'my first cat',
         ]);
         $this->assertFalse($itilcat->isNewItem());
 
-       // 2- create a category
+        $itilloc      = new \Location();
+        $first_loc_id = $itilloc->add([
+            'name' => 'my first loc',
+        ]);
+        $this->assertFalse($itilloc->isNewItem());
+
+       // 2- create a category and location
         $second_cat    = new \ITILCategory();
         $second_cat_id = $second_cat->add([
             'name' => 'my second cat',
         ]);
         $this->assertFalse($second_cat->isNewItem());
+
+        $second_loc    = new \Location();
+        $second_loc_id = $second_loc->add([
+            'name' => 'my second loc',
+        ]);
+        $this->assertFalse($second_loc->isNewItem());
 
         // 3- create ticket
         $ticket    = new \Ticket();
@@ -2936,19 +2948,25 @@ class TicketTest extends DbTestCase
             'name'              => 'A ticket to check the category change when using the "transfer" function.',
             'content'           => 'A ticket to check the category change when using the "transfer" function.',
             'itilcategories_id' => $first_cat_id,
-            'status'            => \CommonITILObject::CLOSED
+            'status'            => \CommonITILObject::CLOSED,
+            'locations_id'       => $first_loc_id,
         ]);
 
         $this->assertFalse($ticket->isNewItem());
 
-        // 4 - delete category with replacement
+        // 4 - delete category and location with replacement
         $itilcat->delete(['id'          => $first_cat_id,
             '_replace_by' => $second_cat_id
         ], 1);
 
-        // 5 - check that the category has been replaced in the ticket
+        $itilloc->delete(['id'          => $first_loc_id,
+            '_replace_by' => $second_loc_id
+        ], 1);
+
+        // 5 - check that the category and the location has been replaced in the ticket
         $ticket->getFromDB($ticket_id);
         $this->assertEquals($second_cat_id, (int)$ticket->fields['itilcategories_id']);
+        $this->assertEquals($second_loc_id, (int)$ticket->fields['locations_id']);
     }
 
     public static function computePriorityProvider()

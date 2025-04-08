@@ -144,7 +144,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_GET["id"]) and isset($_GET['to_rev'])) {
+} else if (isset($_GET['to_rev'])) {
     $kb->check($_GET["id"], UPDATE);
     if ($kb->revertTo($_GET['to_rev'])) {
         Session::addMessageAfterRedirect(
@@ -164,7 +164,7 @@ if (isset($_POST["add"])) {
         );
     }
     Html::redirect($kb->getFormURLWithID($_GET['id']));
-} else if (isset($_GET["id"])) {
+} else {
     if (!Session::getLoginUserID()) {
         Html::redirect("helpdesk.faq.php?id=" . $_GET['id']);
     }

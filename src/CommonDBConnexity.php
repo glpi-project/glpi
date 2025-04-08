@@ -308,7 +308,7 @@ abstract class CommonDBConnexity extends CommonDBTM
 
            // Solution 1 : If we cannot create the new item or delete the old item,
            // then we cannot update the item
-            unset($new_item->fields);
+            $new_item->fields = [];
 
             if (
                 $new_item->can(-1, CREATE, $input)

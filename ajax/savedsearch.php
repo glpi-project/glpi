@@ -77,7 +77,7 @@ if (!isset($_REQUEST['action'])) {
     return;
 }
 
-$action = $_REQUEST['action'] ?? null;
+$action = $_REQUEST['action'];
 
 if ($action == 'display_mine') {
     header("Content-Type: text/html; charset=UTF-8");

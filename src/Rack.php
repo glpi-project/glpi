@@ -498,8 +498,11 @@ class Rack extends CommonDBTM
 
         echo "<div id='viewgraph'>";
 
-        $rows     = (int) $room->fields['vis_rows'];
-        $cols     = (int) $room->fields['vis_cols'];
+        $rows     = (int)$room->fields['vis_rows'];
+        $cols     = (int)$room->fields['vis_cols'];
+        if ($cols === 0) {
+            $cols = 1; //prevent divizion by zero
+        }
         $w_prct   = 100 / $cols;
         $cell_w   = (int) $room->fields['vis_cell_width'];
         $cell_h   = (int) $room->fields['vis_cell_height'];
@@ -817,7 +820,6 @@ JAVASCRIPT;
      */
     private function prepareInput($input)
     {
-
         if (!array_key_exists('dcrooms_id', $input) || $input['dcrooms_id'] == 0) {
            // Position is not set if room not selected
             return $input;
