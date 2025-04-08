@@ -39,7 +39,6 @@ use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\Form;
-use Session;
 
 final class FormAccessControlManager
 {
@@ -47,6 +46,9 @@ final class FormAccessControlManager
      * Singleton instance.
      */
     private static ?FormAccessControlManager $instance = null;
+
+    /** @var ControlTypeInterface[] */
+    private array $plugins_policies = [];
 
     /**
      * Private constructor (singleton).
@@ -175,10 +177,16 @@ final class FormAccessControlManager
         // Add Access Control Strategy warnings
         $access_controls = $this->getPossibleAccessControlsStrategies();
         foreach ($access_controls as $access_control) {
-            $warnings = $access_control->getWarnings($form, $warnings);
+            array_push($warnings, ...$access_control->getWarnings($form));
         }
 
         return $warnings;
+    }
+
+    public function registerPluginAccessControlPolicy(
+        ControlTypeInterface $control
+    ): void {
+        $this->plugins_policies[] = $control;
     }
 
     private function addWarningIfFormIsNotActive(
@@ -249,9 +257,8 @@ final class FormAccessControlManager
         $types = [
             new AllowList(),
             new DirectAccess(),
+            ...$this->plugins_policies,
         ];
-
-        // TODO: plugin support
 
         return $types;
     }

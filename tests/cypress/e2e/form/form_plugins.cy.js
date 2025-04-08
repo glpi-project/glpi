@@ -65,4 +65,34 @@ describe('Form plugins', () => {
             '1) My range question: 50'
         );
     });
+
+    it('can configure access policies from plugins', () => {
+        // Create and go to form
+        cy.createFormWithAPI().visitFormTab('Policies');
+
+        // Config day of the week
+        cy.findByRole('region', {
+            name: 'Restrict access to a specific day of the week'
+        }).within(() => {
+            // Validate default values
+            cy.getDropdownByLabelText('Day').should('have.text', "Monday");
+            cy.findByRole('checkbox', {name: 'Active'}).should('not.be.checked');
+
+            // Apply config
+            cy.getDropdownByLabelText('Day').selectDropdownValue('Thursday');
+            cy.findByRole('checkbox', {name: 'Active'}).should('be.checked');
+        });
+
+        // Save and reload
+        cy.findByRole('button', {name: 'Save changes'}).click();
+        cy.reload();
+
+        // Validate that the value was applied and that the policy is active.
+        cy.findByRole('region', {
+            name: 'Restrict access to a specific day of the week'
+        }).within(() => {
+            cy.findByRole('checkbox', {name: 'Active'}).should('be.checked');
+            cy.getDropdownByLabelText('Day').should('have.text', "Thursday");
+        });
+    });
 });

@@ -65,15 +65,16 @@ final class DirectAccess implements ControlTypeInterface
     }
 
     #[Override]
-    public function getWarnings(Form $form, array $warnings): array
+    public function getWarnings(Form $form): array
     {
-        return $this->addWarningIfFormHasBlacklistedQuestionTypes($form, $warnings);
+        return $this->getWarningIfFormHasBlacklistedQuestionTypes($form);
     }
 
-    private function addWarningIfFormHasBlacklistedQuestionTypes(
+    private function getWarningIfFormHasBlacklistedQuestionTypes(
         Form $form,
-        array $warnings
     ): array {
+        $warnings = [];
+
         if (
             FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($form)
             && array_reduce(

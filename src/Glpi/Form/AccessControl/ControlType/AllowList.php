@@ -69,9 +69,9 @@ final class AllowList implements ControlTypeInterface
     }
 
     #[Override]
-    public function getWarnings(Form $form, array $warnings): array
+    public function getWarnings(Form $form): array
     {
-        return $warnings;
+        return [];
     }
 
     #[Override]

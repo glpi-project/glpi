@@ -68,10 +68,9 @@ interface ControlTypeInterface
      * Get the warnings for the given form.
      *
      * @param  Form $form
-     * @param  string[] $warnings
      * @return string[]
      */
-    public function getWarnings(Form $form, array $warnings): array;
+    public function getWarnings(Form $form): array;
 
     /**
      * Render the configuration form of this control type.
