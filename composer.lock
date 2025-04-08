@@ -279,16 +279,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.2.1",
+            "version": "1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "43d60d8a5c7f1e3609aac40c7e716e74ebcae025"
+                "reference": "07ae1085aa58fac19bf1b8ef87478823c6a94d02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/43d60d8a5c7f1e3609aac40c7e716e74ebcae025",
-                "reference": "43d60d8a5c7f1e3609aac40c7e716e74ebcae025",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/07ae1085aa58fac19bf1b8ef87478823c6a94d02",
+                "reference": "07ae1085aa58fac19bf1b8ef87478823c6a94d02",
                 "shasum": ""
             },
             "require": {
@@ -307,7 +307,7 @@
                 "phpstan/phpstan": "^1.12",
                 "phpstan/phpstan-deprecation-rules": "^1.2",
                 "phpunit/phpunit": "^9.6",
-                "squizlabs/php_codesniffer": "^3.11"
+                "squizlabs/php_codesniffer": "^3.12"
             },
             "bin": [
                 "bin/convert",
@@ -348,7 +348,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2025-02-10T14:53:31+00:00"
+            "time": "2025-04-07T14:30:09+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -8003,7 +8003,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
@@ -8030,5 +8030,5 @@
     "platform-overrides": {
         "php": "7.4.0"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
