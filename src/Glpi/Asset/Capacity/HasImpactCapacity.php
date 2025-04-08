@@ -105,7 +105,7 @@ class HasImpactCapacity extends AbstractCapacity
         return sprintf(__('%1$s impact relations involving %2$s assets'), $impact_count, $asset_count);
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

@@ -92,7 +92,7 @@ class HasLinksCapacity extends AbstractCapacity
         return sprintf(__('%1$s links attached to %2$s assets'), $manualLinkCount + $externalLinkCount, $max);
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('link_types', $classname);
 

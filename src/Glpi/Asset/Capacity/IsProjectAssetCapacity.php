@@ -80,7 +80,7 @@ class IsProjectAssetCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         // Allow our item to be linked to projects
         $this->registerToTypeConfig('project_asset_types', $classname);

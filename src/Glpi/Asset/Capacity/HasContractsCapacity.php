@@ -82,7 +82,7 @@ class HasContractsCapacity extends AbstractCapacity
     }
 
     // #Override
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         // Allow our item to be linked to contracts
         $this->registerToTypeConfig('contract_types', $classname);

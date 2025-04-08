@@ -73,7 +73,7 @@ class HasHistoryCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         CommonGLPI::registerStandardTab(
             $classname,
@@ -82,7 +82,7 @@ class HasHistoryCapacity extends AbstractCapacity
         );
     }
 
-    public function onObjectInstanciation(Asset $object): void
+    public function onObjectInstanciation(Asset $object, CapacityConfig $config): void
     {
         $object->dohistory = true;
     }

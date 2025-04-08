@@ -116,7 +116,7 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         // Allow the asset to be linked to peripheral asset
         $this->registerToTypeConfig('peripheralhost_types', $classname);

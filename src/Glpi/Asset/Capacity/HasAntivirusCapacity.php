@@ -85,7 +85,7 @@ class HasAntivirusCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('itemantivirus_types', $classname);
 

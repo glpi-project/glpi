@@ -73,7 +73,7 @@ abstract class Asset extends CommonDBTM
     final public function __construct()
     {
         foreach (static::getDefinition()->getEnabledCapacities() as $capacity) {
-            $capacity->onObjectInstanciation($this);
+            $capacity->onObjectInstanciation($this, static::getDefinition()->getCapacityConfiguration($capacity));
         }
     }
 
