@@ -842,14 +842,11 @@ function update92xto930()
         );
     }
 
-    CronTask::Register(
+    $migration->addCrontask(
         'PurgeLogs',
         'PurgeLogs',
         7 * DAY_TIMESTAMP,
-        [
-            'param' => 24,
-            'mode' => CronTask::MODE_EXTERNAL
-        ]
+        param: 24,
     );
     /** /Logs purge */
 

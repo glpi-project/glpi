@@ -1182,7 +1182,16 @@ class Migration
                      unset($config[$conf['name']]);
                 }
                 if (count($config)) {
-                    Config::setConfigurationValues($context, $config);
+                    foreach ($config as $name => $value) {
+                        $DB->insert(
+                            'glpi_configs',
+                            [
+                                'context' => $context,
+                                'name'    => $name,
+                                'value'   => $value,
+                            ]
+                        );
+                    }
                     $this->addDebugMessage(sprintf(
                         __('Configuration values added for %1$s (%2$s).'),
                         implode(', ', array_keys($config)),
@@ -1931,5 +1940,58 @@ class Migration
                 KEY `$fk_2` (`$fk_2`)
             ) ENGINE=InnoDB DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation} ROW_FORMAT=DYNAMIC;
         ");
+    }
+
+    /**
+     * Add a crontask to register.
+     *
+     * @since 11.0.0
+     *
+     * @param class-string<CommonDBTM> $itemtype
+     * @param string $name
+     * @param int $frequency
+     * @param int|null $param
+     * @param array{mode?: int, state?: int, hourmin?: int, hourmax?: int, logs_lifetime?: int, allowmode?: int} $options
+     */
+    public function addCrontask(string $itemtype, string $name, int $frequency, ?int $param = null, array $options = []): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $existing_task = $DB->request([
+            'FROM' => 'glpi_crontasks',
+            'WHERE' => [
+                'itemtype' => $itemtype,
+                'name'     => $name,
+            ],
+        ]);
+        if ($existing_task->count() !== 0) {
+            // Cron task is already registered, do nothing.
+            return;
+        }
+
+        $defaults = [
+            'mode'          => 2, // CronTask::MODE_EXTERNAL
+            'state'         => 1, // CronTask::STATE_WAITING
+            'hourmin'       => 0,
+            'hourmax'       => 24,
+            'logs_lifetime' => 30,
+            'allowmode'     => 3, // CronTask::MODE_INTERNAL | CronTask::MODE_EXTERNAL
+            'comment'       => '',
+        ];
+
+        $input = [
+            'itemtype'      => $itemtype,
+            'name'          => $name,
+            'frequency'     => $frequency,
+            'param'         => $param,
+            'date_creation' => new QueryExpression('NOW()'),
+            'date_mod'      => new QueryExpression('NOW()'),
+        ];
+        foreach ($defaults as $key => $default_value) {
+            $input[$key] = $options[$key] ?? $default_value;
+        }
+
+        $DB->insert('glpi_crontasks', $input);
     }
 }

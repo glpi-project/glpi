@@ -90,5 +90,5 @@ if ($user_deleted_ldap !== null) {
         'user_deleted_ldap_authorizations' => $user_deleted_ldap_authorizations,
     ], 'core');
 
-    Config::deleteConfigurationValues('core', ['user_deleted_ldap']);
+    $migration->removeConfig(['user_deleted_ldap']);
 }

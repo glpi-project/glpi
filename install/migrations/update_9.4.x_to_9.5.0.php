@@ -581,25 +581,23 @@ function update94xto950()
         ]);
     }
 
-    CronTask::Register(
+    $migration->addCrontask(
         'Ticket',
         'purgeticket',
         7 * DAY_TIMESTAMP,
-        [
-            'mode'  => CronTask::MODE_EXTERNAL,
-            'state' => CronTask::STATE_DISABLE
+        options: [
+            'state' => 0, // CronTask::STATE_DISABLE
         ]
     );
     /** /Add purge delay per entity */
 
     /** Clean oprhans documents crontask */
-    CronTask::Register(
+    $migration->addCrontask(
         'Document',
         'cleanorphans',
         7 * DAY_TIMESTAMP,
-        [
-            'mode'  => CronTask::MODE_EXTERNAL,
-            'state' => CronTask::STATE_DISABLE
+        options: [
+            'state' => 0, // CronTask::STATE_DISABLE
         ]
     );
     /** /Clean oprhans documents crontask */
@@ -999,11 +997,11 @@ function update94xto950()
     if (count($dashboards)) {
         $dashboards = $dashboards['dashboards'];
         \Glpi\Dashboard\Dashboard::importFromJson($dashboards);
-        Config::deleteConfigurationValues('core', ['dashboards']);
+        $migration->removeConfig(['dashboards']);
     }
 
    //delete prevous dashboards configuration (remove partial dev versions)
-    Config::deleteConfigurationValues('core', [
+    $migration->removeConfig([
         'default_dashboard_central',
         'default_dashboard_assets',
         'default_dashboard_helpdesk',
@@ -1584,28 +1582,23 @@ HTML
             ]
         );
     }
-    CronTask::Register(
+    $migration->addCrontask(
         'User',
         'passwordexpiration',
         DAY_TIMESTAMP,
-        [
-            'mode'  => CronTask::MODE_EXTERNAL,
-            'state' => CronTask::STATE_DISABLE,
-            'param' => 100,
+        param: 100,
+        options: [
+            'state' => 0, // CronTask::STATE_DISABLE
         ]
     );
     /** /Password expiration policy */
 
     /** Marketplace */
    // crontask
-    CronTask::Register(
+    $migration->addCrontask(
         'Glpi\Marketplace\Controller',
         'checkAllUpdates',
         DAY_TIMESTAMP,
-        [
-            'mode'  => CronTask::MODE_EXTERNAL,
-            'state' => CronTask::STATE_WAITING,
-        ]
     );
 
    // notification
@@ -1999,8 +1992,7 @@ HTML
             ($b64_decoded = base64_decode($CFG_GLPI['glpinetwork_registration_key'], true)) !== false
             && json_decode($b64_decoded, true) !== null
         ) {
-            Config::setConfigurationValues(
-                'core',
+            $migration->addConfig(
                 [
                     'glpinetwork_registration_key' => (new GLPIKey())->encrypt($CFG_GLPI['glpinetwork_registration_key'])
                 ]

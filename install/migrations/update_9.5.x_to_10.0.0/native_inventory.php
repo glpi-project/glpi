@@ -664,24 +664,19 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
 
 $migration->addConfig(['purge_refusedequipment' => 0]);
 
-CronTask::Register(
+$migration->addCrontask(
     'Glpi\Inventory\Inventory',
     'cleantemp',
-    1 * DAY_TIMESTAMP,
-    [
-        'mode'  => CronTask::MODE_EXTERNAL,
-        'state' => CronTask::STATE_DISABLE
+    DAY_TIMESTAMP,
+    options: [
+        'state' => 0, // CronTask::STATE_DISABLE
     ]
 );
 
-CronTask::Register(
+$migration->addCrontask(
     'Glpi\Inventory\Inventory',
     'cleanorphans',
-    7 * DAY_TIMESTAMP,
-    [
-        'mode'  => CronTask::MODE_EXTERNAL,
-        'state' => CronTask::STATE_WAITING
-    ]
+    WEEK_TIMESTAMP,
 );
 
 if (!$DB->tableExists('glpi_usbvendors')) {

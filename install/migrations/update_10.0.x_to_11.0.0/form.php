@@ -298,11 +298,9 @@ $migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
 $ADDTODISPLAYPREF['Glpi\Form\Form'] = [1, 80, 86, 3, 4];
 $ADDTODISPLAYPREF['Glpi\Form\AnswersSet'] = [1, 3, 4];
 
-CronTask::register('Glpi\Form\Form', 'purgedraftforms', DAY_TIMESTAMP, [
-    'state'         => CronTask::STATE_WAITING,
-    'mode'          => CronTask::MODE_INTERNAL,
-    'hourmin'       => 0,
-    'hourmax'       => 24,
-    'logs_lifetime' => 30,
-    'param'         => 7
-]);
+$migration->addCrontask(
+    'Glpi\Form\Form',
+    'purgedraftforms',
+    DAY_TIMESTAMP,
+    param: 7
+);

@@ -32,5 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var \Migration $migration
+ */
+
 // Drop unexpected `['0' => 'system_user']` config added by buggy 9.5.x -> 10.0.0 migration.
-Config::deleteConfigurationValues('core', ['0']);
+$migration->removeConfig(['0']);
