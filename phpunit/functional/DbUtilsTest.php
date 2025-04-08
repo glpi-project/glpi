@@ -1607,7 +1607,7 @@ class DbUtilsTest extends DbTestCase
     public static function fixItemtypeCaseProvider()
     {
         return [
-         // Bad case classnames matching and existing class file
+            // Bad case classnames matching and existing class file
             [
                 'itemtype' => 'myclass',
                 'expected' => 'MyClass',
@@ -1632,7 +1632,19 @@ class DbUtilsTest extends DbTestCase
                 'itemtype' => 'glpiplugin\\foo\\models\\foo\\bar_item',
                 'expected' => 'GlpiPlugin\\Foo\\Models\\Foo\\Bar_Item',
             ],
-         // Good case (should not be altered)
+            [
+                'itemtype' => 'PluginBarFooitem',
+                'expected' => 'PluginBarFooItem',
+            ],
+            [
+                'itemtype' => 'GlpiPluGin\\Bar\\Namespacedfoo',
+                'expected' => 'GlpiPlugin\\Bar\\NamespacedFoo',
+            ],
+            [
+                'itemtype' => 'glpiplugin\\bar\\models\\bar\\foo_item',
+                'expected' => 'GlpiPlugin\\Bar\\Models\\Bar\\Foo_Item',
+            ],
+            // Good case (should not be altered)
             [
                 'itemtype' => 'MyClass',
                 'expected' => 'MyClass',
@@ -1645,7 +1657,11 @@ class DbUtilsTest extends DbTestCase
                 'itemtype' => 'GlpiPlugin\\Foo\\NamespacedBar',
                 'expected' => 'GlpiPlugin\\Foo\\NamespacedBar',
             ],
-         // Not matching any class file (should not be altered)
+            [
+                'itemtype' => 'GlpiPlugin\\Bar\\NamespacedFoo',
+                'expected' => 'GlpiPlugin\\Bar\\NamespacedFoo',
+            ],
+            // Not matching any class file (should not be altered)
             [
                 'itemtype' => 'notanitemtype',
                 'expected' => 'notanitemtype',
@@ -1691,10 +1707,23 @@ class DbUtilsTest extends DbTestCase
                         ],
                     ],
                 ],
+                'marketplace' => [
+                    'bar' => [
+                        'src' => [
+                            'Models' => [
+                                'Bar' => [
+                                    'Foo_Item.php' => '',
+                                ],
+                            ],
+                            'NamespacedFoo.php' => '',
+                            'PluginBarFooItem.php' => '',
+                        ],
+                    ],
+                ],
             ]
         );
         $instance = new \DbUtils();
-        $result = $instance->fixItemtypeCase($itemtype, vfsStream::url('glpi'));
+        $result = $instance->fixItemtypeCase($itemtype, vfsStream::url('glpi'), [vfsStream::url('glpi/plugins'), vfsStream::url('glpi/marketplace')]);
         $this->assertEquals($expected, $result);
     }
 }
