@@ -190,7 +190,7 @@ class LocationField extends AbstractConfigField implements DestinationFieldConve
                         specific_question_id: $migration->getMappedItemTarget(
                             'PluginFormcreatorQuestion',
                             $rawData['location_question']
-                        )['items_id'],
+                        )['items_id'] ?? 0
                     );
                 case 4: // PluginFormcreatorAbstractItilTarget::LOCATION_RULE_LAST_ANSWER
                     return new LocationFieldConfig(
