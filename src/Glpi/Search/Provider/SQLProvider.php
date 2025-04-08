@@ -1676,8 +1676,20 @@ final class SQLProvider implements SearchProviderInterface
 
                 case "itemlink":
                     if (in_array($searchtype, ['equals', 'notequals', 'under', 'notunder', 'empty'])) {
-                        $criteria = [];
-                        $append_criterion_with_search($criteria, "$table.id");
+                        if ($searchtype === 'empty' && $opt["field"] === 'name') {
+                            $l = $nott ? 'AND' : 'OR';
+                            $criteria = [
+                                $l => [
+                                    [
+                                        $tocompute => [$nott ? '<>' : '=', '']
+                                    ]
+                                ]
+                            ];
+                            $append_criterion_with_search($criteria[$l], $tocompute);
+                        } else {
+                            $criteria = [];
+                            $append_criterion_with_search($criteria, "$table.id");
+                        }
                         return $criteria;
                     }
                     break;
