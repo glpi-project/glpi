@@ -1500,7 +1500,6 @@ class CommonDBTMTest extends DbTestCase
                 'is_template' => 1,
             ])
         );
-
     }
 
     public function testAddFilesWithNewFile()
