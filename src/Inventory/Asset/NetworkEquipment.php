@@ -335,7 +335,11 @@ class NetworkEquipment extends MainAsset
             switch ($component->type) {
                 case 'chassis':
                     if (property_exists($component, 'serial')) {
-                        $component->stack_number = $stack_number;
+                        if (property_exists($component, 'stack_number')) {
+                            $stack_number = $component->stack_number;
+                        } else {
+                            $component->stack_number = $stack_number;
+                        }
                         $switches[$component->index] = $component;
                     }
                     $stack_number++;
