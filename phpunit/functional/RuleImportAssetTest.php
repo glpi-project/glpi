@@ -36,8 +36,6 @@ namespace tests\units;
 
 use DbTestCase;
 
-use function PHPUnit\Framework\assertTrue;
-
 /* Test for inc/ruleimportcomputer.class.php */
 
 class RuleImportAssetTest extends DbTestCase
