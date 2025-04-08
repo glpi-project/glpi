@@ -215,7 +215,7 @@ class UserEmail extends CommonDBChild
         $result .= "<input title='" . __s('Default email') . "' type='radio' name='_default_email'
              value='" . htmlescape($this->getID()) . "'";
         if (!$canedit) {
-            $result .= " disabled";
+            $result .= " disabled aria-disabled='true'";
         }
         if ($this->fields['is_default']) {
             $result .= " checked";
