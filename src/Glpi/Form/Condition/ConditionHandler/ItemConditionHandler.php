@@ -39,6 +39,8 @@ use Override;
 
 final class ItemConditionHandler implements ConditionHandlerInterface
 {
+    use ArrayConditionHandlerTrait;
+
     public function __construct(
         private string $itemtype,
     ) {
@@ -80,12 +82,6 @@ final class ItemConditionHandler implements ConditionHandlerInterface
             $a['itemtype'] = $this->itemtype;
         }
 
-        return match ($operator) {
-            ValueOperator::EQUALS       => empty(array_diff($a, $b)),
-            ValueOperator::NOT_EQUALS   => !empty(array_diff($a, $b)),
-
-            // Unsupported operators
-            default => false,
-        };
+        return $this->applyArrayValueOperator($a, $operator, $b);
     }
 }
