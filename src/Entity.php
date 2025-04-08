@@ -3170,6 +3170,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
     #[Override]
     public function getConfigInformationText(): ?string
     {
-        return __("Tiles may also be configured by profile.");
+        return __("Tiles may be overriden by profile.");
     }
 }
