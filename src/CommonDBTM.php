@@ -4536,11 +4536,6 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
-       // Do not check for template
-        if (isset($this->input['is_template']) && $this->input['is_template']) {
-            return true;
-        }
-
         $result = true;
 
        //Do not check unicity when creating infocoms or if checking is expliclty disabled

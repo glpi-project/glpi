@@ -1451,6 +1451,58 @@ class CommonDBTMTest extends DbTestCase
         $this->hasSessionMessages(1, [$err_msg]);
     }
 
+    public function testCheckUnicityWithTemplate()
+    {
+        $this->login();
+
+        $field_unicity = new \FieldUnicity();
+        $this->assertGreaterThan(
+            0,
+            $field_unicity->add([
+                'name' => 'name uniqueness',
+                'itemtype' => 'Computer',
+                '_fields' => ['name'],
+                'is_active' => 1,
+                'action_refuse' => 1,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ])
+        );
+
+        $computer = new \Computer();
+        $this->assertGreaterThan(
+            0,
+            $computers_id1 = $computer->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ])
+        );
+
+        //create template with same name should not be possible
+        $template = new \Computer();
+        $this->assertFalse(
+            $template->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'is_template' => 1,
+            ])
+        );
+
+        $err_msg = "Impossible record for Name = " . __FUNCTION__ . '01' . "<br>Other item exist<br>[<a  href='/glpi/front/computer.form.php?id=" . $computers_id1 . "'  title=\"testCheckUnicityWithTemplate01\">testCheckUnicityWithTemplate01</a> - ID: {$computers_id1} - Serial number:  - Entity: Root entity &#62; _test_root_entity]";
+        $this->hasSessionMessages(1, [$err_msg]);
+
+        //create template with different name should be possible
+        $template = new \Computer();
+        $this->assertGreaterThan(
+            0,
+            $template->add([
+                'name' => __FUNCTION__ . '02',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'is_template' => 1,
+            ])
+        );
+
+    }
+
     public function testAddFilesWithNewFile()
     {
         // Simulate legit call to `addFiles()` post_addItem / post_updateItem
