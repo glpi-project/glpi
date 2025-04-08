@@ -2655,6 +2655,16 @@ class SearchTest extends DbTestCase
                 'meta' => false,
                 'expected' => "AND (INET_ATON(`glpi_ipaddresses`.`name`) > INET_ATON('192.168.1.10'))",
             ],
+            [
+                'link' => ' ',
+                'nott' => 0,
+                'itemtype' => \Computer::class,
+                'ID' => 1,
+                'searchtype' => 'empty',
+                'val' => 'null',
+                'meta' => false,
+                'expected' => "(`glpi_computer`.`name` = '')",
+            ],
         ];
     }
 
