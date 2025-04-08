@@ -32,8 +32,12 @@
  * ---------------------------------------------------------------------
  */
 
-// Drop unexpected valuesre related to SQL Replication
-Config::deleteConfigurationValues('core', [
+/**
+ * @var \Migration $migration
+ */
+
+// Drop unexpected values related to SQL Replication
+$migration->removeConfig([
     '_dbslave_status',
     '_dbreplicate_dbhost',
     '_dbreplicate_dbuser',

@@ -2069,9 +2069,6 @@ class Toolbox
      */
     public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?AbstractProgressIndicator $progress_indicator = null)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         if (null === $database) {
             // Use configured DB if no $db is defined in parameters
             if (!class_exists('DB', false)) {
@@ -2080,11 +2077,7 @@ class Toolbox
             $database = new DB();
         }
 
-        // Set global $DB as it is used in "Config::setConfigurationValues()" just after schema creation
-        /** @var \DBmysql $DB */
-        $DB = $database;
-
-        $structure_queries = $DB->getQueriesFromFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT));
+        $structure_queries = $database->getQueriesFromFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT));
 
         //dataset
         Session::loadLanguage($lang, false); // Load default language locales to translate empty data
@@ -2111,7 +2104,7 @@ class Toolbox
         $progress_indicator?->setProgressBarMessage(__('Creating database structure…'));
 
         foreach ($structure_queries as $query) {
-            $DB->doQuery($query);
+            $database->doQuery($query);
             $progress_indicator?->advance();
         }
         $progress_indicator?->addMessage(MessageType::Success, __('Database structure created.'));
@@ -2127,7 +2120,7 @@ class Toolbox
                 )
             );
 
-            $stmt = $DB->prepare($DB->buildInsert($table, $reference));
+            $stmt = $database->prepare($database->buildInsert($table, $reference));
 
             $types = str_repeat('s', count($data[0]));
             foreach ($data as $row) {
@@ -2168,19 +2161,28 @@ class Toolbox
         $progress_indicator?->addMessage(MessageType::Success, __('Security keys generated.'));
 
         $progress_indicator?->setProgressBarMessage(__('Defining configuration defaults…'));
-        Config::setConfigurationValues(
-            'core',
-            [
-                'language'      => $lang,
-                'version'       => GLPI_VERSION,
-                'dbversion'     => GLPI_SCHEMA_VERSION,
-            ]
-        );
+        $configs = [
+            'language'  => $lang,
+            'version'   => GLPI_VERSION,
+            'dbversion' => GLPI_SCHEMA_VERSION,
+        ];
+        foreach ($configs as $name => $value) {
+            $database->updateOrInsert(
+                'glpi_configs',
+                [
+                    'value' => $value,
+                ],
+                [
+                    'context' => 'core',
+                    'name'    => $name,
+                ]
+            );
+        }
         $progress_indicator?->advance($default_lang_weight);
 
         if (defined('GLPI_SYSTEM_CRON')) {
             // Downstream packages may provide a good system cron
-            $DB->update(
+            $database->update(
                 'glpi_crontasks',
                 [
                     'mode'   => 2

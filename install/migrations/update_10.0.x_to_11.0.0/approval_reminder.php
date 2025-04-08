@@ -37,13 +37,12 @@
  * @var \Migration $migration
  */
 
-CronTask::Register(
+$migration->addCrontask(
     'CommonITILValidationCron',
     'approvalreminder',
     1 * WEEK_TIMESTAMP,
-    [
-        'mode'  => CronTask::MODE_INTERNAL,
-        'state' => CronTask::STATE_DISABLE
+    options: [
+        'state' => 0, // CronTask::STATE_DISABLE
     ]
 );
 

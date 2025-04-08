@@ -136,14 +136,11 @@ function update942to943()
     $migration->addKey('glpi_problemtasks', 'is_private');
 
     /** Crontask missing from fresh install */
-    CronTask::Register(
+    $migration->addCrontask(
         'PurgeLogs',
         'PurgeLogs',
         7 * DAY_TIMESTAMP,
-        [
-            'param' => 24,
-            'mode' => CronTask::MODE_EXTERNAL
-        ]
+        param: 24,
     );
     /** /Crontask missing from fresh install */
 

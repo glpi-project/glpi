@@ -200,7 +200,7 @@ function update93xto940()
     }
     /** Add watcher visibility to groups */
 
-    Config::deleteConfigurationValues('core', $config_to_drop);
+    $migration->removeConfig($config_to_drop);
 
    // Add a config entry for the CAS version
     $migration->addConfig(['cas_version' => 'CAS_VERSION_2_0']);

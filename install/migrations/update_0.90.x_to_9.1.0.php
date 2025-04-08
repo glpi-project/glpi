@@ -179,12 +179,15 @@ function update090xto910()
             ]
         );
 
-        Config::setConfigurationValues('core', ['lock_use_lock_item'             => 0,
-            'lock_autolock_mode'             => 1,
-            'lock_directunlock_notification' => 0,
-            'lock_item_list'                 => '[]',
-            'lock_lockprofile_id'            => $ro_p_id
-        ]);
+        $migration->addConfig(
+            [
+                'lock_use_lock_item'             => 0,
+                'lock_autolock_mode'             => 1,
+                'lock_directunlock_notification' => 0,
+                'lock_item_list'                 => '[]',
+                'lock_lockprofile_id'            => $ro_p_id
+            ]
+        );
     }
 
    // cron task
@@ -304,7 +307,7 @@ function update090xto910()
     $migration->addField("glpi_users", "lock_directunlock_notification", "tinyint NULL DEFAULT NULL");
 
    /************** Default Requester *************/
-    Config::setConfigurationValues('core', ['set_default_requester' => 1]);
+    $migration->addConfig(['set_default_requester' => 1]);
     $migration->addField("glpi_users", "set_default_requester", "tinyint NULL DEFAULT NULL");
 
    // ************ NetworkPort ethernets **************
@@ -412,10 +415,10 @@ function update090xto910()
     $migration->addField("glpi_users", "plannings", "text");
 
    /************** API Rest *************/
-    Config::setConfigurationValues('core', ['enable_api'                      => 0]);
-    Config::setConfigurationValues('core', ['enable_api_login_credentials'    => 0]);
-    Config::setConfigurationValues('core', ['enable_api_login_external_token' => 1]);
-    Config::setConfigurationValues('core', ['url_base_api' => trim($current_config['url_base'], "/") . "/apirest.php/"]);
+    $migration->addConfig(['enable_api'                      => 0]);
+    $migration->addConfig(['enable_api_login_credentials'    => 0]);
+    $migration->addConfig(['enable_api_login_external_token' => 1]);
+    $migration->addConfig(['url_base_api' => trim($current_config['url_base'], "/") . "/apirest.php/"]);
     if (!$DB->tableExists('glpi_apiclients')) {
         $query = "CREATE TABLE `glpi_apiclients` (
                   `id` int NOT NULL AUTO_INCREMENT,
@@ -1033,11 +1036,11 @@ function update090xto910()
     }
 
    /************** High contrast CSS **************/
-    Config::setConfigurationValues('core', ['highcontrast_css' => 0]);
+    $migration->addConfig(['highcontrast_css' => 0]);
     $migration->addField("glpi_users", "highcontrast_css", "tinyint DEFAULT 0");
 
    /************** SMTP option for self-signed certificates **************/
-    Config::setConfigurationValues('core', ['smtp_check_certificate' => 1]);
+    $migration->addConfig(['smtp_check_certificate' => 1]);
 
    // for group task
     $migration->addField("glpi_tickettasks", "groups_id_tech", "integer");

@@ -59,10 +59,11 @@ if (!$DB->tableExists('glpi_changesatisfactions')) {
 }
 
 // Register crontask
-CronTask::register('Change', 'createinquest', 86400, [
-    'state'     => CronTask::STATE_WAITING,
-    'mode'      => CronTask::MODE_INTERNAL
-]);
+$migration->addCrontask(
+    'Change',
+    'createinquest',
+    DAY_TIMESTAMP
+);
 
 // Add new entity config columns
 if (!$DB->fieldExists('glpi_entities', 'max_closedate_change')) {

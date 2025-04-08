@@ -279,10 +279,14 @@ class Update
                 // /!\ Do not dot this for last migration:
                 // 1. This should be done at the end of the whole update process.
                 // 2. Last migration target version value may be higher than GLPI_VERSION, when GLPI_VERSION uses a pre-release suffix.
-                Config::setConfigurationValues(
-                    'core',
+                $DB->updateOrInsert(
+                    'glpi_configs',
                     [
-                        'version' => $migration_specs['target_version']
+                        'value' => $migration_specs['target_version'],
+                    ],
+                    [
+                        'context' => 'core',
+                        'name'    => 'version',
                     ]
                 );
             }
@@ -356,12 +360,24 @@ class Update
         }
 
         // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-        Config::setConfigurationValues('core', [
+        $configs = [
             'version'             => GLPI_VERSION,
             'dbversion'           => GLPI_SCHEMA_VERSION,
             'language'            => $this->language,
             'founded_new_version' => ''
-        ]);
+        ];
+        foreach ($configs as $name => $value) {
+            $DB->updateOrInsert(
+                'glpi_configs',
+                [
+                    'value' => $value,
+                ],
+                [
+                    'context' => 'core',
+                    'name'    => $name,
+                ]
+            );
+        }
 
        // Reset telemetry if its state is running, assuming it remained stuck due to telemetry service issue (see #7492).
         $crontask_telemetry = new CronTask();

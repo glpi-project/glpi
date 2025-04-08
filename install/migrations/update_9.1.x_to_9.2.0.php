@@ -683,8 +683,6 @@ function update91xto920()
     $migration->addKey("glpi_tickettasks", "groups_id_tech");
 
    // #1735 - Add new notifications
-    $notification       = new Notification();
-    $notificationtarget = new NotificationTarget();
     $new_notifications  = [
         'requester_user'  => ['label'      => 'New user in requesters',
             'targets_id' => Notification::AUTHOR
@@ -710,28 +708,43 @@ function update91xto920()
     ];
 
     if ($DB->fieldExists("glpi_notifications", "mode", false)) {
-        $notificationtemplates_id = 0;
-        $notificationtemplate = new NotificationTemplate();
-        if ($notificationtemplate->getFromDBByCrit(['name' => 'Tickets', 'itemtype' => 'Ticket'])) {
-            $notificationtemplates_id = $notificationtemplate->fields['id'];
-        }
+        $notificationtemplates_id = $DB->request([
+            'FROM' => 'glpi_notificationtemplates',
+            'WHERE' => [
+                'name'     => 'Tickets',
+                'itemtype' => 'Ticket',
+            ],
+        ])->current()['id'] ?? 0;
 
-        foreach ($new_notifications as $event => $notif_options) {
-            $notifications_id = $notification->add([
-                'name'                     => $notif_options['label'],
-                'itemtype'                 => 'Ticket',
-                'event'                    => $event,
-                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
-                'notificationtemplates_id' => $notificationtemplates_id,
-                'is_recursive'             => 1,
-                'is_active'                => 0,
-            ]);
+        if ($notificationtemplates_id > 0) {
+            foreach ($new_notifications as $event => $notif_options) {
+                $DB->insert(
+                    'glpi_notifications',
+                    [
+                        'name'                     => $notif_options['label'],
+                        'itemtype'                 => 'Ticket',
+                        'event'                    => $event,
+                        'mode'                     => 'mailing',
+                        'notificationtemplates_id' => $notificationtemplates_id,
+                        'comment'                  => null,
+                        'entities_id'              => 0,
+                        'is_recursive'             => 1,
+                        'is_active'                => 1,
+                        'date_creation'            => new QueryExpression('NOW()'),
+                        'date_mod'                 => new QueryExpression('NOW()'),
+                    ]
+                );
+                $notifications_id = $DB->insertId();
 
-            $notificationtarget->add([
-                'items_id'         => $notif_options['targets_id'],
-                'type'             => 1,
-                'notifications_id' => $notifications_id,
-            ]);
+                $DB->insert(
+                    'glpi_notificationtargets',
+                    [
+                        'items_id'         => $notif_options['targets_id'],
+                        'type'             => 1,
+                        'notifications_id' => $notifications_id,
+                    ]
+                );
+            }
         }
     }
 
@@ -1036,32 +1049,31 @@ function update91xto920()
             ]
         )
     ) {
-        $rule = new Rule();
-        $rules_id = $rule->add(['name'         => 'Import category from inventory tool',
-            'is_active'    => 0,
-            'uuid'         => '500717c8-2bd6e957-53a12b5fd38869.86003425',
-            'entities_id'  => 0,
-            'is_recursive' => 1,
-            'sub_type'     => 'RuleSoftwareCategory',
-            'match'        => Rule::AND_MATCHING,
-            'condition'    => 1,
-            'description'  => ''
-        ]);
-        if ($rules_id) {
-            $criteria = new RuleCriteria();
-            $criteria->add(['rules_id'  => $rules_id,
-                'criteria'  => 'name',
-                'condition' => '0',
-                'pattern'   => '*'
-            ]);
-
-            $action = new RuleAction();
-            $action->add(['rules_id'    => $rules_id,
-                'action_type' => 'assign',
-                'field'       => '_import_category',
-                'value'       => '1'
-            ]);
-        }
+        $migration->createRule(
+            [
+                'name'         => 'Import category from inventory tool',
+                'uuid'         => '500717c8-2bd6e957-53a12b5fd38869.86003425',
+                'entities_id'  => 0,
+                'is_recursive' => 1,
+                'sub_type'     => 'RuleSoftwareCategory',
+                'match'        => Rule::AND_MATCHING,
+                'condition'    => 1,
+            ],
+            [
+                [
+                    'criteria'  => 'name',
+                    'condition' => '0',
+                    'pattern'   => '*'
+                ]
+            ],
+            [
+                [
+                    'action_type' => 'assign',
+                    'field'       => '_import_category',
+                    'value'       => '1'
+                ]
+            ]
+        );
     }
 
     if ($DB->tableExists('glpi_queuedmails')) {
@@ -1664,13 +1676,12 @@ Regards,',
             'condition' => 'WHERE `id` = 0'
         ]
     );
-    CronTask::register(
+    $migration->addCrontask(
         'Certificate',
         'certificate',
         DAY_TIMESTAMP,
-        [
-            'comment' => '',
-            'mode'    => CronTask::MODE_INTERNAL
+        options: [
+            'mode' => 1, // CronTask::MODE_INTERNAL
         ]
     );
     if (!countElementsInTable('glpi_notifications', ['itemtype' => 'Certificate'])) {
@@ -2169,19 +2180,18 @@ Regards,',
     ]);
 
    //register telemetry crontask
-    CronTask::register(
+    $migration->addCrontask(
         'Telemetry',
         'telemetry',
         MONTH_TIMESTAMP,
-        [
-            'comment'   => '',
-            'mode'      => CronTask::MODE_INTERNAL,
-            'state'     => CronTask::STATE_DISABLE
+        options: [
+            'state' => 0, // CronTask::STATE_DISABLE
+            'mode'  => 1, // CronTask::MODE_INTERNAL
         ]
     );
     $migration->addConfig([
-        'instance_uuid'      => Telemetry::generateInstanceUuid(),
-        'registration_uuid'  => Telemetry::generateRegistrationUuid()
+        'instance_uuid'      => Toolbox::getRandomString(40),
+        'registration_uuid'  => Toolbox::getRandomString(40),
     ]);
 
     if (isIndex('glpi_authldaps', 'use_tls')) {
