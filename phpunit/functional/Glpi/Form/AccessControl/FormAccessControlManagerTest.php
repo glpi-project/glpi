@@ -346,7 +346,6 @@ final class FormAccessControlManagerTest extends DbTestCase
     ): void {
         // Arrange: create a form with a plugin policy
         $builder = new FormBuilder();
-        $builder->allowAllUsers();
         $builder->addAccessControl(
             DayOfTheWeekPolicy::class,
             new DayOfTheWeekPolicyConfig("Friday"),
