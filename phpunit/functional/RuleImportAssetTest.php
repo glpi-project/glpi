@@ -36,6 +36,8 @@ namespace tests\units;
 
 use DbTestCase;
 
+use function PHPUnit\Framework\assertTrue;
+
 /* Test for inc/ruleimportcomputer.class.php */
 
 class RuleImportAssetTest extends DbTestCase
@@ -1227,5 +1229,43 @@ class RuleImportAssetTest extends DbTestCase
         $this->assertSame("Computer update (by name and tag)", $rule->fields['name']);
         $this->assertSame($computers_id, $this->items_id);
         $this->assertSame('Computer', $this->itemtype);
+    }
+
+    public function testReconciliateWithAssetTemplate()
+    {
+
+        $computer = new \Computer();
+        $ruleCollection = new \RuleImportAssetCollection();
+
+        //create 'legacy' computer
+        $computers_id = (int)$computer->add([
+            'entities_id' => 0,
+            'name'        => 'pc-11',
+            'serial'      => '12345-65487-98765-45645',
+        ]);
+        $this->assertGreaterThan(0, $computers_id);
+
+        $input = [
+            'itemtype'      => 'Computer',
+            'name'          => 'pc-11',
+            'serial'        => '12345-65487-98765-45645',
+            'entities_id'   => 0
+        ];
+
+        // execute rule engine
+        $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
+        // check tha rule engine found the computer
+        $this->assertSame((string) $computers_id, $data["found_inventories"][0]);
+
+        // update computer to mark as template
+        $this->assertTrue($computer->update([
+            'id'            => $computers_id,
+            'is_template'   => 1,
+        ]));
+
+        // execute rule engine
+        $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
+        // check tha rule engine not found any computer
+        $this->assertSame("0", $data["found_inventories"][0]);
     }
 }
