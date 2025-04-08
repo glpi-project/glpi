@@ -3342,10 +3342,8 @@ class AuthLDAP extends CommonDBTM
             $params['method'] = self::IDENTIFIER_EMAIL;
         }
 
-        $auth->user_present = $auth->userExists($options);
-
-       //If the user does not exists
-        if ($auth->user_present == 0) {
+        //If the user does not exist
+        if ($auth->userExists($options) === Auth::USER_DOESNT_EXIST) {
             $auth->getAuthMethods();
             $ldap_methods = $auth->authtypes["ldap"];
 

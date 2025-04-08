@@ -207,7 +207,7 @@ class SavedSearch_Alert extends CommonDBChild
             !$search->getFromDB($ID)
             || !$search->can($ID, READ)
         ) {
-            return false;
+            return;
         }
         $canedit = $search->canEdit($ID);
 
