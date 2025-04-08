@@ -34,7 +34,10 @@
 
 namespace tests\units;
 
+use Appliance;
+use Appliance_Item;
 use CommonDBTM;
+use Computer;
 use DBConnection;
 use DbTestCase;
 use Glpi\Toolbox\Sanitizer;
@@ -3949,6 +3952,67 @@ class SearchTest extends DbTestCase
             13, // Groups
             'contains',
             "Group 1"
+        );
+
+        list (
+            $computer_without_appliance,
+            $computer_appliance_1,
+            $computer_appliance_1_and_2,
+        ) = $this->createItems(Computer::class, [
+            ['name' => 'computer_without_appliance', 'entities_id' => $root],
+            ['name' => 'computer_appliance_1', 'entities_id' => $root],
+            ['name' => 'computer_appliance_1_and_2', 'entities_id' => $root],
+        ]);
+
+        list (
+            $appliance1,
+            $appliance2,
+        ) = $this->createItems(Appliance::class, [
+            ['name' => 'appliance1'],
+            ['name' => 'appliance2'],
+        ]);
+
+        $this->createItems(Appliance_Item::class, [
+            ['items_id' => $computer_appliance_1->getID(), 'appliances_id' => $appliance1->getID(), 'itemtype' => Computer::class],
+            ['items_id' => $computer_appliance_1_and_2->getID(), 'appliances_id' => $appliance1->getID(), 'itemtype' => Computer::class],
+            ['items_id' => $computer_appliance_1_and_2->getID(), 'appliances_id' => $appliance2->getID(), 'itemtype' => Computer::class],
+        ]);
+
+        $all_computers = ['computer_without_appliance', 'computer_appliance_1', 'computer_appliance_1_and_2'];
+        $base_condition = [
+            'link'       => 'AND',
+            'field'      => 1, // Name
+            'searchtype' => 'contains',
+            'value'      => "computer_",
+        ];
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Computer',
+            $base_condition,
+            $all_computers,
+            ['computer_appliance_1', 'computer_appliance_1_and_2'],
+            1210,
+            'equals',
+            $appliance1->getID(),
+        );
+
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Computer',
+            $base_condition,
+            $all_computers,
+            ['computer_appliance_1_and_2'],
+            1210,
+            'contains',
+            'appliance2',
+        );
+
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'Computer',
+            $base_condition,
+            $all_computers,
+            ['computer_appliance_1', 'computer_appliance_1_and_2'],
+            1210,
+            'contains',
+            'appliance',
         );
     }
 
