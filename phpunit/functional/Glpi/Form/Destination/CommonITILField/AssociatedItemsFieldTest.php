@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 use Computer;
 use DBmysql;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldConfig;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldStrategy;
@@ -558,6 +559,30 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 ]
             ],
             ["config"],
+        );
+
+        $destination = current($form->getDestinations());
+        $concrete_destination = $destination->getConcreteDestinationItem();
+        $this->assertInstanceOf(
+            AbstractCommonITILFormDestination::class,
+            $concrete_destination
+        );
+
+        /**
+         * @var AbstractCommonITILFormDestination $concrete_destination
+         * @var AssociatedItemsFieldConfig $config
+         */
+        $config = $concrete_destination->getConfigurableFieldByKey(
+            AssociatedItemsField::getKey()
+        )->getConfig($form, $destination->getConfig());
+
+        $this->assertEquals(
+            [
+                Computer::getType() => [
+                    $computer->getID(),
+                ],
+            ],
+            $config->getSpecificAssociatedItems()
         );
     }
 
