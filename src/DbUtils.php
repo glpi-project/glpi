@@ -344,7 +344,7 @@ final class DbUtils
      *
      * @return string
      */
-    public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT)
+    public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT, array $plugins_dirs = PLUGINS_DIRECTORIES)
     {
         /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
@@ -369,6 +369,17 @@ final class DbUtils
             $context = strtolower($plugin_matches['plugin']);
         }
 
+        // Our cache key must take into account the requested directories
+        if ($context == 'glpi-core') {
+            // Only $root_dir will be used, we don't need to take plugins directories into account
+            // The "root=" prefix make sure we don't have any collision if $root_dir and $plugins_dirs are equals
+            $unique_key = crc32($context . 'root=' . $root_dir);
+        } else {
+            // Only $plugins_dirs will be used, we don't need to take the root dir
+            // The "plugins=" prefix make sure we don't have any collision if $root_dir and $plugins_dirs are equals
+            $unique_key = crc32($context . 'plugins=' . implode(',', $plugins_dirs));
+        }
+
         $namespace      = $context === 'glpi-core' ? NS_GLPI : NS_PLUG . ucfirst($context) . '\\';
         $uses_namespace = preg_match('/^(' . preg_quote($namespace, '/') . ')/i', $itemtype);
 
@@ -378,26 +389,26 @@ final class DbUtils
             strtolower($itemtype) . '.php'
         );
 
-        $cache_key = sprintf('itemtype-case-mapping-%s', $context);
+        $cache_key = sprintf('itemtype-case-mapping-%s', $unique_key);
 
-        if (!array_key_exists($context, $mapping)) {
+        if (!array_key_exists($unique_key, $mapping)) {
             // Initialize mapping from persistent cache if it has not been done yet in current request
-            $mapping[$context] = $GLPI_CACHE->get($cache_key);
+            $mapping[$unique_key] = $GLPI_CACHE->get($cache_key);
         }
 
-        if ($mapping[$context] !== null && array_key_exists($expected_lc_path, $mapping[$context])) {
+        if ($mapping[$unique_key] !== null && array_key_exists($expected_lc_path, $mapping[$unique_key])) {
             // Return known value, if any
-            return ($uses_namespace ? $namespace : '') . $mapping[$context][$expected_lc_path];
+            return ($uses_namespace ? $namespace : '') . $mapping[$unique_key][$expected_lc_path];
         }
 
         if (
             !defined('TU_USER')
             && (
                 (
-                    $mapping[$context] !== null
+                    $mapping[$unique_key] !== null
                     && ($_SESSION['glpi_use_mode'] ?? null) !== Session::DEBUG_MODE
                 )
-                || in_array($context, $already_scanned)
+                || in_array($unique_key, $already_scanned)
             )
         ) {
             // Do not scan class files if mapping was already cached, unless debug mode is used.
@@ -412,37 +423,47 @@ final class DbUtils
         }
 
         // Fetch filenames from "src" directory of context (GLPI core or given plugin).
-        $mapping[$context] = [];
-        $srcdir = $root_dir . ($context === 'glpi-core' ? '' : '/plugins/' . $context) . '/src';
-        if (is_dir($srcdir)) {
-            $files_iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($srcdir),
-                RecursiveIteratorIterator::SELF_FIRST
-            );
-            /** @var SplFileInfo $file */
-            foreach ($files_iterator as $file) {
-                if (!$file->isReadable() || !$file->isFile() || '.php' === !$file->getExtension()) {
-                    continue;
-                }
-                $relative_path = str_replace($srcdir . DIRECTORY_SEPARATOR, '', $file->getPathname());
+        $mapping[$unique_key] = [];
 
-                // Store entry into mapping:
-                // - key is the lowercased filepath;
-                // - value is the classname with correct case.
-                $mapping[$context][strtolower($relative_path)] = str_replace(
-                    [DIRECTORY_SEPARATOR, '.php'],
-                    ['\\',                ''],
-                    $relative_path
+        $srcdirs = [];
+        if ($context === 'glpi-core') {
+            $srcdirs[] = $root_dir . '/src';
+        } else {
+            foreach ($plugins_dirs as $plugins_dir) {
+                $srcdirs[] = $plugins_dir . '/' . $context . '/src';
+            }
+        }
+        foreach ($srcdirs as $srcdir) {
+            if (is_dir($srcdir)) {
+                $files_iterator = new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($srcdir),
+                    RecursiveIteratorIterator::SELF_FIRST
                 );
+                /** @var SplFileInfo $file */
+                foreach ($files_iterator as $file) {
+                    if (!$file->isReadable() || !$file->isFile() || '.php' === !$file->getExtension()) {
+                        continue;
+                    }
+                    $relative_path = str_replace($srcdir . DIRECTORY_SEPARATOR, '', $file->getPathname());
+
+                    // Store entry into mapping:
+                    // - key is the lowercased filepath;
+                    // - value is the classname with correct case.
+                    $mapping[$unique_key][strtolower($relative_path)] = str_replace(
+                        [DIRECTORY_SEPARATOR, '.php'],
+                        ['\\',                ''],
+                        $relative_path
+                    );
+                }
             }
         }
 
-        $already_scanned[] = $context;
+        $already_scanned[] = $unique_key;
 
-        $GLPI_CACHE->set($cache_key, $mapping[$context]);
+        $GLPI_CACHE->set($cache_key, $mapping[$unique_key]);
 
-        return array_key_exists($expected_lc_path, $mapping[$context])
-            ? ($uses_namespace ? $namespace : '') . $mapping[$context][$expected_lc_path]
+        return array_key_exists($expected_lc_path, $mapping[$unique_key])
+            ? ($uses_namespace ? $namespace : '') . $mapping[$unique_key][$expected_lc_path]
             : $itemtype;
     }
 
