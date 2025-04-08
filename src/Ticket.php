@@ -2562,6 +2562,14 @@ JAVASCRIPT;
         ];
 
         $tab[] = [
+            'id'                 => '87',
+            'table'              => $this->getTable(),
+            'field'              => 'externalid',
+            'datatype'           => 'string',
+            'name'               =>  __('External ID'),
+        ];
+
+        $tab[] = [
             'id'                 => '155',
             'table'              => $this->getTable(),
             'field'              => 'time_to_own',
