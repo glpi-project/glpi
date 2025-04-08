@@ -274,6 +274,14 @@
                                             {{ modals.modal(__('Change password'), include('pages/admin/user/change_other_password.html.twig', {full_width: true}), {
                                                 id: 'modal_password_' ~ rand_field,
                                             }) }}
+                                            <script>
+                                                $('#modal_password_{{ rand_field }} input').on('keypress', function(e) {
+                                                    // Prevent enter key in password fields in modal from submitting form
+                                                    if (e.originalEvent.key === 'Enter') {
+                                                        e.preventDefault();
+                                                    }
+                                                });
+                                            </script>
                                             <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modal_password_{{ rand_field }}">
                                                 <i class="ti ti-lock"></i>
                                                 {{ __('Change password') }}
