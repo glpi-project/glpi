@@ -210,21 +210,4 @@ class Item_Ticket extends CommonItilObject_Item
 
         return $nb;
     }
-
-    #[Override]
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-    {
-        // The Item_Ticket tab is only supported on CommonDBTM objects
-        if (!($item instanceof CommonDBTM)) {
-            return "";
-        }
-
-        if ($item instanceof Ticket) {
-            self::showForObject($item);
-            return true;
-        } else {
-            Ticket::showListForItem($item, $withtemplate);
-            return true;
-        }
-    }
 }

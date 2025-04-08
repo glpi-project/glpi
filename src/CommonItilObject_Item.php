@@ -540,13 +540,10 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case static::$itemtype_1:
-                static::showForObject($item);
-                break;
-            default:
-                static::showListForItem($item, $withtemplate);
-                break;
+        if ($item::class === static::$itemtype_1) {
+            static::showForObject($item);
+        } else {
+            static::showListForItem($item, $withtemplate);
         }
         return true;
     }
@@ -1224,7 +1221,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Return used items for a ITIL object
      *
-     * @param integer type $obj_id ITIL object on which the used item are attached
+     * @param integer $items_id ITIL object on which the used item are attached
      *
      * @return array
      */
@@ -1276,11 +1273,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         }
     }
 
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::showMassiveActionsSubForm()
-     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -1721,7 +1713,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             return;
         }
 
-        if ($options['id'] ?? 0 > 0) {
+        if (($options['id'] ?? 0) > 0) {
             // Get requester
             $class  = new $object->userlinkclass();
             $actors = $class->getActors($options['id']);

@@ -157,18 +157,4 @@ class Item_Problem extends CommonItilObject_Item
 
         return $nb;
     }
-
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-    {
-
-        switch ($item->getType()) {
-            case 'Problem':
-                self::showForObject($item);
-                break;
-
-            default:
-                Problem::showListForItem($item, $withtemplate);
-        }
-        return true;
-    }
 }

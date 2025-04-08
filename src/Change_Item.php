@@ -154,18 +154,4 @@ class Change_Item extends CommonItilObject_Item
 
         return $nb;
     }
-
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
-    {
-
-        switch ($item::class) {
-            case Change::class:
-                self::showForObject($item);
-                break;
-
-            default:
-                Change::showListForItem($item, $withtemplate);
-        }
-        return true;
-    }
 }
