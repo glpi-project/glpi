@@ -1097,20 +1097,31 @@ function getUuidV4() {
     });
 }
 
+function setHasUnsavedChanges(has_unsaved_changes) {
+    window.glpiUnsavedFormChanges = has_unsaved_changes;
+    document.dispatchEvent(new CustomEvent("glpiFormChangeEvent", {
+        has_unsaved_changes: has_unsaved_changes
+    }));
+}
+
+function hasUnsavedChanges() {
+    return window.glpiUnsavedFormChanges;
+}
+
 /** Track input changes and warn the user of unsaved changes if they try to navigate away */
-window.glpiUnsavedFormChanges = false;
+setHasUnsavedChanges(false);
 $(document).ready(function() {
     // Forms must have the data-track-changes attribute set to true.
     // Form fields may have their data-track-changes attribute set to empty (false) to override the tracking on that input.
     $(document).on('input', 'form[data-track-changes="true"] input:not([data-track-changes=""]),' +
       'form[data-track-changes="true"] textarea:not([data-track-changes="false"])', function() {
-        window.glpiUnsavedFormChanges = true;
+        setHasUnsavedChanges(true);
     });
     $(document).on('change', 'form[data-track-changes="true"] select:not([data-track-changes=""])', function() {
-        window.glpiUnsavedFormChanges = true;
+        setHasUnsavedChanges(true);
     });
     $(window).on('beforeunload', function(e) {
-        if (window.glpiUnsavedFormChanges) {
+        if (hasUnsavedChanges()) {
             e.preventDefault();
             // All supported browsers will show a localized message
             return '';
@@ -1122,7 +1133,7 @@ $(document).ready(function() {
         if (e.originalEvent && $(e.originalEvent.submitter).attr('data-block-on-unsaved') === 'true') {
             return;
         }
-        window.glpiUnsavedFormChanges = false;
+        setHasUnsavedChanges(false);
     });
 });
 
@@ -1130,7 +1141,7 @@ function onTinyMCEChange(e) {
     var editor = $(e.target)[0];
     if ($(editor.targetElm).data('trackChanges') !== false) {
         if ($(editor.formElement).data('trackChanges') === true) {
-            window.glpiUnsavedFormChanges = true;
+            setHasUnsavedChanges(true);
         }
     }
 }
@@ -1456,7 +1467,7 @@ $(() => {
             if ((submitter === null || submitter.attr('formnovalidate') === undefined) && !window.validateFormWithBootstrap(e)) {
                 return false;
             }
-            if (submitter !== null && submitter.is('button') && submitter.attr('data-block-on-unsaved') === 'true' && window.glpiUnsavedFormChanges) {
+            if (submitter !== null && submitter.is('button') && submitter.attr('data-block-on-unsaved') === 'true' && hasUnsavedChanges()) {
                 // This submit may be cancelled by the unsaved changes warning so we cannot permanently block it
                 // We fall back to a timed block
                 const block = function(e) {

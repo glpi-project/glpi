@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_info, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown */
+/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_info, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown, setHasUnsavedChanges, hasUnsavedChanges */
 
 import { GlpiFormConditionEditorController } from './ConditionEditorController.js';
 
@@ -241,14 +241,9 @@ export class GlpiFormEditorController
             }
         });
 
-        let last_form_changes = window.glpiUnsavedFormChanges;
-        setInterval(() => {
-            if (last_form_changes !== window.glpiUnsavedFormChanges) {
-                this.#updatePreviewButton();
-            }
-            last_form_changes = window.glpiUnsavedFormChanges;
-        }, 500);
-
+        $(document).on('glpiFormChangeEvent', () => {
+            this.#updatePreviewButton();
+        });
 
         // Handle conditions strategy changes
         document.addEventListener('updated_strategy', (e) => {
@@ -466,7 +461,7 @@ export class GlpiFormEditorController
 
             // No specific instructions for these events.
             // They must still be kept here as they benefits from the common code
-            // like refreshUX() and glpiUnsavedFormChanges.
+            // like refreshUX().
             case "question-sort-update":
                 break;
 
@@ -543,7 +538,7 @@ export class GlpiFormEditorController
         }
 
         if (unsaved_changes) {
-            window.glpiUnsavedFormChanges = true;
+            setHasUnsavedChanges(true);
         }
 
         // Refresh all dynamic UX components after every action.
@@ -2207,7 +2202,7 @@ export class GlpiFormEditorController
     }
 
     #updatePreviewButton() {
-        if (window.glpiUnsavedFormChanges) {
+        if (hasUnsavedChanges()) {
             $(this.#target).find('[data-glpi-form-editor-preview-actions]')
                 .find('[data-glpi-form-editor-preview-action]').addClass('d-none');
             $(this.#target).find('[data-glpi-form-editor-preview-actions]')
