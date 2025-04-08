@@ -151,7 +151,7 @@ final class ITILCategoryField extends AbstractConfigField implements Destination
                     specific_question_id: $migration->getMappedItemTarget(
                         'PluginFormcreatorQuestion',
                         $rawData['category_question']
-                    )['items_id'],
+                    )['items_id'] ?? 0
                 );
             case 4: // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_LAST_ANSWER
                 return new ITILCategoryFieldConfig(

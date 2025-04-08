@@ -278,7 +278,7 @@ final class FormMigrationTest extends DbTestCase
                 'type'                        => QuestionTypeRequester::class,
                 'is_mandatory'                => 0,
                 'vertical_rank'               => 0,
-                'horizontal_rank'             => 2,
+                'horizontal_rank'             => 1,
                 'description'                 => null,
                 'default_value'               => json_encode($default_value),
                 'extra_data'                  => json_encode($extra_data)
@@ -948,5 +948,85 @@ final class FormMigrationTest extends DbTestCase
             current($errors)['message'],
             'Question "Orphan question" has no section. It will not be migrated.'
         );
+    }
+
+    public function testFormMigrationUpdateHorizontalRanks(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Insert a new form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name' => 'Test form migration for update horizontal ranks',
+            ]
+        ));
+
+        // Insert a new section
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'name'                        => 'Test form migration for update horizontal ranks - Section',
+                'plugin_formcreator_forms_id' => $DB->insertId()
+            ]
+        ));
+
+        // Insert three questions with same vertical rank
+        $section_id = $DB->insertId();
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'plugin_formcreator_sections_id' => $section_id,
+                'name'                           => 'Test form migration for update horizontal ranks - Question 1',
+                'row'                            => 0,
+                'col'                            => 0,
+                'width'                          => 1,
+            ]
+        ));
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'plugin_formcreator_sections_id' => $section_id,
+                'name'                           => 'Test form migration for update horizontal ranks - Comment 1',
+                'fieldtype'                      => 'description',
+                'row'                            => 0,
+                'col'                            => 2,
+                'width'                          => 1,
+            ]
+        ));
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'plugin_formcreator_sections_id' => $section_id,
+                'name'                           => 'Test form migration for update horizontal ranks - Question 2',
+                'row'                            => 0,
+                'col'                            => 4,
+                'width'                          => 1,
+            ]
+        ));
+
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Check that the horizontal ranks have been updated
+        $section = getItemByTypeName(Section::class, 'Test form migration for update horizontal ranks - Section');
+        if (!($section instanceof Section)) {
+            $this->fail('Section not found');
+        }
+        $blocks = $section->getBlocks();
+
+        // Blocks are grouped by vertical rank
+        $this->assertCount(1, $blocks);
+        $this->assertCount(3, current($blocks));
+
+        // Check ranks
+        foreach (current($blocks) as $index => $block) {
+            $this->assertEquals(0, $block->fields['vertical_rank']);
+            $this->assertEquals($index, $block->fields['horizontal_rank']);
+        }
     }
 }
