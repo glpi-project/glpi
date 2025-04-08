@@ -1067,9 +1067,9 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /**
      * Display buttons
      *
-     * @param integer $type     SavedSearch type to use
-     * @param integer $itemtype Device type of item where is the bookmark (default 0)
-     * @param bool    $active   Should the icon be displayed as active ?
+     * @param integer        $type     SavedSearch type to use
+     * @param integer|string $itemtype Device type of item where is the bookmark (default 0)
+     * @param bool           $active   Should the icon be displayed as active ?
      *
      * @return void
      **/
