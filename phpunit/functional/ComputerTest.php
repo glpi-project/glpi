@@ -594,6 +594,7 @@ class ComputerTest extends DbTestCase
         $computer_template = new \Computer();
         $templates_id = $computer_template->add([
             'template_name' => __FUNCTION__ . '_template',
+            'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
             'is_template' => 1
         ]);
         $this->assertGreaterThan(0, $templates_id);

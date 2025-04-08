@@ -230,6 +230,7 @@ class SoftwareTest extends DbTestCase
         $softwares_id = $software->add([
             'name'          => 'MyTemplate',
             'is_template'   => 1,
+            'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
             'template_name' => 'template'
         ]);
         $this->assertGreaterThan(0, $softwares_id);
