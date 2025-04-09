@@ -354,6 +354,7 @@ class VirtualMachine extends InventoryAsset
                     // Update computer
                     $computervm->getFromDB($computers_vm_id);
                     $input['id'] = $computers_vm_id;
+                    $input['itemtype'] = \Computer::class;
                     if ($this->conf->states_id_default != '-1') {
                         $input['states_id'] = $this->conf->states_id_default;
                     }
@@ -369,7 +370,7 @@ class VirtualMachine extends InventoryAsset
                             }
                             $inputrulelog = [
                                 'date'      => date('Y-m-d H:i:s'),
-                                'rules_id'  => $datarules['rules_id'],
+                                'rules_id'  => $datarules['_rulesid'],
                                 'items_id'  => $computers_vm_id,
                                 'itemtype'  => $input['itemtype'],
                                 'agents_id' => $agents_id,
