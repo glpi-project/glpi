@@ -34,17 +34,17 @@
 
 namespace Glpi\Kernel\Listener;
 
-use DBConnection;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Debug\Profiler;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Update;
 
 final readonly class CustomObjectsAutoloaderRegistration implements EventSubscriberInterface
 {
+    use PostBootListenerTrait;
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -54,7 +54,7 @@ final readonly class CustomObjectsAutoloaderRegistration implements EventSubscri
 
     public function onPostBoot(): void
     {
-        if (!DBConnection::isDbAvailable() || (!defined('SKIP_UPDATES') && !Update::isDbUpToDate())) {
+        if (!$this->canUseDbToInitServices()) {
             // Requires the database to be available.
             return;
         }

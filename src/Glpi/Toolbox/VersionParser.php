@@ -77,6 +77,26 @@ class VersionParser
     }
 
     /**
+     * Get major version number (e.g. '9').
+     */
+    public static function getMajorVersion(string $version): string
+    {
+        $normalized = self::getNormalizedVersion($version, false);
+
+        return \preg_replace('/^(\d+)[^d].+$/', '$1', $normalized);
+    }
+
+    /**
+     * Get intermediate version number (e.g. '9.5').
+     */
+    public static function getIntermediateVersion(string $version): string
+    {
+        $normalized = self::getNormalizedVersion($version, false);
+
+        return \preg_replace('/^(\d+\.\d+)[^d].+$/', '$1', $normalized);
+    }
+
+    /**
      * Check if given version is a stable release (i.e. does not contain a stability flag referring to unstable state).
      *
      * @param string $version

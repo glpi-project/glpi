@@ -564,8 +564,6 @@ class ImpactTest extends \DbTestCase
          */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
-        (new Plugin())->init(true); // The `tester` plugin must be considered as loaded/active.
-
         $PLUGIN_HOOKS[Hooks::SET_ITEM_IMPACT_ICON]['tester'] = function (array $params) {
             if ($params['itemtype'] === 'PluginTesterMyAsset') {
                 return $params['items_id'] > 0

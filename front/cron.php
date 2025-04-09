@@ -83,7 +83,7 @@ if (PHP_SAPI === 'cli') {
         exit();
     }
 
-    if (!defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+    if (Update::isUpdateMandatory()) {
         echo 'The GLPI codebase has been updated. The update of the GLPI database is necessary.' . PHP_EOL;
         exit();
     }
