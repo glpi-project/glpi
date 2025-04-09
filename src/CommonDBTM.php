@@ -4538,8 +4538,8 @@ class CommonDBTM extends CommonGLPI
 
        // Do not check for template
         if (
-            isset($this->input['is_template']) && $this->input['is_template'] // on add template
-            || isset($this->fields['is_template']) && $this->fields['is_template'] // on update template
+            (isset($this->input['is_template']) && $this->input['is_template']) // on add template
+            || (isset($this->fields['is_template']) && $this->fields['is_template']) // on update template
         ) {
             return true;
         }

@@ -1796,7 +1796,7 @@ class CommonDBTMTest extends DbTestCase
         );
 
         // check if no error message is set in session
-        $this->hasNoSessionMessages([1]);
+        $this->hasNoSessionMessages([ERROR]);
 
         //create template with same name should be possible
         $template = new \Computer();
@@ -1810,7 +1810,7 @@ class CommonDBTMTest extends DbTestCase
         );
 
         // check if no error message is set in session
-        $this->hasNoSessionMessages([1]);
+        $this->hasNoSessionMessages([ERROR]);
 
         // update template with same name should be possible
         $this->assertTrue(
@@ -1823,7 +1823,7 @@ class CommonDBTMTest extends DbTestCase
         );
 
         // check if no error message is set in session
-        $this->hasNoSessionMessages([1]);
+        $this->hasNoSessionMessages([ERROR]);
 
         //create computer with same name should not be possible (because of first computer)
         $this->assertFalse(
@@ -1833,7 +1833,7 @@ class CommonDBTMTest extends DbTestCase
             ])
         );
         $err_msg = "Impossible record for Name = " . __FUNCTION__ . "01<br>Other item exist<br>[<a  href='/glpi/front/computer.form.php?id=" . $computers_id . "'  title=\"" . __FUNCTION__ . "01\">" . __FUNCTION__ . "01</a> - ID: {$computers_id} - Serial number:  - Entity: Root entity &#62; _test_root_entity]";
-        $this->hasSessionMessages(1, [$err_msg]);
+        $this->hasSessionMessages(ERROR, [$err_msg]);
 
         // purge all computer to check if uniqueness is checked against template when creating a new computer
         $computer->delete(['id' => $computers_id], true);
