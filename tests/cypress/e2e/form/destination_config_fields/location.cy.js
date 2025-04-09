@@ -44,7 +44,7 @@ describe('Location configuration', () => {
                 name: location_name,
             });
 
-            cy.findByRole('button', {'name': "Add a new question"}).click();
+            cy.findByRole('button', {'name': "Add a question"}).click();
             cy.focused().type("My Location question");
             cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
             cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Dropdowns');

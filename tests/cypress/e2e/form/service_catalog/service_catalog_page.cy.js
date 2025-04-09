@@ -293,7 +293,7 @@ describe('Service catalog page', () => {
         const form_name = `Test form for service_catalog_page.cy.js ${(new Date()).getTime()}`;
         createActiveForm(form_name);
         cy.get('@form_id').visitFormTab('Form');
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.findByRole('button', {'name': 'Add a question'}).click();
         cy.focused().type('Question 1');
         cy.findByRole('button', {'name': 'Save'}).click();
         cy.findByRole('alert')

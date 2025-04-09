@@ -1017,7 +1017,7 @@ class GLPIDashboard {
      */
     addForm() {
         glpi_ajax_dialog({
-            title: __("Add a new dashboard"),
+            title: __("Add a dashboard"),
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
             params: {
                 action: 'add_new',
@@ -1040,7 +1040,7 @@ class GLPIDashboard {
     }
 
     /**
-     * Add a new option to top left dashboard select
+     * Add a option to top left dashboard select
      */
     addNewDashbardInSelect(label, value) {
         const newOption = new Option(label, value, false, true);

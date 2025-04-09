@@ -46,7 +46,7 @@ describe('Display preferences', () => {
         cy.visit('/front/ticket.php');
         openDisplayPreferences();
 
-        // Add a new column to the global view
+        // Add a column to the global view
         goToTab('Global View', true);
         addDisplayPeference('Pending reason');
 
@@ -85,7 +85,7 @@ describe('Display preferences', () => {
         cy.visit('/front/ticket.php');
         openDisplayPreferences();
 
-        // Add a new column to the global view
+        // Add a column to the global view
         goToTab('Helpdesk View', true);
         addDisplayPeference('Pending reason');
 

@@ -43,8 +43,8 @@ describe('Selectable form question types', () => {
             const tab = 'Glpi\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
-            // Add a new question
-            cy.findByRole("button", { name: "Add a new question" }).should('exist').click();
+            // Add a question
+            cy.findByRole("button", { name: "Add a question" }).should('exist').click();
         });
     });
 
@@ -209,10 +209,10 @@ describe('Selectable form question types', () => {
         // Change question type
         cy.findByRole("combobox", { name: "Short answer" }).should('exist').select("Radio");
 
-        // Add a new option
+        // Add a option
         cy.findAllByRole("textbox", { name: "Selectable option"}).eq(0).should('exist').type("Option 1");
 
-        // Add a new option
+        // Add a option
         cy.findAllByRole("textbox", { name: "Selectable option"}).eq(1).should('exist').type("Option 2");
 
         // Define second option as default
@@ -270,13 +270,13 @@ describe('Selectable form question types', () => {
         // Change question type
         cy.findByRole("combobox", { name: "Short answer" }).should('exist').select("Checkbox");
 
-        // Add a new option
+        // Add a option
         cy.findAllByRole("textbox", { name: "Selectable option"}).eq(0).should('exist').type("Option 1");
 
-        // Add a new option
+        // Add a option
         cy.findAllByRole("textbox", { name: "Selectable option"}).eq(1).should('exist').type("Option 2");
 
-        // Add a new option
+        // Add a option
         cy.findAllByRole("textbox", { name: "Selectable option"}).eq(2).should('exist').type("Option 3");
 
         // Define second option as default
@@ -346,10 +346,10 @@ describe('Selectable form question types', () => {
         // Change question type
         cy.findByRole("combobox", { name: "Short answer" }).should('exist').select("Dropdown");
 
-        // Add a new option
+        // Add a option
         cy.findAllByRole("textbox", { name: "Selectable option"}).eq(0).should('exist').type("Option 1");
 
-        // Add a new option
+        // Add a option
         cy.findAllByRole("textbox", { name: "Selectable option"}).eq(1).should('exist').type("Option 2");
 
         // Define second option as default

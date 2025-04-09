@@ -37,7 +37,7 @@ describe('Entity configuration', () => {
 
         // Create form with a single "entity" question
         cy.createFormWithAPI().as('form_id').visitFormTab('Form');
-        cy.findByRole('button', { 'name': "Add a new question" }).click();
+        cy.findByRole('button', { 'name': "Add a question" }).click();
         cy.focused().type("My entity question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('GLPI Objects');

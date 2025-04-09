@@ -59,21 +59,21 @@ describe('Associated items configuration', () => {
 
     function addQuestionsAndSaveForm() {
         // Add a question of type Item
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My item question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('GLPI Objects');
         cy.getDropdownByLabelText('Select an itemtype').selectDropdownValue('Computers');
 
         // Add a question of type User Device with default configuration
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My user device question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('User Devices');
         cy.findByRole('checkbox', {'name': 'Allow multiple devices'}).should('not.be.checked');
 
         // Add a question of type User Device with multiple devices allowed
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My multiple user device question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('User Devices');

@@ -37,7 +37,7 @@ describe('Content configuration', () => {
 
         // Create form with a single "request type" question
         cy.createFormWithAPI({"name": "My form name"}).visitFormTab('Form');
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("What is your name ?");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Short answer');
         cy.findByRole('button', {'name': 'Save'}).click();

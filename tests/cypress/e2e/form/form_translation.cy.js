@@ -32,7 +32,7 @@
  */
 
 function addTranslations() {
-    // Add a new language translation
+    // Add a language translation
     cy.findByRole('button', { name: 'Add language' }).click();
     cy.getDropdownByLabelText('Select language to translate').as('languageDropdown');
     cy.get('@languageDropdown').should('have.value', '');
@@ -110,7 +110,7 @@ describe('Edit form translations', () => {
     });
 
     it('can add a new language translation', () => {
-        // Add a new language translation
+        // Add a language translation
         cy.findByRole('button', { name: 'Add language' }).click();
         cy.getDropdownByLabelText('Select language to translate').as('languageDropdown');
         cy.get('@languageDropdown').should('have.value', '');
@@ -220,7 +220,7 @@ describe('Edit form translations', () => {
     });
 
     it('check form translation stats', () => {
-        // Add a new language translation
+        // Add a language translation
         cy.findByRole('button', { name: 'Add language' }).click();
         cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Français');
         cy.findByRole('button', { name: 'Add' }).click();
@@ -275,7 +275,7 @@ describe('Edit form translations', () => {
     it('can detect translations to review when default value changes', () => {
         addTranslations();
 
-        // Add a new language translation
+        // Add a language translation
         cy.findByRole('button', { name: 'Add language' }).click();
         cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Deutsch');
         cy.findByRole('button', { name: 'Add' }).click();
@@ -325,8 +325,8 @@ describe('Edit form translations', () => {
         // Go to the form editor
         cy.findByRole('tab', { name: 'Form' }).click();
 
-        // Add a new radio question
-        cy.findByRole('button', { name: 'Add a new question' }).click();
+        // Add a radio question
+        cy.findByRole('button', { name: 'Add a question' }).click();
         cy.findByRole('textbox', { name: 'Question name' }).type('Radio question');
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Radio');
 
@@ -342,7 +342,7 @@ describe('Edit form translations', () => {
         // Go to the form translations page
         cy.findByRole('tab', { name: 'Form translations' }).click();
 
-        // Add a new language translation
+        // Add a language translation
         cy.findByRole('button', { name: 'Add language' }).click();
         cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Français');
         cy.findByRole('button', { name: 'Add' }).click();
@@ -404,8 +404,8 @@ describe('Edit form translations', () => {
         // Go to the form editor
         cy.findByRole('tab', { name: 'Form' }).click();
 
-        // Add a new long answer question
-        cy.findByRole('button', { name: 'Add a new question' }).click();
+        // Add a long answer question
+        cy.findByRole('button', { name: 'Add a question' }).click();
         cy.findByRole('textbox', { name: 'Question name' }).type('Long answer question');
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Long answer');
 
@@ -420,7 +420,7 @@ describe('Edit form translations', () => {
         // Go to the form translations page
         cy.findByRole('tab', { name: 'Form translations' }).click();
 
-        // Add a new language translation
+        // Add a language translation
         cy.findByRole('button', { name: 'Add language' }).click();
         cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Français');
         cy.findByRole('button', { name: 'Add' }).click();
@@ -468,8 +468,8 @@ describe('Edit form translations', () => {
         // Go to the form editor
         cy.findByRole('tab', { name: 'Form' }).click();
 
-        // Add a new short answer question
-        cy.findByRole('button', { name: 'Add a new question' }).click();
+        // Add a short answer question
+        cy.findByRole('button', { name: 'Add a question' }).click();
         cy.findByRole('textbox', { name: 'Question name' }).type('Short answer question');
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Short answer');
 
@@ -483,7 +483,7 @@ describe('Edit form translations', () => {
         // Go to the form translations page
         cy.findByRole('tab', { name: 'Form translations' }).click();
 
-        // Add a new language translation
+        // Add a language translation
         cy.findByRole('button', { name: 'Add language' }).click();
         cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Français');
         cy.findByRole('button', { name: 'Add' }).click();

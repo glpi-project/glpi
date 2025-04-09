@@ -336,7 +336,7 @@ export class GlpiFormEditorController
                 unsaved_changes = false;
                 break;
 
-            // Add a new question
+            // Add a question
             case "add-question":
                 this.#addQuestion(
                     target.closest(`
@@ -393,7 +393,7 @@ export class GlpiFormEditorController
                 );
                 break;
 
-            // Add a new section at the end of the form
+            // Add a section at the end of the form
             case "add-section":
                 this.#addSection(
                     target.closest(`
@@ -465,7 +465,7 @@ export class GlpiFormEditorController
             case "question-sort-update":
                 break;
 
-            // Add a new comment
+            // Add a comment
             case "add-comment":
                 this.#addComment(
                     target.closest(`
@@ -915,7 +915,7 @@ export class GlpiFormEditorController
     }
 
     /**
-     * Add a new block next to the target.
+     * Add a block next to the target.
      * @param {jQuery} target
      * @param {jQuery} template
      * @returns
@@ -972,7 +972,7 @@ export class GlpiFormEditorController
     }
 
     /**
-     * Add a new question at the end of the form
+     * Add a question at the end of the form
      * @param {jQuery} target   Current position in the form
      */
     #addQuestion(target) {
@@ -1553,7 +1553,7 @@ export class GlpiFormEditorController
     }
 
     /**
-     * Add a new section at the end of the form.
+     * Add a section at the end of the form.
      * @param {jQuery} target Current position in the form
      */
     #addSection(target) {
@@ -1671,7 +1671,7 @@ export class GlpiFormEditorController
     }
 
     /**
-     * Add a new comment block.
+     * Add a comment block.
      * @param {jQuery} target   Current position in the form
      */
     #addComment(target) {
@@ -2359,7 +2359,7 @@ export class GlpiFormEditorController
     }
 
     /**
-     * Add a new placeholder to the horizontal block.
+     * Add a placeholder to the horizontal block.
      * @param {jQuery} target Horizontal block
      */
     #addHorizontalLayoutSlot(target) {

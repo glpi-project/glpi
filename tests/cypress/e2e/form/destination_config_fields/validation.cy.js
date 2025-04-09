@@ -37,12 +37,12 @@ describe('Validation configuration', () => {
 
         cy.createFormWithAPI().as('form_id').visitFormTab('Form');
 
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My Assignee question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Actors');
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Assignees');
 
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My User question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('GLPI Objects');

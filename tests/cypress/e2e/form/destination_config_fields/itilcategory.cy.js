@@ -47,7 +47,7 @@ describe('ITILCategory configuration', () => {
             }).as('itilcategory_id');
         });
 
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My ITILCategory question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Dropdowns');

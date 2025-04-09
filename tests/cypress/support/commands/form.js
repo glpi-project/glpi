@@ -67,12 +67,12 @@ Cypress.Commands.add('saveFormEditorAndReload', () => {
 });
 
 Cypress.Commands.add('addQuestion', (name) => {
-    cy.findByRole('button', {'name': 'Add a new question'}).click();
+    cy.findByRole('button', {'name': 'Add a question'}).click();
     cy.focused().type(name); // Question name is focused by default
 });
 
 Cypress.Commands.add('addSection', (name) => {
-    cy.findByRole('button', {'name': 'Add a new section'}).click();
+    cy.findByRole('button', {'name': 'Add a section'}).click();
     cy.focused().type(name); // Section name is focused by default
 });
 

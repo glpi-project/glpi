@@ -61,7 +61,7 @@ describe('Assignee configuration', () => {
                 }).as('computer_id');
             });
 
-            cy.findByRole('button', {'name': "Add a new question"}).click();
+            cy.findByRole('button', {'name': "Add a question"}).click();
             cy.focused().type("My Assignee question");
             cy.getDropdownByLabelText('Question type').selectDropdownValue('Actors');
             cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Assignees');
@@ -69,7 +69,7 @@ describe('Assignee configuration', () => {
             cy.findByRole('button', {'name': 'Save'}).click();
             cy.checkAndCloseAlert('Item successfully updated');
 
-            cy.findByRole('button', {'name': "Add a new question"}).click();
+            cy.findByRole('button', {'name': "Add a question"}).click();
             cy.focused().type("My Computer question");
             cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
             cy.getDropdownByLabelText('Question sub type').selectDropdownValue('GLPI Objects');
