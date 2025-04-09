@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_info, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown */
+/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_info, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown, setHasUnsavedChanges, hasUnsavedChanges */
 
 import { GlpiFormConditionEditorController } from './ConditionEditorController.js';
 
@@ -80,6 +80,11 @@ export class GlpiFormEditorController
      * @type {array<GlpiFormConditionEditorController>}
      */
     #conditions_editors_controllers;
+
+    /**
+     * @type {boolean}
+     */
+    #do_preview_after_save = false;
 
     /**
      * Create a new GlpiFormEditorController instance for the given target.
@@ -218,24 +223,27 @@ export class GlpiFormEditorController
 
         // Handle form submit success event
         $(this.#target).on('glpi-ajax-controller-submit-success', () => {
+            const save_and_preview_button = $(this.#target).find(
+                '[data-glpi-form-editor-save-and-preview-action]'
+            );
+
             // Reset unsaved changes
             this.#updatePreviewButton();
 
-            const save_and_preview_button = $(this.#target).find('[data-glpi-form-editor-save-and-preview-action]');
-            if (save_and_preview_button.get(0) === $(document.activeElement).get(0)) {
+            // Check if a preview action was queued
+            if (this.#do_preview_after_save) {
                 // Open the preview page in a new tab
-                window.open(save_and_preview_button.data('glpi-form-editor-preview-url'), '_blank');
+                window.open(
+                    save_and_preview_button.data('glpi-form-editor-preview-url'),
+                    '_blank'
+                );
+                this.#do_preview_after_save = false;
             }
         });
 
-        let last_form_changes = window.glpiUnsavedFormChanges;
-        setInterval(() => {
-            if (last_form_changes !== window.glpiUnsavedFormChanges) {
-                this.#updatePreviewButton();
-            }
-            last_form_changes = window.glpiUnsavedFormChanges;
-        }, 500);
-
+        $(document).on('glpiFormChangeEvent', () => {
+            this.#updatePreviewButton();
+        });
 
         // Handle conditions strategy changes
         document.addEventListener('updated_strategy', (e) => {
@@ -453,7 +461,7 @@ export class GlpiFormEditorController
 
             // No specific instructions for these events.
             // They must still be kept here as they benefits from the common code
-            // like refreshUX() and glpiUnsavedFormChanges.
+            // like refreshUX().
             case "question-sort-update":
                 break;
 
@@ -520,13 +528,17 @@ export class GlpiFormEditorController
                 );
                 break;
 
+            case "queue-preview":
+                this.#do_preview_after_save = true;
+                break;
+
             // Unknown action
             default:
                 throw new Error(`Unknown action: ${action}`);
         }
 
         if (unsaved_changes) {
-            window.glpiUnsavedFormChanges = true;
+            setHasUnsavedChanges(true);
         }
 
         // Refresh all dynamic UX components after every action.
@@ -2190,7 +2202,7 @@ export class GlpiFormEditorController
     }
 
     #updatePreviewButton() {
-        if (window.glpiUnsavedFormChanges) {
+        if (hasUnsavedChanges()) {
             $(this.#target).find('[data-glpi-form-editor-preview-actions]')
                 .find('[data-glpi-form-editor-preview-action]').addClass('d-none');
             $(this.#target).find('[data-glpi-form-editor-preview-actions]')

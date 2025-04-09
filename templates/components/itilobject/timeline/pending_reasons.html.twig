@@ -107,7 +107,7 @@
             // Mark the dropdown as initialized and reset the form modification flag to avoid triggering the unsaved changes warning
             if (!pendingReasonsInitalized{{ rand }}) {
                pendingReasonsInitalized{{ rand }} = true;
-               window.glpiUnsavedFormChanges = false;
+               setHasUnsavedChanges(false);
             }
 
             $('#dropdown_pendingreasons_id{{ rand }}').change(handlePendingReasonsChange{{ rand }});
