@@ -463,7 +463,9 @@ var GLPIPlanning  = {
                         ? GLPIPlanning.calendar.state.viewType
                         : options.default_view;
                     var display_done_events = 1;
-                    if (view_name.indexOf('list') >= 0) {
+
+                    // if we are in a list view or user doesn't want to see done events
+                    if (view_name.indexOf('list') >= 0 || !$('#WithDoneEvents').is(':checked')) {
                         display_done_events = 0;
                     }
                     return {

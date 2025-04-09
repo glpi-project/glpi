@@ -904,7 +904,7 @@ JAVASCRIPT;
 
         return array_merge(
             $CFG_GLPI['planning_types'],
-            ['NotPlanned', 'OnlyBgEvents']
+            ['NotPlanned', 'OnlyBgEvents', 'WithDoneEvents']
         );
     }
 
@@ -936,11 +936,11 @@ JAVASCRIPT;
         $filters = &$_SESSION['glpi_plannings']['filters'];
         $index_color = 0;
         foreach (self::getPlanningTypes() as $planning_type) {
-            if (in_array($planning_type, ['NotPlanned', 'OnlyBgEvents']) || $planning_type::canView()) {
+            if (in_array($planning_type, ['NotPlanned', 'OnlyBgEvents', 'WithDoneEvents']) || $planning_type::canView()) {
                 if (!isset($filters[$planning_type])) {
                     $filters[$planning_type] = [
                         'color'   => self::getPaletteColor('ev', $index_color),
-                        'display' => !in_array($planning_type, ['NotPlanned', 'OnlyBgEvents']),
+                        'display' => !in_array($planning_type, ['NotPlanned', 'WithDoneEvents']),
                         'type'    => 'event_filter'
                     ];
                 }
@@ -1092,6 +1092,8 @@ JAVASCRIPT;
                 $title = __('Not planned tasks');
             } else if ($filter_key == 'OnlyBgEvents') {
                 $title = __('Only background events');
+            }  else if ($filter_key == 'WithDoneEvents') {
+                $title = __('with done events');
             } else {
                 if (!getItemForItemtype($filter_key)) {
                     return false;
