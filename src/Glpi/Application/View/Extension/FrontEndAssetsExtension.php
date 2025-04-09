@@ -187,7 +187,7 @@ class FrontEndAssetsExtension extends AbstractExtension
 
         $css = '';
 
-        if ($DB instanceof DBmysql && $DB->connected) {
+        if ($DB instanceof DBmysql && $DB->connected && $DB->tableExists(Entity::getTable())) {
             $entity = new Entity();
             if (isset($_SESSION['glpiactive_entity'])) {
                 // Apply active entity styles
