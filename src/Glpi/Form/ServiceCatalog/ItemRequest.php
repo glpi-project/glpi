@@ -68,7 +68,6 @@ final class ItemRequest
 
     public function getSortStrategy(): SortStrategyEnum
     {
-        // Return string value for backward compatibility
         return $this->sort_strategy;
     }
 }
