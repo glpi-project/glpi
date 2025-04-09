@@ -561,7 +561,7 @@ describe ('Form editor', () => {
         cy.addQuestion("Second question");
 
         // Add a comment
-        cy.findByRole('button', {'name': "Add a new comment"}).click();
+        cy.findByRole('button', {'name': "Add a comment"}).click();
         cy.focused().type("My comment");
 
         // Collapse the section again

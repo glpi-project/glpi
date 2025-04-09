@@ -62,7 +62,7 @@ function setQuestionTypeCategory(category) {
 }
 
 function addComment(name) {
-    cy.findByRole('button', {'name': "Add a new comment"}).click();
+    cy.findByRole('button', {'name': "Add a comment"}).click();
     cy.focused().type(name);
     cy.then(() => {
         comments.push(name);

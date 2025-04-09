@@ -74,7 +74,7 @@ class HasNetworkPortCapacity extends AbstractCapacity
     public function getCapacityUsageDescription(string $classname): string
     {
         return sprintf(
-            __('%1$s networkports attached to %2$s assets'),
+            __('%1$s network ports attached to %2$s assets'),
             $this->countPeerItemsUsage($classname, NetworkPort::class),
             $this->countAssetsLinkedToPeerItem($classname, NetworkPort::class)
         );

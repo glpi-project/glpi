@@ -193,8 +193,8 @@ describe('Form preview', config, () => {
             cy.findByRole('textbox', { 'name': 'Comment title' }).click();
         };
 
-        // Add a new comment
-        cy.findByRole('button', { 'name': 'Add a new comment' }).click();
+        // Add a comment
+        cy.findByRole('button', { 'name': 'Add a comment' }).click();
 
         // Edit the comment name
         cy.findByRole('textbox', { 'name': 'Comment title' }).type('Test comment');

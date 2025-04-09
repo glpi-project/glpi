@@ -205,7 +205,7 @@ HTML;
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
-                'number' => __('#'),
+                'number' => '#',
                 'selections' => '',
                 'author' => __('Author'),
                 'date_creation' => __('Creation date'),

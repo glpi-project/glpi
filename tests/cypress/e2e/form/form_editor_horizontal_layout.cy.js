@@ -60,10 +60,10 @@ describe ('Form editor', () => {
                 cy.getDropdownByLabelText("Question sub type").selectDropdownValue('Text');
             });
 
-            // Add a new comment from the other placeholder
+            // Add a comment from the other placeholder
             cy.findByRole('option', {'name': 'Form horizontal block placeholder'}).click();
             cy.findByRole('option', {'name': 'Form horizontal block placeholder'})
-                .findByRole('button', {'name': 'Add a new comment'}).click();
+                .findByRole('button', {'name': 'Add a comment'}).click();
             cy.findByRole('region', {'name': 'Comment details'}).within(() => {
                 cy.findByRole('textbox', {'name': 'Comment title'}).type('Comment title');
                 cy.findByLabelText("Comment description")
