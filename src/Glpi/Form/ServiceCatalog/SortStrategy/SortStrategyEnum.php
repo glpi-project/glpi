@@ -34,34 +34,39 @@
 
 namespace Glpi\Form\ServiceCatalog\SortStrategy;
 
-final class SortStrategyFactory
+enum SortStrategyEnum: string
 {
-    /** @var string */
-    public const DEFAULT_STRATEGY = 'popularity';
-
-    /** @var string[] */
-    private const AVAILABLE_STRATEGIES = [
-        'alphabetical'         => AlphabeticalSort::class,
-        'reverse_alphabetical' => ReverseAlphabeticalSort::class,
-        'popularity'           => PopularitySort::class,
-    ];
+    case ALPHABETICAL         = 'alphabetical';
+    case REVERSE_ALPHABETICAL = 'reverse_alphabetical';
+    case POPULARITY           = 'popularity';
 
     /**
-     * Create a sort strategy based on the given name
-     *
-     * @param string|null $name The name of the sort strategy to create, or null to use the default
-     * @return SortStrategyInterface
+     * Get the strategy class for this enum value
      */
-    public static function create(?string $name = null): SortStrategyInterface
+    public function getStrategyClass(): string
     {
-        $name = $name ?? self::DEFAULT_STRATEGY;
+        return match ($this) {
+            self::ALPHABETICAL => AlphabeticalSort::class,
+            self::REVERSE_ALPHABETICAL => ReverseAlphabeticalSort::class,
+            self::POPULARITY => PopularitySort::class,
+        };
+    }
 
-        if (!isset(self::AVAILABLE_STRATEGIES[$name])) {
-            $name = self::DEFAULT_STRATEGY;
-        }
-
-        $class = self::AVAILABLE_STRATEGIES[$name];
+    /**
+     * Create a new instance of the strategy
+     */
+    public function getConcreteStrategy(): SortStrategyInterface
+    {
+        $class = $this->getStrategyClass();
         return new $class();
+    }
+
+    /**
+     * Get the default strategy
+     */
+    public static function getDefault(): self
+    {
+        return self::POPULARITY;
     }
 
     /**
@@ -73,8 +78,8 @@ final class SortStrategyFactory
     {
         $strategies = [];
 
-        foreach (self::AVAILABLE_STRATEGIES as $name => $class) {
-            $strategies[$name] = new $class();
+        foreach (SortStrategyEnum::cases() as $case) {
+            $strategies[$case->value] = $case->getConcreteStrategy();
         }
 
         return $strategies;

@@ -34,42 +34,16 @@
 
 namespace Glpi\Form\ServiceCatalog\SortStrategy;
 
-use Glpi\Form\ServiceCatalog\ServiceCatalogCompositeInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
 
-final class ReverseAlphabeticalSort implements SortStrategyInterface
+final class ReverseAlphabeticalSort extends AbstractSortStrategy
 {
-    public function sort(array $items): array
-    {
-        usort($items, function (
-            ServiceCatalogItemInterface $a,
-            ServiceCatalogItemInterface $b,
-        ) {
-            // First compare pinned status
-            if ($a->isServiceCatalogItemPinned() !== $b->isServiceCatalogItemPinned()) {
-                return $b->isServiceCatalogItemPinned() <=> $a->isServiceCatalogItemPinned();
-            }
-
-            // Then handle composite vs non-composite (composite first)
-            if (
-                $a instanceof ServiceCatalogCompositeInterface
-                && !($b instanceof ServiceCatalogCompositeInterface)
-            ) {
-                return -1;
-            }
-
-            if (
-                !($a instanceof ServiceCatalogCompositeInterface)
-                && $b instanceof ServiceCatalogCompositeInterface
-            ) {
-                return 1;
-            }
-
-            // Sort by title in reverse alphabetical order
-            return $b->getServiceCatalogItemTitle() <=> $a->getServiceCatalogItemTitle();
-        });
-
-        return $items;
+    protected function compareItems(
+        ServiceCatalogItemInterface $a,
+        ServiceCatalogItemInterface $b
+    ): int {
+        // Sort by title in reverse alphabetical order
+        return $b->getServiceCatalogItemTitle() <=> $a->getServiceCatalogItemTitle();
     }
 
     public function getLabel(): string

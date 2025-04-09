@@ -40,7 +40,7 @@ use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
-use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyFactory;
+use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Session;
@@ -84,7 +84,11 @@ final class ItemsController extends AbstractController
         $items_per_page = ServiceCatalogManager::ITEMS_PER_PAGE;
 
         // Read sort strategy
-        $sort_strategy = $request->query->getString('sort_strategy');
+        $sort_strategy = $request->query->getEnum(
+            'sort_strategy',
+            SortStrategyEnum::class,
+            SortStrategyEnum::getDefault()
+        );
 
         // Build session + url params
         $parameters = new FormAccessParameters(

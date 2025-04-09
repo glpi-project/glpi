@@ -174,6 +174,7 @@ final class AnswersHandler
         /** @var \DBmysql $DB */
         global $DB;
 
+        // Note: Using direct DB update prevents race conditions
         $DB->update(
             Form::getTable(),
             ['usage_count' => new QueryExpression('usage_count + 1')],

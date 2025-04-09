@@ -39,6 +39,7 @@ use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
+use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Session;
@@ -83,6 +84,8 @@ final class IndexController extends AbstractController
                 : ["create_ticket"]
             ,
             'items' => $items,
+            'sort_strategies' => SortStrategyEnum::getAvailableStrategies(),
+            'default_sort_strategy' => SortStrategyEnum::getDefault()->value,
         ]);
     }
 }

@@ -36,7 +36,6 @@
 
 {% set container_size = "xl" %}
 
-{% set sort_strategies = call('Glpi\\Form\\ServiceCatalog\\SortStrategy\\SortStrategyFactory::getAvailableStrategies') %}
 {% set icons = sort_strategies|map((value) => value.getIcon()) %}
 
 {% block content_title %}
@@ -58,7 +57,7 @@
             </span>
             {{ fields.dropdownArrayField(
                 'sort_strategy',
-                constant('Glpi\\Form\\ServiceCatalog\\SortStrategy\\SortStrategyFactory::DEFAULT_STRATEGY'),
+                default_sort_strategy,
                 sort_strategies|map((value) => value.getLabel()),
                 '',
                 {

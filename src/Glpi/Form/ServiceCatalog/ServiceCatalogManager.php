@@ -40,7 +40,7 @@ use Glpi\Form\ServiceCatalog\Provider\CompositeProviderInterface;
 use Glpi\Form\ServiceCatalog\Provider\FormProvider;
 use Glpi\Form\ServiceCatalog\Provider\KnowbaseItemProvider;
 use Glpi\Form\ServiceCatalog\Provider\LeafProviderInterface;
-use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyFactory;
+use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
 
 final class ServiceCatalogManager
 {
@@ -222,12 +222,12 @@ final class ServiceCatalogManager
      * Sort items using the specified sort strategy
      *
      * @param ServiceCatalogItemInterface[] $items
-     * @param string $strategy_name The name of the sort strategy to use
+     * @param SortStrategyEnum $strategy
      * @return ServiceCatalogItemInterface[]
      */
-    private function sortItems(array $items, string $strategy_name): array
+    private function sortItems(array $items, SortStrategyEnum $strategy): array
     {
-        $strategy = SortStrategyFactory::create($strategy_name);
+        $strategy = $strategy->getConcreteStrategy();
         return $strategy->sort($items);
     }
 }

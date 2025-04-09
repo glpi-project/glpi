@@ -37,7 +37,7 @@ namespace tests\units\Glpi\Form;
 use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
-use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyFactory;
+use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use KnowbaseItem;
@@ -65,10 +65,10 @@ abstract class SortStrategyTestCase extends \DbTestCase
     }
 
     /**
-     * Return the sort strategy key to test
-     * @return string
+     * Return the sort strategy enum to be tested
+     * @return SortStrategyEnum
      */
-    abstract protected function getSortStrategyKey(): string;
+    abstract protected function getSortStrategyEnum(): SortStrategyEnum;
 
     /**
      * Return the expected order of sorted items
@@ -88,12 +88,12 @@ abstract class SortStrategyTestCase extends \DbTestCase
         $item_request = new ItemRequest(
             access_parameters: $access_parameters,
             items_per_page: 100,
-            sort_strategy: 'alphabetical',
+            sort_strategy: SortStrategyEnum::ALPHABETICAL,
         );
         $items = self::$manager->getItems($item_request)['items'];
 
         // Sort the items using the strategy
-        $sortedItems = SortStrategyFactory::create($this->getSortStrategyKey())
+        $sortedItems = $this->getSortStrategyEnum()->getConcreteStrategy()
             ->sort($items);
 
         // Verify the sorting against the expected order

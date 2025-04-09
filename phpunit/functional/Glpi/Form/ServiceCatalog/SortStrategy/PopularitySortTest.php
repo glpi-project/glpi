@@ -34,13 +34,15 @@
 
 namespace tests\units\Glpi\Form;
 
+use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
+
 include_once __DIR__ . '/../../../../../abstracts/SortStrategyTestCase.php';
 
 class PopularitySortTest extends SortStrategyTestCase
 {
-    protected function getSortStrategyKey(): string
+    protected function getSortStrategyEnum(): SortStrategyEnum
     {
-        return 'popularity';
+        return SortStrategyEnum::POPULARITY;
     }
 
     protected function provideExpectedSortedItems(): array

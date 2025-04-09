@@ -39,47 +39,22 @@ use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
 use Glpi\Form\Form;
 use KnowbaseItem;
 
-final class PopularitySort implements SortStrategyInterface
+final class PopularitySort extends AbstractSortStrategy
 {
-    public function sort(array $items): array
-    {
-        usort($items, function (
-            ServiceCatalogItemInterface $a,
-            ServiceCatalogItemInterface $b,
-        ) {
-            // First compare pinned status
-            if ($a->isServiceCatalogItemPinned() !== $b->isServiceCatalogItemPinned()) {
-                return $b->isServiceCatalogItemPinned() <=> $a->isServiceCatalogItemPinned();
-            }
+    protected function compareItems(
+        ServiceCatalogItemInterface $a,
+        ServiceCatalogItemInterface $b
+    ): int {
+        // Sort by popularity (view count or submission count)
+        $a_popularity = $this->getPopularity($a);
+        $b_popularity = $this->getPopularity($b);
 
-            // Then handle composite vs non-composite (composite first)
-            if (
-                $a instanceof ServiceCatalogCompositeInterface
-                && !($b instanceof ServiceCatalogCompositeInterface)
-            ) {
-                return -1;
-            }
+        if ($a_popularity !== $b_popularity) {
+            return $b_popularity <=> $a_popularity; // Higher popularity first
+        }
 
-            if (
-                !($a instanceof ServiceCatalogCompositeInterface)
-                && $b instanceof ServiceCatalogCompositeInterface
-            ) {
-                return 1;
-            }
-
-            // Sort by popularity (view count or submission count)
-            $a_popularity = $this->getPopularity($a);
-            $b_popularity = $this->getPopularity($b);
-
-            if ($a_popularity !== $b_popularity) {
-                return $b_popularity <=> $a_popularity; // Higher popularity first
-            }
-
-            // If popularity is equal, fall back to alphabetical
-            return $a->getServiceCatalogItemTitle() <=> $b->getServiceCatalogItemTitle();
-        });
-
-        return $items;
+        // If popularity is equal, fall back to alphabetical
+        return $a->getServiceCatalogItemTitle() <=> $b->getServiceCatalogItemTitle();
     }
 
     private function getPopularity(ServiceCatalogItemInterface $item): int
