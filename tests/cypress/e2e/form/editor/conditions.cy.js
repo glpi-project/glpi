@@ -30,8 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-const uuid = new Date().getTime();
-
 let questions = null;
 let comments = null;
 let sections = null;
@@ -887,6 +885,8 @@ describe ('Conditions', () => {
     });
 
     it('can apply all supported conditions types', () => {
+        const uuid = new Date().getTime();
+
         createForm();
 
         // Create test items in GLPI that we'll use in conditions
