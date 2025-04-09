@@ -34,36 +34,17 @@
 
 namespace Glpi\Kernel\Listener;
 
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Debug\Profiler;
-use Glpi\Dropdown\DropdownDefinitionManager;
-use Glpi\Kernel\ListenersPriority;
-use Glpi\Kernel\PostBootEvent;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use DBConnection;
+use Update;
 
-final readonly class CustomObjectsBootstrap implements EventSubscriberInterface
+trait PostBootListenerTrait
 {
-    use PostBootListenerTrait;
-
-    public static function getSubscribedEvents(): array
+    /**
+     * Indicates whether the database data can be used to initialize services.
+     * For instance, plugins and custom objects definitions should not be loaded if a mandatory update is required.
+     */
+    protected function canUseDbToInitServices(): bool
     {
-        return [
-            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
-        ];
-    }
-
-    public function onPostBoot(): void
-    {
-        if (!$this->canUseDbToInitServices()) {
-            // Requires the database to be available.
-            return;
-        }
-
-        Profiler::getInstance()->start('CustomObjectsBootstrap::execute', Profiler::CATEGORY_BOOT);
-
-        AssetDefinitionManager::getInstance()->bootstrapDefinitions();
-        DropdownDefinitionManager::getInstance()->bootstrapDefinitions();
-
-        Profiler::getInstance()->stop('CustomObjectsBootstrap::execute');
+        return DBConnection::isDbAvailable() && Update::isUpdateMandatory() === false;
     }
 }

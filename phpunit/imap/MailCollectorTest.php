@@ -1345,8 +1345,6 @@ PLAINTEXT,
     ) {
         global $PLUGIN_HOOKS;
 
-        (new \Plugin())->init(true); // The `tester` plugin must be considered as loaded/active.
-
         $hooks_backup = $PLUGIN_HOOKS;
 
         $PLUGIN_HOOKS['mail_server_protocols']['tester'] = function () use ($hook_result) {

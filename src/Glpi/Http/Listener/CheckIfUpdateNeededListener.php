@@ -62,9 +62,8 @@ final readonly class CheckIfUpdateNeededListener implements EventSubscriberInter
         }
 
         if (
-            \defined('SKIP_UPDATES')
-            || Update::isDbUpToDate()
-            || !$this->shouldCheckDbStatus($event->getRequest())
+            !$this->shouldCheckDbStatus($event->getRequest())
+            || !Update::isUpdateMandatory()
         ) {
             return;
         }

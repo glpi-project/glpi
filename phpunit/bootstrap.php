@@ -56,7 +56,7 @@ if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     echo("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
     exit(1);
 }
-if (!defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+if (Update::isUpdateMandatory()) {
     echo 'The GLPI codebase has been updated. The update of the GLPI database is necessary.' . PHP_EOL;
     exit(1);
 }
