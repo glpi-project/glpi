@@ -505,7 +505,7 @@ describe('Service catalog page', () => {
 
         // Add a question to B form
         cy.get('@form_id').visitFormTab('Form');
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.findByRole('button', {'name': 'Add a question'}).click();
         cy.focused().type('Question 1');
         cy.findByRole('button', {'name': 'Save'}).click();
 
