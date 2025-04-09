@@ -339,7 +339,7 @@ class VirtualMachine extends InventoryAsset
                             }
                             $inputrulelog = [
                                 'date'      => date('Y-m-d H:i:s'),
-                                'rules_id'  => $datarules['rules_id'],
+                                'rules_id'  => $datarules['_ruleid'],
                                 'items_id'  => $computers_vm_id,
                                 'itemtype'  => $input['itemtype'],
                                 'agents_id' => $agents_id,
