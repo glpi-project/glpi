@@ -516,7 +516,7 @@ describe('Service catalog page', () => {
         cy.findByPlaceholderText('Search for forms...').as('filter_input');
         cy.get('@filter_input').type(time);
         cy.findByRole('region', {'name': `B form ${time}`}).click();
-        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('alert')
             .should('contain.text', 'Item successfully created');
 
