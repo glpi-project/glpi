@@ -73,9 +73,9 @@ describe('Illustration picker', () => {
             'Network equipment',
         ];
         const icons_from_second_page = [
-            'Shared folder',
-            'Training',
-            'VPN',
+            'Folder',
+            'Gear',
+            'Group',
         ];
 
         // We are on the first page by default.
