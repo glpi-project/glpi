@@ -66,7 +66,7 @@ class PlanningCsvTest extends CsvTestCase
 
         $ticket = new \Ticket();
         $tid = (int)$ticket->add([
-            'name'         => 'ticket title',
+            'name'         => 'ticket \d\rtitle',
             'description'  => 'a description',
             'content'      => '',
             'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true)
@@ -132,7 +132,7 @@ class PlanningCsvTest extends CsvTestCase
         foreach ($tasks as $input) {
             $expected_content[] = [
                 'actor'     => $user->getFriendlyName(),
-                'title'     => 'ticket title',
+                'title'     => 'ticket \d\rtitle',
                 'itemtype'  => 'Ticket task',
                 'items_id'  => $input['id'],
                 'begindate' => $input['begin'],
