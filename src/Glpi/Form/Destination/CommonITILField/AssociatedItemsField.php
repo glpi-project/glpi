@@ -78,6 +78,9 @@ final class AssociatedItemsField extends AbstractConfigField implements Destinat
         }
 
         $twig = TemplateRenderer::getInstance();
+        $associated_items = $config->getSpecificAssociatedItems();
+        ksort($associated_items);
+
         return $twig->render('pages/admin/form/itil_config_fields/associated_items.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
             'CONFIG_SPECIFIC_VALUES'  => AssociatedItemsFieldStrategy::SPECIFIC_VALUES->value,
@@ -93,7 +96,7 @@ final class AssociatedItemsField extends AbstractConfigField implements Destinat
                 'items_id_aria_label' => __("Select the item to associate..."),
                 'input_name'          => $input_name . "[" . AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS . "]",
                 'itemtypes'           => array_keys(CommonITILObject::getAllTypesForHelpdesk()),
-                'associated_items'    => $config->getSpecificAssociatedItems(),
+                'associated_items'    => $associated_items,
             ],
 
             // Specific additional config for SPECIFIC_ANSWERS strategy
