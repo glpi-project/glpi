@@ -518,7 +518,6 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
     // It is mandatory to validate that installation endpoints are not used outside installation process
     // to alter the GLPI database or configuration.
     $_SESSION['can_process_install'] = true;
-    $_SESSION['is_installing'] = true;
 
     header_html(__("Select your language"));
     choose_language();

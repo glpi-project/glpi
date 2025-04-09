@@ -176,8 +176,6 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
            // unless it has already been displayed and user clicks on "ignore" button.
             showSecurityKeyCheckForm();
         } else {
-            $_SESSION['is_updating'] = true;
-
             echo "<p>" . __s('Updating the database...') . "</p>";
 
             echo '<div id="glpi_update_messages_container"></div>';

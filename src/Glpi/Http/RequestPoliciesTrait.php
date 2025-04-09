@@ -74,11 +74,12 @@ trait RequestPoliciesTrait
         }
 
         if (
-            \str_starts_with($path, '/install/')
-            || ($_SESSION['is_installing'] ?? false)
-            || ($_SESSION['is_updating'] ?? false)
+            // install/update endpoint
+            \str_starts_with(\strtolower($path), '/install/')
+            // `\Glpi\Controller\ProgressController::check()` route used during install/update process
+            || \str_starts_with(\strtolower($path), '/progress/check/')
         ) {
-            // DB status should never be checked when the requested endpoint is part of the install process.
+            // DB status should never be checked when the requested endpoint is part of the install/update process.
             return false;
         }
 
