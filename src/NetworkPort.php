@@ -1050,12 +1050,6 @@ class NetworkPort extends CommonDBChild
                                         $output .= ' [' . $row['tag'] . ']';
                                     }
                                     $output .= ($row['tagged'] == 1 ? 'T' : 'U');
-                                    if ($canedit) {
-                                        $output .= '<a title="' . __s('Delete') . '" href="' . NetworkPort::getFormURLWithID($row['id']) . '&amp;unassign_vlan=unassigned">'
-                                            . '<i class="ti ti-trash"></i>'
-                                            . '<span class="sr-only">' . __s('Delete') . '</span>'
-                                            . '</a>';
-                                    }
                                     $output .= '<br/>';
                                 }
                             }

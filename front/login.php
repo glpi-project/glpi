@@ -57,7 +57,6 @@ if (isset($_POST['totp_code']) && is_array($_POST['totp_code'])) {
 }
 
 //Do login and checks
-//$user_present = 1;
 if (isset($_SESSION['namfield']) && isset($_POST[$_SESSION['namfield']])) {
     $login = $_POST[$_SESSION['namfield']];
 } else {

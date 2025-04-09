@@ -53,11 +53,11 @@ class Auth extends CommonGLPI
     public $extauth = 0;
     /** @var array External authentication methods */
     public $authtypes;
-    /** @var int Indicates if the user is authenticated or not */
-    public $auth_succeded = 0;
-    /** @var int Indicates if the user is already present in database */
-    public $user_present = 0;
-    /** @var int Indicates if the user password expired */
+    /** @var boolean Indicates if the user is authenticated or not */
+    public $auth_succeded = false;
+    /** @var boolean Indicates if the user is already present in database */
+    public $user_present = false;
+    /** @var boolean Indicates if the user password expired */
     public $password_expired = false;
     /** @var bool Indicates the login was valid by explicitly denied by a rule */
     public $denied_by_rule = false;
@@ -487,7 +487,7 @@ class Auth extends CommonGLPI
                     -1 !== $pass_expiration_delay
                     && $row['password_expiration_date'] < $_SESSION['glpi_currenttime']
                 ) {
-                    $this->password_expired = 1;
+                    $this->password_expired = true;
                 }
 
                 // Update password if needed
@@ -504,7 +504,7 @@ class Auth extends CommonGLPI
                 }
                 $this->user->getFromDBByCrit(['id' => $row['id']]);
                 $this->extauth                  = 0;
-                $this->user_present             = 1;
+                $this->user_present             = true;
                 $this->user->fields["authtype"] = self::DB_GLPI;
                 $this->user->fields["password"] = $password;
 
@@ -780,7 +780,7 @@ class Auth extends CommonGLPI
     public function validateLogin(string $login_name, string $login_password, bool $noauto = false, string $login_auth = ''): bool
     {
         $this->getAuthMethods();
-        $this->user_present  = 1;
+        $this->user_present  = true;
         $this->auth_succeded = false;
         //In case the user was deleted in the LDAP directory
         $user_deleted_ldap   = false;
@@ -1033,7 +1033,7 @@ class Auth extends CommonGLPI
             $this->auth_type = $mfa_pre_auth['auth_type'];
             $this->extauth = $mfa_pre_auth['extauth'];
             $remember_me = $mfa_pre_auth['remember_me'];
-            $this->auth_succeded = 1;
+            $this->auth_succeded = true;
             unset($_SESSION['mfa_pre_auth']);
         }
 

@@ -2334,6 +2334,141 @@ class AuthLDAPTest extends DbTestCase
 
 
     /**
+     * Test if rules targeting ldap criteria are working
+     *
+     * @return void
+     */
+    public function testGroupRuleRight()
+    {
+        //prepare rules
+        $rules_id = $this->createItem(
+            'RuleRight',
+            [
+                'sub_type'     => 'RuleRight',
+                'name'         => 'test ldap groupruleright',
+                'match'        => 'AND',
+                'is_active'    => 1,
+                'entities_id'  => 0,
+                'is_recursive' => 1,
+            ]
+        )->getID();
+
+        $crit_id = $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rules_id,
+            'criteria'  => 'LOGIN',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 'brazil6',
+        ])->getID();
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'profiles_id',
+            'value'       => 5, // 'normal' profile
+        ]);
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => 0, // '_test_child_1' entity
+        ]);
+
+        // Create 2 dynamic group
+        $group_id = $this->createItem(Group::class, ["name" => "testgroup1"])->getID();
+        $this->assertGreaterThan(0, $group_id);
+
+        $group2_id = $this->createItem(Group::class, ["name" => "testgroup2"])->getID();
+        $this->assertGreaterThan(0, $group2_id);
+
+        // Add groups with a rule
+        $act_id = $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'specific_groups_id',
+            'value'       => $group_id,
+        ])->getID();
+
+        // login the user to force a real synchronisation and get it's glpi id
+        $this->login('brazil6', 'password', false);
+        $users_id = \User::getIdByName('brazil6');
+        $this->assertGreaterThan(0, $users_id);
+
+        // Check group
+        $gu = new Group_User();
+        $gus = $gu->find([
+            'users_id' => $users_id,
+            'groups_id' => $group_id,
+            'is_dynamic' => 1,
+        ]);
+        $this->assertCount(1, $gus);
+
+        // update criteria
+        $this->updateItem(\RuleAction::class, $act_id, [
+            'value' => $group2_id,
+        ]);
+
+        // Login
+        $this->login('brazil6', 'password', false);
+        $users_id = \User::getIdByName('brazil6');
+        $this->assertGreaterThan(0, $users_id);
+
+        // Check the dynamic group is deleted without losing the manual groups
+        $this->assertFalse(\Group_User::isUserInGroup($users_id, $group_id));
+        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group2_id));
+
+        // Create 2 manual groups
+        $mgroup_id = $this->createItem(Group::class, ["name" => "manualgroup1"])->getID();
+        $this->assertGreaterThan(0, $mgroup_id);
+        $mgroup2_id = $this->createItem(Group::class, ["name" => "manualgroup2"])->getID();
+        $this->assertGreaterThan(0, $mgroup2_id);
+
+        // Add 2 groups manualy
+        $gu = new Group_User();
+        $gu_id = $this->createItem(Group_User::class, [
+            'users_id' => $users_id,
+            'groups_id' => $mgroup_id,
+        ])->getID();
+        $this->assertGreaterThan(0, $gu_id);
+        $gu_id = $this->createItem(Group_User::class, [
+            'users_id' => $users_id,
+            'groups_id' => $mgroup2_id,
+        ])->getID();
+        $this->assertGreaterThan(0, $gu_id);
+
+        // Check group
+        $gu = new Group_User();
+        $gus = $gu->find([
+            'users_id' => $users_id,
+            'is_dynamic' => false,
+        ]);
+        $this->assertCount(2, $gus);
+
+        $this->assertTrue(\Group_User::isUserInGroup($users_id, $mgroup_id));
+        $this->assertTrue(\Group_User::isUserInGroup($users_id, $mgroup2_id));
+
+        // update criteria
+        $crit_id = $this->updateItem(\RuleCriteria::class, $crit_id, [
+            'pattern'   => 'brazil7',
+        ]);
+
+        // Login
+        $this->login('brazil6', 'password', false);
+        $users_id = \User::getIdByName('brazil6');
+        $this->assertGreaterThan(0, $users_id);
+
+        // Check the dynamic group is deleted without losing the manual groups
+        $gu = new Group_User();
+        $gus = $gu->find([
+            'users_id' => $users_id,
+        ]);
+
+        $this->assertCount(2, $gus);
+        $this->assertTrue(\Group_User::isUserInGroup($users_id, $mgroup_id));
+        $this->assertTrue(\Group_User::isUserInGroup($users_id, $mgroup2_id));
+        $this->assertFalse(\Group_User::isUserInGroup($users_id, $group_id));
+    }
+
+    /**
      * Test if ruleright '_groups_id' criteria is working
      *
      * @return void

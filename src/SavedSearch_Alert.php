@@ -163,7 +163,7 @@ class SavedSearch_Alert extends CommonDBChild
             !$search->getFromDB($ID)
             || !$search->can($ID, READ)
         ) {
-            return false;
+            return;
         }
         $start       = (int) ($_GET["start"] ?? 0);
         $sort        = $_GET["sort"] ?? "";

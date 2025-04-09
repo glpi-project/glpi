@@ -453,18 +453,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         );
     }
 
-    /**
-     * Print the saved search form
-     *
-     * @param integer $ID      ID of the item
-     * @param array   $options possible options:
-     *                         - target for the Form
-     *                         - type when adding
-     *                         - url when adding
-     *                         - itemtype when adding
-     *
-     * @return void
-     **/
     public function showForm($ID, array $options = [])
     {
         if (empty($this->fields) && $ID > 0) {
@@ -484,6 +472,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             'can_create' => self::canCreate(),
             'params' => $options
         ]);
+        return true;
     }
 
     /**
@@ -771,9 +760,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         if ($user->getFromDB(Session::getLoginUserID())) {
             $personalorder = importArrayFromDB($user->fields[$personalorderfield]);
         }
-        if (!is_array($personalorder)) {
-            $personalorder = [];
-        }
 
         // Add on personal order
         if (count($personalorder)) {
@@ -949,7 +935,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $p['value']     = self::COUNT_AUTO;
         $p['display']   = true;
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $p[$key] = $val;
             }
@@ -1029,7 +1015,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @param CronTask $task CronTask instance
      *
-     * @return void
+     * @return integer
      **/
     public static function croncountAll($task)
     {
