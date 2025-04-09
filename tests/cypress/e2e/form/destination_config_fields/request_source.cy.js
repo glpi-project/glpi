@@ -39,7 +39,7 @@ describe('Request source configuration', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
         // Add a default question
-        cy.findByRole('button', { 'name': "Add a new question" }).click();
+        cy.findByRole('button', { 'name': "Add a question" }).click();
         cy.findByRole('button', { 'name': 'Save' }).click();
 
         // Check alert

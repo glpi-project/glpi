@@ -180,13 +180,13 @@ describe('Form access policy', () => {
         // Retrieve the direct access URL
         cy.findByRole('textbox', { 'name': 'Direct access URL' }).should('exist').as('direct_access_url');
 
-        // Add a new question
+        // Add a question
         cy.get('@form_id').then((form_id) => {
             const tab = 'Glpi\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
-            // Add a new question
-            cy.findByRole('button', { 'name': 'Add a new question' }).click();
+            // Add a question
+            cy.findByRole('button', { 'name': 'Add a question' }).click();
 
             // Set the question title
             cy.focused().type('Actor question title');
@@ -194,8 +194,8 @@ describe('Form access policy', () => {
             // Select the actor question type
             cy.findByRole('combobox', { 'name': 'Short answer' }).select('Actors');
 
-            // Add a new question
-            cy.findByRole('button', { 'name': 'Add a new question' }).click();
+            // Add a question
+            cy.findByRole('button', { 'name': 'Add a question' }).click();
 
             // Set the question title
             cy.focused().type('Short answer question title');
@@ -247,7 +247,7 @@ describe('Form access policy', () => {
             const tab = 'Glpi\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
         });
-        cy.findByRole('button', { 'name': 'Add a new question' }).click();
+        cy.findByRole('button', { 'name': 'Add a question' }).click();
         cy.focused().type('Question 1');
         cy.findByRole('button', { 'name': 'Save' }).click();
         cy.findByRole('alert').should('contain.text', 'Item successfully updated');

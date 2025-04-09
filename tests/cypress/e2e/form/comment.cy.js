@@ -43,8 +43,8 @@ describe('Comment form', () => {
             const tab = 'Glpi\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
-            // Add a new comment
-            cy.findByRole("button", { name: "Add a new comment" }).should('exist').click();
+            // Add a comment
+            cy.findByRole("button", { name: "Add a comment" }).should('exist').click();
         });
     });
 

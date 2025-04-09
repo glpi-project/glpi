@@ -39,7 +39,7 @@ describe('Template configuration', () => {
         cy.createFormWithAPI().as('form_id').visitFormTab('Form');
 
         // Add a default question
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My test question");
         cy.findByRole('button', {'name': 'Save'}).click();
 

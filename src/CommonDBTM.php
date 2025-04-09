@@ -5499,7 +5499,7 @@ class CommonDBTM extends CommonGLPI
             ],
             'add_template' => $item::canCreate() && !$add,
             'target_create' => $target . (strpos($target, '?') ? '&id=-1&withtemplate=1' : '?id=-1&withtemplate=1'),
-            'add_template_label' => __('Add a template...')
+            'add_template_label' => __('Add a template')
         ];
 
         // language=Twig

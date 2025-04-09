@@ -80,7 +80,7 @@ class HasDevicesCapacity extends AbstractCapacity
     public function getCapacityUsageDescription(string $classname): string
     {
         return sprintf(
-            __('%1$d component(s) attached to %2$d asset(s)'),
+            __('%1$d components attached to %2$d assets'),
             $this->countDevicesUsages($classname),
             $this->countAssetsLinkedToDevices($classname)
         );

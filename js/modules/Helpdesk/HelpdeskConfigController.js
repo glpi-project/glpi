@@ -364,7 +364,7 @@ export class GlpiHelpdeskConfigController
             // to be executed for richtext input initialization
             $(this.#getFormTileDiv()).html(await response.text());
 
-            this.#getFormTileHeader().innerHTML = __("Add a new tile");
+            this.#getFormTileHeader().innerHTML = __("Add a tile");
             this.#getFormTileDiv().classList.remove('d-none');
             this.#getFormTileLoadingIndicatorDiv().classList.add('d-none');
         } catch (e) {

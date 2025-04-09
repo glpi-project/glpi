@@ -91,7 +91,7 @@ describe('Actors configuration', () => {
                     });
 
                     // Create actor question
-                    cy.findByRole('button', {'name': "Add a new question"}).click();
+                    cy.findByRole('button', {'name': "Add a question"}).click();
                     cy.focused().type(`My ${actorConfig.name} question`);
                     cy.getDropdownByLabelText('Question type').selectDropdownValue('Actors');
                     cy.getDropdownByLabelText('Question sub type').selectDropdownValue(`${actorConfig.name}s`);
@@ -100,7 +100,7 @@ describe('Actors configuration', () => {
                     cy.checkAndCloseAlert('Item successfully updated');
 
                     // Create computer question
-                    cy.findByRole('button', {'name': "Add a new question"}).click();
+                    cy.findByRole('button', {'name': "Add a question"}).click();
                     cy.focused().type("My Computer question");
                     cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
                     cy.getDropdownByLabelText('Question sub type').selectDropdownValue('GLPI Objects');

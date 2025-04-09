@@ -37,7 +37,7 @@ describe('Urgency configuration', () => {
 
         // Create form with a single "urgency" question
         cy.createFormWithAPI().visitFormTab('Form');
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My urgency question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Urgency');
         cy.findByRole('button', {'name': 'Save'}).click();

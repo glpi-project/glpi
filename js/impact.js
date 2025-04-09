@@ -2593,7 +2593,7 @@ var GLPIImpact = {
     },
 
     /**
-    * Add a new compound from the selected nodes
+    * Add a compound from the selected nodes
     */
     addCompoundFromSelection: _.debounce(function(){
         // Check that there is enough selected nodes
@@ -3821,17 +3821,17 @@ var GLPIImpact = {
             });
         });
 
-        // Add a new node on the graph
+        // Add a node on the graph
         $(GLPIImpact.selectors.addNode).click(function() {
             GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_NODE);
         });
 
-        // Add a new edge on the graph
+        // Add a edge on the graph
         $(GLPIImpact.selectors.addEdge).click(function() {
             GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_EDGE);
         });
 
-        // Add a new compound on the graph
+        // Add a compound on the graph
         $(GLPIImpact.selectors.addCompound).click(function() {
             GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_COMPOUND);
         });

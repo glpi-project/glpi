@@ -113,7 +113,7 @@ class CommonAjaxController
 
     /**
      * Create an error response when the controller wasn't able to handle
-     * the request (lack or rights, invalid paramters, ...)
+     * the request (lack or rights, invalid parameters, ...)
      *
      * @param int    $code    HTTP status code
      * @param string $message Error message
@@ -131,7 +131,7 @@ class CommonAjaxController
 
     /**
      * Create a success response when the controller handled the request
-     * succesfully
+     * successfully
      *
      * @param int   $code HTTP status code
      * @param array $body Response's body

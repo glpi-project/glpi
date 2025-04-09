@@ -91,7 +91,7 @@ describe('Form rendering', () => {
 });
 
 function addQuestionAndGetUuuid(name, type = null, subtype = null) {
-    cy.findByRole('button', { 'name': 'Add a new question' }).click();
+    cy.findByRole('button', { 'name': 'Add a question' }).click();
     cy.focused().type(name);
     if (type !== null) {
         cy.getDropdownByLabelText('Question type').selectDropdownValue(type);

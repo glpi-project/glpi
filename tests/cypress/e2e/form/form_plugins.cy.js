@@ -40,7 +40,7 @@ describe('Form plugins', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
         // Create range question
-        cy.findByRole('button', {name: "Add a new question"}).click();
+        cy.findByRole('button', {name: "Add a question"}).click();
         cy.focused().type('My range question');
         cy.getDropdownByLabelText('Question type').selectDropdownValue("Tester plugin");
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue("Range");

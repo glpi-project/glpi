@@ -43,8 +43,8 @@ describe('Dropdown form question type', () => {
             const tab = 'Glpi\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
-            // Add a new question
-            cy.findByRole("button", { name: "Add a new question" }).should('exist').click();
+            // Add a question
+            cy.findByRole("button", { name: "Add a question" }).should('exist').click();
 
             // Set the question name
             cy.findByRole("textbox", { name: "Question name" }).should('exist').type("Test dropdown question");
@@ -103,7 +103,7 @@ describe('Dropdown form question type', () => {
     }
 
     it('test adding and selecting options (simple)', () => {
-        // Add a new option
+        // Add a option
         cy.findByRole("textbox", { name: "Selectable option" }).type("Option 1");
         cy.findAllByRole("textbox", { name: "Selectable option" }).should('exist');
 
@@ -111,7 +111,7 @@ describe('Dropdown form question type', () => {
         checkSelectedOptions([]);
         checkOptionLabels(["Option 1"]);
 
-        // Add a new option
+        // Add a option
         cy.findAllByRole("textbox", { name: "Selectable option" }).eq(1).type("Option 2");
 
         // Select the first option in the select preview
@@ -121,7 +121,7 @@ describe('Dropdown form question type', () => {
         checkSelectedOptions([0]);
         checkOptionLabels(["Option 1", "Option 2"]);
 
-        // Add a new option
+        // Add a option
         cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
 
         // Check selected options and option labels

@@ -44,7 +44,7 @@ describe('Requester configuration', () => {
                 name: requester_name,
             }).as('requester_id');
 
-            cy.findByRole('button', {'name': "Add a new question"}).click();
+            cy.findByRole('button', {'name': "Add a question"}).click();
             cy.focused().type("My Requester question");
             cy.getDropdownByLabelText('Question type').selectDropdownValue('Actors');
             cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Requesters');
@@ -66,7 +66,7 @@ describe('Requester configuration', () => {
                 }).as('computer_id');
             });
 
-            cy.findByRole('button', {'name': "Add a new question"}).click();
+            cy.findByRole('button', {'name': "Add a question"}).click();
             cy.focused().type("My Computer question");
             cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
             cy.getDropdownByLabelText('Question sub type').selectDropdownValue('GLPI Objects');

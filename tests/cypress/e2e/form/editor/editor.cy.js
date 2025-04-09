@@ -561,7 +561,7 @@ describe ('Form editor', () => {
         cy.addQuestion("Second question");
 
         // Add a comment
-        cy.findByRole('button', {'name': "Add a new comment"}).click();
+        cy.findByRole('button', {'name': "Add a comment"}).click();
         cy.focused().type("My comment");
 
         // Collapse the section again
@@ -796,7 +796,7 @@ describe ('Form editor', () => {
         cy.getDropdownByLabelText("Question type").selectDropdownValue('Date and time');
 
         // Create sections
-        cy.findByRole('button', {'name': 'Add a new section'}).click();
+        cy.findByRole('button', {'name': 'Add a section'}).click();
 
         // Add a question to the new section
         cy.addQuestion("Third question");

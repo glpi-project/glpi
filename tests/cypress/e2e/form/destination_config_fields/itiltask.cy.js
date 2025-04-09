@@ -37,7 +37,7 @@ describe('ITILTask configuration', () => {
 
         // Create form
         cy.createFormWithAPI().as('form_id').visitFormTab('Form');
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My question");
 
         cy.findByRole('button', {'name': 'Save'}).click();

@@ -175,7 +175,7 @@ class HasSoftwaresCapacity extends AbstractCapacity
         }
 
         return sprintf(
-            __('%1$s software(s) attached to %2$s assets'),
+            __('%1$s software attached to %2$s assets'),
             count($softwares_ids),
             count($assets_ids)
         );

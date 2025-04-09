@@ -64,7 +64,7 @@ export class GlpiFormFieldDestinationMultipleConfig {
     }
 
     /**
-     * Add a new field config
+     * Add a field config
      */
     #addFieldConfig() {
         const selected_strategies = [];

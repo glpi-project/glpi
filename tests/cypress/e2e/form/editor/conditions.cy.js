@@ -50,7 +50,7 @@ function goToDestinationTab()
 }
 
 function addQuestion(name) {
-    cy.findByRole('button', {'name': "Add a new question"}).click();
+    cy.findByRole('button', {'name': "Add a question"}).click();
     cy.focused().type(name);
     cy.then(() => {
         questions.push(name);
@@ -62,7 +62,7 @@ function setQuestionTypeCategory(category) {
 }
 
 function addComment(name) {
-    cy.findByRole('button', {'name': "Add a new comment"}).click();
+    cy.findByRole('button', {'name': "Add a comment"}).click();
     cy.focused().type(name);
     cy.then(() => {
         comments.push(name);
@@ -70,7 +70,7 @@ function addComment(name) {
 }
 
 function addSection(name) {
-    cy.findByRole('button', {'name': "Add a new section"}).click();
+    cy.findByRole('button', {'name': "Add a section"}).click();
     cy.focused().type(name);
     cy.then(() => {
         sections.push(name);

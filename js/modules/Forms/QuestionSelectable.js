@@ -196,7 +196,7 @@ export class GlpiFormQuestionTypeSelectable {
     }
 
     /**
-     * Add a new option after the specified input element.
+     * Add a option after the specified input element.
      *
      * @param {HTMLElement} input - The input element after which to add the new option.
      * @param {boolean} focus - Whether to focus the new option.
@@ -299,7 +299,7 @@ export class GlpiFormQuestionTypeSelectable {
     }
 
     /**
-     * Add a new option if needed.
+     * Add a option if needed.
      *
      * @param {HTMLElement} input - The input element.
      */
@@ -401,7 +401,7 @@ export class GlpiFormQuestionTypeSelectable {
     /**
      * Handle the keydown event.
      *
-     * Enter: Add a new option after the current one and focus it.
+     * Enter: Add a option after the current one and focus it.
      * Backspace: Remove the option if the value is empty.
      * Arrow Up or Shift + Tab: Focus the previous option.
      * Arrow Down or Tab: Focus the next option.
@@ -415,7 +415,7 @@ export class GlpiFormQuestionTypeSelectable {
         if (event.key === 'Enter') {
             event.preventDefault();
 
-            // Add a new option after the current one and focus it
+            // Add a option after the current one and focus it
             if (input.value) {
                 // Focus the next option if the current one is not the last and if the next one is empty
                 if (

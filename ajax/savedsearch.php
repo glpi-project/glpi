@@ -39,7 +39,7 @@ Html::header_nocache();
 $savedsearch = new SavedSearch();
 
 if (isset($_POST["name"])) {
-   //Add a new saved search
+   //Add a saved search
     header("Content-Type: application/json; charset=UTF-8");
     $savedsearch->check(-1, CREATE, $_POST);
     if ($savedsearch->add($_POST)) {
