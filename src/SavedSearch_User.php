@@ -56,7 +56,6 @@ class SavedSearch_User extends CommonDBRelation
                 } else {
                     return "<span class='fa fa-star bookmark_record'><span class='sr-only'>" . __('No') . "</span></span>";
                 }
-                break;
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

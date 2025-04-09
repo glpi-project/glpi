@@ -704,12 +704,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Auth\\:\\:login\\(\\) should return bool but returns int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 1,
@@ -724,36 +718,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Offset \'host\' on string in empty\\(\\) does not exist\\.$#',
 	'identifier' => 'empty.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept bool\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept false\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 5,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$password_expired \\(int\\) does not accept default value of type false\\.$#',
-	'identifier' => 'property.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$user_present \\(int\\) does not accept bool\\.$#',
-	'identifier' => 'assign.propertyType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Auth.php',
 ];
@@ -803,30 +767,6 @@ $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept false\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$user_present \\(int\\) does not accept false\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$user_present \\(int\\) does not accept true\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 2,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
@@ -1696,12 +1636,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Console\\\\Plugin\\\\InstallCommand\\:\\:isAlreadyInstalled\\(\\) should return array but returns bool\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Console/Plugin/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
-	'identifier' => 'assign.propertyType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Console/Plugin/InstallCommand.php',
 ];
@@ -4457,42 +4391,6 @@ $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 2,
-	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method SavedSearch\\:\\:croncountAll\\(\\) with return type void returns int but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Return type \\(void\\) of method SavedSearch\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
-	'identifier' => 'method.childReturnType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method SavedSearch_Alert\\:\\:showForSavedSearch\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch_Alert.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch_Alert.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
-	'identifier' => 'deadCode.unreachable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch_User.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 2,
 	'path' => __DIR__ . '/src/Search.php',
 ];
 $ignoreErrors[] = [
@@ -4649,18 +4547,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method Session\\:\\:loadLanguage\\(\\) with return type void returns mixed but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept false\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Session.php',
 ];
 $ignoreErrors[] = [
