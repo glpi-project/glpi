@@ -232,7 +232,7 @@ describe('Actor form question type', () => {
             .click();
 
         // Submit the form
-        cy.findByRole('button', { 'name': 'Send form' }).click();
+        cy.findByRole('button', { 'name': 'Submit' }).click();
 
         // Check the form was submitted
         cy.checkAndCloseAlert('Item successfully created');
@@ -248,7 +248,7 @@ describe('Actor form question type', () => {
             .click();
 
         // Submit the form
-        cy.findByRole('button', { 'name': 'Send form' }).click();
+        cy.findByRole('button', { 'name': 'Submit' }).click();
 
         // Check the form was submitted
         cy.checkAndCloseAlert('Item successfully created');

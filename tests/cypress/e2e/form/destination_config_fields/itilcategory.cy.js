@@ -123,7 +123,7 @@ describe('ITILCategory configuration', () => {
         ;
 
         // Fill the form
-        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 
         // Check ticket values

@@ -103,7 +103,7 @@ describe('Request type configuration', () => {
         // Fill form
         cy.getDropdownByLabelText("My request type question").should('have.text', 'Incident');
         cy.getDropdownByLabelText("My request type question").selectDropdownValue('Request');
-        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 
         // Check ticket values

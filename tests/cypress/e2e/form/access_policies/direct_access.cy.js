@@ -260,7 +260,7 @@ describe('Form access policy', () => {
                 cy.visit(direct_access_url);
                 cy.findByRole('heading', { 'name': 'Form title' }).should('exist');
                 cy.findByRole('textbox', { 'name': 'Question 1' }).type('My answer');
-                cy.findByRole('button', { 'name': 'Send form' }).click();
+                cy.findByRole('button', { 'name': 'Submit' }).click();
                 cy.findByRole('alert').should('contain.text', 'Item successfully created');
             })
         ;

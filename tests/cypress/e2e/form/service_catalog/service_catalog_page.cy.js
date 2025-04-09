@@ -314,7 +314,7 @@ describe('Service catalog page', () => {
 
         // Submit the form
         cy.findByRole('textbox', {'name': 'Question 1'}).type('Answer 1');
-        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('alert')
             .should('contain.text', 'Item successfully created')
         ;

@@ -67,7 +67,7 @@ describe('Title configuration', () => {
 
         // Fill form
         cy.findByRole('textbox', {'name': "What is your name ?"}).type("John doe");
-        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('link', {'name': 'My form name'}).click();
 
         // Check ticket values, default name should be the form name
