@@ -2005,3 +2005,20 @@ document.addEventListener('hidden.bs.modal', (e) => {
         modal.setAttribute('data-cy-shown', 'false');
     }
 });
+
+// Ignore specific keyup events
+document.addEventListener('keyup', (e) => {
+    const potential_target = e.target.closest('[data-glpi-prevent-keyup]');
+    if (potential_target) {
+        // Values are stored like this: <input data-glpi-prevent-keyup="a,b,c">
+        // Note: since "," is the separator, this listener can't be used for the
+        // "," key at this time (but we could use a special token if the need
+        // arise).
+        const raw_keys = potential_target.dataset.glpiPreventKeyup;
+        const keys = raw_keys.split(',');
+
+        if (keys.indexOf(e.key) !== -1) {
+            e.preventDefault();
+        }
+    }
+});

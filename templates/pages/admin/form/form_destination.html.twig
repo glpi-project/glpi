@@ -119,6 +119,7 @@
                                 data-bs-toggle="collapse"
                                 data-bs-target=""
                                 data-glpi-form-destination-name
+                                data-glpi-prevent-keyup=" " {# Ignore keyup on space to prevent the accordion from being toggled #}
                             />
                             <div data-glpi-editor-destination-badges-container>
                                 {% set selected_strategy = destination.getConfiguredCreationStrategy() %}
