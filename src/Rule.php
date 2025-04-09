@@ -1080,9 +1080,9 @@ class Rule extends CommonDBTM
                  || in_array('append_regex_result', $val['force_actions']))
             ) {
                 echo "<table class='tab_cadre_fixe'>";
-                echo "<tr class='tab_bg_2'><td>" .
+                echo "<tr class='tab_bg_2'><td><div class='alert alert-info'>" .
                   __('It is possible to affect the result of a regular expression using the string #0') .
-                 "</td></tr>\n";
+                 "</div></td></tr>\n";
                 echo "</table><br>";
                 return;
             }
