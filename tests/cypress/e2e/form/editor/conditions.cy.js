@@ -278,7 +278,7 @@ function validateSectionOrder(sections) {
 
         if (i + 1 === sections.length) {
             // Last section, do not submit form
-            cy.findByRole('button', {'name': "Send form"}).should('be.visible');
+            cy.findByRole('button', {'name': "Submit"}).should('be.visible');
         } else {
             // Any other section, go to next.
             cy.findByRole('button', {'name': "Continue"}).click();

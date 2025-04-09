@@ -133,7 +133,7 @@ describe('Validation configuration', () => {
             cy.getDropdownByLabelText("My Assignee question").selectDropdownValue(`Validation configuration test group - ${form_id}`);
             cy.getDropdownByLabelText("My User question").selectDropdownValue(`Validation configuration test user - ${form_id}`);
         });
-        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 
         // Check ticket values

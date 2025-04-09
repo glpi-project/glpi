@@ -188,7 +188,7 @@ describe('Actors configuration', () => {
                 cy.findByRole('link', { 'name': "Preview" })
                     .invoke('removeAttr', 'target')
                     .click();
-                cy.findByRole('button', { 'name': 'Send form' }).click();
+                cy.findByRole('button', { 'name': 'Submit' }).click();
                 cy.findByRole('link', { 'name': 'My test form' }).click();
 
                 // Verify actor in ticket

@@ -58,7 +58,7 @@ function testDefaultForm({ profile, formId }) {
     cy.findByRole('textbox', { name: "Title" }).type("My title");
     cy.findByLabelText("Description").awaitTinyMCE().type("My description");
 
-    cy.findByRole('button', { name: "Send form" }).click();
+    cy.findByRole('button', { name: "Submit" }).click();
     cy.findByRole('alert').should('contain.text', 'Item successfully created');
 
     cy.findByRole('alert')

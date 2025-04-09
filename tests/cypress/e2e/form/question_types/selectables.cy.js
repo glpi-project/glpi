@@ -112,7 +112,7 @@ describe('Selectable form question types', () => {
             cy.findByRole('radio', { name: 'Option 1' }).should('not.be.checked');
 
             // Submit the form
-            cy.findByRole("button", { name: "Send form" }).click();
+            cy.findByRole("button", { name: "Submit" }).click();
 
             // Check if the success message is displayed
             cy.findByRole('alert').should('exist').should('contain.text', 'Item successfully created')
@@ -191,7 +191,7 @@ describe('Selectable form question types', () => {
             cy.findByRole('checkbox', { name: 'Option 1' }).should('be.checked');
 
             // Submit the form
-            cy.findByRole("button", { name: "Send form" }).click();
+            cy.findByRole("button", { name: "Submit" }).click();
 
             // Check if the success message is displayed
             cy.findByRole('alert').should('exist').should('contain.text', 'Item successfully created')
