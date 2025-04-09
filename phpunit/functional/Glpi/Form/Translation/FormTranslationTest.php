@@ -126,6 +126,31 @@ class FormTranslationTest extends \DbTestCase
         }
     }
 
+    public function testListTranslationHandlersFromFormWithHorizontalLayout(): void
+    {
+        $form_builder = (new FormBuilder())
+            ->addQuestion(
+                name: 'First question in first section',
+                type: QuestionTypeShortText::class,
+                horizontal_rank: 0,
+            )
+            ->addQuestion(
+                name: 'Second question in first section',
+                type: QuestionTypeShortText::class,
+                horizontal_rank: 1,
+            )
+            ->addQuestion(
+                name: 'Third question in first section',
+                type: QuestionTypeShortText::class,
+                horizontal_rank: 2,
+            );
+        $form = $this->createForm($form_builder);
+        $this->assertCount(
+            4, // Form name + 3 question titles
+            $form->listTranslationsHandlers()
+        );
+    }
+
     public function createFormWithTranslations(): Form
     {
         $form_builder = (new FormBuilder())

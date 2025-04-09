@@ -389,6 +389,7 @@ class FormBuilder
         ?string $extra_data = "",
         string $description = "",
         bool $is_mandatory = false,
+        ?int $horizontal_rank = null,
     ): self {
         // Add first section if missing
         if (empty($this->sections)) {
@@ -397,12 +398,13 @@ class FormBuilder
 
         // Add question into last section
         $this->sections[count($this->sections) - 1]['questions'][] = [
-            'name'          => $name,
-            'type'          => $type,
-            'default_value' => $default_value,
-            'extra_data'    => $extra_data,
-            'description'   => $description,
-            'is_mandatory'  => $is_mandatory,
+            'name'            => $name,
+            'type'            => $type,
+            'default_value'   => $default_value,
+            'extra_data'      => $extra_data,
+            'description'     => $description,
+            'is_mandatory'    => $is_mandatory,
+            'horizontal_rank' => $horizontal_rank,
         ];
 
         return $this;
