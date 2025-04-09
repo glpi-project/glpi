@@ -37,12 +37,14 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
+use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
+use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Plugin\Hooks;
 
 /**
  * Entity class
  */
-class Entity extends CommonTreeDropdown
+class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 {
     use Glpi\Features\Clonable;
     use MapGeolocation;
@@ -528,6 +530,7 @@ class Entity extends CommonTreeDropdown
                         $ong[7] = self::createTabEntry(__('UI customization'), 0, $item::class, 'ti ti-palette');
                     }
                     $ong[8] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
+                    $ong[9] = self::createTabEntry(__('Helpdesk home'), 0, $item::class, 'ti ti-home');
 
                     return $ong;
             }
@@ -571,6 +574,9 @@ class Entity extends CommonTreeDropdown
                     break;
                 case 8:
                     self::showSecurityOptions($item);
+                    break;
+                case 9:
+                    $item->showHelpdeskHomeConfig();
                     break;
             }
         }
@@ -3119,5 +3125,51 @@ class Entity extends CommonTreeDropdown
         $select_tree($entitiestree);
 
         return $entitiestree;
+    }
+
+    public function showHelpdeskHomeConfig(): bool
+    {
+        $tiles_manager = new TilesManager();
+
+        if (
+            // Is not root entity
+            $this->getId() !== 0
+            // Editable
+            && static::canUpdate()
+            && $this->canUpdateItem()
+            // Has no tiles
+            && count($tiles_manager->getTilesForItem($this)) === 0
+        ) {
+            // Render a custom template when there are no tiles as we want the
+            // user to preview the tiles from the parent entities and to be able
+            // to copy them into the current entity if needed.
+            $twig = TemplateRenderer::getInstance();
+            $twig->display(
+                'pages/admin/helpdesk_home_config_for_empty_entity.html.twig',
+                [
+                    'tiles_manager' => $tiles_manager,
+                    'itemtype_item' => static::class,
+                    'items_id_item' => $this->getID(),
+                    'info_text'     => $this->getConfigInformationText(),
+                    'parent_tiles'  => $tiles_manager->getTilesForEntityRecursive($this)
+                ]
+            );
+        } else {
+            $tiles_manager->showConfigFormForItem($this);
+        }
+
+        return true;
+    }
+
+    #[Override]
+    public function acceptTiles(): bool
+    {
+        return true;
+    }
+
+    #[Override]
+    public function getConfigInformationText(): ?string
+    {
+        return __("Tiles may be overriden by profile.");
     }
 }
