@@ -72,7 +72,7 @@ try {
     );
 
     Session::addMessageAfterRedirect(
-        __('An unexpected error occured.'),
+        __('An unexpected error occurred'),
         false,
         ERROR
     );
