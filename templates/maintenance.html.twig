@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set title = __('MAINTENANCE MODE') %}
+
 {% extends 'layout/page_card_notlogged.html.twig' %}
 
 {% block content_block %}
@@ -44,6 +46,7 @@
             {{ __('Sorry for the inconvenience but we’re performing some maintenance at the moment. We’ll be back online shortly!') }}
          </p>
 
+         {% set maintenance_text = config('maintenance_text') %}
          {% if maintenance_text|length %}
             <div class="alert alert-warning mt-4">
                {{ maintenance_text }}

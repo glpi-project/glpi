@@ -44,13 +44,13 @@
                     </form>
                 {% endif %}
                 {% if not core_requirements.hasMissingMandatoryRequirements() %}
-                    {% if not outdated %}
-                        <form method="post" action="{{ path('install/update.php') }}">
+                    {% if not is_outdated %}
+                        <form method="post" action="{{ path('install/update.php') }}" class="p-2">
                             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-                            {% if not stable_release %}
-                                {{ agree_unstable|raw }}
+                            {% if not is_stable_release %}
+                                {% include 'install/agree_unstable.html.twig' with {'is_dev': is_dev_version} only %}
                             {% endif %}
-                            <p class="mt-2 mb-n2 alert alert-important alert-warning">
+                            <p class="my-2 alert alert-important alert-warning">
                                 {{ __('The GLPI codebase has been updated. The update of the GLPI database is necessary.') }}
                             </p>
                             <button type="submit" name="from_update" class="btn btn-primary">

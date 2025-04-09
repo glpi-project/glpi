@@ -42,15 +42,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MaintenanceController extends AbstractController
 {
+    /**
+     * Internal route that displays the "maintenance" page.
+     */
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(): Response
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        return $this->render('maintenance.html.twig', [
-            'title'            => "MAINTENANCE MODE",
-            'maintenance_text' => $CFG_GLPI["maintenance_text"] ?? "",
-        ]);
+        return $this->render('maintenance.html.twig');
     }
 }

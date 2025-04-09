@@ -36,12 +36,19 @@ namespace Glpi\Http\Listener;
 
 use Config;
 use DBmysql;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Controller\InstallController;
 use Glpi\Http\RequestPoliciesTrait;
 use Glpi\Kernel\ListenersPriority;
+use Glpi\System\Requirement\DatabaseTablesEngine;
+use Glpi\System\RequirementsManager;
+use Glpi\Toolbox\VersionParser;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Update;
 
 final class CheckDatabaseStatusListener implements EventSubscriberInterface
 {
@@ -63,7 +70,7 @@ final class CheckDatabaseStatusListener implements EventSubscriberInterface
 
     public function onKernelRequest(RequestEvent $event): void
     {
-        /** @var ?DBmysql $DB */
+        /** @var \DBmysql|null $DB */
         global $DB;
 
         if (!$event->isMainRequest()) {
@@ -104,6 +111,12 @@ final class CheckDatabaseStatusListener implements EventSubscriberInterface
             $exception->setLinkText(__('Try again'));
             $exception->setLinkUrl($event->getRequest()->getRequestUri());
             throw $exception;
+        }
+
+        if (Update::isUpdateMandatory()) {
+            $event->getRequest()->attributes->set('_controller', InstallController::class . '::updateRequired');
+            $event->stopPropagation();
+            return;
         }
     }
 }

@@ -42,6 +42,9 @@ use Glpi\Http\Firewall;
 use Glpi\Progress\ProgressStorage;
 use Glpi\Progress\StoredProgressIndicator;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Glpi\System\Requirement\DatabaseTablesEngine;
+use Glpi\System\RequirementsManager;
+use Glpi\Toolbox\VersionParser;
 use Migration;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -131,5 +134,37 @@ class InstallController extends AbstractController
                 $progress_indicator->fail();
             }
         });
+    }
+
+    /**
+     * Internal route that displays the "update required" page.
+     */
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    public function updateRequired(): Response
+    {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql|null $DB
+         */
+        global $CFG_GLPI, $DB;
+
+        $_SESSION['can_process_update'] = true;
+
+        $requirements = (new RequirementsManager())->getCoreRequirementList($DB);
+        $requirements->add(new DatabaseTablesEngine($DB));
+
+        return $this->render(
+            'install/update.need_update.html.twig',
+            [
+                'core_requirements' => $requirements,
+                'is_stable_release' => VersionParser::isStableRelease(GLPI_VERSION),
+                'is_dev_version'    => VersionParser::isDevVersion(GLPI_VERSION),
+                'is_outdated'       => version_compare(
+                    VersionParser::getNormalizedVersion($CFG_GLPI['version'] ?? '0.0.0-dev'),
+                    VersionParser::getNormalizedVersion(GLPI_VERSION),
+                    '>'
+                )
+            ]
+        );
     }
 }

@@ -83,5 +83,6 @@ final readonly class CheckMaintenanceListener implements EventSubscriberInterfac
         }
 
         $event->getRequest()->attributes->set('_controller', MaintenanceController::class);
+        $event->stopPropagation();
     }
 }

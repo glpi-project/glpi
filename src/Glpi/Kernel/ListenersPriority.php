@@ -60,20 +60,19 @@ final class ListenersPriority
         // Keep the listener on top priority.
         HttpListener\LegacyAssetsListener::class        => 500,
 
+        // This listener will prevent accessing GLPI if the maintenance mode is active.
+        // It must be executed right after the `LegacyAssetsListener`, as nothing more than front-end assets
+        // must be served in this case.
+        HttpListener\CheckMaintenanceListener::class    => 490,
+
         // This listener will ensure that the request is made on a secure context (HTTPS) when the
         // cookies are available only on a secure context (`session.cookie_secure=on`).
         // It must be executed before trying to serve any statefull endpoint.
         HttpListener\SessionCheckCookieListener::class  => 475,
 
-        // This listener will ensure that the database connection is configured and available.
+        // This listener will ensure that the database connection is configured and available, and that database is up-to-date.
         // It must be executed before executing any controller (except controllers related to front-end assets).
         HttpListener\CheckDatabaseStatusListener::class => 450,
-
-        // This listener will ensure that GLPI is not being updated, or does not need a database update.
-        // Must also be executed before other controllers, since it defines its own controller.
-        HttpListener\CheckIfUpdateNeededListener::class => 440,
-
-        HttpListener\CheckMaintenanceListener::class    => 430,
 
         // This listener will forward to the inventory controller any inventory agent requests made on the index endpoint.
         HttpListener\CatchInventoryAgentRequestListener::class => 420,
