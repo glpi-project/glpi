@@ -43,6 +43,10 @@ use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Category;
 use Glpi\Form\Comment;
+use Glpi\Form\Destination\CommonITILField\ContentField;
+use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
+use Glpi\Form\Destination\CommonITILField\TitleField;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Form\Migration\FormMigration;
@@ -1028,5 +1032,129 @@ final class FormMigrationTest extends DbTestCase
             $this->assertEquals(0, $block->fields['vertical_rank']);
             $this->assertEquals($index, $block->fields['horizontal_rank']);
         }
+    }
+
+    public static function provideFormMigrationTagConversion(): iterable
+    {
+        yield 'Single question tag' => [
+            'rawContent'                => 'Question: ##question_9998##',
+            'expectedPatternForTitle' => '/Question: <span[^>]*>#Question: Question for tag tests 1<\/span>/',
+            'expectedPatternForContent' => '/Question: <span[^>]*>#Question: Question for tag tests 1<\/span>/',
+        ];
+
+        yield 'Single answer tag' => [
+            'rawContent'                => 'Answer: ##answer_9998##',
+            'expectedPatternForTitle' => '/Answer: <span[^>]*>#Answer: Question for tag tests 1<\/span>/',
+            'expectedPatternForContent' => '/Answer: <span[^>]*>#Answer: Question for tag tests 1<\/span>/',
+        ];
+
+        yield 'Multiple tags' => [
+            'rawContent'                => 'Q1: ##question_9998## A1: ##answer_9998## Q2: ##question_9999##',
+            'expectedPatternForTitle' => '/Q1: <span[^>]*>#Question: Question for tag tests 1<\/span> A1: <span[^>]*>#Answer: Question for tag tests 1<\/span> Q2: <span[^>]*>#Question: Question for tag tests 2<\/span>/',
+            'expectedPatternForContent' => '/Q1: <span[^>]*>#Question: Question for tag tests 1<\/span> A1: <span[^>]*>#Answer: Question for tag tests 1<\/span> Q2: <span[^>]*>#Question: Question for tag tests 2<\/span>/',
+        ];
+
+        yield 'HTML content with tags' => [
+            'rawContent'                => '<h2>Form</h2><p>Question: ##question_9998##</p><p>Answer: ##answer_9998##</p>',
+            'expectedPatternForTitle'   => '/FormQuestion: <span[^>]*>#Question: Question for tag tests 1<\/span>Answer: <span[^>]*>#Answer: Question for tag tests 1<\/span>/',
+            'expectedPatternForContent' => '/<h2>Form<\/h2><p>Question: <span[^>]*>#Question: Question for tag tests 1<\/span><\/p><p>Answer: <span[^>]*>#Answer: Question for tag tests 1<\/span><\/p>/',
+        ];
+
+        yield 'FULLFORM placeholder' => [
+            'rawContent'                => '##FULLFORM##',
+            'expectedPatternForTitle'   => '/##FULLFORM##/',
+            'expectedPatternForContent' => '/<p><b>1\) <span[^>]*>#Question: Question for tag tests 1<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 1<\/span><br><b>2\) <span[^>]*>#Question: Question for tag tests 2<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 2<\/span><br><\/p>/',
+        ];
+
+        yield 'No tags' => [
+            'rawContent'                => 'Plain text without any tags',
+            'expectedPatternForTitle' => '/^Plain text without any tags$/',
+            'expectedPatternForContent' => '/^Plain text without any tags$/',
+        ];
+    }
+
+    #[DataProvider('provideFormMigrationTagConversion')]
+    public function testFormMigrationTagConversion(string $rawContent, string $expectedPatternForTitle, string $expectedPatternForContent): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Create a test form with simple tags in title and content
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name' => 'Test form migration for tag conversion',
+            ]
+        ));
+        $form_id = $DB->insertId();
+
+        // Insert section for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'name'                        => 'Section for tag tests',
+                'plugin_formcreator_forms_id' => $form_id
+            ]
+        ));
+        $section_id = $DB->insertId();
+
+        // Insert questions that will be referenced by tags
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'id'                             => 9998,                         // Fixed ID to match our test tags
+                'plugin_formcreator_sections_id' => $section_id,
+                'name'                           => 'Question for tag tests 1',
+                'row'                            => 0,
+            ]
+        ));
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'id'                             => 9999,                         // Fixed ID to match our test tags
+                'plugin_formcreator_sections_id' => $section_id,
+                'name'                           => 'Question for tag tests 2',
+                'row'                            => 1,
+            ]
+        ));
+
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_targettickets',
+            [
+                'plugin_formcreator_forms_id' => $form_id,
+                'target_name'                 => $rawContent,
+                'content'                     => $rawContent,
+            ]
+        ));
+
+        // Process migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Verify that the tag conversion worked for both title and content fields
+        /** @var Form $form */
+        $form = getItemByTypeName(Form::class, 'Test form migration for tag conversion');
+        $destination = current($form->getDestinations());
+        /** @var FormDestinationTicket $ticket_destination */
+        $ticket_destination = $destination->getConcreteDestinationItem();
+
+        /** @var SimpleValueConfig $title_config */
+        $title_config = $ticket_destination->getConfigurableFieldByKey(TitleField::getKey())
+            ->getConfig($form, $destination->getConfig());
+        $this->assertMatchesRegularExpression(
+            $expectedPatternForTitle,
+            $title_config->getValue()
+        );
+
+        /** @var SimpleValueConfig $content_config */
+        $content_config = $ticket_destination->getConfigurableFieldByKey(ContentField::getKey())
+            ->getConfig($form, $destination->getConfig());
+        $this->assertMatchesRegularExpression(
+            $expectedPatternForContent,
+            $content_config->getValue()
+        );
     }
 }
