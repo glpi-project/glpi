@@ -1765,4 +1765,86 @@ class CommonDBTMTest extends DbTestCase
         sort($expected_updates);
         $this->assertEquals($expected_updates, $item->updates);
     }
+
+    public function testSkipCheckUnicityWithTemplate()
+    {
+        $this->login();
+
+        // create field unicity rule
+        // for Computer itemtype and name field
+        $field_unicity = new \FieldUnicity();
+        $this->assertGreaterThan(
+            0,
+            $field_unicity->add([
+                'name' => 'name uniqueness',
+                'itemtype' => 'Computer',
+                '_fields' => ['name'],
+                'is_active' => 1,
+                'action_refuse' => 1,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ])
+        );
+
+        //create computer with name should be possible
+        $computer = new \Computer();
+        $this->assertGreaterThan(
+            0,
+            $computers_id = $computer->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ])
+        );
+
+        // check if no error message is set in session
+        $this->hasNoSessionMessages([ERROR]);
+
+        //create template with same name should be possible
+        $template = new \Computer();
+        $this->assertGreaterThan(
+            0,
+            $templates_id = $template->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'is_template' => 1,
+            ])
+        );
+
+        // check if no error message is set in session
+        $this->hasNoSessionMessages([ERROR]);
+
+        // update template with same name should be possible
+        $this->assertTrue(
+            $template->update([
+                'id' => $templates_id,
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'comment' => 'a comment',
+            ])
+        );
+
+        // check if no error message is set in session
+        $this->hasNoSessionMessages([ERROR]);
+
+        //create computer with same name should not be possible (because of first computer)
+        $this->assertFalse(
+            $computer->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ])
+        );
+        $err_msg = "Impossible record for Name = " . __FUNCTION__ . "01<br>Other item exist<br>[<a  href='/glpi/front/computer.form.php?id=" . $computers_id . "'  title=\"" . __FUNCTION__ . "01\">" . __FUNCTION__ . "01</a> - ID: {$computers_id} - Serial number:  - Entity: Root entity &#62; _test_root_entity]";
+        $this->hasSessionMessages(ERROR, [$err_msg]);
+
+        // purge all computer to check if uniqueness is checked against template when creating a new computer
+        $computer->delete(['id' => $computers_id], true);
+
+        //create computer with same name of template should be possible
+        $this->assertGreaterThan(
+            0,
+            $computers_id = $computer->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ])
+        );
+    }
 }
