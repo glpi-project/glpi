@@ -458,7 +458,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
         $assets_count   = 0;
         $software_count = 0;
         $this->assertEquals(
-            '0 software(s) attached to 0 assets',
+            '0 software attached to 0 assets',
             $capacity->getCapacityUsageDescription($class)
         );
 
@@ -489,7 +489,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
             $assets_count++;
 
             $this->assertEquals(
-                sprintf('%d software(s) attached to %d assets', $software_count, $assets_count),
+                sprintf('%d software attached to %d assets', $software_count, $assets_count),
                 $capacity->getCapacityUsageDescription($class)
             );
         }
@@ -521,7 +521,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
             $assets_count++;
 
             $this->assertEquals(
-                sprintf('%d software(s) attached to %d assets', $software_count, $assets_count),
+                sprintf('%d software attached to %d assets', $software_count, $assets_count),
                 $capacity->getCapacityUsageDescription($class)
             );
         }
@@ -551,7 +551,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
             $assets_count++;
 
             $this->assertEquals(
-                sprintf('%d software(s) attached to %d assets', $software_count, $assets_count),
+                sprintf('%d software attached to %d assets', $software_count, $assets_count),
                 $capacity->getCapacityUsageDescription($class)
             );
         }

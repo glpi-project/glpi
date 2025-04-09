@@ -352,7 +352,7 @@ class HasDevicesCapacityTest extends DbTestCase
 
         // Check that the capacity usage description is correct
         $this->assertEquals(
-            '0 component(s) attached to 0 asset(s)',
+            '0 components attached to 0 assets',
             $capacity->getCapacityUsageDescription($definition->getAssetClassName())
         );
 
@@ -368,7 +368,7 @@ class HasDevicesCapacityTest extends DbTestCase
 
         // Check that the capacity usage description is correct
         $this->assertEquals(
-            '0 component(s) attached to 0 asset(s)',
+            '0 components attached to 0 assets',
             $capacity->getCapacityUsageDescription($definition->getAssetClassName())
         );
 
@@ -400,7 +400,7 @@ class HasDevicesCapacityTest extends DbTestCase
 
         // Check that the capacity usage description is correct
         $this->assertEquals(
-            '1 component(s) attached to 1 asset(s)',
+            '1 components attached to 1 assets',
             $capacity->getCapacityUsageDescription($definition->getAssetClassName())
         );
 
@@ -419,7 +419,7 @@ class HasDevicesCapacityTest extends DbTestCase
 
         // Check that the capacity usage description is correct
         $this->assertEquals(
-            '1 component(s) attached to 2 asset(s)',
+            '1 components attached to 2 assets',
             $capacity->getCapacityUsageDescription($definition->getAssetClassName())
         );
 
@@ -438,7 +438,7 @@ class HasDevicesCapacityTest extends DbTestCase
 
         // Check that the capacity usage description is correct
         $this->assertEquals(
-            '2 component(s) attached to 2 asset(s)',
+            '2 components attached to 2 assets',
             $capacity->getCapacityUsageDescription($definition->getAssetClassName())
         );
     }
