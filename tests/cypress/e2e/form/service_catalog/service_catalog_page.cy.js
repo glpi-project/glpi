@@ -493,4 +493,71 @@ describe('Service catalog page', () => {
             ;
         });
     });
+
+    it('can change sort order in the service catalog', () => {
+        const time = (new Date()).getTime();
+        cy.changeProfile('Super-Admin');
+
+        // Create forms with different names
+        createActiveForm(`A form ${time}`);
+        createActiveForm(`C form ${time}`);
+        createActiveForm(`B form ${time}`);
+
+        // Add a question to B form
+        cy.get('@form_id').visitFormTab('Form');
+        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.focused().type('Question 1');
+        cy.findByRole('button', {'name': 'Save'}).click();
+
+        cy.changeProfile('Self-Service', true);
+
+        // Visit and answer to a form to increment popularity
+        cy.visit('/ServiceCatalog');
+        cy.findByPlaceholderText('Search for forms...').as('filter_input');
+        cy.get('@filter_input').type(time);
+        cy.findByRole('region', {'name': `B form ${time}`}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
+        cy.findByRole('alert')
+            .should('contain.text', 'Item successfully created');
+
+        // Go back to the service catalog
+        cy.visit('/ServiceCatalog');
+
+        // Search with time to restrict the results
+        cy.findByPlaceholderText('Search for forms...').as('filter_input');
+        cy.get('@filter_input').type(time);
+
+        // Check the default sort order
+        cy.getDropdownByLabelText('Sort by').findByRole('textbox', {'name': 'Most popular'}).should('exist');
+        cy.findByRole('region', {'name': `Forms`}).within(() => {
+            cy.findAllByRole('link').should('have.length', 3);
+            cy.findAllByRole('link').eq(0).findByRole('heading').contains(`B form ${time}`).should('exist');
+            cy.findAllByRole('link').eq(1).findByRole('heading').contains(`A form ${time}`).should('exist');
+            cy.findAllByRole('link').eq(2).findByRole('heading').contains(`C form ${time}`).should('exist');
+        });
+
+        // Change sort order to "Alphabetical"
+        cy.getDropdownByLabelText('Sort by').selectDropdownValue('Alphabetical');
+
+        // Check the new sort order
+        cy.getDropdownByLabelText('Sort by').findByRole('textbox', {'name': 'Alphabetical'}).should('exist');
+        cy.findByRole('region', {'name': `Forms`}).within(() => {
+            cy.findAllByRole('link').should('have.length', 3);
+            cy.findAllByRole('link').eq(0).findByRole('heading').contains(`A form ${time}`).should('exist');
+            cy.findAllByRole('link').eq(1).findByRole('heading').contains(`B form ${time}`).should('exist');
+            cy.findAllByRole('link').eq(2).findByRole('heading').contains(`C form ${time}`).should('exist');
+        });
+
+        // Change sort order to "Non alphabetical"
+        cy.getDropdownByLabelText('Sort by').selectDropdownValue('Reverse alphabetical');
+
+        // Check the new sort order
+        cy.getDropdownByLabelText('Sort by').findByRole('textbox', {'name': 'Reverse alphabetical'}).should('exist');
+        cy.findByRole('region', {'name': `Forms`}).within(() => {
+            cy.findAllByRole('link').should('have.length', 3);
+            cy.findAllByRole('link').eq(0).findByRole('heading').contains(`C form ${time}`).should('exist');
+            cy.findAllByRole('link').eq(1).findByRole('heading').contains(`B form ${time}`).should('exist');
+            cy.findAllByRole('link').eq(2).findByRole('heading').contains(`A form ${time}`).should('exist');
+        });
+    });
 });

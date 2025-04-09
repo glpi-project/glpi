@@ -30,9 +30,13 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% extends "layout/page_without_tabs.html.twig" %}
 
 {% set container_size = "xl" %}
+
+{% set icons = sort_strategies|map((value) => value.getIcon()) %}
 
 {% block content_title %}
     <div class="d-flex">
@@ -47,9 +51,32 @@
                 </a>
             </li>
         </ol>
-        <div class="ms-auto input-icon">
+        <div class="ms-auto fw-normal d-flex align-items-center">
+            <span class="text-muted me-2 fs-3">
+                {{ __("Sort by: ") }}
+            </span>
+            {{ fields.dropdownArrayField(
+                'sort_strategy',
+                default_sort_strategy,
+                sort_strategies|map((value) => value.getLabel()),
+                '',
+                {
+                    'init'               : false,
+                    'no_label'           : true,
+                    'field_class'        : '',
+                    'mb'                 : '',
+                    'aria_label'         : __('Sort by'),
+                    'templateSelection'  : 'function(data) { return window.GlpiServiceCatalog.getTemplateForSortSelect(data); }',
+                    'templateResult'     : 'function(data) { return window.GlpiServiceCatalog.getTemplateForSortSelect(data); }',
+                    'add_data_attributes': {
+                        'glpi-service-catalog-sort-strategy': '',
+                    },
+                }
+            ) }}
+        </div>
+        <div class="ms-2 input-icon">
             <input
-                class="form-control"
+                class="h-full form-control"
                 placeholder="{{ __("Search for forms...") }}"
                 data-glpi-service-catalog-filter-items
             >
@@ -82,11 +109,16 @@
     </section>
 
     <script>
+
         (async function() {
             const module = await import(
                 "{{ js_path('js/modules/Forms/ServiceCatalogController.js') }}"
             );
-            new module.GlpiFormServiceCatalogController();
+            const icons = {};
+            {% for key, icon in icons %}
+                icons["{{ key|escape('js') }}"] = "{{ icon|escape('js') }}";
+            {% endfor %}
+            window.GlpiServiceCatalog = new module.GlpiFormServiceCatalogController(icons);
         })();
     </script>
 {% endblock content_body %}

@@ -155,12 +155,12 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Assert: forms must be ordered by name
         $this->assertEquals([
+            "BBB",
+            "QQQ",
+            // Categories are always at the top
             "AAA",
             "CCC",
             "ZZZ",
-            // Categories are always at the end
-            "BBB",
-            "QQQ",
         ], $forms_names);
     }
 
@@ -454,9 +454,9 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Assert: only root items must be found
         $this->assertEquals([
+            "Category A",
             "Root form 1",
             "Root form 2",
-            "Category A",
         ], $items_names);
     }
 
@@ -493,8 +493,8 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Assert: only forms and categories inside "Category A" must be found.
         $this->assertEquals([
-            "Form from category A",
             "Category B",
+            "Form from category A",
         ], $items_names);
     }
 

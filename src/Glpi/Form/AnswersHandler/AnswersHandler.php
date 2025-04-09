@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\AnswersHandler;
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Condition\Engine;
@@ -155,7 +156,30 @@ final class AnswersHandler
             $answers_set
         );
 
+        // Increment the form usage counter
+        $this->incrementFormUsageCount($form);
+
         return $answers_set;
+    }
+
+    /**
+     * Increment the usage count of a form
+     *
+     * @param Form $form The form to increment the usage count for
+     *
+     * @return void
+     */
+    protected function incrementFormUsageCount(Form $form): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Note: Using direct DB update prevents race conditions
+        $DB->update(
+            Form::getTable(),
+            ['usage_count' => new QueryExpression('usage_count + 1')],
+            ['id' => $form->getID()]
+        );
     }
 
     /**

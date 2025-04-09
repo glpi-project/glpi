@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,41 +32,27 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\ServiceCatalog;
+namespace Glpi\Form\ServiceCatalog\SortStrategy;
 
-use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Form\Category;
-use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
+use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
 
-final class ItemRequest
+final class AlphabeticalSort extends AbstractSortStrategy
 {
-    public function __construct(
-        public FormAccessParameters $access_parameters,
-        public string $filter = "",
-        public ?Category $category = null,
-        public int $page = 1,
-        public int $items_per_page = ServiceCatalogManager::ITEMS_PER_PAGE,
-        public SortStrategyEnum $sort_strategy = SortStrategyEnum::POPULARITY
-    ) {
+    protected function compareItems(
+        ServiceCatalogItemInterface $a,
+        ServiceCatalogItemInterface $b
+    ): int {
+        // Sort by title alphabetically
+        return $a->getServiceCatalogItemTitle() <=> $b->getServiceCatalogItemTitle();
     }
 
-    public function getFormAccessParameters(): FormAccessParameters
+    public function getLabel(): string
     {
-        return $this->access_parameters;
+        return __('Alphabetical');
     }
 
-    public function getFilter(): string
+    public function getIcon(): string
     {
-        return $this->filter;
-    }
-
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function getSortStrategy(): SortStrategyEnum
-    {
-        return $this->sort_strategy;
+        return 'ti ti-sort-ascending-letters';
     }
 }

@@ -79,6 +79,7 @@ if (!$DB->tableExists('glpi_forms_forms')) {
             `illustration` varchar(255) NOT NULL DEFAULT '',
             `description` longtext,
             `forms_categories_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+            `usage_count` int unsigned NOT NULL DEFAULT '0',
             `date_mod` timestamp NULL DEFAULT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
