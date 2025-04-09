@@ -108,6 +108,7 @@ trait FormTesterTrait
                     'description'       => $question_data['description'],
                     'default_value'     => $question_data['default_value'],
                     'extra_data'        => $question_data['extra_data'],
+                    'horizontal_rank'   => $question_data['horizontal_rank'],
                     'vertical_rank'     => $question_rank++,
                 ], [
                     'default_value', // The default value can be formatted by the question type

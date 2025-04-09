@@ -157,10 +157,13 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
             }
         }
 
-        $blocks_handlers = array_map(
-            fn(ProvideTranslationsInterface $block) => $block->listTranslationsHandlers(),
-            $this->getBlocks()
-        );
+        $blocks_handlers = [];
+        foreach ($this->getBlocks() as $block) {
+            $blocks_to_process = is_array($block) ? $block : [$block];
+            foreach ($blocks_to_process as $b) {
+                $blocks_handlers[] = $b->listTranslationsHandlers();
+            }
+        }
 
         return array_merge($handlers, ...$blocks_handlers);
     }
@@ -170,7 +173,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
      * Block can be a question or a comment
      * Each block implements BlockInterface and extends CommonDBChild
      *
-     * @return array<int, (BlockInterface & CommonDBChild)[]>
+     * @return array<int, (BlockInterface & CommonDBChild)|(BlockInterface & CommonDBChild)[]>
      */
     public function getBlocks(): array
     {
