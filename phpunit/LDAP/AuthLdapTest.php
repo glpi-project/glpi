@@ -2256,6 +2256,7 @@ class AuthLDAPTest extends DbTestCase
         $this->assertGreaterThan(0, $users_id);
 
         // Check the dynamic group is deleted without losing the manual groups
+        $this->assertFalse(\Group_User::isUserInGroup($users_id, $group_id));
         $this->assertTrue(\Group_User::isUserInGroup($users_id, $group2_id));
 
         // Create 2 manual groups
