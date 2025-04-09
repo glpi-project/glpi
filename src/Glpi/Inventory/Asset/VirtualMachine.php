@@ -345,6 +345,7 @@ class VirtualMachine extends InventoryAsset
                                 'agents_id' => $agents_id,
                                 'method'    => 'inventory'
                             ];
+                            $rulesmatched->add($inputrulelog, [], false);
                         }
                     } else {
                         //refused by rules
