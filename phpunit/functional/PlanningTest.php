@@ -325,4 +325,318 @@ class PlanningTest extends \DbTestCase
         $this->assertEquals(__FUNCTION__ . '_not_allday', $events[2]['title']);
         $this->assertFalse($events[2]['allDay'] ?? false);
     }
+
+    /**
+     * Tests the planning cache functionality with PlanningEvent Trait.
+     * (tested with PlanningexternalEvent but work with CommonItilTask as both use the same cache)
+     *
+     * This test verifies the creation and management of planning events and their
+     * cache behavior. It performs the following operations:
+     *
+     * - Creates a group and adds users to it.
+     * - Assigns planning view rights to "Technician" profile.
+     * - Logs in as different users and sets up planning filters.
+     * - Creates an external event and checks for its existence in the cache.
+     * - Ensures that updating an event results in cache invalidation and reloading.
+     *
+     * It asserts the expected number of events and checks cache existence and content
+     * at various stages to verify the correct operation of the planning cache.
+     */
+    public function testPlanningCacheWithPlanningEventTrait() {
+        global $GLPI_CACHE;
+
+        // Create a group named '_group_planning'
+        $group = $this->createItem('Group', [
+            'name'         => '_group_planning',
+            'entities_id'  => $this->getTestRootEntity(true),
+            'is_recursive' => 1,
+        ]);
+
+        // Add two users ('_test_user' and 'tech') to the group
+        foreach (['_test_user', 'tech'] as $username) {
+            $this->createItem('Group_User', [
+                'groups_id' => $group->getID(),
+                'users_id'  => (int)getItemByTypeName('User', $username, true),
+            ]);
+        }
+
+        // Assign planning view rights to the 'Technician' profile
+        $profil_id = getItemByTypeName('Profile', 'Technician', true);
+        $this->assertGreaterThan(0, $profil_id, 'Technician profile not found');
+        \ProfileRight::updateProfileRights($profil_id, [
+            'planning'      => \Planning::READMY + \Planning::READGROUP + \Planning::READALL,
+            'externalevent' => READ + UPDATE + PURGE,
+        ]);
+
+        // Log in as '_test_user'
+        $this->login();
+        \Planning::initSessionForCurrentUser();
+
+        // Add a planning filter by '_group_planning' group
+        \Planning::sendAddGroupForm([
+            'planning_type' => 'group',
+            'groups_id'     => $group->fields['id'],
+        ]);
+
+        // Create an external event associated with _test_user and the group
+        $event = new \PlanningExternalEvent();
+        $event_id = $event->add([
+            'name'      => __FUNCTION__,
+            'text'      => __FUNCTION__,
+            'users_id'  => (int)getItemByTypeName('User', '_test_user', true),
+            'groups_id' => $group->fields['id'],
+            'plan'      => [
+                'begin' => '2020-01-01 00:00:00',
+                'end'   => '2020-01-02 00:00:00',
+            ],
+        ]);
+        $this->assertGreaterThan(0, $event_id, 'Event was not created');
+        $this->assertEquals((int)getItemByTypeName('User', '_test_user', true), $event->fields['users_id']);
+        $this->assertEquals($group->fields['id'], $event->fields['groups_id']);
+
+        // The cache should initially be empty
+        $this->assertFalse($GLPI_CACHE->has(\Planning::PLANNING_CACHE_KEY), 'Planning cache should not exist yet');
+
+        // Fetch planning events (should return two: one for user and one for group)
+        $events = \Planning::constructEventsArray([
+            'start'            => '2020-01-01 00:00:00',
+            'end'              => '2020-01-30 00:00:00',
+            'view_name'        => 'listFull',
+            'force_all_events' => true,
+        ]);
+        $this->assertCount(2, $events, 'Expected two events (user and group)');
+        $this->assertEquals(__FUNCTION__, $events[0]['title']);
+        $this->assertEquals(__FUNCTION__, $events[1]['title']);
+
+        // The cache should now exist
+        $this->assertTrue($GLPI_CACHE->has(\Planning::PLANNING_CACHE_KEY), 'Planning cache should now exist');
+        $planning_items  = $GLPI_CACHE->get(\Planning::PLANNING_CACHE_KEY);
+        $event_cache_key = \PlanningExternalEvent::class . $event_id;
+        $this->assertArrayHasKey($event_cache_key, $planning_items);
+
+        // Log in as "tech" user
+        $this->login('tech', 'tech');
+        \Planning::initSessionForCurrentUser();
+
+        // Apply group planning filter again
+        \Planning::sendAddGroupForm([
+            'planning_type' => 'group',
+            'groups_id'     => $group->fields['id'],
+        ]);
+
+        // The planning cache should still contain the event
+        $this->assertTrue($GLPI_CACHE->has(\Planning::PLANNING_CACHE_KEY));
+        $planning_items = $GLPI_CACHE->get(\Planning::PLANNING_CACHE_KEY);
+        $this->assertArrayHasKey($event_cache_key, $planning_items);
+
+        // "tech" should only see one event (group event only)
+        $events = \Planning::constructEventsArray([
+            'start'            => '2020-01-01 00:00:00',
+            'end'              => '2020-01-30 00:00:00',
+            'view_name'        => 'listFull',
+            'force_all_events' => true,
+        ]);
+        $this->assertCount(1, $events, 'Expected only one event for tech (group only)');
+        $this->assertEquals(__FUNCTION__, $events[0]['title']);
+
+        // Now update the event text
+        $this->login(); // back to _test_user
+        \Planning::initSessionForCurrentUser();
+        $this->assertTrue($event->update([
+            'id'   => $event_id,
+            'text' => 'An update',
+        ]), 'Event update failed');
+
+        // Cache still exists, but the updated event should no longer be in it
+        $this->assertTrue($GLPI_CACHE->has(\Planning::PLANNING_CACHE_KEY));
+        $planning_items = $GLPI_CACHE->get(\Planning::PLANNING_CACHE_KEY);
+        $this->assertArrayNotHasKey($event_cache_key, $planning_items, 'Updated event should be purged from cache');
+
+        // Fetch events again after the update
+        $events = \Planning::constructEventsArray([
+            'start'            => '2020-01-01 00:00:00',
+            'end'              => '2020-01-30 00:00:00',
+            'view_name'        => 'listFull',
+            'force_all_events' => true,
+        ]);
+        $this->assertCount(2, $events, 'Expected two events after update');
+        $this->assertEquals(__FUNCTION__, $events[0]['title']);
+        $this->assertEquals(__FUNCTION__, $events[1]['title']);
+
+        // Final check: event should be back in cache after being reloaded
+        $this->assertTrue($GLPI_CACHE->has(\Planning::PLANNING_CACHE_KEY));
+        $planning_items = $GLPI_CACHE->get(\Planning::PLANNING_CACHE_KEY);
+        $this->assertArrayHasKey($event_cache_key, $planning_items, 'Updated event should now be back in cache');
+
+        // delete ProjectTask
+        $event->delete(['id' => $event_id], true, false);
+        $this->assertFalse($event->getFromDB($event_id), 'ProjectTask was not deleted');
+        // Cache still exists, but the updated event should no longer be in it
+        $this->assertTrue($GLPI_CACHE->has(\Planning::PLANNING_CACHE_KEY));
+        $planning_items = $GLPI_CACHE->get(\Planning::PLANNING_CACHE_KEY);
+        $this->assertArrayNotHasKey($event_cache_key, $planning_items, 'Deleted ProjectTask should be purged from cache');
+    }
+
+    /**
+     * Tests the planning cache functionality with ProjectTask that use PlanningEvent Trait.
+     * but override populatePlanning();
+     *
+     * This test verifies the creation and management of planning events and their
+     * cache behavior. It performs the following operations:
+     *
+     * - Creates a group and adds users to it.
+     * - Assigns planning view rights to "Technician" profile.
+     * - Logs in as different users and sets up planning filters.
+     * - Creates an external event and checks for its existence in the cache.
+     * - Ensures that updating an event results in cache invalidation and reloading.
+     *
+     * It asserts the expected number of events and checks cache existence and content
+     * at various stages to verify the correct operation of the planning cache.
+     */
+    public function testPlanningCacheWithProjectTask() {
+        global $GLPI_CACHE;
+
+        // Create a group named '_group_planning'
+        $group = $this->createItem('Group', [
+            'name'         => '_group_planning',
+            'entities_id'  => $this->getTestRootEntity(true),
+            'is_recursive' => 1,
+        ]);
+
+        // Add two users ('_test_user' and 'tech') to the group
+        foreach (['_test_user', 'tech'] as $username) {
+            $this->createItem('Group_User', [
+                'groups_id' => $group->getID(),
+                'users_id'  => (int)getItemByTypeName('User', $username, true),
+            ]);
+        }
+
+        // Assign planning view rights to the 'Technician' profile
+        $profil_id = getItemByTypeName('Profile', 'Technician', true);
+        $this->assertGreaterThan(0, $profil_id, 'Technician profile not found');
+        \ProfileRight::updateProfileRights($profil_id, [
+            'planning'      => \Planning::READMY + \Planning::READGROUP + \Planning::READALL,
+            'externalevent' => READ + UPDATE + PURGE,
+        ]);
+
+        // Log in as '_test_user'
+        $this->login();
+        \Planning::initSessionForCurrentUser();
+
+        // Add a planning filter by '_group_planning' group
+        \Planning::sendAddGroupForm([
+            'planning_type' => 'group',
+            'groups_id'     => $group->fields['id'],
+        ]);
+
+        // create project
+        $project = new \Project();
+        $project_id = $project->add([
+            'name'              => __FUNCTION__,
+            'content'           => __FUNCTION__,
+        ]);
+        $this->assertGreaterThan(0, $project_id, 'Project was not created');
+
+        // Create an ProjectTask 
+        $project_task = new \ProjectTask();
+        $project_task_id = $project_task->add([
+            'name'              => __FUNCTION__,
+            'content'           => __FUNCTION__,
+            'projects_id'        => $project_id,
+            'users_id'          => (int)getItemByTypeName('User', '_test_user', true),
+            'plan_start_date'   => '2020-01-01 00:00:00',
+            'plan_end_date'     => '2020-01-02 00:00:00',
+        ]);
+        $this->assertGreaterThan(0, $project_task_id, 'ProjectTaskTeam was not created');
+        $this->assertEquals((int)getItemByTypeName('User', '_test_user', true), $project_task->fields['users_id']);
+
+        $team = new \ProjectTaskTeam();
+        $team_id = $team->add([
+            'projecttasks_id'      => $project_task_id,
+            'itemtype'      => \Group::class,
+            'items_id'  => $group->getID(),
+        ]);
+        $this->assertGreaterThan(0, $team_id, 'ProjectTaskTeam was not created');
+        $this->assertEquals($group->getID(), $team->fields['items_id']);
+
+        // The cache should initially be empty
+        $this->assertFalse($GLPI_CACHE->has(\Planning::PLANNING_CACHE_KEY), 'Planning cache should not exist yet');
+
+        $events = \Planning::constructEventsArray([
+            'start'            => '2020-01-01 00:00:00',
+            'end'              => '2020-01-30 00:00:00',
+            'view_name'        => 'listFull',
+            'force_all_events' => true,
+        ]);
+        $this->assertCount(1, $events, 'Expected one events');
+        $this->assertEquals(__FUNCTION__, $events[0]['title']);
+
+        // The cache should now exist
+        $this->assertTrue($GLPI_CACHE->has(\Planning::PLANNING_CACHE_KEY), 'Planning cache should now exist');
+        $planning_items  = $GLPI_CACHE->get(\Planning::PLANNING_CACHE_KEY);
+        $event_cache_key = \ProjectTask::class . $project_task_id;
+        $this->assertArrayHasKey($event_cache_key, $planning_items);
+
+        // Log in as "tech" user
+        $this->login('tech', 'tech');
+        \Planning::initSessionForCurrentUser();
+
+        // Apply group planning filter again
+        \Planning::sendAddGroupForm([
+            'planning_type' => 'group',
+            'groups_id'     => $group->fields['id'],
+        ]);
+
+        // The planning cache should still contain the event
+        $this->assertTrue($GLPI_CACHE->has(\Planning::PLANNING_CACHE_KEY));
+        $planning_items = $GLPI_CACHE->get(\Planning::PLANNING_CACHE_KEY);
+        $this->assertArrayHasKey($event_cache_key, $planning_items);
+
+        // "tech" should only see one event (group event only)
+        $events = \Planning::constructEventsArray([
+            'start'            => '2020-01-01 00:00:00',
+            'end'              => '2020-01-30 00:00:00',
+            'view_name'        => 'listFull',
+            'force_all_events' => true,
+        ]);
+        $this->assertCount(1, $events, 'Expected only one ProjectTask for tech (group only)');
+        $this->assertEquals(__FUNCTION__, $events[0]['title']);
+
+        // Now update the event text
+        $this->login(); // back to _test_user
+        \Planning::initSessionForCurrentUser();
+        $this->assertTrue($project_task->update([
+            'id'        => $project_task_id,
+            'content'   => 'An update',
+        ]), 'Event update failed');
+
+        // Cache still exists, but the updated event should no longer be in it
+        $this->assertTrue($GLPI_CACHE->has(\Planning::PLANNING_CACHE_KEY));
+        $planning_items = $GLPI_CACHE->get(\Planning::PLANNING_CACHE_KEY);
+        $this->assertArrayNotHasKey($event_cache_key, $planning_items, 'Updated ProjectTask should be purged from cache');
+
+        // Fetch events again after the update
+        $events = \Planning::constructEventsArray([
+            'start'            => '2020-01-01 00:00:00',
+            'end'              => '2020-01-30 00:00:00',
+            'view_name'        => 'listFull',
+            'force_all_events' => true,
+        ]);
+        $this->assertCount(1, $events, 'Expected two events after update');
+        $this->assertEquals(__FUNCTION__, $events[0]['title']);
+
+        // Final check: event should be back in cache after being reloaded
+        $this->assertTrue($GLPI_CACHE->has(\Planning::PLANNING_CACHE_KEY));
+        $planning_items = $GLPI_CACHE->get(\Planning::PLANNING_CACHE_KEY);
+        $this->assertArrayHasKey($event_cache_key, $planning_items, 'Updated ProjectTask should now be back in cache');
+
+        // delete ProjectTask
+        $project_task->delete(['id' => $project_task_id], true, false);
+        $this->assertFalse($project_task->getFromDB($project_task_id), 'ProjectTask was not deleted');
+        // Cache still exists, but the updated event should no longer be in it
+        $this->assertTrue($GLPI_CACHE->has(\Planning::PLANNING_CACHE_KEY));
+        $planning_items = $GLPI_CACHE->get(\Planning::PLANNING_CACHE_KEY);
+        $this->assertArrayNotHasKey($event_cache_key, $planning_items, 'Deleted ProjectTask should be purged from cache');
+    }
+
 }

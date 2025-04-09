@@ -76,6 +76,8 @@ class Planning extends CommonGLPI
     const TODO = 1;
     const DONE = 2;
 
+    const PLANNING_CACHE_KEY = 'planning_cache_key';
+
     /**
      * @since 0.85
      *
@@ -2859,6 +2861,30 @@ JAVASCRIPT;
         }
 
         return $calendar_uri;
+    }
+
+    /**
+     * Invalidate planning cache entry for given itemtype / items_id
+     *
+     * @param string $itemtype
+     * @param int    $items_id
+     *
+     * @return void
+     */
+    public static function invalidateCacheEvents(string $itemtype, int $items_id)
+    {
+        /**
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         */
+        global $GLPI_CACHE;
+
+        //invalid cache for related planning entry
+        $planning_items = $GLPI_CACHE->get(Planning::PLANNING_CACHE_KEY);
+        $event_cache_key = $itemtype . $items_id;
+        if (isset($planning_items[$event_cache_key])) {
+            unset($planning_items[$event_cache_key]);
+        }
+        $GLPI_CACHE->set(Planning::PLANNING_CACHE_KEY, $planning_items);
     }
 
     public static function getIcon()

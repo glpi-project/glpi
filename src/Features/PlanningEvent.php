@@ -49,6 +49,7 @@ use Group_User;
 use Html;
 use Planning;
 use PlanningEventCategory;
+use PlanningExternalEvent;
 use PlanningRecall;
 use QueryExpression;
 use Reminder;
@@ -290,6 +291,14 @@ trait PlanningEvent
                 $this->fields["begin"]
             );
         }
+
+        Planning::invalidateCacheEvents(get_called_class(), (int) $this->fields['id']);
+    }
+
+
+    public function post_purgeItem()
+    {
+        Planning::invalidateCacheEvents(self::class, (int) $this->fields["id"]);
     }
 
 
@@ -393,8 +402,9 @@ trait PlanningEvent
         /**
          * @var array $CFG_GLPI
          * @var \DBmysql $DB
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
          */
-        global $CFG_GLPI, $DB;
+        global $CFG_GLPI, $DB,$GLPI_CACHE;
 
         $default_options = [
             'genical'             => false,
@@ -558,6 +568,8 @@ trait PlanningEvent
 
         $events_toadd = [];
 
+        $planning_items = $GLPI_CACHE->get(Planning::PLANNING_CACHE_KEY);
+
         if (count($iterator)) {
             foreach ($iterator as $data) {
                 if ($event_obj->getFromDB($data["id"]) && $event_obj->canViewItem()) {
@@ -576,6 +588,18 @@ trait PlanningEvent
                     static::getFormURLWithID($data['id'], false);
 
                     $is_rrule = isset($data['rrule']) && strlen($data['rrule']) > 0;
+
+                    // compute event cache_key, check if event is already in cache and get it if exists
+                    // exclude events with rrule (to be computed later)
+                    $event_cache_key = $itemtype . $data["id"];
+                    if (isset($planning_items[$event_cache_key]) && !$is_rrule) {
+                        // if event is already in cache, we need to compute some data
+                        $planning_items[$event_cache_key]['editable']           = $event_obj->canUpdateItem();
+                        $planning_items[$event_cache_key]['begin']              = !$is_rrule && (strcmp($begin, $data["begin"]) > 0) ? $begin : $data["begin"];
+                        $planning_items[$event_cache_key]['end']                = !$is_rrule && (strcmp($end, $data["end"]) < 0) ? $end : $data["end"];
+                        $events[$key] = $planning_items[$event_cache_key];
+                        continue;
+                    }
 
                     $events[$key] = [
                         'color'            => $options['color'],
@@ -608,6 +632,9 @@ trait PlanningEvent
                                           ? json_decode($data['rrule'], true)
                                           : []
                     ];
+
+                    // add event to cache
+                    $planning_items[$event_cache_key] = $events[$key];
 
                     // when checking avaibility, we need to explode rrules events
                     // to check if future occurences of the primary event
@@ -646,6 +673,7 @@ trait PlanningEvent
                     }
                 }
             }
+            $GLPI_CACHE->set(Planning::PLANNING_CACHE_KEY, $planning_items);
         }
 
         if (count($events_toadd)) {
