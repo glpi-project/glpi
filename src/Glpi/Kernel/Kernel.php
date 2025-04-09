@@ -103,8 +103,15 @@ final class Kernel extends BaseKernel
         $bundles[] = new FrameworkBundle();
 
         if ($this->environment === 'development') {
-            $bundles[] = new WebProfilerBundle();
-            $bundles[] = new TwigBundle();
+            $dev_bundles_classes = [
+                WebProfilerBundle::class,
+                TwigBundle::class,
+            ];
+            foreach ($dev_bundles_classes as $bundle_class) {
+                if (\class_exists($bundle_class)) {
+                    $bundles[] = new $bundle_class();
+                }
+            }
         }
 
         return $bundles;
