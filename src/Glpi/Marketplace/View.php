@@ -278,10 +278,6 @@ class View extends CommonGLPI
      * @return string url to the plugins logo or empty string
      */
    protected static function getLogoUrl(array $apidata, string $key): string {
-      // Check if a logo URL is provided from an online resource
-      if (isset($apidata['logo_url'])) {
-          return $apidata['logo_url'];
-      }
 
       // Relative path to the plugin directory (used for HTML rendering)
       $pluginPath = '../plugins/' . $key . '/';
@@ -301,9 +297,15 @@ class View extends CommonGLPI
          return $pluginPath . 'icon.png';
       }
 
+      // Check if a logo URL is provided from an online resource
+      // At least to prevent internet access if not needed
+      if (isset($apidata['logo_url'])) {
+            return $apidata['logo_url'];
+      }
+
       // No logo found, return an empty string
       return '';
-   }
+    }
 
    /**
      * Checks whether an image file exists, is readable, and is a valid image.
