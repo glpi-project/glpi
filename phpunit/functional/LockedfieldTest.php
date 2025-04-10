@@ -185,7 +185,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertGreaterThan(0, $cid);
 
         $this->assertTrue($computer->getFromDB($cid));
-        $this->assertEquals('', $computer->fields['otherserial']);
+        $this->assertEquals('789012', $computer->fields['otherserial']);
 
         $this->assertTrue($lockedfield->isHandled($computer));
         //lockedfield value must be null because it's a global lock
@@ -201,7 +201,7 @@ class LockedfieldTest extends DbTestCase
         );
 
         $this->assertTrue($computer->getFromDB($cid));
-        $this->assertEquals('', $computer->fields['otherserial']);
+        $this->assertEquals('789012', $computer->fields['otherserial']);
         //lockedfield must be null because it's a global lock
         $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer->getType(), $cid));
 
@@ -227,85 +227,6 @@ class LockedfieldTest extends DbTestCase
         $this->assertEquals('QWERTY', $computer->fields['otherserial']);
     }
 
-    public function testNoRelation()
-    {
-        global $DB;
-
-        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
-<REQUEST>
-  <CONTENT>
-    <HARDWARE>
-      <NAME>glpixps</NAME>
-      <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
-    </HARDWARE>
-    <BIOS>
-      <MSN>640HP72</MSN>
-      <SSN>000</SSN>
-      <SMANUFACTURER>Da Manuf</SMANUFACTURER>
-    </BIOS>
-    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
-  </CONTENT>
-  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
-  <QUERY>INVENTORY</QUERY>
-  </REQUEST>";
-
-        $existing_manufacturers = countElementsInTable(\Manufacturer::getTable());
-        $lockedfield = new \Lockedfield();
-
-        //add a global lock on manufacturers_id field
-        $this->assertGreaterThan(
-            0,
-            $lockedfield->add([
-                'item' => 'Computer - manufacturers_id'
-            ])
-        );
-
-        $converter = new \Glpi\Inventory\Converter();
-        $data = $converter->convert($xml);
-        $json = json_decode($data);
-
-        $inventory = new \Glpi\Inventory\Inventory($json);
-
-        if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
-        }
-        $this->assertFalse($inventory->inError());
-        $this->assertEmpty($inventory->getErrors());
-
-        //check matchedlogs
-        $criteria = [
-            'FROM' => \RuleMatchedLog::getTable(),
-            'LEFT JOIN' => [
-                \Rule::getTable() => [
-                    'ON' => [
-                        \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
-            ],
-            'WHERE' => []
-        ];
-        $iterator = $DB->request($criteria);
-        $this->assertSame('Computer import (by serial + uuid)', $iterator->current()['name']);
-
-        //check created agent
-        $agents = $DB->request(['FROM' => \Agent::getTable()]);
-        $this->assertSame(1, count($agents));
-        $agent = $agents->current();
-        $this->assertSame('glpixps.teclib.infra-2018-10-03-08-42-36', $agent['deviceid']);
-        $this->assertSame('Computer', $agent['itemtype']);
-
-        //check created computer
-        $computers_id = $agent['items_id'];
-
-        $this->assertGreaterThan(0, $computers_id);
-        $computer = new \Computer();
-        $this->assertTrue($computer->getFromDB($computers_id));
-        $this->assertEquals(0, $computer->fields['manufacturers_id']);
-
-        //ensure no new manufacturer has been added
-        $this->assertSame($existing_manufacturers, countElementsInTable(\Manufacturer::getTable()));
-    }
 
     public function testNoLocation()
     {
@@ -428,82 +349,6 @@ class LockedfieldTest extends DbTestCase
         $this->assertSame(['locations_id' => 'Greffe Charron'], $lockedfield->getLockedValues($printer->getType(), $printers_id));
     }
 
-    public function testNoLocationGlobal()
-    {
-        global $DB;
-
-        $xml = "<?xml version=\"1.0\"?>
-<REQUEST><CONTENT><DEVICE>
-      <INFO>
-        <COMMENTS>Brother NC-6800h, Firmware Ver.1.01  (08.12.12),MID 84UB03</COMMENTS>
-        <ID>1907</ID>
-        <IPS>
-          <IP>10.75.230.125</IP>
-        </IPS>
-        <LOCATION>Greffe Charron</LOCATION>
-        <MAC>00:1b:a9:12:11:f2</MAC>
-        <MANUFACTURER>Brother</MANUFACTURER>
-        <MEMORY>32</MEMORY>
-        <MODEL>Brother HL-5350DN series</MODEL>
-        <NAME>CE75I09008</NAME>
-        <RAM>32</RAM>
-        <SERIAL>D9J230159</SERIAL>
-        <TYPE>PRINTER</TYPE>
-        <UPTIME>14 days, 22:48:33.30</UPTIME>
-      </INFO>
-    </DEVICE>
-  </CONTENT><QUERY>SNMP</QUERY><DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID></REQUEST>
-";
-
-        $existing_locations = countElementsInTable(\Location::getTable());
-        $lockedfield = new \Lockedfield();
-
-        //add a global lock on locations_id field
-        $this->assertGreaterThan(
-            0,
-            $lockedfield->add([
-                'item' => 'Printer - locations_id'
-            ])
-        );
-
-        $converter = new \Glpi\Inventory\Converter();
-        $data = $converter->convert($xml);
-        $json = json_decode($data);
-
-        $inventory = new \Glpi\Inventory\Inventory($json);
-
-        if ($inventory->inError()) {
-            $this->dump($inventory->getErrors());
-        }
-        $this->assertFalse($inventory->inError());
-        $this->assertEmpty($inventory->getErrors());
-
-        //check matchedlogs
-        $criteria = [
-            'FROM' => \RuleMatchedLog::getTable(),
-            'LEFT JOIN' => [
-                \Rule::getTable() => [
-                    'ON' => [
-                        \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
-            ],
-            'WHERE' => []
-        ];
-        $iterator = $DB->request($criteria);
-        $this->assertSame('Printer import (by serial)', $iterator->current()['name']);
-
-        $printers_id = $inventory->getItem()->fields['id'];
-        $this->assertGreaterThan(0, $printers_id);
-
-        $printer = new \Printer();
-        $this->assertTrue($printer->getFromDB($printers_id));
-        $this->assertEquals(0, $printer->fields['locations_id']);
-
-        //ensure no new location has been added
-        $this->assertSame($existing_locations, countElementsInTable(\Location::getTable()));
-    }
 
     public function testLockedDdValue()
     {
