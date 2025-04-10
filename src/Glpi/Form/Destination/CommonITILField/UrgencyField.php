@@ -44,6 +44,7 @@ use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
+use Glpi\Message\MessageType;
 use InvalidArgumentException;
 use Override;
 
@@ -152,12 +153,22 @@ class UrgencyField extends AbstractConfigField implements DestinationFieldConver
                     specific_urgency_value: $rawData['urgency_question']
                 );
             case 3: // PluginFormcreatorAbstractItilTarget::URGENCY_RULE_ANSWER
+                $mapped_item = $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    $rawData['urgency_question']
+                );
+
+                if ($mapped_item === null) {
+                    $migration->result->addMessage(MessageType::Error, sprintf(
+                        "Question %d not found in a target form (%s)",
+                        $rawData['urgency_question'],
+                        $form->getName()
+                    ));
+                }
+
                 return new UrgencyFieldConfig(
                     strategy: UrgencyFieldStrategy::SPECIFIC_ANSWER,
-                    specific_question_id: $migration->getMappedItemTarget(
-                        'PluginFormcreatorQuestion',
-                        $rawData['urgency_question']
-                    )['items_id'] ?? 0
+                    specific_question_id: $mapped_item['items_id'] ?? 0
                 );
         }
 

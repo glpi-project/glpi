@@ -46,6 +46,7 @@ use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
+use Glpi\Message\MessageType;
 use Group;
 use InvalidArgumentException;
 use Override;
@@ -279,10 +280,20 @@ class ValidationField extends AbstractConfigField implements DestinationFieldCon
                 case 4: // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_GROUP
                     $question_ids = [];
                     if (is_numeric($rawData['commonitil_validation_question'] ?? null)) {
-                        $question_ids[] = $migration->getMappedItemTarget(
+                        $mapped_item = $migration->getMappedItemTarget(
                             'PluginFormcreatorQuestion',
                             $rawData['commonitil_validation_question']
-                        )['items_id'] ?? 0;
+                        );
+
+                        if ($mapped_item === null) {
+                            $migration->result->addMessage(MessageType::Error, sprintf(
+                                "Question %d not found in a target form (%s)",
+                                $rawData['commonitil_validation_question'],
+                                $form->getName()
+                            ));
+                        }
+
+                        $question_ids[] = $mapped_item['items_id'] ?? 0;
                     }
 
                     return new ValidationFieldConfig(

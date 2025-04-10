@@ -542,7 +542,7 @@ class FormMigration extends AbstractPluginMigration
      */
     private function removeUselessHorizontalRanks(): void
     {
-        $this->progress_indicator?->setProgressBarMessage(__('Removing useless horizontal ranks...'));
+        $this->progress_indicator?->setProgressBarMessage(__('Cleaning imported data...'));
 
         $tables = [Question::getTable(), Comment::getTable()];
 
@@ -600,7 +600,7 @@ class FormMigration extends AbstractPluginMigration
      */
     private function updateHorizontalRanks(): void
     {
-        $this->progress_indicator?->setProgressBarMessage(__('Updating horizontal ranks...'));
+        $this->progress_indicator?->setProgressBarMessage(__('Fixing forms layouts...'));
 
         // Retrieve all blocks with horizontal ranks and their new horizontal ranks
         $blocks = $this->db->request([

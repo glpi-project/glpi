@@ -43,6 +43,7 @@ use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Message\MessageType;
 use Group;
 use InvalidArgumentException;
 use Override;
@@ -232,10 +233,20 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
 
                     if ($strategy === ITILActorFieldStrategy::SPECIFIC_ANSWERS) {
                         foreach ($ids as $id) {
-                            $specific_question_ids[] = $migration->getMappedItemTarget(
+                            $mapped_item = $migration->getMappedItemTarget(
                                 'PluginFormcreatorQuestion',
                                 $id
-                            )['items_id'];
+                            );
+
+                            if ($mapped_item === null) {
+                                $migration->result->addMessage(MessageType::Error, sprintf(
+                                    "Question %d not found in a target form (%s)",
+                                    $id,
+                                    $form->getName()
+                                ));
+                            }
+
+                            $specific_question_ids[] = $mapped_item['items_id'] ?? 0;
                         }
                     }
                 }

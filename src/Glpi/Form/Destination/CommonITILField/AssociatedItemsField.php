@@ -45,6 +45,7 @@ use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
+use Glpi\Message\MessageType;
 use InvalidArgumentException;
 use Override;
 
@@ -272,14 +273,22 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
                         specific_associated_items: json_decode($rawData['associate_items'], true) ?? []
                     );
                 case 3: // PluginFormcreatorAbstractItilTarget::ASSOCIATE_RULE_ANSWER
+                    $mapped_item = $migration->getMappedItemTarget(
+                        'PluginFormcreatorQuestion',
+                        $rawData['associate_question']
+                    );
+
+                    if ($mapped_item === null) {
+                        $migration->result->addMessage(MessageType::Error, sprintf(
+                            "Question %d not found in a target form (%s)",
+                            $rawData['associate_question'],
+                            $form->getName()
+                        ));
+                    }
+
                     return new AssociatedItemsFieldConfig(
                         strategies: [AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS],
-                        specific_question_ids: [
-                            $migration->getMappedItemTarget(
-                                'PluginFormcreatorQuestion',
-                                $rawData['associate_question']
-                            )['items_id']
-                        ],
+                        specific_question_ids: [$mapped_item['items_id'] ?? 0]
                     );
                 case 4: // PluginFormcreatorAbstractItilTarget::ASSOCIATE_RULE_LAST_ANSWER
                     return new AssociatedItemsFieldConfig(

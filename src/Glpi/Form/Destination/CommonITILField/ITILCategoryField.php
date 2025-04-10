@@ -43,6 +43,7 @@ use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Message\MessageType;
 use InvalidArgumentException;
 use ITILCategory;
 use Override;
@@ -142,12 +143,22 @@ class ITILCategoryField extends AbstractConfigField implements DestinationFieldC
                     specific_itilcategory_id: $rawData['category_question']
                 );
             case 3: // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_ANSWER
+                $mapped_item = $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    $rawData['category_question']
+                );
+
+                if ($mapped_item === null) {
+                    $migration->result->addMessage(MessageType::Error, sprintf(
+                        "Question %d not found in a target form (%s)",
+                        $rawData['category_question'],
+                        $form->getName()
+                    ));
+                }
+
                 return new ITILCategoryFieldConfig(
                     strategy: ITILCategoryFieldStrategy::SPECIFIC_ANSWER,
-                    specific_question_id: $migration->getMappedItemTarget(
-                        'PluginFormcreatorQuestion',
-                        $rawData['category_question']
-                    )['items_id'] ?? 0
+                    specific_question_id: $mapped_item['items_id'] ?? 0
                 );
             case 4: // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_LAST_ANSWER
                 return new ITILCategoryFieldConfig(
