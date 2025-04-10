@@ -342,7 +342,8 @@ class PlanningTest extends \DbTestCase
      * It asserts the expected number of events and checks cache existence and content
      * at various stages to verify the correct operation of the planning cache.
      */
-    public function testPlanningCacheWithPlanningEventTrait() {
+    public function testPlanningCacheWithPlanningEventTrait()
+    {
         global $GLPI_CACHE;
 
         // Create a group named '_group_planning'
@@ -493,7 +494,8 @@ class PlanningTest extends \DbTestCase
      * It asserts the expected number of events and checks cache existence and content
      * at various stages to verify the correct operation of the planning cache.
      */
-    public function testPlanningCacheWithProjectTask() {
+    public function testPlanningCacheWithProjectTask()
+    {
         global $GLPI_CACHE;
 
         // Create a group named '_group_planning'
@@ -537,7 +539,7 @@ class PlanningTest extends \DbTestCase
         ]);
         $this->assertGreaterThan(0, $project_id, 'Project was not created');
 
-        // Create an ProjectTask 
+        // Create an ProjectTask
         $project_task = new \ProjectTask();
         $project_task_id = $project_task->add([
             'name'              => __FUNCTION__,
@@ -638,5 +640,4 @@ class PlanningTest extends \DbTestCase
         $planning_items = $GLPI_CACHE->get(\Planning::PLANNING_CACHE_KEY);
         $this->assertArrayNotHasKey($event_cache_key, $planning_items, 'Deleted ProjectTask should be purged from cache');
     }
-
 }
