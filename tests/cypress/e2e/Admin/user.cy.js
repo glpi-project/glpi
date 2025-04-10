@@ -81,7 +81,7 @@ describe('User form', () => {
         cy.findByRole('radio', { name: 'Set as default email' }).should('be.checked');
 
         // Add another email
-        cy.findByRole('generic', { name: 'Add a Emails' }).click();
+        cy.findByRole('generic', { name: 'Add a new Emails' }).click();
         cy.findAllByRole('textbox', { name: 'Email address' }).eq(1).should('be.visible').type('anothertest@test.test');
         cy.findByRole('button', { name: /Save/ }).click();
 
