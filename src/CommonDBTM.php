@@ -1331,8 +1331,6 @@ class CommonDBTM extends CommonGLPI
 
             $this->pre_addInDB();
 
-            // fill array for add
-            $this->cleanLockedsOnAdd();
             foreach (array_keys($this->input) as $key) {
                 if (
                     ($key[0] != '_')
@@ -1769,34 +1767,6 @@ class CommonDBTM extends CommonGLPI
         }
 
         return false;
-    }
-
-    /**
-     * Clean locked fields from add, if needed
-     *
-     * @return void
-     */
-    protected function cleanLockedsOnAdd()
-    {
-        if (isset($this->input['is_dynamic']) && $this->input['is_dynamic'] == true) {
-            $lockedfield = new Lockedfield();
-            $config = Config::getConfigurationValues('inventory');
-            $locks = $lockedfield->getLockedNames($this->getType(), 0);
-            foreach ($locks as $lock) {
-                //bypass for states_id if default value is define from inventory conf
-                if ($lock == 'states_id' && $config['states_id_default']) {
-                    continue;
-                }
-                //bypass for entities_id // default inventory conf is 0 'root entity')
-                if ($lock == 'entities_id') {
-                    continue;
-                }
-
-                if (array_key_exists($lock, $this->input)) {
-                    unset($this->input[$lock]);
-                }
-            }
-        }
     }
 
 
