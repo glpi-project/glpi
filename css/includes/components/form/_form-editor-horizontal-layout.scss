@@ -129,6 +129,14 @@
         }
     }
 
+    :not([data-glpi-form-editor-active-question]), :not([data-glpi-form-editor-active-comment]) {
+        div.col-6, div.col-sm-6 {
+            &:has([name="default_value"], [data-glpi-form-editor-original-name="default_value"]) {
+                width: min(100%, max(50%, 250px));
+            }
+        }
+    }
+
     [data-glpi-form-editor-horizontal-blocks] {
         position: relative;
         display: flex;
