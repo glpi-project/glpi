@@ -41,6 +41,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryUnion;
 
 abstract class CommonItilObject_Item extends CommonDBRelation
@@ -52,7 +53,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
@@ -69,9 +69,23 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         return parent::canCreateItem();
     }
 
+    private function updateItemTCO(): void
+    {
+        $cost_class = match(static::$itemtype_1) {
+            'Ticket' => TicketCost::class,
+            'Change' => ChangeCost::class,
+            'Problem' => ProblemCost::class,
+            default => null
+        };
+        if ($cost_class) {
+            $cost_obj = new $cost_class();
+            $cost_obj->updateTCOItem($this->fields['itemtype'], $this->fields['items_id']);
+        }
+    }
+
     public function post_addItem()
     {
-
+        $this->updateItemTCO();
         $obj = new static::$itemtype_1();
         $input  = [
             'id'            => $this->fields[static::$items_id_1],
@@ -91,7 +105,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
     public function post_purgeItem()
     {
-
+        $this->updateItemTCO();
         $obj = new static::$itemtype_1();
         $input = [
             'id'            => $this->fields[static::$items_id_1],
@@ -106,21 +120,47 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         parent::post_purgeItem();
     }
 
-
     public function prepareInputForAdd($input)
     {
         // Avoid duplicate entry
         if (
             countElementsInTable(
-                $this->getTable(),
+                static::getTable(),
                 [
-                    static::$items_id_1 => $input[static::$items_id_1],
-                    'itemtype'   => $input['itemtype'],
-                    'items_id'   => $input['items_id']
+                    'WHERE' => [
+                        static::$items_id_1 => $input[static::$items_id_1],
+                        static::$itemtype_2   => $input[static::$itemtype_2],
+                        static::$items_id_2   => $input[static::$items_id_2]
+                    ],
+                    'LIMIT' => 1
                 ]
             ) > 0
         ) {
             return false;
+        }
+
+        /** @var CommonITILObject $itil */
+        $itil = new static::$itemtype_1();
+        $item = getItemForItemtype($input["itemtype"]);
+
+        // Process rules based on linked item location if needed
+        if (
+            $itil->getFromDB($input[static::$items_id_1])
+            && empty($itil->fields['locations_id'])
+            && !$itil->isClosed() // Do not allow rules to modify a closed ITIL item
+            && $item->getFromDB($input["items_id"])
+            && $item->maybeLocated()) {
+            $itil->fields['_locations_id_of_item'] = $item->fields['locations_id'];
+
+            $rules = new ($itil::getRuleCollectionClass())($itil->getEntityID());
+            $itil->fields = $rules->processAllRules(
+                $itil->fields,
+                $itil->fields,
+                ['recursive' => true]
+            );
+            unset($itil->fields['_locations_id_of_item']);
+            // Update only the location field
+            $itil->updateInDB(['locations_id']);
         }
 
         return parent::prepareInputForAdd($input);
@@ -514,28 +554,111 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         if (!$withtemplate) {
-            $nb = 0;
-            switch ($item->getType()) {
-                case static::$itemtype_1:
-                    if (
-                        ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0)
-                        && (count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]) > 0)
-                    ) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                            $nb = countElementsInTable(
-                                static::getTable(),
-                                [
-                                    static::$items_id_1 => $item->getID(),
-                                    'itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]
-                                ]
-                            );
-                        }
-                        return static::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
-                    }
+            if (!($item instanceof CommonDBTM)) {
+                return '';
             }
+
+            // This tab might be hidden on assets
+            if (in_array($item::class, $CFG_GLPI['asset_types'], true) && !$this->shouldDisplayTabForAsset($item)) {
+                return '';
+            }
+
+            $nb = 0;
+
+            if ($item::class === static::$itemtype_1) {
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    $nb = static::countForMainItem($item);
+                }
+                return static::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class);
+            } else if ($_SESSION['glpishow_count_on_tabs'] && is_subclass_of(static::$itemtype_1, CommonITILObject::class)) {
+                if (in_array($item::class, static::$itemtype_1::getTeamItemtypes(), true)) {
+                    $nb = static::countForActor($item);
+                } else if (Session::haveRight(static::$itemtype_1::$rightname, CommonITILObject::READALL)) {
+                    $nb = static::countForItemAndLinked($item);
+                }
+            } else if ($_SESSION['glpishow_count_on_tabs']) {
+                $nb = static::countForItem($item);
+            }
+            return static::createTabEntry(static::$itemtype_1::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
+    }
+
+    /**
+     * Count number of ITIL objects for the provided item and other items linked to the requested item
+     * @param CommonDBTM $item
+     * @return int
+     * @see Asset_PeripheralAsset
+     * @see static::getLinkedItems()
+     */
+    public static function countForItemAndLinked(CommonDBTM $item)
+    {
+        // Direct links
+        $nb = parent::countForItem($item);
+
+        // Linked items
+        $itil_table = static::$itemtype_1::getTable();
+        $linkeditems = $item->getLinkedItems();
+        foreach ($linkeditems as $type => $ids) {
+            $type_item = getItemForItemtype($type);
+            if (!$type_item) {
+                continue;
+            }
+            // Only count valid links and non-deleted items
+            $criteria = [
+                'INNER JOIN' => [
+                    $itil_table => [
+                        'FKEY' => [
+                            static::getTable() => static::$items_id_1,
+                            $itil_table       => 'id'
+                        ]
+                    ]
+                ],
+                'WHERE' => [
+                    static::$itemtype_2 => $type,
+                    static::$items_id_2 => $ids,
+                ]
+            ];
+            if ($type_item->maybeDeleted()) {
+                $criteria['WHERE']['is_deleted'] = 0;
+            }
+            $nb += countElementsInTable(static::getTable(), $criteria);
+        }
+
+        return $nb;
+    }
+
+    /**
+     * Count number of ITIL objects for the provided actor item (user, group, etc)
+     * @param CommonDBTM $item
+     * @return int
+     */
+    protected static function countForActor(CommonDBTM $item): int
+    {
+        /** @var \DBmysql $DB **/
+        global $DB;
+
+        /** @var CommonITILObject $itil */
+        $itil = new static::$itemtype_1();
+        $link_class_prop = strtolower($item::class) . 'linkclass';
+        if (!isset($itil->{$link_class_prop})) {
+            return 0;
+        }
+        $link_table = ($itil->{$link_class_prop})::getTable();
+        $result = $DB->request([
+            'SELECT' => [
+                QueryFunction::count($itil::getForeignKeyField(), true, 'cpt')
+            ],
+            'FROM'   => $link_table,
+            'WHERE'  => [
+                $item->getForeignKeyField()   => $item->fields['id']
+            ]
+        ])->current();
+        return $result['cpt'] ?? 0;
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

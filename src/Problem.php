@@ -60,9 +60,6 @@ class Problem extends CommonITILObject
     const IMPACT_MASK_FIELD    = 'impact_mask';
     const STATUS_MATRIX_FIELD  = 'problem_status';
 
-    const READMY               = 1;
-    const READALL              = 1024;
-
 
     /**
      * Name of the type
