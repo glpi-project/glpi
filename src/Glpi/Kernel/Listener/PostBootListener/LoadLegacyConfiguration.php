@@ -32,22 +32,41 @@
  * ---------------------------------------------------------------------
  */
 
-declare(strict_types=1);
+namespace Glpi\Kernel\Listener\PostBootListener;
 
-namespace Glpi\Controller;
+use Config;
+use Glpi\Debug\Profiler;
+use Glpi\Kernel\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-use Glpi\Http\Firewall;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Response;
-
-class MaintenanceController extends AbstractController
+final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
 {
-    /**
-     * Internal route that displays the "maintenance" page.
-     */
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    public function __invoke(): Response
+    public static function getSubscribedEvents(): array
     {
-        return $this->render('maintenance.html.twig');
+        return [
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onPostBoot(): void
+    {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        Profiler::getInstance()->start('LoadLegacyConfiguration::execute', Profiler::CATEGORY_BOOT);
+
+        Config::loadLegacyConfiguration();
+
+        // Copy the configuration defaults to the session
+        foreach ($CFG_GLPI['user_pref_field'] as $field) {
+            if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
+                $_SESSION["glpi$field"] = $CFG_GLPI[$field];
+            }
+        }
+
+        Profiler::getInstance()->stop('LoadLegacyConfiguration::execute');
     }
 }

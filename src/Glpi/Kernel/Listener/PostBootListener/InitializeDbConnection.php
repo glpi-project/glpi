@@ -32,22 +32,35 @@
  * ---------------------------------------------------------------------
  */
 
-declare(strict_types=1);
+namespace Glpi\Kernel\Listener\PostBootListener;
 
-namespace Glpi\Controller;
+use DBConnection;
+use Glpi\Debug\Profiler;
+use Glpi\Kernel\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-use Glpi\Http\Firewall;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Response;
-
-class MaintenanceController extends AbstractController
+final readonly class InitializeDbConnection implements EventSubscriberInterface
 {
-    /**
-     * Internal route that displays the "maintenance" page.
-     */
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    public function __invoke(): Response
+    public static function getSubscribedEvents(): array
     {
-        return $this->render('maintenance.html.twig');
+        return [
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onPostBoot(): void
+    {
+        Profiler::getInstance()->start('InitializeDbConnection::execute', Profiler::CATEGORY_BOOT);
+
+        if (file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
+            include_once(GLPI_CONFIG_DIR . '/config_db.php');
+
+            if (\class_exists('DB', false)) {
+                DBConnection::establishDBConnection(false, false);
+            }
+        }
+
+        Profiler::getInstance()->stop('InitializeDbConnection::execute');
     }
 }
