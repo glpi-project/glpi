@@ -1331,8 +1331,6 @@ class CommonDBTM extends CommonGLPI
 
             $this->pre_addInDB();
 
-            // fill array for add
-            $this->cleanLockedsOnAdd();
             foreach (array_keys($this->input) as $key) {
                 if (
                     ($key[0] != '_')
@@ -1778,6 +1776,8 @@ class CommonDBTM extends CommonGLPI
      */
     protected function cleanLockedsOnAdd()
     {
+        Toolbox::deprecated('Called method is deprecated', true, '11.0');
+
         if (isset($this->input['is_dynamic']) && $this->input['is_dynamic'] == true) {
             $lockedfield = new Lockedfield();
             $config = Config::getConfigurationValues('inventory');
