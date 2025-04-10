@@ -36,6 +36,7 @@ namespace Glpi\Http\Listener;
 
 use Config;
 use DBmysql;
+use Glpi\Controller\InstallController;
 use Glpi\Http\RequestPoliciesTrait;
 use Glpi\Kernel\ListenersPriority;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -75,15 +76,9 @@ final class CheckDatabaseStatusListener implements EventSubscriberInterface
         }
 
         if (!($DB instanceof DBmysql)) {
-            $exception = new \Glpi\Exception\Http\HttpException(500);
-            $exception->setMessageToDisplay(
-                __('The database configuration file is missing or is corrupted. You have to either restart the install process, or restore this file.')
-            );
-            if (file_exists($this->projectDir . '/install/install.php')) {
-                $exception->setLinkText(__('Go to install page'));
-                $exception->setLinkUrl($event->getRequest()->getBasePath() . '/install/install.php');
-            }
-            throw $exception;
+            $event->getRequest()->attributes->set('_controller', [InstallController::class, 'installRequired']);
+            $event->stopPropagation();
+            return;
         }
 
         if (!$DB->connected) {
