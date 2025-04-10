@@ -36,13 +36,13 @@
 #glpi-destinations-accordion {
     > .accordion-item > .accordion-header > .accordion-button {
         &.collapsed {
-            input[data-glpi-form-destination-name] {
+            input.glpi-form-destination-name {
                 display: none !important;
             }
         }
 
         &:not(.collapsed) {
-            h4[data-glpi-form-destination-name] {
+            span.glpi-form-destination-name {
                 display: none !important;
             }
 
