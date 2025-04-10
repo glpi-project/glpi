@@ -3150,7 +3150,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                     'tiles_manager' => $tiles_manager,
                     'itemtype_item' => static::class,
                     'items_id_item' => $this->getID(),
-                    'info_text'     => $this->getConfigInformationText(),
+                    'info_text'     => $this->getTilesConfigInformationText(),
                     'parent_tiles'  => $tiles_manager->getTilesForEntityRecursive($this)
                 ]
             );
@@ -3168,7 +3168,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
     }
 
     #[Override]
-    public function getConfigInformationText(): ?string
+    public function getTilesConfigInformationText(): ?string
     {
         return __("Tiles may be overriden by profile.");
     }
