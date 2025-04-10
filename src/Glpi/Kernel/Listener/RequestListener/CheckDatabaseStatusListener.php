@@ -39,7 +39,6 @@ use DBmysql;
 use Glpi\Controller\InstallController;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -48,11 +47,6 @@ use Update;
 final class CheckDatabaseStatusListener implements EventSubscriberInterface
 {
     use KernelListenerTrait;
-
-    public function __construct(
-        #[Autowire('%kernel.project_dir%')] private readonly string $projectDir,
-    ) {
-    }
 
     public static function getSubscribedEvents(): array
     {
@@ -97,15 +91,10 @@ final class CheckDatabaseStatusListener implements EventSubscriberInterface
         global $DB;
 
         if (!($DB instanceof DBmysql)) {
-            $exception = new \Glpi\Exception\Http\HttpException(500);
-            $exception->setMessageToDisplay(
-                __('The database configuration file is missing or is corrupted. You have to either restart the install process, or restore this file.')
-            );
-            if (file_exists($this->projectDir . '/install/install.php')) {
-                $exception->setLinkText(__('Go to install page'));
-                $exception->setLinkUrl($event->getRequest()->getBasePath() . '/install/install.php');
-            }
-            throw $exception;
+            // Setting the `_controller` attribute will force Symfony to consider that routing was resolved already.
+            // @see `\Symfony\Component\HttpKernel\EventListener\RouterListener::onKernelRequest()`
+            $event->getRequest()->attributes->set('_controller', [InstallController::class, 'installRequired']);
+            return;
         }
 
         if (!$DB->connected) {
@@ -132,6 +121,7 @@ final class CheckDatabaseStatusListener implements EventSubscriberInterface
             // Setting the `_controller` attribute will force Symfony to consider that routing was resolved already.
             // @see `\Symfony\Component\HttpKernel\EventListener\RouterListener::onKernelRequest()`
             $event->getRequest()->attributes->set('_controller', InstallController::class . '::updateRequired');
+            return;
         }
     }
 }
