@@ -650,6 +650,206 @@ final class EngineTest extends DbTestCase
         }
     }
 
+    public static function circularDependenciesProvider(): iterable
+    {
+        // Simple circular dependency between two questions
+        $form1 = new FormBuilder();
+        $form1->addQuestion("Question A", QuestionTypeShortText::class);
+        $form1->addQuestion("Question B", QuestionTypeShortText::class);
+        $form1->setQuestionVisibility(
+            "Question A",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question B",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::VISIBLE,
+                    'value'          => "",
+                ]
+            ]
+        );
+        $form1->setQuestionVisibility(
+            "Question B",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question A",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::VISIBLE,
+                    'value'          => "",
+                ]
+            ]
+        );
+
+        yield 'direct circular dependency' => [
+            'form' => $form1,
+            'expected_output' => [
+                'questions' => [
+                    'Question A' => false,
+                    'Question B' => false,
+                ],
+            ],
+        ];
+
+        // Complex circular dependency between three questions
+        $form2 = new FormBuilder();
+        $form2->addQuestion("Question X", QuestionTypeShortText::class);
+        $form2->addQuestion("Question Y", QuestionTypeShortText::class);
+        $form2->addQuestion("Question Z", QuestionTypeShortText::class);
+        $form2->setQuestionVisibility(
+            "Question X",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question Y",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::VISIBLE,
+                    'value'          => "",
+                ]
+            ]
+        );
+        $form2->setQuestionVisibility(
+            "Question Y",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question Z",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::VISIBLE,
+                    'value'          => "",
+                ]
+            ]
+        );
+        $form2->setQuestionVisibility(
+            "Question Z",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question X",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::VISIBLE,
+                    'value'          => "",
+                ]
+            ]
+        );
+
+        yield 'transitive circular dependency' => [
+            'form' => $form2,
+            'expected_output' => [
+                'questions' => [
+                    'Question X' => false,
+                    'Question Y' => false,
+                    'Question Z' => false,
+                ],
+            ],
+        ];
+
+        // Mixed circular dependencies with comments and sections
+        $form3 = new FormBuilder();
+        $form3->addQuestion("Question 1", QuestionTypeShortText::class);
+        $form3->addComment("Comment 1");
+        $form3->addSection("Section 1");
+        $form3->setQuestionVisibility(
+            "Question 1",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Comment 1",
+                    'item_type'      => Type::COMMENT,
+                    'value_operator' => ValueOperator::VISIBLE,
+                    'value'          => "",
+                ]
+            ]
+        );
+        $form3->setCommentVisibility(
+            "Comment 1",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Section 1",
+                    'item_type'      => Type::SECTION,
+                    'value_operator' => ValueOperator::VISIBLE,
+                    'value'          => "",
+                ]
+            ]
+        );
+        $form3->setSectionVisibility(
+            "Section 1",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question 1",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::VISIBLE,
+                    'value'          => "",
+                ]
+            ]
+        );
+
+        yield 'mixed item types circular dependency' => [
+            'form' => $form3,
+            'expected_output' => [
+                'questions' => [
+                    'Question 1' => false,
+                ],
+                'comments' => [
+                    'Comment 1' => false,
+                ],
+                'sections' => [
+                    'Section 1' => false,
+                ],
+            ],
+        ];
+    }
+
+    #[DataProvider('circularDependenciesProvider')]
+    public function testCircularDependencies(
+        FormBuilder $form,
+        array $expected_output
+    ): void {
+        // Arrange: create the form
+        $form = $this->createForm($form);
+        $input = new EngineInput([]);
+
+        // Act: execute visibility engine
+        $engine = new Engine($form, $input);
+        $output = $engine->computeVisibility();
+
+        // Assert: validate output - all items in a circular dependency should be invisible
+        foreach (($expected_output['questions'] ?? []) as $name => $expected_visibility) {
+            $id = $this->getQuestionId($form, $name);
+            $this->assertEquals(
+                $expected_visibility,
+                $output->isQuestionVisible($id),
+                "Question '$name' does not have the expected visibility.",
+            );
+        }
+        foreach (($expected_output['comments'] ?? []) as $name => $expected_visibility) {
+            $id = $this->getCommentId($form, $name);
+            $this->assertEquals(
+                $expected_visibility,
+                $output->isCommentVisible($id),
+                "Comment '$name' does not have the expected visibility.",
+            );
+        }
+        foreach (($expected_output['sections'] ?? []) as $name => $expected_visibility) {
+            $id = $this->getSectionId($form, $name);
+            $this->assertEquals(
+                $expected_visibility,
+                $output->isSectionVisible($id),
+                "Section '$name' does not have the expected visibility.",
+            );
+        }
+    }
+
     /**
      * Transform a simplified raw input that uses questions names by a real
      * EngineInput object with the correct ids.
