@@ -32,49 +32,37 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Helpdesk;
+namespace Glpi\Controller\UI\Illustration;
 
-use Entity;
 use Glpi\Controller\AbstractController;
-use Glpi\Helpdesk\HomePageTabs;
-use Glpi\Helpdesk\Tile\TilesManager;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
-use Session;
-use Symfony\Component\HttpFoundation\Request;
+use Glpi\UI\IllustrationManager;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use User;
 
-final class IndexController extends AbstractController
+final class CustomSceneController extends AbstractController
 {
-    private TilesManager $tiles_manager;
-
-    public function __construct()
-    {
-        $this->tiles_manager = new TilesManager();
+    public function __construct(
+        private IllustrationManager $illustration_manager
+    ) {
     }
 
-    #[SecurityStrategy(Firewall::STRATEGY_HELPDESK_ACCESS)]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     #[Route(
-        "/Helpdesk",
-        name: "glpi_helpdesk_index",
-        methods: "GET"
+        "/UI/Illustration/CustomScene/{id}",
+        name: "glpi_ui_illustration_custom_scene",
+        methods: "GET",
     )]
-    public function __invoke(Request $request): Response
+    public function __invoke(string $id): Response
     {
-        $session_info = Session::getCurrentSessionInfo();
+        $file = $this->illustration_manager->getCustomSceneFile($id);
+        if (!$file) {
+            throw new BadRequestHttpException();
+        }
 
-        $user = User::getById($session_info->getUserId());
-        $entity = Entity::getById($session_info->getCurrentEntityId());
-
-        return $this->render('pages/helpdesk/index.html.twig', [
-            'title' => __("Home"),
-            'menu'  => ['helpdesk-home'],
-            'tiles' => $this->tiles_manager->getVisibleTilesForSession(Session::getCurrentSessionInfo()),
-            'tabs'  => new HomePageTabs(),
-            'password_alert' => $user->getPasswordExpirationMessage(),
-            'entity' => $entity,
-        ]);
+        return new BinaryFileResponse($file);
     }
 }
