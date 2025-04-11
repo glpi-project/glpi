@@ -105,7 +105,9 @@ abstract class CommonITILObject extends CommonDBTM
     const TIMELINE_ORDER_NATURAL = 'natural';
     const TIMELINE_ORDER_REVERSE = 'reverse';
 
-    const SURVEY           = 131072;
+    public const READMY           =      1;
+    public const READALL          =   1024;
+    public const SURVEY           = 131072;
 
     abstract public static function getTaskClass();
 
