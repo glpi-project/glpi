@@ -47,6 +47,7 @@ use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Message\MessageType;
 use InvalidArgumentException;
 use Location;
 use Override;
@@ -189,12 +190,22 @@ final class LocationField extends AbstractConfigField implements DestinationFiel
                         specific_location_id: $rawData['location_question']
                     );
                 case 3: // PluginFormcreatorAbstractItilTarget::LOCATION_RULE_ANSWER
+                    $mapped_item = $migration->getMappedItemTarget(
+                        'PluginFormcreatorQuestion',
+                        $rawData['location_question']
+                    );
+
+                    if ($mapped_item === null) {
+                        $migration->result->addMessage(MessageType::Error, sprintf(
+                            "Question %d not found in a target form (%s)",
+                            $rawData['location_question'],
+                            $form->getName()
+                        ));
+                    }
+
                     return new LocationFieldConfig(
                         strategy: LocationFieldStrategy::SPECIFIC_ANSWER,
-                        specific_question_id: $migration->getMappedItemTarget(
-                            'PluginFormcreatorQuestion',
-                            $rawData['location_question']
-                        )['items_id'],
+                        specific_question_id: $mapped_item['items_id'] ?? 0
                     );
                 case 4: // PluginFormcreatorAbstractItilTarget::LOCATION_RULE_LAST_ANSWER
                     return new LocationFieldConfig(

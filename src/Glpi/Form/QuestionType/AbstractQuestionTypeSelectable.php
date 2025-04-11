@@ -176,10 +176,20 @@ TWIG;
     #[Override]
     public function convertDefaultValue(array $rawData): array
     {
-        $default_values = json_decode($rawData['default_values']) ?? [];
-        $options = json_decode($rawData['values']) ?? [];
+        if (
+            empty($rawData['default_values'])
+            || empty($rawData['values'])
+        ) {
+            return [];
+        }
 
-        if (empty($default_values) && !empty($rawData['default_values'])) {
+        $options = json_decode($rawData['values']);
+        if (empty($options)) {
+            return [];
+        }
+
+        $default_values = json_decode($rawData['default_values']);
+        if ($default_values === null && json_last_error() !== JSON_ERROR_NONE) {
             $default_values = [$rawData['default_values']];
         }
 

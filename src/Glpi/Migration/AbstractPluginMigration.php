@@ -59,7 +59,7 @@ abstract class AbstractPluginMigration
     /**
      * Current execution results.
      */
-    protected PluginMigrationResult $result;
+    public PluginMigrationResult $result;
 
     /**
      * Mapping between plugin items and GLPI core items.
@@ -512,7 +512,7 @@ abstract class AbstractPluginMigration
     /**
      * Return the GLPI core item specs corresponding to the given plugin item.
      *
-     * @return array{itemtype: class-string<\CommonDBTM>, items_id: int}
+     * @return array{itemtype: class-string<\CommonDBTM>, items_id: int}|null
      */
     final public function getMappedItemTarget(string $source_itemtype, int $source_items_id): ?array
     {
