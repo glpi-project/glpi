@@ -182,8 +182,31 @@ class NotificationMailing implements NotificationInterface
 
         $data['attach_documents'] = $options['attach_documents'] ?? $CFG_GLPI['attach_ticket_documents_to_mail'];
 
+        $send_immediately = $options['send_immediately'] ?? false;
+
         $queue = new QueuedNotification();
 
+        // Try sending notification immediately if specified
+        if ($send_immediately) {
+            $data = $queue->prepareInputForAdd($data);
+            if (NotificationEventMailing::send([$data])) {
+                Toolbox::logInFile(
+                    "mail",
+                    sprintf(
+                        __('%1$s: %2$s'),
+                        sprintf(
+                            __('An email to %s was sent immediately'),
+                            $options['to']
+                        ),
+                        $options['subject'] . "\n"
+                    )
+                );
+                return true;
+            }
+            $data['sent_try'] = 1;
+        }
+
+        // Not bypassing queue or the notification could not be sent immediately
         if (!$queue->add($data)) {
             Session::addMessageAfterRedirect(__s('Error inserting email to queue'), true, ERROR);
             return false;
