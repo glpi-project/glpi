@@ -34,14 +34,21 @@
 
 namespace Glpi\Form\Condition;
 
+use Glpi\Form\Comment;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Condition\VisibilityStrategy;
-use Glpi\Form\QuestionType\AbstractQuestionType;
-use RuntimeException;
+use Glpi\Form\Section;
+use LogicException;
 
 final class Engine
 {
+    /**
+     * @var array Track items currently being processed to avoid circular dependencies
+     */
+    private array $processing_stack = [];
+
     public function __construct(
         private Form $form,
         private EngineInput $input,
@@ -98,17 +105,48 @@ final class Engine
 
     private function computeItemVisibility(ConditionableVisibilityInterface $item): bool
     {
-        // Stop immediatly if the strategy result is forced.
-        $strategy = $item->getConfiguredVisibilityStrategy();
-        if ($strategy == VisibilityStrategy::ALWAYS_VISIBLE) {
-            return true;
+        // Detect circular dependencies
+        $item_id = $this->getItemIdentifier($item);
+        if (in_array($item_id, $this->processing_stack)) {
+            // Circular dependency detected, stop processing and return false to avoid infinite loop.
+            return false;
         }
 
-        // Compute the conditions
-        $conditions = $item->getConfiguredConditionsData();
-        $conditions_result = $this->computeConditions($conditions);
+        // Add current item to the processing stack
+        $this->processing_stack[] = $item_id;
 
-        return $strategy->mustBeVisible($conditions_result);
+        try {
+            // Stop immediatly if the strategy result is forced.
+            $strategy = $item->getConfiguredVisibilityStrategy();
+            if ($strategy == VisibilityStrategy::ALWAYS_VISIBLE) {
+                return true;
+            }
+
+            // Compute the conditions
+            $conditions = $item->getConfiguredConditionsData();
+            $conditions_result = $this->computeConditions($conditions);
+
+            return $strategy->mustBeVisible($conditions_result);
+        } finally {
+            // Remove the item from the processing stack when done
+            array_pop($this->processing_stack);
+        }
+    }
+
+    /**
+     * Get a unique identifier for an item to track in the processing stack
+     */
+    private function getItemIdentifier(ConditionableVisibilityInterface $item): string
+    {
+        if ($item instanceof Question) {
+            return 'question_' . $item->getID();
+        } elseif ($item instanceof Comment) {
+            return 'comment_' . $item->getID();
+        } elseif ($item instanceof Section) {
+            return 'section_' . $item->getID();
+        }
+
+        return '';
     }
 
     private function computeDestinationCreation(ConditionableCreationInterface $item): bool
@@ -159,38 +197,57 @@ final class Engine
     {
         // Find relevant answer using the question's id
         $type = $condition->getItemType();
-        if ($type !== Type::QUESTION) {
-            // Only questions can be used as criteria at this time, this should
-            // never happen.
-            throw new RuntimeException("Not supported");
-        }
-        $question = Question::getByUuid($condition->getItemUuid());
-        $answer = $this->input->getAnswers()[$question->getID()] ?? null;
+        switch ($type) {
+            case Type::QUESTION:
+                $question = Question::getByUuid($condition->getItemUuid());
+                $item = $question->getQuestionType();
+                $raw_config = json_decode($question->fields['extra_data'] ?? '', true);
+                $config = $raw_config ? $item->getExtraDataConfig($raw_config) : null;
+                $answer = $this->input->getAnswers()[$question->getID()] ?? null;
 
-        // Fail for questions without an answer.
-        if ($answer === null) {
-            return false;
+                break;
+            case Type::SECTION:
+                $item = Section::getByUuid($condition->getItemUuid());
+                break;
+            case Type::COMMENT:
+                $item = Comment::getByUuid($condition->getItemUuid());
+                break;
+            default:
+                throw new LogicException(sprintf('Unknown type "%s" for condition', $type));
         }
 
-        // Get UsedForConditionInstance
-        $question_type = $question->getQuestionType();
         if (
-            $question_type == null
-            || !is_subclass_of($question_type, UsedAsCriteriaInterface::class)
-            || !is_subclass_of($question_type, AbstractQuestionType::class)
+            $condition->getValueOperator() === ValueOperator::VISIBLE
+            || $condition->getValueOperator() === ValueOperator::NOT_VISIBLE
         ) {
-            // Invalid condition
+            $answer = $this->computeItemVisibility($question ?? $item);
+        }
+
+        if (($answer ?? null) === null) {
             return false;
         }
 
-        // Retrieve the configuration for the question type if any.
-        $config = null;
-        if ($question->fields['extra_data'] != null) {
-            $raw_config = json_decode($question->fields['extra_data'], true);
-            $config = $question_type->getExtraDataConfig($raw_config);
+        $condition_handler = array_filter(
+            $item->getConditionHandlers($config ?? null),
+            fn (ConditionHandlerInterface $handler): bool => in_array(
+                $condition->getValueOperator(),
+                $handler->getSupportedValueOperators(),
+            ),
+        );
+
+        if (count($condition_handler) === 1) {
+            $condition_handler = current($condition_handler);
+        } else {
+            throw new LogicException(
+                sprintf(
+                    'Condition handler not found for item "%s" and operator "%s"',
+                    $item->getName(),
+                    $condition->getValueOperator()->value,
+                ),
+            );
         }
 
-        return $question_type->getConditionHandler($config)->applyValueOperator(
+        return $condition_handler->applyValueOperator(
             $answer,
             $condition->getValueOperator(),
             $condition->getValue(),

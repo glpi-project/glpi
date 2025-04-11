@@ -355,14 +355,14 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
+    ): array {
         if (!$question_config instanceof QuestionTypeItemExtraDataConfig) {
             throw new InvalidArgumentException();
         }
 
-        return new ItemConditionHandler($question_config->getItemtype());
+        return [new ItemConditionHandler($question_config->getItemtype())];
     }
 
     public function exportDynamicDefaultValue(

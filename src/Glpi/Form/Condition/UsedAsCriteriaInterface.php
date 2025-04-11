@@ -42,7 +42,13 @@ use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
  */
 interface UsedAsCriteriaInterface
 {
-    public function getConditionHandler(
+    /**
+     * Get the condition handlers that can be used with this item.
+     *
+     * @param JsonFieldInterface|null $question_config The question config
+     * @return array<ConditionHandlerInterface> The condition handlers
+     */
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface;
+    ): array;
 }

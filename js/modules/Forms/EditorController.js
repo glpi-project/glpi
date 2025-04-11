@@ -2249,6 +2249,30 @@ export class GlpiFormEditorController
      * To render the condition editor, the unsaved state must be computed
      * and sent to the server.
      *
+     * This method compute the available sections of the forms
+     */
+    #getSectionStateForConditionEditor() {
+        this.computeState();
+        const sections = [];
+
+        // Extract all sections
+        $(this.#target)
+            .find("[data-glpi-form-editor-section]")
+            .each((_index, section) => {
+                sections.push({
+                    'uuid': this.#getItemInput($(section), "uuid"),
+                    'name': this.#getItemInput($(section), "name"),
+                });
+            })
+        ;
+
+        return sections;
+    }
+
+    /**
+     * To render the condition editor, the unsaved state must be computed
+     * and sent to the server.
+     *
      * This method compute the available questions of the forms, the defined
      * conditions and the current selected item.
      *
@@ -2274,6 +2298,30 @@ export class GlpiFormEditorController
         return questions;
     }
 
+    /**
+     * To render the condition editor, the unsaved state must be computed
+     * and sent to the server.
+     *
+     * This method compute the available comments of the forms
+     */
+    #getCommentStateForConditionEditor() {
+        this.computeState();
+        const comments = [];
+
+        // Extract all comments
+        $(this.#target)
+            .find("[data-glpi-form-editor-comment]")
+            .each((_index, comment) => {
+                comments.push({
+                    'uuid': this.#getItemInput($(comment), "uuid"),
+                    'name': this.#getItemInput($(comment), "name"),
+                });
+            })
+        ;
+
+        return comments;
+    }
+
     async #renderVisibilityEditor(container) {
         let controller = this.#getConditionEditorController(container);
 
@@ -2295,7 +2343,9 @@ export class GlpiFormEditorController
                 container[0],
                 uuid,
                 type,
+                this.#getSectionStateForConditionEditor(),
                 this.#getQuestionStateForConditionEditor(),
+                this.#getCommentStateForConditionEditor(),
             );
             container.attr(
                 'data-glpi-editor-condition-controller-index',
@@ -2303,8 +2353,10 @@ export class GlpiFormEditorController
             );
             this.#conditions_editors_controllers.push(controller);
         } else {
-            // Refresh question data to make sure it is up to date
+            // Refresh form data to make sure it is up to date
+            controller.setFormSections(this.#getSectionStateForConditionEditor());
             controller.setFormQuestions(this.#getQuestionStateForConditionEditor());
+            controller.setFormComments(this.#getCommentStateForConditionEditor());
         }
 
         controller.renderEditor();

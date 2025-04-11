@@ -438,14 +438,17 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
+    ): array {
         if (!$question_config instanceof QuestionTypeActorsExtraDataConfig) {
             throw new InvalidArgumentException();
         }
 
-        return new ActorConditionHandler($this, $question_config);
+        return array_merge(
+            parent::getConditionHandlers($question_config),
+            [new ActorConditionHandler($this, $question_config)]
+        );
     }
 
     #[Override]
