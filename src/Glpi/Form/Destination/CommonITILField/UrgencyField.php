@@ -159,7 +159,7 @@ final class UrgencyField extends AbstractConfigField implements DestinationField
                     specific_question_id: $migration->getMappedItemTarget(
                         'PluginFormcreatorQuestion',
                         $rawData['urgency_question']
-                    )['items_id']
+                    )['items_id'] ?? 0
                 );
         }
 

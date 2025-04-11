@@ -45,11 +45,14 @@ use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\FormTagsManager;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\SectionTagProvider;
+use Glpi\Form\Migration\TagConversionTrait;
 use InvalidArgumentException;
 use Override;
 
 final class ContentField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
+    use TagConversionTrait;
+
     #[Override]
     public function getLabel(): string
     {
@@ -181,7 +184,8 @@ TWIG;
     public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
     {
         if (isset($rawData['content'])) {
-            return new SimpleValueConfig($rawData['content']);
+            $content = $this->convertLegacyTags($rawData['content'], $migration);
+            return new SimpleValueConfig($content);
         }
 
         return $this->getDefaultConfig($form);
