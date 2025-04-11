@@ -93,33 +93,21 @@
                     class="accordion-item"
                 >
                     <h3 class="accordion-header">
-                        <button
+                        <div
                             class="accordion-button {{ is_expanded ? '' : 'collapsed' }}"
-                            type="button"
+                            role="button"
+                            tabindex="0"
                             data-bs-toggle="collapse"
                             data-bs-target="#glpi-destinations-accordion-collapse-{{ rand }}-{{ loop.index }}"
                             aria-expanded="{{ is_expanded ? 'true' : 'false' }}"
+                            data-glpi-destination-click-on-space {# Simulate how space would behave in a button instead of a div #}
                         >
                             <i class="{{ concrete_destination.getIcon() }} me-2"></i>
-                            <h4
-                                class="m-0"
-                                style="font-weight: inherit;"
-                                data-glpi-form-destination-name
+                            <span
+                                class="m-0 lh-base fw-normal glpi-form-destination-name"
                             >
                                 {{ destination.getName() }}
-                            </h4>
-                            <input
-                                aria-label="{{ __("Form destination name") }}"
-                                type="text"
-                                name="name"
-                                form="form-destination-{{ destination.getID() }}"
-                                value="{{ destination.getName() }}"
-                                class="form-control me-4 fw-normal"
-                                style="font-weight: inherit;"
-                                data-bs-toggle="collapse"
-                                data-bs-target=""
-                                data-glpi-form-destination-name
-                            />
+                            </span>
                             <div data-glpi-editor-destination-badges-container>
                                 {% set selected_strategy = destination.getConfiguredCreationStrategy() %}
                                 {% for strategy in enum_cases('Glpi\\Form\\Condition\\CreationStrategy') %}
@@ -134,7 +122,19 @@
                                     </span>
                                 {% endfor %}
                             </div>
-                        </button>
+                            <input
+                                aria-label="{{ __("Form destination name") }}"
+                                type="text"
+                                name="name"
+                                form="form-destination-{{ destination.getID() }}"
+                                value="{{ destination.getName() }}"
+                                class="form-control me-4 fw-normal glpi-form-destination-name"
+                                style="font-weight: inherit;"
+                                {# Fake collaspe needed to avoid triggering the parent accordion when clicking inside #}
+                                data-bs-toggle="collapse"
+                                data-bs-target=""
+                            />
+                        </div>
                     </h3>
                     <div
                         id="glpi-destinations-accordion-collapse-{{ rand }}-{{ loop.index }}"

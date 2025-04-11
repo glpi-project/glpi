@@ -55,6 +55,20 @@ export class GlpiFormDestinationConditionController {
                 }
             }
         });
+
+        // [data-glpi-destination-click-on-space] should be a button but we can't
+        // because it contains an input.
+        // It is thus a div instead but we want to keep the behavior of pressing
+        // space while focusing this div as a way to toggle the accordion.
+        const divs = document.querySelectorAll('[data-glpi-destination-click-on-space]');
+        for (const div of divs) {
+            div.addEventListener('keyup', (e) => {
+                // Dispatch click event if space is pressed outside of an input
+                if (e.key == " " && e.target.tagName !== "INPUT") {
+                    div.dispatchEvent(new Event("click"));
+                }
+            });
+        }
     }
 
     /**
