@@ -4476,7 +4476,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     #[Override]
-    public function getConfigInformationText(): ?string
+    public function getTilesConfigInformationText(): ?string
     {
         return __("Users with this profile will see the tiles below if defined, overriding the one found in the entities configuration.");
     }

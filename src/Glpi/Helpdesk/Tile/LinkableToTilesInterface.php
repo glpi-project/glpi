@@ -37,5 +37,6 @@ namespace Glpi\Helpdesk\Tile;
 interface LinkableToTilesInterface
 {
     public function acceptTiles(): bool;
-    public function getConfigInformationText(): ?string;
+
+    public function getTilesConfigInformationText(): ?string;
 }
