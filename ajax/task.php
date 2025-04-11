@@ -120,9 +120,5 @@ if ($template->fields['groups_id_tech'] == 0) {
     unset($template->fields['groups_id_tech']);
 }
 
-if ($template->fields['users_id_tech'] == 0) {
-    unset($template->fields['users_id_tech']);
-}
-
 // Return json response with the template fields
 echo json_encode($template->fields);
