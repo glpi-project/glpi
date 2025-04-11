@@ -477,11 +477,11 @@ class Toolbox
      */
     public static function logError()
     {
-        self::deprecated(
+        /*self::deprecated(
             'Use either native trigger_error($msg, E_USER_WARNING) to log errors,'
             . ' either Glpi\\Application\\ErrorHandler::handleException() to log exceptions,'
             . ' either Toolbox::logInfo() or Toolbox::logDebug() to log messages not related to errors.'
-        );
+        );*/
         self::log(null, Logger::ERROR, func_get_args());
     }
 
