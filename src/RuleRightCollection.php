@@ -82,11 +82,9 @@ class RuleRightCollection extends RuleCollection
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center' colspan='4'>" . __('Entities assignment') . "</td>";
             foreach ($output["_ldap_rules"]["rules_entities"] as $entities) {
-                foreach ($entities as $entity) {
-                    $this->displayActionByName("entity", $entity[0]);
-                    if (isset($entity[1])) {
-                        $this->displayActionByName("recursive", $entity[1]);
-                    }
+                $this->displayActionByName("entity", $entities[0]);
+                if (isset($entities[1])) {
+                    $this->displayActionByName("is_recursive", $entities[1]);
                 }
             }
         }
@@ -250,23 +248,28 @@ class RuleRightCollection extends RuleCollection
             $rule_fields = $this->getFieldsToLookFor();
 
            //Get all the data we need from ldap to process the rules
-            $sz = @ldap_read(
-                $params_lower["connection"],
-                $params_lower["userdn"],
-                "objectClass=*",
-                $rule_fields
-            );
-            if ($sz === false) {
-                // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
-                if (ldap_errno($params_lower["connection"]) !== 32) {
-                    trigger_error(
-                        AuthLDAP::buildError(
-                            $params_lower["connection"],
-                            sprintf('Unable to get LDAP user having DN `%s` with filter `%s`', $params_lower["userdn"], 'objectClass=*')
-                        ),
-                        E_USER_WARNING
-                    );
+           if (isset($params_lower["connection"]) && $params_lower["connection"] !== null) {
+                $sz = @ldap_read(
+                    $params_lower["connection"],
+                    $params_lower["userdn"] ?? '',
+                    "objectClass=*",
+                    $rule_fields
+                );
+
+                if ($sz === false) {
+                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                    if (isset($params_lower["connection"]) && ldap_errno($params_lower["connection"]) !== 32) {
+                        trigger_error(
+                            AuthLDAP::buildError(
+                                $params_lower["connection"],
+                                sprintf('Unable to get LDAP user having DN `%s` with filter `%s`', $params_lower["userdn"], 'objectClass=*')
+                            ),
+                            E_USER_WARNING
+                        );
+                    }
+                    return $rule_parameters;
                 }
+            } else {
                 return $rule_parameters;
             }
 
