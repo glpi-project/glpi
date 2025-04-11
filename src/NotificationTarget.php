@@ -448,9 +448,8 @@ class NotificationTarget extends CommonDBChild
                 $label = $this->notification_targets_labels[$type][$id];
                 if (in_array((int) $type, $allowed_exclusion_types, true)) {
                     $all_exclusion_targets[$key] = $label;
-                } else {
-                    $values[$key] = $label;
                 }
+                $values[$key] = $label;
             }
 
             $targets = getAllDataFromTable(
