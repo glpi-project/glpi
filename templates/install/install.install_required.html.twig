@@ -1,0 +1,56 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set title = __('GLPI setup') %}
+
+{% extends 'layout/page_card_notlogged.html.twig' %}
+
+{% block content_block %}
+<div class="flex-fill d-flex align-items-center justify-content-center">
+    <div class="empty p-0">
+        <i class="fas fa-tools fa-3x mb-3"></i>
+
+        <p class="empty-title">{{ __('GLPI setup') }}</p>
+
+        <p class="empty-subtitle">
+            {{ __('The GLPI database must be configured and installed.') }}
+        </p>
+        <div class="empty-action">
+            <a href="{{ path('/install/install.php') }}" class="btn btn-primary">{{ __('Go to install page') }}</a>
+        </div>
+
+        <div class="alert alert-warning mt-4">
+            {{ __('If you see this page when the installation has already been done, it means that the GLPI database configuration file has been removed or corrupted.') }}
+        </div>
+    </div>
+</div>
+{% endblock %}

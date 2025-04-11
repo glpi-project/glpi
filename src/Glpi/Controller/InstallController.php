@@ -132,4 +132,13 @@ class InstallController extends AbstractController
             }
         });
     }
+
+    /**
+     * Internal route that displays the "install required" page.
+     */
+    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
+    public function installRequired(): Response
+    {
+        return $this->render('install/install.install_required.html.twig');
+    }
 }
