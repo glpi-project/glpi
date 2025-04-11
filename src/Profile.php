@@ -166,7 +166,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                         $ong[4] = self::createTabEntry(__('Helpdesk home'), 0, $item::class, 'ti ti-home');
                         $ong[5] = self::createTabEntry(__('Life cycles'));
                         $ong[6] = self::createTabEntry(__('Tools'), 0, $item::class, 'ti ti-briefcase');
-                        $ong[7] = self::createTabEntry(__('Setup'), 0, $item::class, 'ti ti-cog');
+                        $ong[7] = self::createTabEntry(__('Setup'), 0, $item::class, 'ti ti-settings');
                         $ong[8] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
                     } else {
                         $ong[2] = self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), 0, $item::class, 'ti ti-package');
