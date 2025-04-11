@@ -248,7 +248,7 @@ class RuleRightCollection extends RuleCollection
             $rule_fields = $this->getFieldsToLookFor();
 
             //Get all the data we need from ldap to process the rules
-            if (isset($params_lower["connection"]) && $params_lower["connection"] !== null) {
+            if (!empty($params_lower["connection"])) {
                 $sz = @ldap_read(
                     $params_lower["connection"],
                     $params_lower["userdn"],
@@ -258,7 +258,7 @@ class RuleRightCollection extends RuleCollection
 
                 if ($sz === false) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
-                    if (isset($params_lower["connection"]) && ldap_errno($params_lower["connection"]) !== 32) {
+                    if (ldap_errno($params_lower["connection"]) !== 32) {
                         trigger_error(
                             AuthLDAP::buildError(
                                 $params_lower["connection"],
