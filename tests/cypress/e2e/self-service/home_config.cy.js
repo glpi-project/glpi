@@ -142,7 +142,7 @@ for (const test of tests) {
 
             // Save new order
             cy.findByRole('button', {'name': "Save tiles order"}).click();
-            cy.findByRole('alert')
+            cy.findAllByRole('alert')
                 .contains("Configuration updated successfully.")
                 .should('be.visible')
             ;
@@ -161,7 +161,7 @@ for (const test of tests) {
 
             // Validate deletion
             cy.findByRole("region", {'name': "Request a service"}).should('not.exist');
-            cy.findByRole('alert')
+            cy.findAllByRole('alert')
                 .contains("Configuration updated successfully.")
                 .should('be.visible')
             ;
@@ -190,7 +190,7 @@ for (const test of tests) {
 
             // Submit
             cy.findByRole('dialog').findByRole('button', {'name': 'Save changes'}).click();
-            cy.findByRole('alert')
+            cy.findAllByRole('alert')
                 .contains("Configuration updated successfully.")
                 .should('be.visible')
             ;
@@ -219,7 +219,7 @@ for (const test of tests) {
 
             // Submit
             cy.findByRole('dialog').findByRole('button', {'name': 'Add tile'}).click();
-            cy.findByRole('alert')
+            cy.findAllByRole('alert')
                 .contains("Configuration updated successfully.")
                 .should('be.visible')
             ;
@@ -250,7 +250,7 @@ for (const test of tests) {
 
             // Submit
             cy.findByRole('dialog').findByRole('button', {'name': 'Add tile'}).click();
-            cy.findByRole('alert')
+            cy.findAllByRole('alert')
                 .contains("Configuration updated successfully.")
                 .should('be.visible')
             ;
@@ -274,7 +274,7 @@ for (const test of tests) {
 
             // Submit
             cy.findByRole('dialog').findByRole('button', {'name': 'Add tile'}).click();
-            cy.findByRole('alert')
+            cy.findAllByRole('alert')
                 .contains("Configuration updated successfully.")
                 .should('be.visible')
             ;
