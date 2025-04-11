@@ -595,8 +595,8 @@ trait PlanningEvent
                     if (isset($planning_items[$event_cache_key]) && !$is_rrule) {
                         // if event is already in cache, we need to compute some data
                         $planning_items[$event_cache_key]['editable']           = $event_obj->canUpdateItem();
-                        $planning_items[$event_cache_key]['begin']              = (strcmp($begin, $data["begin"]) > 0) ? $begin : $data["begin"];
-                        $planning_items[$event_cache_key]['end']                = (strcmp($end, $data["end"]) < 0) ? $end : $data["end"];
+                        //$planning_items[$event_cache_key]['begin']              = (strcmp($begin, $data["begin"]) > 0) ? $begin : $data["begin"];
+                        //$planning_items[$event_cache_key]['end']                = (strcmp($end, $data["end"]) < 0) ? $end : $data["end"];
                         $events[$key] = $planning_items[$event_cache_key];
                         continue;
                     }
