@@ -324,7 +324,7 @@ TWIG;
                 <input
                     data-glpi-form-editor-specific-question-extra-data
                     type="text"
-                    class="flex-grow-1"
+                    class="flex-grow-1 w-full"
                     style="border: none transparent; outline: none; box-shadow: none;"
                     name="options[{{ uuid }}]"
                     value="{{ value }}"
