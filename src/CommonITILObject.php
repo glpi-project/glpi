@@ -39,6 +39,10 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Event;
+use Glpi\Features\Clonable;
+use Glpi\Features\Kanban;
+use Glpi\Features\Teamwork;
+use Glpi\Features\Timeline;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Plugin\Hooks;
@@ -55,10 +59,10 @@ use Glpi\Team\Team;
  **/
 abstract class CommonITILObject extends CommonDBTM
 {
-    use \Glpi\Features\Clonable;
-    use \Glpi\Features\Timeline;
-    use \Glpi\Features\Kanban;
-    use \Glpi\Features\Teamwork;
+    use Clonable;
+    use Timeline;
+    use Kanban;
+    use Teamwork;
 
    /// Users by type
     protected $lazy_loaded_users = null;
@@ -1863,7 +1867,6 @@ abstract class CommonITILObject extends CommonDBTM
             }
 
             $ret = [];
-
             foreach ($allowed_fields as $field) {
                 if (isset($input[$field])) {
                     $ret[$field] = $input[$field];
@@ -2707,12 +2710,6 @@ abstract class CommonITILObject extends CommonDBTM
         if (in_array("closedate", $this->updates)) {
             $this->updates[]                  = "close_delay_stat";
             $this->fields['close_delay_stat'] = $this->computeCloseDelayStat();
-        }
-
-        // Update of the global validation status if the validation percentage has changed
-        if (in_array("validation_percent", $this->updates)) {
-            $this->updates[] = 'global_validation';
-            $this->fields['global_validation'] = $this->getValidationClassInstance()->computeValidationStatus($this);
         }
 
        //Look for reopening
@@ -8611,7 +8608,7 @@ abstract class CommonITILObject extends CommonDBTM
         } else if (isset($this->fields['status'])) {
             $status = $this->fields['status'];
         } else {
-            throw new \LogicException("Can't get status value: no object loaded");
+            throw new LogicException("Can't get status value: no object loaded");
         }
 
         return $status == CommonITILObject::INCOMING;
@@ -8634,7 +8631,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 'Ticket':
                 return 'glpi_items_tickets';
             default:
-                throw new \RuntimeException('Unknown ITIL type ' . static::getType());
+                throw new RuntimeException('Unknown ITIL type ' . static::getType());
         }
     }
 
@@ -8852,6 +8849,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $input["_add_validation"] = [$input["_add_validation"]];
             }
 
+            // user/groups assignements
             foreach ($input["_add_validation"] as $key => $value) {
                 switch ($value) {
                     case 'requester_supervisor':
@@ -9028,6 +9026,10 @@ abstract class CommonITILObject extends CommonDBTM
                             && $this->isUserValidationRequested($validation_to_send['items_id_target'], false)
                         ) {
                             continue;
+                        }
+                        // add validation step
+                        if (isset($input['_validationsteps_id'])) {
+                            $values['_validationsteps_id'] = $input['_validationsteps_id'];
                         }
                         $values['itemtype_target'] = $validation_to_send['itemtype_target'];
                         $values['items_id_target'] = $validation_to_send['items_id_target'];
@@ -9390,7 +9392,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $actor = new $this->supplierlinkclass();
                 break;
             default:
-                throw new \RuntimeException('Unexpected actor type.');
+                throw new RuntimeException('Unexpected actor type.');
         }
         return $actor;
     }
@@ -10148,7 +10150,7 @@ abstract class CommonITILObject extends CommonDBTM
             $column_field = 'status';
         }
         $columns = [];
-        if ($column_field === null || $column_field === 'status') {
+        if ($column_field === 'status') {
             $all_statuses = static::getAllStatusArray();
             foreach ($all_statuses as $status_id => $status) {
                 $columns['status'][$status_id] = [
@@ -10390,11 +10392,39 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public static function getValidationClassInstance(): ?CommonITILValidation
     {
+        $validationClassName = self::getValidationClassName();
+
+        return $validationClassName ? new $validationClassName() : null;
+    }
+
+    public static function getValidationClassName(): ?string
+    {
         $validation_class = static::class . 'Validation';
         if (class_exists($validation_class)) {
-            return new $validation_class();
+            return $validation_class;
         }
+
         return null;
+    }
+
+    public static function getValidationStepClassName(): ?string
+    {
+        $validation_class = static::class . 'ValidationStep';
+        if (class_exists($validation_class)) {
+            return $validation_class;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return ChangeValidationStep|\TicketValidationStep|null
+     */
+    public static function getValidationStepInstance()
+    {
+        $class = self::getValidationStepClassName();
+
+        return $class ? new $class() : null;
     }
 
     /**

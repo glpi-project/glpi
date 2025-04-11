@@ -3479,7 +3479,7 @@ JAVASCRIPT;
             'items_id'                  => 0,
             'locations_id'              => 0,
             'plan'                      => [],
-            'global_validation'         => CommonITILValidation::NONE,
+//            'global_validation'         => CommonITILValidation::NONE, // to allow approval form in right panel when creating a ticket
             'time_to_resolve'           => 'NULL',
             'time_to_own'               => 'NULL',
             'slas_id_tto'               => 0,

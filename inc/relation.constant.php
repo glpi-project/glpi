@@ -811,6 +811,17 @@ $RELATION = [
         'glpi_pendingreasons' => 'itilfollowuptemplates_id',
     ],
 
+    'glpi_itilvalidationtemplates' => [
+        '_glpi_itilvalidationtemplates_targets' => 'itilvalidationtemplates_id',
+        'glpi_changevalidations' => 'itilvalidationtemplates_id',
+        'glpi_ticketvalidations' => 'itilvalidationtemplates_id',
+    ],
+
+    'glpi_itils_validationsteps' => [
+        'glpi_ticketvalidations' => 'itils_validationsteps_id',
+        'glpi_changevalidations' => 'itils_validationsteps_id',
+    ],
+
     'glpi_knowbaseitemcategories' => [
         'glpi_itilcategories'            => 'knowbaseitemcategories_id',
         'glpi_knowbaseitemcategories'    => 'knowbaseitemcategories_id',
@@ -1667,6 +1678,11 @@ $RELATION = [
         'glpi_users'    => 'usertitles_id',
     ],
 
+    'glpi_validationsteps' => [
+        'glpi_itilvalidationtemplates' => 'validationsteps_id',
+        'glpi_itils_validationsteps' => 'validationsteps_id',
+    ],
+
     'glpi_virtualmachinestates' => [
         'glpi_itemvirtualmachines' => 'virtualmachinestates_id',
     ],
@@ -1694,12 +1710,6 @@ $RELATION = [
     'glpi_webhookcategories' => [
         'glpi_webhookcategories'    => 'webhookcategories_id',
         'glpi_webhooks'             => 'webhookcategories_id',
-    ],
-
-    'glpi_itilvalidationtemplates' => [
-        '_glpi_itilvalidationtemplates_targets' => 'itilvalidationtemplates_id',
-        'glpi_changevalidations' => 'itilvalidationtemplates_id',
-        'glpi_ticketvalidations' => 'itilvalidationtemplates_id',
     ],
 
 ];

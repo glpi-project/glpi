@@ -642,11 +642,11 @@ class RuleAction extends CommonDBChild
                             $display            = true;
                             break;
 
-                        case "dropdown_validation_percent":
-                            $ticket = new Ticket();
-                            echo $ticket->getValueToSelect('validation_percent', 'value', $param['value']);
-                            $display       = true;
-                            break;
+//                        case "dropdown_validation_percent":
+//                            $ticket = new Ticket();
+//                            echo $ticket->getValueToSelect('validation_percent', 'value', $param['value']);
+//                            $display       = true;
+//                            break;
 
                         case "dropdown_validation_status":
                             TicketValidation::dropdownStatus('value', [
