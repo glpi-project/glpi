@@ -71,10 +71,12 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
     private function updateItemTCO(): void
     {
+        //TODO Costs for changes and problems should probably affect TCO too but there should also be a way to handle costs affecting multiple assets
+        //Example, A ticket with a cost of $400 with two computers shouldn't add $400 cost of ownership to both.
         $cost_class = match(static::$itemtype_1) {
             'Ticket' => TicketCost::class,
-            'Change' => ChangeCost::class,
-            'Problem' => ProblemCost::class,
+            //'Change' => ChangeCost::class,
+            //'Problem' => ProblemCost::class,
             default => null
         };
         if ($cost_class) {
