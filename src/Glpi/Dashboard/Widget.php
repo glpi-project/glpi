@@ -282,6 +282,13 @@ class Widget
                 'width'    => 3,
                 'height'   => 4,
             ],
+            'map' => [
+                'label'    => __("Map"),
+                'function' => 'Glpi\\Dashboard\\Widget::map',
+                'image'    => $CFG_GLPI['root_doc'] . '/pics/charts/map.png',
+                'width'    => 4,
+                'height'   => 4,
+            ]
         ];
 
         $more_types = Plugin::doHookFunction(Hooks::DASHBOARD_TYPES);
@@ -1824,6 +1831,104 @@ HTML;
          });
       });
 JAVASCRIPT;
+        $js = \Html::scriptBlock($js);
+
+        return $html . $js;
+    }
+
+
+    public static function map(array $params): string
+    {
+        $default = [
+            'data'         => [],
+            'label'        => '',
+            'alt'          => '',
+            'url'          => '',
+            'color'        => '',
+            'icon'         => '',
+            'limit'        => 99999,
+            'class'        => "map",
+            'rand'         => mt_rand(),
+            'filters'      => [],
+        ];
+        $p = array_merge($default, $params);
+
+        $color = new Color($p['color']);
+        $is_light = $color->isLight();
+
+        $fg_color  = Toolbox::getFgColor($p['color'], $is_light ? 65 : 40);
+        $id = "map-" . $p['rand'];
+        $class = $p['class'];
+        $class .= count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
+
+        $points = json_encode($p['data'] ?? []);
+
+        $html = <<<HTML
+        <div
+            class="card map {$class}"
+            id="{$id}"
+            style="background-color: {$p['color']}; color: {$fg_color}">
+            <div id="map_container-{$p['rand']}" class="card-body px-0"></div>
+            <span class="main-label">{$p['label']}</a></span>
+            <i class="main-icon {$p['icon']}"></i>
+        </div>
+        HTML;
+        $js = <<<JAVASCRIPT
+        $(function () {
+            const map = initMap($('#map_container-{$p['rand']}'), 'map', 'full');
+
+            const _markers = L.markerClusterGroup({
+                iconCreateFunction: (cluster) => {
+                    const markers = cluster.getAllChildMarkers();
+                    let n = markers.length;
+
+                    let c = ' marker-cluster-';
+                    if (n < 10) {
+                        c += 'small';
+                    } else if (n < 100) {
+                        c += 'medium';
+                    } else {
+                        c += 'large';
+                    }
+
+                    return new L.DivIcon({
+                        html: '<div><span>' + n + '</span></div>',
+                        className: 'marker-cluster' + c,
+                        iconSize: new L.Point(40, 40)
+                    });
+                }
+            });
+
+            const points = {$points};
+            $.each(points, (index, point) => {
+                const _icon = L.divIcon({
+                    'className': 'badge bg-blue-lt',
+                    'iconSize': [24, 20],
+                    'html': '<i class="' + point.icon + '"></i>',
+                });
+                const _title = `
+                    <a href='\${point.url}'><i class="\${point.icon}"></i>\${point.type} - \${point.name}</a>
+                `;
+
+                const _marker = L.marker([point.latitude, point.longitude], {
+                    icon: _icon,
+                    title: point.name
+                });
+                _marker.count = point.count;
+                _marker.bindPopup(_title);
+                _markers.addLayer(_marker);
+
+            });
+
+            map.addLayer(_markers);
+            map.fitBounds(
+                _markers.getBounds(), {
+                    padding: [50, 50],
+                    maxZoom: 12
+                }
+            );
+        });
+        JAVASCRIPT;
         $js = \Html::scriptBlock($js);
 
         return $html . $js;
