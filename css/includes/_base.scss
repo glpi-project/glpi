@@ -69,9 +69,6 @@
     --glpi-logo: var(--glpi-logo-light);
     --glpi-logo-reduced: var(--glpi-logo-light-reduced);
     --glpi-mainmenu-bg: #2f3f64; // hsl(222, 36%, 29%)
-    --glpi-helpdesk-header: hsl(223deg, 31%, 80%);
-    --glpi-helpdesk-tiles-section-bg: #f6f8fb;
-    --glpi-helpdesk-tabs-section-bg: #fff;
     --glpi-mainmenu-fg: #f4f6fa;
     --glpi-mainmenu-fg-muted: #f4f6fa99;
     --glpi-mainmenu-active-bg: color-mix(in srgb, var(--glpi-mainmenu-bg), white 45%);
@@ -125,14 +122,19 @@
     --glpi-zindex-tooltip: #{$zindex-tooltip};
     --glpi-zindex-toast: #{$zindex-toast};
 
+    // helpdesk portal
+    --glpi-helpdesk-header: hsl(from var(--glpi-mainmenu-bg) h s 80);
+    --glpi-helpdesk-tiles-section-bg: #f6f8fb;
+    --glpi-helpdesk-tabs-section-bg: #fff;
+
     // Variables for @glpi-project/illustrations
     --glpi-illustrations-background: white;
     --glpi-illustrations-header-dark: var(--glpi-mainmenu-bg);
     --glpi-illustrations-header-light: var(--glpi-helpdesk-header);
     --glpi-illustrations-primary: var(--tblr-primary);
-    --glpi-illustrations-gradient-1: hsl(222deg, 36%, 92%);
-    --glpi-illustrations-gradient-2: hsl(222deg, 36%, 72%);
-    --glpi-illustrations-gradient-3: hsl(222deg, 36%, 55%);
+    --glpi-illustrations-gradient-1: hsl(from var(--glpi-mainmenu-bg) h s 92);
+    --glpi-illustrations-gradient-2: hsl(from var(--glpi-mainmenu-bg) h s 72);
+    --glpi-illustrations-gradient-3: hsl(from var(--glpi-mainmenu-bg) h s 45);
 }
 
 @media(prefers-reduced-motion) {
