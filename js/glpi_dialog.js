@@ -356,7 +356,7 @@ const glpi_toast = (title, message, css_class, options = {}) => {
         location = 'bottom-right';
     }
     const html = `<div class='toast-container ${location} p-3 messages_after_redirect'>
-      <div id='toast_js_${toast_id}' class='toast ${animation_classes}' role='alert' aria-live='assertive' aria-atomic='true' aria-label="${message}">
+      <div id='toast_js_${toast_id}' class='toast ${animation_classes}' role='alert' aria-live='assertive' aria-atomic='true'>
          <div class='toast-header ${css_class}'>
             <strong class='me-auto'>${title}</strong>
             <button type='button' class='btn-close' data-bs-dismiss='toast' aria-label='${__('Close')}'></button>
