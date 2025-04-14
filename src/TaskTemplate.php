@@ -218,6 +218,12 @@ class TaskTemplate extends AbstractITILChildTemplate
                     'value'  => $this->fields["users_id_tech"],
                     'entity' => $this->fields["entities_id"],
                     'width'  => '100%',
+                    'toadd'  => [
+                        [
+                            'id'   => -1,
+                            'text' => __('Current logged-in user')
+                        ]
+                    ]
                 ]);
                 break;
             case 'groups_id_tech':
