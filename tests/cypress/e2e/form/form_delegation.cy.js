@@ -43,6 +43,7 @@ describe('Form delegation', () => {
 
         // Define email address
         cy.findByRole('button', { name: 'Address to send the notification' }).click();
+        cy.findByRole('textbox', { name: 'Address to send the notification' }).clear();
         cy.findByRole('textbox', { name: 'Address to send the notification' }).type('test@test.fr');
 
         // Fill form
