@@ -176,24 +176,24 @@ abstract class CommonITILValidation extends DbTestCase
         $this->assertGreaterThan(0, $itil_items_id);
 
         $validation_class = $this->getTestedClass();
-        $validation = new $validation_class();
 
         // Test the current user cannot approve since there are no approvals
-        $this->assertFalse($validation::canValidate($itil_items_id));
+        $this->assertFalse($validation_class::canValidate($itil_items_id));
 
         // Add user approval for current user
-        $validations_id_1 = $validation->add([
+        $validation_1 = new $validation_class();
+        $validations_id_1 = $validation_1->add([
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'User',
             'items_id_target'                   => $_SESSION['glpiID'],
             'comment_submission'                => __FUNCTION__,
         ]);
         $this->assertGreaterThan(0, $validations_id_1);
-        $this->assertTrue($validation::canValidate($itil_items_id));
+        $this->assertTrue($validation_class::canValidate($itil_items_id));
 
         // Add user approval for other user
-        $validation = new $validation_class();
-        $validations_id_2 = $validation->add([
+        $validation_2 = new $validation_class();
+        $validations_id_2 = $validation_2->add([
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'User',
             'items_id_target'                   => \User::getIdByName('normal'), // Other user.
@@ -202,15 +202,15 @@ abstract class CommonITILValidation extends DbTestCase
         $this->assertGreaterThan(0, $validations_id_2);
 
         // Test the current user can still approve since they still have an approval
-        $this->assertTrue($validation::canValidate($itil_items_id));
+        $this->assertTrue($validation_class::canValidate($itil_items_id));
         // Test the current user can specifically approve their own approval
-        $this->assertTrue($validation::canValidate($itil_items_id, $validations_id_1));
+        $this->assertTrue($validation_1->canAnswer());
         // Test the current user cannot approve the other user's approval
-        $this->assertFalse($validation::canValidate($itil_items_id, $validations_id_2));
+        $this->assertFalse($validation_2->canAnswer());
         // Remove user approval for current user
-        $this->assertTrue($validation->delete(['id' => $validations_id_1]));
+        $this->assertTrue($validation_1->delete(['id' => $validations_id_1]));
         // Test the current user cannot still approve since the remaining approval isn't for them
-        $this->assertFalse($validation::canValidate($itil_items_id));
+        $this->assertFalse($validation_class::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // without substitution period
@@ -227,7 +227,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => 'NULL',
             'substitution_end_date' => 'NULL',
         ]);
-        $this->assertTrue($validation::canValidate($itil_items_id));
+        $this->assertTrue($validation_class::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period start date only
@@ -237,7 +237,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => '2021-01-01 00:00:00',
             'substitution_end_date' => 'NULL',
         ]);
-        $this->assertTrue($validation::canValidate($itil_items_id));
+        $this->assertTrue($validation_class::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period start date only excluding now
@@ -247,7 +247,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
             'substitution_end_date' => 'NULL',
         ]);
-        $this->assertFalse($validation::canValidate($itil_items_id));
+        $this->assertFalse($validation_class::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period end date only
@@ -257,7 +257,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => 'NULL',
             'substitution_end_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
         ]);
-        $this->assertTrue($validation::canValidate($itil_items_id));
+        $this->assertTrue($validation_class::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period end date only excluding now
@@ -267,7 +267,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => 'NULL',
             'substitution_end_date' => '2021-01-01 00:00:00',
         ]);
-        $this->assertFalse($validation::canValidate($itil_items_id));
+        $this->assertFalse($validation_class::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period
@@ -277,7 +277,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => '2021-01-01 00:00:00',
             'substitution_end_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
         ]);
-        $this->assertTrue($validation::canValidate($itil_items_id));
+        $this->assertTrue($validation_class::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period
@@ -287,7 +287,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => '2021-01-01 00:00:00',
             'substitution_end_date' => (new \DateTime())->modify("-1 month")->format("Y-m-d h:i:s"),
         ]);
-        $this->assertFalse($validation::canValidate($itil_items_id));
+        $this->assertFalse($validation_class::canValidate($itil_items_id));
     }
 
     public function testCanValidateGroup()

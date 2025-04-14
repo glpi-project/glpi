@@ -253,7 +253,7 @@
                         'mention_options': mention_options,
                         'entities_id': item.fields['entities_id'],
                         'rand': rand,
-                        'disabled': item.fields['status'] == constant('CommonITILValidation::WAITING'),
+                        'disabled': item.fields['status'] != constant('CommonITILValidation::WAITING'),
                     }
                 ) }}
 

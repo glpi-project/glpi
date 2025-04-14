@@ -181,9 +181,8 @@ abstract class CommonITILValidation extends CommonDBChild
      */
     public function canUpdateItem(): bool
     {
-        $is_target = static::canValidate($this->fields[static::$items_id], $this->getID());
         if (
-            !$is_target
+            !$this->canAnswer()
             && !Session::haveRightsOr(static::$rightname, static::getCreateRights())
         ) {
             return false;
@@ -193,25 +192,39 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
     /**
-     * @param integer $items_id ID of the ITIL item
-     * @param integer|null $validation_id Specific validation to check or null to only check if the user can validate any existing validation
+     * @param integer $items_id ID of the item
      **/
-    public static function canValidate($items_id, ?int $validation_id = null)
+    public static function canValidate($items_id)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        $id_condition = [];
-        if ($validation_id !== null) {
-            $id_condition = [
-                'id' => $validation_id,
-            ];
-        }
         $iterator = $DB->request([
             'SELECT' => [static::getTable() . '.id'],
             'FROM'   => static::getTable(),
-            'WHERE'  => $id_condition + [
+            'WHERE'  => [
                 static::$items_id => $items_id,
+                static::getTargetCriteriaForUser(Session::getLoginUserID()),
+            ],
+            'START'  => 0,
+            'LIMIT'  => 1
+        ]);
+        return count($iterator) > 0;
+    }
+
+    /**
+     * Indicates whether the current connected user can answer the validation.
+     */
+    final public function canAnswer(): bool
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT' => [static::getTable() . '.id'],
+            'FROM'   => static::getTable(),
+            'WHERE'  => [
+                'id' => $this->getID(),
                 static::getTargetCriteriaForUser(Session::getLoginUserID()),
             ],
             'START'  => 0,
@@ -390,7 +403,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function prepareInputForUpdate($input)
     {
-        $can_answer = static::canValidate($this->fields[static::$items_id], $this->getID());
+        $can_answer = $this->canAnswer();
         // Don't allow changing internal entity fields or change the item it is attached to
         $forbid_fields = ['entities_id', static::$items_id, 'is_recursive'];
         // The following fields shouldn't be changed by anyone after the approval is created
