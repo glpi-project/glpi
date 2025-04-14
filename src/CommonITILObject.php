@@ -9914,7 +9914,7 @@ abstract class CommonITILObject extends CommonDBTM
             ];
 
             $content = "<div class='kanban-plugin-content'>";
-            $plugin_content_pre = Plugin::doHookFunction('pre_kanban_content', [
+            $plugin_content_pre = Plugin::doHookFunction(Hooks::PRE_KANBAN_CONTENT, [
                 'itemtype' => $itemtype,
                 'items_id' => $item['id'],
             ]);
@@ -9936,7 +9936,7 @@ abstract class CommonITILObject extends CommonDBTM
 
             $content .= "</div>";
             $content .= "<div class='kanban-plugin-content'>";
-            $plugin_content_post = Plugin::doHookFunction('post_kanban_content', [
+            $plugin_content_post = Plugin::doHookFunction(Hooks::POST_KANBAN_CONTENT, [
                 'itemtype' => $itemtype,
                 'items_id' => $item['id'],
             ]);

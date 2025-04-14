@@ -44,6 +44,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Debug\Profiler;
 use Glpi\Form\Form;
 use Glpi\Features\AssignableItem;
+use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\SearchEngine;
@@ -1049,7 +1050,7 @@ final class SQLProvider implements SearchProviderInterface
 
         /* Hook to restrict user right on current itemtype */
         //TODO Plugin call works on raw SQL, should use criteria array instead
-        [$itemtype, $criteria] = \Plugin::doHookFunction('add_default_where', [$itemtype, $criteria]);
+        [$itemtype, $criteria] = \Plugin::doHookFunction(Hooks::ADD_DEFAULT_WHERE, [$itemtype, $criteria]);
         return $criteria;
     }
 
@@ -2308,7 +2309,7 @@ final class SQLProvider implements SearchProviderInterface
                 break;
         }
 
-        [$itemtype, $out] = \Plugin::doHookFunction('add_default_join', [$itemtype, $out]);
+        [$itemtype, $out] = \Plugin::doHookFunction(Hooks::ADD_DEFAULT_JOIN, [$itemtype, $out]);
         if (is_string($out)) {
             $out = self::parseJoinString($out);
         }

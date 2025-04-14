@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Plugin\Hooks;
 
 /**
  * Infocom class
@@ -1425,7 +1426,7 @@ JS;
 
     public static function addPluginInfos(CommonDBTM $item)
     {
-        Plugin::doHookFunction("infocom", $item);
+        Plugin::doHookFunction(Hooks::INFOCOM, $item);
     }
 
     /**

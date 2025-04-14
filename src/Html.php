@@ -1576,7 +1576,7 @@ TWIG,
         \Glpi\Debug\Profiler::getInstance()->stop('Html::includeHeader');
 
         $menu = self::generateMenuSession();
-        $menu = Plugin::doHookFunction("redefine_menus", $menu);
+        $menu = Plugin::doHookFunction(Hooks::REDEFINE_MENUS, $menu);
 
         $tmp_active_item = explode("/", $item);
         $active_item     = array_pop($tmp_active_item);
@@ -1774,7 +1774,7 @@ TWIG,
         self::includeHeader($title, $sector, $item, $option, $add_id);
 
         $menu = self::generateHelpMenu();
-        $menu = Plugin::doHookFunction("redefine_menus", $menu);
+        $menu = Plugin::doHookFunction(Hooks::REDEFINE_MENUS, $menu);
 
         $tmp_active_item = explode("/", $item);
         $active_item     = array_pop($tmp_active_item);

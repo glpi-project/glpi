@@ -85,6 +85,22 @@ class Hooks
     public const PRE_KANBAN_CONTENT            = 'pre_kanban_content';
     public const KANBAN_ITEM_METADATA          = 'kanban_item_metadata';
     public const KANBAN_FILTERS                = 'kanban_filters';
+    /**
+     * @used-by templates/components/kanban/item_panels/default_panel.html.twig
+     */
+    public const PRE_KANBAN_PANEL_CONTENT      = 'pre_kanban_panel_content';
+    /**
+     * @used-by templates/components/kanban/item_panels/default_panel.html.twig
+     */
+    public const POST_KANBAN_PANEL_CONTENT     = 'post_kanban_panel_content';
+    /**
+     * @used-by templates/components/kanban/item_panels/default_panel.html.twig
+     */
+    public const PRE_KANBAN_PANEL_MAIN_CONTENT = 'pre_kanban_panel_main_content';
+    /**
+     * @used-by templates/components/kanban/item_panels/default_panel.html.twig
+     */
+    public const POST_KANBAN_PANEL_MAIN_CONTENT = 'post_kanban_panel_main_content';
     public const REDEFINE_MENUS                = 'redefine_menus';
     public const RETRIEVE_MORE_DATA_FROM_LDAP  = 'retrieve_more_data_from_ldap';
     public const RETRIEVE_MORE_FIELD_FROM_LDAP = 'retrieve_more_field_from_ldap';
@@ -119,7 +135,13 @@ class Hooks
     public const SHOW_ITEM_STATS           = 'show_item_stats';
 
     // Item hooks expecting an array parameter (available keys: item, options)
+    /**
+     * @used-by templates/components/itilobject/fields_panel.html.twig
+     */
     public const PRE_ITIL_INFO_SECTION   = 'pre_itil_info_section';
+    /**
+     * @used-by templates/components/itilobject/fields_panel.html.twig
+     */
     public const POST_ITIL_INFO_SECTION  = 'post_itil_info_section';
     public const ITEM_TRANSFER           = 'item_transfer';
     public const POST_ITEM_FORM          = 'post_item_form';
@@ -208,6 +230,9 @@ class Hooks
     public const API_MIDDLEWARE                = 'api_middleware';
 
     public const STATS = 'stats';
+    public const MAIL_SERVER_PROTOCOLS = 'mail_server_protocols';
+    public const ADD_DEFAULT_JOIN = 'add_default_join';
+    public const ADD_DEFAULT_WHERE = 'add_default_where';
 
     /**
      * Get file hooks
