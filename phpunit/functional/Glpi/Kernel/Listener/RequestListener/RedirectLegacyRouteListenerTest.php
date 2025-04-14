@@ -34,10 +34,10 @@
 
 namespace tests\units\Glpi\Kernel\Listener\RequestListener;
 
+use Glpi\Http\RedirectResponse;
 use Glpi\Kernel\Listener\RequestListener\RedirectLegacyRouteListener;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;

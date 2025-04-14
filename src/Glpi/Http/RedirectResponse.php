@@ -32,31 +32,41 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller;
+namespace Glpi\Http;
 
-use Glpi\Http\Firewall;
-use Glpi\Http\RedirectResponse;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Override;
 
-final class WellKnownController extends AbstractController
+class RedirectResponse extends \Symfony\Component\HttpFoundation\RedirectResponse
 {
-    /**
-     *  Handle well-known URIs as defined in RFC 5785.
-     *  https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml
-     */
-    #[Route(
-        "/.well-known/change-password",
-        name: "glpi_wellknown_change_password"
-    )]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    public function changePassword(Request $request): Response
+    #[Override()]
+    public function setTargetUrl(string $url): static
     {
-        return new RedirectResponse(
-            $request->getBasePath() . '/front/updatepassword.php',
-            Response::HTTP_TEMPORARY_REDIRECT
+        if ('' === $url) {
+            throw new \InvalidArgumentException('Cannot redirect to an empty URL.');
+        }
+
+        $this->targetUrl = $url;
+
+        $this->setContent(
+            \sprintf(
+                '<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="refresh" content="0;url=\'%1$s\'" />
+
+        <title>%2$s</title>
+    </head>
+    <body></body>
+</html>',
+                \htmlspecialchars($url),
+                \htmlspecialchars(\sprintf('Redirecting to %s...', $url))
+            )
         );
+
+        $this->headers->set('Location', $url);
+        $this->headers->set('Content-Type', 'text/html; charset=utf-8');
+
+        return $this;
     }
 }

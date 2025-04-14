@@ -35,7 +35,7 @@
 namespace Glpi\Exception;
 
 use Exception;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Glpi\Http\RedirectResponse;
 
 /**
  * @internal Not to be used unless you absolutely know what you are doing.
