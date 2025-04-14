@@ -906,14 +906,22 @@ class LockedfieldTest extends DbTestCase
         $this->assertSame(['locations_id' => null], $global_lockedfield->getLockedValues($computer->getType(), $cid));
 
         $this->assertEquals($computer->fields['locations_id'], $location_id);
+
+        // Delete the location with a replacement value
         $location->delete([
             'id' => $location_id,
             '_replace_by' => $location_id2,
-            'itemtype' => Location::class,
-            'replace' => 'Replace',
-        ], 1);
+        ], true);
 
         $this->assertTrue($computer->getFromDB($cid));
         $this->assertEquals($computer->fields['locations_id'], $location_id2);
+
+        // Delete the location with no replacement value
+        $location->delete([
+            'id' => $location_id2,
+        ], true);
+
+        $this->assertTrue($computer->getFromDB($cid));
+        $this->assertEquals($computer->fields['locations_id'], 0);
     }
 }

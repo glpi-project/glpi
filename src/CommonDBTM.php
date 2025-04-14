@@ -940,7 +940,7 @@ class CommonDBTM extends CommonGLPI
                         $input =  [
                             $id_field       => $data[$id_field],
                             '_disablenotif' => true,
-                            '_skip_locks'   => isset($this->input['_replace_by']),
+                            '_skip_locks'   => true,
                         ] + $update;
 
                         //prevent lock if item is dynamic
