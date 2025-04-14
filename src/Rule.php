@@ -1744,8 +1744,8 @@ JS
         global $PLUGIN_HOOKS;
 
         $input = $this->prepareInputDataForProcess($input, $params);
-        if (isset($PLUGIN_HOOKS['use_rules'])) {
-            foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+        if (isset($PLUGIN_HOOKS[Hooks::USE_RULES])) {
+            foreach ($PLUGIN_HOOKS[Hooks::USE_RULES] as $plugin => $val) {
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
@@ -1786,10 +1786,10 @@ JS
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
-        if (isset($PLUGIN_HOOKS['use_rules'])) {
+        if (isset($PLUGIN_HOOKS[Hooks::USE_RULES])) {
             $params['criterias_results'] = $this->criterias_results;
             $params['rule_itemtype']     = static::class;
-            foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            foreach ($PLUGIN_HOOKS[Hooks::USE_RULES] as $plugin => $val) {
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
@@ -2766,10 +2766,10 @@ JS
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
-        if (isset($PLUGIN_HOOKS['use_rules'])) {
+        if (isset($PLUGIN_HOOKS[Hooks::USE_RULES])) {
             $params['criterias_results'] = $this->criterias_results;
             $params['rule_itemtype']     = static::class;
-            foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            foreach ($PLUGIN_HOOKS[Hooks::USE_RULES] as $plugin => $val) {
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
@@ -2827,7 +2827,7 @@ JS
 
     public function getAllCriteria()
     {
-        return self::doHookAndMergeResults("getRuleCriteria", $this->getCriterias(), static::class);
+        return self::doHookAndMergeResults(Hooks::AUTO_GET_RULE_CRITERIA, $this->getCriterias(), static::class);
     }
 
     public function getCriterias()
@@ -2841,7 +2841,7 @@ JS
      */
     public function getAllActions()
     {
-        return self::doHookAndMergeResults("getRuleActions", $this->getActions(), static::class);
+        return self::doHookAndMergeResults(Hooks::AUTO_GET_RULE_ACTIONS, $this->getActions(), static::class);
     }
 
     public function getActions()
@@ -2864,7 +2864,7 @@ JS
      *
      *  @since 0.84
      *
-     * @param string $hook            the hook to execute
+     * @param string $hook            the hook to execute (getRuleActions, getRuleCriteria)
      * @param array $params   array  input parameters
      * @param string $itemtype        (default '')
      *
@@ -2881,8 +2881,8 @@ JS
 
         //Agregate all plugins criteria for this rules engine
         $toreturn = $params;
-        if (isset($PLUGIN_HOOKS['use_rules'])) {
-            foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+        if (isset($PLUGIN_HOOKS[Hooks::USE_RULES])) {
+            foreach ($PLUGIN_HOOKS[Hooks::USE_RULES] as $plugin => $val) {
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }

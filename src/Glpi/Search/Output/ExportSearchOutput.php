@@ -35,6 +35,7 @@
 
 namespace Glpi\Search\Output;
 
+use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
 
 /**
@@ -66,7 +67,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
         if ($plug = isPluginItemType($itemtype)) {
             $out = \Plugin::doOneHook(
                 $plug['plugin'],
-                'displayConfigItem',
+                Hooks::AUTO_DISPLAY_CONFIG_ITEM,
                 $itemtype,
                 $ID,
                 $data,

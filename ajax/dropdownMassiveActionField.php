@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -81,7 +82,7 @@ if (
     ) {
         $plugdisplay = Plugin::doOneHook(
             $plug['plugin'],
-            'MassiveActionsFieldsDisplay',
+            Hooks::AUTO_MASSIVE_ACTIONS_FIELDS_DISPLAY,
             ['itemtype' => $_POST["itemtype"],
                 'options'  => $search,
             ]
