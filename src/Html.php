@@ -5181,7 +5181,7 @@ HTML;
                       . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
 
         $display .= "<div id='progress{$rand_id}' style='display:none'>" .
-                "<div class='uploadbar' style='width: 0%;'></div></div>";
+                "<div role='progressbar' class='uploadbar' style='width: 0%;'></div></div>";
         $progressall_js = "
         progressall: function(event, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
