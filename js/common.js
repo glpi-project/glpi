@@ -1503,8 +1503,18 @@ $(() => {
     // TODO: refactorate existing code to use this unique handler.
     $(document).on('click', '[data-glpi-clipboard-text]', function() {
         const text = $(this).data('glpi-clipboard-text');
-        navigator.clipboard.writeText(text);
-        glpi_toast_info(__("Copied to clipboard"));
+        if (navigator.clipboard === undefined) {
+            // The clipboard is not available in non secure environements.
+            // See: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
+            // See: https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts
+            // This rarely happens in production but we can still add a specific
+            // error message to identify this issue in our support and/or help
+            // system administrator fix it themselves.
+            glpi_toast_error(__("Unable to copy to clipboard (insecure context)."));
+        } else {
+            navigator.clipboard.writeText(text);
+            glpi_toast_info(__("Copied to clipboard"));
+        }
     });
 });
 
