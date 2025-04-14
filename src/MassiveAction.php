@@ -782,7 +782,7 @@ class MassiveAction
                     if (!Plugin::isPluginActive($plugin)) {
                         continue;
                     }
-                    $plug_actions = Plugin::doOneHook($plugin, 'MassiveActions', $itemtype);
+                    $plug_actions = Plugin::doOneHook($plugin, Hooks::AUTO_MASSIVE_ACTIONS, $itemtype);
 
                     if (is_array($plug_actions) && count($plug_actions)) {
                         $actions += $plug_actions;
@@ -1139,7 +1139,7 @@ class MassiveAction
                 ) {
                     $plugdisplay = Plugin::doOneHook(
                         $plug['plugin'],
-                        'MassiveActionsFieldsDisplay',
+                        Hooks::AUTO_MASSIVE_ACTIONS_FIELDS_DISPLAY,
                         ['itemtype' => $item->getType(),
                             'options'  => $search,
                         ]

@@ -995,9 +995,9 @@ class NotificationTarget extends CommonDBChild
 
 
     /**
-     * @param $target    (default '')
-     * @param $label     (default '')
-     * @param $type      (=Notification::USER_TYPE)
+     * @param $target    (default '') Typically the ID of the recipient
+     * @param $label     (default '') The recipient label
+     * @param $type      (=Notification::USER_TYPE) Type of the recipient
      **/
     public function addTarget($target = '', $label = '', $type = Notification::USER_TYPE)
     {

@@ -90,7 +90,7 @@
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
             <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
             <input type="hidden" name="_no_message_link" value="1" />
-            {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
             {% if item.getType() == 'Ticket' and item.countOpenChildrenOfSameType() > 0 %}
                <div class="alert alert-important alert-warning">
@@ -219,7 +219,7 @@
             </div>
 
          {% if not noform %}
-               {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
+               {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
                <div class="d-flex card-footer mx-n3 mb-n3">
                   {% if (subitem.fields['id'] ?? 0) <= 0 %}
                      <button class="btn btn-primary me-2" type="submit" name="add">

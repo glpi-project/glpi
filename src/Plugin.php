@@ -1644,7 +1644,7 @@ class Plugin extends CommonDBTM
 
         $dps = [];
         foreach (self::getPlugins() as $plug) {
-            $tab = self::doOneHook($plug, 'getDropdown');
+            $tab = self::doOneHook($plug, Hooks::AUTO_GET_DROPDOWN);
             if (is_array($tab)) {
                 $dps = array_merge($dps, [self::getInfo($plug, 'name') => $tab]);
             }
@@ -1898,21 +1898,6 @@ class Plugin extends CommonDBTM
         }
 
         return $options;
-    }
-
-    /**
-     * Check if there is a plugin enabled that supports importing items
-     *
-     * @return boolean
-     *
-     * @since 0.84
-     **/
-    public static function haveImport()
-    {
-        /** @var array $PLUGIN_HOOKS */
-        global $PLUGIN_HOOKS;
-
-        return (isset($PLUGIN_HOOKS[Hooks::IMPORT_ITEM]) && count($PLUGIN_HOOKS[Hooks::IMPORT_ITEM]));
     }
 
     /**
@@ -2481,10 +2466,10 @@ class Plugin extends CommonDBTM
 
                 if (
                     in_array($state, [self::ACTIVATED, self::TOBECONFIGURED], true)
-                    && isset($PLUGIN_HOOKS['config_page'][$directory])
+                    && isset($PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory])
                 ) {
                     // Configuration button for activated or configurable plugins
-                    $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS['config_page'][$directory]}";
+                    $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory]}";
                     $output .= '<a href="' . $config_url . '" title="' . __s('Configure') . '">'
                     . '<i class="ti ti-tool fs-2x"></i>'
                     . '<span class="sr-only">' . __s('Configure') . '</span>'
@@ -2664,9 +2649,9 @@ TWIG;
                 self::load($directory); // Load plugin to give it ability to define its config_page hook
                 if (
                     in_array($state, [self::ACTIVATED, self::TOBECONFIGURED])
-                    && isset($PLUGIN_HOOKS['config_page'][$directory])
+                    && isset($PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory])
                 ) {
-                    $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS['config_page'][$directory]}";
+                    $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory]}";
                     return "<a href='$config_url'><span class='b'>$value</span></a>";
                 } else {
                     return $value;

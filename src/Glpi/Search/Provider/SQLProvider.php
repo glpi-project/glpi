@@ -44,6 +44,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Debug\Profiler;
 use Glpi\Form\Form;
 use Glpi\Features\AssignableItem;
+use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\SearchEngine;
@@ -121,7 +122,7 @@ final class SQLProvider implements SearchProviderInterface
             default:
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
-                    $default_select = \Plugin::doOneHook($plug['plugin'], 'addDefaultSelect', $itemtype);
+                    $default_select = \Plugin::doOneHook($plug['plugin'], Hooks::AUTO_ADD_DEFAULT_SELECT, $itemtype);
                     if (!empty($default_select)) {
                         $ret[] = new QueryExpression(rtrim($default_select, ' ,'));
                     }
@@ -202,7 +203,7 @@ final class SQLProvider implements SearchProviderInterface
 
         // Plugin can override core definition for its type
         if ($plug = isPluginItemType($itemtype)) {
-            $out = \Plugin::doOneHook($plug['plugin'], 'addSelect', $itemtype, $ID, "{$itemtype}_{$ID}");
+            $out = \Plugin::doOneHook($plug['plugin'], Hooks::AUTO_ADD_SELECT, $itemtype, $ID, "{$itemtype}_{$ID}");
             if (!empty($out)) {
                 return new QueryExpression($out);
             }
@@ -472,7 +473,7 @@ final class SQLProvider implements SearchProviderInterface
         $plugin_table_pattern = "/^glpi_plugin_([a-z0-9]+)/";
         if (preg_match($plugin_table_pattern, $table, $matches) && count($matches) === 2) {
             $plug     = $matches[1];
-            $out = \Plugin::doOneHook($plug, 'addSelect', $itemtype, $ID, "{$itemtype}_{$ID}");
+            $out = \Plugin::doOneHook($plug, Hooks::AUTO_ADD_SELECT, $itemtype, $ID, "{$itemtype}_{$ID}");
             if (!empty($out)) {
                 return [new QueryExpression($out)];
             }
@@ -1031,7 +1032,7 @@ final class SQLProvider implements SearchProviderInterface
             default:
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
-                    $default_where = \Plugin::doOneHook($plug['plugin'], 'addDefaultWhere', $itemtype);
+                    $default_where = \Plugin::doOneHook($plug['plugin'], Hooks::AUTO_ADD_DEFAULT_WHERE, $itemtype);
                     if (!empty($default_where)) {
                         $criteria = [new QueryExpression($default_where)];
                     }
@@ -1049,7 +1050,7 @@ final class SQLProvider implements SearchProviderInterface
 
         /* Hook to restrict user right on current itemtype */
         //TODO Plugin call works on raw SQL, should use criteria array instead
-        [$itemtype, $criteria] = \Plugin::doHookFunction('add_default_where', [$itemtype, $criteria]);
+        [$itemtype, $criteria] = \Plugin::doHookFunction(Hooks::ADD_DEFAULT_WHERE, [$itemtype, $criteria]);
         return $criteria;
     }
 
@@ -1242,7 +1243,7 @@ final class SQLProvider implements SearchProviderInterface
         if ($plug = isPluginItemType($itemtype)) {
             $out = \Plugin::doOneHook(
                 $plug['plugin'],
-                'addWhere',
+                Hooks::AUTO_ADD_WHERE,
                 '',
                 $nott,
                 $itemtype,
@@ -1633,7 +1634,7 @@ final class SQLProvider implements SearchProviderInterface
                 $plug     = $matches[1];
                 $out = \Plugin::doOneHook(
                     $plug,
-                    'addWhere',
+                    Hooks::AUTO_ADD_WHERE,
                     '',
                     $nott,
                     $itemtype,
@@ -2294,7 +2295,7 @@ final class SQLProvider implements SearchProviderInterface
                 // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
                     $plugin_name   = $plug['plugin'];
-                    $hook_function = 'plugin_' . strtolower($plugin_name) . '_addDefaultJoin';
+                    $hook_function = 'plugin_' . strtolower($plugin_name) . '_' . Hooks::AUTO_ADD_DEFAULT_JOIN;
                     $hook_closure  = function () use ($hook_function, $itemtype, $ref_table, &$already_link_tables) {
                         if (is_callable($hook_function)) {
                             return $hook_function($itemtype, $ref_table, $already_link_tables);
@@ -2310,7 +2311,7 @@ final class SQLProvider implements SearchProviderInterface
                 break;
         }
 
-        [$itemtype, $out] = \Plugin::doHookFunction('add_default_join', [$itemtype, $out]);
+        [$itemtype, $out] = \Plugin::doHookFunction(Hooks::ADD_DEFAULT_JOIN, [$itemtype, $out]);
         if (is_string($out)) {
             $out = self::parseJoinString($out);
         }
@@ -2478,7 +2479,7 @@ final class SQLProvider implements SearchProviderInterface
         // Plugin can override core definition for its type
         if ($plug = isPluginItemType($itemtype)) {
             $plugin_name   = $plug['plugin'];
-            $hook_function = 'plugin_' . strtolower($plugin_name) . '_addLeftJoin';
+            $hook_function = 'plugin_' . strtolower($plugin_name) . '_' . Hooks::AUTO_ADD_LEFT_JOIN;
             $hook_closure  = static function () use ($hook_function, $itemtype, $ref_table, $new_table, $linkfield, &$already_link_tables) {
                 if (is_callable($hook_function)) {
                     return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
@@ -2500,7 +2501,7 @@ final class SQLProvider implements SearchProviderInterface
         ) {
             if (count($matches) == 2) {
                 $plugin_name   = $matches[1];
-                $hook_function = 'plugin_' . strtolower($plugin_name) . '_addLeftJoin';
+                $hook_function = 'plugin_' . strtolower($plugin_name) . '_' . Hooks::AUTO_ADD_LEFT_JOIN;
                 $hook_closure  = static function () use ($hook_function, $itemtype, $ref_table, $new_table, $linkfield, &$already_link_tables) {
                     if (is_callable($hook_function)) {
                         return self::parseJoinString($hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables) ?? '');
@@ -3469,7 +3470,7 @@ final class SQLProvider implements SearchProviderInterface
         if ($plug = isPluginItemType($itemtype)) {
             $out = \Plugin::doOneHook(
                 $plug['plugin'],
-                'addHaving',
+                Hooks::AUTO_ADD_HAVING,
                 $LINK,
                 $NOT,
                 $itemtype,
@@ -3491,7 +3492,7 @@ final class SQLProvider implements SearchProviderInterface
                 $plug     = $matches[1];
                 $out = \Plugin::doOneHook(
                     $plug,
-                    'addHaving',
+                    Hooks::AUTO_ADD_HAVING,
                     $LINK,
                     $NOT,
                     $itemtype,
@@ -3678,7 +3679,7 @@ final class SQLProvider implements SearchProviderInterface
             if ($criterion === null && $plug = isPluginItemType($itemtype)) {
                 $out = \Plugin::doOneHook(
                     $plug['plugin'],
-                    'addOrderBy',
+                    Hooks::AUTO_ADD_ORDER_BY,
                     $itemtype,
                     $ID,
                     $order,
@@ -3748,7 +3749,7 @@ final class SQLProvider implements SearchProviderInterface
                     $plug = $matches[1];
                     $out = \Plugin::doOneHook(
                         $plug,
-                        'addOrderBy',
+                        Hooks::AUTO_ADD_ORDER_BY,
                         $itemtype,
                         $ID,
                         $order,
@@ -5104,7 +5105,7 @@ final class SQLProvider implements SearchProviderInterface
         if ($plug = isPluginItemType($itemtype)) {
             $out = \Plugin::doOneHook(
                 $plug['plugin'],
-                'giveItem',
+                Hooks::AUTO_GIVE_ITEM,
                 $itemtype,
                 $orig_id,
                 $data,
@@ -6055,7 +6056,7 @@ final class SQLProvider implements SearchProviderInterface
                     $plug     = $matches[1];
                     $out = \Plugin::doOneHook(
                         $plug,
-                        'giveItem',
+                        Hooks::AUTO_GIVE_ITEM,
                         $itemtype,
                         $orig_id,
                         $data,

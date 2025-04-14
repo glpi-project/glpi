@@ -38,6 +38,7 @@ namespace Glpi\System\Status;
 use AuthLDAP;
 use CronTask;
 use DBConnection;
+use Glpi\Plugin\Hooks;
 use MailCollector;
 use Plugin;
 use Toolbox;
@@ -554,7 +555,7 @@ final class StatusChecker
                     'ok' => true,
                     '_public_only' => $public_only,
                 ];
-                $plugin_status = Plugin::doOneHook($plugin, 'status', $param);
+                $plugin_status = Plugin::doOneHook($plugin, Hooks::AUTO_STATUS, $param);
                 if ($plugin_status === null) {
                     continue;
                 }
