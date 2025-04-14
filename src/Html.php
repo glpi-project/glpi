@@ -1473,23 +1473,23 @@ TWIG,
         }
 
         if (
-            isset($PLUGIN_HOOKS["helpdesk_menu_entry"])
-            && count($PLUGIN_HOOKS["helpdesk_menu_entry"])
+            isset($PLUGIN_HOOKS[Hooks::HELPDESK_MENU_ENTRY])
+            && count($PLUGIN_HOOKS[Hooks::HELPDESK_MENU_ENTRY])
         ) {
             $menu['plugins'] = [
                 'title' => __("Plugins"),
                 'icon'  => Plugin::getIcon(),
             ];
 
-            foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
+            foreach ($PLUGIN_HOOKS[Hooks::HELPDESK_MENU_ENTRY] as $plugin => $active) {
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
                 if ($active) {
                     $infos = Plugin::getInfo($plugin);
                     $link = "";
-                    if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin])) {
-                        $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin];
+                    if (is_string($PLUGIN_HOOKS[Hooks::HELPDESK_MENU_ENTRY][$plugin])) {
+                        $link = $PLUGIN_HOOKS[Hooks::HELPDESK_MENU_ENTRY][$plugin];
 
                         // Ensure menu entries have all a starting `/`
                         if (!str_starts_with($link, '/')) {
@@ -1503,8 +1503,8 @@ TWIG,
                     }
                     $infos['page'] = $link;
                     $infos['title'] = $infos['name'];
-                    if (isset($PLUGIN_HOOKS["helpdesk_menu_entry_icon"][$plugin])) {
-                        $infos['icon'] = $PLUGIN_HOOKS["helpdesk_menu_entry_icon"][$plugin];
+                    if (isset($PLUGIN_HOOKS[Hooks::HELPDESK_MENU_ENTRY_ICON][$plugin])) {
+                        $infos['icon'] = $PLUGIN_HOOKS[Hooks::HELPDESK_MENU_ENTRY_ICON][$plugin];
                     }
                     $menu['plugins']['content'][$plugin] = $infos;
                 }
@@ -5895,9 +5895,9 @@ HTML;
                 break;
             default:
                 $found = false;
-                if (isset($PLUGIN_HOOKS['javascript']) && isset($PLUGIN_HOOKS['javascript'][$name])) {
+                if (isset($PLUGIN_HOOKS[Hooks::JAVASCRIPT][$name])) {
                     $found = true;
-                    $jslibs = $PLUGIN_HOOKS['javascript'][$name];
+                    $jslibs = $PLUGIN_HOOKS[Hooks::JAVASCRIPT][$name];
                     if (!is_array($jslibs)) {
                         $jslibs = [$jslibs];
                     }
@@ -5989,8 +5989,8 @@ HTML;
             }
         }
 
-        if (isset($PLUGIN_HOOKS['add_javascript_module']) && count($PLUGIN_HOOKS['add_javascript_module'])) {
-            foreach ($PLUGIN_HOOKS["add_javascript_module"] as $plugin => $files) {
+        if (isset($PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE]) && count($PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE])) {
+            foreach ($PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT_MODULE] as $plugin => $files) {
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }

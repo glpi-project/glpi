@@ -37,6 +37,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Plugin\Hooks;
 
 class RuleImportAsset extends Rule
 {
@@ -515,8 +516,8 @@ class RuleImportAsset extends Rule
 
             $this->handleFieldsCriteria($item, $it_criteria, $input);
 
-            if (isset($PLUGIN_HOOKS['use_rules'])) {
-                foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            if (isset($PLUGIN_HOOKS[Hooks::USE_RULES])) {
+                foreach ($PLUGIN_HOOKS[Hooks::USE_RULES] as $plugin => $val) {
                     if (!Plugin::isPluginActive($plugin)) {
                         continue;
                     }

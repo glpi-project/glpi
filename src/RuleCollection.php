@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Event;
+use Glpi\Plugin\Hooks;
 
 class RuleCollection extends CommonDBTM
 {
@@ -1619,8 +1620,8 @@ TWIG, $twig_params);
         global $PLUGIN_HOOKS;
 
         $input = $this->prepareInputDataForProcess($input, $params);
-        if (isset($PLUGIN_HOOKS['use_rules'])) {
-            foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+        if (isset($PLUGIN_HOOKS[Hooks::USE_RULES])) {
+            foreach ($PLUGIN_HOOKS[Hooks::USE_RULES] as $plugin => $val) {
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
@@ -1792,9 +1793,9 @@ TWIG, $twig_params);
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
-        if (isset($PLUGIN_HOOKS['use_rules'])) {
+        if (isset($PLUGIN_HOOKS[Hooks::USE_RULES])) {
             $params['rule_itemtype'] = static::class;
-            foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            foreach ($PLUGIN_HOOKS[Hooks::USE_RULES] as $plugin => $val) {
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
