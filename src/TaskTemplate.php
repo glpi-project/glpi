@@ -133,12 +133,14 @@ class TaskTemplate extends AbstractITILChildTemplate
 
         $tab[] = [
             'id'                 => '7',
-            'table'              => 'glpi_users',
-            'field'              => 'name',
-            'linkfield'          => 'users_id_tech',
+            'table'              => $this->getTable(),
+            'field'              => 'users_id_tech',
             'name'               => __('By'),
-            'datatype'           => 'dropdown',
-            'right'              => 'own_ticket'
+            'searchtype'         => [
+                '0'                  => 'equals',
+                '1'                  => 'notequals',
+            ],
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -182,6 +184,11 @@ class TaskTemplate extends AbstractITILChildTemplate
         switch ($field) {
             case 'state':
                 return Planning::getState($values[$field]);
+            case 'users_id_tech':
+                if ((int) $values[$field] == -1) {
+                    return __('Current logged-in user');
+                }
+                return getUserName($values[$field], 1);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -198,6 +205,20 @@ class TaskTemplate extends AbstractITILChildTemplate
         switch ($field) {
             case 'state':
                 return Planning::dropdownState($name, $values[$field], false);
+            case 'users_id_tech':
+                return User::dropdown([
+                    'name'   => $name,
+                    'right'  => 'own_ticket',
+                    'value'  => $values[$field],
+                    'width'  => '100%',
+                    'display' => false,
+                    'toadd'  => [
+                        [
+                            'id'   => -1,
+                            'text' => __('Current logged-in user')
+                        ]
+                    ]
+                ]);
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
