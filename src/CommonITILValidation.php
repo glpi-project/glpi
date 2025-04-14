@@ -181,9 +181,8 @@ abstract class CommonITILValidation extends CommonDBChild
      */
     public function canUpdateItem(): bool
     {
-        $is_target = static::canValidate($this->fields[static::$items_id]);
         if (
-            !$is_target
+            !$this->canAnswer()
             && !Session::haveRightsOr(static::$rightname, static::getCreateRights())
         ) {
             return false;
@@ -191,7 +190,6 @@ abstract class CommonITILValidation extends CommonDBChild
         return (int) $this->fields['status'] === self::WAITING
             || (int) $this->fields['users_id_validate'] === Session::getLoginUserID();
     }
-
 
     /**
      * @param integer $items_id ID of the item
@@ -211,13 +209,29 @@ abstract class CommonITILValidation extends CommonDBChild
             'START'  => 0,
             'LIMIT'  => 1
         ]);
-
-        if (count($iterator) > 0) {
-            return true;
-        }
-        return false;
+        return count($iterator) > 0;
     }
 
+    /**
+     * Indicates whether the current connected user can answer the validation.
+     */
+    final public function canAnswer(): bool
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT' => [static::getTable() . '.id'],
+            'FROM'   => static::getTable(),
+            'WHERE'  => [
+                'id' => $this->getID(),
+                static::getTargetCriteriaForUser(Session::getLoginUserID()),
+            ],
+            'START'  => 0,
+            'LIMIT'  => 1
+        ]);
+        return count($iterator) > 0;
+    }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
@@ -389,9 +403,32 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function prepareInputForUpdate($input)
     {
-
+        $can_answer = $this->canAnswer();
+        // Don't allow changing internal entity fields or change the item it is attached to
         $forbid_fields = ['entities_id', static::$items_id, 'is_recursive'];
-        if (isset($input["status"]) && static::canValidate($this->fields[static::$items_id])) {
+        // The following fields shouldn't be changed by anyone after the approval is created
+        array_push(
+            $forbid_fields,
+            'users_id',
+            'itemtype_target',
+            'items_id_target',
+            'submission_date'
+        );
+
+        if (!$can_answer) {
+            array_push($forbid_fields, 'status', 'comment_validation', 'validation_date');
+        }
+
+        if ($this->fields["status"] !== self::WAITING) {
+            // Cannot change the approval request comment after it has been answered
+            array_push($forbid_fields, 'comment_submission');
+        }
+
+        foreach ($forbid_fields as $key) {
+            unset($input[$key]);
+        }
+
+        if (isset($input["status"])) {
             if (
                 ($input["status"] == self::REFUSED)
                 && (!isset($input["comment_validation"])
@@ -409,25 +446,6 @@ abstract class CommonITILValidation extends CommonDBChild
                 $input["validation_date"] = 'NULL';
             } else {
                 $input["validation_date"] = $_SESSION["glpi_currenttime"];
-            }
-
-            array_push(
-                $forbid_fields,
-                'users_id',
-                'itemtype_target',
-                'items_id_target',
-                'comment_submission',
-                'submission_date'
-            );
-        } else if (Session::haveRightsOr(static::$rightname, $this->getCreateRights())) { // Update validation request
-            array_push($forbid_fields, 'status', 'comment_validation', 'validation_date');
-        }
-
-        if (count($forbid_fields)) {
-            foreach (array_keys($forbid_fields) as $key) {
-                if (isset($input[$key])) {
-                    unset($input[$key]);
-                }
             }
         }
 

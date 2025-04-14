@@ -115,8 +115,7 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 } else if (isset($_POST['approval_action'])) {
-    $validation->getFromDB($_POST['id']);
-    if ($validation->canValidate($validation->fields[$validation::$items_id])) {
+    if ($validation->getFromDB($_POST['id']) && $validation->canAnswer()) {
         $validation->update($_POST + [
             'status' => ($_POST['approval_action'] === 'approve') ? CommonITILValidation::ACCEPTED : CommonITILValidation::REFUSED,
         ]);

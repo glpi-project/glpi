@@ -181,18 +181,20 @@
                 <h3 class="cart-title">{{ __("Validation request") }}</h3>
             </div>
             <div class="card-body">
-               {{ fields.dropdownField(
-                  'ITILValidationTemplate',
-                  'itilvalidationtemplates_id',
-                  '',
-                  _n('Template', 'Templates', 1),
-                  {
-                     'full_width': true,
-                     'on_change': 'itilvalidationtemplate_update' ~ rand ~ '(this.value);',
-                     'entity': item.fields['entities_id'],
-                     'rand': rand,
-                  },
-                ) }}
+                {% if item.isNewItem() %}
+                   {{ fields.dropdownField(
+                      'ITILValidationTemplate',
+                      'itilvalidationtemplates_id',
+                      '',
+                      _n('Template', 'Templates', 1),
+                      {
+                         'full_width': true,
+                         'on_change': 'itilvalidationtemplate_update' ~ rand ~ '(this.value);',
+                         'entity': item.fields['entities_id'],
+                         'rand': rand,
+                      },
+                    ) }}
+                {% endif %}
 
                 {{ fields.readOnlyField(
                     'approval_requester',
@@ -245,12 +247,13 @@
                     subitem.fields['comment_submission'],
                     _n('Comment', 'Comments', 1),
                     {
-                    'full_width': true,
-                    'enable_richtext': true,
-                    'enable_fileupload': false,
-                    'mention_options': mention_options,
-                    'entities_id': item.fields['entities_id'],
-                    'rand': rand,
+                        'full_width': true,
+                        'enable_richtext': true,
+                        'enable_fileupload': false,
+                        'mention_options': mention_options,
+                        'entities_id': item.fields['entities_id'],
+                        'rand': rand,
+                        'disabled': item.fields['status'] != constant('CommonITILValidation::WAITING'),
                     }
                 ) }}
 

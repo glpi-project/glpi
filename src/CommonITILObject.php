@@ -7699,6 +7699,7 @@ abstract class CommonITILObject extends CommonDBTM
             class_exists($validation_class) && $params['with_validations']
             && (!$params['check_view_rights'] || $validation_class::canView())
         ) {
+            /** @var CommonITILValidation $validation_obj */
             $validation_obj = new $validation_class();
             $validations = $validation_obj->find([
                 $foreignKey => $this->getID()
@@ -7711,7 +7712,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $validation->post_getFromDB();
 
                 $canedit = $validation_obj->can($validations_id, UPDATE);
-                $cananswer = $validation_obj->canValidate($this->getID())
+                $cananswer = $validation_obj->canAnswer()
                     && $validation_row['status'] == CommonITILValidation::WAITING
                     && !$this->isSolved(true);
                 $user = new User();
