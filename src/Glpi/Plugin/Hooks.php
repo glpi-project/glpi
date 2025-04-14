@@ -39,13 +39,6 @@ use Glpi\Api\HL as HL_API;
 
 class Hooks
 {
-    // Boolean hooks
-    /**
-     * @var string
-     * @deprecated 11.0.0 Plugins are expected to always be CSRF compliant.
-     */
-    public const CSRF_COMPLIANT = 'csrf_compliant';
-
     // File hooks
     public const ADD_CSS               = 'add_css';
     public const ADD_JAVASCRIPT        = 'add_javascript';
