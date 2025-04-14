@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Location;
 
 /* Test for inc/savedsearch.class.php */
 
@@ -867,5 +868,60 @@ class LockedfieldTest extends DbTestCase
             'items_id' => $computer->getID(),
         ];
         $this->assertEquals(false, $instance->canCreateItem());
+    }
+
+    public function testReplaceLockedField()
+    {
+        $this->login('glpi', 'glpi');
+
+        $location = new Location();
+        $location_id = (int)$location->add([
+            'entities' => 0,
+            'name' => 'Location 1',
+        ]);
+        $this->assertGreaterThan(0, $location_id);
+
+        $location2 = new Location();
+        $location_id2 = (int)$location2->add([
+            'entities' => 0,
+            'name' => 'Location 2',
+        ]);
+        $this->assertGreaterThan(0, $location_id2);
+
+        $computer = new \Computer();
+        $cid = (int)$computer->add([
+            'name'         => 'Computer',
+            'entities_id'  => 0,
+            'is_dynamic'   => 1,
+            'locations_id' => $location_id,
+        ]);
+        $this->assertGreaterThan(0, $cid);
+
+        $global_lockedfield = new \Lockedfield();
+        $global_lockedfield_id = (int)$global_lockedfield->add([
+            'item' => 'Computer - locations_id'
+        ]);
+        $this->assertGreaterThan(0, $global_lockedfield_id);
+
+        $this->assertSame(['locations_id' => null], $global_lockedfield->getLockedValues($computer->getType(), $cid));
+
+        $this->assertEquals($computer->fields['locations_id'], $location_id);
+
+        // Delete the location with a replacement value
+        $location->delete([
+            'id' => $location_id,
+            '_replace_by' => $location_id2,
+        ], true);
+
+        $this->assertTrue($computer->getFromDB($cid));
+        $this->assertEquals($computer->fields['locations_id'], $location_id2);
+
+        // Delete the location with no replacement value
+        $location->delete([
+            'id' => $location_id2,
+        ], true);
+
+        $this->assertTrue($computer->getFromDB($cid));
+        $this->assertEquals($computer->fields['locations_id'], 0);
     }
 }
