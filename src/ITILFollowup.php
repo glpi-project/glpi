@@ -365,6 +365,13 @@ class ITILFollowup extends CommonDBChild
             );
         }
 
+        // _do_not_compute_status can be passed from rule
+        // if isset it will be used to set _do_not_compute_takeintoaccount
+        // and prevent take into account delay computation
+        if (isset($input['_do_not_compute_status'])) {
+            $input['_do_not_compute_takeintoaccount'] = $input['_do_not_compute_status'];
+        }
+
         $input["_job"] = new $input['itemtype']();
 
         if (
