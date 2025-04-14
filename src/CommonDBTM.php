@@ -940,7 +940,7 @@ class CommonDBTM extends CommonGLPI
                         $input =  [
                             $id_field       => $data[$id_field],
                             '_disablenotif' => true,
-                            '_replace_by'      => isset($this->input['_replace_by']),
+                            '_skip_locks'   => isset($this->input['_replace_by']),
                         ] + $update;
 
                         //prevent lock if item is dynamic
@@ -1809,7 +1809,8 @@ class CommonDBTM extends CommonGLPI
     protected function cleanLockeds()
     {
         if (
-            (
+            ($this->input['_skip_locks'] ?? false) !== true
+            && (
                 (
                     isset($this->input['_transfer'])
                     // lock updated fields in transfer only if requested
@@ -1820,7 +1821,6 @@ class CommonDBTM extends CommonGLPI
             && $this->isDynamic()
             && (in_array('is_dynamic', $this->updates) || isset($this->input['is_dynamic'])
             && $this->input['is_dynamic'] == true)
-            && !isset($this->input['_replace_by'])
         ) {
             $lockedfield = new Lockedfield();
             $locks = $lockedfield->getFullLockedFields($this->getType(), $this->fields['id']);
