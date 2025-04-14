@@ -181,9 +181,6 @@ class Hooks
 
     public const STALE_AGENT_CONFIG = 'stale_agent_config';
 
-    // Debug / Development hooks
-    const DEBUG_TABS = 'debug_tabs';
-
     // Menu Hooks
     public const MENU_TOADD = 'menu_toadd';
     public const HELPDESK_MENU_ENTRY = 'helpdesk_menu_entry';
@@ -229,6 +226,13 @@ class Hooks
         return [
             self::ADD_CSS,
             self::ADD_JAVASCRIPT,
+            self::ADD_JAVASCRIPT_MODULE,
+            self::JAVASCRIPT,
+            self::ADD_CSS_ANONYMOUS_PAGE,
+            self::ADD_JAVASCRIPT_ANONYMOUS_PAGE,
+            self::ADD_JAVASCRIPT_MODULE_ANONYMOUS_PAGE,
+            self::ADD_HEADER_TAG,
+            self::ADD_HEADER_TAG_ANONYMOUS_PAGE,
         ];
     }
 
@@ -257,7 +261,6 @@ class Hooks
             self::UNDISCLOSED_CONFIG_VALUE,
             self::UNLOCK_FIELDS,
             self::VCARD_DATA,
-            self::ADD_HEADER_TAG
         ];
     }
 
