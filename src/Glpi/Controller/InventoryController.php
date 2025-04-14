@@ -37,11 +37,11 @@ namespace Glpi\Controller;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Http\Firewall;
-use Symfony\Component\HttpFoundation\Request;
+use Glpi\Http\RedirectResponse;
 use Glpi\Inventory\Conf;
 use Glpi\Security\Attribute\DisableCsrfChecks;
 use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 

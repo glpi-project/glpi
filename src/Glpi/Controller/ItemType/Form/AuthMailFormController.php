@@ -36,11 +36,11 @@ namespace Glpi\Controller\ItemType\Form;
 
 use AuthMail;
 use Glpi\Controller\GenericFormController;
+use Glpi\Http\RedirectResponse;
 use Glpi\Routing\Attribute\ItemtypeFormLegacyRoute;
 use Glpi\Routing\Attribute\ItemtypeFormRoute;
 use Html;
 use Session;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

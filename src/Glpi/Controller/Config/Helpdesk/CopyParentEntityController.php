@@ -35,9 +35,8 @@
 namespace Glpi\Controller\Config\Helpdesk;
 
 use Entity;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Http\RedirectResponse;
 use Html;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
