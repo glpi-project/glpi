@@ -82,11 +82,9 @@ class RuleRightCollection extends RuleCollection
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center' colspan='4'>" . __('Entities assignment') . "</td>";
             foreach ($output["_ldap_rules"]["rules_entities"] as $entities) {
-                foreach ($entities as $entity) {
-                    $this->displayActionByName("entity", $entity[0]);
-                    if (isset($entity[1])) {
-                        $this->displayActionByName("recursive", $entity[1]);
-                    }
+                $this->displayActionByName("entity", $entities[0]);
+                if (isset($entities[1])) {
+                    $this->displayActionByName("is_recursive", $entities[1]);
                 }
             }
         }
@@ -249,13 +247,19 @@ class RuleRightCollection extends RuleCollection
            //Get all the field to retrieve to be able to process rule matching
             $rule_fields = $this->getFieldsToLookFor();
 
-           //Get all the data we need from ldap to process the rules
+            //If we are oustide authentication process, $params_lower["connection"] is not set
+            if (empty($params_lower["connection"])) {
+                return $rule_parameters;
+            }
+
+            //Get all the data we need from ldap to process the rules
             $sz = @ldap_read(
                 $params_lower["connection"],
                 $params_lower["userdn"],
                 "objectClass=*",
                 $rule_fields
             );
+
             if ($sz === false) {
                 // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                 if (ldap_errno($params_lower["connection"]) !== 32) {
