@@ -49,6 +49,11 @@ final class Engine
      */
     private array $processing_stack = [];
 
+    /**
+     * @var array Cache for item visibility results
+     */
+    private array $visibility_cache = [];
+
     public function __construct(
         private Form $form,
         private EngineInput $input,
@@ -105,48 +110,42 @@ final class Engine
 
     private function computeItemVisibility(ConditionableVisibilityInterface $item): bool
     {
+        $item_uuid = $item->getUUID();
+
+        // Return cached result if available
+        if (isset($this->visibility_cache[$item_uuid])) {
+            return $this->visibility_cache[$item_uuid];
+        }
+
         // Detect circular dependencies
-        $item_id = $this->getItemIdentifier($item);
-        if (in_array($item_id, $this->processing_stack)) {
+        if (in_array($item_uuid, $this->processing_stack)) {
             // Circular dependency detected, stop processing and return false to avoid infinite loop.
             return false;
         }
 
         // Add current item to the processing stack
-        $this->processing_stack[] = $item_id;
+        $this->processing_stack[] = $item_uuid;
 
         try {
             // Stop immediatly if the strategy result is forced.
             $strategy = $item->getConfiguredVisibilityStrategy();
             if ($strategy == VisibilityStrategy::ALWAYS_VISIBLE) {
-                return true;
+                $result = true;
+            } else {
+                // Compute the conditions
+                $conditions = $item->getConfiguredConditionsData();
+                $conditions_result = $this->computeConditions($conditions);
+                $result = $strategy->mustBeVisible($conditions_result);
             }
 
-            // Compute the conditions
-            $conditions = $item->getConfiguredConditionsData();
-            $conditions_result = $this->computeConditions($conditions);
+            // Cache the result
+            $this->visibility_cache[$item_uuid] = $result;
 
-            return $strategy->mustBeVisible($conditions_result);
+            return $result;
         } finally {
             // Remove the item from the processing stack when done
             array_pop($this->processing_stack);
         }
-    }
-
-    /**
-     * Get a unique identifier for an item to track in the processing stack
-     */
-    private function getItemIdentifier(ConditionableVisibilityInterface $item): string
-    {
-        if ($item instanceof Question) {
-            return 'question_' . $item->getID();
-        } elseif ($item instanceof Comment) {
-            return 'comment_' . $item->getID();
-        } elseif ($item instanceof Section) {
-            return 'section_' . $item->getID();
-        }
-
-        return '';
     }
 
     private function computeDestinationCreation(ConditionableCreationInterface $item): bool

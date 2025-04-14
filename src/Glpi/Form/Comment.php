@@ -73,6 +73,12 @@ final class Comment extends CommonDBChild implements
     }
 
     #[Override]
+    public function getUUID(): string
+    {
+        return $this->fields['uuid'];
+    }
+
+    #[Override]
     public function post_addItem()
     {
         // Report logs to the parent form

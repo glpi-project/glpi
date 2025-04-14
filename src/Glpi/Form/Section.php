@@ -80,6 +80,12 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     }
 
     #[Override]
+    public function getUUID(): string
+    {
+        return $this->fields['uuid'];
+    }
+
+    #[Override]
     public function post_getFromDB()
     {
         // Clear any lazy loaded data

@@ -77,6 +77,12 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     }
 
     #[Override]
+    public function getUUID(): string
+    {
+        return $this->fields['uuid'];
+    }
+
+    #[Override]
     public function isEntityAssign()
     {
         return false;
