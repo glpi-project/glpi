@@ -32,22 +32,26 @@
  * ---------------------------------------------------------------------
  */
 
-declare(strict_types=1);
+namespace Glpi\Kernel\Listener\RequestListener;
 
-namespace Glpi\Controller;
+use Glpi\Error\ErrorDisplayHandler\HtmlErrorDisplayHandler;
+use Glpi\Kernel\ListenersPriority;
+use Glpi\Log\AccessLogLineFormatter;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 
-use Glpi\Http\Firewall;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Response;
-
-class MaintenanceController extends AbstractController
+class ErrorHandlerRequestListener implements EventSubscriberInterface
 {
-    /**
-     * Internal route that displays the "maintenance" page.
-     */
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    public function __invoke(): Response
+    public static function getSubscribedEvents(): array
     {
-        return $this->render('maintenance.html.twig');
+        return [
+            RequestEvent::class => ['onRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onRequest(RequestEvent $event): void
+    {
+        AccessLogLineFormatter::setCurrentRequest($event->getRequest());
+        HtmlErrorDisplayHandler::setCurrentRequest($event->getRequest());
     }
 }

@@ -32,22 +32,29 @@
  * ---------------------------------------------------------------------
  */
 
-declare(strict_types=1);
+namespace Glpi\Kernel\Listener\ExceptionListener;
 
-namespace Glpi\Controller;
+use Glpi\Exception\RedirectException;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-use Glpi\Http\Firewall;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Response;
-
-class MaintenanceController extends AbstractController
+final readonly class RedirectExceptionListener implements EventSubscriberInterface
 {
-    /**
-     * Internal route that displays the "maintenance" page.
-     */
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    public function __invoke(): Response
+    public static function getSubscribedEvents(): array
     {
-        return $this->render('maintenance.html.twig');
+        return [
+            // priority = 1 to be executed before the default Symfony listeners
+            KernelEvents::EXCEPTION => ['onKernelException', 1],
+        ];
+    }
+
+    public function onKernelException(ExceptionEvent $event): void
+    {
+        $throwable = $event->getThrowable();
+
+        if ($throwable instanceof RedirectException) {
+            $event->setResponse($throwable->getResponse());
+        }
     }
 }

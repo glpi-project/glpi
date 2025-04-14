@@ -32,22 +32,39 @@
  * ---------------------------------------------------------------------
  */
 
-declare(strict_types=1);
+namespace Glpi\Kernel\Listener\PostBootListener;
 
-namespace Glpi\Controller;
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Debug\Profiler;
+use Glpi\Dropdown\DropdownDefinitionManager;
+use Glpi\Kernel\KernelListenerTrait;
+use Glpi\Kernel\ListenersPriority;
+use Glpi\Kernel\PostBootEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-use Glpi\Http\Firewall;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Response;
-
-class MaintenanceController extends AbstractController
+final readonly class CustomObjectsBootstrap implements EventSubscriberInterface
 {
-    /**
-     * Internal route that displays the "maintenance" page.
-     */
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    public function __invoke(): Response
+    use KernelListenerTrait;
+
+    public static function getSubscribedEvents(): array
     {
-        return $this->render('maintenance.html.twig');
+        return [
+            PostBootEvent::class => ['onPostBoot', ListenersPriority::POST_BOOT_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onPostBoot(): void
+    {
+        if (!$this->isDatabaseUsable()) {
+            // Requires the database to be available.
+            return;
+        }
+
+        Profiler::getInstance()->start('CustomObjectsBootstrap::execute', Profiler::CATEGORY_BOOT);
+
+        AssetDefinitionManager::getInstance()->bootstrapDefinitions();
+        DropdownDefinitionManager::getInstance()->bootstrapDefinitions();
+
+        Profiler::getInstance()->stop('CustomObjectsBootstrap::execute');
     }
 }

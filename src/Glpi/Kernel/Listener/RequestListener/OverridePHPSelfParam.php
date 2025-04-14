@@ -32,22 +32,32 @@
  * ---------------------------------------------------------------------
  */
 
-declare(strict_types=1);
+namespace Glpi\Kernel\Listener\RequestListener;
 
-namespace Glpi\Controller;
+use Glpi\Kernel\ListenersPriority;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-use Glpi\Http\Firewall;
-use Glpi\Security\Attribute\SecurityStrategy;
-use Symfony\Component\HttpFoundation\Response;
-
-class MaintenanceController extends AbstractController
+final class OverridePHPSelfParam implements EventSubscriberInterface
 {
-    /**
-     * Internal route that displays the "maintenance" page.
-     */
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
-    public function __invoke(): Response
+    public static function getSubscribedEvents(): array
     {
-        return $this->render('maintenance.html.twig');
+        return [
+            KernelEvents::REQUEST => ['onKernelRequest', ListenersPriority::REQUEST_LISTENERS_PRIORITIES[self::class]],
+        ];
+    }
+
+    public function onKernelRequest(RequestEvent $event): void
+    {
+        if (!$event->isMainRequest()) {
+            // Do not override server variables on sub-requests.
+            return;
+        }
+
+        $current_path = $event->getRequest()->getBasePath() . $event->getRequest()->getPathInfo();
+
+        $_SERVER['PHP_SELF'] = $current_path;
+        $event->getRequest()->server->set('PHP_SELF', $current_path);
     }
 }
