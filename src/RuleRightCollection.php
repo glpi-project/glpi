@@ -247,29 +247,30 @@ class RuleRightCollection extends RuleCollection
            //Get all the field to retrieve to be able to process rule matching
             $rule_fields = $this->getFieldsToLookFor();
 
-            //Get all the data we need from ldap to process the rules
-            if (!empty($params_lower["connection"])) {
-                $sz = @ldap_read(
-                    $params_lower["connection"],
-                    $params_lower["userdn"],
-                    "objectClass=*",
-                    $rule_fields
-                );
+            //If we are oustide authentication process, $params_lower["connection"] is not set
+            if (empty($params_lower["connection"])) {
+                return $rule_parameters;
+            }
 
-                if ($sz === false) {
-                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
-                    if (ldap_errno($params_lower["connection"]) !== 32) {
-                        trigger_error(
-                            AuthLDAP::buildError(
-                                $params_lower["connection"],
-                                sprintf('Unable to get LDAP user having DN `%s` with filter `%s`', $params_lower["userdn"], 'objectClass=*')
-                            ),
-                            E_USER_WARNING
-                        );
-                    }
-                    return $rule_parameters;
+            //Get all the data we need from ldap to process the rules
+            $sz = @ldap_read(
+                $params_lower["connection"],
+                $params_lower["userdn"],
+                "objectClass=*",
+                $rule_fields
+            );
+
+            if ($sz === false) {
+                // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                if (ldap_errno($params_lower["connection"]) !== 32) {
+                    trigger_error(
+                        AuthLDAP::buildError(
+                            $params_lower["connection"],
+                            sprintf('Unable to get LDAP user having DN `%s` with filter `%s`', $params_lower["userdn"], 'objectClass=*')
+                        ),
+                        E_USER_WARNING
+                    );
                 }
-            } else {
                 return $rule_parameters;
             }
 
