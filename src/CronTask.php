@@ -1892,7 +1892,7 @@ TWIG, ['msg' => __('Last run list')]);
      *
      * @return bool
      **/
-    protected static function mustRunWebTasks(): bool
+    public static function mustRunWebTasks(): bool
     {
         $web_tasks_count = countElementsInTable(self::getTable(), [
             'mode'  => self::MODE_INTERNAL, // "GLPI" mode
