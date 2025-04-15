@@ -37,9 +37,11 @@
  * @var \Migration $migration
  */
 
-$migration->changeField(
+$migration->addField(
     'glpi_tasktemplates',
-    'users_id_tech',
-    'users_id_tech',
-    "int NOT NULL DEFAULT '0'"
+    'use_current_user',
+    'bool',
+    [
+        'after' => 'users_id_tech',
+    ]
 );

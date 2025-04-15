@@ -49,7 +49,12 @@ class TaskTemplate extends AbstractITILChildTemplate
 
     public static $rightname          = 'tasktemplate';
 
-
+    public function post_getFromDB()
+    {
+        if (isset($this->fields['use_current_user']) && $this->fields['use_current_user']) {
+            $this->fields['users_id_tech'] = -1;
+        }
+    }
 
     public static function getTypeName($nb = 0)
     {
@@ -141,6 +146,10 @@ class TaskTemplate extends AbstractITILChildTemplate
                 '1'                  => 'notequals',
             ],
             'datatype'           => 'specific',
+            'additionalfields'   => ['use_current_user'],
+            'toadd'              => [
+                0 => '',
+            ]
         ];
 
         $tab[] = [
@@ -185,9 +194,10 @@ class TaskTemplate extends AbstractITILChildTemplate
             case 'state':
                 return Planning::getState($values[$field]);
             case 'users_id_tech':
-                if ((int) $values[$field] == -1) {
+                if (isset($values['use_current_user']) && $values['use_current_user'] == 1) {
                     return __('Current logged-in user');
                 }
+
                 return getUserName($values[$field], 1);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -277,6 +287,34 @@ class TaskTemplate extends AbstractITILChildTemplate
         }
     }
 
+    public function prepareInputForAdd($input)
+    {
+        $input = parent::prepareInputForAdd($input);
+
+        if (isset($input['users_id_tech']) && (int) $input['users_id_tech'] == -1) {
+            $input['use_current_user'] = 1;
+            $input['users_id_tech'] = 0;
+        } else {
+            $input['use_current_user'] = 0;
+        }
+
+        return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+
+        if (isset($input['users_id_tech']) && (int) $input['users_id_tech'] == -1) {
+            $input['use_current_user'] = 1;
+            $input['users_id_tech'] = 0;
+        } else if (isset($input['users_id_tech'])) {
+            $input['use_current_user'] = 0;
+        }
+
+        return $input;
+    }
+
     public static function getIcon()
     {
         return "fas fa-layer-group";
@@ -285,5 +323,49 @@ class TaskTemplate extends AbstractITILChildTemplate
     public function getCloneRelations(): array
     {
         return [];
+    }
+
+    public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val)
+    {
+        if ($itemtype !== self::class) {
+            return false;
+        }
+
+        $searchopt = Search::getOptions($itemtype);
+        if (!isset($searchopt[$ID]['field'])) {
+            return false;
+        }
+
+        $field = $searchopt[$ID]['field'];
+        $table = self::getTable();
+
+        if ($field === 'users_id_tech') {
+            $positive_condition = ($nott == 0 && $searchtype == 'equals') || ($nott == 1 && $searchtype == 'notequals');
+            $table_use_current_user = "`$table`.`use_current_user`";
+            $table_users_id_tech = "`$table`.`users_id_tech`";
+            $int_val = (int) $val;
+
+            if ($val == -1) {
+                if ($positive_condition) {
+                    return " $link ($table_use_current_user = 1)";
+                } else {
+                    return " $link ($table_use_current_user = 0)";
+                }
+            } else if ($val == 0) {
+                if ($positive_condition) {
+                    return " $link ($table_use_current_user = 0 AND $table_users_id_tech = 0)";
+                } else {
+                    return " $link ($table_use_current_user = 1 OR $table_users_id_tech != 0)";
+                }
+            } else {
+                if ($positive_condition) {
+                    return " $link ($table_use_current_user = 0 AND $table_users_id_tech = $int_val)";
+                } else {
+                    return " $link ($table_use_current_user = 1 OR $table_users_id_tech != $int_val)";
+                }
+            }
+        }
+
+        return false;
     }
 }
