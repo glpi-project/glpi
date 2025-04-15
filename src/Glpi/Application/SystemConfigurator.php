@@ -143,8 +143,9 @@ final class SystemConfigurator
                 'GLPI_USER_AGENT_EXTRA_COMMENTS'    => '', // Extra comment to add to GLPI User-Agent
                 'GLPI_DOCUMENTATION_ROOT_URL'       => 'https://links.glpi-project.org', // Official documentations root URL
 
-                // SQL compatibility
+                // Constants dedicated to developers
                 'GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE' => '1', // '1' to disable ONLY_FULL_GROUP_BY 'sql_mode'
+                'GLPI_STRICT_DEPRECATED'                   => false, // `true` to trigger specific deprecations
 
                 // Other constants
                 'GLPI_AJAX_DASHBOARD'         => '1', // 1 for "multi ajax mode" 0 for "single ajax mode" (see Glpi\Dashboard\Grid::getCards)
@@ -173,6 +174,7 @@ final class SystemConfigurator
                     $this->root_dir . '/plugins',
                     $this->root_dir . '/tests/fixtures/plugins',
                 ],
+                'GLPI_STRICT_DEPRECATED'        => true,
             ],
             'development' => [
                 'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '1'
