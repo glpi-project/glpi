@@ -32,12 +32,7 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<div
-    {% if main_config_field.value != CONFIG_SPECIFIC_VALUE %}
-        class="d-none"
-    {% endif %}
-    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUE }}"
->
+<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUE }}">
     {{ fields.dropdownField(
         'Location',
         specific_value_extra_field.input_name,
@@ -54,12 +49,7 @@
     ) }}
 </div>
 
-<div
-    {% if main_config_field.value != CONFIG_SPECIFIC_ANSWER %}
-        class="d-none"
-    {% endif %}
-    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ANSWER }}"
->
+<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ANSWER }}">
     {{ fields.dropdownArrayField(
         specific_answer_extra_field.input_name,
         specific_answer_extra_field.value,

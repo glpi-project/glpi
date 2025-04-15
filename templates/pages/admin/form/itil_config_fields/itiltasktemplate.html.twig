@@ -32,12 +32,7 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<div
-    {% if main_config_field.value != CONFIG_SPECIFIC_VALUES %}
-        class="d-none"
-    {% endif %}
-    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUES }}"
->
+<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUES }}">
     {{ fields.dropdownField(
         'TaskTemplate',
         specific_value_extra_field.input_name,

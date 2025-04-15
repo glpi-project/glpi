@@ -104,12 +104,7 @@ final class TemplateField extends AbstractConfigField implements DestinationFiel
         $template = <<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
 
-            <div
-                {% if main_config_field.value != CONFIG_SPECIFIC_TEMPLATE %}
-                    class="d-none"
-                {% endif %}
-                data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_TEMPLATE }}"
-            >
+            <div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_TEMPLATE }}">
                 {{ fields.dropdownArrayField(
                     specific_template_extra_field.input_name,
                     specific_template_extra_field.value,
