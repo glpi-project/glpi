@@ -224,16 +224,12 @@ class EntityField extends AbstractConfigField implements DestinationFieldConvert
                 );
 
                 if ($mapped_item === null) {
-                    $migration->result->addMessage(MessageType::Error, sprintf(
-                        "Question %d not found in a target form (%s)",
-                        $rawData['destination_entity_value'],
-                        $form->getName()
-                    ));
+                    throw new InvalidArgumentException("Question not found in a target form");
                 }
 
                 return new EntityFieldConfig(
                     strategy: EntityFieldStrategy::SPECIFIC_ANSWER,
-                    specific_question_id: $mapped_item['items_id'] ?? 0
+                    specific_question_id: $mapped_item['items_id']
                 );
         }
 

@@ -239,14 +239,10 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                             );
 
                             if ($mapped_item === null) {
-                                $migration->result->addMessage(MessageType::Error, sprintf(
-                                    "Question %d not found in a target form (%s)",
-                                    $id,
-                                    $form->getName()
-                                ));
+                                throw new InvalidArgumentException("Question not found in a target form");
                             }
 
-                            $specific_question_ids[] = $mapped_item['items_id'] ?? 0;
+                            $specific_question_ids[] = $mapped_item['items_id'];
                         }
                     }
                 }

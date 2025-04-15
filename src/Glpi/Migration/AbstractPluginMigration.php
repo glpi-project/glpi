@@ -59,7 +59,7 @@ abstract class AbstractPluginMigration
     /**
      * Current execution results.
      */
-    public PluginMigrationResult $result;
+    protected PluginMigrationResult $result;
 
     /**
      * Mapping between plugin items and GLPI core items.

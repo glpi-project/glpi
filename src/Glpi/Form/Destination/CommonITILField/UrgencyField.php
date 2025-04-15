@@ -159,16 +159,12 @@ class UrgencyField extends AbstractConfigField implements DestinationFieldConver
                 );
 
                 if ($mapped_item === null) {
-                    $migration->result->addMessage(MessageType::Error, sprintf(
-                        "Question %d not found in a target form (%s)",
-                        $rawData['urgency_question'],
-                        $form->getName()
-                    ));
+                    throw new InvalidArgumentException("Question not found in a target form");
                 }
 
                 return new UrgencyFieldConfig(
                     strategy: UrgencyFieldStrategy::SPECIFIC_ANSWER,
-                    specific_question_id: $mapped_item['items_id'] ?? 0
+                    specific_question_id: $mapped_item['items_id']
                 );
         }
 

@@ -843,11 +843,22 @@ class FormMigration extends AbstractPluginMigration
             foreach ($configurable_fields as $configurable_field) {
                 /** @var AbstractConfigField $configurable_field */
                 if ($configurable_field instanceof DestinationFieldConverterInterface) {
-                    $fields_config[$configurable_field::getKey()] = $configurable_field->convertFieldConfig(
-                        $this,
-                        $form,
-                        $raw_target
-                    )->jsonSerialize();
+                    try {
+                        $fields_config[$configurable_field::getKey()] = $configurable_field->convertFieldConfig(
+                            $this,
+                            $form,
+                            $raw_target
+                        )->jsonSerialize();
+                    } catch (\Throwable $th) {
+                        $this->result->addMessage(
+                            MessageType::Error,
+                            sprintf(
+                                __('The "%s" destination field configuration of the form "%s" cannot be imported.'),
+                                $configurable_field->getLabel(),
+                                $form->getName()
+                            )
+                        );
+                    }
                 }
 
                 if ($configurable_field instanceof ContentField) {
@@ -936,12 +947,23 @@ class FormMigration extends AbstractPluginMigration
             );
 
             foreach ($configurable_fields as $configurable_field) {
-                /** @var ITILActorField $configurable_field */
-                $fields_config[$configurable_field::getKey()] = $configurable_field->convertFieldConfig(
-                    $this,
-                    $destination->getItem(),
-                    $actors
-                )->jsonSerialize();
+                try {
+                    /** @var ITILActorField $configurable_field */
+                    $fields_config[$configurable_field::getKey()] = $configurable_field->convertFieldConfig(
+                        $this,
+                        $destination->getItem(),
+                        $actors
+                    )->jsonSerialize();
+                } catch (\Throwable $th) {
+                    $this->result->addMessage(
+                        MessageType::Error,
+                        sprintf(
+                            __('The "%s" destination field configuration of the form "%s" cannot be imported.'),
+                            $configurable_field->getLabel(),
+                            $destination->getItem()->getName()
+                        )
+                    );
+                }
             }
 
             if (

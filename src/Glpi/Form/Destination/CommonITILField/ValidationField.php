@@ -286,14 +286,10 @@ class ValidationField extends AbstractConfigField implements DestinationFieldCon
                         );
 
                         if ($mapped_item === null) {
-                            $migration->result->addMessage(MessageType::Error, sprintf(
-                                "Question %d not found in a target form (%s)",
-                                $rawData['commonitil_validation_question'],
-                                $form->getName()
-                            ));
+                            throw new InvalidArgumentException("Question not found in a target form");
                         }
 
-                        $question_ids[] = $mapped_item['items_id'] ?? 0;
+                        $question_ids[] = $mapped_item['items_id'];
                     }
 
                     return new ValidationFieldConfig(
