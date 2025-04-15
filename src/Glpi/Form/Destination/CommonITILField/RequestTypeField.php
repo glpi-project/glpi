@@ -150,12 +150,18 @@ final class RequestTypeField extends AbstractConfigField implements DestinationF
                     specific_request_type: $rawData['type_question']
                 );
             case 2: // PluginFormcreatorAbstractItilTarget::REQUESTTYPE_ANSWER
+                $mapped_item = $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    $rawData['type_question']
+                );
+
+                if ($mapped_item === null) {
+                    throw new InvalidArgumentException("Question not found in a target form");
+                }
+
                 return new RequestTypeFieldConfig(
                     strategy: RequestTypeFieldStrategy::SPECIFIC_ANSWER,
-                    specific_question_id: $migration->getMappedItemTarget(
-                        'PluginFormcreatorQuestion',
-                        $rawData['type_question']
-                    )['items_id'],
+                    specific_question_id: $mapped_item['items_id']
                 );
         }
 

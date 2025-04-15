@@ -154,12 +154,18 @@ final class UrgencyField extends AbstractConfigField implements DestinationField
                     specific_urgency_value: $rawData['urgency_question']
                 );
             case 3: // PluginFormcreatorAbstractItilTarget::URGENCY_RULE_ANSWER
+                $mapped_item = $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    $rawData['urgency_question']
+                );
+
+                if ($mapped_item === null) {
+                    throw new InvalidArgumentException("Question not found in a target form");
+                }
+
                 return new UrgencyFieldConfig(
                     strategy: UrgencyFieldStrategy::SPECIFIC_ANSWER,
-                    specific_question_id: $migration->getMappedItemTarget(
-                        'PluginFormcreatorQuestion',
-                        $rawData['urgency_question']
-                    )['items_id']
+                    specific_question_id: $mapped_item['items_id']
                 );
         }
 

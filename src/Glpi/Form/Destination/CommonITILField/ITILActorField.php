@@ -236,10 +236,16 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
 
                     if ($strategy === ITILActorFieldStrategy::SPECIFIC_ANSWERS) {
                         foreach ($ids as $id) {
-                            $specific_question_ids[] = $migration->getMappedItemTarget(
+                            $mapped_item = $migration->getMappedItemTarget(
                                 'PluginFormcreatorQuestion',
                                 $id
-                            )['items_id'];
+                            );
+
+                            if ($mapped_item === null) {
+                                throw new InvalidArgumentException("Question not found in a target form");
+                            }
+
+                            $specific_question_ids[] = $mapped_item['items_id'];
                         }
                     }
                 }

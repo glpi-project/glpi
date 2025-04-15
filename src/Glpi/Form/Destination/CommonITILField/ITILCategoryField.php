@@ -146,12 +146,18 @@ final class ITILCategoryField extends AbstractConfigField implements Destination
                     specific_itilcategory_id: $rawData['category_question']
                 );
             case 3: // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_ANSWER
+                $mapped_item = $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    $rawData['category_question']
+                );
+
+                if ($mapped_item === null) {
+                    throw new InvalidArgumentException("Question not found in a target form");
+                }
+
                 return new ITILCategoryFieldConfig(
                     strategy: ITILCategoryFieldStrategy::SPECIFIC_ANSWER,
-                    specific_question_id: $migration->getMappedItemTarget(
-                        'PluginFormcreatorQuestion',
-                        $rawData['category_question']
-                    )['items_id'],
+                    specific_question_id: $mapped_item['items_id']
                 );
             case 4: // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_LAST_ANSWER
                 return new ITILCategoryFieldConfig(

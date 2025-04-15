@@ -189,12 +189,18 @@ final class LocationField extends AbstractConfigField implements DestinationFiel
                         specific_location_id: $rawData['location_question']
                     );
                 case 3: // PluginFormcreatorAbstractItilTarget::LOCATION_RULE_ANSWER
+                    $mapped_item = $migration->getMappedItemTarget(
+                        'PluginFormcreatorQuestion',
+                        $rawData['location_question']
+                    );
+
+                    if ($mapped_item === null) {
+                        throw new InvalidArgumentException("Question not found in a target form");
+                    }
+
                     return new LocationFieldConfig(
                         strategy: LocationFieldStrategy::SPECIFIC_ANSWER,
-                        specific_question_id: $migration->getMappedItemTarget(
-                            'PluginFormcreatorQuestion',
-                            $rawData['location_question']
-                        )['items_id'],
+                        specific_question_id: $mapped_item['items_id']
                     );
                 case 4: // PluginFormcreatorAbstractItilTarget::LOCATION_RULE_LAST_ANSWER
                     return new LocationFieldConfig(

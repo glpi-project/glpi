@@ -246,7 +246,8 @@ class FormMigration extends AbstractPluginMigration
         $this->processMigrationOfSections();
         $this->processMigrationOfQuestions();
         $this->processMigrationOfComments();
-        $this->updateBlockHorizontalRank();
+        $this->removeUselessHorizontalRanks();
+        $this->updateHorizontalRanks();
         $this->processMigrationOfAccessControls();
         $this->processMigrationOfFormTargets();
         $this->processMigrationOfTranslations();
@@ -534,13 +535,14 @@ class FormMigration extends AbstractPluginMigration
     }
 
     /**
-     * Update horizontal rank of questions and comments to be consistent with the new form system
+     * Sets horizontal_rank to null for blocks that are contained in a horizontal layout
+     * and have only one element.
      *
      * @return void
      */
-    private function updateBlockHorizontalRank(): void
+    private function removeUselessHorizontalRanks(): void
     {
-        $this->progress_indicator?->setProgressBarMessage(__('Updating horizontal rank...'));
+        $this->progress_indicator?->setProgressBarMessage(__('Cleaning imported data...'));
 
         $tables = [Question::getTable(), Comment::getTable()];
 
@@ -589,6 +591,59 @@ class FormMigration extends AbstractPluginMigration
                     ['OR' => $sections_ranks]
                 );
             }
+        }
+    }
+
+    /**
+     * The new form system no longer allows defining a precise width for a block
+     * The width of each block is now determined by the number of elements contained in the horizontal layout
+     */
+    private function updateHorizontalRanks(): void
+    {
+        $this->progress_indicator?->setProgressBarMessage(__('Fixing forms layouts...'));
+
+        // Retrieve all blocks with horizontal ranks and their new horizontal ranks
+        $blocks = $this->db->request([
+            'SELECT' => [
+                'id',
+                'table',
+                new QueryExpression(
+                    'ROW_NUMBER() OVER ( PARTITION BY forms_sections_id, vertical_rank ORDER BY horizontal_rank ) - 1',
+                    'new_horizontal_rank'
+                )
+            ],
+            'FROM' => new QueryUnion([
+                [
+                    'SELECT' => [
+                        'id',
+                        'forms_sections_id',
+                        'vertical_rank',
+                        'horizontal_rank',
+                        new QueryExpression("'" . Question::getTable() . "'", 'table')
+                    ],
+                    'FROM'   => Question::getTable(),
+                    'WHERE'  => ['NOT' => ['horizontal_rank' => null]]
+                ],
+                [
+                    'SELECT' => [
+                        'id',
+                        'forms_sections_id',
+                        'vertical_rank',
+                        'horizontal_rank',
+                        new QueryExpression("'" . Comment::getTable() . "'", 'table')
+                    ],
+                    'FROM'   => Comment::getTable(),
+                    'WHERE'  => ['NOT' => ['horizontal_rank' => null]]
+                ]
+            ]),
+        ]);
+
+        foreach ($blocks as $block) {
+            $this->db->update(
+                $block['table'],
+                ['horizontal_rank' => $block['new_horizontal_rank']],
+                ['id' => $block['id']]
+            );
         }
     }
 
@@ -788,11 +843,22 @@ class FormMigration extends AbstractPluginMigration
             foreach ($configurable_fields as $configurable_field) {
                 /** @var AbstractConfigField $configurable_field */
                 if ($configurable_field instanceof DestinationFieldConverterInterface) {
-                    $fields_config[$configurable_field::getKey()] = $configurable_field->convertFieldConfig(
-                        $this,
-                        $form,
-                        $raw_target
-                    )->jsonSerialize();
+                    try {
+                        $fields_config[$configurable_field::getKey()] = $configurable_field->convertFieldConfig(
+                            $this,
+                            $form,
+                            $raw_target
+                        )->jsonSerialize();
+                    } catch (\Throwable $th) {
+                        $this->result->addMessage(
+                            MessageType::Error,
+                            sprintf(
+                                __('The "%s" destination field configuration of the form "%s" cannot be imported.'),
+                                $configurable_field->getLabel(),
+                                $form->getName()
+                            )
+                        );
+                    }
                 }
 
                 if ($configurable_field instanceof ContentField) {
@@ -881,12 +947,23 @@ class FormMigration extends AbstractPluginMigration
             );
 
             foreach ($configurable_fields as $configurable_field) {
-                /** @var ITILActorField $configurable_field */
-                $fields_config[$configurable_field::getKey()] = $configurable_field->convertFieldConfig(
-                    $this,
-                    $destination->getItem(),
-                    $actors
-                )->jsonSerialize();
+                try {
+                    /** @var ITILActorField $configurable_field */
+                    $fields_config[$configurable_field::getKey()] = $configurable_field->convertFieldConfig(
+                        $this,
+                        $destination->getItem(),
+                        $actors
+                    )->jsonSerialize();
+                } catch (\Throwable $th) {
+                    $this->result->addMessage(
+                        MessageType::Error,
+                        sprintf(
+                            __('The "%s" destination field configuration of the form "%s" cannot be imported.'),
+                            $configurable_field->getLabel(),
+                            $destination->getItem()->getName()
+                        )
+                    );
+                }
             }
 
             if (

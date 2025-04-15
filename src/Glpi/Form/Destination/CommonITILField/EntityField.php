@@ -221,12 +221,18 @@ final class EntityField extends AbstractConfigField implements DestinationFieldC
                     specific_entity_id: $rawData['destination_entity_value']
                 );
             case 9: // PluginFormcreatorAbstractTarget::DESTINATION_ENTITY_ENTITY_FROM_OBJECT
+                $mapped_item = $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    $rawData['destination_entity_value']
+                );
+
+                if ($mapped_item === null) {
+                    throw new InvalidArgumentException("Question not found in a target form");
+                }
+
                 return new EntityFieldConfig(
                     strategy: EntityFieldStrategy::SPECIFIC_ANSWER,
-                    specific_question_id: $migration->getMappedItemTarget(
-                        'PluginFormcreatorQuestion',
-                        $rawData['destination_entity_value']
-                    )['items_id']
+                    specific_question_id: $mapped_item['items_id']
                 );
         }
 
