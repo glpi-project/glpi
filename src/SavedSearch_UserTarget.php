@@ -33,27 +33,42 @@
  * ---------------------------------------------------------------------
  */
 
-if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
-} else {
-    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), '', 'tools', 'savedsearch');
-}
+class SavedSearch_UserTarget extends CommonDBRelation
+{
+    public $auto_message_on_action = false;
 
-$savedsearch = new SavedSearch();
+    public static $itemtype_1          = 'SavedSearch';
+    public static $items_id_1          = 'savedsearches_id';
 
-if (
-    isset($_GET['action']) && $_GET["action"] == "load"
-    && isset($_GET["id"]) && ($_GET["id"] > 0)
-) {
-    $savedsearch->getFromDB($_GET['ID']);
-    if ($savedsearch->canViewItem()) {
-        $savedsearch->load($_GET["id"]);
-    } else {
-        $info = "User can not access the SavedSearch " . $_GET['id'];
-        throw new \Glpi\Exception\Http\AccessDeniedHttpException($info);
+    public static $itemtype_2          = 'User';
+    public static $items_id_2          = 'users_id';
+
+    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static $logs_for_item_2     = false;
+
+    /**
+     * Get users for a saved search
+     *
+     * @param SavedSearch $savedSearch SavedSearch instance
+     *
+     * @return array of users linked to a saved search
+     **/
+    public static function getUsers(SavedSearch $savedSearch)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $results   = [];
+        $iterator = $DB->request([
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                self::$items_id_1 => $savedSearch->getID()
+            ]
+        ]);
+
+        foreach ($iterator as $data) {
+            $results[$data[self::$items_id_2]][] = $data;
+        }
+        return $results;
     }
-    return;
 }
-
-Search::show('SavedSearch');
-Html::footer();

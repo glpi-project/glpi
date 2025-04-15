@@ -33,27 +33,23 @@
  * ---------------------------------------------------------------------
  */
 
-if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
-} else {
-    Html::header(SavedSearch::getTypeName(Session::getPluralNumber()), '', 'tools', 'savedsearch');
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
+
+$default_charset = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
+if (!$DB->tableExists('glpi_savedsearches_usertargets')) {
+    $query = "CREATE TABLE `glpi_savedsearches_usertargets` (
+        `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+        `savedsearches_id` int {$default_key_sign}  NOT NULL DEFAULT '0',
+        `users_id` int {$default_key_sign}  NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`),
+        KEY `savedsearches_id` (`savedsearches_id`),
+        KEY `users_id` (`users_id`)
+    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
+    $DB->doQuery($query);
 }
-
-$savedsearch = new SavedSearch();
-
-if (
-    isset($_GET['action']) && $_GET["action"] == "load"
-    && isset($_GET["id"]) && ($_GET["id"] > 0)
-) {
-    $savedsearch->getFromDB($_GET['ID']);
-    if ($savedsearch->canViewItem()) {
-        $savedsearch->load($_GET["id"]);
-    } else {
-        $info = "User can not access the SavedSearch " . $_GET['id'];
-        throw new \Glpi\Exception\Http\AccessDeniedHttpException($info);
-    }
-    return;
-}
-
-Search::show('SavedSearch');
-Html::footer();
