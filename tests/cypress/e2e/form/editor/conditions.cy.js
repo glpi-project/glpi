@@ -756,6 +756,87 @@ describe ('Conditions', () => {
         validateThatQuestionIsNotVisible("My question that is visible if some criteria are met");
     });
 
+    // Radio, checkboxes and dropdown questions need extensive testing because
+    // they rely on a specific data format being send from the client to the
+    // backend when the form is submitted.
+    // It it thus needed to have a dedicated e2e tests for them as the backend
+    // tests can't know if the client code is wrong.
+    // It cost us a bit of extra execution time but it is worth it because these
+    // types of questions will be the one most likely to be used as conditions.
+    const cases = [
+        {
+            question_type: "Checkbox",
+            is_array: true,
+            dom_role: 'checkbox',
+        },
+        {
+            question_type: "Radio",
+            is_array: false,
+            dom_role: 'radio',
+        },
+        {
+            question_type: "Dropdown",
+            is_array: false,
+            dom_role: 'select2',
+        },
+    ];
+    for (const test_case of cases) {
+        it(`conditions using "${test_case.question_type}" question as subject`, () => {
+            createForm();
+
+            // Add the question that will be used as a condition criteria
+            addQuestion('My question used as a criteria');
+            setQuestionTypeCategory(test_case.question_type);
+            getAndFocusQuestion('My question used as a criteria').within(() => {
+                cy.findByPlaceholderText('Enter an option').type('Option 1{enter}');
+            });
+            cy.focused().type('Option 2{enter}');
+            cy.focused().type('Option 3{enter}');
+            cy.focused().type('Option 4');
+
+            // Add a question that will be visible depending on our subject value
+            addQuestion('My question that is visible if some criteria are met');
+            getAndFocusQuestion('My question that is visible if some criteria are met').within(() => {
+                initVisibilityConfiguration();
+                setConditionStrategy('Visible if...');
+                fillCondition(
+                    0,
+                    null,
+                    'My question used as a criteria',
+                    'Is equal to',
+                    test_case.is_array ? ['Option 3'] : 'Option 3',
+                    test_case.is_array ? 'dropdown_multiple' : 'dropdown',
+                );
+            });
+            save();
+            preview();
+
+            // The form questions are all empty, the test question should be hidden.
+            validateThatQuestionIsNotVisible("My question that is visible if some criteria are met");
+
+            // Check the correct values
+            if (test_case.dom_role === 'select2') {
+                cy.getDropdownByLabelText('My question used as a criteria')
+                    .selectDropdownValue('Option 3')
+                ;
+            } else {
+                cy.findByRole(test_case.dom_role, {'name': 'Option 3'}).check();
+            }
+            validateThatQuestionIsVisible("My question that is visible if some criteria are met");
+
+            // Change to an incorrect value
+            if (test_case.dom_role === 'checkbox') {
+                cy.findByRole(test_case.dom_role, {'name': 'Option 3'}).uncheck();
+            } else if (test_case.dom_role === 'radio') {
+                cy.findByRole(test_case.dom_role, {'name': 'Option 1'}).check();
+            } else if (test_case.dom_role === 'select2') {
+                cy.getDropdownByLabelText('My question used as a criteria')
+                    .selectDropdownValue('Option 1')
+                ;
+            }
+            validateThatQuestionIsNotVisible("My question that is visible if some criteria are met");
+        });
+    }
 
     it('conditions are applied on comments', () => {
         createForm();

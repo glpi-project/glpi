@@ -130,6 +130,10 @@ final class Engine
     {
         $conditions_result = null;
         foreach ($conditions as $condition) {
+            if (empty($condition->getItemUuid())) {
+                continue;
+            }
+
             // Apply condition (item + value operator + value)
             $condition_result = $this->computeCondition($condition);
 
