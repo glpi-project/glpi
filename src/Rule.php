@@ -2819,7 +2819,7 @@ JS
 
     public function getAllCriteria()
     {
-        return self::doHookAndMergeResults("getRuleCriteria", $this->getCriterias(), static::class);
+        return self::doHookAndMergeResults(Hooks::AUTO_GET_RULE_CRITERIA, $this->getCriterias(), static::class);
     }
 
     public function getCriterias()
@@ -2833,7 +2833,7 @@ JS
      */
     public function getAllActions()
     {
-        return self::doHookAndMergeResults("getRuleActions", $this->getActions(), static::class);
+        return self::doHookAndMergeResults(Hooks::AUTO_GET_RULE_ACTIONS, $this->getActions(), static::class);
     }
 
     public function getActions()
@@ -2856,7 +2856,7 @@ JS
      *
      *  @since 0.84
      *
-     * @param string $hook            the hook to execute
+     * @param string $hook            the hook to execute (getRuleActions, getRuleCriteria)
      * @param array $params   array  input parameters
      * @param string $itemtype        (default '')
      *

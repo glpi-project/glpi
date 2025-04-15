@@ -531,7 +531,7 @@ class RuleImportAsset extends Rule
                         ];
                         $sql_results = Plugin::doOneHook(
                             $plugin,
-                            "ruleImportAsset_getSqlRestriction",
+                            Hooks::AUTO_RULEIMPORTASSET_GET_SQL_RESTRICTION,
                             $params
                         );
 
@@ -1151,7 +1151,7 @@ TWIG, $twig_params);
                 if (is_array($val) && in_array(static::class, $val, true)) {
                     $criteria = Plugin::doOneHook(
                         $plugin,
-                        "ruleImportAsset_addGlobalCriteria",
+                        Hooks::AUTO_RULEIMPORTASSET_ADD_GLOBAL_CRITERIA,
                         $criteria
                     );
                 }

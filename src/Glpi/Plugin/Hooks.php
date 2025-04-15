@@ -36,14 +36,36 @@
 namespace Glpi\Plugin;
 
 use Glpi\Api\HL as HL_API;
+use Glpi\Features\Kanban;
 
+/**
+ * @link https://glpi-developer-documentation.readthedocs.io/en/master/plugins/hooks.html
+ */
 class Hooks
 {
     // File hooks
+    /**
+     * Add CSS file in the head of all non-anonymous pages.
+     * @see HookManager::registerCSSFile()
+     */
     public const ADD_CSS               = 'add_css';
+
+    /**
+     * Add classic JavaScript file in the head of all non-anonymous pages.
+     * @see HookManager::registerJavascriptFile()
+     */
     public const ADD_JAVASCRIPT        = 'add_javascript';
+
+    /**
+     * Add ESM JavaScript module in the head of all non-anonymous pages.
+     */
     public const ADD_JAVASCRIPT_MODULE = 'add_javascript_module';
+
+    /**
+     * Add a header tag in the head of all non-anonymous pages.
+     */
     public const ADD_HEADER_TAG        = 'add_header_tag';
+
     /**
      * Register one or more on-demand JavaScript files.
      *
@@ -53,55 +75,246 @@ class Hooks
     public const JAVASCRIPT            = 'javascript';
 
     // File hooks for anonymous pages
+
+    /**
+     * Add CSS file in the head of all anonymous pages.
+     */
     public const ADD_CSS_ANONYMOUS_PAGE               = 'add_css_anonymous_page';
+
+    /**
+     * Add classic JavaScript file in the head of all anonymous pages.
+     */
     public const ADD_JAVASCRIPT_ANONYMOUS_PAGE        = 'add_javascript_anonymous_page';
+
+    /**
+     * Add ESM JavaScript module in the head of all anonymous pages.
+     */
     public const ADD_JAVASCRIPT_MODULE_ANONYMOUS_PAGE = 'add_javascript_module_anonymous_page';
+
+    /**
+     * Add a header tag in the head of all anonymous pages.
+     */
     public const ADD_HEADER_TAG_ANONYMOUS_PAGE        = 'add_header_tag_anonymous_page';
 
+
     // Function hooks with no parameters
+    /**
+     * Register a function to be called when the entity is changed.
+     */
     public const CHANGE_ENTITY               = 'change_entity';
+
+    /**
+     * Register a function to be called when the profile is changed.
+     */
     public const CHANGE_PROFILE              = 'change_profile';
+
+    /**
+     * Register a function to output some content on the login page.
+     */
     public const DISPLAY_LOGIN               = 'display_login';
+
+    /**
+     * Register a function to output some content on the standard (central) or simplified interface (helpdesk) home page.
+     * This hook is called inside a table element.
+     */
     public const DISPLAY_CENTRAL             = 'display_central';
+
+    /**
+     * Register a function to output some content before the network port list.
+     */
     public const DISPLAY_NETPORT_LIST_BEFORE = 'display_netport_list_before';
+
+    /**
+     * Register a function to be called when the session is initialized.
+     */
     public const INIT_SESSION                = 'init_session';
+
+    /**
+     * Register a function to be called after all plugins are initialized.
+     */
     public const POST_INIT                   = 'post_init';
+
+    /**
+     * Register a URL relative to the plugin's root URL for the plugin's config page.
+     */
     public const CONFIG_PAGE                 = 'config_page';
+
+    /**
+     * Set to true if the plugin wants to use the {@link self::AUTO_MASSIVE_ACTIONS} hook.
+     * Example: $PLUGIN_HOOKS[Hooks::USE_MASSIVE_ACTION]['myplugin'] = true;
+     */
     public const USE_MASSIVE_ACTION          = 'use_massive_action';
+
+    /**
+     * Set to true if the plugin wants to use the {@link self::AUTO_ASSIGN_TO_TICKET} hook.
+     * Example: $PLUGIN_HOOKS[Hooks::ASSIGN_TO_TICKET]['myplugin'] = true;
+     */
+    public const ASSIGN_TO_TICKET            = 'assign_to_ticket';
+
+    /**
+     * Set to true if the plugin can import items. Adds the plugin as a source criteria for 'Rules for assigning an item to an entity'
+     */
     public const IMPORT_ITEM                 = 'import_item';
 
     // Specific function hooks with parameters
+    /**
+     * Register a function to be called when the rules engine matches a rule.
+     * The function is called with an array containing several properties including:
+     * - 'sub_type' => The subtype of the rule (Example: RuleTicket)
+     * - 'ruleid' => The ID of the rule
+     * - 'input' => The input data sent to the rule engine
+     * - 'output' => The current output data
+     * The function is not expected to return anything and the data provided to it cannot be modified.
+     */
     public const RULE_MATCHED          = 'rule_matched';
+
+    /**
+     * Register a function to be called when a vCard is generated.
+     * The function is called with an array containing several properties including:
+     * - 'item' => The item for which the vCard is generated
+     * - 'data' => The vCard data
+     * The function is expected to modify the given array as needed and return it.
+     */
     public const VCARD_DATA            = 'vcard_data';
+
+    /**
+     * Register a function to be called when the plugin is disabled.
+     * The function is called with the plugin name as a parameter.
+     */
     public const POST_PLUGIN_DISABLE   = 'post_plugin_disable';
+
+    /**
+     * Register a function to be called when the plugin is cleaned from the database.
+     * The function is called with the plugin name as a parameter.
+     */
     public const POST_PLUGIN_CLEAN     = 'post_plugin_clean';
+
+    /**
+     * Register a function to be called when the plugin is installed.
+     * The function is called with the plugin name as a parameter.
+     */
     public const POST_PLUGIN_INSTALL   = 'post_plugin_install';
+
+    /**
+     * Register a function to be called when the plugin is uninstalled.
+     * The function is called with the plugin name as a parameter.
+     */
     public const POST_PLUGIN_UNINSTALL = 'post_plugin_uninstall';
+
+    /**
+     * Register a function to be called when the plugin is enabled.
+     * The function is called with the plugin name as a parameter.
+     */
     public const POST_PLUGIN_ENABLE    = 'post_plugin_enable' ;
 
     // Function hooks with parameters and output
-    public const DISPLAY_LOCKED_FIELDS         = 'display_locked_fields';
-    public const POST_KANBAN_CONTENT           = 'post_kanban_content';
-    public const PRE_KANBAN_CONTENT            = 'pre_kanban_content';
-    public const KANBAN_ITEM_METADATA          = 'kanban_item_metadata';
-    public const KANBAN_FILTERS                = 'kanban_filters';
     /**
+     * Register a function to be called to show locked fields managed by the plugin.
+     * The function is called with an array containing several properties including:
+     * - 'item' => The item for which the locked fields are shown
+     * - 'header' => Always false. //TODO WHY!?
+     */
+    public const DISPLAY_LOCKED_FIELDS         = 'display_locked_fields';
+
+    /**
+     * Register a function to define content to show before the main content of a Kanban card.
+     * This function is called with an array containing several properties including:
+     * - 'itemtype' => The type of the item represented by the Kanban card
+     * - 'items_id' => The ID of the item represented by the Kanban card
+     * The function is expected to return HTML content.
+     */
+    public const PRE_KANBAN_CONTENT            = 'pre_kanban_content';
+
+    /**
+     * Register a function to define content to show after the main content of a Kanban card.
+     * This function is called with an array containing several properties including:
+     * - 'itemtype' => The type of the item represented by the Kanban card
+     * - 'items_id' => The ID of the item represented by the Kanban card
+     * The function is expected to return HTML content.
+     */
+    public const POST_KANBAN_CONTENT           = 'post_kanban_content';
+
+    /**
+     * Register a function to redefine metadata for a Kanban card.
+     * This function is called with an array containing several properties including:
+     * - 'itemtype' => The type of the item represented by the Kanban card
+     * - 'items_id' => The ID of the item represented by the Kanban card
+     * - 'metadata' => The current metadata for the Kanban card
+     * The function is expected to modify the given array as needed and return it.
+     */
+    public const KANBAN_ITEM_METADATA          = 'kanban_item_metadata';
+
+    /**
+     * Define extra Kanban filters by itemtype.
+     * Example:
+     * ```
+     * $PLUGIN_HOOKS[Hooks::KANBAN_FILTERS]['myplugin'] = [
+     *     'Ticket' => [
+     *         'new_metadata_property' => [
+     *             'description' => 'My new property'
+     *             'supported_prefixes' => ['!']
+     *         ]
+     *     ]
+     * ]
+     * ```
+     */
+    public const KANBAN_FILTERS                = 'kanban_filters';
+
+    /**
+     * Register a function to display content at the beginning of the item details panel in the Kanban.
+     * The function is called with an array containing several properties including:
+     * - 'itemtype' => The type of the item represented by the Kanban card
+     * - 'items_id' => The ID of the item represented by the Kanban card
+     * The function is expected to return HTML content.
      * @used-by templates/components/kanban/item_panels/default_panel.html.twig
      */
     public const PRE_KANBAN_PANEL_CONTENT      = 'pre_kanban_panel_content';
+
     /**
+     * Register a function to display content at the end of the item details panel in the Kanban.
+     * The function is called with an array containing several properties including:
+     * - 'itemtype' => The type of the item represented by the Kanban card
+     * - 'items_id' => The ID of the item represented by the Kanban card
+     * The function is expected to return HTML content.
      * @used-by templates/components/kanban/item_panels/default_panel.html.twig
      */
     public const POST_KANBAN_PANEL_CONTENT     = 'post_kanban_panel_content';
+
     /**
+     * Register a function to display content at the beginning of the item details panel in the Kanban after the content from {@link self::PRE_KANBAN_PANEL_CONTENT} but before the default main content.
+     * The function is called with an array containing several properties including:
+     * - 'itemtype' => The type of the item represented by the Kanban card
+     * - 'items_id' => The ID of the item represented by the Kanban card
+     * The function is expected to return HTML content.
      * @used-by templates/components/kanban/item_panels/default_panel.html.twig
      */
     public const PRE_KANBAN_PANEL_MAIN_CONTENT = 'pre_kanban_panel_main_content';
+
     /**
+     * Register a function to display content at the end of the item details panel in the Kanban after the default main content but before the content from {@link self::POST_KANBAN_PANEL_CONTENT}.
+     * The function is called with an array containing several properties including:
+     *  - 'itemtype' => The type of the item represented by the Kanban card
+     * - 'items_id' => The ID of the item represented by the Kanban card
+     * The function is expected to return HTML content.
      * @used-by templates/components/kanban/item_panels/default_panel.html.twig
      */
     public const POST_KANBAN_PANEL_MAIN_CONTENT = 'post_kanban_panel_main_content';
+
+    /**
+     * Register a function to redefine the GLPI menu.
+     * The function is called with the current menu as a parameter.
+     * The function is expected to modify the given array as needed and return it.
+     * @see Html::generateMenuSession()
+     */
     public const REDEFINE_MENUS                = 'redefine_menus';
+
+    /**
+     * Register a function to get more user field data from LDAP.
+     * The function is called with an array containing the current fields for the user along with:
+     * - '_ldap_result' => The LDAP query result
+     * - '_ldap_conn' => The LDAP connection resource
+     * The function is expected to modify the given array as needed and return it.
+     */
     public const RETRIEVE_MORE_DATA_FROM_LDAP  = 'retrieve_more_data_from_ldap';
     public const RETRIEVE_MORE_FIELD_FROM_LDAP = 'retrieve_more_field_from_ldap';
     public const RESTRICT_LDAP_AUTH            = 'restrict_ldap_auth';
@@ -162,7 +375,18 @@ class Hooks
     public const SET_ITEM_IMPACT_ICON    = 'set_item_impact_icon'; // (keys: itemtype, items_id)
 
     // Security hooks (data to encypt)
+    /**
+     * An array of database columns (example: glpi_mytable.myfield) that are stored using GLPI encrypting methods.
+     * This allows plugin fields to be handled by the `glpi:security:changekey` command.
+     * @since 9.4.6
+     */
     public const SECURED_FIELDS  = 'secured_fields';
+
+    /**
+     * An array of configuration keys that are stored using GLPI encrypting methods.
+     * This allows plugin configuration values to be handled by the `glpi:security:changekey` command.
+     * @since 9.4.6
+     */
     public const SECURED_CONFIGS = 'secured_configs';
 
     // Inventory hooks
@@ -234,6 +458,96 @@ class Hooks
     public const ADD_DEFAULT_JOIN = 'add_default_join';
     public const ADD_DEFAULT_WHERE = 'add_default_where';
 
+    // Function hooks that are currently automatically registered. Example: MassiveActions -> plugin_myplugin_MassiveActions
+
+    /**
+     * Automatic hook function called with the itemtype as a parameter and expects an array of massive action to be returned.
+     * Only called if the plugin also uses the {@link self::USE_MASSIVE_ACTION} hook set to true.
+     */
+    public const AUTO_MASSIVE_ACTIONS = 'MassiveActions';
+
+    public const AUTO_MASSIVE_ACTIONS_FIELDS_DISPLAY = 'MassiveActionsFieldsDisplay';
+
+    public const AUTO_DYNAMIC_REPORT = 'dynamicReport';
+
+    public const AUTO_ASSIGN_TO_TICKET = 'AssignToTicket';
+
+    public const AUTO_GET_DROPDOWN = 'getDropdown';
+
+    /**
+     * Automatic hook function called with an array with the key 'rule_itemtype' set to the itemtype and 'values' set to the input sent to the rule engine.
+     * The function is expected to return an array of criteria to add.
+     * Only called if the plugin also uses the {@link self::USE_RULES} hook set to true.
+     * @see Rule::getAllCriteria()
+     */
+    public const AUTO_GET_RULE_CRITERIA = 'getRuleCriteria';
+
+    /**
+     * Automatic hook function called with an array with the key 'rule_itemtype' set to the itemtype and 'values' set to the input sent to the rule engine.
+     * The function is expected to return an array of actions to add.
+     * Only called if the plugin also uses the {@link self::USE_RULES} hook set to true.
+     * @see Rule::getAllActions()
+     */
+    public const AUTO_GET_RULE_ACTIONS = 'getRuleActions';
+
+    /**
+     * Only called if the plugin also uses the {@link self::USE_RULES} hook set to true.
+     */
+    public const AUTO_RULE_COLLECTION_PREPARE_INPUT_DATA_FOR_PROCESS = 'ruleCollectionPrepareInputDataForProcess';
+
+    /**
+     * Only called if the plugin also uses the {@link self::USE_RULES} hook set to true.
+     */
+    public const AUTO_PRE_PROCESS_RULE_COLLECTION_PREVIEW_RESULTS = 'preProcessRuleCollectionPreviewResults';
+
+    /**
+     * Automatic hook function called with an array containing several criteria including:
+     * - 'where_entity' => the entity to restrict
+     * - 'input' => the rule input
+     * - 'criteria' => the rule criteria
+     * - 'sql_where' => the SQL WHERE clause as a string
+     * - 'sql_from' => the SQL FROM clause as a string
+     * The function is expected to return the given array with any needed modifications.
+     * Only called if the plugin also uses the {@link self::USE_RULES} hook set to true.
+     */
+    public const AUTO_RULEIMPORTASSET_GET_SQL_RESTRICTION = 'ruleImportAsset_getSqlRestriction';
+
+    public const AUTO_RULEIMPORTASSET_ADD_GLOBAL_CRITERIA = 'ruleImportAsset_addGlobalCriteria';
+
+    public const AUTO_SEARCH_OPTION_VALUES = 'searchOptionsValues';
+
+    public const AUTO_DISPLAY_CONFIG_ITEM = 'displayConfigItem';
+
+    public const AUTO_ADD_PARAM_FOR_DYNAMIC_REPORT = 'addParamFordynamicReport';
+
+    public const AUTO_ADD_DEFAULT_JOIN = 'addDefaultJoin';
+
+    public const AUTO_ADD_DEFAULT_SELECT = 'addDefaultSelect';
+
+    public const AUTO_ADD_DEFAULT_WHERE = 'addDefaultWhere';
+
+    public const AUTO_ADD_HAVING = 'addHaving';
+
+    public const AUTO_ADD_LEFT_JOIN = 'addLeftJoin';
+
+    public const AUTO_ADD_ORDER_BY = 'addOrderBy';
+
+    public const AUTO_ADD_SELECT = 'addSelect';
+
+    public const AUTO_ADD_WHERE = 'addWhere';
+
+    public const AUTO_GIVE_ITEM = 'giveItem';
+
+    /**
+     * Automatic hook function to report status information through the GLPI status feature.
+     * The function receives a parameter with the following keys:
+     * - 'ok' => Always true
+     * - '_public_only' => True if only non-sensitive/public information should be returned
+     * The function is expected to return an array containing at least a 'status' key with a `StatusChecker::STATUS_*` value.
+     * @link https://glpi-user-documentation.readthedocs.io/fr/latest/advanced/status.html
+     */
+    public const AUTO_STATUS = 'status';
+
     /**
      * Get file hooks
      *
@@ -261,6 +575,7 @@ class Hooks
      */
     public static function getFunctionalHooks(): array
     {
+        //TODO Function or functional? Not always the first and I sure hope the second is true (they actually work).
         return [
             self::CHANGE_ENTITY,
             self::CHANGE_PROFILE,

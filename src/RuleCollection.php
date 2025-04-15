@@ -1628,7 +1628,7 @@ TWIG, $twig_params);
                 if (is_array($val) && in_array(static::getRuleClassName(), $val, true)) {
                     $results = Plugin::doOneHook(
                         $plugin,
-                        'ruleCollectionPrepareInputDataForProcess',
+                        Hooks::AUTO_RULE_COLLECTION_PREPARE_INPUT_DATA_FOR_PROCESS,
                         ['rule_itemtype' => static::getRuleClassName(),
                             'values'        => ['input' => $input,
                                 'params' => $params
@@ -1802,7 +1802,7 @@ TWIG, $twig_params);
                 if (is_array($val) && in_array($params['rule_itemtype'], $val, true)) {
                     $results = Plugin::doOneHook(
                         $plugin,
-                        "preProcessRuleCollectionPreviewResults",
+                        Hooks::AUTO_PRE_PROCESS_RULE_COLLECTION_PREVIEW_RESULTS,
                         ['output' => $output,
                             'params' => $params
                         ]

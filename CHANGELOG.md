@@ -501,6 +501,7 @@ The present file will list all changes made to the project; according to the
 - `OlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `PlanningExternalEvent::addVisibilityRestrict()`
 - `PlanningRecall::specificForm()`
+- `Plugin::haveImport()`
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
