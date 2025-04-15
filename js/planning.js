@@ -625,12 +625,6 @@ var GLPIPlanning  = {
             }
         });
 
-        // Load the last known view only if it is valid (else load default view)
-        const view = this.calendar.isValidViewType(options.default_view) ?
-            options.default_view :
-            default_options.default_view;
-        this.calendar.changeView(view);
-
         $('.planning_on_central a')
             .mousedown(function() {
                 disable_qtip = true;
