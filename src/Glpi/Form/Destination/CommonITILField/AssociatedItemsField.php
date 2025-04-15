@@ -45,7 +45,6 @@ use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
-use Glpi\Message\MessageType;
 use InvalidArgumentException;
 use Override;
 
