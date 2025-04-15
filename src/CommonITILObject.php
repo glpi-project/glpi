@@ -1917,6 +1917,9 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function checkRequiredFieldsFilled(): bool
     {
+        if (empty($this->fields) && $this->input === false) {
+            return false;
+        }
         $result = $this->handleTemplateFields($this->fields, false);
         if ($result === false) {
             return false;
