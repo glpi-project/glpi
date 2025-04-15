@@ -625,14 +625,10 @@ var GLPIPlanning  = {
             }
         });
 
-        // Load the last known view only if it is valid (else load default view)
-        const view = this.calendar.isValidViewType(options.default_view)
-        ? options.default_view
-        : default_options.default_view;
-
-        // force view only if it is not the same as the default use on itinitialization
-        if (options.default_view !== view) {
-            this.calendar.changeView(view);
+        // if current view is not valid eg: related plugin not loaded
+        // fallback to default view
+        if (!this.calendar.isValidViewType(options.default_view)) {
+            this.calendar.changeView(default_options.default_view);
         }
 
         $('.planning_on_central a')
