@@ -134,7 +134,7 @@
 
          {% if canedit and (params['addbuttons'] ?? [])|length > 0 %}
             {% for key, val in params['addbuttons'] %}
-                {% if val.add_attribs is not empty %}
+                {% if (val.add_attribs ?? []) is not empty %}
                     {% set extra_attribs = call('Html::parseAttributes', {options: val.add_attribs}) %}
                 {% else %}
                     {% set extra_attribs = '' %}

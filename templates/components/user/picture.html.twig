@@ -60,7 +60,7 @@
 </span>
 
 {% if with_link and not anonymized %}
-   {% if display_login %}
+   {% if display_login ?? false %}
       <span class="ms-2">{{ user.fields['name'] }}</span>
    {% endif %}
 

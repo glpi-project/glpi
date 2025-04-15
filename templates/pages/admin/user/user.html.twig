@@ -48,7 +48,7 @@
 {% set is_preference_form = is_preference_form|default(false) %}
 {% set target = path(is_preference_form ? '/front/preference.php' : '/front/user.form.php') %}
 
-<div class="asset {{ bg }}">
+<div class="asset">
     <form id="main-form" name="asset_form" method="post" action="{{ target }}" enctype="multipart/form-data" data-submit-once>
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 
@@ -308,7 +308,7 @@
             {% if no_form_buttons is not defined or no_form_buttons == false %}
                 {{ include('components/form/buttons.html.twig') }}
             {% endif %}
-            {% if params['formfooter'] is null or params['formfooter'] == true %}
+            {% if params['formfooter'] ?? true %}
                 <div class="card-footer mx-n2 mb-n2">
                     {{ include('components/form/dates.html.twig') }}
                 </div>

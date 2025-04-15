@@ -48,6 +48,16 @@ class MaintenanceController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(): Response
     {
-        return $this->render('maintenance.html.twig');
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        return $this->render(
+            'maintenance.html.twig',
+            [
+                'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]
+            ]
+        );
     }
 }

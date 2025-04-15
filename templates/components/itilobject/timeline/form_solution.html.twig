@@ -38,8 +38,8 @@
 {% set candedit = item.maySolve() %}
 {% set can_read_kb = has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ')) %}
 {% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
-{% set nokb = params['nokb'] is defined or params['nokb'] == true %}
-{% set noform = params['noform'] is defined or params['noform'] == true %}
+{% set nokb = params['nokb'] is defined or (params['nokb'] ?? false) == true %}
+{% set noform = params['noform'] is defined or (params['noform'] ?? false) == true %}
 {% set disabled = (candedit == false) %}
 
 {% set content_field_id = 'solution_content_' ~ rand %}
@@ -100,7 +100,7 @@
 
             <div class="row mx-n3 mx-xxl-auto">
                <div class="col-12 col-xl-7 col-xxl-8">
-                  {% set content = subitem.fields['content'] %}
+                  {% set content = subitem.fields['content'] ?? '' %}
 
                   {{ fields.textareaField(
                      'content',
@@ -219,7 +219,7 @@
          {% if not noform %}
                {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
                <div class="d-flex card-footer mx-n3 mb-n3">
-                  {% if subitem.fields['id'] <= 0 %}
+                  {% if (subitem.fields['id'] ?? 0) <= 0 %}
                      <button class="btn btn-primary me-2" type="submit" name="add">
                         <i class="ti ti-plus"></i>
                         <span>{{ _x('button', 'Add') }}</span>

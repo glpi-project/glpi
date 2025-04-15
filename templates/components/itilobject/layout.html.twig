@@ -36,10 +36,11 @@
 {% set show_extra_fields = not is_helpdesk or show_tickets_properties_on_helpdesk %}
 
 {% set itil_layout = user_pref('itil_layout', true) %}
-{% set is_collapsed = itil_layout['collapsed'] == "true" %}
-{% set is_expanded  = itil_layout['expanded'] == "true" %}
+{% set is_collapsed = (itil_layout['collapsed'] ?? false) == "true" %}
+{% set is_expanded  = (itil_layout['expanded'] ?? false) == "true" %}
 {% set collapsed_cls = (is_collapsed ? "right-collapsed" : "") %}
 {% set expanded_cls  = (is_expanded == "true" ? "right-expanded" : "") %}
+{% set template_preview = params.template_preview|default(false) %}
 
 {% set left_regular_cls = "col-lg-8" %}
 {% set right_regular_cls = "col-lg-4" %}
@@ -57,7 +58,7 @@
 
 <div id="itil-object-container" class="mt-n1 {{ collapsed_cls }} {{ expanded_cls }}">
 
-   {% if item.isNewItem() and not params['template_preview'] %}
+   {% if item.isNewItem() and not template_preview %}
       {{ include('components/itilobject/mainform_open.html.twig') }}
    {% endif %}
 
@@ -84,14 +85,12 @@
       {% endif %}
    </div>
 
-   {% if not params['template_preview'] %}
+   {% if not template_preview %}
       {{ include('components/itilobject/footer.html.twig') }}
+      {% if not item.isNewItem() %}
+           {{ include('components/itilobject/mainform_close.html.twig') }}
+      {% endif %}
    {% endif %}
-
-   {% if not item.isNewItem() and not params['template_preview'] %}
-      {{ include('components/itilobject/mainform_close.html.twig') }}
-   {% endif %}
-
 </div>
 
 {# Common form fields for CommonITILObject_CommonITILObject purge action #}

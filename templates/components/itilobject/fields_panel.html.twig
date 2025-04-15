@@ -40,7 +40,7 @@
 } %}
 
 {% set itil_layout    = user_pref('itil_layout', true) %}
-{% set headers_states = itil_layout['items'] %}
+{% set headers_states = itil_layout['items']|default([]) %}
 
 <div class="accordion open accordion-flush" id="itil-data">
    {% set main_show = headers_states['item-main'] is not defined or headers_states['item-main'] == "true" ? true : false %}
@@ -274,7 +274,7 @@
             <span class="badge bg-secondary text-secondary-fg ms-2">
                {{ item.countActors() }}
             </span>
-            {% if not params['template_preview'] and cancreateuser and canupdate %}
+            {% if not (params['template_preview'] ?? false) and cancreateuser and canupdate %}
                {{ include('components/user/create_user.html.twig') }}
             {% endif %}
          </button>
@@ -470,7 +470,7 @@
       <h2 class="accordion-header" id="linked_itilobjects-heading" title="{{ 'CommonITILObject_CommonITILObject'|itemtype_name(nb_linked_itilobjects) }}" data-bs-toggle="tooltip">
          <button class="accordion-button {{ linked_itilobjects_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#linked_itilobjects" aria-expanded="true" aria-controls="linked_itilobjects">
             <i class="ti ti-link me-1"></i>
-            {% if item.isNewItem() and params['_link']['items_id_2'] > 0 %}
+            {% if item.isNewItem() and (params['_link']['items_id_2'] ?? 0) > 0 %}
                {% set nb_linked_itilobjects = 1 %}
             {% endif %}
             <span class="item-title">

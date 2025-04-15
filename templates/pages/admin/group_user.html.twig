@@ -62,7 +62,7 @@
                 } + field_options) }}
             {% endif %}
 
-            {{ fields.dropdownYesNo('is_manager', item.fields['is_manager'], _n('Manager', 'Managers', 1), field_options) }}
+            {{ fields.dropdownYesNo('is_manager', item.fields['is_manager'] ?? false, _n('Manager', 'Managers', 1), field_options) }}
         </div>
         <div class="d-flex flex-row-reverse pe-2">
             {{ inputs.submit('add', _x('button', 'Add'), 1, field_options) }}

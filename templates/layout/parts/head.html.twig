@@ -32,7 +32,7 @@
 
 <!DOCTYPE html>
 <html lang="{{ lang }}"
-    {% if high_contrast %}
+    {% if session('glpihighcontrast_css') %}
         data-high-contrast="1"
     {% endif %}
     {% if theme is defined %}

@@ -31,6 +31,7 @@
  #}
 
 {% set pending_reason_item_parent = call("PendingReason_Item::getForItem", [item]) %}
+{% set display_for_parent = display_for_parent|default(false) %}
 
 {% set pending_reason_contexts = {
    'pending': {

@@ -38,7 +38,7 @@
 {% set candedit = item.maySolve() %}
 {% set can_read_kb = has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ')) %}
 {% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
-{% set nokb = params['nokb'] is defined or params['nokb'] == true %}
+{% set nokb = params['nokb'] is defined or (params['nokb'] ?? false) == true %}
 {% set rand = random() %}
 {% set is_default_pending = call('PendingReason::isDefaultPending') %}
 
@@ -135,7 +135,7 @@
                         {{ fields.dropdownField(
                            'ITILFollowupTemplate',
                            'itilfollowuptemplates_id',
-                           subitem.fields['itilfollowuptemplates_id'],
+                           subitem.fields['itilfollowuptemplates_id'] ?? 0,
                            fup_template_lbl,
                            {
                               'full_width': true,

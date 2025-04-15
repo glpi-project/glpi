@@ -57,7 +57,7 @@
          {{ include('components/user/link_with_tooltip.html.twig', {
             'users_id': users_id,
             'user_object': user_object,
-            'enable_anonymization': anonym_user
+            'enable_anonymization': anonym_user ?? false
          }, with_context = false) }}
       {% endset %}
       {% set group_span %}
@@ -70,14 +70,14 @@
       {% endset %}
 
       {{ __('Created: %1$s by %2$s for the group %3$s')|format(date_span, creator_span, group_span)|raw }}
-   {% elseif entry['type'] == 'ITILReminder' %}
+   {% elseif entry is defined and entry['type'] == 'ITILReminder' %}
       {{ date_span|raw }}
    {% else %}
       {% if users_id > 0 %}
          {% set creator_span %}
             {{ include('components/user/link_with_tooltip.html.twig', {
                'users_id': users_id,
-               'enable_anonymization': anonym_user
+               'enable_anonymization': anonym_user ?? false
             }, with_context = false) }}
          {% endset %}
 

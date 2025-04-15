@@ -37,7 +37,7 @@
 {% if not(item.isNewItem()) and call(item.getType() ~ '::isMassiveActionAllowed', [item.fields['id']])%}
    {% set input = item.getMassiveActionsForItem().getInput() %}
    {% if input['actions']|length > 0 %}
-   {% set ms_auto = single_actions_ms_auto ? 'ms-auto' : '' %}
+   {% set ms_auto = (single_actions_ms_auto ?? false) ? 'ms-auto' : '' %}
 <div class="d-none d-sm-block btn-group {{ ms_auto }}" title="{{ __('Actions') }}"
      {% if onlyicon %}data-bs-toggle="tooltip" data-bs-placement="top"{% endif %}>
    <button class="btn {{ onlyicon ? 'btn-icon' : 'dropdown-toggle' }} btn-outline-secondary" type="button"

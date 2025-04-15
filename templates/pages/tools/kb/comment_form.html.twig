@@ -90,7 +90,7 @@
                 <br>
             {% endif %}
             <div class="px-2" style="min-width: 400px;">
-                {{ fields.textareaField('comment', comment, null, {
+                {{ fields.textareaField('comment', comment ?? '', null, {
                     no_label: true,
                     full_width: true,
                     add_field_html: btn,

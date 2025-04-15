@@ -45,7 +45,7 @@
     {{ fields.textField('description', item.fields['description'], __('Description')) }}
     {{ fields.dropdownArrayField('match', item.fields['match'], match_operators, __('Logical operator')) }}
 
-    {% if not short %}
+    {% if not (short ?? false) %}
         {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
         {% if conditions|length > 0 %}
             {{ fields.dropdownArrayField('condition', item.fields['condition'], conditions, __('Use rule for')) }}

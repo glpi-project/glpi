@@ -54,7 +54,7 @@
         {% set options = options|merge({'readonly': true}) %}
     {% endif %}
 
-   {% if (options.is_disclosable or options.is_copyable) and id is null %}
+   {% if (options.is_disclosable or options.is_copyable) and (id ?? null) is null %}
       {% set options = options|merge({
          id: name|slug ~ '_' ~ random()
       }) %}
@@ -218,6 +218,9 @@
         'enableTime': false,
         'checkIsExpired': false,
         'clearable': false,
+        'input_addclass': '',
+        'readonly': false,
+        'maybeempty': false,
     }|merge(options) %}
 
     {% set options = {
@@ -451,7 +454,7 @@
     }|merge(options) %}
 
     {% set required_mark = '' %}
-    {% if options.fields_template.isMandatoryField(options.name)|default(false) or options.required ?? false %}
+    {% if (options.name is defined and options.fields_template.isMandatoryField(options.name)|default(false)) or options.required ?? false %}
         {% set required_mark = '<span class="required">*</span>' %}
     {% endif %}
 

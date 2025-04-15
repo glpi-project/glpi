@@ -67,7 +67,7 @@
         </tbody>
     </table>
 {% else %}
-    {% set total_cols = columns|length + (showmassiveactions ? 1 : 0) + (nofilter ? 0 : 1) %}
+    {% set total_cols = columns|length + (showmassiveactions ? 1 : 0) + ((nofilter ?? false) ? 0 : 1) %}
     {% if nopager is not defined or not nopager %}
         {{ include('components/pager.html.twig', {
             'count': filtered_number,
@@ -216,7 +216,7 @@
             <tbody>
                 {% if entries|length > 0 %}
                     {% for entry in entries %}
-                        <tr class="{{ row_class|default('') }} {{ entry['row_class']|default('') }}" data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
+                        <tr class="{{ row_class|default('') }} {{ entry['row_class']|default('') }}"{% if row_massiveactions %} data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}"{% endif %}>
                             {% set row_massiveactions = entry['showmassiveactions']|default(showmassiveactions) %}
                             {% if row_massiveactions %}
                                 <td style="width: 10px">
@@ -303,7 +303,7 @@
                                     </td>
                                 {% endif %}
                             {% endfor %}
-                            {% if not nofilter %}
+                            {% if not (nofilter ?? false) %}
                                 <td></td>
                             {% endif %}
                         </tr>

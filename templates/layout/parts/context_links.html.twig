@@ -30,8 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set links = menu[sector]['content'][item]['options'][option]['links'] ?? menu[sector]['content'][item]['links'] %}
-{% set lists_itemtype = menu[sector]['content'][item]['options'][option]['lists_itemtype'] ?? menu[sector]['content'][item]['lists_itemtype'] %}
+{% set links = menu[sector]['content'][item]['options'][option]['links'] ?? menu[sector]['content'][item]['links'] ?? '' %}
+{% set lists_itemtype = menu[sector]['content'][item]['options'][option]['lists_itemtype'] ?? menu[sector]['content'][item]['lists_itemtype'] ?? '' %}
 {% if lists_itemtype is empty %}
     {% set lists_itemtype = item %}
 {% endif %}
