@@ -44,7 +44,6 @@ use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
-use Glpi\Message\MessageType;
 use InvalidArgumentException;
 use Override;
 

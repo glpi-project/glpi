@@ -43,7 +43,6 @@ use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
-use Glpi\Message\MessageType;
 use InvalidArgumentException;
 use ITILCategory;
 use Override;

@@ -43,7 +43,6 @@ use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
-use Glpi\Message\MessageType;
 use Group;
 use InvalidArgumentException;
 use Override;

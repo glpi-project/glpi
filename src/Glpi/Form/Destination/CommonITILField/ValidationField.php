@@ -46,7 +46,6 @@ use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
-use Glpi\Message\MessageType;
 use Group;
 use InvalidArgumentException;
 use Override;
