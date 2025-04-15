@@ -35,21 +35,20 @@
 namespace Glpi\Controller;
 
 use Auth;
-use Glpi\Http\Firewall;
-use Html;
-use Session;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-use Toolbox;
-use Preference;
-use Dropdown;
 use CronTask;
-use Glpi\Http\HeaderlessStreamedResponse;
+use Dropdown;
+use Glpi\Http\Firewall;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Html;
+use Preference;
+use Session;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Toolbox;
 
 final class IndexController extends AbstractController
 {
@@ -62,23 +61,6 @@ final class IndexController extends AbstractController
     )]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
-    {
-        $response = $this->call();
-
-        if ($response instanceof RedirectResponse) {
-            // Redirections don't call cron anyway.
-            return $response;
-        }
-
-        // call cron
-        $out = CronTask::callCronForce(true);
-
-        $response->setContent($response->getContent() . $out . '</body></html>');
-
-        return $response;
-    }
-
-    private function call(): Response
     {
         /**
          * @var array $CFG_GLPI
@@ -129,23 +111,23 @@ final class IndexController extends AbstractController
             Toolbox::manageRedirect($redirect);
         }
 
-        if (isset($_SESSION['mfa_pre_auth'], $_POST['skip_mfa'])) {
-            return new RedirectResponse($CFG_GLPI['root_doc'] . '/front/login.php?skip_mfa=1');
-        }
         if (isset($_SESSION['mfa_pre_auth'])) {
-            return new HeaderlessStreamedResponse(static function () {
-                if (isset($_GET['mfa_setup'])) {
-                    if (isset($_POST['secret'], $_POST['totp_code'])) {
-                        $code = is_array($_POST['totp_code']) ? implode('', $_POST['totp_code']) : $_POST['totp_code'];
-                        $totp = new \Glpi\Security\TOTPManager();
-                        if (Session::validateIDOR($_POST) && ($algorithm = $totp->verifyCodeForSecret($code, $_POST['secret'])) !== false) {
-                            $totp->setSecretForUser((int)$_SESSION['mfa_pre_auth']['user']['id'], $_POST['secret'], $algorithm);
-                        } else {
-                            Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
-                        }
-                        return new RedirectResponse(Preference::getSearchURL());
-                    }
+            if (isset($_POST['skip_mfa'])) {
+                return new RedirectResponse($CFG_GLPI['root_doc'] . '/front/login.php?skip_mfa=1');
+            }
+            if (isset($_GET['mfa_setup']) && isset($_POST['secret'], $_POST['totp_code'])) {
+                $code = is_array($_POST['totp_code']) ? implode('', $_POST['totp_code']) : $_POST['totp_code'];
+                $totp = new \Glpi\Security\TOTPManager();
+                if (Session::validateIDOR($_POST) && ($algorithm = $totp->verifyCodeForSecret($code, $_POST['secret'])) !== false) {
+                    $totp->setSecretForUser((int)$_SESSION['mfa_pre_auth']['user']['id'], $_POST['secret'], $algorithm);
+                } else {
+                    Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
+                }
+                return new RedirectResponse(Preference::getSearchURL());
+            }
 
+            return new StreamedResponse(static function () {
+                if (isset($_GET['mfa_setup'])) {
                     // Login started. 2FA needs configured.
                     $totp = new \Glpi\Security\TOTPManager();
                     $totp->showTOTPSetupForm((int)$_SESSION['mfa_pre_auth']['user']['id']);
@@ -189,7 +171,8 @@ final class IndexController extends AbstractController
                 || count($PLUGIN_HOOKS[Hooks::DISPLAY_LOGIN] ?? []) > 0
                 || $CFG_GLPI["use_public_faq"],
             'auth_dropdown_login' => Auth::dropdownLogin(false, $rand),
-            'copyright_message'   => Html::getCopyrightMessage(false)
+            'copyright_message'   => Html::getCopyrightMessage(false),
+            'must_call_cron'      => CronTask::mustRunWebTasks()
         ]);
     }
 }

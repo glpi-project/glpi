@@ -126,6 +126,10 @@
 
 {% block footer_block %}
     {{ copyright_message|raw }}
+
+    {% if must_call_cron %}
+        <div style="background-image: url('{{ path('/front/cron.php') }}');"></div>
+    {% endif %}
 {% endblock %}
 
 {% block javascript_block %}

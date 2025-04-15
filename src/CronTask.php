@@ -1871,19 +1871,17 @@ TWIG, ['msg' => __('Last run list')]);
 
     /**
      * Call cron without time check
+     *
+     * @return boolean : true if launched
      **/
-    public static function callCronForce(bool $returnScript = false): bool | string
+    public static function callCronForce()
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (self::mustRunWebTasks()) {
             $path = $CFG_GLPI['root_doc'] . "/front/cron.php";
-            $out = "<div style=\"background-image: url('$path');\"></div>";
-            if ($returnScript) {
-                return $out;
-            }
-            echo $out;
+            echo "<div style=\"background-image: url('$path');\"></div>";
         }
 
         return true;
@@ -1894,7 +1892,7 @@ TWIG, ['msg' => __('Last run list')]);
      *
      * @return bool
      **/
-    protected static function mustRunWebTasks(): bool
+    public static function mustRunWebTasks(): bool
     {
         $web_tasks_count = countElementsInTable(self::getTable(), [
             'mode'  => self::MODE_INTERNAL, // "GLPI" mode
