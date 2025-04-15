@@ -73,7 +73,7 @@
                   <td colspan="{{ number_columns }}">{{ row }}</td>
                {% else %}
                   {% set row_id = call('Html::cleanId', ['row_label_' ~ row_name ~ '_' ~ param['rand']]) %}
-                  <td class="{{ row['class'] }}" id="{{ row_id }}">
+                  <td class="{{ row['class'] ?? '' }}" id="{{ row_id }}">
                      {{ row['label'] ?? '&nbsp;' }}
                   </td>
 

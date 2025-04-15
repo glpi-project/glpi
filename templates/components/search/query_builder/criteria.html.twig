@@ -34,6 +34,7 @@
 
 {% set add_padding = from_meta ? 'p-0' : 'p-2' %}
 {% set add_class = add_class|default('') %}
+{% set normalized_itemtype = itemtype|replace({'\\': ''}) %}
 
 {% if meta and not from_meta %}
    {{ call("Glpi\\Search\\Input\\QueryBuilder::displayMetaCriteria", [{

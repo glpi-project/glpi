@@ -193,7 +193,7 @@
 {% macro readOnlyField(name, value, label = '', options = {}) %}
    {% set options = options|merge({'readonly': true}) %}
    {% set value %}
-      <span class="form-control {{ options.input_addclass }}" readonly>
+      <span class="form-control {{ options.input_addclass ?? '' }}" readonly>
          {% if value|length == 0 %}
             &nbsp;
          {% else %}
@@ -302,8 +302,8 @@
 {% macro passwordField(name, value, label = '', options = {}) %}
    {% set options = {
       'id': '%id%',
-      'can_regenerate': options.can_regenerate,
-      'clearable': options.clearable is defined ? options.clearable : not options.is_disclosable,
+      'can_regenerate': options.can_regenerate ?? false,
+      'clearable': options.clearable is defined ? options.clearable : not (options.is_disclosable ?? false),
       'is_copyable': options.is_disclosable ?? false
    }|merge(options) %}
 
@@ -485,6 +485,7 @@
     {% set options = {
         'rand': random(),
         'width': '100%',
+        'disabled': false,
     }|merge(options) %}
    {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
@@ -500,8 +501,7 @@
 
    {% set field %}
       {% do call('Dropdown::showTimestamp', [name, {
-         'value': value,
-         'rand': rand,
+         'value': value
       }|merge(options)]) %}
    {% endset %}
 
@@ -512,6 +512,7 @@
     {% set options = {
         'rand': random(),
         'width': '100%',
+        'disabled': false
     }|merge(options) %}
    {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
@@ -526,9 +527,7 @@
    {% endif %}
 
    {% set field %}
-      {% do call('Dropdown::showYesNo', [name, value, -1, {
-         'rand': rand,
-      }|merge(options)]) %}
+      {% do call('Dropdown::showYesNo', [name, value, -1, options]) %}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}

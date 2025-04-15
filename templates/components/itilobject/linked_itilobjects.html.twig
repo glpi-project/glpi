@@ -79,8 +79,8 @@
    </div>
 {% endif %}
 
-{% if canupdate and not params['template_preview'] %}
-   {% set has_pending_link = params['_link']['items_id_2']|length > 0 %}
+{% if canupdate and not (params['template_preview'] ?? false) %}
+   {% set has_pending_link = (params['_link']['items_id_2'] ?? '')|length > 0 %}
    <div class="mt-2">
       <button class="btn btn-sm btn-ghost-secondary {{ has_pending_link ? 'd-none' : '' }}" type="button"
               data-bs-toggle="collapse" data-bs-target="#link_itilobject_dropdowns"

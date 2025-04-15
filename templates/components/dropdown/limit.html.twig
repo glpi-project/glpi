@@ -31,6 +31,8 @@
  #}
 
 {% set additional_attributes = additional_attributes|default([]) %}
+{% set no_onchange = no_onchange|default(false) %}
+
 {% if additional_params is not defined %}
    {% set additional_params = '' %}
 {% else %}
@@ -40,10 +42,11 @@
 {% endif %}
 
 {% if no_onchange is not defined or not no_onchange %}
-   {% set href_separator = '?' in href ? '&' : '?' %}
-   {% set href = "location.href='" ~ href ~ href_separator ~ "glpilist_limit='+this.value+'" ~ additional_params ~ "'" %}
    {% if is_tab is defined and is_tab == true %}
       {% set href = "javascript:reloadTab('glpilist_limit='+this.value+'" ~ additional_params ~ "');" %}
+   {% elseif href is defined %}
+      {% set href_separator = '?' in href ? '&' : '?' %}
+      {% set href = "location.href='" ~ href ~ href_separator ~ "glpilist_limit='+this.value+'" ~ additional_params ~ "'" %}
    {% endif %}
 {% endif %}
 

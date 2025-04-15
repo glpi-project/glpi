@@ -68,7 +68,7 @@
    {% endfor %}
    </select>
 
-   {% if not item.isNewItem() and not params['template_preview'] and canassigntome %}
+   {% if not item.isNewItem() and not (params['template_preview'] ?? false) and canassigntome %}
       {{ include('components/itilobject/actors/assign_to_me.html.twig') }}
    {% endif %}
 

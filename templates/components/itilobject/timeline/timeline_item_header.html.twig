@@ -37,7 +37,7 @@
          'user_object': user_object,
          'date_creation': date_creation,
          'date_mod': date_mod,
-         'users_id_editor': entry_i['users_id_editor'],
+         'users_id_editor': entry_i['users_id_editor']|default(null),
          'anchor': entry['type'] ~ '_' ~ entry_i['id'],
          'anonym_user': anonym_user,
          'entry': entry,
@@ -58,7 +58,7 @@
          {% set actions = actions|merge({edit_btn}) %}
       {% endif %}
 
-      {% if entry_i['can_promote'] %}
+      {% if entry_i['can_promote'] ?? false %}
          {% if entry_i['sourceof_items_id'] > 0 %}
             {% set promoted_btn %}
                <li>

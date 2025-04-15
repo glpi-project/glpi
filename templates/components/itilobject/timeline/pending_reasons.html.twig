@@ -119,7 +119,7 @@
             <div class="col-12 col-sm-6" title="{{ __('Automatic follow-up') }}"
                   data-bs-toggle="tooltip" data-bs-placement="top">
                {% set pendingreasons_frequency_field = call('PendingReason::displayFollowupFrequencyfield', [
-                  pending_item ? pending_item.fields['followup_frequency'] : pending_item_parent.fields['followup_frequency'],
+                  pending_item ? pending_item.fields['followup_frequency'] : pending_item_parent ? pending_item_parent.fields['followup_frequency'] : null,
                   "",
                   {
                      'rand': rand
@@ -145,7 +145,7 @@
             <div class="col-12 col-sm-6" title="{{ __('Automatic resolution') }}"
                  data-bs-toggle="tooltip" data-bs-placement="top">
                {% set pendingreasons_resolution_field = call('PendingReason::displayFollowupsNumberBeforeResolutionField', [
-                     pending_item ? pending_item.fields['followups_before_resolution'] : pending_item_parent.fields['followups_before_resolution'],
+                     pending_item ? pending_item.fields['followups_before_resolution'] : pending_item_parent ? pending_item_parent.fields['followups_before_resolution'] : null,
                      "",
                      {
                         'rand': rand

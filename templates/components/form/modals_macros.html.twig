@@ -69,7 +69,7 @@
             </div>
             <div class="modal-footer">
                {% for button in options['buttons'] %}
-                  <button type="button" class="btn {{ options['primary'] ? 'btn-primary' : 'btn-outline-secondary' }} {{ button['class']|default('') }}"
+                  <button type="button" class="btn {{ (options['primary'] ?? true) ? 'btn-primary' : 'btn-outline-secondary' }} {{ button['class']|default('') }}"
                           id="{{ button['id']|default(options.id ~ '_btn_' ~ (loop.index0)) }}" data-bs-dismiss="modal">
                      {{ button['label']|default('')|raw }}
                   </button>

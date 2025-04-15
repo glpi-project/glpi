@@ -177,7 +177,7 @@
                 {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
 
                 <div class="d-flex card-footer mx-n3 mb-n3">
-                    {% if subitem.fields['id'] <= 0 %}
+                    {% if (subitem.fields['id'] ?? 0) <= 0 %}
                         <div class="input-group">
                             <button class="btn btn-primary" type="submit" name="add">
                                 <i class="ti ti-file-plus"></i>

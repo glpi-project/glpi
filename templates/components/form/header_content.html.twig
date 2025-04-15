@@ -37,8 +37,9 @@
 {% set friendlyname = params['friendlyname'] ?? item.getHeaderName() %}
 {% set id           = item.fields['id'] ?? -1 %}
 {% set in_navheader = in_navheader|default(false) %}
-
+{% set header_toolbar = header_toolbar|default([]) %}
 {% set entity_name = entity_name|default('') %}
+
 {% if entity_id is not defined %}
     {% if item.getType() == 'Entity' %}
         {% set entity_id = item.fields['id'] == 0 ? null : (params['entities_id'] ?? item.fields['entities_id'] ?? session('glpiactive_entity')) %}
@@ -52,11 +53,12 @@
     {% endif %}
 {% endif %}
 
-{% set template_name = item.fields['template_name'] %}
 {% if withtemplate == 2 and not item.isNewItem() %}
+   {% set template_name = item.fields['template_name'] %}
    <input type="hidden" name="template_name" value="{{ template_name }}" />
    {% set nametype = __('Created from the template %s')|format(template_name) %}
 {% elseif withtemplate == 1 %}
+   {% set template_name = item.fields['template_name'] %}
    <input type="hidden" name="is_template" value="1" />
 {% elseif item.isNewItem() %}
    {% set nametype = __('%1$s - %2$s')|format(__('New item'), nametype) %}
@@ -114,7 +116,7 @@
       </span>
       {% endif %}
 
-      {% if header_toolbar %}
+      {% if header_toolbar|length > 0 %}
          <div class="d-inline-block toolbar ms-2">
             {% for raw_element in header_toolbar %}
                {{ raw_element|raw }}

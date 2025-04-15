@@ -38,6 +38,11 @@
 {# @var hide_new_horizontal_layout_button         bool #}
 {# @var show_remove_horizontal_placeholder_button bool #}
 
+{% set ghost_button = ghost_button|default(false) %}
+{% set hide_section_button = hide_section_button|default(false) %}
+{% set hide_new_horizontal_layout_button = hide_new_horizontal_layout_button|default(false) %}
+{% set show_remove_horizontal_placeholder_button = show_remove_horizontal_placeholder_button|default(false) %}
+
 {% if can_update %}
     <div
         class="d-flex justify-content-center h-full {{ vertical_layout ? 'btn-group-vertical ms-2' : 'btn-group mt-2' }}"
