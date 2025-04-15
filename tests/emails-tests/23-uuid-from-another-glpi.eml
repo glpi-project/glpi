@@ -2,7 +2,7 @@ Return-Path: tech@glpi-project.org
 Received: from mail.glpi-project.org (localhost [127.0.0.1])
     by mail.glpi-project.org (Postfix) with ESMTP id B74527E805E8
     for <tech@glpi-project.org>; Wed,  3 Apr 2019 11:48:35 +0200 (CEST)
-Subject: Re: [GLPI #0000001] New ticket
+Subject: Re: [GLPI #0000001] Ticket from another GLPI
 References: <GLPI_1pAReXsxIoFd4pZEJhXZyrPGvef1ju3TMQcTTavt-Ticket-1.1611674092.1756143577@ae1a6b5a3a9c>
 From: Tech Ni Cian <tech@glpi-project.org>
 To: tech@glpi-project.org
@@ -17,6 +17,6 @@ Content-Transfer-Encoding: quoted-printable
 Hi,
 
 This is a response to a ticket notification from another GLPI instance.
-It should be blacklisted as we consider that current instance of GLPI is not responsible of this thread.
+It will create a new ticket, as the default rules are made to refuse this email.
 
 Regards.

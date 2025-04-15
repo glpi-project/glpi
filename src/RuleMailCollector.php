@@ -79,9 +79,17 @@ class RuleMailCollector extends Rule
         $criterias['to']['table']                       = '';
         $criterias['to']['type']                        = 'text';
 
+        $criterias['message_id']['name']                = __('Message-ID email header');
+        $criterias['message_id']['table']               = '';
+        $criterias['message_id']['type']                = 'text';
+
         $criterias['in_reply_to']['name']               = __('In-Reply-To email header');
         $criterias['in_reply_to']['table']              = '';
         $criterias['in_reply_to']['type']               = 'text';
+
+        $criterias['references']['name']                = __('References email header');
+        $criterias['references']['table']               = '';
+        $criterias['references']['type']                = 'text';
 
         $criterias['x-priority']['name']                = __('X-Priority email header');
         $criterias['x-priority']['table']               = '';

@@ -1,0 +1,12 @@
+Subject: [GLPI #0000012] New ticket
+From: noreply@glpi-project.org
+To: tech@glpi-project.org
+Message-ID: <GLPI_HXhZEy5AsWBYGKUsJZkJPqF6Jdbu6cGHm7HXopUO-Ticket-12.1716977698.1280320605@localhost>
+Date: Wed, 29 May 2024 11:49:25 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: fr-FR
+Content-Transfer-Encoding: 7bit
+
+This is a notification for a new ticket, sent by GLPI >= 10.0.0 < 10.0.7.
+It should be refused by default rules, based on its Message-ID header.
