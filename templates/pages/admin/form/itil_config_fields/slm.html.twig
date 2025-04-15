@@ -32,12 +32,7 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<div
-    {% if main_config_field.value != CONFIG_SPECIFIC_VALUE %}
-        class="d-none"
-    {% endif %}
-    data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUE }}"
->
+<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUE }}">
     {{ fields.dropdownField(
         specific_value_extra_field.slm_class,
         specific_value_extra_field.input_name,

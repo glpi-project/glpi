@@ -85,7 +85,8 @@ final class TemplateField extends AbstractConfigField implements DestinationFiel
             throw new InvalidArgumentException("Unexpected config class");
         }
 
-        $parameters = [
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render('pages/admin/form/itil_config_fields/template.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
             'CONFIG_SPECIFIC_TEMPLATE'  => TemplateFieldStrategy::SPECIFIC_TEMPLATE->value,
 
@@ -99,36 +100,7 @@ final class TemplateField extends AbstractConfigField implements DestinationFiel
                 'input_name'      => $input_name . "[" . TemplateFieldConfig::TEMPLATE_ID . "]",
                 'possible_values' => $this->getTemplateValuesForDropdown($form),
             ],
-        ];
-
-        $template = <<<TWIG
-            {% import 'components/form/fields_macros.html.twig' as fields %}
-
-            <div
-                {% if main_config_field.value != CONFIG_SPECIFIC_TEMPLATE %}
-                    class="d-none"
-                {% endif %}
-                data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_TEMPLATE }}"
-            >
-                {{ fields.dropdownArrayField(
-                    specific_template_extra_field.input_name,
-                    specific_template_extra_field.value,
-                    specific_template_extra_field.possible_values,
-                    "",
-                    options|merge({
-                        field_class: '',
-                        mb: '',
-                        no_label: true,
-                        display_emptychoice: true,
-                        emptylabel: specific_template_extra_field.empty_label,
-                        aria_label: specific_template_extra_field.empty_label,
-                    })
-                ) }}
-            </div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, $parameters);
+        ]);
     }
 
     #[Override]

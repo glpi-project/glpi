@@ -32,36 +32,19 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUE }}">
-    {{ fields.dropdownField(
-        'ITILCategory',
-        specific_value_extra_field.input_name,
-        specific_value_extra_field.value,
-        "",
-        options|merge({
-            field_class: '',
-            mb: '',
-            no_label: true,
-            display_emptychoice: true,
-            emptylabel: specific_value_extra_field.empty_label,
-            aria_label: specific_value_extra_field.empty_label,
-        })
-    ) }}
-</div>
-
-<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ANSWER }}">
+<div data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_TEMPLATE }}">
     {{ fields.dropdownArrayField(
-        specific_answer_extra_field.input_name,
-        specific_answer_extra_field.value,
-        specific_answer_extra_field.possible_values,
+        specific_template_extra_field.input_name,
+        specific_template_extra_field.value,
+        specific_template_extra_field.possible_values,
         "",
         options|merge({
             field_class: '',
             mb: '',
             no_label: true,
             display_emptychoice: true,
-            emptylabel: specific_answer_extra_field.empty_label,
-            aria_label: specific_answer_extra_field.empty_label,
+            emptylabel: specific_template_extra_field.empty_label,
+            aria_label: specific_template_extra_field.empty_label,
         })
     ) }}
 </div>
