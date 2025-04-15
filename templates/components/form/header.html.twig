@@ -72,7 +72,6 @@
 
       {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
 
-      {# todo modal message #}
-      {% if app.request.request('in_modal') == true %}
+      {% if _request['_in_modal'] is defined and _request['_in_modal'] == "1" %}
       <input type="hidden" name="_no_message_link" value="1" />
       {% endif %}

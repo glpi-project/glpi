@@ -124,7 +124,7 @@
                                   {% set conditions_met = conditions_met + 1 %}
                               {% endif %}
 
-                              {% if cluster is not null %}
+                              {% if cluster is defined and cluster is not null %}
                                   {{ fields.htmlField(
                                       '',
                                       cluster.getLink(),
@@ -578,7 +578,7 @@
       {{ include('components/form/inventory_info.html.twig') }}
    {% endif %}
 
-   {% if params['formfooter'] is null or params['formfooter'] == true %}
+   {% if params['formfooter'] ?? true %}
       <div class="card-footer mx-n2 mb-n2">
          {{ include('components/form/dates.html.twig') }}
       </div>

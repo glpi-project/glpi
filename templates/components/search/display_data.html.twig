@@ -37,7 +37,7 @@
    <div class="ajax-container search-display-data">
 {% endif %}
 {% set push_history = push_history is defined and push_history %}
-{% set hide_controls = data['search']['hide_controls'] or (hide_controls is defined and hide_controls) %}
+{% set hide_controls = data['search']['hide_controls'] ?? hide_controls ?? false %}
 
 {# Remove namespace separators for use in HTML attributes #}
 {% set normalized_itemtype = itemtype|replace({'\\': ''}) %}

@@ -35,6 +35,7 @@
 {% set anonymized = enable_anonymization and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED') %}
 {% set user = user_object ?? get_item('User', users_id) %}
 {% set with_link = with_link ?? true %}
+{% set force_initials = force_initials ?? false %}
 {% if not force_initials %}
     {% set user_thumbnail = user.getThumbnailPicturePath(enable_anonymization) %}
     {% if user_thumbnail == null and not entity_config('display_users_initials', session('glpiactive_entity')) %}

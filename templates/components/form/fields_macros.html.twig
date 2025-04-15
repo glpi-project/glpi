@@ -77,7 +77,7 @@
 {% endmacro %}
 
 {% macro autoNameField(name, item, label = '', withtemplate, options = {}) %}
-   {% set tpl_value = options.value|length > 0 ? options.value : item.fields[name] %}
+   {% set tpl_value = (options.value ?? '')|length > 0 ? options.value : item.fields[name] %}
    {% if item.isTemplate() %} {# TODO exluded types #}
        {% set options = options|merge({
            tpl_mark: item.getAutofillMark(name, {'withtemplate': withtemplate}, tpl_value)
@@ -137,17 +137,22 @@
 
 
 {% macro sliderField(name, value, label = '', options = {}) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {
          'required': true
       }|merge(options) %}
    {% endif %}
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
    {% set options = {
       'no_value': 0,
       'yes_value': 1,
+      'readonly': false,
+      'required': false,
+      'disabled': false,
+      'additional_attributes': [],
+      'label2': '',
    }|merge(options) %}
 
    {% set field %}
@@ -214,6 +219,7 @@
       'entities_id': session('glpiactive_entity'),
       'uploads': [],
       'rows': 3,
+      'readonly': false,
    }|merge(options) %}
 
    {% if options.id is not defined %}
@@ -233,7 +239,7 @@
              'editor_id': options.id,
              'multiple': true,
              'uploads': options.uploads,
-             'required': options.fields_template.isMandatoryField('_documents_id')
+             'required': options.fields_template.isMandatoryField('_documents_id')|default(false)
          }]) %}
       {% endset %}
    {% elseif not options.readonly and not options.enable_fileupload and options.enable_richtext and options.enable_images %}
@@ -243,7 +249,7 @@
              'name': name,
              'only_uploaded_files': true,
              'uploads': options.uploads,
-             'required': options.fields_template.isMandatoryField('_documents_id')
+             'required': options.fields_template.isMandatoryField('_documents_id')|default(false)
          }]) %}
       {% endset %}
    {% endif %}
@@ -366,7 +372,7 @@
          {% endif %}
       </div>
    {% endset %}
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
    {{ _self.field(name, field, label, options) }}
@@ -392,7 +398,7 @@
       }) }}
    {% endset %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -406,7 +412,7 @@
 {% endmacro %}
 
 {% macro hiddenField(name, value, label = '', options = {}) %}
-   {% if options.no_label %}
+   {% if options.no_label ?? false %}
       {% set options = {
          mb: 'mb-0'
       }|merge(options) %}
@@ -422,23 +428,24 @@
     {% set options = {
         'rand': random(),
         'width': '100%',
+        'disabled': false,
     }|merge(options) %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
    {% if options.disabled %}
       {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
    {% endif %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'specific_tags': {'required': true}}|merge(options) %}
    {% endif %}
 
    {% set field %}
       {% do call('Dropdown::showNumber', [name, {
          'value': value,
-         'rand': rand
+         'rand': options.rand
       }|merge(options)]) %}
    {% endset %}
 
@@ -448,10 +455,11 @@
 {% macro dropdownArrayField(name, value, elements, label = '', options = {}) %}
     {% set options = {
         'rand': random(),
+        'disabled': false,
         'width': '100%',
     }|merge(options) %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -459,14 +467,14 @@
       {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
    {% endif %}
 
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
    {% set field %}
       {% do call('Dropdown::showFromArray', [name, elements, {
          'value': value,
-         'rand': rand,
+         'rand': options.rand,
       }|merge(options)]) %}
    {% endset %}
 
@@ -478,11 +486,11 @@
         'rand': random(),
         'width': '100%',
     }|merge(options) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -505,11 +513,11 @@
         'rand': random(),
         'width': '100%',
     }|merge(options) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -530,12 +538,13 @@
     {% set options = {
         'rand': random(),
         'width': '100%',
+        'disabled': false,
     }|merge(options) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -547,7 +556,7 @@
 
    {% set field %}
       {% do call('Dropdown::showItemTypes', [name, types, {
-         'rand': rand,
+         'rand': options.rand,
          'value': value
       }|merge(options)]) %}
    {% endset %}
@@ -560,7 +569,7 @@
       'rand': random()
    }|merge(options) %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -575,11 +584,11 @@
         'rand': random(),
         'width': '100%',
     }|merge(options) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -620,11 +629,11 @@
         'rand': random(),
         'width': '100%',
     }|merge(options) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -644,11 +653,11 @@
 
 {% macro dropdownFrequency(name, value, label = '', options = {}) %}
    {% set options = {'rand': random()}|merge(options) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'required': true}|merge(options) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -668,7 +677,7 @@
 {% endmacro %}
 
 {% macro dropdownField(itemtype, name, value, label = '', options = {}) %}
-   {% if options.multiple %}
+   {% if options.multiple ?? false %}
       {# Needed for empty value as the input wont be sent in this case... we need something to know the input was displayed AND empty #}
       {% set defined_input_name = "_#{name}_defined" %}
       <input type="hidden" name="{{ defined_input_name }}" value="1"></input>
@@ -679,12 +688,13 @@
     {% set options = {
         'rand': random(),
         'width': '100%',
+        'disabled': false,
     }|merge(options) %}
-   {% if options.fields_template.isMandatoryField(name) %}
+   {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {'specific_tags': {'required': true}}|merge(options) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -696,7 +706,7 @@
       {{ itemtype|itemtype_dropdown({
          'name': name,
          'value': value,
-         'rand': rand,
+         'rand': options.rand,
       }|merge(options)) }}
    {% endset %}
 
@@ -718,11 +728,11 @@
         'rand': random(),
         'width': '100%',
     }|merge(options) %}
-    {% if options.fields_template.isMandatoryField(name) %}
+    {% if options.fields_template.isMandatoryField(name)|default(false) %}
         {% set options = {'specific_tags': {'required': true}}|merge(options) %}
     {% endif %}
 
-    {% if options.fields_template.isReadonlyField(name) %}
+    {% if options.fields_template.isReadonlyField(name)|default(false) %}
         {% set options = options|merge({'readonly': true}) %}
     {% endif %}
 
@@ -751,7 +761,7 @@
       wrapper_class: 'form-control-plaintext'
    }|merge(options) %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
@@ -769,6 +779,7 @@
       'add_field_html': '',
       'locked': false,
       'locked_fields': [],
+       'no_label': false,
    }|merge(options) %}
 
    {% if options.locked_fields[name] is defined %}
@@ -777,14 +788,14 @@
       {% set options = options|merge({'locked': true}) %}
    {% endif %}
 
-   {% if options.fields_template.isReadonlyField(name) %}
+   {% if options.fields_template.isReadonlyField(name)|default(false) %}
       {% set options = options|merge({'readonly': true}) %}
    {% endif %}
 
    {% if not options.include_field %}
       {{ field }}
    {% else %}
-      {% set id    = options.id|length > 0 and options.id != '%id%' ? options.id : (name|slug ~ '_' ~ options.rand) %}
+      {% set id    = (options.id ?? '')|length > 0 and options.id != '%id%' ? options.id : (name|slug ~ '_' ~ options.rand) %}
       {% set field = field|replace({'%id%': id}) %}
       {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : '' %}
 
@@ -863,6 +874,7 @@
       'center': false,
       'label_align': 'end',
       'inline_add_field_html': false,
+       'icon_label': false,
    }|merge(options) %}
 
    {% if options.icon_label %}
@@ -922,6 +934,8 @@
       'add_field_class': '',
       'add_field_attribs': {},
       'insert_content_after_label': '',
+      'label_class': '',
+      'input_class': '',
    }|merge(options) %}
 
    {% if options.full_width %}
