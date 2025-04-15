@@ -1767,10 +1767,11 @@ abstract class CommonITILObject extends CommonDBTM
      * Handle template mandatory fields on update
      *
      * @param array $input Input
+     * @param bool  $show_error_message Show error message
      *
      * @return false|array
      */
-    protected function handleTemplateFields(array $input)
+    protected function handleTemplateFields(array $input, bool $show_error_message = true)
     {
        //// check mandatory fields
        // First get ticket template associated : entity and type/category
@@ -1894,17 +1895,33 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
             if (count($mandatory_missing)) {
-               //TRANS: %s are the fields concerned
-                $message = sprintf(
-                    __('Mandatory fields are not filled. Please correct: %s'),
-                    implode(", ", $mandatory_missing)
-                );
-                Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
+                //TRANS: %s are the fields concerned
+                if ($show_error_message) {
+                    $message = sprintf(
+                        __('Mandatory fields are not filled. Please correct: %s'),
+                        implode(", ", $mandatory_missing)
+                    );
+                    Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
+                }
                 return false;
             }
         }
 
         return $input;
+    }
+
+    /**
+     * Checks if all required fields are filled
+     *
+     * @return bool
+     */
+    public function checkRequiredFieldsFilled(): bool
+    {
+        $result = $this->handleTemplateFields($this->fields, false);
+        if ($result === false) {
+            return false;
+        }
+        return true;
     }
 
     protected function manageITILObjectLinkInput($input)
@@ -7367,7 +7384,7 @@ abstract class CommonITILObject extends CommonDBTM
         $canadd_fup = $fup->can(-1, CREATE, $tmp) && !in_array($this->fields["status"], $solved_closed_statuses, true) || isset($_GET['_openfollowup']);
         $canadd_task = $task->can(-1, CREATE, $tmp) && !in_array($this->fields["status"], $solved_closed_statuses, true);
         $canadd_document = $canadd_fup || ($this->canAddItem('Document') && !in_array($this->fields["status"], $solved_closed_statuses, true));
-        $canadd_solution = $obj_type::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $solved_statuses, true);
+        $canadd_solution = $obj_type::canUpdate() && $this->canSolve() && !in_array($this->fields["status"], $solved_statuses, true) && $this->checkRequiredFieldsFilled();
 
         $validation = $this->getValidationClassInstance();
         $canadd_validation = $validation !== null

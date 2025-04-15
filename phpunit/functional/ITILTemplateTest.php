@@ -141,6 +141,8 @@ class ITILTemplateTest extends DbTestCase
         $tid = (int)$object->add($content);
         $this->assertSame(0, $tid);
 
+        $this->assertFalse($object->checkRequiredFieldsFilled());
+
         $this->hasSessionMessages(
             ERROR,
             [
@@ -151,6 +153,7 @@ class ITILTemplateTest extends DbTestCase
 
         $content['content'] = 'A content for our ' . $itiltype;
         $tid = (int)$object->add($content);
+        $this->assertTrue($object->checkRequiredFieldsFilled());
         $this->assertGreaterThan(0, $tid);
     }
 
