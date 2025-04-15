@@ -37,15 +37,15 @@
 {% endif %}
 
 <div class="card-header search-header px-1 px-xl-3">
-    {% if not original_params.hide_controls %}
+    {% if not original_params.hide_controls ?? false %}
         <div class="search-controls d-flex justify-content-between align-items-center">
 
             {% set mainform = mainform ?? true %}
             {% set showaction = showaction ?? true %}
             {% if mainform and showaction %}
-                <form name="searchform{{ normalized_itemtype }}" class="search-form-container needs-validation" novalidate method="get" action="{{ p['target'] }}">
+                <form name="searchform{{ normalized_itemtype }}" class="search-form-container needs-validation" novalidate method="get" action="{{ href }}">
             {% endif %}
-            {% if not original_params.hide_criteria %}
+            {% if not original_params.hide_criteria ?? false %}
                 <div class="primary-controls">
                 <div class="btn-group me-1 me-xl-2">
                     {% set is_filter_active = false %}

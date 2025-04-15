@@ -37,7 +37,7 @@
     <form method="post" action="{{ 'Document'|itemtype_form_path }}" enctype="multipart/form-data" data-submit-once>
 
         <div class="d-flex">
-            {{ fields.dropdownField('DocumentCategory', 'documentcategories_id', item.fields['documentcategories_id'], 'DocumentCategory'|itemtype_name, {
+            {{ fields.dropdownField('DocumentCategory', 'documentcategories_id', item.fields['documentcategories_id'] ?? '', 'DocumentCategory'|itemtype_name, {
                 field_class: 'col-12 col-sm-5 pe-2',
                 entity: entities
             }) }}

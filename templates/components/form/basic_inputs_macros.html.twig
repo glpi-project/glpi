@@ -40,16 +40,17 @@
         'disabled': false,
         'multiple': false,
         'required': false,
+        'maxlength': null,
         'is_disclosable': false,
         'is_copyable': false,
         'clearable': false,
     }|merge(options) %}
 
-    {% if options.fields_template.isMandatoryField(name) %}
+    {% if options.fields_template.isMandatoryField(name)|default(false) %}
         {% set options = options|merge({'required': true}) %}
     {% endif %}
 
-    {% if options.fields_template.isReadonlyField(name) %}
+    {% if options.fields_template.isReadonlyField(name)|default(false) %}
         {% set options = options|merge({'readonly': true}) %}
     {% endif %}
 
@@ -117,6 +118,10 @@
 
 
 {% macro text(name, value, options = {}) %}
+    {% set options = {
+        'copyable': false,
+    }|merge(options) %}
+
     {% if options.copyable %}
         <div class="copy_to_clipboard_wrapper">
     {% endif %}
@@ -320,9 +325,10 @@
         'aria_label': "",
         'statusbar': true,
         'content_style': "",
+        'input_addclass': '',
     }|merge(options) %}
 
-    {% if options.fields_template.isMandatoryField(name) %}
+    {% if options.fields_template.isMandatoryField(name)|default(false) %}
         {% set options = {'required': true}|merge(options) %}
     {% endif %}
     {% set options = options|merge({
@@ -438,13 +444,14 @@
 
 {% macro label(label, id, options = {}, class = 'form-label') %}
     {% set options = {
-        locked: false,
-        locked_value: null,
-        tpl_mark: null
+        'locked': false,
+        'locked_value': null,
+        'tpl_mark': null,
+        'helper': false
     }|merge(options) %}
 
     {% set required_mark = '' %}
-    {% if options.fields_template.isMandatoryField(options.name) or options.required %}
+    {% if options.fields_template.isMandatoryField(options.name)|default(false) or options.required ?? false %}
         {% set required_mark = '<span class="required">*</span>' %}
     {% endif %}
 

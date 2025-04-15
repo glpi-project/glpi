@@ -33,6 +33,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set add_padding = from_meta ? 'p-0' : 'p-2' %}
+{% set add_class = add_class|default('') %}
 
 {% if meta and not from_meta %}
    {{ call("Glpi\\Search\\Input\\QueryBuilder::displayMetaCriteria", [{

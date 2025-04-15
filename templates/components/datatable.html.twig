@@ -33,13 +33,21 @@
 {% import 'components/alerts_macros.html.twig' as alerts %}
 
 {% set datatable_id = datatable_id|default('datatable' ~ random()) %}
+{% set filters = filters|default([]) %}
+{% set additional_params = additional_params|default('') %}
+{% set sort = sort|default(null) %}
+{% set nosort = nosort|default(false) %}
+{% set order = order|default('ASC') %}
+{% set csv_url = csv_url|default('') %}
+{% set footers = footers|default([]) %}
+
 {% if total_number < 1 and filters|length == 0 %}
     <table id="{{ datatable_id }}" class="table">
         <thead>
         {% if super_header is defined and super_header is not empty %}
             {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
             {% if super_header_label is not empty %}
-                {% set super_header_raw = super_header is array ? super_header['is_raw'] : false %}
+                {% set super_header_raw = super_header is array ? (super_header['is_raw'] ?? false) : false %}
                 <tr>
                     <th colspan="1">
                         {{ super_header_raw ? super_header_label|raw : super_header_label }}
@@ -60,7 +68,7 @@
     </table>
 {% else %}
     {% set total_cols = columns|length + (showmassiveactions ? 1 : 0) + (nofilter ? 0 : 1) %}
-    {% if not nopager %}
+    {% if nopager is not defined or not nopager %}
         {{ include('components/pager.html.twig', {
             'count': filtered_number,
             'additional_params': additional_params ~ '&sort=' ~ sort ~ '&order=' ~ order
@@ -77,7 +85,7 @@
             <thead>
                 {% if super_header is defined and super_header is not empty %}
                     {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
-                    {% set super_header_raw = super_header is array ? super_header['is_raw'] : false %}
+                    {% set super_header_raw = super_header is array ? (super_header['is_raw'] ?? false) : false %}
                     <tr>
                         {% if super_header_raw is not same as 'th_elements' %}<th colspan="{{ total_cols }}">{% endif %}
                             {{ super_header_raw ? super_header_label|raw : super_header_label }}
@@ -225,7 +233,7 @@
                                     {% set aria_label = entry[colkey ~ '_aria_label']|default('') %}
                                     <td colspan="{{ colspan }}" aria-label="{{ aria_label }}">
 
-                                        {% set formatter = formatters[colkey] %}
+                                        {% set formatter = formatters[colkey] ?? '' %}
 
                                         {% if formatter == "maintext" %}
                                             <span class="d-inline-block bg-blue-lt p-1 text-truncate"
@@ -328,7 +336,7 @@
         </table>
     </div>
 
-    {% if not nopager %}
+    {% if nopager is defined and not nopager %}
         <div class="ms-auto d-inline-flex align-items-center d-none d-md-block my-2">
             {{ __('Entries to show:') }}
             {% include 'components/dropdown/limit.html.twig' %}
