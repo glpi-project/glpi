@@ -336,7 +336,7 @@
         </table>
     </div>
 
-    {% if nopager is defined and not nopager %}
+    {% if nopager is not defined or not nopager %}
         <div class="ms-auto d-inline-flex align-items-center d-none d-md-block my-2">
             {{ __('Entries to show:') }}
             {% include 'components/dropdown/limit.html.twig' %}
