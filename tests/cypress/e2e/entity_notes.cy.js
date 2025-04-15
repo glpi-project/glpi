@@ -102,6 +102,7 @@ describe('Entity notes', () => {
         });
 
         // Check that the note is edited
+        cy.findByRole('dialog').should('not.exist');
         cy.findByRole('tabpanel').find('.rich_text_container').should('contain', 'This is an edited test note');
     });
 
@@ -118,7 +119,9 @@ describe('Entity notes', () => {
             cy.findByRole('button', { name: 'Update' }).click();
         });
 
+        // Check that the note is edited
         cy.findByRole('dialog').should('not.exist');
+        cy.findByRole('tabpanel').find('.rich_text_container').should('contain', 'This is an edited test note');
     });
 
     it('entity note can be visible on tickets', () => {
