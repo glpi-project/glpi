@@ -303,7 +303,14 @@
              <div id="notes" class="accordion-collapse collapse {{ notes_show ? "show" : "" }}" aria-labelledby="notes-heading">
                 <div class="accordion-body row m-0 mt-n2">
                   {% for note in notes %}
-                     <div class="alert alert-info entitynote rich_text_container" role="alert">{{ note['content']|safe_html }}</div>
+                     <div class="alert alert-info entitynote rich_text_container" role="alert">
+                        {{ note['content']|safe_html }}
+
+                        {{ include('components/itilobject/timeline/sub_documents.html.twig', {
+                           'item': note,
+                           'entry': note
+                        }) }}
+                     </div>
                   {% endfor %}
                 </div>
              </div>

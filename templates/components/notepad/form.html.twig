@@ -148,10 +148,15 @@
                             'entry': note
                         }) }}
 
-                        <div id="edit-{{ id }}" class="modal fade">
+                    </form>
 
-                            <div class="modal-dialog modal-xl">
-                                <div class="modal-content">
+                    <div id="edit-{{ id }}" class="modal fade">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
+                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                                    <input type="hidden" name="id" value="{{ note['id'] }}" />
+
                                     <div class="modal-header">
                                         <h3 class="modal-title">
                                             <i class="ti ti-notes"></i>
@@ -195,11 +200,10 @@
                                             <span>{{ __('Update') }}</span>
                                         </button>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
-
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
