@@ -126,7 +126,7 @@ final class OAuthClient extends CommonDBTM
         $input['secret'] = $key->encrypt(self::getNewIDOrSecret());
 
         $input['grants'] = json_encode($input['grants'] ?? []);
-        $input['scopes'] = json_encode($input['scopes'] ?? []);
+        $input['scopes'] = json_encode(empty($input['scopes']) ? [] : $input['scopes']);
 
         if (empty($input['redirect_uri'])) {
             $input['redirect_uri'] = ['/api.php/oauth2/redirection'];
@@ -153,7 +153,7 @@ final class OAuthClient extends CommonDBTM
             $input['grants'] = json_encode($input['grants']);
         }
         if (isset($input['scopes'])) {
-            $input['scopes'] = json_encode($input['scopes']);
+            $input['scopes'] = json_encode(empty($input['scopes']) ? [] : $input['scopes']);
         }
         $input['redirect_uri'] = json_encode($input['redirect_uri'] ?? []);
 
