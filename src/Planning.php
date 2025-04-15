@@ -762,7 +762,7 @@ JAVASCRIPT;
             Planning::showPlanningFilter();
             $options = [
                 'full_view'    => true,
-                'default_view' => 'timeGridWeek',
+                'default_view' => $_SESSION['glpi_plannings']['lastview'] ?? 'timeGridWeek',
                 'license_key'  => $scheduler_key,
                 'resources'    => self::getTimelineResources(),
                 'now'          => date("Y-m-d H:i:s"),
