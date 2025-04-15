@@ -58,6 +58,7 @@ use Profile_User;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
+use Location;
 use Session;
 use Stat;
 use Ticket;
@@ -1697,6 +1698,76 @@ class Provider
                     'color'  => '#555555',
                 ]
             ],
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+
+    public static function getItemsCoordinates(array $params = []): array
+    {
+        global $CFG_GLPI;
+
+        $DB = DBConnection::getReadConnection();
+        $default_params = [
+            'label'         => "",
+            'icon'          => "",
+            'apply_filters' => [],
+            'limit'         => 5000,
+        ];
+        $params = array_merge($default_params, $params);
+
+        $data = [];
+        $nb_added = 0;
+        foreach ($CFG_GLPI['location_types'] as $itemtype) {
+            if (!$DB->fieldExists($itemtype::getTable(), 'locations_id') || !$DB->fieldExists($itemtype::getTable(), 'name')) {
+                continue;
+            }
+
+            $i_table = $itemtype::getTable();
+            $l_table = Location::getTable();
+            $iterator = $DB->request([
+                'SELECT' => [
+                    "$i_table.id",
+                    "$i_table.name",
+                    "$l_table.latitude",
+                    "$l_table.longitude",
+                ],
+                'FROM'   => $l_table,
+                'INNER JOIN' => [
+                    $i_table => [
+                        'ON' => [
+                            $i_table => getForeignKeyFieldForItemType(Location::class),
+                            $l_table  => 'id',
+                        ]
+                    ],
+                ],
+                'WHERE'  => [
+                    'latitude'  => ['!=', ''],
+                    'longitude' => ['!=', ''],
+                ],
+            ]);
+
+            foreach ($iterator as $result) {
+                if ($nb_added >= $params['limit']) {
+                    break 2;
+                }
+                $data[] = [
+                    'id'        => $result['id'],
+                    'type'      => $itemtype::getTypeName(1),
+                    'url'       => $itemtype::getFormURLWithID($result['id']),
+                    'icon'      => $itemtype::getIcon(),
+                    'name'      => $result['name'],
+                    'latitude'  => $result['latitude'],
+                    'longitude' => $result['longitude'],
+                ];
+
+                $nb_added++;
+            }
+        }
+
+        return [
+            'data'  => $data,
             'label' => $params['label'],
             'icon'  => $params['icon'],
         ];
