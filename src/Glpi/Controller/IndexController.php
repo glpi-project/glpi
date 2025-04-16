@@ -103,8 +103,9 @@ final class IndexController extends AbstractController
         if (count($errors) > 0) {
             return $this->render('pages/login_error.html.twig', [
                 'errors'    => $errors,
+                'title'     => __('Access denied'),
                 'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1&redirect=' . \rawurlencode($redirect),
-            ]);
+            ] + $this->commonTwigParameters());
         }
 
         if ($redirect !== '') {
@@ -146,7 +147,6 @@ final class IndexController extends AbstractController
         return $this->render('pages/login.html.twig', [
             'rand'                => $rand,
             'card_bg_width'       => true,
-            'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
             'title'               => __('Authentication'),
             'noAuto'              => $_GET["noAUTO"] ?? 0,
             'redirect'            => $redirect,
@@ -173,6 +173,6 @@ final class IndexController extends AbstractController
             'auth_dropdown_login' => Auth::dropdownLogin(false, $rand),
             'copyright_message'   => Html::getCopyrightMessage(false),
             'must_call_cron'      => CronTask::mustRunWebTasks()
-        ]);
+        ] + $this->commonTwigParameters());
     }
 }
