@@ -463,10 +463,10 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                     $input[$field] = $this->handleCustomScenesSubmittedFile($file);
                 }
             }
-        }
 
-        if ($input[$field] === null) {
-            unset($input[$field]);
+            if ($input[$field] === null) {
+                unset($input[$field]);
+            }
         }
 
         return $input;
