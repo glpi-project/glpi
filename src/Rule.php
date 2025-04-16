@@ -2692,6 +2692,7 @@ class Rule extends CommonDBTM
                     if ($value == -1) {
                         return __('Full structure');
                     }
+                    // Intentional fall-through to handle dropdown cases
                 case "dropdown":
                     if ($type == 'defaultfromuser' || $type == 'fromuser' || $type == 'fromitem' || $type == 'firstgroupfromuser') {
                         return Dropdown::getYesNo($value);

@@ -73,37 +73,35 @@ class RuleRightTest extends DbTestCase
     {
         //prepare rules
         $rules = new \RuleRight();
-        $rules_id = $rules->add([
+        $rules_id = $this->createItem(\RuleRight::class, [
             'sub_type'     => 'RuleRight',
             'name'         => 'test local account ruleright',
             'match'        => 'AND',
             'is_active'    => 1,
             'entities_id'  => 0,
             'is_recursive' => 1,
-        ]);
+        ])->getID();
 
-        $criteria = new \RuleCriteria();
-        $criteria->add([
+        $this->createItem(\RuleCriteria::class, [
             'rules_id'  => $rules_id,
             'criteria'  => 'LOGIN',
             'condition' => \Rule::PATTERN_IS,
             'pattern'   => TU_USER,
         ]);
-        $criteria->add([
+        $this->createItem(\RuleCriteria::class, [
             'rules_id'  => $rules_id,
             'criteria'  => 'MAIL_EMAIL',
             'condition' => \Rule::PATTERN_IS,
             'pattern'   => TU_USER . '@glpi.com',
         ]);
 
-        $actions = new \RuleAction();
-        $actions->add([
+        $this->createItem(\RuleAction::class, [
             'rules_id'    => $rules_id,
             'action_type' => 'assign',
             'field'       => 'profiles_id',
             'value'       => 5, // 'normal' profile
         ]);
-        $actions->add([
+        $this->createItem(\RuleAction::class, [
             'rules_id'    => $rules_id,
             'action_type' => 'assign',
             'field'       => 'entities_id',
@@ -114,6 +112,21 @@ class RuleRightTest extends DbTestCase
         $this->login(TU_USER, TU_PASS, false);
         $users_id = \User::getIdByName(TU_USER);
         $this->assertGreaterThan(0, $users_id);
+
+        $user = new \User();
+        $user->getFromDB($users_id);
+        $this->assertEquals(1, $user->fields['entities_id']);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => '_entities_id_default',
+            'value'       => -1, // Full structure
+        ]);
+
+        $this->login(TU_USER, TU_PASS, false);
+        $user->getFromDB($users_id);
+        $this->assertEquals(null, $user->fields['entities_id']);
 
         // check the user got the entity/profiles assigned
         $pu = \Profile_User::getForUser($users_id, true);
@@ -220,5 +233,17 @@ class RuleRightTest extends DbTestCase
 
         // Clean session
         $this->login();
+    }
+
+    public function testDefaultEntityAction()
+    {
+        $testuser = [
+            'name'      => 'testuser',
+            'password'  => 'test',
+            'password2' => 'test',
+        ];
+
+        $users_id = $this->createItem(\User::class, $testuser)->getID();
+
     }
 }
