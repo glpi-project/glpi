@@ -44,10 +44,13 @@ use Glpi\Form\Migration\FormMigration;
 use InvalidArgumentException;
 use Glpi\Form\Tag\FormTagProvider;
 use Glpi\Form\Tag\FormTagsManager;
+use Glpi\Form\Migration\TagConversionTrait;
 use Override;
 
 final class TitleField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
+    use TagConversionTrait;
+
     #[Override]
     public function getLabel(): string
     {
@@ -166,7 +169,8 @@ TWIG;
     public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
     {
         if (isset($rawData['target_name'])) {
-            return new SimpleValueConfig($rawData['target_name']);
+            $title = $this->convertLegacyTags($rawData['target_name'], $migration);
+            return new SimpleValueConfig($title);
         }
 
         return $this->getDefaultConfig($form);
