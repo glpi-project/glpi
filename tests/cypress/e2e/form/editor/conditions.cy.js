@@ -80,7 +80,7 @@ function addSection(name) {
 function getAndFocusQuestion(name) {
     return cy.then(() => {
         const index = questions.indexOf(name);
-        cy.findAllByRole('region', {'name': 'Question details'}).eq(index).click();
+        cy.findAllByRole('region', {'name': 'Question details', 'timeout': 10000}).eq(index).click();
     });
 }
 
@@ -208,6 +208,8 @@ function fillCondition(index, logic_operator, question_name, value_operator_name
     cy.get('@condition').getDropdownByLabelText('Value operator')
         .selectDropdownValue(value_operator_name)
     ;
+
+    cy.waitForNetworkIdle(150);
 
     if (value_type === "string"){
         cy.get('@condition').findByRole('textbox', {'name': 'Value'}).type(value);
@@ -391,14 +393,14 @@ describe ('Conditions', () => {
             checkThatConditionExist(
                 0,
                 null,
-                'My second question',
+                'Questions - My second question',
                 'Is not equal to',
                 'I love GLPI',
             );
             checkThatConditionExist(
                 1,
                 'Or',
-                'My first question',
+                'Questions - My first question',
                 'Contains',
                 'GLPI is great',
             );
@@ -406,7 +408,7 @@ describe ('Conditions', () => {
             checkThatConditionExist(
                 0,
                 null,
-                'My first question',
+                'Questions - My first question',
                 'Contains',
                 'GLPI is great',
             );
@@ -418,7 +420,7 @@ describe ('Conditions', () => {
             checkThatConditionExist(
                 0,
                 null,
-                'My first question',
+                'Questions - My first question',
                 'Contains',
                 'GLPI is great',
             );
@@ -447,14 +449,14 @@ describe ('Conditions', () => {
             checkThatConditionExist(
                 0,
                 null,
-                'My second question',
+                'Questions - My second question',
                 'Is not equal to',
                 'I love GLPI'
             );
             checkThatConditionExist(
                 1,
                 'Or',
-                'My first question',
+                'Questions - My first question',
                 'Contains',
                 'GLPI is great',
             );
@@ -462,7 +464,7 @@ describe ('Conditions', () => {
             checkThatConditionExist(
                 0,
                 null,
-                'My first question',
+                'Questions - My first question',
                 'Contains',
                 'GLPI is great',
             );
@@ -474,7 +476,7 @@ describe ('Conditions', () => {
             checkThatConditionExist(
                 0,
                 null,
-                'My first question',
+                'Questions - My first question',
                 'Contains',
                 'GLPI is great',
             );
@@ -502,14 +504,14 @@ describe ('Conditions', () => {
             checkThatConditionExist(
                 0,
                 null,
-                'My second question',
+                'Questions - My second question',
                 'Contains',
                 'I love GLPI'
             );
             checkThatConditionExist(
                 1,
                 'Or',
-                'My first question',
+                'Questions - My first question',
                 'Contains',
                 'GLPI is great',
             );
@@ -517,7 +519,7 @@ describe ('Conditions', () => {
             checkThatConditionExist(
                 0,
                 null,
-                'My first question',
+                'Questions - My first question',
                 'Contains',
                 'GLPI is great',
             );
@@ -529,7 +531,7 @@ describe ('Conditions', () => {
             checkThatConditionExist(
                 0,
                 null,
-                'My first question',
+                'Questions - My first question',
                 'Contains',
                 'GLPI is great',
             );
@@ -557,14 +559,14 @@ describe ('Conditions', () => {
             checkThatConditionExist(
                 0,
                 null,
-                'My second question',
+                'Questions - My second question',
                 'Do not contains',
                 'I love GLPI'
             );
             checkThatConditionExist(
                 1,
                 'Or',
-                'My first question',
+                'Questions - My first question',
                 'Contains',
                 'GLPI is great',
             );
@@ -572,7 +574,7 @@ describe ('Conditions', () => {
             checkThatConditionExist(
                 0,
                 null,
-                'My first question',
+                'Questions - My first question',
                 'Contains',
                 'GLPI is great',
             );
@@ -584,7 +586,7 @@ describe ('Conditions', () => {
             checkThatConditionExist(
                 0,
                 null,
-                'My first question',
+                'Questions - My first question',
                 'Contains',
                 'GLPI is great',
             );
@@ -613,14 +615,14 @@ describe ('Conditions', () => {
         checkThatConditionExist(
             0,
             null,
-            'My second question',
+            'Questions - My second question',
             'Is not equal to',
             'I love GLPI',
         );
         checkThatConditionExist(
             1,
             'Or',
-            'My first question',
+            'Questions - My first question',
             'Contains',
             'GLPI is great',
         );
@@ -630,7 +632,7 @@ describe ('Conditions', () => {
         checkThatConditionExist(
             0,
             null,
-            'My first question',
+            'Questions - My first question',
             'Contains',
             'GLPI is great',
         );
@@ -642,7 +644,7 @@ describe ('Conditions', () => {
         checkThatConditionExist(
             0,
             null,
-            'My first question',
+            'Questions - My first question',
             'Contains',
             'GLPI is great',
         );
@@ -884,356 +886,578 @@ describe ('Conditions', () => {
         ]);
     });
 
-    it('can apply all supported conditions types', () => {
-        const uuid = new Date().getTime();
-
-        createForm();
-
-        // Create test items in GLPI that we'll use in conditions
-        cy.createWithAPI('Computer', {
-            'name': `Computer - ${uuid}`,
-        });
-        cy.createWithAPI('Location', {
-            'name': `Location - ${uuid}`,
-        });
-        cy.createWithAPI('Computer', {
-            name    : `Assigned Computer - ${uuid}`,
-            users_id: 7, // E2E Tests user id
-        });
-
-        // Define all question types we need to test different condition operators
-        const testQuestions = [
-            // Main question where we'll add all our conditions
-            { name: 'Test subject', type: 'Glpi\\Form\\QuestionType\\QuestionTypeShortText' },
-
-            // Text type
-            { name: 'My text question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeShortText' },
-
-            // Numeric type
-            { name: 'My number question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeNumber', subType: 'Number'},
-
-            // Date/Time types
+    const questionsToAdd = {
+        'QuestionTypeShortText': [
+            {
+                name: 'My text question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Contains',
+                        value: 'Expected answer',
+                        valueType: 'string'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is equal to',
+                        value: 'Exact match',
+                        valueType: 'string'
+                    }
+                ]
+            },
+        ],
+        'QuestionTypeNumber': [
+            {
+                name: 'My number question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeNumber',
+                subType: 'Number',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is greater than',
+                        value: 10,
+                        valueType: 'number'
+                    },
+                    {
+                        logic: 'Or',
+                        operator: 'Is less than',
+                        value: 50,
+                        valueType: 'number'
+                    }
+                ]
+            },
+        ],
+        'QuestionTypeDateTime': [
             {
                 name: 'My date question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeDateTime',
-                extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"1","is_time_enabled":"0"}'
+                extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"1","is_time_enabled":"0"}',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is greater than',
+                        value: '2021-01-01',
+                        valueType: 'date'
+                    }
+                ]
             },
             {
                 name: 'My time question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeDateTime',
-                extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"0","is_time_enabled":"1"}'
+                extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"0","is_time_enabled":"1"}',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is greater than',
+                        value: '15:40',
+                        valueType: 'date'
+                    }
+                ]
             },
             {
                 name: 'My datetime question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeDateTime',
-                extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"1","is_time_enabled":"1"}'
+                extra_data: '{"is_default_value_current_time":"0","is_date_enabled":"1","is_time_enabled":"1"}',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is greater than',
+                        value: '2021-01-01T15:40',
+                        valueType: 'date'
+                    }
+                ]
             },
-
-            // ITIL fields
-            { name: 'My urgency question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeUrgency'},
-            { name: 'My request type question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeRequestType'},
-
-            // Selectable types
+        ],
+        'QuestionTypeUrgency': [
+            {
+                name: 'My urgency question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeUrgency',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is equal to',
+                        value: 'Low',
+                        valueType: 'dropdown'
+                    }
+                ]
+            },
+        ],
+        'QuestionTypeRequestType': [
+            {
+                name: 'My request type question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeRequestType',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is equal to',
+                        value: 'Request',
+                        valueType: 'dropdown'
+                    }
+                ]
+            },
+        ],
+        'QuestionTypeSelectable': [
             {
                 name: 'My radio question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeRadio',
-                extra_data: '{"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}'
+                extra_data: '{"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is equal to',
+                        value: 'Option 3',
+                        valueType: 'dropdown'
+                    }
+                ]
             },
             {
                 name: 'My checkbox question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeCheckbox',
-                extra_data: '{"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}'
+                extra_data: '{"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Contains',
+                        value: ['Option 2', 'Option 4'],
+                        valueType: 'dropdown_multiple'
+                    }
+                ]
             },
             {
                 name: 'My single value dropdown question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeDropdown',
-                extra_data: '{"is_multiple_dropdown":false,"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}'
+                extra_data: '{"is_multiple_dropdown":false,"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is not equal to',
+                        value: 'Option 2',
+                        valueType: 'dropdown'
+                    }
+                ]
             },
             {
                 name: 'My multiple value dropdown question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeDropdown',
-                extra_data: '{"is_multiple_dropdown":true,"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}'
+                extra_data: '{"is_multiple_dropdown":true,"options":{"1":"Option 1","2":"Option 2","3":"Option 3","4":"Option 4"}}',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is not equal to',
+                        value: ['Option 1', 'Option 2'],
+                        valueType: 'dropdown_multiple'
+                    }
+                ]
             },
-
-            // User types
-            { name: 'My requester question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeRequester'},
-            { name: 'My observer question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeObserver'},
-            { name: 'My assignee question', type: 'Glpi\\Form\\QuestionType\\QuestionTypeAssignee'},
-
-            // Item reference types
+        ],
+        'QuestionTypeActor': [
+            {
+                name: 'My requester question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeRequester',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is equal to',
+                        value: 'E2E Tests',
+                        valueType: 'dropdown'
+                    }
+                ]
+            },
+            {
+                name: 'My observer question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeObserver',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is equal to',
+                        value: 'E2E Tests',
+                        valueType: 'dropdown'
+                    }
+                ]
+            },
+            {
+                name: 'My assignee question',
+                type: 'Glpi\\Form\\QuestionType\\QuestionTypeAssignee',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is equal to',
+                        value: 'E2E Tests',
+                        valueType: 'dropdown'
+                    }
+                ]
+            },
+        ],
+        'QuestionTypeItem': [
             {
                 name: 'My item question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeItem',
                 extra_data: '{"itemtype":"Computer"}',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is equal to',
+                        value: 'Computer - {uuid}',
+                        valueType: 'dropdown'
+                    }
+                ]
             },
             {
                 name: 'My dropdown item question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
                 extra_data: '{"itemtype":"Location"}',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is equal to',
+                        value: '»Location - {uuid}',
+                        valueType: 'dropdown'
+                    }
+                ]
             },
-
-            // User device reference types
             {
                 name: 'My single user devices question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeUserDevice',
                 extra_data: '{"is_multiple_devices":false}',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'Is of itemtype',
+                        value: 'Computer',
+                        valueType: 'dropdown'
+                    }
+                ]
             },
             {
                 name: 'My multiple user devices question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeUserDevice',
                 extra_data: '{"is_multiple_devices":true}',
+                conditions: [
+                    {
+                        logic: null,
+                        operator: 'At least one item of itemtype',
+                        value: ['Computer'],
+                        valueType: 'dropdown_multiple'
+                    }
+                ]
             }
-        ];
+        ]
+    };
 
-        // Create all questions through API for better performance
-        testQuestions.forEach((question, index) => {
+    Object.entries(questionsToAdd).forEach(([type, questionsList]) => {
+        it(`can apply all available conditions on ${type}`, () => {
+            const uuid = new Date().getTime();
+
+            createForm();
+
+            // Create test items in GLPI that we'll use in conditions
+            cy.createWithAPI('Computer', {
+                'name': `Computer - ${uuid}`,
+            });
+            cy.createWithAPI('Location', {
+                'name': `Location - ${uuid}`,
+            });
+            cy.createWithAPI('Computer', {
+                name    : `Assigned Computer - ${uuid}`,
+                users_id: 7, // E2E Tests user id
+            });
+
+            // Add test subject question where conditions will be applied
             cy.get('@form_id').then((formId) => {
                 cy.addQuestionToDefaultSectionWithAPI(
                     formId,
-                    question.name,
-                    question.type,
-                    index,
-                    null,
-                    null,
-                    question.extra_data,
+                    'Test subject',
+                    'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    0,
+                    null
                 );
-                questions.push(question.name);
+                questions.push('Test subject');
+            });
+
+            // Create all questions of this type through API
+            questionsList.forEach((question, index) => {
+                cy.get('@form_id').then((formId) => {
+                    cy.addQuestionToDefaultSectionWithAPI(
+                        formId,
+                        question.name,
+                        question.type,
+                        index + 1,
+                        null,
+                        null,
+                        question.extra_data,
+                    );
+                    questions.push(question.name);
+                });
+            });
+
+            cy.reload();
+
+            // Configure visibility conditions on the test subject question
+            getAndFocusQuestion('Test subject').within(() => {
+                // Initialize the visibility configuration UI
+                initVisibilityConfiguration();
+                setConditionStrategy('Visible if...');
+
+                // Add conditions for each question in this type
+                questionsList.forEach((question, qIndex) => {
+                    question.conditions.forEach((condition, cIndex) => {
+                        // Calculate overall condition index
+                        const conditionIndex = qIndex > 0 ? qIndex + cIndex : cIndex;
+
+                        // Add new empty condition if not the first one
+                        if (conditionIndex > 0) {
+                            addNewEmptyCondition();
+                        }
+
+                        // Replace {uuid} placeholder in condition value if it exists
+                        let value = condition.value;
+                        if (typeof value === 'string' && value.includes('{uuid}')) {
+                            value = value.replace('{uuid}', uuid);
+                        } else if (Array.isArray(value)) {
+                            value = value.map(v => typeof v === 'string' && v.includes('{uuid}')
+                                ? v.replace('{uuid}', uuid)
+                                : v);
+                        }
+
+                        // Fill the condition
+                        fillCondition(
+                            conditionIndex,
+                            conditionIndex === 0 ? null : condition.logic || 'And',
+                            question.name,
+                            condition.operator,
+                            value,
+                            condition.valueType
+                        );
+                    });
+                });
+            });
+
+            // Save and reload to ensure all conditions are properly stored
+            saveAndReload();
+
+            // Verify all conditions are correctly saved and displayed
+            getAndFocusQuestion('Test subject').within(() => {
+                openConditionEditor();
+
+                // Verify each condition
+                let conditionIndex = 0;
+                questionsList.forEach((question) => {
+                    question.conditions.forEach((condition) => {
+                        // Replace {uuid} placeholder in expected value if it exists
+                        let expectedValue = condition.value;
+                        if (typeof expectedValue === 'string' && expectedValue.includes('{uuid}')) {
+                            expectedValue = expectedValue.replace('{uuid}', uuid);
+                        } else if (Array.isArray(expectedValue)) {
+                            expectedValue = expectedValue.map(v =>
+                                typeof v === 'string' && v.includes('{uuid}') ? v.replace('{uuid}', uuid) : v);
+                        }
+
+                        // Handle special value transformations after save
+                        if (type === 'QuestionTypeActor' && expectedValue === 'E2E Tests') {
+                            expectedValue = 'e2e_tests';
+                        }
+
+                        if (typeof expectedValue === 'string' && expectedValue.startsWith('»')) {
+                            expectedValue = expectedValue.substring(1);
+                        }
+
+                        // Check that the condition exists with correct values
+                        checkThatConditionExist(
+                            conditionIndex,
+                            conditionIndex === 0 ? null : condition.logic || 'And',
+                            `Questions - ${question.name}`,
+                            condition.operator,
+                            expectedValue,
+                            condition.valueType
+                        );
+
+                        conditionIndex++;
+                    });
+                });
             });
         });
+    });
 
-        cy.reload();
+    it('can apply visibility conditions to questions', () => {
+        createForm();
+        addQuestion('My question used as a criteria');
+        addQuestion('My question that is visible if some criteria are met');
+        addQuestion('My question that is visible if previous question is visible');
 
-        // Define conditions that will test each question type with appropriate operators
-        const conditionsToTest = [
-            // Text condition
-            {
-                logic: null,
-                question: 'My text question',
-                operator: 'Contains',
-                value: 'Expected answer',
-                valueType: 'string'
-            },
-
-            // Numeric condition
-            {
-                logic: 'And',
-                question: 'My number question',
-                operator: 'Is greater than',
-                value: 10,
-                valueType: 'number'
-            },
-
-            // Date/time conditions
-            {
-                logic: 'And',
-                question: 'My date question',
-                operator: 'Is greater than',
-                value: '2021-01-01',
-                valueType: 'date'
-            },
-            {
-                logic: 'And',
-                question: 'My time question',
-                operator: 'Is greater than',
-                value: '15:40',
-                valueType: 'date'
-            },
-            {
-                logic: 'And',
-                question: 'My datetime question',
-                operator: 'Is greater than',
-                value: '2021-01-01T15:40',
-                valueType: 'date'
-            },
-
-            // ITIL field conditions
-            {
-                logic: 'And',
-                question: 'My urgency question',
-                operator: 'Is greater than',
-                value: 'Low',
-                valueType: 'dropdown'
-            },
-            {
-                logic: 'And',
-                question: 'My request type question',
-                operator: 'Is equal to',
-                value: 'Request',
-                valueType: 'dropdown'
-            },
-
-            // Selectable field conditions
-            {
-                logic: 'And',
-                question: 'My radio question',
-                operator: 'Is not equal to',
-                value: 'Option 3',
-                valueType: 'dropdown'
-            },
-            {
-                logic: 'And',
-                question: 'My checkbox question',
-                operator: 'Contains',
-                value: ['Option 2', 'Option 4'],
-                valueType: 'dropdown_multiple'
-            },
-            {
-                logic: 'And',
-                question: 'My single value dropdown question',
-                operator: 'Is not equal to',
-                value: 'Option 2',
-                valueType: 'dropdown'
-            },
-            {
-                logic: 'And',
-                question: 'My multiple value dropdown question',
-                operator: 'Is not equal to',
-                value: ['Option 1', 'Option 2'],
-                valueType: 'dropdown_multiple'
-            },
-
-            // User field conditions
-            {
-                logic: 'And',
-                question: 'My requester question',
-                operator: 'Is equal to',
-                value: 'E2E Tests',
-                valueType: 'dropdown'
-            },
-            {
-                logic: 'And',
-                question: 'My observer question',
-                operator: 'Is equal to',
-                value: 'E2E Tests',
-                valueType: 'dropdown'
-            },
-            {
-                logic: 'And',
-                question: 'My assignee question',
-                operator: 'Is equal to',
-                value: 'E2E Tests',
-                valueType: 'dropdown'
-            },
-
-            // Item reference conditions
-            {
-                logic: 'And',
-                question: 'My item question',
-                operator: 'Is equal to',
-                value: `Computer - ${uuid}`,
-                valueType: 'dropdown'
-            },
-            {
-                logic: 'And',
-                question: 'My dropdown item question',
-                operator: 'Is equal to',
-                value: `»Location - ${uuid}`,
-                valueType: 'dropdown'
-            },
-
-            // User device reference conditions
-            {
-                logic: 'And',
-                question: 'My single user devices question',
-                operator: 'Is of itemtype',
-                value: 'Computer',
-                valueType: 'dropdown'
-            },
-            {
-                logic: 'And',
-                question: 'My multiple user devices question',
-                operator: 'At least one item of itemtype',
-                value: 'Computer',
-                valueType: 'dropdown'
-            }
-        ];
-
-        // Configure visibility conditions on the test subject question
-        getAndFocusQuestion('Test subject').within(() => {
-            // Initialize the visibility configuration UI
+        getAndFocusQuestion('My question that is visible if some criteria are met').within(() => {
             initVisibilityConfiguration();
             setConditionStrategy('Visible if...');
-
-            // Add the first condition without a logical operator
             fillCondition(
                 0,
-                conditionsToTest[0].logic,
-                conditionsToTest[0].question,
-                conditionsToTest[0].operator,
-                conditionsToTest[0].value,
-                conditionsToTest[0].valueType
+                null,
+                'My question used as a criteria',
+                'Is equal to',
+                'Expected answer 1'
             );
-
-            // Add all remaining conditions with their logical operators
-            conditionsToTest.slice(1).forEach((condition, index) => {
-                addNewEmptyCondition();
-                fillCondition(
-                    index + 1,
-                    condition.logic,
-                    condition.question,
-                    condition.operator,
-                    condition.value,
-                    condition.valueType
-                );
-            });
         });
 
-        // Save and reload to ensure all conditions are properly stored
-        saveAndReload();
-
-        // Define expected condition values after saving
-        // Note: some values are adjusted to match how they appear in the UI after saving
-        const expectedConditions = [
-            { logic: null, question: 'My text question', operator: 'Contains', value: 'Expected answer' },
-            { logic: 'And', question: 'My number question', operator: 'Is greater than', value: 10, valueType: 'number' },
-            { logic: 'And', question: 'My date question', operator: 'Is greater than', value: '2021-01-01', valueType: 'date' },
-            { logic: 'And', question: 'My time question', operator: 'Is greater than', value: '15:40', valueType: 'date' },
-            { logic: 'And', question: 'My datetime question', operator: 'Is greater than', value: '2021-01-01T15:40', valueType: 'date' },
-            { logic: 'And', question: 'My urgency question', operator: 'Is greater than', value: 'Low', valueType: 'dropdown' },
-            { logic: 'And', question: 'My request type question', operator: 'Is equal to', value: 'Request', valueType: 'dropdown' },
-            { logic: 'And', question: 'My radio question', operator: 'Is not equal to', value: 'Option 3', valueType: 'dropdown' },
-            { logic: 'And', question: 'My checkbox question', operator: 'Contains', value: ['Option 2', 'Option 4'], valueType: 'dropdown_multiple' },
-            { logic: 'And', question: 'My single value dropdown question', operator: 'Is not equal to', value: 'Option 2', valueType: 'dropdown' },
-            { logic: 'And', question: 'My multiple value dropdown question', operator: 'Is not equal to', value: ['Option 1', 'Option 2'], valueType: 'dropdown_multiple' },
-            { logic: 'And', question: 'My requester question', operator: 'Is equal to', value: 'e2e_tests', valueType: 'dropdown' },
-            { logic: 'And', question: 'My observer question', operator: 'Is equal to', value: 'e2e_tests', valueType: 'dropdown' },
-            { logic: 'And', question: 'My assignee question', operator: 'Is equal to', value: 'e2e_tests', valueType: 'dropdown' },
-            { logic: 'And', question: 'My item question', operator: 'Is equal to', value: `Computer - ${uuid}`, valueType: 'dropdown' },
-            { logic: 'And', question: 'My dropdown item question', operator: 'Is equal to', value: `Location - ${uuid}`, valueType: 'dropdown' },
-            { logic: 'And', question: 'My single user devices question', operator: 'Is of itemtype', value: 'Computer', valueType: 'dropdown' },
-            { logic: 'And', question: 'My multiple user devices question', operator: 'At least one item of itemtype', value: ['Computer'], valueType: 'dropdown_multiple' }
-        ];
-
-        // Verify all conditions are correctly saved and displayed
-        getAndFocusQuestion('Test subject').within(() => {
-            openConditionEditor();
-
-            // Check each condition exists with the correct values
-            // Adding a timeout increase for complex condition checks
-            cy.wrap(null).then(() => {
-                // Use a loop with cy.then() to ensure each check completes before starting the next
-                const checkConditionSequentially = (index) => {
-                    if (index >= expectedConditions.length) {
-                        return; // Done checking all conditions
-                    }
-
-                    const condition = expectedConditions[index];
-                    checkThatConditionExist(
-                        index,
-                        condition.logic,
-                        condition.question,
-                        condition.operator,
-                        condition.value,
-                        condition.valueType
-                    );
-
-                    // Check the next condition after the current one is verified
-                    cy.then(() => checkConditionSequentially(index + 1));
-                };
-
-                // Start the sequential checking
-                checkConditionSequentially(0);
-            });
+        closeVisibilityConfiguration();
+        getAndFocusQuestion('My question that is visible if previous question is visible').within(() => {
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            fillCondition(
+                0,
+                null,
+                'My question that is visible if some criteria are met',
+                'Is visible',
+                null,
+                null,
+            );
         });
+
+        save();
+        preview();
+
+        // The form questions are all empty, we expect the following default state
+        validateThatQuestionIsVisible("My question used as a criteria");
+        validateThatQuestionIsNotVisible("My question that is visible if some criteria are met");
+        validateThatQuestionIsNotVisible("My question that is visible if previous question is visible");
+
+        // Note: after changing the answer, make sure that the first value that is being
+        // checked has a different visibility that in the previous assertions.
+        // Indeed, if we don't do that the assertion might be validated instantly
+        // before the UI is updated with the new visibilities.
+        // By checking for a different value, we make sure the first assertion can't
+        // run until the UI is updated - thus making the other assertions safe.
+
+        // Set first answer to "Expected answer 1" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "Expected answer 1");
+        validateThatQuestionIsVisible("My question that is visible if some criteria are met");
+        validateThatQuestionIsVisible("My question that is visible if previous question is visible");
+        validateThatQuestionIsVisible("My question used as a criteria");
+
+        // Set first answer to "Expected answer 2" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "Expected answer 2");
+        validateThatQuestionIsNotVisible("My question that is visible if some criteria are met");
+        validateThatQuestionIsNotVisible("My question that is visible if previous question is visible");
+        validateThatQuestionIsVisible("My question used as a criteria");
+    });
+
+    it('can apply visibility conditions to comments', () => {
+        createForm();
+        addQuestion('My question used as a criteria');
+        addComment('My comment that is visible if some criteria are met');
+        addComment('My comment that is visible if previous comment is visible');
+
+        getAndFocusComment('My comment that is visible if some criteria are met').within(() => {
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            fillCondition(
+                0,
+                null,
+                'My question used as a criteria',
+                'Is equal to',
+                'Expected answer 1'
+            );
+        });
+
+        closeVisibilityConfiguration();
+        getAndFocusComment('My comment that is visible if previous comment is visible').within(() => {
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            fillCondition(
+                0,
+                null,
+                'My comment that is visible if some criteria are met',
+                'Is visible',
+                null,
+                null,
+            );
+        });
+
+        save();
+        preview();
+
+        // The form questions are all empty, we expect the following default state
+        validateThatQuestionIsVisible("My question used as a criteria");
+        validateThatCommentIsNotVisible("My comment that is visible if some criteria are met");
+        validateThatCommentIsNotVisible("My comment that is visible if previous comment is visible");
+
+        // Note: after changing the answer, make sure that the first value that is being
+        // checked has a different visibility that in the previous assertions.
+        // Indeed, if we don't do that the assertion might be validated instantly
+        // before the UI is updated with the new visibilities.
+        // By checking for a different value, we make sure the first assertion can't
+        // run until the UI is updated - thus making the other assertions safe.
+
+        // Set first answer to "Expected answer 1" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "Expected answer 1");
+        validateThatQuestionIsVisible("My question used as a criteria");
+        validateThatCommentIsVisible("My comment that is visible if some criteria are met");
+        validateThatCommentIsVisible("My comment that is visible if previous comment is visible");
+
+        // Set first answer to "Expected answer 2" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "Expected answer 2");
+        validateThatQuestionIsVisible("My question used as a criteria");
+        validateThatCommentIsNotVisible("My comment that is visible if some criteria are met");
+        validateThatCommentIsNotVisible("My comment that is visible if previous comment is visible");
+    });
+
+    it('can apply visibility conditions to sections', () => {
+        createForm();
+        addQuestion('My question used as a criteria');
+        addSection('My section that is visible if some criteria are met');
+        addSection('My section that is visible if previous section is visible');
+
+        getAndFocusSection('My section that is visible if some criteria are met').within(() => {
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            fillCondition(
+                0,
+                null,
+                'My question used as a criteria',
+                'Is equal to',
+                'Expected answer 1'
+            );
+        });
+
+        closeVisibilityConfiguration();
+        getAndFocusSection('My section that is visible if previous section is visible').within(() => {
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            fillCondition(
+                0,
+                null,
+                'My section that is visible if some criteria are met',
+                'Is visible',
+                null,
+                null,
+            );
+        });
+
+        save();
+        preview();
+
+        // The form questions are all empty, we expect the following default state
+        validateSectionOrder([
+            'First section',
+        ]);
+
+        // Note: after changing the answer, make sure that the first value that is being
+        // checked has a different visibility that in the previous assertions.
+        // Indeed, if we don't do that the assertion might be validated instantly
+        // before the UI is updated with the new visibilities.
+        // By checking for a different value, we make sure the first assertion can't
+        // run until the UI is updated - thus making the other assertions safe.
+
+        // Set first answer to "Expected answer 1" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "Expected answer 1");
+        validateSectionOrder([
+            'First section',
+            'My section that is visible if some criteria are met',
+            'My section that is visible if previous section is visible',
+        ]);
+
+        // Set first answer to "Expected answer 2" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "Expected answer 2");
+        validateSectionOrder([
+            'First section',
+        ]);
     });
 });

@@ -36,17 +36,20 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Override;
 use Ramsey\Uuid\Uuid;
 
 /**
  * Section of a given helpdesk form
  */
-final class Section extends CommonDBChild implements ConditionableVisibilityInterface, ProvideTranslationsInterface
+final class Section extends CommonDBChild implements ConditionableVisibilityInterface, ProvideTranslationsInterface, UsedAsCriteriaInterface
 {
     use ConditionableVisibilityTrait;
 
@@ -74,6 +77,12 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     public static function getTypeName($nb = 0)
     {
         return _n('Step', 'Steps', $nb);
+    }
+
+    #[Override]
+    public function getUUID(): string
+    {
+        return $this->fields['uuid'];
     }
 
     #[Override]
@@ -166,6 +175,13 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         }
 
         return array_merge($handlers, ...$blocks_handlers);
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return [new VisibilityConditionHandler()];
     }
 
     /**

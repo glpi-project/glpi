@@ -40,10 +40,22 @@ export class GlpiFormConditionEditorController
     #container;
 
     /**
+     * Known form sections
+     * @type {array<{uuid: string, name: string}>}
+     */
+    #form_sections;
+
+    /**
      * Known form questions
      * @type {array<{uuid: string, name: string, type: string, extra_data: object}>}
      */
     #form_questions;
+
+    /**
+     * Known form comments
+     * @type {array<{uuid: string, name: string}>}
+     */
+    #form_comments;
 
     /** @type {?string} */
     #item_uuid;
@@ -51,7 +63,7 @@ export class GlpiFormConditionEditorController
     /** @type {?string} */
     #item_type;
 
-    constructor(container, item_uuid, item_type, form_questions)
+    constructor(container, item_uuid, item_type, forms_sections, form_questions, form_comments)
     {
         this.#container = container;
         if (this.#container.dataset.glpiConditionsEditorContainer === undefined) {
@@ -63,9 +75,15 @@ export class GlpiFormConditionEditorController
         this.#item_uuid = item_uuid;
         this.#item_type = item_type;
 
+        // Load form sections
+        this.#form_sections = forms_sections;
+
         // Load linked form questions
         this.#form_questions = form_questions;
         this.#initEventHandlers();
+
+        // Load linked form comments
+        this.#form_comments = form_comments;
 
         // Enable actions
         const disabled_items = this.#container.querySelectorAll(
@@ -84,11 +102,29 @@ export class GlpiFormConditionEditorController
 
     /**
      * In a dynamic environement such as the form editor, it might be necessary
+     * to redefine the known list of available sections.
+     */
+    setFormSections(form_sections)
+    {
+        this.#form_sections = form_sections;
+    }
+
+    /**
+     * In a dynamic environement such as the form editor, it might be necessary
      * to redefine the known list of available questions.
      */
     setFormQuestions(form_questions)
     {
         this.#form_questions = form_questions;
+    }
+
+    /**
+     * In a dynamic environement such as the form editor, it might be necessary
+     * to redefine the known list of available comments.
+     */
+    setFormComments(form_comments)
+    {
+        this.#form_comments = form_comments;
     }
 
     async #doRenderEditor(data)
@@ -128,7 +164,7 @@ export class GlpiFormConditionEditorController
         // Note: need to be jquery else select2 wont work
         $(this.#container).on(
             'change',
-            '[data-glpi-conditions-editor-item]',
+            '[data-glpi-conditions-editor-item], [data-glpi-conditions-editor-value-operator]',
             () => this.renderEditor()
         );
 
@@ -177,7 +213,9 @@ export class GlpiFormConditionEditorController
     #computeData()
     {
         return {
+            sections: this.#form_sections,
             questions: this.#form_questions,
+            comments: this.#form_comments,
             conditions: this.#computeDefinedConditions(),
             selected_item_uuid: this.#item_uuid,
             selected_item_type: this.#item_type,
