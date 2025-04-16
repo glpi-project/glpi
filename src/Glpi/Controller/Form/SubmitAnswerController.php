@@ -41,6 +41,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\DelegationData;
 use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\Form;
 use Glpi\Http\Firewall;
@@ -96,11 +97,11 @@ final class SubmitAnswerController extends AbstractController
         $post = $request->request->all();
         $provider = new EndUserInputNameProvider();
 
-        $delegation = [
-            'users_id'          => $post['delegation_users_id'] ?? null,
-            'use_notification'  => $post['delegation_use_notification'] ?? null,
-            'alternative_email' => $post['delegation_alternative_email'] ?? null,
-        ];
+        $delegation = new DelegationData(
+            $request->request->getInt('delegation_users_id', 0) ?: null,
+            $request->request->getBoolean('delegation_use_notification', false) ?: null,
+            $request->request->getString('delegation_alternative_email', '') ?: null
+        );
         $answers    = $provider->getAnswers($post);
         $files      = $provider->getFiles($post, $answers);
         if (empty($answers)) {
@@ -112,8 +113,8 @@ final class SubmitAnswerController extends AbstractController
             $form,
             $answers,
             Session::getLoginUserID(),
-            $files,
-            $delegation
+            $delegation,
+            $files
         );
 
         return $answers;

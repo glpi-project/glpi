@@ -123,13 +123,13 @@ enum ITILActorFieldStrategy: string
         }
 
         $delegation = $answers_set->getDelegation();
-        if (Ticket::canDelegateeCreateTicket($delegation['users_id'] ?? $user_id)) {
+        if (Ticket::canDelegateeCreateTicket($delegation->users_id ?? $user_id)) {
             return [
                 [
                     'itemtype' => User::class,
-                    'items_id' => $delegation['users_id'] ?? $user_id,
-                    'use_notification' => $delegation['use_notification'] ?? 0,
-                    'alternative_email' => $delegation['alternative_email'] ?? '',
+                    'items_id' => $delegation->users_id ?? $user_id,
+                    'use_notification' => $delegation->use_notification ?? 0,
+                    'alternative_email' => $delegation->alternative_email ?? '',
                 ]
             ];
         } else {
@@ -144,7 +144,7 @@ enum ITILActorFieldStrategy: string
 
     private function getActorsFromSupervisorOfCurrentUser(AnswersSet $answers_set): ?array
     {
-        $users_id = $answers_set->getDelegation()['users_id'] ?? Session::getLoginUserID();
+        $users_id = $answers_set->getDelegation()->users_id ?? Session::getLoginUserID();
         if (!is_numeric($users_id)) {
             return null;
         }

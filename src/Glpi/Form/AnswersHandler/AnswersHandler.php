@@ -40,6 +40,7 @@ use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Condition\Engine;
 use Glpi\Form\Condition\EngineInput;
+use Glpi\Form\DelegationData;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
@@ -92,21 +93,21 @@ final class AnswersHandler
         Form $form,
         array $answers,
         int $users_id,
+        DelegationData $delegation,
         array $files = [],
-        array $delegation = []
     ): AnswersSet {
         /** @var \DBmysql $DB */
         global $DB;
 
         if ($DB->inTransaction()) {
-            return $this->doSaveAnswers($form, $answers, $users_id, $files, $delegation);
+            return $this->doSaveAnswers($form, $answers, $users_id, $delegation, $files);
         } else {
             // We do not want to commit the answers unless everything was processed
             // correctly
             $DB->beginTransaction();
 
             try {
-                $answers_set = $this->doSaveAnswers($form, $answers, $users_id, $files, $delegation);
+                $answers_set = $this->doSaveAnswers($form, $answers, $users_id, $delegation, $files);
                 $DB->commit();
                 return $answers_set;
             } catch (\Throwable $e) {
@@ -141,8 +142,8 @@ final class AnswersHandler
         Form $form,
         array $answers,
         int $users_id,
+        DelegationData $delegation,
         array $files = [],
-        array $delegation = []
     ): AnswersSet {
         // Save answers
         $answers_set = $this->createAnswserSet(

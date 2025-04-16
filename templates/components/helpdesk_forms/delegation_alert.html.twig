@@ -38,36 +38,26 @@
         {% set selected_user = get_current_user() %}
     {% endif %}
 
-    {% set users = get_current_user().getDelegateGroupsForUser()|map(
-        groups_id => call('Group_User::getGroupUsers', [groups_id])
-    )|reduce(
-        (carry, group_users) => carry|merge(group_users), []
-    ) %}
+    {% set users = get_current_user().getUsersFromDelegatedGroups() %}
+    {% set user_dropdown_html %}
+        {{ fields.dropdownArrayField(
+            'delegation_users_id',
+            selected_user.getID(),
+            users,
+            '',
+            {
+                'no_label'      : true,
+                'width'         : 'auto',
+                'field_class'   : '',
+                'mb'            : '',
+                'aria_label'    : __('Select the user to delegate'),
+                'wrapper_class' : 'd-inline-block',
+            }
+        ) }}
+    {% endset %}
 
-    <div
-        class="alert d-flex align-items-center justify-content-start"
-        data-glpi-form-renderer-delegation-container
-    >
-        {% if users is not empty %}
-            <span class="text-nowrap text-muted mx-2">This ticket is for</span>
-            {{ fields.dropdownArrayField(
-                'delegation_users_id',
-                selected_user.getID(),
-                {
-                    (get_current_user().getID()): __('Myself'),
-                } + users|reduce((carry, user) => carry + {(user.id): call('User::getFriendlyNameById', [user.id])}, {}),
-                '',
-                {
-                    'no_label'   : true,
-                    'width'      : 'auto',
-                    'field_class': '',
-                    'mb'         : '',
-                    'aria_label' : __('Select the user to delegate'),
-                }
-            ) }}
-            <span class="text-nowrap text-muted mx-2">and</span>
-        {% endif %}
-        <span class="me-2 input-group d-inline-flex w-auto">
+    {% set notification_part_html %}
+        <span class="input-group d-inline-flex w-auto">
             {% if selected_user.getID() == get_current_user().getID() %}
                 {{ fields.dropdownArrayField(
                     'delegation_use_notification',
@@ -78,11 +68,12 @@
                     },
                     '',
                     {
-                        'no_label'   : true,
-                        'width'      : 'auto',
-                        'field_class': '',
-                        'mb'         : '',
-                        'aria_label' : __('Do you want to be notified of future events of this ticket'),
+                        'no_label'      : true,
+                        'width'         : 'auto',
+                        'field_class'   : '',
+                        'mb'            : '',
+                        'aria_label'    : __('Do you want to be notified of future events of this ticket'),
+                        'wrapper_class' : 'd-inline-block',
                     }
                 ) }}
             {% else %}
@@ -95,11 +86,12 @@
                     },
                     '',
                     {
-                        'no_label'   : true,
-                        'width'      : 'auto',
-                        'field_class': '',
-                        'mb'         : '',
-                        'aria_label' : __('Do you want to be notified of future events of this ticket'),
+                        'no_label'      : true,
+                        'width'         : 'auto',
+                        'field_class'   : '',
+                        'mb'            : '',
+                        'aria_label'    : __('Do you want to be notified of future events of this ticket'),
+                        'wrapper_class' : 'd-inline-block',
                     }
                 ) }}
             {% endif %}
@@ -126,6 +118,18 @@
                 ) }}
             </div>
         </span>
-        <span class="text-nowrap text-muted ms-1">to be notified of future events of this ticket</span><span></span>
+    {% endset %}
+
+    <div class="alert d-flex align-items-center justify-content-start flex-wrap">
+        {% if users|length > 1 %}
+            {{ __('This ticket is for %1$s and %2$s to be notified of future events of this ticket.')|format(
+                '<span class="mx-2">' ~ user_dropdown_html|raw ~ '</span>',
+                '<span class="mx-2">' ~ notification_part_html|raw ~ '</span>'
+            )|raw }}
+        {% else %}
+            {{ __('%1$s to be notified of future events of this ticket.')|format(
+                '<span class="mx-2">' ~ notification_part_html|raw ~ '</span>'
+            )|raw }}
+        {% endif %}
     </div>
 {% endif %}

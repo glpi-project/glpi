@@ -32,36 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Controller\Form;
+namespace Glpi\Form;
 
-use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-use User;
-
-final class DelegationController extends AbstractController
+final class DelegationData
 {
-    #[Route(
-        "/Form/Delegation",
-        name: "glpi_form_delegation",
-        methods: "GET",
-    )]
-    public function __invoke(Request $request): Response
-    {
-        $selected_user_id = $request->query->get('selected_user_id');
-        if (empty($selected_user_id)) {
-            throw new BadRequestHttpException('Missing selected_user_id parameter');
-        }
-
-        $selected_user = new User();
-        if (!$selected_user->getFromDB($selected_user_id)) {
-            throw new NotFoundHttpException('Selected user not found');
-        }
-        return $this->render('components/helpdesk_forms/delegation_alert.html.twig', [
-            'selected_user' => $selected_user
-        ]);
+    public function __construct(
+        public readonly ?int $users_id,
+        public readonly ?bool $use_notification,
+        public readonly ?string $alternative_email
+    ) {
     }
 }

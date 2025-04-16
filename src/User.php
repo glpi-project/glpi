@@ -3697,6 +3697,36 @@ HTML;
         return $groups;
     }
 
+    /**
+     * Get all users from groups where the current user have delegating, plus the current user.
+     *
+     * @param integer|string $entities_id ID of the entity to restrict
+     *
+     * @return array<int, string> Array of user IDs mapped to their friendly names, sorted alphabetically, with "Myself" first.
+     */
+    public static function getUsersFromDelegatedGroups($entities_id = ''): array
+    {
+        $groups_ids = self::getDelegateGroupsForUser($entities_id);
+        $users_data = [];
+        foreach ($groups_ids as $groups_id) {
+            $users_data = array_merge($users_data, Group_User::getGroupUsers($groups_id));
+        }
+
+        // Get unique user IDs from the collected data
+        $user_ids = array_unique(array_column($users_data, 'id'));
+
+        $formatted_users = [];
+        foreach ($user_ids as $user_id) {
+            // Avoid adding the current user if they are in the delegated groups, will be added later
+            if ($user_id !== Session::getLoginUserID()) {
+                $formatted_users[$user_id] = User::getFriendlyNameById($user_id);
+            }
+        }
+
+        uasort($formatted_users, 'strcasecmp');
+
+        return [Session::getLoginUserID() => __('Myself')] + $formatted_users;
+    }
 
     /**
      * Execute the query to select box with all glpi users where select key = name

@@ -52,8 +52,7 @@ final class AnswersSet extends CommonDBChild
 
     public array $files = [];
 
-    /** @var array<string, ?string> $delegation */
-    public array $delegation = [];
+    public DelegationData $delegation;
 
     #[Override]
     public static function getTypeName($nb = 0)
@@ -271,9 +270,9 @@ final class AnswersSet extends CommonDBChild
     /**
      * Get delegation data
      *
-     * @return array<string, ?string>
+     * @return DelegationData
      */
-    public function getDelegation(): array
+    public function getDelegation(): DelegationData
     {
         return $this->delegation;
     }
@@ -281,9 +280,9 @@ final class AnswersSet extends CommonDBChild
     /**
      * Set delegation data
      *
-     * @param array<string, ?string> $delegation
+     * @param DelegationData $delegation
      */
-    public function setDelegation(array $delegation): void
+    public function setDelegation(DelegationData $delegation): void
     {
         $this->delegation = $delegation;
     }
