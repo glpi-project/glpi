@@ -207,7 +207,7 @@
                      ) }}
                   {% endif %}
 
-                  {% if item.isField('groups_id') %}
+                  {% if item.isField('groups_id') or item is usingtrait('Glpi\\Features\\AssignableItem') %}
                      {{ fields.dropdownField(
                         'Group',
                         'groups_id',

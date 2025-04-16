@@ -142,7 +142,8 @@ class Item_DeviceSimcard extends Item_Devices
                 ],
                 'forcegroupby'       => true,
                 'massiveaction'      => false,
-                'datatype'           => 'dropdown'
+                'datatype'           => 'dropdown',
+                'dropdown_options' => ['multiple' => true]
             ],
             'users_id_tech'  => [
                 'long name'  => __('Technician in charge'),
@@ -169,7 +170,10 @@ class Item_DeviceSimcard extends Item_Devices
                 'forcegroupby'     => true,
                 'massiveaction'    => false,
                 'datatype'         => 'dropdown',
-                'dropdown_options' => ['condition' => ['is_assign' => 1]]
+                'dropdown_options' => [
+                    'condition' => ['is_assign' => 1],
+                    'multiple' => true
+                ]
             ],
         ];
     }
