@@ -41,6 +41,7 @@ use Glpi\Features\AssetImage;
 class Supplier extends CommonDBTM
 {
     use AssetImage;
+    use Glpi\Features\Clonable;
 
    // From CommonDBTM
     public $dohistory           = true;
@@ -94,6 +95,13 @@ class Supplier extends CommonDBTM
 
        // Ticket rules use suppliers_id_assign
         Rule::cleanForItemAction($this, 'suppliers_id%');
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Contact_Supplier::class,
+        ];
     }
 
 
