@@ -319,7 +319,7 @@
         <input
             type="hidden"
             name="category"
-            value="{{ question_type.getCategory().value }}"
+            value="{{ question_types_manager.getCategoryKey(question_type.getCategory()) }}"
         />
         <input
             type="hidden"
