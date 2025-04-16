@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set theme = config('palette')|default('auror') %}
+{% set theme = current_theme() %}
 {% if css_files is not defined %}
    {% set css_files = [
        {'path': 'lib/base.css'},
