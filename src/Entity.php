@@ -457,7 +457,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                 if (!is_array($files) || empty($files)) {
                     // Unexpected format or no files were submitted, do not
                     // modify the saved value.
-                    unset($input[$field]);
+                    $input[$field] = null;
                 } else {
                     $file = array_pop($files);
                     $input[$field] = $this->handleCustomScenesSubmittedFile($file);
@@ -465,10 +465,14 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             }
         }
 
+        if ($input[$field] === null) {
+            unset($input[$field]);
+        }
+
         return $input;
     }
 
-    private function handleCustomScenesSubmittedFile(string $file): string
+    private function handleCustomScenesSubmittedFile(string $file): ?string
     {
         // Read file path
         $path = realpath(GLPI_TMP_DIR . "/$file");
@@ -476,14 +480,14 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             // File doest not exist or is outside upload directory
             $message = __("An unexpected error occured.");
             Session::addMessageAfterRedirect($message);
-            return "";
+            return null;
         }
 
         // Validate that the file is an image
         if (!Document::isImage($path)) {
             $message = __("The uploaded file must be a valid image.");
             Session::addMessageAfterRedirect($message);
-            return "";
+            return null;
         }
 
         // Rename file
