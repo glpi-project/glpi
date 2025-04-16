@@ -195,7 +195,7 @@ TWIG;
         $default_values = json_decode($rawData['default_values']);
         if (
             ($default_values === null && json_last_error() !== JSON_ERROR_NONE)
-            || !empty($rawData['default_values']) && !is_array($default_values)
+            || !is_array($default_values)
         ) {
             $default_values = [$rawData['default_values']];
         }

@@ -558,7 +558,7 @@ class FormMigration extends AbstractPluginMigration
                     $question->getID()
                 );
             } catch (\Throwable $th) {
-                $section = Section::getById($section_id);
+                $section = Section::getById($section_id) ?: null;
                 $this->result->addMessage(
                     MessageType::Error,
                     sprintf(
