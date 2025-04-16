@@ -34,7 +34,7 @@
 
 namespace Glpi\Error;
 
-use GLPI;
+use Glpi\Application\Environment;
 use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\CliDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\HtmlErrorDisplayHandler;
@@ -74,13 +74,10 @@ final class ErrorHandler extends BaseErrorHandler
 
     private static LoggerInterface $currentLogger;
 
-    private string $env;
-
     public function __construct(LoggerInterface $logger)
     {
-        parent::__construct(debug: GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT);
-
-        $this->env = GLPI_ENVIRONMENT_TYPE;
+        $env = Environment::get();
+        parent::__construct(debug: $env->shouldEnableExtraDevAndDebugTools());
 
         $this->scopeAt(E_ALL, true); // Preserve variables for all errors
         $this->traceAt(E_ALL, true); // Preserve stack trace for all errors
@@ -227,7 +224,7 @@ final class ErrorHandler extends BaseErrorHandler
         foreach (self::ERROR_LEVEL_MAP as $value => $log_level) {
             if (
                 \in_array($log_level, [LogLevel::DEBUG, LogLevel::INFO, LogLevel::NOTICE], true)
-                && !\in_array($this->env, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING], true)
+                && !Environment::get()->shouldReportLowLevelErrors()
             ) {
                 // Do not report debug, info, and notice messages unless in development/testing env.
                 // Notices are errors with no functional impact, so we do not want people to report them as issues.

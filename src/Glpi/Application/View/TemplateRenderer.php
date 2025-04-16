@@ -34,7 +34,6 @@
 
 namespace Glpi\Application\View;
 
-use GLPI;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\DataHelpersExtension;
 use Glpi\Application\View\Extension\DocumentExtension;
@@ -76,9 +75,10 @@ class TemplateRenderer
             $loader->addPath(Plugin::getPhpDir($plugin_key . '/templates'), $plugin_key);
         }
 
+        $glpi_environment = \Glpi\Application\Environment::get();
         $env_params = [
             'debug' => ($_SESSION['glpi_use_mode'] ?? null) === Session::DEBUG_MODE,
-            'auto_reload' => GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_PRODUCTION,
+            'auto_reload' => $glpi_environment->shouldWatchForRessourcesChanges(),
         ];
 
         $tpl_cachedir = $cachedir . '/templates';

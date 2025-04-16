@@ -36,7 +36,7 @@
 namespace Glpi\Console;
 
 use DBmysql;
-use GLPI;
+use Glpi\Application\Environment;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
@@ -122,7 +122,7 @@ class Application extends BaseApplication
 
     protected function getDefaultInputDefinition(): InputDefinition
     {
-        $env_values = [GLPI::ENV_PRODUCTION, GLPI::ENV_STAGING, GLPI::ENV_TESTING, GLPI::ENV_DEVELOPMENT];
+        $env_values = Environment::getValues();
 
         $definition = new InputDefinition(
             [

@@ -34,7 +34,7 @@
 
 namespace Glpi\Error\ErrorDisplayHandler;
 
-use GLPI;
+use Glpi\Application\Environment;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -53,11 +53,11 @@ final class HtmlErrorDisplayHandler implements ErrorDisplayHandler
             return false;
         }
 
-        $is_dev_env    = GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT;
+        $is_env_with_debug_tools = Environment::get()->shouldEnableExtraDevAndDebugTools();
         $is_debug_mode = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE;
 
         if (
-            !$is_dev_env       // error messages are always displayed in development environment
+            !$is_env_with_debug_tools       // error messages are always displayed in development environment
             && !$is_debug_mode // error messages are always displayed in debug mode
         ) {
             return false;

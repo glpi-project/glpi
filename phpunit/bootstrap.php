@@ -32,6 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\Environment;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
 use Glpi\Kernel\Kernel;
@@ -48,7 +49,7 @@ global $GLPI_CACHE;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new Kernel('testing');
+$kernel = new Kernel(Environment::TESTING->value);
 $kernel->boot();
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
