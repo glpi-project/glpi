@@ -61,7 +61,7 @@
                     config: entity.getSceneConfigForDropdown(
                         'custom_helpdesk_home_scene_left'
                     ),
-                    default: 'shelves',
+                    default: constant("Entity::DEFAULT_LEFT_SCENE"),
                 },
                 {
                     id: "right_side",
@@ -71,7 +71,7 @@
                     config: entity.getSceneConfigForDropdown(
                         'custom_helpdesk_home_scene_right'
                     ),
-                    default: 'desk',
+                    default: constant("Entity::DEFAULT_RIGHT_SCENE"),
                 },
             ] %}
 
