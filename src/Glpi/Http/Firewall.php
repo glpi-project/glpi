@@ -34,6 +34,8 @@
 
 namespace Glpi\Http;
 
+use Config;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -51,6 +53,11 @@ final class Firewall
      * Check that user is authenticated.
      */
     public const STRATEGY_AUTHENTICATED = 'authenticated';
+
+    /**
+     * Check that user is authenticated and has administration rights.
+     */
+    public const STRATEGY_ADMIN_ACCESS = 'admin_access';
 
     /**
      * Check that user is authenticated and is using a profile based on central interface.
@@ -140,6 +147,12 @@ final class Firewall
         switch ($strategy) {
             case self::STRATEGY_AUTHENTICATED:
                 Session::checkLoginUser();
+                break;
+            case self::STRATEGY_ADMIN_ACCESS:
+                Session::checkLoginUser();
+                if (!Session::haveRight(Config::$rightname, UPDATE)) {
+                    throw new AccessDeniedHttpException('Missing administration rights.');
+                }
                 break;
             case self::STRATEGY_CENTRAL_ACCESS:
                 Session::checkCentralAccess();

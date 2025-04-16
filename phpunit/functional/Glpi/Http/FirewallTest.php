@@ -270,6 +270,7 @@ class FirewallTest extends \DbTestCase
     public static function provideStrategy(): iterable
     {
         yield ['strategy' => Firewall::STRATEGY_AUTHENTICATED];
+        yield ['strategy' => Firewall::STRATEGY_ADMIN_ACCESS];
         yield ['strategy' => Firewall::STRATEGY_CENTRAL_ACCESS];
         yield ['strategy' => Firewall::STRATEGY_FAQ_ACCESS];
         yield ['strategy' => Firewall::STRATEGY_HELPDESK_ACCESS];
@@ -299,11 +300,42 @@ class FirewallTest extends \DbTestCase
 
     public static function provideStrategyResults(): iterable
     {
+        $admin_users = [
+            TU_USER => TU_PASS,
+            'glpi'  => 'glpi',
+        ];
+
+        foreach ($admin_users as $login => $pass) {
+            yield [
+                'strategy'      => Firewall::STRATEGY_AUTHENTICATED,
+                'credentials'   => [$login, $pass],
+                'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_ADMIN_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_CENTRAL_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_FAQ_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_HELPDESK_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => new AccessDeniedHttpException('The current profile does not use the simplified interface'),
+            ];
+        }
+
         $central_users = [
-            TU_USER     => TU_PASS,
-            'glpi'      => 'glpi',
-            'tech'      => 'tech',
-            'normal'    => 'normal',
+            'tech'   => 'tech',
+            'normal' => 'normal',
         ];
 
         foreach ($central_users as $login => $pass) {
@@ -311,6 +343,11 @@ class FirewallTest extends \DbTestCase
                 'strategy'      => Firewall::STRATEGY_AUTHENTICATED,
                 'credentials'   => [$login, $pass],
                 'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_ADMIN_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => new AccessDeniedHttpException('Missing administration rights.'),
             ];
             yield [
                 'strategy'      => Firewall::STRATEGY_CENTRAL_ACCESS,
@@ -337,6 +374,11 @@ class FirewallTest extends \DbTestCase
                 'strategy'      => Firewall::STRATEGY_AUTHENTICATED,
                 'credentials'   => [$login, $pass],
                 'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_ADMIN_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => new AccessDeniedHttpException('Missing administration rights.'),
             ];
             yield [
                 'strategy'      => Firewall::STRATEGY_CENTRAL_ACCESS,
