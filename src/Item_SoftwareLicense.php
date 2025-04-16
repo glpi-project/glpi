@@ -771,6 +771,7 @@ JAVASCRIPT;
         $license_users_table = SoftwareLicense_User::getTable();
         $users_table = User::getTable();
         $entity_table = Entity::getTable();
+        $location_table = Location::getTable();
 
         $user_query = [
             'SELECT' => [
@@ -792,10 +793,10 @@ JAVASCRIPT;
                 new QueryExpression($DB::quoteValue(-1), "userid"),
                 new QueryExpression($DB::quoteValue(''), "userrealname"),
                 new QueryExpression($DB::quoteValue(''), "userfirstname"),
-                new QueryExpression($DB::quoteValue(''), "location"),
+                new QueryExpression($DB::quoteValue(''), "entity"),
+                Location::getFriendlyNameFields('location'),
                 new QueryExpression($DB::quoteValue(''), "state"),
                 new QueryExpression($DB::quoteValue(''), "group"),
-                "$entity_table.completename AS entity"
             ],
             'FROM' => $users_table,
             'LEFT JOIN' => [
@@ -810,7 +811,13 @@ JAVASCRIPT;
                         $users_table  => 'entities_id',
                         $entity_table => 'id'
                     ]
-                ]
+                ],
+                $location_table => [
+                    'FKEY' => [
+                        $users_table      => Location::getForeignKeyField(),
+                        $location_table   => 'id'
+                    ]
+                ],
             ],
             'INNER JOIN' => [
                 'glpi_softwarelicenses' => [
@@ -824,7 +831,7 @@ JAVASCRIPT;
                 'glpi_softwarelicenses.id' => $searchID,
                 'glpi_users.is_deleted'    => 0
             ],
-            'ORDER' => "$entity_table.completename, $users_table.name"
+            'ORDER' => "$users_table.name"
         ];
 
         $queries[] = $user_query;
