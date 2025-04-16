@@ -1486,7 +1486,7 @@ describe ('Conditions', () => {
         saveAndReload();
 
         getAndFocusQuestion('My second question').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatConditionExist(
                 0,
                 null,
@@ -1509,7 +1509,7 @@ describe ('Conditions', () => {
 
         // Delete conditions
         getAndFocusQuestion('My second question').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             deleteConditon(0);
         });
 
@@ -1545,7 +1545,7 @@ describe ('Conditions', () => {
         saveAndReload();
 
         getAndFocusQuestion('My question').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatConditionExist(
                 0,
                 null,
@@ -1569,7 +1569,7 @@ describe ('Conditions', () => {
 
         // Delete conditions
         getAndFocusQuestion('My question').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             deleteConditon(0);
         });
 
@@ -1607,7 +1607,7 @@ describe ('Conditions', () => {
         saveAndReload();
 
         getAndFocusSection('Second section').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             checkThatConditionExist(
                 0,
                 null,
@@ -1632,7 +1632,7 @@ describe ('Conditions', () => {
 
         // Delete conditions
         getAndFocusSection('Second section').within(() => {
-            openVisibilityOptions();
+            openConditionEditor();
             deleteConditon(0);
         });
 
