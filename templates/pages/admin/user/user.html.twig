@@ -48,7 +48,7 @@
 {% set is_preference_form = is_preference_form|default(false) %}
 {% set target = path(is_preference_form ? '/front/preference.php' : '/front/user.form.php') %}
 
-<div class="asset {{ bg }}">
+<div class="asset">
     <form id="main-form" name="asset_form" method="post" action="{{ target }}" enctype="multipart/form-data" data-submit-once>
         <div class="card-body d-flex flex-wrap">
             <div class="col-12 col-xxl-12 flex-column">
