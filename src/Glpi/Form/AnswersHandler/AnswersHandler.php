@@ -93,8 +93,8 @@ final class AnswersHandler
         Form $form,
         array $answers,
         int $users_id,
-        DelegationData $delegation,
         array $files = [],
+        DelegationData $delegation = new DelegationData(),
     ): AnswersSet {
         /** @var \DBmysql $DB */
         global $DB;

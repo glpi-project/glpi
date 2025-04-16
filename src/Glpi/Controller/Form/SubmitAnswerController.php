@@ -113,8 +113,8 @@ final class SubmitAnswerController extends AbstractController
             $form,
             $answers,
             Session::getLoginUserID(),
-            $delegation,
-            $files
+            $files,
+            $delegation
         );
 
         return $answers;

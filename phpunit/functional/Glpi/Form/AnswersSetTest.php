@@ -40,6 +40,7 @@ use DbTestCase;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\DelegationData;
 use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
@@ -150,11 +151,11 @@ class AnswersSetTest extends DbTestCase
             [],
             \Session::getLoginUserID(),
             [],
-            [
-                'users_id'          => getitemByTypeName(User::class, 'glpi')->getID(),
-                'use_notification'  => true,
-                'alternative_email' => ''
-            ]
+            new DelegationData(
+                getitemByTypeName(User::class, 'glpi')->getID(),
+                true,
+                ''
+            )
         );
 
         /** @var Ticket $ticket */
@@ -217,11 +218,11 @@ class AnswersSetTest extends DbTestCase
             [],
             \Session::getLoginUserID(),
             [],
-            [
-                'users_id'          => getitemByTypeName(User::class, 'glpi')->getID(),
-                'use_notification'  => true,
-                'alternative_email' => ''
-            ]
+            new DelegationData(
+                getitemByTypeName(User::class, 'glpi')->getID(),
+                true,
+                ''
+            ),
         );
 
         /** @var Ticket $ticket */
