@@ -178,7 +178,13 @@ class PrinterLog extends CommonDBChild
         foreach ($raw_metrics as $metrics) {
             $date = new DateTime($metrics['date']);
             $labels[] = $fmt->format($date);
-            unset($metrics['id'], $metrics['date'], $metrics['printers_id']);
+            unset(
+                $metrics['id'],
+                $metrics['date'],
+                $metrics['printers_id'],
+                $metrics['date_creation'],
+                $metrics['date_mod']
+            );
 
             // Keep values if at least 1 label is greater than 0
             $valuesum = array_sum($metrics);
