@@ -75,18 +75,4 @@ abstract class AbstractController implements PublicService
         $response->setContent($content);
         return $response;
     }
-
-    /**
-     * Common Twig templates parameters
-     *
-     * @return array
-     */
-    protected function commonTwigParameters(): array
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-        return [
-            'lang' => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]
-        ];
-    }
 }
