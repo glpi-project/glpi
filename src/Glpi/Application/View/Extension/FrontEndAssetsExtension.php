@@ -38,6 +38,7 @@ namespace Glpi\Application\View\Extension;
 use DBmysql;
 use Entity;
 use Glpi\Toolbox\FrontEnd;
+use Glpi\UI\Theme;
 use Glpi\UI\ThemeManager;
 use Html;
 use Plugin;
@@ -69,7 +70,18 @@ class FrontEndAssetsExtension extends AbstractExtension
             new TwigFunction('js_path', [$this, 'jsPath']),
             new TwigFunction('custom_css', [$this, 'customCss'], ['is_safe' => ['html']]),
             new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
+            new TwigFunction('current_theme', [$this, 'currentTheme']),
         ];
+    }
+
+    /**
+     * Current theme
+     *
+     * @return Theme
+     */
+    public function currentTheme(): Theme
+    {
+        return ThemeManager::getInstance()->getCurrentTheme();
     }
 
     /**
