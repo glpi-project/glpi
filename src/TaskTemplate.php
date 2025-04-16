@@ -198,7 +198,7 @@ class TaskTemplate extends AbstractITILChildTemplate
                     return __('Current logged-in user');
                 }
 
-                return getUserName($values[$field], 1);
+                return getUserLink($values[$field]);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -340,7 +340,7 @@ class TaskTemplate extends AbstractITILChildTemplate
         $table = self::getTable();
 
         if ($field === 'users_id_tech') {
-            $positive_condition = ($nott == 0 && $searchtype == 'equals') || ($nott == 1 && $searchtype == 'notequals');
+            $positive_condition = ($nott == 0 && $searchtype == 'equals') || ($nott == 1 && $searchtype == 'notequals') || ($nott == 0 && $searchtype == 'empty');
             $table_use_current_user = "`$table`.`use_current_user`";
             $table_users_id_tech = "`$table`.`users_id_tech`";
             $int_val = (int) $val;
@@ -352,6 +352,12 @@ class TaskTemplate extends AbstractITILChildTemplate
                     return " $link ($table_use_current_user = 0)";
                 }
             } else if ($val == 0) {
+                if ($positive_condition) {
+                    return " $link ($table_use_current_user = 0 AND $table_users_id_tech = 0)";
+                } else {
+                    return " $link ($table_use_current_user = 1 OR $table_users_id_tech != 0)";
+                }
+            } else if ($val = 'null' && $searchtype = 'empty') {
                 if ($positive_condition) {
                     return " $link ($table_use_current_user = 0 AND $table_users_id_tech = 0)";
                 } else {
