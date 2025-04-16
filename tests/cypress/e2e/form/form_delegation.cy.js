@@ -31,7 +31,11 @@
  */
 
 describe('Form delegation', () => {
-    const uuid = new Date().getTime();
+    let uuid = new Date().getTime();
+
+    beforeEach(() => {
+        uuid = new Date().getTime();
+    });
 
     it('can choice my notifications preferences', () => {
         createFormAndRenderIt();
@@ -53,7 +57,7 @@ describe('Form delegation', () => {
         cy.findByRole('button', { name: 'Submit' }).click();
 
         // Go to the created ticket
-        cy.findByRole('link', { name: 'My test form' }).click();
+        cy.findByRole('link', { name: `My test form - ${uuid}` }).click();
 
         cy.findByRole('region', { name: 'Actors' }).within(() => {
             cy.findByRole('listitem', { name: 'E2E Tests' }).should('exist');
@@ -95,7 +99,55 @@ describe('Form delegation', () => {
         cy.findByRole('button', { name: 'Submit' }).click();
 
         // Go to the created ticket
-        cy.findByRole('link', { name: 'My test form' }).click();
+        cy.findByRole('link', { name: `My test form - ${uuid}` }).click();
+
+        cy.findByRole('region', { name: 'Actors' }).within(() => {
+            cy.findByRole('listitem', { name: `Test user - ${uuid}` }).should('exist');
+            cy.findByRole('listitem', { name: 'E2E Tests' }).should('not.exist');
+            cy.findByRole('button', { name: 'Email followup' }).click();
+            cy.findByRole('checkbox', { name: 'Email followup' }).should('be.checked');
+            cy.findByRole('textbox', { name: 'Email address' }).should('have.value', 'test@test.fr');
+        });
+    });
+
+    it('can delegate in self-service', () => {
+        initDelegationWithAPI();
+        createFormAndRenderIt();
+        cy.changeProfile('Self-Service');
+        cy.reload();
+
+        // Check values
+        cy.getDropdownByLabelText('Select the user to delegate').should('have.text', 'Myself');
+        cy.getDropdownByLabelText('Select the user to delegate').click();
+        cy.get('.select2-results__options').contains(`Test user - ${uuid}`);
+
+        cy.getDropdownByLabelText('Do you want to be notified of future events of this ticket').should('have.text', 'I want');
+        cy.getDropdownByLabelText('Do you want to be notified of future events of this ticket').click();
+        cy.get('.select2-results__options').contains('I don\'t want');
+
+        // Select user to delegate
+        cy.getDropdownByLabelText('Select the user to delegate').selectDropdownValue(`Test user - ${uuid}`);
+
+        // Check values
+        cy.getDropdownByLabelText('Do you want to be notified of future events of this ticket').should('have.text', 'He wants');
+        cy.getDropdownByLabelText('Do you want to be notified of future events of this ticket').click();
+        cy.get('.select2-results__options').contains('He doesn\'t want');
+
+        // Define email address
+        cy.findByRole('button', { name: 'Address to send the notification' }).click();
+        cy.findByRole('textbox', { name: 'Address to send the notification' }).type('test@test.fr');
+
+        // Fill form
+        cy.findByRole('textbox', { name: 'Name' }).type('Test');
+
+        // Submit form
+        cy.findByRole('button', { name: 'Submit' }).click();
+
+        // Change profile to view ticket properties
+        cy.changeProfile('Super-Admin');
+
+        // Go to the created ticket
+        cy.findByRole('link', { name: `My test form - ${uuid}` }).click();
 
         cy.findByRole('region', { name: 'Actors' }).within(() => {
             cy.findByRole('listitem', { name: `Test user - ${uuid}` }).should('exist');
@@ -108,7 +160,10 @@ describe('Form delegation', () => {
 
     function createFormAndRenderIt() {
         cy.login();
-        cy.createFormWithAPI().as('form_id').then((form_id) => {
+        cy.createFormWithAPI({
+            name: `My test form - ${uuid}`,
+            is_active: true
+        }).as('form_id').then((form_id) => {
             cy.addQuestionToDefaultSectionWithAPI(
                 form_id,
                 'Name',

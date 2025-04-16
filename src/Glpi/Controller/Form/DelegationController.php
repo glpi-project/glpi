@@ -37,6 +37,8 @@ namespace Glpi\Controller\Form;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Http\Firewall;
+use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -49,6 +51,7 @@ final class DelegationController extends AbstractController
         name: "glpi_form_delegation",
         methods: "GET",
     )]
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function __invoke(Request $request): Response
     {
         $selected_user_id = $request->query->get('selected_user_id');
