@@ -611,7 +611,7 @@ final class SQLProvider implements SearchProviderInterface
             new QueryExpression($tocompute, $NAME),
         ];
         if (Session::haveTranslations($opt_itemtype, $field)) {
-            $SELECT[] = "$tocomputetrans AS {$NAME}_trans_{$field}";
+            $SELECT[] = "$tocomputetrans AS " . $DB::quoteName("{$NAME}_trans_{$field}");
         }
         return array_merge($SELECT, $ADDITONALFIELDS);
     }

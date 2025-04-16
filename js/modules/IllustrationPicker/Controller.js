@@ -121,6 +121,16 @@ export class GlpiIllustrationPickerController
             })
         ;
 
+        /**
+         * Sometimes the tab content is not visible when the modal opens.
+         * This problem occurs especially when our modal is contained within a tab.
+         * This solution forces the display of the active tab.
+         */
+        this.#modal_node.addEventListener('show.bs.modal', () => {
+            const active_tab_id = this.#container.querySelector(".nav-link.active").dataset.bsTarget;
+            this.#container.querySelector(active_tab_id).classList.add('show', 'active');
+        });
+
         // Autofocus search input when the modal is opened
         this.#modal_node.addEventListener('shown.bs.modal', () => {
             this.#container.querySelector("[data-glpi-icon-picker-filter]").focus();
