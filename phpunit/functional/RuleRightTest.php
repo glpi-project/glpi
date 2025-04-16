@@ -234,16 +234,4 @@ class RuleRightTest extends DbTestCase
         // Clean session
         $this->login();
     }
-
-    public function testDefaultEntityAction()
-    {
-        $testuser = [
-            'name'      => 'testuser',
-            'password'  => 'test',
-            'password2' => 'test',
-        ];
-
-        $users_id = $this->createItem(\User::class, $testuser)->getID();
-
-    }
 }
