@@ -556,6 +556,7 @@ $CFG_GLPI['javascript'] = [
             'SolutionTemplate'       => ['tinymce'],
             'TaskTemplate'           => ['tinymce'],
             'ITILValidationTemplate' => ['tinymce'],
+            'Glpi\Form\Category'     => ['tinymce'],
         ],
         'notification' => [
             'NotificationTemplate' => ['tinymce']

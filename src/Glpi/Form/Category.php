@@ -76,10 +76,11 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     {
         $fields = parent::getAdditionalFields();
         $fields[] = [
-            'name'  => 'description',
-            'label' => __('Description'),
-            'type'  => 'richtext',
-            'list'  => false,
+            'name'        => 'description',
+            'label'       => __('Description'),
+            'type'        => 'tinymce',
+            'form_params' => ['enable_images' => false, 'full_width' => false],
+            'list'        => false,
         ];
         $fields[] = [
             'name'  => 'illustration',
