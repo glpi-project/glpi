@@ -95,8 +95,9 @@ final class FormData
         }
 
         return new self([
-            'sections' => $sections_data,
+            'sections'  => $sections_data,
             'questions' => $questions_data,
+            'comments'  => $comments_data,
 
             // No selected item in this context.
             'selected_item_uuid' => null,
