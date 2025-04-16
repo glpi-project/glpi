@@ -194,7 +194,11 @@ TWIG;
     #[Override]
     public function convertDefaultValue(array $rawData): ?int
     {
-        return $rawData['default_values'] ?? null;
+        if (!isset($rawData['default_values'])) {
+            return null;
+        }
+
+        return (int) $rawData['default_values'];
     }
 
     #[Override]
