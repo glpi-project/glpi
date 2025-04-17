@@ -10393,9 +10393,9 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public static function getValidationClassInstance(): ?CommonITILValidation
     {
-        $validationClassName = self::getValidationClassName();
+        $validation_class_name = self::getValidationClassName();
 
-        return $validationClassName ? new $validationClassName() : null;
+        return $validation_class_name ? new $validation_class_name() : null;
     }
 
     public static function getValidationClassName(): ?string
@@ -10418,10 +10418,7 @@ abstract class CommonITILObject extends CommonDBTM
         return null;
     }
 
-    /**
-     * @return ChangeValidationStep|\TicketValidationStep|null
-     */
-    public static function getValidationStepInstance()
+    public static function getValidationStepInstance(): ?ITIL_ValidationStep
     {
         $class = self::getValidationStepClassName();
 

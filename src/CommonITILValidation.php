@@ -1011,10 +1011,8 @@ abstract class CommonITILValidation extends CommonDBChild
 
     /**
      * Print validations summary (list of validations of the ITIL object)
-     *
-     * @return false|void
      */
-    public function showSummary(CommonITILObject $itil)
+    private function showSummary(CommonITILObject $itil): void
     {
         /**
          * @var array $CFG_GLPI
@@ -1032,7 +1030,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 )
             )
         ) {
-            return false;
+            return;
         }
 
         $tID    = $itil->fields['id'];
@@ -1868,44 +1866,6 @@ abstract class CommonITILValidation extends CommonDBChild
         $vs = $itil->getValidationStepInstance();
         return $vs::getValidationStatusForITIL($itil);
     }
-
-    /**
-     * Get the validation statistics
-     *
-     * Used in twig template
-     *
-     * @todo information provided now looks stupid, to remove
-     * @param integer $tID tickets id
-     **/
-    public static function getValidationStats($tID): string
-    {
-        $itil = new static::$itemtype();
-        $itil->getFromDB($tID);
-        $vs = $itil->getValidationStepInstance();
-        $validation_steps_status = $vs::getValidationStepsStatus($itil);
-        $count_total_validations = count($validation_steps_status);
-
-        // edge case : no validations
-        if ($count_total_validations === 0) {
-            return "";
-        }
-
-        $count = fn($status_to_count) => array_reduce(
-            $validation_steps_status,
-            function ($count, $step_status) use ($status_to_count) {
-                return $step_status === $status_to_count ? $count + 1 : $count;
-            },
-            0
-        );
-        $accepted = $count(self::ACCEPTED);
-        $refused = $count(self::REFUSED);
-        $waiting = $count(self::WAITING);
-
-        return "Accepted ($accepted): " . round($accepted / $count_total_validations * 100) . "%"
-            . " - Refused ($refused): " . round($refused / $count_total_validations * 100) . "%"
-            . " - Waiting ($waiting): " . round($waiting / $count_total_validations * 100) . "%";
-    }
-
 
     /**
      * @param $item       CommonITILObject
