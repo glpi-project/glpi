@@ -233,6 +233,7 @@ The present file will list all changes made to the project; according to the
 - `Hooks::SHOW_IN_TIMELINE`/`show_in_timeline` plugin hook has been renamed to `Hooks::TIMELINE_ITEMS`/`timeline_items`.
 - `Auth::getMethodName()` now only returns the name without a link. Use `Auth::getMethodLink()` to get a HTML-safe link.
 - `GLPI_STRICT_DEPRECATED` constant is now know as `GLPI_STRICT_ENV`
+- `Software::merge()` method is now private.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.

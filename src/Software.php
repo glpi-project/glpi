@@ -1004,37 +1004,18 @@ class Software extends CommonDBTM
     }
 
     /**
-     * Merge software with current
+     * Merge software with current.
      *
      * @param array   $item array of software ID to be merged
-     * @param boolean $html display html progress bar
      *
      * @return boolean about success
-     **/
-    public function merge($item, $html = true)
+     */
+    private function merge($item): bool
     {
         /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $this->getField('id');
-
-        if ($html) {
-            $twig_params = [
-                'merge_msg' => __('Merging'),
-                'progress' => Html::progressBar('doaction_progress', [
-                    'message' => __s('Work in progress...'),
-                    'create' => true,
-                    'display' => false
-                ])
-            ];
-            // language=Twig
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                {% import 'components/form/fields_macros.html.twig' as fields %}
-                <div class="text-center">
-                    {{ fields.htmlField('', progress, merge_msg) }}
-                </div>
-TWIG, $twig_params);
-        }
 
         $item = array_keys($item);
 
@@ -1112,9 +1093,6 @@ TWIG, $twig_params);
                 if ($result) {
                     $i++;
                 }
-                if ($html) {
-                    Html::changeProgressBarPosition($i, $nb + 1);
-                }
             }
         }
 
@@ -1138,9 +1116,6 @@ TWIG, $twig_params);
             foreach ($item as $old) {
                 $soft->putInTrash($old, __('Software deleted after merging'));
             }
-        }
-        if ($html) {
-            Html::changeProgressBarPosition($i, $nb + 1, __('Task completed.'));
         }
         return $i === ($nb + 1);
     }
