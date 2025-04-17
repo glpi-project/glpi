@@ -247,23 +247,24 @@ TWIG;
                 values,
                 '',
                 {
-                    'no_label': true,
-                    'values'  : checked_values,
-                    'multiple': is_multiple,
-                    'mb'      : '',
+                    'no_label'  : true,
+                    'values'    : checked_values,
+                    'multiple'  : is_multiple,
+                    'mb'        : '',
+                    'aria_label': label,
                 }
             ) }}
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
-        $values = array_map(fn ($option) => $option['value'], $this->getValues($question));
         $checked_values = array_map(
-            fn ($option) => $option['value'],
+            fn ($option) => $option['uuid'],
             array_filter($this->getValues($question), fn ($option) => $option['checked'])
         );
         return $twig->renderFromStringTemplate($template, [
             'question'       => $question,
-            'values'         => array_combine($values, $values), // Make keys and values the same to easily store the selected values
+            'label'          => $question->fields['name'],
+            'values'         => $this->getOptions($question),
             'checked_values' => $checked_values,
             'is_multiple'    => $this->isMultipleDropdown($question),
         ]);

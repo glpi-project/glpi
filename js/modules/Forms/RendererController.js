@@ -122,6 +122,9 @@ export class GlpiFormRendererController
 
             debouncedComputeItemsVisibilities();
         });
+
+        // Enable actions
+        $(this.#target).removeClass('pointer-events-none');
     }
 
     /**
