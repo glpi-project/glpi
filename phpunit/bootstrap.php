@@ -49,12 +49,14 @@ global $GLPI_CACHE;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
+// Make sure cached content like twig template is cleared before running the tests.
+// It seems calling $cache_manager->resetAllCaches(); mess up with the kernel
+// leading to some issues. It is safer to use the console directly as it goes
+// throught another process.
+exec("bin/console cache:clear --env='testing");
+
 $kernel = new Kernel(Environment::TESTING->value);
 $kernel->boot();
-
-// Make sure cached content like twig template is cleared before running the tests.
-$cache_manager = new CacheManager();
-$cache_manager->resetAllCaches();
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     echo("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
