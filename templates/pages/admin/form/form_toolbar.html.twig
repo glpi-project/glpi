@@ -40,7 +40,7 @@
 
 {% if can_update %}
     <div
-        class="d-flex justify-content-center h-full {{ vertical_layout ? 'btn-group-vertical ms-2' : 'btn-group mt-2' }}"
+        class="d-flex justify-content-center h-full {{ (vertical_layout ?? false) ? 'btn-group-vertical ms-2' : 'btn-group mt-2' }}"
         style="box-shadow:none;"
         role="group"
         data-glpi-form-editor-toolbar

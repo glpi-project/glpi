@@ -70,7 +70,7 @@
          {{ include('components/form/header_content.html.twig') }}
       {% endif %}
 
-      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
+      {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params ?? []}) }}
 
       {% if _request['_in_modal'] is defined and _request['_in_modal'] == "1" %}
       <input type="hidden" name="_no_message_link" value="1" />

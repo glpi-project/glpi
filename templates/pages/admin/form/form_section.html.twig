@@ -32,7 +32,7 @@
 
 {# @var form                   Glpi\Form #}
 {# @var section                Glpi\Form\Section|null #}
-{# @var section_index          int|null #}
+{# @var section_index          int #}
 {# @var question_types_manager QuestionTypesManager #}
 {# @var can_update             bool #}
 {# @var show_section_form      bool #}
@@ -46,6 +46,7 @@
     'full_width'   : true,
     'no_label'     : true,
 } %}
+{% set section_index = section_index|default(1) %}
 
 <section
     data-glpi-form-editor-section
@@ -102,7 +103,8 @@
                         class="badge bg-secondary-lt"
                         data-glpi-form-editor-section-block-badge
                     >
-                        {{ _n('%d element', '%d elements', section.getBlocks()|length)|format(section.getBlocks()|length) }}
+                        {% set count_blocks = (section ? section.getBlocks()|length : 1) %}
+                        {{ _n('%d element', '%d elements', count_blocks)|format(count_blocks) }}
                     </span>
 
                     {# Collapse section #}
@@ -236,6 +238,7 @@
     </section>
 
     <div data-glpi-form-editor-section-blocks class="mt-3">
+    {% if section %}
         {% for form_group_blocks in section.getBlocks() %}
             {% if form_group_blocks is iterable %}
                 {{ include('pages/admin/form/form_horizontal_block.html.twig', {
@@ -248,6 +251,7 @@
                 {{ form_block.displayBlockForEditor() }}
             {% endif %}
         {% endfor %}
+    {% endif %}
     </div>
 
 </section>

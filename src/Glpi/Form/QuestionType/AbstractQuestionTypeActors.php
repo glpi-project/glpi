@@ -255,7 +255,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
             'default_value',
             values,
             {
-                'form_id'         : question.getForm().getId(),
+                'form_id'         : form_id,
                 'multiple'        : false,
                 'init'            : init,
                 'allowed_types'   : allowed_types,
@@ -271,7 +271,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
             'default_value',
             values,
             {
-                'form_id'         : question.getForm().getId(),
+                'form_id'         : form_id,
                 'multiple'        : true,
                 'init'            : init,
                 'allowed_types'   : allowed_types,
@@ -320,6 +320,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
+        $form_id = $question ? $question->getForm()->getId() : null;
         return $twig->renderFromStringTemplate($template, [
             'init'               => $question != null,
             'question'           => $question,
@@ -328,7 +329,8 @@ TWIG;
             'is_multiple_actors' => $this->isMultipleActors($question),
             'aria_label'         => __('Select an actor...'),
             'right_for_users'    => $this->getRightForUsers(),
-            'group_conditions'   => $this->getGroupConditions()
+            'group_conditions'   => $this->getGroupConditions(),
+            'form_id'            => $form_id,
         ]);
     }
 
