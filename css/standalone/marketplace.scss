@@ -116,6 +116,14 @@ $break_s_screen: 1400px;
                         text-overflow: clip;
                         text-overflow: unset;
                         padding-left: 0;
+
+                        .select2-selection__rendered {
+                            line-height: 22px;
+                        }
+
+                        .select2-selection__arrow {
+                            height: 22px;
+                        }
                     }
 
                     .select2-selection.select2-selection--single::before {
