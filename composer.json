@@ -103,6 +103,7 @@
     },
     "require-dev": {
         "ext-xml": "*",
+        "alisqi/twigqi": "^3.0",
         "atoum/atoum": "dev-main#e43a6a84809635cf5dcdf80bf3c773e7cf1d5a04",
         "atoum/stubs": "dev-master#fb8890f347a7ecf1e3cf2b5a139a8b038359a6ab",
         "friendsofphp/php-cs-fixer": "^3.75",
