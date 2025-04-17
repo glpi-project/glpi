@@ -34,6 +34,7 @@
 
 namespace Glpi\Application\View;
 
+use AlisQI\TwigQI\Extension;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\DataHelpersExtension;
 use Glpi\Application\View\Extension\DocumentExtension;
@@ -84,7 +85,7 @@ class TemplateRenderer
         $env_params = [
             'debug' => $glpi_environment->shouldEnableExtraDevAndDebugTools() || ($_SESSION['glpi_use_mode'] ?? null) === Session::DEBUG_MODE,
             'auto_reload' => $glpi_environment->shouldExpectResourcesToChange(),
-            'strict_variables' => defined('GLPI_STRICT_ENV') && GLPI_STRICT_ENV
+            'strict_variables' => defined('GLPI_STRICT_ENV') && GLPI_STRICT_ENV,
         ];
 
         $tpl_cachedir = $cachedir . '/templates';
@@ -119,6 +120,15 @@ class TemplateRenderer
         $this->environment->addExtension(new SearchExtension());
         $this->environment->addExtension(new SessionExtension());
         $this->environment->addExtension(new TeamExtension());
+        if (
+            in_array(GLPI_ENVIRONMENT_TYPE, [\Glpi\Application\Environment::DEVELOPMENT->value, \Glpi\Application\Environment::TESTING->value])
+            && defined('GLPI_STRICT_ENV')
+            && GLPI_STRICT_ENV
+        ) {
+            /** @var \Monolog\Logger $PHPLOGGER */
+            global $PHPLOGGER;
+            $this->environment->addExtension(new Extension($PHPLOGGER));
+        }
 
         // add superglobals
         $this->environment->addGlobal('_post', $_POST);
