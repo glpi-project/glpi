@@ -53,7 +53,11 @@ try {
     Html::popFooter();
     return;
 }
-Html::popHeader(__('Bulk modification'));
+Html::includeHeader(__('Bulk modification'));
+echo '<body><div id="page">';
+$ma->displayProgressBar();
+echo '</div></body></html>';
+flush(); // force displaying the output
 
 $results   = $ma->process();
 
