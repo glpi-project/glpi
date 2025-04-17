@@ -74,7 +74,17 @@
       {{ include('components/itilobject/actors/assign_to_me.html.twig') }}
    {% endif %}
 
+   {#
+      Prevent WAF (Web Application Firewall) from triggering on item.fields['content']
+
+      The WAF rule (signature ID 010000092) is triggered due to the presence of HTML-encoded content
+      in the 'content' field, which is falsely identified as a potential XSS injection.
+      This key is removed from the AJAX payload to avoid false positives.
+
+      Reference: https://github.com/glpi-project/glpi/pull/10300
+   #}
    {% set safe_item_fields = item.fields|filter((value, key) => key != 'content') %}
+
    <script type="text/javascript">
 
    // Do not use jquery ready wrapper here as it behave unexpectedly with ajax
