@@ -2734,10 +2734,8 @@ HTML;
     public function showForm($ID, array $options = [])
     {
         /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
-        global $CFG_GLPI, $DB;
+         * @var \DBmysql $DB */
+        global $DB;
 
        // Affiche un formulaire User
         if (($ID != Session::getLoginUserID()) && !self::canView()) {
@@ -2754,7 +2752,7 @@ HTML;
         $ismyself = $ID == Session::getLoginUserID();
         $higherrights = $this->currentUserHaveMoreRightThan($ID);
         if ($ID) {
-            $caneditpassword = $higherrights || ($ismyself && Session::haveRight('password_update', 1));
+            $caneditpassword = ($this->canUpdateItem() && $higherrights) || ($ismyself && Session::haveRight('password_update', 1));
         } else {
            // can edit on creation form
             $caneditpassword = true;
