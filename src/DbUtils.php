@@ -430,7 +430,7 @@ final class DbUtils
         if (
             (
                 $mapping[$unique_key] !== null
-                && !Environment::get()->shouldWatchForRessourcesChanges()
+                && !Environment::get()->shouldExpectRessourcesToChange()
             )
             || in_array($unique_key, $already_scanned)
         ) {

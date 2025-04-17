@@ -183,8 +183,10 @@ enum Environment: string
 
     /**
      * Will the files of this environment change ?
+     * This may affect which cache we decide to set (twig, http cache on the
+     * generated css and locale, ...)
      */
-    public function shouldWatchForRessourcesChanges(): bool
+    public function shouldExpectRessourcesToChange(): bool
     {
         // Only production/staging environment are considered as environments
         // where resources are not supposed to change.
@@ -210,22 +212,6 @@ enum Environment: string
         return match ($this) {
             default           => false,
             self::DEVELOPMENT => true,
-        };
-    }
-
-    /**
-     * Should we set http cache headers for content like generated css, locales,
-     * dashboards cards, menus, ...
-     */
-    public function shouldCacheGeneratedContent(): bool
-    {
-        // TODO: if we can drop the TESTING => true in shouldWatchForRessourcesChanges,
-        // maybe these two methods should be merged into one ?
-
-        // Should not be enabled for dev as the source files may be updated.
-        return match ($this) {
-            default           => true,
-            self::DEVELOPMENT => false,
         };
     }
 

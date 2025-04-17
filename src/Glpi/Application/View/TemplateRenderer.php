@@ -78,7 +78,7 @@ class TemplateRenderer
         $glpi_environment = \Glpi\Application\Environment::get();
         $env_params = [
             'debug' => ($_SESSION['glpi_use_mode'] ?? null) === Session::DEBUG_MODE,
-            'auto_reload' => $glpi_environment->shouldWatchForRessourcesChanges(),
+            'auto_reload' => $glpi_environment->shouldExpectRessourcesToChange(),
         ];
 
         $tpl_cachedir = $cachedir . '/templates';
