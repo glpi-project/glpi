@@ -557,6 +557,9 @@ class RuleAction extends CommonDBChild
                 $actions = Rule::getActionsByType($options["sub_type"]);
                 if (isset($actions[$options["field"]]['type'])) {
                     switch ($actions[$options["field"]]['type']) {
+                        case "dropdown_entity":
+                            $param['toadd'] = [-1 => __('Full structure')];
+                            // Intentional fall-through to handle dropdown cases
                         case "dropdown":
                             $table   = $actions[$options["field"]]['table'];
                             $param['name'] = "value";

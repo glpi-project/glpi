@@ -2688,6 +2688,11 @@ class Rule extends CommonDBTM
         $action = $this->getAction($ID);
         if (isset($action['type'])) {
             switch ($action['type']) {
+                case "dropdown_entity":
+                    if ($value == -1) {
+                        return __('Full structure');
+                    }
+                    // Intentional fall-through to handle dropdown cases
                 case "dropdown":
                     if ($type == 'defaultfromuser' || $type == 'fromuser' || $type == 'fromitem' || $type == 'firstgroupfromuser') {
                         return Dropdown::getYesNo($value);

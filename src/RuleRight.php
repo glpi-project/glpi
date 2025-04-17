@@ -363,7 +363,7 @@ class RuleRight extends Rule
         $actions['_entities_id_default']['field']             = 'name';
         $actions['_entities_id_default']['name']              = __('Default entity');
         $actions['_entities_id_default']['linkfield']         = 'entities_id';
-        $actions['_entities_id_default']['type']              = 'dropdown';
+        $actions['_entities_id_default']['type']              = 'dropdown_entity';
 
         $actions['specific_groups_id']['name'] = Group::getTypeName(Session::getPluralNumber());
         $actions['specific_groups_id']['type'] = 'dropdown';
