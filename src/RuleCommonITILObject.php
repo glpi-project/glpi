@@ -156,6 +156,9 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         if (count($this->actions)) {
             foreach ($this->actions as $action) {
                 switch ($action->fields["action_type"]) {
+                    // each entry with "add_validation" ($output['_add_validation'])action_type will create (at least) a new Validation
+                    // to provide additionnal data to the validation, use $output['my_field'] = 'myvalue'.
+                    // possible actions are registered in \RuleAction::getActions()
                     case "add_validation":
                         if (isset($output['_add_validation']) && !is_array($output['_add_validation'])) {
                             $output['_add_validation'] = [$output['_add_validation']];
@@ -185,8 +188,12 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
                                 $output['_add_validation'][] = 'requester_responsible';
                                 break;
 
-                            case 'validation_percent':
-                                $output[$action->fields["field"]] = $action->fields["value"];
+//                            case 'validation_percent':
+//                                $output[$action->fields["field"]] = $action->fields["value"];
+//                                break;
+
+                            case 'validationsteps_id':
+                                $output['validationsteps_id'] = $action->fields["value"];
                                 break;
 
                             default:
@@ -931,12 +938,12 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
             $actions['groups_id_validate_any']['force_actions']             = ['add_validation'];
             $actions['groups_id_validate_any']['permitseveral']             = ['add_validation'];
 
-            $actions['validation_percent']['name']                      = sprintf(
-                __('%1$s - %2$s'),
-                __('Send an approval request'),
-                __('Minimum validation required')
-            );
-            $actions['validation_percent']['type']                      = 'dropdown_validation_percent';
+//            $actions['validation_percent']['name']                      = sprintf(
+//                __('%1$s - %2$s'),
+//                __('Send an approval request'),
+//                __('Minimum validation required')
+//            );
+//            $actions['validation_percent']['type']                      = 'dropdown_validation_percent';
 
             $actions['users_id_validate_requester_supervisor']['name']  = __('Approval request to requester group manager');
             $actions['users_id_validate_requester_supervisor']['type']  = 'yesno';
@@ -945,6 +952,11 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
             $actions['users_id_validate_assign_supervisor']['name']     = __('Approval request to technician group manager');
             $actions['users_id_validate_assign_supervisor']['type']     = 'yesno';
             $actions['users_id_validate_assign_supervisor']['force_actions'] = ['add_validation'];
+
+            $actions['validationsteps_id']['name']                      = __('Approval request to validation step');
+            $actions['validationsteps_id']['type']                      = 'dropdown';
+            $actions['validationsteps_id']['table']                     = 'glpi_validationsteps';
+            $actions['validationsteps_id']['force_actions']             = ['assign'];
         }
 
         $actions['requesttypes_id']['name']                         = RequestType::getTypeName(1);

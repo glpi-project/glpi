@@ -58,6 +58,12 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     {
         return [
             [
+                'name' => 'validationsteps_id',
+                'label' => __('Validation step'),
+                'type' => 'dropdownValue',
+                'required' => true,
+            ],
+            [
                 'name'  => 'approver',
                 'label' => __('Approver'),
                 'type'  => '',
@@ -73,7 +79,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
                 // As fixing it is really complex (requires lot of refactoring in images handling, both on JS and PHP side),
                 // it is preferable to disable usage of images in templates.
                 'disable_images' => true,
-            ]
+            ],
         ];
     }
 

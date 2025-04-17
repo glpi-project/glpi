@@ -70,10 +70,44 @@
                'display': false,
                'disabled': (not canupdate),
                'readonly': (field_options.fields_template.isReadonlyField('_add_validation')),
+               'rand': rand,
             }|merge(required)),
             __('Approval request'),
             field_options
          ) }}
+
+         {# Validation step #}
+         {{ fields.dropdownField(
+            'ValidationStep',
+            '_validationsteps_id',
+            validationsteps_id,
+            __('Validation step'),
+            {
+               'rand': rand,
+               'value': call('ValidationStep::getDefault').id,
+            }|merge(field_options)
+         ) }}
+
+         <script type="text/javascript">
+            // --- show/hide validation step field depending on validation type seleted
+            $(
+                    () => {
+                       console.log('init {{ rand }}');
+                       let validationstep_wrapper = $('#dropdown__validationsteps_id{{ rand }}').closest('.form-field');
+                       validationstep_wrapper.hide();
+                    }
+            );
+
+            $("#dropdown__validation_targets_0__validatortype_{{ rand }}").on(
+                    'change',
+                    function() {
+                       let validationstep_wrapper = $('#dropdown__validationsteps_id{{ rand }}').closest('.form-field');
+                       let validation_activated = $(this).val() !== '0';
+                       validation_activated
+                               ? validationstep_wrapper.show()
+                               : validationstep_wrapper.hide();
+                    });
+         </script>
 
          <input type="hidden" name="_add_validation" value="{{ params['_add_validation'] }}" />
       {% endif %}
