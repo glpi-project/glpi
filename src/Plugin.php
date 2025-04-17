@@ -2635,7 +2635,7 @@ TWIG;
                         ['action' => 'clean'],
                         _x('button', 'Clean'),
                         ['id' => $ID],
-                        'fas fa-broom fs-2x'
+                        'fa-broom fs-2x'
                     );
                 }
 
