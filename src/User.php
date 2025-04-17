@@ -1907,24 +1907,20 @@ class User extends CommonDBTM
     public function getInfoCard(): string
     {
         $user_params = [
-            'id'                  => $this->getID(),
             'user_name'           => $this->getName(),
-            'email'               => UserEmail::getDefaultForUser($this->getID()),
-            'phone'               => $this->fields["phone"],
-            'phone2'              => $this->fields["phone2"],
-            'mobile'              => $this->fields["mobile"],
-            'locations_id'        => $this->fields['locations_id'],
-            'usertitles_id'       => $this->fields['usertitles_id'],
-            'usercategories_id'   => $this->fields['usercategories_id'],
-            'registration_number' => $this->fields['registration_number'],
+            'email'               => UserEmail::getDefaultForUser($this->getID())
         ];
+
+        foreach ($this->fields as $key => $value) {
+            if (!isset($user_params[$key])) {
+                $user_params[$key] = $value;
+            }
+        }
 
         if (Session::haveRight('user', READ)) {
              $user_params['login'] = $this->fields['name'];
         }
-        if (!empty($this->fields["groups_id"])) {
-            $user_params['groups_id'] = $this->fields["groups_id"];
-        }
+
         return TemplateRenderer::getInstance()->render('components/user/info_card.html.twig', [
             'user'                 => $user_params,
             'enable_anonymization' => Session::getCurrentInterface() == 'helpdesk',

@@ -103,7 +103,9 @@ final class IndexController extends AbstractController
         if (count($errors) > 0) {
             return $this->render('pages/login_error.html.twig', [
                 'errors'    => $errors,
+                'title'     => __('Access denied'),
                 'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1&redirect=' . \rawurlencode($redirect),
+                'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]
             ]);
         }
 
