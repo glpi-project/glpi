@@ -412,7 +412,7 @@ class Toolbox
         }
         if (
             $strict === true ||
-            GLPI_STRICT_DEPRECATED === true
+            GLPI_STRICT_ENV === true
         ) {
             trigger_error($message, E_USER_DEPRECATED);
         }
