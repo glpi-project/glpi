@@ -290,7 +290,8 @@ describe('Service catalog page', () => {
         cy.changeProfile('Super-Admin');
 
         // Create a simple form
-        const form_name = `Test form for service_catalog_page.cy.js ${(new Date()).getTime()}`;
+        const time = (new Date()).getTime();
+        const form_name = `Test form for service_catalog_page.cy.js ${time}`;
         createActiveForm(form_name);
         cy.get('@form_id').visitFormTab('Form');
         cy.findByRole('button', {'name': 'Add a question'}).click();
@@ -306,6 +307,7 @@ describe('Service catalog page', () => {
         cy.validateMenuIsActive('Service catalog');
 
         // Go to our form
+        cy.findByPlaceholderText('Search for forms...').type(time);
         cy.findByRole('region', {'name': form_name}).as('form');
         cy.get('@form').click();
         cy.url().should('include', '/Form/Render');
