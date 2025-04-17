@@ -40,6 +40,7 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Inventory;
 use Glpi\Plugin\Hooks;
+use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Response;
 
 /**
@@ -722,6 +723,10 @@ class Agent extends CommonDBTM
                 self::$found_address = $address;
                 break;
             } catch (\GuzzleHttp\Exception\RequestException $exception) {
+                if ($exception instanceof ServerException) {
+                    // may be a proxy error on this address. we can try other addresses
+                    continue;
+                }
                 // got an error response, we don't need to try other addresses
                 break;
             } catch (\Throwable $exception) {
