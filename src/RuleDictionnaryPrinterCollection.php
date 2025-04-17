@@ -62,6 +62,14 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
         return $output;
     }
 
+    public function countTotalItemsForRulesReplay(array $params = []): int
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        return $DB->request($this->getIteratorCriteriaForRulesReplay())->count();
+    }
+
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
         /** @var \DBmysql $DB */
@@ -73,56 +81,17 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
         $nb = 0;
         $i  = $offset;
 
-       //Select all the differents software
-        $criteria = [
-            'SELECT' => [
-                'glpi_printers.name',
-                'glpi_manufacturers.name AS manufacturer',
-                'glpi_printers.manufacturers_id AS manufacturers_id',
-                'glpi_printers.comment AS comment'
-            ],
-            'DISTINCT'  => true,
-            'FROM'      => 'glpi_printers',
-            'LEFT JOIN' => [
-                'glpi_manufacturers' => [
-                    'ON'  => [
-                        'glpi_manufacturers' => 'id',
-                        'glpi_printers'      => 'manufacturers_id'
-                    ]
-                ]
-            ],
-            'WHERE'     => [
-            // Do not replay on trashbin and templates
-                'glpi_printers.is_deleted'    => 0,
-                'glpi_printers.is_template'   => 0
-            ]
-        ];
+        $criteria = $this->getIteratorCriteriaForRulesReplay();
 
         if ($offset) {
             $criteria['START'] = (int)$offset;
-            $criteria['LIMIT'] = 999999999;
+            $criteria['LIMIT'] = 2 ** 32; // MySQL requires a limit, set it to an unreachable value
         }
 
         $iterator = $DB->request($criteria);
         $nb   = count($iterator) + $offset;
-        $step = (($nb > 1000) ? 50 : (($nb > 20) ? floor(count($iterator) / 20) : 1));
 
         foreach ($iterator as $input) {
-            if (!($i % $step)) {
-                if (isCommandLine()) {
-                    //TRANS: %1$s is a date, %2$s is a row, %3$s is total row, %4$s is memory
-                    printf(
-                        __('%1$s - replay rules on existing database: %2$s/%3$s (%4$s Mio)') . "\n",
-                        date("H:i:s"),
-                        $i,
-                        $nb,
-                        round(memory_get_usage() / (1024 * 1024), 2)
-                    );
-                } else {
-                    Html::changeProgressBarPosition($i, $nb, "$i / $nb");
-                }
-            }
-
            //Replay printer dictionary rules
             $res_rule = $this->processAllRules($input, [], []);
 
@@ -156,25 +125,40 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
             }
             $i++;
 
-            if ($maxtime) {
-                $crt = explode(" ", microtime());
-                if (((float)$crt[0] + (float)$crt[1]) > $maxtime) {
-                    break;
-                }
+            if ($maxtime && microtime(true) > $maxtime) {
+                break;
             }
         }
 
-        if (isCommandLine()) {
-            printf(__('Replay rules on existing database: %1$s/%2$s') . "\n", $i, $nb);
-        } else {
-            Html::changeProgressBarPosition($i, $nb, "$i / $nb");
-        }
-
-        if (isCommandLine()) {
-            printf(__('Replay rules on existing database ended on %s') . "\n", date("r"));
-        }
-
         return (($i == $nb) ? -1 : $i);
+    }
+
+    private function getIteratorCriteriaForRulesReplay(): array
+    {
+        //Select all the differents software
+        return [
+            'SELECT' => [
+                'glpi_printers.name',
+                'glpi_manufacturers.name AS manufacturer',
+                'glpi_printers.manufacturers_id AS manufacturers_id',
+                'glpi_printers.comment AS comment'
+            ],
+            'DISTINCT'  => true,
+            'FROM'      => 'glpi_printers',
+            'LEFT JOIN' => [
+                'glpi_manufacturers' => [
+                    'ON'  => [
+                        'glpi_manufacturers' => 'id',
+                        'glpi_printers'      => 'manufacturers_id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                // Do not replay on trashbin and templates
+                'glpi_printers.is_deleted'    => 0,
+                'glpi_printers.is_template'   => 0
+            ]
+        ];
     }
 
 
