@@ -51,7 +51,7 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 // It seems calling $cache_manager->resetAllCaches(); mess up with the kernel
 // leading to some issues. It is safer to use the console directly as it goes
 // throught another process.
-exec("bin/console cache:clear --env='testing");
+exec("bin/console cache:clear --env='testing'");
 
 $kernel = new Kernel(Environment::TESTING->value);
 $kernel->boot();
