@@ -42,6 +42,8 @@
     'full_width'   : true,
     'no_label'     : true,
 } %}
+{% set comment = comment|default(null) %}
+{% set question = question|default(null) %}
 
 <section
     role="option"
@@ -175,12 +177,12 @@
         <input
             type="hidden"
             name="vertical_rank"
-            value="{{ question is not null ? question.fields.vertical_rank : 0 }}"
+            value="0"
         />
         <input
             type="hidden"
             name="horizontal_rank"
-            value="{{ question is not null ? question.fields.horizontal_rank : null }}"
+            value="0"
         />
     </section>
 
