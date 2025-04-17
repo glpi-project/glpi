@@ -80,7 +80,6 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
-use Glpi\Message\MessageType;
 use Glpi\Migration\PluginMigrationResult;
 use Glpi\Tests\FormTesterTrait;
 use Location;
@@ -919,15 +918,11 @@ final class FormMigrationTest extends DbTestCase
         $this->setPrivateProperty($migration, 'result', $result);
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
-        $errors = array_filter(
-            $result->getMessages(),
-            static fn (array $entry) => $entry['type'] === MessageType::Error
-        );
-        $this->assertCount(1, $errors);
-        $this->assertEquals(
-            current($errors)['message'],
-            'Section "Orphan section" has no form. It will not be migrated.'
-        );
+        // Check that the section hasn't been migrated
+        $section = new Section();
+        $this->assertFalse($section->getFromDBByCrit([
+            'name' => 'Orphan section',
+        ]));
     }
 
     public function testFormMigrationWithOrphanQuestion(): void
@@ -950,15 +945,11 @@ final class FormMigrationTest extends DbTestCase
         $this->setPrivateProperty($migration, 'result', $result);
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
-        $errors = array_filter(
-            $result->getMessages(),
-            static fn (array $entry) => $entry['type'] === MessageType::Error
-        );
-        $this->assertCount(1, $errors);
-        $this->assertEquals(
-            current($errors)['message'],
-            'Question "Orphan question" has no section. It will not be migrated.'
-        );
+        // Check that the question hasn't been migrated
+        $question = new Question();
+        $this->assertFalse($question->getFromDBByCrit([
+            'name' => 'Orphan question',
+        ]));
     }
 
     public function testFormMigrationUpdateHorizontalRanks(): void
