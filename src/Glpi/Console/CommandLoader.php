@@ -369,7 +369,7 @@ class CommandLoader implements CommandLoaderInterface
             return;
         }
 
-        if (!Environment::get()->shouldLoadSymfonyCommands()) {
+        if (!Environment::get()->shouldEnableExtraDevAndDebugTools()) {
             return;
         }
 
