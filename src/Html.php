@@ -1185,6 +1185,8 @@ TWIG,
 
 
     /**
+     * Get menu layout information.
+     * This does not include any plugin menu info.
      * @since 0.90
      *
      * @return array
@@ -1523,7 +1525,7 @@ TWIG,
      */
     public static function getMenuSectorForItemtype(string $itemtype): ?string
     {
-        $menu = self::getMenuInfos();
+        $menu = self::generateMenuSession();
         foreach ($menu as $sector => $params) {
             if (array_key_exists('types', $params) && in_array($itemtype, $params['types'])) {
                 return $sector;
