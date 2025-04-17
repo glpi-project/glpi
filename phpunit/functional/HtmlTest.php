@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use GlpiPlugin\Tester\MyPsr4Class;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
@@ -1146,5 +1147,49 @@ SCSS
     public function testSanitizeDomId(string $name, string $expected): void
     {
         $this->assertEquals($expected, \Html::sanitizeInputName($name));
+    }
+
+    public static function getMenuSectorForItemtypeProvider(): iterable
+    {
+        yield [
+            'itemtype' => 'Computer',
+            'expected' => 'assets',
+        ];
+
+        yield [
+            'itemtype' => 'Ticket',
+            'expected' => 'helpdesk',
+        ];
+
+        yield [
+            'itemtype' => 'SoftwareLicense',
+            'expected' => 'management',
+        ];
+
+        yield [
+            'itemtype' => 'Project',
+            'expected' => 'tools',
+        ];
+
+        yield [
+            'itemtype' => 'User',
+            'expected' => 'admin',
+        ];
+
+        yield [
+            'itemtype' => 'Config',
+            'expected' => 'config',
+        ];
+
+        yield [
+            'itemtype' => MyPsr4Class::class,
+            'expected' => 'management',
+        ];
+    }
+
+    #[DataProvider('getMenuSectorForItemtypeProvider')]
+    public function testGetMenuSectorForItemtype($itemtype, $expected): void
+    {
+        $this->assertEquals($expected, \Html::getMenuSectorForItemtype($itemtype));
     }
 }
