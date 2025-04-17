@@ -263,13 +263,6 @@ final class SystemConfigurator
                 @mkdir($value, recursive: true);
             }
         }
-
-        //deprecated constants
-        if (defined('GLPI_STRICT_DEPRECATED')) {
-            throw new \UnexpectedValueException(
-                'Invalid GLPI_STRICT_DEPRECATED constant, please use GLPI_STRICT_ENV',
-            );
-        }
     }
 
     private function setSessionConfiguration(): void
