@@ -99,9 +99,7 @@ class Supplier extends CommonDBTM
 
     public function getCloneRelations(): array
     {
-        return [
-            Contact_Supplier::class,
-        ];
+        return [];
     }
 
 
