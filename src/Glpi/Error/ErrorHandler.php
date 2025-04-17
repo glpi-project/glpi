@@ -220,19 +220,7 @@ final class ErrorHandler extends BaseErrorHandler
      */
     private function configureErrorReporting(): void
     {
-        $reporting_level = E_ALL;
-        foreach (self::ERROR_LEVEL_MAP as $value => $log_level) {
-            if (
-                \in_array($log_level, [LogLevel::DEBUG, LogLevel::INFO, LogLevel::NOTICE], true)
-                && !Environment::get()->shouldReportLowLevelErrors()
-            ) {
-                // Do not report debug, info, and notice messages unless in development/testing env.
-                // Notices are errors with no functional impact, so we do not want people to report them as issues.
-                // Suppressing the INFO level will prevent deprecations to be pushed in other environments logs.
-                $reporting_level &= ~$value;
-            }
-        }
-        \error_reporting($reporting_level);
+        \error_reporting(E_ALL);
     }
 
     /**

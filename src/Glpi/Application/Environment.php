@@ -164,24 +164,6 @@ enum Environment: string
     }
 
     /**
-     * Should debug, info and notice be reported ?
-     * See ErrorHandler::configureErrorReporting().
-     *
-     * Note: this seems weird and should not necessary as we already have
-     * getLogLevel() to define this behavior in the AbstractLogger class.
-     *
-     * TODO: investigate and remove this method and its usage if needed.
-     */
-    public function shouldReportLowLevelErrors(): bool
-    {
-        return match ($this) {
-            default           => false,
-            self::TESTING     => true,
-            self::DEVELOPMENT => true,
-        };
-    }
-
-    /**
      * Will the files of this environment change ?
      * This may affect which cache we decide to set (twig, http cache on the
      * generated css and locale, ...)
