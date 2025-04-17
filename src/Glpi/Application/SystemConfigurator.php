@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -145,7 +144,7 @@ final class SystemConfigurator
 
                 // Constants dedicated to developers
                 'GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE' => '1', // '1' to disable ONLY_FULL_GROUP_BY 'sql_mode'
-                'GLPI_STRICT_DEPRECATED'                   => false, // `true` to trigger specific deprecations
+                'GLPI_STRICT_ENV'                          => false, // `true` to make environment more strict (strict variables in twig templates, etc)
 
                 // Other constants
                 'GLPI_AJAX_DASHBOARD'         => '1', // 1 for "multi ajax mode" 0 for "single ajax mode" (see Glpi\Dashboard\Grid::getCards)
@@ -174,7 +173,7 @@ final class SystemConfigurator
                     $this->root_dir . '/plugins',
                     $this->root_dir . '/tests/fixtures/plugins',
                 ],
-                'GLPI_STRICT_DEPRECATED'        => true,
+                'GLPI_STRICT_ENV'               => true,
             ],
             'development' => [
                 'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '1'
@@ -263,6 +262,13 @@ final class SystemConfigurator
             ) {
                 @mkdir($value, recursive: true);
             }
+        }
+
+        //deprecated constants
+        if (defined('GLPI_STRICT_DEPRECATED')) {
+            throw new \UnexpectedValueException(
+                'Invalid GLPI_STRICT_DEPRECATED constant, please use GLPI_STRICT_ENV',
+            );
         }
     }
 
