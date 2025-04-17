@@ -305,6 +305,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $this->getFromDB($this->fields['id']);
             NotificationEvent::raiseEvent("update", $this);
         }
+
+        Planning::invalidateCacheEvents(self::class, (int) $this->fields['id']);
     }
 
 
@@ -419,6 +421,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if ($this->fields['projects_id'] > 0) {
             Project::recalculatePercentDone($this->fields['projects_id']);
         }
+
+        Planning::invalidateCacheEvents(self::class, (int) $this->fields["id"]);
     }
 
 
@@ -1387,8 +1391,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         /**
          * @var array $CFG_GLPI
          * @var \DBmysql $DB
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
          */
-        global $CFG_GLPI, $DB;
+        global $CFG_GLPI, $DB,$GLPI_CACHE;
 
         $interv = [];
         $ttask  = new self();
@@ -1516,6 +1521,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $task   = new self();
 
         if (count($iterator)) {
+            $planning_items = $GLPI_CACHE->get(Planning::PLANNING_CACHE_KEY);
             foreach ($iterator as $data) {
                 if ($task->getFromDB($data["id"])) {
                     if (isset($data['notp_date'])) {
@@ -1523,9 +1529,21 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         $data['plan_end_date'] = $data['notp_edate'];
                     }
                     $key = $data["plan_start_date"] .
-                      "$$$" . "ProjectTask" .
+                      "$$$" . ProjectTask::class .
                       "$$$" . $data["id"] .
                       "$$$" . $who . "$$$" . $whogroup;
+
+                    // compute event cache_key, check if event is already in cache and get it if exists
+                    $event_cache_key = ProjectTask::class . $data["id"];
+                    if (isset($planning_items[$event_cache_key])) {
+                        // if event is already in cache, we need to compute some data
+                        $planning_items[$event_cache_key]['editable']   = $ttask->canUpdateItem();
+                        $planning_items[$event_cache_key]["begin"]      = max($begin, $data["plan_start_date"]);
+                        $planning_items[$event_cache_key]["end"]        = min($end, $data["plan_end_date"]);
+                        $interv[$key] = $planning_items[$event_cache_key];
+                        continue;
+                    }
+
                     $interv[$key]['color']            = $options['color'];
                     $interv[$key]['event_type_color'] = $options['event_type_color'];
                     $interv[$key]['itemtype']         = 'ProjectTask';
@@ -1565,8 +1583,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
                     $ttask->getFromDB($data["id"]);
                     $interv[$key]["editable"] = $ttask->canUpdateItem();
+
+                    $planning_items[$event_cache_key] = $interv[$key];
                 }
             }
+            $GLPI_CACHE->set(Planning::PLANNING_CACHE_KEY, $planning_items);
         }
 
         return $interv;

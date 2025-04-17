@@ -1116,8 +1116,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         /**
          * @var array $CFG_GLPI
          * @var \DBmysql $DB
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
          */
-        global $CFG_GLPI, $DB;
+        global $CFG_GLPI, $DB, $GLPI_CACHE;
 
         $interv = [];
 
@@ -1275,6 +1276,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $interv = [];
 
         if (count($iterator)) {
+            $planning_items = $GLPI_CACHE->get(Planning::PLANNING_CACHE_KEY);
             foreach ($iterator as $data) {
                 if (
                     $item->getFromDB($data["id"])
@@ -1290,6 +1292,15 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                          "$$$" . $itemtype .
                          "$$$" . $data["id"] .
                          "$$$" . $who . "$$$" . $whogroup;
+
+                        // compute event cache_key, check if event is already in cache and get it if exists
+                        $event_cache_key = $itemtype . $data["id"];
+                        if (isset($planning_items[$event_cache_key])) {
+                            // if event is already in cache, we need to update 'editable'
+                            $planning_items[$event_cache_key]['editable'] = $item->canUpdateItem();
+                            $interv[$key] = $planning_items[$event_cache_key];
+                            continue;
+                        }
 
                         if (isset($options['from_group_users'])) {
                              $key .= "_gu";
@@ -1358,9 +1369,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                                 $interv[$key]["device"] = implode("<br>", $interv[$key]["device"]);
                             }
                         }
+
+                        $planning_items[$event_cache_key] = $interv[$key];
                     }
                 }
             }
+            $GLPI_CACHE->set(Planning::PLANNING_CACHE_KEY, $planning_items);
         }
         return $interv;
     }
