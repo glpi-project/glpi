@@ -200,17 +200,6 @@ enum Environment: string
         };
     }
 
-    public function shouldLoadSymfonyCommands(): bool
-    {
-        // Don't load commands if non-dev/test
-        return match ($this) {
-            default           => false,
-            self::DEVELOPMENT => true,
-            // TODO: why do we need it in testing ? Investigate.
-            self::TESTING     => true,
-        };
-    }
-
     public function shouldSetupTesterPlugin(): bool
     {
         // Specific for tests, should never be enabled anywhere else.
