@@ -122,6 +122,13 @@ export class GlpiFormRendererController
 
             debouncedComputeItemsVisibilities();
         });
+
+        // Handle delegation form update
+        $(this.#target).on(
+            'change',
+            '[data-glpi-form-renderer-delegation-container] select[name="delegation_users_id"]',
+            (e) => this.#renderDelegation(e)
+        );
     }
 
     /**
@@ -160,6 +167,7 @@ export class GlpiFormRendererController
             $(this.#target)
                 .find(`
                     [data-glpi-form-renderer-form-header],
+                    [data-glpi-form-renderer-delegation-container],
                     [data-glpi-form-renderer-section=${this.#section_index}],
                     [data-glpi-form-renderer-parent-section=${this.#section_index}],
                     [data-glpi-form-renderer-actions]
@@ -446,5 +454,22 @@ export class GlpiFormRendererController
             .find("button[data-glpi-form-renderer-action]")
             .removeClass("pointer-events-none")
         ;
+    }
+
+    async #renderDelegation()
+    {
+        const selected_user_id = $(this.#target)
+            .find('[data-glpi-form-renderer-delegation-container]')
+            .find('select[name="delegation_users_id"]')
+            .val();
+
+        const response = await $.get('/Form/Delegation', {
+            'selected_user_id': selected_user_id,
+        });
+
+        // Replace only the inner content of the delegation container
+        $(this.#target)
+            .find('[data-glpi-form-renderer-delegation-container]')
+            .html(response);
     }
 }
