@@ -192,11 +192,6 @@ enum Environment: string
         return match ($this) {
             default           => false,
             self::DEVELOPMENT => true,
-            // TODO: when running on the CI, TESTING should return false as the
-            // code won't change. Should be easy to set up.
-            // Or maybe it should always be false and the test bootstrap file
-            // should clear the caches on start up, guaranteeing a clean env ?
-            self::TESTING     => true,
         };
     }
 
