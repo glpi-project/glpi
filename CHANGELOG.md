@@ -487,6 +487,7 @@ The present file will list all changes made to the project; according to the
 - `Link_Itemtype::showForLink()`
 - `MailCollector::listEncodings()`
 - `MailCollector::title()`
+- `MassiveAction::updateProgressBars()`
 - `ManualLink::showForItem()`
 - `MigrationCleaner` class
 - `Netpoint` class
