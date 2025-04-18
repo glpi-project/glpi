@@ -156,6 +156,9 @@ enum Environment: string
 
     public function getLogLevel(): string
     {
+        // Do not report debug, info, and notice messages unless in development/testing env.
+        // Notices are errors with no functional impact, so we do not want people to report them as issues.
+        // Suppressing the INFO level will prevent deprecations to be pushed in other environments logs.
         return match ($this) {
             default           => LogLevel::WARNING,
             self::TESTING     => LogLevel::DEBUG,

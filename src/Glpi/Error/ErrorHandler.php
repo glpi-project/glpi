@@ -72,6 +72,17 @@ final class ErrorHandler extends BaseErrorHandler
         E_USER_DEPRECATED   => LogLevel::INFO,
     ];
 
+    private const PSR_ERROR_LEVEL_VALUES = [
+        LogLevel::EMERGENCY => 0,
+        LogLevel::ALERT     => 1,
+        LogLevel::CRITICAL  => 2,
+        LogLevel::ERROR     => 3,
+        LogLevel::WARNING   => 4,
+        LogLevel::NOTICE    => 5,
+        LogLevel::INFO      => 6,
+        LogLevel::DEBUG     => 7,
+    ];
+
     private static LoggerInterface $currentLogger;
 
     public function __construct(LoggerInterface $logger)
@@ -215,12 +226,30 @@ final class ErrorHandler extends BaseErrorHandler
     }
 
     /**
-     * Adjust reporting level to the environment, to ensure that all the errors supposed to be logged are
-     * actually reported, and to prevent reporting other errors.
+     * Adjust reporting level to the environment, to ensure that all the errors
+     * supposed to be logged are actually reported, and to prevent reporting
+     * other errors.
      */
     private function configureErrorReporting(): void
     {
-        \error_reporting(E_ALL);
+        // Define base reporting level
+        $reporting_level = E_ALL;
+
+        // Compute max error level that should be reported
+        $env_psr_level = Environment::get()->getLogLevel();
+        $env_report_value = self::PSR_ERROR_LEVEL_VALUES[$env_psr_level];
+
+        foreach (self::ERROR_LEVEL_MAP as $value => $log_level) {
+            $psr_level_value = self::PSR_ERROR_LEVEL_VALUES[$log_level];
+
+            // Error must be removed from the reporting level if its level
+            // is superior to the max level defined by the current env.
+            if ($psr_level_value > $env_report_value) {
+                $reporting_level &= ~$value;
+            }
+        }
+
+        \error_reporting($reporting_level);
     }
 
     /**
