@@ -76,8 +76,6 @@ class Ticket extends CommonITILObject
    // Demand type
     const DEMAND_TYPE   = 2;
 
-    const READMY           =      1;
-    const READALL          =   1024;
     const READGROUP        =   2048;
     const READASSIGN       =   4096;
     const ASSIGN           =   8192;
@@ -4782,16 +4780,8 @@ JAVASCRIPT;
             return false;
         }
 
-        $restrict = self::getListForItemRestrict($item);
-        $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable());
-        $criteria['WHERE']['glpi_tickets.is_deleted'] = 0;
-        $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
-
         $options = [
-            'metacriteria' => [],
-            'restrict' => $restrict,
-            'criteria' => $criteria,
-            'reset'    => 'reset'
+            'metacriteria' => []
         ];
 
         switch (get_class($item)) {

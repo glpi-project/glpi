@@ -53,16 +53,6 @@ class Item_TicketRecurrent extends CommonItilObject_Item
         return _n('Ticket recurrent item', 'Ticket recurrent items', $nb);
     }
 
-    /**
-     * Print the HTML ajax associated item add
-     *
-     * @param TicketRecurrent $ticketrecurrent   object holding the item
-     * @param array $options   array of possible options:
-     *    - id                  : ID of the object holding the items
-     *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
-     *
-     * @return void
-     */
     public static function itemAddForm(CommonDBTM $ticketrecurrent, $options = [])
     {
         parent::displayItemAddForm($ticketrecurrent, $options);
