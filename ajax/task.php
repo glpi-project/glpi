@@ -120,8 +120,8 @@ if ($template->fields['groups_id_tech'] == 0) {
     unset($template->fields['groups_id_tech']);
 }
 
-if ($template->fields['users_id_tech'] == 0) {
-    unset($template->fields['users_id_tech']);
+if ($template->fields['users_id_tech'] == -1) {
+    $template->fields['users_id_tech'] = Session::getLoginUserID();
 }
 
 // Return json response with the template fields
