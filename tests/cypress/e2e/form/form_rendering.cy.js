@@ -88,6 +88,88 @@ describe('Form rendering', () => {
         cy.getDropdownByLabelText('Urgency').should('have.text', "Very low");
         cy.getDropdownByLabelText('Request type').should('have.text', "Request");
     });
+
+    it('Mandatory questions must be filled', () => {
+        // Set up a form with two sections, each with a mandatory question
+        cy.createWithAPI('Glpi\\Form\\Form', {
+            'name': 'Test mandatory questions',
+        }).as('form_id');
+        cy.get('@form_id').then((form_id) => {
+            // Add mandatory question to default section
+            cy.addQuestionToDefaultSectionWithAPI(
+                form_id,
+                'First question',
+                'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                0,
+                null,
+                null,
+                null,
+                true // Mandatory
+            );
+
+            // Add second section
+            cy.createWithAPI('Glpi\\Form\\Section', {
+                'name': 'Second section',
+                'rank': 1,
+                'forms_forms_id': form_id,
+            }).as('second_section_id');
+
+            cy.get('@second_section_id').then((second_section_id) => {
+                // Add mandatory question to second section
+                cy.createWithAPI('Glpi\\Form\\Question', {
+                    'name': 'Second question',
+                    'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'vertical_rank': 1,
+                    'forms_sections_id': second_section_id,
+                    'is_mandatory' : true,
+                }).as('second_section_id');
+            });
+
+            // Preview form
+            cy.login();
+            cy.visit(`/Form/Render/${form_id}`);
+
+            // Try to submit first section, should fail since we didn't answer
+            // the mandatory question
+            cy.findByRole('button', {name: 'Continue'}).click();
+            // Wait to be sure that the current state will not be used a false
+            // positive to pass the following assertions in case the current
+            // section was not yet updated by the JS logic.
+            // This would not be needed if we could detect and wait for the "Please
+            // fill this input" popup from the browser but it doesn't seem
+            // supported by cypress.
+            // eslint-disable-next-line cypress/no-unnecessary-waiting
+            cy.wait(600);
+            cy.findByRole('heading', {name: 'First section'}).should('be.visible');
+            cy.findByRole('heading', {name: 'Second section'}).should('not.exist');
+
+            // Submit again with a value
+            cy.findByRole('textbox', {name: 'First question'}).type("test");
+            cy.findByRole('button', {name: 'Continue'}).click();
+            cy.findByRole('heading', {name: 'Second section'}).should('be.visible');
+            cy.findByRole('heading', {name: 'First section'}).should('not.exist');
+
+            // Try to submit the final section, should fail since we didn't answer
+            // the mandatory question
+            cy.findByRole('button', {name: 'Submit'}).click();
+            // Wait to be sure that the current state will not be used a false
+            // positive to pass the following assertions in case the current
+            // section was not yet updated by the JS logic.
+            // This would not be needed if we could detect and wait for the "Please
+            // fill this input" popup from the browser but it doesn't seem
+            // supported by cypress.
+            // eslint-disable-next-line cypress/no-unnecessary-waiting
+            cy.wait(600);
+            cy.findByRole('heading', {name: 'Second section'}).should('be.visible');
+            cy.findByText('Form submitted').should('not.be.visible');
+
+            // Submit again with a value
+            cy.findByRole('textbox', {name: 'Second question'}).type("test");
+            cy.findByRole('button', {name: 'Submit'}).click();
+            cy.findByRole('heading', {name: 'Second section'}).should('not.exist');
+            cy.findByText('Form submitted').should('be.visible');
+        });
+    });
 });
 
 function addQuestionAndGetUuuid(name, type = null, subtype = null) {

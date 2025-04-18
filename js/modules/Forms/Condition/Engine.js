@@ -43,8 +43,6 @@ export class GlpiFormConditionEngine
 
     async computeVisiblity(container)
     {
-        container = document.querySelector(container);
-
         try {
             // Send data to server for computation and apply results.
             return await this.#computeVisibilityOnBackend({
