@@ -73,7 +73,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     {
         //TODO Costs for changes and problems should probably affect TCO too but there should also be a way to handle costs affecting multiple assets
         //Example, A ticket with a cost of $400 with two computers shouldn't add $400 cost of ownership to both.
-        $cost_class = match(static::$itemtype_1) {
+        $cost_class = match (static::$itemtype_1) {
             'Ticket' => TicketCost::class,
             //'Change' => ChangeCost::class,
             //'Problem' => ProblemCost::class,
@@ -151,7 +151,8 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             && empty($itil->fields['locations_id'])
             && !$itil->isClosed() // Do not allow rules to modify a closed ITIL item
             && $item->getFromDB($input["items_id"])
-            && $item->maybeLocated()) {
+            && $item->maybeLocated()
+        ) {
             $itil->fields['_locations_id_of_item'] = $item->fields['locations_id'];
 
             $rules = new ($itil::getRuleCollectionClass())($itil->getEntityID());
