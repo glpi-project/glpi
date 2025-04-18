@@ -119,6 +119,14 @@ final class ProjectController extends AbstractController
                     'priority' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'enum' => [1, 2, 3, 4, 5, 6],
+                        'description' => <<<EOT
+                            - 1: Very Low
+                            - 2: Low
+                            - 3: Medium
+                            - 4: High
+                            - 5: Very High
+                            - 6: Major
+                            EOT,
                     ],
                     'entity' => self::getDropdownTypeSchema(class: \Entity::class, full_schema: 'Entity'),
                     'tasks' => [
