@@ -79,6 +79,7 @@ function plugin_tester_getDropdown(): array
 
 function plugin_init_tester(): void
 {
+    global $PLUGIN_HOOKS;
     $plugin = new Plugin();
     if (!$plugin->isActivated('tester')) {
         return;
@@ -97,4 +98,6 @@ function plugin_init_tester(): void
     // Register destination type
     $destination_manager = FormDestinationManager::getInstance();
     $destination_manager->registerPluginDestinationType(new ComputerDestination());
+
+    $PLUGIN_HOOKS['menu_toadd']['tester'] = ['management' => MyPsr4Class::class];
 }
