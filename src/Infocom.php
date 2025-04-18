@@ -1424,8 +1424,12 @@ JS;
         }
     }
 
+    /**
+     * @deprecated
+     */
     public static function addPluginInfos(CommonDBTM $item)
     {
+        Toolbox::deprecated('Infocom::addPluginInfos() is deprecated. Use Plugin::doHookFunction(Hooks::INFOCOM, $item) directly instead.');
         Plugin::doHookFunction(Hooks::INFOCOM, $item);
     }
 

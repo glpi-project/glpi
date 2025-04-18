@@ -316,36 +316,237 @@ class Hooks
      * The function is expected to modify the given array as needed and return it.
      */
     public const RETRIEVE_MORE_DATA_FROM_LDAP  = 'retrieve_more_data_from_ldap';
+
+    /**
+     * Register a function to get more LDAP -> Field mappings.
+     * The function is called with an array containing the current mappings.
+     * The function is expected to modify the given array as needed and return it.
+     * @see AuthLDAP::getSyncFields
+     */
     public const RETRIEVE_MORE_FIELD_FROM_LDAP = 'retrieve_more_field_from_ldap';
+
+    /**
+     * Register a function to add additional checks to the LDAP authentication.
+     * The function is called with an array containing several properties including:
+     * - 'dn' => The DN of the user
+     * - login field => Login field value where 'login field' is the name of the login field (usually samaccountname or uid) set in the LDAP config in GLPI.
+     * - sync field => Sync field value where 'sync field' is the name of the sync field (usually objectguid or entryuuid) set in the LDAP config in GLPI
+     */
     public const RESTRICT_LDAP_AUTH            = 'restrict_ldap_auth';
+
+    /**
+     * Register a function to handle unlocking additional fields.
+     * The function is called with the $_POST array containing several properties including:
+     * - 'itemtype' => The type of the item for which the fields are unlocked
+     * - 'id' => The ID of the item for which the fields are unlocked
+     * - itemtype => Array of fields to unlock where 'itemtype' is the name of the item type (usually the same as the itemtype value).
+     * The function is expected to return nothing.
+     */
     public const UNLOCK_FIELDS                 = 'unlock_fields';
+
+    /**
+     * Register a function to optionally hide a config value in certain locations such as the API.
+     * The function is called with an array containing several properties including:
+     * - 'context' => The context of the config option ('core' for core GLPI configs)
+     * - 'name' => The name of the config option
+     * - 'value' => The value of the config option
+     * The function is expected to modify the given array as needed (typically unsetting the value if it should be hidden) and return it.
+     */
     public const UNDISCLOSED_CONFIG_VALUE      = 'undiscloseConfigValue';
+
+    /**
+     * Register a function to modify the actor results in the right panel of ITIL objects.
+     * The function is called with an array containing several properties including:
+     * - 'actors' => The current actor results
+     * - 'params' => The parameters used to retrieve the actors
+     * The function is expected to modify the given array as needed and return it.
+     */
     public const FILTER_ACTORS                 = 'filter_actors';
+
+    /**
+     * Register a function to declare what the default display preferences are for an itemtype.
+     * This is not used when no display preferences are set for the itemtype, but rather when hte preferences are being reset.
+     * Therefore, defaults should be set during the plugin installation and the result of the function should be the same as the default values set in the plugin installation.
+     * Core GLPI itemtypes with display preferences set in `install/empty_data.php` will never use this hook.
+     * The function is called with an array containing several properties including:
+     * - 'itemtype' => The type of the item for which the display preferences are set
+     * - 'prefs' => The current defaults (usually empty unless also modified by another plugin)
+     * The function is expected to modify the given array as needed and return it.
+     */
     public const DEFAULT_DISPLAY_PREFS         = 'default_display_prefs';
+
+    /**
+     * Must be set to true for some other hooks to function including:
+     * - {@link self::AUTO_GET_RULE_CRITERIA}
+     * - {@link self::AUTO_GET_RULE_ACTIONS}
+     * - {@link self::AUTO_RULE_COLLECTION_PREPARE_INPUT_DATA_FOR_PROCESS}
+     * - {@link self::AUTO_PRE_PROCESS_RULE_COLLECTION_PREVIEW_RESULTS}
+     * - {@link self::AUTO_RULEIMPORTASSET_GET_SQL_RESTRICTION}
+     * - {@link self::AUTO_RULEIMPORTASSET_ADD_GLOBAL_CRITERIA}
+     */
     public const USE_RULES                     = 'use_rules';
 
     // Item hooks expecting an 'item' parameter
+    /**
+     * Register a function to be called when a notification recipient is to be added.
+     * The function is called with the {@link NotificationTarget} object as a parameter.
+     * The function is expected to return nothing.
+     * The added notification target information can be found in the `recipient_data` property of the object. Modifying this information will have no effect.
+     * The current list of all added notification targets can be found in the `target` property of the object.
+     * If you wish to remove/modify targets, you must do so in the `target` property.
+     */
     public const ADD_RECIPIENT_TO_TARGET   = 'add_recipient_to_target';
+
+    /**
+     * Register a function to be called to display some automatic inventory information.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing, but the information may be output directly.
+     * The function is only called for items that have the `is_dynamic` field, and it is set to 1.
+     */
     public const AUTOINVENTORY_INFORMATION = 'autoinventory_information';
+
+    /**
+     * Register a function to be called to display extra Infocom form fields/information.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing, but the information may be output directly.
+     */
     public const INFOCOM                   = 'infocom';
+
+    /**
+     * Register a function to handle adding a plugin-specific notification target.
+     * The function is called with the NotificationTarget object as a parameter.
+     * The function is expected to return nothing.
+     * The notification target data can be found in the `data` property of the object.
+     * @see NotificationTarget::addToRecipientsList()
+     */
     public const ITEM_ACTION_TARGETS       = 'item_action_targets';
-    public const ITEM_ADD                  = 'item_add';
+
+    /**
+     * Register a function to handle adding new possible recipients for notification targets.
+     * The function is called with the NotificationTarget object as a parameter.
+     * The function is expected to return nothing.
+     * @see NotificationTarget::addTarget()
+     */
     public const ITEM_ADD_TARGETS          = 'item_add_targets';
-    public const ITEM_CAN                  = 'item_can';
+
+    /**
+     * Register a function to handle the 'item_empty' lifecycle event for an item.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing.
+     * The hook is called at the very end of the process of initializing an empty item.
+     * @see CommonDBTM::getEmpty()
+     */
     public const ITEM_EMPTY                = 'item_empty';
+
+    /**
+     * Register a function to handle the 'pre_item_add' lifecycle event for an item.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing.
+     * This hook is called at the very beginning of the add process, before the input has been modified.
+     * The input can be found in the `input` property of the item. Setting the `input` property to false will cancel the add process.
+     * @see CommonDBTM::prepareInputForAdd()
+     */
+    public const PRE_ITEM_ADD              = 'pre_item_add';
+
+    /**
+     * Register a function to handle the 'post_prepareadd' lifecycle event for an item.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing.
+     * This hook is called after the input has been modified, but before the item is added to the database.
+     * The input can be found in the `input` property of the item. Setting the `input` property to false will cancel the add process.
+     * @see CommonDBTM::prepareInputForAdd()
+     */
+    public const POST_PREPAREADD           = 'post_prepareadd';
+
+    /**
+     * Register a function to handle the 'item_add' lifecycle event for an item.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing.
+     * This hook is called at the very end of the add process, after the item has been added to the database.
+     */
+    public const ITEM_ADD                  = 'item_add';
+
+    /**
+     * Register a function to handle the 'pre_item_update' lifecycle event for an item.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing.
+     * This hook is called at the very beginning of the update process, before the input has been modified.
+     * The input can be found in the `input` property of the item. Setting the `input` property to false will cancel the update process.
+     * @see CommonDBTM::prepareInputForUpdate()
+     */
+    public const PRE_ITEM_UPDATE           = 'pre_item_update';
+
+    /**
+     * Register a function to handle the 'item_update' lifecycle event for an item.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing.
+     * This hook is called at the very end of the update process, after the item has been updated in the database.
+     * The input can be found in the `input` property of the item while the updated field names can be found in the `updates` property.
+     * The old values of changed field can be found in the `oldvalues` property.
+     */
+    public const ITEM_UPDATE               = 'item_update';
+
+    /**
+     * Register a function to handle the 'pre_item_delete' lifecycle event for an item.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing.
+     * This hook is called at the very beginning of the soft-deletion process.
+     * The input can be found in the `input` property of the item. Setting the `input` property to false will cancel the deletion process.
+     */
+    public const PRE_ITEM_DELETE           = 'pre_item_delete';
+
+    /**
+     * Register a function to handle the 'item_delete' lifecycle event for an item.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing.
+     * This hook is called at the very end of the soft-deletion process, after the item has been soft-deleted from the database (`is_deleted` set to 1).
+     */
     public const ITEM_DELETE               = 'item_delete';
+
+    /**
+     * Register a function to handle the 'pre_item_purge' lifecycle event for an item.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing.
+     * This hook is called at the very beginning of the purge process.
+     * The input can be found in the `input` property of the item. Setting the `input` property to false will cancel the purge process.
+     */
+    public const PRE_ITEM_PURGE            = 'pre_item_purge';
+
+    /**
+     * Register a function to handle the 'item_purge' lifecycle event for an item.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing.
+     * This hook is called at the very end of the purge process, after the item has been purged from the database.
+     */
+    public const ITEM_PURGE                = 'item_purge';
+
+    /**
+     * Register a function to handle the 'pre_item_restore' lifecycle event for an item.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing.
+     * This hook is called at the very beginning of the restore process.
+     * The input can be found in the `input` property of the item. Setting the `input` property to false will cancel the restore process.
+     */
+    public const PRE_ITEM_RESTORE          = 'pre_item_restore';
+
+    /**
+     * Register a function to handle the 'item_restore' lifecycle event for an item.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing.
+     * This hook is called at the very end of the restore process, after the item has been restored in the database (`is_deleted` set to 0).
+     */
+    public const ITEM_RESTORE              = 'item_restore';
+
     public const ITEM_GET_DATA             = 'item_get_datas';
     public const ITEM_GET_EVENTS           = 'item_get_events';
-    public const ITEM_UPDATE               = 'item_update';
-    public const ITEM_PURGE                = 'item_purge';
-    public const ITEM_RESTORE              = 'item_restore';
-    public const POST_PREPAREADD           = 'post_prepareadd';
-    public const PRE_ITEM_ADD              = 'pre_item_add';
-    public const PRE_ITEM_UPDATE           = 'pre_item_update';
-    public const PRE_ITEM_DELETE           = 'pre_item_delete';
-    public const PRE_ITEM_PURGE            = 'pre_item_purge';
-    public const PRE_ITEM_RESTORE          = 'pre_item_restore';
+
+
+
+
+
     public const SHOW_ITEM_STATS           = 'show_item_stats';
+
+    public const ITEM_CAN                  = 'item_can';
 
     // Item hooks expecting an array parameter (available keys: item, options)
     /**
@@ -507,11 +708,15 @@ class Hooks
      * - 'criteria' => the rule criteria
      * - 'sql_where' => the SQL WHERE clause as a string
      * - 'sql_from' => the SQL FROM clause as a string
-     * The function is expected to return the given array with any needed modifications.
+     * The function is expected to modify the given array as needed and return it.
      * Only called if the plugin also uses the {@link self::USE_RULES} hook set to true.
      */
     public const AUTO_RULEIMPORTASSET_GET_SQL_RESTRICTION = 'ruleImportAsset_getSqlRestriction';
 
+    /**
+     * Automatic hook function called with an array of the current global criteria.
+     * The function is expected to modify the given array as needed and return it.
+     */
     public const AUTO_RULEIMPORTASSET_ADD_GLOBAL_CRITERIA = 'ruleImportAsset_addGlobalCriteria';
 
     public const AUTO_SEARCH_OPTION_VALUES = 'searchOptionsValues';
