@@ -76,7 +76,7 @@
    </div>
 {% endmacro %}
 
-{% macro autoNameField(name, item, label = '', withtemplate, options = {}) %}
+{% macro autoNameField(name, item, label = '', withtemplate = 0, options = {}) %}
    {% set tpl_value = (options.value ?? '')|length > 0 ? options.value : item.fields[name] %}
    {% if item.isTemplate() %} {# TODO exluded types #}
        {% set options = options|merge({
@@ -596,9 +596,7 @@
    {% endif %}
 
    {% set field %}
-      {% do call('Dropdown::dropdownIcons', [name, value, constant('GLPI_ROOT') ~ '/pics/icones', {
-         'rand': rand,
-      }|merge(options)]) %}
+      {% do call('Dropdown::dropdownIcons', [name, value, constant('GLPI_ROOT') ~ '/pics/icones', options]) %}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
@@ -642,7 +640,6 @@
 
    {% set field %}
       {% do call('Dropdown::showHours', [name, {
-         'rand': rand,
          'value': value
       }|merge(options)]) %}
    {% endset %}
@@ -666,7 +663,6 @@
 
    {% set field %}
       {% do call('Dropdown::showFrequency', [name, value, {
-         'rand': rand,
          'width': '100%',
          'value': value
       }|merge(options)]) %}

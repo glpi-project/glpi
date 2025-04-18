@@ -54,7 +54,7 @@
         {% set options = options|merge({'readonly': true}) %}
     {% endif %}
 
-   {% if (options.is_disclosable or options.is_copyable) and (id ?? null) is null %}
+   {% if (options.is_disclosable or options.is_copyable) and options.id is null %}
       {% set options = options|merge({
          id: name|slug ~ '_' ~ random()
       }) %}
