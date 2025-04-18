@@ -633,6 +633,16 @@ final class FormSerializer extends AbstractFormSerializer
                 )
             );
         }
+        foreach ($form_spec->destinations as $destination_spec) {
+            $this->importCondition(
+                id: $mapper->getItemId(FormDestination::class, $destination_spec->id),
+                itemtype: new FormDestination(),
+                conditions: $this->prepareConditionsForImport(
+                    $destination_spec->conditions,
+                    $mapper,
+                )
+            );
+        }
 
         // Reload form to clear lazy loaded data
         $form->getFromDB($form->getID());
@@ -728,9 +738,12 @@ final class FormSerializer extends AbstractFormSerializer
     ): FormContentSpecification {
         foreach ($form->getDestinations() as $destination) {
             // Compute simple fields
-            $spec           = new DestinationContentSpecification();
-            $spec->itemtype = $destination->fields['itemtype'];
-            $spec->name     = $destination->fields['name'];
+            $spec                    = new DestinationContentSpecification();
+            $spec->id                = $destination->fields['id'];
+            $spec->itemtype          = $destination->fields['itemtype'];
+            $spec->name              = $destination->fields['name'];
+            $spec->creation_strategy = $destination->fields['creation_strategy'];
+            $spec->conditions        = $this->prepareConditionDataForExport($destination);
 
             // Handle dynamic config, we can't know the values that need to be
             // mapped here so we need to let the destination object handle it
@@ -759,6 +772,7 @@ final class FormSerializer extends AbstractFormSerializer
                 '_from_import'             => true,
                 'itemtype'                 => $destination_spec->itemtype,
                 'name'                     => $destination_spec->name,
+                'creation_strategy'        => $destination_spec->creation_strategy,
                 'config'                   => $config,
                 Form::getForeignKeyField() => $form->getID(),
             ];
@@ -779,11 +793,19 @@ final class FormSerializer extends AbstractFormSerializer
                 $input,
                 $mapper
             );
+            $id = $destination->add($input);
 
-            if (!$destination->add($input)) {
+            if (!$id) {
                 $message = "Failed to create destination: " . json_encode($input);
                 throw new RuntimeException($message);
             }
+
+            // Destinations can be required for other items, so we need to map them.
+            $mapper->addMappedItem(
+                FormDestination::class,
+                $destination_spec->id,
+                $id
+            );
         }
 
         // Reload form to clear lazy loaded data
