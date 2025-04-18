@@ -37,6 +37,7 @@ namespace tests\units;
 use CommonITILActor;
 use Contract;
 use DbTestCase;
+use Entity;
 use ITILFollowup;
 use ITILSolution;
 use NotificationTarget;
@@ -1458,5 +1459,135 @@ class EntityTest extends DbTestCase
         $entities = $fn_get_current_entities();
         $fn_find_entities_in_selector(\Entity::getEntitySelectorTree(), $entities, null, $found);
         $this->assertCount(count($entities), $found);
+    }
+
+    public function testGetHelpdeskSceneIdIsInheritedByDefault(): void
+    {
+        $this->login();
+        $root_entity = $this->getTestRootEntity();
+
+        // Act: create a child entity without values for the scene fields
+        $entity = $this->createItem(Entity::class, [
+            'name'        => "Test entity",
+            'entities_id' => $root_entity->getID(),
+        ]);
+
+        // Assert: scenes should be inherited
+        $this->assertEquals(
+            Entity::CONFIG_PARENT,
+            $entity->fields['custom_helpdesk_home_scene_left'],
+        );
+        $this->assertEquals(
+            Entity::CONFIG_PARENT,
+            $entity->fields['custom_helpdesk_home_scene_right'],
+        );
+    }
+
+    public function testGetHelpdeskSceneIdInheritedDefaultValue(): void
+    {
+        $this->login();
+        $root_entity = $this->getTestRootEntity();
+
+        // Arrange: create a child entity that inherit its parent values
+        $entity = $this->createItem(Entity::class, [
+            'name'        => "Test entity",
+            'entities_id' => $root_entity->getID(),
+            'custom_helpdesk_home_scene_left'  => Entity::CONFIG_PARENT,
+            'custom_helpdesk_home_scene_right' => Entity::CONFIG_PARENT,
+        ]);
+
+        // Act: get the scenes id
+        $left_scene_id = $entity->getHelpdeskSceneId(
+            'custom_helpdesk_home_scene_left'
+        );
+        $right_scene_id = $entity->getHelpdeskSceneId(
+            'custom_helpdesk_home_scene_right'
+        );
+
+        // Assert: the default illustration must be found
+        $this->assertEquals($left_scene_id, Entity::DEFAULT_LEFT_SCENE);
+        $this->assertEquals($right_scene_id, Entity::DEFAULT_RIGHT_SCENE);
+    }
+
+    public function testGetHelpdeskSceneIdInheritedCustomValue(): void
+    {
+        $this->login();
+        $root_entity = $this->getTestRootEntity();
+
+        // Arrange: create a child entity that inherit its parent values
+        $entity = $this->createItem(Entity::class, [
+            'name'        => "Test entity",
+            'entities_id' => $root_entity->getID(),
+            'custom_helpdesk_home_scene_left'  => Entity::CONFIG_PARENT,
+            'custom_helpdesk_home_scene_right' => Entity::CONFIG_PARENT,
+        ]);
+
+        // Act: set custom values for the parent and get the scenes ids
+        $this->updateItem(Entity::class, $root_entity->getID(), [
+            'custom_helpdesk_home_scene_left' => 'test-left.png',
+            'custom_helpdesk_home_scene_right' => 'test-right.png',
+        ]);
+        $left_scene_id = $entity->getHelpdeskSceneId(
+            'custom_helpdesk_home_scene_left'
+        );
+        $right_scene_id = $entity->getHelpdeskSceneId(
+            'custom_helpdesk_home_scene_right'
+        );
+
+        // Assert: the specific file names should be found.
+        $this->assertEquals($left_scene_id, 'custom:test-left.png');
+        $this->assertEquals($right_scene_id, 'custom:test-right.png');
+    }
+
+    public function testGetHelpdeskSceneIdDefaultValue(): void
+    {
+        $this->login();
+        $root_entity = $this->getTestRootEntity();
+
+        // Arrange: create a child entity with default illustrations
+        $entity = $this->createItem(Entity::class, [
+            'name'                             => "Test entity",
+            'entities_id'                      => $root_entity->getID(),
+            'custom_helpdesk_home_scene_left'  => '',
+            'custom_helpdesk_home_scene_right' => '',
+        ]);
+
+        // Act: get the scenes id
+        $left_scene_id = $entity->getHelpdeskSceneId(
+            'custom_helpdesk_home_scene_left'
+        );
+        $right_scene_id = $entity->getHelpdeskSceneId(
+            'custom_helpdesk_home_scene_right'
+        );
+
+        // Assert: the default illustration must be found
+        $this->assertEquals($left_scene_id, Entity::DEFAULT_LEFT_SCENE);
+        $this->assertEquals($right_scene_id, Entity::DEFAULT_RIGHT_SCENE);
+    }
+
+    public function testGetHelpdeskSceneIdCustomValue(): void
+    {
+        $this->login();
+        $root_entity = $this->getTestRootEntity();
+
+        // Arrange: create a child entity with custom illustrations
+        $entity = $this->createItem(Entity::class, [
+            'name'                             => "Test entity",
+            'entities_id'                      => $root_entity->getID(),
+            'custom_helpdesk_home_scene_left'  => 'test-left.png',
+            'custom_helpdesk_home_scene_right' => 'test-right.png',
+        ]);
+
+        // Act: Get the scenes ids
+        $left_scene_id = $entity->getHelpdeskSceneId(
+            'custom_helpdesk_home_scene_left'
+        );
+        $right_scene_id = $entity->getHelpdeskSceneId(
+            'custom_helpdesk_home_scene_right'
+        );
+
+        // Assert: the specific file names should be found.
+        $this->assertEquals($left_scene_id, 'custom:test-left.png');
+        $this->assertEquals($right_scene_id, 'custom:test-right.png');
     }
 }

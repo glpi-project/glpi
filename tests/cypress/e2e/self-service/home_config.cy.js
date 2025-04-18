@@ -346,6 +346,113 @@ describe(`Helpdesk home page configuration - entities specific`, () => {
             .should('be.visible')
         ;
     });
+
+    it('can configure custom illustrations', () => {
+        // Some headings should be displayed
+        cy.findByRole('heading', {name: "Custom illustrations"}).should('be.visible');
+        cy.findByRole('heading', {name: "Left side"}).should('be.visible');
+        cy.findByRole('heading', {name: "Right side"}).should('be.visible');
+
+        // There should be two dropdowns - one per side
+        cy.getDropdownByLabelText("Left side configuration").should('be.visible');
+        cy.getDropdownByLabelText("Right side configuration").should('be.visible');
+
+        // Configure a custom illustration
+        cy.findByRole('region', {name: "Left side"}).within(() => {
+            // Default state, inheritance should be selected
+            cy.getDropdownByLabelText("Left side configuration").should(
+                "have.text",
+                "Inherited from parent entity"
+            );
+            validateRegionVisibilities({
+                "Default illustration preview"             : 'not.exist',
+                "Custom illustration preview and selection": 'not.exist',
+                "Inherited illustration preview"           : 'be.visible',
+            });
+            validateSvgSpriteIsShown();
+
+            // Switch to "Custom illustration"
+            cy.getDropdownByLabelText("Left side configuration")
+                .selectDropdownValue("Custom illustration")
+            ;
+            validateRegionVisibilities({
+                "Default illustration preview"             : 'not.exist',
+                "Custom illustration preview and selection": 'be.visible',
+                "Inherited illustration preview"           : 'not.exist',
+            });
+
+            // Upload an image
+            cy.get('input[type=file]').selectFile("fixtures/uploads/bar.png");
+            cy.findByText("Upload successful").should('be.visible');
+
+            // Save and reload, make sure value was saved
+            saveIllustrationSettings();
+            cy.getDropdownByLabelText("Left side configuration").should(
+                "have.text",
+                "Custom illustration"
+            );
+            validateRegionVisibilities({
+                "Default illustration preview"             : 'not.exist',
+                "Custom illustration preview and selection": 'be.visible',
+                "Inherited illustration preview"           : 'not.exist',
+            });
+            validateImageIsShown();
+        });
+
+        // Use the default illustration
+        cy.findByRole('region', {name: "Left side"}).within(() => {
+            // Switch to "Default illustration"
+            cy.getDropdownByLabelText("Left side configuration")
+                .selectDropdownValue("Default illustration")
+            ;
+            validateRegionVisibilities({
+                "Default illustration preview"             : 'be.visible',
+                "Custom illustration preview and selection": 'not.exist',
+                "Inherited illustration preview"           : 'not.exist',
+            });
+            validateSvgSpriteIsShown();
+
+            // Save and reload, make sure value was saved
+            saveIllustrationSettings();
+            cy.getDropdownByLabelText("Left side configuration").should(
+                "have.text",
+                "Default illustration"
+            );
+            validateRegionVisibilities({
+                "Default illustration preview"             : 'be.visible',
+                "Custom illustration preview and selection": 'not.exist',
+                "Inherited illustration preview"           : 'not.exist',
+            });
+            validateSvgSpriteIsShown();
+        });
+
+        // Go back to inherited value
+        cy.findByRole('region', {name: "Left side"}).within(() => {
+            // Switch to "Default illustration"
+            cy.getDropdownByLabelText("Left side configuration")
+                .selectDropdownValue("Inherited from parent entity")
+            ;
+            validateRegionVisibilities({
+                "Default illustration preview"             : 'not.exist',
+                "Custom illustration preview and selection": 'not.exist',
+                "Inherited illustration preview"           : 'be.visible',
+            });
+            validateSvgSpriteIsShown();
+
+            // Save and reload, make sure value was saved
+            saveIllustrationSettings();
+            cy.getDropdownByLabelText("Left side configuration").should(
+                "have.text",
+                "Inherited from parent entity"
+            );
+            validateRegionVisibilities({
+                "Default illustration preview"             : 'not.exist',
+                "Custom illustration preview and selection": 'not.exist',
+                "Inherited illustration preview"           : 'be.visible',
+            });
+            validateSvgSpriteIsShown();
+        });
+    });
 });
 
 function validateTilesOrder(tiles) {
@@ -359,4 +466,31 @@ function validateTilesOrder(tiles) {
 function moveTileAfterTile(subject, destination) {
     cy.findByRole("region", {'name': subject}).startToDrag();
     cy.findByRole("region", {'name': destination}).dropDraggedItemAfter();
+}
+
+function saveIllustrationSettings() {
+    cy.document().its('body').within(() => {
+        cy.findByRole('button', {name: "Save custom illustrations settings"}).click();
+    });
+}
+
+function validateRegionVisibilities(regions) {
+    for (const [region, assertion] of Object.entries(regions)) {
+        cy.findByRole('region', {name: region})
+            .should(assertion)
+        ;
+    }
+}
+
+function validateImageIsShown() {
+    cy.get('img:visible')
+        .should('have.prop', 'naturalWidth')
+        .should('be.greaterThan', 0)
+    ;
+}
+
+function validateSvgSpriteIsShown() {
+    cy.get('svg:visible').should('exist');
+    // TODO: something like this would be better but I can't get it to work.
+    // cy.get('svg:visible').find('use').shadow().find('symbol').should('exist');
 }

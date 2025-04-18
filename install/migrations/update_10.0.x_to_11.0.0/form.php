@@ -292,6 +292,24 @@ if (!$DB->fieldExists("glpi_entities", $field)) {
     );
 }
 
+$fields = ['custom_helpdesk_home_scene_left', 'custom_helpdesk_home_scene_right'];
+foreach ($fields as $field) {
+    if (!$DB->fieldExists("glpi_entities", $field)) {
+        $migration->addField(
+            'glpi_entities',
+            $field,
+            "varchar(255) NOT NULL DEFAULT '-2'"
+        );
+        $migration->addPostQuery(
+            $DB->buildUpdate(
+                'glpi_entities',
+                [$field => ''],
+                ['id' => 0]
+            )
+        );
+    }
+}
+
 // Add rights for the forms object
 $migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
 
