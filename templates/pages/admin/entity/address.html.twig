@@ -71,7 +71,7 @@
       {{ fields.nullField() }}
 
       {{ fields.autoNameField(
-         'postalcode',
+         'postcode',
          item,
          __('Postal code'),
       ) }}
@@ -100,7 +100,7 @@
       {{ fields.nullField() }}
 
       {% set setlocation %}
-         {{ item.displaySpecificTypeField(entity.fields['id'], {
+         {{ item.displaySpecificTypeField(item.fields['id'], {
             name: 'setlocation',
             type: 'setlocation',
             label: '',

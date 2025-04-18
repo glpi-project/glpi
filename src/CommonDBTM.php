@@ -500,12 +500,11 @@ class CommonDBTM extends CommonGLPI
 
     public function getFormFields(): array
     {
-        // NOTE: Post code field named differently for Suppliers. Placed after town to maintain field order from 9.5
         $fields = [
             'name', 'firstname', 'template_name', '_template_is_active', 'states_id', static::getForeignKeyField(), 'is_helpdesk_visible',
             '_dc_breadcrumbs', 'locations_id', 'item_type', 'itemtype', 'date_domaincreation', $this->getTypeForeignKeyField(),
             'usertitles_id', 'registration_number', 'phone', 'phone2', 'phonenumber', 'mobile', 'fax', 'website', 'email',
-            'address', 'postalcode', 'town', 'postcode', 'state', 'country', 'date_expiration', 'ref', 'users_id_tech',
+            'address', 'town', 'postcode', 'state', 'country', 'date_expiration', 'ref', 'users_id_tech',
             'manufacturers_id', 'groups_id_tech', $this->getModelForeignKeyField(), 'contact_num', 'serial', 'contact', 'otherserial',
             'sysdescr', 'snmpcredentials_id', 'users_id', 'is_global', 'size', 'networks_id', 'groups_id', 'uuid', 'version',
             'comment', 'ram', 'alarm_threshold', 'brand', 'begin_date', 'autoupdatesystems_id', 'pictures', 'is_active', 'last_boot'
