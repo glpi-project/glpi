@@ -509,25 +509,19 @@ JAVASCRIPT;
 
         echo "<div class='rack_side_block_content'>";
         echo "<h3>" . __s("Space") . "</h3>";
-        Html::progressBar('rack_space', [
-            'create' => true,
-            'percent' => $space_prct,
-            'message' => htmlescape($space_prct . "%"),
-        ]);
+        echo Html::getProgressBar($space_prct);
 
         echo "<h3>" . __s("Weight") . "</h3>";
-        Html::progressBar('rack_weight', [
-            'create' => true,
-            'percent' => $weight_prct,
-            'message' => htmlescape($weight . " / " . $rack->fields['max_weight'])
-        ]);
+        echo Html::getProgressBar(
+            $weight_prct,
+            $weight . " / " . $rack->fields['max_weight']
+        );
 
         echo "<h3>" . __s("Power") . "</h3>";
-        Html::progressBar('rack_power', [
-            'create' => true,
-            'percent' => $power_prct,
-            'message' => htmlescape($power . " / " . $rack->fields['max_power'])
-        ]);
+        echo Html::getProgressBar(
+            $power_prct,
+            $power . " / " . $rack->fields['max_power']
+        );
         echo "</div>";
         echo "</div>";
     }

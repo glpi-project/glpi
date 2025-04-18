@@ -334,6 +334,16 @@ class RuleCollection extends CommonDBTM
     }
 
     /**
+     * Count the total items that will be processed if rules are replayed.
+     *
+     * @param array $params Specific parameters used when rules are replayed.
+     */
+    public function countTotalItemsForRulesReplay(array $params = []): int
+    {
+        return 0;
+    }
+
+    /**
      * Replay Collection on DB
      *
      * @param integer $offset  first row to work on (default 0)

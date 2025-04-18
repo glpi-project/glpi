@@ -1194,7 +1194,6 @@ class OperatingSystemTest extends AbstractInventoryAsset
         $this->login('glpi', 'glpi');
 
         $os_dictionnary = new \RuleDictionnaryOperatingSystemCollection();
-        $this->expectOutputRegex('/.*Replay rules on existing database started on.*/');
         $os_dictionnary->replayRulesOnExistingDB(0, 0, [], []);
 
         $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

@@ -38,8 +38,6 @@
  * @var RuleCollection $rulecollection
  */
 
-use Glpi\Application\View\TemplateRenderer;
-
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
@@ -74,15 +72,13 @@ if (isset($_POST["action"])) {
     }
     Html::back();
 } else if (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
-   // POST and GET needed to manage reload
     $rulecollection->checkGlobal(UPDATE);
 
-   // Current time
+    // Current time
     $start = microtime(true);
 
-   // Limit computed from current time
-    $max = (int) get_cfg_var("max_execution_time");
-    $max = $start + ($max > 0 ? $max / 2.0 : 30.0);
+    // Reload every X seconds to refresh the progress bar
+    $max = $start + 5;
 
     Html::header(
         Rule::getTypeName(Session::getPluralNumber()),
@@ -100,51 +96,53 @@ if (isset($_POST["action"])) {
         return;
     }
 
+    $rule_class = $rulecollection->getRuleClassName();
+
+    if (array_key_exists('offset', $_GET)) {
+        // $_GET['offset'] will exists only when page is reloaded to update the progress bar
+        $manufacturer   = (int)($_GET['manufacturer']);
+        $current_offset = (int)$_GET['offset'];
+        $total_items    = (int)$_GET['total'];
+
+        $start = $_GET['start']; // global start for stat
+    } else {
+        $manufacturer   = (int)($_POST['manufacturer'] ?? 0);
+        $current_offset = 0;
+        $total_items    = $rulecollection->countTotalItemsForRulesReplay(['manufacturer' => $manufacturer]);
+    }
+
+    if ($total_items === 0) {
+        // Nothing to do
+        Session::addMessageAfterRedirect(__s('No items found.'));
+        Html::redirect($rule_class::getSearchURL());
+    }
+
     echo "<div class='position-relative fw-bold'>" . htmlescape($rulecollection->getTitle()) . "<br>" .
          __s('Replay the rules dictionary') . "</div>";
     echo "<div class='text-center mb-3'>";
-    Html::progressBar('doaction_progress', [
-        'create' => true,
-        'message' => __s('Work in progress...')
-    ]);
+    echo Html::getProgressBar(
+        $current_offset / $total_items * 100,
+        __('Work in progress...')
+    );
     echo '</div>';
+    Html::footer();
+    flush(); // force displaying the output
 
-    if (!isset($_GET['offset'])) {
-       // First run
-        $offset       = $rulecollection->replayRulesOnExistingDB(0, $max, [], $_POST);
-        $manufacturer = (isset($_POST["manufacturer"]) ? $_POST["manufacturer"] : 0);
-    } else {
-       // Next run
-        $offset       = $rulecollection->replayRulesOnExistingDB(
-            $_GET['offset'],
-            $max,
-            [],
-            $_GET
-        );
-        $manufacturer = $_GET["manufacturer"];
-
-       // global start for stat
-        $start = $_GET["start"];
-    }
-
-    $rule_class = $rulecollection->getRuleClassName();
+    $offset = $rulecollection->replayRulesOnExistingDB($current_offset, $max, [], ['manufacturer' => $manufacturer]);
 
     if ($offset < 0) {
-       // Work ended
-        $duree = round(microtime(true) - $start);
-        Html::changeProgressBarMessage(sprintf(
-            __('Task completed in %s'),
-            Html::timestampToString($duree)
+        // Work ended
+        $duration = round(microtime(true) - $start);
+        Session::addMessageAfterRedirect(sprintf(
+            __s('Task completed in %s'),
+            Html::timestampToString($duration)
         ));
-        echo "<a href='" . htmlescape($rule_class::getSearchURL()) . "'>" . __s('Back') . "</a>";
+        Html::redirect($rule_class::getSearchURL());
     } else {
-       // Need more work
-        Html::redirect($rule_class::getSearchURL() . "?start=$start&replay_rule=1&offset=$offset&manufacturer=" .
+        // Need more work
+        Html::redirect($rule_class::getSearchURL() . "?start=$start&replay_rule=1&offset=$offset&total=$total_items&manufacturer=" .
                      "$manufacturer");
     }
-
-    Html::footer();
-    return;
 }
 
 Html::header(

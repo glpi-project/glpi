@@ -101,70 +101,32 @@ TWIG, $twig_params);
         return true;
     }
 
+    public function countTotalItemsForRulesReplay(array $params = []): int
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        return $DB->request($this->getIteratorCriteriaForRulesReplay($params))->count();
+    }
+
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (isCommandLine()) {
-            echo "replayRulesOnExistingDB started : " . date("r") . "\n";
-        }
         $i  = $offset;
 
         if (count($items) === 0) {
-           //Select all the differents software
-            $criteria = [
-                'SELECT'          => [
-                    'glpi_softwares.name',
-                    'glpi_manufacturers.name AS manufacturer',
-                    'glpi_softwares.manufacturers_id AS manufacturers_id',
-                    'glpi_softwares.entities_id AS entities_id',
-                    'glpi_softwares.is_helpdesk_visible AS helpdesk',
-                    'glpi_softwares.softwarecategories_id AS softwarecategories_id',
-                ],
-                'DISTINCT'        => true,
-                'FROM'            => 'glpi_softwares',
-                'LEFT JOIN'       => [
-                    'glpi_manufacturers' => [
-                        'ON' => [
-                            'glpi_manufacturers' => 'id',
-                            'glpi_softwares'     => 'manufacturers_id'
-                        ]
-                    ]
-                ],
-                'WHERE'           => [
-               // Do not replay on trashbin and templates
-                    'glpi_softwares.is_deleted'   => 0,
-                    'glpi_softwares.is_template'  => 0
-                ]
-            ];
-
-            if (isset($params['manufacturer']) && $params['manufacturer']) {
-                $criteria['WHERE']['glpi_softwares.manufacturers_id'] = $params['manufacturer'];
-            }
+            $criteria = $this->getIteratorCriteriaForRulesReplay($params);
             if ($offset) {
                 $criteria['START'] = (int)$offset;
+                $criteria['LIMIT'] = 2 ** 32; // MySQL requires a limit, set it to an unreachable value
             }
 
             $iterator = $DB->request($criteria);
             $nb   = count($iterator) + $offset;
-            $step = (($nb > 1000) ? 50 : (($nb > 20) ? floor(count($iterator) / 20) : 1));
 
             foreach ($iterator as $input) {
-                if (!($i % $step)) {
-                    if (isCommandLine()) {
-                        printf(
-                            __('%1$s - replay rules on existing database: %2$s/%3$s (%4$s Mio)') . "\n",
-                            date("H:i:s"),
-                            $i,
-                            $nb,
-                            round(memory_get_usage() / (1024 * 1024), 2)
-                        );
-                    } else {
-                        Html::changeProgressBarPosition($i, $nb, "$i / $nb");
-                    }
-                }
-
                //If manufacturer is set, then first run the manufacturer's dictionary
                 if (isset($input["manufacturer"])) {
                     $input["manufacturer"] = Manufacturer::processName($input["manufacturer"]);
@@ -206,29 +168,53 @@ TWIG, $twig_params);
                     }
                 }
                 $i++;
-                if ($maxtime) {
-                    $crt = explode(" ", microtime());
-                    if (((float)$crt[0] + (float)$crt[1]) > $maxtime) {
-                        break;
-                    }
-                }
-            }
 
-            if (isCommandLine()) {
-                printf(__('Replay rules on existing database: %1$s/%2$s') . "   \n", $i, $nb);
-            } else {
-                Html::changeProgressBarPosition($i, $nb, "$i / $nb");
+                if ($maxtime && microtime(true) > $maxtime) {
+                    break;
+                }
             }
         } else {
             $this->replayDictionnaryOnSoftwaresByID($items);
             return true;
         }
 
-        if (isCommandLine()) {
-            printf(__('Replay rules on existing database ended on %s') . "\n", date("r"));
+        return (($i == $nb) ? -1 : $i);
+    }
+
+    private function getIteratorCriteriaForRulesReplay(array $params): array
+    {
+        // Select all the differents software
+        $criteria = [
+            'SELECT'          => [
+                'glpi_softwares.name',
+                'glpi_manufacturers.name AS manufacturer',
+                'glpi_softwares.manufacturers_id AS manufacturers_id',
+                'glpi_softwares.entities_id AS entities_id',
+                'glpi_softwares.is_helpdesk_visible AS helpdesk',
+                'glpi_softwares.softwarecategories_id AS softwarecategories_id',
+            ],
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_softwares',
+            'LEFT JOIN'       => [
+                'glpi_manufacturers' => [
+                    'ON' => [
+                        'glpi_manufacturers' => 'id',
+                        'glpi_softwares'     => 'manufacturers_id'
+                    ]
+                ]
+            ],
+            'WHERE'           => [
+                // Do not replay on trashbin and templates
+                'glpi_softwares.is_deleted'   => 0,
+                'glpi_softwares.is_template'  => 0
+            ]
+        ];
+
+        if (isset($params['manufacturer']) && $params['manufacturer']) {
+            $criteria['WHERE']['glpi_softwares.manufacturers_id'] = $params['manufacturer'];
         }
 
-        return (($i == $nb) ? -1 : $i);
+        return $criteria;
     }
 
     /**

@@ -1082,12 +1082,7 @@ class Item_Devices extends CommonDBRelation
                                     $percent = round(100 * $this->fields[$field] / $device->fields[$attributs['max']]);
                                     $message = sprintf(__('%1$s (%2$d%%) '), Html::formatNumber($this->fields[$field], false, 0), $percent);
                                 }
-                                $content = Html::progressBar("percent" . mt_rand(), [
-                                    'create'  => true,
-                                    'percent' => $percent,
-                                    'message' => htmlescape($message),
-                                    'display' => false
-                                ]);
+                                $content = Html::getProgressBar($percent, $message);
                                 break;
 
                             default:

@@ -126,12 +126,6 @@ class MassiveAction
     private $fields_to_remove_when_reload = [];
 
     /**
-     * Computed timeout delay.
-     * @var int
-     */
-    private $timeout_delay;
-
-    /**
      * Current process start time.
      * @var float
      */
@@ -149,24 +143,6 @@ class MassiveAction
      * @var string
      */
     private $redirect;
-
-    /**
-     * Indicates whether progress bar has to be displayed.
-     * @var bool
-     */
-    private $display_progress_bars;
-
-    /**
-     * Indicates whether progress bar is currently displayed.
-     * @var bool
-     */
-    private $progress_bar_displayed;
-
-    /**
-     * Buffer that stores messages to display after redirect.
-     * @var null|array
-     */
-    private $message_after_redirect;
 
     /**
      * Itemtype currently processed.
@@ -359,8 +335,6 @@ class MassiveAction
                             $this->nb_items += count($ids);
                         }
                         $this->redirect = Html::getBackUrl();
-                    // Don't display progress bars if delay is less than 1 second
-                        $this->display_progress_bars = false;
                         break;
                 }
 
@@ -411,17 +385,6 @@ class MassiveAction
             $this->fields_to_remove_when_reload = ['fields_to_remove_when_reload'];
 
             $this->start_time = microtime(true);
-
-            $max_time = (int) get_cfg_var("max_execution_time");
-            $max_time = ($max_time == 0) ? 60 : $max_time;
-
-            $this->timeout_delay                  = ($max_time - 3);
-            $this->fields_to_remove_when_reload[] = 'timeout_delay';
-
-            if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
-                $this->message_after_redirect = $_SESSION["MESSAGE_AFTER_REDIRECT"];
-                unset($_SESSION["MESSAGE_AFTER_REDIRECT"]);
-            }
         }
     }
 
@@ -444,17 +407,13 @@ class MassiveAction
                 break;
             case 'check_item':
             case 'current_itemtype':
-            case 'display_progress_bars':
             case 'done':
             case 'fields_to_remove_when_reload':
             case 'identifier':
-            case 'message_after_redirect':
             case 'nb_done':
             case 'nb_items':
-            case 'progress_bar_displayed':
             case 'redirect':
             case 'remainings':
-            case 'timeout_delay':
                 Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', __CLASS__, $property));
                 $value = $this->$property;
                 break;
@@ -473,9 +432,6 @@ class MassiveAction
     {
         // TODO Deprecate access to variables in GLPI 11.0.
         switch ($property) {
-            case 'display_progress_bars':
-                $this->$property = $value;
-                break;
             case 'action':
             case 'action_name':
             case 'check_item':
@@ -484,14 +440,11 @@ class MassiveAction
             case 'fields_to_remove_when_reload':
             case 'identifier':
             case 'items':
-            case 'message_after_redirect':
             case 'nb_done':
             case 'nb_items':
             case 'processor':
-            case 'progress_bar_displayed':
             case 'redirect':
             case 'remainings':
-            case 'timeout_delay':
                 Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
                 $this->$property = $value;
                 break;
@@ -1369,55 +1322,26 @@ class MassiveAction
 
 
     /**
-     * Update the progress bar
-     *
-     * Display and update the progress bar. If the delay is more than 1 second, then activate it
-     *
-     * @return void
-     **/
-    public function updateProgressBars()
+     * Display the progress bar.
+     */
+    public function displayProgressBar(): void
     {
-        if (isAPI()) {
-            // No progress bar on API
-            return;
-        }
-
-        if ((microtime(true) - $this->start_time) > 1000) {
-           // If the action's delay is more than one second, the display progress bars
-            $this->display_progress_bars = true;
-        }
-
-        if ($this->display_progress_bars) {
-            if ($this->progress_bar_displayed !== true) {
-                Html::progressBar('main_' . $this->identifier, ['create'  => true,
-                    'message' => htmlescape($this->action_name)
-                ]);
-                $this->progress_bar_displayed         = true;
-                $this->fields_to_remove_when_reload[] = 'progress_bar_displayed';
-                if (count($this->items) > 1) {
-                     Html::progressBar('itemtype_' . $this->identifier, ['create'  => true]);
-                }
-            }
-            $percent = 100 * $this->nb_done / $this->nb_items;
-            Html::progressBar('main_' . $this->identifier, ['percent' => $percent]);
-            if ((count($this->items) > 1) && $this->current_itemtype !== null) {
-                $itemtype = $this->current_itemtype;
-                if (isset($this->items[$itemtype])) {
-                    if (isset($this->done[$itemtype])) {
-                        $nb_done = count($this->done[$itemtype]);
-                    } else {
-                        $nb_done = 0;
-                    }
-                    $percent = 100 * $nb_done / count($this->items[$itemtype]);
-                    Html::progressBar(
-                        'itemtype_' . $this->identifier,
-                        [
-                            'message' => htmlescape($itemtype::getTypeName(Session::getPluralNumber())),
-                            'percent' => $percent
-                        ]
-                    );
-                }
-            }
+        echo Html::getProgressBar(
+            $this->nb_done / $this->nb_items * 100,
+            $this->action_name
+        );
+        if (
+            count($this->items) > 1
+            && $this->current_itemtype !== null
+            && array_key_exists($this->current_itemtype, $this->items)
+        ) {
+            $nb_done = array_key_exists($this->current_itemtype, $this->done)
+                ? count($this->done[$this->current_itemtype])
+                : 0;
+            echo Html::getProgressBar(
+                $nb_done / count($this->items[$this->current_itemtype]) * 100,
+                $this->current_itemtype::getTypeName(Session::getPluralNumber())
+            );
         }
     }
 
@@ -1432,16 +1356,6 @@ class MassiveAction
     {
 
         if (!empty($this->remainings)) {
-            $this->updateProgressBars();
-
-            if (!empty($this->message_after_redirect)) {
-                $_SESSION["MESSAGE_AFTER_REDIRECT"] = $this->message_after_redirect;
-                Html::displayMessageAfterRedirect();
-                $this->message_after_redirect = null;
-            }
-
-            $processor = $this->processor;
-
             $this->processForSeveralItemtypes();
         }
 
@@ -1880,7 +1794,6 @@ class MassiveAction
      **/
     public function itemDone($itemtype, $id, $result)
     {
-
         $this->current_itemtype = $itemtype;
 
         if (!isset($this->done[$itemtype])) {
@@ -1921,12 +1834,11 @@ class MassiveAction
         }
         $this->nb_done += $number;
 
-       // If delay is to big, then reload !
-        if ((microtime(true) - $this->start_time) > ($this->timeout_delay * 1000)) {
+        // Reload every X seconds to refresh the progress bar
+        $refresh_delay = 5;
+        if ((microtime(true) - $this->start_time) > $refresh_delay) {
             Html::redirect($_SERVER['PHP_SELF'] . '?identifier=' . $this->identifier);
         }
-
-        $this->updateProgressBars();
     }
 
     /**
