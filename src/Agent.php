@@ -40,6 +40,7 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Inventory;
 use Glpi\Plugin\Hooks;
+use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Response;
 
 /**
@@ -721,11 +722,11 @@ class Agent extends CommonDBTM
                 $response = $httpClient->request('GET', $endpoint, []);
                 self::$found_address = $address;
                 break;
-            } catch (\GuzzleHttp\Exception\RequestException $exception) {
-                // got an error response, we don't need to try other addresses
-                break;
-            } catch (\Throwable $exception) {
-                // many addresses will be incorrect
+            } catch (\GuzzleHttp\Exception\ClientException $exception) {
+                // If a 4XX error seems to be coming from an agent, we can stop trying. For every other exception, we can try other addresses
+                if (str_contains($exception->getResponse()->getHeaderLine('Server'), 'libwww-perl-daemon')) {
+                    break;
+                }
             }
         }
 
