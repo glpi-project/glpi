@@ -39,6 +39,7 @@ use Entity;
 use Glpi\Form\Category;
 use Glpi\Form\Comment;
 use Glpi\Form\Condition\ConditionData;
+use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\Type;
 use Glpi\Form\Condition\ValueOperator;
@@ -690,6 +691,57 @@ final class FormSerializerTest extends \DbTestCase
         $this->assertEquals(
             VisibilityStrategy::VISIBLE_IF->value,
             $section->fields['visibility_strategy']
+        );
+    }
+
+    public function testExportAndImportDestinationConditions(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with conditions on a destination.
+        $builder = new FormBuilder();
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $builder->setDestinationCondition(
+            "Ticket",
+            CreationStrategy::CREATED_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "my value",
+                ]
+            ]
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate the condition exist on the destination
+        $destinations = $form_copy->getDestinations();
+        $destination = array_pop($destinations);
+        $question_uuid = Question::getById(
+            $this->getQuestionId($form_copy, "My question")
+        )->fields['uuid'];
+
+        $expected_data = [
+            (new ConditionData(
+                item_uuid: $question_uuid,
+                item_type: Type::QUESTION->value,
+                logic_operator: LogicOperator::AND->value,
+                value_operator: ValueOperator::EQUALS->value,
+                value: "my value",
+            ))->jsonSerialize()
+        ];
+        $this->assertEquals(
+            $expected_data,
+            json_decode($destination->fields['conditions'], true)
+        );
+        $this->assertEquals(
+            CreationStrategy::CREATED_IF->value,
+            $destination->fields['creation_strategy']
         );
     }
 
