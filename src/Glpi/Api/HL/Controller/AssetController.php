@@ -956,10 +956,12 @@ final class AssetController extends AbstractController
                 'orientation' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT32,
-                    'enum' => [
-                        \Rack::FRONT => 'Front',
-                        \Rack::REAR => 'Rear',
-                    ]
+                    'enum' => [\Rack::FRONT, \Rack::REAR],
+                    'description' => <<<EOT
+                        Orientation of the item in the rack.
+                        - 0: Front
+                        - 1: Rear
+                        EOT,
                 ],
                 'bgcolor' => ['type' => Doc\Schema::TYPE_STRING],
                 'position_horizontal' => [

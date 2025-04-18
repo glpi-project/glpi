@@ -133,6 +133,15 @@ final class ITILController extends AbstractController
             'properties' => $common_itiltemplate_properties
         ];
 
+        // U/I/P Values Description
+        $uip_description = <<<EOT
+            - 1: Very Low
+            - 2: Low
+            - 3: Medium
+            - 4: High
+            - 5: Very High
+            EOT;
+
         $base_schema = [
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
@@ -148,15 +157,18 @@ final class ITILController extends AbstractController
                 'location' => self::getDropdownTypeSchema(class: \Location::class, full_schema: 'Location'),
                 'urgency' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
-                    'enum' => [1, 2, 3, 4, 5]
+                    'enum' => [1, 2, 3, 4, 5],
+                    'description' => $uip_description,
                 ],
                 'impact' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
-                    'enum' => [1, 2, 3, 4, 5]
+                    'enum' => [1, 2, 3, 4, 5],
+                    'description' => $uip_description,
                 ],
                 'priority' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
-                    'enum' => [1, 2, 3, 4, 5]
+                    'enum' => [1, 2, 3, 4, 5],
+                    'description' => $uip_description,
                 ],
                 'actiontime' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -193,7 +205,12 @@ final class ITILController extends AbstractController
             if ($itil_type === Ticket::class) {
                 $schemas[$itil_type]['properties']['type'] = [
                     'type' => Doc\Schema::TYPE_INTEGER,
-                    'enum' => [Ticket::INCIDENT_TYPE, Ticket::DEMAND_TYPE]
+                    'enum' => [Ticket::INCIDENT_TYPE, Ticket::DEMAND_TYPE],
+                    'description' => <<<EOT
+                        The type of the ticket.
+                        - 1: Incident
+                        - 2: Request
+                        EOT,
                 ];
                 $schemas[$itil_type]['properties']['external_id'] = [
                     'x-field' => 'externalid',
@@ -202,13 +219,19 @@ final class ITILController extends AbstractController
                 $schemas[$itil_type]['properties']['request_type'] = self::getDropdownTypeSchema(class: \RequestType::class, full_schema: 'RequestType');
             }
             $schemas[$itil_type]['x-itemtype'] = $itil_type;
+            $status_description = '';
+            foreach ($itil_type::getAllStatusArray() as $status => $status_name) {
+                $status_description .= "- $status: $status_name\n";
+            }
             $schemas[$itil_type]['properties']['status'] = [
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
                     'id' => [
                         'x-field' => 'status',
                         'type' => Doc\Schema::TYPE_INTEGER,
-                        'format' => Doc\Schema::FORMAT_INTEGER_INT64
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'enum' => array_keys($itil_type::getAllStatusArray()),
+                        'description' => $status_description,
                     ],
                     'name' => [
                         'type' => Doc\Schema::TYPE_STRING,
@@ -276,7 +299,13 @@ final class ITILController extends AbstractController
                         \Planning::INFO,
                         \Planning::TODO,
                         \Planning::DONE,
-                    ]
+                    ],
+                    'description' => <<<EOT
+                        The state of the task.
+                        - 1: Information
+                        - 2: To do
+                        - 3: Done
+                        EOT,
                 ],
                 'category' => self::getDropdownTypeSchema(class: \TaskCategory::class, full_schema: 'TaskCategory'),
             ]
@@ -425,7 +454,14 @@ final class ITILController extends AbstractController
                         \CommonITILValidation::WAITING,
                         \CommonITILValidation::ACCEPTED,
                         \CommonITILValidation::REFUSED,
-                    ]
+                    ],
+                    'description' => <<<EOT
+                        The status of the validation.
+                        - 0: None
+                        - 1: Waiting
+                        - 2: Accepted
+                        - 3: Refused
+                        EOT,
                 ],
                 'submission_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'approval_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-field' => 'validation_date'],
@@ -538,7 +574,13 @@ final class ITILController extends AbstractController
                 'category' => self::getDropdownTypeSchema(class: PlanningEventCategory::class, full_schema: 'EventCategory'),
                 'state' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
-                    'enum' => [\Planning::INFO, \Planning::TODO, \Planning::DONE]
+                    'enum' => [\Planning::INFO, \Planning::TODO, \Planning::DONE],
+                    'description' => <<<EOT
+                        The state of the event.
+                        - 1: Information
+                        - 2: To do
+                        - 3: Done
+                        EOT,
                 ],
                 'is_background' => ['x-field' => 'background', 'type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
