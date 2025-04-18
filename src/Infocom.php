@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Plugin\Hooks;
 
 /**
  * Infocom class
@@ -1423,9 +1424,13 @@ JS;
         }
     }
 
+    /**
+     * @deprecated
+     */
     public static function addPluginInfos(CommonDBTM $item)
     {
-        Plugin::doHookFunction("infocom", $item);
+        Toolbox::deprecated('Infocom::addPluginInfos() is deprecated. Use Plugin::doHookFunction(Hooks::INFOCOM, $item) directly instead.');
+        Plugin::doHookFunction(Hooks::INFOCOM, $item);
     }
 
     /**

@@ -42,6 +42,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
+use Glpi\Plugin\Hooks;
 use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Message\MessageType;
 use Glpi\Rules\RulesManager;
@@ -1836,7 +1837,7 @@ class Toolbox
             return $protocols;
         }
 
-        $additionnal_protocols = Plugin::doHookFunction('mail_server_protocols', []);
+        $additionnal_protocols = Plugin::doHookFunction(Hooks::MAIL_SERVER_PROTOCOLS, []);
         if (is_array($additionnal_protocols)) {
             foreach ($additionnal_protocols as $key => $additionnal_protocol) {
                 if (array_key_exists($key, $protocols)) {
