@@ -41,8 +41,8 @@ import { GlpiFormConditionEngine } from './Condition/Engine.js';
 export class GlpiFormRendererController
 {
     /**
-     * Target form (jquery selector)
-     * @type {string}
+     * Target form
+     * @type {HTMLFormElement}
      */
     #target;
 
@@ -66,7 +66,7 @@ export class GlpiFormRendererController
      */
     constructor(target, form_id) {
         // Target must be a valid form
-        this.#target = target;
+        this.#target = document.querySelector(target);
         if ($(this.#target).prop("tagName") != "FORM") {
             throw new Error("Target must be a valid form");
         }
@@ -124,10 +124,39 @@ export class GlpiFormRendererController
         });
     }
 
+    #checkCurrentSectionValidity() {
+        // Find all required inputs that are hidden and not already disabled.
+        // They must be removed from the check as they are inputs from others
+        // sections or input hidden by condition (thus they should not be
+        // evaluated).
+        // The easiest way to not evaluate these inputs is to disable them.
+        const inputs = $(this.#target).find('[required]:hidden:not(:disabled)');
+        for (const input of inputs) {
+            input.disabled = true;
+        }
+
+        // Check validity and display browser feedback if needed.
+        const is_valid = this.#target.checkValidity();
+        if (!is_valid) {
+            this.#target.reportValidity();
+        }
+
+        // Revert disabled inputs
+        for (const input of inputs) {
+            input.disabled = false;
+        }
+
+        return is_valid;
+    }
+
     /**
      * Submit the target form using an AJAX request.
      */
     async #submitForm() {
+        if (!this.#checkCurrentSectionValidity()) {
+            return;
+        }
+
         // Form will be sumitted using an AJAX request instead
         try {
             // Update tinymce values
@@ -178,6 +207,10 @@ export class GlpiFormRendererController
      * Go to the next section of the form.
      */
     #goToNextSection() {
+        if (!this.#checkCurrentSectionValidity()) {
+            return;
+        }
+
         // Hide current section and its questions
         $(this.#target)
             .find(`
@@ -319,7 +352,7 @@ export class GlpiFormRendererController
 
     #applyVisibilityResults(results)
     {
-        const container = document.querySelector(this.#target);
+        const container = this.#target;
 
         // Apply sections visibility
         for (const [id, must_be_visible] of Object.entries(
