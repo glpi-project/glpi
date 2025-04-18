@@ -91,7 +91,6 @@ var GLPIPlanning  = {
             timeZone:    'UTC',
             theme:       true,
             weekNumbers: options.full_view ? true : false,
-            defaultView: options.default_view,
             timeFormat:  'H:mm',
             eventLimit:  true, // show 'more' button when too mmany events
             minTime:     CFG_GLPI.planning_begin,
@@ -627,11 +626,11 @@ var GLPIPlanning  = {
             }
         });
 
-        // Load the last known view only if it is valid (else load default view)
-        const view = this.calendar.isValidViewType(options.default_view) ?
-            options.default_view :
-            default_options.default_view;
-        this.calendar.changeView(view);
+        // if current view is not valid eg: related plugin not loaded
+        // fallback to default view
+        if (!this.calendar.isValidViewType(options.default_view)) {
+            this.calendar.changeView(default_options.default_view);
+        }
 
         $('.planning_on_central a')
             .mousedown(function() {
