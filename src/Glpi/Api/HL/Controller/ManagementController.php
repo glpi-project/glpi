@@ -427,7 +427,13 @@ final class ManagementController extends AbstractController
                 'value' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT],
                 'amortization_type' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'enum' => ['None', 'Decreasing', 'Linear'],
+                    'enum' => [0, 1, 2],
+                    'description' => <<<EOT
+                        The amortization type:
+                        - 0: No amortization
+                        - 1: Decreasing
+                        - 2: Linear
+                        EOT,
                     'x-field' => 'sink_type'
                 ],
                 'amortization_time' => [
