@@ -133,6 +133,7 @@ class ITILTemplateTest extends DbTestCase
         $err_msg = 'Mandatory fields are not filled. Please correct: Title' .
          ($itiltype === \Ticket::getType() ? ', Location' : '') . ', Description';
         $this->hasSessionMessages(ERROR, [$err_msg]);
+        $this->assertFalse($object->checkRequiredFieldsFilled());
 
         $content['name']           = 'Title is required';
         $content['content']        = 'Description from template';
@@ -148,10 +149,12 @@ class ITILTemplateTest extends DbTestCase
                 'Mandatory fields are not filled. Please correct: Description'
             ]
         );
+        $this->assertFalse($object->checkRequiredFieldsFilled());
 
         $content['content'] = 'A content for our ' . $itiltype;
         $tid = (int)$object->add($content);
         $this->assertGreaterThan(0, $tid);
+        $this->assertTrue($object->checkRequiredFieldsFilled());
     }
 
     #[DataProvider('itilProvider')]

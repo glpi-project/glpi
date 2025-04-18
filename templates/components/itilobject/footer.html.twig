@@ -105,6 +105,12 @@
                {{ legacy_timeline_actions|default('')|raw }}
             </ul>
 
+            {% if not item.checkRequiredFieldsFilled() %}
+               <i class="ti ti-exclamation-circle text-danger me-2 d-flex align-items-center"
+                  data-bs-toggle="tooltip" data-bs-placement="top"
+                  title="{{ __('Some actions are unavailable due to missing required fields.') }}"></i>
+            {% endif %}
+
             <div class="ms-auto"></div>
 
             {% if item.canDeleteItem() and is_helpdesk %}
