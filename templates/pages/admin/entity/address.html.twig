@@ -100,7 +100,7 @@
       {{ fields.nullField() }}
 
       {% set setlocation %}
-         {{ item.displaySpecificTypeField(entity.fields['id'], {
+         {{ item.displaySpecificTypeField(item.fields['id'], {
             name: 'setlocation',
             type: 'setlocation',
             label: '',
