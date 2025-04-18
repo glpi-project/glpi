@@ -34,7 +34,7 @@
 
 namespace Glpi\Kernel\Listener\PostBootListener;
 
-use GLPI;
+use Glpi\Application\Environment;
 use Glpi\Debug\Profiler;
 use Glpi\DependencyInjection\PluginContainer;
 use Glpi\Kernel\KernelListenerTrait;
@@ -65,7 +65,7 @@ final readonly class InitializePlugins implements EventSubscriberInterface
             return;
         }
 
-        if (GLPI_ENVIRONMENT_TYPE === GLPI::ENV_TESTING) {
+        if (Environment::get()->shouldSetupTesterPlugin()) {
             $this->setupTesterPlugin();
         }
 

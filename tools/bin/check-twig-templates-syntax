@@ -36,7 +36,7 @@
 
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
-$kernel = new \Glpi\Kernel\Kernel('testing');
+$kernel = new \Glpi\Kernel\Kernel(\Glpi\Application\Environment::TESTING->value);
 $kernel->boot();
 
 $command = new \Glpi\Tools\Command\CheckTwigTemplatesSyntaxCommand();

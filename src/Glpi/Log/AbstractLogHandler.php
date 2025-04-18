@@ -34,8 +34,8 @@
 
 namespace Glpi\Log;
 
+use Glpi\Application\Environment;
 use Monolog\Handler\StreamHandler;
-use Psr\Log\LogLevel;
 
 abstract class AbstractLogHandler extends StreamHandler
 {
@@ -44,11 +44,7 @@ abstract class AbstractLogHandler extends StreamHandler
         if (\defined('GLPI_LOG_LVL')) {
             $log_level = GLPI_LOG_LVL;
         } else {
-            $log_level = match (GLPI_ENVIRONMENT_TYPE) {
-                \GLPI::ENV_DEVELOPMENT => LogLevel::DEBUG,
-                \GLPI::ENV_TESTING => LogLevel::DEBUG,
-                default => LogLevel::WARNING,
-            };
+            $log_level = Environment::get()->getLogLevel();
         }
 
         parent::__construct($logfile, $log_level);

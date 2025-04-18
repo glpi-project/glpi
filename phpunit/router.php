@@ -32,7 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-define('GLPI_ENVIRONMENT_TYPE', 'testing');
+use Glpi\Application\Environment;
+
+Environment::set(Environment::TESTING);
 
 ini_set("log_error", 1);
 

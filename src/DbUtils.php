@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
@@ -429,7 +430,7 @@ final class DbUtils
         if (
             (
                 $mapping[$unique_key] !== null
-                && !in_array(GLPI_ENVIRONMENT_TYPE, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING])
+                && !Environment::get()->shouldExpectRessourcesToChange()
             )
             || in_array($unique_key, $already_scanned)
         ) {

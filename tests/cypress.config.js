@@ -31,6 +31,7 @@
  */
 
 const { defineConfig } = require("cypress");
+const execSync = require('child_process');
 
 module.exports = defineConfig({
     viewportWidth: 1920,
@@ -52,6 +53,10 @@ module.exports = defineConfig({
                     launchOptions.args.splice(maximized_index, 1);
                 }
                 return launchOptions;
+            });
+            on('before:run', () => {
+                // Make sure cached content like twig template is cleared before running the tests.
+                execSync.execSync("../bin/console cache:clear --env='testing'");
             });
             on('task', {
                 log(message) {

@@ -35,7 +35,7 @@
 
 namespace Glpi\Console\Build;
 
-use GLPI;
+use Glpi\Application\Environment;
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
 use Symfony\Component\Console\Command\Command;
@@ -58,7 +58,7 @@ class GenerateCodeManifestCommand extends Command
             __('Hash algorithm to use'),
             'CRC32c'
         );
-        $this->setHidden(GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT);
+        $this->setHidden(!Environment::get()->shouldEnableExtraDevAndDebugTools());
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
