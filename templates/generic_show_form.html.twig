@@ -249,14 +249,6 @@
                               ) }}
                           {% elseif field is same as 'address' %}
                               {{ fields.textareaField('address', item.fields['address'], __('Address')) }}
-                          {% elseif field is same as 'postalcode' %}
-                              {{ fields.autoNameField(
-                                  'postalcode',
-                                  item,
-                                  __('Postal code'),
-                                  withtemplate,
-                                  specific_field_options
-                              ) }}
                           {% elseif field is same as 'town' %}
                               {{ fields.autoNameField(
                                   'town',
