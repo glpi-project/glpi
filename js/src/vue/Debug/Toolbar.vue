@@ -145,12 +145,6 @@
         }
     ];
 
-    $.each(props.initial_request.sql.queries, (i, query) => {
-        cleanSQLQuery(query.query).then((clean_query) => {
-            // eslint-disable-next-line vue/no-mutating-props
-            props.initial_request.sql.queries[i].query = clean_query;
-        });
-    });
     $(document).ajaxSend((event, xhr, settings) => {
         // If the request is going to the debug AJAX endpoint, don't do anything
         if (settings.url.indexOf('ajax/debug.php') !== -1) {
@@ -246,18 +240,6 @@
         return widgets.filter((widget) => widget.main_widget);
     }
 
-    function cleanSQLQuery(query) {
-        const newline_keywords = ['UNION', 'FROM', 'WHERE', 'INNER JOIN', 'LEFT JOIN', 'ORDER BY', 'SORT'];
-        const post_newline_keywords = ['UNION'];
-        query = query.replace(/\n/g, ' ');
-        return Promise.resolve(window.GLPI.Monaco.colorizeText(query, 'sql')).then((html) => {
-            // get all 'span' elements with mtk6 class (keywords) and insert the needed line breaks
-            const newline_before_selector = newline_keywords.map((keyword) => `span.mtk6:contains(${keyword})`).join(',');
-            const post_newline_selector = post_newline_keywords.map((keyword) => `span.mtk6:contains(${keyword})`).join(',');
-            return $($.parseHTML(html)).find(newline_before_selector).before('</br>').end().find(post_newline_selector).after('</br>').end().html();
-        });
-    }
-
     function getCombinedSQLData() {
         const sql_data = {
             total_requests: 0,
@@ -333,12 +315,6 @@
                 return;
             }
             ajax_request.profile = data;
-
-            $.each(ajax_request.profile.sql.queries || [], (i, query) => {
-                cleanSQLQuery(query.query).then((clean_query) => {
-                    ajax_request.profile.sql.queries[i].query = clean_query;
-                });
-            });
 
             const content_area = $('#debug-toolbar-expanded-content');
             if (content_area.data('active-widget') !== undefined) {
