@@ -1,6 +1,6 @@
 <script setup>
     /* global copyTextToClipboard */
-    import {computed, ref} from "vue";
+    import {computed, reactive, ref, watch} from "vue";
 
     const props = defineProps({
         initial_request: {
@@ -121,6 +121,37 @@
             icon.removeClass('ti-check').addClass('ti-clipboard-copy');
         }, 1000);
     }
+
+    function cleanSQLQuery(query) {
+        const newline_keywords = ['UNION', 'FROM', 'WHERE', 'INNER JOIN', 'LEFT JOIN', 'ORDER BY', 'SORT'];
+        const post_newline_keywords = ['UNION'];
+        query = query.replace(/\n/g, ' ');
+
+        return Promise.resolve(window.GLPI.Monaco.colorizeText(query, 'sql')).then((html) => {
+            // get all 'span' elements with mtk6 class (keywords) and insert the needed line breaks
+            const newline_before_selector = newline_keywords.map((keyword) => `span.mtk6:contains(${keyword})`).join(',');
+            const post_newline_selector = post_newline_keywords.map((keyword) => `span.mtk6:contains(${keyword})`).join(',');
+            return $($.parseHTML(html)).find(newline_before_selector).before('</br>').end().find(post_newline_selector).after('</br>').end().html();
+        });
+    }
+
+    const colorized_queries = reactive(new Map());
+
+    watch(() => sorted_queries_data.value, () => {
+        sorted_queries_data.value.forEach((query) => {
+            const key = query.request_id + '-' + query.num;
+            if (!colorized_queries.has(key)) {
+                // Show uncolored query until the colorized version is ready
+                colorized_queries.set(key, query.query);
+                cleanSQLQuery(query.query).then((html) => {
+                    colorized_queries.set(key, html);
+                });
+            }
+        });
+    }, {
+        immediate: true,
+        deep: true
+    });
 </script>
 
 <template>
@@ -144,7 +175,7 @@
                     <td>
                         <div class="d-flex align-items-start" style="max-width: 50vw;">
                             <div style="max-width: 50vw; white-space: break-spaces;" class="w-100">
-                                <code class="d-block cm-s-default border-0" v-html="query.query"></code>
+                                <code class="d-block cm-s-default border-0" v-html="colorized_queries.get(query.request_id + '-' + query.num)"></code>
                             </div>
                             <button type="button" @click="copyToClipboard($event)" class="ms-1 copy-code btn btn-sm btn-ghost-secondary" title="Copy query to clipboard">
                                 <i class="ti ti-clipboard-copy"></i>
