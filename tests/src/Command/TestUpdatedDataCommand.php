@@ -171,6 +171,11 @@ class TestUpdatedDataCommand extends Command
                     continue;
                 }
 
+                // Ignore e2e oauth client
+                if ($table_name === 'glpi_oauthclients' && $row_data['name'] === 'Test E2E OAuth Client') {
+                    continue;
+                }
+
                 foreach ($row_data as $key => $value) {
                     if (in_array($key, $excluded_fields)) {
                         continue; // Ignore fields that would be subject to legitimate changes
