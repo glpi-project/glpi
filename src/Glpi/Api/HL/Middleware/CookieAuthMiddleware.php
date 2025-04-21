@@ -43,15 +43,23 @@ class CookieAuthMiddleware extends AbstractMiddleware implements AuthMiddlewareI
     {
         $auth = new \Auth();
         if ($auth->getAlternateAuthSystemsUserLogin(\Auth::COOKIE)) {
-            // User could be authenticated by a cookie
-            // Need to use cookies for session and start it manually
-            ini_set('session.use_cookies', '1');
-            Session::start();
+            $t = '';
+        }
+        if (session_status() !== PHP_SESSION_NONE) {
+            $t = '';
+        }
+
+        // User could be authenticated by a cookie
+        // Need to use cookies for session and start it manually
+        ini_set('session.use_cookies', '1');
+        Session::start();
+
+        if (($user_id = Session::getLoginUserID()) !== false) {
             // unset the response to indicate a successful auth
             $input->response = null;
             $input->client = [
                 'client_id' => 'internal', // Internal just means the user was authenticated internally either by cookie or an already existing session.
-                'users_id'  => Session::getLoginUserID(),
+                'users_id'  => $user_id,
                 'scopes' => []
             ];
         } else {
