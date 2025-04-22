@@ -40,6 +40,8 @@ use Glpi\Event;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Plugin\Hooks;
+use Glpi\UI\IllustrationManager;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Entity class
@@ -83,6 +85,15 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
     public const ANONYMIZE_USE_NICKNAME_USER   = 4;
     /** @var int Replace the group's name with a generic name */
     public const ANONYMIZE_USE_GENERIC_GROUP   = 5;
+
+    // Const values used for the scene configuration dropdown
+    public const SCENE_INHERIT = "inherit";
+    public const SCENE_DEFAULT = "default";
+    public const SCENE_CUSTOM = "custom";
+
+    // Default scenes
+    public const DEFAULT_LEFT_SCENE = "shelves";
+    public const DEFAULT_RIGHT_SCENE = "desk";
 
     // Array of "right required to update" => array of fields allowed
     // Missing field here couldn't be update (no right)
@@ -150,7 +161,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'changetemplates_strategy', 'changetemplates_id',
             'problemtemplates_strategy', 'problemtemplates_id',
             'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents', 'display_users_initials',
-            'contracts_strategy_default', 'contracts_id_default', 'show_tickets_properties_on_helpdesk'
+            'contracts_strategy_default', 'contracts_id_default', 'show_tickets_properties_on_helpdesk',
+            'custom_helpdesk_home_scene_left', 'custom_helpdesk_home_scene_right',
         ],
         // Configuration
         'config' => ['enable_custom_css', 'custom_css_code']
@@ -414,7 +426,78 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             $input = $this->checkRightDatas($input);
         }
 
+        $input = $this->handleCustomScenesInputValues($input);
+
         return $input;
+    }
+
+    private function handleCustomScenesInputValues(array $input): array
+    {
+        $fields = [
+            "custom_helpdesk_home_scene_left",
+            "custom_helpdesk_home_scene_right",
+        ];
+
+        foreach ($fields as $field) {
+            // Check for special values
+            $value = $input[$field] ?? "";
+            if (empty($value)) {
+                continue;
+            }
+
+            if ($value == self::SCENE_DEFAULT) {
+                // Reset default value (empty string)
+                $input[$field] = "";
+            } elseif ($value == self::SCENE_INHERIT) {
+                // Inherit parent value
+                $input[$field] = self::CONFIG_PARENT;
+            } elseif ($value == self::SCENE_CUSTOM) {
+                // A custom file was submitted
+                $files = $input["_$field"] ?? [];
+                if (!is_array($files) || empty($files)) {
+                    // Unexpected format or no files were submitted, do not
+                    // modify the saved value.
+                    $input[$field] = null;
+                } else {
+                    $file = array_pop($files);
+                    $input[$field] = $this->handleCustomScenesSubmittedFile($file);
+                }
+            }
+
+            if ($input[$field] === null) {
+                unset($input[$field]);
+            }
+        }
+
+        return $input;
+    }
+
+    private function handleCustomScenesSubmittedFile(string $file): ?string
+    {
+        // Read file path
+        $path = realpath(GLPI_TMP_DIR . "/$file");
+        if (!$path || !str_starts_with($path, GLPI_TMP_DIR)) {
+            // File doest not exist or is outside upload directory
+            $message = __("An unexpected error occured.");
+            Session::addMessageAfterRedirect($message);
+            return null;
+        }
+
+        // Validate that the file is an image
+        if (!Document::isImage($path)) {
+            $message = __("The uploaded file must be a valid image.");
+            Session::addMessageAfterRedirect($message);
+            return null;
+        }
+
+        // Rename file
+        $info = new SplFileInfo($file);
+        $id = Uuid::uuid4() . '.' . $info->getExtension();
+
+        // Save scene
+        $illustration_manager = new IllustrationManager();
+        $illustration_manager->saveCustomScene($id, $path);
+        return $id;
     }
 
     /**
@@ -3129,6 +3212,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
     public function showHelpdeskHomeConfig(): bool
     {
+        $twig = TemplateRenderer::getInstance();
         $tiles_manager = new TilesManager();
 
         if (
@@ -3143,7 +3227,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             // Render a custom template when there are no tiles as we want the
             // user to preview the tiles from the parent entities and to be able
             // to copy them into the current entity if needed.
-            $twig = TemplateRenderer::getInstance();
             $twig->display(
                 'pages/admin/helpdesk_home_config_for_empty_entity.html.twig',
                 [
@@ -3158,7 +3241,46 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             $tiles_manager->showConfigFormForItem($this);
         }
 
+        $twig->display(
+            'pages/admin/helpdesk_home_custom_scene_config.html.twig',
+            ['entity' => $this],
+        );
+
         return true;
+    }
+
+    public function getSceneConfigForDropdown(string $field): string
+    {
+        $config_value = $this->fields[$field] ?? "";
+
+        if ($config_value == "") {
+            return self::SCENE_DEFAULT;
+        } elseif ($config_value == self::CONFIG_PARENT) {
+            return self::SCENE_INHERIT;
+        } else {
+            return self::SCENE_CUSTOM;
+        }
+    }
+
+    public function getHelpdeskSceneId(string $field): string
+    {
+        $value = $this->fields[$field] ?? '';
+        if ($value == self::CONFIG_PARENT) {
+            $value = self::getUsedConfig($field, $this->fields['entities_id']);
+        }
+
+        // Default natives icons
+        if ($value == "") {
+            return match ($field) {
+                'custom_helpdesk_home_scene_left'  => self::DEFAULT_LEFT_SCENE,
+                'custom_helpdesk_home_scene_right' => self::DEFAULT_RIGHT_SCENE,
+                // Unknown field
+                default                            => '',
+            };
+        }
+
+        // Custom icons
+        return IllustrationManager::CUSTOM_SCENE_PREFIX . $value;
     }
 
     #[Override]

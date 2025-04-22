@@ -2512,6 +2512,8 @@ $empty_data_builder = new class
                 'is_location_autoclean' => '0',
                 'state_autoclean_mode' => '0',
                 'show_tickets_properties_on_helpdesk' => 0,
+                'custom_helpdesk_home_scene_left' => '',
+                'custom_helpdesk_home_scene_right' => '',
             ],
         ];
 

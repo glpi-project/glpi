@@ -57,6 +57,10 @@ final class IllustrationManager
 
     private const CUSTOM_ILLUSTRATION_DIR = GLPI_PICTURE_DIR . "/illustrations";
 
+    public const CUSTOM_SCENE_PREFIX = "custom:";
+
+    private const CUSTOM_SCENES_DIR = GLPI_PICTURE_DIR . "/scenes";
+
     public function __construct(
         ?string $icons_definition_file = null,
         ?string $icons_sprites_path = null,
@@ -78,7 +82,8 @@ final class IllustrationManager
         $this->checkIconFile($this->icons_definition_file);
         $this->checkIconFile(GLPI_ROOT . "/public/$this->scenes_gradient_sprites_path");
         $this->checkIconFile(GLPI_ROOT . "/public/$this->icons_sprites_path");
-        $this->validateOrInitCustomIllustrationDir();
+        $this->validateOrInitCustomContentDir(self::CUSTOM_ILLUSTRATION_DIR);
+        $this->validateOrInitCustomContentDir(self::CUSTOM_SCENES_DIR);
     }
 
     /**
@@ -98,16 +103,24 @@ final class IllustrationManager
     }
 
     /**
-     * @param int|null $size Height and width (px). Will be set to 100% if null.
+     * @param int|null $height Height (px). Will be set to 100% if null.
+     * @param int|null $width Width (px). Will be set to 100% if null.
      */
-    public function renderScene(string $icon_id, ?int $size = null): string
-    {
-        $twig = TemplateRenderer::getInstance();
-        return $twig->render('components/illustration/icon.svg.twig', [
-            'file_path' => $this->scenes_gradient_sprites_path,
-            'icon_id'   => $icon_id,
-            'size'      => $this->computeSize($size),
-        ]);
+    public function renderScene(
+        string $icon_id,
+        ?int $height = null,
+        ?int $width = null,
+    ): string {
+        $custom_scene_prefix = self::CUSTOM_SCENE_PREFIX;
+        if (str_starts_with($icon_id, $custom_scene_prefix)) {
+            return $this->renderCustomScene(
+                substr($icon_id, strlen($custom_scene_prefix)),
+                $height,
+                $width,
+            );
+        } else {
+            return $this->renderNativeScene($icon_id, $height, $width);
+        }
     }
 
     /** @return string[] */
@@ -174,6 +187,13 @@ final class IllustrationManager
         }
     }
 
+    public function saveCustomScene(string $id, string $path): void
+    {
+        if (!rename($path, self::CUSTOM_SCENES_DIR . "/$id")) {
+            throw new RuntimeException();
+        }
+    }
+
     public function getCustomIllustrationFile(string $id): ?string
     {
         $file_path = realpath(self::CUSTOM_ILLUSTRATION_DIR . "/$id");
@@ -190,24 +210,41 @@ final class IllustrationManager
         return $file_path;
     }
 
-    private function validateOrInitCustomIllustrationDir(): void
+    public function getCustomSceneFile(string $id): ?string
     {
+        $file_path = realpath(self::CUSTOM_SCENES_DIR . "/$id");
+        $custom_dir_path = realpath(self::CUSTOM_SCENES_DIR);
+
         if (
-            !file_exists(self::CUSTOM_ILLUSTRATION_DIR)
-            && !mkdir(self::CUSTOM_ILLUSTRATION_DIR)
+            // Make sure $id is not maliciously reading from others directories
+            !str_starts_with($file_path, $custom_dir_path)
+            || !file_exists($file_path)
         ) {
-            throw new RuntimeException();
+            return null;
+        }
+
+        return $file_path;
+    }
+
+    private function validateOrInitCustomContentDir(string $dir): void
+    {
+        if (!file_exists($dir) && !mkdir($dir)) {
+            $message = "$dir does not exist and can't be created";
+            throw new RuntimeException($message);
         }
     }
 
     private function renderNativeIcon(string $icon_id, ?int $size = null): string
     {
+        $size = $this->computeSize($size);
+
         $icons = $this->getIconsDefinitions();
         $twig = TemplateRenderer::getInstance();
         return $twig->render('components/illustration/icon.svg.twig', [
             'file_path' => $this->icons_sprites_path,
             'icon_id'   => $icon_id,
-            'size'      => $this->computeSize($size),
+            'width'     => $size,
+            'height'    => $size,
             'title'     => $icons[$icon_id]['title'] ?? "",
         ]);
     }
@@ -215,9 +252,38 @@ final class IllustrationManager
     private function renderCustomIcon(string $icon_id, ?int $size = null): string
     {
         $twig = TemplateRenderer::getInstance();
+        $size = $this->computeSize($size);
         return $twig->render('components/illustration/custom_icon.html.twig', [
-            'url'   => "/UI/Illustration/CustomIllustration/$icon_id",
-            'size'  => $this->computeSize($size),
+            'url'    => "/UI/Illustration/CustomIllustration/$icon_id",
+            'height' => $size,
+            'width'  => $size,
+        ]);
+    }
+
+    private function renderNativeScene(
+        string $icon_id,
+        ?int $height = null,
+        ?int $width = null,
+    ): string {
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render('components/illustration/icon.svg.twig', [
+            'file_path' => $this->scenes_gradient_sprites_path,
+            'icon_id'   => $icon_id,
+            'height'    => $this->computeSize($height),
+            'width'     => $this->computeSize($width),
+        ]);
+    }
+
+    private function renderCustomScene(
+        string $icon_id,
+        ?int $height = null,
+        ?int $width = null,
+    ): string {
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render('components/illustration/custom_icon.html.twig', [
+            'url'    => "/UI/Illustration/CustomScene/$icon_id",
+            'height' => $this->computeSize($height),
+            'width'  => $this->computeSize($width),
         ]);
     }
 
