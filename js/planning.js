@@ -589,13 +589,6 @@ var GLPIPlanning  = {
                         title: __('Add an event'),
                         bs_focus: false
                     });
-                    // Save the original datesRender function which is overwritten by selectable
-                    const originalDatesRender = GLPIPlanning.calendar.getOption('datesRender');
-                    GLPIPlanning.calendar.setOption('selectable', false);
-                    window.setTimeout(function() {
-                        GLPIPlanning.calendar.setOption('selectable', true);
-                        originalDatesRender(info); //Restore datesRender
-                    }, 500);
                 }
 
                 GLPIPlanning.calendar.unselect();
