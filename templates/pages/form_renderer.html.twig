@@ -41,8 +41,13 @@
     {# Is this a single or multi sections forms ? #}
     {% set is_single_section_form = form.getSections()|length == 1 %}
 
-    <form id="forms_form_answers" method="POST" action="{{ path("/Form/SubmitAnswers") }}">
-
+    <form
+        id="forms_form_answers"
+        method="POST"
+        action="{{ path("/Form/SubmitAnswers") }}"
+        {# The pointer-events-none class will be removed by the JS controller once it is loaded #}
+        class="pointer-events-none"
+    >
         <div class="form-renderer mt-n5">
 
             {# Form header: title and description #}

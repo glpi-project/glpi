@@ -72,6 +72,12 @@ final class SingleChoiceFromValuesConditionHandler implements ConditionHandlerIn
         mixed $b,
     ): bool {
         // Normalize values as strings.
+        if (is_array($a)) {
+            $a = array_pop($a);
+        }
+        if (is_array($b)) {
+            $b = array_pop($b);
+        }
         $a = strtolower(strval($a));
         $b = strtolower(strval($b));
 
