@@ -76,7 +76,7 @@ final class SingleChoiceFromValuesConditionHandler implements ConditionHandlerIn
             $a = array_pop($a);
         }
         if (is_array($b)) {
-            $a = array_pop($b);
+            $b = array_pop($b);
         }
         $a = strtolower(strval($a));
         $b = strtolower(strval($b));
