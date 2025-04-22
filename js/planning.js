@@ -634,14 +634,14 @@ var GLPIPlanning  = {
                 var display_done_events = (view_name.indexOf('list') >= 0) ? 0 : 1;
 
                 return {
-                'action': 'get_events',
-                'display_done_events': display_done_events,
-                'view_name': view_name
+                    'action': 'get_events',
+                    'display_done_events': display_done_events,
+                    'view_name': view_name
                 };
             },
             success: function (data) {
                 if (!options.full_view && data.length === 0) {
-                GLPIPlanning.calendar.setOption('height', 0);
+                    GLPIPlanning.calendar.setOption('height', 0);
                 }
             },
             failure: function (error) {
