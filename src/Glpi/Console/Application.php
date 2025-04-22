@@ -219,7 +219,7 @@ class Application extends BaseApplication
         }
 
         if ($output->getVerbosity() === OutputInterface::VERBOSITY_DEBUG) {
-            Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
+            Toolbox::setDebugMode(Session::DEBUG_MODE);
         }
     }
 
