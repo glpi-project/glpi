@@ -40,7 +40,7 @@ use Html;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Http\HeaderlessStreamedResponse;
+use Glpi\Http\RedirectResponse;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,17 +60,7 @@ final class DropdownFormController extends AbstractController
             throw new BadRequestHttpException('The "class" attribute must be a valid dropdown class.');
         }
 
-        return new HeaderlessStreamedResponse(function () use ($class, $request) {
-            $dropdown = new $class();
-            $this->loadDropdownForm($request, $dropdown);
-        });
-    }
-
-    public static function loadDropdownForm(Request $request, CommonDropdown $dropdown, ?array $options = null): void
-    {
-        if ($options !== null) {
-            Toolbox::deprecated('Usage of `$options` parameter in DropdownFormController is deprecated.');
-        }
+        $dropdown = new $class();
 
         if (!$dropdown->canView()) {
             throw new AccessDeniedHttpException();
@@ -110,21 +100,28 @@ final class DropdownFormController extends AbstractController
                     if ($in_modal) {
                         $url .= "&_in_modal=1";
                     }
-                    Html::redirect($url);
+                    return new RedirectResponse($url);
                 }
             }
-            Html::back();
-        } else if (isset($input["purge"])) {
+
+            return new RedirectResponse(Html::getBackUrl());
+        }
+
+        if (isset($input["purge"])) {
             $dropdown->check($input["id"], PURGE);
             if (
                 $dropdown->isUsed()
                 && empty($input["forcepurge"])
             ) {
+                ob_start();
                 Html::header(
                     ...$dropdown->getHeaderParameters()
                 );
                 $dropdown->showDeleteConfirmForm();
                 Html::footer();
+                $content = ob_get_clean();
+
+                return new Response($content);
             } else {
                 $dropdown->delete($input, 1);
 
@@ -136,9 +133,12 @@ final class DropdownFormController extends AbstractController
                     //TRANS: %s is the user login
                     \sprintf(\__('%s purges an item'), $_SESSION["glpiname"])
                 );
-                $dropdown->redirectToList();
+
+                return new RedirectResponse($dropdown->getRedirectToListUrl());
             }
-        } else if (isset($input["replace"])) {
+        }
+
+        if (isset($input["replace"])) {
             $dropdown->check($input["id"], PURGE);
             $dropdown->delete($input, 1);
 
@@ -150,8 +150,11 @@ final class DropdownFormController extends AbstractController
                 //TRANS: %s is the user login
                 \sprintf(\__('%s replaces an item'), $_SESSION["glpiname"])
             );
-            $dropdown->redirectToList();
-        } else if (isset($input["update"])) {
+
+            return new RedirectResponse($dropdown->getRedirectToListUrl());
+        }
+
+        if (isset($input["update"])) {
             $dropdown->check($input["id"], UPDATE);
             $dropdown->update($input);
 
@@ -163,19 +166,23 @@ final class DropdownFormController extends AbstractController
                 //TRANS: %s is the user login
                 \sprintf(\__('%s updates an item'), $_SESSION["glpiname"])
             );
-            Html::back();
-        } else if (
-            isset($input['execute'])
-            && isset($input['_method'])
-        ) {
+
+            return new RedirectResponse(Html::getBackUrl());
+        }
+
+        if (isset($input['execute']) && isset($input['_method'])) {
             $method = 'execute' . $input['_method'];
             if (method_exists($dropdown, $method)) {
                 \call_user_func([&$dropdown, $method], $input);
-                Html::back();
+
+                return new RedirectResponse(Html::getBackUrl());
             } else {
                 throw new BadRequestHttpException();
             }
-        } else if ($in_modal) {
+        }
+
+        if ($in_modal) {
+            ob_start();
             Html::popHeader(
                 $dropdown->getTypeName(Session::getPluralNumber()),
                 '',
@@ -184,14 +191,24 @@ final class DropdownFormController extends AbstractController
             );
             $dropdown->showForm($id);
             Html::popFooter();
-        } else {
-            if ($options === null) {
-                $options = [];
-            }
-            $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
-            $options['id'] = $id;
+            $content = ob_get_clean();
 
-            $dropdown::displayFullPageForItem($id, $dropdown->getSectorizedDetails(), $options);
+            return new Response($content);
         }
+
+        ob_start();
+        $options = $request->attributes->get('options');
+        if ($options !== null) {
+            Toolbox::deprecated('Usage of `$options` parameter in DropdownFormController is deprecated.');
+        } else {
+            $options = [];
+        }
+        $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
+        $options['id'] = $id;
+
+        $dropdown::displayFullPageForItem($id, $dropdown->getSectorizedDetails(), $options);
+        $content = ob_get_clean();
+
+        return new Response($content);
     }
 }
