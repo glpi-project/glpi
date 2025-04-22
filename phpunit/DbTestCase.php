@@ -37,6 +37,7 @@
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity;
+use Glpi\Asset\CapacityConfig;
 use Glpi\Dropdown\DropdownDefinition;
 
 class DbTestCase extends \GLPITestCase
@@ -569,13 +570,14 @@ class DbTestCase extends \GLPITestCase
      */
     protected function enableCapacity(
         AssetDefinition $definition,
-        string $capacity_classname
+        string $capacity_classname,
+        ?CapacityConfig $config = new CapacityConfig()
     ): AssetDefinition {
         // Add new capacity
         $existing_capacities = $this->callPrivateMethod($definition, 'getDecodedCapacitiesField');
+        $existing_capacities[] = new Capacity(name: $capacity_classname, config: $config);
 
         $capacity_input = array_map(fn(Capacity $capacity) => $capacity->jsonSerialize(), $existing_capacities);
-        $capacity_input[] = ['name' => $capacity_classname];
 
         $this->updateItem(
             AssetDefinition::class,
