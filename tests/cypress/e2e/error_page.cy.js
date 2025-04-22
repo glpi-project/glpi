@@ -42,8 +42,8 @@ describe('Error page', () => {
         cy.changeProfile('Super-Admin');
 
         const urls = [
-            '/front/impactcsv.php',     // streamed response
-            '/InvalidClassname/Search', // modern controller
+            '/front/impactcsv.php', // streamed response
+            '/Form/Render/0',       // modern controller
         ];
 
         const expected_code    = 400;
