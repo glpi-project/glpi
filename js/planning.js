@@ -456,28 +456,6 @@ var GLPIPlanning  = {
                 // set end of day markers for timeline
                 GLPIPlanning.setEndofDays(info.view);
             },
-            events: {
-                url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
-                type: 'POST',
-                extraParams: function() {
-                    var view_name = GLPIPlanning.calendar
-                        ? GLPIPlanning.calendar.state.viewType
-                        : options.default_view;
-                    return {
-                        'action': 'get_events',
-                        'view_name': view_name
-                    };
-                },
-                success: function(data) {
-                    if (!options.full_view && data.length == 0) {
-                        GLPIPlanning.calendar.setOption('height', 0);
-                    }
-                },
-                failure: function(error) {
-                    console.error('there was an error while fetching events!', error);
-                }
-            },
-
             // EDIT EVENTS
             eventResize: function(info) {
                 var event        = info.event;
@@ -624,10 +602,12 @@ var GLPIPlanning  = {
             }
         });
 
-        // if current view is not valid eg: related plugin not loaded
-        // fallback to default view
+        // if current view is not valid eg: related plugin not loaded fallback to default view
         if (!this.calendar.isValidViewType(options.default_view)) {
             this.calendar.changeView(default_options.default_view);
+        } else {
+            // else use the one passed in options
+            this.calendar.changeView(options.default_view);
         }
 
         $('.planning_on_central a')
@@ -648,6 +628,35 @@ var GLPIPlanning  = {
 
         //window.calendar = calendar; // Required as object is not accessible by forms callback
         GLPIPlanning.calendar.render();
+
+        // IMPORTANT: This event source was moved here, after the calendar's render() call,
+        // to prevent an automatic AJAX request to the events URL during FullCalendar's initialization.
+        // And another one during the calendar's changeView() call.
+        // By adding it manually after rendering, onlyone call is done.
+        this.calendar.addEventSource({
+            url: CFG_GLPI.root_doc + "/ajax/planning.php",
+            type: 'POST',
+            extraParams: function () {
+                var view_name = GLPIPlanning.calendar
+                ? GLPIPlanning.calendar.state.viewType
+                : options.default_view;
+                var display_done_events = (view_name.indexOf('list') >= 0) ? 0 : 1;
+
+                return {
+                'action': 'get_events',
+                'display_done_events': display_done_events,
+                'view_name': view_name
+                };
+            },
+            success: function (data) {
+                if (!options.full_view && data.length === 0) {
+                GLPIPlanning.calendar.setOption('height', 0);
+                }
+            },
+            failure: function (error) {
+                console.error('there was an error while fetching events!', error);
+            }
+        });
 
         // attach the date picker to planning
         GLPIPlanning.initFCDatePicker();
