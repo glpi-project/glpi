@@ -48,20 +48,17 @@ class SupplierTest extends \DbTestCase
         $this->setEntity('_test_root_entity', true);
 
         // Create trype
-        $supplier_type = new \SupplierType();
-        $supplier__type_id = $supplier_type->add([
-            'name' => 'Supplier Type',
+        $supplier_type = $this->createItem('SupplierType', [
+            'name' => 'Supplier Type'
         ]);
-        $this->assertGreaterThan(0, $supplier__type_id);
 
         // Create supplier
-        $supplier = new \Supplier();
-        $supplier_id = $supplier->add([
+        $supplier = $this->createItem('Supplier', [
             'name'                => 'create_supplier',
             'entities_id'         => 0,
-            'suppliertype_id'     => $supplier__type_id,
+            'suppliertypes_id'     => $supplier_type->fields['id'],
             'registration_number' => '123',
-            'adress'              => 'supplier adress',
+            'address'              => 'supplier address',
             'postcode'            => 'supplier postcode',
             'town'                => 'supplier town',
             'state'               => 'supplier state',
@@ -73,7 +70,6 @@ class SupplierTest extends \DbTestCase
             'email'               => 'supplier@supplier.com',
             'pictures'            => 'pictures'
         ]);
-        $this->assertGreaterThan(0, $supplier_id);
 
         // Test item cloning
         $added = $supplier->clone();
