@@ -56,42 +56,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/commonitilvalidation.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between CommonDropdown and CommonDropdown will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/front/dropdown.common.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Controller\\\\LegacyFileLoadController and Glpi\\\\Controller\\\\LegacyFileLoadController will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/front/dropdown.common.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Result of \\|\\| is always false\\.$#',
-	'identifier' => 'booleanOr.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/front/dropdown.common.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between CommonDropdown and CommonDropdown will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/front/dropdown.common.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Controller\\\\LegacyFileLoadController and Glpi\\\\Controller\\\\LegacyFileLoadController will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/front/dropdown.common.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Result of \\|\\| is always false\\.$#',
-	'identifier' => 'booleanOr.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/front/dropdown.common.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^The overwriting exit point is on this line\\.$#',
 	'identifier' => 'finally.exitPoint',
 	'count' => 1,
