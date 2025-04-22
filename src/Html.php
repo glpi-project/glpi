@@ -34,6 +34,7 @@
  */
 
 use donatj\UserAgent\UserAgentParser;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
@@ -1304,7 +1305,7 @@ TWIG,
 
         if (
             $force
-            || GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT
+            || Environment::get()->shouldExpectRessourcesToChange()
             || !isset($_SESSION['glpimenu'])
             || !is_array($_SESSION['glpimenu'])
             || (count($_SESSION['glpimenu']) == 0)

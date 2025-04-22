@@ -34,7 +34,7 @@
 
 namespace Glpi\Kernel;
 
-use GLPI;
+use Glpi\Application\Environment;
 use Glpi\Application\SystemConfigurator;
 use Override;
 use Psr\Log\LoggerInterface;
@@ -67,12 +67,12 @@ final class Kernel extends BaseKernel
         $configurator = new SystemConfigurator($this->getProjectDir(), $env);
         $this->logger = $configurator->getLogger();
 
-        $env = GLPI_ENVIRONMENT_TYPE;
+        $env = Environment::get();
         parent::__construct(
-            $env,
+            $env->value,
             // `debug: true` will ensure that cache is recompiled everytime a corresponding resource is updated.
             // Reserved for dev/test environments as it consumes many disk I/O.
-            debug: in_array($env, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING], true)
+            debug: $env->shouldExpectRessourcesToChange(),
         );
     }
 
@@ -102,7 +102,7 @@ final class Kernel extends BaseKernel
 
         $bundles[] = new FrameworkBundle();
 
-        if ($this->environment === 'development') {
+        if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
             $dev_bundles_classes = [
                 WebProfilerBundle::class,
                 TwigBundle::class,

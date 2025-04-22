@@ -122,9 +122,10 @@ final class ResourcesChecker
      */
     private function shouldCheckResources(): bool
     {
-        // Only production/staging environment are considered as environments where resources are not supposed to change.
-        $env = $_ENV['GLPI_ENVIRONMENT_TYPE'] ?? $_SERVER['GLPI_ENVIRONMENT_TYPE'] ?? 'production';
-        if (!in_array($env, ['staging', 'production'])) {
+        // The file is special and will be executed before the autoload script
+        // is loaded, thus we must require the needed file manually.
+        require_once($this->root_dir . '/src/Glpi/Application/Environment.php');
+        if (!\Glpi\Application\Environment::get()->shouldExpectRessourcesToChange()) {
             return true;
         }
 

@@ -34,7 +34,7 @@
 
 namespace Glpi\Error;
 
-use GLPI;
+use Glpi\Application\Environment;
 use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\CliDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\HtmlErrorDisplayHandler;
@@ -72,15 +72,23 @@ final class ErrorHandler extends BaseErrorHandler
         E_USER_DEPRECATED   => LogLevel::INFO,
     ];
 
-    private static LoggerInterface $currentLogger;
+    private const PSR_ERROR_LEVEL_VALUES = [
+        LogLevel::EMERGENCY => 0,
+        LogLevel::ALERT     => 1,
+        LogLevel::CRITICAL  => 2,
+        LogLevel::ERROR     => 3,
+        LogLevel::WARNING   => 4,
+        LogLevel::NOTICE    => 5,
+        LogLevel::INFO      => 6,
+        LogLevel::DEBUG     => 7,
+    ];
 
-    private string $env;
+    private static LoggerInterface $currentLogger;
 
     public function __construct(LoggerInterface $logger)
     {
-        parent::__construct(debug: GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT);
-
-        $this->env = GLPI_ENVIRONMENT_TYPE;
+        $env = Environment::get();
+        parent::__construct(debug: $env->shouldEnableExtraDevAndDebugTools());
 
         $this->scopeAt(E_ALL, true); // Preserve variables for all errors
         $this->traceAt(E_ALL, true); // Preserve stack trace for all errors
@@ -218,23 +226,29 @@ final class ErrorHandler extends BaseErrorHandler
     }
 
     /**
-     * Adjust reporting level to the environment, to ensure that all the errors supposed to be logged are
-     * actually reported, and to prevent reporting other errors.
+     * Adjust reporting level to the environment, to ensure that all the errors
+     * supposed to be logged are actually reported, and to prevent reporting
+     * other errors.
      */
     private function configureErrorReporting(): void
     {
+        // Define base reporting level
         $reporting_level = E_ALL;
+
+        // Compute max error level that should be reported
+        $env_psr_level = Environment::get()->getLogLevel();
+        $env_report_value = self::PSR_ERROR_LEVEL_VALUES[$env_psr_level];
+
         foreach (self::ERROR_LEVEL_MAP as $value => $log_level) {
-            if (
-                \in_array($log_level, [LogLevel::DEBUG, LogLevel::INFO, LogLevel::NOTICE], true)
-                && !\in_array($this->env, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING], true)
-            ) {
-                // Do not report debug, info, and notice messages unless in development/testing env.
-                // Notices are errors with no functional impact, so we do not want people to report them as issues.
-                // Suppressing the INFO level will prevent deprecations to be pushed in other environments logs.
+            $psr_level_value = self::PSR_ERROR_LEVEL_VALUES[$log_level];
+
+            // Error must be removed from the reporting level if its level
+            // is superior to the max level defined by the current env.
+            if ($psr_level_value > $env_report_value) {
                 $reporting_level &= ~$value;
             }
         }
+
         \error_reporting($reporting_level);
     }
 

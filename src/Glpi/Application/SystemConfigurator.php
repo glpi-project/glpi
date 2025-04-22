@@ -62,7 +62,8 @@ final class SystemConfigurator
         if ($this->env !== null) {
             // Force the `GLPI_ENVIRONMENT_TYPE` constant.
             // The value defined in the server env variables will be ignored.
-            define('GLPI_ENVIRONMENT_TYPE', $this->env);
+            $env = Environment::from($this->env);
+            Environment::set($env);
         }
 
         // Define GLPI_* constants that can be customized by admin.
@@ -74,7 +75,7 @@ final class SystemConfigurator
         $constants = [
             'default' => [
                 // GLPI environment
-                'GLPI_ENVIRONMENT_TYPE' => 'production',
+                'GLPI_ENVIRONMENT_TYPE' => Environment::PRODUCTION->value,
 
                 // Constants related to system paths
                 'GLPI_CONFIG_DIR'      => $this->root_dir . '/config', // Path for configuration files (db, security key, ...)
@@ -153,32 +154,11 @@ final class SystemConfigurator
                 'GLPI_TEXT_MAXSIZE'           => '4000', // character threshold for displaying read more button
                 'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '0', // allow (1) or not (0) to save webhook response in database
             ],
-            'production' => [
-            ],
-            'staging' => [
-            ],
-            'testing' => [
-                'GLPI_CONFIG_DIR'               => $this->root_dir . '/tests/config',
-                'GLPI_VAR_DIR'                  => $this->root_dir . '/tests/files',
-                'GLPI_SERVERSIDE_URL_ALLOWLIST' => [
-                    // default allowlist entries
-                    '#^http://[^@:]+(:80)?(/.*)?$#',
-                    '#^https://[^@:]+(:443)?(/.*)?$#',
-                    '#^feed://[^@:]+(/.*)?$#',
-
-                    // calendar mockups
-                    '/^file:\/\/.*\.ics$/',
-                ],
-                'PLUGINS_DIRECTORIES'           => [
-                    $this->root_dir . '/plugins',
-                    $this->root_dir . '/tests/fixtures/plugins',
-                ],
-                'GLPI_STRICT_ENV'               => true,
-            ],
-            'development' => [
-                'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '1'
-            ],
         ];
+
+        foreach (Environment::cases() as $env) {
+            $constants[$env->value] = $env->getConstantsOverride($this->root_dir);
+        }
 
         $constants_names = array_keys($constants['default']);
 
@@ -199,21 +179,11 @@ final class SystemConfigurator
             include_once($this->root_dir . '/inc/downstream.php');
         }
 
-        // Check custom values
-        $allowed_envs = ['production', 'staging', 'testing', 'development'];
-        if (defined('GLPI_ENVIRONMENT_TYPE') && !in_array(GLPI_ENVIRONMENT_TYPE, $allowed_envs)) {
-            throw new \UnexpectedValueException(
-                sprintf(
-                    'Invalid GLPI_ENVIRONMENT_TYPE constant value `%s`. Allowed values are: `%s`',
-                    GLPI_ENVIRONMENT_TYPE,
-                    implode('`, `', $allowed_envs)
-                )
-            );
-        }
-
         // Configure environment type if not defined by user.
-        if (!defined('GLPI_ENVIRONMENT_TYPE')) {
-            define('GLPI_ENVIRONMENT_TYPE', $constants['default']['GLPI_ENVIRONMENT_TYPE']);
+        if (Environment::isSet()) {
+            Environment::validate();
+        } else {
+            Environment::set(Environment::PRODUCTION);
         }
 
         // Define constants values from defaults

@@ -37,6 +37,7 @@ namespace Glpi\Console;
 
 use AppendIterator;
 use DirectoryIterator;
+use Glpi\Application\Environment;
 use Glpi\Kernel\Kernel;
 use Plugin;
 use RecursiveDirectoryIterator;
@@ -368,8 +369,7 @@ class CommandLoader implements CommandLoaderInterface
             return;
         }
 
-        if (!\in_array($kernel->getEnvironment(), [\GLPI::ENV_DEVELOPMENT, \GLPI::ENV_TESTING], true)) {
-            // Don't load commands if non-dev/test
+        if (!Environment::get()->shouldEnableExtraDevAndDebugTools()) {
             return;
         }
 

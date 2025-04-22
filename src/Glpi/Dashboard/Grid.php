@@ -37,7 +37,7 @@ namespace Glpi\Dashboard;
 
 use Config;
 use Dropdown;
-use GLPI;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
@@ -972,7 +972,7 @@ HTML;
             $card = $cards[$card_id];
 
             $use_cache = !$force
-                && GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT
+                && !Environment::get()->shouldExpectRessourcesToChange()
                 && (!isset($card['cache']) || $card['cache'] == true);
             $cache_age = 40;
 
@@ -1442,7 +1442,7 @@ HTML;
                 ]
             ];
 
-            if (GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT) {
+            if (!Environment::get()->shouldExpectRessourcesToChange()) {
                 // Do not cache dashboard cards on `development` envs
                 $GLPI_CACHE->set(self::getAllDashboardCardsCacheKey(), $cards);
             }

@@ -36,6 +36,7 @@ namespace Glpi\Controller;
 
 use Config;
 use DBConnection;
+use Glpi\Application\Environment;
 use Glpi\Error\ErrorUtils;
 use Html;
 use Session;
@@ -100,7 +101,7 @@ class ErrorController extends AbstractController
         $trace = null;
         if (
             (
-                GLPI_ENVIRONMENT_TYPE === 'development'
+                Environment::get()->shouldEnableExtraDevAndDebugTools()
                 || isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
             )
         ) {
