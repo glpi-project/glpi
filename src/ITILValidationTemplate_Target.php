@@ -47,7 +47,7 @@ class ITILValidationTemplate_Target extends CommonDBRelation
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Validation template target', 'Validation template targets', $nb);
+        return _n('Approval template target', 'Approval template targets', $nb);
     }
 
     public static function getTargets($itilvalidationtemplates_id)

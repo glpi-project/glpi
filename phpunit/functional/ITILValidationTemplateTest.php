@@ -48,8 +48,8 @@ class ITILValidationTemplateTest extends AbstractITILChildTemplate
         $this->assertGreaterThan(
             0,
             (int) $validationTemplate->add([
-                'name'         => 'Validation template',
-                'description'  => 'a description',
+                'name'         => 'Approval template',
+                'description'  => 'Approval description',
                 'content'      => '',
             ])
         );

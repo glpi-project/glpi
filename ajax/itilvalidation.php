@@ -66,7 +66,7 @@ if (empty($parents_itemtype) || !is_subclass_of($parents_itemtype, CommonITILObj
     throw new BadRequestHttpException("Missing or invalid parameter: 'itemtype'");
 }
 
-// Load validation template
+// Load validation/approval template
 $template = new ITILValidationTemplate();
 if (!$template->getFromDB($validationtemplates_id)) {
     throw new BadRequestHttpException("Unable to load template: $validationtemplates_id");

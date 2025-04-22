@@ -192,7 +192,7 @@ final class FakeProvider extends Provider
         $label = match ($case) {
             'notold' => _x('status', 'Not solved'),
             'late' => __("Late tickets"),
-            'waiting_validation' => __("Tickets waiting for validation"),
+            'waiting_validation' => __("Tickets waiting for approval"),
             'incoming' => __("Incoming tickets"),
             'waiting' => __("Pending tickets"),
             'assigned' => __("Assigned tickets"),

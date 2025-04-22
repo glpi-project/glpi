@@ -788,12 +788,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between string and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to an undefined static method CommonDBRelation\\:\\:getLinkedTo\\(\\)\\.$#',
 	'identifier' => 'staticMethod.notFound',
 	'count' => 1,
