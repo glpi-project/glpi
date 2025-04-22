@@ -52,43 +52,58 @@ class TaskTemplateTest extends AbstractITILChildTemplate
         $this->login();
         $template = new \TaskTemplate();
 
-        $template_id = $template->add([
-            'name'         => 'Test Current User Template',
-            'content'      => 'Test content',
-            'users_id_tech' => -1
-        ]);
-        $this->assertGreaterThan(0, $template_id);
+        $template_id = $this->createItem(
+            'TaskTemplate',
+            [
+                'name'         => 'Test Current User Template',
+                'content'      => 'Test content',
+                'users_id_tech' => -1
+            ]
+        )->getID();
 
         $this->assertTrue($template->getFromDB($template_id));
+
         $this->assertEquals(1, $template->fields['use_current_user']);
         $this->assertEquals(-1, $template->fields['users_id_tech']); // Value should be transformed in post_getFromDB
 
         $specific_user_id = getItemByTypeName('User', 'tech', true);
-        $this->assertTrue($template->update([
-            'id'          => $template_id,
-            'users_id_tech' => $specific_user_id
-        ]));
+        $this->updateItem(
+            'TaskTemplate',
+            $template_id,
+            [
+                'users_id_tech' => $specific_user_id
+            ]
+        );
 
         $this->assertTrue($template->getFromDB($template_id));
+
         $this->assertEquals(0, $template->fields['use_current_user']);
         $this->assertEquals($specific_user_id, (int)$template->fields['users_id_tech']);
 
         // Test updating back to current user
-        $this->assertTrue($template->update([
-            'id'          => $template_id,
-            'users_id_tech' => -1
-        ]));
+        $this->updateItem(
+            'TaskTemplate',
+            $template_id,
+            [
+                'users_id_tech' => -1
+            ]
+        );
 
         $this->assertTrue($template->getFromDB($template_id));
+
         $this->assertEquals(1, $template->fields['use_current_user']);
         $this->assertEquals(-1, $template->fields['users_id_tech']); // Value should be transformed in post_getFromDB
 
-        $this->assertTrue($template->update([
-            'id'          => $template_id,
-            'users_id_tech' => 0
-        ]));
+        $this->updateItem(
+            'TaskTemplate',
+            $template_id,
+            [
+                'users_id_tech' => 0
+            ]
+        );
 
         $this->assertTrue($template->getFromDB($template_id));
+
         $this->assertEquals(0, $template->fields['use_current_user']);
         $this->assertEquals(0, (int)$template->fields['users_id_tech']);
     }
@@ -118,14 +133,16 @@ class TaskTemplateTest extends AbstractITILChildTemplate
         $this->login();
         $template = new \TaskTemplate();
 
-        $template_id = $template->add([
-            'name'         => 'Template for AJAX Test',
-            'content'      => 'Test content for AJAX',
-            'users_id_tech' => -1
-        ]);
-        $this->assertGreaterThan(0, $template_id);
+        $template_id = $this->createItem(
+            'TaskTemplate',
+            [
+                'name'         => 'Template for AJAX Test',
+                'content'      => 'Test content for AJAX',
+                'users_id_tech' => -1
+            ]
+        )->getID();
 
-        $template->getFromDB($template_id);
+        $this->assertTrue($template->getFromDB($template_id));
         $current_user_id = \Session::getLoginUserID();
 
         if ($template->fields['users_id_tech'] == -1) {
@@ -138,29 +155,34 @@ class TaskTemplateTest extends AbstractITILChildTemplate
     public function testSearchAbility()
     {
         $this->login();
-        $template = new \TaskTemplate();
 
-        $template_id1 = $template->add([
-            'name'         => 'Search Template Current User',
-            'content'      => 'Content 1',
-            'users_id_tech' => -1
-        ]);
-        $this->assertGreaterThan(0, $template_id1);
+        $this->createItem(
+            'TaskTemplate',
+            [
+                'name'         => 'Search Template Current User',
+                'content'      => 'Content 1',
+                'users_id_tech' => -1
+            ]
+        )->getID();
 
         $specific_user_id = getItemByTypeName('User', 'tech', true);
-        $template_id2 = $template->add([
-            'name'         => 'Search Template Specific User',
-            'content'      => 'Content 2',
-            'users_id_tech' => $specific_user_id
-        ]);
-        $this->assertGreaterThan(0, $template_id2);
+        $this->createItem(
+            'TaskTemplate',
+            [
+                'name'         => 'Search Template Specific User',
+                'content'      => 'Content 2',
+                'users_id_tech' => $specific_user_id
+            ]
+        )->getID();
 
-        $template_id3 = $template->add([
-            'name'         => 'Search Template No User',
-            'content'      => 'Content 3',
-            'users_id_tech' => 0
-        ]);
-        $this->assertGreaterThan(0, $template_id3);
+        $this->createItem(
+            'TaskTemplate',
+            [
+                'name'         => 'Search Template No User',
+                'content'      => 'Content 3',
+                'users_id_tech' => 0
+            ]
+        )->getID();
 
         $condition = \TaskTemplate::addWhere('AND', 0, \TaskTemplate::class, 7, 'equals', -1);
         $this->assertEquals(' AND (`glpi_tasktemplates`.`use_current_user` = 1)', $condition);

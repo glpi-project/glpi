@@ -146,10 +146,7 @@ class TaskTemplate extends AbstractITILChildTemplate
                 '1'                  => 'notequals',
             ],
             'datatype'           => 'specific',
-            'additionalfields'   => ['use_current_user'],
-            'toadd'              => [
-                0 => '',
-            ]
+            'additionalfields'   => ['use_current_user']
         ];
 
         $tab[] = [
@@ -218,6 +215,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             case 'users_id_tech':
                 return User::dropdown([
                     'name'   => $name,
+                    'aria_label' => __('By'),
                     'right'  => 'own_ticket',
                     'value'  => $values[$field],
                     'width'  => '100%',
@@ -245,6 +243,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             case 'users_id_tech':
                 User::dropdown([
                     'name'   => "users_id_tech",
+                    'aria_label' => __('By'),
                     'right'  => "own_ticket",
                     'value'  => $this->fields["users_id_tech"],
                     'entity' => $this->fields["entities_id"],
@@ -291,16 +290,7 @@ class TaskTemplate extends AbstractITILChildTemplate
     {
         $input = parent::prepareInputForAdd($input);
 
-        if ($input === false) { // Vérifier si la validation parente a échoué
-            return false;
-        }
-
-        if (isset($input['users_id_tech']) && (int) $input['users_id_tech'] == -1) {
-            $input['use_current_user'] = 1;
-            $input['users_id_tech'] = 0;
-        } else {
-            $input['use_current_user'] = 0;
-        }
+        $input = $this->prepareInput($input);
 
         return $input;
     }
@@ -309,7 +299,14 @@ class TaskTemplate extends AbstractITILChildTemplate
     {
         $input = parent::prepareInputForUpdate($input);
 
-        if ($input === false) { // Vérifier si la validation parente a échoué
+        $input = $this->prepareInput($input);
+
+        return $input;
+    }
+
+    private function prepareInput($input)
+    {
+        if ($input === false) {
             return false;
         }
 
