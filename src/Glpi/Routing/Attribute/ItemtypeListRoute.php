@@ -37,7 +37,7 @@ namespace Glpi\Routing\Attribute;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[\Attribute(\Attribute::IS_REPEATABLE | \Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD)]
-class ItemtypeFormLegacyRoute extends Route
+class ItemtypeListRoute extends Route
 {
     /**
      * @phpstan-param class-string<\CommonDBTM> $itemtype
@@ -45,8 +45,8 @@ class ItemtypeFormLegacyRoute extends Route
     public function __construct(string $itemtype)
     {
         parent::__construct(
-            path: $itemtype::getFormURL(false),
-            name: 'glpi_itemtype_' . \strtolower($itemtype) . '_form_legacy',
+            path: $itemtype::getSearchUrl(false),
+            name: 'glpi_itemtype_' . \strtolower($itemtype) . '_list',
         );
     }
 }
