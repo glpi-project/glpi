@@ -637,9 +637,7 @@ var GLPIPlanning  = {
             url: CFG_GLPI.root_doc + "/ajax/planning.php",
             type: 'POST',
             extraParams: function () {
-                var view_name = GLPIPlanning.calendar
-                ? GLPIPlanning.calendar.state.viewType
-                : options.default_view;
+                var view_name =  GLPIPlanning.calendar.state.viewType;
                 var display_done_events = (view_name.indexOf('list') >= 0) ? 0 : 1;
 
                 return {
