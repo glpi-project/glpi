@@ -56,28 +56,9 @@ if (isset($_POST['totp_code']) && is_array($_POST['totp_code'])) {
     $_POST['totp_code'] = implode('', $_POST['totp_code']);
 }
 
-//Do login and checks
-if (isset($_SESSION['namfield']) && isset($_POST[$_SESSION['namfield']])) {
-    $login = $_POST[$_SESSION['namfield']];
-} else {
-    $login = '';
-}
-if (isset($_SESSION['pwdfield']) && isset($_POST[$_SESSION['pwdfield']])) {
-    $password = $_POST[$_SESSION['pwdfield']];
-} else {
-    $password = '';
-}
-// Manage the selection of the auth source (local, LDAP id, MAIL id)
-if (isset($_POST['auth'])) {
-    $login_auth = $_POST['auth'];
-} else {
-    $login_auth = '';
-}
-
-$remember = isset($_SESSION['rmbfield']) && isset($_POST[$_SESSION['rmbfield']]) && $CFG_GLPI["login_remember_time"];
+$remember = ($_POST['login_remember'] ?? 0) && $CFG_GLPI["login_remember_time"];
 
 $auth = new Auth();
-
 
 // now we can continue with the process...
 if (isset($_REQUEST['totp_cancel'])) {
@@ -90,7 +71,14 @@ if (!empty($_POST['totp_code'])) {
 } else if (!empty($_POST['backup_code'])) {
     $mfa_params['backup_code'] = $_POST['backup_code'];
 }
-if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth, $mfa_params)) {
+if ($auth->login(
+    login_name: $_POST['login_name'],
+    login_password: $_POST['login_password'],
+    noauto: ($_REQUEST["noAUTO"] ?? false),
+    remember_me: $remember,
+    login_auth: $_POST['auth'] ?? '',
+    mfa_params: $mfa_params)
+) {
     Auth::redirectIfAuthenticated();
 } else {
     throw new AuthenticationFailedException(authentication_errors: $auth->getErrors());
