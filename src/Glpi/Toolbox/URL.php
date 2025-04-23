@@ -126,7 +126,7 @@ final class URL
      * @param string $path The filename of the currently executing script,
      *                     relative to the document root.
      *                     For the "http://example.com/foo/bar.php" page, that
-     *                     would be "/foo/bar.php" (= $_SERVER['PHP_SELF']).
+     *                     would be "/foo/bar.php" (= $request->getPathInfo()).
      * @return string|null Null if the itemtype could not be extracted.
      *
      * @todo Support custom marketplace and plugins URL.

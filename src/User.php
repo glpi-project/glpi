@@ -42,6 +42,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Plugin\Hooks;
 use Sabre\VObject;
+use Symfony\Component\HttpFoundation\Request;
 
 class User extends CommonDBTM
 {
@@ -2929,7 +2930,7 @@ HTML;
         if (
             Session::getLoginUserID() === (int)$this->input['id']
             && !Session::haveRight("user", UPDATE)
-            && !strpos($_SERVER['PHP_SELF'], "/front/login.php")
+            && !str_starts_with(Request::createFromGlobals()->getPathInfo(), "/front/login.php")
             && isset($this->fields["authtype"])
         ) {
            // extauth ldap case

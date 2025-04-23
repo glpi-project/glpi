@@ -41,6 +41,7 @@ use Glpi\Search\Output\Pdf;
 use Glpi\Search\SearchEngine;
 use Glpi\Stat\StatData;
 use Glpi\Application\View\TemplateRenderer;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *  Stat class
@@ -457,6 +458,8 @@ class Stat extends CommonGLPI
             $nbcols--;
         }
 
+        $request = Request::createFromGlobals();
+
         $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);
         $subname = match ($type) {
             'group_tree', 'groups_tree_assign' => Dropdown::getDropdownName('glpi_groups', $value2),
@@ -470,7 +473,7 @@ class Stat extends CommonGLPI
             $header_num = 1;
 
             if (str_contains($type, '_tree') && $value2) {
-                $url = $_SERVER['PHP_SELF'] . '?' . Toolbox::append_params(
+                $url = $request->getBasePath() . $request->getPathInfo() . '?' . Toolbox::append_params(
                     [
                         'date1'    => $date1,
                         'date2'    => $date2,
@@ -592,7 +595,7 @@ class Stat extends CommonGLPI
                 && ((int) $value[$i]['id'] !== (int) $value2)
             ) {
                 // HTML display
-                $url = $_SERVER['PHP_SELF'] . '?' . Toolbox::append_params(
+                $url = $request->getBasePath() . $request->getPathInfo() . '?' . Toolbox::append_params(
                     [
                         'date1'    => $date1,
                         'date2'    => $date2,
