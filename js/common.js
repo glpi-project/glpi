@@ -1868,8 +1868,7 @@ function setupAdaptDropdown(config)
     // to avoid issues with jQuery.
     const field_id = $.escapeSelector(config.field_id);
 
-    const select2_el = $('#' + field_id).select2({
-        placeholder: config.placeholder,
+    const options = {
         width: config.width,
         dropdownAutoWidth: true,
         dropdownCssClass: config.dropdown_css_class,
@@ -1956,10 +1955,13 @@ function setupAdaptDropdown(config)
         },
         templateResult: config.templateresult,
         templateSelection: config.templateselection,
-    })
-        .bind('setValue', function (e, value) {
-            $('#' + field_id).val(value).trigger('change');
-        });
+    };
+    if (config.placeholder !== undefined && config.placeholder !== '') {
+        options.placeholder = config.placeholder;
+    }
+    const select2_el = $('#' + field_id).select2(options).bind('setValue', (e, value) => {
+        $('#' + field_id).val(value).trigger('change');
+    });
     $('label[for=' + field_id + ']').on('click', function () {
         $('#' + field_id).select2('open');
     });
