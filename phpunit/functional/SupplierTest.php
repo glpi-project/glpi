@@ -81,23 +81,11 @@ class SupplierTest extends \DbTestCase
         $fields = $supplier->fields;
 
         // Check the values. Id and dates must be different, everything else must be equal
-        foreach ($fields as $k => $v) {
-            switch ($k) {
-                case 'id':
-                    $this->assertNotEquals($supplier->getField($k), $clonedSupplier->getField($k));
-                    break;
-                case 'date_mod':
-                case 'date_creation':
-                    $dateClone = new \DateTime($clonedSupplier->getField($k));
-                    $expectedDate = new \DateTime($date);
-                    $this->assertEquals($expectedDate, $dateClone);
-                    break;
-                case 'name':
-                    $this->assertSame("create_supplier (copy)", $clonedSupplier->getField($k));
-                    break;
-                default:
-                    $this->assertEquals($supplier->getField($k), $clonedSupplier->getField($k));
-            }
-        }
+        $expected = $supplier->fields;
+        $expected['id'] = $clonedSupplier->getID();
+        $expected['date_creation'] = $date;
+        $expected['date_mod'] = $date;
+        $expected['name'] = "create_supplier (copy)";
+        $this->assertEquals($expected, $clonedSupplier->fields);
     }
 }
