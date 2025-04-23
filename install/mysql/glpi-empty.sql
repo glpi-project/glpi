@@ -7172,6 +7172,7 @@ CREATE TABLE `glpi_tasktemplates` (
   `state` int NOT NULL DEFAULT '0',
   `is_private` tinyint NOT NULL DEFAULT '0',
   `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `use_current_user` tinyint NOT NULL DEFAULT '0',
   `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),

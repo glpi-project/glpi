@@ -4152,6 +4152,8 @@ HTML;
 
             if ($p['value'] === 'myself') {
                 $default = __("Myself");
+            } else if ((int) $p['value'] === -1) {
+                $default = __('Current logged-in user');
             } else if (!empty($p['value']) && ($p['value'] > 0)) {
                 $default = $user_name;
             } else {
