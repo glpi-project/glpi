@@ -36,6 +36,7 @@
 use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class that manages all the massive actions
@@ -1837,7 +1838,8 @@ class MassiveAction
         // Reload every X seconds to refresh the progress bar
         $refresh_delay = 5;
         if ((microtime(true) - $this->start_time) > $refresh_delay) {
-            Html::redirect($_SERVER['PHP_SELF'] . '?identifier=' . $this->identifier);
+            $request = Request::createFromGlobals();
+            Html::redirect($request->getBasePath() . $request->getPathInfo() . '?identifier=' . $this->identifier);
         }
     }
 

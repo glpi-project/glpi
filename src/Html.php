@@ -50,6 +50,7 @@ use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
 use Glpi\UI\ThemeManager;
 use ScssPhp\ScssPhp\Compiler;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Html Class
@@ -1715,7 +1716,10 @@ TWIG,
 
         self::displayMessageAfterRedirect();
         \Glpi\Debug\Profiler::getInstance()->stopAll();
-        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE && !str_starts_with($_SERVER['PHP_SELF'], $CFG_GLPI['root_doc'] . '/install/')) {
+        if (
+            $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
+            && !str_starts_with(Request::createFromGlobals()->getPathInfo(), '/install/')
+        ) {
             $tpl_vars['debug_info'] = \Glpi\Debug\Profile::getCurrent()->getDebugInfo();
         }
 

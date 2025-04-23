@@ -41,6 +41,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Session Class
@@ -351,13 +352,7 @@ class Session
      **/
     public static function initNavigateListItems($itemtype, $title = "", $url = null)
     {
-        /**
-         * @var \Symfony\Component\HttpFoundation\Request|null $request
-         */
-        global $request;
-
-        if ($request !== null && $request->isXmlHttpRequest() && $url === null) {
-            // `$request` is defined by the `/public/index.php` script.
+        if (Request::createFromGlobals()->isXmlHttpRequest() && $url === null) {
             return;
         }
 
@@ -949,10 +944,11 @@ class Session
      **/
     public static function isCron()
     {
-
-        return (self::isInventory() || isset($_SESSION["glpicronuserrunning"])
-              && (isCommandLine()
-                  || strpos($_SERVER['PHP_SELF'], '/cron.php')));
+        return (self::isInventory() || isset($_SESSION["glpicronuserrunning"]))
+            && (
+                isCommandLine()
+                || str_starts_with(Request::createFromGlobals()->getPathInfo(), '/front/cron.php')
+            );
     }
 
     /**

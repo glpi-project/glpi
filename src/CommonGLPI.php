@@ -38,6 +38,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\FilterableInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  *  Common GLPI object
@@ -885,7 +886,8 @@ class CommonGLPI implements CommonGLPIInterface
         $cleaned_options = $options;
         unset($cleaned_options['id'], $cleaned_options['stock_image']);
 
-        $target         = $_SERVER['PHP_SELF'];
+        $request        = Request::createFromGlobals();
+        $target         = $request->getBasePath() . $request->getPathInfo();
         $withtemplate   = "";
 
         // TODO - There should be a better option than checking whether or not
@@ -994,7 +996,9 @@ class CommonGLPI implements CommonGLPIInterface
                 $ID = 0;
             }
         }
-        $target         = $_SERVER['PHP_SELF'];
+
+        $request        = Request::createFromGlobals();
+        $target         = $request->getBasePath() . $request->getPathInfo();
         $extraparamhtml = "";
 
         if (is_array($options) && count($options)) {

@@ -98,13 +98,6 @@ final class ListenersPriority
         // @see \Symfony\Component\HttpKernel\EventListener\RouterListener::getSubscribedEvents()
         RequestListener\RedirectLegacyRouteListener::class => 33,
 
-        // Redefine the `$_SERVER['PHP_SELF']` variables that it still used to retrieve the "current path".
-        // Must be called as late as possible, just before controllers execution.
-        //
-        // FIXME: `$_SERVER['PHP_SELF']` should not be altered, `$request()->getBasePath() . $request->getPathInfo()`
-        // should be used instead.
-        RequestListener\OverridePHPSelfParam::class        => 0,
-
         // Update session variables according to request parameters.
         // Must be called as late as possible, just before controllers execution.
         RequestListener\SessionVariables::class            => 0,
