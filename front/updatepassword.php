@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
 // Cannot use `Session::checkLoginUser()` as it block users that have their password expired to be able to change it.

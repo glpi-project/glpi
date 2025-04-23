@@ -33,8 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-require_once(__DIR__ . '/_check_webserver_config.php');
-
-$itiltype = 'Problem';
-$fieldtype = 'Readonly';
-include __DIR__ . '/itiltemplatefield.form.php';
+if (!class_exists('Glpi\\Kernel\\Kernel', autoload: false)) {
+    // `Glpi\Kernel\Kernel` class will exists if the request was processed by the `/public/index.php` file,
+    // and will not be found otherwise.
+    http_response_code(404);
+    readfile(__DIR__ . '/../index.html');
+    exit();
+}

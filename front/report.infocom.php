@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 Session::checkRight(Report::$rightname, READ);
 Session::checkRight(Infocom::$rightname, READ);
 

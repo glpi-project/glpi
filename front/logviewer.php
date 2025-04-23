@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\System\Log\LogParser;
 use Glpi\System\Log\LogViewer;

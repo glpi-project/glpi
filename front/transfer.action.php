@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
 Html::header(__('Transfer'), '', 'admin', 'rule', 'Transfer');

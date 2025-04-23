@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 if (isset($_POST['update'])) {
     $validator_substitute = new ValidatorSubstitute();
     $validator_substitute->check(-1, UPDATE, $_POST);

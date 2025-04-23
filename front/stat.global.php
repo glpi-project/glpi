@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Stat\Data\Sglobal\StatDataAverageSatisfaction;
 use Glpi\Stat\Data\Sglobal\StatDataSatisfaction;

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Csv\CsvResponse;
 use Glpi\Csv\ImpactCsvExport;
 use Glpi\Exception\Http\BadRequestHttpException;
