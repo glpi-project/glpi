@@ -43,7 +43,6 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
 
 class GenericFormController extends AbstractController
 {
@@ -56,7 +55,6 @@ class GenericFormController extends AbstractController
         'unglobalize',
     ];
 
-    #[Route("/{class}/Form", name: "glpi_itemtype_form", priority: -1)]
     public function __invoke(Request $request): Response
     {
         $class = $request->attributes->getString('class');

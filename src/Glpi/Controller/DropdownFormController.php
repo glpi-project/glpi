@@ -44,12 +44,10 @@ use Glpi\Http\HeaderlessStreamedResponse;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
 use Toolbox;
 
 final class DropdownFormController extends AbstractController
 {
-    #[Route("/Dropdown/{class}/Form", name: "glpi_dropdown_form")]
     public function __invoke(Request $request): Response
     {
         $class = $request->attributes->getString('class');
