@@ -1346,4 +1346,103 @@ class RuleTicketTest extends RuleCommonITILObject
 
         $this->assertEquals(\CommonITILObject::ASSIGNED, $ticket->fields['status']);
     }
+
+
+    /**
+     * Test action of a rule ticket that add a followup to a ticket
+     * and do not compute take into account delay.
+     */
+    public function testDoNotComputeTakeIntoAccountWithFollowupTemplateWithRule()
+    {
+        $this->login('glpi', 'glpi');
+
+        // Create followup template
+        $followuptemplate = new \ITILFollowupTemplate();
+        $templateid = $followuptemplate->add($templateinput = [
+            'name' => 'followuptemplate_' . __FUNCTION__,
+            'content' => 'Test',
+        ]);
+        $this->checkInput($followuptemplate, $templateid, $templateinput);
+
+        // Create the rule to add a followup template and to not compute takeintoaccount delay
+        $ruleticket = new \RuleTicket();
+        $rulecrit   = new \RuleCriteria();
+        $ruleaction = new \RuleAction();
+
+        // create rule
+        $ruletid = $ruleticket->add($ruletinput = [
+            'name'         => 'test do not compute takeintoaccount with followup template',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleTicket',
+            'condition'    => \RuleTicket::ONADD,
+            'is_recursive' => 1,
+        ]);
+        $this->checkInput($ruleticket, $ruletid, $ruletinput);
+
+        // create criteria to check if title contain 'test' key word
+        $crit_id = $rulecrit->add($crit_input = [
+            'rules_id'  => $ruletid,
+            'criteria'  => 'name',
+            'condition' => \Rule::PATTERN_CONTAIN,
+            'pattern'   => 'test',
+        ]);
+        $this->checkInput($rulecrit, $crit_id, $crit_input);
+
+        // add action to assign followup templates
+        $act2_id = $ruleaction->add($act2_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'append',
+            'field'       => 'itilfollowup_template',
+            'value'       => $templateid,
+        ]);
+        $this->checkInput($ruleaction, $act2_id, $act2_input);
+
+        // add action to not compute takeintoaccount delay
+        $act3_id = $ruleaction->add($act3_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'takeintoaccount_delay_stat',
+            'field'       => 'do_not_compute',
+            'value'       => true,
+        ]);
+        $this->checkInput($ruleaction, $act3_id, $act3_input);
+
+        // Load user glpi
+        $user1 = new \User();
+        $user1->getFromDBbyName('glpi');
+        $this->assertGreaterThan(0, $user1->getID());
+
+        // Create ticket
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name' => 'test ticket ' . __FUNCTION__,
+            'content' => __FUNCTION__,
+            '_actors' => [
+                'requester' => [
+                    [
+                        'items_id' => $user1->getID(),
+                        'itemtype' => 'User'
+                    ]
+                ],
+            ]
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+
+        // reload ticket
+        $ticket = new \Ticket();
+        $ticket->getFromDB($tickets_id);
+
+        // check that ticket status is always new
+        $this->assertEquals(\CommonITILObject::INCOMING, $ticket->fields['status']);
+        // check that ticket takeintoaccount delay is not computed
+        $this->assertEquals(0, $ticket->fields['takeintoaccount_delay_stat']);
+        // followup well added
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                \ITILFollowup::getTable(),
+                ['itemtype' => \Ticket::getType(), 'items_id' => $tickets_id]
+            )
+        );
+    }
 }

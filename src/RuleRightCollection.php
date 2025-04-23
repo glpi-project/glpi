@@ -126,7 +126,12 @@ class RuleRightCollection extends RuleCollection
            //Get all the field to retrieve to be able to process rule matching
             $rule_fields = $this->getFieldsToLookFor();
 
-           //Get all the data we need from ldap to process the rules
+            //If we are oustide authentication process, $params_lower["connection"] is not set
+            if (empty($params_lower["connection"])) {
+                return $rule_parameters;
+            }
+
+            //Get all the data we need from ldap to process the rules
             $sz = @ldap_read(
                 $params_lower["connection"],
                 $params_lower["userdn"],

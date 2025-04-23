@@ -355,6 +355,7 @@ The present file will list all changes made to the project; according to the
 - `Change::showDebug()`
 - `Change_Item::showForChange()`
 - `CommonDBTM::$deduplicate_queued_notifications` property.
+- `CommonDBTM::cleanLockedsOnAdd()`
 - `CommonDBTM::getCacheKeyForFriendlyName()`
 - `CommonDBTM::getSNMPCredential()`
 - `CommonDBTM::hasSavedInput()`
