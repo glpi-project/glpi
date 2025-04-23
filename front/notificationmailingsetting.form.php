@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 use Glpi\Mail\SMTP\OauthConfig;

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 if (Session::getCurrentInterface() == "helpdesk") {
     Html::helpHeader(SavedSearch::getTypeName(Session::getPluralNumber()));
 } else {

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 /**
  * Following variables have to be defined before inclusion of this file:
  * @var CommonDropdown $dropdown

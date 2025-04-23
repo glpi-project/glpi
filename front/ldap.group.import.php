@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 Session::checkRightsOr('group', [CREATE, UPDATE]);
 Session::checkRight('user', User::UPDATEAUTHENT);
 AuthLDAP::manageRequestValues(false);

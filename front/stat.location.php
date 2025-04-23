@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Stat\Data\Location\StatDataClosed;
 use Glpi\Stat\Data\Location\StatDataLate;
