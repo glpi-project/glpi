@@ -584,6 +584,7 @@ JAVASCRIPT;
         }
 
         // Allow class and style attribute
+        $config = $config->allowAttribute('class', '*');
         $config = $config->allowAttribute('style', '*');
 
         if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
@@ -601,7 +602,6 @@ JAVASCRIPT;
             'data-form-tag',
             'data-form-tag-value',
             'data-form-tag-provider',
-            'class',
         ];
         foreach ($rich_text_completion_attributes as $attribute) {
             $config = $config->allowAttribute($attribute, 'span');
