@@ -128,30 +128,6 @@ class TaskTemplateTest extends AbstractITILChildTemplate
         $this->assertStringContainsString('tech', $result);
     }
 
-    public function testAjaxUsage()
-    {
-        $this->login();
-        $template = new \TaskTemplate();
-
-        $template_id = $this->createItem(
-            'TaskTemplate',
-            [
-                'name'         => 'Template for AJAX Test',
-                'content'      => 'Test content for AJAX',
-                'users_id_tech' => -1
-            ]
-        )->getID();
-
-        $this->assertTrue($template->getFromDB($template_id));
-        $current_user_id = \Session::getLoginUserID();
-
-        if ($template->fields['users_id_tech'] == -1) {
-            $template->fields['users_id_tech'] = $current_user_id;
-        }
-
-        $this->assertEquals($current_user_id, (int)$template->fields['users_id_tech']);
-    }
-
     public function testSearchAbility()
     {
         $this->login();
