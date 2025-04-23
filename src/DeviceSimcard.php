@@ -111,7 +111,7 @@ class DeviceSimcard extends CommonDevice
 
     public static function getIcon()
     {
-        return "fas fa-sim-card";
+        return "ti ti-device-sim";
     }
 
     public function getRights($interface = 'central')
