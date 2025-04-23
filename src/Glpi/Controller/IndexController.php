@@ -153,9 +153,6 @@ final class IndexController extends AbstractController
             'noAuto'              => $_GET["noAUTO"] ?? 0,
             'redirect'            => $redirect,
             'text_login'          => $CFG_GLPI['text_login'],
-            'namfield'            => ($_SESSION['namfield'] = \uniqid('fielda')),
-            'pwdfield'            => ($_SESSION['pwdfield'] = \uniqid('fieldb')),
-            'rmbfield'            => ($_SESSION['rmbfield'] = \uniqid('fieldc')),
             'show_lost_password'  => $CFG_GLPI["notifications_mailing"]
                 && countElementsInTable('glpi_notifications', [
                     'itemtype' => 'User',
