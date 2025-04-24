@@ -148,7 +148,7 @@ class Contract_Supplier extends CommonDBRelation
                                 nochecklimit: true
                             }) }}
                             {% set btn %}
-                                <button type="submit" class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name='add' class="btn btn-primary">{{ btn_label }}</button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
@@ -271,7 +271,7 @@ TWIG, $twig_params);
                                 entity_sons: contract.fields['is_recursive']
                             }) }}
                             {% set btn %}
-                                <button type="submit" class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name='add' class="btn btn-primary">{{ btn_label }}</button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
