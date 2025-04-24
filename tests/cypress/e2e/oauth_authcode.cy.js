@@ -35,7 +35,7 @@ describe('OAuth - Authorization Code Grant', () => {
     const oauthclient_secret = 'd2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1';
 
     function doAuthCodeGrant(expect_already_logged_in = false, remember_me = false) {
-        function doGLPILogin(redirect_url, username_field, password_field, csrf_token) {
+        function doGLPILogin(redirect_url, csrf_token) {
             // cy.findByRole('textbox', {'name': "Login"}).type('e2e_tests');
             // cy.findByLabelText("Password").type('glpi');
             // if (remember_me) {
@@ -48,8 +48,8 @@ describe('OAuth - Authorization Code Grant', () => {
 
             // Do login as request instead of visit
             const body = {
-                [username_field]: 'e2e_tests',
-                [password_field]: 'glpi',
+                login_name: 'e2e_tests',
+                login_password: 'glpi',
                 auth: 0,
                 _glpi_csrf_token: csrf_token,
                 redirect: redirect_url,
@@ -95,10 +95,8 @@ describe('OAuth - Authorization Code Grant', () => {
                 const parsed_html = Cypress.$(`<div>${response.body}</div>`);
                 expect(parsed_html.find('title').text()).to.eq('Authentication - GLPI');
                 const redirect_url = parsed_html.find('input[name="redirect"]').val();
-                const username_field = parsed_html.find('#login_name').attr('name');
-                const password_field = parsed_html.find('#login_password').attr('name');
                 const csrf_token = parsed_html.find('input[name="_glpi_csrf_token"]').val();
-                doGLPILogin(redirect_url, username_field, password_field, csrf_token);
+                doGLPILogin(redirect_url, csrf_token);
             }
             doAuthorization();
         });
