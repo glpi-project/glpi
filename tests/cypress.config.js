@@ -54,10 +54,6 @@ module.exports = defineConfig({
                 }
                 return launchOptions;
             });
-            on('before:run', () => {
-                // Make sure cached content like twig template is cleared before running the tests.
-                execSync.execSync("../bin/console cache:clear --env='testing'");
-            });
             on('task', {
                 log(message) {
                     // eslint-disable-next-line no-console
