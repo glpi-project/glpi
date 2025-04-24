@@ -35,9 +35,12 @@
 namespace Glpi\Form\Condition\ConditionHandler;
 
 use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Migration\ConditionHandlerDataConverterInterface;
 use Override;
 
-final class SingleChoiceFromValuesConditionHandler implements ConditionHandlerInterface
+final class SingleChoiceFromValuesConditionHandler implements
+    ConditionHandlerInterface,
+    ConditionHandlerDataConverterInterface
 {
     public function __construct(
         private array $values,
@@ -82,5 +85,11 @@ final class SingleChoiceFromValuesConditionHandler implements ConditionHandlerIn
             // Unsupported operators
             default => false,
         };
+    }
+
+    #[Override]
+    public function convertConditionValue(string $value): int
+    {
+        return array_search($value, $this->values, true) ?: 0;
     }
 }

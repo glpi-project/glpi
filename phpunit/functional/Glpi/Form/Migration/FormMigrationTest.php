@@ -43,9 +43,15 @@ use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Category;
 use Glpi\Form\Comment;
+use Glpi\Form\Condition\ConditionData;
+use Glpi\Form\Condition\CreationStrategy;
+use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\CommonITILField\TitleField;
+use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
@@ -71,6 +77,7 @@ use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
 use Glpi\Message\MessageType;
@@ -1155,6 +1162,534 @@ final class FormMigrationTest extends DbTestCase
         $this->assertMatchesRegularExpression(
             $expectedPatternForContent,
             $content_config->getValue()
+        );
+    }
+
+    public static function provideFormMigrationConditionsForQuestions(): iterable
+    {
+        yield 'QuestionTypeShortText - Always visible' => [
+            'text',
+            1,
+            [],
+            VisibilityStrategy::ALWAYS_VISIBLE
+        ];
+
+        yield 'QuestionTypeShortText - Hidden if condition' => [
+            'text',
+            3,
+            [
+                [
+                    'show_condition' => 1,
+                    'show_value'     => 'Test',
+                    'show_logic'     => 1
+                ]
+            ],
+            VisibilityStrategy::HIDDEN_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => 'Test',
+                    'logic_operator' => LogicOperator::AND
+                ]
+            ]
+        ];
+
+        yield 'QuestionTypeShortText - Visible if condition' => [
+            'text',
+            2,
+            [
+                [
+                    'show_condition' => 1,
+                    'show_value'     => 'Test',
+                    'show_logic'     => 1
+                ]
+            ],
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => 'Test',
+                    'logic_operator' => LogicOperator::AND
+                ]
+            ]
+        ];
+
+        $value_operators = [
+            1 => ValueOperator::EQUALS,
+            2 => ValueOperator::NOT_EQUALS,
+            3 => ValueOperator::LESS_THAN,
+            4 => ValueOperator::GREATER_THAN,
+            5 => ValueOperator::LESS_THAN_OR_EQUALS,
+            6 => ValueOperator::GREATER_THAN_OR_EQUALS,
+            7 => ValueOperator::VISIBLE,
+            8 => ValueOperator::NOT_VISIBLE,
+        ];
+        foreach ($value_operators as $key => $value_operator) {
+            yield 'QuestionTypeShortText - Visible if condition with value operator ' . $value_operator->getLabel() => [
+                'text',
+                2,
+                [
+                    [
+                        'show_condition' => $key,
+                        'show_value'     => 'Test',
+                        'show_logic'     => 1
+                    ]
+                ],
+                VisibilityStrategy::VISIBLE_IF,
+                [
+                    [
+                        'value_operator' => $value_operator,
+                        'value'          => 'Test',
+                        'logic_operator' => LogicOperator::AND
+                    ]
+                ]
+            ];
+        }
+
+        yield 'QuestionTypeShortText - Visible if multiple conditions' => [
+            'text',
+            2,
+            [
+                [
+                    'show_condition' => 1,
+                    'show_value'     => 'Test',
+                    'show_logic'     => 1
+                ],
+                [
+                    'show_condition' => 2,
+                    'show_value'     => 'Test2',
+                    'show_logic'     => 2
+                ]
+            ],
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => 'Test',
+                    'logic_operator' => LogicOperator::AND
+                ],
+                [
+                    'value_operator' => ValueOperator::NOT_EQUALS,
+                    'value'          => 'Test2',
+                    'logic_operator' => LogicOperator::OR
+                ]
+            ]
+        ];
+
+        yield 'QuestionTypeRadio - Visible if' => [
+            'field_type' => 'radios',
+            'show_rule'  => 2,
+            'conditions' => [
+                [
+                    'show_condition' => 1,
+                    'show_value'     => 'Second option',
+                    'show_logic'     => 1
+                ]
+            ],
+            'expected_visibility_strategy' => VisibilityStrategy::VISIBLE_IF,
+            'expected_conditions'          => [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => 1,
+                    'logic_operator' => LogicOperator::AND
+                ]
+            ],
+            'values' => '["First option","Second option"]'
+        ];
+
+        yield 'QuestionTypeCheckbox - Visible if' => [
+            'field_type' => 'radios',
+            'show_rule'  => 2,
+            'conditions' => [
+                [
+                    'show_condition' => 1,
+                    'show_value'     => 'Second option',
+                    'show_logic'     => 1
+                ],
+                [
+                    'show_condition' => 1,
+                    'show_value'     => 'Third option',
+                    'show_logic'     => 2
+                ]
+            ],
+            'expected_visibility_strategy' => VisibilityStrategy::VISIBLE_IF,
+            'expected_conditions'          => [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => 1,
+                    'logic_operator' => LogicOperator::AND
+                ],
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => 2,
+                    'logic_operator' => LogicOperator::OR
+                ]
+            ],
+            'values' => '["First option","Second option","Third option"]'
+        ];
+
+        yield 'QuestionTypeDropdown - Visible if' => [
+            'field_type' => 'select',
+            'show_rule'  => 2,
+            'conditions' => [
+                [
+                    'show_condition' => 1,
+                    'show_value'     => 'Second option',
+                    'show_logic'     => 1
+                ],
+                [
+                    'show_condition' => 1,
+                    'show_value'     => 'Third option',
+                    'show_logic'     => 2
+                ]
+            ],
+            'expected_visibility_strategy' => VisibilityStrategy::VISIBLE_IF,
+            'expected_conditions'          => [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => 1,
+                    'logic_operator' => LogicOperator::AND
+                ],
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => 2,
+                    'logic_operator' => LogicOperator::OR
+                ]
+            ],
+            'values' => '["First option","Second option","Third option"]'
+        ];
+    }
+
+    #[DataProvider('provideFormMigrationConditionsForQuestions')]
+    public function testFormMigrationConditionsForQuestions(
+        string $field_type,
+        int $show_rule,
+        array $conditions,
+        VisibilityStrategy $expected_visibility_strategy,
+        array $expected_conditions = [],
+        ?string $values = null
+    ): void {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Create a form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name' => 'Test form migration condition for questions',
+            ]
+        ));
+        $form_id = $DB->insertId();
+
+        // Insert a section for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'plugin_formcreator_forms_id' => $form_id
+            ]
+        ));
+
+        $section_id = $DB->insertId();
+
+        // Insert a question for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name'                           => 'Test form migration condition for questions - Target question',
+                'plugin_formcreator_sections_id' => $section_id,
+                'fieldtype'                      => $field_type,
+                'values'                         => $values,
+                'row'                            => 0,
+                'col'                            => 0,
+            ]
+        ));
+        $target_question_id = $DB->insertId();
+
+        // Insert another question to apply conditions on
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name'                           => 'Test form migration condition for questions - Condition question',
+                'plugin_formcreator_sections_id' => $section_id,
+                'row'                            => 0,
+                'col'                            => 1,
+                'show_rule'                      => $show_rule,
+            ]
+        ));
+        $condition_question_id = $DB->insertId();
+
+        // Insert condition if needed
+        if (!empty($conditions)) {
+            foreach ($conditions as $condition) {
+                $this->assertTrue($DB->insert(
+                    'glpi_plugin_formcreator_conditions',
+                    [
+                        'itemtype'                        => 'PluginFormcreatorQuestion',
+                        'items_id'                        => $condition_question_id,
+                        'plugin_formcreator_questions_id' => $target_question_id,
+                        'show_condition'                  => $condition['show_condition'],
+                        'show_value'                      => $condition['show_value'],
+                        'show_logic'                      => $condition['show_logic'],
+                    ]
+                ));
+            }
+        }
+
+        // Process migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Verify that the condition has been migrated correctly
+        /** @var Form $form */
+        $form = getItemByTypeName(Form::class, 'Test form migration condition for questions');
+        $this->assertCount(1, $form->getSections());
+        $this->assertCount(2, $form->getQuestions());
+
+        /** @var Question $condition_question */
+        $condition_question = getItemByTypeName(Question::class, 'Test form migration condition for questions - Condition question');
+        $this->assertNotFalse($condition_question);
+        $this->assertEquals($expected_visibility_strategy, $condition_question->getConfiguredVisibilityStrategy());
+        $this->assertEquals(
+            $expected_conditions,
+            array_map(
+                fn (ConditionData $condition) => [
+                    'value_operator' => $condition->getValueOperator(),
+                    'value'          => $condition->getValue(),
+                    'logic_operator' => $condition->getLogicOperator(),
+                ],
+                $condition_question->getConfiguredConditionsData()
+            )
+        );
+    }
+
+    public function testFormMigrationConditionsForSections(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Create a form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name' => 'Test form migration condition for sections',
+            ]
+        ));
+        $form_id = $DB->insertId();
+
+        // Insert a section for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'name'                        => 'Test form migration condition for sections - Target section',
+                'plugin_formcreator_forms_id' => $form_id
+            ]
+        ));
+        $target_section_id = $DB->insertId();
+
+        // Insert another section to apply conditions on
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'name'                        => 'Test form migration condition for sections - Condition section',
+                'plugin_formcreator_forms_id' => $form_id,
+                'show_rule'                   => 3,
+            ]
+        ));
+        $condition_section_id = $DB->insertId();
+
+        // Insert a question for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name'                           => 'Test form migration condition for sections - Target question',
+                'plugin_formcreator_sections_id' => $target_section_id,
+            ]
+        ));
+        $target_question_id = $DB->insertId();
+
+        // Insert condition
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_conditions',
+            [
+                'itemtype'                        => 'PluginFormcreatorSection',
+                'items_id'                        => $condition_section_id,
+                'plugin_formcreator_questions_id' => $target_question_id,
+                'show_condition'                  => 1,
+                'show_value'                      => 'Test',
+                'show_logic'                      => 1,
+            ]
+        ));
+
+        // Process migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Verify that the condition has been migrated correctly
+        /** @var Form $form */
+        $form = getItemByTypeName(Form::class, 'Test form migration condition for sections');
+        $this->assertCount(2, $form->getSections());
+
+        /** @var Section $condition_section */
+        $condition_section = getItemByTypeName(Section::class, 'Test form migration condition for sections - Condition section');
+        $this->assertNotFalse($condition_section);
+        $this->assertEquals(VisibilityStrategy::HIDDEN_IF, $condition_section->getConfiguredVisibilityStrategy());
+        $this->assertEquals(
+            [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => 'Test',
+                    'logic_operator' => LogicOperator::AND,
+                ]
+            ],
+            array_map(
+                fn (ConditionData $condition) => [
+                    'value_operator' => $condition->getValueOperator(),
+                    'value'          => $condition->getValue(),
+                    'logic_operator' => $condition->getLogicOperator(),
+                ],
+                $condition_section->getConfiguredConditionsData()
+            )
+        );
+    }
+
+    public static function provideFormMigrationConditionsForDestinations(): iterable
+    {
+        $creation_strategies = [
+            1 => CreationStrategy::ALWAYS_CREATED,
+            2 => CreationStrategy::CREATED_IF,
+            3 => CreationStrategy::CREATED_UNLESS,
+        ];
+
+        $types = [
+            'glpi_plugin_formcreator_targettickets'  => 'PluginFormcreatorTargetTicket',
+            'glpi_plugin_formcreator_targetproblems' => 'PluginFormcreatorTargetProblem',
+            'glpi_plugin_formcreator_targetchanges'  => 'PluginFormcreatorTargetChange',
+        ];
+
+        foreach ($types as $table => $itemtype) {
+            foreach ($creation_strategies as $key => $strategy) {
+                if ($strategy === CreationStrategy::ALWAYS_CREATED) {
+                    $expected_conditions = [];
+                } else {
+                    $expected_conditions = [
+                        [
+                            'value_operator' => ValueOperator::EQUALS,
+                            'value'          => 'Test',
+                            'logic_operator' => LogicOperator::AND,
+                        ]
+                    ];
+                }
+
+                yield 'Destination ' . $itemtype . ' - ' . $strategy->getLabel() => [
+                    'legacy_itemtype'            => $itemtype,
+                    'legacy_table'               => $table,
+                    'legacy_strategy'            => $key,
+                    'expected_creation_strategy' => $strategy,
+                    'expected_conditions'        => $expected_conditions
+                ];
+            }
+        }
+    }
+
+    #[DataProvider('provideFormMigrationConditionsForDestinations')]
+    public function testFormMigrationConditionsForDestinations(
+        string $legacy_itemtype,
+        string $legacy_table,
+        int $legacy_strategy,
+        CreationStrategy $expected_creation_strategy,
+        array $expected_conditions
+    ): void {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Create a form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name' => 'Test form migration condition for destinations',
+            ]
+        ));
+        $form_id = $DB->insertId();
+
+        // Insert a section for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'plugin_formcreator_forms_id' => $form_id
+            ]
+        ));
+
+        $section_id = $DB->insertId();
+
+        // Insert a question for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name'                           => 'Test form migration condition for destinations',
+                'plugin_formcreator_sections_id' => $section_id,
+            ]
+        ));
+        $target_question_id = $DB->insertId();
+
+        // Insert a target for the form
+        $this->assertTrue($DB->insert(
+            $legacy_table,
+            [
+                'name'                        => 'Test form migration condition for destinations',
+                'content'                     => 'Test',
+                'plugin_formcreator_forms_id' => $form_id,
+                'show_rule'                   => $legacy_strategy
+            ]
+        ));
+        $destination_id = $DB->insertId();
+
+        // Insert condition
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_conditions',
+            [
+                'itemtype'                        => $legacy_itemtype,
+                'items_id'                        => $destination_id,
+                'plugin_formcreator_questions_id' => $target_question_id,
+                'show_condition'                  => 1,
+                'show_value'                      => 'Test',
+                'show_logic'                      => 1,
+            ]
+        ));
+
+        // Process migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Verify that the condition has been migrated correctly
+        /** @var Form $form */
+        $form = getItemByTypeName(Form::class, 'Test form migration condition for destinations');
+        $this->assertCount(1, $form->getSections());
+        $this->assertCount(1, $form->getQuestions());
+        $this->assertCount(1, $form->getDestinations());
+
+        /** @var FormDestination $destination */
+        $destination = getItemByTypeName(FormDestination::class, 'Test form migration condition for destinations');
+        $this->assertNotFalse($destination);
+        $this->assertEquals($expected_creation_strategy, $destination->getConfiguredCreationStrategy());
+        $this->assertEquals(
+            $expected_conditions,
+            array_map(
+                fn (ConditionData $condition) => [
+                    'value_operator' => $condition->getValueOperator(),
+                    'value'          => $condition->getValue(),
+                    'logic_operator' => $condition->getLogicOperator(),
+                ],
+                $destination->getConfiguredConditionsData()
+            )
         );
     }
 }

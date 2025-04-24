@@ -81,9 +81,10 @@ final class FormData
 
         foreach ($form->getQuestions() as $question) {
             $questions_data[] = [
-                'uuid' => $question->fields['uuid'],
-                'name' => $question->fields['name'],
-                'type' => $question->getQuestionType(),
+                'uuid'       => $question->fields['uuid'],
+                'name'       => $question->fields['name'],
+                'type'       => $question->getQuestionType(),
+                'extra_data' => json_decode($question->fields['extra_data'] ?? '{}', true),
             ];
         }
 

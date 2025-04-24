@@ -44,14 +44,21 @@ use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\BlockInterface;
 use Glpi\Form\Category;
 use Glpi\Form\Comment;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\CreationStrategy;
+use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\ITILActorField;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationChange;
+use Glpi\Form\Destination\FormDestinationInterface;
 use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
@@ -161,6 +168,75 @@ class FormMigration extends AbstractPluginMigration
     }
 
     /**
+     * Get the visibility strategy from the legacy value
+     *
+     * @param int $visibility The legacy visibility value
+     * @return VisibilityStrategy The corresponding visibility strategy
+     */
+    private function getVisibilityStrategyFromLegacy(int $visibility): VisibilityStrategy
+    {
+        return match ($visibility) {
+            1 => VisibilityStrategy::ALWAYS_VISIBLE,
+            2 => VisibilityStrategy::VISIBLE_IF,
+            3 => VisibilityStrategy::HIDDEN_IF,
+            default => throw new LogicException("Invalid visibility value: {$visibility}")
+        };
+    }
+
+    /**
+     * Get the creation strategy from the legacy value
+     *
+     * @param int $creation The legacy creation value
+     * @return CreationStrategy The corresponding creation strategy
+     */
+    private function getCreationStrategyFromLegacy(int $creation): CreationStrategy
+    {
+        return match ($creation) {
+            1 => CreationStrategy::ALWAYS_CREATED,
+            2 => CreationStrategy::CREATED_IF,
+            3 => CreationStrategy::CREATED_UNLESS,
+            default => throw new LogicException("Invalid creation value: {$creation}")
+        };
+    }
+
+    /**
+     * Get the value operator from the legacy value
+     *
+     * @param int $value_operator The legacy value operator
+     * @return ValueOperator|null The corresponding value operator or null if not found
+     */
+    private function getValueOperatorFromLegacy(int $value_operator): ?ValueOperator
+    {
+        return match ($value_operator) {
+            1 => ValueOperator::EQUALS,
+            2 => ValueOperator::NOT_EQUALS,
+            3 => ValueOperator::LESS_THAN,
+            4 => ValueOperator::GREATER_THAN,
+            5 => ValueOperator::LESS_THAN_OR_EQUALS,
+            6 => ValueOperator::GREATER_THAN_OR_EQUALS,
+            7 => ValueOperator::VISIBLE,
+            8 => ValueOperator::NOT_VISIBLE,
+            9 => null, // TODO: Implement regex match
+            default => null
+        };
+    }
+
+    /**
+     * Get the logic operator from the legacy value
+     *
+     * @param int $logic_operator The legacy logic operator
+     * @return LogicOperator The corresponding logic operator
+     */
+    private function getLogicOperatorFromLegacy(int $logic_operator): LogicOperator
+    {
+        return match ($logic_operator) {
+            1 => LogicOperator::AND,
+            2 => LogicOperator::OR,
+            default => throw new LogicException("Invalid logic operator value: {$logic_operator}")
+        };
+    }
+
+    /**
      * Create the appropriate strategy configuration based on form access rights
      *
      * @param array $form_access_rights The access rights data from the database
@@ -214,6 +290,9 @@ class FormMigration extends AbstractPluginMigration
             ],
             'glpi_plugin_formcreator_forms_languages' => [
                 'plugin_formcreator_forms_id', 'name'
+            ],
+            'glpi_plugin_formcreator_conditions' => [
+                'itemtype', 'items_id', 'plugin_formcreator_questions_id', 'show_condition', 'show_value', 'show_logic', 'order'
             ]
         ];
 
@@ -232,7 +311,8 @@ class FormMigration extends AbstractPluginMigration
             'targets_ticket' => $this->countRecords('glpi_plugin_formcreator_targettickets'),
             'targets_problem' => $this->countRecords('glpi_plugin_formcreator_targetproblems'),
             'targets_change' => $this->countRecords('glpi_plugin_formcreator_targetchanges'),
-            'translations' => $this->countRecords('glpi_plugin_formcreator_forms_languages')
+            'translations' => $this->countRecords('glpi_plugin_formcreator_forms_languages'),
+            'conditions' => $this->countRecords('glpi_plugin_formcreator_conditions'),
         ];
 
         // Set total progress steps
@@ -251,6 +331,7 @@ class FormMigration extends AbstractPluginMigration
         $this->processMigrationOfAccessControls();
         $this->processMigrationOfFormTargets();
         $this->processMigrationOfTranslations();
+        $this->processMigrationOfConditions();
 
         $this->progress_indicator?->setProgressBarMessage('');
         $this->progress_indicator?->finish();
@@ -881,8 +962,14 @@ class FormMigration extends AbstractPluginMigration
                 ]
             );
 
+            $source_itemtype = match ($targetTable) {
+                'glpi_plugin_formcreator_targettickets'  => 'PluginFormcreatorTargetTicket',
+                'glpi_plugin_formcreator_targetproblems' => 'PluginFormcreatorTargetProblem',
+                'glpi_plugin_formcreator_targetchanges'  => 'PluginFormcreatorTargetChange',
+                default => throw new LogicException("Unknown target table {$targetTable}")
+            };
             $this->mapItem(
-                'PluginFormcreatorTarget' . basename($targetTable),
+                $source_itemtype,
                 $raw_target['id'],
                 FormDestination::class,
                 $destination->getID()
@@ -920,8 +1007,14 @@ class FormMigration extends AbstractPluginMigration
         ]);
 
         foreach ($raw_targets_actors as $raw_target_actor) {
+            $source_itemtype = match ($targetTable) {
+                'glpi_plugin_formcreator_targettickets'  => 'PluginFormcreatorTargetTicket',
+                'glpi_plugin_formcreator_targetproblems' => 'PluginFormcreatorTargetProblem',
+                'glpi_plugin_formcreator_targetchanges'  => 'PluginFormcreatorTargetChange',
+                default => throw new LogicException("Unknown target table {$targetTable}")
+            };
             $target_id = $this->getMappedItemTarget(
-                'PluginFormcreatorTarget' . basename($targetTable),
+                $source_itemtype,
                 $raw_target_actor['items_id']
             )['items_id'] ?? 0;
 
@@ -1043,6 +1136,218 @@ class FormMigration extends AbstractPluginMigration
             }
 
             $this->progress_indicator?->advance();
+        }
+    }
+
+    private function processMigrationOfConditions(): void
+    {
+        $this->progress_indicator?->setProgressBarMessage(__('Importing conditions...'));
+
+        // Retrieve data from glpi_plugin_formcreator_conditions table
+        $raw_conditions = $this->db->request([
+            'SELECT' => [
+                'glpi_plugin_formcreator_conditions.itemtype',
+                'glpi_plugin_formcreator_conditions.items_id',
+                'glpi_plugin_formcreator_conditions.plugin_formcreator_questions_id',
+                'glpi_plugin_formcreator_conditions.show_condition',
+                'glpi_plugin_formcreator_conditions.show_value',
+                'glpi_plugin_formcreator_conditions.show_logic',
+                'glpi_plugin_formcreator_conditions.order',
+                new QueryExpression(
+                    'COALESCE(glpi_plugin_formcreator_questions.show_rule, glpi_plugin_formcreator_sections.show_rule, glpi_plugin_formcreator_targettickets.show_rule, glpi_plugin_formcreator_targetchanges.show_rule, glpi_plugin_formcreator_targetproblems.show_rule)',
+                    'show_rule'
+                ),
+            ],
+            'FROM'   => 'glpi_plugin_formcreator_conditions',
+            'JOIN' => [
+                'glpi_plugin_formcreator_questions' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_conditions' => 'items_id',
+                        'glpi_plugin_formcreator_questions'  => 'id',
+                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorQuestion']]
+                    ]
+                ],
+                'glpi_plugin_formcreator_sections' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_conditions' => 'items_id',
+                        'glpi_plugin_formcreator_sections'   => 'id',
+                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorSection']]
+                    ]
+                ],
+                'glpi_plugin_formcreator_targettickets' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_conditions'    => 'items_id',
+                        'glpi_plugin_formcreator_targettickets' => 'id',
+                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorTargetTicket']]
+                    ]
+                ],
+                'glpi_plugin_formcreator_targetchanges' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_conditions'    => 'items_id',
+                        'glpi_plugin_formcreator_targetchanges' => 'id',
+                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorTargetChange']]
+                    ]
+                ],
+                'glpi_plugin_formcreator_targetproblems' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_conditions'     => 'items_id',
+                        'glpi_plugin_formcreator_targetproblems' => 'id',
+                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorTargetProblem']]
+                    ]
+                ]
+            ],
+            'HAVING'  => [
+                'NOT' => [
+                    'show_rule' => 'NULL'
+                ],
+            ],
+            'ORDER'  => [
+                'glpi_plugin_formcreator_conditions.order'
+            ]
+        ]);
+
+        $conditions = [];
+        foreach ($raw_conditions as $raw_condition) {
+            $target_item = $this->getMappedItemTarget(
+                $raw_condition['itemtype'],
+                $raw_condition['items_id']
+            );
+            $question_id = $this->getMappedItemTarget(
+                'PluginFormcreatorQuestion',
+                $raw_condition['plugin_formcreator_questions_id']
+            )['items_id'] ?? 0;
+
+            if ($target_item === null) {
+                $this->result->addMessage(
+                    MessageType::Error,
+                    sprintf(
+                        'Condition for itemtype "%s" and items_id "%s" not found. It will not be migrated.',
+                        $raw_condition['itemtype'],
+                        $raw_condition['items_id']
+                    )
+                );
+                continue;
+            } elseif ($question_id === 0) {
+                $this->result->addMessage(
+                    MessageType::Error,
+                    sprintf(
+                        'Question with id "%s" for itemtype "%s" and items_id "%s" not found. It will not be migrated.',
+                        $raw_condition['plugin_formcreator_questions_id'],
+                        $raw_condition['itemtype'],
+                        $raw_condition['items_id']
+                    )
+                );
+            }
+
+            $question = Question::getById($question_id);
+            if ($question === false) {
+                continue;
+            }
+
+            $value = $raw_condition['show_value'];
+            if (isset($question->fields['extra_data'])) {
+                $config              = $question->getQuestionType()->getExtraDataConfig(
+                    json_decode($question->fields['extra_data'], true)
+                );
+                $condition_handlers  = $question->getQuestionType()->getConditionHandlers($config);
+                $condition_handler   = null;
+
+                // Get the value operator before trying to find a compatible handler
+                $value_operator = $this->getValueOperatorFromLegacy($raw_condition['show_condition']);
+
+                if ($value_operator !== null) {
+                    $condition_handler = current(array_filter(
+                        $condition_handlers,
+                        function (ConditionHandlerInterface $handler) use ($value_operator) {
+                            if (!($handler instanceof ConditionHandlerDataConverterInterface)) {
+                                return false;
+                            }
+
+                            return in_array(
+                                $value_operator,
+                                $handler->getSupportedValueOperators()
+                            );
+                        }
+                    ));
+                }
+
+                if ($condition_handler) {
+                    /** @var ConditionHandlerDataConverterInterface $condition_handler */
+                    $value = $condition_handler->convertConditionValue($value);
+                }
+            }
+
+            if (is_a($target_item['itemtype'], FormDestination::class, true)) {
+                $creation_strategy = $this->getCreationStrategyFromLegacy($raw_condition['show_rule']);
+                if ($creation_strategy !== CreationStrategy::ALWAYS_CREATED) {
+                    $conditions[$target_item['itemtype']][$target_item['items_id']]['creation_strategy'] = $creation_strategy->value;
+                    $conditions[$target_item['itemtype']][$target_item['items_id']]['conditions'][] = [
+                        'item'           => sprintf('question-%s', $question->getUUID()),
+                        'value'          => $value,
+                        'item_type'      => 'question',
+                        'item_uuid'      => $question->getUUID(),
+                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition']),
+                        'logic_operator' => $this->getLogicOperatorFromLegacy($raw_condition['show_logic']),
+                    ];
+                }
+            } else {
+                $visibility_strategy = $this->getVisibilityStrategyFromLegacy($raw_condition['show_rule']);
+                if ($visibility_strategy !== VisibilityStrategy::ALWAYS_VISIBLE) {
+                    $conditions[$target_item['itemtype']][$target_item['items_id']]['visibility_strategy'] = $visibility_strategy->value;
+                    $conditions[$target_item['itemtype']][$target_item['items_id']]['conditions'][] = [
+                        'item'           => sprintf('question-%s', $question->getUUID()),
+                        'value'          => $value,
+                        'item_type'      => 'question',
+                        'item_uuid'      => $question->getUUID(),
+                        'value_operator' => $this->getValueOperatorFromLegacy($raw_condition['show_condition']),
+                        'logic_operator' => $this->getLogicOperatorFromLegacy($raw_condition['show_logic']),
+                    ];
+                }
+            }
+
+            $this->progress_indicator?->advance();
+        }
+
+        // Process all collected conditions at once
+        foreach ($conditions as $itemtype => $items) {
+            foreach ($items as $item_id => $data) {
+                $input = [];
+
+                if (isset($data['visibility_strategy'])) {
+                    $input = [
+                        'id'                  => $item_id,
+                        'visibility_strategy' => $data['visibility_strategy'],
+                        '_conditions'         => $data['conditions'],
+                    ];
+                } elseif (isset($data['creation_strategy'])) {
+                    $input = [
+                        'id'                => $item_id,
+                        'creation_strategy' => $data['creation_strategy'],
+                        '_conditions'       => $data['conditions'],
+                    ];
+                }
+
+                /**
+                 * If the target item is a block (Question or Comment), we must explicitly provide the horizontal_rank.
+                 * A frontend constraint resets horizontal_rank to NULL during update if it's not included in the input.
+                 */
+                if (is_a($itemtype, BlockInterface::class, true)) {
+                    $item = new $itemtype();
+                    $item->getFromDB($item_id);
+
+                    if ($item->fields['horizontal_rank'] !== null) {
+                        $input['horizontal_rank'] = $item->fields['horizontal_rank'];
+                    }
+                }
+
+                $this->importItem(
+                    $itemtype,
+                    $input,
+                    [
+                        'id' => $item_id
+                    ]
+                );
+            }
         }
     }
 
