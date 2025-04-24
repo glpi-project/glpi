@@ -34,11 +34,11 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
+use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
 use org\bovigo\vfs\vfsStream;
-use wapmorgan\UnifiedArchive\UnifiedArchive;
 
-class SourceCodeIntegrityChecker extends \GLPITestCase
+class SourceCodeIntegrityCheckerTest extends \GLPITestCase
 {
     private function setupVFS()
     {
@@ -78,60 +78,61 @@ EOL,
         ]);
     }
 
-    public function beforeTestMethod($method)
+    public function setUp(): void
     {
-        parent::beforeTestMethod($method);
+        parent::setUp();
+
         $this->setupVFS();
     }
 
     public function testGenerateManifest()
     {
-        /** @var \Glpi\System\Diagnostic\SourceCodeIntegrityChecker $checker */
-        $checker = new \mock\Glpi\System\Diagnostic\SourceCodeIntegrityChecker();
-        $this->calling($checker)->getCheckRootDir = static fn() => vfsStream::url('check_root_dir');
-        $this->string($checker->getCheckRootDir())->isEqualTo(vfsStream::url('check_root_dir'));
-        $manifest = $checker->generateManifest('CRC32c');
-        $this->array($manifest)->isEqualTo([
-            'algorithm' => 'CRC32c',
-            'files' => [
-                'index.php' => '4475f8b1',
-                'src/test.php' => '53fe1f55',
-                'src/test2.php' => '2803299a',
-                'status.php' => '82d603ce',
-            ]
-        ]);
+        $checker = new SourceCodeIntegrityChecker(vfsStream::url('check_root_dir'));
+
+        $this->assertEquals(
+            [
+                'algorithm' => 'CRC32c',
+                'files' => [
+                    'index.php' => '4475f8b1',
+                    'src/test.php' => '53fe1f55',
+                    'src/test2.php' => '2803299a',
+                    'status.php' => '82d603ce',
+                ]
+            ],
+            $checker->generateManifest('CRC32c')
+        );
     }
 
     public function testGetSummary()
     {
         $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
-        /** @var \Glpi\System\Diagnostic\SourceCodeIntegrityChecker $checker */
-        $checker = new \mock\Glpi\System\Diagnostic\SourceCodeIntegrityChecker();
-        $this->calling($checker)->getCheckRootDir = static fn() => vfsStream::url('check_root_dir');
-        $this->string($checker->getCheckRootDir())->isEqualTo(vfsStream::url('check_root_dir'));
-        file_put_contents(vfsStream::url('check_root_dir/version/' . $version), json_encode($checker->generateManifest('CRC32c'), JSON_THROW_ON_ERROR));
 
+        $checker = new SourceCodeIntegrityChecker(vfsStream::url('check_root_dir'));
+
+        file_put_contents(vfsStream::url('check_root_dir/version/' . $version), json_encode($checker->generateManifest('CRC32c'), JSON_THROW_ON_ERROR));
         file_put_contents(vfsStream::url('check_root_dir/src/test.php'), 'changed');
         file_put_contents(vfsStream::url('check_root_dir/src/test3.php'), 'added');
         file_put_contents(vfsStream::url('check_root_dir/src/test4.php'), 'added (with EOL)' . "\n");
         unlink(vfsStream::url('check_root_dir/src/test2.php'));
 
-        $this->array($checker->getSummary())->isEqualTo([
-            'src/test.php' => 1, // 1 = STATUS_ALTERED
-            'src/test2.php' => 2, // 2 = STATUS_MISSING
-            'src/test3.php' => 3, // 3 = STATUS_ADDED
-            'src/test4.php' => 3, // 3 = STATUS_ADDED
-        ]);
+        $this->assertEquals(
+            [
+                'src/test.php' => 1, // 1 = STATUS_ALTERED
+                'src/test2.php' => 2, // 2 = STATUS_MISSING
+                'src/test3.php' => 3, // 3 = STATUS_ADDED
+                'src/test4.php' => 3, // 3 = STATUS_ADDED
+            ],
+            $checker->getSummary()
+        );
     }
 
     public function testGetDiff()
     {
         $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
         $version_full = VersionParser::getNormalizedVersion(GLPI_VERSION);
-        /** @var \Glpi\System\Diagnostic\SourceCodeIntegrityChecker $checker */
-        $checker = new \mock\Glpi\System\Diagnostic\SourceCodeIntegrityChecker();
-        $this->calling($checker)->getCheckRootDir = static fn() => vfsStream::url('check_root_dir');
-        $this->string($checker->getCheckRootDir())->isEqualTo(vfsStream::url('check_root_dir'));
+
+        $checker = new SourceCodeIntegrityChecker(vfsStream::url('check_root_dir'));
+
         file_put_contents(vfsStream::url('check_root_dir/version/' . $version), json_encode($checker->generateManifest('CRC32c'), JSON_THROW_ON_ERROR));
 
         // Create tgz file from the vfs directory and save it to files/_tmp/ in the vfs.
@@ -151,7 +152,7 @@ EOL,
             $phar->addFromString('glpi/' . $path, file_get_contents($file->getPathname()));
         }
         $phar->compress(\Phar::GZ);
-        $this->boolean(rename(GLPI_TMP_DIR . '/glpi-' . $version_full . '.tar.gz', GLPI_TMP_DIR . '/glpi-' . $version_full . '.tgz'))->isTrue();
+        $this->assertTrue(rename(GLPI_TMP_DIR . '/glpi-' . $version_full . '.tar.gz', GLPI_TMP_DIR . '/glpi-' . $version_full . '.tgz'));
 
         unlink(vfsStream::url('check_root_dir/src/test.php'));
         file_put_contents(vfsStream::url('check_root_dir/src/test2.php'), <<<EOL
@@ -167,8 +168,9 @@ EOL
         $errors = [];
         $diff = $checker->getDiff(false, $errors);
         // Why not isEmpty? Because then atoum will not tell you what the contents are when this fails.
-        $this->array($errors)->isEqualTo([]);
-        $this->string(trim($diff))->isEqualTo(<<<EOL
+        $this->assertEmpty($errors);
+        $this->assertEquals(
+            <<<EOL
 diff --git a/src/test2.php b/src/test2.php
 --- a/src/test2.php
 +++ b/src/test2.php
@@ -200,7 +202,8 @@ deleted file mode 100644
 @@ -1 +1,0 @@
 -test1
 \ No newline at end of file
-EOL
+EOL,
+            trim($diff)
         );
     }
 }
