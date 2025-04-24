@@ -40,25 +40,32 @@ use org\bovigo\vfs\vfsStream;
 
 class SourceCodeIntegrityCheckerTest extends \GLPITestCase
 {
-    private function setupVFS()
+    /**
+     * Setup the minimal VFS structure required to compute the manifest, and containing some fake files.
+     */
+    private function setupVFS(): void
     {
         $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
         vfsStream::setup('check_root_dir', null, [
             'ajax' => [],
+            'bin' => [
+                'console' => 'GLPI console',
+            ],
             'css' => [],
+            'dependency_injection' => [],
             'front' => [],
             'files' => [
                 '_tmp' => []
             ],
             'inc' => [],
             'install' => [],
-            'js' => [],
             'lib' => [],
             'locales' => [],
-            'pics' => [],
-            'public' => [],
+            'public' => [
+                'index.php' => 'GLPI router',
+            ],
             'resources' => [],
-            'sound' => [],
+            'routes' => [],
             'src' => [
                 'test.php' => 'test1',
                 'test2.php' => <<<EOL
@@ -73,30 +80,23 @@ EOL,
             'version' => [
                 $version => ''
             ],
-            'index.php' => 'index',
-            'status.php' => 'status',
         ]);
-    }
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->setupVFS();
     }
 
     public function testGenerateManifest()
     {
+        $this->setupVFS();
+
         $checker = new SourceCodeIntegrityChecker(vfsStream::url('check_root_dir'));
 
         $this->assertEquals(
             [
                 'algorithm' => 'CRC32c',
                 'files' => [
-                    'index.php' => '4475f8b1',
+                    'bin/console' => '01f78965',
+                    'public/index.php' => '8461e565',
                     'src/test.php' => '53fe1f55',
                     'src/test2.php' => '2803299a',
-                    'status.php' => '82d603ce',
                 ]
             ],
             $checker->generateManifest('CRC32c')
@@ -105,6 +105,8 @@ EOL,
 
     public function testGetSummary()
     {
+        $this->setupVFS();
+
         $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
 
         $checker = new SourceCodeIntegrityChecker(vfsStream::url('check_root_dir'));
@@ -128,6 +130,8 @@ EOL,
 
     public function testGetDiff()
     {
+        $this->setupVFS();
+
         $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
         $version_full = VersionParser::getNormalizedVersion(GLPI_VERSION);
 
@@ -205,5 +209,40 @@ deleted file mode 100644
 EOL,
             trim($diff)
         );
+    }
+
+    public function testGenerateManifestExceptionOnMissingSourceDirectory()
+    {
+        vfsStream::setup('root', null, []);
+        $root_dir = vfsStream::url('root');
+
+        $checker = new SourceCodeIntegrityChecker($root_dir);
+
+        $this->expectExceptionObject(new \RuntimeException(sprintf('`%s/ajax` does not exist in the filesystem.', $root_dir)));
+        $checker->generateManifest('CRC32c');
+    }
+
+    public function testGetSummaryExceptionOnMissingManifestFile()
+    {
+        vfsStream::setup('root', null, []);
+        $root_dir = vfsStream::url('root');
+
+        $checker = new SourceCodeIntegrityChecker($root_dir);
+
+        $this->expectExceptionObject(new \RuntimeException('Error while trying to read the source code file manifest.'));
+        $checker->getSummary();
+    }
+
+    public function testGetSummaryExceptionOnInvalidManifestFile()
+    {
+        $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
+
+        vfsStream::setup('root', null, ['version' => [$version => '{invalid_json']]);
+        $root_dir = vfsStream::url('root');
+
+        $checker = new SourceCodeIntegrityChecker($root_dir);
+
+        $this->expectExceptionObject(new \RuntimeException('The source code file manifest is invalid.'));
+        $checker->getSummary();
     }
 }

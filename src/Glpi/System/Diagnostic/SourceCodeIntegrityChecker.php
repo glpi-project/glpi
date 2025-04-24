@@ -71,25 +71,48 @@ class SourceCodeIntegrityChecker
     private function getPathsToCheck(): array
     {
         return [
-            'ajax', 'css', 'front', 'inc', 'install', 'js', 'lib', 'locales', 'pics',
-            'public', 'resources', 'sound', 'src', 'templates', 'vendor',
-            'index.php', 'status.php'
+            'ajax',
+            'bin',
+            'css',
+            'dependency_injection',
+            'front',
+            'inc',
+            'install',
+            'lib',
+            'locales',
+            'public',
+            'resources',
+            'routes',
+            'src',
+            'templates',
+            'vendor',
         ];
     }
 
     /**
      * Returns the source code manifest contents.
      *
-     * @return array|null
-     * @phpstan-return array{algorithm: string, files: array<string, string>}|null
+     * @return array{algorithm: string, files: array<string, string>}
+     *
      * @throws \JsonException
      */
-    private function getBaselineManifest(): ?array
+    private function getBaselineManifest(): array
     {
-        $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
-        $manifest = file_get_contents($this->root_dir . '/version/' . $version);
+        $manifest_path = \sprintf(
+            '%s/version/%s',
+            $this->root_dir,
+            VersionParser::getNormalizedVersion(GLPI_VERSION, false)
+        );
+
+        if (
+            \is_readable($manifest_path) === false
+            || ($manifest = \file_get_contents($manifest_path)) === false
+        ) {
+            throw new \RuntimeException('Error while trying to read the source code file manifest.');
+        }
+
         try {
-            $content = json_decode($manifest, true, 512, JSON_THROW_ON_ERROR);
+            $content = \json_decode($manifest, associative: true, flags: JSON_THROW_ON_ERROR);
         } catch (\Throwable $e) {
             throw new \RuntimeException('The source code file manifest is invalid.', previous: $e);
         }
@@ -113,6 +136,11 @@ class SourceCodeIntegrityChecker
         $hashes = [];
         foreach ($to_scan as $item) {
             $path = $this->root_dir . '/' . $item;
+
+            if (!\file_exists($path)) {
+                throw new \RuntimeException(sprintf('`%s` does not exist in the filesystem.', $path));
+            }
+
             if (is_dir($path)) {
                 $iterator = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
                 // flatten the iterator
