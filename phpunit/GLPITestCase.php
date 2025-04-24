@@ -191,12 +191,13 @@ class GLPITestCase extends TestCase
     /**
      * Call a private constructor, and get the created instance.
      *
-     * @param string    $classname  Class to instanciate
-     * @param mixed     $arg        Constructor arguments
+     * @template T
+     * @param class-string<T>   $classname  Class to instanciate
+     * @param array             $args       Constructor arguments
      *
-     * @return mixed
+     * @return T
      */
-    protected function callPrivateConstructor($classname, $args)
+    protected function callPrivateConstructor(string $classname, array $args = [])
     {
         $class = new ReflectionClass($classname);
         $instance = $class->newInstanceWithoutConstructor();
