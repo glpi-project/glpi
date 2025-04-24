@@ -5403,7 +5403,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         $iterator = $DB->request($request);
-        $blank_params = (strpos($target, '?') ? '&' : '?') . "id=-1&withtemplate=2";
+        $blank_params = (strpos($target, '?') ? '&' : '?') . "id=-1";
         $target_blank = $target . $blank_params;
 
         if ($add && count($iterator) === 0) {
