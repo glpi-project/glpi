@@ -669,14 +669,6 @@ function loadDataset()
                 'is_active' => 1,
                 'is_confidential' => 1,
                 'name' => 'Test OAuth Client',
-            ],
-            [
-                'redirect_uri' => ["/api.php/oauth2/redirection"],
-                'grants' => ['authorization_code'],
-                'scopes' => ['api', 'user'],
-                'is_active' => 1,
-                'is_confidential' => 1,
-                'name' => 'Test E2E OAuth Client',
             ]
         ],
         'CartridgeItem' => [
@@ -764,14 +756,6 @@ function loadDataset()
         }
         Search::$search = [];
         Config::setConfigurationValues('phpunit', ['dataset' => $data['_version']]);
-
-        // Set well known OAuth client ID and secret to be used in E2E tests where we cannot find the secret
-        $e2e_oauth = getItemByTypeName('OAuthClient', 'Test E2E OAuth Client');
-        $e2e_oauth->update([
-            'id' => $e2e_oauth->getID(),
-            'identifier' => '9246d35072ff62193330003a8106d947fafe5ac036d11a51ebc7ca11b9bc135e',
-            'secret' => 'd2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1'
-        ]);
     }
     $DB->commit();
 

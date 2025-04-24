@@ -35,71 +35,27 @@ describe('OAuth - Authorization Code Grant', () => {
     const oauthclient_secret = 'd2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1';
 
     function doAuthCodeGrant(expect_already_logged_in = false, remember_me = false) {
-        function doGLPILogin(redirect_url, csrf_token) {
-            // cy.findByRole('textbox', {'name': "Login"}).type('e2e_tests');
-            // cy.findByLabelText("Password").type('glpi');
-            // if (remember_me) {
-            //     cy.findByRole('checkbox', {name: "Remember me"}).check();
-            // } else {
-            //     cy.findByRole('checkbox', {name: "Remember me"}).uncheck();
-            // }
-            // cy.getDropdownByLabelText("Login source").selectDropdownValue('GLPI internal database');
-            // cy.findByRole('button', {name: "Sign in"}).click();
-
-            // Do login as request instead of visit
-            const body = {
-                login_name: 'e2e_tests',
-                login_password: 'glpi',
-                auth: 0,
-                _glpi_csrf_token: csrf_token,
-                redirect: redirect_url,
-                noAUTO: 0
-            };
+        function doGLPILogin() {
+            cy.findByRole('textbox', {'name': "Login"}).type('e2e_tests');
+            cy.findByLabelText("Password").type('glpi');
             if (remember_me) {
-                body.login_remember = 1;
+                cy.findByRole('checkbox', {name: "Remember me"}).check();
+            } else {
+                cy.findByRole('checkbox', {name: "Remember me"}).uncheck();
             }
-            cy.request({
-                method: 'POST',
-                url: '/front/login.php',
-                form: true,
-                body: body,
-            }).then((response) => {
-                expect(response.status).to.eq(200);
-            });
+            cy.getDropdownByLabelText("Login source").selectDropdownValue('GLPI internal database');
+            cy.findByRole('button', {name: "Sign in"}).click();
         }
 
         function doAuthorization() {
 
         }
 
-        cy.request({
-            method: 'GET',
-            url: '/api.php/Authorize',
-            qs: {
-                response_type: 'code',
-                client_id: oauthclient_id,
-                scope: 'api user',
-                redirect_uri: '/api.php/oauth2/redirection',
-                //state: 'test_state'
-            },
-        }).then((response) => {
-            expect(response.status).to.eq(200);
-            expect(response.allRequestResponses).to.have.length(2);
-
-            expect(response.allRequestResponses[1]['Request URL']).to.contain(
-                encodeURIComponent(`/api.php/v2/authorize?scope=api+user&client_id=${oauthclient_id}&response_type=code&redirect_uri=${encodeURIComponent('/api.php/oauth2/redirection')}`)
-            );
-
-            if (!expect_already_logged_in) {
-                // Should be on a GLPI login page
-                const parsed_html = Cypress.$(`<div>${response.body}</div>`);
-                expect(parsed_html.find('title').text()).to.eq('Authentication - GLPI');
-                const redirect_url = parsed_html.find('input[name="redirect"]').val();
-                const csrf_token = parsed_html.find('input[name="_glpi_csrf_token"]').val();
-                doGLPILogin(redirect_url, csrf_token);
-            }
-            doAuthorization();
-        });
+        cy.visit(`/api.php/Authorize?response_type=code&client_id=${oauthclient_id}&scope=api user&redirect_uri=/api.php/oauth2/redirection`);
+        if (!expect_already_logged_in) {
+            doGLPILogin();
+        }
+        doAuthorization();
     }
 
     it('Should authorize without cookie - no remember me', () => {

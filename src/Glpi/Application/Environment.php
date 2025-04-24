@@ -178,7 +178,7 @@ enum Environment: string
         // In others environments, we must match for changes.
         return match ($this) {
             default           => false,
-            self::DEVELOPMENT => true,
+            self::DEVELOPMENT, self::TESTING => true,
         };
     }
 
