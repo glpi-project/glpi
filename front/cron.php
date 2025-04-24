@@ -42,6 +42,19 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 global $DB, $CFG_GLPI;
 
 if (PHP_SAPI === 'cli') {
+    // Execution from the CLI context (mainly crontab)
+
+    // Try detecting if we are running with the root user (Not available on Windows)
+    // /!\ Keep it before the Kernel boot.
+    if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
+        echo "\t" . 'WARNING: running as root is discouraged.' . "\n";
+        echo "\t" . 'You should run the script as the same user that your web server runs as to avoid file permissions being ruined.' . "\n";
+        if (!in_array('--allow-superuser', $_SERVER['argv'], true)) {
+            echo "\t" . 'Use --allow-superuser option to bypass this limitation.' . "\n";
+            exit(1);
+        }
+    }
+
     // Check the resources state before trying to instanciate the Kernel.
     // It must be done here as this check must be done even when the Kernel
     // cannot be instanciated due to missing dependencies.
@@ -64,7 +77,7 @@ if (PHP_SAPI === 'cli') {
 
     if ($CFG_GLPI['maintenance_mode'] ?? false) {
         echo 'Service is down for maintenance. It will be back shortly.' . PHP_EOL;
-        exit();
+        exit(1);
     }
 
     if (!($DB instanceof DBmysql)) {
@@ -72,45 +85,54 @@ if (PHP_SAPI === 'cli') {
             'ERROR: The database configuration file "%s" is missing or is corrupted. You have to either restart the install process, or restore this file.',
             GLPI_CONFIG_DIR . '/config_db.php'
         ) . PHP_EOL;
-        exit();
+        exit(1);
     }
 
     if (!$DB->connected) {
         echo 'ERROR: The connection to the SQL server could not be established. Please check your configuration.' . PHP_EOL;
-        exit();
+        exit(1);
     }
 
     if (!Config::isLegacyConfigurationLoaded()) {
         echo 'ERROR: Unable to load the GLPI configuration from the database.' . PHP_EOL;
-        exit();
+        exit(1);
     }
 
     if (Update::isUpdateMandatory()) {
         echo 'The GLPI codebase has been updated. The update of the GLPI database is necessary.' . PHP_EOL;
-        exit();
-    }
-}
-
-// Ensure current directory when run from crontab
-chdir(__DIR__);
-
-// Try detecting if we are running with the root user (Not available on Windows)
-if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
-    echo "\t" . 'WARNING: running as root is discouraged.' . "\n";
-    echo "\t" . 'You should run the script as the same user that your web server runs as to avoid file permissions being ruined.' . "\n";
-    if (!in_array('--allow-superuser', $_SERVER['argv'], true)) {
-        echo "\t" . 'Use --allow-superuser option to bypass this limitation.' . "\n";
         exit(1);
     }
-}
 
-if (!is_writable(GLPI_LOCK_DIR)) {
-    echo "\t" . sprintf('ERROR: %s is not writable.' . "\n", GLPI_LOCK_DIR);
-    echo "\t" . 'Run the script as the same user that your web server runs as.' . "\n";
-    exit(1);
-}
+    if (!is_writable(GLPI_LOCK_DIR)) {
+        echo "\t" . sprintf('ERROR: %s is not writable.' . "\n", GLPI_LOCK_DIR);
+        echo "\t" . 'Run the script as the same user that your web server runs as.' . "\n";
+        exit(1);
+    }
 
-if (!isCommandLine()) {
+    if (isset($_SERVER['argc']) && ($_SERVER['argc'] > 1)) {
+        // Parse command line options
+
+        $mode = CronTask::MODE_EXTERNAL; // when taskname given, will allow --force
+        for ($i = 1; $i < $_SERVER['argc']; $i++) {
+            if ($_SERVER['argv'][$i] == '--force') {
+                $mode = -CronTask::MODE_EXTERNAL;
+            } else if (is_numeric($_SERVER['argv'][$i])) {
+                // Number of tasks
+                CronTask::launch(CronTask::MODE_EXTERNAL, intval($_SERVER['argv'][$i]));
+                // Only check first parameter when numeric is passed
+                break;
+            } else {
+                // Single Task name
+                CronTask::launch($mode, 1, $_SERVER['argv'][$i]);
+            }
+        }
+    } else {
+        // Default from configuration
+        CronTask::launch(CronTask::MODE_EXTERNAL, $CFG_GLPI['cron_limit']);
+    }
+} else {
+    // Execution from the web context
+
     // The advantage of using background-image is that cron is called in a separate
     // request and thus does not slow down output of the main page as it would if called
     // from there.
@@ -144,24 +166,4 @@ if (!isCommandLine()) {
             'Connection'     => 'close',
         ]
     );
-} else if (isset($_SERVER['argc']) && ($_SERVER['argc'] > 1)) {
-   // Parse command line options
-
-    $mode = CronTask::MODE_EXTERNAL; // when taskname given, will allow --force
-    for ($i = 1; $i < $_SERVER['argc']; $i++) {
-        if ($_SERVER['argv'][$i] == '--force') {
-            $mode = -CronTask::MODE_EXTERNAL;
-        } else if (is_numeric($_SERVER['argv'][$i])) {
-           // Number of tasks
-            CronTask::launch(CronTask::MODE_EXTERNAL, intval($_SERVER['argv'][$i]));
-           // Only check first parameter when numeric is passed
-            break;
-        } else {
-           // Single Task name
-            CronTask::launch($mode, 1, $_SERVER['argv'][$i]);
-        }
-    }
-} else {
-   // Default from configuration
-    CronTask::launch(CronTask::MODE_EXTERNAL, $CFG_GLPI['cron_limit']);
 }
