@@ -72,7 +72,7 @@ final class Kernel extends BaseKernel
             $env->value,
             // `debug: true` will ensure that cache is recompiled everytime a corresponding resource is updated.
             // Reserved for dev/test environments as it consumes many disk I/O.
-            debug: $env->shouldExpectRessourcesToChange(),
+            debug: $env->shouldExpectResourcesToChange(),
         );
     }
 

@@ -171,14 +171,14 @@ enum Environment: string
      * This may affect which cache we decide to set (twig, http cache on the
      * generated css and locale, ...)
      */
-    public function shouldExpectRessourcesToChange(): bool
+    public function shouldExpectResourcesToChange(): bool
     {
         // Only production/staging environment are considered as environments
         // where resources are not supposed to change.
         // In others environments, we must match for changes.
         return match ($this) {
             default           => false,
-            self::DEVELOPMENT => true,
+            self::DEVELOPMENT, self::TESTING => true,
         };
     }
 

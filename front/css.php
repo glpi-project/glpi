@@ -61,7 +61,7 @@ header('Content-Type: text/css');
 
 $is_cacheable = !isset($_GET['nocache'])
     // do not use browser cache on env where the source files may change
-    && !Environment::get()->shouldExpectRessourcesToChange()
+    && !Environment::get()->shouldExpectResourcesToChange()
 ;
 if ($is_cacheable) {
    // Makes CSS cacheable by browsers and proxies
