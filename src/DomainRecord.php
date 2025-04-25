@@ -42,6 +42,7 @@ class DomainRecord extends CommonDBChild
     public static $itemtype        = 'Domain';
     public static $items_id        = 'domains_id';
     public $dohistory              = true;
+    public static $mustBeAttached  = false;
 
     public static function getTypeName($nb = 0)
     {
