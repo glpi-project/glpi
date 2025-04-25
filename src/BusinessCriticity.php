@@ -47,6 +47,6 @@ class BusinessCriticity extends CommonTreeDropdown
 
     public static function getIcon()
     {
-        return "fas fa-briefcase";
+        return "ti ti-briefcase";
     }
 }

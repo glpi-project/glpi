@@ -243,6 +243,6 @@ class FQDN extends CommonDropdown
 
     public static function getIcon()
     {
-        return "fas fa-globe";
+        return "ti ti-world";
     }
 }

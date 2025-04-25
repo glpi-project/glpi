@@ -853,4 +853,9 @@ class State extends CommonTreeDropdown
             $this->fields['is_visible_' . strtolower($visibility['visible_itemtype'])] = $visibility['is_visible'];
         }
     }
+
+    public static function getIcon()
+    {
+        return "ti ti-label";
+    }
 }

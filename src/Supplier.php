@@ -621,6 +621,6 @@ class Supplier extends CommonDBTM
 
     public static function getIcon()
     {
-        return "fas fa-dolly";
+        return "ti ti-shopping-cart";
     }
 }

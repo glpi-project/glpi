@@ -154,6 +154,6 @@ class WifiNetwork extends CommonDropdown
 
     public static function getIcon()
     {
-        return "fas fa-wifi";
+        return "ti ti-wifi";
     }
 }

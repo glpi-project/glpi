@@ -145,7 +145,7 @@ if (
                     ) {
                         echo Html::scriptBlock(
                             sprintf(
-                                '$("#%s").html("href", "&nbsp;<a class=\'fas fa-crosshairs\' href=\'%s\'></a>");',
+                                '$("#%s").html("href", "&nbsp;<a class=\'ti ti-crosshairs\' href=\'%s\'></a>");',
                                 htmlescape($_POST['with_dc_position']),
                                 htmlescape($rack->getLinkURL())
                             )

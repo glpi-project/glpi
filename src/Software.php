@@ -247,7 +247,7 @@ class Software extends CommonDBTM
             && (countElementsInTable("glpi_rules", ['sub_type' => 'RuleSoftwareCategory']) > 0)
         ) {
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'compute_software_category']
-            = "<i class='fas fa-calculator'></i>" .
+            = "<i class='ti ti-calculator'></i>" .
               __s('Recalculate the category');
         }
 
@@ -256,7 +256,7 @@ class Software extends CommonDBTM
             && (countElementsInTable("glpi_rules", ['sub_type' => 'RuleDictionnarySoftware']) > 0)
         ) {
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'replay_dictionnary']
-            = "<i class='fas fa-undo'></i>" .
+            = "<i class='ti ti-arrow-back-up'></i>" .
               __s('Replay the dictionary rules');
         }
 

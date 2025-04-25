@@ -259,7 +259,7 @@ class Group extends CommonTreeDropdown
             $prefix                            = 'Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR;
             $actions[$prefix . 'add']            = "<i class='ti ti-user-plus'></i>" .
                                               _sx('button', 'Add a user');
-            $actions[$prefix . 'add_supervisor'] = "<i class='fas fa-user-tie'></i>" .
+            $actions[$prefix . 'add_supervisor'] = "<i class='ti ti-user-star'></i>" .
                                               _sx('button', 'Add a manager');
             $actions[$prefix . 'remove']         = "<i class='ti ti-user-minus'></i>" .
                                               _sx('button', 'Remove a user');

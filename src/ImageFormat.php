@@ -45,7 +45,7 @@ class ImageFormat extends CommonDropdown
 
     public static function getIcon()
     {
-        return "far fa-file-image";
+        return "ti ti-photo-cog";
     }
 
     public function cleanDBonPurge()

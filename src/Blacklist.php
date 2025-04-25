@@ -563,7 +563,7 @@ class Blacklist extends CommonDropdown
 
     public static function getIcon()
     {
-        return "fas fa-ban";
+        return "ti ti-ban";
     }
 
     public function getCloneRelations(): array

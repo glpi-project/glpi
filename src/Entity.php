@@ -2895,7 +2895,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         $out = "<div class='badge bg-azure-lt m-1 py-1 " . ($inline ? "inline" : "") . "'
                    title='" . __s("Value inherited from a parent entity") . "'
                    data-bs-toggle='tooltip'>
-         <i class='fas fa-level-down-alt me-1'></i>
+         <i class='ti ti-corner-right-down me-1'></i>
          $value
       </div>";
 
@@ -3020,7 +3020,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             $title = htmlescape(implode(' > ', $names));
         }
         $breadcrumbs = implode(
-            '<i class="fas fa-caret-right mx-1"></i>',
+            '<i class="ti ti-caret-right-filled mx-1"></i>',
             array_map(
                 static fn(string $name) => '<span class="text-nowrap">' . htmlescape($name) . '</span>',
                 $names
@@ -3061,14 +3061,14 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         $title       = htmlescape(implode(' > ', $names));
         $last_name   = array_pop($names);
         $breadcrumbs = implode(
-            '<i class="fas fa-caret-right mx-1"></i>',
+            '<i class="ti ti-caret-right-filled mx-1"></i>',
             array_map(
                 static fn(string $name) => '<span class="text-nowrap text-muted">' . htmlescape($name) . '</span>',
                 $names
             )
         );
 
-        $last_url  = '<i class="fas fa-caret-right mx-1"></i>' . '<a href="' . $entity->getLinkURL() . '" title="' . $title . '">' . htmlescape($last_name) . '</a>';
+        $last_url  = '<i class="ti ti-caret-right-filled mx-1"></i>' . '<a href="' . $entity->getLinkURL() . '" title="' . $title . '">' . htmlescape($last_name) . '</a>';
 
         return '<span class="glpi-badge" title="' . $title . '">' . $breadcrumbs . $last_url . '</span>';
     }

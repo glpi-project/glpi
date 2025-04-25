@@ -4304,7 +4304,7 @@ TWIG, $twig_params);
 
     public static function getIcon()
     {
-        return "far fa-address-book";
+        return "ti ti-address-book";
     }
 
     /**

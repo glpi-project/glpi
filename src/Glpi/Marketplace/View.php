@@ -748,7 +748,7 @@ HTML;
                 <button class='modify_plugin'
                         data-action='clean_plugin'
                         title='" . __s("Clean") . "'>
-                        <i class='fas fa-broom'></i>
+                        <i class='ti ti-recycle'></i>
                 </button>";
             if ($can_be_downloaded) {
                 $buttons .= "

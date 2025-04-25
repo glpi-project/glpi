@@ -3869,7 +3869,7 @@ final class Transfer extends CommonDBTM
 
     public static function getIcon()
     {
-        return "fas fa-level-up-alt";
+        return "ti ti-corner-right-up";
     }
 
     public function getItemtypes(): array

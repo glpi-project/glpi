@@ -107,7 +107,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info d-flex" role="alert">
-                        <i class="fas fa-exclamation-circle fa-2x me-2"></i>
+                        <i class="ti ti-alert-circle-filled fa-2x me-2"></i>
                         <p v-html="shortcut_message"></p>
                     </div>
                     <input type="text" class="form-control" :placeholder="placeholder" v-model="input_text">

@@ -388,20 +388,20 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         return [
             self::LINK_TO => [
                 'name' => __('Linked to'),
-                'icon' => 'fas fa-link',
+                'icon' => 'ti ti-link',
             ],
             self::DUPLICATE_WITH => [
                 'name' => __('Duplicates'),
-                'icon' => 'fas fa-clone',
+                'icon' => 'ti ti-copy-plus-filled',
             ],
             self::SON_OF => [
                 'name' => __('Son of'),
-                'icon' => 'fa-level-up-alt fa-flip-horizontal',
+                'icon' => 'ti ti-corner-left-up',
                 'inverse' => self::PARENT_OF,
             ],
             self::PARENT_OF => [
                 'name' => __('Parent of'),
-                'icon' => 'fa-level-up-alt',
+                'icon' => 'ti ti-corner-left-down',
                 'inverse' => self::SON_OF,
             ],
         ];

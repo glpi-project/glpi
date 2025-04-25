@@ -322,7 +322,7 @@ class TaskTemplate extends AbstractITILChildTemplate
 
     public static function getIcon()
     {
-        return "fas fa-layer-group";
+        return "ti ti-stack-2-filled";
     }
 
     public function getCloneRelations(): array

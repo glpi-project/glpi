@@ -264,6 +264,6 @@ class DeviceNetworkCard extends CommonDevice
 
     public static function getIcon()
     {
-        return "fas fa-network-wired";
+        return NetworkPort::getIcon();
     }
 }
