@@ -48,7 +48,43 @@ describe('OAuth - Authorization Code Grant', () => {
         }
 
         function doAuthorization() {
-
+            // Should be on a page asking the user to approve or reject the authorization request
+            cy.findByRole('heading', {name: 'Test E2E OAuth Client wants to access your GLPI account'}).should('be.visible');
+            cy.findByText('Access to the API').should('be.visible');
+            cy.findByText('Access to the user\'s information').should('be.visible');
+            cy.findByRole('button', {name: 'Deny'}).should('be.visible');
+            // Clicking the Accept button would go to a 401 error page, because we didn't give a real redirect URL, which Cypress will have issues with because it isn't an HTML page
+            // We only care that the redirect URL includes the code parameter
+            cy.url().then((url) => {
+                cy.request({
+                    url: `${url}&accept=1`,
+                    failOnStatusCode: false
+                }).then((response) => {
+                    expect(response.status).to.eq(401);
+                    expect(response.redirects[0]).to.include('code=');
+                    // extract the code from the URL
+                    const code = response.redirects[0].split('code=')[1];
+                    // Request the token now
+                    cy.request({
+                        method: 'POST',
+                        url: '/api.php/token',
+                        body: {
+                            grant_type: 'authorization_code',
+                            client_id: oauthclient_id,
+                            client_secret: oauthclient_secret,
+                            code: code,
+                            redirect_uri: '/api.php/oauth2/redirection'
+                        },
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then((response) => {
+                        expect(response.status).to.eq(200);
+                        expect(response.body.access_token).to.exist;
+                        expect(response.body.refresh_token).to.exist;
+                    });
+                });
+            });
         }
 
         cy.visit(`/api.php/Authorize?response_type=code&client_id=${oauthclient_id}&scope=api user&redirect_uri=/api.php/oauth2/redirection`);
@@ -61,11 +97,11 @@ describe('OAuth - Authorization Code Grant', () => {
     it('Should authorize without cookie - no remember me', () => {
         doAuthCodeGrant();
     });
-    // it('Should authorize without cookie - remember me', () => {
-    //     doAuthCodeGrant(false, true);
-    // });
-    // it('Should authorize with cookie', () => {
-    //     cy.login();
-    //     doAuthCodeGrant(true);
-    // });
+    it('Should authorize without cookie - remember me', () => {
+        doAuthCodeGrant(false, true);
+    });
+    it('Should authorize with cookie', () => {
+        cy.login();
+        doAuthCodeGrant(true);
+    });
 });
