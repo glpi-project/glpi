@@ -42,6 +42,13 @@ describe('User form', () => {
         cy.url().should('include', '/front/updatepassword.php');
     });
     it('Change other password field', () => {
+        // E2E user shouldn't have access to change password button since they exist in an entity below the "tech" user
+        cy.visit('/front/user.form.php?id=4');
+        cy.findByRole('tab', { name: 'User' }).click();
+        cy.findByRole('button', { name: /Change password/ }).should('not.exist');
+        // Need to log in as the default super-admin to have more permissions over the "tech" user to test they can see the change password button
+        cy.login('glpi', 'glpi');
+        cy.changeEntity(0, true);
         cy.visit('/front/user.form.php?id=4');
         cy.findByRole('tab', { name: 'User' }).click();
         cy.findByRole('button', { name: /Change password/ }).click();
