@@ -1558,6 +1558,101 @@ final class FormMigrationTest extends DbTestCase
         );
     }
 
+    public function testFormMigrationConditionsForComments(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Create a form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name' => 'Test form migration condition for questions',
+            ]
+        ));
+        $form_id = $DB->insertId();
+
+        // Insert a section for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'plugin_formcreator_forms_id' => $form_id
+            ]
+        ));
+        $section_id = $DB->insertId();
+
+        // Insert a question for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name'                           => 'Test form migration condition for comments - Target question',
+                'plugin_formcreator_sections_id' => $section_id,
+            ]
+        ));
+        $target_question_id = $DB->insertId();
+
+        // Insert a comment to apply conditions on
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name'                           => 'Test form migration condition for comments - Condition comment',
+                'plugin_formcreator_sections_id' => $section_id,
+                'fieldtype'                      => 'description',
+                'show_rule'                      => 3,
+            ]
+        ));
+        $condition_comment_id = $DB->insertId();
+
+        // Insert condition
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_conditions',
+            [
+                'itemtype'                        => 'PluginFormcreatorQuestion',
+                'items_id'                        => $condition_comment_id,
+                'plugin_formcreator_questions_id' => $target_question_id,
+                'show_condition'                  => 1,
+                'show_value'                      => 'Test',
+                'show_logic'                      => 1,
+            ]
+        ));
+
+        // Process migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Verify that the condition has been migrated correctly
+        /** @var Form $form */
+        $form = getItemByTypeName(Form::class, 'Test form migration condition for questions');
+        $this->assertCount(1, $form->getSections());
+        $this->assertCount(1, $form->getQuestions());
+        $this->assertCount(1, $form->getFormComments());
+
+        /** @var FormComment $condition_comment */
+        $condition_comment = getItemByTypeName(Comment::class, 'Test form migration condition for comments - Condition comment');
+        $this->assertNotFalse($condition_comment);
+        $this->assertEquals(VisibilityStrategy::HIDDEN_IF, $condition_comment->getConfiguredVisibilityStrategy());
+        $this->assertEquals(
+            [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => 'Test',
+                    'logic_operator' => LogicOperator::AND,
+                ]
+            ],
+            array_map(
+                fn (ConditionData $condition) => [
+                    'value_operator' => $condition->getValueOperator(),
+                    'value'          => $condition->getValue(),
+                    'logic_operator' => $condition->getLogicOperator(),
+                ],
+                $condition_comment->getConfiguredConditionsData()
+            )
+        );
+    }
+
     public static function provideFormMigrationConditionsForDestinations(): iterable
     {
         $creation_strategies = [
