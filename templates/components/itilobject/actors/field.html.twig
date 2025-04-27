@@ -46,7 +46,7 @@
 {% set onchange = '' %}
 {% set allow_auto_submit = allow_auto_submit ?? true %}
 {% if allow_auto_submit and item.isNewItem() and actortype == "requester" %}
-   {% set onchange = 'this.form.submit();' %}
+   {% set onchange = 'e.target.form.submit();' %}
 {% endif %}
 
 {% if not is_actor_hidden %}
@@ -356,11 +356,11 @@
             saveActorsToDom();
         }
 
-        $("#actor_{{ rand }}").on('select2:select', () => {
+        $("#actor_{{ rand }}").on('select2:select', (e) => {
             updateActors();
             {{ onchange }}
         });
-        $("#actor_{{ rand }}").on('select2:unselect', () => {
+        $("#actor_{{ rand }}").on('select2:unselect', (e) => {
             updateActors();
             {{ onchange }}
         });
