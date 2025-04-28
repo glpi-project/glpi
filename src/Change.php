@@ -1073,6 +1073,7 @@ class Change extends CommonITILObject
             return false;
         }
 
+        $JOINS = [];
         $WHERE = [
             'is_deleted' => 0
         ];
@@ -1118,6 +1119,28 @@ class Change extends CommonITILObject
                 );
                 break;
 
+            case "tovalidate": // changes waiting for validation
+                $JOINS['LEFT JOIN'] = [
+                    'glpi_changevalidations' => [
+                        'ON' => [
+                            'glpi_changevalidations'   => 'changes_id',
+                            'glpi_changes'             => 'id'
+                        ]
+                    ]
+                ];
+                $WHERE = array_merge(
+                    $WHERE,
+                    [
+                        'glpi_changevalidations.users_id_validate'              => Session::getLoginUserID(),
+                        'glpi_changevalidations.status'  => CommonITILValidation::WAITING,
+                        'glpi_changes.global_validation' => CommonITILValidation::WAITING,
+                        'NOT'                            => [
+                            'glpi_changevalidations.status'   => [self::SOLVED, self::CLOSED]
+                        ]
+                    ]
+                );
+                break;
+
             default:
                 $WHERE = array_merge(
                     $WHERE,
@@ -1150,6 +1173,11 @@ class Change extends CommonITILObject
             'WHERE'           => $WHERE + getEntitiesRestrictCriteria('glpi_changes'),
             'ORDERBY'         => 'date_mod DESC'
         ];
+
+        if (count($JOINS)) {
+            $criteria = array_merge_recursive($criteria, $JOINS);
+        }
+
         $iterator = $DB->request($criteria);
 
         $total_row_count = count($iterator);
@@ -1226,6 +1254,34 @@ class Change extends CommonITILObject
                         $main_header = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/change.php?" .
                          Toolbox::append_params($options, '&amp;') . "\">" .
                          Html::makeTitle(__('Changes on pending status'), $displayed_row_count, $total_row_count) . "</a>";
+                        break;
+
+                    case "tovalidate":
+                        $options['criteria'][0]['field']      = 55; // validation status
+                        $options['criteria'][0]['searchtype'] = 'equals';
+                        $options['criteria'][0]['value']      = CommonITILValidation::WAITING;
+                        $options['criteria'][0]['link']       = 'AND';
+
+                        $options['criteria'][1]['field']      = 59; // validation aprobator
+                        $options['criteria'][1]['searchtype'] = 'equals';
+                        $options['criteria'][1]['value']      = Session::getLoginUserID();
+                        $options['criteria'][1]['link']       = 'AND';
+
+                        $options['criteria'][2]['field']      = 12; // validation aprobator
+                        $options['criteria'][2]['searchtype'] = 'equals';
+                        $options['criteria'][2]['value']      = 'old';
+                        $options['criteria'][2]['link']       = 'AND NOT';
+
+                        $options['criteria'][3]['field']      = 52; // global validation status
+                        $options['criteria'][3]['searchtype'] = 'equals';
+                        $options['criteria'][3]['value']      = CommonITILValidation::WAITING;
+                        $options['criteria'][3]['link']       = 'AND';
+                        $forcetab                         = 'ChangeValidation$1';
+
+                        $main_header = "<a href=\"" . Change::getSearchURL() . "?" .
+                        Toolbox::append_params($options, '&amp;') . "\">" .
+                        Html::makeTitle(__('Your changes to validate'), $displayed_row_count, $total_row_count) . "</a>";
+
                         break;
 
                     case "process":
