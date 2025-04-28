@@ -61,7 +61,7 @@ class ErrorLogHandler extends AbstractLogHandler
         }
 
         // Do not log access errors.
-        // @see \Glpi\Log\AccessLogHandler::canHandle()
+        // 4xx errors logging is done by the `\Glpi\Log\AccessLogHandler` handler.
         if (isset($record->context['exception'])) {
             /** @var \Throwable $exception */
             $exception = $record->context['exception'];
