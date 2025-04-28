@@ -37,8 +37,6 @@ namespace Glpi\System\Diagnostic;
 
 use FilesystemIterator;
 use Glpi\Toolbox\VersionParser;
-use GLPIKey;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -56,11 +54,13 @@ class SourceCodeIntegrityChecker
     public const STATUS_ADDED = 3;
 
     /**
-     * @note Only exists to be able to mock it in tests
+     * GLPI source code root directory.
      */
-    public function getCheckRootDir(): string
+    private string $root_dir;
+
+    public function __construct(string $root_dir = GLPI_ROOT)
     {
-        return GLPI_ROOT;
+        $this->root_dir = $root_dir;
     }
 
     /**
@@ -71,25 +71,48 @@ class SourceCodeIntegrityChecker
     private function getPathsToCheck(): array
     {
         return [
-            'ajax', 'css', 'front', 'inc', 'install', 'js', 'lib', 'locales', 'pics',
-            'public', 'resources', 'sound', 'src', 'templates', 'vendor',
-            'index.php', 'status.php'
+            'ajax',
+            'bin',
+            'css',
+            'dependency_injection',
+            'front',
+            'inc',
+            'install',
+            'lib',
+            'locales',
+            'public',
+            'resources',
+            'routes',
+            'src',
+            'templates',
+            'vendor',
         ];
     }
 
     /**
      * Returns the source code manifest contents.
      *
-     * @return array|null
-     * @phpstan-return array{algorithm: string, files: array<string, string>}|null
+     * @return array{algorithm: string, files: array<string, string>}
+     *
      * @throws \JsonException
      */
-    private function getBaselineManifest(): ?array
+    private function getBaselineManifest(): array
     {
-        $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
-        $manifest = file_get_contents($this->getCheckRootDir() . '/version/' . $version);
+        $manifest_path = \sprintf(
+            '%s/version/%s',
+            $this->root_dir,
+            VersionParser::getNormalizedVersion(GLPI_VERSION, false)
+        );
+
+        if (
+            \is_readable($manifest_path) === false
+            || ($manifest = \file_get_contents($manifest_path)) === false
+        ) {
+            throw new \RuntimeException('Error while trying to read the source code file manifest.');
+        }
+
         try {
-            $content = json_decode($manifest, true, 512, JSON_THROW_ON_ERROR);
+            $content = \json_decode($manifest, associative: true, flags: JSON_THROW_ON_ERROR);
         } catch (\Throwable $e) {
             throw new \RuntimeException('The source code file manifest is invalid.', previous: $e);
         }
@@ -112,7 +135,12 @@ class SourceCodeIntegrityChecker
         $files_to_check = [];
         $hashes = [];
         foreach ($to_scan as $item) {
-            $path = $this->getCheckRootDir() . '/' . $item;
+            $path = $this->root_dir . '/' . $item;
+
+            if (!\file_exists($path)) {
+                throw new \RuntimeException(sprintf('`%s` does not exist in the filesystem.', $path));
+            }
+
             if (is_dir($path)) {
                 $iterator = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
                 // flatten the iterator
@@ -128,7 +156,7 @@ class SourceCodeIntegrityChecker
         }
         sort($files_to_check);
         foreach ($files_to_check as $file) {
-            $key = preg_replace('/^' . preg_quote($this->getCheckRootDir() . '/', '/') . '/', '', $file);
+            $key = preg_replace('/^' . preg_quote($this->root_dir . '/', '/') . '/', '', $file);
             $hashes[$key] = hash_file($algorithm, $file);
         }
         return [
@@ -250,7 +278,7 @@ class SourceCodeIntegrityChecker
             $extra_header = '';
             if ($status === self::STATUS_ADDED || !file_exists('phar://' . $release_path . '/glpi/' . $file)) {
                 $original_file = '/dev/null';
-                $file_perms   = @substr(sprintf('%o', fileperms($this->getCheckRootDir() . '/' . $file)), -4) ?: '0644';
+                $file_perms   = @substr(sprintf('%o', fileperms($this->root_dir . '/' . $file)), -4) ?: '0644';
                 $extra_header = 'new file mode 10' . $file_perms;
             } else {
                 $original_content = file_get_contents('phar://' . $release_path . '/glpi/' . $file);
@@ -259,12 +287,12 @@ class SourceCodeIntegrityChecker
                     continue;
                 }
             }
-            if ($status === self::STATUS_MISSING || !file_exists($this->getCheckRootDir() . '/' . $file)) {
+            if ($status === self::STATUS_MISSING || !file_exists($this->root_dir . '/' . $file)) {
                 $current_file = '/dev/null';
                 $file_perms   = @substr(sprintf('%o', fileperms('phar://' . $release_path . '/glpi/' . $file)), -4) ?: '0644';
                 $extra_header = 'deleted file mode 10' . $file_perms;
             } else {
-                $current_content = file_get_contents($this->getCheckRootDir() . '/' . $file);
+                $current_content = file_get_contents($this->root_dir . '/' . $file);
                 if ($current_content === false) {
                     $errors[] = sprintf('Fails to get current contents of file `%s`.', $file);
                     continue;

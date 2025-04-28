@@ -34,31 +34,38 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
+use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
 use org\bovigo\vfs\vfsStream;
-use wapmorgan\UnifiedArchive\UnifiedArchive;
 
-class SourceCodeIntegrityChecker extends \GLPITestCase
+class SourceCodeIntegrityCheckerTest extends \GLPITestCase
 {
-    private function setupVFS()
+    /**
+     * Setup the minimal VFS structure required to compute the manifest, and containing some fake files.
+     */
+    private function setupVFS(): void
     {
         $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
         vfsStream::setup('check_root_dir', null, [
             'ajax' => [],
+            'bin' => [
+                'console' => 'GLPI console',
+            ],
             'css' => [],
+            'dependency_injection' => [],
             'front' => [],
             'files' => [
                 '_tmp' => []
             ],
             'inc' => [],
             'install' => [],
-            'js' => [],
             'lib' => [],
             'locales' => [],
-            'pics' => [],
-            'public' => [],
+            'public' => [
+                'index.php' => 'GLPI router',
+            ],
             'resources' => [],
-            'sound' => [],
+            'routes' => [],
             'src' => [
                 'test.php' => 'test1',
                 'test2.php' => <<<EOL
@@ -73,65 +80,63 @@ EOL,
             'version' => [
                 $version => ''
             ],
-            'index.php' => 'index',
-            'status.php' => 'status',
         ]);
-    }
-
-    public function beforeTestMethod($method)
-    {
-        parent::beforeTestMethod($method);
-        $this->setupVFS();
     }
 
     public function testGenerateManifest()
     {
-        /** @var \Glpi\System\Diagnostic\SourceCodeIntegrityChecker $checker */
-        $checker = new \mock\Glpi\System\Diagnostic\SourceCodeIntegrityChecker();
-        $this->calling($checker)->getCheckRootDir = static fn() => vfsStream::url('check_root_dir');
-        $this->string($checker->getCheckRootDir())->isEqualTo(vfsStream::url('check_root_dir'));
-        $manifest = $checker->generateManifest('CRC32c');
-        $this->array($manifest)->isEqualTo([
-            'algorithm' => 'CRC32c',
-            'files' => [
-                'index.php' => '4475f8b1',
-                'src/test.php' => '53fe1f55',
-                'src/test2.php' => '2803299a',
-                'status.php' => '82d603ce',
-            ]
-        ]);
+        $this->setupVFS();
+
+        $checker = new SourceCodeIntegrityChecker(vfsStream::url('check_root_dir'));
+
+        $this->assertEquals(
+            [
+                'algorithm' => 'CRC32c',
+                'files' => [
+                    'bin/console' => '01f78965',
+                    'public/index.php' => '8461e565',
+                    'src/test.php' => '53fe1f55',
+                    'src/test2.php' => '2803299a',
+                ]
+            ],
+            $checker->generateManifest('CRC32c')
+        );
     }
 
     public function testGetSummary()
     {
-        $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
-        /** @var \Glpi\System\Diagnostic\SourceCodeIntegrityChecker $checker */
-        $checker = new \mock\Glpi\System\Diagnostic\SourceCodeIntegrityChecker();
-        $this->calling($checker)->getCheckRootDir = static fn() => vfsStream::url('check_root_dir');
-        $this->string($checker->getCheckRootDir())->isEqualTo(vfsStream::url('check_root_dir'));
-        file_put_contents(vfsStream::url('check_root_dir/version/' . $version), json_encode($checker->generateManifest('CRC32c'), JSON_THROW_ON_ERROR));
+        $this->setupVFS();
 
+        $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
+
+        $checker = new SourceCodeIntegrityChecker(vfsStream::url('check_root_dir'));
+
+        file_put_contents(vfsStream::url('check_root_dir/version/' . $version), json_encode($checker->generateManifest('CRC32c'), JSON_THROW_ON_ERROR));
         file_put_contents(vfsStream::url('check_root_dir/src/test.php'), 'changed');
         file_put_contents(vfsStream::url('check_root_dir/src/test3.php'), 'added');
         file_put_contents(vfsStream::url('check_root_dir/src/test4.php'), 'added (with EOL)' . "\n");
         unlink(vfsStream::url('check_root_dir/src/test2.php'));
 
-        $this->array($checker->getSummary())->isEqualTo([
-            'src/test.php' => 1, // 1 = STATUS_ALTERED
-            'src/test2.php' => 2, // 2 = STATUS_MISSING
-            'src/test3.php' => 3, // 3 = STATUS_ADDED
-            'src/test4.php' => 3, // 3 = STATUS_ADDED
-        ]);
+        $this->assertEquals(
+            [
+                'src/test.php' => 1, // 1 = STATUS_ALTERED
+                'src/test2.php' => 2, // 2 = STATUS_MISSING
+                'src/test3.php' => 3, // 3 = STATUS_ADDED
+                'src/test4.php' => 3, // 3 = STATUS_ADDED
+            ],
+            $checker->getSummary()
+        );
     }
 
     public function testGetDiff()
     {
+        $this->setupVFS();
+
         $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
         $version_full = VersionParser::getNormalizedVersion(GLPI_VERSION);
-        /** @var \Glpi\System\Diagnostic\SourceCodeIntegrityChecker $checker */
-        $checker = new \mock\Glpi\System\Diagnostic\SourceCodeIntegrityChecker();
-        $this->calling($checker)->getCheckRootDir = static fn() => vfsStream::url('check_root_dir');
-        $this->string($checker->getCheckRootDir())->isEqualTo(vfsStream::url('check_root_dir'));
+
+        $checker = new SourceCodeIntegrityChecker(vfsStream::url('check_root_dir'));
+
         file_put_contents(vfsStream::url('check_root_dir/version/' . $version), json_encode($checker->generateManifest('CRC32c'), JSON_THROW_ON_ERROR));
 
         // Create tgz file from the vfs directory and save it to files/_tmp/ in the vfs.
@@ -151,7 +156,7 @@ EOL,
             $phar->addFromString('glpi/' . $path, file_get_contents($file->getPathname()));
         }
         $phar->compress(\Phar::GZ);
-        $this->boolean(rename(GLPI_TMP_DIR . '/glpi-' . $version_full . '.tar.gz', GLPI_TMP_DIR . '/glpi-' . $version_full . '.tgz'))->isTrue();
+        $this->assertTrue(rename(GLPI_TMP_DIR . '/glpi-' . $version_full . '.tar.gz', GLPI_TMP_DIR . '/glpi-' . $version_full . '.tgz'));
 
         unlink(vfsStream::url('check_root_dir/src/test.php'));
         file_put_contents(vfsStream::url('check_root_dir/src/test2.php'), <<<EOL
@@ -167,8 +172,9 @@ EOL
         $errors = [];
         $diff = $checker->getDiff(false, $errors);
         // Why not isEmpty? Because then atoum will not tell you what the contents are when this fails.
-        $this->array($errors)->isEqualTo([]);
-        $this->string(trim($diff))->isEqualTo(<<<EOL
+        $this->assertEmpty($errors);
+        $this->assertEquals(
+            <<<EOL
 diff --git a/src/test2.php b/src/test2.php
 --- a/src/test2.php
 +++ b/src/test2.php
@@ -200,7 +206,43 @@ deleted file mode 100644
 @@ -1 +1,0 @@
 -test1
 \ No newline at end of file
-EOL
+EOL,
+            trim($diff)
         );
+    }
+
+    public function testGenerateManifestExceptionOnMissingSourceDirectory()
+    {
+        vfsStream::setup('root', null, []);
+        $root_dir = vfsStream::url('root');
+
+        $checker = new SourceCodeIntegrityChecker($root_dir);
+
+        $this->expectExceptionObject(new \RuntimeException(sprintf('`%s/ajax` does not exist in the filesystem.', $root_dir)));
+        $checker->generateManifest('CRC32c');
+    }
+
+    public function testGetSummaryExceptionOnMissingManifestFile()
+    {
+        vfsStream::setup('root', null, []);
+        $root_dir = vfsStream::url('root');
+
+        $checker = new SourceCodeIntegrityChecker($root_dir);
+
+        $this->expectExceptionObject(new \RuntimeException('Error while trying to read the source code file manifest.'));
+        $checker->getSummary();
+    }
+
+    public function testGetSummaryExceptionOnInvalidManifestFile()
+    {
+        $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
+
+        vfsStream::setup('root', null, ['version' => [$version => '{invalid_json']]);
+        $root_dir = vfsStream::url('root');
+
+        $checker = new SourceCodeIntegrityChecker($root_dir);
+
+        $this->expectExceptionObject(new \RuntimeException('The source code file manifest is invalid.'));
+        $checker->getSummary();
     }
 }
