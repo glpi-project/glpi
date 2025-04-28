@@ -251,6 +251,16 @@ class Item_Devices extends CommonDBRelation
             'datatype'           => 'dropdown'
         ];
 
+        if ($this->isField('comment')) {
+            $tab[] = [
+                'id'                 => '7',
+                'table'              => $this->getTable(),
+                'field'              => 'comment',
+                'name'               => __('Comments'),
+                'datatype'           => 'text'
+            ];
+        }
+
         return $tab;
     }
 
