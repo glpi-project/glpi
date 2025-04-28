@@ -83,15 +83,15 @@ class ContactTest extends \DbTestCase
         $added = $contact->clone();
         $this->assertGreaterThan(0, (int)$added);
 
-        $clonedConact = new \Contact();
-        $this->assertTrue($clonedConact->getFromDB($added));
+        $clonedContact = new \Contact();
+        $this->assertTrue($clonedContact->getFromDB($added));
 
         // Check the values. Id and dates must be different, everything else must be equal
         $expected = $contact->fields;
-        $expected['id'] = $clonedConact->getID();
+        $expected['id'] = $clonedContact->getID();
         $expected['date_creation'] = $date;
         $expected['date_mod'] = $date;
-        $expected['name'] = "contatc name (copy)";
-        $this->assertEquals($expected, $clonedConact->fields);
+        $expected['name'] = "contact name (copy)";
+        $this->assertEquals($expected, $clonedContact->fields);
     }
 }
