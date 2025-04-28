@@ -120,7 +120,8 @@
         "symfony/stopwatch": "^6.4",
         "symfony/twig-bundle": "^6.4",
         "symfony/var-dumper": "^6.4",
-        "symfony/web-profiler-bundle": "^6.4"
+        "symfony/web-profiler-bundle": "^6.4",
+        "vincentlanglet/twig-cs-fixer": "^3.5"
     },
     "provide": {
         "ext-sodium": "*"
