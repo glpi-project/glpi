@@ -234,6 +234,30 @@ class DeviceNetworkCard extends CommonDevice
             'joinparams'         => $main_joinparams
         ];
 
+        $tab[] = [
+            'id'                 => '1330',
+            'table'              => 'glpi_items_devicenetworkcards',
+            'field'              => 'serial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
+        ];
+
+        $tab[] = [
+            'id'                 => '1331',
+            'table'              => 'glpi_items_devicemotherboards',
+            'field'              => 'otherserial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
+        ];
+
         return $tab;
     }
 

@@ -159,6 +159,30 @@ class DevicePowerSupply extends CommonDevice
             ]
         ];
 
+        $tab[] = [
+            'id'                 => '1334',
+            'table'              => 'glpi_items_devicepowersupplies',
+            'field'              => 'serial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
+        ];
+
+        $tab[] = [
+            'id'                 => '1335',
+            'table'              => 'glpi_items_devicepowersupplies',
+            'field'              => 'otherserial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
+        ];
+
         return $tab;
     }
 
