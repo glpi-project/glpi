@@ -61,11 +61,17 @@ final class FormProvider implements LeafProviderInterface
         $filter = $item_request->getFilter();
         $parameters = $item_request->getFormAccessParameters();
 
+        $entity_restriction = getEntitiesRestrictCriteria(
+            table: Form::getTable(),
+            value: $parameters->getSessionInfo()->getCurrentEntityId(),
+            is_recursive: true,
+        );
+
         $forms = [];
         $raw_forms = (new Form())->find([
             'is_active' => 1,
             'forms_categories_id' => $category ? $category->getID() : 0,
-        ], ['name']);
+        ] + $entity_restriction, ['name']);
 
         foreach ($raw_forms as $raw_form) {
             $form = new Form();

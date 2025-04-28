@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Form;
 
+use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
@@ -42,6 +43,7 @@ use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use KnowbaseItem;
 use Override;
+use Session;
 
 abstract class SortStrategyTestCase extends \DbTestCase
 {
@@ -84,9 +86,10 @@ abstract class SortStrategyTestCase extends \DbTestCase
         $this->populateServiceCatalog();
 
         // Get the service catalog items
-        $access_parameters = $this->getDefaultParametersForTestUser();
         $item_request = new ItemRequest(
-            access_parameters: $access_parameters,
+            access_parameters: new FormAccessParameters(
+                Session::getCurrentSessionInfo()
+            ),
             items_per_page: 100,
             sort_strategy: SortStrategyEnum::ALPHABETICAL,
         );

@@ -621,23 +621,6 @@ trait FormTesterTrait
         return $ticket;
     }
 
-    /**
-     * Get the default parameters containing a mocked session of the TU_USER
-     * user and no URL parameters.
-     *
-     * @return FormAccessParameters
-     */
-    protected function getDefaultParametersForTestUser(): FormAccessParameters
-    {
-        $session_info = new SessionInfo(
-            user_id: getItemByTypeName(User::class, TU_USER, true),
-            group_ids: [],
-            profile_id: getItemByTypeName(Profile::class, "Super-Admin", true),
-        );
-
-        return new FormAccessParameters($session_info, []);
-    }
-
     private function exportForm(Form $form): string
     {
         return self::$serializer->exportFormsToJson([$form])->getJsonContent();
