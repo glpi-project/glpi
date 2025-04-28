@@ -129,7 +129,8 @@ export class GlpiFormConditionEditorController
 
     async #doRenderEditor(data)
     {
-        const content = await $.post('/Form/Condition/Editor', {
+        const url = `${CFG_GLPI.root_doc}/Form/Condition/Editor`;
+        const content = await $.post(url, {
             form_data: data,
         });
 

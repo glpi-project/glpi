@@ -36,7 +36,7 @@
             class="btn btn-primary ms-2"
             name="update"
             type="submit"
-            formaction="{{ '/Form/%d/Destination/%d/Update'|format(form.getID(), destination.getID()) }}"
+            formaction="{{ path('/Form/%d/Destination/%d/Update'|format(form.getID(), destination.getID())) }}"
             formmethod="post"
         >
             <i class="ti ti-device-floppy me-2"></i>
@@ -47,7 +47,7 @@
                 class="btn btn-ghost-danger"
                 name="purge"
                 type="submit"
-                formaction="{{ '/Form/%d/Destination/%d/Purge'|format(form.getID(), destination.getID()) }}"
+                formaction="{{ path('/Form/%d/Destination/%d/Purge'|format(form.getID(), destination.getID())) }}"
                 formmethod="post"
             >
                 <i class="ti ti-trash me-2"></i>
