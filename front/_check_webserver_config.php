@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +35,7 @@
 if (!class_exists('Glpi\\Kernel\\Kernel', autoload: false)) {
     // `Glpi\Kernel\Kernel` class will exists if the request was processed by the `/public/index.php` file,
     // and will not be found otherwise.
-    http_response_code(404);
+    header('HTTP/1.1 404 Not Found');
     readfile(__DIR__ . '/../index.html');
-    exit();
+    exit(); // @phpstan-ignore glpi.forbidExit (Script execution should be stopped to prevent further errors)
 }
