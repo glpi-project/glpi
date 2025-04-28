@@ -40,7 +40,7 @@
 } %}
 
 {% set internal_auth = item.fields['authtype'] == constant('Auth::DB_GLPI') %}
-{% set external_auth = not internal_auth %}
+{% set external_auth = not item.isNewItem() and not internal_auth %}
 {# Simple form used when creating users from a ticket #}
 {% set simple_form = params.simplified_form|default(false) %}
 {% set is_my_form = item.getID() == session('glpiID') %}
