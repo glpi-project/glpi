@@ -43,10 +43,7 @@ Html::header_nocache();
 
 Session::checkCentralAccess();
 
-if (
-    isset($_POST['type']) && !empty($_POST['type'])
-    && isset($_POST['right'])
-) {
+if (isset($_POST['type']) && !empty($_POST['type'])) {
     $display = false;
     $rand    = mt_rand();
     $prefix = '';
@@ -61,10 +58,16 @@ if (
     echo "<div class='d-flex'>";
     switch ($_POST['type']) {
         case 'User':
-            $params = [
-                'right' => isset($_POST['allusers']) ? 'all' : $_POST['right'],
-                'name' => $prefix . 'users_id' . $suffix
-            ];
+            $params = ['name' => $prefix . 'users_id' . $suffix];
+            if (isset($_POST['right'])) {
+                $params['right'] = isset($_POST['allusers']) ? 'all' : $_POST['right'];
+            } else {
+                $params['right'] = 'all';
+            }
+            if (isset($_POST['entity']) && $_POST['entity'] >= 0) {
+                $params['entity'] = $_POST['entity'];
+                $params['entity_sons'] = $_POST['is_recursive'] ?? false;
+            }
             User::dropdown($params);
             $display = true;
             break;
@@ -82,6 +85,12 @@ if (
                     'prefix'   => $_POST['prefix']
                 ]
             ];
+            if (isset($_POST['entity']) && $_POST['entity'] >= 0) {
+                $params['entity'] = $_POST['entity'];
+                $params['toupdate']['moreparams']['entity'] = $_POST['entity'];
+                $params['entity_sons'] = $_POST['is_recursive'] ?? false;
+                $params['toupdate']['moreparams']['entity_sons'] = $_POST['is_recursive'] ?? false;
+            }
 
             Group::dropdown($params);
             echo "<span id='subvisibility$rand'></span>";
