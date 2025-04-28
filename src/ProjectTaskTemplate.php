@@ -254,7 +254,7 @@ class ProjectTaskTemplate extends CommonDropdown
     {
 
         $ong = parent::defineTabs($options);
-        $this->addStandardTab('Document_Item', $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
 
         return $ong;
     }

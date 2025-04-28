@@ -61,7 +61,7 @@ class NotificationMailingSetting extends NotificationSetting
     public function defineTabs($options = [])
     {
         $ong = parent::defineTabs($options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

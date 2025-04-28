@@ -542,14 +542,14 @@ class NetworkPort extends CommonDBChild
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('NetworkPortMetrics', $ong, $options);
-        $this->addStandardTab('NetworkName', $ong, $options);
-        $this->addStandardTab('NetworkPort_Vlan', $ong, $options);
-        $this->addStandardTab('Lock', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
-        $this->addStandardTab('NetworkPortConnectionLog', $ong, $options);
-        $this->addStandardTab('NetworkPortInstantiation', $ong, $options);
-        $this->addStandardTab('NetworkPort', $ong, $options);
+        $this->addStandardTab(NetworkPortMetrics::class, $ong, $options);
+        $this->addStandardTab(NetworkName::class, $ong, $options);
+        $this->addStandardTab(NetworkPort_Vlan::class, $ong, $options);
+        $this->addStandardTab(Lock::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
+        $this->addStandardTab(NetworkPortConnectionLog::class, $ong, $options);
+        $this->addStandardTab(NetworkPortInstantiation::class, $ong, $options);
+        $this->addStandardTab(NetworkPort::class, $ong, $options);
 
         return $ong;
     }

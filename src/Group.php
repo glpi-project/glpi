@@ -195,18 +195,18 @@ class Group extends CommonTreeDropdown
 
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
-        $this->addStandardTab('Group', $ong, $options);
+        $this->addStandardTab(Group::class, $ong, $options);
         if (
             isset($this->fields['is_usergroup'])
             && $this->fields['is_usergroup']
         ) {
-            $this->addStandardTab('Group_User', $ong, $options);
+            $this->addStandardTab(Group_User::class, $ong, $options);
         }
         if (
             isset($this->fields['is_notify'])
             && $this->fields['is_notify']
         ) {
-            $this->addStandardTab('NotificationTarget', $ong, $options);
+            $this->addStandardTab(NotificationTarget::class, $ong, $options);
         }
         if (
             isset($this->fields['is_requester'])
@@ -214,10 +214,10 @@ class Group extends CommonTreeDropdown
         ) {
             $this->addStandardTab(Item_Ticket::class, $ong, $options);
         }
-        $this->addStandardTab('Item_Problem', $ong, $options);
-        $this->addStandardTab('Change_Item', $ong, $options);
-        $this->addStandardTab('Notepad', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Item_Problem::class, $ong, $options);
+        $this->addStandardTab(Change_Item::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
         return $ong;
     }
 

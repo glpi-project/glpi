@@ -66,9 +66,9 @@ class KnowbaseItemTranslation extends CommonDBChild
     {
         $ong = [];
         $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Revision', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Comment', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Revision::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Comment::class, $ong, $options);
 
         return $ong;
     }

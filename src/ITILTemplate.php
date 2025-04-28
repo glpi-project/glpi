@@ -409,8 +409,8 @@ abstract class ITILTemplate extends CommonDropdown
         $this->addStandardTab($itiltype . 'TemplateHiddenField', $ong, $options);
         $this->addStandardTab($itiltype . 'TemplateReadonlyField', $ong, $options);
         $this->addStandardTab($itiltype . 'Template', $ong, $options);
-        $this->addStandardTab('ITILCategory', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(ITILCategory::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

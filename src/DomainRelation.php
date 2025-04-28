@@ -63,8 +63,8 @@ class DomainRelation extends CommonDropdown
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Domain_Item', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Domain_Item::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

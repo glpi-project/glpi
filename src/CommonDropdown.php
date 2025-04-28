@@ -221,11 +221,11 @@ abstract class CommonDropdown extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong);
         if ($this->dohistory) {
-            $this->addStandardTab('Log', $ong, $options);
+            $this->addStandardTab(Log::class, $ong, $options);
         }
 
         if ($this->maybeTranslated()) {
-            $this->addStandardTab('DropdownTranslation', $ong, $options);
+            $this->addStandardTab(DropdownTranslation::class, $ong, $options);
         }
 
         return $ong;

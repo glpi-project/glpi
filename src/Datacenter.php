@@ -74,7 +74,7 @@ class Datacenter extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
-         ->addStandardTab('DCRoom', $ong, $options);
+         ->addStandardTab(DCRoom::class, $ong, $options);
         return $ong;
     }
 

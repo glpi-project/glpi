@@ -84,9 +84,9 @@ class NetworkName extends FQDNLabel
     {
         $ong  = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('NetworkAlias', $ong, $options);
-        $this->addStandardTab('Lock', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(NetworkAlias::class, $ong, $options);
+        $this->addStandardTab(Lock::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

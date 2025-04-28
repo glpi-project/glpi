@@ -47,12 +47,12 @@ class DeviceCamera extends CommonDevice
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
-         ->addStandardTab('Item_DeviceCamera_ImageResolution', $ong, $options)
-         ->addStandardTab('Item_DeviceCamera_ImageFormat', $ong, $options)
-         ->addStandardTab('Infocom', $ong, $options)
-         ->addStandardTab('Contract_Item', $ong, $options)
-         ->addStandardTab('Item_Project', $ong, $options)
-         ->addStandardTab('Log', $ong, $options);
+         ->addStandardTab(Item_DeviceCamera_ImageResolution::class, $ong, $options)
+         ->addStandardTab(Item_DeviceCamera_ImageFormat::class, $ong, $options)
+         ->addStandardTab(Infocom::class, $ong, $options)
+         ->addStandardTab(Contract_Item::class, $ong, $options)
+         ->addStandardTab(Item_Project::class, $ong, $options)
+         ->addStandardTab(Log::class, $ong, $options);
         return $ong;
     }
 

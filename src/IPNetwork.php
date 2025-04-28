@@ -791,9 +791,9 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('IPNetwork_Vlan', $ong, $options);
-        $this->addStandardTab('IPAddress', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(IPNetwork_Vlan::class, $ong, $options);
+        $this->addStandardTab(IPAddress::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

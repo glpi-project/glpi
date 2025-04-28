@@ -96,9 +96,9 @@ class NotificationTemplate extends CommonDBTM
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('NotificationTemplateTranslation', $ong, $options);
-        $this->addStandardTab('Notification_NotificationTemplate', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(NotificationTemplateTranslation::class, $ong, $options);
+        $this->addStandardTab(Notification_NotificationTemplate::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

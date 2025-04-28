@@ -115,9 +115,9 @@ class FQDN extends CommonDropdown
     {
 
         $ong = [];
-        $this->addStandardTab('NetworkName', $ong, $options);
-        $this->addStandardTab('NetworkAlias', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(NetworkName::class, $ong, $options);
+        $this->addStandardTab(NetworkAlias::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
