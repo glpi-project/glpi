@@ -307,7 +307,7 @@
                         {{ note['content']|safe_html }}
 
                         {{ include('components/itilobject/timeline/sub_documents.html.twig', {
-                           'item': note,
+                           'item': get_item(note['itemtype'], note['items_id']),
                            'entry': note
                         }) }}
                      </div>
