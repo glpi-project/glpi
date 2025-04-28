@@ -40,6 +40,7 @@
 {% set order = order|default('ASC') %}
 {% set csv_url = csv_url|default('') %}
 {% set footers = footers|default([]) %}
+{% set showmassiveactions = showmassiveactions|default(false) %}
 
 {% if total_number < 1 and filters|length == 0 %}
     <table id="{{ datatable_id }}" class="table">
