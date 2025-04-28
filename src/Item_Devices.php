@@ -233,7 +233,7 @@ class Item_Devices extends CommonDBRelation
                 'id'                 => '7',
                 'table'              => $this->getTable(),
                 'field'              => 'comment',
-                'name'               => __('Comment'),
+                'name'               => __('Comments'),
                 'datatype'           => 'text'
             ];
         }
