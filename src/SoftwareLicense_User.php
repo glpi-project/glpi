@@ -80,6 +80,12 @@ class SoftwareLicense_User extends CommonDBRelation
         return true;
     }
 
+    public function can($ID, int $right, ?array &$input = null): bool
+    {
+        $item = new SoftwareLicense();
+        return $item->can($ID, $right, $input);
+    }
+
     public static function countForLicense(int $softwarelicenses_id): int
     {
         return countElementsInTable(static::getTable(), ['softwarelicenses_id' => $softwarelicenses_id]);

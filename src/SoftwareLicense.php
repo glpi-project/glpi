@@ -561,23 +561,22 @@ class SoftwareLicense extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '163',
-            'table'              => Item_SoftwareLicense::getTable(),
+            'table'              => static::getTable(),
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of installations'),
             'forcegroupby'       => true,
             'usehaving'          => true,
-            'datatype'           => 'count',
+            'datatype'           => 'specific',
             'massiveaction'      => false,
-            'joinparams'         => [
-                'jointype'   => 'child',
-                'beforejoin' => [
-                    'table'      => static::getTable(),
-                    'joinparams' => ['jointype' => 'child'],
-                ],
-                'condition'  => [
-                    'NEWTABLE.is_deleted'          => 0,
-                ],
-            ],
+            'computation'        => '(' .
+                '(SELECT COUNT(*) FROM ' . Item_SoftwareLicense::getTable() .
+                ' WHERE softwarelicenses_id = ' . static::getTable() . '.id AND is_deleted = 0)' .
+                ' + ' .
+                '(SELECT COUNT(*) FROM ' . SoftwareLicense_User::getTable() .
+                ' WHERE softwarelicenses_id = ' . static::getTable() . '.id)' .
+                ')',
+            'computationgroupby' => true,
+            'computationtype' => 'count',
         ];
 
         // add objectlock search options
