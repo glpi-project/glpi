@@ -40,6 +40,7 @@ use Glpi\Form\Export\Serializer\DynamicExportData;
 final class FormContentSpecification
 {
     public int $id;
+    public string $uuid;
     public string $name;
     public ?string $header;
     public ?string $description;

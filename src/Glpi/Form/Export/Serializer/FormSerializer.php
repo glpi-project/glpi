@@ -268,6 +268,7 @@ final class FormSerializer extends AbstractFormSerializer
     ): FormContentSpecification {
         $spec               = new FormContentSpecification();
         $spec->id           = $form->fields['id'];
+        $spec->uuid         = $form->fields['uuid'];
         $spec->name         = $form->fields['name'];
         $spec->header       = $form->fields['header'];
         $spec->description  = $form->fields['description'];
@@ -322,6 +323,11 @@ final class FormSerializer extends AbstractFormSerializer
         $mapper->addMappedItem(
             Form::class,
             $spec->id,
+            $id
+        );
+        $mapper->addMappedItem(
+            Form::class,
+            $spec->uuid,
             $id
         );
 

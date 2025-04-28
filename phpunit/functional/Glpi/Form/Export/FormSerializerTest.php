@@ -1176,6 +1176,7 @@ final class FormSerializerTest extends \DbTestCase
             $form_copy->fields,
             [
                 'id',
+                'uuid',
                 'date_creation',
             ]
         );
