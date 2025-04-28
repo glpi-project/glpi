@@ -357,6 +357,14 @@ export class GlpiFormRendererController
     {
         const container = this.#target;
 
+        // Apply submit button visibility
+        const submit_button = container.querySelector(
+            '[data-glpi-form-renderer-action=submit]'
+        );
+        if (submit_button !== null) {
+            this.#applyVisibilityToItem(submit_button, results.form_visibility);
+        }
+
         // Apply sections visibility
         for (const [id, must_be_visible] of Object.entries(
             results.sections_visibility

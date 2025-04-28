@@ -54,6 +54,60 @@ final class EngineTest extends DbTestCase
 {
     use FormTesterTrait;
 
+    public static function conditionsOnForm(): iterable
+    {
+        $form = new FormBuilder();
+        $form->addQuestion("Question 1", QuestionTypeShortText::class);
+        $form->setSubmitButtonVisibility(
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question 1",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "correct value",
+                ]
+            ]
+        );
+
+        yield [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "",
+                ],
+            ],
+            'expected_output' => [
+                'submit_button' => false,
+            ],
+        ];
+
+        yield [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "correct value",
+                ],
+            ],
+            'expected_output' => [
+                'submit_button' => true,
+            ],
+        ];
+
+        yield [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "incorrect value",
+                ],
+            ],
+            'expected_output' => [
+                'submit_button' => false,
+            ],
+        ];
+    }
+
     public static function conditionsOnQuestions(): iterable
     {
         $form = new FormBuilder();

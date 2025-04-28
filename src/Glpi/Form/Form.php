@@ -53,6 +53,8 @@ use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Condition\ConditionableVisibilityInterface;
+use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\UI\IllustrationManager;
@@ -64,6 +66,7 @@ use Item_Ticket;
 use Log;
 use MassiveAction;
 use Override;
+use Ramsey\Uuid\Uuid;
 use ReflectionClass;
 use RuntimeException;
 use Session;
@@ -72,8 +75,13 @@ use Ticket;
 /**
  * Helpdesk form
  */
-final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, ProvideTranslationsInterface
+final class Form extends CommonDBTM implements
+    ServiceCatalogLeafInterface,
+    ProvideTranslationsInterface,
+    ConditionableVisibilityInterface
 {
+    use ConditionableVisibilityTrait;
+
     public const TRANSLATION_KEY_NAME = 'form_name';
     public const TRANSLATION_KEY_HEADER = 'form_header';
     public const TRANSLATION_KEY_DESCRIPTION = 'form_description';
@@ -97,6 +105,12 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
     public static function getTypeName($nb = 0)
     {
         return _n('Form', 'Forms', $nb);
+    }
+
+    #[Override]
+    public function getUUID(): string
+    {
+        return $this->fields['uuid'];
     }
 
     #[Override]
@@ -289,12 +303,39 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
     }
 
     #[Override]
+    public function prepareInputForAdd($input)
+    {
+        if (!isset($input['uuid'])) {
+            $input['uuid'] = Uuid::uuid4();
+        }
+
+        // JSON fields must have a value when created to prevent SQL errors
+        if (!isset($input['conditions'])) {
+            $input['conditions'] = json_encode([]);
+        }
+
+        $input = $this->prepareInput($input);
+        return parent::prepareInputForAdd($input);
+    }
+
+    #[Override]
     public function prepareInputForUpdate($input): array
     {
         // Insert date_mod even if the framework would handle it by itself
         // This avoid "empty" updates when the form itself is not modified but
         // its questions are
         $input['date_mod'] = $_SESSION['glpi_currenttime'];
+
+        $input = $this->prepareInput($input);
+        return parent::prepareInputForUpdate($input);
+    }
+
+    private function prepareInput($input): array
+    {
+        if (isset($input['_conditions'])) {
+            $input['conditions'] = json_encode($input['_conditions']);
+            unset($input['_conditions']);
+        }
 
         return $input;
     }

@@ -62,6 +62,11 @@ final class Engine
     {
         $output = new EngineVisibilityOutput();
 
+        // Compute form visibility
+        $output->setFormVisibility(
+            $this->computeItemVisibility($this->form),
+        );
+
         // Compute questions visibility
         foreach ($this->form->getQuestions() as $question) {
             $output->setQuestionVisibility(

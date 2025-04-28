@@ -32,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * @var DBmysql $DB
  * @var Migration $migration
@@ -68,6 +70,7 @@ if (!$DB->tableExists('glpi_forms_forms')) {
     $DB->doQuery(
         "CREATE TABLE `glpi_forms_forms` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+            `uuid` varchar(255) NOT NULL DEFAULT '',
             `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `is_recursive` tinyint NOT NULL DEFAULT '0',
             `is_active` tinyint NOT NULL DEFAULT '0',
@@ -80,9 +83,12 @@ if (!$DB->tableExists('glpi_forms_forms')) {
             `description` longtext,
             `forms_categories_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `usage_count` int unsigned NOT NULL DEFAULT '0',
+            `visibility_strategy` varchar(30) NOT NULL DEFAULT '',
+            `conditions` JSON NOT NULL,
             `date_mod` timestamp NULL DEFAULT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
+            UNIQUE KEY `uuid` (`uuid`),
             KEY `name` (`name`),
             KEY `entities_id` (`entities_id`),
             KEY `is_recursive` (`is_recursive`),
@@ -308,6 +314,46 @@ foreach ($fields as $field) {
             )
         );
     }
+}
+
+if (!$DB->fieldExists('glpi_forms_forms', 'uuid')) {
+    $migration->addField(
+        'glpi_forms_forms',
+        'uuid',
+        "varchar(255) NOT NULL DEFAULT ''",
+        [
+            'after'  => 'id',
+            'update' => '(select md5(UUID()))',
+        ]
+    );
+    $migration->addKey(
+        'glpi_forms_forms',
+        'uuid',
+        'uuid',
+        'UNIQUE KEY'
+    );
+}
+
+if (!$DB->fieldExists('glpi_forms_forms', 'visiblity_strategy')) {
+    $migration->addField(
+        'glpi_forms_forms',
+        'visibility_strategy',
+        "varchar(30) NOT NULL DEFAULT ''",
+        [
+            'after' => 'usage_count',
+        ]
+    );
+}
+
+if (!$DB->fieldExists('glpi_forms_forms', 'conditions')) {
+    $migration->addField(
+        'glpi_forms_forms',
+        'conditions',
+        "JSON NOT NULL",
+        [
+            'after' => 'visibility_strategy',
+        ]
+    );
 }
 
 // Add rights for the forms object

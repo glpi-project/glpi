@@ -77,6 +77,10 @@ function addSection(name) {
     });
 }
 
+function getSubmitButtonContainer() {
+    return cy.get('.editor-footer [data-glpi-form-editor-visibility-dropdown-container]');
+}
+
 function getAndFocusQuestion(name) {
     return cy.then(() => {
         const index = questions.indexOf(name);
@@ -108,6 +112,14 @@ function save() {
 function saveAndReload() {
     save();
     cy.reload();
+}
+
+function validateThatFormSubmitButtonIsVisible() {
+    cy.findByRole('button', {'name': "Submit"}).should('be.visible');
+}
+
+function validateThatFormSubmitButtonIsNotVisible() {
+    cy.findByRole('button', {'name': "Submit"}).should('not.exist');
 }
 
 function validateThatQuestionIsVisible(name) {
@@ -308,6 +320,35 @@ function saveDestination() {
 describe ('Conditions', () => {
     beforeEach(() => {
         cy.login();
+    });
+
+    it('can set the conditional visibility of a form submit button', () => {
+        createForm();
+        addQuestion('My first question');
+        saveAndReload();
+
+        getSubmitButtonContainer().within(() => {
+            openConditionEditor();
+            checkThatConditionEditorIsNotDisplayed();
+            setConditionStrategy('Visible if...');
+            checkThatConditionEditorIsDisplayed();
+            fillCondition(0, null, 'My first question', 'Is equal to', 'I love GLPI');
+        });
+
+        saveAndReload();
+
+        getSubmitButtonContainer().within(() => {
+            openConditionEditor();
+            checkThatConditionEditorIsDisplayed();
+            checkThatConditionExist(
+                0,
+                null,
+                'Questions - My first question',
+                'Is equal to',
+                'I love GLPI'
+            );
+            closeConditionEditor();
+        });
     });
 
     it('can set the conditional visibility of a question', () => {
@@ -651,6 +692,36 @@ describe ('Conditions', () => {
         checkThatConditionDoNotExist(1);
     });
 
+    it('conditions are applied on the submit button', () => {
+        createForm();
+        addQuestion('My question used as a criteria');
+
+        getSubmitButtonContainer().within(() => {
+            openConditionEditor();
+            setConditionStrategy('Visible if...');
+            fillCondition(
+                0,
+                null,
+                'My question used as a criteria',
+                'Is equal to',
+                'I love GLPI'
+            );
+        });
+        save();
+        preview();
+
+        // The form questions are all empty, we expect the following default state
+        validateThatFormSubmitButtonIsNotVisible();
+
+        // Set first answer to "I love GLPI" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "I love GLPI");
+        validateThatFormSubmitButtonIsVisible();
+
+        // Set first answer to "I love GLPI 2" and check the displayed content again.
+        setTextAnswer("My question used as a criteria", "I love GLPI 2");
+        validateThatFormSubmitButtonIsNotVisible();
+    });
+
     it('conditions are applied on questions', () => {
         createForm();
         addQuestion('My question used as a criteria');
@@ -850,8 +921,8 @@ describe ('Conditions', () => {
         getAndFocusComment('My comment that is always visible').within(() => {
             initVisibilityConfiguration();
             setConditionStrategy('Always visible');
+            closeVisibilityConfiguration();
         });
-        closeVisibilityConfiguration();
         getAndFocusComment('My comment that is visible if some criteria are met').within(() => {
             initVisibilityConfiguration();
             setConditionStrategy('Visible if...');
@@ -862,8 +933,8 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'Expected answer 1'
             );
+            closeVisibilityConfiguration();
         });
-        closeVisibilityConfiguration();
         getAndFocusComment('My comment that is hidden if some criteria are met').within(() => {
             initVisibilityConfiguration();
             setConditionStrategy('Hidden if...');
@@ -874,8 +945,8 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'Expected answer 2'
             );
+            closeVisibilityConfiguration();
         });
-        closeVisibilityConfiguration();
         save();
         preview();
 
@@ -914,8 +985,8 @@ describe ('Conditions', () => {
         getAndFocusSection('My section that is always visible').within(() => {
             initVisibilityConfiguration();
             setConditionStrategy('Always visible');
+            closeVisibilityConfiguration();
         });
-        closeVisibilityConfiguration();
         getAndFocusSection('My section that is visible if some criteria are met').within(() => {
             initVisibilityConfiguration();
             setConditionStrategy('Visible if...');
@@ -926,8 +997,8 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'Expected answer 1'
             );
+            closeVisibilityConfiguration();
         });
-        closeVisibilityConfiguration();
         getAndFocusSection('My section that is hidden if some criteria are met').within(() => {
             initVisibilityConfiguration();
             setConditionStrategy('Hidden if...');
@@ -938,8 +1009,8 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'Expected answer 2'
             );
+            closeVisibilityConfiguration();
         });
-        closeVisibilityConfiguration();
         save();
         preview();
 
@@ -1376,9 +1447,9 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'Expected answer 1'
             );
+            closeVisibilityConfiguration();
         });
 
-        closeVisibilityConfiguration();
         getAndFocusQuestion('My question that is visible if previous question is visible').within(() => {
             initVisibilityConfiguration();
             setConditionStrategy('Visible if...');
@@ -1436,9 +1507,9 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'Expected answer 1'
             );
+            closeVisibilityConfiguration();
         });
 
-        closeVisibilityConfiguration();
         getAndFocusComment('My comment that is visible if previous comment is visible').within(() => {
             initVisibilityConfiguration();
             setConditionStrategy('Visible if...');
@@ -1496,9 +1567,9 @@ describe ('Conditions', () => {
                 'Is equal to',
                 'Expected answer 1'
             );
+            closeVisibilityConfiguration();
         });
 
-        closeVisibilityConfiguration();
         getAndFocusSection('My section that is visible if previous section is visible').within(() => {
             initVisibilityConfiguration();
             setConditionStrategy('Visible if...');

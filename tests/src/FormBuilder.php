@@ -104,6 +104,11 @@ class FormBuilder
     protected int $category;
 
     /**
+     * Submit buttons visibilities
+     */
+    protected array $submit_buttons_visibilities;
+
+    /**
      * Questions visibilities
      */
     protected array $questions_visibilities;
@@ -149,6 +154,7 @@ class FormBuilder
         $this->destinations = [];
         $this->access_control = [];
         $this->category = 0;
+        $this->submit_buttons_visibilities = [];
         $this->questions_visibilities = [];
         $this->comments_visibilities = [];
         $this->sections_visibilities = [];
@@ -515,6 +521,21 @@ class FormBuilder
     {
         $this->category = $category;
         return $this;
+    }
+
+    public function setSubmitButtonVisibility(
+        VisibilityStrategy $strategy,
+        array $conditions
+    ): void {
+        $this->submit_buttons_visibilities[] = [
+            'strategy' => $strategy->value,
+            'conditions' => $conditions,
+        ];
+    }
+
+    public function getSubmitButtonVisibility(): array
+    {
+        return $this->submit_buttons_visibilities;
     }
 
     public function setQuestionVisibility(

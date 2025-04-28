@@ -89,6 +89,6 @@
     // It is safer than directly interacting the "display: none" class as it might
     // conflict with other features that hide items like the section pagination.
     [data-glpi-form-renderer-hidden-by-condition] {
-        display: none;
+        display: none !important;
     }
 }

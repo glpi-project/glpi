@@ -145,6 +145,25 @@ trait FormTesterTrait
             ]);
         }
 
+        // Add visibility conditions on form
+        if (!empty($builder->getSubmitButtonVisibility())) {
+            $form_conditions = array_map(
+                fn ($condition) => [
+                    'item'           => $condition['item_type']->value . "-" . $condition['item_name'],
+                    'item_type'      => $condition['item_type'],
+                    'item_uuid'      => $condition['item_name'],
+                    'value'          => $condition['value'],
+                    'value_operator' => $condition['value_operator']->value,
+                    'logic_operator' => $condition['logic_operator']->value,
+                ],
+                $builder->getSubmitButtonVisibility()['conditions']
+            );
+            $this->updateItem(Form::class, $form->getID(), [
+                'visibility_strategy' => $builder->getSubmitButtonVisibility()['strategy'],
+                'conditions'          => $form_conditions,
+            ], ['conditions']);
+        }
+
         // Add visibility conditions on questions
         foreach ($builder->getQuestionVisibility() as $name => $params) {
             // Find the correct question

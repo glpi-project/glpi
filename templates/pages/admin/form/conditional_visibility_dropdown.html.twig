@@ -47,7 +47,8 @@
         data-glpi-form-editor-visibility-dropdown-container
 
         {% set hide = question_strategy == enum('Glpi\\Form\\Condition\\VisibilityStrategy').ALWAYS_VISIBLE %}
-        class="btn-group {{ hide ? 'd-none' : '' }}"
+        {% set force_show = force_show|default(false) %}
+        class="btn-group {{ (hide and not force_show) ? 'd-none' : '' }}"
 
         {# May be displayed on section, comment and question #}
         {# We can't use instanceOf here as `item` may be null #}
