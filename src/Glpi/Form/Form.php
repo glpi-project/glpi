@@ -601,10 +601,22 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
         return $this->getQuestionsByTypes([$type]);
     }
 
+    /** @return \Glpi\Form\Condition\SectionData[] */
+    public function getSectionsStateForConditionEditor(): array
+    {
+        return FormData::createFromForm($this)->getSectionsData();
+    }
+
     /** @return \Glpi\Form\Condition\QuestionData[] */
     public function getQuestionsStateForConditionEditor(): array
     {
         return FormData::createFromForm($this)->getQuestionsData();
+    }
+
+    /** @return \Glpi\Form\Condition\CommentData[] */
+    public function getCommentsStateForConditionEditor(): array
+    {
+        return FormData::createFromForm($this)->getCommentsData();
     }
 
     /**

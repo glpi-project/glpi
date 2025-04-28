@@ -1644,4 +1644,90 @@ describe ('Conditions', () => {
         cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
             .should('not.exist');
     });
+
+    it("can't delete a section, question or comment used in destination conditions", () => {
+        createForm();
+        addQuestion('My first question');
+        addSection('My section');
+        addComment('My first comment');
+
+        saveAndReload();
+        goToDestinationTab();
+
+        // Define destination conditions
+        checkThatConditionEditorIsNotDisplayed();
+        openConditionEditor();
+        setConditionStrategy('Created if');
+        checkThatConditionEditorIsDisplayed();
+        fillCondition(0, null, 'My first question', 'Is equal to', 'Expected answer 1');
+        addNewEmptyCondition();
+        fillCondition(1, null, 'My section', 'Is visible', null, null);
+        addNewEmptyCondition();
+        fillCondition(2, null, 'My first comment', 'Is visible', null, null);
+
+        saveDestination();
+
+        // Check that the conditions are still there
+        openConditionEditor();
+        checkThatConditionExist(
+            0,
+            null,
+            'Questions - My first question',
+            'Is equal to',
+            'Expected answer 1'
+        );
+        checkThatConditionExist(
+            1,
+            null,
+            'Steps - My section',
+            'Is visible',
+            null,
+            null
+        );
+        checkThatConditionExist(
+            2,
+            null,
+            'Comments - My first comment',
+            'Is visible',
+            null,
+            null
+        );
+
+        // Go to the form tab
+        cy.findByRole('tab', {'name': 'Form'}).click();
+
+        // Delete the first question
+        getAndFocusQuestion('My first question').within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'Ticket'}).should('be.visible');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+
+        // Delete the section
+        getAndFocusSection('My section').within(() => {
+            cy.findByRole('button', {'name': 'More actions'}).click();
+            cy.findByRole('button', {'name': 'Delete section'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'Ticket'}).should('be.visible');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+
+        // Delete the comment
+        getAndFocusComment('My first comment').within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                cy.findByRole('link', {'name': 'Ticket'}).should('be.visible');
+                cy.findByRole('button', {'name': 'Close'}).click();
+            });
+    });
 });
