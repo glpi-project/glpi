@@ -1114,13 +1114,13 @@ class Item_SoftwareVersion extends CommonDBRelation
                         <input type='hidden' name='filters[active]' value='1'>
                     </td>
                     <td>
-                        <input type='text' class='form-control' name='filters[name]' value='" . htmlescape($filters['name']) . "'>
+                        <input type='text' class='form-control' name='filters[name]' value='" . htmlescape($filters['name'] ?? '') . "'>
                     </td>
                     <td>
-                        <input type='text' class='form-control' name='filters[state]' value='" . htmlescape($filters['state']) . "'>
+                        <input type='text' class='form-control' name='filters[state]' value='" . htmlescape($filters['state'] ?? '') . "'>
                     </td>
                     <td>
-                        <input type='text' class='form-control' name='filters[version]' value='" . htmlescape($filters['version']) . "'>
+                        <input type='text' class='form-control' name='filters[version]' value='" . htmlescape($filters['version'] ?? '') . "'>
                     </td>
                     <td></td>
                     <td>
@@ -1133,7 +1133,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                         ) . "
                     </td>
                     <td>
-                        <input type='text' class='form-control' name='filters[arch]' value='" . htmlescape($filters['arch']) . "'>
+                        <input type='text' class='form-control' name='filters[arch]' value='" . htmlescape($filters['arch'] ?? '') . "'>
                     </td>
                     <td>" . Dropdown::showFromArray(
                             "filters[is_dynamic]",
