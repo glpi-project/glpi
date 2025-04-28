@@ -360,8 +360,12 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
     #[Override]
     public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $ids = array_values($ma->getItems()[Form::class]);
-        $export_url = "/Form/Export?" . http_build_query(['ids' => $ids]);
+        $export_url = $CFG_GLPI['url_base'];
+        $export_url .= "/Form/Export?" . http_build_query(['ids' => $ids]);
 
         $label = __s("Click here to download the exported forms...");
         echo "<a href=\"$export_url\">$label</a>";
