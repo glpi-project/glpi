@@ -115,20 +115,20 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
     public function defineTabs($options = [])
     {
         $tabs = parent::defineTabs();
-        $this->addStandardTab(ServiceCatalog::getType(), $tabs, $options);
+        $this->addStandardTab(ServiceCatalog::class, $tabs, $options);
         if (Item_Ticket::countLinkedTickets($this) > 0) {
-            $this->addStandardTab(Item_Ticket::getType(), $tabs, $options);
+            $this->addStandardTab(Item_Ticket::class, $tabs, $options);
         }
         if (Change_Item::countLinkedChanges($this) > 0) {
-            $this->addStandardTab(Change_Item::getType(), $tabs, $options);
+            $this->addStandardTab(Change_Item::class, $tabs, $options);
         }
         if (Item_Problem::countLinkedProblems($this) > 0) {
-            $this->addStandardTab(Item_Problem::getType(), $tabs, $options);
+            $this->addStandardTab(Item_Problem::class, $tabs, $options);
         }
-        $this->addStandardTab(FormAccessControl::getType(), $tabs, $options);
-        $this->addStandardTab(FormDestination::getType(), $tabs, $options);
-        $this->addStandardTab(FormTranslation::getType(), $tabs, $options);
-        $this->addStandardTab(Log::getType(), $tabs, $options);
+        $this->addStandardTab(FormAccessControl::class, $tabs, $options);
+        $this->addStandardTab(FormDestination::class, $tabs, $options);
+        $this->addStandardTab(FormTranslation::class, $tabs, $options);
+        $this->addStandardTab(Log::class, $tabs, $options);
         return $tabs;
     }
 
