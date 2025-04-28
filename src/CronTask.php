@@ -213,7 +213,7 @@ class CronTask extends CommonDBTM
             $_SESSION["glpicronuserrunning"] = '';
             self::release_lock();
             Toolbox::logInFile('cron', __('Action aborted') . "\n");
-            exit();
+            exit(); // @phpstan-ignore glpi.forbidExit (CLI context)
         }
     }
 

@@ -53,7 +53,7 @@ if (PHP_SAPI === 'cli') {
         echo "\t" . 'You should run the script as the same user that your web server runs as to avoid file permissions being ruined.' . "\n";
         if (!in_array('--allow-superuser', $_SERVER['argv'], true)) {
             echo "\t" . 'Use --allow-superuser option to bypass this limitation.' . "\n";
-            exit(1);
+            exit(1); // @phpstan-ignore glpi.forbidExit (CLI context)
         }
     }
 
@@ -79,7 +79,7 @@ if (PHP_SAPI === 'cli') {
 
     if ($CFG_GLPI['maintenance_mode'] ?? false) {
         echo 'Service is down for maintenance. It will be back shortly.' . PHP_EOL;
-        exit(1);
+        exit(1); // @phpstan-ignore glpi.forbidExit (CLI context)
     }
 
     if (!($DB instanceof DBmysql)) {
@@ -87,28 +87,28 @@ if (PHP_SAPI === 'cli') {
             'ERROR: The database configuration file "%s" is missing or is corrupted. You have to either restart the install process, or restore this file.',
             GLPI_CONFIG_DIR . '/config_db.php'
         ) . PHP_EOL;
-        exit(1);
+        exit(1); // @phpstan-ignore glpi.forbidExit (CLI context)
     }
 
     if (!$DB->connected) {
         echo 'ERROR: The connection to the SQL server could not be established. Please check your configuration.' . PHP_EOL;
-        exit(1);
+        exit(1); // @phpstan-ignore glpi.forbidExit (CLI context)
     }
 
     if (!Config::isLegacyConfigurationLoaded()) {
         echo 'ERROR: Unable to load the GLPI configuration from the database.' . PHP_EOL;
-        exit(1);
+        exit(1); // @phpstan-ignore glpi.forbidExit (CLI context)
     }
 
     if (Update::isUpdateMandatory()) {
         echo 'The GLPI codebase has been updated. The update of the GLPI database is necessary.' . PHP_EOL;
-        exit(1);
+        exit(1); // @phpstan-ignore glpi.forbidExit (CLI context)
     }
 
     if (!is_writable(GLPI_LOCK_DIR)) {
         echo "\t" . sprintf('ERROR: %s is not writable.' . "\n", GLPI_LOCK_DIR);
         echo "\t" . 'Run the script as the same user that your web server runs as.' . "\n";
-        exit(1);
+        exit(1); // @phpstan-ignore glpi.forbidExit (CLI context)
     }
 
     if (isset($_SERVER['argc']) && ($_SERVER['argc'] > 1)) {
