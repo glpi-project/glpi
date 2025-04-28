@@ -419,7 +419,11 @@ class LocationTest extends DbTestCase
     public function testTabs()
     {
         $this->login();
-        $tabs = (new \Location())->defineTabs();
+        $location = $this->createItem(\Location::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true)
+        ]);
+        $tabs = $location->defineTabs();
         $this->assertArrayHasKey('Location$main', $tabs);
         $this->assertStringContainsString('Locations', $tabs[\Location::class . '$1']);
         $this->assertStringContainsString('Items', $tabs[\Location::class . '$2']);
