@@ -48,35 +48,35 @@ class ContactTest extends \DbTestCase
         $this->setEntity('_test_root_entity', true);
 
         // Create ContactType
-        $contact_type = $this->createItem('ContactType', [
+        $contact_type_id = $this->createItem('ContactType', [
             'name' => 'Supplier Type'
-        ]);
+        ])->getID();
 
         // Create UserTitle
-        $user_title = $this->createItem('UserTitle', [
+        $user_title_id = $this->createItem('UserTitle', [
             'name' => 'User Title'
-        ]);
+        ])->getID();
 
         // Create supplier
         $contact = $this->createItem('Contact', [
-            'name'                => 'contatc name',
+            'name'                => 'contact name',
             'entities_id'         => 0,
             'is_recursive'        => 0,
             'firstname'           => 'contact firstname',
-            'registration_number'             => '0123456789',
-            'phone'            => '123',
-            'phone2'                => '456',
-            'mobile'               => '789',
-            'fax'             => '951',
-            'email'             => 'contact email',
-            'contacttypes_id'         => $contact_type->fields['id'],
+            'registration_number' => '0123456789',
+            'phone'               => '123',
+            'phone2'              => '456',
+            'mobile'              => '789',
+            'fax'                 => '951',
+            'email'               => 'contact@email',
+            'contacttypes_id'     => $contact_type_id,
             'comment'             => 'comment',
-            'usertitles_id' => $user_title->fields['id'],
-            'postcode' => 'contact postcode',
-            'town' => 'contact town',
-            'state' => 'contact state',
-            'country' => 'contact country',
-            'pictures' => 'contact pictures',
+            'usertitles_id'       => $user_title_id,
+            'postcode'            => 'contact postcode',
+            'town'                => 'contact town',
+            'state'               => 'contact state',
+            'country'             => 'contact country',
+            'pictures'            => 'contact pictures',
         ]);
 
         // Test item cloning
