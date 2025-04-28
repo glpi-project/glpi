@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Socket;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/location.class.php */
@@ -413,5 +414,17 @@ class LocationTest extends DbTestCase
             $item = new $type();
             $this->assertTrue($item->maybeLocated(), $type . ' cannot be located!');
         }
+    }
+
+    public function testTabs()
+    {
+        $this->login();
+        $tabs = (new \Location())->defineTabs();
+        $this->assertArrayHasKey('Location$main', $tabs);
+        $this->assertStringContainsString('Locations', $tabs[\Location::class . '$1']);
+        $this->assertStringContainsString('Items', $tabs[\Location::class . '$2']);
+        $this->assertStringContainsString('Translations', $tabs[\DropdownTranslation::class . '$1']);
+        $this->assertStringContainsString('Sockets', $tabs[Socket::class . '$1']);
+        $this->assertStringContainsString('Documents', $tabs[\Document_Item::class . '$1']);
     }
 }
