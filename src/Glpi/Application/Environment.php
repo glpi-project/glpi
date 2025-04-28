@@ -171,16 +171,22 @@ enum Environment: string
      * This may affect which cache we decide to set (twig, http cache on the
      * generated css and locale, ...)
      */
-    public function shouldExpectRessourcesToChange(): bool
+    public function shouldExpectRessourcesToChange(string $root_dir = GLPI_ROOT): bool
     {
         // Only production/staging environment are considered as environments
         // where resources are not supposed to change.
         // In others environments, we must match for changes.
-        return match ($this) {
-            default           => false,
-            self::TESTING     => true,
-            self::DEVELOPMENT => true,
-        };
+        if ($this === self::TESTING || $this === self::DEVELOPMENT) {
+            return true;
+        }
+
+        // If GLPI is install direcly by cloning the git repository, then it is preferable to check
+        // resources state.
+        if (is_dir($root_dir . '/.git')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
