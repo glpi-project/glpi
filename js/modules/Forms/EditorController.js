@@ -1005,7 +1005,7 @@ export class GlpiFormEditorController
      * @param {jQuery} question
      */
     #deleteQuestion(question) {
-        if (!this.#checkBlockConditionDependencies('question', question)) {
+        if (!this.#checkItemConditionDependencies('question', question)) {
             return;
         }
 
@@ -1049,7 +1049,7 @@ export class GlpiFormEditorController
      * @param {jQuery} block The block element to check
      * @returns {boolean} True if the block can be deleted, false otherwise
      */
-    #checkBlockConditionDependencies(type, block) {
+    #checkItemConditionDependencies(type, block) {
         const uuid = `${type}-${this.#getItemInput(block, "uuid")}`;
         const conditions_that_use_this_block = $('[data-glpi-conditions-editor-item]')
             .filter((_index, element) => element.value == uuid);
@@ -1791,7 +1791,7 @@ export class GlpiFormEditorController
      * @param {jQuery} section
      */
     #deleteSection(section) {
-        if (!this.#checkBlockConditionDependencies('section', section)) {
+        if (!this.#checkItemConditionDependencies('section', section)) {
             return;
         }
 
@@ -1857,7 +1857,7 @@ export class GlpiFormEditorController
      * @param {jQuery} comment
      */
     #deleteComment(comment) {
-        if (!this.#checkBlockConditionDependencies('comment', comment)) {
+        if (!this.#checkItemConditionDependencies('comment', comment)) {
             return;
         }
 
