@@ -72,7 +72,7 @@ final class Kernel extends BaseKernel
             $env->value,
             // `debug: true` will ensure that cache is recompiled everytime a corresponding resource is updated.
             // Reserved for dev/test environments as it consumes many disk I/O.
-            debug: $env->shouldExpectRessourcesToChange(),
+            debug: $env->shouldExpectResourcesToChange(),
         );
     }
 
@@ -81,21 +81,34 @@ final class Kernel extends BaseKernel
         $this->triggerGlobalsDeprecation();
     }
 
+    /**
+     * Returns the cache root directory.
+     */
+    public static function getCacheRootDir(): string
+    {
+        // FIXME: Inject it as a DI parameter when corresponding services will be instanciated from the DI system.
+        return GLPI_CACHE_DIR . '/' . GLPI_FILES_VERSION . '-' . Environment::get()->value;
+    }
+
+    #[Override()]
     public function getProjectDir(): string
     {
         return \dirname(__DIR__, 3);
     }
 
+    #[Override()]
     public function getCacheDir(): string
     {
-        return GLPI_CACHE_DIR . '/app/' . $this->environment;
+        return self::getCacheRootDir() . '/app';
     }
 
+    #[Override()]
     public function getLogDir(): string
     {
         return GLPI_LOG_DIR;
     }
 
+    #[Override()]
     public function registerBundles(): iterable
     {
         $bundles = [];
@@ -117,6 +130,7 @@ final class Kernel extends BaseKernel
         return $bundles;
     }
 
+    #[Override()]
     public function boot(): void
     {
         $dispatch_postboot = !$this->booted;

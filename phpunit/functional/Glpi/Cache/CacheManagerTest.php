@@ -62,11 +62,6 @@ class CacheManagerTest extends \GLPITestCase
             'is_configurable' => false,
         ];
         yield [
-            'context'         => 'installer',
-            'is_valid'        => true,
-            'is_configurable' => false,
-        ];
-        yield [
             'context'         => 'plugin:tester',
             'is_valid'        => true,
             'is_configurable' => true,
@@ -116,11 +111,6 @@ class CacheManagerTest extends \GLPITestCase
             vfsStream::url('glpi/config'),
             vfsStream::url('glpi/files/_cache')
         );
-
-        // Test 'installer' context
-        $this->assertInstanceOf(CacheInterface::class, $instance->getInstallerCacheInstance());
-        $this->assertInstanceOf(CacheInterface::class, $instance->getCacheInstance('installer'));
-        $this->assertInstanceOf(FilesystemAdapter::class, $instance->getCacheStorageAdapter('installer'));
 
         // Test 'translations' context
         $this->assertInstanceOf(CacheInterface::class, $instance->getTranslationsCacheInstance());
@@ -199,7 +189,6 @@ class CacheManagerTest extends \GLPITestCase
 
         // Not configurable contexts
         $contexts = [
-            'installer',
             'translations',
         ];
         foreach ($contexts as $context) {
@@ -387,9 +376,6 @@ class CacheManagerTest extends \GLPITestCase
         if ($context === 'core') {
             $this->assertInstanceOf(CacheInterface::class, $instance->getCoreCacheInstance());
         }
-        if ($context === 'installer') {
-            $this->assertInstanceOf(CacheInterface::class, $instance->getInstallerCacheInstance());
-        }
         if ($context === 'translations') {
             $this->assertInstanceOf(CacheInterface::class, $instance->getTranslationsCacheInstance());
         }
@@ -475,7 +461,6 @@ class CacheManagerTest extends \GLPITestCase
         // Check base contexts
         $expected_contexts = [
             'core',
-            'installer',
             'translations',
         ];
         $this->assertSame($expected_contexts, $instance->getKnownContexts());

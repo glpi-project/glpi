@@ -62,12 +62,6 @@ class CacheManager
     public const CONTEXT_TRANSLATIONS = 'translations';
 
     /**
-     * GLPI installer cache context.
-     * @var string
-     */
-    public const CONTEXT_INSTALLER = 'installer';
-
-    /**
      * Memcached scheme.
      * @var string
      */
@@ -105,8 +99,12 @@ class CacheManager
      */
     private $cache_dir;
 
-    public function __construct(string $config_dir = GLPI_CONFIG_DIR, string $cache_dir = GLPI_CACHE_DIR)
+    public function __construct(string $config_dir = GLPI_CONFIG_DIR, ?string $cache_dir = null)
     {
+        if ($cache_dir === null) {
+            $cache_dir = Kernel::getCacheRootDir();
+        }
+
         $this->config_dir = $config_dir;
         $this->cache_dir = $cache_dir;
     }
@@ -236,15 +234,13 @@ class CacheManager
             $namespace_prefix .= '-';
         }
 
-        if ($context === self::CONTEXT_TRANSLATIONS || $context === self::CONTEXT_INSTALLER) {
-            // 'translations' and 'installer' contexts are not supposed to be configured
+        if ($context === self::CONTEXT_TRANSLATIONS) {
+            // 'translations' context is not supposed to be configured
             // and should always use a filesystem adapter.
-            // Append GLPI version to namespace to ensure that these caches are not containing data
-            // from a previous version.
-            $namespace = $this->normalizeNamespace($namespace_prefix . $context . '-' . GLPI_VERSION);
+            $namespace = $this->normalizeNamespace($namespace_prefix . $context);
             $adapter = new FilesystemAdapter($namespace, 0, $this->cache_dir);
         } elseif (!array_key_exists($context, $raw_config['contexts'])) {
-            // Default to filesystem, inside GLPI_CACHE_DIR/$context.
+            // Default to filesystem, in a different directory for each context.
             $adapter = new FilesystemAdapter($this->normalizeNamespace($namespace_prefix . $context), 0, $this->cache_dir);
         } else {
             $context_config = $raw_config['contexts'][$context];
@@ -302,16 +298,6 @@ class CacheManager
     }
 
     /**
-     * Get installer cache instance.
-     *
-     * @return CacheInterface
-     */
-    public function getInstallerCacheInstance(): CacheInterface
-    {
-        return $this->getCacheInstance(self::CONTEXT_INSTALLER);
-    }
-
-    /**
      * Reset all caches.
      *
      * @return bool
@@ -356,9 +342,8 @@ class CacheManager
     {
        // Core contexts
         $contexts = [
-            'core',
-            'installer',
-            'translations',
+            self::CONTEXT_CORE,
+            self::CONTEXT_TRANSLATIONS,
         ];
 
        // Contexts defined in configuration.
@@ -496,8 +481,7 @@ PHP;
         $core_contexts = ['core'];
 
         if (!$only_configurable) {
-           // 'installer' and 'translations' cache storages cannot not be configured (they always use the filesystem storage)
-            $core_contexts[] = self::CONTEXT_INSTALLER;
+           // 'translations' cache storage cannot not be configured (it always use the filesystem storage)
             $core_contexts[] = self::CONTEXT_TRANSLATIONS;
         }
 

@@ -972,7 +972,7 @@ HTML;
             $card = $cards[$card_id];
 
             $use_cache = !$force
-                && !Environment::get()->shouldExpectRessourcesToChange()
+                && Environment::get()->shouldForceExtraBrowserCache()
                 && (!isset($card['cache']) || $card['cache'] == true);
             $cache_age = 40;
 
@@ -1442,7 +1442,7 @@ HTML;
                 ]
             ];
 
-            if (!Environment::get()->shouldExpectRessourcesToChange()) {
+            if (!Environment::get()->shouldExpectResourcesToChange()) {
                 // Do not cache dashboard cards on `development` envs
                 $GLPI_CACHE->set(self::getAllDashboardCardsCacheKey(), $cards);
             }

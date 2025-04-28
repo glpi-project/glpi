@@ -48,15 +48,9 @@ session_write_close(); // Unlocks session to permit concurrent calls
 
 header("Content-Type: application/json; charset=UTF-8");
 
-// do not use browser cache on development env
-$is_cacheable  = !Environment::get()->shouldExpectRessourcesToChange();
-if (!Update::isDbUpToDate()) {
-   // Make sure to not cache if in the middle of a GLPI update
-    $is_cacheable = false;
-}
+$is_cacheable = Environment::get()->shouldForceExtraBrowserCache();
 if ($is_cacheable) {
-    // Makes CSS cacheable by browsers and proxies,
-    // unless when we are in the middle of a GLPI update.
+    // Makes CSS cacheable by browsers and proxies.
     $max_age = WEEK_TIMESTAMP;
     header_remove('Pragma');
     header('Cache-Control: public');

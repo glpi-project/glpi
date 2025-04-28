@@ -118,11 +118,6 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
-        global $GLPI_CACHE;
-        $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance(); // Use dedicated "installer" cache
-
         parent::initialize($input, $output);
 
         $this->outputWarningOnMissingOptionnalRequirements();

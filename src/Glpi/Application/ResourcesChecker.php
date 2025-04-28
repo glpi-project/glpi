@@ -125,16 +125,6 @@ final class ResourcesChecker
         // The file is special and will be executed before the autoload script
         // is loaded, thus we must require the needed file manually.
         require_once($this->root_dir . '/src/Glpi/Application/Environment.php');
-        if (!\Glpi\Application\Environment::get()->shouldExpectRessourcesToChange()) {
-            return true;
-        }
-
-        // If GLPI is install direcly by cloning the git repository, then it is preferable to check
-        // resources state.
-        if (is_dir($this->root_dir . '/.git')) {
-            return true;
-        }
-
-        return false;
+        return \Glpi\Application\Environment::get()->shouldExpectResourcesToChange($this->root_dir);
     }
 }

@@ -34,21 +34,16 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Cache\CacheManager;
 use Glpi\Toolbox\VersionParser;
 
 /**
  * @var array $CFG_GLPI
  * @var \DBmysql $DB
- * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
  * @var bool $HEADER_LOADED
  */
 global $CFG_GLPI,
        $DB,
-       $GLPI_CACHE,
        $HEADER_LOADED;
-
-$GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
 if (($_SESSION['can_process_update'] ?? false) && isset($_POST['update_end'])) {
     if (isset($_POST['send_stats'])) {

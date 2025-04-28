@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Cache\CacheManager;
 use Glpi\System\Requirement\DbConfiguration;
 use Glpi\System\Requirement\DbEngine;
 use Glpi\System\Requirement\DbTimezones;
@@ -43,11 +42,8 @@ use Glpi\Toolbox\Filesystem;
 
 /**
  * @var array $CFG_GLPI
- * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
  */
-global $CFG_GLPI, $GLPI_CACHE;
-
-$GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
+global $CFG_GLPI;
 
 if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]])) {
     $_SESSION["glpilanguage"] = $_POST["language"];
