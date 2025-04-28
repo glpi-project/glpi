@@ -1131,7 +1131,7 @@ class Change extends CommonITILObject
                 $WHERE = array_merge(
                     $WHERE,
                     [
-                        'glpi_changevalidations.users_id_validate'              => Session::getLoginUserID(),
+                        ChangeValidation::getTargetCriteriaForUser(Session::getLoginUserID()),
                         'glpi_changevalidations.status'  => CommonITILValidation::WAITING,
                         'glpi_changes.global_validation' => CommonITILValidation::WAITING,
                         'NOT'                            => [
@@ -1262,15 +1262,27 @@ class Change extends CommonITILObject
                         $options['criteria'][0]['value']      = CommonITILValidation::WAITING;
                         $options['criteria'][0]['link']       = 'AND';
 
-                        $options['criteria'][1]['field']      = 59; // validation aprobator
-                        $options['criteria'][1]['searchtype'] = 'equals';
-                        $options['criteria'][1]['value']      = Session::getLoginUserID();
+                        $options['criteria'][1]['criteria'][0]['field']      = 59; // validation aprobator user
+                        $options['criteria'][1]['criteria'][0]['searchtype'] = 'equals';
+                        $options['criteria'][1]['criteria'][0]['value']      = 'myself'; // Resolved as current user's ID
+                        $options['criteria'][1]['criteria'][1]['field']      = 195; // validation aprobator substitute user
+                        $options['criteria'][1]['criteria'][1]['searchtype'] = 'equals';
+                        $options['criteria'][1]['criteria'][1]['value']      = 'myself'; // Resolved as current user's ID
+                        $options['criteria'][1]['criteria'][1]['link']       = 'OR';
+                        $options['criteria'][1]['criteria'][2]['field']      = 196; // validation aprobator group
+                        $options['criteria'][1]['criteria'][2]['searchtype'] = 'equals';
+                        $options['criteria'][1]['criteria'][2]['value']      = 'mygroups'; // Resolved as groups the current user belongs to
+                        $options['criteria'][1]['criteria'][2]['link']       = 'OR';
+                        $options['criteria'][1]['criteria'][3]['field']      = 197; // validation aprobator group
+                        $options['criteria'][1]['criteria'][3]['searchtype'] = 'equals';
+                        $options['criteria'][1]['criteria'][3]['value']      = 'myself'; // Resolved as groups the current user belongs to
+                        $options['criteria'][1]['criteria'][3]['link']       = 'OR';
                         $options['criteria'][1]['link']       = 'AND';
 
                         $options['criteria'][2]['field']      = 12; // validation aprobator
                         $options['criteria'][2]['searchtype'] = 'equals';
-                        $options['criteria'][2]['value']      = 'old';
-                        $options['criteria'][2]['link']       = 'AND NOT';
+                        $options['criteria'][2]['value']      = 'notold';
+                        $options['criteria'][2]['link']       = 'AND';
 
                         $options['criteria'][3]['field']      = 52; // global validation status
                         $options['criteria'][3]['searchtype'] = 'equals';

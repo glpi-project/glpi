@@ -446,7 +446,8 @@ class ChangeTest extends DbTestCase
         // create change validation
         $this->createItem('ChangeValidation', [
             'changes_id'        => $change->getID(),
-            'users_id_validate' => $users_id,
+            'items_id_target'   => $users_id,
+            'itemtype_target'   => \User::class,
         ]);
 
         ob_start();
