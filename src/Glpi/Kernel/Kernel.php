@@ -88,7 +88,7 @@ final class Kernel extends BaseKernel
 
     public function getCacheDir(): string
     {
-        return GLPI_CACHE_DIR . '/app/' . $this->environment;
+        return GLPI_CACHE_DIR . '/' . GLPI_FILES_VERSION . '/app';
     }
 
     public function getLogDir(): string

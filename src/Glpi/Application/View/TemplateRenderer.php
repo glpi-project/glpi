@@ -63,7 +63,7 @@ class TemplateRenderer
 {
     private Environment $environment;
 
-    public function __construct(string $rootdir = GLPI_ROOT, string $cachedir = GLPI_CACHE_DIR)
+    public function __construct(string $rootdir = GLPI_ROOT, string $cachedir = GLPI_CACHE_DIR . '/' . GLPI_FILES_VERSION)
     {
         $loader = new FilesystemLoader($rootdir . '/templates', $rootdir);
 

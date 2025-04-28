@@ -423,6 +423,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Api\API::showDebug()`
 - `Glpi\Api\API::returnSanitizedContent()`
 - `Glpi\Application\ErrorHandler` class
+- `Glpi\Cache\CacheManager::getInstallerCacheInstance()`
 - `Glpi\Console\Command\ForceNoPluginsOptionCommandInterface` class
 - `Glpi\Dashboard\Filter::dates()`
 - `Glpi\Dashboard\Filter::dates_mod()`

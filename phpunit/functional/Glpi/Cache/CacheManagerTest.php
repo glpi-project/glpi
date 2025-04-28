@@ -117,11 +117,6 @@ class CacheManagerTest extends \GLPITestCase
             vfsStream::url('glpi/files/_cache')
         );
 
-        // Test 'installer' context
-        $this->assertInstanceOf(CacheInterface::class, $instance->getInstallerCacheInstance());
-        $this->assertInstanceOf(CacheInterface::class, $instance->getCacheInstance('installer'));
-        $this->assertInstanceOf(FilesystemAdapter::class, $instance->getCacheStorageAdapter('installer'));
-
         // Test 'translations' context
         $this->assertInstanceOf(CacheInterface::class, $instance->getTranslationsCacheInstance());
         $this->assertInstanceOf(CacheInterface::class, $instance->getCacheInstance('translations'));
@@ -386,9 +381,6 @@ class CacheManagerTest extends \GLPITestCase
 
         if ($context === 'core') {
             $this->assertInstanceOf(CacheInterface::class, $instance->getCoreCacheInstance());
-        }
-        if ($context === 'installer') {
-            $this->assertInstanceOf(CacheInterface::class, $instance->getInstallerCacheInstance());
         }
         if ($context === 'translations') {
             $this->assertInstanceOf(CacheInterface::class, $instance->getTranslationsCacheInstance());

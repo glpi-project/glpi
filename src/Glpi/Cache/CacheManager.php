@@ -105,7 +105,7 @@ class CacheManager
      */
     private $cache_dir;
 
-    public function __construct(string $config_dir = GLPI_CONFIG_DIR, string $cache_dir = GLPI_CACHE_DIR)
+    public function __construct(string $config_dir = GLPI_CONFIG_DIR, string $cache_dir = GLPI_CACHE_DIR . '/' . GLPI_FILES_VERSION)
     {
         $this->config_dir = $config_dir;
         $this->cache_dir = $cache_dir;
@@ -239,12 +239,10 @@ class CacheManager
         if ($context === self::CONTEXT_TRANSLATIONS || $context === self::CONTEXT_INSTALLER) {
             // 'translations' and 'installer' contexts are not supposed to be configured
             // and should always use a filesystem adapter.
-            // Append GLPI version to namespace to ensure that these caches are not containing data
-            // from a previous version.
-            $namespace = $this->normalizeNamespace($namespace_prefix . $context . '-' . GLPI_VERSION);
+            $namespace = $this->normalizeNamespace($namespace_prefix . $context);
             $adapter = new FilesystemAdapter($namespace, 0, $this->cache_dir);
         } elseif (!array_key_exists($context, $raw_config['contexts'])) {
-            // Default to filesystem, inside GLPI_CACHE_DIR/$context.
+            // Default to filesystem, inside GLPI_CACHE_DIR/GLPI_FILES_VERSION/$context.
             $adapter = new FilesystemAdapter($this->normalizeNamespace($namespace_prefix . $context), 0, $this->cache_dir);
         } else {
             $context_config = $raw_config['contexts'][$context];
@@ -299,16 +297,6 @@ class CacheManager
     public function getTranslationsCacheInstance(): CacheInterface
     {
         return $this->getCacheInstance(self::CONTEXT_TRANSLATIONS);
-    }
-
-    /**
-     * Get installer cache instance.
-     *
-     * @return CacheInterface
-     */
-    public function getInstallerCacheInstance(): CacheInterface
-    {
-        return $this->getCacheInstance(self::CONTEXT_INSTALLER);
     }
 
     /**
