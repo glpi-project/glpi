@@ -62,7 +62,7 @@
             </th>
          </tr>
 
-         {% if filters|length > 0  %}
+         {% if filters|length > 0 %}
          <tr class="filter_row">
             <td>
                <input type="hidden" name="filters[active]" value="1" />
@@ -133,11 +133,9 @@
 
    <div class="ms-auto d-inline-flex align-items-center d-none d-md-block mb-2 my-2">
         {{ __('Entries to show:') }}
-        {% include 'components/dropdown/limit.html.twig' %}
+        {{ include('components/dropdown/limit.html.twig') }}
    </div>
 {% endif %}
-
-
 
 <script type="text/javascript">
 $(function() {

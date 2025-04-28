@@ -37,9 +37,9 @@
 
 {% set itil_layout = user_pref('itil_layout', true) %}
 {% set is_collapsed = (itil_layout['collapsed'] ?? false) == "true" %}
-{% set is_expanded  = (itil_layout['expanded'] ?? false) == "true" %}
+{% set is_expanded = (itil_layout['expanded'] ?? false) == "true" %}
 {% set collapsed_cls = (is_collapsed ? "right-collapsed" : "") %}
-{% set expanded_cls  = (is_expanded == "true" ? "right-expanded" : "") %}
+{% set expanded_cls = (is_expanded == "true" ? "right-expanded" : "") %}
 {% set template_preview = params.template_preview|default(false) %}
 
 {% set left_regular_cls = "col-lg-8" %}
@@ -54,7 +54,6 @@
     {% set left_side_cls = left_expanded_cls %}
     {% set right_side_cls = right_expanded_cls %}
 {% endif %}
-
 
 <div id="itil-object-container" class="mt-n1 {{ collapsed_cls }} {{ expanded_cls }}">
 

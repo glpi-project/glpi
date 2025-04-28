@@ -92,7 +92,6 @@
    {{ _self.textField(name, value, label, options) }}
 {% endmacro %}
 
-
 {% macro textField(name, value, label = '', options = {}) %}
    {% set options = {
       'id': '%id%'
@@ -135,7 +134,6 @@
     {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
-
 {% macro sliderField(name, value, label = '', options = {}) %}
    {% if options.fields_template.isMandatoryField(name)|default(false) %}
       {% set options = {
@@ -175,7 +173,6 @@
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
-
 {% macro numberField(name, value, label = '', options = {}) %}
     {% set options = {
         'id': '%id%'
@@ -188,7 +185,6 @@
 
     {{ _self.field(name, field, label, options) }}
 {% endmacro %}
-
 
 {% macro readOnlyField(name, value, label = '', options = {}) %}
    {% set options = options|merge({'readonly': true}) %}
@@ -203,7 +199,6 @@
    {% endset %}
    {{ _self.field(name, value, label, options) }}
 {% endmacro %}
-
 
 {% macro textareaField(name, value, label = '', options = {}) %}
    {% set options = {
@@ -264,7 +259,6 @@
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
-
 {% macro dateField(name, value, label = '', options = {}) %}
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
@@ -274,7 +268,6 @@
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
-
 {% macro datetimeField(name, value, label = '', options = {}) %}
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
@@ -283,7 +276,6 @@
 
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
-
 
 {% macro colorField(name, value, label = '', options = {}) %}
     {% set options = {
@@ -297,7 +289,6 @@
 
     {{ _self.field(name, field, label, options) }}
 {% endmacro %}
-
 
 {% macro passwordField(name, value, label = '', options = {}) %}
    {% set options = {
@@ -322,7 +313,6 @@
 
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
-
 
 {% macro emailField(name, value, label = '', options = {}) %}
     {% set options = {
@@ -794,7 +784,7 @@
    {% if not options.include_field %}
       {{ field }}
    {% else %}
-      {% set id    = (options.id ?? '')|length > 0 and options.id != '%id%' ? options.id : (name|slug ~ '_' ~ options.rand) %}
+      {% set id = (options.id ?? '')|length > 0 and options.id != '%id%' ? options.id : (name|slug ~ '_' ~ options.rand) %}
       {% set field = field|replace({'%id%': id}) %}
       {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : '' %}
 
@@ -831,7 +821,6 @@
    {% endif %}
 {% endmacro %}
 
-
 {% macro noLabelField(field, id = '', add_field_html = '', options = {}) %}
    {% set options = {
       'full_width': false,
@@ -858,7 +847,6 @@
       {{ add_field_html|raw }}
    </div>
 {% endmacro %}
-
 
 {% macro horizontalField(label, field, id, add_field_html = '', options = {}) %}
    {% set options = {
@@ -923,7 +911,6 @@
       </div>
    </div>
 {% endmacro %}
-
 
 {% macro verticalField(label, field, id, add_field_html = '', options = {}) %}
    {% set options = {

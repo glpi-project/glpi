@@ -32,7 +32,7 @@
 
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
-{% set params  = params ?? [] %}
+{% set params = params ?? [] %}
 {% set rand_field = rand|default(random()) %}
 
 {% set params = params|merge({

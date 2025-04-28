@@ -36,8 +36,8 @@
    {{ include('components/form/header.html.twig') }}
 
    {% set rand = random() %}
-   {% set params  = params ?? [] %}
-   {% set target       = params['target'] ?? item.getFormURL() %}
+   {% set params = params ?? [] %}
+   {% set target = params['target'] ?? item.getFormURL() %}
    {% set withtemplate = params['withtemplate'] ?? '' %}
    {% set item_type = item.getType() %}
    {% set field_options = {} %}

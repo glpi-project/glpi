@@ -37,7 +37,7 @@
      data-itemtype="{{ item.getType() }}" data-items-id="{{ item.fields['id'] }}">
    <div class="row">
       <div class="col-auto d-flex flex-column ">
-         {{ include('components/user/picture.html.twig', {'users_id': users_id}, with_context = false) }}
+         {{ include('components/user/picture.html.twig', {'users_id': users_id}, with_context: false) }}
       </div>
       <div class="col-12 col-sm">
          <div class="mt-2 timeline-content left card">
@@ -51,7 +51,7 @@
                         'users_id_editor': item.fields['users_id_lastupdater'],
                         'anonym_user': anonym_user ?? false,
                         'anchor': get_class(item) ~ '_' ~ item.getID(),
-                     }, with_context = false) }}
+                     }, with_context: false) }}
                   </div>
 
                   {% if canupdate %}

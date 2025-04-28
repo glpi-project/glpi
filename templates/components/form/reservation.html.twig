@@ -60,11 +60,11 @@
             'items[]',
             _n('Item', 'Items', 1),
             {
-                items_id_name   : 'items[]',
-                itemtypes       : itemtypes,
-                entity_restrict : session('glpiactive_entity'),
-                checkright      : false,
-                ajax_page       : config('root_doc') ~ '/ajax/reservable_items.php'
+                items_id_name: 'items[]',
+                itemtypes: itemtypes,
+                entity_restrict: session('glpiactive_entity'),
+                checkright: false,
+                ajax_page: config('root_doc') ~ '/ajax/reservable_items.php'
             }
         ) }}
     {% endif %}
@@ -76,8 +76,8 @@
             item.fields['users_id'],
             __('By'),
             {
-                entity      : item.fields['entities_id'],
-                right       : 'all'
+                entity: item.fields['entities_id'],
+                right: 'all'
             }
         ) }}
     {% else %}
@@ -104,12 +104,12 @@
         default_delay,
         __('Duration'),
         {
-            rand             : rand,
-            min              : 0,
-            max              : 24 * constant('HOUR_TIMESTAMP'),
-            value            : default_delay,
-            emptylabel       : __('Specify an end date'),
-            allow_max_change : false
+            rand: rand,
+            min: 0,
+            max: 24 * constant('HOUR_TIMESTAMP'),
+            value: default_delay,
+            emptylabel: __('Specify an end date'),
+            allow_max_change: false
         }
     ) }}
 
@@ -120,9 +120,9 @@
         'date_end' ~ rand,
         config('root_doc') ~ '/ajax/planningend.php',
         {
-            duration    : '__VALUE__',
-            end         : item.fields['end'],
-            name        : "resa[end]"
+            duration: '__VALUE__',
+            end: item.fields['end'],
+            name: "resa[end]"
         }
     ]) %}
 
@@ -131,9 +131,9 @@
             'date_end' ~ rand,
             config('root_doc') ~ '/ajax/planningend.php',
             {
-                duration    : 0,
-                end         : item.fields['end'],
-                name        : "resa[end]"
+                duration: 0,
+                end: item.fields['end'],
+                name: "resa[end]"
             }
         ]) %}
     {% endif %}
@@ -148,14 +148,14 @@
             'periodicity[type]',
             '',
             {
-                '' : _x('periodicity', 'None'),
-                'day' : _x('periodicity', 'Daily'),
-                'week' : _x('periodicity', 'Weekly'),
-                'month' : _x('periodicity', 'Monthly')
+                '': _x('periodicity', 'None'),
+                'day': _x('periodicity', 'Daily'),
+                'week': _x('periodicity', 'Weekly'),
+                'month': _x('periodicity', 'Monthly')
             },
             __('Repetition'),
             {
-                rand : rand
+                rand: rand
             }
         ) }}
 
@@ -166,9 +166,9 @@
             'resaperiodcontent' ~ rand,
             config('root_doc') ~ '/ajax/resaperiod.php',
             {
-                type    : '__VALUE__',
-                end     : item.fields['end'],
-                name    : "resa[end]"
+                type: '__VALUE__',
+                end: item.fields['end'],
+                name: "resa[end]"
             }
         ]) %}
     {% endif %}
@@ -178,10 +178,10 @@
         item.fields['comment'],
         __("Comments"),
         {
-            enable_richtext     : true,
-            enable_fileupload   : false,
-            cols                : 30,
-            rows                : 10
+            enable_richtext: true,
+            enable_fileupload: false,
+            cols: 30,
+            rows: 10
         }
     ) }}
 

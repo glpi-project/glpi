@@ -49,7 +49,7 @@
     </div>
 {% else %}
     <h3>{{ __("Checking of the compatibility of your environment with the execution of GLPI") }}</h3>
-    {{ include('install/blocks/requirements_table.html.twig', {requirements: requirements}, with_context = false) }}
+    {{ include('install/blocks/requirements_table.html.twig', {requirements: requirements}, with_context: false) }}
 {% endif %}
 
 {% set common_hiddens %}

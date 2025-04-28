@@ -31,8 +31,8 @@
  #}
 
 <div class="container-xl">
-    {% include('components/itilobject/timeline/form_task_main_form.html.twig') with {
+    {{ include(('components/itilobject/timeline/form_task_main_form.html.twig'), {
         'no_form': true,
         'disable_pending_reasons': true,
-    } %}
+    }) }}
 </div>

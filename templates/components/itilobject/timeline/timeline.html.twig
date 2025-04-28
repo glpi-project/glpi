@@ -60,7 +60,7 @@
 
       {% set is_private_class = is_private ? "private-item" : "" %}
 
-      {% set can_edit_i  = entry_i['can_edit'] %}
+      {% set can_edit_i = entry_i['can_edit'] %}
 
       {% set timeline_position = entry_i['timeline_position'] %}
       {% set item_position = 't-left' %}
@@ -146,7 +146,7 @@
                         'users_id': users_id,
                         'user_object': entry_user,
                         'enable_anonymization': anonym_user
-                     }, with_context = false) }}
+                     }, with_context: false) }}
                   </span>
                   {% if not anonym_user and entry_user.canView() %}
                      {% do call('Html::showToolTip', [
@@ -154,7 +154,7 @@
                            'user': user_fields,
                            'user_object': entry_user,
                            'enable_anonymization': false,
-                        }, with_context = false), {
+                        }, with_context: false), {
                            'applyto': 'timeline-avatar' ~ avatar_rand
                         }]) %}
                   {% endif %}

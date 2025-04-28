@@ -80,7 +80,6 @@
    ]) %}
 {% endfor %}
 
-
 <div class="container-fluid text-start mb-4 dropdowns-list">
    <div class="input-icon mb-3">
       <input class="form-control" placeholder="{{ __('Filter dropdowns') }}" id="filter-dropdown" />
@@ -92,7 +91,7 @@
    {{ include('components/masonry_grid.html.twig', {
       'grid_items': grid_items,
       'grid_item_class': 'col-lg-6 col-xl-4 col-xxl-3',
-   }, with_context = false) }}
+   }, with_context: false) }}
 </div>
 
 <script>

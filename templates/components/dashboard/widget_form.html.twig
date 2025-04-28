@@ -97,11 +97,11 @@
    </div>
 
    {% set palette_displayed = edit and widget_def['haspalette'] %}
-   {% set palette_disabled  = use_gradient %}
+   {% set palette_disabled = use_gradient %}
    {% set palettes = call("Glpi\\Dashboard\\Palette::getAllPalettes") %}
     <div class="palette_field" {% if not palette_displayed %}style="display: none;"{% endif %}>
         {% set palette_field %}
-            {% set palette_field_id  = "palette_select" ~ random() %}
+            {% set palette_field_id = "palette_select" ~ random() %}
             {% set gradient_field_id = "use_gradient" ~ random() %}
 
             <select name="palette" id="{{ palette_field_id }}"

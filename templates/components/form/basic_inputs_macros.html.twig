@@ -116,7 +116,6 @@
     {% endif %}
 {% endmacro %}
 
-
 {% macro text(name, value, options = {}) %}
     {% set options = {
         'copyable': false,
@@ -130,7 +129,6 @@
         </div>
     {% endif %}
 {% endmacro %}
-
 
 {% macro number(name, value, options = {}) %}
     {% set options = {
@@ -148,7 +146,6 @@
 
     {{ _self.input(name, value, options|merge({'type': 'number'})) }}
 {% endmacro %}
-
 
 {% macro color(name, value, options = {}) %}
     {% set options = {
@@ -179,16 +176,13 @@
     </script>
 {% endmacro %}
 
-
 {% macro password(name, value, options = {}) %}
     {{ _self.input(name, value, options|merge({'type': 'password'})) }}
 {% endmacro %}
 
-
 {% macro email(name, value, options = {}) %}
     {{ _self.input(name, value, options|merge({'type': 'email'})) }}
 {% endmacro %}
-
 
 {% macro file(name, value, options = {}) %}
     {% set options = {
@@ -206,11 +200,9 @@
     {% endif %}
 {% endmacro %}
 
-
 {% macro hidden(name, value, options = {}) %}
     {{ _self.input(name, value, options|merge({'type': 'hidden'})) }}
 {% endmacro %}
-
 
 {% macro date(name, value, options = {}) %}
     {% set options = {
@@ -295,13 +287,11 @@
     </script>
 {% endmacro %}
 
-
 {% macro datetime(name, value, options = {}) %}
     {{ _self.date(name, value, options|merge({
         'enableTime': true
     })) }}
 {% endmacro %}
-
 
 {% macro textarea(name, value, options = {}) %}
     {% set options = {
@@ -393,7 +383,6 @@
     {% endif %}
 {% endmacro %}
 
-
 {% macro checkbox(name, value, options = {}) %}
     {% set options = {
         'id': null,
@@ -417,7 +406,6 @@
             {% endfor %}/>
 {% endmacro %}
 
-
 {% macro button(name, label = '', type = 'button', value = '', options = {}) %}
     {% set options = {
         'type': 'submit',
@@ -439,7 +427,6 @@
         {% endif %}
     </button>
 {% endmacro %}
-
 
 {% macro submit(name, label = '', value = '', options = {}) %}
     {{ _self.button(name, label, 'submit', value, options) }}

@@ -56,14 +56,14 @@
                 translation.getTranslation(),
                 '',
                 {
-                    'no_label'       : true,
-                    'full_width'     : true,
-                    'mb'             : '',
-                    'aria_label'     : __("Enter translation"),
-                    'placeholder'    : __("Enter translation"),
+                    'no_label': true,
+                    'full_width': true,
+                    'mb': '',
+                    'aria_label': __("Enter translation"),
+                    'placeholder': __("Enter translation"),
                     'enable_richtext': true,
-                    'statusbar'      : false,
-                    'editor_height'  : 0,
+                    'statusbar': false,
+                    'editor_height': 0,
                 }
             ) }}
         {% else %}
@@ -129,7 +129,7 @@
             </div>
             <div class="modal-body p-0">
                 <div class="card border-bottom-0">
-                    {% include "components/datatable.html.twig" with {
+                    {{ include("components/datatable.html.twig", {
                         'datatable_id': 'glpi-form-translations-languages',
                         'datatable_aria_label': __('Form translations'),
                         'columns': {
@@ -147,7 +147,7 @@
                         'nofilter': true,
                         'nopager': true,
                         'nosort': true,
-                    } only %}
+                    }, false) }}
                 </div>
             </div>
             <div class="modal-footer border-top-0">

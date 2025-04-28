@@ -35,7 +35,7 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% block form_fields %}
-	{{ inputs.hidden('notifications_id', notification.fields['id']) }}
+    {{ inputs.hidden('notifications_id', notification.fields['id']) }}
    {{ fields.htmlField('', notification_link, 'Notification'|itemtype_name) }}
    {{ fields.nullField() }}
    {{ fields.htmlField('', call('Notification_NotificationTemplate::dropdownMode', [{

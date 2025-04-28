@@ -33,7 +33,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
-{#  not extending generic form due to the canEdit check required to add the form and the odd (broken?) checks done for CommonDBRelation items #}
+{# not extending generic form due to the canEdit check required to add the form and the odd (broken?) checks done for CommonDBRelation items #}
 <div class="asset">
     <form name="asset_form" method="post" action="{{ 'Group_User'|itemtype_form_path }}" enctype="multipart/form-data" data-submit-once>
         <div class="d-flex flex-row flex-wrap">

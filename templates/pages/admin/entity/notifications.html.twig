@@ -32,7 +32,7 @@
 
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
-{% set params  = params ?? [] %}
+{% set params = params ?? [] %}
 
 {% macro inherited_email(item, inheritance_labels, field, label) %}
    {{ fields.emailField(field, item.fields[field], label, {

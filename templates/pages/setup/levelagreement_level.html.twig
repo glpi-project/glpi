@@ -53,7 +53,7 @@
     {% if not item.isNewItem() %}
         {{ fields.dropdownArrayField('match', item.fields['match'], operators, __('Logical operator')) }}
     {% else %}
-        {#  Not sure why the old UI had this hard-coded to AND #}
+        {# Not sure why the old UI had this hard-coded to AND #}
         <input type="hidden" name="match" value="AND">
     {% endif %}
     <input type="hidden" name="{{ la.getForeignKeyField() }}" value="{{ la.fields['id'] }}">

@@ -58,10 +58,9 @@
         'entries': entries,
         'total_number': entries|length,
         'showmassiveactions': canedit,
-    }, with_context = false) }}
+    }, with_context: false) }}
 {% else %}
     {{ alerts.alert_info(
         __('No results found')
     ) }}
 {% endif %}
-

@@ -109,7 +109,7 @@
                   </span>
 
                   {% set nextaction = la_field.la.getNextActionForTicket(item, la_field.type) %}
-                  {% set level  = la_field.la.getLevelFromAction(nextaction) %}
+                  {% set level = la_field.la.getLevelFromAction(nextaction) %}
                   {% if level != false %}
                      <span class="badge bg-info ms-0 ms-sm-1">
                         <i class="ti ti-clock me-1"

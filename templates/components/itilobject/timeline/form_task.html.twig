@@ -39,7 +39,7 @@
 {% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
 {% set nokb = params['nokb'] is defined or (params['nokb'] ?? false) == true %}
 {% set rand = random() %}
-{% set formoptions  = params['formoptions'] ?? '' %}
+{% set formoptions = params['formoptions'] ?? '' %}
 
 {% block timeline_card %}
    {% if form_mode == 'view' %}
@@ -60,7 +60,7 @@
                   {{ include('components/user/link_with_tooltip.html.twig', {
                      'users_id': entry_i['users_id_tech'],
                      'enable_anonymization': anonym_tech
-                  }, with_context = false) }}
+                  }, with_context: false) }}
                </span>
             {% endif %}
 
@@ -151,7 +151,7 @@
          }
       </script>
    {% else %}
-      {% include('components/itilobject/timeline/form_task_main_form.html.twig') %}
+      {{ include(('components/itilobject/timeline/form_task_main_form.html.twig')) }}
 
       <script type="text/javascript">
          function itiltasktemplate_update{{ rand }}(value) {

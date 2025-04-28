@@ -78,7 +78,7 @@
     {% if not no_limit_display %}
         {% if not short_display %}
             <span class="search-limit d-none d-md-block">
-                {% include 'components/dropdown/limit.html.twig' with {
+                {{ include('components/dropdown/limit.html.twig', {
                     'no_onchange': fluid_search|default(false),
                     'select_class': 'search-limit-dropdown',
                     'href': href|replace({'%start%': start}),
@@ -88,16 +88,16 @@
                         'aria-labelledby': 'list_limit' ~ rand ~ '_label',
                     },
                     'rand': rand,
-                } %}
+                }) }}
                 <span id="list_limit{{ rand }}_label">{{ __('rows / page') }}</span>
             </span>
         {% endif %}
         <span class="search-limit {{ short_display ? "" : "d-block d-md-none" }}">
-            {% include 'components/dropdown/limit.html.twig' with {
+            {{ include('components/dropdown/limit.html.twig', {
                 'no_onchange': fluid_search|default(false),
                 'select_class': 'search-limit-dropdown',
                 'href': href|replace({'%start%': start}),
-            } %}
+            }) }}
         </span>
     {% endif %}
 
@@ -126,7 +126,6 @@
                     <i class="ti ti-chevron-left"></i>
                 </a>
             </li>
-
 
             {% if short_display %}
                 <li class="text-muted mx-2 my-0">

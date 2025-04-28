@@ -65,7 +65,7 @@
     }) }}
 
     {% if attachments|length > 0 %}
-        {% include 'components/datatable.html.twig' with {
+        {{ include('components/datatable.html.twig', {
             is_tab: true,
             nopager: true,
             nofilter: true,
@@ -82,7 +82,7 @@
             total_number: attachments|length,
             filtered_number: attachments|length,
             showmassiveactions: false
-        } only %}
+        }, false) }}
     {% endif %}
 
     <div class="card-footer mx-n2 mb-n2 mt-4 fw-bold">

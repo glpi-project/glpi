@@ -52,7 +52,7 @@
                 class="d-none"
                 data-glpi-helpdesk-config-add-tile-form-for="{{ get_class(tile)|replace({"\\": "-"}) }}"
             >
-                {{ include(tile.getConfigFieldsTemplate(), {tile: tile}, with_context = false) }}
+                {{ include(tile.getConfigFieldsTemplate(), {tile: tile}, with_context: false) }}
             </div>
         {% endfor %}
 

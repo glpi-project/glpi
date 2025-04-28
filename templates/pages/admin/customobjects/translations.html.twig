@@ -93,9 +93,9 @@
                         <td>{{ trans_data['name'] }}</td>
                         <td lang="{{ trans_data['language'] }}">{{ config('languages')[trans_data['language']][0] }}</td>
                         <td lang="{{ trans_data['language'] }}">
-                            {% include "pages/admin/customobjects/plurals.html.twig" with {
+                            {{ include("pages/admin/customobjects/plurals.html.twig", {
                                 'plurals': trans_data['translation'],
-                            } only %}
+                            }, false) }}
                         </td>
                         <td>
                             <div title="{{ __("Edit translation") }}" class="d-inline" data-bs-toggle="tooltip" data-bs-placement="top">

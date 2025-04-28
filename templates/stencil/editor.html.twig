@@ -151,13 +151,13 @@
         {% for picture in pictures %}
             <div class="cropper-container mb-2">
                 <img src="{{ picture }}" class="cropper-hidden stencil-image" data-side="{{ loop.index - 1 }}">
-                {% include 'stencil/parts/zones.html.twig' with {
+                {{ include('stencil/parts/zones.html.twig', {
                     'item': item,
                     'stencil': stencil,
                     'zones': zones,
                     'current_side': loop.index - 1,
                     'params': params
-                } only %}
+                }, false) }}
             </div>
         {% endfor %}
     {% endif %}

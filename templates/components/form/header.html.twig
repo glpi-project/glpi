@@ -30,12 +30,12 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set target       = params['target'] ?? item.getFormURL() %}
+{% set target = params['target'] ?? item.getFormURL() %}
 {% set withtemplate = params['withtemplate'] ?? '' %}
-{% set rand         = random() %}
-{% set nametype     = params['formtitle'] ?? item.getTypeName(1) %}
-{% set no_id        = params['noid'] ?? false %}
-{% set formoptions  = params['formoptions'] ?? '' %}
+{% set rand = random() %}
+{% set nametype = params['formtitle'] ?? item.getTypeName(1) %}
+{% set no_id = params['noid'] ?? false %}
+{% set formoptions = params['formoptions'] ?? '' %}
 
 {% set entity_id = 0 %}
 {% set entity_name = '' %}

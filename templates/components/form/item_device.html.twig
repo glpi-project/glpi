@@ -40,7 +40,7 @@
 <div class="asset {{ bg }}">
    {{ include('components/form/header.html.twig', {'in_twig': true}) }}
 
-   {% set params  = params ?? [] %}
+   {% set params = params ?? [] %}
    {% set field_options = {
          'locked_fields': item.getLockedFields(),
    } %}
@@ -68,8 +68,6 @@
                   {% set field_options = field_options|merge(params) %}
 
                   <input type="hidden" name={{ get_static(item, 'itemtype_1') }} value={{ item.fields[get_static(item, 'itemtype_1')] }}>
-
-
 
                   {% if item1 %}
                      {{ fields.htmlField(
@@ -235,7 +233,6 @@
          </div> {# .flex-row #}
       </div> {# .flex-column #}
    </div> {# .flex-wrap #}
-
 
    {{ include('components/form/buttons.html.twig') }}
 </div>

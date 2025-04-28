@@ -108,11 +108,11 @@
         <div class="unused-consumables mb-4">
             <h3>{{ __("%s New consumables"|format(count_unused)) }}</h3>
             {% do call('\\Glpi\\Search\\SearchEngine::show', [itemtype, {
-                'criteria'          : criteria_unused,
-                'push_history'      : false,
+                'criteria': criteria_unused,
+                'push_history': false,
                 'showmassiveactions': can_edit,
-                'hide_criteria'     : true,
-                'init_session_data' : true,
+                'hide_criteria': true,
+                'init_session_data': true,
             }]) %}
         </div>
     {% endif %}
@@ -121,11 +121,11 @@
         <div class="used-consumables mb-4">
             <h3> {{ __("%s Used consumables"|format(count_used)) }} </h3>
             {% do call('\\Glpi\\Search\\SearchEngine::show', [itemtype, {
-                'criteria'          : criteria_used,
-                'push_history'      : false,
+                'criteria': criteria_used,
+                'push_history': false,
                 'showmassiveactions': can_edit,
-                'hide_criteria'     : true,
-                'init_session_data' : true,
+                'hide_criteria': true,
+                'init_session_data': true,
             }]) %}
         </div>
     {% endif %}

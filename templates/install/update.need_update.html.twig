@@ -35,7 +35,7 @@
     <div class="row justify-content-evenly">
         <div class="col-12 col-xxl-6">
             <div class="card text-center mb-4">
-                {% include 'install/blocks/requirements_table.html.twig' with {'requirements': core_requirements} %}
+                {{ include('install/blocks/requirements_table.html.twig', {'requirements': core_requirements}) }}
                 {% if core_requirements.hasMissingMandatoryRequirements() or core_requirements.hasMissingOptionalRequirements() %}
                     <form action="{{ path('index.php') }}" method="post">
                         <button type="submit" class="btn btn-primary">
@@ -48,7 +48,7 @@
                         <form method="post" action="{{ path('install/update.php') }}" class="p-2">
                             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                             {% if not is_stable_release %}
-                                {% include 'install/agree_unstable.html.twig' with {'is_dev': is_dev_version} only %}
+                                {{ include('install/agree_unstable.html.twig', {'is_dev': is_dev_version}, false) }}
                             {% endif %}
                             <p class="my-2 alert alert-important alert-warning">
                                 {{ __('The GLPI codebase has been updated. The update of the GLPI database is necessary.') }}

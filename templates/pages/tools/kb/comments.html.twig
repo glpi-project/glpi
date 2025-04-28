@@ -93,10 +93,10 @@
 
 {% if can_comment %}
     <div class="new_comment_form d-none">
-        {% include 'pages/tools/kb/comment_form.html.twig' with {
+        {{ include('pages/tools/kb/comment_form.html.twig', {
             kbitem_id: kbitem_id,
             language: lang,
-        } %}
+        }) }}
     </div>
     <div class="text-center mb-3">
         <button type="button" class="btn btn-primary add_new_comment">

@@ -32,9 +32,9 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{% set target      = item.getFormURL() %}
+{% set target = item.getFormURL() %}
 {% set is_new_item = (item.fields['id'] == 0) %}
-{% set show_form   = no_form is not defined or true %}
+{% set show_form = no_form is not defined or true %}
 
 {% set field_options = {
    'is_horizontal': false,

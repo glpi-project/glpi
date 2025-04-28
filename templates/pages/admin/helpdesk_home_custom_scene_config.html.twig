@@ -30,7 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-
 <div class="container-xl ms-0 mt-3">
     <h2 class="fs-2 mb-2">
         {{ __("Custom illustrations") }}
@@ -40,12 +39,12 @@
     {% if is_root_entity %}
         {% set options = {
             (constant("Entity::SCENE_DEFAULT")): __("Default illustration"),
-            (constant("Entity::SCENE_CUSTOM")) : __("Custom illustration"),
+            (constant("Entity::SCENE_CUSTOM")): __("Custom illustration"),
         } %}
     {% else %}
         {% set options = {
             (constant("Entity::SCENE_DEFAULT")): __("Default illustration"),
-            (constant("Entity::SCENE_CUSTOM")) : __("Custom illustration"),
+            (constant("Entity::SCENE_CUSTOM")): __("Custom illustration"),
             (constant("Entity::SCENE_INHERIT")): __("Inherited from parent entity"),
         } %}
     {% endif %}

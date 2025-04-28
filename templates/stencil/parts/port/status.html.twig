@@ -35,19 +35,19 @@
 
 {% if port['ifstatus'] == 1 %}
     {% set color = "status-green" %}
-    {% set text  = __('Connected') %}
+    {% set text = __('Connected') %}
 {% elseif port['ifstatus'] == 2 %}
     {% set color = "status-red" %}
-    {% set text  = __('Not connected') %}
+    {% set text = __('Not connected') %}
 {% elseif port['ifstatus'] == 3 %}
     {% set color = "status-orange" %}
-    {% set text  = __('Testing') %}
+    {% set text = __('Testing') %}
 {% elseif port['ifstatus'] == 5 %}
     {% set color = "status-muted" %}
-    {% set text  = __('Dormant') %}
+    {% set text = __('Dormant') %}
 {% else %}
     {% set color = "status-muted" %}
-    {% set text  = __('Unknown') %}
+    {% set text = __('Unknown') %}
 {% endif %}
 
 {% if with_text %}

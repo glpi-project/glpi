@@ -58,9 +58,9 @@
                 {% if form_block.fields.horizontal_rank > previous_index + 1 %}
                     {% for i in 1..(form_block.fields.horizontal_rank - (previous_index + 1)) %}
                         {{ include('pages/admin/form/form_horizontal_block_placeholder.html.twig', {
-                            'can_update'     : can_update,
-                            'form'           : form,
-                        }, with_context = false) }}
+                            'can_update': can_update,
+                            'form': form,
+                        }, with_context: false) }}
                     {% endfor %}
                 {% endif %}
                 {% set previous_index = form_block.fields.horizontal_rank %}
@@ -71,26 +71,26 @@
 
         {% if blocks|length == 0 %}
             {{ include('pages/admin/form/form_horizontal_block_placeholder.html.twig', {
-                'can_update'     : can_update,
-                'form'           : form,
-            }, with_context = false) }}
+                'can_update': can_update,
+                'form': form,
+            }, with_context: false) }}
         {% endif %}
         {{ include('pages/admin/form/form_horizontal_block_toolbar.html.twig', {
-            'can_update'                   : can_update,
-            'form'                         : form,
-        }, with_context = false) }}
+            'can_update': can_update,
+            'form': form,
+        }, with_context: false) }}
         {% if blocks|length == 0 %}
             {{ include('pages/admin/form/form_horizontal_block_placeholder.html.twig', {
-                'can_update'     : can_update,
-                'form'           : form,
-            }, with_context = false) }}
+                'can_update': can_update,
+                'form': form,
+            }, with_context: false) }}
         {% endif %}
     </section>
     {{ include('pages/admin/form/form_toolbar.html.twig', {
-        'can_update'     : can_update,
-        'form'           : form,
+        'can_update': can_update,
+        'form': form,
         'vertical_layout': false,
-    }, with_context = false) }}
+    }, with_context: false) }}
 </section>
 
 {# Add a small div to avoid an issue with the html5sortable library which

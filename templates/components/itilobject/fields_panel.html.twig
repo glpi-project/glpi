@@ -39,7 +39,7 @@
    'rand': rand,
 } %}
 
-{% set itil_layout    = user_pref('itil_layout', true) %}
+{% set itil_layout = user_pref('itil_layout', true) %}
 {% set headers_states = itil_layout['items']|default([]) %}
 
 <div class="accordion open accordion-flush" id="itil-data">
@@ -141,9 +141,9 @@
                   'rand': rand,
                }|merge(field_options) %}
                {% if item.isNewItem() %}
-                  {% set type_params = type_params|merge({'on_change': 'this.form.submit()',}) %}
+                  {% set type_params = type_params|merge({'on_change': 'this.form.submit()'}) %}
                {% else %}
-                  {% set type_params = type_params|merge({'on_change': 'reloadCategory()',}) %}
+                  {% set type_params = type_params|merge({'on_change': 'reloadCategory()'}) %}
                {% endif %}
                {# Without passing a specific ID, the "dropdown" prefix is missing from the label's "for" property here (not sure why). TODO: investigate #}
                {{ fields.field(

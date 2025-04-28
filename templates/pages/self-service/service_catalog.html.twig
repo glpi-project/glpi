@@ -61,13 +61,13 @@
                 sort_strategies|map((value) => value.getLabel()),
                 '',
                 {
-                    'init'               : false,
-                    'no_label'           : true,
-                    'field_class'        : '',
-                    'mb'                 : '',
-                    'aria_label'         : __('Sort by'),
-                    'templateSelection'  : 'function(data) { return window.GlpiServiceCatalog.getTemplateForSortSelect(data); }',
-                    'templateResult'     : 'function(data) { return window.GlpiServiceCatalog.getTemplateForSortSelect(data); }',
+                    'init': false,
+                    'no_label': true,
+                    'field_class': '',
+                    'mb': '',
+                    'aria_label': __('Sort by'),
+                    'templateSelection': 'function(data) { return window.GlpiServiceCatalog.getTemplateForSortSelect(data); }',
+                    'templateResult': 'function(data) { return window.GlpiServiceCatalog.getTemplateForSortSelect(data); }',
                     'add_data_attributes': {
                         'glpi-service-catalog-sort-strategy': '',
                     },
@@ -104,7 +104,7 @@
                 'items_per_page': constant('Glpi\\Form\\ServiceCatalog\\ServiceCatalogManager::ITEMS_PER_PAGE'),
                 'is_default_search': true,
             },
-            with_context = false
+            with_context: false
         ) }}
     </section>
 

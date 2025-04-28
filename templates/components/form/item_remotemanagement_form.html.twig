@@ -42,14 +42,14 @@
         '',
         parent_item.getLink(),
         _n('Item', 'Items', 1),
-        {'readonly' : true}
+        {'readonly': true}
     ) }}
 
     {{ fields.dropdownYesNo(
         'is_dynamic',
         item.fields['is_dynamic']|default(0),
         __('Automatic inventory'),
-        {'readonly' : true}
+        {'readonly': true}
     ) }}
 
     {{ fields.textField(

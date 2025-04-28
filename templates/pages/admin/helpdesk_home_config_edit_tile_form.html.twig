@@ -32,7 +32,7 @@
 
 <section class="container-narrow" aria-labelledby="edit-tile-header">
     <form>
-        {{ include(tile.getConfigFieldsTemplate(), {tile: tile}, with_context = false) }}
+        {{ include(tile.getConfigFieldsTemplate(), {tile: tile}, with_context: false) }}
 
         <input name="id" type="hidden" value="{{ tile.getDatabaseId() }}">
         <input name="_itemtype" type="hidden" value="{{ get_class(tile) }}">

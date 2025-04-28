@@ -66,7 +66,7 @@
     <span>{{ __('Replication status') }}</span>
 </div>
 
-{% set primary_ok      = replication_status['primary']['file'] %}
+{% set primary_ok = replication_status['primary']['file'] %}
 {% set primary_unknown = replication_status['primary']['error'] is defined and replication_status['primary']['error'] is not null %}
 
 <div class="row ps-2 mb-3">

@@ -32,13 +32,13 @@
 
 {% set is_helpdesk = get_current_interface() == 'helpdesk' %}
 {% set timeline_btns_cls = left_regular_cls %}
-{% set form_btns_cls     = is_expanded ? right_expanded_cls : "col-lg" %}
+{% set form_btns_cls = is_expanded ? right_expanded_cls : "col-lg" %}
 {% set timeline_btn_layout = session('glpitimeline_action_btn_layout') %}
-{% set switch_btn_cls    = "ti ti-caret-left-filled" %}
+{% set switch_btn_cls = "ti ti-caret-left-filled" %}
 {% if is_expanded %}
     {% set timeline_btns_cls = left_expanded_cls %}
-    {% set form_btns_cls     = right_expanded_cls %}
-    {% set switch_btn_cls    = "ti ti-caret-right filled" %}
+    {% set form_btns_cls = right_expanded_cls %}
+    {% set switch_btn_cls = "ti ti-caret-right filled" %}
 {% endif %}
 
 <div class="mx-n2 mb-n2 itil-footer itil-footer p-0 border-top" id="itil-footer">

@@ -30,12 +30,12 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set canedit      = params['canedit'] ?? true %}
+{% set canedit = params['canedit'] ?? true %}
 {% set withtemplate = params['withtemplate'] ?? '' %}
-{% set rand         = rand|default(random()) %}
-{% set nametype     = params['formtitle'] ?? item.getTypeName(1) %}
+{% set rand = rand|default(random()) %}
+{% set nametype = params['formtitle'] ?? item.getTypeName(1) %}
 {% set friendlyname = params['friendlyname'] ?? item.getHeaderName() %}
-{% set id           = item.fields['id'] ?? -1 %}
+{% set id = item.fields['id'] ?? -1 %}
 {% set in_navheader = in_navheader|default(false) %}
 {% set header_toolbar = header_toolbar|default([]) %}
 {% set entity_name = entity_name|default('') %}
@@ -137,16 +137,16 @@
          <span class="badge is_recursive-toggle mx-1 px-2 align-items-center">
             <label class="form-check d-flex align-items-center mb-0">
                {% set disabled = canedit == false %}
-               {% set comment  = __('Change visibility in child entities.') %}
+               {% set comment = __('Change visibility in child entities.') %}
 
                {% if item is instanceof('CommonDBChild') %}
-                  {% set comment  = __('Can՛t change this attribute. It՛s inherited from its parent.') %}
+                  {% set comment = __('Can՛t change this attribute. It՛s inherited from its parent.') %}
                   {% set disabled = true %}
                {% elseif not item.canRecurs() %}
-                  {% set comment  = __('You are not allowed to change the visibility flag for child entities.') %}
+                  {% set comment = __('You are not allowed to change the visibility flag for child entities.') %}
                   {% set disabled = true %}
                {% elseif not item.canUnrecurs() %}
-                  {% set comment  = __('Flag change forbidden. Linked items found.') %}
+                  {% set comment = __('Flag change forbidden. Linked items found.') %}
                   {% set disabled = true %}
                {% endif %}
 

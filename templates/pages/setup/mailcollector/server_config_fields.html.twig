@@ -75,7 +75,7 @@
          display_emptychoice: true,
          field_class: 'me-2'
       }) }}
-      {% set cert_value = connect_opts['validate-cert']is same as(true) ? '/validate-cert' : (connect_opts['validate-cert'] is same as(false) ? '/novalidate-cert' : '') %}
+      {% set cert_value = connect_opts['validate-cert'] is same as(true) ? '/validate-cert' : (connect_opts['validate-cert'] is same as(false) ? '/novalidate-cert' : '') %}
       {{ fields.dropdownArrayField('server_cert', cert_value, {
          '/novalidate-cert': __('NO-VALIDATE-CERT'),
          '/validate-cert': __('VALIDATE-CERT')

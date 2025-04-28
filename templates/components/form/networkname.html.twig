@@ -41,7 +41,7 @@
 <div class="asset {{ bg }}">
    {{ include('components/form/header.html.twig', {'in_twig': true}) }}
 
-   {% set params  = params ?? [] %}
+   {% set params = params ?? [] %}
    {% set no_header = true %}
    {% set field_options = {
          'locked_fields': item.getLockedFields(),
@@ -89,8 +89,6 @@
                      ) }}
                   {% endif %}
 
-
-
                   {% set table_from_foreignkey = call('getTableNameForForeignKeyField', ["fqdns_id"]) %}
                   {% set table_from_itemtype = call('getItemTypeForTable', [table_from_foreignkey]) %}
                   {% set fqdn_label = call('FQDN::getTypeName', [0]) %}
@@ -109,7 +107,6 @@
                      field_options
                   ) }}
 
-
                   {% set ipnetwork_label = call('IPNetwork::getTypeName', [session_get_plural]) %}
                   {% set span_for_ajax %}
                      <span id='show_ipnetwork_{{ rand }}'></span>
@@ -120,11 +117,11 @@
                      "ipnetworks_id",
                      item.fields["ipnetworks_id"],
                      'IPNetwork'|itemtype_name(get_plural_number()),
-                     field_options|merge({'entity' : item.getEntityID(),
-                        'rand' : rand,
-                        'value' : item.fields["ipnetworks_id"],
-                        'helper' : __('IP network is not included in the database. However, you can see current available networks.'),
-                        add_field_html : span_for_ajax
+                     field_options|merge({'entity': item.getEntityID(),
+                        'rand': rand,
+                        'value': item.fields["ipnetworks_id"],
+                        'helper': __('IP network is not included in the database. However, you can see current available networks.'),
+                        add_field_html: span_for_ajax
                         })
                   ) }}
 

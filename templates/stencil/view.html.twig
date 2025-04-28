@@ -33,12 +33,12 @@
 {% for picture in pictures %}
     <div class="stencil-view mb-2 w-100">
         <img src="{{ picture }}" class="mb-1 w-100">
-        {% include 'stencil/parts/zones.html.twig' with {
+        {{ include('stencil/parts/zones.html.twig', {
             'item': item,
             'stencil': stencil,
             'zones': zones,
             'current_side': loop.index - 1,
             'params': params
-        } only %}
+        }, false) }}
     </div>
 {% endfor %}

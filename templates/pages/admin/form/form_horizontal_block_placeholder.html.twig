@@ -40,13 +40,11 @@
     data-glpi-form-editor-on-click="set-active"
 >
     {{ include('pages/admin/form/form_toolbar.html.twig', {
-        'can_update'                               : can_update,
-        'form'                                     : form,
-        'ghost_button'                             : true,
-        'hide_section_button'                      : true,
-        'hide_new_horizontal_layout_button'        : true,
+        'can_update': can_update,
+        'form': form,
+        'ghost_button': true,
+        'hide_section_button': true,
+        'hide_new_horizontal_layout_button': true,
         'show_remove_horizontal_placeholder_button': true,
-    }, with_context = false) }}
+    }, with_context: false) }}
 </section>
-
-

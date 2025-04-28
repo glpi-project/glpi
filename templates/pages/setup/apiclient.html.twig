@@ -32,7 +32,7 @@
 
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
-{% set params  = params ?? [] %}
+{% set params = params ?? [] %}
 
 {% block more_fields %}
     {{ fields.dropdownArrayField(
@@ -47,7 +47,6 @@
         <span>{{ __('Filter access') }}</span>
     </div>
     <p><em>{{ __('Leave these parameters empty to disable API access restriction') }}</em></p>
-
 
     {{ fields.textField(
         'ipv4_range_start',

@@ -32,7 +32,7 @@
 
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
-{% set params  = params ?? [] %}
+{% set params = params ?? [] %}
 
 {% block more_fields %}
     <input type="hidden" name="itemtype" value="{{ parent["itemtype"] }}">
@@ -65,7 +65,7 @@
             'items_id': parent['items_id'] ?? 0,
             'networkports_id': item.fields['networkports_id'],
         }) %}
-        {% include 'pages/assets/socket_networkport.html.twig' with netport_params only %}
+        {{ include('pages/assets/socket_networkport.html.twig', netport_params, false) }}
     {% endset %}
     {{ fields.htmlField('networkports_id', networkports, _n('Network port', 'Network ports', get_plural_number())) }}
 

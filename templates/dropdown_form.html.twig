@@ -34,11 +34,11 @@
 
 <div class="asset">
     {{ include('components/form/header.html.twig') }}
-    {% set rand          = random() %}
+    {% set rand = random() %}
     {% set base_fields_params = fields_params ?? [] %}
-    {% set params        = params ?? [] %}
-    {% set target        = params['target'] ?? item.getFormURL() %}
-    {% set withtemplate  = params['withtemplate'] ?? '' %}
+    {% set params = params ?? [] %}
+    {% set target = params['target'] ?? item.getFormURL() %}
+    {% set withtemplate = params['withtemplate'] ?? '' %}
 
     <div class="card-body row">
         {% block form_fields %}

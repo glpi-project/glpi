@@ -34,7 +34,7 @@
    {% set onlyicon = false %}
 {% endif %}
 
-{% if not(item.isNewItem()) and call(item.getType() ~ '::isMassiveActionAllowed', [item.fields['id']])%}
+{% if not (item.isNewItem()) and call(item.getType() ~ '::isMassiveActionAllowed', [item.fields['id']]) %}
    {% set input = item.getMassiveActionsForItem().getInput() %}
    {% if input['actions']|length > 0 %}
    {% set ms_auto = (single_actions_ms_auto ?? false) ? 'ms-auto' : '' %}

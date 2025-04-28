@@ -42,8 +42,8 @@
    {{ include('components/form/header.html.twig', {'in_twig': true}) }}
 
    {% set rand = random() %}
-   {% set params  = params ?? [] %}
-   {% set target       = params['target'] ?? item.getFormURL() %}
+   {% set params = params ?? [] %}
+   {% set target = params['target'] ?? item.getFormURL() %}
    {% set withtemplate = params['withtemplate'] ?? '' %}
    {% set item_type = item.getType() %}
    {% set item_has_pictures = item.hasItemtypeOrModelPictures() %}
@@ -286,7 +286,7 @@
                                   {{ fields.dateField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
                                       'helper': __('Empty for infinite'),
                                       'checkIsExpired': false,
-                                      'expiration_class' : params.expiration_class
+                                      'expiration_class': params.expiration_class
                                   }|merge(specific_field_options)) }}
                               {% elseif item_type == 'ItemAntivirus' %}
                                   {{ fields.dateField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {

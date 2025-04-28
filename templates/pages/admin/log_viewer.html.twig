@@ -157,9 +157,9 @@
         <div class="card-footer d-flex justify-content-between">
             <span class="search-limit d-none d-md-block text-muted">
                 {{ __('Last entries to show:') }}
-                {% include 'components/dropdown/limit.html.twig' with {
+                {{ include('components/dropdown/limit.html.twig', {
                     'no_onchange': fluid_search|default(false),
-                } %}
+                }) }}
             </span>
             <label class="form-check form-switch btn btn-sm btn-ghost-secondary ms-2 px-1 flex-column-reverse flex-sm-row flex-nowrap"
                 data-bs-toggle="tooltip"

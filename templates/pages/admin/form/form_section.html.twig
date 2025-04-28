@@ -43,8 +43,8 @@
 {# Common params for any fields #}
 {% set base_field_options = {
     'is_horizontal': false,
-    'full_width'   : true,
-    'no_label'     : true,
+    'full_width': true,
+    'no_label': true,
 } %}
 {% set section_index = section_index|default(1) %}
 
@@ -96,7 +96,7 @@
                     {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
                         'item': section,
                         'type': "Glpi\\Form\\Section",
-                    }, with_context = false) }}
+                    }, with_context: false) }}
 
                     {# Question count #}
                     <span
@@ -201,7 +201,7 @@
                             'aria_label': __('Section description'),
                             'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
                             'editor_height': "0",
-                            'rows' : 1,
+                            'rows': 1,
                             'toolbar_location': 'bottom',
                             'init': section is not null ? true : false,
                             'mb': 'mb-0',
@@ -229,10 +229,10 @@
 
         <div data-glpi-form-editor-section-extra-details>
             {{ include('pages/admin/form/form_toolbar.html.twig', {
-                'can_update'     : can_update,
-                'form'           : form,
+                'can_update': can_update,
+                'form': form,
                 'vertical_layout': false,
-            }, with_context = false) }}
+            }, with_context: false) }}
         </div>
 
     </section>
@@ -242,10 +242,10 @@
         {% for form_group_blocks in section.getBlocks() %}
             {% if form_group_blocks is iterable %}
                 {{ include('pages/admin/form/form_horizontal_block.html.twig', {
-                    'blocks'         : form_group_blocks,
-                    'can_update'     : can_update,
-                    'form'           : form,
-                }, with_context = false) }}
+                    'blocks': form_group_blocks,
+                    'can_update': can_update,
+                    'form': form,
+                }, with_context: false) }}
             {% else %}
                 {% set form_block = form_group_blocks %}
                 {{ form_block.displayBlockForEditor() }}
@@ -255,4 +255,3 @@
     </div>
 
 </section>
-

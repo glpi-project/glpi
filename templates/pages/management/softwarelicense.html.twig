@@ -32,10 +32,9 @@
 
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
-{% set params  = params ?? [] %}
+{% set params = params ?? [] %}
 
 {% block form_fields %}
-
 
    {% if item.fields['id'] > 0 %}
 
@@ -57,7 +56,7 @@
          {
             'width': '100%',
             'height': '100%',
-            'input_class' : 'd-flex col-xxl-7 field-container align-items-center'
+            'input_class': 'd-flex col-xxl-7 field-container align-items-center'
          }
       ) }}
 
@@ -79,8 +78,6 @@
       ) }}
 
    {% endif %}
-
-
 
    {{ fields.nullField() }}
 

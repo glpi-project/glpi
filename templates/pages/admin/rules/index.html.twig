@@ -128,8 +128,8 @@
     </div>
 
     <div class="col-12 col-lg-6">
-        {% include "pages/admin/rules/collections_list.html.twig" with {
+        {{ include("pages/admin/rules/collections_list.html.twig", {
             rules_group: rules_group,
-        } only %}
+        }, false) }}
     </div>
 </div>

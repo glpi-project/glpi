@@ -72,7 +72,6 @@ PHP extensions: {{ call('get_loaded_extensions')|join(', ') }}
 
 Setup: {% for k in setup_init_keys %}{{ k }}="{{ call('ini_get', [k]) }}" {% endfor %}
 
-
 Web server: {{ _server['SERVER_SOFTWARE']|default('') }} ({{ (_server['SERVER_SIGNATURE']|default(''))|trim|striptags }})
 
 User agent: {{ _server['HTTP_USER_AGENT']|default('') }}

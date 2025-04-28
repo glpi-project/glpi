@@ -67,9 +67,9 @@
                   {% endif %}
 
                   {% if document['item']['_can_edit'] %}
-                    {% set blacklisted_class    = document['item']['is_blacklisted'] ? 'red' : '' %}
-                    {% set blacklisted_title    = document['item']['is_blacklisted'] ? _x('button', 'Remove from import exclusion list') : _x('button', 'Add to import exclusion list') %}
-                    {% set blacklisted_value    = document['item']['is_blacklisted'] ? 0 : 1 %}
+                    {% set blacklisted_class = document['item']['is_blacklisted'] ? 'red' : '' %}
+                    {% set blacklisted_title = document['item']['is_blacklisted'] ? _x('button', 'Remove from import exclusion list') : _x('button', 'Add to import exclusion list') %}
+                    {% set blacklisted_value = document['item']['is_blacklisted'] ? 0 : 1 %}
                      <form class="d-inline" method="post" action="{{ 'Document'|itemtype_form_path }}">
                         <input type="hidden" name="id" value="{{ document['item']['id'] }}">
                         <input type="hidden" name="is_blacklisted" value="{{ blacklisted_value }}">
@@ -114,11 +114,11 @@
             }]) %}
          {% endif %}
       {% endfor %}
-      {% include 'components/photoswipe.html.twig' with {
+      {{ include('components/photoswipe.html.twig', {
          'imgs': imgs,
          'gallery_type': 'horizontal',
          'controls': {'close': true, 'zoom': true}
-      } %}
+      }) }}
    {% endif %}
 
    {% for document in other_docs %}

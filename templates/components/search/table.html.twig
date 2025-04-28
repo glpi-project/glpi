@@ -124,7 +124,7 @@
                         {# disable massiveaction checkbox for some specific cases #}
                         {% if itemtype == 'Entity' and not has_access_to_entity(row['id']) %}
                         {% elseif itemtype == 'User' and not can_view_all_entities() and not has_access_to_user_entities(row['id']) %}
-                        {% elseif item is instanceof('CommonDBTM') and item.maybeRecursive() and not has_access_to_entity(row['entities_id'])  %}
+                        {% elseif item is instanceof('CommonDBTM') and item.maybeRecursive() and not has_access_to_entity(row['entities_id']) %}
                         {% else %}
                            {% set row_itemtype = row['TYPE'] ?? itemtype %}
                            {% if call(row_itemtype ~ '::isMassiveActionAllowed', [row['id']]) %}

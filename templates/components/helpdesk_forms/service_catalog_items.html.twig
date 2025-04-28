@@ -35,7 +35,7 @@
         {{ include(
             'components/helpdesk_forms/service_catalog_item.html.twig',
             {item: item},
-            with_context = false
+            with_context: false
         ) }}
     {% endif %}
     {% if item is instanceof("Glpi\\Form\\ServiceCatalog\\ServiceCatalogCompositeInterface") %}
@@ -61,7 +61,7 @@
                             {{ include(
                                 'components/helpdesk_forms/service_catalog_nested_item.html.twig',
                                 {child: child},
-                                with_context = false
+                                with_context: false
                             ) }}
                         {% endfor %}
                     </div>

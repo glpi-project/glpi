@@ -41,7 +41,7 @@
 <div class="asset {{ bg }}">
    {{ include('components/form/header.html.twig', {'in_twig': true}) }}
 
-   {% set params  = params ?? [] %}
+   {% set params = params ?? [] %}
    {% set field_options = {
          'locked_fields': item.getLockedFields(),
    } %}

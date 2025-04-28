@@ -70,7 +70,7 @@
          'canassigntome': canassigntome ?? false,
          'main_rand': main_rand,
          'allow_auto_submit': allow_auto_submit,
-      }, with_context = false) }}
+      }, with_context: false) }}
    {% endset %}
    {% if display_labels %}
       {{ fields.field(
@@ -103,7 +103,7 @@
          'canassigntome': canassigntome ?? false,
          'main_rand': main_rand,
          'allow_auto_submit': allow_auto_submit,
-      }, with_context = false) }}
+      }, with_context: false) }}
    {% endset %}
    {% if display_labels %}
       {{ fields.field(
@@ -136,7 +136,7 @@
          'canassigntome': canassigntome ?? false,
          'main_rand': main_rand,
          'allow_auto_submit': allow_auto_submit,
-      }, with_context = false) }}
+      }, with_context: false) }}
    {% endset %}
    {% if display_labels %}
       {{ fields.field(
@@ -315,7 +315,6 @@
       if (actor.itemtype == "User" && parseInt(actor.items_id) == 0) {
          actor_entry.find('.actor_text').html(alt_email);
       }
-
 
       editActorNotifySettings_modal.hide();
       saveActorsToDom();

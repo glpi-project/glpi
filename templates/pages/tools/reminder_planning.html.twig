@@ -61,7 +61,7 @@
         {{ recall|raw }}
     {% endset %}
     {% do call('Html::showToolTip', [tooltip_content, {
-        'applyto' : 'reminder_' ~ val['reminders_id'] ~ rand,
+        'applyto': 'reminder_' ~ val['reminders_id'] ~ rand,
     }]) %}
 {% endif %}
 

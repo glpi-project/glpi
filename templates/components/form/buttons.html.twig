@@ -31,9 +31,9 @@
  #}
 
 {% set withtemplate = params['withtemplate'] ?? '' %}
-{% set candel       = params['candel'] ?? true %}
-{% set canedit      = params['canedit'] ?? true %}
-{% set id           = item.fields['id'] ?? -1 %}
+{% set candel = params['candel'] ?? true %}
+{% set canedit = params['canedit'] ?? true %}
+{% set id = item.fields['id'] ?? -1 %}
 
          <div class="row">
          {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}

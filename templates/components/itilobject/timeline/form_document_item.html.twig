@@ -36,7 +36,7 @@
 {% block timeline_card %}
    {% if form_mode == 'view' %}
       <div class="row align-items-center m-n2">
-         {% set name     = entry_i['name'] ?? entry_i['filename'] %}
+         {% set name = entry_i['name'] ?? entry_i['filename'] %}
          {% set filename = entry_i['filename'] ?? entry_i['name'] %}
          {% set fk = item.getForeignKeyField() %}
 
@@ -88,9 +88,9 @@
                   </form>
                {% endif %}
                 {% if entry_i['_can_edit'] %}
-                    {% set blacklisted_class    = entry_i['is_blacklisted'] ? 'red' : '' %}
-                    {% set blacklisted_title    = entry_i['is_blacklisted'] ? _x('button', 'Remove from import exclusion list') : _x('button', 'Add to import exclusion list') %}
-                    {% set blacklisted_value    = entry_i['is_blacklisted'] ? 0 : 1 %}
+                    {% set blacklisted_class = entry_i['is_blacklisted'] ? 'red' : '' %}
+                    {% set blacklisted_title = entry_i['is_blacklisted'] ? _x('button', 'Remove from import exclusion list') : _x('button', 'Add to import exclusion list') %}
+                    {% set blacklisted_value = entry_i['is_blacklisted'] ? 0 : 1 %}
                      <form class="d-inline" method="post" action="{{ 'Document'|itemtype_form_path }}">
                         <input type="hidden" name="id" value="{{ document['item']['id'] }}">
                         <input type="hidden" name="is_blacklisted" value="{{ blacklisted_value }}">

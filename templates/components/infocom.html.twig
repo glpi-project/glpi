@@ -119,7 +119,7 @@
                         infocom.fields['suppliers_id'],
                         'Supplier'|itemtype_name,
                         {
-                           'entity'  : item.fields['entities_id'],
+                           'entity': item.fields['entities_id'],
                            'disabled': disabled
                         }
                      ) }}
@@ -131,7 +131,7 @@
                            infocom.fields['budgets_id'],
                            'Budget'|itemtype_name,
                            {
-                              'entity'  : item.fields['entities_id'],
+                              'entity': item.fields['entities_id'],
                               'comments': 1,
                               'disabled': disabled
                            }
@@ -187,7 +187,6 @@
                         }
                      ) }}
 
-
                      {% set amort = infocom.Amort(
                            infocom.fields['sink_type'],
                            infocom.fields['value'],
@@ -221,9 +220,9 @@
                         infocom.fields['sink_time'],
                         __('Amortization duration'),
                         {
-                           'max'      : 15,
-                           'unit'     : 'year',
-                           'disabled' : disabled
+                           'max': 15,
+                           'unit': 'year',
+                           'disabled': disabled
                         }
                      ) }}
 
@@ -234,7 +233,7 @@
                         {'disabled': disabled, 'step': 'any'}
                      ) }}
 
-                     {% if item.getType() not in infocom.getExcludedTypes()|merge(['Cartridge', 'Consumable', 'SoftwareLicense'])  %}
+                     {% if item.getType() not in infocom.getExcludedTypes()|merge(['Cartridge', 'Consumable', 'SoftwareLicense']) %}
                         {% set ticket_tco_value = infocom.showTco(item.fields['ticket_tco'], infocom.fields['value']) %}
                         {{ fields.readOnlyField(
                            'ticket_tco',
@@ -251,7 +250,6 @@
                            {'disabled': disabled}
                         ) }}
                      {% endif %}
-
 
                      {{ fields.dropdownField(
                         'BusinessCriticity',
@@ -296,13 +294,13 @@
                            infocom.fields['warranty_duration'],
                            __('Warranty duration'),
                            {
-                              'min'            : 0,
-                              'max'            : 120,
-                              'step'           : 1,
-                              'toadd'          : {'-1': __('Lifelong')},
-                              'unit'           : 'month',
-                              'disabled'       : disabled,
-                              'add_field_html' : '<span class="text-muted">' ~ __('Valid to %s')|format(warrantyexpir) ~ '</span>'
+                              'min': 0,
+                              'max': 120,
+                              'step': 1,
+                              'toadd': {'-1': __('Lifelong')},
+                              'unit': 'month',
+                              'disabled': disabled,
+                              'add_field_html': '<span class="text-muted">' ~ __('Valid to %s')|format(warrantyexpir) ~ '</span>'
                            }
                         ) }}
                      {% endif %}
@@ -320,11 +318,11 @@
                         {% endset %}
 
                         {% set alert_field = infocom.dropdownAlert({
-                              'name'   : 'alert',
-                              'value'  : infocom.fields['alert'],
+                              'name': 'alert',
+                              'value': infocom.fields['alert'],
                               'display': false,
-                              'width'  : '100%',
-                              'class'  : 'form-select'
+                              'width': '100%',
+                              'class': 'form-select'
                            }) %}
 
                         {{ fields.field(

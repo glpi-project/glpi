@@ -39,7 +39,7 @@
          <div class="row">
             <div class="col-auto todo-list-state"></div>
             <div class="col-auto d-flex flex-column user-part ms-0 order-sm-last">
-               {{ include('components/user/picture.html.twig', {'users_id': session('glpiID')}, with_context = false) }}
+               {{ include('components/user/picture.html.twig', {'users_id': session('glpiID')}, with_context: false) }}
             </div>
             <div class="col-12 col-sm d-flex flex-column content-part">
                <div class="timeline-content t-right card mt-2">

@@ -46,7 +46,7 @@
             {{ include('components/user/picture.html.twig', {
                 'users_id': session('glpiID'),
                 'with_link': false,
-            }, with_context = false) }}
+            }, with_context: false) }}
         </a>
     {% endif %}
     <div class="{{ comment_style ? "h_item d-flex timeline-content flex-column pt-3" : "w-100" }}">

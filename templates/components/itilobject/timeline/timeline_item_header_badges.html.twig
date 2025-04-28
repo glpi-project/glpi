@@ -58,7 +58,7 @@
             'users_id': users_id,
             'user_object': user_object,
             'enable_anonymization': anonym_user ?? false
-         }, with_context = false) }}
+         }, with_context: false) }}
       {% endset %}
       {% set group_span %}
          <span id="group_{{ random() }}">
@@ -78,7 +78,7 @@
             {{ include('components/user/link_with_tooltip.html.twig', {
                'users_id': users_id,
                'enable_anonymization': anonym_user ?? false
-            }, with_context = false) }}
+            }, with_context: false) }}
          {% endset %}
 
          {{ __('Created: %1$s by %2$s')|format(date_span, creator_span)|raw }}
@@ -113,7 +113,7 @@
             'users_id': users_id_editor,
             'user_object': users_id == users_id_editor ? user_object : null,
             'enable_anonymization': anonym_editor
-         }, with_context = false) }}
+         }, with_context: false) }}
       {% endset %}
 
       {{ __('Last update: %1$s by %2$s')|format(date_span, editor_span)|raw }}

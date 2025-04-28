@@ -52,22 +52,22 @@
                     specific_values_extra_field.input_name,
                     '',
                     {
-                        'init'               : true,
-                        'itemtypes'          : specific_values_extra_field.itemtypes,
-                        'no_label'           : true,
+                        'init': true,
+                        'itemtypes': specific_values_extra_field.itemtypes,
+                        'no_label': true,
                         'display_emptychoice': false,
-                        'itemtype_name'      : specific_values_extra_field.input_name ~ '[itemtype][]',
-                        'items_id_name'      : specific_values_extra_field.input_name ~ '[items_id][]',
-                        'default_itemtype'   : itemtype,
-                        'default_items_id'   : items_id,
-                        'width'              : '30%',
-                        'add_field_class'    : 'd-flex input-group flex-nowrap',
-                        'mb'                 : '',
-                        'add_field_html'     : remove_button,
-                        'add_field_attribs'  : {
+                        'itemtype_name': specific_values_extra_field.input_name ~ '[itemtype][]',
+                        'items_id_name': specific_values_extra_field.input_name ~ '[items_id][]',
+                        'default_itemtype': itemtype,
+                        'default_items_id': items_id,
+                        'width': '30%',
+                        'add_field_class': 'd-flex input-group flex-nowrap',
+                        'mb': '',
+                        'add_field_html': remove_button,
+                        'add_field_attribs': {
                             'data-glpi-associated-items-specific-values-extra-field-item': ''
                         },
-                        'aria_label'         : specific_values_extra_field.itemtype_aria_label,
+                        'aria_label': specific_values_extra_field.itemtype_aria_label,
                         'specific_tags_items_id_dropdown': {
                             'aria-label': specific_values_extra_field.items_id_aria_label,
                             'data-glpi-associated-items-items-id-dropdown': ''
@@ -81,21 +81,21 @@
             specific_values_extra_field.input_name,
             '',
             {
-                'init'               : true,
-                'itemtypes'          : specific_values_extra_field.itemtypes,
-                'no_label'           : true,
+                'init': true,
+                'itemtypes': specific_values_extra_field.itemtypes,
+                'no_label': true,
                 'display_emptychoice': true,
-                'emptylabel'         : specific_values_extra_field.empty_label,
-                'itemtype_name'      : specific_values_extra_field.input_name ~ '[itemtype][]',
-                'items_id_name'      : specific_values_extra_field.input_name ~ '[items_id][]',
-                'width'              : '30%',
-                'add_field_class'    : 'd-flex input-group flex-nowrap',
-                'mb'                 : '',
-                'add_field_html'     : remove_button,
-                'add_field_attribs'  : {
+                'emptylabel': specific_values_extra_field.empty_label,
+                'itemtype_name': specific_values_extra_field.input_name ~ '[itemtype][]',
+                'items_id_name': specific_values_extra_field.input_name ~ '[items_id][]',
+                'width': '30%',
+                'add_field_class': 'd-flex input-group flex-nowrap',
+                'mb': '',
+                'add_field_html': remove_button,
+                'add_field_attribs': {
                     'data-glpi-associated-items-specific-values-extra-field-item': ''
                 },
-                'aria_label'         : specific_values_extra_field.itemtype_aria_label,
+                'aria_label': specific_values_extra_field.itemtype_aria_label,
                 'specific_tags_items_id_dropdown': {
                     'aria-label': specific_values_extra_field.items_id_aria_label,
                     'data-glpi-associated-items-items-id-dropdown': ''
@@ -109,26 +109,26 @@
             specific_values_extra_field.input_name,
             '',
             {
-                'init'               : false,
-                'itemtypes'          : specific_values_extra_field.itemtypes,
-                'no_label'           : true,
+                'init': false,
+                'itemtypes': specific_values_extra_field.itemtypes,
+                'no_label': true,
                 'display_emptychoice': true,
-                'emptylabel'         : specific_values_extra_field.empty_label,
-                'itemtype_name'      : specific_values_extra_field.input_name ~ '[itemtype][]',
-                'items_id_name'      : specific_values_extra_field.input_name ~ '[items_id][]',
-                'width'              : '30%',
-                'add_field_class'    : 'd-flex input-group flex-nowrap',
-                'mb'                 : '',
-                'add_field_html'     : remove_button,
-                'add_field_attribs'  : {
+                'emptylabel': specific_values_extra_field.empty_label,
+                'itemtype_name': specific_values_extra_field.input_name ~ '[itemtype][]',
+                'items_id_name': specific_values_extra_field.input_name ~ '[items_id][]',
+                'width': '30%',
+                'add_field_class': 'd-flex input-group flex-nowrap',
+                'mb': '',
+                'add_field_html': remove_button,
+                'add_field_attribs': {
                     'data-glpi-associated-items-specific-values-extra-field-item': ''
                 },
-                'aria_label'         : specific_values_extra_field.itemtype_aria_label,
+                'aria_label': specific_values_extra_field.itemtype_aria_label,
                 'specific_tags_items_id_dropdown': {
                     'aria-label': specific_values_extra_field.items_id_aria_label,
                     'data-glpi-associated-items-items-id-dropdown': ''
                 },
-                'disabled'                       : true
+                'disabled': true
             }
         ) }}
     </template>
@@ -138,7 +138,7 @@
     class="d-none"
     data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_ANSWERS }}"
 >
-	{{ fields.dropdownArrayField(
+    {{ fields.dropdownArrayField(
         specific_answer_extra_field.input_name,
         '',
         specific_answer_extra_field.possible_values,

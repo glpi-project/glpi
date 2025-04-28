@@ -50,7 +50,7 @@
                             manager.getLogicOperatorDropdownValues(),
                             {
                                 'value': condition.getLogicOperator().value,
-                                'aria_label' : __('Logic operator'),
+                                'aria_label': __('Logic operator'),
                                 'add_data_attributes': {
                                     'glpi-conditions-editor-logic-operator': '',
                                 },
@@ -64,7 +64,7 @@
                         items_values,
                         {
                             'value': condition.getItemDropdownKey(),
-                            'aria_label' : _n('Item', 'Items', 1),
+                            'aria_label': _n('Item', 'Items', 1),
                             'add_data_attributes': {
                                 'glpi-conditions-editor-item': '',
                             },
@@ -96,7 +96,7 @@
                             ),
                             {
                                 'value': condition.getValueOperator().value,
-                                'aria_label' : __('Value operator'),
+                                'aria_label': __('Value operator'),
                                 'add_data_attributes': {
                                     'glpi-conditions-editor-value-operator': '',
                                 },
@@ -116,7 +116,7 @@
                                     input_name: "_conditions[" ~ loop.index0 ~ "][value]",
                                     input_label: __("Value"),
                                 }|merge(handler.getTemplateParameters()),
-                                with_context = false
+                                with_context: false
                             ) }}
                         {% endif %}
                     {% endif %}
