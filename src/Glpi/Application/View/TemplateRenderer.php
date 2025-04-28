@@ -49,6 +49,7 @@ use Glpi\Application\View\Extension\SecurityExtension;
 use Glpi\Application\View\Extension\SessionExtension;
 use Glpi\Application\View\Extension\TeamExtension;
 use Glpi\Debug\Profiler;
+use Glpi\Kernel\Kernel;
 use Plugin;
 use Session;
 use Twig\Environment;
@@ -63,8 +64,12 @@ class TemplateRenderer
 {
     private Environment $environment;
 
-    public function __construct(string $rootdir = GLPI_ROOT, string $cachedir = GLPI_CACHE_DIR . '/' . GLPI_FILES_VERSION)
+    public function __construct(string $rootdir = GLPI_ROOT, ?string $cachedir = null)
     {
+        if ($cachedir === null) {
+            $cachedir = Kernel::getCacheRootDir();
+        }
+
         $loader = new FilesystemLoader($rootdir . '/templates', $rootdir);
 
         $active_plugins = Plugin::getPlugins();

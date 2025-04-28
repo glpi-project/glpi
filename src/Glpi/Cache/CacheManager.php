@@ -99,8 +99,12 @@ class CacheManager
      */
     private $cache_dir;
 
-    public function __construct(string $config_dir = GLPI_CONFIG_DIR, string $cache_dir = GLPI_CACHE_DIR . '/' . GLPI_FILES_VERSION)
+    public function __construct(string $config_dir = GLPI_CONFIG_DIR, ?string $cache_dir = null)
     {
+        if ($cache_dir === null) {
+            $cache_dir = Kernel::getCacheRootDir();
+        }
+
         $this->config_dir = $config_dir;
         $this->cache_dir = $cache_dir;
     }
@@ -236,7 +240,7 @@ class CacheManager
             $namespace = $this->normalizeNamespace($namespace_prefix . $context);
             $adapter = new FilesystemAdapter($namespace, 0, $this->cache_dir);
         } elseif (!array_key_exists($context, $raw_config['contexts'])) {
-            // Default to filesystem, inside GLPI_CACHE_DIR/GLPI_FILES_VERSION/$context.
+            // Default to filesystem, in a different directory for each context.
             $adapter = new FilesystemAdapter($this->normalizeNamespace($namespace_prefix . $context), 0, $this->cache_dir);
         } else {
             $context_config = $raw_config['contexts'][$context];
