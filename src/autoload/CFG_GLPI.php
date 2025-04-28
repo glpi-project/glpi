@@ -300,7 +300,7 @@ foreach ($CFG_GLPI['device_types'] as $dtype) {
 }
 
 $CFG_GLPI["itemdevices_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
-    'Phone', 'Printer', 'Enclosure'
+    'Phone', 'Printer', 'Enclosure', 'PDU'
 ];
 
 $CFG_GLPI["itemdevices_itemaffinity"]     = ['Computer'];
