@@ -76,7 +76,7 @@ class Document_ItemTest extends DbTestCase
             }
 
             $item = \getItemForItemtype($itemtype);
-            $this->assertContains(Document_Item::class, $item->getCloneRelations(), $itemtype, $itemtype);
+            $this->assertContains(Document_Item::class, $item->getCloneRelations(), $itemtype);
         }
     }
 
