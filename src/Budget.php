@@ -83,11 +83,11 @@ class Budget extends CommonDropdown
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-        $this->addStandardTab('ManualLink', $ong, $options);
-        $this->addStandardTab('Notepad', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
+        $this->addStandardTab(ManualLink::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

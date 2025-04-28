@@ -395,22 +395,22 @@ class User extends CommonDBTM
         }
 
         $this->addImpactTab($ong, $options);
-        $this->addStandardTab('Profile_User', $ong, $options);
-        $this->addStandardTab('Group_User', $ong, $options);
-        $this->addStandardTab('Config', $ong, $options);
+        $this->addStandardTab(Profile_User::class, $ong, $options);
+        $this->addStandardTab(Group_User::class, $ong, $options);
+        $this->addStandardTab(Config::class, $ong, $options);
         $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('Consumable', $ong, $options);
-        $this->addStandardTab('Ticket', $ong, $options);
-        $this->addStandardTab('Item_Problem', $ong, $options);
-        $this->addStandardTab('Change_Item', $ong, $options);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('Reservation', $ong, $options);
-        $this->addStandardTab('Auth', $ong, $options);
-        $this->addStandardTab('ManualLink', $ong, $options);
-        $this->addStandardTab('Certificate_Item', $ong, $options);
+        $this->addStandardTab(Consumable::class, $ong, $options);
+        $this->addStandardTab(Item_Ticket::class, $ong, $options);
+        $this->addStandardTab(Item_Problem::class, $ong, $options);
+        $this->addStandardTab(Change_Item::class, $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(Reservation::class, $ong, $options);
+        $this->addStandardTab(Auth::class, $ong, $options);
+        $this->addStandardTab(ManualLink::class, $ong, $options);
+        $this->addStandardTab(Certificate_Item::class, $ong, $options);
         $this->addStandardTab(SoftwareLicense_User::class, $ong, $options);
         $this->addStandardTab(Contract_User::class, $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

@@ -116,15 +116,15 @@ class Contract extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
-        $this->addStandardTab('ContractCost', $ong, $options);
-        $this->addStandardTab('Contract_Supplier', $ong, $options);
-        $this->addStandardTab('Contract_Item', $ong, $options);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('ManualLink', $ong, $options);
-        $this->addStandardTab('Notepad', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
+        $this->addStandardTab(ContractCost::class, $ong, $options);
+        $this->addStandardTab(Contract_Supplier::class, $ong, $options);
+        $this->addStandardTab(Contract_Item::class, $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(ManualLink::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
         $this->addStandardTab(Ticket_Contract::class, $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

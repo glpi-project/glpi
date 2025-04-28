@@ -65,16 +65,16 @@ abstract class CommonTreeDropdown extends CommonDropdown
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
 
-        $this->addStandardTab($this->getType(), $ong, $options);
+        $this->addStandardTab(__CLASS__, $ong, $options);
 
         $ong = array_merge($ong, $this->insertTabs($options));
 
         if ($this->dohistory) {
-            $this->addStandardTab('Log', $ong, $options);
+            $this->addStandardTab(Log::class, $ong, $options);
         }
 
         if ($this->maybeTranslated()) {
-            $this->addStandardTab('DropdownTranslation', $ong, $options);
+            $this->addStandardTab(DropdownTranslation::class, $ong, $options);
         }
 
         return $ong;

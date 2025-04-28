@@ -70,11 +70,11 @@ class Unmanaged extends CommonDBTM
 
         $ong = [];
         $this->addDefaultFormTab($ong)
-         ->addStandardTab('NetworkPort', $ong, $options)
-         ->addStandardTab('Domain_Item', $ong, $options)
-         ->addStandardTab('Lock', $ong, $options)
-         ->addStandardTab('RuleMatchedLog', $ong, $options)
-         ->addStandardTab('Log', $ong, $options);
+         ->addStandardTab(NetworkPort::class, $ong, $options)
+         ->addStandardTab(Domain_Item::class, $ong, $options)
+         ->addStandardTab(Lock::class, $ong, $options)
+         ->addStandardTab(RuleMatchedLog::class, $ong, $options)
+         ->addStandardTab(Log::class, $ong, $options);
         return $ong;
     }
 

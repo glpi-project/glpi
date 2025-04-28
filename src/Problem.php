@@ -213,17 +213,17 @@ class Problem extends CommonITILObject
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('Problem_Ticket', $ong, $options);
-        $this->addStandardTab('Change_Problem', $ong, $options);
-        $this->addStandardTab('ProblemCost', $ong, $options);
-        $this->addStandardTab('Itil_Project', $ong, $options);
-        $this->addStandardTab('Item_Problem', $ong, $options);
+        $this->addStandardTab(Problem_Ticket::class, $ong, $options);
+        $this->addStandardTab(Change_Problem::class, $ong, $options);
+        $this->addStandardTab(ProblemCost::class, $ong, $options);
+        $this->addStandardTab(Itil_Project::class, $ong, $options);
+        $this->addStandardTab(Item_Problem::class, $ong, $options);
         if ($this->hasImpactTab()) {
-            $this->addStandardTab('Impact', $ong, $options);
+            $this->addStandardTab(Impact::class, $ong, $options);
         }
-        $this->addStandardTab('Notepad', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

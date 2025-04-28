@@ -541,9 +541,9 @@ abstract class CommonDevice extends CommonDropdown
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
         $this->addStandardTab(static::getItem_DeviceType(), $ong, $options);
-        $this->addStandardTab('Item_Project', $ong, $options);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Item_Project::class, $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

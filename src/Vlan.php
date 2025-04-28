@@ -175,7 +175,7 @@ class Vlan extends CommonDropdown
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
-         ->addStandardTab('NetworkPort_Vlan', $ong, $options);
+         ->addStandardTab(NetworkPort_Vlan::class, $ong, $options);
 
         return $ong;
     }

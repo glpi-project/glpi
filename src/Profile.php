@@ -150,8 +150,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
         $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('Profile_User', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Profile_User::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

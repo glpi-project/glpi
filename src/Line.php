@@ -85,12 +85,12 @@ class Line extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
-        $this->addStandardTab('Item_Line', $ong, $options);
-        $this->addStandardTab('Infocom', $ong, $options);
-        $this->addStandardTab('Contract_Item', $ong, $options);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('Notepad', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Item_Line::class, $ong, $options);
+        $this->addStandardTab(Infocom::class, $ong, $options);
+        $this->addStandardTab(Contract_Item::class, $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

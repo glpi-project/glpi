@@ -73,9 +73,9 @@ class SLM extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
-        $this->addStandardTab('SLA', $ong, $options);
-        $this->addStandardTab('OLA', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(SLA::class, $ong, $options);
+        $this->addStandardTab(OLA::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

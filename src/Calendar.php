@@ -80,8 +80,8 @@ class Calendar extends CommonDropdown
     {
 
         $ong = parent::defineTabs($options);
-        $this->addStandardTab('CalendarSegment', $ong, $options);
-        $this->addStandardTab('Calendar_Holiday', $ong, $options);
+        $this->addStandardTab(CalendarSegment::class, $ong, $options);
+        $this->addStandardTab(Calendar_Holiday::class, $ong, $options);
 
         return $ong;
     }

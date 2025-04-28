@@ -104,7 +104,7 @@ class FieldUnicity extends CommonDropdown
         $ong          = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

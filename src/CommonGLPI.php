@@ -298,7 +298,7 @@ class CommonGLPI implements CommonGLPIInterface
         $this->addImpactTab($ong, $options);
 
         if ($this instanceof FilterableInterface) {
-            $this->addStandardTab('Glpi\Search\CriteriaFilter', $ong, $options);
+            $this->addStandardTab(Glpi\Search\CriteriaFilter::class, $ong, $options);
         }
 
         return $ong;
@@ -391,7 +391,7 @@ class CommonGLPI implements CommonGLPIInterface
 
        // Check if impact analysis is enabled for this item type
         if (Impact::isEnabled(static::class)) {
-            $this->addStandardTab('Impact', $ong, $options);
+            $this->addStandardTab(Impact::class, $ong, $options);
         }
 
         return $this;

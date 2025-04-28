@@ -111,8 +111,8 @@ class Item_Disk extends CommonDBChild
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Lock', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Lock::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

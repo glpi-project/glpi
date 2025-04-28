@@ -48,6 +48,7 @@ use HTMLTableRow;
 use Location;
 use Log;
 use NetworkPort;
+use Notepad;
 use Session;
 
 /// Socket class
@@ -96,8 +97,8 @@ class Socket extends CommonDBChild
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Notepad', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

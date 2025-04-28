@@ -115,7 +115,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $this->addStandardTab(__CLASS__, $tabs, $options);
         // Add common tabs
         $tabs = array_merge($tabs, $parent_tabs);
-        $this->addStandardTab('Log', $tabs, $options);
+        $this->addStandardTab(Log::class, $tabs, $options);
 
         // Final order of tabs: main, filter, payload editor, queries, test, historical
         return $tabs;

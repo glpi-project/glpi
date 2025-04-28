@@ -488,10 +488,10 @@ class Reminder extends CommonDBVisible implements
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('Reminder', $ong, $options);
-        $this->addStandardTab('ReminderTranslation', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(Reminder::class, $ong, $options);
+        $this->addStandardTab(ReminderTranslation::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

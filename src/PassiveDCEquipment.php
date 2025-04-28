@@ -70,13 +70,13 @@ class PassiveDCEquipment extends CommonDBTM
         $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
          ->addStandardTab(Socket::class, $ong, $options)
-         ->addStandardTab('Infocom', $ong, $options)
-         ->addStandardTab('Contract_Item', $ong, $options)
-         ->addStandardTab('Document_Item', $ong, $options)
-         ->addStandardTab('Item_Ticket', $ong, $options)
-         ->addStandardTab('Item_Problem', $ong, $options)
-         ->addStandardTab('Change_Item', $ong, $options)
-         ->addStandardTab('Log', $ong, $options);
+         ->addStandardTab(Infocom::class, $ong, $options)
+         ->addStandardTab(Contract_Item::class, $ong, $options)
+         ->addStandardTab(Document_Item::class, $ong, $options)
+         ->addStandardTab(Item_Ticket::class, $ong, $options)
+         ->addStandardTab(Item_Problem::class, $ong, $options)
+         ->addStandardTab(Change_Item::class, $ong, $options)
+         ->addStandardTab(Log::class, $ong, $options);
         return $ong;
     }
 

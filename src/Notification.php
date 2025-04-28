@@ -232,14 +232,14 @@ class Notification extends CommonDBTM implements FilterableInterface
         ];
 
         // Most relevant tabs first
-        $this->addStandardTab('Notification_NotificationTemplate', $tabs, $options);
-        $this->addStandardTab('NotificationTarget', $tabs, $options);
+        $this->addStandardTab(Notification_NotificationTemplate::class, $tabs, $options);
+        $this->addStandardTab(NotificationTarget::class, $tabs, $options);
 
         // Add common tabs
         $tabs = array_merge($tabs, $parent_tabs);
 
         // Keep log at the end
-        $this->addStandardTab('Log', $tabs, $options);
+        $this->addStandardTab(Log::class, $tabs, $options);
 
         return $tabs;
     }

@@ -109,17 +109,17 @@ class Supplier extends CommonDBTM
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Contact_Supplier', $ong, $options);
-        $this->addStandardTab('Contract_Supplier', $ong, $options);
-        $this->addStandardTab('Infocom', $ong, $options);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('Ticket', $ong, $options);
-        $this->addStandardTab('Item_Problem', $ong, $options);
-        $this->addStandardTab('Change_Item', $ong, $options);
-        $this->addStandardTab('ManualLink', $ong, $options);
-        $this->addStandardTab('Notepad', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Contact_Supplier::class, $ong, $options);
+        $this->addStandardTab(Contract_Supplier::class, $ong, $options);
+        $this->addStandardTab(Infocom::class, $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(Item_Ticket::class, $ong, $options);
+        $this->addStandardTab(Item_Problem::class, $ong, $options);
+        $this->addStandardTab(Change_Item::class, $ong, $options);
+        $this->addStandardTab(ManualLink::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }

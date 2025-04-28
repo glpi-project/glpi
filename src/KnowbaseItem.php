@@ -224,13 +224,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         $ong = [];
         $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('KnowbaseItemTranslation', $ong, $options);
-        $this->addStandardTab(ServiceCatalog::getType(), $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Revision', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Comment', $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItemTranslation::class, $ong, $options);
+        $this->addStandardTab(ServiceCatalog::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Revision::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Comment::class, $ong, $options);
 
         return $ong;
     }
