@@ -171,7 +171,7 @@ enum Environment: string
      * This may affect which cache we decide to set (twig, http cache on the
      * generated css and locale, ...)
      */
-    public function shouldExpectRessourcesToChange(string $root_dir = GLPI_ROOT): bool
+    public function shouldExpectResourcesToChange(string $root_dir = GLPI_ROOT): bool
     {
         // Only production/staging environment are considered as environments
         // where resources are not supposed to change.

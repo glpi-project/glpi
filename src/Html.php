@@ -1341,7 +1341,7 @@ TWIG,
 
         if (
             $force
-            || Environment::get()->shouldExpectRessourcesToChange()
+            || Environment::get()->shouldExpectResourcesToChange()
             || !isset($_SESSION['glpimenu'])
             || !is_array($_SESSION['glpimenu'])
             || (count($_SESSION['glpimenu']) == 0)

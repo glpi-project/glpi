@@ -1442,7 +1442,7 @@ HTML;
                 ]
             ];
 
-            if (!Environment::get()->shouldExpectRessourcesToChange()) {
+            if (!Environment::get()->shouldExpectResourcesToChange()) {
                 // Do not cache dashboard cards on `development` envs
                 $GLPI_CACHE->set(self::getAllDashboardCardsCacheKey(), $cards);
             }
