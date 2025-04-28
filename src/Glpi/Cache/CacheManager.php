@@ -62,12 +62,6 @@ class CacheManager
     public const CONTEXT_TRANSLATIONS = 'translations';
 
     /**
-     * GLPI installer cache context.
-     * @var string
-     */
-    public const CONTEXT_INSTALLER = 'installer';
-
-    /**
      * Memcached scheme.
      * @var string
      */
@@ -236,8 +230,8 @@ class CacheManager
             $namespace_prefix .= '-';
         }
 
-        if ($context === self::CONTEXT_TRANSLATIONS || $context === self::CONTEXT_INSTALLER) {
-            // 'translations' and 'installer' contexts are not supposed to be configured
+        if ($context === self::CONTEXT_TRANSLATIONS) {
+            // 'translations' context is not supposed to be configured
             // and should always use a filesystem adapter.
             $namespace = $this->normalizeNamespace($namespace_prefix . $context);
             $adapter = new FilesystemAdapter($namespace, 0, $this->cache_dir);
@@ -484,8 +478,7 @@ PHP;
         $core_contexts = ['core'];
 
         if (!$only_configurable) {
-           // 'installer' and 'translations' cache storages cannot not be configured (they always use the filesystem storage)
-            $core_contexts[] = self::CONTEXT_INSTALLER;
+           // 'translations' cache storage cannot not be configured (it always use the filesystem storage)
             $core_contexts[] = self::CONTEXT_TRANSLATIONS;
         }
 
