@@ -1477,7 +1477,7 @@ describe ('Conditions', () => {
         getAndFocusQuestion('My first question').within(() => {
             cy.findByRole('button', {'name': 'Delete'}).click();
         });
-        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'})
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'My second question'}).should('be.visible');
@@ -1500,7 +1500,7 @@ describe ('Conditions', () => {
         getAndFocusQuestion('My first question').within(() => {
             cy.findByRole('button', {'name': 'Delete'}).click();
         });
-        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'})
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'My second question'}).should('be.visible');
@@ -1517,7 +1517,7 @@ describe ('Conditions', () => {
         getAndFocusQuestion('My first question').within(() => {
             cy.findByRole('button', {'name': 'Delete'}).click();
         });
-        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'}).should('not.exist');
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'}).should('not.exist');
     });
 
     it("can't delete a comment used in conditions", () => {
@@ -1536,7 +1536,7 @@ describe ('Conditions', () => {
         getAndFocusComment('My comment').within(() => {
             cy.findByRole('button', {'name': 'Delete'}).click();
         });
-        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'})
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'My question'}).should('be.visible');
@@ -1560,7 +1560,7 @@ describe ('Conditions', () => {
         getAndFocusComment('My comment').within(() => {
             cy.findByRole('button', {'name': 'Delete'}).click();
         });
-        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'})
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'My question'}).should('be.visible');
@@ -1577,7 +1577,7 @@ describe ('Conditions', () => {
         getAndFocusComment('My comment').within(() => {
             cy.findByRole('button', {'name': 'Delete'}).click();
         });
-        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'}).should('not.exist');
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'}).should('not.exist');
     });
 
     it("can't delete a section used in conditions", () => {
@@ -1598,7 +1598,7 @@ describe ('Conditions', () => {
             cy.findByRole('button', {'name': 'More actions'}).click();
             cy.findByRole('button', {'name': 'Delete section'}).click();
         });
-        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'})
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'Second section'}).should('be.visible');
@@ -1623,7 +1623,7 @@ describe ('Conditions', () => {
             cy.findByRole('button', {'name': 'More actions'}).click();
             cy.findByRole('button', {'name': 'Delete section'}).click();
         });
-        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'})
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
             .should('have.attr', 'data-cy-shown', 'true')
             .within(() => {
                 cy.findByRole('link', {'name': 'Second section'}).should('be.visible');
@@ -1641,7 +1641,7 @@ describe ('Conditions', () => {
             cy.findByRole('button', {'name': 'More actions'}).click();
             cy.findByRole('button', {'name': 'Delete section'}).click();
         });
-        cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'})
+        cy.findByRole('dialog', {'name': 'Item has conditions and cannot be deleted'})
             .should('not.exist');
     });
 });

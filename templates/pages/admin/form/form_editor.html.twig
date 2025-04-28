@@ -304,7 +304,7 @@
     {{ include('pages/admin/form/move_section_modal.html.twig') }}
 
     {# Block has conditions modal #}
-    {{ include('pages/admin/form/block_has_conditions_modal.html.twig') }}
+    {{ include('pages/admin/form/item_has_conditions_modal.html.twig') }}
 </form>
 
 {% if item.canUpdate() %}
@@ -401,7 +401,12 @@
         container_selector,
         {{ item.fields.is_draft ? "true" : "false" }},
         "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
-        "[data-glpi-form-editor-templates]"
+        "[data-glpi-form-editor-templates]",
+        {{ item.getDestinations()|map(destination => {
+            'id': destination.fields.id,
+            'name': destination.fields.name,
+            'conditions': destination.getConfiguredConditionsData(),
+        })|json_encode|raw }}
     );
 
     // Temporary solution, would be better to import it directly where it is needed but the current

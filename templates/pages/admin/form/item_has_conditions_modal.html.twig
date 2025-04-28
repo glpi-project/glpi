@@ -30,27 +30,27 @@
  # ---------------------------------------------------------------------
  #}
 
-{# Block has conditions modal #}
+{# Item has conditions modal #}
 <div
-    data-glpi-form-editor-block-has-conditions-modal
+    data-glpi-form-editor-item-has-conditions-modal
     class="modal modal-blur fade"
     aria-modal="true"
     role="dialog"
-    aria-label="{{ __("Block has conditions and cannot be deleted") }}"
+    aria-label="{{ __("Item has conditions and cannot be deleted") }}"
 >
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header p-3">
                 <div>
-                    <div class="d-none" data-glpi-form-editor-block-has-conditions-modal-header="question">
+                    <div class="d-none" data-glpi-form-editor-item-has-conditions-modal-header="question">
                         <h3 class="m-0">{{ __("This question is used in conditions of other form elements") }}</h3>
                         <p class="m-0 text-muted">{{ __("You must delete related conditions before deleting this question") }}</p>
                     </div>
-                    <div class="d-none" data-glpi-form-editor-block-has-conditions-modal-header="comment">
+                    <div class="d-none" data-glpi-form-editor-item-has-conditions-modal-header="comment">
                         <h3 class="m-0">{{ __("This comment is used in conditions of other form elements") }}</h3>
                         <p class="m-0 text-muted">{{ __("You must delete related conditions before deleting this comment") }}</p>
                     </div>
-                    <div class="d-none" data-glpi-form-editor-block-has-conditions-modal-header="section">
+                    <div class="d-none" data-glpi-form-editor-item-has-conditions-modal-header="section">
                         <h3 class="m-0">{{ __("This section is used in conditions of other form elements") }}</h3>
                         <p class="m-0 text-muted">{{ __("You must delete related conditions before deleting this section") }}</p>
                     </div>
@@ -63,7 +63,7 @@
                 ></button>
             </div>
             <div class="modal-body p-0">
-                <div class="list-group list-group-flush list-group-hoverable" data-glpi-form-editor-block-has-conditions-list>
+                <div class="list-group list-group-flush list-group-hoverable" data-glpi-form-editor-item-has-conditions-list></div>
                     <!-- List items will be populated dynamically by JavaScript -->
                 </div>
             </div>
@@ -71,13 +71,13 @@
     </div>
 
     {# Item template for conditions list #}
-    <div class="d-none" data-glpi-form-editor-block-has-conditions-item-template>
+    <div class="d-none" data-glpi-form-editor-item-has-conditions-item-template>
         <div class="list-group-item d-flex align-items-center space-x-2 p-3">
             <i class="ti ti-circle-x fa-lg text-danger"></i>
             <a href="#" class="m-0" style="font-weight: var(--tblr-font-weight-medium)"
-               data-glpi-form-editor-block-has-conditions-item-name
-               data-glpi-form-editor-block-has-conditions-item-selector
-               data-glpi-form-editor-block-has-conditions-item-uuid></a>
+               data-glpi-form-editor-item-has-conditions-item-name
+               data-glpi-form-editor-item-has-conditions-item-selector
+               data-glpi-form-editor-item-has-conditions-item-uuid></a>
         </div>
     </div>
 </div>
