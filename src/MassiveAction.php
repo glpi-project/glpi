@@ -246,8 +246,8 @@ class MassiveAction
                             throw new \Exception(__('Implementation error!'));
                         }
                         if ($POST['action'] == -1) {
-                       // Case when no action is choosen
-                            exit();
+                            // Case when no action is choosen
+                            throw new \RuntimeException();
                         }
                         if (isset($POST['actions'])) {
                             // First, get the name of current action !
@@ -550,11 +550,11 @@ class MassiveAction
 
         if ($this->check_item === null && isset($POST['check_itemtype'])) {
             if (!($this->check_item = getItemForItemtype($POST['check_itemtype']))) {
-                exit();
+                throw new \RuntimeException();
             }
             if (isset($POST['check_items_id'])) {
                 if (!$this->check_item->getFromDB($POST['check_items_id'])) {
-                    exit();
+                    throw new \RuntimeException();
                 } else {
                     $this->check_item->getEmpty();
                 }
@@ -595,7 +595,7 @@ class MassiveAction
      *
      * @param boolean $display_selector  can we display the itemtype selector ?
      *
-     * @return string|boolean  the itemtype or false if we cannot define it (and we cannot display the selector)
+     * @return string|boolean  the itemtype, or true if the selector is displayed, or false if we cannot define the itemtype nor display the selector
      **/
     public function getItemtype($display_selector)
     {
@@ -629,7 +629,7 @@ class MassiveAction
             );
 
             echo "<span id='show_itemtype$rand'>&nbsp;</span>";
-            exit();
+            return true;
         }
 
         return false;
@@ -1083,15 +1083,11 @@ class MassiveAction
                         );
                     }
                     // Only display the form for this stage
-                    exit();
+                    return;
                 }
 
                 if (!isset($ma->POST['common_options'])) {
-                    echo "<div class='center'><img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" .
-                              __s('Warning') . "'><br><br>";
-                    echo "<span class='b'>" . __s('Implementation error!') . "</span><br>";
-                    echo "</div>";
-                    exit();
+                    throw new \RuntimeException('Implementation error!');
                 }
 
                 if ($ma->POST['common_options'] == 'false') {
@@ -1124,7 +1120,7 @@ class MassiveAction
 
                     $itemtype_search_options = SearchOption::getOptionsForItemtype($so_itemtype);
                     if (!isset($itemtype_search_options[$so_index])) {
-                        exit();
+                        throw new \RuntimeException();
                     }
 
                     $item   = $so_item;
@@ -1133,7 +1129,7 @@ class MassiveAction
                 }
 
                 if ($item === null) {
-                    exit();
+                    throw new \RuntimeException();
                 }
 
                 $plugdisplay = false;
