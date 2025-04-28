@@ -62,11 +62,6 @@ class CacheManagerTest extends \GLPITestCase
             'is_configurable' => false,
         ];
         yield [
-            'context'         => 'installer',
-            'is_valid'        => true,
-            'is_configurable' => false,
-        ];
-        yield [
             'context'         => 'plugin:tester',
             'is_valid'        => true,
             'is_configurable' => true,
@@ -194,7 +189,6 @@ class CacheManagerTest extends \GLPITestCase
 
         // Not configurable contexts
         $contexts = [
-            'installer',
             'translations',
         ];
         foreach ($contexts as $context) {
@@ -467,7 +461,6 @@ class CacheManagerTest extends \GLPITestCase
         // Check base contexts
         $expected_contexts = [
             'core',
-            'installer',
             'translations',
         ];
         $this->assertSame($expected_contexts, $instance->getKnownContexts());

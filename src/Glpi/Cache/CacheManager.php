@@ -342,9 +342,8 @@ class CacheManager
     {
        // Core contexts
         $contexts = [
-            'core',
-            'installer',
-            'translations',
+            self::CONTEXT_CORE,
+            self::CONTEXT_TRANSLATIONS,
         ];
 
        // Contexts defined in configuration.
