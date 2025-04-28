@@ -1461,7 +1461,7 @@ describe ('Conditions', () => {
         ]);
     });
 
-    it('can delete a question used in conditions', () => {
+    it("can't delete a question used in conditions", () => {
         createForm();
         addQuestion('My first question');
         addQuestion('My second question');
@@ -1520,7 +1520,7 @@ describe ('Conditions', () => {
         cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'}).should('not.exist');
     });
 
-    it('can delete a comment used in conditions', () => {
+    it("can't delete a comment used in conditions", () => {
         createForm();
         addComment('My comment');
         addQuestion('My question');
@@ -1580,7 +1580,7 @@ describe ('Conditions', () => {
         cy.findByRole('dialog', {'name': 'Block has conditions and cannot be deleted'}).should('not.exist');
     });
 
-    it('can delete a section used in conditions', () => {
+    it("can't delete a section used in conditions", () => {
         createForm();
         addQuestion('My first question');
         addSection('Second section');
