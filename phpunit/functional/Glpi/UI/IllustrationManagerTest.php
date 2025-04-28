@@ -73,7 +73,7 @@ final class IllustrationManagerTest extends GLPITestCase
             'expected' => [
                 'antivirus',
                 'application',
-                'approve-requests',
+                'application-altenative',
             ],
         ];
 
@@ -81,9 +81,9 @@ final class IllustrationManagerTest extends GLPITestCase
             'page' => 2,
             'page_size' => 3,
             'expected' => [
+                'application-edit',
+                'approve-requests',
                 'asset-cartridge',
-                'asset-desktop-1',
-                'asset-desktop-2',
             ],
         ];
 
@@ -93,14 +93,14 @@ final class IllustrationManagerTest extends GLPITestCase
             'expected' => [
                 'antivirus',
                 'application',
+                'application-altenative',
+                'application-edit',
                 'approve-requests',
                 'asset-cartridge',
                 'asset-desktop-1',
                 'asset-desktop-2',
                 'asset-laptop',
                 'asset-lost',
-                'asset-network-equipment',
-                'asset-peripheral',
             ],
         ];
     }
