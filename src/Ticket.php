@@ -3140,23 +3140,25 @@ JAVASCRIPT;
             }
         }
 
-        $tab[] = [
-            'id'                 => '111',
-            'table'              => ProjectTask::getTable(),
-            'field'              => 'name',
-            'name'               => ProjectTask::getTypeName(1),
-            'datatype'           => 'dropdown',
-            'massiveaction'      => false,
-            'forcegroupby'       => true,
-            'joinparams'         => [
-                'beforejoin'         => [
-                    'table'              => ProjectTask_Ticket::getTable(),
-                    'joinparams'         => [
-                        'jointype'           => 'child',
+        if (Session::haveRight(ProjectTask::$rightname, READ)) {
+            $tab[] = [
+                'id' => '111',
+                'table' => ProjectTask::getTable(),
+                'field' => 'name',
+                'name' => ProjectTask::getTypeName(1),
+                'datatype' => 'dropdown',
+                'massiveaction' => false,
+                'forcegroupby' => true,
+                'joinparams' => [
+                    'beforejoin' => [
+                        'table' => ProjectTask_Ticket::getTable(),
+                        'joinparams' => [
+                            'jointype' => 'child',
+                        ]
                     ]
                 ]
-            ]
-        ];
+            ];
+        }
 
         return $tab;
     }

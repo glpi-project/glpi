@@ -40,6 +40,7 @@ use Computer;
 use CronTask;
 use DbTestCase;
 use Entity;
+use Glpi\Search\SearchOption;
 use Glpi\Team\Team;
 use Group;
 use Group_Ticket;
@@ -8674,5 +8675,15 @@ HTML
 
         // Assert: only the non closed tickets should be found.
         $this->assertEquals(5, $results['data']['totalcount']);
+    }
+
+    public function testConditionalSearchOptions()
+    {
+        $this->login();
+        $this->assertArrayHasKey('111', SearchOption::getCleanedOptions(Ticket::class));
+
+        $this->login('post-only', 'postonly');
+        SearchOption::clearSearchOptionCache(Ticket::class);
+        $this->assertArrayNotHasKey('111', SearchOption::getCleanedOptions(Ticket::class));
     }
 }
