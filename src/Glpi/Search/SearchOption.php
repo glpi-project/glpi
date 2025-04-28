@@ -134,7 +134,7 @@ final class SearchOption implements \ArrayAccess
 
         $search = [];
 
-        $cache_key = $itemtype . '_' . $withplugins;
+        $cache_key = $itemtype . '_' . ($withplugins ? 1 : 0);
         if (isset(self::$search_options_cache[$cache_key])) {
             return self::$search_options_cache[$cache_key];
         }
@@ -783,8 +783,26 @@ final class SearchOption implements \ArrayAccess
         return $generated_id;
     }
 
-    public static function clearSearchOptionCache(): void
+    /**
+     * Clear the {@link $search_options_cache search option cache} for a specific itemtype or all itemtypes.
+     *
+     * If an itemtype is specified, the itemtype class-level search option cache will also be cleared.
+     * If no itemtype is specified, you may need to clear the needed class-level caches manually.
+     * @param string|null $itemtype The itemtype to clear the cache for, or null to clear all caches.
+     * @return void
+     * @see \CommonDBTM::clearSearchOptionCache()
+     */
+    public static function clearSearchOptionCache(?string $itemtype = null): void
     {
-        self::$search_options_cache = [];
+        if ($itemtype === null) {
+            self::$search_options_cache = [];
+            return;
+        }
+        // Clear only the cache for the specified itemtype both with and without plugins
+        unset(self::$search_options_cache["{$itemtype}_1"], self::$search_options_cache["{$itemtype}_0"]);
+        // Clear itemtype-level cache if it is CommonDBTM
+        if (is_subclass_of($itemtype, CommonDBTM::class)) {
+            $itemtype::clearSearchOptionCache();
+        }
     }
 }
