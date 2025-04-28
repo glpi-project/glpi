@@ -972,7 +972,7 @@ HTML;
             $card = $cards[$card_id];
 
             $use_cache = !$force
-                && !Environment::get()->shouldExpectRessourcesToChange()
+                && Environment::get()->shouldForceExtraBrowserCache()
                 && (!isset($card['cache']) || $card['cache'] == true);
             $cache_age = 40;
 

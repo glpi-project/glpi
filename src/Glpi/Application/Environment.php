@@ -178,7 +178,20 @@ enum Environment: string
         // In others environments, we must match for changes.
         return match ($this) {
             default           => false,
+            self::TESTING     => true,
             self::DEVELOPMENT => true,
+        };
+    }
+
+    /**
+     * Should the HTTP response contains extra headers to force the caching on the browser side ?
+     */
+    public function shouldForceExtraBrowserCache(): bool
+    {
+        // Prevent intensive caching on dev env.
+        return match ($this) {
+            default           => true,
+            self::DEVELOPMENT => false,
         };
     }
 
