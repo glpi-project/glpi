@@ -45,15 +45,15 @@ define('TU_PASS', 'PhpUnit_4');
 
 define('FIXTURE_DIR', __DIR__ . "/../tests/fixtures");
 
-global $GLPI_CACHE;
-
-require_once dirname(__DIR__) . '/vendor/autoload.php';
-
 // Make sure cached content like twig template is cleared before running the tests.
 // It seems calling $cache_manager->resetAllCaches(); mess up with the kernel
 // leading to some issues. It is safer to use the console directly as it goes
 // throught another process.
 exec("bin/console cache:clear --env='testing'");
+
+global $GLPI_CACHE;
+
+require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $kernel = new Kernel(Environment::TESTING->value);
 $kernel->boot();
