@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Plugin\Hooks;
 use Glpi\Search\Output\Csv;
 use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\Output\Pdf;
@@ -1774,8 +1775,8 @@ class Stat extends CommonGLPI
         // Manage plugins
         $names    = [];
         $optgroup = [];
-        if (isset($PLUGIN_HOOKS["stats"]) && is_array($PLUGIN_HOOKS["stats"])) {
-            foreach ($PLUGIN_HOOKS["stats"] as $plug => $pages) {
+        if (isset($PLUGIN_HOOKS[Hooks::STATS]) && is_array($PLUGIN_HOOKS[Hooks::STATS])) {
+            foreach ($PLUGIN_HOOKS[Hooks::STATS] as $plug => $pages) {
                 if (!Plugin::isPluginActive($plug)) {
                     continue;
                 }

@@ -299,6 +299,7 @@ The present file will list all changes made to the project; according to the
 - `Html::jsSetDropdownValue()`
 - `Html::progressBar()`
 - `HookManager::enableCSRF()`
+- `Infocom::addPluginInfos()`
 - `ITILFollowup::ADDMYTICKET` constant. Use `ITILFollowup::ADDMY`.
 - `ITILFollowup::ADDGROUPTICKET` constant. Use `ITILFollowup::ADD_AS_GROUP`.
 - `ITILFollowup::ADDALLTICKET` constant. Use `ITILFollowup::ADDALLITEM`.
@@ -514,6 +515,7 @@ The present file will list all changes made to the project; according to the
 - `OlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `PlanningExternalEvent::addVisibilityRestrict()`
 - `PlanningRecall::specificForm()`
+- `Plugin::haveImport()`
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`

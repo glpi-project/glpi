@@ -46,6 +46,7 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Plugin\Hooks;
 use Search;
 
 /**
@@ -144,7 +145,7 @@ abstract class AbstractController
     {
         $schemas = static::getRawKnownSchemas();
         // Allow plugins to inject or modify schemas
-        $schemas = \Plugin::doHookFunction('redefine_api_schemas', [
+        $schemas = \Plugin::doHookFunction(Hooks::REDEFINE_API_SCHEMAS, [
             'controller' => static::class,
             'schemas' => $schemas,
         ])['schemas'];
