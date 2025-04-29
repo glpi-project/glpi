@@ -517,9 +517,10 @@ JAVASCRIPT;
                         }
                     }
                 }
-                if ($itemtype = 'Ticket') {
+                $task = null;
+                if ($item instanceof Ticket) {
                     $task = new TicketTask();
-                } elseif ($itemtype = 'Problem') {
+                } elseif ($item instanceof  Problem) {
                     $task = new ProblemTask();
                 }
                 if ($task !== null && $task->getFromDBByCrit(['tickets_id' => $item->fields['id']])) {
