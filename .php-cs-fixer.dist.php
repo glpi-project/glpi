@@ -55,6 +55,7 @@ return (new PhpCsFixer\Config())
         '@PHP84Migration' => true,
         'no_unused_imports' => true,
         'heredoc_indentation' => false, // This rule is mandatory due to a bug in `xgettext`, see https://savannah.gnu.org/bugs/?func=detailitem&item_id=62158
+        'octal_notation' => false, // Prevent conflicts running on both PHP 7.4 and 8.4
     ])
     ->setFinder($finder)
 ;
