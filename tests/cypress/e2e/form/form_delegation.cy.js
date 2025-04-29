@@ -37,34 +37,10 @@ describe('Form delegation', () => {
         uuid = new Date().getTime();
     });
 
-    it('can choice my notifications preferences', () => {
+    it("can't view delegation section when no delegation rights", () => {
         createFormAndRenderIt();
-
-        // Check values
-        cy.getDropdownByLabelText('Do you want to be notified of future events of this ticket').should('have.text', 'I want');
-        cy.getDropdownByLabelText('Do you want to be notified of future events of this ticket').click();
-        cy.get('.select2-results__options').contains('I don\'t want');
-
-        // Define email address
-        cy.findByRole('button', { name: 'Address to send the notification' }).click();
-        cy.findByRole('textbox', { name: 'Address to send the notification' }).clear();
-        cy.findByRole('textbox', { name: 'Address to send the notification' }).type('test@test.fr');
-
-        // Fill form
-        cy.findByRole('textbox', { name: 'Name' }).type('Test');
-
-        // Submit form
-        cy.findByRole('button', { name: 'Submit' }).click();
-
-        // Go to the created ticket
-        cy.findByRole('link', { name: `My test form - ${uuid}` }).click();
-
-        cy.findByRole('region', { name: 'Actors' }).within(() => {
-            cy.findByRole('listitem', { name: 'E2E Tests' }).should('exist');
-            cy.findByRole('button', { name: 'Email followup' }).click();
-            cy.findByRole('checkbox', { name: 'Email followup' }).should('be.checked');
-            cy.findByRole('textbox', { name: 'Email address' }).should('have.value', 'test@test.fr');
-        });
+        cy.getDropdownByLabelText('Select the user to delegate').should('not.exist');
+        cy.getDropdownByLabelText('Do you want to be notified of future events of this ticket').should('not.exist');
     });
 
     it('can delegate', () => {
@@ -75,10 +51,9 @@ describe('Form delegation', () => {
         cy.getDropdownByLabelText('Select the user to delegate').should('have.text', 'Myself');
         cy.getDropdownByLabelText('Select the user to delegate').click();
         cy.get('.select2-results__options').contains(`Test user - ${uuid}`);
+        cy.getDropdownByLabelText('Select the user to delegate').click();
 
-        cy.getDropdownByLabelText('Do you want to be notified of future events of this ticket').should('have.text', 'I want');
-        cy.getDropdownByLabelText('Do you want to be notified of future events of this ticket').click();
-        cy.get('.select2-results__options').contains('I don\'t want');
+        cy.getDropdownByLabelText('Do you want to be notified of future events of this ticket').should('not.exist');
 
         // Select user to delegate
         cy.getDropdownByLabelText('Select the user to delegate').selectDropdownValue(`Test user - ${uuid}`);
@@ -120,10 +95,9 @@ describe('Form delegation', () => {
         cy.getDropdownByLabelText('Select the user to delegate').should('have.text', 'Myself');
         cy.getDropdownByLabelText('Select the user to delegate').click();
         cy.get('.select2-results__options').contains(`Test user - ${uuid}`);
+        cy.getDropdownByLabelText('Select the user to delegate').click();
 
-        cy.getDropdownByLabelText('Do you want to be notified of future events of this ticket').should('have.text', 'I want');
-        cy.getDropdownByLabelText('Do you want to be notified of future events of this ticket').click();
-        cy.get('.select2-results__options').contains('I don\'t want');
+        cy.getDropdownByLabelText('Do you want to be notified of future events of this ticket').should('not.exist');
 
         // Select user to delegate
         cy.getDropdownByLabelText('Select the user to delegate').selectDropdownValue(`Test user - ${uuid}`);
