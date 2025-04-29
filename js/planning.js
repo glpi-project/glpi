@@ -625,7 +625,7 @@ var GLPIPlanning  = {
         // IMPORTANT: This event source was moved here, after the calendar's render() call,
         // to prevent an automatic AJAX request to the events URL during FullCalendar's initialization.
         // And another one during the calendar's changeView() call.
-        // By adding it manually after rendering, onlyone call is done.
+        // By adding it manually after rendering, only one call is done.
         this.calendar.addEventSource({
             url: `${CFG_GLPI.root_doc}/ajax/planning.php`
             type: 'POST',
