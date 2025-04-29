@@ -721,9 +721,6 @@ class Agent extends CommonDBTM
                 $response = $httpClient->request('GET', $endpoint, []);
                 self::$found_address = $address;
                 break;
-            } catch (\GuzzleHttp\Exception\RequestException $exception) {
-                // got an error response, we don't need to try other addresses
-                break;
             } catch (\Throwable $exception) {
                 // many addresses will be incorrect
             }
