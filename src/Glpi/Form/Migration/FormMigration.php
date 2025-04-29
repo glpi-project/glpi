@@ -562,7 +562,7 @@ class FormMigration extends AbstractPluginMigration
                 $this->result->addMessage(
                     MessageType::Error,
                     sprintf(
-                        'Error while importing question "%s" in section "%s" and form "%s": %s',
+                        __('Error while importing question "%s" in section "%s" and form "%s": %s'),
                         $raw_question['name'],
                         $section?->getName(),
                         $section?->getItem()?->getName(),
