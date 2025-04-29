@@ -403,9 +403,9 @@
         "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
         "[data-glpi-form-editor-templates]",
         {{ item.getDestinations()|map(destination => {
-            'id': destination.fields.id,
-            'name': destination.fields.name,
-            'conditions': destination.getConfiguredConditionsData(),
+            'id': destination.fields.id|escape('js'),
+            'name': destination.fields.name|escape('js'),
+            'conditions': destination.getConfiguredConditionsData()|escape('js'),
         })|json_encode|raw }}
     );
 
