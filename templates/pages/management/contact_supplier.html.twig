@@ -44,7 +44,7 @@
                     entity_sons: peer.isRecursive(),
                 }) }}
             {% else %}
-                <input type="hidden" name="suppliers" value="{{ peer.getID() }}">
+                <input type="hidden" name="suppliers_id" value="{{ peer.getID() }}">
                 {{ fields.dropdownField('Contact', 'contacts_id', '', __('Add a contact'), {
                     used: used,
                     entity: peer.getEntityID(),
