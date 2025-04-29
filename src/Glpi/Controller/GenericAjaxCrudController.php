@@ -36,13 +36,17 @@
 namespace Glpi\Controller;
 
 use CommonDBTM;
-use Glpi\Http\Response;
+use Glpi\Form\Form;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
  * Ajax controller for handling "update", "delete", "restore" and "purge"
  * actions on CommonDBTM objects
  */
-class CommonAjaxController
+class GenericAjaxCrudController extends AbstractController
 {
     /**
      * Object to update, delete, restore or purge
@@ -50,15 +54,11 @@ class CommonAjaxController
      */
     protected CommonDBTM $item;
 
-    /**
-     * Handle a given HTTP request
-     *
-     * @param array $input request data
-     *
-     * @return Response
-     */
-    final public function handleRequest(array $input): Response
+    #[Route("/GenericAjaxCrud", name: "glpi_generic_ajax_crud")]
+    public function __invoke(Request $request): Response
     {
+        $input = $request->request->all();
+
         // Validate id as soon as possible so all sub-methods can assume
         // $input['id'] exist
         if (!isset($input['id'])) {
@@ -78,8 +78,8 @@ class CommonAjaxController
             $this->check((int) $input['id'], READ, $input);
 
             return $this->handleAction($input);
-        } catch (\Glpi\Controller\RequestException $e) {
-            return $this->errorReponse($e->getHttpCode(), $e->getMessage());
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            return $this->errorReponse($e->getStatusCode(), $e->getMessage());
         }
     }
 
@@ -126,7 +126,7 @@ class CommonAjaxController
             'messages' => ['error' => [$message]],
         ];
         $body = $this->insertSessionMessages($body);
-        return $this->jsonResponse($code, $body);
+        return new JsonResponse($body, $code);
     }
 
     /**
@@ -144,24 +144,7 @@ class CommonAjaxController
         // the response so it can be applied in the UX but its not yet displayed
         // for Forms so there is no way to test it right now
         $body = $this->insertSessionMessages($body);
-        return $this->jsonResponse($code, $body);
-    }
-
-    /**
-     * Build a simple JSON response
-     *
-     * @param int   $code HTTP status code
-     * @param array $body Response's body
-     *
-     * @return Response
-     */
-    final protected function jsonResponse(int $code, array $body): Response
-    {
-        return new Response(
-            $code,
-            ['Content-Type' => 'application/json'],
-            json_encode($body),
-        );
+        return new JsonResponse($body, $code);
     }
 
     /**
@@ -327,17 +310,17 @@ class CommonAjaxController
      *
      * @return void
      *
-     * @throws \Glpi\Controller\RequestException
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      */
     final protected function check(int $id, int $right, array $input): void
     {
         if (!$this->item->checkIfExistOrNew($id)) {
-            throw new \Glpi\Controller\RequestException(
+            throw new \Symfony\Component\HttpKernel\Exception\HttpException(
                 404,
                 __("Item not found.")
             );
         } elseif (!$this->item->can($id, $right, $input)) {
-            throw new \Glpi\Controller\RequestException(
+            throw new \Symfony\Component\HttpKernel\Exception\HttpException(
                 403,
                 __("You don't have permission to perform this action.")
             );
@@ -359,6 +342,10 @@ class CommonAjaxController
      */
     final protected function isClassAllowed(string $class): bool
     {
-        return in_array($class, CommonAjaxControllerAllowedClassesList::getClasses());
+        $allowed_classes = [
+            Form::class,
+        ];
+
+        return in_array($class, $allowed_classes);
     }
 }

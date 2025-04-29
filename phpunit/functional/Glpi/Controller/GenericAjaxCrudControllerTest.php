@@ -35,10 +35,11 @@
 namespace tests\units\Glpi\Controller;
 
 use DbTestCase;
+use Glpi\Controller\GenericAjaxCrudController;
 use Glpi\Form\Form;
-use Glpi\Http\Response;
+use Symfony\Component\HttpFoundation\Request;
 
-class CommonAjaxControllerTest extends DbTestCase
+class GenericAjaxCrudControllerTest extends DbTestCase
 {
     /**
      * Data provider for the testHandleRequest method
@@ -62,65 +63,53 @@ class CommonAjaxControllerTest extends DbTestCase
         // First tests set: invalid inputs (general)
         yield [
             'input' => [],
-            'expected_response' => new Response(
-                400,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => ["Invalid id"],
-                    ],
-                ])
-            ),
+            'expected_status' => 400,
+            'expected_body'   => [
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => ["Invalid id"],
+                ],
+            ],
         ];
         yield [
             'input' => ['id' => $invalid_id],
-            'expected_response' => new Response(
-                403,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => ["Forbidden itemtype"],
-                    ],
-                ])
-            ),
+            'expected_status' => 403,
+            'expected_body'   => [
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => ["Forbidden itemtype"],
+                ],
+            ],
         ];
         yield [
             'input' => [
                 'id' => $invalid_id,
                 'itemtype' => 'Computer',
             ],
-            'expected_response' => new Response(
-                403,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => ["Forbidden itemtype"],
-                    ],
-                ])
-            ),
+            'expected_status' => 403,
+            'expected_body'   => [
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => ["Forbidden itemtype"],
+                ],
+            ],
         ];
         yield [
-            'input' => [
+            'input'   => [
                 'id'       => $form_1->getID(),
                 'itemtype' => $form_1->getType(),
             ],
-            'expected_response' => new Response(
-                400,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => ["Invalid action"],
-                    ],
-                ])
-            ),
+            'expected_status' => 400,
+            'expected_body'   => [
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => ["Invalid action"],
+                ],
+            ],
         ];
 
         // Second tests set: update request
@@ -132,17 +121,14 @@ class CommonAjaxControllerTest extends DbTestCase
                 '_action'  => 'update',
                 'name'     => 'Form 1 name (first update)',
             ],
-            'expected_response' => new Response(
-                403,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => ["You don't have permission to perform this action."],
-                    ],
-                ])
-            ),
+            'expected_status' => 403,
+            'expected_body'   => [
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => ["You don't have permission to perform this action."],
+                ],
+            ],
         ];
         yield [
             'input' => [
@@ -151,17 +137,14 @@ class CommonAjaxControllerTest extends DbTestCase
                 '_action'  => 'update',
                 'name'     => 'Form 1 name (second update)',
             ],
-            'expected_response' => new Response(
-                404,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => ["Item not found."],
-                    ],
-                ])
-            ),
+            'expected_status' => 404,
+            'expected_body'   => [
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => ["Item not found."],
+                ],
+            ],
         ];
         yield [
             'input' => [
@@ -170,18 +153,15 @@ class CommonAjaxControllerTest extends DbTestCase
                 '_action'  => 'update',
                 'name'     => 'Form 1 name (third update)',
             ],
-            'expected_response' => new Response(
-                200,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'friendlyname' => "Form 1 name (third update)",
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => [],
-                    ],
-                ])
-            ),
+            'expected_status' => 200,
+            'expected_body'   => [
+                'friendlyname' => "Form 1 name (third update)",
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => [],
+                ],
+            ],
         ];
         // We can't test the "Failed to update item" response because it doesn't
         // seem to be a way to send an invalid update request that isn't already
@@ -196,17 +176,14 @@ class CommonAjaxControllerTest extends DbTestCase
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'delete',
             ],
-            'expected_response' => new Response(
-                403,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => ["You don't have permission to perform this action."],
-                    ],
-                ])
-            ),
+            'expected_status' => 403,
+            'expected_body'   => [
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => ["You don't have permission to perform this action."],
+                ],
+            ],
         ];
         yield [
             'input' => [
@@ -214,17 +191,14 @@ class CommonAjaxControllerTest extends DbTestCase
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'delete',
             ],
-            'expected_response' => new Response(
-                404,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => ["Item not found."],
-                    ],
-                ])
-            ),
+            'expected_status' => 404,
+            'expected_body'   => [
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => ["Item not found."],
+                ],
+            ],
         ];
         yield [
             'input' => [
@@ -232,18 +206,15 @@ class CommonAjaxControllerTest extends DbTestCase
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'delete',
             ],
-            'expected_response' => new Response(
-                200,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'is_deleted' => true,
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => [],
-                    ],
-                ])
-            ),
+            'expected_status' => 200,
+            'expected_body'   => [
+                'is_deleted' => true,
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => [],
+                ],
+            ],
         ];
         // We can't test the "Failed to delete item" response it because doesn't
         // seem to be a way to send an invalid delete request that isn't already
@@ -257,17 +228,14 @@ class CommonAjaxControllerTest extends DbTestCase
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'restore',
             ],
-            'expected_response' => new Response(
-                403,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => ["You don't have permission to perform this action."],
-                    ],
-                ])
-            ),
+            'expected_status' => 403,
+            'expected_body'   => [
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => ["You don't have permission to perform this action."],
+                ],
+            ],
         ];
         yield [
             'input' => [
@@ -275,17 +243,14 @@ class CommonAjaxControllerTest extends DbTestCase
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'restore',
             ],
-            'expected_response' => new Response(
-                404,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => ["Item not found."],
-                    ],
-                ])
-            ),
+            'expected_status' => 404,
+            'expected_body'   => [
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => ["Item not found."],
+                ],
+            ],
         ];
         yield [
             'input' => [
@@ -293,18 +258,15 @@ class CommonAjaxControllerTest extends DbTestCase
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'restore',
             ],
-            'expected_response' => new Response(
-                200,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'is_deleted' => false,
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => [],
-                    ],
-                ])
-            ),
+            'expected_status' => 200,
+            'expected_body'   => [
+                'is_deleted' => false,
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => [],
+                ],
+            ],
         ];
         // We can't test the "Failed to restore item" response because it doesn't
         // seem to be a way to send an invalid delete request that isn't already
@@ -318,17 +280,14 @@ class CommonAjaxControllerTest extends DbTestCase
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'purge',
             ],
-            'expected_response' => new Response(
-                403,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => ["You don't have permission to perform this action."],
-                    ],
-                ])
-            ),
+            'expected_status' => 403,
+            'expected_body'   => [
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => ["You don't have permission to perform this action."],
+                ],
+            ],
         ];
         yield [
             'input' => [
@@ -336,17 +295,14 @@ class CommonAjaxControllerTest extends DbTestCase
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'purge',
             ],
-            'expected_response' => new Response(
-                404,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'messages' => [
-                        'info'    => [],
-                        'warning' => [],
-                        'error'   => ["Item not found."],
-                    ],
-                ])
-            ),
+            'expected_status' => 404,
+            'expected_body'   => [
+                'messages' => [
+                    'info'    => [],
+                    'warning' => [],
+                    'error'   => ["Item not found."],
+                ],
+            ],
         ];
         yield [
             'input' => [
@@ -354,13 +310,10 @@ class CommonAjaxControllerTest extends DbTestCase
                 'itemtype' => $form_1->getType(),
                 '_action'  => 'purge',
             ],
-            'expected_response' => new Response(
-                200,
-                ['Content-Type' => 'application/json'],
-                json_encode([
-                    'redirect' => "/glpi/front/form/form.php",
-                ])
-            ),
+            'expected_status' => 200,
+            'expected_body'   => [
+                'redirect' => "/glpi/front/form/form.php",
+            ],
         ];
         // We can't test the "Failed to purge item" response because it doesn't
         // seem to be a way to send an invalid purge request that isn't already
@@ -376,7 +329,8 @@ class CommonAjaxControllerTest extends DbTestCase
     {
         foreach ($this->testHandleRequestProvider() as $row) {
             $input = $row['input'];
-            $expected_response = $row['expected_response'];
+            $expected_status = $row['expected_status'];
+            $expected_body   = $row['expected_body'];
             $user = $row['user'] ?? TU_USER;
 
             if ($user === TU_USER) {
@@ -385,25 +339,25 @@ class CommonAjaxControllerTest extends DbTestCase
                 $this->login("normal", "normal");
             }
 
-            $controller = new \Glpi\Controller\CommonAjaxController();
-            $response = $controller->handleRequest($input);
+            $controller = new GenericAjaxCrudController();
+            $response = $controller(new Request(request: $input));
 
             // Validate return code
             $this->assertEquals(
-                $expected_response->getStatusCode(),
+                $expected_status,
                 $response->getStatusCode()
             );
 
             // Validate headers
             $this->assertEquals(
-                $expected_response->getHeaders(),
-                $response->getHeaders()
+                'application/json',
+                $response->headers->get('Content-Type')
             );
 
             // Validate body
             $this->assertEquals(
-                (string) $expected_response->getBody(),
-                (string) $response->getBody()
+                $expected_body,
+                json_decode($response->getContent(), true)
             );
         }
     }
