@@ -722,7 +722,7 @@ class Agent extends CommonDBTM
                 $response = $httpClient->request('GET', $endpoint, []);
                 self::$found_address = $address;
                 break;
-            } catch (Exception $exception) {
+            } catch (\Throwable $exception) {
                 // many addresses will be incorrect
             }
         }
