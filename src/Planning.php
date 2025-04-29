@@ -1749,7 +1749,7 @@ TWIG, $twig_params);
                 // For list view, only display only the next occurence
                 // to avoid issues performances (range in list view can be 10 years long)
                 if ($param['view_name'] === "listFull") {
-                    /** @var DateTime $next_date */
+                    /** @var ?DateTime $next_date */
                     $next_date = $rset->getNthOccurrenceAfter(new DateTime(), 1);
                     if ($next_date) {
                         $new_event = array_merge($new_event, [

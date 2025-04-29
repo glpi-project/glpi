@@ -3860,12 +3860,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Planning\\:\\:updateEventTimes\\(\\) should return bool but empty return statement found\\.$#',
 	'identifier' => 'return.empty',
 	'count' => 1,

@@ -63,9 +63,11 @@ parameters:
     ignoreErrors:
         - '~Instantiated class XHProfRuns_Default not found~'
         - '~Instantiation of deprecated class Glpi\\Http\\HeaderlessStreamedResponse~'
-        - { message: '~LDAP\\Connection~', reportUnmatched: false }
         -
-            message: '~/(downstream\.php|config_db\.php|config_db_slave\.php)" is not a file or it does not exist.~'
+            message: '~LDAP\\Connection~'
+            reportUnmatched: false
+        -
+            message: '~/(xhprof_runs\.php|xhprof_lib\.php|downstream\.php|config_db\.php|config_db_slave\.php)" is not a file or it does not exist.~'
             reportUnmatched: false
 rules:
     - Glpi\Tools\PHPStan\ForbidExitRule
