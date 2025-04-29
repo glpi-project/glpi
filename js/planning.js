@@ -631,8 +631,6 @@ var GLPIPlanning  = {
             type: 'POST',
             extraParams: function () {
                 var view_name =  GLPIPlanning.calendar.state.viewType;
-                var display_done_events = (view_name.indexOf('list') >= 0) ? 0 : 1;
-
                 return {
                     'action': 'get_events',
                     'view_name': view_name
