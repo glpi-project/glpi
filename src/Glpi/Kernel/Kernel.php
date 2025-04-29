@@ -161,7 +161,7 @@ final class Kernel extends BaseKernel
 
                 echo sprintf('Unable to write in the `%s` directory.', $relative_path) . PHP_EOL;
                 echo 'Files ACL must be fixed.' . PHP_EOL;
-                exit(1);
+                exit(1); // @phpstan-ignore glpi.forbidExit (Script execution should be stopped to prevent further errors)
             }
         }
 

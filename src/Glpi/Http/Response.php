@@ -88,7 +88,7 @@ class Response extends \GuzzleHttp\Psr7\Response
         Toolbox::logDebug($message);
 
         echo($output);
-        exit(1);
+        exit(1); // @phpstan-ignore glpi.forbidExit (Deprecated scope)
     }
 
     public function sendHeaders(): Response

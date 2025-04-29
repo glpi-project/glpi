@@ -4167,7 +4167,16 @@ abstract class CommonITILObject extends CommonDBTM
 
         switch ($ma->getAction()) {
             case 'add_task':
-                $itemtype = $ma->getItemtype(true);
+                $itemtype_or_selector = $ma->getItemtype(true);
+
+                if (is_bool($itemtype_or_selector)) {
+                    // MassiveAction::getItemtype() will return a boolean if the itemtype selector needs to be displayed.
+                    return $itemtype_or_selector;
+                }
+
+                // MassiveAction::getItemtype() will return a classname if the selector does not need to be displayed.
+                $itemtype = $itemtype_or_selector;
+
                 $tasktype = $itemtype . 'Task';
                 if ($ttype = getItemForItemtype($tasktype)) {
                     /** @var CommonITILTask $ttype */

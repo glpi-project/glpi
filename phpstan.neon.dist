@@ -68,6 +68,8 @@ parameters:
             message: '~/(downstream\.php|config_db\.php|config_db_slave\.php)" is not a file or it does not exist.~'
             reportUnmatched: false
 rules:
+    - Glpi\Tools\PHPStan\ForbidExitRule
+    - Glpi\Tools\PHPStan\ForbidHttpResponseCodeRule
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
 
 # Copy and uncomment this content into a "phpstan.neon" file to add your own config values

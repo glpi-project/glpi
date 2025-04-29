@@ -1556,6 +1556,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^You should not use the `exit` function\\. It prevents the execution of post\\-request/post\\-command routines\\.$#',
+	'identifier' => 'glpi.forbidExit',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^You should not use the `http_response_code` function to change the response code\\. Due to a PHP bug, it may not provide the expected result \\(see https\\://bugs\\.php\\.net/bug\\.php\\?id\\=81451\\)\\.$#',
+	'identifier' => 'glpi.forbidHttpResponseCode',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\APIRest\\:\\:parseIncomingParams\\(\\) with return type void returns string but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -1576,6 +1588,18 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between false and array will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^You should not use the `exit` function\\. It prevents the execution of post\\-request/post\\-command routines\\.$#',
+	'identifier' => 'glpi.forbidExit',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^You should not use the `http_response_code` function to change the response code\\. Due to a PHP bug, it may not provide the expected result \\(see https\\://bugs\\.php\\.net/bug\\.php\\?id\\=81451\\)\\.$#',
+	'identifier' => 'glpi.forbidHttpResponseCode',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
 ];
@@ -2172,6 +2196,12 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Dropdown/Dropdown.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^You should not use the `http_response_code` function to change the response code\\. Due to a PHP bug, it may not provide the expected result \\(see https\\://bugs\\.php\\.net/bug\\.php\\?id\\=81451\\)\\.$#',
+	'identifier' => 'glpi.forbidHttpResponseCode',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Http/Response.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always false\\.$#',

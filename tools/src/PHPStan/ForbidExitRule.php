@@ -32,10 +32,38 @@
  * ---------------------------------------------------------------------
  */
 
-if (!class_exists('Glpi\\Kernel\\Kernel', autoload: false)) {
-    // `Glpi\Kernel\Kernel` class will exists if the request was processed by the `/public/index.php` file,
-    // and will not be found otherwise.
-    header('HTTP/1.1 404 Not Found');
-    readfile(__DIR__ . '/../index.html');
-    exit(); // @phpstan-ignore glpi.forbidExit (Script execution should be stopped to prevent further errors)
+namespace Glpi\Tools\PHPStan;
+
+use PhpParser\Node;
+use PhpParser\Node\Expr\Exit_;
+use PHPStan\Analyser\Scope;
+use PHPStan\Rules\Rule;
+use PHPStan\Rules\RuleErrorBuilder;
+
+class ForbidExitRule implements Rule
+{
+    public function getNodeType(): string
+    {
+        return Exit_::class;
+    }
+
+    public function processNode(Node $node, Scope $scope): array
+    {
+        $name = match ($node->getAttribute('kind')) {
+            Exit_::KIND_DIE  => 'die',
+            Exit_::KIND_EXIT => 'exit',
+            default          => 'die/exit',
+        };
+
+        return [
+            RuleErrorBuilder::message(
+                sprintf(
+                    'You should not use the `%s` function. It prevents the execution of post-request/post-command routines.',
+                    $name
+                )
+            )
+            ->identifier('glpi.forbidExit')
+            ->build()
+        ];
+    }
 }

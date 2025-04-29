@@ -32,10 +32,39 @@
  * ---------------------------------------------------------------------
  */
 
-if (!class_exists('Glpi\\Kernel\\Kernel', autoload: false)) {
-    // `Glpi\Kernel\Kernel` class will exists if the request was processed by the `/public/index.php` file,
-    // and will not be found otherwise.
-    header('HTTP/1.1 404 Not Found');
-    readfile(__DIR__ . '/../index.html');
-    exit(); // @phpstan-ignore glpi.forbidExit (Script execution should be stopped to prevent further errors)
+namespace Glpi\Tools\PHPStan;
+
+use PhpParser\Node;
+use PhpParser\Node\Expr\FuncCall;
+use PHPStan\Analyser\Scope;
+use PhpParser\Node\Name;
+use PHPStan\Rules\Rule;
+use PHPStan\Rules\RuleErrorBuilder;
+
+class ForbidHttpResponseCodeRule implements Rule
+{
+    public function getNodeType(): string
+    {
+        return FuncCall::class;
+    }
+
+    public function processNode(Node $node, Scope $scope): array
+    {
+        if (
+            $node instanceof FuncCall
+            && $node->name instanceof Name
+            && $node->name->toString() === 'http_response_code'
+            && count($node->getRawArgs()) > 0 // `http_response_code()` used without args is a setter and does not cause issues
+        ) {
+            return [
+                RuleErrorBuilder::message(
+                    'You should not use the `http_response_code` function to change the response code. Due to a PHP bug, it may not provide the expected result (see https://bugs.php.net/bug.php?id=81451).',
+                )
+                ->identifier('glpi.forbidHttpResponseCode')
+                ->build()
+            ];
+        }
+
+        return [];
+    }
 }

@@ -53,12 +53,12 @@ final class ResourcesChecker
         if (!$this->areDependenciesUpToDate()) {
             echo 'Application dependencies are not up to date.' . PHP_EOL;
             echo 'Run "php bin/console dependencies install" in the glpi tree to fix this.' . PHP_EOL;
-            exit(1);
+            exit(1); // @phpstan-ignore glpi.forbidExit (Script execution should be stopped to prevent further errors)
         }
         if (!$this->areLocalesUpToDate()) {
             echo 'Application locales have to be compiled.' . PHP_EOL;
             echo 'Run "php bin/console locales:compile" in the glpi tree to fix this.' . PHP_EOL;
-            exit(1);
+            exit(1); // @phpstan-ignore glpi.forbidExit (Script execution should be stopped to prevent further errors)
         }
     }
 
