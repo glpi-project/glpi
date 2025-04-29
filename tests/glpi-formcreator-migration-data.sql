@@ -508,4 +508,24 @@ LOCK TABLES `glpi_plugin_formcreator_forms_languages` WRITE;
 INSERT INTO `glpi_plugin_formcreator_forms_languages` VALUES (2,19,'fr_FR','','18b24cbd-91f5039d-67e3dc2daab018.88018762');
 UNLOCK TABLES;
 
+--
+-- Table structure for table `glpi_plugin_formcreator_conditions`
+--
+
+DROP TABLE IF EXISTS `glpi_plugin_formcreator_conditions`;
+CREATE TABLE `glpi_plugin_formcreator_conditions` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'itemtype of the item affected by the condition',
+  `items_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'item ID of the item affected by the condition',
+  `plugin_formcreator_questions_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'question to test for the condition',
+  `show_condition` int NOT NULL DEFAULT '0',
+  `show_value` mediumtext COLLATE utf8mb4_unicode_ci,
+  `show_logic` int NOT NULL DEFAULT '1',
+  `order` int NOT NULL DEFAULT '1',
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `plugin_formcreator_questions_id` (`plugin_formcreator_questions_id`),
+  KEY `item` (`itemtype`,`items_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=825 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 -- Dump completed on 2025-01-21 11:41:32

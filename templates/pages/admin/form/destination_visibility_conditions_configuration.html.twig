@@ -68,6 +68,7 @@
                 uuid: '{{ question_data.getUuid()|escape('js') }}',
                 name: '{{ question_data.getName()|escape('js') }}',
                 type: '{{ get_class(question_data.getType())|escape('js') }}',
+                extra_data: {{ question_data.getExtraData()|json_encode|raw }},
             });
         {% endfor %}
 
