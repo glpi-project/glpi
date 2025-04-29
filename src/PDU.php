@@ -54,6 +54,7 @@ class PDU extends CommonDBTM
         return [
             Item_Plug::class,
             Item_Devices::class,
+            Document_Item::class,
             NetworkPort::class,
             Contract_Item::class,
             Infocom::class,
@@ -271,6 +272,8 @@ class PDU extends CommonDBTM
         $tab = array_merge($tab, PDUModel::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, DCRoom::rawSearchOptionsToAdd());
+
+        $tab = array_merge($tab, Item_Devices::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
     }
