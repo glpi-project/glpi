@@ -722,11 +722,8 @@ class Agent extends CommonDBTM
                 $response = $httpClient->request('GET', $endpoint, []);
                 self::$found_address = $address;
                 break;
-            } catch (\GuzzleHttp\Exception\ClientException $exception) {
-                // If a 4XX error seems to be coming from an agent, we can stop trying. For every other exception, we can try other addresses
-                if (str_contains($exception->getResponse()->getHeaderLine('Server'), 'libwww-perl-daemon')) {
-                    break;
-                }
+            } catch (Exception $exception) {
+                // many addresses will be incorrect
             }
         }
 
