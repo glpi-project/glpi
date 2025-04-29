@@ -248,23 +248,27 @@ trait PlanningEvent
             return "";
         }
 
-        if (empty($rrule['byday'])) {
+        if (isset($rrule['byday']) && empty($rrule['byday'])) {
             $rrule['byday'] = [];
+        } elseif (!is_array($rrule['byday'])) {
+            $rrule['byday'] = [$rrule['byday']];
         }
 
-        if (empty($rrule['bymonth'])) {
+        if (isset($rrule['bymonth']) && empty($rrule['bymonth'])) {
             $rrule['bymonth'] = [];
+        } elseif (!is_array($rrule['bymonth'])) {
+            $rrule['bymonth'] = [$rrule['bymonth']];
         }
 
         if (!empty($rrule['exceptions'])) {
-            if (is_string($rrule['exceptions']) && strlen($rrule['exceptions'])) {
+            if (is_string($rrule['exceptions']) && strlen($rrule['exceptions'])) { //@phpstan-ignore-line
                 $rrule['exceptions'] = explode(', ', $rrule['exceptions']);
             }
             if (!is_array($rrule['exceptions']) || count($rrule['exceptions']) === 0) {
-                $rrule['exceptions'] = [];
+                unset($rrule['exceptions']);
             }
         } else {
-            $rrule['exceptions'] = [];
+            unset($rrule['exceptions']);
         }
 
         if (count($rrule) > 0) {
@@ -916,7 +920,7 @@ trait PlanningEvent
      * Returns RSet occurence corresponding to rrule field value.
      *
      * @param array  $rrule    RRule field value
-     * @param string $dtstart  Start of first occurence
+     * @param string $dtstart  Start of first occurrence
      *
      * @return \RRule\RSet
      */
