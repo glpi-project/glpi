@@ -462,6 +462,6 @@ class ChangeTest extends DbTestCase
         ob_start();
         \Change::showCentralList(0, 'tovalidate', false);
         $output = ob_get_clean();
-        $this->assertStringNotContainsString("Your changes to validate <span class='primary-bg primary-fg count'>1</span>", $output);
+        $this->assertStringNotContainsString("Your changes to validate", $output);
     }
 }
