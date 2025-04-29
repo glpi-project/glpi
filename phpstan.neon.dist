@@ -68,7 +68,9 @@ parameters:
         - '/Class phpCAS not found/'
         - '/Instantiated class (DB|DBSlave) not found/'
         - '/Instantiated class XHProfRuns_Default not found/'
-        - '/\w+ has been replaced by \w+/'
+        -
+            message: '/\w+ has been replaced by \w+/'
+            reportUnmatched: false
         -
             message: '/LDAP\\Connection/'
             reportUnmatched: false
