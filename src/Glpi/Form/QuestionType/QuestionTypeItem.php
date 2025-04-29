@@ -245,7 +245,7 @@ class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataC
 
             {% if question == null %}
                 <script>
-                    import("{{ js_path('js/modules/Forms/QuestionItem.js') }}").then((m) => {
+                    import("Forms/QuestionItem").then((m) => {
                         new m.GlpiFormQuestionTypeItem({{ question_type|json_encode|raw }});
                     });
                 </script>

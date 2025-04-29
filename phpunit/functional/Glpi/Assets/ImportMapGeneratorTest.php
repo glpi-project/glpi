@@ -1,0 +1,203 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units\Glpi\Assets;
+
+use Glpi\Assets\ImportMapGenerator;
+use GLPITestCase;
+use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\MockObject\MockObject;
+
+/**
+ * Tests for the ImportMapGenerator class
+ */
+class ImportMapGeneratorTest extends GLPITestCase
+{
+    /**
+     * Root URL for the import map
+     */
+    private const ROOT_URL = '/glpi';
+
+    /**
+     * Setup a basic virtual filesystem for testing
+     *
+     * @return \org\bovigo\vfs\vfsStreamDirectory The configured virtual filesystem
+     */
+    private function setupBasicVirtualFilesystem(): \org\bovigo\vfs\vfsStreamDirectory
+    {
+        return vfsStream::setup('glpi', null, [
+            'js' => [
+                'modules' => [
+                    'Forms' => [
+                        'GlpiFormConditionEditorController.js' => '// Some JS content 1',
+                        'GlpiFormDestinationAutoConfigController.js' => '// Some JS content 2'
+                    ],
+                    'Utils' => [
+                        'HelperFunctions.js' => '// Some helper functions'
+                    ]
+                ]
+            ],
+            'plugins' => [
+                'myplugin' => [
+                    'js' => [
+                        'modules' => [
+                            'CustomModule.js' => '// Plugin JS content'
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * Create a mock of ImportMapGenerator with customized behavior
+     *
+     * @param string $virtual_fs_path Virtual filesystem path
+     * @return ImportMapGenerator|MockObject Mocked generator
+     */
+    private function createMockGenerator(string $virtual_fs_path): MockObject
+    {
+        /** @var ImportMapGenerator|MockObject $generator */
+        $generator = $this->getMockBuilder(ImportMapGenerator::class)
+            ->setConstructorArgs([self::ROOT_URL, $this->createCacheMock()])
+            ->onlyMethods(['getGlpiRoot', 'getPluginList'])
+            ->getMock();
+
+        // Configure mocks
+        $generator->method('getGlpiRoot')
+            ->willReturn($virtual_fs_path);
+
+        $generator->method('getPluginList')
+            ->willReturn(['myplugin']);
+
+        return $generator;
+    }
+
+    /**
+     * Create a mock cache for testing
+     *
+     * @return \Psr\SimpleCache\CacheInterface Mocked cache
+     */
+    private function createCacheMock(): \Psr\SimpleCache\CacheInterface
+    {
+        $cache = $this->createMock(\Psr\SimpleCache\CacheInterface::class);
+        $cache->method('get')
+            ->willReturn(null); // Simulate cache miss
+        $cache->method('set')
+            ->willReturn(true); // Do nothing but return success
+
+        /** @var \Psr\SimpleCache\CacheInterface $cache */
+        return $cache;
+    }
+
+    /**
+     * Test the generate method for core and plugin modules
+     */
+    public function testGenerate()
+    {
+        // Set up virtual file system
+        $root = $this->setupBasicVirtualFilesystem();
+
+        // Create generator with mocked dependencies
+        $generator = $this->createMockGenerator(vfsStream::url('glpi'));
+
+        // Generate the import map
+        $import_map = $generator->generate();
+
+        // Assertions for structure and entries
+        $this->assertArrayHasKey('imports', $import_map, 'Import map should have an imports key');
+
+        // Check for core modules
+        $this->assertArrayHasKey('Forms/GlpiFormConditionEditorController', $import_map['imports']);
+        $this->assertArrayHasKey('Forms/GlpiFormDestinationAutoConfigController', $import_map['imports']);
+        $this->assertArrayHasKey('Utils/HelperFunctions', $import_map['imports']);
+
+        // Check for plugin modules
+        $this->assertArrayHasKey('myplugin/CustomModule', $import_map['imports']);
+
+        // Verify all URLs have version parameters
+        foreach ($import_map['imports'] as $module_name => $url) {
+            $this->assertStringContainsString('?v=', $url, "URL for $module_name should include a version parameter");
+        }
+    }
+
+    /**
+     * Test that version parameters change when file content changes
+     */
+    public function testVersionParameterChangesWhenFileContentChanges()
+    {
+        // Set up basic virtual filesystem with a test module
+        $root = vfsStream::setup('glpi', null, [
+            'js' => [
+                'modules' => [
+                    'TestModule.js' => '// Initial content'
+                ]
+            ]
+        ]);
+
+        // Create generator and get reflection access to private method
+        $generator = $this->createMockGenerator(vfsStream::url('glpi'));
+        $reflection = new \ReflectionClass($generator);
+        $method = $reflection->getMethod('generateVersionParam');
+        $method->setAccessible(true);
+
+        // Test file path
+        $file_path = vfsStream::url('glpi/js/modules/TestModule.js');
+
+        // First version check
+        $initial_version = $method->invoke($generator, $file_path);
+        $this->assertNotEmpty($initial_version, 'Version parameter should not be empty');
+
+        // Modify file and check for version change
+        file_put_contents($file_path, '// Modified content');
+        $new_version = $method->invoke($generator, $file_path);
+
+        // Verify version changed
+        $this->assertNotEquals(
+            $initial_version,
+            $new_version,
+            'Version parameter should change when file content changes'
+        );
+
+        // Additional verification - changing back should match original hash
+        file_put_contents($file_path, '// Initial content');
+        $reverted_version = $method->invoke($generator, $file_path);
+        $this->assertEquals(
+            $initial_version,
+            $reverted_version,
+            'Version parameter should be the same when content is identical'
+        );
+    }
+}

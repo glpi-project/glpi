@@ -40,6 +40,8 @@ use Entity;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\UI\Theme;
 use Glpi\UI\ThemeManager;
+use Glpi\Assets\ImportMapGenerator;
+use Glpi\Cache\CacheManager;
 use Html;
 use Plugin;
 use Session;
@@ -71,6 +73,7 @@ class FrontEndAssetsExtension extends AbstractExtension
             new TwigFunction('custom_css', [$this, 'customCss'], ['is_safe' => ['html']]),
             new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
             new TwigFunction('current_theme', [$this, 'currentTheme']),
+            new TwigFunction('importmap', [$this, 'importmap'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -266,5 +269,28 @@ JAVASCRIPT;
         }
 
         return Html::scriptBlock($script);
+    }
+
+    /**
+     * Generate an import map for JavaScript modules
+     *
+     * @return string HTML script tag containing the import map
+     */
+    public function importmap(): string
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $generator = new ImportMapGenerator(
+            $CFG_GLPI['root_doc'],
+            (new CacheManager())->getCoreCacheInstance()
+        );
+
+        $import_map = $generator->generate();
+
+        return '<script type="importmap">' . json_encode(
+            $import_map,
+            JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+        ) . '</script>';
     }
 }

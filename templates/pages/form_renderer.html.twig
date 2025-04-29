@@ -283,10 +283,7 @@
     </form>
 
     <script>(async () => {
-        // Load renderer controller
-        const mod = await import(
-            "{{ js_path('js/modules/Forms/RendererController.js') }}"
-        );
+        const mod = await import("Forms/RendererController");
         new mod.GlpiFormRendererController(
             '#forms_form_answers',
             {{ form.getID() }}
