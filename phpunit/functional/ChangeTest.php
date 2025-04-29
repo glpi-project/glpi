@@ -430,4 +430,38 @@ class ChangeTest extends DbTestCase
         $this->assertTrue(array_key_exists('ITEM_Change_74', $change_with_so));
         $this->assertEquals($last_solution_date, $change_with_so['ITEM_Change_74']);
     }
+
+    public function testCentralChangeValidationList()
+    {
+        $this->login();
+        $users_id = getItemByTypeName('User', TU_USER, true);
+
+        // create change
+        $change = $this->createItem('Change', [
+            'name'         => 'test change',
+            'content'      => '<p>test content</p>',
+            'entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
+        ]);
+
+        // create change validation
+        $this->createItem('ChangeValidation', [
+            'changes_id'        => $change->getID(),
+            'items_id_target'   => $users_id,
+            'itemtype_target'   => \User::class,
+        ]);
+
+        ob_start();
+        \Change::showCentralList(0, 'tovalidate', false);
+        $output = ob_get_clean();
+        $this->assertStringContainsString("Your changes to validate <span class='primary-bg primary-fg count'>1</span>", $output);
+        $this->assertMatchesRegularExpression("/href='\/glpi\/front\/change.form.php\?id=" . $change->getID() . "[^']+'>/", $output);
+
+        // login as tech to check if the change validation is not shown
+        $this->login('tech', 'tech');
+
+        ob_start();
+        \Change::showCentralList(0, 'tovalidate', false);
+        $output = ob_get_clean();
+        $this->assertStringNotContainsString("Your changes to validate", $output);
+    }
 }

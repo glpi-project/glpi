@@ -243,6 +243,13 @@ class Central extends CommonGLPI
             ];
         }
 
+        if (Session::haveRightsOr('changevalidation', ChangeValidation::getValidateRights())) {
+            $lists[] = [
+                'itemtype'  => Change::class,
+                'status'    => 'tovalidate'
+            ];
+        }
+
         if ($showchanges) {
             $lists[] = [
                 'itemtype'  => Change::class,
