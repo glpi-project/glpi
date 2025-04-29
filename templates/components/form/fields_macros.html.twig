@@ -596,7 +596,7 @@
    {% endif %}
 
    {% set field %}
-      {% do call('Dropdown::dropdownIcons', [name, value, constant('GLPI_ROOT') ~ '/pics/icones', options]) %}
+      {% do call('Dropdown::dropdownIcons', [name, value, '', options]) %}
    {% endset %}
 
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
