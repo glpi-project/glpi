@@ -1897,7 +1897,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
     }
 
     /**
-     * Get linked items list for specified item
+     * Get linked items list for specified item.
+     *
+     * The returned data contains the fields of the linked items, plus a reference to the linktable ($this) : 'linkid'.
      *
      * @since 9.3.1
      *

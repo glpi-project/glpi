@@ -510,10 +510,10 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get data by type and ticket
+     * Get all LevelAgreements related to the ticket, filtered by LevelAgreement type (SLM::TTR | SLM::TTO)
      *
-     * @param $tickets_id
-     * @param $type
+     * @param int $tickets_id
+     * @param int $type
      * @return false|iterable
      * @used-by templates/components/itilobject/service_levels.html.twig
      */
@@ -659,7 +659,7 @@ TWIG, $twig_params);
     /**
      * Get computed resolution time
      *
-     * @return integer resolution time (default 0)
+     * @return integer resolution time in seconds (default 0)
      **/
     public function getTime()
     {
@@ -709,10 +709,10 @@ TWIG, $twig_params);
     /**
      * Get date for current agreement
      *
-     * @param string  $start_date        datetime start date
+     * @param string  $start_date        datetime start date ('Y-m-d H:i:s')
      * @param integer $additional_delay  integer  additional delay to add or substract (for waiting time)
      *
-     * @return string|null  due date time (NULL if sla/ola not exists)
+     * @return string|null  due datetime 'Y-m-d H:i:s' (NULL if sla/ola not exists)
      **/
     public function computeDate($start_date, $additional_delay = 0)
     {

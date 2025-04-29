@@ -2158,9 +2158,10 @@ final class DbUtils
                 if (!is_a($target_itemtype, CommonDBTM::class, true)) {
                     trigger_error(
                         sprintf(
-                            'Invalid relations declared for "%s" table. Target table "%s" does not correspond to a known itemtype.',
+                            'Invalid relations declared for "%s" table. Target table "%s" does not correspond to a known itemtype (%s)',
                             $source_table,
-                            $target_table
+                            $target_table,
+                            $target_itemtype
                         ),
                         E_USER_WARNING
                     );

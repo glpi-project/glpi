@@ -44,6 +44,12 @@ use Glpi\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Display a form for a given item type or handle form submission.
+ *
+ * - Use GET method to display a form.
+ * - Use POST method to submit a form.
+ */
 class GenericFormController extends AbstractController
 {
     private const SUPPORTED_ACTIONS = [
@@ -187,7 +193,10 @@ class GenericFormController extends AbstractController
         return $request->getMethod() === 'GET' ? 'get' : null;
     }
 
-    public function displayForm(CommonDBTM $object, Request $request): Response
+    /**
+     * Display a full form page
+     */
+    private function displayForm(CommonDBTM $object, Request $request): Response
     {
         $form_options = $object->getFormOptionsFromUrl($request->query->all());
         $form_options['formoptions'] = 'data-track-changes=true';
@@ -202,6 +211,9 @@ class GenericFormController extends AbstractController
         ]);
     }
 
+    /**
+     * Display a modal form
+     */
     private function displayModal(mixed $object, Request $request): Response
     {
         $form_options = [];
