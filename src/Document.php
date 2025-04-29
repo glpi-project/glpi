@@ -36,7 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
-use Glpi\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Document class
@@ -380,19 +380,26 @@ class Document extends CommonDBTM
     }
 
     /**
-     * Send a document to navigator
-     *
-     * @param bool   $return_response
-     * @return Response|void
-     * @phpstan-return $return_response ? Response : void
-     **/
-    public function send(bool $return_response = false)
+     * Get a Symfony response for the given document.
+     */
+    public function getAsResponse(): Response
     {
         $file = GLPI_DOC_DIR . "/" . $this->fields['filepath'];
-        $response = Toolbox::sendFile($file, $this->fields['filename'], $this->fields['mime'], false, $return_response);
-        if ($response !== null) {
-            return $response;
-        }
+        return Toolbox::getFileAsResponse($file, $this->fields['filename'], $this->fields['mime']);
+    }
+
+    /**
+     * Send a document to navigator
+     *
+     * @return void
+     *
+     * @deprecated 11.0.0
+     */
+    public function send()
+    {
+        Toolbox::deprecated();
+
+        $this->getAsResponse()->send();
     }
 
     /**

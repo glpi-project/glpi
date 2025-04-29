@@ -45,5 +45,5 @@ if (!MarketplaceController::isWebAllowed()) {
 }
 if (isset($_REQUEST['key'])) {
     $marketplace_ctrl = new MarketplaceController($_REQUEST['key']);
-    $marketplace_ctrl->proxifyPluginArchive();
+    return $marketplace_ctrl->proxifyPluginArchive();
 }

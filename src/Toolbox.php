@@ -40,7 +40,6 @@ use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\DefaultDataManager;
-use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Message\MessageType;
@@ -52,6 +51,7 @@ use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Toolbox Class
@@ -496,49 +496,44 @@ class Toolbox
 
 
     /**
-     * Send a file (not a document) to the navigator
-     * See Document->send();
+     * Get a Symfony response for the given file.
      *
-     * @param string      $file        storage filename
-     * @param string      $filename    file title
-     * @param string|null $mime        file mime type
-     * @param boolean     $expires_headers add expires headers maximize cacheability ?
-     * @param boolean     $return_response return a Response object instead of sending it directly
+     * @param string      $path             filesystem path
+     * @param string      $filename         file name to send in the response
+     * @param string|null $mime             mime type
+     * @param boolean     $expires_headers  whether to add expires headers to maximize cacheability
      *
-     * @return Response|void
-     * @phpstan-return $return_response ? Response : void
-     **/
-    public static function sendFile($file, $filename, $mime = null, $expires_headers = false, bool $return_response = false)
-    {
-
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     */
+    public static function getFileAsResponse(
+        string $path,
+        string $filename,
+        ?string $mime = null,
+        bool $expires_headers = false
+    ): Response {
         // Test securite : document in DOC_DIR
-        $tmpfile = str_replace(GLPI_DOC_DIR, "", $file);
+        $tmpfile = str_replace(GLPI_DOC_DIR, "", $path);
 
         if (str_contains($tmpfile, "../") || str_contains($tmpfile, "..\\")) {
             Event::log(
-                $file,
+                $path,
                 "sendFile",
                 1,
                 "security",
                 $_SESSION["glpiname"] . " try to get a non standard file."
             );
-            if ($return_response) {
-                return new Response(403);
-            }
+
             throw new AccessDeniedHttpException();
         }
 
-        if (!file_exists($file)) {
-            if ($return_response) {
-                return new Response(404);
-            }
+        if (!file_exists($path)) {
             throw new NotFoundHttpException();
         }
 
         // if $mime is defined, ignore mime type by extension
-        if ($mime === null && preg_match('/\.(...)$/', $file)) {
+        if ($mime === null && preg_match('/\.(...)$/', $path)) {
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime = finfo_file($finfo, $file);
+            $mime = finfo_file($finfo, $path);
             finfo_close($finfo);
         }
 
@@ -556,8 +551,8 @@ class Toolbox
         }
         $attachment = $can_be_inlined === false ? ' attachment;' : '';
 
-        $etag = md5_file($file);
-        $lastModified = filemtime($file);
+        $etag = md5_file($path);
+        $lastModified = filemtime($path);
 
         $headers = [
             'Last-Modified' => gmdate("D, d M Y H:i:s", $lastModified) . " GMT",
@@ -585,25 +580,42 @@ class Toolbox
             $matches_cache = true;
         }
         if ($matches_cache) {
-            $response = new Response(304, $headers);
-            if ($return_response) {
-                return $response;
-            }
-            $response->send();
-            return;
+            return new Response(
+                status: 304,
+                headers: $headers
+            );
         }
-        $content = file_get_contents($file);
+        $content = file_get_contents($path);
         if ($content === false) {
-            if ($return_response) {
-                return new Response(500);
-            }
-            throw new \RuntimeException();
+            throw new \Symfony\Component\HttpKernel\Exception\HttpException(500);
         }
-        $response = new Response(200, $headers, $content);
-        if ($return_response) {
-            return $response;
-        }
-        $response->send();
+
+        return new Response(
+            content: $content,
+            status: 200,
+            headers: $headers
+        );
+    }
+
+
+    /**
+     * Send a file (not a document) to the navigator
+     * See Document->send();
+     *
+     * @param string      $file        storage filename
+     * @param string      $filename    file title
+     * @param string|null $mime        file mime type
+     * @param boolean     $expires_headers add expires headers maximize cacheability ?
+     *
+     * @return void
+     *
+     * @deprecated 11.0.0
+     */
+    public static function sendFile($file, $filename, $mime = null, $expires_headers = false)
+    {
+        Toolbox::deprecated();
+
+        static::getFileAsResponse($file, $filename, $mime, $expires_headers)->send();
     }
 
 

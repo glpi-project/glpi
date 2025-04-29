@@ -69,7 +69,7 @@ if (isset($_GET['docid'])) {
             $exception->setMessageToDisplay(__('File is altered (bad checksum)'));
             throw $exception;
         } else {
-            $doc->send();
+            return $doc->getAsResponse();
         }
     } else {
         $exception = new AccessDeniedHttpException();
@@ -110,7 +110,7 @@ if (isset($_GET['docid'])) {
         }
 
         if ($send && file_exists($send)) {
-            Toolbox::sendFile($send, $splitter[1], $mime, $expires_headers);
+            return Toolbox::getFileAsResponse($send, $splitter[1], $mime, $expires_headers);
         } else {
             $exception = new AccessDeniedHttpException();
             $exception->setMessageToDisplay(__('Unauthorized access to this file'));

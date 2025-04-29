@@ -3103,7 +3103,8 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
         if (!empty($user->fields['picture'])) {
             // Send file
             $file = GLPI_PICTURE_DIR . '/' . $user->fields['picture'];
-            Toolbox::sendFile($file, $user->fields['picture']);
+
+            Toolbox::getFileAsResponse($file, $user->fields['picture'])->send();
         } else {
             // No content
             http_response_code(204);
