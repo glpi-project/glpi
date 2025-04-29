@@ -321,6 +321,14 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
     }
 
     /**
+     * Register a capacity.
+     */
+    public function registerCapacity(CapacityInterface $capacity): void
+    {
+        $this->capacities[$capacity::class] = $capacity;
+    }
+
+    /**
      * Returns available capacities instances.
      *
      * @return CapacityInterface[]

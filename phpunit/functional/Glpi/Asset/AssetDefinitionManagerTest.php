@@ -36,6 +36,10 @@ namespace tests\units\Glpi\Asset;
 
 use Change_Item;
 use DbTestCase;
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\AbstractCapacity;
+use Glpi\Asset\CapacityConfig;
 use Item_Problem;
 use Item_Ticket;
 use Profile;
@@ -213,5 +217,46 @@ class AssetDefinitionManagerTest extends DbTestCase
 
             $this->assertEquals($expected_tabs, $tabs);
         }
+    }
+
+    public function testRegisteredCapacity(): void
+    {
+        $definition = $this->initAssetDefinition();
+        $asset_classname = $definition->getAssetClassName();
+
+        $capacity_implementation = $this->createMock(AbstractCapacity::class);
+        $capacity_config = new CapacityConfig(['foo' => 'bar']);
+
+        // Register the capacity.
+        $manager = AssetDefinitionManager::getInstance();
+        $manager->registerCapacity($capacity_implementation);
+
+        $this->assertContains($capacity_implementation, $manager->getAvailableCapacities());
+        $this->assertEquals($capacity_implementation, $manager->getCapacity($capacity_implementation::class));
+
+        // `onCapacityEnabled` method is executed when the capacity is enabled.
+        $capacity_implementation->expects($this->once())
+            ->method('onCapacityEnabled')
+            ->with($asset_classname, $this->equalTo($capacity_config));
+        $this->enableCapacity($definition, $capacity_implementation::class, $capacity_config);
+
+        // `onObjectInstanciation` method is executed when an asset constructor is used.
+        $capacity_implementation->expects($this->once())
+            ->method('onObjectInstanciation')
+            ->with($this->isInstanceOf($asset_classname), $this->equalTo($capacity_config));
+        new $asset_classname();
+
+        // `onCapacityUpdated` method is executed when the capacity config is updated.
+        $new_config = new CapacityConfig(['bar' => 'baz']);
+        $capacity_implementation->expects($this->once())
+            ->method('onCapacityUpdated')
+            ->with($asset_classname, $this->equalTo($capacity_config), $this->equalTo($new_config));
+        $this->enableCapacity($definition, $capacity_implementation::class, $new_config);
+
+        // `onCapacityDisabled` method is executed when the capacity is disabled.
+        $capacity_implementation->expects($this->once())
+            ->method('onCapacityDisabled')
+            ->with($asset_classname, $this->equalTo($new_config));
+        $this->disableCapacity($definition, $capacity_implementation::class);
     }
 }
