@@ -635,7 +635,6 @@ var GLPIPlanning  = {
 
                 return {
                     'action': 'get_events',
-                    'display_done_events': display_done_events,
                     'view_name': view_name
                 };
             },
