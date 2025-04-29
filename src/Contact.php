@@ -44,6 +44,7 @@ use Sabre\VObject;
 class Contact extends CommonDBTM
 {
     use AssetImage;
+    use Glpi\Features\Clonable;
 
    // From CommonDBTM
     public $dohistory           = true;
@@ -90,6 +91,11 @@ class Contact extends CommonDBTM
                 ProjectTeam::class,
             ]
         );
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 
 
