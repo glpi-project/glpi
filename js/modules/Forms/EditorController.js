@@ -65,6 +65,12 @@ export class GlpiFormEditorController
     #templates;
 
     /**
+     * Destination conditions
+     * @type {array}
+     */
+    #destination_conditions;
+
+    /**
      * Options for each question type
      * @type {Object}
      */
@@ -94,14 +100,16 @@ export class GlpiFormEditorController
      * @param {boolean} is_draft
      * @param {string} defaultQuestionType
      * @param {string} templates
+     * @param {object} destination_conditions
      */
-    constructor(target, is_draft, defaultQuestionType, templates) {
-        this.#target              = target;
-        this.#is_draft            = is_draft;
-        this.#defaultQuestionType = defaultQuestionType;
-        this.#templates           = templates;
-        this.#options             = {};
-        this.#question_subtypes_options    = {};
+    constructor(target, is_draft, defaultQuestionType, templates, destination_conditions) {
+        this.#target                         = target;
+        this.#is_draft                       = is_draft;
+        this.#defaultQuestionType            = defaultQuestionType;
+        this.#templates                      = templates;
+        this.#destination_conditions         = destination_conditions;
+        this.#options                        = {};
+        this.#question_subtypes_options      = {};
         this.#conditions_editors_controllers = [];
 
         // Validate target
@@ -1005,6 +1013,10 @@ export class GlpiFormEditorController
      * @param {jQuery} question
      */
     #deleteQuestion(question) {
+        if (!this.#checkItemConditionDependencies('question', question)) {
+            return;
+        }
+
         // Dispose all tooltips and popovers
         question.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 
@@ -1035,6 +1047,188 @@ export class GlpiFormEditorController
             && question_container.find("[data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-block-placeholder]").length === 0
         ) {
             this.#deleteHorizontalLayout(question_container);
+        }
+    }
+
+    /**
+     * Check if an item is used in conditions and show modal if needed
+     *
+     * @param {string} type Type of item ('question', 'comment', 'section')
+     * @param {jQuery} item The element to check
+     * @returns {boolean} True if the item can be deleted, false otherwise
+     */
+    #checkItemConditionDependencies(type, item) {
+        const uuid = this.#getItemInput(item, "uuid");
+        if (!uuid) {
+            return true; // New item without UUID can always be deleted
+        }
+
+        const itemIdentifier = `${type}-${uuid}`;
+
+        // Find elements using this item in their conditions
+        const conditionsUsingItem = $('[data-glpi-conditions-editor-item]')
+            .filter((_index, element) => element.value === itemIdentifier);
+
+        // Find destinations using this item in their conditions
+        const destinationsUsingItem = Object.values(this.#destination_conditions)
+            .filter(destination =>
+                destination.conditions &&
+                Object.values(destination.conditions).some(condition =>
+                    condition.item === itemIdentifier
+                )
+            );
+
+        // If the item is used in conditions, show modal and prevent deletion
+        if (conditionsUsingItem.length > 0 || destinationsUsingItem.length > 0) {
+            this.#showItemHasConditionsModal(type, conditionsUsingItem, destinationsUsingItem);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Show the modal displaying all items that use the target item in their conditions
+     *
+     * @param {string} type Type of item ('question', 'comment', 'section')
+     * @param {jQuery} conditionsUsingItem jQuery object containing condition elements
+     * @param {array} destinationsUsingItem Array of destination objects
+     */
+    #showItemHasConditionsModal(type, conditionsUsingItem, destinationsUsingItem) {
+        // Show only the relevant header for this item type
+        $('[data-glpi-form-editor-item-has-conditions-modal-header]')
+            .addClass('d-none')
+            .filter(`[data-glpi-form-editor-item-has-conditions-modal-header=${type}]`)
+            .removeClass('d-none');
+
+        // Collect all elements using this item in their conditions
+        const elementsWithConditions = [];
+
+        // Process form elements (questions and sections)
+        conditionsUsingItem.each((_index, element) => {
+            // Check if condition is in a question
+            const parentItem = $(element).closest('[data-glpi-form-editor-block]');
+            if (parentItem.length > 0) {
+                elementsWithConditions.push({
+                    name: this.#getItemInput(parentItem, "name"),
+                    uuid: this.#getItemInput(parentItem, "uuid"),
+                    type: 'question',
+                    element: parentItem
+                });
+            }
+
+            // Check if condition is in a section
+            const parentSection = $(element).closest('[data-glpi-form-editor-section-details]');
+            if (parentSection.length > 0) {
+                elementsWithConditions.push({
+                    name: this.#getItemInput(parentSection, "name"),
+                    uuid: this.#getItemInput(parentSection, "uuid"),
+                    type: 'section',
+                    element: parentSection
+                });
+            }
+        });
+
+        // Add destinations to the list
+        destinationsUsingItem.forEach(destination => {
+            elementsWithConditions.push({
+                name: destination.name,
+                type: 'destination'
+            });
+        });
+
+        // Render the list of elements in the modal
+        const modalList = $('[data-glpi-form-editor-item-has-conditions-list]');
+        modalList.empty();
+
+        const template = $('[data-glpi-form-editor-item-has-conditions-item-template]').html();
+
+        // Add each element to the list
+        elementsWithConditions.forEach(data => {
+            const item = $(template);
+            const nameElement = item.find('[data-glpi-form-editor-item-has-conditions-item-name]');
+
+            nameElement.text(data.name);
+
+            if (data.uuid) {
+                nameElement.attr('data-glpi-form-editor-item-has-conditions-item-uuid', data.uuid);
+            }
+
+            nameElement.attr('data-glpi-form-editor-item-has-conditions-item-type', data.type);
+
+            // For destinations, link to the destinations tab
+            if (data.type === 'destination') {
+                const tab = $('[data-bs-target^="#tab-Glpi_Form_Destination_FormDestination_"]');
+                nameElement.attr('href', tab.attr('href'));
+            }
+
+            modalList.append(item);
+        });
+
+        // Set up click handlers for the items
+        modalList.find('[data-glpi-form-editor-item-has-conditions-item-selector][href="#"]').on('click', e => {
+            e.preventDefault();
+
+            // Hide modal
+            $('[data-glpi-form-editor-item-has-conditions-modal]').modal('hide');
+
+            // Get the UUID and type
+            const clickedElement = $(e.currentTarget);
+            const uuid = clickedElement.data('glpi-form-editor-item-has-conditions-item-uuid');
+            const type = clickedElement.data('glpi-form-editor-item-has-conditions-item-type');
+
+            // Find and scroll to the element with matching UUID
+            this.#findAndHighlightElement(type, uuid);
+        });
+
+        // Show the modal
+        $('[data-glpi-form-editor-item-has-conditions-modal]').modal('show');
+    }
+
+    /**
+     * Find an element by type and UUID, make it visible and highlight it
+     *
+     * @param {string} type The type of element ('question' or 'section')
+     * @param {string} uuid The UUID of the element
+     */
+    #findAndHighlightElement(type, uuid) {
+        if (!uuid || !type) {
+            return;
+        }
+
+        let targetElement;
+
+        if (type === 'question') {
+            // Find question with matching UUID
+            targetElement = $(this.#target)
+                .find('[data-glpi-form-editor-question]')
+                .filter((_index, item) => this.#getItemInput($(item), "uuid") === uuid)
+                .first();
+        } else if (type === 'section') {
+            // Find section with matching UUID
+            targetElement = $(this.#target)
+                .find('[data-glpi-form-editor-section-details]')
+                .filter((_index, section) => this.#getItemInput($(section), "uuid") === uuid)
+                .first();
+        }
+
+        // Make sure we found the element before proceeding
+        if (targetElement && targetElement.length > 0) {
+            // Make sure parent section is not collapsed
+            const parentSection = targetElement.closest('[data-glpi-form-editor-section]');
+            if (parentSection.hasClass('section-collapsed')) {
+                this.#collaspeSection(parentSection);
+            }
+
+            // Set as active
+            this.#setActiveItem(targetElement);
+
+            // Scroll to the element
+            targetElement.get(0).scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'nearest'
+            });
         }
     }
 
@@ -1643,6 +1837,10 @@ export class GlpiFormEditorController
      * @param {jQuery} section
      */
     #deleteSection(section) {
+        if (!this.#checkItemConditionDependencies('section', section)) {
+            return;
+        }
+
         if (section.prev().length == 0) {
             // If this is the first section of the form, set the next section as active if it exists
             if (section.next().length > 0 && this.#getSectionCount() > 2) {
@@ -1705,6 +1903,10 @@ export class GlpiFormEditorController
      * @param {jQuery} comment
      */
     #deleteComment(comment) {
+        if (!this.#checkItemConditionDependencies('comment', comment)) {
+            return;
+        }
+
         // Dispose all tooltips and popovers
         comment.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 
