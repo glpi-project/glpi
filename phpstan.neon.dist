@@ -73,7 +73,7 @@ parameters:
             message: '/LDAP\\Connection/'
             reportUnmatched: false
         -
-            message: '/\/config\/config_db.php" is not a file or it does not exist./'
+            message: '~/(downstream\.php|config_db\.php|config_db_slave\.php)" is not a file or it does not exist.~'
             reportUnmatched: false
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
