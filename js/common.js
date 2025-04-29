@@ -1959,7 +1959,9 @@ function setupAdaptDropdown(config)
     if (config.placeholder !== undefined && config.placeholder !== '') {
         options.placeholder = config.placeholder;
     }
-    const select2_el = $('#' + field_id).select2(options).bind('setValue', (e, value) => {
+    const select2_el = $('#' + field_id).select2(options);
+
+    select2_el.bind('setValue', (e, value) => {
         $('#' + field_id).val(value).trigger('change');
     });
     $('label[for=' + field_id + ']').on('click', function () {
