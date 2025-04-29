@@ -257,7 +257,7 @@ export class GlpiFormEditorController
         document.addEventListener('updated_strategy', (e) => {
             this.#updateVisibilityBadge(
                 $(e.detail.container).closest(
-                    '[data-glpi-form-editor-block],[data-glpi-form-editor-section-details]'
+                    '[data-glpi-form-editor-block],[data-glpi-form-editor-section-details],[data-glpi-form-editor-container]'
                 ),
                 e.detail.strategy
             );

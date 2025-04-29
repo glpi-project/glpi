@@ -208,13 +208,9 @@
         </div>
 
         {# Visibility dropdown #}
-        <div class="me-2 my-auto">
-            {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
-                'item'      : item,
-                'type'      : "Glpi\\Form\\Form",
-                'force_show': true
-            }, with_context = false) }}
-        </div>
+        {{ include('pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig', {
+            'item'      : item,
+        }, with_context = false) }}
 
         {# Move to trashbin form action #}
         {% if item.canDelete() %}

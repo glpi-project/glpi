@@ -3,6 +3,7 @@
     "forms": [
         {
             "id": 1,
+            "uuid": "form-1",
             "name": "My valid form",
             "illustration": "report-issue",
             "entity_name": "E2ETestEntity",
@@ -53,6 +54,7 @@
         },
         {
             "id": 2,
+            "uuid": "form-2",
             "name": "My invalid form",
             "illustration": "report-issue",
             "entity_name": "Missing entity",
