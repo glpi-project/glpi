@@ -44,6 +44,7 @@ use GLPINetwork;
 use NotificationEvent;
 use Plugin;
 use Session;
+use Symfony\Component\HttpFoundation\Response;
 use Toolbox;
 use wapmorgan\UnifiedArchive\Formats;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
@@ -269,10 +270,8 @@ class Controller extends CommonGLPI
 
     /**
      * Get plugin archive from its download URL and serve it to the browser.
-     *
-     * @return void
      */
-    public function proxifyPluginArchive(): void
+    public function proxifyPluginArchive(): Response
     {
         // close session to prevent blocking other requests
         session_write_close();
@@ -281,7 +280,9 @@ class Controller extends CommonGLPI
         $plugin = $api->getPlugin($this->plugin_key, true);
 
         if (!array_key_exists('installation_url', $plugin) || empty($plugin['installation_url'])) {
-            return;
+            $exception = new HttpException(500);
+            $exception->setMessageToDisplay(__('Unable to download plugin archive.'));
+            throw $exception;
         }
 
         $url      = $plugin['installation_url'];
@@ -294,7 +295,7 @@ class Controller extends CommonGLPI
             throw $exception;
         }
 
-        Toolbox::sendFile($dest, $filename);
+        return Toolbox::getFileAsResponse($dest, $filename);
     }
 
     /**

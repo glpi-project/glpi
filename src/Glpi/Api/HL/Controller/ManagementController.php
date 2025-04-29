@@ -546,7 +546,8 @@ final class ManagementController extends AbstractController
         $document = new Document();
         if ($document->getFromDB($request->getAttribute('id'))) {
             if ($document->canViewFile()) {
-                return $document->send(true);
+                $symfony_response = $document->getAsResponse();
+                return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $symfony_response->getContent());
             }
             return self::getAccessDeniedErrorResponse();
         }

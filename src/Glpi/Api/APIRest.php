@@ -292,7 +292,7 @@ class APIRest extends API
                         if (!$document->can($id, READ)) {
                             $this->messageRightError();
                         }
-                        $document->send();
+                        $document->getAsResponse()->send();
                         exit();
                     }
 

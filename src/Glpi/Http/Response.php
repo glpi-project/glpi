@@ -91,6 +91,9 @@ class Response extends \GuzzleHttp\Psr7\Response
         exit(1); // @phpstan-ignore glpi.forbidExit (Deprecated scope)
     }
 
+    /**
+     * @deprecated 11.0.0
+     */
     public function sendHeaders(): Response
     {
         if (headers_sent()) {
@@ -100,16 +103,22 @@ class Response extends \GuzzleHttp\Psr7\Response
         foreach ($headers as $name => $values) {
             header(sprintf('%s: %s', $name, implode(', ', $values)), true);
         }
-        http_response_code($this->getStatusCode());
+        http_response_code($this->getStatusCode()); // @phpstan-ignore glpi.forbidHttpResponseCode (Deprecated scope)
         return $this;
     }
 
+    /**
+     * @deprecated 11.0.0
+     */
     public function sendContent(): Response
     {
         echo $this->getBody();
         return $this;
     }
 
+    /**
+     * @deprecated 11.0.0
+     */
     public function send(): Response
     {
         return $this->sendHeaders()

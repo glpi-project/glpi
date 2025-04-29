@@ -563,7 +563,9 @@ final class AdministrationController extends AbstractController
         } else {
             $picture_path = 'public/pics/picture.png';
         }
-        return \Toolbox::sendFile($picture_path, $username, null, false, true);
+        $symfony_response = \Toolbox::getFileAsResponse($picture_path, $username);
+
+        return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $symfony_response->getContent());
     }
 
     #[Route(path: '/User/Me/Picture', methods: ['GET'])]

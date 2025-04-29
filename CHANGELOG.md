@@ -264,10 +264,14 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
 - `DBmysql::updateOrDie()`. Use `DBmysql::update()` instead.
+- `Document::send()`
 - `Glpi\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
 - `Glpi\Application\View\Extension\PluginExtension::getPluginWebDir()`
 - `Glpi\Dashboard\Filter::getAll()`
+- `Glpi\Http\Response::send()`
+- `Glpi\Http\Response::sendContent()`
 - `Glpi\Http\Response::sendError()`. Throw a `Glpi\Exception\Http\*HttpException` exception instead.
+- `Glpi\Http\Response::sendHeaders()`
 - `Glpi\Toolbox\Sanitizer::dbEscape()`
 - `Glpi\Toolbox\Sanitizer::dbEscapeRecursive()`
 - `Glpi\Toolbox\Sanitizer::dbUnescape()`
@@ -317,6 +321,7 @@ The present file will list all changes made to the project; according to the
 - `Timer` class
 - `Toolbox::addslashes_deep()`
 - `Toolbox::seems_utf8()`
+- `Toolbox::sendFile()`
 - `Toolbox::stripslashes_deep()`
 
 #### Removed
