@@ -967,8 +967,11 @@ class Dropdown
      *    void if param display=true
      *    string if param display=false (HTML code)
      **/
-    public static function dropdownIcons($myname, $value, $store_path, $display = true, $options = [])
+    public static function dropdownIcons($myname, $value, $store_path = '', $display = true, $options = [])
     {
+        if (!empty($store_path)) {
+            Toolbox::deprecated('The store_path parameter is no longer used.');
+        }
         $icon_path = GLPI_ROOT . '/public/pics/icones';
         if ($dh = @opendir($icon_path)) {
             $files = [];
