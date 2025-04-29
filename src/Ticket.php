@@ -3990,6 +3990,7 @@ JAVASCRIPT;
             '_users_id_observer_notif'  => [
                 'use_notification' => $default_use_notif,
             ],
+            '_groups_id_observer'        => 0,
             'name'                      => '',
             'content'                   => '',
             'itilcategories_id'         => 0,
