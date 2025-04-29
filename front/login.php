@@ -82,7 +82,7 @@ $remember = isset($_SESSION['rmbfield']) && isset($_POST[$_SESSION['rmbfield']])
 $REDIRECT = "";
 if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
     $REDIRECT = "?redirect=" . rawurlencode($_POST['redirect']);
-} else if (isset($_GET['redirect']) && strlen($_GET['redirect']) > 0) {
+} elseif (isset($_GET['redirect']) && strlen($_GET['redirect']) > 0) {
     $REDIRECT = "?redirect=" . rawurlencode($_GET['redirect']);
 }
 
@@ -90,7 +90,7 @@ $auth = new Auth();
 
 
 // now we can continue with the process...
-if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth)) {
+if ($auth->login($login, $password, ($_REQUEST["noAUTO"] ?? false), $remember, $login_auth)) {
     Auth::redirectIfAuthenticated();
 } else {
     http_response_code(401);

@@ -47,7 +47,7 @@ $users_iterator = $DB->request(
         'WHERE'  => [
             // `user_dn` will contains a `&` char if any of its char was sanitized
             'user_dn' => ['LIKE', '%&%'],
-        ]
+        ],
     ]
 );
 foreach ($users_iterator as $user_data) {

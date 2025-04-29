@@ -86,23 +86,23 @@ $RELATION = [
     ],
 
     'glpi_applianceenvironments' => [
-        'glpi_appliances' => 'applianceenvironments_id'
+        'glpi_appliances' => 'applianceenvironments_id',
     ],
 
     'glpi_appliances'     => [
-        '_glpi_appliances_items' => 'appliances_id'
+        '_glpi_appliances_items' => 'appliances_id',
     ],
 
     'glpi_appliances_items' => [
-        '_glpi_appliances_items_relations' => 'appliances_items_id'
+        '_glpi_appliances_items_relations' => 'appliances_items_id',
     ],
 
     'glpi_appliancetypes' => [
-        'glpi_appliances' => 'appliancetypes_id'
+        'glpi_appliances' => 'appliancetypes_id',
     ],
 
     'glpi_databaseinstancetypes' => [
-        'glpi_databaseinstances' => 'databaseinstancetypes_id'
+        'glpi_databaseinstances' => 'databaseinstancetypes_id',
     ],
 
     'glpi_authldaps' => [
@@ -478,11 +478,11 @@ $RELATION = [
     ],
 
     'glpi_domaintypes' => [
-        'glpi_domains'  => 'domaintypes_id'
+        'glpi_domains'  => 'domaintypes_id',
     ],
 
     'glpi_domainrecordtypes'    => [
-        'glpi_domainrecords'  => 'domainrecordtypes_id'
+        'glpi_domainrecords'  => 'domainrecordtypes_id',
     ],
 
     'glpi_enclosuremodels' => [
@@ -1286,7 +1286,7 @@ $RELATION = [
         'glpi_cables' => [
             'sockets_id_endpoint_a',
             'sockets_id_endpoint_b',
-        ]
+        ],
     ],
 
     'glpi_softwarecategories' => [

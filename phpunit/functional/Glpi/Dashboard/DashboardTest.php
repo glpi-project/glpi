@@ -63,7 +63,7 @@ class DashboardTest extends DbTestCase
 
     public function testGetFromDB()
     {
-       // we need to test we get the dashboard by it's key and not it's id
+        // we need to test we get the dashboard by it's key and not it's id
         $this->assertFalse($this->dashboard->getFromDB(1));
         $this->assertTrue($this->dashboard->getFromDB('test_dashboard'));
         $this->assertEquals('test_dashboard', $this->getPrivateProperty('key'));
@@ -94,7 +94,7 @@ class DashboardTest extends DbTestCase
                         'height'       => 2,
                         'card_options' => [
                             'color' => '#FFFFFF',
-                        ]
+                        ],
                     ], [
                         'gridstack_id' => 'bn_count_Computer_5',
                         'card_id'      => 'bn_count_Computer',
@@ -104,13 +104,13 @@ class DashboardTest extends DbTestCase
                         'height'       => 2,
                         'card_options' => [
                             'color' => '#FFFFFF',
-                        ]
+                        ],
                     ],
                 ],
                 [
                     [
                         'entities_id' => 0,
-                    ]
+                    ],
                 ]
             )
         );
@@ -184,7 +184,7 @@ class DashboardTest extends DbTestCase
 
     public function testGetAll()
     {
-       // get "core" dashboards
+        // get "core" dashboards
         $dasboards = $this->dashboard::getAll(true, false);
         $this->assertCount(5, $dasboards);
         $this->assertArrayHasKey('test_dashboard', $dasboards);
@@ -214,21 +214,21 @@ class DashboardTest extends DbTestCase
         $dashboards_id = $this->dashboard->fields['id'];
 
         $this->assertTrue($this->dashboard->delete([
-            'key' => 'test_dashboard'
+            'key' => 'test_dashboard',
         ]));
 
         $items = iterator_to_array($DB->request([
             'FROM' => \Glpi\Dashboard\Item::getTable(),
             'WHERE' => [
-                'dashboards_dashboards_id' => $dashboards_id
-            ]
+                'dashboards_dashboards_id' => $dashboards_id,
+            ],
         ]));
         $this->assertEmpty($items);
         $rights     = iterator_to_array($DB->request([
             'FROM' => \Glpi\Dashboard\Right::getTable(),
             'WHERE' => [
-                'dashboards_dashboards_id' => $dashboards_id
-            ]
+                'dashboards_dashboards_id' => $dashboards_id,
+            ],
         ]));
         $this->assertEmpty($rights);
     }
@@ -260,7 +260,7 @@ class DashboardTest extends DbTestCase
                         'y'            => 0,
                         'width'        => 2,
                         'height'       => 2,
-                        'card_options' => []
+                        'card_options' => [],
                     ], [
                         'gridstack_id' => 'bn_count_Computer_5',
                         'card_id'      => 'bn_count_Computer',
@@ -268,15 +268,15 @@ class DashboardTest extends DbTestCase
                         'y'            => 0,
                         'width'        => 2,
                         'height'       => 2,
-                        'card_options' => []
+                        'card_options' => [],
                     ],
                 ],
                 'rights'  => [
                     [
-                        'entities_id' => 0
-                    ]
+                        'entities_id' => 0,
+                    ],
                 ],
-            ]
+            ],
         ];
 
         $this->assertTrue(\Glpi\Dashboard\Dashboard::importFromJson($import));
@@ -302,7 +302,7 @@ class DashboardTest extends DbTestCase
             ], [
                 'itemtype'                 => 'User',
                 'items_id'                 => 2,
-            ]
+            ],
         ];
 
         $this->assertEquals(

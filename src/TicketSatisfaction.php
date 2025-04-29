@@ -81,7 +81,7 @@ class TicketSatisfaction extends CommonDBTM
             return false;
         }
 
-       // you can't change if your answer > 12h
+        // you can't change if your answer > 12h
         if (
             !is_null($this->fields['date_answered'])
             && ((time() - strtotime($this->fields['date_answered'])) > (12 * HOUR_TIMESTAMP))
@@ -113,7 +113,7 @@ class TicketSatisfaction extends CommonDBTM
         $options             = [];
         $options['colspan']  = 1;
 
-       // for external inquest => link
+        // for external inquest => link
         if ($this->fields["type"] == 2) {
             $url = Entity::generateLinkSatisfaction($ticket);
             echo "<div class='center spaced'>" .
@@ -121,7 +121,7 @@ class TicketSatisfaction extends CommonDBTM
         } else { // for internal inquest => form
             $this->showFormHeader($options);
 
-           // Set default satisfaction to 3 if not set
+            // Set default satisfaction to 3 if not set
             if (is_null($this->fields["satisfaction"])) {
                 $this->fields["satisfaction"] = 3;
             }
@@ -205,7 +205,7 @@ class TicketSatisfaction extends CommonDBTM
             // Send notification only if fields related to reply are updated.
             $answer_updates = array_filter(
                 $this->updates,
-                fn ($field) => in_array($field, ['satisfaction', 'comment'])
+                fn($field) => in_array($field, ['satisfaction', 'comment'])
             );
 
             $ticket = new Ticket();
@@ -266,7 +266,7 @@ class TicketSatisfaction extends CommonDBTM
                 return __('External survey');
 
             default:
-               // Get value if not defined
+                // Get value if not defined
                 return $value;
         }
     }
@@ -313,7 +313,7 @@ class TicketSatisfaction extends CommonDBTM
             case 'type':
                 $options['value'] = $values[$field];
                 $typeinquest = [1 => __('Internal survey'),
-                    2 => __('External survey')
+                    2 => __('External survey'),
                 ];
                 return Dropdown::showFromArray($name, $typeinquest, $options);
         }

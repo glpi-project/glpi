@@ -81,7 +81,7 @@ abstract class InventoryAsset
     protected array $known_links = [];
     /** @var array */
     protected array $raw_links = [];
-        /** @var array */
+    /** @var array */
     protected array $input_notmanaged = [];
 
     /**
@@ -255,7 +255,7 @@ abstract class InventoryAsset
                     $entities_id = $this->entities_id;
                     if ($key == "locations_id") {
                         $this->known_links[$known_key] = Dropdown::importExternal('Location', $value->$key, $entities_id);
-                    } else if (preg_match('/^.+models_id/', $key)) {
+                    } elseif (preg_match('/^.+models_id/', $key)) {
                         // models that need manufacturer relation for dictionary import
                         // see CommonDCModelDropdown::$additional_fields_for_dictionnary
                         $this->known_links[$known_key] = Dropdown::importExternal(
@@ -264,9 +264,9 @@ abstract class InventoryAsset
                             $entities_id,
                             ['manufacturer' => $manufacturer_name]
                         );
-                    } else if (isset($foreignkey_itemtype[$key])) {
+                    } elseif (isset($foreignkey_itemtype[$key])) {
                         $this->known_links[$known_key] = Dropdown::importExternal($foreignkey_itemtype[$key], $value->$key, $entities_id);
-                    } else if ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
+                    } elseif ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
                         $foreignkey_itemtype[$key] = $itemtype;
 
                         $this->known_links[$known_key] = Dropdown::importExternal(
@@ -278,7 +278,7 @@ abstract class InventoryAsset
                         if (
                             $key == 'operatingsystemkernelversions_id'
                             && property_exists($value, 'operatingsystemkernels_id')
-                            && (int)$this->known_links[$known_key] > 0
+                            && (int) $this->known_links[$known_key] > 0
                         ) {
                             $kversion = new OperatingSystemKernelVersion();
                             $kversion->getFromDB($this->known_links[$known_key]);
@@ -286,7 +286,7 @@ abstract class InventoryAsset
                             if ($kversion->fields['operatingsystemkernels_id'] != $oskernels_id) {
                                 $kversion->update([
                                     'id'                          => $kversion->getID(),
-                                    'operatingsystemkernels_id'   => $oskernels_id
+                                    'operatingsystemkernels_id'   => $oskernels_id,
                                 ]);
                             }
                         }

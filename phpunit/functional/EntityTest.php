@@ -129,20 +129,20 @@ class EntityTest extends DbTestCase
 
         $this->assertFalse(
             $entity->prepareInputForAdd([
-                'name' => ''
+                'name' => '',
             ])
         );
         $this->hasSessionMessages(ERROR, ["You can't add an entity without name"]);
 
         $this->assertFalse(
             $entity->prepareInputForAdd([
-                'anykey' => 'anyvalue'
+                'anykey' => 'anyvalue',
             ])
         );
         $this->hasSessionMessages(ERROR, ["You can't add an entity without name"]);
 
         $prepared = $entity->prepareInputForAdd([
-            'name' => 'entname'
+            'name' => 'entname',
         ]);
         $this->assertSame('entname', $prepared['name']);
         $this->assertSame('entname', $prepared['completename']);
@@ -171,9 +171,9 @@ class EntityTest extends DbTestCase
         $sckey_ent2 = 'sons_cache_glpi_entities_' . $ent2;
 
         $entity = new \Entity();
-        $new_id = (int)$entity->add([
+        $new_id = (int) $entity->add([
             'name'         => 'Sub child entity',
-            'entities_id'  => $ent1
+            'entities_id'  => $ent1,
         ]);
         $this->assertGreaterThan(0, $new_id);
         $ackey_new_id = 'ancestors_cache_glpi_entities_' . $new_id;
@@ -203,7 +203,7 @@ class EntityTest extends DbTestCase
         $this->assertTrue(
             $entity->update([
                 'id'           => $new_id,
-                'entities_id'  => $ent2
+                'entities_id'  => $ent2,
             ])
         );
 
@@ -271,7 +271,7 @@ class EntityTest extends DbTestCase
             'glpi_entities',
             [
                 'ancestors_cache' => null,
-                'sons_cache'      => null
+                'sons_cache'      => null,
             ],
             [true]
         );
@@ -321,7 +321,7 @@ class EntityTest extends DbTestCase
                 \Entity::class,
                 [
                     'name'         => sprintf('Level %s entity', $i + 1),
-                    'entities_id'  => $parent_id
+                    'entities_id'  => $parent_id,
                 ]
             );
             $entities[$i] = $entity;
@@ -352,7 +352,7 @@ class EntityTest extends DbTestCase
 
         foreach ($entities as $key => $entity) {
             $expected_sons_ids = \array_map(
-                static fn (\Entity $ent) => $ent->getID(),
+                static fn(\Entity $ent) => $ent->getID(),
                 \array_slice($entities, $key)
             );
             $expected_sons = \array_combine($expected_sons_ids, $expected_sons_ids);
@@ -360,7 +360,7 @@ class EntityTest extends DbTestCase
             $expected_ancestors_ids = array_merge(
                 [0], // root entity
                 \array_map(
-                    static fn (\Entity $ent) => $ent->getID(),
+                    static fn(\Entity $ent) => $ent->getID(),
                     \array_slice($entities, 0, $key)
                 )
             );
@@ -388,7 +388,7 @@ class EntityTest extends DbTestCase
             'name'         => 'inherit_geo_test_parent',
             'latitude'     => '48.8566',
             'longitude'    => '2.3522',
-            'altitude'     => '115'
+            'altitude'     => '115',
         ]);
         $this->assertGreaterThan(0, (int) $ent1_id);
         $ent2 = new \Entity();
@@ -401,14 +401,14 @@ class EntityTest extends DbTestCase
         $this->assertEquals($ent1->fields['longitude'], $ent2->fields['longitude']);
         $this->assertEquals($ent1->fields['altitude'], $ent2->fields['altitude']);
 
-       // Make sure we don't overwrite data a user sets
+        // Make sure we don't overwrite data a user sets
         $ent3 = new \Entity();
         $ent3_id = $ent3->add([
             'entities_id'  => $ent1_id,
             'name'         => 'inherit_geo_test_child2',
             'latitude'     => '41.3851',
             'longitude'    => '2.1734',
-            'altitude'     => '39'
+            'altitude'     => '39',
         ]);
         $this->assertGreaterThan(0, (int) $ent3_id);
         $this->assertEquals('41.3851', $ent3->fields['latitude']);
@@ -422,7 +422,7 @@ class EntityTest extends DbTestCase
         $root_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
         $entity = new \Entity();
-        $entity_id = (int)$entity->add(
+        $entity_id = (int) $entity->add(
             [
                 'name'         => 'Test entity',
                 'entities_id'  => $root_id,
@@ -438,7 +438,7 @@ class EntityTest extends DbTestCase
         $profile_id = getItemByTypeName('Profile', 'Admin', true);
 
         $profile_user = new Profile_User();
-        $profile_user_id = (int)$profile_user->add(
+        $profile_user_id = (int) $profile_user->add(
             [
                 'entities_id' => $entity_id,
                 'profiles_id' => $profile_id,
@@ -670,7 +670,7 @@ class EntityTest extends DbTestCase
 
         return [
             [
-            // Do not output custom CSS if not enabled
+                // Do not output custom CSS if not enabled
                 'entity_id'               => $root_id,
                 'root_enable_custom_css'  => 0,
                 'root_custom_css_code'    => 'body { color:blue; }',
@@ -679,7 +679,7 @@ class EntityTest extends DbTestCase
                 'expected'                => '',
             ],
             [
-            // Output custom CSS if enabled
+                // Output custom CSS if enabled
                 'entity_id'               => $root_id,
                 'root_enable_custom_css'  => 1,
                 'root_custom_css_code'    => 'body { color:blue; }',
@@ -688,7 +688,7 @@ class EntityTest extends DbTestCase
                 'expected'                => '<style>body { color:blue; }</style>',
             ],
             [
-            // Do not output custom CSS if empty
+                // Do not output custom CSS if empty
                 'entity_id'               => $root_id,
                 'root_enable_custom_css'  => 1,
                 'root_custom_css_code'    => '',
@@ -697,7 +697,7 @@ class EntityTest extends DbTestCase
                 'expected'                => '',
             ],
             [
-            // Do not output custom CSS from parent if disabled in parent
+                // Do not output custom CSS from parent if disabled in parent
                 'entity_id'               => $child_id,
                 'root_enable_custom_css'  => 0,
                 'root_custom_css_code'    => 'body { color:blue; }',
@@ -706,7 +706,7 @@ class EntityTest extends DbTestCase
                 'expected'                => '',
             ],
             [
-            // Do not output custom CSS from parent if empty
+                // Do not output custom CSS from parent if empty
                 'entity_id'               => $child_id,
                 'root_enable_custom_css'  => 1,
                 'root_custom_css_code'    => '',
@@ -715,7 +715,7 @@ class EntityTest extends DbTestCase
                 'expected'                => '',
             ],
             [
-            // Output custom CSS from parent
+                // Output custom CSS from parent
                 'entity_id'               => $child_id,
                 'root_enable_custom_css'  => 1,
                 'root_custom_css_code'    => '.link::before { content: "test"; }',
@@ -724,7 +724,7 @@ class EntityTest extends DbTestCase
                 'expected'                => '<style>.link::before { content: "test"; }</style>',
             ],
             [
-            // Do not output custom CSS from entity itself if disabled
+                // Do not output custom CSS from entity itself if disabled
                 'entity_id'               => $child_id,
                 'root_enable_custom_css'  => 0,
                 'root_custom_css_code'    => '',
@@ -733,7 +733,7 @@ class EntityTest extends DbTestCase
                 'expected'                => '',
             ],
             [
-            // Do not output custom CSS from entity itself if empty
+                // Do not output custom CSS from entity itself if empty
                 'entity_id'               => $child_id,
                 'root_enable_custom_css'  => 1,
                 'root_custom_css_code'    => '',
@@ -742,7 +742,7 @@ class EntityTest extends DbTestCase
                 'expected'                => '',
             ],
             [
-            // Output custom CSS from entity itself
+                // Output custom CSS from entity itself
                 'entity_id'               => $child_id,
                 'root_enable_custom_css'  => 0,
                 'root_custom_css_code'    => '',
@@ -751,7 +751,7 @@ class EntityTest extends DbTestCase
                 'expected'                => '<style>body > a { color:blue; }</style>',
             ],
             [
-            // Output cleaned custom CSS
+                // Output cleaned custom CSS
                 'entity_id'               => $child_id,
                 'root_enable_custom_css'  => 0,
                 'root_custom_css_code'    => '',
@@ -782,7 +782,7 @@ class EntityTest extends DbTestCase
             [
                 'id'                => getItemByTypeName('Entity', 'Root entity', true),
                 'enable_custom_css' => $root_enable_custom_css,
-                'custom_css_code'   => $root_custom_css_code
+                'custom_css_code'   => $root_custom_css_code,
             ]
         );
         $this->assertTrue($update);
@@ -790,7 +790,7 @@ class EntityTest extends DbTestCase
             [
                 'id'                => getItemByTypeName('Entity', '_test_child_1', true),
                 'enable_custom_css' => $child_enable_custom_css,
-                'custom_css_code'   => $child_custom_css_code
+                'custom_css_code'   => $child_custom_css_code,
             ]
         );
         $this->assertTrue($update);
@@ -827,13 +827,13 @@ class EntityTest extends DbTestCase
                 'interface' => 'central',
                 'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
                 'expected'  => 'test_anon_user',
-                'user_nick' => 'user_nick_6436345654'
+                'user_nick' => 'user_nick_6436345654',
             ],
             [
                 'interface' => 'helpdesk',
                 'setting'   => \Entity::ANONYMIZE_USE_NICKNAME,
                 'expected'  => 'user_nick_6436345654',
-                'user_nick' => 'user_nick_6436345654'
+                'user_nick' => 'user_nick_6436345654',
             ],
             [
                 'interface' => 'central',
@@ -849,13 +849,13 @@ class EntityTest extends DbTestCase
                 'interface' => 'central',
                 'setting'   => \Entity::ANONYMIZE_USE_NICKNAME_USER,
                 'expected'  => 'test_anon_user',
-                'user_nick' => 'user_nick_6436345654'
+                'user_nick' => 'user_nick_6436345654',
             ],
             [
                 'interface' => 'helpdesk',
                 'setting'   => \Entity::ANONYMIZE_USE_NICKNAME_USER,
                 'expected'  => 'user_nick_6436345654',
-                'user_nick' => 'user_nick_6436345654'
+                'user_nick' => 'user_nick_6436345654',
             ],
             [
                 'interface' => 'central',
@@ -896,7 +896,7 @@ class EntityTest extends DbTestCase
         $user_obj = new \User();
         $user_obj->add([
             'name'     => 'test_anon_user',
-            'password' => 'test_anon_user'
+            'password' => 'test_anon_user',
         ]);
 
         // Set user nickname
@@ -1031,10 +1031,10 @@ class EntityTest extends DbTestCase
         $notif_data = $notification->getDataForObject($ticket, [
             'additionnaloption' => [
                 'usertype' => NotificationTarget::GLPI_USER,
-            // Workaround to "simulate" different notification target and test
-            // this part more easily
+                // Workaround to "simulate" different notification target and test
+                // this part more easily
                 'is_self_service' => $interface == 'helpdesk',
-            ]
+            ],
         ]);
         foreach ($notif_data['followups'] as $n_fup) {
             if ($n_fup['##followup.author##'] !== null) {
@@ -1220,7 +1220,7 @@ class EntityTest extends DbTestCase
             [
                 'name'        => 'test clone entity',
                 'entities_id' => 0,
-            ]
+            ],
         ]);
 
         // Check that no clones exists
@@ -1302,12 +1302,12 @@ class EntityTest extends DbTestCase
                                 $entity_test_child_2->getID() => [
                                     'name' => $entity_test_child_2->fields['name'],
                                     'tree' => [],
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         yield [
@@ -1323,10 +1323,10 @@ class EntityTest extends DbTestCase
                         $entity_test_child_2->getID() => [
                             'name' => $entity_test_child_2->fields['name'],
                             'tree' => [],
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         yield [
@@ -1335,9 +1335,9 @@ class EntityTest extends DbTestCase
                 $entity_test_child_1->getID() => [
                     'name' => \Entity::sanitizeSeparatorInCompletename($entity_test_child_1->fields['completename']),
                     'tree' => [
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         yield [
@@ -1346,9 +1346,9 @@ class EntityTest extends DbTestCase
                 $entity_test_child_2->getID() => [
                     'name' => \Entity::sanitizeSeparatorInCompletename($entity_test_child_2->fields['completename']),
                     'tree' => [
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -1408,7 +1408,7 @@ class EntityTest extends DbTestCase
             0,
             $entities_id = $entity_id = $entity->add([
                 'name' => __FUNCTION__ . '1',
-                'entities_id' => getItemByTypeName('Entity', '_test_child_2', true)
+                'entities_id' => getItemByTypeName('Entity', '_test_child_2', true),
             ])
         );
         $found = [];

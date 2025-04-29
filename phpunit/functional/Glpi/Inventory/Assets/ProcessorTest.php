@@ -67,7 +67,7 @@ class ProcessorTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"arch": "i386", "core": 2, "external_clock": 100, "familyname": "Core i5", "familynumber": "6", "internalid": "E3 06 04 00 FF FB EB BF", "manufacturer": "Intel", "model": "78", "name": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "serial": "To Be Filled By O.E.M.", "speed": 2300, "stepping": 3, "thread": 4, "frequency": 2300, "manufacturers_id": "Intel", "designation": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "nbcores": 2, "nbthreads": 4, "frequency_default": 2300, "frequence": 2300, "is_dynamic": 1}'
+                'expected'  => '{"arch": "i386", "core": 2, "external_clock": 100, "familyname": "Core i5", "familynumber": "6", "internalid": "E3 06 04 00 FF FB EB BF", "manufacturer": "Intel", "model": "78", "name": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "serial": "To Be Filled By O.E.M.", "speed": 2300, "stepping": 3, "thread": 4, "frequency": 2300, "manufacturers_id": "Intel", "designation": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "nbcores": 2, "nbthreads": 4, "frequency_default": 2300, "frequence": 2300, "is_dynamic": 1}',
             ],
             [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -92,8 +92,8 @@ class ProcessorTest extends AbstractInventoryAsset
 <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
 <QUERY>INVENTORY</QUERY>
 </REQUEST>",
-                'expected'  => '{"arch": "i386", "core": 2, "external_clock": 100, "familyname": "Core i5", "familynumber": "6", "internalid": "E3 06 04 00 FF FB EB BF", "manufacturer": "Intel", "model": "78", "name": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "serial": "To Be Filled By O.E.M.", "stepping": 3, "thread": 4, "frequency": 2300, "manufacturers_id": "Intel", "designation": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "nbcores": 2, "nbthreads": 4, "frequency_default": 0, "frequency": 0, "frequence": 0, "is_dynamic": 1}'
-            ]
+                'expected'  => '{"arch": "i386", "core": 2, "external_clock": 100, "familyname": "Core i5", "familynumber": "6", "internalid": "E3 06 04 00 FF FB EB BF", "manufacturer": "Intel", "model": "78", "name": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "serial": "To Be Filled By O.E.M.", "stepping": 3, "thread": 4, "frequency": 2300, "manufacturers_id": "Intel", "designation": "Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz", "nbcores": 2, "nbthreads": 4, "frequency_default": 0, "frequency": 0, "frequence": 0, "is_dynamic": 1}',
+            ],
         ];
     }
 
@@ -108,7 +108,7 @@ class ProcessorTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Processor($computer, $json->content->cpus);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -117,14 +117,14 @@ class ProcessorTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no controller linked to this computer
+        //first, check there are no controller linked to this computer
         $idp = new \Item_DeviceProcessor();
-                 $this->assertFalse(
-                     $idp->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
-                     'A processor is already linked to computer!'
-                 );
+        $this->assertFalse(
+            $idp->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            'A processor is already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -133,11 +133,11 @@ class ProcessorTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Processor($computer, $json->content->cpus);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
@@ -189,17 +189,17 @@ class ProcessorTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //create manually a computer, with 3 processors
+        //create manually a computer, with 3 processors
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-            'name' => 'Intel'
+            'name' => 'Intel',
         ]);
         $this->assertGreaterThan(0, $manufacturers_id);
 
@@ -207,14 +207,14 @@ class ProcessorTest extends AbstractInventoryAsset
             'designation' => 'Intel(R) Core(TM) i9',
             'manufacturers_id' => $manufacturers_id,
             'frequence' => '2300',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $cpu_1_id);
 
         $item_cpu_1_id = $item_proc->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'deviceprocessors_id' => $cpu_1_id
+            'deviceprocessors_id' => $cpu_1_id,
         ]);
         $this->assertGreaterThan(0, $item_cpu_1_id);
 
@@ -222,14 +222,14 @@ class ProcessorTest extends AbstractInventoryAsset
             'designation' => 'Intel(R) Core(TM) i5',
             'manufacturers_id' => $manufacturers_id,
             'frequence' => '2000',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $cpu_2_id);
 
         $item_cpu_2_id = $item_proc->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'deviceprocessors_id' => $cpu_2_id
+            'deviceprocessors_id' => $cpu_2_id,
         ]);
         $this->assertGreaterThan(0, $item_cpu_2_id);
 
@@ -237,14 +237,14 @@ class ProcessorTest extends AbstractInventoryAsset
             'designation' => 'Intel(R) Core(TM) i3',
             'manufacturers_id' => $manufacturers_id,
             'frequence' => '1800',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $cpu_3_id);
 
         $item_cpu_3_id = $item_proc->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'deviceprocessors_id' => $cpu_3_id
+            'deviceprocessors_id' => $cpu_3_id,
         ]);
         $this->assertGreaterThan(0, $item_cpu_3_id);
 
@@ -254,26 +254,26 @@ class ProcessorTest extends AbstractInventoryAsset
             $this->assertEquals(0, $cpu['is_dynamic']);
         }
 
-       //computer inventory knows only "i9" and "i5" processors
+        //computer inventory knows only "i9" and "i5" processors
         $this->doInventory($xml_source, true);
 
-       //we still have 3 processors
+        //we still have 3 processors
         $cpus = $device_proc->find();
         $this->assertCount(3, $cpus);
 
-       //we still have 3 processors items linked to the computer
+        //we still have 3 processors items linked to the computer
         $cpus = $item_proc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $cpus);
 
-       //processors present in the inventory source are now dynamic
+        //processors present in the inventory source are now dynamic
         $cpus = $item_proc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $cpus);
 
-       //processor not present in the inventory is still not dynamic
+        //processor not present in the inventory is still not dynamic
         $cpus = $item_proc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $cpus);
 
-       //Redo inventory, but with removed "i5" processor
+        //Redo inventory, but with removed "i5" processor
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -298,19 +298,19 @@ class ProcessorTest extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-       //we still have 3 processors
+        //we still have 3 processors
         $cpus = $device_proc->find();
         $this->assertCount(3, $cpus);
 
-       //we now have 2 processors linked to computer only
+        //we now have 2 processors linked to computer only
         $cpus = $item_proc->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(2, $cpus);
 
-       //processor present in the inventory source is still dynamic
+        //processor present in the inventory source is still dynamic
         $cpus = $item_proc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $cpus);
 
-       //processor not present in the inventory is still not dynamic
+        //processor not present in the inventory is still not dynamic
         $cpus = $item_proc->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $cpus);
     }

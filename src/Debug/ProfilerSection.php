@@ -57,12 +57,12 @@ final class ProfilerSection
         $this->parent_id = $parent_id;
         $this->category = $category;
         $this->name = $name;
-        $this->start = (int)$start;
+        $this->start = (int) $start;
     }
 
     public function end($time): void
     {
-        $this->end = (int)$time;
+        $this->end = (int) $time;
     }
 
     public function getID(): string
@@ -97,7 +97,7 @@ final class ProfilerSection
 
     public function getDuration(): int
     {
-        $end = $this->end ?? (int)(microtime(true) * 1000);
+        $end = $this->end ?? (int) (microtime(true) * 1000);
         return $end - $this->start;
     }
 

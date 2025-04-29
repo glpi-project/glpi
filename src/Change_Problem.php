@@ -44,7 +44,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class Change_Problem extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1   = 'Change';
     public static $items_id_1   = 'changes_id';
 
@@ -134,7 +134,7 @@ class Change_Problem extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_changes_problems.id AS linkid',
-                'glpi_changes.*'
+                'glpi_changes.*',
             ],
             'DISTINCT'        => true,
             'FROM'            => 'glpi_changes_problems',
@@ -142,14 +142,14 @@ class Change_Problem extends CommonDBRelation
                 'glpi_changes' => [
                     'ON' => [
                         'glpi_changes_problems' => 'changes_id',
-                        'glpi_changes'          => 'id'
-                    ]
-                ]
+                        'glpi_changes'          => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                'glpi_changes_problems.problems_id' => $ID
+                'glpi_changes_problems.problems_id' => $ID,
             ],
-            'ORDERBY'         => 'glpi_changes.name'
+            'ORDERBY'         => 'glpi_changes.name',
         ]);
 
         $changes = [];
@@ -174,7 +174,7 @@ class Change_Problem extends CommonDBRelation
                     'displaywith' => ['id'],
                     'condition'   => Change::getOpenCriteria(),
                 ],
-                'create_link' => Session::haveRight(Change::$rightname, CREATE)
+                'create_link' => Session::haveRight(Change::$rightname, CREATE),
             ]);
         }
 
@@ -182,7 +182,7 @@ class Change_Problem extends CommonDBRelation
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                'container'     => 'mass' . __CLASS__ . $rand
+                'container'     => 'mass' . __CLASS__ . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -195,12 +195,12 @@ class Change_Problem extends CommonDBRelation
             Session::initNavigateListItems(
                 'Change',
                 //TRANS : %1$s is the itemtype name,
-                                 //        %2$s is the name of the item (used for headings of a list)
-                                         sprintf(
-                                             __('%1$s = %2$s'),
-                                             Problem::getTypeName(1),
-                                             $problem->fields["name"]
-                                         )
+                //        %2$s is the name of the item (used for headings of a list)
+                sprintf(
+                    __('%1$s = %2$s'),
+                    Problem::getTypeName(1),
+                    $problem->fields["name"]
+                )
             );
 
             $i = 0;
@@ -208,9 +208,9 @@ class Change_Problem extends CommonDBRelation
                 Session::addToNavigateListItems('Change', $data["id"]);
                 Change::showShort($data['id'], ['row_num'                => $i,
                     'type_for_massiveaction' => __CLASS__,
-                    'id_for_massiveaction'   => $data['linkid']
+                    'id_for_massiveaction'   => $data['linkid'],
                 ]);
-                 $i++;
+                $i++;
             }
             Change::commonListHeader(Search::HTML_OUTPUT, 'mass' . __CLASS__ . $rand);
         }
@@ -246,7 +246,7 @@ class Change_Problem extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_changes_problems.id AS linkid',
-                'glpi_problems.*'
+                'glpi_problems.*',
             ],
             'DISTINCT'        => true,
             'FROM'            => 'glpi_changes_problems',
@@ -254,14 +254,14 @@ class Change_Problem extends CommonDBRelation
                 'glpi_problems' => [
                     'ON' => [
                         'glpi_changes_problems' => 'problems_id',
-                        'glpi_problems'         => 'id'
-                    ]
-                ]
+                        'glpi_problems'         => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                'glpi_changes_problems.changes_id' => $ID
+                'glpi_changes_problems.changes_id' => $ID,
             ],
-            'ORDERBY'         => 'glpi_problems.name'
+            'ORDERBY'         => 'glpi_problems.name',
         ]);
 
         $problems = [];
@@ -283,9 +283,9 @@ class Change_Problem extends CommonDBRelation
                     'entity'      => $change->getEntityID(),
                     'entity_sons' => $change->isRecursive(),
                     'used'        => $used,
-                    'displaywith' => ['id']
+                    'displaywith' => ['id'],
                 ],
-                'create_link' => false
+                'create_link' => false,
             ]);
         }
 
@@ -293,7 +293,7 @@ class Change_Problem extends CommonDBRelation
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                'container'     => 'mass' . __CLASS__ . $rand
+                'container'     => 'mass' . __CLASS__ . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -306,12 +306,12 @@ class Change_Problem extends CommonDBRelation
             Session::initNavigateListItems(
                 'Problem',
                 //TRANS : %1$s is the itemtype name,
-                                 //        %2$s is the name of the item (used for headings of a list)
-                                         sprintf(
-                                             __('%1$s = %2$s'),
-                                             Change::getTypeName(1),
-                                             $change->fields["name"]
-                                         )
+                //        %2$s is the name of the item (used for headings of a list)
+                sprintf(
+                    __('%1$s = %2$s'),
+                    Change::getTypeName(1),
+                    $change->fields["name"]
+                )
             );
 
             $i = 0;
@@ -319,9 +319,9 @@ class Change_Problem extends CommonDBRelation
                 Session::addToNavigateListItems('Problem', $data["id"]);
                 Problem::showShort($data['id'], ['row_num'               => $i,
                     'type_for_massiveaction' => __CLASS__,
-                    'id_for_massiveaction'   => $data['linkid']
+                    'id_for_massiveaction'   => $data['linkid'],
                 ]);
-                 $i++;
+                $i++;
             }
             Problem::commonListHeader(Search::HTML_OUTPUT, 'mass' . __CLASS__ . $rand);
         }

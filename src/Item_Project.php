@@ -42,7 +42,7 @@
  **/
 class Item_Project extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'Project';
     public static $items_id_1          = 'projects_id';
 
@@ -67,11 +67,11 @@ class Item_Project extends CommonDBRelation
     public function prepareInputForAdd($input)
     {
 
-       // Avoid duplicate entry
+        // Avoid duplicate entry
         if (
             countElementsInTable($this->getTable(), ['projects_id' => $input['projects_id'],
                 'itemtype'    => $input['itemtype'],
-                'items_id'    => $input['items_id']
+                'items_id'    => $input['items_id'],
             ]) > 0
         ) {
             return false;
@@ -120,7 +120,7 @@ class Item_Project extends CommonDBRelation
                                                               'glpi_entities',
                                                               $project->fields['entities_id']
                                                           )
-                                                          : $project->fields['entities_id'])
+                                                          : $project->fields['entities_id']),
             ]);
             echo "</td><td class='center' width='30%'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -233,17 +233,17 @@ class Item_Project extends CommonDBRelation
                     return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
                 default:
-                   // Not used now
+                    // Not used now
                     if (
                         Session::haveRight("project", Project::READALL)
                         && ($item instanceof CommonDBTM)
                     ) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                              // Direct one
-                              $nb = self::countForItem($item);
+                            // Direct one
+                            $nb = self::countForItem($item);
 
-                              // Linked items
-                              $linkeditems = $item->getLinkedItems();
+                            // Linked items
+                            $linkeditems = $item->getLinkedItems();
 
                             if (count($linkeditems)) {
                                 foreach ($linkeditems as $type => $tab) {
@@ -272,8 +272,8 @@ class Item_Project extends CommonDBRelation
                 break;
 
             default:
-               // Not defined and used now
-               // Project::showListForItem($item);
+                // Not defined and used now
+                // Project::showListForItem($item);
         }
         return true;
     }

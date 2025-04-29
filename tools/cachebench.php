@@ -66,13 +66,13 @@ if ($nb < 100000) {
                 //echo "$idc\r";
                 for ($d = 0; $d < PER_LEVEL; $d++) {
                     $idd = $ent->add(['entities_id' => $idc, 'name' => "sss-ent $d"]);
-                   //echo "$idd\r";
+                    //echo "$idd\r";
                     for ($e = 0; $e < PER_LEVEL; $e++) {
                         $ide = $ent->add(['entities_id' => $idd, 'name' => "sss-ent $e"]);
                         //echo "$ide\r";
                         for ($f = 0; $f < PER_LEVEL; $f++) {
                             $idf = $ent->add(['entities_id' => $ide, 'name' => "sss-ent $f"]);
-                          //echo "$idf\r";
+                            //echo "$idf\r";
                         }
                     }
                 }
@@ -80,8 +80,8 @@ if ($nb < 100000) {
         }
     }
 
-   //echo "Regenerate tree\n";
-   //regenerateTreeCompleteName('glpi_entities');
+    //echo "Regenerate tree\n";
+    //regenerateTreeCompleteName('glpi_entities');
 
     $nb = countElementsInTable('glpi_entities');
 }
@@ -105,7 +105,7 @@ for ($i = 0; $i < COUNT; $i++) {
         echo "$i\r";
     }
     $t[$i] = $id = mt_rand(0, $nb);
-   //$x = getSonsOf('glpi_entities', $id);
+    //$x = getSonsOf('glpi_entities', $id);
     $x = getAncestorsOf('glpi_entities', $id);
 }
 $tps = microtime(true) - $tps;
@@ -118,7 +118,7 @@ for ($i = 0; $i < COUNT; $i++) {
         echo "$i\r";
     }
     $id = $t[$i];
-   //$x = getSonsOf('glpi_entities', $id);
+    //$x = getSonsOf('glpi_entities', $id);
     $x = getAncestorsOf('glpi_entities', $id);
 }
 $tps = microtime(true) - $tps;

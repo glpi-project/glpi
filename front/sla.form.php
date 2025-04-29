@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $sla->check($_POST["id"], PURGE);
     $sla->delete($_POST, 1);
 
@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $sla->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $sla->check($_POST["id"], UPDATE);
     $sla->update($_POST);
 

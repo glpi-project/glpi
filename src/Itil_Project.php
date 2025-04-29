@@ -145,7 +145,7 @@ class Itil_Project extends CommonDBRelation
             $iterator = $DB->request([
                 'SELECT'          => [
                     "$selfTable.id AS linkid",
-                    "$itemTable.*"
+                    "$itemTable.*",
                 ],
                 'DISTINCT'        => true,
                 'FROM'            => $selfTable,
@@ -191,7 +191,7 @@ class Itil_Project extends CommonDBRelation
                         $label = __('Add a problem');
                         break;
                     case Ticket::class:
-                         $label = __('Add a ticket');
+                        $label = __('Add a ticket');
                         break;
                 }
                 echo '<tr class="tab_bg_2"><th colspan="2">' . $label . '</th></tr>';
@@ -243,16 +243,16 @@ class Itil_Project extends CommonDBRelation
 
                 $i = 0;
                 foreach ($items as $data) {
-                     Session::addToNavigateListItems($itemtype, $data['id']);
-                     $itemtype::showShort(
-                         $data['id'],
-                         [
-                             'row_num'                => $i,
-                             'type_for_massiveaction' => __CLASS__,
-                             'id_for_massiveaction'   => $data['linkid']
-                         ]
-                     );
-                     $i++;
+                    Session::addToNavigateListItems($itemtype, $data['id']);
+                    $itemtype::showShort(
+                        $data['id'],
+                        [
+                            'row_num'                => $i,
+                            'type_for_massiveaction' => __CLASS__,
+                            'id_for_massiveaction'   => $data['linkid'],
+                        ]
+                    );
+                    $i++;
                 }
                 $itemtype::commonListHeader(Search::HTML_OUTPUT, $massContainerId);
             }
@@ -292,7 +292,7 @@ class Itil_Project extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT'          => [
                 "$selfTable.id AS linkid",
-                "$projectTable.*"
+                "$projectTable.*",
             ],
             'DISTINCT'        => true,
             'FROM'            => $selfTable,
@@ -343,7 +343,7 @@ class Itil_Project extends CommonDBRelation
             Project::dropdown(
                 [
                     'used'   => $used,
-                    'entity' => $itil->getEntityID()
+                    'entity' => $itil->getEntityID(),
                 ]
             );
             echo '</td>';
@@ -388,10 +388,10 @@ class Itil_Project extends CommonDBRelation
                     [
                         'row_num'               => $i,
                         'type_for_massiveaction' => __CLASS__,
-                        'id_for_massiveaction'   => $data['linkid']
+                        'id_for_massiveaction'   => $data['linkid'],
                     ]
                 );
-                 $i++;
+                $i++;
             }
             Project::commonListHeader(Search::HTML_OUTPUT, $massContainerId);
         }

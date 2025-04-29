@@ -40,7 +40,7 @@
  **/
 class Change_Item extends CommonItilObject_Item
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'Change';
     public static $items_id_1          = 'changes_id';
 
@@ -65,16 +65,16 @@ class Change_Item extends CommonItilObject_Item
     public function prepareInputForAdd($input)
     {
 
-       // Well, if I remember my PHP: empty(0) == true ...
+        // Well, if I remember my PHP: empty(0) == true ...
         if (empty($input['changes_id']) || ($input['changes_id'] == 0)) {
             return false;
         }
 
-       // Avoid duplicate entry
+        // Avoid duplicate entry
         if (
             countElementsInTable($this->getTable(), ['changes_id' => $input['changes_id'],
                 'itemtype' => $input['itemtype'],
-                'items_id' => $input['items_id']
+                'items_id' => $input['items_id'],
             ]) > 0
         ) {
             return false;
@@ -125,7 +125,7 @@ class Change_Item extends CommonItilObject_Item
                                                               'glpi_entities',
                                                               $change->fields['entities_id']
                                                           )
-                                                          : $change->fields['entities_id'])
+                                                          : $change->fields['entities_id']),
             ]);
             echo "</td><td class='center' width='30%'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -246,8 +246,8 @@ class Change_Item extends CommonItilObject_Item
                             'COUNT'  => 'cpt',
                             'FROM'   => $from,
                             'WHERE'  => [
-                                $item->getForeignKeyField()   => $item->fields['id']
-                            ]
+                                $item->getForeignKeyField()   => $item->fields['id'],
+                            ],
                         ])->current();
                         $nb = $result['cpt'];
                     }
@@ -256,10 +256,10 @@ class Change_Item extends CommonItilObject_Item
                 default:
                     if (Session::haveRight("change", Change::READALL)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                              // Direct one
-                              $nb = self::countForItem($item);
-                              // Linked items
-                              $linkeditems = $item->getLinkedItems();
+                            // Direct one
+                            $nb = self::countForItem($item);
+                            // Linked items
+                            $linkeditems = $item->getLinkedItems();
 
                             if (count($linkeditems)) {
                                 foreach ($linkeditems as $type => $tab) {

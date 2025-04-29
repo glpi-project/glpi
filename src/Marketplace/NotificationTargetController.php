@@ -96,7 +96,7 @@ class NotificationTargetController extends NotificationTarget
     {
         //Tags with just lang
         $tags = [
-            'plugins_updates_available' => __('Some updates are available for your installed plugins!')
+            'plugins_updates_available' => __('Some updates are available for your installed plugins!'),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -104,7 +104,7 @@ class NotificationTargetController extends NotificationTarget
                 'tag'   => $tag,
                 'label' => $label,
                 'value' => false,
-                'lang'  => true
+                'lang'  => true,
             ]);
         }
 

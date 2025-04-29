@@ -43,7 +43,7 @@ class GLPIMailerTest extends DbTestCase
     public static function valideAddressProvider()
     {
         return [
-         // Test local part
+            // Test local part
             ["!#$%&+-=?^_`.{|}~@localhost.dot", true],
             ["test.test@localhost.dot", true],
             ["test..test@localhost.dot", false],
@@ -52,7 +52,7 @@ class GLPIMailerTest extends DbTestCase
             ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@localhost.dot", true],
             ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@localhost.dot", false],
 
-         // Test domain part
+            // Test domain part
             ["user", false],
             ["user@localhost", true],
             ["user@localhost.dot", true],

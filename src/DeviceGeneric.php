@@ -51,8 +51,8 @@ class DeviceGeneric extends CommonDevice
             parent::getAdditionalFields(),
             [['name'  => 'devicegenerictypes_id',
                 'label' => _n('Type', 'Types', 1),
-                'type'  => 'dropdownValue'
-            ]
+                'type'  => 'dropdownValue',
+            ],
             ]
         );
     }
@@ -67,7 +67,7 @@ class DeviceGeneric extends CommonDevice
             'table'              => 'glpi_devicegenerictypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;

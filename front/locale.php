@@ -54,11 +54,11 @@ header("Content-Type: application/json; charset=UTF-8");
 
 $is_cacheable = !isset($_GET['debug']);
 if (!Update::isDbUpToDate()) {
-   // Make sure to not cache if in the middle of a GLPI update
+    // Make sure to not cache if in the middle of a GLPI update
     $is_cacheable = false;
 }
 if ($is_cacheable) {
-   // Makes CSS cacheable by browsers and proxies
+    // Makes CSS cacheable by browsers and proxies
     $max_age = WEEK_TIMESTAMP;
     header_remove('Pragma');
     header('Cache-Control: public');
@@ -87,8 +87,8 @@ try {
     ErrorHandler::getInstance()->handleException($e, true);
 }
 if (!($messages instanceof \Laminas\I18n\Translator\TextDomain)) {
-   // No TextDomain found means that there is no translations for given domain.
-   // It is mostly related to plugins that does not provide any translations.
+    // No TextDomain found means that there is no translations for given domain.
+    // It is mostly related to plugins that does not provide any translations.
     exit($default_response);
 }
 

@@ -48,10 +48,10 @@ Session::checkLoginUser();
 $solutiontemplates_id = $_POST['solutiontemplates_id'] ?? null;
 if ($solutiontemplates_id === null) {
     Response::sendError(400, "Missing or invalid parameter: 'solutiontemplates_id'");
-} else if ($solutiontemplates_id == 0) {
-   // Reset form
+} elseif ($solutiontemplates_id == 0) {
+    // Reset form
     echo json_encode([
-        'content' => ""
+        'content' => "",
     ]);
     die;
 }
@@ -80,13 +80,13 @@ if (!$template->getFromDB($solutiontemplates_id)) {
 }
 
 if ($apply_twig) {
-   // Load parent item
+    // Load parent item
     $parent = new $parents_itemtype();
     if (!$parent->getFromDB($parents_id)) {
         Response::sendError(400, "Unable to load parent item: $parents_itemtype $parents_id");
     }
 
-   // Render template content using twig
+    // Render template content using twig
     $template->fields['content'] = $template->getRenderedContent($parent);
 } else {
     $content = $template->fields['content'];

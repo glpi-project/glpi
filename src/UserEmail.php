@@ -40,10 +40,10 @@ use Glpi\Toolbox\Sanitizer;
  **/
 class UserEmail extends CommonDBChild
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $auto_message_on_action = false;
 
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype        = 'User';
     public static $items_id        = 'users_id';
     public $dohistory              = true;
@@ -101,14 +101,14 @@ class UserEmail extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Get default one
+        // Get default one
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'users_id'     => $users_id,
             ],
             'ORDER'  => 'is_default DESC',
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         foreach ($iterator as $row) {
@@ -137,7 +137,7 @@ class UserEmail extends CommonDBChild
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'users_id'     => $users_id,
-            ]
+            ],
         ]);
 
         foreach ($iterator as $row) {
@@ -165,9 +165,9 @@ class UserEmail extends CommonDBChild
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'users_id'  => $users_id,
-                'email'     => $email
+                'email'     => $email,
             ],
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         if (count($iterator)) {
@@ -303,7 +303,7 @@ class UserEmail extends CommonDBChild
             return false;
         }
 
-       // First email is default
+        // First email is default
         if (countElementsInTable($this->getTable(), ['users_id' => $input['users_id']]) == 0) {
             $input['is_default'] = 1;
         }
@@ -351,7 +351,7 @@ class UserEmail extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       // if default is set : unsed others for the users
+        // if default is set : unsed others for the users
         if (
             in_array('is_default', $this->updates)
             && ($this->input["is_default"] == 1)
@@ -359,11 +359,11 @@ class UserEmail extends CommonDBChild
             $DB->update(
                 $this->getTable(),
                 [
-                    'is_default' => 0
+                    'is_default' => 0,
                 ],
                 [
                     'id'        => ['<>', $this->input['id']],
-                    'users_id'  => $this->fields['users_id']
+                    'users_id'  => $this->fields['users_id'],
                 ]
             );
         }
@@ -377,16 +377,16 @@ class UserEmail extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       // if default is set : unset others for the users
+        // if default is set : unset others for the users
         if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
             $DB->update(
                 $this->getTable(),
                 [
-                    'is_default' => 0
+                    'is_default' => 0,
                 ],
                 [
                     'id'        => ['<>', $this->fields['id']],
-                    'users_id'  => $this->fields['users_id']
+                    'users_id'  => $this->fields['users_id'],
                 ]
             );
         }
@@ -400,19 +400,19 @@ class UserEmail extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       // if default is set : set default to another one
+        // if default is set : set default to another one
         if ($this->fields["is_default"] == 1) {
             $DB->update(
                 $this->getTable(),
                 [
-                    'is_default'   => 1
+                    'is_default'   => 1,
                 ],
                 [
                     'WHERE'  => [
                         'id'        => ['<>', $this->fields['id']],
-                        'users_id'  => $this->fields['users_id']
+                        'users_id'  => $this->fields['users_id'],
                     ],
-                    'LIMIT'  => 1
+                    'LIMIT'  => 1,
                 ]
             );
         }

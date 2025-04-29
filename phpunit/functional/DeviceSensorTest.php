@@ -43,7 +43,7 @@ class DeviceSensorTest extends DbTestCase
         $this->login();
         $obj = new \DeviceSensor();
 
-       // Add
+        // Add
         $in = [
             'designation'              => __METHOD__,
             'manufacturers_id'         => $this->getUniqueInteger(),
@@ -51,10 +51,10 @@ class DeviceSensorTest extends DbTestCase
             'devicesensormodels_id'    => $this->getUniqueInteger(),
         ];
         $id = $obj->add($in);
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan(0, (int) $id);
         $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
+        // getField methods
         $this->assertEquals($id, $obj->getField('id'));
         foreach ($in as $k => $v) {
             $this->assertEquals($v, $obj->getField($k));
@@ -66,13 +66,13 @@ class DeviceSensorTest extends DbTestCase
         $this->login();
         $obj = new \DeviceSensor();
 
-       // Add
+        // Add
         $id = $obj->add([
             'designation' => $this->getUniqueString(),
         ]);
         $this->assertGreaterThan(0, $id);
 
-       // Update
+        // Update
         $id = $obj->getID();
         $in = [
             'id'                    => $id,
@@ -84,7 +84,7 @@ class DeviceSensorTest extends DbTestCase
         $this->assertTrue($obj->update($in));
         $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
+        // getField methods
         foreach ($in as $k => $v) {
             $this->assertEquals($v, $obj->getField($k));
         }
@@ -95,13 +95,13 @@ class DeviceSensorTest extends DbTestCase
         $this->login();
         $obj = new \DeviceSensor();
 
-       // Add
+        // Add
         $id = $obj->add([
             'designation' => __METHOD__,
         ]);
         $this->assertGreaterThan(0, $id);
 
-       // Delete
+        // Delete
         $in = [
             'id'                       => $obj->getID(),
         ];

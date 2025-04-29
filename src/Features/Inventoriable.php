@@ -36,7 +36,6 @@
 namespace Glpi\Features;
 
 use Agent;
-use AutoUpdateSystem;
 use CommonDBTM;
 use Computer;
 use Computer_Item;
@@ -56,7 +55,7 @@ trait Inventoriable
     {
         $file_name = $this->getInventoryFileName();
         if ($file_name === null) {
-           //file does not exists
+            //file does not exists
             return true;
         }
 
@@ -124,7 +123,7 @@ trait Inventoriable
                 $download_file
             );
             $title = sprintf(
-             //TRANS: parameter is the name of the asset
+                //TRANS: parameter is the name of the asset
                 __('Download "%1$s" inventory file'),
                 $this->getName()
             );
@@ -160,7 +159,7 @@ trait Inventoriable
             $this->displayAgentInformation();
         }
 
-       // Display auto inventory information
+        // Display auto inventory information
         if (
             !empty($this->fields['id'])
             && $this->maybeDynamic() && $this->fields["is_dynamic"]
@@ -199,7 +198,7 @@ trait Inventoriable
         echo "<i id='update-status' class='fas fa-sync' style='float: right;cursor: pointer;' title='" . __s('Ask agent about its current status') . "'></i>";
         echo '</td>';
         echo '<td id="agent_status">' . __('Unknown') . '</td>';
-        echo '<td>' .  __('Request inventory');
+        echo '<td>' . __('Request inventory');
         echo "<i id='update-inventory' class='fas fa-sync' style='float: right;cursor: pointer;' title='" . __s('Request agent to proceed an new inventory') . "'></i>";
         echo '</td>';
         echo '<td id="inventory_status">' . __('None') . '</td>';
@@ -267,8 +266,8 @@ JAVASCRIPT;
                     'SELECT' => ['itemtype', 'items_id'],
                     'FROM'   => Computer_Item::getTable(),
                     'WHERE'  => [
-                        'computers_id' => $this->getID()
-                    ]
+                        'computers_id' => $this->getID(),
+                    ],
                 ]
             );
             if (count($relations_iterator) > 0) {
@@ -284,7 +283,7 @@ JAVASCRIPT;
                     if (count($ids) > 0) {
                         $conditions['OR'][] = [
                             'itemtype' => $itemtype,
-                            'items_id' => $ids
+                            'items_id' => $ids,
                         ];
                     }
                 }
@@ -314,7 +313,7 @@ JAVASCRIPT;
             'FROM'      => Agent::getTable(),
             'WHERE'     => $conditions,
             'ORDERBY'   => ['last_contact DESC'],
-            'LIMIT'     => 1
+            'LIMIT'     => 1,
         ]);
         if (count($iterator) === 0) {
             return null;

@@ -77,43 +77,43 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                 'glpi_contracts.duration',
                 'glpi_entities.completename AS entname',
                 'glpi_entities.id AS entID',
-                'glpi_contracts.begin_date'
+                'glpi_contracts.begin_date',
             ],
             'FROM'   => 'glpi_contracts_items',
             'INNER JOIN'   => [
                 'glpi_contracts'  => [
                     'ON'  => [
                         'glpi_contracts_items'  => 'contracts_id',
-                        'glpi_contracts'        => 'id'
-                    ]
+                        'glpi_contracts'        => 'id',
+                    ],
                 ],
                 $itemtable  => [
                     'ON'  => [
                         $itemtable  => 'id',
                         'glpi_contracts_items'  => 'items_id', [
                             'AND' => [
-                                'glpi_contracts_items.itemtype' => $val
-                            ]
-                        ]
-                    ]
-                ]
+                                'glpi_contracts_items.itemtype' => $val,
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'LEFT JOIN'    => [
                 'glpi_contracttypes' => [
                     'ON'  => [
                         'glpi_contracts'     => 'contracttypes_id',
-                        'glpi_contracttypes' => 'id'
-                    ]
+                        'glpi_contracttypes' => 'id',
+                    ],
                 ],
                 'glpi_entities'   => [
                     'ON'  => [
                         $itemtable        => 'entities_id',
-                        'glpi_entities'   => 'id'
-                    ]
-                ]
+                        'glpi_entities'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'        => getEntitiesRestrictCriteria($itemtable),
-            'ORDERBY'      => ["entname ASC", 'itemdeleted DESC', "itemname ASC"]
+            'ORDERBY'      => ["entname ASC", 'itemdeleted DESC', "itemname ASC"],
         ];
 
         if ($DB->fieldExists($itemtable, 'name')) {
@@ -137,10 +137,10 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                         'glpi_infocoms' => 'items_id',
                         $itemtable     => 'id', [
                             'AND' => [
-                                'glpi_infocoms.itemtype'   => $val
-                            ]
-                        ]
-                    ]
+                                'glpi_infocoms.itemtype'   => $val,
+                            ],
+                        ],
+                    ],
                 ];
             }
             if ($val == 'Project') {
@@ -163,25 +163,25 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
             $criteria['SELECT'] = array_merge($criteria['SELECT'], [
                 "$itemtable.is_deleted AS itemdeleted",
                 'glpi_infocoms.buy_date',
-                'glpi_infocoms.warranty_duration'
+                'glpi_infocoms.warranty_duration',
             ]);
             $criteria['LEFT JOIN']['glpi_infocoms'] = [
                 'ON'  => [
                     $itemtable        => 'id',
                     'glpi_infocoms'   => 'items_id', [
                         'AND' => [
-                            'glpi_infocoms.itemtype' => $val
-                        ]
-                    ]
-                ]
+                            'glpi_infocoms.itemtype' => $val,
+                        ],
+                    ],
+                ],
             ];
             if ($DB->fieldExists($itemtable, 'locations_id')) {
                 $criteria['SELECT'][] = 'glpi_locations.completename AS location';
                 $criteria['LEFT JOIN']['glpi_locations'] = [
                     'ON'  => [
                         $itemtable        => 'locations_id',
-                        'glpi_locations'   => 'id'
-                    ]
+                        'glpi_locations'   => 'id',
+                    ],
                 ];
             } else {
                 $criteria['SELECT'][] = new QueryExpression("'' AS location");

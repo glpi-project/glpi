@@ -54,16 +54,16 @@ class Holiday extends CommonDropdown
 
         return [['name'  => 'begin_date',
             'label' => __('Start'),
-            'type'  => 'date'
+            'type'  => 'date',
         ],
             ['name'  => 'end_date',
                 'label' => __('End'),
-                'type'  => 'date'
+                'type'  => 'date',
             ],
             ['name'  => 'is_perpetual',
                 'label' => __('Recurrent'),
-                'type'  => 'bool'
-            ]
+                'type'  => 'bool',
+            ],
         ];
     }
 
@@ -77,7 +77,7 @@ class Holiday extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'begin_date',
             'name'               => __('Start'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -85,7 +85,7 @@ class Holiday extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'end_date',
             'name'               => __('End'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -93,7 +93,7 @@ class Holiday extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_perpetual',
             'name'               => __('Recurrent'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         return $tab;

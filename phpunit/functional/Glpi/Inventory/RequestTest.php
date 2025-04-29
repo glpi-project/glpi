@@ -41,12 +41,12 @@ class RequestTest extends \GLPITestCase
 {
     public function testConstructor()
     {
-       //no mode without content
+        //no mode without content
         $request = new \Glpi\Inventory\Request();
         $this->assertNull($request->getMode());
         $this->assertSame("", $request->getResponse());
 
-       //no mode with content
+        //no mode with content
         $request->addToResponse(["something" => "some content"]);
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Mode has not been set');
@@ -63,7 +63,7 @@ class RequestTest extends \GLPITestCase
         $this->assertSame("<?xml version=\"1.0\"?>\n<REPLY/>", $request->getResponse());
         $this->assertSame('application/xml', $request->getContentType());
 
-       //JSON mode
+        //JSON mode
         $request = new \Glpi\Inventory\Request();
         $request->handleContentType('application/json');
         $this->assertSame(\Glpi\Inventory\Request::JSON_MODE, $request->getMode());
@@ -164,8 +164,8 @@ class RequestTest extends \GLPITestCase
                     'attributes' => [
                         'THREADS_DISCOVERY' => 5,
                         'TIMEOUT' => 1,
-                        'PID' => 16
-                    ]
+                        'PID' => 16,
+                    ],
                 ],
                 'RANGEIP' => [
                     'content' => '',
@@ -173,8 +173,8 @@ class RequestTest extends \GLPITestCase
                         'ID' => 1,
                         'IPSTART' => '192.168.1.1',
                         'IPEND' => '192.168.1.254',
-                        'ENTITY' => 0
-                    ]
+                        'ENTITY' => 0,
+                    ],
                 ],
                 [
                     'AUTHENTICATION' => [
@@ -187,9 +187,9 @@ class RequestTest extends \GLPITestCase
                             'AUTHPROTOCOL' => '',
                             'AUTHPASSPHRASE' => '',
                             'PRIVPROTOCOL' => '',
-                            'PRIVPASSPHRASE' => ''
-                        ]
-                    ]
+                            'PRIVPASSPHRASE' => '',
+                        ],
+                    ],
                 ], [
                     'AUTHENTICATION' => [
                         'content' => '',
@@ -201,11 +201,11 @@ class RequestTest extends \GLPITestCase
                             'AUTHPROTOCOL' => '',
                             'AUTHPASSPHRASE' => '',
                             'PRIVPROTOCOL' => '',
-                            'PRIVPASSPHRASE' => ''
-                        ]
-                    ]
-                ]
-            ]
+                            'PRIVPASSPHRASE' => '',
+                        ],
+                    ],
+                ],
+            ],
         ]);
 
         $this->assertSame(
@@ -219,23 +219,23 @@ class RequestTest extends \GLPITestCase
         return [
             [
                 'function' => 'gzcompress',
-                'mime' => 'application/x-compress-zlib'
+                'mime' => 'application/x-compress-zlib',
             ], [
                 'function' => 'gzcompress',
-                'mime' => 'application/x-zlib'
+                'mime' => 'application/x-zlib',
             ], [
                 'function' => 'gzencode',
-                'mime' => 'application/x-gzip'
+                'mime' => 'application/x-gzip',
             ], [
                 'function' => 'gzencode',
-                'mime' => 'application/x-compress-gzip'
+                'mime' => 'application/x-compress-gzip',
             ], [
                 'function' => 'gzdeflate',
-                'mime' => 'application/x-compress-deflate'
+                'mime' => 'application/x-compress-deflate',
             ], [
                 'function' => 'gzdeflate',
-                'mime' => 'application/x-deflate'
-            ]
+                'mime' => 'application/x-deflate',
+            ],
         ];
     }
 

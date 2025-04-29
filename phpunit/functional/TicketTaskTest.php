@@ -53,17 +53,17 @@ class TicketTaskTest extends DbTestCase
         $ticket = new \Ticket();
         $this->assertGreaterThan(
             0,
-            (int)$ticket->add([
+            (int) $ticket->add([
                 'name'               => 'ticket title',
                 'description'        => 'a description',
                 'content'            => '',
                 'entities_id'        => getItemByTypeName('Entity', '_test_root_entity', true),
-                '_users_id_assign'   => getItemByTypeName('User', 'tech', true)
+                '_users_id_assign'   => getItemByTypeName('User', 'tech', true),
             ])
         );
 
         $this->assertFalse($ticket->isNewItem());
-        $tid = (int)$ticket->fields['id'];
+        $tid = (int) $ticket->fields['id'];
 
         return ($as_object ? $ticket : $tid);
     }
@@ -98,7 +98,7 @@ class TicketTaskTest extends DbTestCase
                 'itemtype'    => 'TicketTask',
                 'users_id'    => $uid,
                 'field'       => 'begin', //default
-            ]
+            ],
         ]);
         $this->assertGreaterThan(0, $task_id);
 
@@ -142,7 +142,7 @@ class TicketTaskTest extends DbTestCase
                 'itemtype'    => 'TicketTask',
                 'users_id'    => $uid,
                 'field'       => 'begin', //default
-            ]
+            ],
         ]);
         $this->assertGreaterThan(0, $task_id);
 
@@ -175,7 +175,7 @@ class TicketTaskTest extends DbTestCase
                     'itemtype'    => 'TicketTask',
                     'users_id'    => $uid,
                     'field'       => 'begin', //default
-                ]
+                ],
             ])
         );
 
@@ -204,7 +204,7 @@ class TicketTaskTest extends DbTestCase
         $tasksstates = [
             \Planning::TODO,
             \Planning::TODO,
-            \Planning::INFO
+            \Planning::INFO,
         ];
         //create few tasks
         $task = new \TicketTask();
@@ -215,7 +215,7 @@ class TicketTaskTest extends DbTestCase
                     'content'      => sprintf('Task with "%s" state', $taskstate),
                     'state'        => $taskstate,
                     'tickets_id'   => $ticketId,
-                    'users_id_tech' => $uid
+                    'users_id_tech' => $uid,
                 ])
             );
         }
@@ -244,7 +244,7 @@ class TicketTaskTest extends DbTestCase
             \Planning::TODO,
             \Planning::TODO,
             \Planning::INFO,
-            \Planning::INFO
+            \Planning::INFO,
         ];
         //create few tasks
         $task = new \TicketTask();
@@ -255,7 +255,7 @@ class TicketTaskTest extends DbTestCase
                     'content'      => sprintf('Task with "%s" state', $taskstate),
                     'state'        => $taskstate,
                     'tickets_id'   => $ticketId,
-                    'users_id_tech' => $uid
+                    'users_id_tech' => $uid,
                 ])
             );
         }
@@ -297,7 +297,7 @@ class TicketTaskTest extends DbTestCase
         $this->login();
 
         $user = getItemByTypeName('User', 'tech');
-        $users_id = (int)$user->fields['id'];
+        $users_id = (int) $user->fields['id'];
 
         $ticket = $this->getNewTicket(true);
         $tid = $ticket->fields['id'];
@@ -305,32 +305,32 @@ class TicketTaskTest extends DbTestCase
         $ttask = new \TicketTask();
         $this->assertGreaterThan(
             0,
-            (int)$ttask->add([
+            (int) $ttask->add([
                 'name'               => 'first test, whole period',
                 'content'            => 'first test, whole period',
                 'tickets_id'         => $tid,
                 'plan'               => [
                     'begin'  => '2019-08-10',
-                    'end'    => '2019-08-20'
+                    'end'    => '2019-08-20',
                 ],
                 'users_id_tech'      => $users_id,
-                'tasktemplates_id'   => 0
+                'tasktemplates_id'   => 0,
             ])
         );
         $this->hasNoSessionMessages([ERROR, WARNING]);
 
         $this->assertGreaterThan(
             0,
-            (int)$ttask->add([
+            (int) $ttask->add([
                 'name'               => 'test, subperiod',
                 'content'            => 'test, subperiod',
                 'tickets_id'         => $tid,
                 'plan'               => [
                     'begin'   => '2019-08-13',
-                    'end'     => '2019-08-14'
+                    'end'     => '2019-08-14',
                 ],
                 'users_id_tech'      => $users_id,
-                'tasktemplates_id'   => 0
+                'tasktemplates_id'   => 0,
             ])
         );
 
@@ -339,7 +339,7 @@ class TicketTaskTest extends DbTestCase
             WARNING,
             [
                 "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='" .
-            $ticket->getFormURLWithID($tid) . "&amp;forcetab=TicketTask$1'>ticket title</a><br/>"
+            $ticket->getFormURLWithID($tid) . "&amp;forcetab=TicketTask$1'>ticket title</a><br/>",
             ]
         );
         $this->assertGreaterThan(0, $tid);
@@ -347,16 +347,16 @@ class TicketTaskTest extends DbTestCase
         //add another task to be updated
         $this->assertGreaterThan(
             0,
-            (int)$ttask->add([
+            (int) $ttask->add([
                 'name'               => 'first test, whole period',
                 'content'            => 'first test, whole period',
                 'tickets_id'         => $tid,
                 'plan'               => [
                     'begin'  => '2018-08-10',
-                    'end'    => '2018-08-20'
+                    'end'    => '2018-08-20',
                 ],
                 'users_id_tech'      => $users_id,
-                'tasktemplates_id'   => 0
+                'tasktemplates_id'   => 0,
             ])
         );
         $this->hasNoSessionMessages([ERROR, WARNING]);
@@ -369,7 +369,7 @@ class TicketTaskTest extends DbTestCase
                 'tickets_id'   => $tid,
                 'plan'               => [
                     'begin'  => str_replace('2018', '2019', $ttask->fields['begin']),
-                    'end'    => str_replace('2018', '2019', $ttask->fields['end'])
+                    'end'    => str_replace('2018', '2019', $ttask->fields['end']),
                 ],
                 'users_id_tech'      => $users_id,
             ])
@@ -381,7 +381,7 @@ class TicketTaskTest extends DbTestCase
             [
                 "The user $usr_str is busy at the selected timeframe.<br/>- Ticket task: from 2019-08-10 00:00 to 2019-08-20 00:00:<br/><a href='" .
             $ticket->getFormURLWithID($tid) . "&amp;forcetab=TicketTask$1'>ticket title</a><br/>- Ticket task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='" . $ticket
-            ->getFormURLWithID($tid) . "&amp;forcetab=TicketTask$1'>ticket title</a><br/>"
+            ->getFormURLWithID($tid) . "&amp;forcetab=TicketTask$1'>ticket title</a><br/>",
             ]
         );
     }
@@ -677,7 +677,7 @@ class TicketTaskTest extends DbTestCase
                 'plan'               => [
                     'begin'        => $date_begin_string,
                     'end'          => $date_end_string,
-                ]
+                ],
             ])
         );
 
@@ -696,7 +696,7 @@ class TicketTaskTest extends DbTestCase
                 'plan'               => [
                     'begin'        => $date_begin_string,
                     'end'          => $date_end_string,
-                ]
+                ],
             ])
         );
 

@@ -83,7 +83,7 @@ class Certificate_ItemTest extends DbTestCase
         $input = [
             'certificates_id' => $cid1,
             'itemtype'        => 'Computer',
-            'items_id'        => $computer->getID()
+            'items_id'        => $computer->getID(),
         ];
         $this->assertGreaterThan(0, $cert_item->add($input));
 
@@ -96,7 +96,7 @@ class Certificate_ItemTest extends DbTestCase
         $input = [
             'certificates_id' => $cid1,
             'itemtype'        => 'Printer',
-            'items_id'        => $printer->getID()
+            'items_id'        => $printer->getID(),
         ];
         $this->assertGreaterThan(0, $cert_item->add($input));
 
@@ -119,7 +119,7 @@ class Certificate_ItemTest extends DbTestCase
         $list_types = iterator_to_array($cert_item->getDistinctTypes($cid1));
         $expected = [
             ['itemtype' => 'Computer'],
-            ['itemtype' => 'Printer']
+            ['itemtype' => 'Printer'],
         ];
         $this->assertSame($expected, $list_types);
 

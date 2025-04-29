@@ -45,7 +45,7 @@ use Glpi\RichText\RichText;
  **/
 class ProjectTask_Ticket extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1   = 'ProjectTask';
     public static $items_id_1   = 'projecttasks_id';
 
@@ -127,11 +127,11 @@ class ProjectTask_Ticket extends CommonDBRelation
                 'glpi_tickets' => [
                     'FKEY'   => [
                         self::getTable()  => 'tickets_id',
-                        'glpi_tickets'    => 'id'
-                    ]
-                ]
+                        'glpi_tickets'    => 'id',
+                    ],
+                ],
             ],
-            'WHERE'        => ['projecttasks_id' => $projecttasks_id]
+            'WHERE'        => ['projecttasks_id' => $projecttasks_id],
         ]);
 
         if ($row = $iterator->current()) {
@@ -172,8 +172,8 @@ class ProjectTask_Ticket extends CommonDBRelation
                     'glpi_tickets.status'    => array_merge(
                         Ticket::getSolvedStatusArray(),
                         Ticket::getClosedStatusArray()
-                    )
-                ]
+                    ),
+                ],
             ];
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
@@ -186,9 +186,9 @@ class ProjectTask_Ticket extends CommonDBRelation
                     'entity_sons' => $projecttask->isRecursive(),
                     'used'        => $used,
                     'displaywith' => ['id'],
-                    'condition'   => $condition
+                    'condition'   => $condition,
                 ],
-                'create_link' => Session::haveRight(Ticket::$rightname, CREATE)
+                'create_link' => Session::haveRight(Ticket::$rightname, CREATE),
             ]);
         }
 
@@ -196,7 +196,7 @@ class ProjectTask_Ticket extends CommonDBRelation
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $numrows),
-                'container'        => 'mass' . __CLASS__ . $rand
+                'container'        => 'mass' . __CLASS__ . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -209,12 +209,12 @@ class ProjectTask_Ticket extends CommonDBRelation
             Session::initNavigateListItems(
                 'Ticket',
                 //TRANS : %1$s is the itemtype name,
-                                 //        %2$s is the name of the item (used for headings of a list)
-                                         sprintf(
-                                             __('%1$s = %2$s'),
-                                             ProjectTask::getTypeName(1),
-                                             $projecttask->fields["name"]
-                                         )
+                //        %2$s is the name of the item (used for headings of a list)
+                sprintf(
+                    __('%1$s = %2$s'),
+                    ProjectTask::getTypeName(1),
+                    $projecttask->fields["name"]
+                )
             );
 
             $i = 0;
@@ -225,10 +225,10 @@ class ProjectTask_Ticket extends CommonDBRelation
                     [
                         'row_num'                => $i,
                         'type_for_massiveaction' => __CLASS__,
-                        'id_for_massiveaction'   => $data['linkid']
+                        'id_for_massiveaction'   => $data['linkid'],
                     ]
                 );
-                 $i++;
+                $i++;
             }
         }
         echo "</table>";
@@ -286,7 +286,7 @@ class ProjectTask_Ticket extends CommonDBRelation
                     'SELECT' => ['id'],
                     'FROM'   => ProjectState::getTable(),
                     'WHERE'  => [
-                        'is_finished' => 1
+                        'is_finished' => 1,
                     ],
                 ]
             );
@@ -299,15 +299,15 @@ class ProjectTask_Ticket extends CommonDBRelation
                 'entity_restrict' => $ticket->getEntityID(),
                 'used'            => $used,
                 'rand'            => $rand,
-                'myname'          => "projects"
+                'myname'          => "projects",
             ];
 
             if (count($finished_states_ids)) {
                 $where = [
                     'OR'  => [
                         'projectstates_id'   => $finished_states_ids,
-                        'is_template'        => 1
-                    ]
+                        'is_template'        => 1,
+                    ],
                 ];
             } else {
                 $where = ['is_template' => 1];
@@ -317,7 +317,7 @@ class ProjectTask_Ticket extends CommonDBRelation
                 [
                     'SELECT' => ['id'],
                     'FROM'   => Project::getTable(),
-                    'WHERE'  => $where
+                    'WHERE'  => $where,
                 ]
             );
             $excluded_projects_ids = [];
@@ -329,7 +329,7 @@ class ProjectTask_Ticket extends CommonDBRelation
                 'used'        => $used,
                 'entity'      => $ticket->getEntityID(),
                 'entity_sons' => $ticket->isRecursive(),
-                'displaywith' => ['id']
+                'displaywith' => ['id'],
             ];
 
             $condition = [];
@@ -361,12 +361,12 @@ class ProjectTask_Ticket extends CommonDBRelation
                     'toupdate' => [
                         "id" => "results_projects$rand",
                         "itemtype" => ProjectTask::class,
-                        'params' => $dd_params
+                        'params' => $dd_params,
                     ],
                     'url' => $CFG_GLPI["root_doc"] . "/ajax/dropdownProjectTaskTicket.php",
-                    'params' => $p
+                    'params' => $p,
                 ],
-                'create_link' => false
+                'create_link' => false,
             ]);
         }
 
@@ -409,58 +409,58 @@ class ProjectTask_Ticket extends CommonDBRelation
                     'father.name AS fname',
                     'father.id AS fID',
                     'glpi_projects.name AS projectname',
-                    'glpi_projects.content AS projectcontent'
+                    'glpi_projects.content AS projectcontent',
                 ],
                 'FROM'      => 'glpi_projecttasks',
                 'LEFT JOIN' => [
                     'glpi_projecttasktypes' => [
                         'ON' => [
                             'glpi_projecttasktypes' => 'id',
-                            'glpi_projecttasks'     => 'projecttasktypes_id'
-                        ]
+                            'glpi_projecttasks'     => 'projecttasktypes_id',
+                        ],
                     ],
                     'glpi_projectstates'    => [
                         'ON' => [
                             'glpi_projectstates' => 'id',
-                            'glpi_projecttasks'  => 'projectstates_id'
-                        ]
+                            'glpi_projecttasks'  => 'projectstates_id',
+                        ],
                     ],
                     'glpi_projecttasks AS father' => [
                         'ON' => [
                             'father'             => 'id',
-                            'glpi_projecttasks'  => 'projecttasks_id'
-                        ]
+                            'glpi_projecttasks'  => 'projecttasks_id',
+                        ],
                     ],
                     'glpi_projecttasks_tickets'   => [
                         'ON' => [
                             'glpi_projecttasks_tickets'   => 'projecttasks_id',
-                            'glpi_projecttasks'           => 'id'
-                        ]
+                            'glpi_projecttasks'           => 'id',
+                        ],
                     ],
                     'glpi_projects'               => [
                         'ON' => [
                             'glpi_projecttasks'  => 'projects_id',
-                            'glpi_projects'      => 'id'
-                        ]
-                    ]
+                            'glpi_projects'      => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
-                    'glpi_projecttasks_tickets.tickets_id' => $ID
+                    'glpi_projecttasks_tickets.tickets_id' => $ID,
                 ],
                 'ORDERBY'   => [
-                    "$sort $order"
-                ]
+                    "$sort $order",
+                ],
             ]);
 
             Session::initNavigateListItems(
                 'ProjectTask',
                 //TRANS : %1$s is the itemtype name,
-                                        //       %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            $ticket::getTypeName(1),
-                                            $ticket->getName()
-                                        )
+                //       %2$s is the name of the item (used for headings of a list)
+                sprintf(
+                    __('%1$s = %2$s'),
+                    $ticket::getTypeName(1),
+                    $ticket->getName()
+                )
             );
 
             if (count($iterator)) {
@@ -470,7 +470,7 @@ class ProjectTask_Ticket extends CommonDBRelation
 
                 $header = '<tr>';
                 foreach ($columns as $key => $val) {
-                  // Non order column
+                    // Non order column
                     if ($key[0] == '_') {
                         $header .= "<th>$val</th>";
                     } else {
@@ -496,7 +496,7 @@ class ProjectTask_Ticket extends CommonDBRelation
                         Html::showToolTip(
                             $data['projectcontent'],
                             ['display' => false,
-                                'applyto' => "Project" . $data["projects_id"] . $rand
+                                'applyto' => "Project" . $data["projects_id"] . $rand,
                             ]
                         )
                     );
@@ -511,7 +511,7 @@ class ProjectTask_Ticket extends CommonDBRelation
                         Html::showToolTip(
                             RichText::getEnhancedHtml($data['content']),
                             ['display' => false,
-                                'applyto' => "ProjectTask" . $data["id"] . $rand
+                                'applyto' => "ProjectTask" . $data["id"] . $rand,
                             ]
                         )
                     );

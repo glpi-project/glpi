@@ -75,12 +75,12 @@ class TicketFollowup implements DeprecatedInterface
 
     public function mapDeprecatedToCurrentCriteria(array $criteria): array
     {
-       // Add itemtype condition
+        // Add itemtype condition
         $criteria[] = [
             "link"       => 'AND',
             "field"      => "6",
             "searchtype" => 'equals',
-            "value"      => "Ticket"
+            "value"      => "Ticket",
         ];
 
         return $criteria;
@@ -92,14 +92,14 @@ class TicketFollowup implements DeprecatedInterface
          ->updateSearchOptionsUids($soptions)
          ->updateSearchOptionsTables($soptions)
          ->alterSearchOption($soptions, "1", [
-             "available_searchtypes" => ["contains"]
+             "available_searchtypes" => ["contains"],
          ])
          ->alterSearchOption($soptions, "2", [
              "available_searchtypes" => [
                  "contains",
                  "equals",
-                 "notequals"
-             ]
+                 "notequals",
+             ],
          ])
          ->alterSearchOption($soptions, "3", [
              "available_searchtypes" => [
@@ -107,22 +107,22 @@ class TicketFollowup implements DeprecatedInterface
                  "notequals",
                  "lessthan",
                  "morethan",
-                 "contains"
-             ]
+                 "contains",
+             ],
          ])
          ->alterSearchOption($soptions, "4", [
              "available_searchtypes" => [
                  "equals",
                  "notequals",
-                 "contains"
-             ]
+                 "contains",
+             ],
          ])
          ->alterSearchOption($soptions, "5", [
              "available_searchtypes" => [
                  "contains",
                  "equals",
-                 "notequals"
-             ]
+                 "notequals",
+             ],
          ])
          ->deleteSearchOption($soptions, "6")
          ->deleteSearchOption($soptions, "119")

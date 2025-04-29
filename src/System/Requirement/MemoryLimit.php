@@ -63,11 +63,11 @@ class MemoryLimit extends AbstractRequirement
     {
         $limit = \Toolbox::getMemoryLimit();
 
-       /*
-        * $limit can be:
-        *  -1 : unlimited
-        *  >0 : allocated bytes
-        */
+        /*
+         * $limit can be:
+         *  -1 : unlimited
+         *  >0 : allocated bytes
+         */
         if ($limit == -1 || $limit >= $this->min) {
             $this->validated = true;
             $this->validation_messages[] = $limit > 0

@@ -126,7 +126,7 @@ class UninstallCommand extends AbstractPluginCommand
                 'FROM'  => Plugin::getTable(),
                 'WHERE' => [
                     ['NOT' => ['state' => Plugin::NOTINSTALLED]],
-                ]
+                ],
             ]
         );
         foreach ($plugin_iterator as $plugin) {

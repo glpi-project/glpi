@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $enclosure->check($_POST["id"], DELETE);
     $enclosure->delete($_POST);
 
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
     $enclosure->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $enclosure->check($_POST["id"], DELETE);
 
     $enclosure->restore($_POST);
@@ -90,7 +90,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s restores an item'), $_SESSION["glpiname"])
     );
     $enclosure->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $enclosure->check($_POST["id"], PURGE);
 
     $enclosure->delete($_POST, 1);
@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $enclosure->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $enclosure->check($_POST["id"], UPDATE);
 
     $enclosure->update($_POST);
@@ -119,7 +119,7 @@ if (isset($_POST["add"])) {
 } else {
     $options = [
         'withtemplate' => $_GET['withtemplate'],
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ];
     if (isset($_GET['position'])) {
         $options['position'] = $_GET['position'];

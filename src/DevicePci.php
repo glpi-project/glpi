@@ -63,12 +63,12 @@ class DevicePci extends CommonDevice
                                             null,
                                             false
                                         ),
-                'type'  => 'registeredIDChooser'
+                'type'  => 'registeredIDChooser',
             ],
                 ['name'  => 'devicepcimodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
-                ]
+                    'type'  => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -83,7 +83,7 @@ class DevicePci extends CommonDevice
             'table'              => 'glpi_devicepcimodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -105,9 +105,9 @@ class DevicePci extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicepcis',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
         ];
 
         return $tab;

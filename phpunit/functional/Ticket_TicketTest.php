@@ -48,7 +48,7 @@ class Ticket_TicketTest extends DbTestCase
         $tone = new \Ticket();
         $this->assertGreaterThan(
             0,
-            (int)$tone->add([
+            (int) $tone->add([
                 'name'         => 'Linked ticket 01',
                 'description'  => 'Linked ticket 01',
                 'content'            => '',
@@ -60,7 +60,7 @@ class Ticket_TicketTest extends DbTestCase
         $ttwo = new \Ticket();
         $this->assertGreaterThan(
             0,
-            (int)$ttwo->add([
+            (int) $ttwo->add([
                 'name'         => 'Linked ticket 02',
                 'description'  => 'Linked ticket 02',
                 'content'            => '',
@@ -77,10 +77,10 @@ class Ticket_TicketTest extends DbTestCase
         $ttwo = $this->ttwo;
 
         $link = new \Ticket_Ticket();
-        $lid = (int)$link->add([
+        $lid = (int) $link->add([
             'tickets_id_1' => $tone->getID(),
             'tickets_id_2' => $ttwo->getID(),
-            'link'         => \Ticket_Ticket::LINK_TO
+            'link'         => \Ticket_Ticket::LINK_TO,
         ]);
         $this->assertGreaterThan(0, $lid);
 
@@ -89,17 +89,17 @@ class Ticket_TicketTest extends DbTestCase
             $link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \Ticket_Ticket::LINK_TO
+                'link'         => \Ticket_Ticket::LINK_TO,
             ])
         );
 
         //but can be reclassed as a duplicate
         $this->assertGreaterThan(
             0,
-            (int)$link->add([
+            (int) $link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \Ticket_Ticket::DUPLICATE_WITH
+                'link'         => \Ticket_Ticket::DUPLICATE_WITH,
             ])
         );
         //original link has been removed
@@ -110,7 +110,7 @@ class Ticket_TicketTest extends DbTestCase
             $link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \Ticket_Ticket::LINK_TO
+                'link'         => \Ticket_Ticket::LINK_TO,
             ])
         );
     }
@@ -124,10 +124,10 @@ class Ticket_TicketTest extends DbTestCase
         $link = new \Ticket_Ticket();
         $this->assertGreaterThan(
             0,
-            (int)$link->add([
+            (int) $link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \Ticket_Ticket::SON_OF
+                'link'         => \Ticket_Ticket::SON_OF,
             ])
         );
 
@@ -137,7 +137,7 @@ class Ticket_TicketTest extends DbTestCase
             $link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \Ticket_Ticket::SON_OF
+                'link'         => \Ticket_Ticket::SON_OF,
             ])
         );
 
@@ -148,10 +148,10 @@ class Ticket_TicketTest extends DbTestCase
         $link = new \Ticket_Ticket();
         $this->assertGreaterThan(
             0,
-            (int)$link->add([
+            (int) $link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \Ticket_Ticket::PARENT_OF
+                'link'         => \Ticket_Ticket::PARENT_OF,
             ])
         );
         $this->assertTrue($link->getFromDB($link->getID()));
@@ -173,10 +173,10 @@ class Ticket_TicketTest extends DbTestCase
         $link = new \Ticket_Ticket();
         $this->assertGreaterThan(
             0,
-            (int)$link->add([
+            (int) $link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \Ticket_Ticket::LINK_TO
+                'link'         => \Ticket_Ticket::LINK_TO,
             ])
         );
 
@@ -186,7 +186,7 @@ class Ticket_TicketTest extends DbTestCase
         $this->assertTrue(
             $link->update([
                 'id'     => $link->getID(),
-                'link'   => \Ticket_Ticket::SON_OF
+                'link'   => \Ticket_Ticket::SON_OF,
             ])
         );
         $this->assertSame(1, \Ticket_Ticket::countOpenChildren($ttwo->getID()));
@@ -194,7 +194,7 @@ class Ticket_TicketTest extends DbTestCase
         $this->assertTrue(
             $tone->update([
                 'id'     => $tone->getID(),
-                'status' => \Ticket::CLOSED
+                'status' => \Ticket::CLOSED,
             ])
         );
         $this->assertSame(0, \Ticket_Ticket::countOpenChildren($ttwo->getID()));
@@ -211,7 +211,7 @@ class Ticket_TicketTest extends DbTestCase
             $ticket_ticket->add([
                 'tickets_id_1' => $this->tone->getID(),
                 'tickets_id_2' => $this->ttwo->getID(),
-                'link'         => \Ticket_Ticket::LINK_TO
+                'link'         => \Ticket_Ticket::LINK_TO,
             ])
         );
 
@@ -232,7 +232,7 @@ class Ticket_TicketTest extends DbTestCase
             $ticket_ticket->add([
                 'tickets_id_1' => $this->tone->getID(),
                 'tickets_id_2' => $other_tickets_id,
-                'link'         => \Ticket_Ticket::LINK_TO
+                'link'         => \Ticket_Ticket::LINK_TO,
             ])
         );
 

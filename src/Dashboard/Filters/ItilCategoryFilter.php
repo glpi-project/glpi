@@ -64,7 +64,7 @@ class ItilCategoryFilter extends AbstractFilter
 
         if ((int) $value > 0) {
             $criteria["WHERE"] = [
-                "$table.itilcategories_id" => getSonsOf(ITILCategory::getTable(), (int) $value)
+                "$table.itilcategories_id" => getSonsOf(ITILCategory::getTable(), (int) $value),
             ];
         }
 
@@ -80,7 +80,7 @@ class ItilCategoryFilter extends AbstractFilter
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'itilcategories_id', 'glpi_itilcategories'),
                 'searchtype' => 'under',
-                'value'      => (int) $value
+                'value'      => (int) $value,
             ];
         }
 

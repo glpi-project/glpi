@@ -50,10 +50,10 @@ class Item_DiskTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            $id = (int)$obj->add([
+            $id = (int) $obj->add([
                 'itemtype'     => $computer->getType(),
                 'items_id'     => $computer->fields['id'],
-                'mountpoint'   => '/'
+                'mountpoint'   => '/',
             ])
         );
         $this->assertTrue($obj->getFromDB($id));
@@ -72,10 +72,10 @@ class Item_DiskTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            $id = (int)$obj->add([
+            $id = (int) $obj->add([
                 'itemtype'     => $computer->getType(),
                 'items_id'     => $computer->fields['id'],
-                'mountpoint'   => '/'
+                'mountpoint'   => '/',
             ])
         );
         $this->assertTrue($obj->getFromDB($id));
@@ -83,7 +83,7 @@ class Item_DiskTest extends DbTestCase
 
         $this->assertTrue($obj->update([
             'id'           => $id,
-            'mountpoint'   => '/mnt'
+            'mountpoint'   => '/mnt',
         ]));
         $this->assertTrue($obj->getFromDB($id));
         $this->assertSame('/mnt', $obj->fields['mountpoint']);
@@ -101,10 +101,10 @@ class Item_DiskTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            $id = (int)$obj->add([
+            $id = (int) $obj->add([
                 'itemtype'     => $computer->getType(),
                 'items_id'     => $computer->fields['id'],
-                'mountpoint'   => '/'
+                'mountpoint'   => '/',
             ])
         );
         $this->assertTrue($obj->getFromDB($id));
@@ -112,7 +112,7 @@ class Item_DiskTest extends DbTestCase
 
         $this->assertTrue(
             $obj->delete([
-                'id'  => $id
+                'id'  => $id,
             ])
         );
         $this->assertTrue($obj->getFromDB($id)); //it's always in DB but with is_deleted = 1

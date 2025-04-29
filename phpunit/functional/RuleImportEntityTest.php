@@ -52,7 +52,7 @@ class RuleImportEntityTest extends DbTestCase
             'entities_id'  => 0,
             'completename' => 'Root entitiy > Entity A',
             'level'        => 2,
-            'tag'          => 'entA'
+            'tag'          => 'entA',
         ]);
         $this->assertGreaterThan(0, $entities_id_a);
 
@@ -61,7 +61,7 @@ class RuleImportEntityTest extends DbTestCase
             'entities_id'  => 0,
             'completename' => 'Root entitiy > Entity B',
             'level'        => 2,
-            'tag'          => 'entB'
+            'tag'          => 'entB',
         ]);
         $this->assertGreaterThan(0, $entities_id_b);
 
@@ -70,7 +70,7 @@ class RuleImportEntityTest extends DbTestCase
             'entities_id'  => 0,
             'completename' => 'Root entitiy > Entity C',
             'level'        => 2,
-            'tag'          => 'entC'
+            'tag'          => 'entC',
         ]);
         $this->assertGreaterThan(0, $entities_id_c);
 
@@ -81,7 +81,7 @@ class RuleImportEntityTest extends DbTestCase
             'name'      => 'entity rule 1',
             'match'     => 'AND',
             'sub_type'  => 'RuleImportEntity',
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rule1_id = $rule->add($input);
         $this->assertGreaterThan(0, $rule1_id);
@@ -92,7 +92,7 @@ class RuleImportEntityTest extends DbTestCase
             'rules_id'  => $rule1_id,
             'criteria'  => "name",
             'pattern'   => "/^([A-Za-z0-9]*) - ([A-Za-z0-9]*) - (.*)$/",
-            'condition' => \RuleImportEntity::REGEX_MATCH
+            'condition' => \RuleImportEntity::REGEX_MATCH,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -102,7 +102,7 @@ class RuleImportEntityTest extends DbTestCase
             'rules_id'    => $rule1_id,
             'action_type' => 'regex_result',
             'field'       => '_affect_entity_by_tag',
-            'value'       => '#2'
+            'value'       => '#2',
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 
@@ -113,7 +113,7 @@ class RuleImportEntityTest extends DbTestCase
             'name'      => 'entity rule 2',
             'match'     => 'AND',
             'sub_type'  => 'RuleImportEntity',
-            'ranking'   => 2
+            'ranking'   => 2,
         ];
         $rule2_id = $rule->add($input);
         $this->assertGreaterThan(0, $rule2_id);
@@ -124,7 +124,7 @@ class RuleImportEntityTest extends DbTestCase
             'rules_id'  => $rule2_id,
             'criteria'  => "name",
             'pattern'   => "/^([A-Za-z0-9]*) - (.*)$/",
-            'condition' => \RuleImportEntity::REGEX_MATCH
+            'condition' => \RuleImportEntity::REGEX_MATCH,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -134,19 +134,19 @@ class RuleImportEntityTest extends DbTestCase
             'rules_id'    => $rule2_id,
             'action_type' => 'regex_result',
             'field'       => '_affect_entity_by_tag',
-            'value'       => '#1'
+            'value'       => '#1',
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
         $input = [
             'rules_id'    => $rule2_id,
             'action_type' => 'assign',
             'field'       => 'is_recursive',
-            'value'       => 1
+            'value'       => 1,
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 
         $input = [
-            'name' => 'computer01 - entC'
+            'name' => 'computer01 - entC',
         ];
 
         $ruleEntity = new \RuleImportEntityCollection();
@@ -156,12 +156,12 @@ class RuleImportEntityTest extends DbTestCase
         $expected = [
             'entities_id'  => $entities_id_c,
             'is_recursive' => 1,
-            '_ruleid'      => $rule2_id
+            '_ruleid'      => $rule2_id,
         ];
         $this->assertEquals($expected, $ent);
 
         $input = [
-            'name' => 'computer01 - blabla - entB'
+            'name' => 'computer01 - blabla - entB',
         ];
 
         $ruleEntity->getCollectionPart();
@@ -169,7 +169,7 @@ class RuleImportEntityTest extends DbTestCase
 
         $expected = [
             'entities_id' => $entities_id_b,
-            '_ruleid'     => $rule1_id
+            '_ruleid'     => $rule1_id,
         ];
         $this->assertEquals($expected, $ent);
     }
@@ -184,7 +184,7 @@ class RuleImportEntityTest extends DbTestCase
             'name'      => 'entity refuse rule',
             'match'     => 'AND',
             'sub_type'  => \RuleImportEntity::class,
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rules_id = $rule->add($input);
         $this->assertGreaterThan(0, $rules_id);
@@ -197,7 +197,7 @@ class RuleImportEntityTest extends DbTestCase
                 'rules_id'  => $rules_id,
                 'criteria'  => "name",
                 'pattern'   => "/^([A-Za-z0-9]*) - (.*)$/",
-                'condition' => \RuleImportEntity::REGEX_MATCH
+                'condition' => \RuleImportEntity::REGEX_MATCH,
             ])
         );
 
@@ -209,12 +209,12 @@ class RuleImportEntityTest extends DbTestCase
                 'rules_id'    => $rules_id,
                 'action_type' => 'assign',
                 'field'       => '_ignore_import',
-                'value'       => 1
+                'value'       => 1,
             ])
         );
 
         $input = [
-            'name' => 'computer01 - entD'
+            'name' => 'computer01 - entD',
         ];
 
         $ruleEntity = new \RuleImportEntityCollection();
@@ -223,7 +223,7 @@ class RuleImportEntityTest extends DbTestCase
 
         $expected = [
             '_ignore_import' => 1,
-            '_ruleid'     => $rules_id
+            '_ruleid'     => $rules_id,
         ];
         $this->assertEquals($expected, $ent);
     }
@@ -240,19 +240,19 @@ class RuleImportEntityTest extends DbTestCase
 
         $location = new \Location();
         $location_id = $location->add([
-            'name' => 'Location 1'
+            'name' => 'Location 1',
         ]);
         $this->assertGreaterThan(0, $location_id);
 
         $group = new \Group();
         $group_id = $group->add([
-            'name' => 'Group tech 1'
+            'name' => 'Group tech 1',
         ]);
         $this->assertGreaterThan(0, $group_id);
 
         $user = new \User();
         $user_id = $user->add([
-            'name' => 'User tech 1'
+            'name' => 'User tech 1',
         ]);
         $this->assertGreaterThan(0, $user_id);
 
@@ -262,7 +262,7 @@ class RuleImportEntityTest extends DbTestCase
             'name'      => 'entity rule additional actions',
             'match'     => 'AND',
             'sub_type'  => 'RuleImportEntity',
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rule_id = $rule->add($input);
         $this->assertGreaterThan(0, $rule_id);
@@ -272,7 +272,7 @@ class RuleImportEntityTest extends DbTestCase
             'rules_id'  => $rule_id,
             'criteria'  => "name",
             'pattern'   => "/(.*)/",
-            'condition' => \RuleImportEntity::REGEX_MATCH
+            'condition' => \RuleImportEntity::REGEX_MATCH,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -281,28 +281,28 @@ class RuleImportEntityTest extends DbTestCase
             'rules_id'    => $rule_id,
             'action_type' => 'assign',
             'field'       => 'locations_id',
-            'value'       => $location_id
+            'value'       => $location_id,
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
         $input = [
             'rules_id'    => $rule_id,
             'action_type' => 'assign',
             'field'       => 'groups_id_tech',
-            'value'       => $group_id
+            'value'       => $group_id,
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
         $input = [
             'rules_id'    => $rule_id,
             'action_type' => 'assign',
             'field'       => 'users_id_tech',
-            'value'       => $user_id
+            'value'       => $user_id,
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 
         $ruleEntity = new \RuleImportEntityCollection();
         $ruleEntity->getCollectionPart();
         $ent = $ruleEntity->processAllRules([
-            'name' => 'computer01'
+            'name' => 'computer01',
         ], []);
 
         $expected = [
@@ -327,7 +327,7 @@ class RuleImportEntityTest extends DbTestCase
             'entities_id'  => 0,
             'completename' => 'Root entitiy > Entity A',
             'level'        => 2,
-            'tag'          => 'InvEnt'
+            'tag'          => 'InvEnt',
         ]);
         $this->assertGreaterThan(0, $entities_id_a);
 
@@ -341,7 +341,7 @@ class RuleImportEntityTest extends DbTestCase
             'name'      => 'entity rule 1',
             'match'     => 'AND',
             'sub_type'  => 'RuleImportEntity',
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rule1_id = $rule->add($input);
         $this->assertGreaterThan(0, $rule1_id);
@@ -352,7 +352,7 @@ class RuleImportEntityTest extends DbTestCase
             'rules_id'  => $rule1_id,
             'criteria'  => "name",
             'pattern'   => "/^(.*)$/",
-            'condition' => \RuleImportEntity::REGEX_MATCH
+            'condition' => \RuleImportEntity::REGEX_MATCH,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -362,12 +362,12 @@ class RuleImportEntityTest extends DbTestCase
             'rules_id'    => $rule1_id,
             'action_type' => 'regex_result',
             'field'       => '_affect_entity_by_tag',
-            'value'       => 'InvEnt'
+            'value'       => 'InvEnt',
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 
         $input = [
-            'name' => 'computer01 - entC'
+            'name' => 'computer01 - entC',
         ];
 
         $ruleEntity = new \RuleImportEntityCollection();
@@ -376,7 +376,7 @@ class RuleImportEntityTest extends DbTestCase
 
         $expected = [
             'entities_id'  => $entities_id_a,
-            '_ruleid'      => $rule1_id
+            '_ruleid'      => $rule1_id,
         ];
         $this->assertEquals($expected, $ent);
 
@@ -442,7 +442,7 @@ class RuleImportEntityTest extends DbTestCase
 
         $locations_id = $location->add([
             'locations_id' => $locations_parent_id,
-            'name' => 'Location 2 - child'
+            'name' => 'Location 2 - child',
         ]);
         $this->assertGreaterThan(0, $locations_id);
 
@@ -455,7 +455,7 @@ class RuleImportEntityTest extends DbTestCase
             'name'      => 'location rule 1 - itemtype',
             'match'     => 'AND',
             'sub_type'  => 'RuleImportEntity',
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rules_id = $rule->add($input);
         $this->assertGreaterThan(0, $rules_id);
@@ -465,7 +465,7 @@ class RuleImportEntityTest extends DbTestCase
             'rules_id'  => $rules_id,
             'criteria'  => "itemtype",
             'pattern'   => \Computer::class,
-            'condition' => \RuleImportEntity::PATTERN_IS
+            'condition' => \RuleImportEntity::PATTERN_IS,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -474,12 +474,12 @@ class RuleImportEntityTest extends DbTestCase
             'rules_id'    => $rules_id,
             'action_type' => 'assign',
             'field'       => 'locations_id',
-            'value'       => $locations_id
+            'value'       => $locations_id,
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 
         $input = [
-            'itemtype' => \Computer::class
+            'itemtype' => \Computer::class,
         ];
 
         $ruleLocation = new \RuleImportEntityCollection();
@@ -488,12 +488,12 @@ class RuleImportEntityTest extends DbTestCase
 
         $expected = [
             'locations_id' => $locations_id,
-            '_ruleid'      => $rules_id
+            '_ruleid'      => $rules_id,
         ];
         $this->assertEquals($expected, $location_data);
 
         $falseinput = [
-            'itemtype' => \Printer::class
+            'itemtype' => \Printer::class,
         ];
 
         $ruleLocation = new \RuleImportEntityCollection();
@@ -502,7 +502,7 @@ class RuleImportEntityTest extends DbTestCase
 
         $expected = [
             '_no_rule_matches' => true,
-            '_rule_process'    => ""
+            '_rule_process'    => "",
         ];
         $this->assertEquals($expected, $location_data);
 

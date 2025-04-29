@@ -59,7 +59,7 @@ class SessionsSecurityConfiguration extends AbstractRequirement
         $cookie_httponly = filter_var($this->getCookiesHttpOnly(), FILTER_VALIDATE_BOOLEAN);
         $cookie_samesite = $this->getCookiesSamesite();
 
-        $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
+        $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int) ($_SERVER['SERVER_PORT'] ?? null) == 443;
 
         if ($is_cli) {
             $this->validation_messages[] = __('Checking the session cookie configuration of the web server cannot be done in the CLI context.');

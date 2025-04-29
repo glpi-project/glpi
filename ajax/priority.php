@@ -49,7 +49,7 @@ if (
     // Fallback to Form value -> Template values -> Medium
     $priority = Ticket::computePriority(
         $_REQUEST["urgency"] ?: $predefined_fields['urgency'] ?? 3 /* Medium */,
-        $_REQUEST["impact"]  ?: $predefined_fields['impact']  ?? 3 /* Medium */
+        $_REQUEST["impact"] ?: $predefined_fields['impact']  ?? 3 /* Medium */
     );
 
     if (isset($_REQUEST['getJson'])) {

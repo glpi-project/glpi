@@ -38,14 +38,14 @@
  */
 
 $dc_models = [ComputerModel::class, EnclosureModel::class, MonitorModel::class, NetworkEquipmentModel::class,
-    PassiveDCEquipmentModel::class, PDUModel::class, PeripheralModel::class
+    PassiveDCEquipmentModel::class, PDUModel::class, PeripheralModel::class,
 ];
 
 // Itemtypes with a 'front_picture' and 'rear picture' field
 $front_rear_picture_itemtypes = [PhoneModel::class, PrinterModel::class];
 // Itemtypes with a 'pictures' field that can contain one or more pictures
 $misc_pictures_itemtypes = array_merge([PhoneModel::class, PrinterModel::class, Software::class, CartridgeItem::class, ConsumableItem::class,
-    RackModel::class, SoftwareLicense::class, Datacenter::class, Contact::class, Supplier::class, Appliance::class
+    RackModel::class, SoftwareLicense::class, Datacenter::class, Contact::class, Supplier::class, Appliance::class,
 ], $dc_models);
 
 /** @var CommonDBTM $itemtype */
@@ -65,7 +65,7 @@ foreach ($misc_pictures_itemtypes as $itemtype) {
     if (!$DB->fieldExists($table, 'pictures')) {
         $after = ($DB->fieldExists($table, 'picture_rear')) ? 'picture_rear' : '';
         $migration->addField($table, 'pictures', 'text', [
-            'after'  => $after
+            'after'  => $after,
         ]);
     }
 }

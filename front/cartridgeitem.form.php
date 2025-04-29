@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $cartype->check($_POST["id"], DELETE);
 
     if ($cartype->delete($_POST)) {
@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
         );
     }
     $cartype->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $cartype->check($_POST["id"], DELETE);
 
     if ($cartype->restore($_POST)) {
@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
         );
     }
     $cartype->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $cartype->check($_POST["id"], PURGE);
 
     if ($cartype->delete($_POST, 1)) {
@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
         );
     }
     $cartype->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $cartype->check($_POST["id"], UPDATE);
 
     if ($cartype->update($_POST)) {
@@ -120,6 +120,6 @@ if (isset($_POST["add"])) {
 } else {
     $menus = ["assets", "cartridgeitem"];
     CartridgeItem::displayFullPageForItem($_GET["id"], $menus, [
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

@@ -53,10 +53,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     use VobjectConverterTrait;
     use Glpi\Features\Teamwork;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
 
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype     = 'Project';
     public static $items_id     = 'projects_id';
 
@@ -66,8 +66,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public $can_be_translated   = true;
 
-    const READMY      = 1;
-    const UPDATEMY    = 1024;
+    public const READMY      = 1;
+    public const UPDATEMY    = 1024;
 
 
 
@@ -207,7 +207,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function post_getFromDB()
     {
-       // Team
+        // Team
         $this->team    = ProjectTaskTeam::getTeamFor($this->fields['id']);
     }
 
@@ -236,7 +236,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         );
 
         if (in_array('plan_start_date', $this->updates) || in_array('plan_end_date', $this->updates)) {
-           //dates has changed, check for planning conflicts on attached team
+            //dates has changed, check for planning conflicts on attached team
             $team = ProjectTaskTeam::getTeamFor($this->fields['id']);
             $users = [];
             foreach ($team as $type => $actors) {
@@ -248,11 +248,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         break;
                     case Group::getType():
                         foreach ($actors as $actor) {
-                             $group_iterator = $DB->request([
-                                 'SELECT' => 'users_id',
-                                 'FROM'   => Group_User::getTable(),
-                                 'WHERE'  => ['groups_id' => $actor['items_id']]
-                             ]);
+                            $group_iterator = $DB->request([
+                                'SELECT' => 'users_id',
+                                'FROM'   => Group_User::getTable(),
+                                'WHERE'  => ['groups_id' => $actor['items_id']],
+                            ]);
                             foreach ($group_iterator as $row) {
                                 $users[$row['users_id']] = $row['users_id'];
                             }
@@ -260,7 +260,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         break;
                     case Supplier::getType():
                     case Contact::getType():
-                     //only Users can be checked for planning conflicts
+                        //only Users can be checked for planning conflicts
                         break;
                     default:
                         if (count($actors)) {
@@ -279,10 +279,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         if (in_array('auto_percent_done', $this->updates) && $this->input['auto_percent_done'] == 1) {
-           // Auto-calculate was toggled. Force recalculation of this and parents
+            // Auto-calculate was toggled. Force recalculation of this and parents
             self::recalculatePercentDone($this->getID());
         } else {
-           // Update parent percent_done
+            // Update parent percent_done
             if ($this->fields['projecttasks_id'] > 0) {
                 self::recalculatePercentDone($this->fields['projecttasks_id']);
             }
@@ -292,16 +292,16 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         if (isset($this->input['_old_projects_id'])) {
-           // Recalculate previous parent project percent done
+            // Recalculate previous parent project percent done
             Project::recalculatePercentDone($this->input['_old_projects_id']);
         }
         if (isset($this->input['_old_projecttasks_id'])) {
-           // Recalculate previous parent task percent done
+            // Recalculate previous parent task percent done
             self::recalculatePercentDone($this->input['_old_projecttasks_id']);
         }
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-           // Read again project to be sure that all data are up to date
+            // Read again project to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
             NotificationEvent::raiseEvent("update", $this);
         }
@@ -323,7 +323,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             ]
         );
 
-       // ADD Documents
+        // ADD Documents
         $document_items = Document_Item::getItemsAssociatedTo($this->getType(), $this->fields['id']);
         $override_input['items_id'] = $this->getID();
         foreach ($document_items as $document_item) {
@@ -339,7 +339,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-           // Clean reload of the project
+            // Clean reload of the project
             $this->getFromDB($this->fields['id']);
 
             NotificationEvent::raiseEvent('new', $this);
@@ -434,7 +434,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         if (isset($input['is_milestone']) && $input['is_milestone']) {
-           // Milestone are a precise moment, start date and end dates should have same values.
+            // Milestone are a precise moment, start date and end dates should have same values.
             if (array_key_exists('plan_start_date', $input)) {
                 $input['plan_end_date'] = $input['plan_start_date'];
             }
@@ -495,7 +495,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         if (isset($input['is_milestone']) && $input['is_milestone']) {
-           // Milestone are a precise moment, start date and end dates should have same values.
+            // Milestone are a precise moment, start date and end dates should have same values.
             if (array_key_exists('plan_start_date', $input)) {
                 $input['plan_end_date'] = $input['plan_start_date'];
             }
@@ -524,9 +524,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $iterator = $DB->request([
             'FROM'   => 'glpi_projecttasks',
             'WHERE'  => [
-                'projects_id'  => $ID
+                'projects_id'  => $ID,
             ],
-            'ORDERBY'   => ['plan_start_date', 'real_start_date']
+            'ORDERBY'   => ['plan_start_date', 'real_start_date'],
         ]);
 
         foreach ($iterator as $data) {
@@ -552,9 +552,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $iterator = $DB->request([
             'FROM'   => 'glpi_projecttasks',
             'WHERE'  => [
-                'projecttasks_id'  => $ID
+                'projecttasks_id'  => $ID,
             ],
-            'ORDERBY'   => ['plan_start_date', 'real_start_date']
+            'ORDERBY'   => ['plan_start_date', 'real_start_date'],
         ]);
 
         foreach ($iterator as $data) {
@@ -582,14 +582,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 'glpi_projecttasks'  => [
                     'ON' => [
                         'glpi_projecttasks_tickets'   => 'projecttasks_id',
-                        'glpi_projecttasks'           => 'id'
-                    ]
-                ]
+                        'glpi_projecttasks'           => 'id',
+                    ],
+                ],
             ],
             'FIELDS' =>  'tickets_id',
             'WHERE'        => [
-                'glpi_projecttasks.projects_id'   => $ID
-            ]
+                'glpi_projecttasks.projects_id'   => $ID,
+            ],
         ]);
 
         $tasks = [];
@@ -685,17 +685,17 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 'glpi_projecttasks_tickets'   => [
                     'FKEY'   => [
                         'glpi_projecttasks_tickets'   => 'projecttasks_id',
-                        self::getTable()              => 'id'
-                    ]
+                        self::getTable()              => 'id',
+                    ],
                 ],
                 'glpi_tickets'                => [
                     'FKEY'   => [
                         'glpi_projecttasks_tickets'   => 'tickets_id',
-                        'glpi_tickets'                => 'id'
-                    ]
-                ]
+                        'glpi_tickets'                => 'id',
+                    ],
+                ],
             ],
-            'WHERE'     => [self::getTable() . '.id' => $projecttasks_id]
+            'WHERE'     => [self::getTable() . '.id' => $projecttasks_id],
         ]);
 
         if ($row = $iterator->current()) {
@@ -720,7 +720,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $iterator = $DB->request([
             'SELECT' => 'id',
             'FROM'   => self::getTable(),
-            'WHERE'  => ['projects_id' => $projects_id]
+            'WHERE'  => ['projects_id' => $projects_id],
         ]);
         $time = 0;
         foreach ($iterator as $data) {
@@ -745,7 +745,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $iterator = $DB->request([
             'SELECT' => new QueryExpression('SUM(planned_duration) AS duration'),
             'FROM'   => self::getTable(),
-            'WHERE'  => ['projects_id' => $projects_id]
+            'WHERE'  => ['projects_id' => $projects_id],
         ]);
 
         foreach ($iterator as $data) {
@@ -761,7 +761,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -779,7 +779,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'field'              => 'name',
             'name'               => Project::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -789,10 +789,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'name'               => __('Father'),
             'datatype'           => 'dropdown',
             'massiveaction'      => false,
-         // Add virtual condition to relink table
+            // Add virtual condition to relink table
             'joinparams'         => [
-                'condition'          => 'AND 1=1'
-            ]
+                'condition'          => 'AND 1=1',
+            ],
         ];
 
         $tab[] = [
@@ -810,7 +810,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'table'              => 'glpi_projectstates',
             'field'              => 'name',
             'name'               => _x('item', 'State'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -818,7 +818,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'table'              => 'glpi_projecttasktypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -827,7 +827,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -836,7 +836,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -848,7 +848,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'unit'               => '%',
             'min'                => 0,
             'max'                => 100,
-            'step'               => 5
+            'step'               => 5,
         ];
 
         $tab[] = [
@@ -857,7 +857,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'field'              => 'name',
             'linkfield'          => 'users_id',
             'name'               => __('Creator'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -865,7 +865,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'table'              => $this->getTable(),
             'field'              => 'plan_start_date',
             'name'               => __('Planned start date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -873,7 +873,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'table'              => $this->getTable(),
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -881,7 +881,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'table'              => $this->getTable(),
             'field'              => 'real_start_date',
             'name'               => __('Real start date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -889,7 +889,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'table'              => $this->getTable(),
             'field'              => 'real_end_date',
             'name'               => __('Real end date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -902,7 +902,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'max'                => 100 * HOUR_TIMESTAMP,
             'step'               => HOUR_TIMESTAMP,
             'addfirstminutes'    => true,
-            'inhours'            => true
+            'inhours'            => true,
         ];
 
         $tab[] = [
@@ -915,7 +915,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'max'                => 100 * HOUR_TIMESTAMP,
             'step'               => HOUR_TIMESTAMP,
             'addfirstminutes'    => true,
-            'inhours'            => true
+            'inhours'            => true,
         ];
 
         $tab[] = [
@@ -923,7 +923,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -931,7 +931,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'table'              => $this->getTable(),
             'field'              => 'is_milestone',
             'name'               => __('Milestone'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -950,7 +950,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'table'              => 'glpi_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -958,7 +958,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'table'              => $this->getTable(),
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -994,7 +994,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'plan_end_date'    => __('Planned end date'),
             'planned_duration' => __('Planned duration'),
             '_effect_duration' => __('Effective duration'),
-            'fname'            => __('Father')
+            'fname'            => __('Father'),
         ];
 
         $criteria = [
@@ -1004,31 +1004,31 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 'glpi_projectstates.name AS sname',
                 'glpi_projectstates.color',
                 'father.name AS fname',
-                'father.id AS fID'
+                'father.id AS fID',
             ],
             'FROM'   => 'glpi_projecttasks',
             'LEFT JOIN' => [
                 'glpi_projecttasktypes'        => [
                     'ON'  => [
                         'glpi_projecttasktypes' => 'id',
-                        'glpi_projecttasks'     => 'projecttasktypes_id'
-                    ]
+                        'glpi_projecttasks'     => 'projecttasktypes_id',
+                    ],
                 ],
                 'glpi_projectstates'          => [
                     'ON'  => [
                         'glpi_projectstates' => 'id',
-                        'glpi_projecttasks'  => 'projectstates_id'
-                    ]
+                        'glpi_projecttasks'  => 'projectstates_id',
+                    ],
                 ],
                 'glpi_projecttasks AS father' => [
                     'ON'  => [
                         'father' => 'id',
-                        'glpi_projecttasks'  => 'projecttasks_id'
-                    ]
-                ]
+                        'glpi_projecttasks'  => 'projecttasks_id',
+                    ],
+                ],
             ],
             'WHERE'  => [], //$where
-            'ORDERBY'   => [] // $sort $order";
+            'ORDERBY'   => [], // $sort $order";
         ];
 
         if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
@@ -1102,10 +1102,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         'AND' => [
                             'namet2.itemtype' => 'ProjectTaskType',
                             'namet2.language' => $_SESSION['glpilanguage'],
-                            'namet2.field'    => 'name'
-                        ]
-                    ]
-                ]
+                            'namet2.field'    => 'name',
+                        ],
+                    ],
+                ],
             ];
         }
 
@@ -1118,10 +1118,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         'AND' => [
                             'namet3.itemtype' => 'ProjectState',
                             'namet3.language' => $_SESSION['glpilanguage'],
-                            'namet3.field'    => 'name'
-                        ]
-                    ]
-                ]
+                            'namet3.field'    => 'name',
+                        ],
+                    ],
+                ],
             ];
         }
 
@@ -1129,11 +1129,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'ProjectTask',
             //TRANS : %1$s is the itemtype name,
             //       %2$s is the name of the item (used for headings of a list)
-                                     sprintf(
-                                         __('%1$s = %2$s'),
-                                         $item::getTypeName(1),
-                                         $item->getName()
-                                     )
+            sprintf(
+                __('%1$s = %2$s'),
+                $item::getTypeName(1),
+                $item->getName()
+            )
         );
 
         $iterator = $DB->request($criteria);
@@ -1168,7 +1168,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                     Html::showToolTip(
                         RichText::getEnhancedHtml($data['content']),
                         ['display' => false,
-                            'applyto' => "ProjectTask" . $data["id"] . $rand
+                            'applyto' => "ProjectTask" . $data["id"] . $rand,
                         ]
                     )
                 );
@@ -1191,10 +1191,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 ) . "</td>";
                 echo "<td>";
                 if ($data['projecttasks_id'] > 0) {
-                      $father = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
-                      echo "<a id='ProjectTask" . $data["projecttasks_id"] . $rand . "' href='" .
-                        ProjectTask::getFormURLWithID($data['projecttasks_id']) . "'>" . $father .
-                        (empty($father) ? "(" . $data['projecttasks_id'] . ")" : "") . "</a>";
+                    $father = Dropdown::getDropdownName('glpi_projecttasks', $data['projecttasks_id']);
+                    echo "<a id='ProjectTask" . $data["projecttasks_id"] . $rand . "' href='" .
+                      ProjectTask::getFormURLWithID($data['projecttasks_id']) . "'>" . $father .
+                      (empty($father) ? "(" . $data['projecttasks_id'] . ")" : "") . "</a>";
                 }
                 echo "</td></tr>";
             }
@@ -1262,7 +1262,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      **/
     public function showTeam(ProjectTask $task)
     {
-       /// TODO : permit to simple add member of project team ?
+        /// TODO : permit to simple add member of project team ?
 
         $ID      = $task->fields['id'];
         $canedit = $task->canEdit($ID);
@@ -1287,7 +1287,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                                                    $task->fields['entities_id']
                                                )
                                                : $task->fields['entities_id']),
-                'checkright'      => true
+                'checkright'      => true,
             ];
             $addrand = Dropdown::showSelectItemFromItemtypes($params);
 
@@ -1304,7 +1304,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if ($canedit && $nb) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $nb),
-                'container'     => 'mass' . __CLASS__ . $rand
+                'container'     => 'mass' . __CLASS__ . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -1331,9 +1331,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         $item->getFromDB($data['items_id']);
                         echo "<tr class='tab_bg_2'>";
                         if ($canedit) {
-                             echo "<td>";
-                             Html::showMassiveActionCheckBox('ProjectTaskTeam', $data["id"]);
-                             echo "</td>";
+                            echo "<td>";
+                            Html::showMassiveActionCheckBox('ProjectTaskTeam', $data["id"]);
+                            echo "</td>";
                         }
                         echo "<td>" . $item->getTypeName(1) . "</td>";
                         echo "<td>" . $item->getLink() . "</td>";
@@ -1353,7 +1353,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         echo "</div>";
-       // Add items
+        // Add items
 
         return true;
     }
@@ -1412,13 +1412,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $begin     = $options['begin'];
         $end       = $options['end'];
 
-       // Get items to print
+        // Get items to print
         $ADDWHERE = [];
 
         if ($whogroup === "mine") {
             if (isset($_SESSION['glpigroups'])) {
                 $whogroup = $_SESSION['glpigroups'];
-            } else if ($who > 0) {
+            } elseif ($who > 0) {
                 $whogroup = array_column(Group_User::getUserGroups($who), 'id');
             }
         }
@@ -1444,14 +1444,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         'glpi_profiles_users'   => [
                             'ON' => [
                                 'glpi_profiles_users'   => 'profiles_id',
-                                'glpi_profiles'         => 'id'
-                            ]
-                        ]
+                                'glpi_profiles'         => 'id',
+                            ],
+                        ],
                     ],
                     'WHERE'           => [
-                        'glpi_profiles.interface'  => 'central'
-                    ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], 1)
-                ])
+                        'glpi_profiles.interface'  => 'central',
+                    ] + getEntitiesRestrictCriteria('glpi_profiles_users', '', $_SESSION['glpiactive_entity'], 1),
+                ]),
             ];
         }
 
@@ -1459,15 +1459,15 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $ADDWHERE['glpi_projecttasks.percent_done'] = ['<', 100];
             $ADDWHERE[] = ['OR' => [
                 ['glpi_projectstates.is_finished'  => 0],
-                ['glpi_projectstates.is_finished'  => null]
-            ]
+                ['glpi_projectstates.is_finished'  => null],
+            ],
             ];
         }
 
         $SELECT = [$ttask->getTable() . '.*'];
         $WHERE = $ADDWHERE;
         if (isset($options['not_planned'])) {
-           //not planned case
+            //not planned case
             $bdate = "DATE_SUB(" . $DB->quoteName($ttask->getTable() . '.date_creation') .
             ", INTERVAL " . $DB->quoteName($ttask->getTable() . '.planned_duration') . " SECOND)";
             $SELECT[] = new QueryExpression($bdate . ' AS ' . $DB->quoteName('notp_date'));
@@ -1481,10 +1481,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 $ttask->getTable() . '.planned_duration'  => ['>', 0],
                 //begin is replaced with creation tim minus duration
                 new QueryExpression($edate . " >= '" . $begin . "'"),
-                new QueryExpression($bdate . " <= '" . $end . "'")
+                new QueryExpression($bdate . " <= '" . $end . "'"),
             ]);
         } else {
-           //std case: get tasks for current view dates
+            //std case: get tasks for current view dates
             $WHERE[$ttask->getTable() . '.plan_end_date'] = ['>=', $begin];
             $WHERE[$ttask->getTable() . '.plan_start_date'] = ['<=', $end];
         }
@@ -1496,20 +1496,20 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 $ttask->getTable() => [
                     'ON' => [
                         'glpi_projecttaskteams' => 'projecttasks_id',
-                        $ttask->getTable()      => 'id'
-                    ]
-                ]
+                        $ttask->getTable()      => 'id',
+                    ],
+                ],
             ],
             'LEFT JOIN'    => [
                 'glpi_projectstates' => [
                     'ON' => [
                         $ttask->getTable()   => 'projectstates_id',
-                        'glpi_projectstates' => 'id'
-                    ]
-                ]
+                        'glpi_projectstates' => 'id',
+                    ],
+                ],
             ],
             'WHERE'        => $WHERE,
-            'ORDERBY'      => $ttask->getTable() . '.plan_start_date'
+            'ORDERBY'      => $ttask->getTable() . '.plan_start_date',
         ]);
 
         $interv = [];
@@ -1552,7 +1552,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                     }
 
                     if (strcmp($end, $data["plan_end_date"]) < 0) {
-                           $interv[$key]["end"]   = $end;
+                        $interv[$key]["end"]   = $end;
                     } else {
                         $interv[$key]["end"]   = $data["plan_end_date"];
                     }
@@ -1630,7 +1630,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         switch ($type) {
             case "in":
-               //TRANS: %1$s is the start time of a planned item, %2$s is the end
+                //TRANS: %1$s is the start time of a planned item, %2$s is the end
                 $beginend = sprintf(
                     __('From %1$s to %2$s'),
                     date("H:i", strtotime($val["begin"])),
@@ -1661,7 +1661,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $html .= sprintf(__('%1$s: %2$s'), __('Percent done'), $val["status"] . "%");
         $html .= "</div>";
 
-       // $val['content'] has already been sanitized and decoded by self::populatePlanning()
+        // $val['content'] has already been sanitized and decoded by self::populatePlanning()
         $content = $val['content'];
         $html .= "<div class='event-description rich_text_container'>" . $content . "</div>";
         return $html;
@@ -1687,12 +1687,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $iterator = $DB->request([
             'SELECT' => [
-                new QueryExpression('CAST(AVG(' . $DB->quoteName('percent_done') . ') AS UNSIGNED) AS percent_done')
+                new QueryExpression('CAST(AVG(' . $DB->quoteName('percent_done') . ') AS UNSIGNED) AS percent_done'),
             ],
             'FROM'   => ProjectTask::getTable(),
             'WHERE'  => [
-                'projecttasks_id' => $ID
-            ]
+                'projecttasks_id' => $ID,
+            ],
         ]);
         if ($iterator->count()) {
             $percent_done = $iterator->current()['percent_done'];
@@ -1800,7 +1800,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             }
             $vcomp->STATUS = 100 == $fields['percent_done'] ? 'COMPLETED' : 'NEEDS-ACTION';
             $vcomp->{'PERCENT-COMPLETE'} = $fields['percent_done'];
-        } else if ('VEVENT' === $target_component) {
+        } elseif ('VEVENT' === $target_component) {
             if ($is_planned) {
                 $vcomp->DTSTART = (new \DateTime($fields['plan_start_date']))->setTimeZone($utc_tz);
                 $vcomp->DTEND   = (new \DateTime($fields['plan_end_date']))->setTimeZone($utc_tz);
@@ -1824,14 +1824,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $input = $this->getCommonInputFromVcomponent($vtodo, $this->isNewItem());
 
         if ($vtodo->DESCRIPTION instanceof FlatText) {
-           // Description is not in HTML format
+            // Description is not in HTML format
             $input['content'] = $vtodo->DESCRIPTION->getValue();
         }
 
         if ($vtodo->{'PERCENT-COMPLETE'} instanceof IntegerValue) {
             $input['percent_done'] = $vtodo->{'PERCENT-COMPLETE'}->getValue();
-        } else if (array_key_exists('state', $input) && $input['state'] == \Planning::DONE) {
-           // Consider task as done if status is DONE
+        } elseif (array_key_exists('state', $input) && $input['state'] == \Planning::DONE) {
+            // Consider task as done if status is DONE
             $input['percent_done'] = 100;
         }
 
@@ -1866,7 +1866,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $result = $projecttask_team->add([
             'projecttasks_id' => $this->getID(),
             'itemtype'        => $itemtype,
-            'items_id'        => $items_id
+            'items_id'        => $items_id,
         ]);
         return (bool) $result;
     }
@@ -1877,7 +1877,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $result = $projecttask_team->deleteByCriteria([
             'projecttasks_id' => $this->getID(),
             'itemtype'        => $itemtype,
-            'items_id'        => $items_id
+            'items_id'        => $items_id,
         ]);
         return (bool) $result;
     }
@@ -1885,7 +1885,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     public function getTeam(): array
     {
         $team = ProjectTaskTeam::getTeamFor($this->getID(), true);
-       // Flatten the array
+        // Flatten the array
         $result = [];
         foreach ($team as $itemtype_members) {
             foreach ($itemtype_members as $member) {

@@ -43,7 +43,7 @@ class Knowbase extends CommonGLPI
     public static function getTypeName($nb = 0)
     {
 
-       // No plural
+        // No plural
         return __('Knowledge base');
     }
 
@@ -107,7 +107,7 @@ class Knowbase extends CommonGLPI
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Search a solution
+        // Search a solution
         if (
             !isset($_GET["contains"])
             && isset($_GET["itemtype"])
@@ -122,7 +122,7 @@ class Knowbase extends CommonGLPI
 
         if (isset($_GET["contains"])) {
             $_SESSION['kbcontains'] = $_GET["contains"];
-        } else if (isset($_SESSION['kbcontains'])) {
+        } elseif (isset($_SESSION['kbcontains'])) {
             $_GET['contains'] = $_SESSION["kbcontains"];
         }
         $ki = new KnowbaseItem();
@@ -154,8 +154,8 @@ class Knowbase extends CommonGLPI
         $rand        = mt_rand();
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/knowbase.php";
         $loading_txt = __s('Loading...');
-        $start       = (int)($_REQUEST['start'] ?? 0);
-        $cat_id      = (int)($_GET["knowbaseitemcategories_id"] ?? $_SESSION['kb_cat_id'] ?? 0);
+        $start       = (int) ($_REQUEST['start'] ?? 0);
+        $cat_id      = (int) ($_GET["knowbaseitemcategories_id"] ?? $_SESSION['kb_cat_id'] ?? 0);
 
         $category_list = json_encode(self::getTreeCategoryList());
         $no_cat_found  = __s("No category found");
@@ -259,15 +259,15 @@ JAVASCRIPT;
                         KnowbaseItem_KnowbaseItemCategory::getTable() => [
                             'ON'  => [
                                 KnowbaseItem_KnowbaseItemCategory::getTable()   => KnowbaseItem::getForeignKeyField(),
-                                KnowbaseItem::getTable()            => 'id'
-                            ]
-                        ]
+                                KnowbaseItem::getTable()            => 'id',
+                            ],
+                        ],
                     ],
                     'WHERE'  => [
                         KnowbaseItem_KnowbaseItemCategory::getTableField($cat_fk) => new QueryExpression(
                             $DB->quoteName(KnowbaseItemCategory::getTableField('id'))
                         ),
-                    ]
+                    ],
                 ],
                 $kbitem_visibility_crit
             ),
@@ -285,7 +285,7 @@ JAVASCRIPT;
             'ORDER' => [
                 KnowbaseItemCategory::getTableField('level') . ' DESC',
                 KnowbaseItemCategory::getTableField('name'),
-            ]
+            ],
         ]);
 
         $inst = new KnowbaseItemCategory();
@@ -297,14 +297,14 @@ JAVASCRIPT;
                     $inst->getType()
                 );
                 if (!empty($tname)) {
-                     $category['name'] = $tname;
+                    $category['name'] = $tname;
                 }
             }
             $categories[] = $category;
         }
 
-       // Remove categories that have no items and no children
-       // Requires category list to be sorted by level DESC
+        // Remove categories that have no items and no children
+        // Requires category list to be sorted by level DESC
         foreach ($categories as $index => $category) {
             $children = array_filter(
                 $categories,
@@ -318,7 +318,7 @@ JAVASCRIPT;
             }
         }
 
-       // Add root category (which is not a real category)
+        // Add root category (which is not a real category)
         $root_items_count = $DB->request(
             array_merge_recursive(
                 [
@@ -328,19 +328,19 @@ JAVASCRIPT;
                         KnowbaseItem_KnowbaseItemCategory::getTable() => [
                             'ON'  => [
                                 KnowbaseItem_KnowbaseItemCategory::getTable()   => KnowbaseItem::getForeignKeyField(),
-                                KnowbaseItem::getTable()            => 'id'
-                            ]
+                                KnowbaseItem::getTable()            => 'id',
+                            ],
                         ],
                         KnowbaseItemCategory::getTable() => [
                             'ON'  => [
                                 KnowbaseItem_KnowbaseItemCategory::getTable()   => KnowbaseItemCategory::getForeignKeyField(),
-                                KnowbaseItemCategory::getTable()    => 'id'
-                            ]
-                        ]
+                                KnowbaseItemCategory::getTable()    => 'id',
+                            ],
+                        ],
                     ],
                     'WHERE'  => [
                         KnowbaseItemCategory::getTableField('id') => null,
-                    ]
+                    ],
                 ],
                 $kbitem_visibility_crit
             )
@@ -351,7 +351,7 @@ JAVASCRIPT;
             'items_count' => $root_items_count['cpt'],
         ];
 
-       // construct flat data
+        // construct flat data
         $nodes   = [];
         foreach ($categories as $category) {
             $cat_id = intval($category['id']);
@@ -360,7 +360,7 @@ JAVASCRIPT;
                 'title'  => $category['name'],
                 'parent' => $category[$cat_fk] ?? null,
                 'a_attr' => [
-                    'data-id' => $cat_id
+                    'data-id' => $cat_id,
                 ],
             ];
 
@@ -373,7 +373,7 @@ JAVASCRIPT;
             $nodes[] = $node;
         }
 
-       // recursive construct tree data
+        // recursive construct tree data
         $buildtree = function (array &$elements, $parent = null) use (&$buildtree) {
             $branch = [];
 
@@ -381,7 +381,7 @@ JAVASCRIPT;
                 if ($element['parent'] === $parent) {
                     $children = $buildtree($elements, $element['key']);
                     if (count($children) > 0) {
-                         $element['children'] = $children;
+                        $element['children'] = $children;
                     }
                     $branch[] = $element;
                     unset($elements[$index]);
@@ -403,7 +403,7 @@ JAVASCRIPT;
 
         if (isset($_GET["unpublished"])) {
             $_SESSION['kbunpublished'] = $_GET["unpublished"];
-        } else if (isset($_SESSION['kbunpublished'])) {
+        } elseif (isset($_SESSION['kbunpublished'])) {
             $_GET["unpublished"] = $_SESSION['kbunpublished'];
         }
         if (!isset($_GET["unpublished"])) {

@@ -47,7 +47,7 @@ class ClonableTest extends \DbTestCase
             [\Software::class, true],
             [\Ticket::class, true],
             [\Plugin::class, false],
-            [\Config::class, false]
+            [\Config::class, false],
         ];
     }
 

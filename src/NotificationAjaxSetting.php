@@ -96,7 +96,7 @@ class NotificationAjaxSetting extends NotificationSetting
                 ['value' => $CFG_GLPI["notifications_ajax_check_interval"],
                     'min'   => 5,
                     'max'   => 120,
-                    'step'  => 5
+                    'step'  => 5,
                 ]
             );
             echo "</td>";
@@ -108,7 +108,7 @@ class NotificationAjaxSetting extends NotificationSetting
         } else {
             echo "<tr><td colspan='4'>" . __('Notifications are disabled.') .
               "<a href='{$CFG_GLPI['root_doc']}/front/setup.notification.php'>" .
-                __('See configuration') .  "</a></td></tr>";
+                __('See configuration') . "</a></td></tr>";
         }
         $options['candel']     = false;
         if ($CFG_GLPI['notifications_ajax']) {

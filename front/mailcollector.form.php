@@ -52,7 +52,7 @@ if (isset($_POST["add"])) {
     $mailgate->check(-1, CREATE, $_POST);
 
     if (array_key_exists('passwd', $_POST)) {
-       // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
+        // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
         $_POST['passwd'] = $_UPOST['passwd'];
     }
 
@@ -69,7 +69,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $mailgate->check($_POST['id'], PURGE);
     $mailgate->delete($_POST, 1);
 
@@ -82,11 +82,11 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $mailgate->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $mailgate->check($_POST['id'], UPDATE);
 
     if (array_key_exists('passwd', $_POST)) {
-       // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
+        // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
         $_POST['passwd'] = $_UPOST['passwd'];
     }
 
@@ -101,7 +101,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["get_mails"])) {
+} elseif (isset($_POST["get_mails"])) {
     $mailgate->check($_POST['id'], UPDATE);
     $mailgate->collect($_POST["id"], 1);
 

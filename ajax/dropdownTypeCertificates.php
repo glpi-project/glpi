@@ -59,7 +59,7 @@ if (
         $DB->request(
             'glpi_certificates',
             ['id'                  => $_POST['used'],
-                'certificatetypes_id' => $_POST['certificatetype']
+                'certificatetypes_id' => $_POST['certificatetype'],
             ]
         ) as $data
     ) {

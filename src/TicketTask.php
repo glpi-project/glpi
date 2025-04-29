@@ -100,7 +100,7 @@ class TicketTask extends CommonITILTask
             return true;
         }
 
-       // see task created or affected to me
+        // see task created or affected to me
         if (
             Session::getCurrentInterface() == "central"
             && ($this->fields["users_id"] === Session::getLoginUserID())

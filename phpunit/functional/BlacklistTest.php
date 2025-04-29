@@ -50,7 +50,7 @@ class BlacklistTest extends DbTestCase
             \Blacklist::MAC => 19,
             \Blacklist::MODEL => 7,
             \Blacklist::MANUFACTURER => 1,
-            \Blacklist::IP => 4
+            \Blacklist::IP => 4,
         ];
         $this->assertSame(array_keys($expecteds), array_keys($defaults));
 
@@ -64,41 +64,41 @@ class BlacklistTest extends DbTestCase
         return [
             [
                 'input'    => ['name' => 'My name', 'serial' => 'AGH577C'],
-                'expected' => null
+                'expected' => null,
             ], [
                 'input'    => ['name' => 'My name', 'serial' => '123456'],
-                'expected' => ['name' => 'My name']
+                'expected' => ['name' => 'My name'],
             ], [
                 'input'    => ['name' => 'My name', 'mac' => '00:50:56:C0:00:03'],
-                'expected' => ['name' => 'My name']
+                'expected' => ['name' => 'My name'],
             ], [
                 'input'    => ['name' => 'My name', 'serial' => '111'],
-                'expected' => ['name' => 'My name']
+                'expected' => ['name' => 'My name'],
             ], [
                 'input'    => ['name' => 'My name', 'serial' => '111111111111111111'],
-                'expected' => ['name' => 'My name']
+                'expected' => ['name' => 'My name'],
             ], [
                 'input'    => ['name' => 'My name', 'serial' => '1.0'],
-                'expected' => ['name' => 'My name']
+                'expected' => ['name' => 'My name'],
             ], [
                 'input'    => ['name' => 'My name', 'serial' => '1.0.0'],
-                'expected' => ['name' => 'My name']
+                'expected' => ['name' => 'My name'],
             ], [
                 'input'    => ['name' => 'My name', 'serial' => '0000001000000'],
-                'expected' => ['name' => 'My name']
+                'expected' => ['name' => 'My name'],
             ], [
                 'input'    => ['name' => 'My name', 'serial' => 'XYZ01'],
-                'expected' => ['name' => 'My name', 'serial' => 'XYZ01']
+                'expected' => ['name' => 'My name', 'serial' => 'XYZ01'],
             ], [
                 'input'    => ['name' => 'My name', 'ip' => '::1'],
-                'expected' => ['name' => 'My name']
+                'expected' => ['name' => 'My name'],
             ], [
                 'input'    => ['name' => 'My name', 'ip' => '127.0.0.1'],
-                'expected' => ['name' => 'My name']
+                'expected' => ['name' => 'My name'],
             ], [
                 'input'    => ['name' => 'My name', 'ip' => '0.0.0.0'],
-                'expected' => ['name' => 'My name']
-            ]
+                'expected' => ['name' => 'My name'],
+            ],
         ];
     }
 
@@ -108,11 +108,11 @@ class BlacklistTest extends DbTestCase
         $blacklist = new \Blacklist();
 
         if ($expected == null) {
-            $expected = (object)$input;
+            $expected = (object) $input;
         } else {
-            $expected = (object)$expected;
+            $expected = (object) $expected;
         }
-        $input = (object)$input;
+        $input = (object) $input;
         $blacklist->processBlackList($input);
         $this->assertEquals($expected, $input);
     }

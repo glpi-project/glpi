@@ -97,7 +97,7 @@ class DataDirectoriesProtectedPathTest extends \GLPITestCase
             [
                 sprintf('The following directories should be placed outside "%s":', $root_path),
                 sprintf('‣ "%s" ("%s")', $unsecure_var_root_path, $unsecure_var_root_constant),
-                 // $unsecure_dir_constant1 and $unsecure_dir_constant2 are ignored as they are nested in var root
+                // $unsecure_dir_constant1 and $unsecure_dir_constant2 are ignored as they are nested in var root
                 sprintf('‣ "%s/config" ("%s")', $root_path, $unsecure_dir_constant3),
                 sprintf('You can ignore this suggestion if your web server root directory is "%s/public".', $root_path),
             ],

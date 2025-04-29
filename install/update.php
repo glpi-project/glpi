@@ -253,7 +253,7 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
     Html::closeForm();
     echo "</div>";
 } else {
-   // Step 2
+    // Step 2
     if (test_connect()) {
         echo "<h3>" . __('Database connection successful') . "</h3>";
         echo "<p class='text-center'>";
@@ -266,8 +266,8 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
             $update->isExpectedSecurityKeyFileMissing()
             && (!isset($_POST['missing_key_warning_shown']) || !isset($_POST['ignore']))
         ) {
-           // Display missing security key file form if key file is missing
-           // unless it has already been displayed and user clicks on "ignore" button.
+            // Display missing security key file form if key file is missing
+            // unless it has already been displayed and user clicks on "ignore" button.
             showSecurityKeyCheckForm();
         } else {
             echo "<div class='text-center'>";

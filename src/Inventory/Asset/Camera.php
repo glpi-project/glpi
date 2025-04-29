@@ -47,7 +47,7 @@ class Camera extends Device
         $mapping = [
             'manufacturer'    => 'manufacturers_id',
             'model'           => 'devicecameramodels_id',
-            'designation'     => 'name'
+            'designation'     => 'name',
         ];
 
         foreach ($this->data as &$val) {
@@ -70,7 +70,7 @@ class Camera extends Device
     protected function itemdeviceAdded(Item_Devices $itemdevice, $val)
     {
 
-       //handle resolutions
+        //handle resolutions
         if (property_exists($val, 'resolution')) {
             $this->handleResolution($itemdevice, $val->resolution);
         }
@@ -102,7 +102,7 @@ class Camera extends Device
                 $resolution->add([
                     'name'         => $rsl,
                     'is_video'     => $is_video,
-                    'is_dynamic'   => 1
+                    'is_dynamic'   => 1,
                 ]);
             }
 
@@ -110,7 +110,7 @@ class Camera extends Device
             $data = [
                 'items_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
                 'imageresolutions_id' => $resolution->fields['id'],
-                'is_dynamic' => 1
+                'is_dynamic' => 1,
             ];
 
             if (!$cam_resolutions->getFromDBByCrit($data)) {
@@ -136,7 +136,7 @@ class Camera extends Device
             if (!$format->getFromDBByCrit(['name' => $fmt])) {
                 $format->add([
                     'name' => $fmt,
-                    'is_dynamic' => 1
+                    'is_dynamic' => 1,
                 ]);
             }
 
@@ -144,7 +144,7 @@ class Camera extends Device
             $data = [
                 'items_devicecameras_id' => $itemdevice->fields['devicecameras_id'],
                 'imageformats_id' => $format->fields['id'],
-                'is_dynamic' => 1
+                'is_dynamic' => 1,
             ];
 
             if (!$cam_formats->getFromDBByCrit($data)) {

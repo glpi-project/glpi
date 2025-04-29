@@ -56,7 +56,7 @@ abstract class TreeDropdownParameters extends DropdownParameters
     protected function defineValues(CommonDBTM $item): array
     {
 
-       // Output "unsanitized" values
+        // Output "unsanitized" values
         $fields = Sanitizer::unsanitize($item->fields);
 
         $values = parent::defineValues($item);

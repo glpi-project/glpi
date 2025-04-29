@@ -55,7 +55,7 @@ if (isset($_POST["update"])) {
     echo "<script type='text/javascript' >\n";
     echo "window.parent.location.reload();";
     echo "</script>";
-} else if (isset($_POST['delete'])) {
+} elseif (isset($_POST['delete'])) {
     $link->check($_POST['id'], DELETE);
     $link->delete($_POST);
 
@@ -67,7 +67,7 @@ if (isset($_POST["update"])) {
         sprintf(__('%s deletes an actor'), $_SESSION["glpiname"])
     );
     Html::redirect(Change::getFormURLWithID($link->fields['changes_id']));
-} else if (isset($_GET["id"])) {
+} elseif (isset($_GET["id"])) {
     $link->showSupplierNotificationForm($_GET["id"]);
 } else {
     Html::displayErrorAndDie('Lost');

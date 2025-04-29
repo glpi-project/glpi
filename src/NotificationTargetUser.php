@@ -72,7 +72,7 @@ class NotificationTargetUser extends NotificationTarget
     public function addSpecificTargets($data, $options)
     {
 
-       //Look for all targets whose type is Notification::ITEM_USER
+        //Look for all targets whose type is Notification::ITEM_USER
         switch ($data['type']) {
             case Notification::USER_TYPE:
                 switch ($data['items_id']) {
@@ -86,7 +86,7 @@ class NotificationTargetUser extends NotificationTarget
                         $data = ['name'     => $this->obj->getName(),
                             'email'    => $this->obj->getDefaultEmail(),
                             'language' => $this->obj->getField('language'),
-                            'usertype' => $usertype
+                            'usertype' => $usertype,
                         ];
                         $this->addToRecipientsList($data);
                 }
@@ -114,20 +114,20 @@ class NotificationTargetUser extends NotificationTarget
                 );
 
                 $this->data['##user.account.lock.date##']  = null;
-                $lock_delay = (int)$CFG_GLPI['password_expiration_lock_delay'];
+                $lock_delay = (int) $CFG_GLPI['password_expiration_lock_delay'];
                 if (-1 !== $lock_delay) {
-                     $this->data['##user.account.lock.date##'] = Html::convDateTime(
-                         date(
-                             'Y-m-d H:i:s',
-                             strtotime(
-                                 sprintf(
-                                     '+ %s days',
-                                     $lock_delay
-                                 ),
-                                 $expiration_time
-                             )
-                         )
-                     );
+                    $this->data['##user.account.lock.date##'] = Html::convDateTime(
+                        date(
+                            'Y-m-d H:i:s',
+                            strtotime(
+                                sprintf(
+                                    '+ %s days',
+                                    $lock_delay
+                                ),
+                                $expiration_time
+                            )
+                        )
+                    );
                 }
                 $this->data['##user.password.has_expired##'] = $this->obj->hasPasswordExpired() ? '1' : '0';
                 $this->data['##user.password.update.url##'] = urldecode(
@@ -154,7 +154,7 @@ class NotificationTargetUser extends NotificationTarget
     public function getTags()
     {
 
-       // Common value tags
+        // Common value tags
         $tags = [
             'user.name'      => __('Login'),
             'user.realname'  => __('Name'),

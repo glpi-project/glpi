@@ -40,7 +40,7 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 class PrinterTest extends AbstractInventoryAsset
 {
-    const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+    public const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
     public static function assetProvider(): array
     {
@@ -65,8 +65,8 @@ class PrinterTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"driver": "HP Color LaserJet Pro MFP M476 PCL 6", "name": "HP Color LaserJet Pro MFP M476 PCL 6", "network": false, "printprocessor": "hpcpp155", "resolution": "600x600", "shared": false, "sharename": "HP Color LaserJet Pro MFP M476 PCL 6  (1)", "status": "Unknown", "have_usb": 0, "autoupdatesystems_id": "GLPI Native Inventory", "last_inventory_update": "DATE_NOW"}'
-            ]
+                'expected'  => '{"driver": "HP Color LaserJet Pro MFP M476 PCL 6", "name": "HP Color LaserJet Pro MFP M476 PCL 6", "network": false, "printprocessor": "hpcpp155", "resolution": "600x600", "shared": false, "sharename": "HP Color LaserJet Pro MFP M476 PCL 6  (1)", "status": "Unknown", "have_usb": 0, "autoupdatesystems_id": "GLPI Native Inventory", "last_inventory_update": "DATE_NOW"}',
+            ],
         ];
     }
 
@@ -87,7 +87,7 @@ class PrinterTest extends AbstractInventoryAsset
         $asset = new \Glpi\Inventory\Asset\Printer($computer, $json->content->printers);
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue($asset->checkConf($conf));
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -102,7 +102,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         $printer = new \Printer();
 
-        $data = (array)$json->content;
+        $data = (array) $json->content;
         $inventory = new \Glpi\Inventory\Inventory();
         $this->assertTrue($inventory->setData($json));
 
@@ -137,10 +137,10 @@ class PrinterTest extends AbstractInventoryAsset
                 'memory_size' => 512,
                 'last_pages_counter' => 1802,
             ],
-            (array)$result[0]
+            (array) $result[0]
         );
 
-       //no management port (network_device->ips same as network_port->ips)
+        //no management port (network_device->ips same as network_port->ips)
         $this->assertSame([], $main->getNetworkPorts());
         $this->assertCount(0, $main->getManagementPorts());
 
@@ -161,7 +161,7 @@ class PrinterTest extends AbstractInventoryAsset
         global $DB;
         $iterator = $DB->request([
             'FROM'   => \PrinterLog::getTable(),
-            'WHERE'  => ['printers_id' => $printer->fields['id']]
+            'WHERE'  => ['printers_id' => $printer->fields['id']],
         ]);
         $this->assertCount(1, $iterator);
 
@@ -206,7 +206,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         $printer = new \Printer();
 
-        $data = (array)$json->content;
+        $data = (array) $json->content;
         $inventory = new \Glpi\Inventory\Inventory();
         $this->assertTrue($inventory->setData($json));
 
@@ -239,9 +239,9 @@ class PrinterTest extends AbstractInventoryAsset
                 'have_usb' => 0,
                 'have_ethernet' => 1,
                 'memory_size' => 256,
-                'last_pages_counter' => 800
+                'last_pages_counter' => 800,
             ],
-            (array)$result[0]
+            (array) $result[0]
         );
 
         //get one management port only
@@ -256,10 +256,10 @@ class PrinterTest extends AbstractInventoryAsset
                 'instantiation_type' => 'NetworkPortAggregate',
                 'is_internal' => true,
                 'ipaddress' => [
-                    '10.59.29.176'
-                ]
+                    '10.59.29.176',
+                ],
             ],
-            (array)$mports['management']
+            (array) $mports['management']
         );
 
         //do real inventory to check dataDB
@@ -271,8 +271,8 @@ class PrinterTest extends AbstractInventoryAsset
         $this->assertTrue($printer->getFromDbByCrit(['name' => 'MX5970', 'serial' => 'SDFSDF9874']));
 
         $np = new \NetworkPort();
-        $this->assertTrue($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']));
-        $this->assertTrue($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortEthernet']));
+        $this->assertTrue($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'], 'instantiation_type' => 'NetworkPortAggregate']));
+        $this->assertTrue($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'], 'instantiation_type' => 'NetworkPortEthernet']));
 
         //remove printer for other test
         $printer->delete($printer->fields);
@@ -292,7 +292,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         $printer = new \Printer();
 
-        $data = (array)$json->content;
+        $data = (array) $json->content;
         $inventory = new \Glpi\Inventory\Inventory();
         $this->assertTrue($inventory->setData($json));
 
@@ -325,9 +325,9 @@ class PrinterTest extends AbstractInventoryAsset
                 'have_usb' => 0,
                 'have_ethernet' => 1,
                 'memory_size' => 256,
-                'last_pages_counter' => 800
+                'last_pages_counter' => 800,
             ],
-            (array)$result[0]
+            (array) $result[0]
         );
 
         //get no management port
@@ -347,12 +347,12 @@ class PrinterTest extends AbstractInventoryAsset
             2,
             countElementsInTable(
                 $np::getTable(),
-                [['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortEthernet']]
+                [['itemtype' => 'Printer', 'items_id' => $printer->fields['id'], 'instantiation_type' => 'NetworkPortEthernet']]
             )
         );
 
         //0 NetworkPortAggregate
-        $this->assertFalse($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']));
+        $this->assertFalse($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'], 'instantiation_type' => 'NetworkPortAggregate']));
 
         //remove printer for other test
         $printer->delete($printer->fields);
@@ -402,8 +402,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -432,8 +432,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -486,8 +486,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -520,8 +520,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -586,8 +586,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -640,8 +640,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -715,8 +715,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -778,8 +778,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -853,8 +853,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -883,8 +883,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -951,8 +951,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -995,8 +995,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -1022,7 +1022,7 @@ class PrinterTest extends AbstractInventoryAsset
         global $DB;
         $printer = new \Printer();
 
-       // Add dictionary rule for ignore import for printer "HP Deskjet 2540"
+        // Add dictionary rule for ignore import for printer "HP Deskjet 2540"
         $rulecollection = new \RuleDictionnaryPrinterCollection();
         $rule = $rulecollection->getRuleClass();
         $rule_id = $rule->add([
@@ -1030,11 +1030,11 @@ class PrinterTest extends AbstractInventoryAsset
             'name' => 'Ignore import',
             'match' => 'AND',
             'sub_type' => 'RuleDictionnaryPrinter',
-            'ranking' => 1
+            'ranking' => 1,
         ]);
         $this->assertGreaterThan(0, $rule_id);
 
-       // Add criteria
+        // Add criteria
         $rulecriteria = new \RuleCriteria(get_class($rule));
         $this->assertGreaterThan(
             0,
@@ -1042,11 +1042,11 @@ class PrinterTest extends AbstractInventoryAsset
                 'rules_id' => $rule_id,
                 'criteria' => "name",
                 'pattern' => 'HP Deskjet 2540',
-                'condition' => 0
+                'condition' => 0,
             ])
         );
 
-       // Add action
+        // Add action
         $ruleaction = new \RuleAction(get_class($rule));
         $this->assertGreaterThan(
             0,
@@ -1054,7 +1054,7 @@ class PrinterTest extends AbstractInventoryAsset
                 'rules_id' => $rule_id,
                 'action_type' => 'assign',
                 'field' => '_ignore_import',
-                'value' => '1'
+                'value' => '1',
             ])
         );
 
@@ -1090,7 +1090,7 @@ class PrinterTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //computer inventory with two printers, "HP Deskjet 2540" ignored by rules
+        //computer inventory with two printers, "HP Deskjet 2540" ignored by rules
         $inventory = $this->doInventory($xml_source, true);
 
         //check for expected logs
@@ -1100,8 +1100,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -1130,7 +1130,7 @@ class PrinterTest extends AbstractInventoryAsset
             'name' => 'rename',
             'match' => 'AND',
             'sub_type' => 'RuleDictionnaryPrinter',
-            'ranking' => 2
+            'ranking' => 2,
         ]);
         $this->assertGreaterThan(0, $rule_id);
 
@@ -1143,7 +1143,7 @@ class PrinterTest extends AbstractInventoryAsset
                 'rules_id' => $rule_id,
                 'criteria' => "name",
                 'pattern' => 'HP Deskjet 2540',
-                'condition' => 0
+                'condition' => 0,
             ])
         );
 
@@ -1155,7 +1155,7 @@ class PrinterTest extends AbstractInventoryAsset
                 'rules_id' => $rule_id,
                 'action_type' => 'assign',
                 'field' => 'name',
-                'value' => 'HP Deskjet 2540 - renamed'
+                'value' => 'HP Deskjet 2540 - renamed',
             ])
         );
 
@@ -1167,7 +1167,7 @@ class PrinterTest extends AbstractInventoryAsset
                 'rules_id' => $rule_id,
                 'action_type' => 'assign',
                 'field' => 'manufacturer',
-                'value' => $manufacturer->fields['id']
+                'value' => $manufacturer->fields['id'],
             ])
         );
 
@@ -1177,7 +1177,7 @@ class PrinterTest extends AbstractInventoryAsset
             'rules_id' => $rule_id,
             'action_type' => 'assign',
             'field' => 'is_global',
-            'value' => '0'
+            'value' => '0',
         ]);
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -1226,10 +1226,10 @@ class PrinterTest extends AbstractInventoryAsset
                     'itemtype' => [
                         \Config::class,
                         'RuleAction',
-                        'RuleDictionnaryPrinter'
-                    ]
-                ]
-            ]
+                        'RuleDictionnaryPrinter',
+                    ],
+                ],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -1289,7 +1289,7 @@ class PrinterTest extends AbstractInventoryAsset
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_printer' => 0
+                'import_printer' => 0,
             ])
         );
         $this->logout();
@@ -1301,7 +1301,7 @@ class PrinterTest extends AbstractInventoryAsset
         $this->login();
         $this->assertTrue(
             $conf->saveConf([
-                'import_printer' => 1
+                'import_printer' => 1,
             ])
         );
         $this->logOut();
@@ -1313,8 +1313,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -1335,8 +1335,8 @@ class PrinterTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -1364,7 +1364,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         $printer = new \Printer();
 
-        $data = (array)$json->content;
+        $data = (array) $json->content;
         $inventory = new \Glpi\Inventory\Inventory();
         $this->assertTrue($inventory->setData($json));
 
@@ -1400,7 +1400,7 @@ class PrinterTest extends AbstractInventoryAsset
                 'memory_size' => 512,
                 'last_pages_counter' => 1802,
             ],
-            (array)$result[0]
+            (array) $result[0]
         );
 
         $this->assertSame([], $main->getNetworkPorts());
@@ -1431,7 +1431,7 @@ class PrinterTest extends AbstractInventoryAsset
         $printer = new \Printer();
 
         $printer = new \Printer();
-        $data = (array)$json->content;
+        $data = (array) $json->content;
 
         $inventory = new \Glpi\Inventory\Inventory();
         $this->assertTrue($inventory->setData($json));
@@ -1468,7 +1468,7 @@ class PrinterTest extends AbstractInventoryAsset
                 'memory_size' => 512,
                 'last_pages_counter' => 1802,
             ],
-            (array)$result[0]
+            (array) $result[0]
         );
 
         $this->assertSame([], $main->getNetworkPorts());
@@ -1575,7 +1575,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         $printer = new \Printer();
 
-        $data = (array)$json->content;
+        $data = (array) $json->content;
         $inventory = new \Glpi\Inventory\Inventory();
         $this->assertTrue($inventory->setData($json));
 
@@ -1608,9 +1608,9 @@ class PrinterTest extends AbstractInventoryAsset
                 'have_usb' => 0,
                 'have_ethernet' => 1,
                 'memory_size' => 512,
-                'last_pages_counter' => 1802
+                'last_pages_counter' => 1802,
             ],
-            (array)$result[0]
+            (array) $result[0]
         );
 
         //get no management port
@@ -1629,12 +1629,12 @@ class PrinterTest extends AbstractInventoryAsset
             1,
             countElementsInTable(
                 $np::getTable(),
-                [['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortEthernet']]
+                [['itemtype' => 'Printer', 'items_id' => $printer->fields['id'], 'instantiation_type' => 'NetworkPortEthernet']]
             )
         );
 
         //1 NetworkPortAggregate
-        $this->assertTrue($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']));
+        $this->assertTrue($np->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'], 'instantiation_type' => 'NetworkPortAggregate']));
 
         //1 NetworkName form NetworkPortAggregate
         $nm = new \NetworkName();
@@ -1709,7 +1709,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         //1 NetworkPortAggregate
         $np_aggregate = new \NetworkPort();
-        $this->assertTrue($np_aggregate->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']));
+        $this->assertTrue($np_aggregate->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'], 'instantiation_type' => 'NetworkPortAggregate']));
 
 
         //redo a discovery
@@ -1721,7 +1721,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         //1 NetworkPortAggregate
         $np_aggregate_after_reimport = new \NetworkPort();
-        $this->assertTrue($np_aggregate_after_reimport->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']));
+        $this->assertTrue($np_aggregate_after_reimport->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'], 'instantiation_type' => 'NetworkPortAggregate']));
 
 
         $this->assertSame($np_aggregate_after_reimport->fields['id'], $np_aggregate->fields['id']);
@@ -1838,7 +1838,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         //1 NetworkPortAggregate
         $np_aggregate_after_networkinventory = new \NetworkPort();
-        $this->assertTrue($np_aggregate_after_networkinventory->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']));
+        $this->assertTrue($np_aggregate_after_networkinventory->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'], 'instantiation_type' => 'NetworkPortAggregate']));
 
 
         $this->assertSame($np_aggregate_after_networkinventory->fields['id'], $np_aggregate_after_reimport->fields['id']);
@@ -1852,7 +1852,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         //1 NetworkPortAggregate
         $np_aggregate_after_reimport = new \NetworkPort();
-        $this->assertTrue($np_aggregate_after_reimport->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortAggregate']));
+        $this->assertTrue($np_aggregate_after_reimport->getFromDbByCrit(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'], 'instantiation_type' => 'NetworkPortAggregate']));
 
 
         $this->assertSame($np_aggregate_after_reimport->fields['id'], $np_aggregate_after_reimport->fields['id']);
@@ -1946,7 +1946,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         //1 NetworkPortEthernet
         $np_ethernet = new \NetworkPort();
-        $np_ethernets = $np_ethernet->find(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortEthernet']);
+        $np_ethernets = $np_ethernet->find(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'], 'instantiation_type' => 'NetworkPortEthernet']);
         $this->assertCount(1, $np_ethernets);
         $first_np_versions = array_pop($np_ethernets);
 
@@ -1960,7 +1960,7 @@ class PrinterTest extends AbstractInventoryAsset
 
         //1 NetworkPortEthernet
         $np_ethernet = new \NetworkPort();
-        $np_ethernets = $np_ethernet->find(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'] , 'instantiation_type' => 'NetworkPortEthernet']);
+        $np_ethernets = $np_ethernet->find(['itemtype' => 'Printer', 'items_id' => $printer->fields['id'], 'instantiation_type' => 'NetworkPortEthernet']);
         $this->assertCount(1, $np_ethernets);
         $second_np_versions = array_pop($np_ethernets);
 

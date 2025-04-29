@@ -44,9 +44,9 @@ if (
     );
 }
 
-$itemtype = isset($_POST['itemtype']) ? $_POST['itemtype'] : $_GET['itemtype'];
+$itemtype = $_POST['itemtype'] ?? $_GET['itemtype'];
 $options = [
-    'itemtype' => $itemtype
+    'itemtype' => $itemtype,
 ];
 $dropdown = new $itemtype();
 include(GLPI_ROOT . "/front/dropdown.common.form.php");

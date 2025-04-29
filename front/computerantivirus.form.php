@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $antivirus->check($_POST["id"], PURGE);
 
     if ($antivirus->delete($_POST, 1)) {
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
     $computer->getFromDB($antivirus->fields['computers_id']);
     Html::redirect(Toolbox::getItemTypeFormURL('Computer') . '?id=' . $antivirus->fields['computers_id'] .
                   ($computer->fields['is_template'] ? "&withtemplate=1" : ""));
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $antivirus->check($_POST["id"], UPDATE);
 
     if ($antivirus->update($_POST)) {
@@ -98,6 +98,6 @@ if (isset($_POST["add"])) {
 } else {
     $menus = ["assets", "computer"];
     ComputerAntivirus::displayFullPageForItem($_GET["id"], $menus, [
-        'computers_id' => $_GET["computers_id"]
+        'computers_id' => $_GET["computers_id"],
     ]);
 }

@@ -41,7 +41,7 @@ use Glpi\Toolbox\Sanitizer;
  **/
 class NotificationTemplateTranslation extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype  = 'NotificationTemplate';
     public static $items_id  = 'notificationtemplates_id';
 
@@ -136,7 +136,7 @@ class NotificationTemplateTranslation extends CommonDBChild
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Language') . "</td><td colspan='3'>";
 
-       //Get all used languages
+        //Get all used languages
         $used = self::getAllUsedLanguages($notificationtemplates_id);
         if ($ID > 0) {
             if (isset($used[$this->getField('language')])) {
@@ -173,7 +173,7 @@ class NotificationTemplateTranslation extends CommonDBChild
             'enable_fileupload' => false,
             'enable_richtext'   => true,
             'cols'              => 100,
-            'rows'              => 15
+            'rows'              => 15,
         ]);
 
         echo "<input type='hidden' name='notificationtemplates_id' value='" .
@@ -210,11 +210,11 @@ class NotificationTemplateTranslation extends CommonDBChild
         Session::initNavigateListItems(
             'NotificationTemplateTranslation',
             //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                     sprintf(
-                                         __('%1$s = %2$s'),
-                                         NotificationTemplate::getTypeName(1),
-                                         $template->getName()
-                                     )
+            sprintf(
+                __('%1$s = %2$s'),
+                NotificationTemplate::getTypeName(1),
+                $template->getName()
+            )
         );
 
         if ($canedit) {
@@ -277,20 +277,20 @@ class NotificationTemplateTranslation extends CommonDBChild
     public static function cleanContentHtml(array $input)
     {
 
-       // Unsanitize
+        // Unsanitize
         $txt = Sanitizer::unsanitize($input['content_html']);
 
-       // Get as text plain text
+        // Get as text plain text
         $txt = RichText::getTextFromHtml($txt, true, false, false, true);
 
-       // Sanitize result
+        // Sanitize result
         $txt = Sanitizer::sanitize($txt);
 
         if (!$txt) {
-           // No HTML (nothing to display)
+            // No HTML (nothing to display)
             $input['content_html'] = '';
-        } else if (!$input['content_text']) {
-           // Use cleaned HTML
+        } elseif (!$input['content_text']) {
+            // Use cleaned HTML
             $input['content_text'] = $txt;
         }
         return $input;
@@ -316,7 +316,7 @@ class NotificationTemplateTranslation extends CommonDBChild
             'force_update' => true,
             'name' => 'content_html',
             'content_field' => 'content_html',
-            '_add_link' => false
+            '_add_link' => false,
         ]);
 
         parent::post_addItem();
@@ -330,7 +330,7 @@ class NotificationTemplateTranslation extends CommonDBChild
             'force_update' => true,
             'name' => 'content_html',
             'content_field' => 'content_html',
-            '_add_link' => false
+            '_add_link' => false,
         ]);
 
         parent::post_updateItem($history);
@@ -343,7 +343,7 @@ class NotificationTemplateTranslation extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -352,7 +352,7 @@ class NotificationTemplateTranslation extends CommonDBChild
             'field'              => 'language',
             'name'               => __('Language'),
             'datatype'           => 'language',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -371,7 +371,7 @@ class NotificationTemplateTranslation extends CommonDBChild
             'name'               => __('Email HTML body'),
             'datatype'           => 'text',
             'htmltext'           => 'true',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -380,7 +380,7 @@ class NotificationTemplateTranslation extends CommonDBChild
             'field'              => 'content_text',
             'name'               => __('Email text body'),
             'datatype'           => 'text',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -396,7 +396,7 @@ class NotificationTemplateTranslation extends CommonDBChild
         $used_languages = getAllDataFromTable(
             'glpi_notificationtemplatetranslations',
             [
-                'notificationtemplates_id' => $language_id
+                'notificationtemplates_id' => $language_id,
             ]
         );
         $used           = [];
@@ -527,35 +527,35 @@ class NotificationTemplateTranslation extends CommonDBChild
         echo "<tr><th colspan='2'>" . __('Preview') . "</th></tr>";
 
         $oktypes = ['CartridgeItem', 'Change', 'ConsumableItem', 'Contract', 'CronTask',
-            'Problem', 'Project', 'Ticket', 'User'
+            'Problem', 'Project', 'Ticket', 'User',
         ];
 
         if (!in_array($itemtype, $oktypes)) {
-           // this itemtype doesn't work, need to be fixed
+            // this itemtype doesn't work, need to be fixed
             echo "<tr class='tab_bg_2 center'><td>" . NOT_AVAILABLE . "</td>";
             echo "</table></div>";
             return;
         }
 
-       // Criteria Form
+        // Criteria Form
         $key   = getForeignKeyFieldForItemType($item->getType());
         $id    = Session::getSavedOption(__CLASS__, $key, 0);
         $event = Session::getSavedOption(__CLASS__, $key . '_event', '');
 
         echo "<tr class='tab_bg_2'><td>" . $item->getTypeName(1) . "&nbsp;";
         $item->dropdown(['value'     => $id,
-            'on_change' => 'reloadTab("' . $key . '="+this.value)'
+            'on_change' => 'reloadTab("' . $key . '="+this.value)',
         ]);
         echo "</td><td>" . NotificationEvent::getTypeName(1) . "&nbsp;";
         NotificationEvent::dropdownEvents(
             $item->getType(),
             ['value'     => $event,
-                'on_change' => 'reloadTab("' . $key . '_event="+this.value)'
+                'on_change' => 'reloadTab("' . $key . '_event="+this.value)',
             ]
         );
         echo "</td>";
 
-       // Preview
+        // Preview
         if (
             $event
             && $item->getFromDB($id)
@@ -564,16 +564,16 @@ class NotificationTemplateTranslation extends CommonDBChild
 
             // TODO Awfull Hack waiting for https://forge.indepnet.net/issues/3439
             $multi   = ['alert', 'alertnotclosed', 'end', 'notice',
-                'periodicity', 'periodicitynotice'
+                'periodicity', 'periodicitynotice',
             ];
             if (in_array($event, $multi)) {
-             // Won't work for Cardridge and Consumable
+                // Won't work for Cardridge and Consumable
                 $options['entities_id'] = $item->getEntityID();
                 $options['items']       = [$item->getID() => $item->fields];
             }
             $target = NotificationTarget::getInstance($item, $event, $options);
             $infos  = ['language' => $_SESSION['glpilanguage'],
-                'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER]
+                'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER],
             ];
 
             $template->resetComputedTemplates();

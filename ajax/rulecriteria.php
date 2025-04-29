@@ -41,7 +41,7 @@ if (strpos($_SERVER['PHP_SELF'], "rulecriteria.php")) {
     include('../inc/includes.php');
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
-} else if (!defined('GLPI_ROOT')) {
+} elseif (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
@@ -52,7 +52,7 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
     $criterias = $rule->getAllCriteria();
 
     if (count($criterias)) {
-       // First include -> first of the predefined array
+        // First include -> first of the predefined array
         if (!isset($_POST["criteria"])) {
             $_POST["criteria"] = key($criterias);
         }
@@ -60,7 +60,7 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
         $allow_condition = $criterias[$_POST["criteria"]]['allow_condition'] ?? [];
 
         $condparam = ['criterion'        => $_POST["criteria"],
-            'allow_conditions' => $allow_condition
+            'allow_conditions' => $allow_condition,
         ];
         if (isset($_POST['condition'])) {
             $condparam['value'] = $_POST['condition'];
@@ -73,7 +73,7 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
 
         $paramscriteria = ['condition' => '__VALUE__',
             'criteria'  => $_POST["criteria"],
-            'sub_type'  => $_POST["sub_type"]
+            'sub_type'  => $_POST["sub_type"],
         ];
 
         Ajax::updateItemOnSelectEvent(

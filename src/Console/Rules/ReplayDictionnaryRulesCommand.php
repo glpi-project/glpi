@@ -73,7 +73,7 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
     {
 
         if (empty($input->getOption('dictionnary'))) {
-           // Ask for dictionary argument is empty
+            // Ask for dictionary argument is empty
             /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
             $question_helper = $this->getHelper('question');
             $question = new ChoiceQuestion(
@@ -109,9 +109,9 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
             $params['manufacturer'] = $manufacturer_id;
         }
 
-       // Nota: implementations of RuleCollection::replayRulesOnExistingDB() are printing
-       // messages during execution on CLI mode.
-       // This could be improved by using the $output object to handle choosed verbosity level.
+        // Nota: implementations of RuleCollection::replayRulesOnExistingDB() are printing
+        // messages during execution on CLI mode.
+        // This could be improved by using the $output object to handle choosed verbosity level.
         $rulecollection->replayRulesOnExistingDB(0, 0, [], $params);
 
         return 0; // Success

@@ -42,19 +42,19 @@ $cluster = new Cluster();
 
 if (isset($_POST['update'])) {
     $icl->check($_POST['id'], UPDATE);
-   //update existing relation
+    //update existing relation
     if ($icl->update($_POST)) {
         $url = $cluster->getFormURLWithID($_POST['clusters_id']);
     } else {
         $url = $icl->getFormURLWithID($_POST['id']);
     }
     Html::redirect($url);
-} else if (isset($_POST['add'])) {
+} elseif (isset($_POST['add'])) {
     $icl->check(-1, CREATE, $_POST);
     $icl->add($_POST);
     $url = $cluster->getFormURLWithID($_POST['clusters_id']);
     Html::redirect($url);
-} else if (isset($_POST['purge'])) {
+} elseif (isset($_POST['purge'])) {
     $icl->check($_POST['id'], PURGE);
     $icl->delete($_POST, 1);
     $url = $cluster->getFormURLWithID($_POST['clusters_id']);
@@ -70,7 +70,7 @@ if (isset($_REQUEST['id'])) {
     $params['id'] = $_REQUEST['id'];
 } else {
     $params = [
-        'clusters_id'   => $_REQUEST['cluster']
+        'clusters_id'   => $_REQUEST['cluster'],
     ];
 }
 

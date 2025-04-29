@@ -62,7 +62,7 @@ class ImpactItem extends CommonDBTM
             'WHERE'  => [
                 'glpi_impactitems.itemtype' => get_class($item),
                 'glpi_impactitems.items_id' => $item->fields['id'],
-            ]
+            ],
         ]);
 
         $res = $it->current();
@@ -70,10 +70,10 @@ class ImpactItem extends CommonDBTM
 
         if ($res) {
             $id = $res['id'];
-        } else if (!$res && $create_if_missing) {
+        } elseif (!$res && $create_if_missing) {
             $id = $impact_item->add([
                 'itemtype' => get_class($item),
-                'items_id' => $item->fields['id']
+                'items_id' => $item->fields['id'],
             ]);
         } else {
             return false;
@@ -88,10 +88,10 @@ class ImpactItem extends CommonDBTM
         $max_depth = $input['max_depth'] ?? 0;
 
         if (intval($max_depth) <= 0) {
-           // If value is not valid, reset to default
+            // If value is not valid, reset to default
             $input['max_depth'] = Impact::DEFAULT_DEPTH;
-        } else if ($max_depth >= Impact::MAX_DEPTH && $max_depth != Impact::NO_DEPTH_LIMIT) {
-           // Set to no limit if greater than max
+        } elseif ($max_depth >= Impact::MAX_DEPTH && $max_depth != Impact::NO_DEPTH_LIMIT) {
+            // Set to no limit if greater than max
             $input['max_depth'] = Impact::NO_DEPTH_LIMIT;
         }
 

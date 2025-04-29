@@ -34,7 +34,6 @@
 
 namespace tests\units;
 
-use Config;
 use Contract;
 use DbTestCase;
 use Group;
@@ -113,7 +112,7 @@ class NotificationTest extends DbTestCase
         global $DB, $CFG_GLPI;
 
         // Test users
-        list($user_root, $user_sub) = $this->createItems(User::class, [
+        [$user_root, $user_sub] = $this->createItems(User::class, [
             [
                 'name'         => "User_root_entity",
                 '_useremails'  => [-1 => "user_root@teclib.com"],
@@ -143,7 +142,7 @@ class NotificationTest extends DbTestCase
             [
                 'users_id'  => $user_sub->getID(),
                 'groups_id' => $group->getID(),
-            ]
+            ],
         ]);
 
         // Set up notifications
@@ -199,7 +198,7 @@ class NotificationTest extends DbTestCase
 
         $provider = $this->testEntityRestrictionProvider();
         foreach ($provider as $row) {
-            list($contract, $expected_queue) = $row;
+            [$contract, $expected_queue] = $row;
 
             // Clear notification queue
             $DB->delete(QueuedNotification::getTable(), [1]);
@@ -220,7 +219,7 @@ class NotificationTest extends DbTestCase
                         'states_id' => $contract->fields['states_id'],
                         'begin_date' => $contract->fields['begin_date'],
                         'duration' => $contract->fields['duration'],
-                    ]
+                    ],
                 ],
             ]);
 

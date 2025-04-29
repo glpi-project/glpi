@@ -36,7 +36,7 @@
 /// Collector Rules collection class
 class RuleMailCollectorCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
     public $stop_on_first_match = true;
     public static $rightname           = 'rule_mailcollector';
     public $menu_option         = 'mailcollector';
@@ -63,7 +63,7 @@ class RuleMailCollectorCollection extends RuleCollection
 
         $fields = $this->getFieldsToLookFor();
 
-       //Add needed ticket datas for rules processing
+        //Add needed ticket datas for rules processing
         if (isset($params['ticket']) && is_array($params['ticket'])) {
             foreach ($params['ticket'] as $key => $value) {
                 if (in_array($key, $fields) && !isset($input[$key])) {
@@ -72,7 +72,7 @@ class RuleMailCollectorCollection extends RuleCollection
             }
         }
 
-       //Add needed headers for rules processing
+        //Add needed headers for rules processing
         if (isset($params['headers']) && is_array($params['headers'])) {
             foreach ($params['headers'] as $key => $value) {
                 if (in_array($key, $fields) && !isset($input[$key])) {
@@ -89,23 +89,23 @@ class RuleMailCollectorCollection extends RuleCollection
             );
         }
 
-       //Add all user's groups
+        //Add all user's groups
         if (in_array('_groups_id_requester', $fields)) {
             foreach (Group_User::getUserGroups($input['_users_id_requester']) as $group) {
                 $input['_groups_id_requester'][] = $group['id'];
             }
         }
 
-       //Add all user's profiles
+        //Add all user's profiles
         if (in_array('profiles', $fields)) {
             foreach (Profile_User::getForUser($input['_users_id_requester']) as $profile) {
                 $input['PROFILES'][$profile['profiles_id']] = $profile['profiles_id'];
             }
         }
 
-       //If the criteria is "user has only one time the profile xxx"
+        //If the criteria is "user has only one time the profile xxx"
         if (in_array('unique_profile', $fields)) {
-           //Get all profiles
+            //Get all profiles
             $profiles = Profile_User::getForUser($input['_users_id_requester']);
             foreach ($profiles as $profile) {
                 if (
@@ -119,7 +119,7 @@ class RuleMailCollectorCollection extends RuleCollection
             }
         }
 
-       //Store the number of profiles of which the user belongs to
+        //Store the number of profiles of which the user belongs to
         if (in_array('one_profile', $fields)) {
             $profiles = Profile_User::getForUser($input['_users_id_requester']);
             if (count($profiles) == 1) {
@@ -128,7 +128,7 @@ class RuleMailCollectorCollection extends RuleCollection
             }
         }
 
-       //Store the number of profiles of which the user belongs to
+        //Store the number of profiles of which the user belongs to
         if (in_array('known_domain', $fields)) {
             if (preg_match("/@(.*)/", $input['from'], $results)) {
                 if (Entity::getEntityIDByDomain($results[1]) != -1) {

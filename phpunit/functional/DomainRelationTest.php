@@ -46,7 +46,7 @@ class DomainRelationTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $unprotected_id = $relation->add([
-                'name' => __FUNCTION__
+                'name' => __FUNCTION__,
             ])
         );
 

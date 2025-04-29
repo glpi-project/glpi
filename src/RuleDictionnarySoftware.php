@@ -53,7 +53,7 @@ class RuleDictionnarySoftware extends Rule
      **/
     public function getTitle()
     {
-       //TRANS: plural for software
+        //TRANS: plural for software
         return __('Dictionary of software');
     }
 
@@ -106,7 +106,7 @@ class RuleDictionnarySoftware extends Rule
 
         $actions['version']['name']               = _n('Version', 'Versions', 1);
         $actions['version']['force_actions']      = ['assign','regex_result',
-            'append_regex_result'
+            'append_regex_result',
         ];
 
         $actions['manufacturer']['name']          = __('Publisher');
@@ -153,15 +153,15 @@ class RuleDictionnarySoftware extends Rule
             $this->getRuleWithCriteriasAndActions($this->fields['id'], 0, 1);
         }
 
-       //if there's a least one action with type == append_regex_result, then need to display
-       //this field as a criteria
+        //if there's a least one action with type == append_regex_result, then need to display
+        //this field as a criteria
         foreach ($this->actions as $action) {
             if ($action->fields["action_type"] == "append_regex_result") {
-                $value = (isset($fields[$action->fields['field']]) ? $fields[$action->fields['field']] : '');
-               //Get actions for this type of rule
+                $value = ($fields[$action->fields['field']] ?? '');
+                //Get actions for this type of rule
                 $actions = $this->getAllActions();
 
-               //display the additionnal field
+                //display the additionnal field
                 echo "<tr class='tab_bg_1'>";
                 echo "<td>" . $this->fields['match'] . "</td>";
                 echo "<td>" . $actions[$action->fields['field']]['name'] . "</td>";

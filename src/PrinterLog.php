@@ -111,15 +111,15 @@ class PrinterLog extends CommonDBChild
         $bdate = new DateTime();
         $bdate->sub(new DateInterval('P1Y'));
         $filters = [
-            'date' => ['>', $bdate->format('Y-m-d')]
+            'date' => ['>', $bdate->format('Y-m-d')],
         ];
         $filters = array_merge($filters, $user_filters);
 
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => [
-                'printers_id'  => $printer->fields['id']
-            ] + $filters
+                'printers_id'  => $printer->fields['id'],
+            ] + $filters,
         ]);
 
         $series = iterator_to_array($iterator, false);
@@ -149,7 +149,7 @@ class PrinterLog extends CommonDBChild
     {
         $raw_metrics = $this->getMetrics($printer);
 
-       //build graph data
+        //build graph data
         $params = [
             'label'         => $this->getTypeName(),
             'icon'          => Printer::getIcon(),
@@ -210,10 +210,10 @@ class PrinterLog extends CommonDBChild
             'label' => $params['label'],
             'icon'  => $params['icon'],
             'color' => '#ffffff',
-            'distributed' => false
+            'distributed' => false,
         ];
 
-       //display graph
+        //display graph
         echo "<div class='dashboard printer_barchart'>";
         echo Widget::multipleAreas($bar_conf);
         echo "</div>";

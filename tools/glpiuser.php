@@ -77,7 +77,7 @@ if ($user->getFromDBbyName($_GET['user'])) {
 
     if ($_GET['enable']) {
         $in['is_active'] = 1;
-    } else if ($_GET['disable']) {
+    } elseif ($_GET['disable']) {
         $in['is_active'] = 0;
     }
 

@@ -60,7 +60,7 @@ if (!empty($_POST["update"])) {
     $glpikey = new GLPIKey();
     foreach (array_keys($_POST) as $field) {
         if ($glpikey->isConfigSecured($context, $field)) {
-           // Field must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
+            // Field must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
             $_POST[$field] = $_UPOST[$field];
         }
     }
@@ -93,5 +93,5 @@ if (!empty($_POST['reset_translation_cache'])) {
 }
 
 Config::displayFullPageForItem($_POST['id'], ["config", "config"], [
-    'formoptions'  => "data-track-changes=true"
+    'formoptions'  => "data-track-changes=true",
 ]);

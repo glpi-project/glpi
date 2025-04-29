@@ -73,9 +73,9 @@ class TemplateRenderer
 
         $active_plugins = Plugin::getPlugins();
         foreach ($active_plugins as $plugin_key) {
-           // Add a dedicated namespace for each active plugin, so templates would be loadable using
-           // `@my_plugin/path/to/template.html.twig` where `my_plugin` is the plugin key and `path/to/template.html.twig`
-           // is the path of the template inside the `/templates` directory of the plugin.
+            // Add a dedicated namespace for each active plugin, so templates would be loadable using
+            // `@my_plugin/path/to/template.html.twig` where `my_plugin` is the plugin key and `path/to/template.html.twig`
+            // is the path of the template inside the `/templates` directory of the plugin.
             $loader->addPath(Plugin::getPhpDir($plugin_key . '/templates'), $plugin_key);
         }
 
@@ -98,10 +98,10 @@ class TemplateRenderer
             $loader,
             $env_params
         );
-       // Vendor extensions
+        // Vendor extensions
         $this->environment->addExtension(new DebugExtension());
         $this->environment->addExtension(new StringExtension());
-       // GLPI extensions
+        // GLPI extensions
         $this->environment->addExtension(new ConfigExtension());
         $this->environment->addExtension(new SecurityExtension());
         $this->environment->addExtension(new DataHelpersExtension());
@@ -116,7 +116,7 @@ class TemplateRenderer
         $this->environment->addExtension(new SessionExtension());
         $this->environment->addExtension(new TeamExtension());
 
-       // add superglobals
+        // add superglobals
         $this->environment->addGlobal('_post', $_POST);
         $this->environment->addGlobal('_get', $_GET);
         $this->environment->addGlobal('_request', $_REQUEST);

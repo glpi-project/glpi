@@ -35,7 +35,7 @@
 
 class Contact_Supplier extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1 = 'Contact';
     public static $items_id_1 = 'contacts_id';
 
@@ -136,7 +136,7 @@ class Contact_Supplier extends CommonDBRelation
             echo "<input type='hidden' name='contacts_id' value='$instID'>";
             Supplier::dropdown(['used'        => $used,
                 'entity'      => $contact->fields["entities_id"],
-                'entity_sons' => $contact->fields["is_recursive"]
+                'entity_sons' => $contact->fields["is_recursive"],
             ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -151,7 +151,7 @@ class Contact_Supplier extends CommonDBRelation
         if ($canedit && $number) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                'container'     => 'mass' . __CLASS__ . $rand
+                'container'     => 'mass' . __CLASS__ . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -179,12 +179,12 @@ class Contact_Supplier extends CommonDBRelation
             Session::initNavigateListItems(
                 'Supplier',
                 //TRANS : %1$s is the itemtype name,
-                              //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            Contact::getTypeName(1),
-                                            $contact->getName()
-                                        )
+                //        %2$s is the name of the item (used for headings of a list)
+                sprintf(
+                    __('%1$s = %2$s'),
+                    Contact::getTypeName(1),
+                    $contact->getName()
+                )
             );
 
             foreach ($suppliers as $data) {
@@ -269,7 +269,7 @@ class Contact_Supplier extends CommonDBRelation
 
             Contact::dropdown(['used'        => $used,
                 'entity'      => $supplier->fields["entities_id"],
-                'entity_sons' => $supplier->fields["is_recursive"]
+                'entity_sons' => $supplier->fields["is_recursive"],
             ]);
 
             echo "</td><td class='center'>";
@@ -285,7 +285,7 @@ class Contact_Supplier extends CommonDBRelation
         if ($canedit && $number) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                'container'     => 'mass' . __CLASS__ . $rand
+                'container'     => 'mass' . __CLASS__ . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -316,11 +316,11 @@ class Contact_Supplier extends CommonDBRelation
             Session::initNavigateListItems(
                 'Contact',
                 //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            Supplier::getTypeName(1),
-                                            $supplier->getName()
-                                        )
+                sprintf(
+                    __('%1$s = %2$s'),
+                    Supplier::getTypeName(1),
+                    $supplier->getName()
+                )
             );
 
             foreach ($contacts as $data) {
@@ -338,18 +338,18 @@ class Contact_Supplier extends CommonDBRelation
                     "glpi_entities",
                     $data["entity"]
                 );
-                 echo "</td>";
-                 echo "<td class='center' width='100'>" . $data["phone"] . "</td>";
-                 echo "<td class='center' width='100'>" . $data["phone2"] . "</td>";
-                 echo "<td class='center' width='100'>" . $data["mobile"] . "</td>";
-                 echo "<td class='center' width='100'>" . $data["fax"] . "</td>";
-                 echo "<td class='center'>";
-                 echo "<a href='mailto:" . $data["email"] . "'>" . $data["email"] . "</a></td>";
-                 echo "<td class='center'>" . Dropdown::getDropdownName(
-                     "glpi_contacttypes",
-                     $data["contacttypes_id"]
-                 ) . "</td>";
-                 echo "</tr>";
+                echo "</td>";
+                echo "<td class='center' width='100'>" . $data["phone"] . "</td>";
+                echo "<td class='center' width='100'>" . $data["phone2"] . "</td>";
+                echo "<td class='center' width='100'>" . $data["mobile"] . "</td>";
+                echo "<td class='center' width='100'>" . $data["fax"] . "</td>";
+                echo "<td class='center'>";
+                echo "<a href='mailto:" . $data["email"] . "'>" . $data["email"] . "</a></td>";
+                echo "<td class='center'>" . Dropdown::getDropdownName(
+                    "glpi_contacttypes",
+                    $data["contacttypes_id"]
+                ) . "</td>";
+                echo "</tr>";
             }
             echo $header_begin . $header_bottom . $header_end;
         }

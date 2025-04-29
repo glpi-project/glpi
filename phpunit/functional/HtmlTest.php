@@ -136,11 +136,11 @@ class HtmlTest extends \GLPITestCase
 
         $aorigin = [
             $origin,
-            "Another\\none!"
+            "Another\\none!",
         ];
         $aexpected = [
             $expected,
-            "Another\none!"
+            "Another\none!",
         ];
         $this->assertSame($aexpected, \Html::cleanPostForTextArea($aorigin));
     }
@@ -262,7 +262,7 @@ class HtmlTest extends \GLPITestCase
             'plugins',
             'admin',
             'config',
-            'preference'
+            'preference',
         ];
         $this->assertSame($expected, array_keys($menu));
 
@@ -282,7 +282,7 @@ class HtmlTest extends \GLPITestCase
             'PassiveDCEquipment',
             'Unmanaged',
             'Cable',
-            'Item_DeviceSimcard'
+            'Item_DeviceSimcard',
         ];
         $this->assertSame('Assets', $menu['assets']['title']);
         $this->assertSame($expected, $menu['assets']['types']);
@@ -312,7 +312,7 @@ class HtmlTest extends \GLPITestCase
             'Cluster',
             'Domain',
             'Appliance',
-            'Database'
+            'Database',
         ];
         $this->assertSame('Management', $menu['management']['title']);
         $this->assertSame($expected, $menu['management']['types']);
@@ -326,7 +326,7 @@ class HtmlTest extends \GLPITestCase
             'Report',
             'MigrationCleaner',
             'SavedSearch',
-            'Impact'
+            'Impact',
         ];
         $this->assertSame('Tools', $menu['tools']['title']);
         $this->assertSame($expected, $menu['tools']['types']);
@@ -343,7 +343,7 @@ class HtmlTest extends \GLPITestCase
             'Profile',
             'QueuedNotification',
             'Glpi\\Event',
-            'Glpi\Inventory\Inventory'
+            'Glpi\Inventory\Inventory',
         ];
         $this->assertSame('Administration', $menu['admin']['title']);
         $this->assertSame($expected, $menu['admin']['types']);
@@ -359,7 +359,7 @@ class HtmlTest extends \GLPITestCase
             'Auth',
             'MailCollector',
             'Link',
-            'Plugin'
+            'Plugin',
         ];
         $this->assertSame('Setup', $menu['config']['title']);
         $this->assertSame($expected, $menu['config']['types']);
@@ -384,12 +384,12 @@ class HtmlTest extends \GLPITestCase
     {
         global $CFG_GLPI;
 
-       //fake files
+        //fake files
         $fake_files = [
             'file.css',
             'file.min.css',
             'other.css',
-            'other-min.css'
+            'other-min.css',
         ];
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
         $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
@@ -397,12 +397,12 @@ class HtmlTest extends \GLPITestCase
          $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '" %attrs>';
         $base_attrs = 'media="all"';
 
-       //create test files
+        //create test files
         foreach ($fake_files as $fake_file) {
             $this->assertTrue(touch(GLPI_TMP_DIR . '/' . $fake_file));
         }
 
-       //expect minified file
+        //expect minified file
         $expected = str_replace(
             ['%url', '%attrs'],
             ['file.min.css', $base_attrs],
@@ -410,7 +410,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/file.css'));
 
-       //explicitely require not minified file
+        //explicitely require not minified file
         $expected = str_replace(
             ['%url', '%attrs'],
             ['file.css', $base_attrs],
@@ -418,7 +418,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/file.css', [], false));
 
-       //activate debug mode: expect not minified file
+        //activate debug mode: expect not minified file
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         $expected = str_replace(
             ['%url', '%attrs'],
@@ -428,7 +428,7 @@ class HtmlTest extends \GLPITestCase
         $this->assertSame($expected, \Html::css($dir . '/file.css'));
         $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
 
-       //expect original file
+        //expect original file
         $expected = str_replace(
             ['%url', '%attrs'],
             ['nofile.css', $base_attrs],
@@ -436,7 +436,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/nofile.css'));
 
-       //expect original file
+        //expect original file
         $expected = str_replace(
             ['%url', '%attrs'],
             ['other.css', $base_attrs],
@@ -444,7 +444,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/other.css'));
 
-       //expect original file
+        //expect original file
         $expected = str_replace(
             ['%url', '%attrs'],
             ['other-min.css', $base_attrs],
@@ -452,7 +452,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/other-min.css'));
 
-       //expect minified file, print media
+        //expect minified file, print media
         $expected = str_replace(
             ['%url', '%attrs'],
             ['file.min.css', 'media="print"'],
@@ -460,7 +460,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/file.css', ['media' => 'print']));
 
-       //expect minified file, screen media
+        //expect minified file, screen media
         $expected = str_replace(
             ['%url', '%attrs'],
             ['file.min.css', $base_attrs],
@@ -468,7 +468,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/file.css', ['media' => '']));
 
-       //expect minified file and specific version
+        //expect minified file and specific version
         $fake_version = '0.0.1';
         $expected = str_replace(
             ['%url', '%attrs', $version_key],
@@ -477,7 +477,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/file.css', ['version' => $fake_version]));
 
-       //expect minified file with added attributes
+        //expect minified file with added attributes
         $expected = str_replace(
             ['%url', '%attrs'],
             ['file.min.css', 'attribute="one" ' . $base_attrs],
@@ -485,7 +485,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::css($dir . '/file.css', ['attribute' => 'one']));
 
-       //remove test files
+        //remove test files
         foreach ($fake_files as $fake_file) {
             unlink(GLPI_TMP_DIR . '/' . $fake_file);
         }
@@ -495,24 +495,24 @@ class HtmlTest extends \GLPITestCase
     {
         global $CFG_GLPI;
 
-       //fake files
+        //fake files
         $fake_files = [
             'file.js',
             'file.min.js',
             'other.js',
-            'other-min.js'
+            'other-min.js',
         ];
         $dir = str_replace(realpath(GLPI_ROOT), '', realpath(GLPI_TMP_DIR));
         $version_key = FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $base_expected = '<script type="text/javascript" src="' .
          $CFG_GLPI['root_doc'] . $dir . '/%url?v=' . $version_key . '"></script>';
 
-       //create test files
+        //create test files
         foreach ($fake_files as $fake_file) {
             touch(GLPI_TMP_DIR . '/' . $fake_file);
         }
 
-       //expect minified file
+        //expect minified file
         $expected = str_replace(
             '%url',
             'file.min.js',
@@ -520,7 +520,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::script($dir . '/file.js'));
 
-       //explicitely require not minified file
+        //explicitely require not minified file
         $expected = str_replace(
             '%url',
             'file.js',
@@ -528,7 +528,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::script($dir . '/file.js', [], false));
 
-       //activate debug mode: expect not minified file
+        //activate debug mode: expect not minified file
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         $expected = str_replace(
             '%url',
@@ -538,7 +538,7 @@ class HtmlTest extends \GLPITestCase
         $this->assertSame($expected, \Html::script($dir . '/file.js'));
         $_SESSION['glpi_use_mode'] = \Session::NORMAL_MODE;
 
-       //expect original file
+        //expect original file
         $expected = str_replace(
             '%url',
             'nofile.js',
@@ -546,7 +546,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::script($dir . '/nofile.js'));
 
-       //expect original file
+        //expect original file
         $expected = str_replace(
             '%url',
             'other.js',
@@ -554,7 +554,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::script($dir . '/other.js'));
 
-       //expect original file
+        //expect original file
         $expected = str_replace(
             '%url',
             'other-min.js',
@@ -562,7 +562,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::script($dir . '/other-min.js'));
 
-       //expect minified file and specific version
+        //expect minified file and specific version
         $fake_version = '0.0.1';
         $expected = str_replace(
             ['%url', $version_key],
@@ -571,7 +571,7 @@ class HtmlTest extends \GLPITestCase
         );
         $this->assertSame($expected, \Html::script($dir . '/file.js', ['version' => $fake_version]));
 
-       //remove test files
+        //remove test files
         foreach ($fake_files as $fake_file) {
             unlink(GLPI_TMP_DIR . '/' . $fake_file);
         }
@@ -579,7 +579,7 @@ class HtmlTest extends \GLPITestCase
 
     public function testManageRefreshPage()
     {
-       //no session refresh, no args => no timer
+        //no session refresh, no args => no timer
         if (isset($_SESSION['glpirefresh_views'])) {
             unset($_SESSION['glpirefresh_views']);
         }
@@ -592,7 +592,7 @@ class HtmlTest extends \GLPITestCase
         $message = \Html::manageRefreshPage();
         $this->assertSame($expected, $message);
 
-       //Set session refresh to one minute
+        //Set session refresh to one minute
         $_SESSION['glpirefresh_views'] = 1;
         $expected = str_replace("##CALLBACK##", "window.location.reload()", $base_script);
         $expected = str_replace("##TIMER##", 1 * MINUTE_TIMESTAMP * 1000, $expected);
@@ -617,7 +617,7 @@ class HtmlTest extends \GLPITestCase
 
     public function testGenerateMenuSession()
     {
-       //login to get session
+        //login to get session
         $auth = new \Auth();
         $this->assertTrue($auth->login(TU_USER, TU_PASS, true));
 
@@ -659,7 +659,7 @@ class HtmlTest extends \GLPITestCase
         $this->assertStringContainsString('id="fuzzysearch"', $modal);
         $this->assertMatchesRegularExpression('/class="results[^"]*"/', $modal);
 
-       // test retrieving entries
+        // test retrieving entries
         $default = json_decode(\Html::FuzzySearch(), true);
         $entries = json_decode(\Html::FuzzySearch('getList'), true);
         $this->assertSame($default, $entries);
@@ -694,7 +694,7 @@ class HtmlTest extends \GLPITestCase
     {
         $_SESSION['MESSAGE_AFTER_REDIRECT'] = [
             ERROR    => ['Something went really wrong :('],
-            WARNING  => ['Oooops, I did it again!']
+            WARNING  => ['Oooops, I did it again!'],
         ];
 
         ob_start();
@@ -771,7 +771,7 @@ class HtmlTest extends \GLPITestCase
 
         $options = [
             'title'  => 'My title',
-            'alt'    => 'no img text'
+            'alt'    => 'no img text',
         ];
         $expected = '<img src="/path/to/image.png" title="My title" alt="no img text"  />';
         $this->assertSame($expected, \Html::image($path, $options));
@@ -790,7 +790,7 @@ class HtmlTest extends \GLPITestCase
         $this->assertSame($expected, \Html::link($text, $url));
 
         $options = [
-            'confirm'   => 'U sure?'
+            'confirm'   => 'U sure?',
         ];
         $expected = '<a href="mylink.php" onclick="if (window.confirm(&apos;U sure?&apos;)){ ;return true;} else { return false;}">My link</a>';
         $this->assertSame($expected, \Html::link($text, $url, $options));
@@ -813,8 +813,8 @@ class HtmlTest extends \GLPITestCase
         $options = [
             'value'  => [
                 'a value',
-                'another one'
-            ]
+                'another one',
+            ],
         ];
         $expected = "<input type=\"hidden\" name=\"hiddenfield[0]\" value=\"a value\" />\n<input type=\"hidden\" name=\"hiddenfield[1]\" value=\"another one\" />\n";
         $this->assertSame($expected, \Html::hidden($name, $options));
@@ -822,8 +822,8 @@ class HtmlTest extends \GLPITestCase
         $options = [
             'value'  => [
                 'one' => 'a value',
-                'two' => 'another one'
-            ]
+                'two' => 'another one',
+            ],
         ];
         $expected = "<input type=\"hidden\" name=\"hiddenfield[one]\" value=\"a value\" />\n<input type=\"hidden\" name=\"hiddenfield[two]\" value=\"another one\" />\n";
         $this->assertSame($expected, \Html::hidden($name, $options));
@@ -838,7 +838,7 @@ class HtmlTest extends \GLPITestCase
         $options = [
             'value'     => 'myval',
             'class'     => 'a_class',
-            'data-id'   => 12
+            'data-id'   => 12,
         ];
         $expected = '<input type="text" name="in_put" value="myval" class="a_class" data-id="12" />';
         $this->assertSame($expected, \Html::input($name, $options));
@@ -897,28 +897,25 @@ body {
 }
 @import 'imports/borders';     /* import without extension */
 @import 'imports/colors.scss'; /* import with extension */
-SCSS
-            ,
+SCSS,
 
                 'another.scss' => <<<SCSS
 form input {
    background: grey;
 }
-SCSS
-            ,
+SCSS,
 
                 'imports' => [
                     'borders.scss' => <<<SCSS
 .big-border {
    border: 5px dashed black;
 }
-SCSS
-               ,
+SCSS,
                     'colors.scss' => <<<SCSS
 .red {
    color:red;
 }
-SCSS
+SCSS,
                 ],
             ],
         ];

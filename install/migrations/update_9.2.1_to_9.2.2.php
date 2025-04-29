@@ -53,7 +53,7 @@ function update921to922()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '9.2.2'));
     $migration->setVersion('9.2.2');
 
@@ -64,7 +64,7 @@ function update921to922()
     $migration->addPostQuery(
         $DB->buildDelete("glpi_configs", [
             'context'   => "core",
-            'name'      => "default_graphtype"
+            'name'      => "default_graphtype",
         ])
     );
 
@@ -75,7 +75,7 @@ function update921to922()
         )
     );
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

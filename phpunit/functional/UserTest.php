@@ -84,7 +84,7 @@ class UserTest extends \DbTestCase
         $input = [
             'password_forget_token' => $token . 'bad',
             'password'  => TU_PASS,
-            'password2' => TU_PASS
+            'password2' => TU_PASS,
         ];
         $this->expectException(\Glpi\Exception\ForgetPasswordException::class);
         $user->updateForgottenPassword($input);
@@ -107,7 +107,7 @@ class UserTest extends \DbTestCase
         $input = [
             'password_forget_token' => $token,
             'password'  => 'NewPassword',
-            'password2' => 'NewPassword'
+            'password2' => 'NewPassword',
         ];
 
         // 3 - check the update succeeds
@@ -134,11 +134,11 @@ class UserTest extends \DbTestCase
         $this->assertSame([], $user->getAllEmails());
         $this->assertFalse($user->isEmail('one@test.com'));
 
-        $uid = (int)$user->add([
+        $uid = (int) $user->add([
             'name'   => 'test_email',
             '_useremails'  => [
-                'one@test.com'
-            ]
+                'one@test.com',
+            ],
         ]);
         $this->assertGreaterThan(0, $uid);
         $this->assertTrue($user->getFromDB($user->fields['id']));
@@ -148,7 +148,7 @@ class UserTest extends \DbTestCase
             $user->update([
                 'id'              => $uid,
                 '_useremails'     => ['two@test.com'],
-                '_default_email'  => 0
+                '_default_email'  => 0,
             ])
         );
 
@@ -168,13 +168,13 @@ class UserTest extends \DbTestCase
 
         // Create a user with some emails
         $user1 = new \User();
-        $uid1 = (int)$user1->add([
+        $uid1 = (int) $user1->add([
             'name'   => 'test_email 1',
             '_useremails'  => [
                 -1 => 'email1@test.com',
                 -2 => 'email2@test.com',
                 -3 => 'email3@test.com',
-            ]
+            ],
         ]);
         $this->assertGreaterThan(0, $uid1);
 
@@ -206,7 +206,7 @@ class UserTest extends \DbTestCase
                 -1 => 'anotheremail1@test.com',
                 $user1_email1_id => 'anotheremail2@test.com', // try to change email from user 1
                 -3 => 'anotheremail3@test.com',
-            ]
+            ],
         ]);
         $this->assertGreaterThan(0, $uid2);
 
@@ -335,7 +335,7 @@ class UserTest extends \DbTestCase
         $user = new \User();
 
         $input = [
-            'name'   => 'prepare_for_add'
+            'name'   => 'prepare_for_add',
         ];
         $expected = [
             'name'         => 'prepare_for_add',
@@ -344,7 +344,7 @@ class UserTest extends \DbTestCase
             'is_active'    => 1,
             'is_deleted'   => 0,
             'entities_id'  => 0,
-            'profiles_id'  => 0
+            'profiles_id'  => 0,
         ];
 
         $this->assertSame($expected, $user->prepareInputForAdd($input));
@@ -356,7 +356,7 @@ class UserTest extends \DbTestCase
         $this->assertFalse($user->prepareInputForAdd($input));
         $this->hasSessionMessages(ERROR, ['The login is not valid. Unable to add the user.']);
 
-       //add same user twice
+        //add same user twice
         $input = ['name' => 'new_user'];
         $this->assertGreaterThan(0, $user->add($input));
         $this->assertFalse($user->add($input));
@@ -365,7 +365,7 @@ class UserTest extends \DbTestCase
         $input = [
             'name'      => 'user_pass',
             'password'  => 'password',
-            'password2' => 'nomatch'
+            'password2' => 'nomatch',
         ];
         $this->assertFalse($user->prepareInputForAdd($input));
         $this->hasSessionMessages(ERROR, ['Error: the two passwords do not match']);
@@ -373,7 +373,7 @@ class UserTest extends \DbTestCase
         $input = [
             'name'      => 'user_pass',
             'password'  => '',
-            'password2' => 'nomatch'
+            'password2' => 'nomatch',
         ];
         $expected = [
             'name'         => 'user_pass',
@@ -383,7 +383,7 @@ class UserTest extends \DbTestCase
             'is_active'    => 1,
             'is_deleted'   => 0,
             'entities_id'  => 0,
-            'profiles_id'  => 0
+            'profiles_id'  => 0,
         ];
         $this->assertSame($expected, $user->prepareInputForAdd($input));
 
@@ -455,7 +455,7 @@ class UserTest extends \DbTestCase
         ] + $default_values;
         $this->assertSame($expected, $user->prepareInputForAdd($input));
         $this->hasSessionMessages(ERROR, [
-            'The following field has an incorrect value: "PDF export font".'
+            'The following field has an incorrect value: "PDF export font".',
         ]);
     }
 
@@ -487,7 +487,7 @@ class UserTest extends \DbTestCase
         ];
         $this->assertSame($expected, $user->prepareInputForUpdate($input));
         $this->hasSessionMessages(ERROR, [
-            'The following field has an incorrect value: "PDF export font".'
+            'The following field has an incorrect value: "PDF export font".',
         ]);
     }
 
@@ -510,7 +510,7 @@ class UserTest extends \DbTestCase
                     'timezone' => 'NULL',
                 ],
             ],
-         // check that timezone is not reset unexpectedly
+            // check that timezone is not reset unexpectedly
             [
                 'input'     => [
                     'registration_number' => 'no.1',
@@ -535,10 +535,10 @@ class UserTest extends \DbTestCase
                 'name'         => $username,
                 'password'     => 'mypass',
                 'password2'    => 'mypass',
-                '_profiles_id' => 1
+                '_profiles_id' => 1,
             ]
         );
-        $this->assertGreaterThan(0, (int)$user_id);
+        $this->assertGreaterThan(0, (int) $user_id);
 
         $this->login($username, 'mypass');
 
@@ -555,7 +555,7 @@ class UserTest extends \DbTestCase
             [
                 'input'     => [
                     'password'  => 'initial_pass',
-                    'password2' => 'initial_pass'
+                    'password2' => 'initial_pass',
                 ],
                 'expected'  => [
                 ],
@@ -563,7 +563,7 @@ class UserTest extends \DbTestCase
             [
                 'input'     => [
                     'password'  => 'new_pass',
-                    'password2' => 'new_pass_not_match'
+                    'password2' => 'new_pass_not_match',
                 ],
                 'expected'  => false,
                 'messages'  => [ERROR => ['Error: the two passwords do not match']],
@@ -571,7 +571,7 @@ class UserTest extends \DbTestCase
             [
                 'input'     => [
                     'password'  => 'new_pass',
-                    'password2' => 'new_pass'
+                    'password2' => 'new_pass',
                 ],
                 'expected'  => [
                     'password_last_update' => true,
@@ -594,10 +594,10 @@ class UserTest extends \DbTestCase
                 'name'         => $username,
                 'password'     => 'initial_pass',
                 'password2'    => 'initial_pass',
-                '_profiles_id' => 1
+                '_profiles_id' => 1,
             ]
         );
-        $this->assertGreaterThan(0, (int)$user_id);
+        $this->assertGreaterThan(0, (int) $user_id);
 
         $this->login($username, 'initial_pass');
 
@@ -677,7 +677,7 @@ class UserTest extends \DbTestCase
                 'tech'      => false,
                 'normal'    => false,
                 'post-only' => true,
-            ]
+            ],
         ];
 
         $inputs = [
@@ -709,7 +709,7 @@ class UserTest extends \DbTestCase
                             sprintf(
                                 __('You are not allowed to update the following fields: %s'),
                                 $key
-                            )
+                            ),
                         ]);
                     }
                 }
@@ -739,9 +739,9 @@ class UserTest extends \DbTestCase
 
         //user with a profile
         $pid = getItemByTypeName('Profile', 'Technician', true);
-        $uid = (int)$user->add([
+        $uid = (int) $user->add([
             'name'         => 'create_user',
-            '_profiles_id' => $pid
+            '_profiles_id' => $pid,
         ]);
         $this->assertGreaterThan(0, $uid);
 
@@ -756,11 +756,11 @@ class UserTest extends \DbTestCase
         $this->assertSame(0, $puser->fields['is_recursive']);
         $this->assertSame(0, $puser->fields['is_dynamic']);
 
-        $pid = (int)\Profile::getDefault();
+        $pid = (int) \Profile::getDefault();
         $this->assertGreaterThan(0, $pid);
 
         //user without a profile (will take default one)
-        $uid2 = (int)$user->add([
+        $uid2 = (int) $user->add([
             'name' => 'create_user2',
         ]);
         $this->assertGreaterThan(0, $uid2);
@@ -777,11 +777,11 @@ class UserTest extends \DbTestCase
         $this->assertSame(1, $puser->fields['is_dynamic']);
 
         //user with entity not recursive
-        $eid2 = (int)getItemByTypeName('Entity', '_test_child_1', true);
+        $eid2 = (int) getItemByTypeName('Entity', '_test_child_1', true);
         $this->assertGreaterThan(0, $eid2);
-        $uid3 = (int)$user->add([
+        $uid3 = (int) $user->add([
             'name'         => 'create_user3',
-            '_entities_id' => $eid2
+            '_entities_id' => $eid2,
         ]);
         $this->assertGreaterThan(0, $uid3);
 
@@ -799,7 +799,7 @@ class UserTest extends \DbTestCase
         $uid4 = $user->add([
             'name'            => 'create_user4',
             '_entities_id'    => $eid2,
-            '_is_recursive'   => 1
+            '_is_recursive'   => 1,
         ]);
         $this->assertGreaterThan(0, $uid4);
 
@@ -824,7 +824,7 @@ class UserTest extends \DbTestCase
         // Create user with profile
         $uid = $user->add([
             'name'         => 'create_user',
-            '_profiles_id' => (int)getItemByTypeName('Profile', 'Self-Service', true)
+            '_profiles_id' => (int) getItemByTypeName('Profile', 'Self-Service', true),
         ]);
         $this->assertGreaterThan(0, $uid);
 
@@ -839,8 +839,8 @@ class UserTest extends \DbTestCase
             0,
             $puser->add([
                 'users_id'      => $uid,
-                'profiles_id'   => (int)getItemByTypeName('Profile', 'Technician', true),
-                'entities_id'   => (int)getItemByTypeName('Entity', '_test_child_1', true),
+                'profiles_id'   => (int) getItemByTypeName('Profile', 'Technician', true),
+                'entities_id'   => (int) getItemByTypeName('Entity', '_test_child_1', true),
                 'is_recursive'  => 0,
             ])
         );
@@ -849,8 +849,8 @@ class UserTest extends \DbTestCase
             0,
             $puser->add([
                 'users_id'      => $uid,
-                'profiles_id'   => (int)getItemByTypeName('Profile', 'Admin', true),
-                'entities_id'   => (int)getItemByTypeName('Entity', '_test_child_2', true),
+                'profiles_id'   => (int) getItemByTypeName('Profile', 'Admin', true),
+                'entities_id'   => (int) getItemByTypeName('Entity', '_test_child_2', true),
                 'is_recursive'  => 1,
             ])
         );
@@ -859,7 +859,7 @@ class UserTest extends \DbTestCase
 
         // Test item cloning
         $added = $user->clone();
-        $this->assertGreaterThan(0, (int)$added);
+        $this->assertGreaterThan(0, (int) $added);
 
         $clonedUser = new \User();
         $this->assertTrue($clonedUser->getFromDB($added));
@@ -906,7 +906,7 @@ class UserTest extends \DbTestCase
 
         $uid = $user->add([
             'name'      => 'user_with_dn',
-            'user_dn'   => $dn
+            'user_dn'   => $dn,
         ]);
         $this->assertGreaterThan(0, $uid);
 
@@ -923,7 +923,7 @@ class UserTest extends \DbTestCase
 
         $uid = $user->add([
             'name'         => 'user_with_syncfield',
-            'sync_field'   => $sync_field
+            'sync_field'   => $sync_field,
         ]);
 
         $this->assertGreaterThan(0, $uid);
@@ -940,7 +940,7 @@ class UserTest extends \DbTestCase
         $name = 'user_with_name';
 
         $uid = $user->add([
-            'name' => $name
+            'name' => $name,
         ]);
 
         $this->assertGreaterThan(0, $uid);
@@ -958,7 +958,7 @@ class UserTest extends \DbTestCase
         $uid = $user->add([
             'name'      => $name,
             'authtype'  => \Auth::DB_GLPI,
-            'auths_id'  => 12
+            'auths_id'  => 12,
         ]);
 
         $this->assertGreaterThan(0, $uid);
@@ -973,27 +973,27 @@ class UserTest extends \DbTestCase
         return [
             [
                 'input'     => ['name' => 'myname'],
-                'rawname'   => 'myname'
+                'rawname'   => 'myname',
             ], [
                 'input'     => [
                     'name'      => 'anothername',
-                    'realname'  => 'real name'
+                    'realname'  => 'real name',
                 ],
-                'rawname'      => 'real name'
+                'rawname'      => 'real name',
             ], [
                 'input'     => [
                     'name'      => 'yet another name',
-                    'firstname' => 'first name'
+                    'firstname' => 'first name',
                 ],
-                'rawname'   => 'yet another name'
+                'rawname'   => 'yet another name',
             ], [
                 'input'     => [
                     'name'      => 'yet another one',
                     'realname'  => 'real name',
-                    'firstname' => 'first name'
+                    'firstname' => 'first name',
                 ],
-                'rawname'   => 'real name first name'
-            ]
+                'rawname'   => 'real name first name',
+            ],
         ];
     }
 
@@ -1019,57 +1019,57 @@ class UserTest extends \DbTestCase
                 'name' => 'user1',
                 'realname' => 'Doe',
                 'firstname' => 'John',
-                'expected' => 'Doe John'
+                'expected' => 'Doe John',
             ],
             'REALNAME_BEFORE with only realname' => [
                 'name_format' => User::REALNAME_BEFORE,
                 'name' => 'user2',
                 'realname' => 'Smith',
                 'firstname' => '',
-                'expected' => 'Smith'
+                'expected' => 'Smith',
             ],
             'REALNAME_BEFORE with only firstname' => [
                 'name_format' => User::REALNAME_BEFORE,
                 'name' => 'user3',
                 'realname' => '',
                 'firstname' => 'Alice',
-                'expected' => 'Alice'
+                'expected' => 'Alice',
             ],
             'REALNAME_BEFORE with neither' => [
                 'name_format' => User::REALNAME_BEFORE,
                 'name' => 'user4',
                 'realname' => '',
                 'firstname' => '',
-                'expected' => 'user4'
+                'expected' => 'user4',
             ],
             'FIRSTNAME_BEFORE with both names' => [
                 'name_format' => User::FIRSTNAME_BEFORE,
                 'name' => 'user1',
                 'realname' => 'Doe',
                 'firstname' => 'John',
-                'expected' => 'John Doe'
+                'expected' => 'John Doe',
             ],
             'FIRSTNAME_BEFORE with only realname' => [
                 'name_format' => User::FIRSTNAME_BEFORE,
                 'name' => 'user2',
                 'realname' => 'Smith',
                 'firstname' => '',
-                'expected' => 'Smith'
+                'expected' => 'Smith',
             ],
             'FIRSTNAME_BEFORE with only firstname' => [
                 'name_format' => User::FIRSTNAME_BEFORE,
                 'name' => 'user3',
                 'realname' => '',
                 'firstname' => 'Alice',
-                'expected' => 'Alice'
+                'expected' => 'Alice',
             ],
             'FIRSTNAME_BEFORE with neither' => [
                 'name_format' => User::FIRSTNAME_BEFORE,
                 'name' => 'user4',
                 'realname' => '',
                 'firstname' => '',
-                'expected' => 'user4'
-            ]
+                'expected' => 'user4',
+            ],
         ];
     }
 
@@ -1087,7 +1087,7 @@ class UserTest extends \DbTestCase
 
         // Create test user
         $user = new \User();
-        $id = (int)$user->add([
+        $id = (int) $user->add([
             'name' => $name,
             'realname' => $realname,
             'firstname' => $firstname,
@@ -1102,7 +1102,7 @@ class UserTest extends \DbTestCase
         $iterator = $DB->request([
             'SELECT' => ['id', new \QueryExpression($field_expr)],
             'FROM'   => 'glpi_users',
-            'WHERE'  => ['id' => $id]
+            'WHERE'  => ['id' => $id],
         ]);
 
         $this->assertEquals(1, count($iterator));
@@ -1122,7 +1122,7 @@ class UserTest extends \DbTestCase
         $input = [
             'name'      => 'myname',
             'password'  => 'mypass',
-            'password2' => 'mypass'
+            'password2' => 'mypass',
         ];
 
         $user = new \User();
@@ -1145,21 +1145,21 @@ class UserTest extends \DbTestCase
         $user = new \User();
 
         $uid = $user->add([
-            'name' => 'preupdate_user'
+            'name' => 'preupdate_user',
         ]);
         $this->assertGreaterThan(0, $uid);
         $this->assertTrue($user->getFromDB($uid));
 
         $this->assertTrue($user->update([
             'id'     => $uid,
-            'name'   => 'preupdate_user_edited'
+            'name'   => 'preupdate_user_edited',
         ]));
         $this->hasNoSessionMessages([ERROR, WARNING]);
 
         //can update with same name when id is identical
         $this->assertTrue($user->update([
             'id'     => $uid,
-            'name'   => 'preupdate_user_edited'
+            'name'   => 'preupdate_user_edited',
         ]));
         $this->hasNoSessionMessages([ERROR, WARNING]);
 
@@ -1169,7 +1169,7 @@ class UserTest extends \DbTestCase
         );
         $this->assertTrue($user->update([
             'id'     => $uid,
-            'name'   => 'do_exist'
+            'name'   => 'do_exist',
         ]));
         $this->hasSessionMessages(ERROR, ['Unable to update login. A user already exists.']);
 
@@ -1178,7 +1178,7 @@ class UserTest extends \DbTestCase
 
         $this->assertTrue($user->update([
             'id'     => $uid,
-            'name'   => 'in+valid'
+            'name'   => 'in+valid',
         ]));
         $this->hasSessionMessages(ERROR, ['The login is not valid. Unable to update login.']);
     }
@@ -1198,7 +1198,7 @@ class UserTest extends \DbTestCase
 
         $uid = $user->add([
             'name'   => 'id_by_field',
-            'phone'  => '+33123456789'
+            'phone'  => '+33123456789',
         ]);
         $this->assertGreaterThan(0, $uid);
         $this->assertSame($uid, $user->getIdByField('phone', '+33123456789'));
@@ -1207,7 +1207,7 @@ class UserTest extends \DbTestCase
             0,
             $user->add([
                 'name'   => 'id_by_field2',
-                'phone'  => '+33123456789'
+                'phone'  => '+33123456789',
             ])
         );
         $this->assertFalse($user->getIdByField('phone', '+33123456789'));
@@ -1310,7 +1310,7 @@ class UserTest extends \DbTestCase
                 'date_creation' => $creation_date,
                 'name'          => $username,
                 'password'      => 'pass',
-                'password2'     => 'pass'
+                'password2'     => 'pass',
             ]
         );
         $this->assertGreaterThan(0, $user_id);
@@ -1495,9 +1495,9 @@ class UserTest extends \DbTestCase
                 'SELECT' => 'users_id',
                 'FROM'   => Profile_User::getTable(),
                 'WHERE'  => [
-                    'profiles_id' => $super_admin->fields['id']
-                ]
-            ])
+                    'profiles_id' => $super_admin->fields['id'],
+                ],
+            ]),
         ]);
         $this->assertCount(3, $users);
         $this->assertEquals(
@@ -1519,10 +1519,10 @@ class UserTest extends \DbTestCase
         // Last user, can't be deleted or disabled
         $this->assertTrue($glpi->update([
             'id'        => $glpi->getID(),
-            'is_active' => false
+            'is_active' => false,
         ]));
         $this->hasSessionMessages(ERROR, [
-            "Can't set user as inactive as it is the only remaining super administrator."
+            "Can't set user as inactive as it is the only remaining super administrator.",
         ]);
         $glpi->getFromDB($glpi->getId());
         $this->assertEquals(true, (bool) $glpi->fields['is_active']);
@@ -1547,7 +1547,7 @@ class UserTest extends \DbTestCase
             'login' => 'for preferences',
             'password' => 'for preferences',
             'password2' => 'for preferences',
-            'profiles_id' => 4
+            'profiles_id' => 4,
         ]);
         $this->assertGreaterThan(0, $users_id);
 
@@ -1622,28 +1622,28 @@ class UserTest extends \DbTestCase
         $dn = 'user=' . __FUNCTION__ . '_created,dc=R&D,dc=glpi-project,dc=org';
         $user = $this->createItem('User', [
             'name'      => __FUNCTION__ . '_created',
-            'user_dn'   => $dn
+            'user_dn'   => $dn,
         ]);
         $this->assertEquals(md5($dn), $user->fields['user_dn_hash']);
 
         // Update user dn and check that user_dn_hash is updated
         $dn = 'user=' . __FUNCTION__ . '_updated,dc=R&D,dc=glpi-project,dc=org';
         $this->updateItem('User', $user->getID(), [
-            'user_dn'   => $dn
+            'user_dn'   => $dn,
         ]);
         $user->getFromDB($user->getID());
         $this->assertEquals(md5($dn), $user->fields['user_dn_hash']);
 
         // Set user_dn to empty and check that user_dn_hash is set to null
         $this->updateItem('User', $user->getID(), [
-            'user_dn'   => ''
+            'user_dn'   => '',
         ]);
         $user->getFromDB($user->getID());
         $this->assertNull($user->fields['user_dn_hash']);
 
         // Set user_dn to null and check that user_dn_hash is set to null
         $this->updateItem('User', $user->getID(), [
-            'user_dn'   => null
+            'user_dn'   => null,
         ]);
         $user->getFromDB($user->getID());
         $this->assertNull($user->fields['user_dn_hash']);
@@ -1668,7 +1668,7 @@ class UserTest extends \DbTestCase
         $dn = 'user=' . __FUNCTION__ . ',dc=R&D,dc=glpi-project,dc=org';
         $user = $this->createItem('User', [
             'name'      => __FUNCTION__,
-            'user_dn'   => $dn
+            'user_dn'   => $dn,
         ]);
 
         // Retrieve the user using getFromDBbyDn method
@@ -1804,7 +1804,7 @@ class UserTest extends \DbTestCase
                 'tech'      => false,
                 'normal'    => false,
                 'post-only' => true,
-            ]
+            ],
         ];
 
         foreach ($users_matrix as $login => $targer_users_names) {

@@ -65,7 +65,7 @@ class CleanSoftwareCommand extends AbstractCommand
         $this->validateInput($input);
         $max = $input->getOption('max');
 
-       // Run crontask
+        // Run crontask
         $total = CleanSoftwareCron::run($max);
         $output->writeln("<info> $total item(s) deleted </info>");
 

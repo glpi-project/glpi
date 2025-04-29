@@ -52,7 +52,7 @@ class Domain_Item extends CommonDBRelation
         $temp = new self();
         $temp->deleteByCriteria(
             ['itemtype' => $item->getType(),
-                'items_id' => $item->getField('id')
+                'items_id' => $item->getField('id'),
             ]
         );
     }
@@ -67,7 +67,7 @@ class Domain_Item extends CommonDBRelation
                 return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), self::countForDomain($item));
             }
             return _n('Associated item', 'Associated items', Session::getPluralNumber());
-        } else if (
+        } elseif (
             $item->getType() == 'DomainRelation' || in_array($item->getType(), Domain::getTypes(true))
                   && Session::haveRight('domain', READ)
         ) {
@@ -83,7 +83,7 @@ class Domain_Item extends CommonDBRelation
     {
         if ($item->getType() == 'Domain') {
             self::showForDomain($item);
-        } else if (
+        } elseif (
             in_array($item->getType(), Domain::getTypes(true))
             || $item->getType() == DomainRelation::getType()
         ) {
@@ -102,7 +102,7 @@ class Domain_Item extends CommonDBRelation
             'glpi_domains_items',
             [
                 "domains_id"   => $item->getID(),
-                "itemtype"     => $types
+                "itemtype"     => $types,
             ]
         );
     }
@@ -115,7 +115,7 @@ class Domain_Item extends CommonDBRelation
         } else {
             $criteria = [
                 'itemtype'  => $item->getType(),
-                'items_id'  => $item->fields['id']
+                'items_id'  => $item->fields['id'],
             ];
         }
 
@@ -134,7 +134,7 @@ class Domain_Item extends CommonDBRelation
         } else {
             $criteria += [
                 'itemtype'  => $itemtype,
-                'items_id'  => $items_id
+                'items_id'  => $items_id,
             ];
         }
 
@@ -147,7 +147,7 @@ class Domain_Item extends CommonDBRelation
             'domains_id'         => $values['domains_id'],
             'items_id'           => $values['items_id'],
             'itemtype'           => $values['itemtype'],
-            'domainrelations_id' => $values['domainrelations_id']
+            'domainrelations_id' => $values['domainrelations_id'],
         ]);
     }
 
@@ -183,7 +183,7 @@ class Domain_Item extends CommonDBRelation
             'FROM'      => self::getTable(),
             'WHERE'     => ['domains_id' => $instID],
             'ORDER'     => 'itemtype',
-            'LIMIT'     => count(Domain::getTypes(true))
+            'LIMIT'     => count(Domain::getTypes(true)),
         ]);
 
         $number = count($iterator);
@@ -208,10 +208,10 @@ class Domain_Item extends CommonDBRelation
                 'items_id_name' => 'items_id',
                 'itemtypes'     => Domain::getTypes(true),
                 'entity_restrict' => (
-            $domain->fields['is_recursive']
+                    $domain->fields['is_recursive']
                ? getSonsOf('glpi_entities', $domain->fields['entities_id'])
                : $domain->fields['entities_id']
-            ),
+                ),
                 'checkright' => true,
             ]);
 
@@ -219,7 +219,7 @@ class Domain_Item extends CommonDBRelation
                 'DomainRelation',
                 [
                     'name'   => "domainrelations_id",
-                    'value'  => DomainRelation::BELONGS
+                    'value'  => DomainRelation::BELONGS,
                 ]
             );
             echo "</td><td colspan='2' class='center' class='tab_bg_1'>";
@@ -267,29 +267,29 @@ class Domain_Item extends CommonDBRelation
                         "$itemTable.*",
                         'glpi_domains_items.id AS items_id',
                         'glpi_domains_items.domainrelations_id',
-                        'glpi_entities.id AS entity'
+                        'glpi_entities.id AS entity',
                     ],
                     'FROM'   => self::getTable(),
                     'INNER JOIN'   => [
                         $itemTable  => [
                             'ON'  => [
                                 $itemTable  => 'id',
-                                self::getTable()  => 'items_id'
-                            ]
-                        ]
+                                self::getTable()  => 'items_id',
+                            ],
+                        ],
                     ],
                     'LEFT JOIN'    => [
                         'glpi_entities'   => [
                             'ON'  => [
                                 'glpi_entities'   => 'id',
-                                $itemTable        => 'entities_id'
-                            ]
-                        ]
+                                $itemTable        => 'entities_id',
+                            ],
+                        ],
                     ],
                     'WHERE'        => [
                         self::getTable() . '.itemtype'   => $itemtype,
-                        self::getTable() . '.domains_id' => $instID
-                    ] + getEntitiesRestrictCriteria($itemTable, '', '', $item->maybeRecursive())
+                        self::getTable() . '.domains_id' => $instID,
+                    ] + getEntitiesRestrictCriteria($itemTable, '', '', $item->maybeRecursive()),
                 ];
 
                 if ($item->maybeTemplate()) {
@@ -309,7 +309,7 @@ class Domain_Item extends CommonDBRelation
                         $ID = "";
 
                         if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                             $ID = " (" . $data["id"] . ")";
+                            $ID = " (" . $data["id"] . ")";
                         }
 
                         $link = Toolbox::getItemTypeFormURL($itemtype);
@@ -391,7 +391,7 @@ class Domain_Item extends CommonDBRelation
                 'glpi_domains_items.is_dynamic',
                 'glpi_entities.id AS entity',
                 'glpi_domains.name AS assocName',
-                'glpi_domains.*'
+                'glpi_domains.*',
 
             ],
             'FROM'      => self::getTable(),
@@ -399,18 +399,18 @@ class Domain_Item extends CommonDBRelation
                 Domain::getTable()   => [
                     'ON'  => [
                         Domain::getTable()   => 'id',
-                        self::getTable()     => 'domains_id'
-                    ]
+                        self::getTable()     => 'domains_id',
+                    ],
                 ],
                 Entity::getTable()   => [
                     'ON'  => [
                         Domain::getTable()   => 'entities_id',
-                        Entity::getTable()   => 'id'
-                    ]
-                ]
+                        Entity::getTable()   => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [],//to be filled
-            'ORDER'     => 'assocName'
+            'ORDER'     => 'assocName',
         ];
 
         if ($item instanceof DomainRelation) {
@@ -418,7 +418,7 @@ class Domain_Item extends CommonDBRelation
         } else {
             $criteria['WHERE'] = [
                 'glpi_domains_items.itemtype' => $item->getType(),
-                'glpi_domains_items.items_id' => $ID
+                'glpi_domains_items.items_id' => $ID,
             ];
         }
         $criteria['WHERE'] += getEntitiesRestrictCriteria(Domain::getTable(), '', '', true);
@@ -430,10 +430,10 @@ class Domain_Item extends CommonDBRelation
             'OR'  => [
                 'AND' => [
                     "glpi_domains_items.is_deleted" => 0,
-                    "glpi_domains_items.is_dynamic" => 1
+                    "glpi_domains_items.is_dynamic" => 1,
                 ],
-                "glpi_domains_items.is_dynamic" => 0
-            ]
+                "glpi_domains_items.is_dynamic" => 0,
+            ],
         ];
 
         $iterator = $DB->request($criteria);
@@ -450,12 +450,12 @@ class Domain_Item extends CommonDBRelation
         }
 
         if (!($item instanceof DomainRelation) && $canedit && $withtemplate < 2) {
-           // Restrict entity for knowbase
+            // Restrict entity for knowbase
             $entities = "";
             $entity   = $_SESSION["glpiactive_entity"];
 
             if ($item->isEntityAssign()) {
-               /// Case of personal items : entity = -1 : create on active entity (Reminder case))
+                /// Case of personal items : entity = -1 : create on active entity (Reminder case))
                 if ($item->getEntityID() >= 0) {
                     $entity = $item->getEntityID();
                 }
@@ -470,7 +470,7 @@ class Domain_Item extends CommonDBRelation
             $domain_iterator = $DB->request([
                 'COUNT'  => 'cpt',
                 'FROM'   => Domain::getTable(),
-                'WHERE'  => ['is_deleted' => 0] + getEntitiesRestrictCriteria(Domain::getTable(), '', $entities, true)
+                'WHERE'  => ['is_deleted' => 0] + getEntitiesRestrictCriteria(Domain::getTable(), '', $entities, true),
             ]);
             $result = $domain_iterator->current();
             $nb     = $result['cpt'];
@@ -499,22 +499,22 @@ class Domain_Item extends CommonDBRelation
                     [
                         'name'   => "domainrelations_id",
                         'value'  => DomainRelation::BELONGS,
-                        'display_emptychoice'   => false
+                        'display_emptychoice'   => false,
                     ]
                 );
 
-                 Domain::dropdownDomains([
-                     'entity' => $entities,
-                     'used'   => $used
-                 ]);
+                Domain::dropdownDomains([
+                    'entity' => $entities,
+                    'used'   => $used,
+                ]);
 
-                 echo "</td><td class='center' width='20%'>";
-                 echo "<input type='submit' name='additem' value=\"" .
-                   __('Associate a domain') . "\" class='btn btn-primary'>";
-                 echo "</td>";
-                 echo "</tr>";
-                 echo "</table>";
-                 Html::closeForm();
+                echo "</td><td class='center' width='20%'>";
+                echo "<input type='submit' name='additem' value=\"" .
+                  __('Associate a domain') . "\" class='btn btn-primary'>";
+                echo "</td>";
+                echo "</tr>";
+                echo "</table>";
+                Html::closeForm();
             }
 
             echo "</div>";
@@ -553,11 +553,11 @@ class Domain_Item extends CommonDBRelation
                 'Domain',
                 //TRANS : %1$s is the itemtype name,
                 //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            $item->getTypeName(1),
-                                            $item->getName()
-                                        )
+                sprintf(
+                    __('%1$s = %2$s'),
+                    $item->getTypeName(1),
+                    $item->getName()
+                )
             );
 
             foreach ($domains as $data) {
@@ -580,7 +580,7 @@ class Domain_Item extends CommonDBRelation
                 }
                 echo "<td class='center'>$link</td>";
                 if (Session::isMultiEntitiesMode()) {
-                     echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data['entities_id']) . "</td>";
+                    echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data['entities_id']) . "</td>";
                 }
                 echo "<td class='center'>" . Dropdown::getDropdownName("glpi_groups", $data["groups_id_tech"]) . "</td>";
                 echo "<td class='center'>" . getUserName($data["users_id_tech"]) . "</td>";
@@ -594,7 +594,7 @@ class Domain_Item extends CommonDBRelation
                     && !empty($data["date_expiration"])
                 ) {
                     echo "<td class='center'><div class='deleted'>" . Html::convDate($data["date_expiration"]) . "</div></td>";
-                } else if (empty($data["date_expiration"])) {
+                } elseif (empty($data["date_expiration"])) {
                     echo "<td class='center'>" . __('Does not expire') . "</td>";
                 } else {
                     echo "<td class='center'>" . Html::convDate($data["date_expiration"]) . "</td>";

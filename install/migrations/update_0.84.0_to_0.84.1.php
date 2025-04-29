@@ -49,7 +49,7 @@ function update0840to0841()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '0.84.1'));
     $migration->setVersion('0.84.1');
 
@@ -57,7 +57,7 @@ function update0840to0841()
     $newtables     = [];
 
     foreach ($newtables as $new_table) {
-       // rename new tables if exists ?
+        // rename new tables if exists ?
         if ($DB->tableExists($new_table)) {
             $migration->dropTable("backup_$new_table");
             $migration->displayWarning("$new_table table already exists. " .
@@ -73,7 +73,7 @@ function update0840to0841()
         );
     }
 
-   // Add date_mod to document_item
+    // Add date_mod to document_item
     $migration->addField('glpi_documents_items', 'date_mod', 'datetime');
     $migration->migrationOneTable('glpi_documents_items');
     $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
@@ -85,7 +85,7 @@ function update0840to0841()
         "0.84.1 update date_mod in glpi_documents_items"
     );
 
-   // correct entities_id in documents_items
+    // correct entities_id in documents_items
     $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
                    INNER JOIN `glpi_documents` as `doc`
                      ON  `doc`.`id` = `doc_i`.`documents_id`
@@ -93,18 +93,18 @@ function update0840to0841()
                        `doc_i`.`is_recursive` = `doc`.`is_recursive`";
     $DB->doQueryOrDie($query_doc_i, "0.84.1 change entities_id in documents_items");
 
-   // add delete_problem
+    // add delete_problem
     $migration->addField(
         'glpi_profiles',
         'delete_problem',
         'char',
         ['after'  => 'edit_all_problem',
-            'update' => 'edit_all_problem'
+            'update' => 'edit_all_problem',
         ]
     );
 
-   // ************ Keep it at the end **************
-   //TRANS: %s is the table or item to migrate
+    // ************ Keep it at the end **************
+    //TRANS: %s is the table or item to migrate
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
@@ -124,18 +124,18 @@ function update0840to0841()
                     $rank++;
 
                     foreach ($tab as $newval) {
-                         $query = "SELECT *
+                        $query = "SELECT *
                             FROM `glpi_displaypreferences`
                             WHERE `users_id` = '" . $data['users_id'] . "'
                                   AND `num` = '$newval'
                                   AND `itemtype` = '$type'";
                         if ($result2 = $DB->doQuery($query)) {
                             if ($DB->numrows($result2) == 0) {
-                                  $query = "INSERT INTO `glpi_displaypreferences`
+                                $query = "INSERT INTO `glpi_displaypreferences`
                                          (`itemtype` ,`num` ,`rank` ,`users_id`)
                                   VALUES ('$type', '$newval', '" . $rank++ . "',
                                           '" . $data['users_id'] . "')";
-                                  $DB->doQuery($query);
+                                $DB->doQuery($query);
                             }
                         }
                     }
@@ -152,7 +152,7 @@ function update0840to0841()
         }
     }
 
-   // must always be at the end
+    // must always be at the end
     $migration->executeMigration();
 
     return $updateresult;

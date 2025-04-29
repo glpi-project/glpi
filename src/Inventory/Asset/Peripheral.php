@@ -69,7 +69,7 @@ class Peripheral extends InventoryAsset
                     && property_exists($val, 'productid')
                     && $val->vendorid != ''
                 ) {
-                   //manufacturer
+                    //manufacturer
                     if (
                         empty($val->manufacturers_id)
                         && $usb_manufacturer = $usbvendor->getManufacturer($val->vendorid)
@@ -77,7 +77,7 @@ class Peripheral extends InventoryAsset
                         $val->manufacturers_id = $usb_manufacturer;
                     }
 
-                   //product name
+                    //product name
                     if (
                         empty($val->productname)
                         && $usb_product = $usbvendor->getProductName($val->vendorid, $val->productid)
@@ -99,7 +99,7 @@ class Peripheral extends InventoryAsset
         }
 
         if ($this->extra_data['inputs'] !== null) {
-           //hanlde inputs
+            //hanlde inputs
             $point_types = [
                 3 => 'Mouse',
                 4 => 'Trackball',
@@ -107,7 +107,7 @@ class Peripheral extends InventoryAsset
                 6 => 'Glide Point',
                 7 => 'Touch Pad',
                 8 => 'Touch Screen',
-                9 => 'Mouse - Optical Sensor'
+                9 => 'Mouse - Optical Sensor',
             ];
 
             foreach ($this->extra_data['inputs'] as $k => &$val) {
@@ -122,7 +122,7 @@ class Peripheral extends InventoryAsset
 
                 if (property_exists($val, 'layout')) {
                     $val->peripheraltypes_id = 'keyboard';
-                } else if (property_exists($val, 'pointingtype') && isset($point_types[$val->pointingtype])) {
+                } elseif (property_exists($val, 'pointingtype') && isset($point_types[$val->pointingtype])) {
                     $val->peripheraltypes_id = $point_types[$val->pointingtype];
                 }
 
@@ -154,7 +154,7 @@ class Peripheral extends InventoryAsset
                 'itemtype'     => 'Peripheral',
                 'name'         => $val->name ?? '',
                 'serial'       => $val->serial ?? '',
-                'entities_id'  => $this->item->fields['entities_id']
+                'entities_id'  => $this->item->fields['entities_id'],
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
 
@@ -184,7 +184,7 @@ class Peripheral extends InventoryAsset
                     'items_id'  => $items_id,
                     'itemtype'  => $itemtype,
                     'agents_id' => $agents_id,
-                    'method'    => 'inventory'
+                    'method'    => 'inventory',
                 ];
                 $rulesmatched->add($inputrulelog, [], false);
                 $rulesmatched->cleanOlddata($items_id, $itemtype);
@@ -203,16 +203,16 @@ class Peripheral extends InventoryAsset
                 'glpi_peripherals' => [
                     'FKEY' => [
                         'glpi_peripherals'      => 'id',
-                        'glpi_computers_items'  => 'items_id'
-                    ]
-                ]
+                        'glpi_computers_items'  => 'items_id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'itemtype' => 'Peripheral',
                 'computers_id' => $this->item->fields['id'],
                 'entities_id' => $this->entities_id,
-                'glpi_peripherals.is_global' => 0
-            ]
+                'glpi_peripherals.is_global' => 0,
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -235,7 +235,7 @@ class Peripheral extends InventoryAsset
         }
 
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_peripherals)) {
-           // Delete peripherals links in DB
+            // Delete peripherals links in DB
             foreach ($db_peripherals as $keydb => $data) {
                 if ($data['is_dynamic']) {
                     $computer_Item->delete(['id' => $keydb], true);

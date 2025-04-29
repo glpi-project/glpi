@@ -49,7 +49,7 @@ class SupplierTest extends \DbTestCase
 
         // Create trype
         $supplier_type = $this->createItem('SupplierType', [
-            'name' => 'Supplier Type'
+            'name' => 'Supplier Type',
         ]);
 
         // Create supplier
@@ -68,12 +68,12 @@ class SupplierTest extends \DbTestCase
             'comment'             => 'comment',
             'fax'                 => '789',
             'email'               => 'supplier@supplier.com',
-            'pictures'            => 'pictures'
+            'pictures'            => 'pictures',
         ]);
 
         // Test item cloning
         $added = $supplier->clone();
-        $this->assertGreaterThan(0, (int)$added);
+        $this->assertGreaterThan(0, (int) $added);
 
         $clonedSupplier = new \Supplier();
         $this->assertTrue($clonedSupplier->getFromDB($added));

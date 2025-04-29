@@ -115,7 +115,7 @@ class NotificationTargetTest extends DbTestCase
                 $parent_entity_id  => ['email' => null, 'name'  => null],
                 $child_1_entity_id => ['email' => null, 'name'  => null],
                 $child_2_entity_id => ['email' => null, 'name'  => null],
-            ]
+            ],
         ];
 
         // Global config is used if no entity configuration is defined
@@ -133,7 +133,7 @@ class NotificationTargetTest extends DbTestCase
                 $parent_entity_id  => ['email' => 'test@global.tld', 'name'  => 'test global'],
                 $child_1_entity_id => ['email' => 'test@global.tld', 'name'  => 'test global'],
                 $child_2_entity_id => ['email' => 'test@global.tld', 'name'  => 'test global'],
-            ]
+            ],
         ];
 
         yield [
@@ -150,7 +150,7 @@ class NotificationTargetTest extends DbTestCase
                 $parent_entity_id  => ['email' => 'noreply@global.tld', 'name'  => 'noreply global'],
                 $child_1_entity_id => ['email' => 'noreply@global.tld', 'name'  => 'noreply global'],
                 $child_2_entity_id => ['email' => 'noreply@global.tld', 'name'  => 'noreply global'],
-            ]
+            ],
         ];
 
         // Closest entity config is used, fallback on global
@@ -181,7 +181,7 @@ class NotificationTargetTest extends DbTestCase
                 $parent_entity_id  => ['email' => 'test@parent.tld', 'name'  => 'test parent'],
                 $child_1_entity_id => ['email' => 'test@parent.tld', 'name'  => 'test parent'],
                 $child_2_entity_id => ['email' => 'test@child2.tld', 'name'  => 'test child2'],
-            ]
+            ],
         ];
 
         yield [
@@ -211,7 +211,7 @@ class NotificationTargetTest extends DbTestCase
                 $parent_entity_id  => ['email' => 'noreply@parent.tld', 'name'  => 'noreply parent'],
                 $child_1_entity_id => ['email' => 'noreply@parent.tld', 'name'  => 'noreply parent'],
                 $child_2_entity_id => ['email' => 'noreply@child2.tld', 'name'  => 'noreply child2'],
-            ]
+            ],
         ];
     }
 
@@ -259,7 +259,7 @@ class NotificationTargetTest extends DbTestCase
             'allow_response' => false,
             'email'          => "admsys@localhost",
             'name'           => "",
-            'warning'        => 'No-Reply address is not defined in configuration.'
+            'warning'        => 'No-Reply address is not defined in configuration.',
         ];
 
         // Case 2: no reply with global config

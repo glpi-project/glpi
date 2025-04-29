@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\Features;
 
-use CommonDBTM;
 use Datacenter;
 use DCRoom;
 use DbTestCase;
@@ -104,7 +103,7 @@ class DCBreadcrumbTest extends DbTestCase
                     'entities_id'   => $root_entity_id,
                     'name'          => 'DC room',
                     'vis_cols'      => 1,
-                    'vis_rows'      => 1
+                    'vis_rows'      => 1,
                 ]
             );
             $rack = $this->createItem(
@@ -177,7 +176,7 @@ class DCBreadcrumbTest extends DbTestCase
                 yield [
                     'item' => $item_for_enclosure,
                     'breadcrumbs' => [
-                        "<i class='ti ti-columns'></i> Enclosure test&nbsp;(U1)"
+                        "<i class='ti ti-columns'></i> Enclosure test&nbsp;(U1)",
                     ],
                 ];
 
@@ -283,7 +282,7 @@ class DCBreadcrumbTest extends DbTestCase
                 'entities_id'   => $root_entity_id,
                 'name'          => 'DC room',
                 'vis_cols'      => 1,
-                'vis_rows'      => 1
+                'vis_rows'      => 1,
             ]
         );
         $rack = $this->createItem(
@@ -298,7 +297,7 @@ class DCBreadcrumbTest extends DbTestCase
             PDU::class,
             [
                 'entities_id' => $root_entity_id,
-                'name' => 'PDU aside the rack'
+                'name' => 'PDU aside the rack',
             ]
         );
 
@@ -324,7 +323,7 @@ class DCBreadcrumbTest extends DbTestCase
             yield [
                 'item' => $pdu,
                 'breadcrumbs' => [
-                    "<i class='ti ti-server'></i> Rack #1&nbsp;{$text} (12)"
+                    "<i class='ti ti-server'></i> Rack #1&nbsp;{$text} (12)",
                 ],
             ];
         }
@@ -387,7 +386,7 @@ class DCBreadcrumbTest extends DbTestCase
                 'entities_id'   => $root_entity_id,
                 'name'          => 'DC room',
                 'vis_cols'      => 1,
-                'vis_rows'      => 1
+                'vis_rows'      => 1,
             ]
         );
 

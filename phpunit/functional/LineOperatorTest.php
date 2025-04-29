@@ -47,13 +47,13 @@ class LineOperatorTest extends DbTestCase
         $in = [
             'name'                     => __METHOD__,
             'comment'                  => $this->getUniqueString(),
-            'entities_id'              => getItemByTypeName('Entity', '_test_root_entity', true)
+            'entities_id'              => getItemByTypeName('Entity', '_test_root_entity', true),
         ];
         $id = $obj->add($in);
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan(0, (int) $id);
         $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
+        // getField methods
         $this->assertEquals($id, $obj->getField('id'));
         foreach ($in as $k => $v) {
             $this->assertEquals($v, $obj->getField($k));
@@ -69,7 +69,7 @@ class LineOperatorTest extends DbTestCase
         $id = $obj->add([
             'name'                     => $this->getUniqueString(),
             'comment'                  => $this->getUniqueString(),
-            'entities_id'              => getItemByTypeName('Entity', '_test_root_entity', true)
+            'entities_id'              => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $this->assertGreaterThan(0, $id);
 
@@ -83,7 +83,7 @@ class LineOperatorTest extends DbTestCase
         $this->assertTrue($obj->update($in));
         $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
+        // getField methods
         foreach ($in as $k => $v) {
             $this->assertEquals($v, $obj->getField($k));
         }

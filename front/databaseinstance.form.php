@@ -130,6 +130,6 @@ if (isset($_POST["add"])) {
 
     $menus = ["database", "databaseinstance"];
     DatabaseInstance::displayFullPageForItem($_GET['id'], $menus, [
-        'withtemplate' => $_GET['withtemplate']
+        'withtemplate' => $_GET['withtemplate'],
     ]);
 }

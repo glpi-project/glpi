@@ -50,7 +50,7 @@ class Computer_SoftwareLicense implements DeprecatedInterface
     {
         return [
             "id", "computers_id", "softwarelicenses_id", "is_deleted", "is_dynamic",
-            "links"
+            "links",
         ];
     }
 

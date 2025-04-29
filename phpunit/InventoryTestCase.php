@@ -54,7 +54,7 @@ class InventoryTestCase extends \DbTestCase
 
         $conf = new \Glpi\Inventory\Conf();
         $conf->saveConf([
-            'enabled_inventory' => 1
+            'enabled_inventory' => 1,
         ]);
 
         if (file_exists(self::INVENTORY_ARCHIVE_PATH)) {
@@ -80,10 +80,10 @@ class InventoryTestCase extends \DbTestCase
                             \Log::HISTORY_ADD_DEVICE,
                             \Log::HISTORY_ADD_RELATION,
                             \Log::HISTORY_ADD_SUBITEM,
-                            \Log::HISTORY_CREATE_ITEM
-                        ]
-                    ]
-                ]
+                            \Log::HISTORY_CREATE_ITEM,
+                        ],
+                    ],
+                ],
             ]);
             $this->assertSame(
                 0,

@@ -49,7 +49,7 @@ class NetworkEquipment extends MainAsset
     protected $extra_data = [
         'network_device'                          => null,
         'network_components'                      => null,
-        '\Glpi\Inventory\Asset\NetworkPort'       => null
+        '\Glpi\Inventory\Asset\NetworkPort'       => null,
     ];
 
     protected function getModelsFieldName(): string
@@ -72,7 +72,7 @@ class NetworkEquipment extends MainAsset
         $blacklist = new Blacklist();
 
         if (isset($this->extra_data['network_device'])) {
-            $device = (object)$this->extra_data['network_device'];
+            $device = (object) $this->extra_data['network_device'];
 
             $dev_mapping = [
                 'description'  => 'sysdescr',
@@ -91,7 +91,7 @@ class NetworkEquipment extends MainAsset
             }
 
             if (!property_exists($device, 'name') && property_exists($device, 'description')) {
-               //take description if name is missing
+                //take description if name is missing
                 $device->name = $device->description;
             }
             $this->hardware = $device;
@@ -112,7 +112,7 @@ class NetworkEquipment extends MainAsset
                 $port->is_internal = true;
                 $port->ipaddress = [];
 
-               //add internal port(s)
+                //add internal port(s)
                 foreach ($device->ips as $ip) {
                     if (
                         !in_array($ip, $port->ipaddress)
@@ -127,7 +127,7 @@ class NetworkEquipment extends MainAsset
         }
 
         if ($this->isStackedSwitch()) {
-           //keep only stack parts, not main equipment
+            //keep only stack parts, not main equipment
             $this->data = [];
             $switches = $this->getStackedSwitches();
             foreach ($switches as $switch) {
@@ -145,7 +145,7 @@ class NetworkEquipment extends MainAsset
                 $this->data[] = $stack;
             }
         } else {
-           //keep an entry for main equipment
+            //keep an entry for main equipment
             $this->data = [$val];
             if ($this->isWirelessController()) {
                 $aps = $this->getAccessPoints();
@@ -251,20 +251,20 @@ class NetworkEquipment extends MainAsset
             return;
         }
 
-       // Get networkname
+        // Get networkname
         $netname = new NetworkName();
         if ($netname->getFromDBByCrit(['itemtype' => 'NetworkPort', 'items_id' => $netports_id])) {
             if ($netname->fields['name'] != $port->name) {
                 $netname->update(Sanitizer::sanitize([
                     'id'     => $netname->getID(),
-                    'name'   => $port->netname ?? $port->name
+                    'name'   => $port->netname ?? $port->name,
                 ]));
             }
         } else {
             $netname->add([
                 'itemtype'  => 'NetworkPort',
                 'items_id'  => $netports_id,
-                'name'      => addslashes($port->name)
+                'name'      => addslashes($port->name),
             ]);
         }
     }

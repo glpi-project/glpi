@@ -46,7 +46,7 @@ class GroupParametersTest extends AbstractParameters
 
         $this->createItem('Group', [
             'name'        => 'group_testGetValues',
-            'entities_id' => $test_entity_id
+            'entities_id' => $test_entity_id,
         ]);
 
         $parameters = new GroupParameters();

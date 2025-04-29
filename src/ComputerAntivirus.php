@@ -42,7 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class ComputerAntivirus extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'Computer';
     public static $items_id = 'computers_id';
     public $dohistory       = true;
@@ -58,7 +58,7 @@ class ComputerAntivirus extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-       // can exists for template
+        // can exists for template
         if (
             $item instanceof Computer
             && Computer::canView()
@@ -102,7 +102,7 @@ class ComputerAntivirus extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -143,7 +143,7 @@ class ComputerAntivirus extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'antivirus',
-            'name'               => $name
+            'name'               => $name,
         ];
 
         $tab[] = [
@@ -156,7 +156,7 @@ class ComputerAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'searchtype'         => ['contains'],
         ];
@@ -171,8 +171,8 @@ class ComputerAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'text',
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -183,12 +183,12 @@ class ComputerAntivirus extends CommonDBChild
             'name'               => __('Active'),
             'datatype'           => 'bool',
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'usehaving'          => true,
-            'searchtype'         => ['equals']
+            'searchtype'         => ['equals'],
         ];
 
         $tab[] = [
@@ -199,12 +199,12 @@ class ComputerAntivirus extends CommonDBChild
             'name'               => __('Is up to date'),
             'datatype'           => 'bool',
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'usehaving'          => true,
-            'searchtype'         => ['equals']
+            'searchtype'         => ['equals'],
         ];
 
         $tab[] = [
@@ -217,8 +217,8 @@ class ComputerAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'text',
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -231,8 +231,8 @@ class ComputerAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'date',
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         return $tab;
@@ -340,21 +340,21 @@ class ComputerAntivirus extends CommonDBChild
             Session::initNavigateListItems(
                 __CLASS__,
                 //TRANS : %1$s is the itemtype name,
-                           //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            Computer::getTypeName(1),
-                                            $comp->getName()
-                                        )
+                //        %2$s is the name of the item (used for headings of a list)
+                sprintf(
+                    __('%1$s = %2$s'),
+                    Computer::getTypeName(1),
+                    $comp->getName()
+                )
             );
 
             $antivirus = new self();
             foreach ($result as $data) {
-                 $antivirus->getFromDB($data['id']);
-                 echo "<tr class='tab_bg_2'>";
-                 echo "<td>" . $antivirus->getLink() . "</td>";
-                 echo "<td>" . Dropdown::getYesNo($data['is_dynamic']) . "</td>";
-                 echo "<td>";
+                $antivirus->getFromDB($data['id']);
+                echo "<tr class='tab_bg_2'>";
+                echo "<td>" . $antivirus->getLink() . "</td>";
+                echo "<td>" . Dropdown::getYesNo($data['is_dynamic']) . "</td>";
+                echo "<td>";
                 if ($data['manufacturers_id']) {
                     echo Dropdown::getDropdownName(
                         'glpi_manufacturers',

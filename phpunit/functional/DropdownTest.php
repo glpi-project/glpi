@@ -43,7 +43,6 @@ use Glpi\Toolbox\Sanitizer;
 use Item_DeviceSimcard;
 use Session;
 use State;
-use User;
 
 /* Test for inc/dropdown.class.php */
 
@@ -87,12 +86,12 @@ class DropdownTest extends DbTestCase
     {
         $id = \Dropdown::import('UserTitle', $input);
         if ($result) {
-            $this->assertGreaterThan(0, (int)$id);
+            $this->assertGreaterThan(0, (int) $id);
             $ut = new \UserTitle();
             $this->assertTrue($ut->getFromDB($id));
             $this->assertSame($result, $ut->getField('name'));
         } else {
-            $this->assertLessThan(0, (int)$id);
+            $this->assertLessThan(0, (int) $id);
         }
     }
 
@@ -123,13 +122,13 @@ class DropdownTest extends DbTestCase
         $input['entities_id'] = getItemByTypeName('Entity', '_test_root_entity', true);
         $id = \Dropdown::import('Location', $input);
         if ($result) {
-            $this->assertGreaterThan(0, (int)$id, $msg);
+            $this->assertGreaterThan(0, (int) $id, $msg);
             $ut = new \Location();
             $this->assertTrue($ut->getFromDB($id));
             $this->assertSame($result, $ut->getField('name'));
             $this->assertSame($complete, $ut->getField('completename'));
         } else {
-            $this->assertLessThanOrEqual(0, (int)$id);
+            $this->assertLessThanOrEqual(0, (int) $id);
         }
     }
 
@@ -155,14 +154,14 @@ class DropdownTest extends DbTestCase
         $expected = ['name'    => $cat->fields['name'] . $encoded_sep . $subCat->fields['name'],
             'comment' => "<span class='b'>Complete name</span>: " . $cat->fields['name'] . $encoded_sep
                                     . $subCat->fields['name'] . "<br><span class='b'>&nbsp;Comments&nbsp;</span>"
-                                    . $subCat->fields['comment']
+                                    . $subCat->fields['comment'],
         ];
         $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID(), true);
         $this->assertSame($expected, $ret);
 
         // test of return without $tooltip
         $expected = ['name'    => $cat->fields['name'] . $encoded_sep . $subCat->fields['name'],
-            'comment' => $subCat->fields['comment']
+            'comment' => $subCat->fields['comment'],
         ];
         $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID(), true, true, false);
         $this->assertSame($expected, $ret);
@@ -174,12 +173,12 @@ class DropdownTest extends DbTestCase
         (new \DropdownTranslation())->generateCompletename([
             'itemtype' => \TaskCategory::class,
             'items_id' => getItemByTypeName(\TaskCategory::class, '_cat_1', true),
-            'language' => 'fr_FR'
+            'language' => 'fr_FR',
         ]);
         $_SESSION["glpilanguage"] = \Session::loadLanguage('fr_FR');
         $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
         $expected = ['name'    => 'FR - _cat_1' . $encoded_sep . 'FR - _subcat_1',
-            'comment' => 'FR - Commentaire pour sous-catégorie _subcat_1'
+            'comment' => 'FR - Commentaire pour sous-catégorie _subcat_1',
         ];
         $ret = \Dropdown::getDropdownName('glpi_taskcategories', $subCat->getID(), true, true, false);
         // switch back to default language
@@ -197,7 +196,7 @@ class DropdownTest extends DbTestCase
         $this->assertSame($computer->getName(), $ret);
 
         $expected = ['name'    => $computer->getName(),
-            'comment' => $computer->fields['comment']
+            'comment' => $computer->fields['comment'],
         ];
         $ret = \Dropdown::getDropdownName('glpi_computers', $computer->getID(), true);
         $this->assertSame($expected, $ret);
@@ -214,14 +213,14 @@ class DropdownTest extends DbTestCase
             'comment' => "Comment for contact _contact01_name<br><span class='b'>" .
                                     "Phone: </span>0123456789<br><span class='b'>Phone 2: </span>0123456788<br><span class='b'>" .
                                     "Mobile phone: </span>0623456789<br><span class='b'>Fax: </span>0123456787<br>" .
-                                    "<span class='b'>Email: </span>_contact01_firstname._contact01_name@glpi.com"
+                                    "<span class='b'>Email: </span>_contact01_firstname._contact01_name@glpi.com",
         ];
         $ret = \Dropdown::getDropdownName('glpi_contacts', $contact->getID(), true);
         $this->assertSame($expected, $ret);
 
         // test of return without $tooltip
         $expected = ['name'    => $contact->getName(),
-            'comment' => $contact->fields['comment']
+            'comment' => $contact->fields['comment'],
         ];
         $ret = \Dropdown::getDropdownName('glpi_contacts', $contact->getID(), true, true, false);
         $this->assertSame($expected, $ret);
@@ -236,14 +235,14 @@ class DropdownTest extends DbTestCase
         // test of return with comments
         $expected = ['name'    => $supplier->getName(),
             'comment' => "Comment for supplier _suplier01_name<br><span class='b'>Phone: </span>0123456789<br>" .
-                                     "<span class='b'>Fax: </span>0123456787<br><span class='b'>Email: </span>info@_supplier01_name.com"
+                                     "<span class='b'>Fax: </span>0123456787<br><span class='b'>Email: </span>info@_supplier01_name.com",
         ];
         $ret = \Dropdown::getDropdownName('glpi_suppliers', $supplier->getID(), true);
         $this->assertSame($expected, $ret);
 
         // test of return without $tooltip
         $expected = ['name'    => $supplier->getName(),
-            'comment' => $supplier->fields['comment']
+            'comment' => $supplier->fields['comment'],
         ];
         $ret = \Dropdown::getDropdownName('glpi_suppliers', $supplier->getID(), true, true, false);
         $this->assertSame($expected, $ret);
@@ -259,14 +258,14 @@ class DropdownTest extends DbTestCase
         $expected = ['name'    =>  $budget->getName(),
             'comment' => "Comment for budget _budget01<br><span class='b'>Location</span>: " .
                                        "_location01<br><span class='b'>Type</span>: _budgettype01<br><span class='b'>" .
-                                       "Start date</span>: 2016-10-18 <br><span class='b'>End date</span>: 2016-12-31 "
+                                       "Start date</span>: 2016-10-18 <br><span class='b'>End date</span>: 2016-12-31 ",
         ];
         $ret = \Dropdown::getDropdownName('glpi_budgets', $budget->getID(), true);
         $this->assertSame($expected, $ret);
 
         // test of return without $tooltip
         $expected = ['name'    => $budget->getName(),
-            'comment' => $budget->fields['comment']
+            'comment' => $budget->fields['comment'],
         ];
         $ret = \Dropdown::getDropdownName('glpi_budgets', $budget->getID(), true, true, false);
         $this->assertSame($expected, $ret);
@@ -321,7 +320,7 @@ class DropdownTest extends DbTestCase
             [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory'
+                    'itemtype'              => 'TaskCategory',
                 ],
                 'expected'  => [
                     'results' => [
@@ -350,299 +349,299 @@ class DropdownTest extends DbTestCase
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
-                    ],
-                    'count' => 3
-                ]
-            ], [
-                'params' => [
-                    'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
-                    'searchText'            => 'subcat'
-                ],
-                'expected'  => [
-                    'results' => [
-                        0 => [
-                            'text'      => 'Root entity',
-                            'children'  => [
-                                0 => [
-                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                                    'text'   => '_cat_1',
-                                    'level'  => 1,
-                                    'disabled' => true
-                                ],
-                                1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                                    'text'           => '_subcat_1',
-                                    'level'          => 2,
-                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
-                                    'selection_text' => '_cat_1 > _subcat_1',
-                                ]
-                            ],
-                            'itemtype' => 'Entity'
-                        ]
-                    ],
-                    'count' => 1
-                ]
-            ], [
-                'params' => [
-                    'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
-                    'searchText'            => '_cat_1 > _subcat'
-                ],
-                'expected'  => [
-                    'results' => [
-                        0 => [
-                            'text'      => 'Root entity',
-                            'children'  => [
-                                0 => [
-                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                                    'text'   => '_cat_1',
-                                    'level'  => 1,
-                                    'disabled' => true
-                                ],
-                                1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                                    'text'           => '_subcat_1',
-                                    'level'          => 2,
-                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
-                                    'selection_text' => '_cat_1 > _subcat_1',
-                                ]
-                            ],
-                            'itemtype' => 'Entity'
-                        ]
-                    ],
-                    'count' => 1
-                ]
-            ], [
-                'params' => [
-                    'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
-                    'searchText'            => 'R&D' // raw value
-                ],
-                'expected'  => [
-                    'results' => [
-                        0 => [
-                            'text'      => 'Root entity',
-                            'children'  => [
-                                0 => [
-                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                                    'text'   => '_cat_1',
-                                    'level'  => 1,
-                                    'disabled' => true
-                                ],
-                                1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
-                                    'text'           => 'R&D',
-                                    'level'          => 2,
-                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
-                                    'selection_text' => '_cat_1 > R&D',
-                                ],
-                            ],
-                            'itemtype' => 'Entity'
-                        ]
-                    ],
-                    'count' => 1
-                ]
-            ], [
-                'params' => [
-                    'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
-                    'searchText'            => 'R&#38;D' // sanitized value from front file
-                ],
-                'expected'  => [
-                    'results' => [
-                        0 => [
-                            'text'      => 'Root entity',
-                            'children'  => [
-                                0 => [
-                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                                    'text'   => '_cat_1',
-                                    'level'  => 1,
-                                    'disabled' => true
-                                ],
-                                1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
-                                    'text'           => 'R&D',
-                                    'level'          => 2,
-                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
-                                    'selection_text' => '_cat_1 > R&D',
-                                ],
-                            ],
-                            'itemtype' => 'Entity'
-                        ]
-                    ],
-                    'count' => 1
-                ]
-            ], [
-                'params' => [
-                    'display_emptychoice'   => 1,
-                    'emptylabel'            => 'EEEEEE',
-                    'itemtype'              => 'TaskCategory'
-                ],
-                'expected'  => [
-                    'results' => [
-                        0 => [
-                            'id'        => 0,
-                            'text'      => 'EEEEEE'
+                            'itemtype' => 'Entity',
                         ],
-                        1 => [
-                            'text'      => 'Root entity',
-                            'children'  => [
-                                0 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
-                                    'text'           => '_cat_1',
-                                    'level'          => 1,
-                                    'title'          => '_cat_1 - Comment for category _cat_1',
-                                    'selection_text' => '_cat_1',
-                                ],
-                                1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                                    'text'           => '_subcat_1',
-                                    'level'          => 2,
-                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
-                                    'selection_text' => '_cat_1 > _subcat_1',
-                                ],
-                                2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
-                                    'text'           => 'R&D',
-                                    'level'          => 2,
-                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
-                                    'selection_text' => '_cat_1 > R&D',
-                                ],
-                            ],
-                            'itemtype' => 'Entity'
-                        ]
                     ],
-                    'count' => 3
-                ]
-            ], [
-                'params' => [
-                    'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory',
-                    'used'                  => [getItemByTypeName('TaskCategory', '_cat_1', true)]
+                    'count' => 3,
                 ],
-                'expected'  => [
-                    'results' => [
-                        0 => [
-                            'text'      => 'Root entity',
-                            'children'  => [
-                                0 => [
-                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
-                                    'text'   => '_cat_1',
-                                    'level'  => 1,
-                                    'disabled' => true
-                                ],
-                                1 => [
-                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
-                                    'text'           => '_subcat_1',
-                                    'level'          => 2,
-                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
-                                    'selection_text' => '_cat_1 > _subcat_1',
-                                ],
-                                2 => [
-                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
-                                    'text'           => 'R&D',
-                                    'level'          => 2,
-                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
-                                    'selection_text' => '_cat_1 > R&D',
-                                ],
-                            ],
-                            'itemtype' => 'Entity'
-                        ]
-                    ],
-                    'count' => 2
-                ]
-            ], [
-                'params' => [
-                    'display_emptychoice'   => 0,
-                    'itemtype'              => 'Computer',
-                    'entity_restrict'       => getItemByTypeName('Entity', '_test_child_2', true)
-                ],
-                'expected'  => [
-                    'results'   => [
-                        0 => [
-                            'text'      => 'Root entity > _test_root_entity > _test_child_2',
-                            'children'  => [
-                                0 => [
-                                    'id'     => getItemByTypeName('Computer', '_test_pc21', true),
-                                    'text'   => '_test_pc21',
-                                    'title'  => '_test_pc21',
-                                ],
-                                1 => [
-                                    'id'     => getItemByTypeName('Computer', '_test_pc22', true),
-                                    'text'   => '_test_pc22',
-                                    'title'  => '_test_pc22',
-                                ]
-                            ],
-                            'itemtype' => 'Entity'
-                        ]
-                    ],
-                    'count'     => 2
-                ]
-            ], [
-                'params' => [
-                    'display_emptychoice'   => 0,
-                    'itemtype'              => 'Computer',
-                    'entity_restrict'       => '[' . getItemByTypeName('Entity', '_test_child_2', true) . ']'
-                ],
-                'expected'  => [
-                    'results'   => [
-                        0 => [
-                            'text'      => 'Root entity > _test_root_entity > _test_child_2',
-                            'children'  => [
-                                0 => [
-                                    'id'     => getItemByTypeName('Computer', '_test_pc21', true),
-                                    'text'   => '_test_pc21',
-                                    'title'  => '_test_pc21',
-                                ],
-                                1 => [
-                                    'id'     => getItemByTypeName('Computer', '_test_pc22', true),
-                                    'text'   => '_test_pc22',
-                                    'title'  => '_test_pc22',
-                                ]
-                            ],
-                            'itemtype' => 'Entity'
-                        ]
-                    ],
-                    'count'     => 2
-                ]
-            ], [
-                'params' => [
-                    'display_emptychoice'   => 0,
-                    'itemtype'              => 'Computer',
-                    'entity_restrict'       => getItemByTypeName('Entity', '_test_child_2', true),
-                    'searchText'            => '22'
-                ],
-                'expected'  => [
-                    'results'   => [
-                        0 => [
-                            'text'      => 'Root entity > _test_root_entity > _test_child_2',
-                            'children'  => [
-                                0 => [
-                                    'id'     => getItemByTypeName('Computer', '_test_pc22', true),
-                                    'text'   => '_test_pc22',
-                                    'title'  => '_test_pc22',
-                                ]
-                            ],
-                            'itemtype' => 'Entity'
-                        ]
-                    ],
-                    'count'     => 1
-                ]
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
                     'searchText'            => 'subcat',
-                    'toadd'                 => ['key' => 'value']
+                ],
+                'expected'  => [
+                    'results' => [
+                        0 => [
+                            'text'      => 'Root entity',
+                            'children'  => [
+                                0 => [
+                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'   => '_cat_1',
+                                    'level'  => 1,
+                                    'disabled' => true,
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'text'           => '_subcat_1',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                                    'selection_text' => '_cat_1 > _subcat_1',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count' => 1,
+                ],
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
+                    'itemtype'              => 'TaskCategory',
+                    'searchText'            => '_cat_1 > _subcat',
+                ],
+                'expected'  => [
+                    'results' => [
+                        0 => [
+                            'text'      => 'Root entity',
+                            'children'  => [
+                                0 => [
+                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'   => '_cat_1',
+                                    'level'  => 1,
+                                    'disabled' => true,
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'text'           => '_subcat_1',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                                    'selection_text' => '_cat_1 > _subcat_1',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count' => 1,
+                ],
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
+                    'itemtype'              => 'TaskCategory',
+                    'searchText'            => 'R&D', // raw value
+                ],
+                'expected'  => [
+                    'results' => [
+                        0 => [
+                            'text'      => 'Root entity',
+                            'children'  => [
+                                0 => [
+                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'   => '_cat_1',
+                                    'level'  => 1,
+                                    'disabled' => true,
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'text'           => 'R&D',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
+                                    'selection_text' => '_cat_1 > R&D',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count' => 1,
+                ],
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
+                    'itemtype'              => 'TaskCategory',
+                    'searchText'            => 'R&#38;D', // sanitized value from front file
+                ],
+                'expected'  => [
+                    'results' => [
+                        0 => [
+                            'text'      => 'Root entity',
+                            'children'  => [
+                                0 => [
+                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'   => '_cat_1',
+                                    'level'  => 1,
+                                    'disabled' => true,
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'text'           => 'R&D',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
+                                    'selection_text' => '_cat_1 > R&D',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count' => 1,
+                ],
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 1,
+                    'emptylabel'            => 'EEEEEE',
+                    'itemtype'              => 'TaskCategory',
+                ],
+                'expected'  => [
+                    'results' => [
+                        0 => [
+                            'id'        => 0,
+                            'text'      => 'EEEEEE',
+                        ],
+                        1 => [
+                            'text'      => 'Root entity',
+                            'children'  => [
+                                0 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'           => '_cat_1',
+                                    'level'          => 1,
+                                    'title'          => '_cat_1 - Comment for category _cat_1',
+                                    'selection_text' => '_cat_1',
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'text'           => '_subcat_1',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                                    'selection_text' => '_cat_1 > _subcat_1',
+                                ],
+                                2 => [
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'text'           => 'R&D',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
+                                    'selection_text' => '_cat_1 > R&D',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count' => 3,
+                ],
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
+                    'itemtype'              => 'TaskCategory',
+                    'used'                  => [getItemByTypeName('TaskCategory', '_cat_1', true)],
+                ],
+                'expected'  => [
+                    'results' => [
+                        0 => [
+                            'text'      => 'Root entity',
+                            'children'  => [
+                                0 => [
+                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'   => '_cat_1',
+                                    'level'  => 1,
+                                    'disabled' => true,
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'text'           => '_subcat_1',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                                    'selection_text' => '_cat_1 > _subcat_1',
+                                ],
+                                2 => [
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'text'           => 'R&D',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
+                                    'selection_text' => '_cat_1 > R&D',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count' => 2,
+                ],
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
+                    'itemtype'              => 'Computer',
+                    'entity_restrict'       => getItemByTypeName('Entity', '_test_child_2', true),
+                ],
+                'expected'  => [
+                    'results'   => [
+                        0 => [
+                            'text'      => 'Root entity > _test_root_entity > _test_child_2',
+                            'children'  => [
+                                0 => [
+                                    'id'     => getItemByTypeName('Computer', '_test_pc21', true),
+                                    'text'   => '_test_pc21',
+                                    'title'  => '_test_pc21',
+                                ],
+                                1 => [
+                                    'id'     => getItemByTypeName('Computer', '_test_pc22', true),
+                                    'text'   => '_test_pc22',
+                                    'title'  => '_test_pc22',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count'     => 2,
+                ],
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
+                    'itemtype'              => 'Computer',
+                    'entity_restrict'       => '[' . getItemByTypeName('Entity', '_test_child_2', true) . ']',
+                ],
+                'expected'  => [
+                    'results'   => [
+                        0 => [
+                            'text'      => 'Root entity > _test_root_entity > _test_child_2',
+                            'children'  => [
+                                0 => [
+                                    'id'     => getItemByTypeName('Computer', '_test_pc21', true),
+                                    'text'   => '_test_pc21',
+                                    'title'  => '_test_pc21',
+                                ],
+                                1 => [
+                                    'id'     => getItemByTypeName('Computer', '_test_pc22', true),
+                                    'text'   => '_test_pc22',
+                                    'title'  => '_test_pc22',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count'     => 2,
+                ],
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
+                    'itemtype'              => 'Computer',
+                    'entity_restrict'       => getItemByTypeName('Entity', '_test_child_2', true),
+                    'searchText'            => '22',
+                ],
+                'expected'  => [
+                    'results'   => [
+                        0 => [
+                            'text'      => 'Root entity > _test_root_entity > _test_child_2',
+                            'children'  => [
+                                0 => [
+                                    'id'     => getItemByTypeName('Computer', '_test_pc22', true),
+                                    'text'   => '_test_pc22',
+                                    'title'  => '_test_pc22',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count'     => 1,
+                ],
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
+                    'itemtype'              => 'TaskCategory',
+                    'searchText'            => 'subcat',
+                    'toadd'                 => ['key' => 'value'],
                 ],
                 'expected'  => [
                     'results' => [
                         0 => [
                             'id'     => 'key',
-                            'text'   => 'value'
+                            'text'   => 'value',
                         ],
                         1 => [
                             'text'      => 'Root entity',
@@ -651,7 +650,7 @@ class DropdownTest extends DbTestCase
                                     'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
                                     'text'   => '_cat_1',
                                     'level'  => 1,
-                                    'disabled' => true
+                                    'disabled' => true,
                                 ],
                                 1 => [
                                     'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
@@ -659,18 +658,18 @@ class DropdownTest extends DbTestCase
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
-                                ]
+                                ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 1
-                ]
+                    'count' => 1,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
-                    'searchText'            => 'subcat'
+                    'searchText'            => 'subcat',
                 ],
                 'expected'  => [
                     'results' => [
@@ -683,20 +682,20 @@ class DropdownTest extends DbTestCase
                                     'level'          => 0,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
-                                ]
+                                ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 1
+                    'count' => 1,
                 ],
                 'session_params' => [
-                    'glpiuse_flat_dropdowntree' => true
-                ]
+                    'glpiuse_flat_dropdowntree' => true,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory'
+                    'itemtype'              => 'TaskCategory',
                 ],
                 'expected'  => [
                     'results' => [
@@ -725,20 +724,20 @@ class DropdownTest extends DbTestCase
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 3
+                    'count' => 3,
                 ],
                 'session_params' => [
-                    'glpiuse_flat_dropdowntree' => true
-                ]
+                    'glpiuse_flat_dropdowntree' => true,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
                     'searchText'            => 'subcat',
-                    'permit_select_parent'  => true
+                    'permit_select_parent'  => true,
                 ],
                 'expected'  => [
                     'results' => [
@@ -758,15 +757,15 @@ class DropdownTest extends DbTestCase
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
-                                ]
+                                ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 1
-                ]
+                    'count' => 1,
+                ],
             ], [
-            // search using id on CommonTreeDropdown but without "glpiis_ids_visible" set to true -> no results
+                // search using id on CommonTreeDropdown but without "glpiis_ids_visible" set to true -> no results
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
@@ -775,13 +774,13 @@ class DropdownTest extends DbTestCase
                 'expected'  => [
                     'results' => [
                     ],
-                    'count' => 0
+                    'count' => 0,
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => false
-                ]
+                    'glpiis_ids_visible' => false,
+                ],
             ], [
-            // search using id on CommonTreeDropdown with "glpiis_ids_visible" set to true -> results
+                // search using id on CommonTreeDropdown with "glpiis_ids_visible" set to true -> results
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
@@ -796,7 +795,7 @@ class DropdownTest extends DbTestCase
                                     'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
                                     'text'           => '_cat_1',
                                     'level'          => 1,
-                                    'disabled'       => true
+                                    'disabled'       => true,
                                 ],
                                 1 => [
                                     'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
@@ -804,18 +803,18 @@ class DropdownTest extends DbTestCase
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
-                                ]
+                                ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 1
+                    'count' => 1,
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => true
-                ]
+                    'glpiis_ids_visible' => true,
+                ],
             ], [
-            // search using id on "not a CommonTreeDropdown" but without "glpiis_ids_visible" set to true -> no results
+                // search using id on "not a CommonTreeDropdown" but without "glpiis_ids_visible" set to true -> no results
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'DocumentType',
@@ -824,13 +823,13 @@ class DropdownTest extends DbTestCase
                 'expected'  => [
                     'results' => [
                     ],
-                    'count' => 0
+                    'count' => 0,
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => false
-                ]
+                    'glpiis_ids_visible' => false,
+                ],
             ], [
-            // search using id on "not a CommonTreeDropdown" with "glpiis_ids_visible" set to true -> results
+                // search using id on "not a CommonTreeDropdown" with "glpiis_ids_visible" set to true -> results
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'DocumentType',
@@ -842,13 +841,13 @@ class DropdownTest extends DbTestCase
                             'id'             => getItemByTypeName('DocumentType', 'markdown', true),
                             'text'           => 'markdown (' . getItemByTypeName('DocumentType', 'markdown', true) . ')',
                             'title'          => 'markdown',
-                        ]
+                        ],
                     ],
-                    'count' => 1
+                    'count' => 1,
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => true
-                ]
+                    'glpiis_ids_visible' => true,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice' => 0,
@@ -865,10 +864,10 @@ class DropdownTest extends DbTestCase
                             'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_2', true),
                             'text'   => '_test_computermodel_2 - CMP_567AEC68',
                             'title'  => '_test_computermodel_2 - CMP_567AEC68',
-                        ]
+                        ],
                     ],
-                    'count'     => 2
-                ]
+                    'count'     => 2,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice' => 0,
@@ -881,10 +880,10 @@ class DropdownTest extends DbTestCase
                             'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_2', true),
                             'text'   => '_test_computermodel_2 - CMP_567AEC68',
                             'title'  => '_test_computermodel_2 - CMP_567AEC68',
-                        ]
+                        ],
                     ],
-                    'count'     => 1
-                ]
+                    'count'     => 1,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice' => 0,
@@ -897,10 +896,10 @@ class DropdownTest extends DbTestCase
                             'id'     => getItemByTypeName(Socket::class, '_socket01', true),
                             'text'   => '_socket01',
                             'title'  => '_socket01 - Comment for socket _socket01',
-                        ]
+                        ],
                     ],
-                    'count'     => 1
-                ]
+                    'count'     => 1,
+                ],
             ],
         ];
     }
@@ -949,7 +948,7 @@ class DropdownTest extends DbTestCase
             [
                 'params'    => [
                     'fromtype'  => 'Computer',
-                    'itemtype'  => 'Printer'
+                    'itemtype'  => 'Printer',
                 ],
                 'expected'  => [
                     'results' => [
@@ -967,8 +966,8 @@ class DropdownTest extends DbTestCase
                                 1 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
                                     'text'   => '_test_printer_ent0',
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         2 => [
                             'text' => "Root entity {$encoded_sep} _test_root_entity {$encoded_sep} _test_child_1",
@@ -976,8 +975,8 @@ class DropdownTest extends DbTestCase
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent1', true),
                                     'text'   => '_test_printer_ent1',
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         3 => [
                             'text' => "Root entity {$encoded_sep} _test_root_entity {$encoded_sep} _test_child_2",
@@ -985,11 +984,11 @@ class DropdownTest extends DbTestCase
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent2', true),
                                     'text'   => '_test_printer_ent2',
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ], [
                 'params'    => [
                     'fromtype'  => 'Computer',
@@ -997,9 +996,9 @@ class DropdownTest extends DbTestCase
                     'used'      => [
                         'Printer' => [
                             getItemByTypeName('Printer', '_test_printer_ent0', true),
-                            getItemByTypeName('Printer', '_test_printer_ent2', true)
-                        ]
-                    ]
+                            getItemByTypeName('Printer', '_test_printer_ent2', true),
+                        ],
+                    ],
                 ],
                 'expected'  => [
                     'results' => [
@@ -1013,8 +1012,8 @@ class DropdownTest extends DbTestCase
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_all', true),
                                     'text'   => '_test_printer_all',
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         2 => [
                             'text' => "Root entity {$encoded_sep} _test_root_entity {$encoded_sep} _test_child_1",
@@ -1022,16 +1021,16 @@ class DropdownTest extends DbTestCase
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent1', true),
                                     'text'   => '_test_printer_ent1',
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ], [
                 'params'    => [
                     'fromtype'     => 'Computer',
                     'itemtype'     => 'Printer',
-                    'searchText'   => 'ent0'
+                    'searchText'   => 'ent0',
                 ],
                 'expected'  => [
                     'results' => [
@@ -1041,16 +1040,16 @@ class DropdownTest extends DbTestCase
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
                                     'text'   => '_test_printer_ent0',
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ], [
                 'params'    => [
                     'fromtype'     => 'Computer',
                     'itemtype'     => 'Printer',
-                    'searchText'   => 'ent0'
+                    'searchText'   => 'ent0',
                 ],
                 'expected'  => [
                     'results' => [
@@ -1060,15 +1059,15 @@ class DropdownTest extends DbTestCase
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
                                     'text'   => '_test_printer_ent0 (' . getItemByTypeName('Printer', '_test_printer_ent0', true) . ')',
-                                ]
-                            ]
-                        ]
-                    ]
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => true
-                ]
-            ]
+                    'glpiis_ids_visible' => true,
+                ],
+            ],
         ];
     }
 
@@ -1117,137 +1116,137 @@ class DropdownTest extends DbTestCase
                     'results'   => [
                         0 => [
                             'id'     => 1,
-                            'text'   => '1'
+                            'text'   => '1',
                         ],
                         1 => [
                             'id'     => 2,
-                            'text'   => '2'
+                            'text'   => '2',
                         ],
                         2 => [
                             'id'     => 3,
-                            'text'   => '3'
+                            'text'   => '3',
                         ],
                         3 => [
                             'id'     => 4,
-                            'text'   => '4'
+                            'text'   => '4',
                         ],
                         4 => [
                             'id'     => 5,
-                            'text'   => '5'
+                            'text'   => '5',
                         ],
                         5 => [
                             'id'     => 6,
-                            'text'   => '6'
+                            'text'   => '6',
                         ],
                         6 => [
                             'id'     => 7,
-                            'text'   => '7'
+                            'text'   => '7',
                         ],
                         7 => [
                             'id'     => 8,
-                            'text'   => '8'
+                            'text'   => '8',
                         ],
                         8 => [
                             'id'     => 9,
-                            'text'   => '9'
+                            'text'   => '9',
                         ],
                         9 => [
                             'id'     => 10,
-                            'text'   => '10'
-                        ]
+                            'text'   => '10',
+                        ],
                     ],
-                    'count'     => 10
-                ]
-            ], [
-                'params'    => [
-                    'min'    => 10,
-                    'max'    => 30,
-                    'step'   => 10
+                    'count'     => 10,
                 ],
-                'expected'  => [
-                    'results'   => [
-                        0 => [
-                            'id'     => 10,
-                            'text'   => '10'
-                        ],
-                        1 => [
-                            'id'     => 20,
-                            'text'   => '20'
-                        ],
-                        2 => [
-                            'id'     => 30,
-                            'text'   => '30'
-                        ]
-                    ],
-                    'count'     => 3
-                ]
             ], [
                 'params'    => [
                     'min'    => 10,
                     'max'    => 30,
                     'step'   => 10,
-                    'used'   => [20]
                 ],
                 'expected'  => [
                     'results'   => [
                         0 => [
                             'id'     => 10,
-                            'text'   => '10'
+                            'text'   => '10',
                         ],
                         1 => [
+                            'id'     => 20,
+                            'text'   => '20',
+                        ],
+                        2 => [
                             'id'     => 30,
-                            'text'   => '30'
-                        ]
+                            'text'   => '30',
+                        ],
                     ],
-                    'count'     => 2
-                ]
+                    'count'     => 3,
+                ],
             ], [
                 'params'    => [
                     'min'    => 10,
                     'max'    => 30,
                     'step'   => 10,
                     'used'   => [20],
-                    'toadd'  => [5 => 'five']
+                ],
+                'expected'  => [
+                    'results'   => [
+                        0 => [
+                            'id'     => 10,
+                            'text'   => '10',
+                        ],
+                        1 => [
+                            'id'     => 30,
+                            'text'   => '30',
+                        ],
+                    ],
+                    'count'     => 2,
+                ],
+            ], [
+                'params'    => [
+                    'min'    => 10,
+                    'max'    => 30,
+                    'step'   => 10,
+                    'used'   => [20],
+                    'toadd'  => [5 => 'five'],
                 ],
                 'expected'  => [
                     'results'   => [
                         0 => [
                             'id'     => 5,
-                            'text'   => 'five'
+                            'text'   => 'five',
                         ],
                         1 => [
                             'id'     => 10,
-                            'text'   => '10'
+                            'text'   => '10',
                         ],
                         2 => [
                             'id'     => 30,
-                            'text'   => '30'
-                        ]
+                            'text'   => '30',
+                        ],
                     ],
-                    'count'     => 2
-                ]
+                    'count'     => 2,
+                ],
             ], [
                 'params'    => [
                     'min'    => 10,
                     'max'    => 30,
                     'step'   => 10,
                     'used'   => [20],
-                    'unit'   => 'second'
+                    'unit'   => 'second',
                 ],
                 'expected'  => [
                     'results'   => [
                         0 => [
                             'id'     => 10,
-                            'text'   => '10 seconds'
+                            'text'   => '10 seconds',
                         ],
                         1 => [
                             'id'     => 30,
-                            'text'   => '30 seconds'
-                        ]
+                            'text'   => '30 seconds',
+                        ],
                     ],
-                    'count'     => 2
-                ]
-            ]
+                    'count'     => 2,
+                ],
+            ],
         ];
     }
 
@@ -1276,44 +1275,44 @@ class DropdownTest extends DbTestCase
                             'text'   => '-----',
                         ],
                         1 => [
-                            'id'     => (int)getItemByTypeName('User', '_test_user', true),
+                            'id'     => (int) getItemByTypeName('User', '_test_user', true),
                             'text'   => '_test_user',
                             'title'  => '_test_user - _test_user',
                         ],
                         2 => [
-                            'id'     => (int)getItemByTypeName('User', 'glpi', true),
+                            'id'     => (int) getItemByTypeName('User', 'glpi', true),
                             'text'   => 'glpi',
                             'title'  => 'glpi - glpi',
                         ],
                         3 => [
-                            'id'     => (int)getItemByTypeName('User', 'normal', true),
+                            'id'     => (int) getItemByTypeName('User', 'normal', true),
                             'text'   => 'normal',
                             'title'  => 'normal - normal',
                         ],
                         4 => [
-                            'id'     => (int)getItemByTypeName('User', 'post-only', true),
+                            'id'     => (int) getItemByTypeName('User', 'post-only', true),
                             'text'   => 'post-only',
                             'title'  => 'post-only - post-only',
                         ],
                         5 => [
-                            'id'     => (int)getItemByTypeName('User', 'tech', true),
+                            'id'     => (int) getItemByTypeName('User', 'tech', true),
                             'text'   => 'tech',
                             'title'  => 'tech - tech',
                         ],
                         6 => [
-                            'id'     => (int)getItemByTypeName('User', 'jsmith123', true),
+                            'id'     => (int) getItemByTypeName('User', 'jsmith123', true),
                             'text'   => 'Smith John',
                             'title'  => 'Smith John - jsmith123',
-                        ]
+                        ],
                     ],
-                    'count' => 6
-                ]
+                    'count' => 6,
+                ],
             ], [
                 'params'    => [
                     'used'   => [
                         getItemByTypeName('User', 'glpi', true),
-                        getItemByTypeName('User', 'tech', true)
-                    ]
+                        getItemByTypeName('User', 'tech', true),
+                    ],
                 ],
                 'expected'  => [
                     'results' => [
@@ -1322,28 +1321,28 @@ class DropdownTest extends DbTestCase
                             'text'   => '-----',
                         ],
                         1 => [
-                            'id'     => (int)getItemByTypeName('User', '_test_user', true),
+                            'id'     => (int) getItemByTypeName('User', '_test_user', true),
                             'text'   => '_test_user',
                             'title'  => '_test_user - _test_user',
                         ],
                         2 => [
-                            'id'     => (int)getItemByTypeName('User', 'normal', true),
+                            'id'     => (int) getItemByTypeName('User', 'normal', true),
                             'text'   => 'normal',
                             'title'  => 'normal - normal',
                         ],
                         3 => [
-                            'id'     => (int)getItemByTypeName('User', 'post-only', true),
+                            'id'     => (int) getItemByTypeName('User', 'post-only', true),
                             'text'   => 'post-only',
                             'title'  => 'post-only - post-only',
                         ],
                         4 => [
-                            'id'     => (int)getItemByTypeName('User', 'jsmith123', true),
+                            'id'     => (int) getItemByTypeName('User', 'jsmith123', true),
                             'text'   => 'Smith John',
                             'title'  => 'Smith John - jsmith123',
-                        ]
+                        ],
                     ],
-                    'count' => 4
-                ]
+                    'count' => 4,
+                ],
             ], [
                 'params'    => [
                     'all'    => true,
@@ -1351,8 +1350,8 @@ class DropdownTest extends DbTestCase
                         getItemByTypeName('User', 'glpi', true),
                         getItemByTypeName('User', 'tech', true),
                         getItemByTypeName('User', 'normal', true),
-                        getItemByTypeName('User', 'post-only', true)
-                    ]
+                        getItemByTypeName('User', 'post-only', true),
+                    ],
                 ],
                 'expected'  => [
                     'results' => [
@@ -1361,19 +1360,19 @@ class DropdownTest extends DbTestCase
                             'text'   => 'All',
                         ],
                         1 => [
-                            'id'     => (int)getItemByTypeName('User', '_test_user', true),
+                            'id'     => (int) getItemByTypeName('User', '_test_user', true),
                             'text'   => '_test_user',
                             'title'  => '_test_user - _test_user',
                         ],
                         2 => [
-                            'id'     => (int)getItemByTypeName('User', 'jsmith123', true),
+                            'id'     => (int) getItemByTypeName('User', 'jsmith123', true),
                             'text'   => 'Smith John',
                             'title'  => 'Smith John - jsmith123',
-                        ]
+                        ],
                     ],
-                    'count' => 2
-                ]
-            ]
+                    'count' => 2,
+                ],
+            ],
         ];
     }
 
@@ -1402,8 +1401,8 @@ class DropdownTest extends DbTestCase
         for ($i = 0; $i <= 20; ++$i) {
             $this->assertGreaterThan(
                 0,
-                (int)$location->add([
-                    'name'   => "Test location $i"
+                (int) $location->add([
+                    'name'   => "Test location $i",
                 ])
             );
         }
@@ -1414,29 +1413,29 @@ class DropdownTest extends DbTestCase
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0])
+            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0]),
         ];
         $values = \Dropdown::getDropdownValue($post);
-        $values = (array)json_decode($values);
+        $values = (array) json_decode($values);
 
         $this->assertSame(10, $values['count']);
         $this->assertCount(2, $values['results']);
 
-        $results = (array)$values['results'];
+        $results = (array) $values['results'];
         $this->assertSame(
             [
                 'id'     => 0,
-                'text'   => '-----'
+                'text'   => '-----',
             ],
-            (array)$results[0]
+            (array) $results[0]
         );
 
-        $list_results = (array)$results[1];
+        $list_results = (array) $results[1];
         $this->assertCount(3, $list_results);
         $this->assertSame('Root entity', $list_results['text']);
         $this->assertSame('Entity', $list_results['itemtype']);
 
-        $children = (array)$list_results['children'];
+        $children = (array) $list_results['children'];
         $this->assertCount(10, $children);
         $this->assertSame(
             [
@@ -1444,14 +1443,14 @@ class DropdownTest extends DbTestCase
                 'text',
                 'level',
                 'title',
-                'selection_text'
+                'selection_text',
             ],
-            array_keys((array)$children[0])
+            array_keys((array) $children[0])
         );
 
         $post['page'] = 2;
         $values = \Dropdown::getDropdownValue($post);
-        $values = (array)json_decode($values);
+        $values = (array) json_decode($values);
 
         $this->assertEquals(10, $values['count']);
 
@@ -1462,9 +1461,9 @@ class DropdownTest extends DbTestCase
                 'text',
                 'level',
                 'title',
-                'selection_text'
+                'selection_text',
             ],
-            array_keys((array)$values['results'][0])
+            array_keys((array) $values['results'][0])
         );
 
         //use a array condition
@@ -1475,10 +1474,10 @@ class DropdownTest extends DbTestCase
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['name' => ['LIKE', "%3%"]]])
+            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['name' => ['LIKE', "%3%"]]]),
         ];
         $values = \Dropdown::getDropdownValue($post);
-        $values = (array)json_decode($values);
+        $values = (array) json_decode($values);
 
         $this->assertEquals(2, $values['count']);
         $this->assertCount(2, $values['results']);
@@ -1490,7 +1489,7 @@ class DropdownTest extends DbTestCase
         $post['condition']   = $condition_key;
         $post['_idor_token'] = \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]);
         $values = \Dropdown::getDropdownValue($post);
-        $values = (array)json_decode($values);
+        $values = (array) json_decode($values);
 
         $this->assertEquals(2, $values['count']);
         $this->assertCount(2, $values['results']);
@@ -1503,10 +1502,10 @@ class DropdownTest extends DbTestCase
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => '`name` LIKE "%4%"'])
+            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => '`name` LIKE "%4%"']),
         ];
         $values = \Dropdown::getDropdownValue($post);
-        $values = (array)json_decode($values);
+        $values = (array) json_decode($values);
 
         $this->assertEquals(10, $values['count']);
         $this->assertCount(2, $values['results']);
@@ -1583,7 +1582,7 @@ class DropdownTest extends DbTestCase
                 'parent_id'           => $state_1_id,
                 'display_emptychoice' => false,
                 'entity_restrict'     => 0,
-                '_idor_token'         => Session::getNewIDORToken($state->getType())
+                '_idor_token'         => Session::getNewIDORToken($state->getType()),
             ],
             false
         );
@@ -1637,7 +1636,7 @@ class DropdownTest extends DbTestCase
                 'parent_id'           => $state_1_1_id,
                 'display_emptychoice' => false,
                 'entity_restrict'     => 0,
-                '_idor_token'         => Session::getNewIDORToken($state->getType())
+                '_idor_token'         => Session::getNewIDORToken($state->getType()),
             ],
             false
         );
@@ -1683,7 +1682,7 @@ class DropdownTest extends DbTestCase
                 'parent_id'           => $state_2_id,
                 'display_emptychoice' => false,
                 'entity_restrict'     => 0,
-                '_idor_token'         => Session::getNewIDORToken($state->getType())
+                '_idor_token'         => Session::getNewIDORToken($state->getType()),
             ],
             false
         );
@@ -1731,14 +1730,14 @@ class DropdownTest extends DbTestCase
                 'step' => 1,
                 'unit' => "",
             ],
-            'expected' => [1, 2, 3, 4]
+            'expected' => [1, 2, 3, 4],
         ];
         yield [
             'params' => [
                 'min' => 1,
                 'max' => 4,
                 'step' => 0.5,
-                'unit' => ""
+                'unit' => "",
             ],
             'expected' => [
                 1,
@@ -1747,8 +1746,8 @@ class DropdownTest extends DbTestCase
                 2.5,
                 3,
                 3.5,
-                4
-            ]
+                4,
+            ],
         ];
 
         yield [
@@ -1756,12 +1755,12 @@ class DropdownTest extends DbTestCase
                 'min' => 1,
                 'max' => 4,
                 'step' => 2,
-                'unit' => ""
+                'unit' => "",
             ],
             'expected' => [
                 1,
-                3
-            ]
+                3,
+            ],
         ];
 
         yield [
@@ -1769,12 +1768,12 @@ class DropdownTest extends DbTestCase
                 'min' => 1,
                 'max' => 4,
                 'step' => 2.5,
-                'unit' => ""
+                'unit' => "",
             ],
             'expected' => [
                 1,
-                3.5
-            ]
+                3.5,
+            ],
         ];
 
         yield [
@@ -1782,11 +1781,11 @@ class DropdownTest extends DbTestCase
                 'min' => 1,
                 'max' => 4,
                 'step' => 5.5,
-                'unit' => ""
+                'unit' => "",
             ],
             'expected' => [
-                1
-            ]
+                1,
+            ],
         ];
     }
 

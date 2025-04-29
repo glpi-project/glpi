@@ -52,7 +52,7 @@ class SynchronizeUsersCommand extends AbstractCommand
      * @var integer
      * @FIXME Remove in GLPI 10.1.
      */
-    const ERROR_LDAP_CONNECTION_FAILED = 1;
+    public const ERROR_LDAP_CONNECTION_FAILED = 1;
 
     /**
      * Error code returned if LDAP limit exceeded.
@@ -60,7 +60,7 @@ class SynchronizeUsersCommand extends AbstractCommand
      * @var integer
      * @FIXME Remove in GLPI 10.1.
      */
-    const ERROR_LDAP_LIMIT_EXCEEDED = 2;
+    public const ERROR_LDAP_LIMIT_EXCEEDED = 2;
 
     protected function configure()
     {
@@ -191,7 +191,7 @@ class SynchronizeUsersCommand extends AbstractCommand
             $actions = [
                 AuthLDAP::ACTION_IMPORT, // Import unexisting users
             ];
-        } else if ($only_update) {
+        } elseif ($only_update) {
             $actions = [
                 AuthLDAP::ACTION_SYNCHRONIZE, // Update existing users but does not handle deleted ones
             ];
@@ -231,7 +231,7 @@ class SynchronizeUsersCommand extends AbstractCommand
         }
 
         if (!$input->getOption('no-interaction')) {
-           // Ask for confirmation (unless --no-interaction)
+            // Ask for confirmation (unless --no-interaction)
 
             $servers_iterator = $this->db->request(
                 [
@@ -263,7 +263,7 @@ class SynchronizeUsersCommand extends AbstractCommand
                 throw new \Symfony\Component\Console\Exception\RuntimeException(__('Unable to load LDAP server information.'));
             }
             if (!$server->isActive()) {
-               // Can happen if id is specified in command call
+                // Can happen if id is specified in command call
                 $message = sprintf(
                     __('LDAP server "%s" is inactive, no synchronization will be done against it.'),
                     $server_id
@@ -321,10 +321,10 @@ class SynchronizeUsersCommand extends AbstractCommand
                     continue;
                 }
 
-                 $action_message = '';
+                $action_message = '';
                 switch ($action) {
                     case AuthLDAP::ACTION_IMPORT:
-                          $action_message = __('Import new users from server "%s"...');
+                        $action_message = __('Import new users from server "%s"...');
                         break;
                     case AuthLDAP::ACTION_SYNCHRONIZE:
                         $action_message = __('Update existing users with server "%s"...');
@@ -334,28 +334,28 @@ class SynchronizeUsersCommand extends AbstractCommand
                         break;
                 }
 
-                 $output->writeln(
-                     '<info>' . sprintf($action_message, $name) . '</info>',
-                     OutputInterface::VERBOSITY_NORMAL
-                 );
+                $output->writeln(
+                    '<info>' . sprintf($action_message, $name) . '</info>',
+                    OutputInterface::VERBOSITY_NORMAL
+                );
 
                 if (count($users) === 0) {
-                     $output->writeln(
-                         '<info>' . __('No users found.') . '</info>',
-                         OutputInterface::VERBOSITY_NORMAL
-                     );
-                     continue;
+                    $output->writeln(
+                        '<info>' . __('No users found.') . '</info>',
+                        OutputInterface::VERBOSITY_NORMAL
+                    );
+                    continue;
                 }
 
-                 $users_progress_bar = new ProgressBar($output, count($users));
-                 $users_progress_bar->start();
+                $users_progress_bar = new ProgressBar($output, count($users));
+                $users_progress_bar->start();
 
                 foreach ($users as $user) {
                     $users_progress_bar->advance(1);
 
                     $user_sync_field = null;
                     if ($server->isSyncFieldEnabled()) {
-                          $sync_field = $server->fields['sync_field'];
+                        $sync_field = $server->fields['sync_field'];
                         if (isset($user[$sync_field])) {
                             $user_sync_field = $server->getFieldValue($user, $sync_field);
                         }
@@ -368,7 +368,7 @@ class SynchronizeUsersCommand extends AbstractCommand
                     );
 
                     if ($existing_user instanceof User && $action == AuthLDAP::ACTION_IMPORT) {
-                           continue; // Do not update existing user if current action is only import
+                        continue; // Do not update existing user if current action is only import
                     }
 
                     $user_field = 'name';
@@ -389,24 +389,24 @@ class SynchronizeUsersCommand extends AbstractCommand
                             'method'           => AuthLDAP::IDENTIFIER_LOGIN,
                             'value'            => $value,
                             'identifier_field' => $id_field,
-                            'user_field'       => $user_field
+                            'user_field'       => $user_field,
                         ],
                         $action,
                         $server_id
                     );
 
                     if (false !== $result) {
-                           $results[$result['action']] += 1;
+                        $results[$result['action']] += 1;
                     } else {
-                          $this->writelnOutputWithProgressBar(
-                              sprintf(__('Unable to synchronize user "%s".'), $user['user']),
-                              $users_progress_bar,
-                              OutputInterface::VERBOSITY_VERBOSE
-                          );
+                        $this->writelnOutputWithProgressBar(
+                            sprintf(__('Unable to synchronize user "%s".'), $user['user']),
+                            $users_progress_bar,
+                            OutputInterface::VERBOSITY_VERBOSE
+                        );
                     }
                 }
-                 $users_progress_bar->finish();
-                 $output->write(PHP_EOL);
+                $users_progress_bar->finish();
+                $output->write(PHP_EOL);
             }
 
             if ($output->getVerbosity() > OutputInterface::VERBOSITY_QUIET) {
@@ -470,7 +470,7 @@ class SynchronizeUsersCommand extends AbstractCommand
         }
 
         foreach (['begin-date', 'end-date'] as $option_name) {
-           // Convert date to 'Y:m:d H:i:s' formatted string
+            // Convert date to 'Y:m:d H:i:s' formatted string
             $date = $input->getOption($option_name);
 
             if (null !== $date) {

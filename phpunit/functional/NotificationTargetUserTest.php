@@ -49,7 +49,7 @@ class NotificationTargetUserTest extends DbTestCase
         $update_url     = $CFG_GLPI['url_base'] . '/front/updatepassword.php';
 
         return [
-         // case 1: password already expired but account will not be locked
+            // case 1: password already expired but account will not be locked
             [
                 'expiration_time' => $time_in_past,
                 'lock_delay'      => -1,
@@ -60,7 +60,7 @@ class NotificationTargetUserTest extends DbTestCase
                     '##user.password.update.url##'      => $update_url,
                 ],
             ],
-         // case 2: password already expired and account will be locked
+            // case 2: password already expired and account will be locked
             [
                 'expiration_time' => $time_in_past,
                 'lock_delay'      => 15,
@@ -71,7 +71,7 @@ class NotificationTargetUserTest extends DbTestCase
                     '##user.password.update.url##'      => $update_url,
                 ],
             ],
-         // case 3: password not yet expired but account will not be locked
+            // case 3: password not yet expired but account will not be locked
             [
                 'expiration_time' => $time_in_future,
                 'lock_delay'      => -1,
@@ -82,7 +82,7 @@ class NotificationTargetUserTest extends DbTestCase
                     '##user.password.update.url##'      => $update_url,
                 ],
             ],
-         // case 2: password not yet expired and account will be locked
+            // case 2: password not yet expired and account will be locked
             [
                 'expiration_time' => $time_in_future,
                 'lock_delay'      => 15,
@@ -109,7 +109,8 @@ class NotificationTargetUserTest extends DbTestCase
         $user->method('getPasswordExpirationTime')->willReturn($expiration_time);
 
         $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;$target = new \NotificationTargetUser(
+        $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;
+        $target = new \NotificationTargetUser(
             getItemByTypeName('Entity', '_test_root_entity', true),
             'passwordexpires',
             $user

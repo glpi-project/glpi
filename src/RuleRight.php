@@ -42,7 +42,7 @@ use Glpi\Toolbox\Sanitizer;
  **/
 class RuleRight extends Rule
 {
-   // From Rule
+    // From Rule
     public static $rightname           = 'rule_ldap';
     public $orderby             = "name";
     public $specific_parameters = true;
@@ -98,7 +98,7 @@ class RuleRight extends Rule
                     case "assign":
                         switch ($action->fields["field"]) {
                             case "entities_id":
-                                 $entity[] = $action->fields["value"];
+                                $entity[] = $action->fields["value"];
                                 break;
 
                             case "profiles_id":
@@ -114,15 +114,15 @@ class RuleRight extends Rule
                                 break;
 
                             case '_profiles_id_default':
-                                     $output['profiles_id'] = $action->fields["value"];
+                                $output['profiles_id'] = $action->fields["value"];
                                 break;
 
                             case 'groups_id':
-                                   $output['groups_id'] = $action->fields["value"];
+                                $output['groups_id'] = $action->fields["value"];
                                 break;
 
                             case 'specific_groups_id':
-                                 $output["_ldap_rules"]['groups_id'][] = $action->fields["value"];
+                                $output["_ldap_rules"]['groups_id'][] = $action->fields["value"];
                                 break;
 
                             case "is_active":
@@ -158,11 +158,11 @@ class RuleRight extends Rule
                                     if ($res != null) {
                                         switch ($action->fields["field"]) {
                                             case "_affect_entity_by_dn":
-                                                 $entity_found = Entity::getEntityIDByDN(addslashes($res));
+                                                $entity_found = Entity::getEntityIDByDN(addslashes($res));
                                                 break;
 
                                             case "_affect_entity_by_tag":
-                                                 $entity_found = Entity::getEntityIDByTag(addslashes($res));
+                                                $entity_found = Entity::getEntityIDByTag(addslashes($res));
                                                 break;
 
                                             case "_affect_entity_by_domain":
@@ -179,7 +179,7 @@ class RuleRight extends Rule
                                                 break;
                                         }
 
-                                         //If an entity was found
+                                        //If an entity was found
                                         if ($entity_found > -1) {
                                             $entity[] = $entity_found;
                                         }
@@ -187,7 +187,7 @@ class RuleRight extends Rule
                                 }
 
                                 if (!count($entity)) {
-                                //Not entity assigned : action processing must be stopped for this rule
+                                    //Not entity assigned : action processing must be stopped for this rule
                                     $continue = false;
                                 }
                                 break;
@@ -198,13 +198,13 @@ class RuleRight extends Rule
         }
 
         if ($continue) {
-           //Nothing to be returned by the function :
-           //Store in session the entity and/or right
+            //Nothing to be returned by the function :
+            //Store in session the entity and/or right
             if (count($entity)) {
                 if ($right != '') {
                     foreach ($entity as $entID) {
                         $output["_ldap_rules"]["rules_entities_rights"][] = [$entID, $right,
-                            $is_recursive
+                            $is_recursive,
                         ];
                     }
                 } else {
@@ -212,7 +212,7 @@ class RuleRight extends Rule
                         $output["_ldap_rules"]["rules_entities"][] = [$entID, $is_recursive];
                     }
                 }
-            } else if ($right != '') {
+            } elseif ($right != '') {
                 $output["_ldap_rules"]["rules_rights"][] = $right;
             }
 
@@ -281,7 +281,7 @@ class RuleRight extends Rule
             $criterias['_groups_id']['virtual']    = true;
             $criterias['_groups_id']['id']         = 'groups';
 
-           //Dynamically add all the ldap criterias to the current list of rule's criterias
+            //Dynamically add all the ldap criterias to the current list of rule's criterias
             $this->addSpecificCriteriasToArray($criterias);
         }
         return $criterias;
@@ -400,7 +400,7 @@ class RuleRight extends Rule
                     'value',
                     $timezones,
                     [
-                        'display_emptychoice' => true
+                        'display_emptychoice' => true,
                     ]
                 );
                 return true;

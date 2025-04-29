@@ -38,7 +38,6 @@ namespace Glpi\Features;
 use CommonDBTM;
 use CommonITILObject;
 use CommonTreeDropdown;
-use DB;
 use DropdownTranslation;
 use Html;
 use ITILCategory;
@@ -63,9 +62,9 @@ trait TreeBrowse
 
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/treebrowse.php";
         $loading_txt = __s('Loading...');
-        $start       = (int)($_REQUEST['start'] ?? 0);
-        $browse      = (int)($_REQUEST['browse'] ?? 0);
-        $is_deleted  = (int)($_REQUEST['is_deleted'] ?? 0);
+        $start       = (int) ($_REQUEST['start'] ?? 0);
+        $browse      = (int) ($_REQUEST['browse'] ?? 0);
+        $is_deleted  = (int) ($_REQUEST['is_deleted'] ?? 0);
         $criteria    = json_encode($params['criteria']);
         $sort        = json_encode($_REQUEST['sort'] ?? []);
         $order       = json_encode($_REQUEST['order'] ?? []);
@@ -206,8 +205,8 @@ JAVASCRIPT;
                 'FROM'   => $itemtype::getTable(),
                 'WHERE'  => [
                     $itemtype::getTableField($cat_fk) => new QueryExpression($DB::quoteName($cat_itemtype::getTableField('id'))),
-                    $id_criteria
-                ]
+                    $id_criteria,
+                ],
             ],
             'items_count'
         );
@@ -229,7 +228,7 @@ JAVASCRIPT;
         $cat_iterator = $DB->request([
             'SELECT' => $select,
             'FROM' => $cat_table,
-            'ORDER' => $order
+            'ORDER' => $order,
         ]);
 
         $inst = new $cat_itemtype();
@@ -255,7 +254,7 @@ JAVASCRIPT;
                 'WHERE'  => [
                     $itemtype::getTableField($cat_fk) => 0,
                     $id_criteria,
-                ]
+                ],
             ]
         )->current();
         $categories[] = [
@@ -274,7 +273,7 @@ JAVASCRIPT;
                 'title'  => $category['name'],
                 'parent' => $category[$cat_fk] ?? 0,
                 'a_attr' => [
-                    'data-id' => $cat_id
+                    'data-id' => $cat_id,
                 ],
             ];
 

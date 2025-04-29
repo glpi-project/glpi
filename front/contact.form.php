@@ -54,7 +54,7 @@ if (isset($_GET['getvcard'])) {
     }
     $contact->check($_GET["id"], READ);
     $contact->generateVcard();
-} else if (isset($_POST["add"])) {
+} elseif (isset($_POST["add"])) {
     $contact->check(-1, CREATE, $_POST);
 
     if ($newID = $contact->add($_POST)) {
@@ -70,7 +70,7 @@ if (isset($_GET['getvcard'])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $contact->check($_POST["id"], DELETE);
 
     if ($contact->delete($_POST)) {
@@ -84,7 +84,7 @@ if (isset($_GET['getvcard'])) {
         );
     }
     $contact->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $contact->check($_POST["id"], DELETE);
 
     if ($contact->restore($_POST)) {
@@ -98,7 +98,7 @@ if (isset($_GET['getvcard'])) {
         );
     }
     $contact->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $contact->check($_POST["id"], PURGE);
 
     if ($contact->delete($_POST, 1)) {
@@ -112,7 +112,7 @@ if (isset($_GET['getvcard'])) {
         );
     }
     $contact->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $contact->check($_POST["id"], UPDATE);
 
     if ($contact->update($_POST)) {
@@ -129,6 +129,6 @@ if (isset($_GET['getvcard'])) {
 } else {
     $menus = ["management", "contact"];
     Contact::displayFullPageForItem($_GET["id"], $menus, [
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

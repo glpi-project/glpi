@@ -65,15 +65,15 @@ if (
             'glpi_networkportethernets'   => [
                 'ON'  => [
                     'glpi_networkportethernets'   => 'id',
-                    'glpi_networkports'           => 'id'
-                ]
+                    'glpi_networkports'           => 'id',
+                ],
             ],
             'glpi_sockets'              => [
                 'ON'  => [
                     'glpi_networkports'   => 'id',
-                    'glpi_sockets'        => 'networkports_id'
-                ]
-            ]
+                    'glpi_sockets'        => 'networkports_id',
+                ],
+            ],
         ];
     }
 
@@ -83,7 +83,7 @@ if (
             'glpi_networkports.id AS did',
             "$table.name AS cname",
             'glpi_networkports.name AS nname',
-            $name_field
+            $name_field,
         ],
         'DISTINCT'  => true,
         'FROM'      => $table,
@@ -95,30 +95,30 @@ if (
                         'AND' => [
                             'glpi_networkports.items_id'           => $_POST['item'],
                             'glpi_networkports.itemtype'           => $_POST["itemtype"],
-                            'glpi_networkports.instantiation_type' => $_POST['instantiation_type']
-                        ]
-                    ]
-                ]
+                            'glpi_networkports.instantiation_type' => $_POST['instantiation_type'],
+                        ],
+                    ],
+                ],
             ],
             'glpi_networkports_networkports' => [
                 'ON'  => [
                     'glpi_networkports_networkports' => 'networkports_id_1',
                     'glpi_networkports'              => 'id', [
                         'OR'  => [
-                            'glpi_networkports_networkports.networkports_id_2' => new QueryExpression($DB->quoteName('glpi_networkports.id'))
-                        ]
-                    ]
-                ]
-            ]
+                            'glpi_networkports_networkports.networkports_id_2' => new QueryExpression($DB->quoteName('glpi_networkports.id')),
+                        ],
+                    ],
+                ],
+            ],
         ] + $joins,
         'WHERE'     => [
             'glpi_networkports_networkports.id' => null,
             'NOT'                               => ['glpi_networkports.id' => null],
             'glpi_networkports.id'              => ['<>', $_POST['networkports_id']],
             "$table.is_deleted"                 => 0,
-            "$table.is_template"                => 0
+            "$table.is_template"                => 0,
         ],
-        'ORDERBY'   => 'glpi_networkports.id'
+        'ORDERBY'   => 'glpi_networkports.id',
     ];
     $iterator = $DB->request($criteria);
 
@@ -126,19 +126,19 @@ if (
 
     $values = [];
     foreach ($iterator as $data) {
-       // Device name + port name
+        // Device name + port name
         $output = $output_long = $data['cname'];
 
         if (!empty($data['nname'])) {
             $output      = sprintf(__('%1$s - %2$s'), $output, $data['nname']);
-           //TRANS: %1$s is device name, %2$s is port name
+            //TRANS: %1$s is device name, %2$s is port name
             $output_long = sprintf(__('%1$s - The port %2$s'), $output_long, $data['nname']);
         }
 
-       // display netpoint (which will be copied)
+        // display netpoint (which will be copied)
         if (!empty($data['socketname'])) {
             $output      = sprintf(__('%1$s - %2$s'), $output, $data['socketname']);
-           //TRANS: %1$s is a string (device name - port name...), %2$s is network outlet name
+            //TRANS: %1$s is a string (device name - port name...), %2$s is network outlet name
             $output_long = sprintf(__('%1$s - Network outlet %2$s'), $output_long, $data['socketname']);
         }
         $ID = $data['did'];

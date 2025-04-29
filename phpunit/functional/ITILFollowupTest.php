@@ -59,11 +59,11 @@ class ITILFollowupTest extends DbTestCase
      */
     private function getNewITILObject($itemtype, bool $as_object = false)
     {
-       //create reference ITILObject
+        //create reference ITILObject
         $itilobject = new $itemtype();
         $this->assertGreaterThan(
             0,
-            (int)$itilobject->add([
+            (int) $itilobject->add([
                 'name'         => "$itemtype title",
                 'description'  => 'a description',
                 'content'      => '',
@@ -73,7 +73,7 @@ class ITILFollowupTest extends DbTestCase
 
         $this->assertFalse($itilobject->isNewItem());
         $this->assertTrue($itilobject->can($itilobject->getID(), \READ));
-        return $as_object ? $itilobject : (int)$itilobject->getID();
+        return $as_object ? $itilobject : (int) $itilobject->getID();
     }
 
     public function testACL()
@@ -88,7 +88,7 @@ class ITILFollowupTest extends DbTestCase
         $fup_id = $fup->add([
             'content'      => "my followup",
             'itemtype'   => 'Ticket',
-            'items_id'   => $ticketId
+            'items_id'   => $ticketId,
         ]);
         $this->assertGreaterThan(0, $fup_id);
         $this->assertTrue($fup->canViewItem());
@@ -103,7 +103,7 @@ class ITILFollowupTest extends DbTestCase
         $fup_id = $fup->add([
             'content'      => "my followup",
             'itemtype'   => 'Change',
-            'items_id'   => $changeId
+            'items_id'   => $changeId,
         ]);
         $this->assertGreaterThan(0, $fup_id);
         $this->assertTrue($fup->canViewItem());
@@ -118,7 +118,7 @@ class ITILFollowupTest extends DbTestCase
         $fup_id = $fup->add([
             'content'      => "my followup",
             'itemtype'   => 'Problem',
-            'items_id'   => $problemId
+            'items_id'   => $problemId,
         ]);
         $this->assertGreaterThan(0, $fup_id);
         $this->assertTrue($fup->canViewItem());
@@ -136,16 +136,16 @@ class ITILFollowupTest extends DbTestCase
         $fup_id = $fup->add([
             'content'      => "my followup",
             'itemtype'   => 'Ticket',
-            'items_id'   => $ticketId
+            'items_id'   => $ticketId,
         ]);
-        $this->assertGreaterThan(0, (int)$fup_id);
+        $this->assertGreaterThan(0, (int) $fup_id);
 
         $this->assertTrue(
             $fup->update([
                 'id'         => $fup_id,
                 'content'    => "my followup updated",
                 'itemtype'   => 'Ticket',
-                'items_id'   => $ticketId
+                'items_id'   => $ticketId,
             ])
         );
 
@@ -156,7 +156,7 @@ class ITILFollowupTest extends DbTestCase
 
         $this->assertTrue(
             $fup->delete([
-                'id'  => $fup_id
+                'id'  => $fup_id,
             ])
         );
         $this->assertFalse($fup->getFromDB($fup_id));
@@ -167,16 +167,16 @@ class ITILFollowupTest extends DbTestCase
         $fup_id = $fup->add([
             'content'      => "my followup",
             'itemtype'   => 'Change',
-            'items_id'   => $changeId
+            'items_id'   => $changeId,
         ]);
-        $this->assertGreaterThan(0, (int)$fup_id);
+        $this->assertGreaterThan(0, (int) $fup_id);
 
         $this->assertTrue(
             $fup->update([
                 'id'         => $fup_id,
                 'content'    => "my followup updated",
                 'itemtype'   => 'Change',
-                'items_id'   => $changeId
+                'items_id'   => $changeId,
             ])
         );
 
@@ -187,7 +187,7 @@ class ITILFollowupTest extends DbTestCase
 
         $this->assertTrue(
             $fup->delete([
-                'id'  => $fup_id
+                'id'  => $fup_id,
             ])
         );
         $this->assertFalse($fup->getFromDB($fup_id));
@@ -198,16 +198,16 @@ class ITILFollowupTest extends DbTestCase
         $fup_id = $fup->add([
             'content'      => "my followup",
             'itemtype'   => 'Problem',
-            'items_id'   => $problemId
+            'items_id'   => $problemId,
         ]);
-        $this->assertGreaterThan(0, (int)$fup_id);
+        $this->assertGreaterThan(0, (int) $fup_id);
 
         $this->assertTrue(
             $fup->update([
                 'id'         => $fup_id,
                 'content'    => "my followup updated",
                 'itemtype'   => 'Problem',
-                'items_id'   => $problemId
+                'items_id'   => $problemId,
             ])
         );
 
@@ -218,7 +218,7 @@ class ITILFollowupTest extends DbTestCase
 
         $this->assertTrue(
             $fup->delete([
-                'id'  => $fup_id
+                'id'  => $fup_id,
             ])
         );
         $this->assertFalse($fup->getFromDB($fup_id));
@@ -290,37 +290,37 @@ class ITILFollowupTest extends DbTestCase
     {
         return [
             [
-            // Case 1: user is not an actor of the ticket
+                // Case 1: user is not an actor of the ticket
                 "roles"    => [],
                 "profile" => "Technician",
                 "expected" => true,
             ],
             [
-            // Case 2: user is a requester
+                // Case 2: user is a requester
                 "roles"    => [CommonITILActor::REQUESTER],
                 "profile" => "Technician",
                 "expected" => false,
             ],
             [
-            // Case 3: user is an observer with a central profile
+                // Case 3: user is an observer with a central profile
                 "roles"    => [CommonITILActor::OBSERVER],
                 "profile" => "Technician",
                 "expected" => true,
             ],
             [
-            // Case 3b: user is an observer without central profiles
+                // Case 3b: user is an observer without central profiles
                 "roles"    => [CommonITILActor::OBSERVER],
                 "profile" => "Self-Service",
                 "expected" => false,
             ],
             [
-            // Case 4: user is assigned
+                // Case 4: user is assigned
                 "roles"    => [CommonITILActor::ASSIGN],
                 "profile" => "Technician",
                 "expected" => true,
             ],
             [
-            // Case 5: user is observer and assigned
+                // Case 5: user is observer and assigned
                 "roles"    => [
                     CommonITILActor::OBSERVER,
                     CommonITILActor::ASSIGN,
@@ -425,7 +425,8 @@ class ITILFollowupTest extends DbTestCase
             'items_id' => $ticket->getID(),
             'itemtype' => 'Ticket',
             'name'    => 'a followup',
-            'content' => Sanitizer::sanitize(<<<HTML
+            'content' => Sanitizer::sanitize(
+                <<<HTML
 <p>Test with a ' (add)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
 HTML
@@ -438,7 +439,7 @@ HTML
             ],
             '_prefix_filename' => [
                 '5e5e92ffd9bd91.11111111',
-            ]
+            ],
         ];
         copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
 
@@ -454,7 +455,8 @@ HTML
         copy(FIXTURE_DIR . '/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $success = $instance->update([
             'id' => $instance->getID(),
-            'content' => Sanitizer::sanitize(<<<HTML
+            'content' => Sanitizer::sanitize(
+                <<<HTML
 <p>Test with a ' (update)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
 HTML
@@ -467,7 +469,7 @@ HTML
             ],
             '_prefix_filename' => [
                 '5e5e92ffd9bd91.44444444',
-            ]
+            ],
         ]);
         $this->assertTrue($success);
         $this->assertTrue($instance->getFromDB($instance->getId()));
@@ -506,7 +508,7 @@ HTML
             ],
             '_prefix_filename' => [
                 '5e5e92ffd9bd91.11111111',
-            ]
+            ],
         ];
         copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
         $instance->add($input);
@@ -532,7 +534,7 @@ HTML
             ],
             '_prefix_filename' => [
                 '5e5e92ffd9bd91.44444444',
-            ]
+            ],
         ]);
         $this->assertTrue($success);
         $this->assertStringContainsString('update testUploadDocuments', $instance->fields['content']);
@@ -687,7 +689,7 @@ HTML
                         CoreITILFollowup::getTable(),
                         $already_linked_tables
                     )
-                )
+                ),
             ],
             'WHERE' => new QueryExpression(
                 Search::addDefaultWhere(CoreITILFollowup::class)

@@ -43,7 +43,7 @@ class NetworkPort_NetworkPortTest extends DbTestCase
     private function createPort(\CommonDBTM $asset, string $mac): int
     {
         $port = new \NetworkPort();
-        $nb_log = (int)countElementsInTable('glpi_logs');
+        $nb_log = (int) countElementsInTable('glpi_logs');
         $ports_id = $port->add([
             'items_id'           => $asset->getID(),
             'itemtype'           => 'Computer',
@@ -54,8 +54,8 @@ class NetworkPort_NetworkPortTest extends DbTestCase
             'instantiation_type' => 'NetworkPortEthernet',
             'name'               => 'eth1',
         ]);
-        $this->assertGreaterThan(0, (int)$ports_id);
-        $this->assertGreaterThan($nb_log, (int)countElementsInTable('glpi_logs'));
+        $this->assertGreaterThan(0, (int) $ports_id);
+        $this->assertGreaterThan($nb_log, (int) countElementsInTable('glpi_logs'));
 
         return $ports_id;
     }
@@ -75,7 +75,7 @@ class NetworkPort_NetworkPortTest extends DbTestCase
             0,
             $wired->add([
                 'networkports_id_1' => $id_1,
-                'networkports_id_2' => $id_2
+                'networkports_id_2' => $id_2,
             ])
         );
 

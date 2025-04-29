@@ -48,7 +48,7 @@ class ChangekeyCommand extends AbstractCommand implements ConfigurationCommandIn
      *
      * @var integer
      */
-    const ERROR_UNABLE_TO_RENEW_KEY = 1;
+    public const ERROR_UNABLE_TO_RENEW_KEY = 1;
 
     protected function configure()
     {

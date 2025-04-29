@@ -40,7 +40,7 @@ class DatabaseSchemaConsistencyCheckerTest extends \GLPITestCase
 {
     public static function sqlProvider(): iterable
     {
-       // `date_creation` should always be associated with `date_mod`
+        // `date_creation` should always be associated with `date_mod`
         yield [
             'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
@@ -49,10 +49,9 @@ CREATE TABLE `%s` (
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB
-SQL
-         ,
+SQL,
             'expected_missing'   => [
-                'date_mod'
+                'date_mod',
             ],
         ];
         yield [
@@ -63,10 +62,9 @@ CREATE TABLE `%s` (
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB
-SQL
-         ,
+SQL,
             'expected_missing'   => [
-                'date_creation'
+                'date_creation',
             ],
         ];
         yield [
@@ -78,8 +76,7 @@ CREATE TABLE `%s` (
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB
-SQL
-         ,
+SQL,
             'expected_missing'   => [],
         ];
     }

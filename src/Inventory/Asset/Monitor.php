@@ -50,7 +50,7 @@ class Monitor extends InventoryAsset
         $mapping = [
             'caption'      => 'name',
             'manufacturer' => 'manufacturers_id',
-            'description'  => 'comment'
+            'description'  => 'comment',
         ];
 
         foreach ($this->data as &$val) {
@@ -107,24 +107,24 @@ class Monitor extends InventoryAsset
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_monitors.id',
-                'glpi_computers_items.id AS link_id'
+                'glpi_computers_items.id AS link_id',
             ],
             'FROM'      => 'glpi_computers_items',
             'LEFT JOIN' => [
                 'glpi_monitors' => [
                     'FKEY' => [
                         'glpi_monitors'         => 'id',
-                        'glpi_computers_items'  => 'items_id'
-                    ]
-                ]
+                        'glpi_computers_items'  => 'items_id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'itemtype'                          => 'Monitor',
                 'computers_id'                      => $this->item->getID(),
                 'entities_id'                       => $this->entities_id,
                 'glpi_computers_items.is_dynamic'   => 1,
-                'glpi_monitors.is_global'           => 0
-            ]
+                'glpi_monitors.is_global'           => 0,
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -149,7 +149,7 @@ class Monitor extends InventoryAsset
                 'itemtype'     => 'Monitor',
                 'name'         => $val->name,
                 'serial'       => $val->serial ?? '',
-                'entities_id'  => $entities_id
+                'entities_id'  => $entities_id,
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
 
@@ -180,7 +180,7 @@ class Monitor extends InventoryAsset
                     'items_id'  => $items_id,
                     'itemtype'  => $itemtype,
                     'agents_id' => $agents_id,
-                    'method'    => 'inventory'
+                    'method'    => 'inventory',
                 ];
                 $rulesmatched->add($inputrulelog, [], false);
                 $rulesmatched->cleanOlddata($items_id, $itemtype);

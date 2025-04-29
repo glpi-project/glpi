@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $passive_equip->check($_POST["id"], DELETE);
     $passive_equip->delete($_POST);
 
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
     $passive_equip->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $passive_equip->check($_POST["id"], DELETE);
 
     $passive_equip->restore($_POST);
@@ -90,7 +90,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s restores an item'), $_SESSION["glpiname"])
     );
     $passive_equip->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $passive_equip->check($_POST["id"], PURGE);
 
     $passive_equip->delete($_POST, 1);
@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $passive_equip->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $passive_equip->check($_POST["id"], UPDATE);
 
     $passive_equip->update($_POST);
@@ -119,7 +119,7 @@ if (isset($_POST["add"])) {
 } else {
     $options = [
         'withtemplate' => $_GET['withtemplate'],
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ];
     if (isset($_GET['position'])) {
         $options['position'] = $_GET['position'];

@@ -118,16 +118,16 @@ abstract class CommonDBVisible extends CommonDBTM
      **/
     public function haveVisibilityAccess()
     {
-       // Author
+        // Author
         if ($this->fields['users_id'] == Session::getLoginUserID()) {
             return true;
         }
-       // Users
+        // Users
         if (isset($this->users[Session::getLoginUserID()])) {
             return true;
         }
 
-       // Groups
+        // Groups
         if (
             count($this->groups)
             && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])
@@ -135,11 +135,11 @@ abstract class CommonDBVisible extends CommonDBTM
             foreach ($this->groups as $data) {
                 foreach ($data as $group) {
                     if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
-                      // All the group
+                        // All the group
                         if ($group['no_entity_restriction']) {
-                             return true;
+                            return true;
                         }
-                      // Restrict to entities
+                        // Restrict to entities
                         if (Session::haveAccessToEntity($group['entities_id'], $group['is_recursive'])) {
                             return true;
                         }
@@ -148,7 +148,7 @@ abstract class CommonDBVisible extends CommonDBTM
             }
         }
 
-       // Entities
+        // Entities
         if (
             count($this->entities)
             && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])
@@ -162,7 +162,7 @@ abstract class CommonDBVisible extends CommonDBTM
             }
         }
 
-       // Profiles
+        // Profiles
         if (
             count($this->profiles)
             && isset($_SESSION["glpiactiveprofile"])
@@ -257,7 +257,7 @@ abstract class CommonDBVisible extends CommonDBTM
                 'container'
                               => 'mass' . __CLASS__ . $rand,
                 'specific_actions'
-                              => ['delete' => _x('button', 'Delete permanently')]
+                              => ['delete' => _x('button', 'Delete permanently')],
             ];
 
             if ($this->fields['users_id'] != Session::getLoginUserID()) {
@@ -282,7 +282,7 @@ abstract class CommonDBVisible extends CommonDBTM
         $header_end .= "</tr>";
         echo $header_begin . $header_top . $header_end;
 
-       // Users
+        // Users
         if (count($this->users)) {
             foreach ($this->users as $val) {
                 foreach ($val as $data) {
@@ -299,7 +299,7 @@ abstract class CommonDBVisible extends CommonDBTM
             }
         }
 
-       // Groups
+        // Groups
         if (count($this->groups)) {
             foreach ($this->groups as $val) {
                 foreach ($val as $data) {
@@ -327,21 +327,21 @@ abstract class CommonDBVisible extends CommonDBTM
                             )
                         );
                         if ($data['is_recursive']) {
-                             //TRANS: R for Recursive
-                             $entname = sprintf(
-                                 __('%1$s %2$s'),
-                                 $entname,
-                                 "<span class='b'>(" . __('R') . ")</span>"
-                             );
+                            //TRANS: R for Recursive
+                            $entname = sprintf(
+                                __('%1$s %2$s'),
+                                $entname,
+                                "<span class='b'>(" . __('R') . ")</span>"
+                            );
                         }
                     }
-                     echo "<td>" . $entname . "</td>";
-                     echo "</tr>";
+                    echo "<td>" . $entname . "</td>";
+                    echo "</tr>";
                 }
             }
         }
 
-       // Entity
+        // Entity
         if (count($this->entities)) {
             foreach ($this->entities as $val) {
                 foreach ($val as $data) {
@@ -368,16 +368,16 @@ abstract class CommonDBVisible extends CommonDBTM
             }
         }
 
-       // Profiles
+        // Profiles
         if (count($this->profiles)) {
             foreach ($this->profiles as $val) {
                 foreach ($val as $data) {
                     echo "<tr class='tab_bg_1'>";
                     if ($canedit) {
                         echo "<td>";
-                      //Knowledgebase-specific case
+                        //Knowledgebase-specific case
                         if ($this::getType() === "KnowbaseItem") {
-                             Html::showMassiveActionCheckBox($this::getType() . '_Profile', $data["id"]);
+                            Html::showMassiveActionCheckBox($this::getType() . '_Profile', $data["id"]);
                         } else {
                             Html::showMassiveActionCheckBox('Profile_' . $this::getType(), $data["id"]);
                         }
@@ -422,7 +422,7 @@ abstract class CommonDBVisible extends CommonDBTM
         }
 
         echo "</div>";
-       // Add items
+        // Add items
 
         return true;
     }
@@ -436,7 +436,7 @@ abstract class CommonDBVisible extends CommonDBTM
     {
         return [
             'type'  => '__VALUE__',
-            'right' => strtolower($this::getType()) . '_public'
+            'right' => strtolower($this::getType()) . '_public',
         ];
     }
 }

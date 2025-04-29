@@ -105,7 +105,7 @@ class NotificationMailingSetting extends NotificationSetting
 
         $tab[] = [
             'id'   => 'common',
-            'name' => __('Characteristics')
+            'name' => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -113,7 +113,7 @@ class NotificationMailingSetting extends NotificationSetting
             'table'         => $this->getTable(),
             'field'         => 'value',
             'name'          => __('Value'),
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         return $tab;
@@ -156,7 +156,7 @@ class NotificationMailingSetting extends NotificationSetting
 
             $out .= "<tr class='tab_bg_2'>";
             $out .= "<td><label for='from_email'>" . __('Email sender address') . " <i class='pointer fa fa-info' title='" .
-            __s('Address to use in from for sent emails.') . "\n" . __s('If not set, main or entity administrator email address will be used.')  . "'></i></label></td>";
+            __s('Address to use in from for sent emails.') . "\n" . __s('If not set, main or entity administrator email address will be used.') . "'></i></label></td>";
             $out .= "<td><input type='email' class='form-control' name='from_email' id='from_email' value='" .
                     $CFG_GLPI["from_email"] . "'>";
             if (!empty($CFG_GLPI['from_email']) && !NotificationMailing::isUserAddressValid($CFG_GLPI["from_email"])) {
@@ -248,7 +248,7 @@ class NotificationMailingSetting extends NotificationSetting
                 [
                     'value'     => $CFG_GLPI["smtp_mode"],
                     'display'   => false,
-                    'rand'      => $rand
+                    'rand'      => $rand,
                 ]
             );
             $out .= Html::scriptBlock("
@@ -372,7 +372,8 @@ class NotificationMailingSetting extends NotificationSetting
                 }
             }
             // display/hide additionnal fields on provider change
-            $out .= Html::scriptBlock(<<<JAVASCRIPT
+            $out .= Html::scriptBlock(
+                <<<JAVASCRIPT
                 $(function() {
                     $('[name=smtp_oauth_provider]').on('change', function() {
                         const value = $(this).find('option:selected').val();
@@ -418,7 +419,7 @@ JAVASCRIPT
             $out .= "<tr class='tab_bg_2'><td><label for='smtp_host'>" . __('SMTP host') . "</label></td>";
             $out .= "<td><input type='text' class='form-control' name='smtp_host' id='smtp_host' value='" . $CFG_GLPI["smtp_host"] . "'>";
             $out .= "</td>";
-           //TRANS: SMTP port
+            //TRANS: SMTP port
             $out .= "<td><label for='smtp_port'>" . _n('Port', 'Ports', 1) . "</label></td>";
             $out .= "<td><input type='number' class='form-control' name='smtp_port' id='smtp_port' size='5' value='" . $CFG_GLPI["smtp_port"] . "'>";
             $out .= "</td>";
@@ -443,7 +444,7 @@ JAVASCRIPT
             $out .= "</tr>";
             $out .= "</table>";
         } else {
-            $out .= "<tr><td colspan='4'>" . __('Notifications are disabled.')  .
+            $out .= "<tr><td colspan='4'>" . __('Notifications are disabled.') .
                      "<a href='{$CFG_GLPI['root_doc']}/front/setup.notification.php'>" .
                        __('See configuration') . "</a></td></tr>";
             $out .= "</table>";
@@ -452,7 +453,7 @@ JAVASCRIPT
         if ($CFG_GLPI['notifications_mailing']) {
             $options['addbuttons'] = ['test_smtp_send' => __('Send a test email to the administrator')];
         }
-       //do not satisfy display param since showFormButtons() will not :(
+        //do not satisfy display param since showFormButtons() will not :(
         echo $out;
         $this->showFormButtons($options);
     }

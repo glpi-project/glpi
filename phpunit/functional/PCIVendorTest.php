@@ -53,7 +53,7 @@ class PCIVendorTest extends DbTestCase
             $vendors->add([
                 'name'  => 'Something to test',
                 'vendorid'  => '01ef',
-                'deviceid'  => '02ef'
+                'deviceid'  => '02ef',
             ])
         );
 
@@ -77,7 +77,7 @@ class PCIVendorTest extends DbTestCase
             0,
             $vendors->add([
                 'name'  => addslashes("UnAllied Telesis, Inc (Good ID)"),
-                'vendorid'  => '0010'
+                'vendorid'  => '0010',
             ])
         );
         $this->assertSame(
@@ -103,7 +103,7 @@ class PCIVendorTest extends DbTestCase
             $vendors->add([
                 'name'  => 'not the good one',
                 'vendorid'  => '0002',
-                'deviceid'  => '8139'
+                'deviceid'  => '8139',
             ])
         );
         $this->assertGreaterThan(
@@ -111,7 +111,7 @@ class PCIVendorTest extends DbTestCase
             $vendors->add([
                 'name'  => 'Yeah, that works',
                 'vendorid'  => '0010',
-                'deviceid'  => '8139'
+                'deviceid'  => '8139',
             ])
         );
         $this->assertSame(

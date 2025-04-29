@@ -71,21 +71,21 @@ class RuleAssetTest extends DbTestCase
             'name'        => "computer",
             '_auto'       => 1,
             'entities_id' => $root_ent_id,
-            'is_dynamic'  => 1
+            'is_dynamic'  => 1,
         ]);
-        $this->assertGreaterThan(0, (int)$computers_id);
+        $this->assertGreaterThan(0, (int) $computers_id);
         $this->assertTrue($computer->getFromDB($computers_id));
-        $this->assertEquals('comment1', (string)$computer->getField('comment'));
+        $this->assertEquals('comment1', (string) $computer->getField('comment'));
 
         $computers_id = $computer->add([
             'name'        => "computer2",
             'entities_id' => $root_ent_id,
             'is_dynamic'  => 0,
-            '_auto'       => 0
+            '_auto'       => 0,
         ]);
-        $this->assertGreaterThan(0, (int)$computers_id);
+        $this->assertGreaterThan(0, (int) $computers_id);
         $this->assertTrue($computer->getFromDB($computers_id));
-        $this->assertEquals('', (string)$computer->getField('comment'));
+        $this->assertEquals('', (string) $computer->getField('comment'));
 
         $monitor = new \Monitor();
         $monitors_id = $monitor->add([
@@ -93,68 +93,68 @@ class RuleAssetTest extends DbTestCase
             'contact'     => 'tech',
             'entities_id' => $root_ent_id,
             'is_dynamic'  => 1,
-            '_auto'       => 1
+            '_auto'       => 1,
         ]);
         $this->assertGreaterThan(0, $monitors_id);
         $this->assertTrue($monitor->getFromDB($monitors_id));
 
         //Rule only apply to computers
-        $this->assertEquals('', (string)$monitor->getField('comment'));
-        $this->assertEquals(0, (int)$monitor->getField('users_id'));
+        $this->assertEquals('', (string) $monitor->getField('comment'));
+        $this->assertEquals(0, (int) $monitor->getField('users_id'));
 
         $computers_id = $computer->add([
             'name'        => "computer3",
             'contact'     => 'tech@AD',
             'entities_id' => $root_ent_id,
             'is_dynamic'  => 1,
-            '_auto'       => 1
+            '_auto'       => 1,
         ]);
-        $this->assertGreaterThan(0, (int)$computers_id);
+        $this->assertGreaterThan(0, (int) $computers_id);
         $this->assertTrue($computer->getFromDB($computers_id));
 
         //User rule should apply (extract @domain from the name)
-        $this->assertEquals(4, (int)$computer->getField('users_id'));
-        $this->assertEquals('comment1', (string)$computer->getField('comment'));
+        $this->assertEquals(4, (int) $computer->getField('users_id'));
+        $this->assertEquals('comment1', (string) $computer->getField('comment'));
 
         $computers_id = $computer->add([
             'name'        => "computer3",
             'contact'     => 'tech@AD',
             'entities_id' => $root_ent_id,
             'is_dynamic'  => 1,
-            '_auto'       => 1
+            '_auto'       => 1,
         ]);
-        $this->assertGreaterThan(0, (int)$computers_id);
+        $this->assertGreaterThan(0, (int) $computers_id);
         $this->assertTrue($computer->getFromDB($computers_id));
 
         //User rule should apply (extract the first user from the list)
-        $this->assertEquals(4, (int)$computer->getField('users_id'));
+        $this->assertEquals(4, (int) $computer->getField('users_id'));
 
         $computers_id = $computer->add([
             'name'        => "computer4",
             'contact'     => 'tech,glpi',
             'entities_id' => $root_ent_id,
             'is_dynamic'  => 1,
-            '_auto'       => 1
+            '_auto'       => 1,
         ]);
-        $this->assertGreaterThan(0, (int)$computers_id);
+        $this->assertGreaterThan(0, (int) $computers_id);
         $this->assertTrue($computer->getFromDB($computers_id));
 
         //User rule should apply (extract the first user from the list)
-        $this->assertEquals(4, (int)$computer->getField('users_id'));
+        $this->assertEquals(4, (int) $computer->getField('users_id'));
 
         $computers_id = $computer->add([
             'name'        => "computer5",
             'contact'     => 'tech2',
             'entities_id' => $root_ent_id,
             'is_dynamic'  => 1,
-            '_auto'       => 1
+            '_auto'       => 1,
         ]);
-        $this->assertGreaterThan(0, (int)$computers_id);
+        $this->assertGreaterThan(0, (int) $computers_id);
         $this->assertTrue($computer->getFromDB($computers_id));
 
         //User rule should apply (extract @domain from the name) but should not
         //find any user, so users_id is set to 0
-        $this->assertEquals(0, (int)$computer->getField('users_id'));
+        $this->assertEquals(0, (int) $computer->getField('users_id'));
     }
 
     public function testTriggerUpdate()
@@ -176,13 +176,13 @@ class RuleAssetTest extends DbTestCase
                 'name'        => "$itemtype 1",
                 'entities_id' => $root_ent_id,
                 'is_dynamic'  => 1,
-                'comment'     => 'mycomment'
+                'comment'     => 'mycomment',
             ];
             if ($itemtype == 'SoftwareLicense') {
                 $item_input['softwares_id'] = 1;
             }
             $items_id = $item->add($item_input);
-            $this->assertGreaterThan(0, (int)$items_id);
+            $this->assertGreaterThan(0, (int) $items_id);
 
             // Trigger update
             $update = $item->update([
@@ -192,13 +192,13 @@ class RuleAssetTest extends DbTestCase
             ]);
             $this->assertTrue($update);
 
-            $this->assertTrue((bool)$item->getFromDB($items_id));
+            $this->assertTrue((bool) $item->getFromDB($items_id));
             if ($itemtype == 'Computer') {
-                $this->assertEquals('comment1', (string)$item->getField('comment'));
+                $this->assertEquals('comment1', (string) $item->getField('comment'));
             } else {
-                $this->assertEquals('mycomment', (string)$item->getField('comment'));
+                $this->assertEquals('mycomment', (string) $item->getField('comment'));
             }
-            $this->assertGreaterThan(0, (int)$item->getField('locations_id'));
+            $this->assertGreaterThan(0, (int) $item->getField('locations_id'));
         }
     }
 
@@ -221,13 +221,13 @@ class RuleAssetTest extends DbTestCase
                 'name'        => "$itemtype 3",
                 'entities_id' => $root_ent_id,
                 'is_dynamic'  => 1,
-                'comment'     => 'mycomment'
+                'comment'     => 'mycomment',
             ];
             if ($itemtype == 'SoftwareLicense') {
                 $item_input['softwares_id'] = 1;
             }
             $items_id = $item->add($item_input);
-            $this->assertGreaterThan(0, (int)$items_id);
+            $this->assertGreaterThan(0, (int) $items_id);
 
             // Trigger update
             $update = $item->update([
@@ -237,9 +237,9 @@ class RuleAssetTest extends DbTestCase
             ]);
             $this->assertTrue($update);
 
-            $this->assertTrue((bool)$item->getFromDB($items_id));
-            $this->assertEquals($itemtype . 'test', (string)$item->getField('comment'));
-            $this->assertGreaterThan(0, (int)$item->getField('locations_id'));
+            $this->assertTrue((bool) $item->getFromDB($items_id));
+            $this->assertEquals($itemtype . 'test', (string) $item->getField('comment'));
+            $this->assertGreaterThan(0, (int) $item->getField('locations_id'));
         }
     }
 
@@ -255,28 +255,28 @@ class RuleAssetTest extends DbTestCase
             'is_active'    => 1,
             'sub_type'     => 'RuleAsset',
             'condition'    => $condition,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->checkInput($ruleasset, $ruleid, $ruleinput);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruleid,
             'criteria'  => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => "Computer"
+            'pattern'   => "Computer",
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruleid,
             'criteria'  => '_auto',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 1
+            'pattern'   => 1,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruleid,
             'action_type' => 'assign',
             'field'       => 'comment',
-            'value'       => 'comment1'
+            'value'       => 'comment1',
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
     }
@@ -293,28 +293,28 @@ class RuleAssetTest extends DbTestCase
             'is_active'    => 1,
             'sub_type'     => 'RuleAsset',
             'condition'    => $condition,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->checkInput($ruleasset, $ruleid, $ruleinput);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruleid,
             'criteria'  => '_itemtype',
             'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => "/(.*)/s"
+            'pattern'   => "/(.*)/s",
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruleid,
             'criteria'  => '_auto',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 1
+            'pattern'   => 1,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruleid,
             'action_type' => 'regex_result',
             'field'       => 'comment',
-            'value'       => '#0test'
+            'value'       => '#0test',
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
     }
@@ -331,21 +331,21 @@ class RuleAssetTest extends DbTestCase
             'is_active'    => 1,
             'sub_type'     => 'RuleAsset',
             'condition'    => $condition,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->checkInput($ruleasset, $ruleid, $ruleinput);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruleid,
             'criteria'  => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => "*"
+            'pattern'   => "*",
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruleid,
             'action_type' => 'assign',
             'field'       => 'locations_id',
-            'value'       => 1
+            'value'       => 1,
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
     }
@@ -357,13 +357,13 @@ class RuleAssetTest extends DbTestCase
         // Create solution template
         $location     = new \Location();
         $locations_id = $location->add([
-            'name' => "test"
+            'name' => "test",
         ]);
         $this->assertGreaterThan(0, $locations_id);
         $user     = new \User();
         $users_id = $user->add([
             'name'         => "user test",
-            'locations_id' => $locations_id
+            'locations_id' => $locations_id,
         ]);
         $this->assertGreaterThan(0, $users_id);
 
@@ -470,7 +470,7 @@ class RuleAssetTest extends DbTestCase
         $group    = new \Group();
         $group_id = $group->add($group_input = [
             "name"         => "group1",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id, $group_input);
 
@@ -481,7 +481,7 @@ class RuleAssetTest extends DbTestCase
         $group_user    = new \Group_User();
         $group_user_id = $group_user->add($group_user_input = [
             "groups_id" => $group_id,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id, $group_user_input);
 
@@ -489,12 +489,12 @@ class RuleAssetTest extends DbTestCase
         $user->fields['groups_id'] = $group_id;
         $this->assertTrue($user->update($user->fields));
 
-       // Check ticket that trigger rule on creation
+        // Check ticket that trigger rule on creation
         $computer     = new \Computer();
         $computers_id = $computer->add($computer_input = [
             'name'        => 'test',
             'entities_id' => 0,
-            'users_id'    => $user->fields['id']
+            'users_id'    => $user->fields['id'],
         ]);
         $this->assertGreaterThan(0, $computers_id);
         $this->assertTrue($computer->getFromDB($computers_id));
@@ -545,7 +545,7 @@ class RuleAssetTest extends DbTestCase
         $group    = new \Group();
         $group_id = $group->add($group_input = [
             "name"         => "group1",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id, $group_input);
 
@@ -553,7 +553,7 @@ class RuleAssetTest extends DbTestCase
         $group2    = new \Group();
         $group_id2 = $group2->add($group_input2 = [
             "name"         => "group2",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group2, $group_id2, $group_input2);
 
@@ -575,13 +575,13 @@ class RuleAssetTest extends DbTestCase
         $group_user    = new \Group_User();
         $group_user_id = $group_user->add($group_user_input = [
             "groups_id" => $group_id,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id, $group_user_input);
 
         $group_user_id = $group_user->add($group_user_input = [
             "groups_id" => $group_id2,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id, $group_user_input);
 
@@ -590,7 +590,7 @@ class RuleAssetTest extends DbTestCase
         $computers_id = $computer->add($computer_input = [
             'name'        => 'test',
             'entities_id' => 0,
-            'users_id'    => $user->fields['id']
+            'users_id'    => $user->fields['id'],
         ]);
         $this->assertGreaterThan(0, $computers_id);
         $this->assertTrue($computer->getFromDB($computers_id));
@@ -605,7 +605,7 @@ class RuleAssetTest extends DbTestCase
             \Entity::class,
             [
                 'name'          => 'Subentity',
-                'entities_id'   => 0
+                'entities_id'   => 0,
             ]
         );
 
@@ -643,9 +643,9 @@ class RuleAssetTest extends DbTestCase
         $this->checkInput($ruleaction, $action_id, $action_input);
 
         $computer = new \Computer();
-        $computers_id = (int)$computer->add([
+        $computers_id = (int) $computer->add([
             'name'        => 'ComputerSubEntity',
-            'entities_id' => $sub_entity->getID()
+            'entities_id' => $sub_entity->getID(),
         ]);
 
         $computer->getFromDB($computers_id);

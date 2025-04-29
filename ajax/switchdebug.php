@@ -41,7 +41,7 @@ if (Config::canUpdate()) {
     $user->update(
         [
             'id'        => Session::getLoginUserID(),
-            'use_mode'  => $mode
+            'use_mode'  => $mode,
         ]
     );
     Session::addMessageAfterRedirect(

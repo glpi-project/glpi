@@ -42,12 +42,12 @@ class SavedSearch_UserTest extends DbTestCase
 {
     public function testGetDefault()
     {
-       // needs a user
-       // let's use TU_USER
+        // needs a user
+        // let's use TU_USER
         $this->login();
         $uid =  getItemByTypeName('User', TU_USER, true);
 
-       // with no default bookmark
+        // with no default bookmark
         $this->assertFalse(
             \SavedSearch_User::getDefault($uid, 'Ticket')
         );
@@ -55,14 +55,14 @@ class SavedSearch_UserTest extends DbTestCase
         // now add a bookmark on Ticket view
         $bk = new \SavedSearch();
         $this->assertTrue(
-            (bool)$bk->add(['name'         => 'All my tickets',
+            (bool) $bk->add(['name'         => 'All my tickets',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
                 'users_id'     => $uid,
                 'is_private'   => 1,
                 'entities_id'  => 0,
                 'is_recursive' => 1,
-                'url'         => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
+                'url'         => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid,
             ])
         );
 
@@ -70,13 +70,13 @@ class SavedSearch_UserTest extends DbTestCase
 
         $bk_user = new \SavedSearch_User();
         $this->assertTrue(
-            (bool)$bk_user->add(['users_id' => $uid,
+            (bool) $bk_user->add(['users_id' => $uid,
                 'itemtype' => 'Ticket',
-                'savedsearches_id' => $bk_id
+                'savedsearches_id' => $bk_id,
             ])
         );
 
-       // should get a default bookmark
+        // should get a default bookmark
         $bk = \SavedSearch_User::getDefault($uid, 'Ticket');
         $this->assertEquals(
             [
@@ -86,8 +86,8 @@ class SavedSearch_UserTest extends DbTestCase
                 'savedsearches_id' => $bk_id,
                 'criteria'         => [0 => ['field' => '5',
                     'searchtype' => 'equals',
-                    'value' => $uid
-                ]
+                    'value' => $uid,
+                ],
                 ],
                 'reset'            => 'reset',
             ],

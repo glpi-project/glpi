@@ -52,7 +52,7 @@ class LocationParametersTest extends AbstractParameters
         $this->createItem('Location', [
             'name'        => 'location_testGetValues',
             'entities_id' => $test_entity_id,
-            'locations_id' => getItemByTypeName('Location', 'location_testGetValues_parent', true)
+            'locations_id' => getItemByTypeName('Location', 'location_testGetValues_parent', true),
         ]);
 
         $parameters = new LocationParameters();

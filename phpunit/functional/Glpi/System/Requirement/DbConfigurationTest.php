@@ -42,7 +42,7 @@ class DbConfigurationTest extends \GLPITestCase
     {
         return [
             [
-            // Default variables on MySQL 5.7
+                // Default variables on MySQL 5.7
                 'version'   => '5.7.34-standard',
                 'variables' => [
                     'innodb_file_format'  => 'Barracuda',
@@ -52,10 +52,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => true,
                 'messages'  => [
                     'Database configuration is OK.',
-                ]
+                ],
             ],
             [
-            // Incompatible variables on MySQL 5.7
+                // Incompatible variables on MySQL 5.7
                 'version'   => '5.7.34-standard',
                 'variables' => [
                     'innodb_file_format'  => 'Antelope', // Not a problem, will enforce Barracuda for Dynamic tables
@@ -66,10 +66,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'messages'  => [
                     '"innodb_large_prefix" must be enabled.',
                     '"innodb_page_size" must be >= 8KB.',
-                ]
+                ],
             ],
             [
-            // Default variables on MySQL 8.0
+                // Default variables on MySQL 8.0
                 'version'   => '8.0.24-standard',
                 'variables' => [
                     'innodb_page_size'    => 16384,
@@ -77,10 +77,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => true,
                 'messages'  => [
                     'Database configuration is OK.',
-                ]
+                ],
             ],
             [
-            // "innodb_page_size=8k" config is valid too
+                // "innodb_page_size=8k" config is valid too
                 'version'   => '8.0.24-standard',
                 'variables' => [
                     'innodb_page_size'    => 8192,
@@ -88,10 +88,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => true,
                 'messages'  => [
                     'Database configuration is OK.',
-                ]
+                ],
             ],
             [
-            // Incompatible variables on MySQL 8.0
+                // Incompatible variables on MySQL 8.0
                 'version'   => '8.0.24-standard',
                 'variables' => [
                     'innodb_page_size'    => 4096,
@@ -99,10 +99,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => false,
                 'messages'  => [
                     '"innodb_page_size" must be >= 8KB.',
-                ]
+                ],
             ],
             [
-            // Default variables on MariaDB 10.1
+                // Default variables on MariaDB 10.1
                 'version'   => '10.1.48-MariaDB',
                 'variables' => [
                     'innodb_file_format'  => 'Antelope',
@@ -112,10 +112,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => false,
                 'messages'  => [
                     '"innodb_large_prefix" must be enabled.',
-                ]
+                ],
             ],
             [
-            // Required variables on MariaDB 10.1
+                // Required variables on MariaDB 10.1
                 'version'   => '10.1.48-MariaDB',
                 'variables' => [
                     'innodb_file_format'  => 'Antelope',
@@ -125,10 +125,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => true,
                 'messages'  => [
                     'Database configuration is OK.',
-                ]
+                ],
             ],
             [
-            // Incompatible variables on MariaDB 10.1
+                // Incompatible variables on MariaDB 10.1
                 'version'   => '10.1.48-MariaDB',
                 'variables' => [
                     'innodb_file_format'  => 'Antelope', // Not a problem, will enforce Barracuda for Dynamic tables
@@ -139,10 +139,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'messages'  => [
                     '"innodb_large_prefix" must be enabled.',
                     '"innodb_page_size" must be >= 8KB.',
-                ]
+                ],
             ],
             [
-            // Default variables on MariaDB 10.2
+                // Default variables on MariaDB 10.2
                 'version'   => '10.2.36-MariaDB',
                 'variables' => [
                     'innodb_file_format'  => 'Barracuda',
@@ -152,10 +152,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => true,
                 'messages'  => [
                     'Database configuration is OK.',
-                ]
+                ],
             ],
             [
-            // Incompatible variables on MariaDB 10.2
+                // Incompatible variables on MariaDB 10.2
                 'version'   => '10.2.36-MariaDB',
                 'variables' => [
                     'innodb_file_format'  => 'Antelope', // Not a problem, will enforce Barracuda for Dynamic tables
@@ -166,10 +166,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'messages'  => [
                     '"innodb_large_prefix" must be enabled.',
                     '"innodb_page_size" must be >= 8KB.',
-                ]
+                ],
             ],
             [
-            // Default variables on MariaDB 10.3
+                // Default variables on MariaDB 10.3
                 'version'   => '10.3.27-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 16384,
@@ -177,10 +177,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => true,
                 'messages'  => [
                     'Database configuration is OK.',
-                ]
+                ],
             ],
             [
-            // Incompatible variables on MariaDB 10.3
+                // Incompatible variables on MariaDB 10.3
                 'version'   => '10.3.27-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 4096,
@@ -188,10 +188,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => false,
                 'messages'  => [
                     '"innodb_page_size" must be >= 8KB.',
-                ]
+                ],
             ],
             [
-            // Default variables on MariaDB 10.4
+                // Default variables on MariaDB 10.4
                 'version'   => '10.4.17-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 16384,
@@ -199,10 +199,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => true,
                 'messages'  => [
                     'Database configuration is OK.',
-                ]
+                ],
             ],
             [
-            // Incompatible variables on MariaDB 10.4
+                // Incompatible variables on MariaDB 10.4
                 'version'   => '10.4.17-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 4096,
@@ -210,10 +210,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => false,
                 'messages'  => [
                     '"innodb_page_size" must be >= 8KB.',
-                ]
+                ],
             ],
             [
-            // Default variables on MariaDB 10.5
+                // Default variables on MariaDB 10.5
                 'version'   => '10.5.8-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 16384,
@@ -221,10 +221,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => true,
                 'messages'  => [
                     'Database configuration is OK.',
-                ]
+                ],
             ],
             [
-            // Incompatible variables on MariaDB 10.5
+                // Incompatible variables on MariaDB 10.5
                 'version'   => '10.5.8-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 4096,
@@ -232,7 +232,7 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => false,
                 'messages'  => [
                     '"innodb_page_size" must be >= 8KB.',
-                ]
+                ],
             ],
         ];
     }

@@ -35,10 +35,10 @@
 
 class DomainRecord extends CommonDBChild
 {
-    const DEFAULT_TTL = 3600;
+    public const DEFAULT_TTL = 3600;
 
     public static $rightname              = 'domain';
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype        = 'Domain';
     public static $items_id        = 'domains_id';
     public $dohistory              = true;
@@ -88,7 +88,7 @@ class DomainRecord extends CommonDBChild
             'table'              => 'glpi_domains',
             'field'              => 'name',
             'name'               => Domain::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -96,14 +96,14 @@ class DomainRecord extends CommonDBChild
             'table'              => DomainRecordType::getTable(),
             'field'              => 'name',
             'name'               => DomainRecordType::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
             'id'                 => '4',
             'table'              => $this->getTable(),
             'field'              => 'ttl',
-            'name'               => __('TTL')
+            'name'               => __('TTL'),
         ];
 
         $tab[] = [
@@ -119,7 +119,7 @@ class DomainRecord extends CommonDBChild
             'field'              => 'name',
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -127,7 +127,7 @@ class DomainRecord extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -135,7 +135,7 @@ class DomainRecord extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -144,7 +144,7 @@ class DomainRecord extends CommonDBChild
             'field'              => 'name',
             'linkfield'          => 'groups_id_tech',
             'name'               => __('Group in charge'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -153,7 +153,7 @@ class DomainRecord extends CommonDBChild
             'field'              => 'date_mod',
             'massiveaction'      => false,
             'name'               => __('Last update'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -161,7 +161,7 @@ class DomainRecord extends CommonDBChild
             'table'              => 'glpi_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -211,7 +211,8 @@ class DomainRecord extends CommonDBChild
     public function canUpdateItem()
     {
         return parent::canUpdateItem()
-         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1]
+         && (
+             $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1]
          || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])
          );
     }
@@ -219,7 +220,8 @@ class DomainRecord extends CommonDBChild
     public function canDeleteItem()
     {
         return parent::canDeleteItem()
-         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1]
+         && (
+             $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1]
          || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])
          );
     }
@@ -228,7 +230,8 @@ class DomainRecord extends CommonDBChild
     public function canPurgeItem()
     {
         return parent::canPurgeItem()
-         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1]
+         && (
+             $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1]
          || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])
          );
     }
@@ -269,7 +272,7 @@ class DomainRecord extends CommonDBChild
             }
         }
 
-       //search entity
+        //search entity
         if ($add && !isset($input['entities_id'])) {
             $input['entities_id'] = $_SESSION['glpiactive_entity'] ?? 0;
             $input['is_recursive'] = $_SESSION['glpiactive_entity_recursive'] ?? 0;
@@ -292,7 +295,7 @@ class DomainRecord extends CommonDBChild
                     return false;
                 }
                 if ($add === false && !(in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes']))) {
-                   //no right to change existing type
+                    //no right to change existing type
                     Session::addMessageAfterRedirect(
                         __('You are not allowed to edit this type of records'),
                         true,
@@ -323,8 +326,8 @@ class DomainRecord extends CommonDBChild
             (in_array('data', $this->updates) || in_array('domainrecordtypes_id', $this->updates))
             && !array_key_exists('data_obj', $this->input)
         ) {
-           // Remove data stored as obj if "data" or "record type" changed" and "data_obj" is not part of input.
-           // It ensure that updates that "data_obj" will not contains obsolete values.
+            // Remove data stored as obj if "data" or "record type" changed" and "data_obj" is not part of input.
+            // It ensure that updates that "data_obj" will not contains obsolete values.
             $this->fields['data_obj'] = 'NULL';
             $this->updates[]          = 'data_obj';
         }
@@ -349,9 +352,9 @@ class DomainRecord extends CommonDBChild
         if ($domain->isTemplate()) {
             echo Html::input('domains_id', [
                 'type'   => 'hidden',
-                'value'  => $this->fields['domains_id']
+                'value'  => $this->fields['domains_id'],
             ]);
-           // TRANS: first parameter is the template name
+            // TRANS: first parameter is the template name
             echo sprintf(_n('%1$s template', '%1$s templates', 1), $domain->fields['template_name']);
         } else {
             Dropdown::show(
@@ -456,7 +459,7 @@ JAVASCRIPT;
         User::dropdown(['name'   => "users_id_tech",
             'value'  => $this->fields["users_id_tech"],
             'entity' => $this->fields["entities_id"],
-            'right'  => 'interface'
+            'right'  => 'interface',
         ]);
         echo "</td>";
 
@@ -465,7 +468,7 @@ JAVASCRIPT;
         Dropdown::show('Group', ['name'      => "groups_id_tech",
             'value'     => $this->fields["groups_id_tech"],
             'entity'    => $this->fields["entities_id"],
-            'condition' => ['is_assign' => 1]
+            'condition' => ['is_assign' => 1],
         ]);
         echo "</td>";
         echo "</tr>";
@@ -522,11 +525,11 @@ JAVASCRIPT;
                 DomainRecordType::getTable() . ' AS rtype'  => [
                     'ON'  => [
                         'rtype'  => 'id',
-                        'record' => 'domainrecordtypes_id'
-                    ]
-                ]
+                        'record' => 'domainrecordtypes_id',
+                    ],
+                ],
             ],
-            'ORDER'     => ['rtype.name ASC', 'record.name ASC']
+            'ORDER'     => ['rtype.name ASC', 'record.name ASC'],
         ]);
 
         $number = count($iterator);
@@ -548,9 +551,9 @@ JAVASCRIPT;
                     'condition' => [
                         'NOT' => [
                             'domains_id'   => ['>', 0],
-                            'NOT'          => ['domains_id' => null]
-                        ]
-                    ]
+                            'NOT'          => ['domains_id' => null],
+                        ],
+                    ],
                 ]
             );
 
@@ -652,7 +655,7 @@ JAVASCRIPT;
             '.'
         );
         if (empty($name_txt)) {
-           //dns root
+            //dns root
             $name_txt = '@';
         }
         return $name_txt;

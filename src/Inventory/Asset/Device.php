@@ -56,8 +56,8 @@ abstract class Device extends InventoryAsset
             'FROM'      => $itemdevicetable,
             'WHERE'     => [
                 "$itemdevicetable.items_id"     => $this->item->fields['id'],
-                "$itemdevicetable.itemtype"     => $this->item->getType()
-            ]
+                "$itemdevicetable.itemtype"     => $this->item->getType(),
+            ],
         ]);
 
         foreach ($iterator as $row) {
@@ -115,7 +115,7 @@ abstract class Device extends InventoryAsset
                     $fk                  => $device_id,
                     'itemtype'           => $this->item->getType(),
                     'items_id'           => $this->item->fields['id'],
-                    'is_dynamic'         => 1
+                    'is_dynamic'         => 1,
                 ];
                 $i_input = $fk_input;
 
@@ -149,8 +149,8 @@ abstract class Device extends InventoryAsset
 
                             case 'delta':
                                 if (
-                                    $i_input[$field] - (int)$compare[1] > $existing_item[$field]
-                                    && $i_input[$field] + (int)$compare[1] < $existing_item[$field]
+                                    $i_input[$field] - (int) $compare[1] > $existing_item[$field]
+                                    && $i_input[$field] + (int) $compare[1] < $existing_item[$field]
                                 ) {
                                     $equals = false;
                                 }
@@ -165,7 +165,7 @@ abstract class Device extends InventoryAsset
                             $fk                  => $device_id,
                             'itemtype'           => $this->item->getType(),
                             'items_id'           => $this->item->fields['id'],
-                            'is_dynamic'         => 1
+                            'is_dynamic'         => 1,
                         ] + $this->handleInput($val, $itemdevice);
                         $itemdevice->update(Sanitizer::sanitize($itemdevice_data), true);
                         unset($existing[$device_id][$key]);
@@ -179,7 +179,7 @@ abstract class Device extends InventoryAsset
                         $fk => $device_id,
                         'itemtype' => $this->item->getType(),
                         'items_id' => $this->item->fields['id'],
-                        'is_dynamic' => 1
+                        'is_dynamic' => 1,
                     ] + $this->handleInput($val, $itemdevice);
                     $itemdevice->add(Sanitizer::sanitize($itemdevice_data), [], !$this->item->isNewItem()); //log only if mainitem is not new
                     $this->itemdeviceAdded($itemdevice, $val);
@@ -203,6 +203,6 @@ abstract class Device extends InventoryAsset
 
     protected function itemdeviceAdded(Item_Devices $itemdevice, $val)
     {
-       //to be overrided
+        //to be overrided
     }
 }

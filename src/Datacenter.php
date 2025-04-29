@@ -42,13 +42,13 @@ class Datacenter extends CommonDBTM
 {
     use AssetImage;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
     public static $rightname                   = 'datacenter';
 
     public static function getTypeName($nb = 0)
     {
-       //TRANS: Test of comment for translation (mark : //TRANS)
+        //TRANS: Test of comment for translation (mark : //TRANS)
         return _n('Data center', 'Data centers', $nb);
     }
 
@@ -81,7 +81,7 @@ class Datacenter extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -99,7 +99,7 @@ class Datacenter extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false, // implicit field is id
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -110,7 +110,7 @@ class Datacenter extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -119,7 +119,7 @@ class Datacenter extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -127,7 +127,7 @@ class Datacenter extends CommonDBTM
             'table'              => 'glpi_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -139,7 +139,7 @@ class Datacenter extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'datacenter',
-            'name'               => _n('Data center', 'Data centers', Session::getPluralNumber())
+            'name'               => _n('Data center', 'Data centers', Session::getPluralNumber()),
         ];
 
         $tab[] = [
@@ -148,13 +148,13 @@ class Datacenter extends CommonDBTM
             'field'              => '_virtual_datacenter_position', // virtual field
             'additionalfields'   => [
                 'id',
-                'name'
+                'name',
             ],
             'name'               => __('Data center position'),
             'datatype'           => 'specific',
             'nosearch'           => true,
             'nosort'             => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         if (($itemtype != Rack::getType()) && ($itemtype != DCRoom::getType())) {
@@ -178,14 +178,14 @@ class Datacenter extends CommonDBTM
                                     'beforejoin'    => [
                                         'table'         => Item_Rack::getTable(),
                                         'joinparams'    => [
-                                            'jointype'      => 'itemtype_item'
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                            'jointype'      => 'itemtype_item',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ];
         }
 
@@ -220,8 +220,8 @@ class Datacenter extends CommonDBTM
                     'links' => [
                         'add'    => '/front/dcroom.form.php',
                         'search' => '/front/dcroom.php',
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
         return false;

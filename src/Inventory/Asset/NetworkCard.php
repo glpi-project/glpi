@@ -36,7 +36,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
 use Glpi\Inventory\Conf;
 
 class NetworkCard extends Device
@@ -55,7 +54,7 @@ class NetworkCard extends Device
         $mapping = [
             'name'          => 'designation',
             'manufacturer'  => 'manufacturers_id',
-            'macaddr'       => 'mac'
+            'macaddr'       => 'mac',
         ];
         $mapping_ports = [
             'description' => 'name',
@@ -69,7 +68,7 @@ class NetworkCard extends Device
             'ipmask'      => 'netmask',
             'ipdhcp'      => 'dhcpserver',
             'wwn'         => 'wwn',
-            'speed'       => 'speed'
+            'speed'       => 'speed',
         ];
         $pcivendor = new \PCIVendor();
 
@@ -102,7 +101,7 @@ class NetworkCard extends Device
                 }
             }
             if (property_exists($val, 'speed')) {
-                if ((int)$val->speed > 0) {
+                if ((int) $val->speed > 0) {
                     $val_port->ifstatus = '1';  //up
                 } else {
                     $val_port->ifstatus = '2';  //down
@@ -111,7 +110,7 @@ class NetworkCard extends Device
 
             if (isset($this->extra_data['controllers'])) {
                 $found_controller = false;
-               // Search in controller if find NAME = CONTROLLER TYPE
+                // Search in controller if find NAME = CONTROLLER TYPE
                 foreach ($this->extra_data['controllers'] as $controller) {
                     if (
                         property_exists($controller, 'type')
@@ -132,23 +131,23 @@ class NetworkCard extends Device
                     if (property_exists($found_controller, 'pciid')) {
                         $exploded = explode(":", $found_controller->pciids);
 
-                       //manufacturer
+                        //manufacturer
                         if ($pci_manufacturer = $pcivendor->getManufacturer($exploded[0])) {
-                             $val->manufacturers_id = $pci_manufacturer;
+                            $val->manufacturers_id = $pci_manufacturer;
                         }
 
-                       //product name
+                        //product name
                         if ($pci_product = $pcivendor->getProductName($exploded[0], $exploded[1])) {
                             $val->designation = $pci_product;
                         }
-                    } else if (property_exists($found_controller, 'vendorid')) {
-                       //manufacturer
+                    } elseif (property_exists($found_controller, 'vendorid')) {
+                        //manufacturer
                         if ($pci_manufacturer = $pcivendor->getManufacturer($found_controller->vendorid)) {
                             $val->manufacturers_id = $pci_manufacturer;
                         }
 
                         if (property_exists($found_controller, 'productid')) {
-                           //product name
+                            //product name
                             if ($pci_product = $pcivendor->getProductName($found_controller->vendorid, $found_controller->productid)) {
                                 $val->designation = $pci_product;
                             }
@@ -199,7 +198,7 @@ class NetworkCard extends Device
                 if (isset($this->ports[$portkey])) {
                     if (property_exists($val_port, 'ip') && $val_port->ip != '') {
                         if (!in_array($val_port->ip, $this->ports[$portkey]->ipaddress)) {
-                             $this->ports[$portkey]->ipaddress[] = $val_port->ip;
+                            $this->ports[$portkey]->ipaddress[] = $val_port->ip;
                         }
                     }
                     if (property_exists($val_port, 'ipaddress6') && $val_port->ipaddress6 != '') {
@@ -210,10 +209,10 @@ class NetworkCard extends Device
                 } else {
                     if (property_exists($val_port, 'ip')) {
                         if ($val_port->ip != '') {
-                             $val_port->ipaddress = [$val_port->ip];
+                            $val_port->ipaddress = [$val_port->ip];
                         }
                         unset($val_port->ip);
-                    } else if (property_exists($val_port, 'ipaddress6') && $val_port->ipaddress6 != '') {
+                    } elseif (property_exists($val_port, 'ipaddress6') && $val_port->ipaddress6 != '') {
                         $val_port->ipaddress = [$val_port->ipaddress6];
                     } else {
                         $val_port->ipaddress = [];
@@ -247,7 +246,7 @@ class NetworkCard extends Device
                             default:
                                 if (property_exists($val_port, 'wwn') && !empty($val_port->wwn)) {
                                     $val_port->instantiation_type = 'NetworkPortFiberchannel';
-                                } else if (property_exists($val_port, 'mac') && $val_port->mac != '') {
+                                } elseif (property_exists($val_port, 'mac') && $val_port->mac != '') {
                                     $val_port->instantiation_type = 'NetworkPortEthernet';
                                 } else {
                                     $val_port->instantiation_type = 'NetworkPortLocal';
@@ -256,12 +255,12 @@ class NetworkCard extends Device
                         }
                     }
 
-                  // Test if the provided network speed is an integer number
+                    // Test if the provided network speed is an integer number
                     if (
                         property_exists($val_port, 'speed')
                         && ctype_digit(strval($val_port->speed))
                     ) {
-                       // Old agent version have speed in b/s instead Mb/s
+                        // Old agent version have speed in b/s instead Mb/s
                         if ($val_port->speed > 100000) {
                             $val_port->speed = $val_port->speed / 1000000;
                         }
@@ -272,7 +271,7 @@ class NetworkCard extends Device
                     $uniq = '';
                     if (property_exists($val_port, 'mac') && !empty($val_port->mac)) {
                         $uniq = $val_port->mac;
-                    } else if (property_exists($val_port, 'wwn') && !empty($val_port->wwn)) {
+                    } elseif (property_exists($val_port, 'wwn') && !empty($val_port->wwn)) {
                         $uniq = $val_port->wwn;
                     }
                     $ports[$val_port->name . '-' . $uniq] = $val_port;
@@ -301,7 +300,7 @@ class NetworkCard extends Device
 
     public function handlePorts($itemtype = null, $items_id = null)
     {
-       //ports are handled from main asset in NetworkCard case
+        //ports are handled from main asset in NetworkCard case
         return;
     }
 

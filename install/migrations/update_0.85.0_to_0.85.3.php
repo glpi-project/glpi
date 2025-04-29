@@ -49,7 +49,7 @@ function update0850to0853()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '0.85.3'));
     $migration->setVersion('0.85.3');
 
@@ -57,7 +57,7 @@ function update0850to0853()
     $newtables     = [];
 
     foreach ($newtables as $new_table) {
-       // rename new tables if exists ?
+        // rename new tables if exists ?
         if ($DB->tableExists($new_table)) {
             $migration->dropTable("backup_$new_table");
             $migration->displayWarning("$new_table table already exists. " .
@@ -73,7 +73,7 @@ function update0850to0853()
         );
     }
 
-   // Increase cron_limit
+    // Increase cron_limit
     $current_config = Config::getConfigurationValues('core');
     if ($current_config['cron_limit'] == 1) {
         Config::setConfigurationValues('core', ['cron_limit' => 5]);
@@ -84,8 +84,8 @@ function update0850to0853()
     $migration->addField('glpi_projecttasks', 'is_milestone', 'bool');
     $migration->addKey('glpi_projecttasks', 'is_milestone');
 
-   // Change Ticket items
-   // Add glpi_items_tickets table for associated elements
+    // Change Ticket items
+    // Add glpi_items_tickets table for associated elements
     if (!$DB->tableExists('glpi_items_tickets')) {
         $query = "CREATE TABLE `glpi_items_tickets` (
                   `id` int NOT NULL AUTO_INCREMENT,
@@ -114,13 +114,13 @@ function update0850to0853()
                 }
             }
         }
-       // Delete old columns and keys
+        // Delete old columns and keys
         $migration->dropField("glpi_tickets", "itemtype");
         $migration->dropField("glpi_tickets", "items_id");
         $migration->dropKey("glpi_tickets", "item");
     }
 
-   // correct value of status for changes
+    // correct value of status for changes
     $query = "UPDATE `glpi_changes`
              SET `status` = 1
              WHERE `status` = 2";
@@ -135,15 +135,15 @@ function update0850to0853()
         )
     ) {
         $migration->migrationOneTable('glpi_entities');
-       // Set directly to root entity
+        // Set directly to root entity
         $query = 'UPDATE `glpi_entities`
                 SET `is_notif_enable_default` = 1
                 WHERE `id` = 0';
         $DB->doQueryOrDie($query, "0.85.3 default value for is_notif_enable_default for root entity");
     }
 
-   // ************ Keep it at the end **************
-   //TRANS: %s is the table or item to migrate
+    // ************ Keep it at the end **************
+    //TRANS: %s is the table or item to migrate
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
@@ -170,11 +170,11 @@ function update0850to0853()
                                   AND `itemtype` = '$type'";
                         if ($result2 = $DB->doQuery($query)) {
                             if ($DB->numrows($result2) == 0) {
-                                 $query = "INSERT INTO `glpi_displaypreferences`
+                                $query = "INSERT INTO `glpi_displaypreferences`
                                          (`itemtype` ,`num` ,`rank` ,`users_id`)
                                   VALUES ('$type', '$newval', '" . $rank++ . "',
                                           '" . $data['users_id'] . "')";
-                                 $DB->doQuery($query);
+                                $DB->doQuery($query);
                             }
                         }
                     }
@@ -190,12 +190,12 @@ function update0850to0853()
             }
         }
     }
-   // change type of field solution in ticket.change and problem
+    // change type of field solution in ticket.change and problem
     $migration->changeField('glpi_tickets', 'solution', 'solution', 'longtext');
     $migration->changeField('glpi_changes', 'solution', 'solution', 'longtext');
     $migration->changeField('glpi_problems', 'solution', 'solution', 'longtext');
 
-   // must always be at the end
+    // must always be at the end
     $migration->executeMigration();
 
     return $updateresult;

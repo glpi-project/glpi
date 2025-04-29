@@ -53,7 +53,7 @@ if (
     isset($_POST["table"])
     && isset($_POST["value"])
 ) {
-   // Security
+    // Security
     if (!$DB->tableExists($_POST['table'])) {
         exit();
     }
@@ -63,7 +63,7 @@ if (
         if (
             !Session::validateIDOR([
                 'itemtype'    => $itemtype,
-                '_idor_token' => $_POST['_idor_token'] ?? ""
+                '_idor_token' => $_POST['_idor_token'] ?? "",
             ])
         ) {
             exit();

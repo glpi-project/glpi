@@ -56,8 +56,8 @@ if ($printers_id !== false) {
 
     foreach ($period as $dt) {
         $total = random_int(10, 95);
-        $rvs = (int)round($total * random_int(70, 95) / 100);
-        $bws = (int)round($total * random_int(55, 80) / 100);
+        $rvs = (int) round($total * random_int(70, 95) / 100);
+        $bws = (int) round($total * random_int(55, 80) / 100);
         $colors = $total - $bws;
         $scans = random_int(20, 100);
 
@@ -74,7 +74,7 @@ if ($printers_id !== false) {
             'color_pages'    => $color_pages,
             'scanned'        => $scanned,
             'rv_pages'       => $rv_pages,
-            'printers_id'    => $printers_id
+            'printers_id'    => $printers_id,
         ];
         $metrics->add($input, [], false);
     }
@@ -106,7 +106,7 @@ if ($networkports_id !== false) {
             'ifoutbytes'      => $outbytes,
             'ifinerrors'      => $inerrors,
             'ifouterrors'     => $outerrors,
-            'networkports_id' => $networkports_id
+            'networkports_id' => $networkports_id,
         ];
         $metrics->add($input, [], false);
     }

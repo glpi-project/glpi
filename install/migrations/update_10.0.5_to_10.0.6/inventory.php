@@ -45,11 +45,11 @@ if (isset($config['stale_agents_action']) && is_numeric($config['stale_agents_ac
     $DB->updateOrDie(
         'glpi_configs',
         [
-            'value' => exportArrayToDB([$config['stale_agents_action']])
+            'value' => exportArrayToDB([$config['stale_agents_action']]),
         ],
         [
             'context' => 'inventory',
-            'name' => 'stale_agents_action'
+            'name' => 'stale_agents_action',
         ]
     );
 }

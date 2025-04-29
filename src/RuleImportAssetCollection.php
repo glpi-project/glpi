@@ -36,7 +36,7 @@
 /// Import rules collection class
 class RuleImportAssetCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
     public $stop_on_first_match = true;
     public static $rightname           = 'rule_import';
     public $menu_option         = 'linkcomputer';
@@ -81,7 +81,7 @@ class RuleImportAssetCollection extends RuleCollection
 
     public function collectionFilter($criteria, $options = [])
     {
-       //current tab
+        //current tab
         $active_tab = $options['_glpi_tab'] ?? Session::getActiveTab($this->getType());
         $current_tab = str_replace(__CLASS__ . '$', '', $active_tab);
         $tabs = $this->getTabNameForItem($this);
@@ -93,15 +93,15 @@ class RuleImportAssetCollection extends RuleCollection
         $criteria['LEFT JOIN']['glpi_rulecriterias AS crit'] = [
             'ON'  => [
                 'crit'         => 'rules_id',
-                'glpi_rules'   => 'id'
-            ]
+                'glpi_rules'   => 'id',
+            ],
         ];
         $criteria['GROUPBY'] = ['glpi_rules.id'];
 
         if ($current_tab != '_global') {
             $where = [
                 'crit.criteria'   => 'itemtype',
-                'crit.pattern'    => getSingular($current_tab)
+                'crit.pattern'    => getSingular($current_tab),
             ];
             $criteria['WHERE']  += $where;
         } else {
@@ -139,7 +139,7 @@ class RuleImportAssetCollection extends RuleCollection
             $item = $inventory->getItem();
             $invitem = $inventory->getMainAsset();
 
-          //sanitize input
+            //sanitize input
             if ($input['itemtype'] == 0) {
                 unset($input['itemtype']);
             }
@@ -152,7 +152,7 @@ class RuleImportAssetCollection extends RuleCollection
             $data = $invitem->getData();
             $rules_input = $invitem->prepareAllRulesInput($data[0]);
 
-          //keep user values if any
+            //keep user values if any
             $input += $rules_input;
         } else {
             trigger_error(

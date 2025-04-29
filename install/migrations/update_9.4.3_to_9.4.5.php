@@ -47,7 +47,7 @@ function update943to945()
 
     $updateresult     = true;
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '9.4.5'));
     $migration->setVersion('9.4.5');
 
@@ -60,7 +60,7 @@ function update943to945()
         [
             'after'     => 'olalevels_id_ttr',
             'update'    => $DB->quoteName('date'), // Assign ticket creation date by default
-            'condition' => 'WHERE ' . $iterator->analyseCrit(['NOT' => ['olas_id_ttr' => '0']])
+            'condition' => 'WHERE ' . $iterator->analyseCrit(['NOT' => ['olas_id_ttr' => '0']]),
         ]
     );
     /** /Add OLA TTR begin date field to Tickets */
@@ -90,7 +90,7 @@ function update943to945()
     }
     /** /Fix language fields */
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

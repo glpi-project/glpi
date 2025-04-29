@@ -62,7 +62,7 @@ abstract class LevelAgreementLevel extends RuleTicket
      **/
     public function __construct()
     {
-       // Override in order not to use glpi_rules table.
+        // Override in order not to use glpi_rules table.
     }
 
 
@@ -71,7 +71,7 @@ abstract class LevelAgreementLevel extends RuleTicket
      **/
     public static function getConditionsArray()
     {
-       // Override ruleticket one
+        // Override ruleticket one
         return [];
     }
 
@@ -100,7 +100,7 @@ abstract class LevelAgreementLevel extends RuleTicket
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -118,7 +118,7 @@ abstract class LevelAgreementLevel extends RuleTicket
             'field'              => 'name',
             'name'               => static::getTypeName(),
             'datatype'           => 'itemlink',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -128,7 +128,7 @@ abstract class LevelAgreementLevel extends RuleTicket
             'name'               => __('Execution'),
             'massiveaction'      => false,
             'searchtype'         => 'equals',
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -138,7 +138,7 @@ abstract class LevelAgreementLevel extends RuleTicket
             'name'               => __('Logical operator'),
             'massiveaction'      => false,
             'searchtype'         => 'equals',
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -146,7 +146,7 @@ abstract class LevelAgreementLevel extends RuleTicket
             'table'              => static::getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -155,7 +155,7 @@ abstract class LevelAgreementLevel extends RuleTicket
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -164,7 +164,7 @@ abstract class LevelAgreementLevel extends RuleTicket
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -208,7 +208,7 @@ abstract class LevelAgreementLevel extends RuleTicket
 
         $actions = parent::getActions();
 
-       // Only append actors
+        // Only append actors
         $actions['_users_id_requester']['force_actions']  = ['append'];
         $actions['_groups_id_requester']['force_actions'] = ['append'];
         $actions['_users_id_assign']['force_actions']     = ['append'];
@@ -232,7 +232,7 @@ abstract class LevelAgreementLevel extends RuleTicket
 
         unset($actions['olas_id']);
         unset($actions['slas_id']);
-       // Could not be used as criteria
+        // Could not be used as criteria
         unset($actions['users_id_validate_requester_supervisor']);
         unset($actions['users_id_validate_assign_supervisor']);
         unset($actions['affectobject']);
@@ -339,7 +339,7 @@ abstract class LevelAgreementLevel extends RuleTicket
             }
         }
 
-       // Display default value;
+        // Display default value;
         if (($key = array_search($p['value'], $p['used'])) !== false) {
             unset($p['used'][$key]);
         }
@@ -368,8 +368,8 @@ abstract class LevelAgreementLevel extends RuleTicket
             'DISTINCT'        => true,
             'FROM'            => static::getTable(),
             'WHERE'           => [
-                static::$fkparent => $las_id
-            ]
+                static::$fkparent => $las_id,
+            ],
         ]);
 
         foreach ($iterator as $data) {

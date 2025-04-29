@@ -37,7 +37,7 @@
 // @since 0.84
 class PlanningRecall extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype        = 'itemtype';
     public static $items_id        = 'items_id';
 
@@ -72,7 +72,7 @@ class PlanningRecall extends CommonDBChild
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Cache in session
+        // Cache in session
         if (isset($_SESSION['glpiplanningreminder_isavailable'])) {
             return $_SESSION['glpiplanningreminder_isavailable'];
         }
@@ -81,7 +81,7 @@ class PlanningRecall extends CommonDBChild
         if ($CFG_GLPI["use_notifications"]) {
             $task = new CronTask();
             if ($task->getFromDBbyName('PlanningRecall', 'planningrecall')) {
-               // Only disabled by config
+                // Only disabled by config
                 if ($task->isDisabled() != 1) {
                     if (
                         Session::haveRightsOr(
@@ -114,7 +114,7 @@ class PlanningRecall extends CommonDBChild
         return $this->getFromDBByCrit([
             $this->getTable() . '.itemtype'  => $itemtype,
             $this->getTable() . '.items_id'  => $items_id,
-            $this->getTable() . '.users_id'  => $users_id
+            $this->getTable() . '.users_id'  => $users_id,
         ]);
     }
 
@@ -139,7 +139,7 @@ class PlanningRecall extends CommonDBChild
     public static function manageDatas(array $data)
     {
 
-       // Check data information
+        // Check data information
         if (
             !isset($data['itemtype'])
             || !isset($data['items_id'])
@@ -151,7 +151,7 @@ class PlanningRecall extends CommonDBChild
         }
 
         $pr = new self();
-       // Datas OK : check if recall already exists
+        // Datas OK : check if recall already exists
         if (
             $pr->getFromDBForItemAndUser(
                 $data['itemtype'],
@@ -160,7 +160,7 @@ class PlanningRecall extends CommonDBChild
             )
         ) {
             if ($data['before_time'] != $pr->fields['before_time']) {
-               // Recall exists and is different : update datas and clean alert
+                // Recall exists and is different : update datas and clean alert
                 if ($item = getItemForItemtype($data['itemtype'])) {
                     if (
                         $item->getFromDB($data['items_id'])
@@ -175,19 +175,19 @@ class PlanningRecall extends CommonDBChild
                             if ($pr->can($pr->fields['id'], UPDATE)) {
                                 $pr->update(['id'          => $pr->fields['id'],
                                     'before_time' => $data['before_time'],
-                                    'when'        => $when
+                                    'when'        => $when,
                                 ]);
                             }
                         } else {
                             if ($pr->can($pr->fields['id'], PURGE)) {
-                                 $pr->delete(['id' => $pr->fields['id']]);
+                                $pr->delete(['id' => $pr->fields['id']]);
                             }
                         }
                     }
                 }
             }
         } else {
-           // Recall does not exists : create it
+            // Recall does not exists : create it
             if ($pr->can(-1, CREATE, $data)) {
                 if ($item = getItemForItemtype($data['itemtype'])) {
                     $item->getFromDB($data['items_id']);
@@ -202,7 +202,7 @@ class PlanningRecall extends CommonDBChild
                             - $data['before_time']
                         );
                         if ($data['before_time'] >= 0) {
-                             $pr->add($data);
+                            $pr->add($data);
                         }
                     }
                 }
@@ -229,7 +229,7 @@ class PlanningRecall extends CommonDBChild
             unset($_SESSION['glpiplanningreminder_isavailable']);
         }
 
-       //nedds DB::update() to support SQL functions to get migrated
+        //nedds DB::update() to support SQL functions to get migrated
         $result = $DB->update(
             'glpi_planningrecalls',
             [
@@ -239,7 +239,7 @@ class PlanningRecall extends CommonDBChild
             ],
             [
                 'itemtype'  => $itemtype,
-                'items_id'  => $items_id
+                'items_id'  => $items_id,
             ]
         );
         return $result;
@@ -262,7 +262,7 @@ class PlanningRecall extends CommonDBChild
      **/
     public static function dropdown($options = [])
     {
-       // Default values
+        // Default values
         $p['itemtype'] = '';
         $p['items_id'] = 0;
         $p['users_id'] = Session::getLoginUserID();
@@ -280,7 +280,7 @@ class PlanningRecall extends CommonDBChild
         }
 
         $pr = new self();
-       // Get recall for item and user
+        // Get recall for item and user
         if ($pr->getFromDBForItemAndUser($p['itemtype'], $p['items_id'], $p['users_id'])) {
             $p['value'] = $pr->fields['before_time'];
         }
@@ -339,7 +339,7 @@ class PlanningRecall extends CommonDBChild
      **/
     public static function specificForm($options = [])
     {
-       // Default values
+        // Default values
         $p['itemtype'] = '';
         $p['items_id'] = 0;
         $p['users_id'] = Session::getLoginUserID();
@@ -411,17 +411,17 @@ class PlanningRecall extends CommonDBChild
                         'glpi_alerts'           => 'items_id', [
                             'AND' => [
                                 'glpi_alerts.itemtype'  => 'PlanningRecall',
-                                'glpi_alerts.type'      => Alert::ACTION
-                            ]
-                        ]
-                    ]
-                ]
+                                'glpi_alerts.type'      => Alert::ACTION,
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'NOT'                         => ['glpi_planningrecalls.when' => null],
                 'glpi_planningrecalls.when'   => ['<', new \QueryExpression('NOW()')],
-                'glpi_alerts.date'            => null
-            ]
+                'glpi_alerts.date'            => null,
+            ],
         ]);
 
         $pr = new self();
@@ -458,7 +458,7 @@ class PlanningRecall extends CommonDBChild
                     $alert->add($input);
                 }
             } else {
-               // Clean item
+                // Clean item
                 $pr->delete($data);
             }
         }

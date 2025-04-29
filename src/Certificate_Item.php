@@ -38,7 +38,7 @@
  */
 class Certificate_Item extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1    = "Certificate";
     public static $items_id_1    = 'certificates_id';
     public static $take_entity_1 = false;
@@ -66,7 +66,7 @@ class Certificate_Item extends CommonDBRelation
     {
         $temp = new self();
         $temp->deleteByCriteria(['itemtype' => $item->getType(),
-            'items_id' => $item->getField('id')
+            'items_id' => $item->getField('id'),
         ]);
     }
 
@@ -90,7 +90,7 @@ class Certificate_Item extends CommonDBRelation
                     );
                 }
                 return _n('Associated item', 'Associated items', Session::getPluralNumber());
-            } else if (
+            } elseif (
                 in_array($item->getType(), Certificate::getTypes(true))
                 && Certificate::canView()
             ) {
@@ -121,7 +121,7 @@ class Certificate_Item extends CommonDBRelation
 
         if ($item->getType() == 'Certificate') {
             self::showForCertificate($item);
-        } else if (in_array($item->getType(), Certificate::getTypes(true))) {
+        } elseif (in_array($item->getType(), Certificate::getTypes(true))) {
             self::showForItem($item);
         }
         return true;
@@ -141,7 +141,7 @@ class Certificate_Item extends CommonDBRelation
         $certificates = $certificate->find([
             'certificates_id' => $certificates_id,
             'itemtype'        => $itemtype,
-            'items_id'        => $items_id
+            'items_id'        => $items_id,
         ]);
         if (count($certificates) != 1) {
             return false;
@@ -164,7 +164,7 @@ class Certificate_Item extends CommonDBRelation
 
         $this->add(['certificates_id' => $values["certificates_id"],
             'items_id'        => $values["items_id"],
-            'itemtype'        => $values["itemtype"]
+            'itemtype'        => $values["itemtype"],
         ]);
     }
 
@@ -312,7 +312,7 @@ class Certificate_Item extends CommonDBRelation
                             $entity = ($item->isEntityAssign() ?
                             Dropdown::getDropdownName("glpi_entities", $data['entity']) :
                             '-');
-                             echo "<td class='center'>" . $entity . "</td>";
+                            echo "<td class='center'>" . $entity . "</td>";
                         }
                         echo "<td class='center'>" . (isset($data["serial"]) ? "" . $data["serial"] . "" : "-") . "</td>";
                         echo "<td class='center'>" . (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
@@ -394,7 +394,7 @@ class Certificate_Item extends CommonDBRelation
             $nb = countElementsInTable(
                 'glpi_certificates',
                 [
-                    'is_deleted'  => 0
+                    'is_deleted'  => 0,
                 ] + $entity_restrict
             );
 
@@ -413,32 +413,32 @@ class Certificate_Item extends CommonDBRelation
                     'entities_id',
                     ['value' => $item->fields['entities_id']]
                 );
-                 echo Html::hidden(
-                     'is_recursive',
-                     ['value' => $is_recursive]
-                 );
-                 echo Html::hidden(
-                     'itemtype',
-                     ['value' => $item->getType()]
-                 );
-                 echo Html::hidden(
-                     'items_id',
-                     ['value' => $ID]
-                 );
+                echo Html::hidden(
+                    'is_recursive',
+                    ['value' => $is_recursive]
+                );
+                echo Html::hidden(
+                    'itemtype',
+                    ['value' => $item->getType()]
+                );
+                echo Html::hidden(
+                    'items_id',
+                    ['value' => $ID]
+                );
                 if ($item->getType() == 'Ticket') {
-                     echo Html::hidden('tickets_id', ['value' => $ID]);
+                    echo Html::hidden('tickets_id', ['value' => $ID]);
                 }
-                 Dropdown::show('Certificate', ['entity' => $item->fields['entities_id'],
-                     'is_recursive'       => $is_recursive,
-                     'used'               => $used
-                 ]);
+                Dropdown::show('Certificate', ['entity' => $item->fields['entities_id'],
+                    'is_recursive'       => $is_recursive,
+                    'used'               => $used,
+                ]);
 
-                 echo "</td><td class='center' width='20%'>";
-                 echo Html::submit(_sx('button', 'Associate'), ['name' => 'add']);
-                 echo "</td>";
-                 echo "</tr>";
-                 echo "</table>";
-                 Html::closeForm();
+                echo "</td><td class='center' width='20%'>";
+                echo Html::submit(_sx('button', 'Associate'), ['name' => 'add']);
+                echo "</td>";
+                echo "</tr>";
+                echo "</table>";
+                Html::closeForm();
             }
 
             echo "</div>";
@@ -502,26 +502,26 @@ class Certificate_Item extends CommonDBRelation
                 }
                 echo "<td class='center'>$link</td>";
                 if (Session::isMultiEntitiesMode()) {
-                     echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data['entities_id']) .
-                     "</td>";
+                    echo "<td class='center'>" . Dropdown::getDropdownName("glpi_entities", $data['entities_id']) .
+                    "</td>";
                 }
                 echo "<td class='center'>";
                 echo Dropdown::getDropdownName(
                     "glpi_certificatetypes",
                     $data["certificatetypes_id"]
                 );
-                 echo "</td>";
-                 echo "<td class='center'>" . $data["dns_name"] . "</td>";
-                 echo "<td class='center'>" . $data["dns_suffix"] . "</td>";
-                 echo "<td class='center'>" . Html::convDate($data["date_creation"]) . "</td>";
+                echo "</td>";
+                echo "<td class='center'>" . $data["dns_name"] . "</td>";
+                echo "<td class='center'>" . $data["dns_suffix"] . "</td>";
+                echo "<td class='center'>" . Html::convDate($data["date_creation"]) . "</td>";
                 if (
                     $data["date_expiration"] <= date('Y-m-d')
                      && !empty($data["date_expiration"])
                 ) {
-                     echo "<td class='center'>";
-                     echo "<div class='deleted'>" . Html::convDate($data["date_expiration"]) . "</div>";
-                     echo "</td>";
-                } else if (empty($data["date_expiration"])) {
+                    echo "<td class='center'>";
+                    echo "<div class='deleted'>" . Html::convDate($data["date_expiration"]) . "</div>";
+                    echo "</td>";
+                } elseif (empty($data["date_expiration"])) {
                     echo "<td class='center'>" . __('Does not expire') . "</td>";
                 } else {
                     echo "<td class='center'>" . Html::convDate($data["date_expiration"]) . "</td>";

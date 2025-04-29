@@ -40,7 +40,7 @@
  **/
 class Notepad extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype        = 'itemtype';
     public static $items_id        = 'items_id';
     public $dohistory              = false;
@@ -50,7 +50,7 @@ class Notepad extends CommonDBChild
 
     public static function getTypeName($nb = 0)
     {
-       //TRANS: Always plural
+        //TRANS: Always plural
         return _n('Note', 'Notes', $nb);
     }
 
@@ -140,7 +140,7 @@ class Notepad extends CommonDBChild
         return countElementsInTable(
             'glpi_notepads',
             ['itemtype' => $item->getType(),
-                'items_id' => $item->getID()
+                'items_id' => $item->getID(),
             ]
         );
     }
@@ -158,22 +158,22 @@ class Notepad extends CommonDBChild
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_notepads.*',
-                'glpi_users.picture'
+                'glpi_users.picture',
             ],
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
                 'glpi_users'   => [
                     'ON' => [
                         self::getTable()  => 'users_id_lastupdater',
-                        'glpi_users'      => 'id'
-                    ]
-                ]
+                        'glpi_users'      => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'itemtype'  => $item->getType(),
-                'items_id'  => $item->getID()
+                'items_id'  => $item->getID(),
             ],
-            'ORDERBY'   => 'date_mod DESC'
+            'ORDERBY'   => 'date_mod DESC',
         ]);
 
         foreach ($iterator as $note) {
@@ -190,7 +190,7 @@ class Notepad extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'notepad',
-            'name'               => $name
+            'name'               => $name,
         ];
 
         $tab[] = [
@@ -200,11 +200,11 @@ class Notepad extends CommonDBChild
             'name'               => $name,
             'datatype'           => 'text',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'forcegroupby'       => true,
             'splititems'         => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -214,10 +214,10 @@ class Notepad extends CommonDBChild
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'forcegroupby'       => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -232,10 +232,10 @@ class Notepad extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => 'glpi_notepads',
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -245,10 +245,10 @@ class Notepad extends CommonDBChild
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'forcegroupby'       => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -264,10 +264,10 @@ class Notepad extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => 'glpi_notepads',
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         return $tab;
@@ -360,7 +360,7 @@ class Notepad extends CommonDBChild
                 );
                 $username = NOT_AVAILABLE;
                 if ($note['users_id']) {
-                     $username = getUserName($note['users_id'], $showuserlink);
+                    $username = getUserName($note['users_id'], $showuserlink);
                 }
                 $create = sprintf(
                     __('Create by %1$s on %2$s'),
@@ -372,8 +372,8 @@ class Notepad extends CommonDBChild
 
                 echo "<div class='boxnotetext $classtoadd' ";
                 if ($canedit) {
-                     echo "onclick=\"" . Html::jsHide("view$id") . " " .
-                              Html::jsShow("edit$id") . "\"";
+                    echo "onclick=\"" . Html::jsHide("view$id") . " " .
+                             Html::jsShow("edit$id") . "\"";
                 }
                 echo ">";
                 $content = nl2br($note['content']);

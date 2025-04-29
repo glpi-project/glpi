@@ -173,8 +173,8 @@ class HTMLTableGroup extends HTMLTableBase
                     foreach ($sub_header_names as $sub_header_name) {
                         $sub_header = $this->getHeaderByName($super_header_name, $sub_header_name);
                         if ($sub_header->hasToDisplay()) {
-                              $this->ordered_headers[]        = $sub_header;
-                              $sub_header->numberOfSubHeaders = $count;
+                            $this->ordered_headers[]        = $sub_header;
+                            $sub_header->numberOfSubHeaders = $count;
                         }
                     }
                 }

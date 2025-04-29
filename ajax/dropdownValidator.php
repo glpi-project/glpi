@@ -106,7 +106,7 @@ if (isset($_POST["validatortype"])) {
             }
             $opt             = ['groups_id' => $_POST["groups_id"],
                 'right'     => $_POST['right'],
-                'entity'    => $_POST["entity"]
+                'entity'    => $_POST["entity"],
             ];
             $data_users      = TicketValidation::getGroupUserHaveRights($opt);
             $users           = [];
@@ -123,11 +123,11 @@ if (isset($_POST["validatortype"])) {
                     $data['firstname']
                 );
                 if (in_array($data['id'], $values)) {
-                     $param['values'][] = $data['id'];
+                    $param['values'][] = $data['id'];
                 }
             }
 
-           // Display all users
+            // Display all users
             if (
                 isset($_POST['all_users'])
                 && $_POST['all_users']
@@ -144,7 +144,7 @@ if (isset($_POST["validatortype"])) {
                 $param
             );
 
-           // Display all/none buttons to select all or no users in group
+            // Display all/none buttons to select all or no users in group
             if (!empty($_POST['groups_id'])) {
                 $param_button = [
                     'validatortype'     => 'list_users',
@@ -163,14 +163,14 @@ if (isset($_POST["validatortype"])) {
                     ['click']
                 );
 
-                 $param_button['all_users'] = 0;
-                 Ajax::updateItemOnEvent(
-                     'no_users',
-                     'show_list_users',
-                     $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
-                     $param_button,
-                     ['click']
-                 );
+                $param_button['all_users'] = 0;
+                Ajax::updateItemOnEvent(
+                    'no_users',
+                    'show_list_users',
+                    $CFG_GLPI["root_doc"] . "/ajax/dropdownValidator.php",
+                    $param_button,
+                    ['click']
+                );
             }
             break;
     }

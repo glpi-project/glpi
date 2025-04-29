@@ -34,6 +34,4 @@
 
 namespace Glpi\Test;
 
-class A_B extends \CommonDBTM
-{
-}
+class A_B extends \CommonDBTM {}

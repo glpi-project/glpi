@@ -50,7 +50,7 @@ abstract class AbstractPluginCommand extends AbstractCommand implements ForceNoP
      *
      * @var string
      */
-    const DIRECTORY_ALL = '*';
+    public const DIRECTORY_ALL = '*';
 
     protected function configure()
     {
@@ -83,10 +83,10 @@ abstract class AbstractPluginCommand extends AbstractCommand implements ForceNoP
         }
 
         if ($all) {
-           // Set wildcard value in directory argument
+            // Set wildcard value in directory argument
             $input->setArgument('directory', [self::DIRECTORY_ALL]);
-        } else if (empty($directories)) {
-           // Ask for plugin list if directory argument is empty
+        } elseif (empty($directories)) {
+            // Ask for plugin list if directory argument is empty
             $choices = $this->getDirectoryChoiceChoices();
 
             if (!empty($choices)) {
@@ -116,7 +116,7 @@ abstract class AbstractPluginCommand extends AbstractCommand implements ForceNoP
     public function getNoPluginsOptionValue()
     {
 
-       // Force no loading on plugins in plugin install process
+        // Force no loading on plugins in plugin install process
         return true;
     }
 

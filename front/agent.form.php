@@ -63,7 +63,7 @@ if (isset($_POST["delete"])) {
         );
     }
     $agent->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $agent->check($_POST['id'], DELETE);
     if ($agent->restore($_POST)) {
         Event::log(
@@ -76,7 +76,7 @@ if (isset($_POST["delete"])) {
         );
     }
     $agent->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $agent->check($_POST['id'], PURGE);
     if ($agent->delete($_POST, 1)) {
         Event::log(
@@ -90,8 +90,8 @@ if (isset($_POST["delete"])) {
     }
     $agent->redirectToList();
 
-   //update an agent
-} else if (isset($_POST["update"])) {
+    //update an agent
+} elseif (isset($_POST["update"])) {
     $agent->check($_POST['id'], UPDATE);
     $agent->update($_POST);
     Event::log(

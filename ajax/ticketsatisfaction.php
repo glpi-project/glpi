@@ -67,7 +67,7 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
                 'max'   => 90,
                 'step'  => 1,
                 'toadd' => ['0' => __('As soon as possible')],
-                'unit'  => 'day'
+                'unit'  => 'day',
             ]
         );
         echo "</td></tr>";
@@ -80,7 +80,7 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
             'max'     => 100,
             'step'    => 10,
             'toadd'   => [0 => __('Disabled')],
-            'unit'    => '%'
+            'unit'    => '%',
         ]);
         echo "</td></tr>";
 
@@ -93,14 +93,14 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
                 'max'   => 180,
                 'step'  => 1,
                 'toadd' => ['0' => __('Unspecified')],
-                'unit'  => 'day'
+                'unit'  => 'day',
             ]
         );
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'><td>" . __('For tickets closed after') . "</td><td>";
         Html::showDateTimeField("max_closedate", ['value'      => $max_closedate,
-            'timestep'   => 1
+            'timestep'   => 1,
         ]);
         echo "</td></tr>";
 

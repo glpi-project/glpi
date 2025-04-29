@@ -92,7 +92,7 @@ trait DCBreadcrumb
                 $position .= ' (' . $pdu_rack->fields['position'] . ')';
                 $options = [
                     'linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : '',
-                    'icon'       => true
+                    'icon'       => true,
                 ];
                 $breadcrumb[] = $rack->getLink($options) . '&nbsp;' . $position;
                 $item = $rack;
@@ -100,11 +100,11 @@ trait DCBreadcrumb
         }
 
         if (in_array($item->getType(), $enclosure_types)) {
-           //check if asset is part of an enclosure
+            //check if asset is part of an enclosure
             if ($enclosure = $this->isEnclosurePart($item->getType(), $item->getID(), true)) {
                 $options = [
                     'linkoption' => $enclosure->isDeleted() ? 'class="target-deleted"' : '',
-                    'icon'       => true
+                    'icon'       => true,
                 ];
                 $position = $this->getItemEnclosurePosition($item->getType(), $item->getID());
                 $breadcrumb[] = $enclosure->getLink($options) . $position;
@@ -113,11 +113,11 @@ trait DCBreadcrumb
         }
 
         if (in_array($item->getType(), $types)) {
-           //check if asset (or its enclosure) is part of a rack
+            //check if asset (or its enclosure) is part of a rack
             if ($rack = $this->isRackPart($item->getType(), $item->getID(), true)) {
                 $options = [
                     'linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : '',
-                    'icon'       => true
+                    'icon'       => true,
                 ];
                 $position = $this->getItemRackPosition($item->getType(), $item->getID());
                 $breadcrumb[] = $rack->getLink($options) . $position;
@@ -131,7 +131,7 @@ trait DCBreadcrumb
                 if ($dcroom->getFromDB($item->fields['dcrooms_id'])) {
                     $options = [
                         'linkoption' => $dcroom->isDeleted() ? 'class="target-deleted"' : '',
-                        'icon'       => true
+                        'icon'       => true,
                     ];
                     $breadcrumb[] = $dcroom->getLink($options);
                     $item = $dcroom;
@@ -145,7 +145,7 @@ trait DCBreadcrumb
                 if ($datacenter->getFromDB($item->fields['datacenters_id'])) {
                     $options = [
                         'linkoption' => $datacenter->isDeleted() ? 'class="target-deleted"' : '',
-                        'icon'       => true
+                        'icon'       => true,
                     ];
                     $breadcrumb[] = $datacenter->getLink($options);
                 }
@@ -169,7 +169,7 @@ trait DCBreadcrumb
         $ien = new Item_Enclosure();
         $found = $ien->getFromDBByCrit([
             'itemtype'  => $itemtype,
-            'items_id'  => $items_id
+            'items_id'  => $items_id,
         ]);
 
         if ($found && $getobj) {
@@ -177,7 +177,7 @@ trait DCBreadcrumb
             if ($enclosure->getFromDB($ien->fields['enclosures_id'])) {
                 return $enclosure;
             } else {
-               // Association to unexisting enclosure is possible due to a bug in 9.3.0.
+                // Association to unexisting enclosure is possible due to a bug in 9.3.0.
                 return false;
             }
         }
@@ -201,7 +201,7 @@ trait DCBreadcrumb
         if (
             $ien->getFromDBByCrit([
                 'itemtype'  => $itemtype,
-                'items_id'  => $items_id
+                'items_id'  => $items_id,
             ])
         ) {
             $position = $ien->getField('position');
@@ -227,7 +227,7 @@ trait DCBreadcrumb
         if (
             $ira->getFromDBByCrit([
                 'itemtype'  => $itemtype,
-                'items_id'  => $items_id
+                'items_id'  => $items_id,
             ])
         ) {
             $position = $ira->getField('position');
@@ -251,14 +251,14 @@ trait DCBreadcrumb
         $ira = new Item_Rack();
         $found = $ira->getFromDBByCrit([
             'itemtype'  => $itemtype,
-            'items_id'  => $items_id
+            'items_id'  => $items_id,
         ]);
         if ($found && $getobj) {
             $rack = new \Rack();
             if ($rack->getFromDb($ira->fields['racks_id'])) {
                 return $rack;
             } else {
-               // Association to unexisting rack is possible due to a bug in 9.3.0.
+                // Association to unexisting rack is possible due to a bug in 9.3.0.
                 return false;
             }
         }

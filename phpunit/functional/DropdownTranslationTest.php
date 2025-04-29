@@ -47,7 +47,7 @@ class DropdownTranslationTest extends DbTestCase
         $category = $this->createItem(
             ITILCategory::class,
             [
-                'name' => 'Root category'
+                'name' => 'Root category',
             ]
         );
         $sub_category = $this->createItem(
@@ -85,7 +85,7 @@ class DropdownTranslationTest extends DbTestCase
                     'language' => 'fr_FR',
                     'field'    => 'name',
                     'value'    => 'Catégorie racine',
-                ]
+                ],
             ],
             'category_id'   => $category->getID(),
             'language'      => 'fr_FR',
@@ -101,7 +101,7 @@ class DropdownTranslationTest extends DbTestCase
                     'language' => 'fr_FR',
                     'field'    => 'name',
                     'value'    => 'Catégorie racine',
-                ]
+                ],
             ],
             'category_id'   => $sub_category->getID(),
             'language'      => 'fr_FR',
@@ -117,7 +117,7 @@ class DropdownTranslationTest extends DbTestCase
                     'language' => 'fr_FR',
                     'field'    => 'name',
                     'value'    => 'Sous catégorie',
-                ]
+                ],
             ],
             'category_id'   => $sub_category->getID(),
             'language'      => 'fr_FR',
@@ -140,7 +140,7 @@ class DropdownTranslationTest extends DbTestCase
                     'language' => 'fr_FR',
                     'field'    => 'name',
                     'value'    => 'Sous catégorie',
-                ]
+                ],
             ],
             'category_id'   => $sub_category->getID(),
             'language'      => 'fr_FR',
@@ -156,7 +156,7 @@ class DropdownTranslationTest extends DbTestCase
                     'language' => 'fr_FR',
                     'field'    => 'name',
                     'value'    => 'Sous catégorie',
-                ]
+                ],
             ],
             'category_id'   => $sub_sub_category->getID(),
             'language'      => 'fr_FR',

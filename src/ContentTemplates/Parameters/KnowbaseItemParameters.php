@@ -75,7 +75,7 @@ class KnowbaseItemParameters extends AbstractParameters
     protected function defineValues(CommonDBTM $kbi): array
     {
 
-       // Output "unsanitized" values
+        // Output "unsanitized" values
         $fields = Sanitizer::unsanitize($kbi->fields);
 
         return [

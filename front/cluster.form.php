@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $cluster->check($_POST["id"], DELETE);
     $cluster->delete($_POST);
 
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
     $cluster->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $cluster->check($_POST["id"], DELETE);
 
     $cluster->restore($_POST);
@@ -90,7 +90,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s restores an item'), $_SESSION["glpiname"])
     );
     $cluster->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $cluster->check($_POST["id"], PURGE);
 
     $cluster->delete($_POST, 1);
@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $cluster->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $cluster->check($_POST["id"], UPDATE);
 
     $cluster->update($_POST);

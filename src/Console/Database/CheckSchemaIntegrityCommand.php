@@ -48,28 +48,28 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
      *
      * @var integer
      */
-    const ERROR_UNABLE_TO_READ_EMPTYSQL = 1;
+    public const ERROR_UNABLE_TO_READ_EMPTYSQL = 1;
 
     /**
      * Error code returned when differences are found.
      *
      * @var integer
      */
-    const ERROR_FOUND_DIFFERENCES = 2;
+    public const ERROR_FOUND_DIFFERENCES = 2;
 
     /**
      * Error code returned when a DB update is necessary to be able to perform the check.
      *
      * @var integer
      */
-    const ERROR_REQUIRE_DB_UPDATE = 3;
+    public const ERROR_REQUIRE_DB_UPDATE = 3;
 
     /**
      * Error code returned when a DB version is not supported.
      *
      * @var integer
      */
-    const ERROR_UNSUPPORTED_VERSION = 4;
+    public const ERROR_UNSUPPORTED_VERSION = 4;
 
     protected $requires_db_up_to_date = false;
 

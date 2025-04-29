@@ -41,18 +41,18 @@ use Glpi\Application\View\TemplateRenderer;
 
 class APIClient extends CommonDBTM
 {
-    const DOLOG_DISABLED   = 0;
-    const DOLOG_LOGS       = 1;
-    const DOLOG_HISTORICAL = 2;
+    public const DOLOG_DISABLED   = 0;
+    public const DOLOG_LOGS       = 1;
+    public const DOLOG_HISTORICAL = 2;
 
     public static $rightname = 'config';
     protected $displaylist = false;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
 
     public static $undisclosedFields = [
-        'app_token'
+        'app_token',
     ];
 
     public static function canCreate()
@@ -86,7 +86,7 @@ class APIClient extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => self::GetTypeName()
+            'name'               => self::GetTypeName(),
         ];
 
         $tab[] = [
@@ -103,7 +103,7 @@ class APIClient extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -111,7 +111,7 @@ class APIClient extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -119,12 +119,12 @@ class APIClient extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'dolog_method',
             'name'               => __('Log connections'),
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
             'id'                 => 'filter',
-            'name'               => __('Filter access')
+            'name'               => __('Filter access'),
         ];
 
         $tab[] = [
@@ -132,7 +132,7 @@ class APIClient extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'ipv4_range_start',
             'name'               => __('IPv4 address range') . " - " . __("Start"),
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -140,7 +140,7 @@ class APIClient extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'ipv4_range_end',
             'name'               => __('IPv4 address range') . " - " . __("End"),
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -176,7 +176,7 @@ class APIClient extends CommonDBTM
                 if (empty($values[$field])) {
                     return '';
                 }
-                return long2ip((int)$values[$field]);
+                return long2ip((int) $values[$field]);
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -196,7 +196,7 @@ class APIClient extends CommonDBTM
         TemplateRenderer::getInstance()->display('pages/setup/apiclient.html.twig', [
             'item'   => $this,
             'params' => $options,
-            'log_methods' => self::getLogMethod()
+            'log_methods' => self::getLogMethod(),
         ]);
         return true;
     }
@@ -260,7 +260,7 @@ class APIClient extends CommonDBTM
                 'Log',
                 'Logs',
                 Session::getPluralNumber()
-            )
+            ),
         ];
     }
 

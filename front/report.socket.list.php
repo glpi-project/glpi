@@ -47,7 +47,7 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
 
     $name = Dropdown::getDropdownName("glpi_sockets", $_POST["prise"]);
 
-   // Titre
+    // Titre
     echo "<div class='center spaced'><h2>" . sprintf(__('Network report by outlet: %s'), $name) .
         "</h2></div>";
 
@@ -60,17 +60,17 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
             'glpi_locations'  => [
                 'ON'  => [
                     'glpi_locations'  => 'id',
-                    'glpi_sockets'  => 'locations_id'
-                ]
-            ]
+                    'glpi_sockets'  => 'locations_id',
+                ],
+            ],
         ], //left join
         [
             'glpi_networkportethernets'   => [
                 'ON'  => [
                     'glpi_networkportethernets' => 'networkports_id',
-                    'glpi_sockets'              => 'networkports_id'
-                ]
-            ]
+                    'glpi_sockets'              => 'networkports_id',
+                ],
+            ],
         ], //inner join
         [], //order
         Location::getTypeName()

@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $constype->check($_POST["id"], DELETE);
 
     if ($constype->delete($_POST)) {
@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
         );
     }
     $constype->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $constype->check($_POST["id"], DELETE);
 
     if ($constype->restore($_POST)) {
@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
         );
     }
     $constype->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $constype->check($_POST["id"], PURGE);
 
     if ($constype->delete($_POST, 1)) {
@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
         );
     }
     $constype->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $constype->check($_POST["id"], UPDATE);
 
     if ($constype->update($_POST)) {
@@ -120,6 +120,6 @@ if (isset($_POST["add"])) {
 } else {
     $menus = ["assets", "consumableitem"];
     ConsumableItem::displayFullPageForItem($_GET["id"], $menus, [
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

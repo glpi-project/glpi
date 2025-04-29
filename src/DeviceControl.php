@@ -53,15 +53,15 @@ class DeviceControl extends CommonDevice
             parent::getAdditionalFields(),
             [['name'  => 'is_raid',
                 'label' => __('RAID'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
                 ['name'  => 'interfacetypes_id',
                     'label' => __('Interface'),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 ['name'  => 'devicecontrolmodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 ['name'  => 'none',
                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
@@ -71,8 +71,8 @@ class DeviceControl extends CommonDevice
                                             null,
                                             false
                                         ),
-                    'type'  => 'registeredIDChooser'
-                ]
+                    'type'  => 'registeredIDChooser',
+                ],
             ]
         );
     }
@@ -87,7 +87,7 @@ class DeviceControl extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'is_raid',
             'name'               => __('RAID'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -95,7 +95,7 @@ class DeviceControl extends CommonDevice
             'table'              => 'glpi_interfacetypes',
             'field'              => 'name',
             'name'               => __('Interface'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -103,7 +103,7 @@ class DeviceControl extends CommonDevice
             'table'              => 'glpi_devicecontrolmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;

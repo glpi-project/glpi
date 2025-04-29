@@ -72,14 +72,14 @@ class Report extends CommonGLPI
          */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
-       // Report generation
-       // Default Report included
+        // Report generation
+        // Default Report included
         $report_list = [];
         $report_list["default"]["name"] = __('Default report');
         $report_list["default"]["file"] = "report.default.php";
 
         if (Contract::canView()) {
-           // Rapport ajoute par GLPI V0.2
+            // Rapport ajoute par GLPI V0.2
             $report_list["Contrats"]["name"] = __('By contract');
             $report_list["Contrats"]["file"] = "report.contract.php";
         }
@@ -110,7 +110,7 @@ class Report extends CommonGLPI
             $report_list["state"]["name"] = __('Status');
             $report_list["state"]["file"] = "report.state.php";
         }
-       //Affichage du tableau de presentation des stats
+        //Affichage du tableau de presentation des stats
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr><th colspan='2'>" . __('Select the report you want to generate') . "</th></tr>";
         echo "<tr class='tab_bg_1'><td class='center'>";
@@ -138,7 +138,7 @@ class Report extends CommonGLPI
                 if (is_array($pages) && count($pages)) {
                     foreach ($pages as $page => $name) {
                         $names[$plug . '/' . $page] = ["name" => $name,
-                            "plug" => $plug
+                            "plug" => $plug,
                         ];
                         $optgroup[$plug] = Plugin::getInfo($plug, 'name');
                     }
@@ -171,7 +171,7 @@ class Report extends CommonGLPI
             'statmenu',
             $values,
             ['on_change' => "window.location.href=this.options[this.selectedIndex].value",
-                'value'     => $selected
+                'value'     => $selected,
             ]
         );
         echo "</td>";
@@ -193,10 +193,10 @@ class Report extends CommonGLPI
          */
         global $CFG_GLPI, $DB;
 
-       // Title
+        // Title
         echo "<span class='big b'>GLPI " . Report::getTypeName(Session::getPluralNumber()) . "</span><br><br>";
 
-       // 1. Get counts of itemtype
+        // 1. Get counts of itemtype
         $items     = $CFG_GLPI["asset_types"];
 
         $linkitems = $CFG_GLPI['directconnect_types'];
@@ -209,8 +209,8 @@ class Report extends CommonGLPI
                 'COUNT'  => 'cpt',
                 'FROM'   => $table_item,
                 'WHERE'  => [
-                    "$table_item.is_deleted"   => 0
-                ] + getEntitiesRestrictCriteria($table_item)
+                    "$table_item.is_deleted"   => 0,
+                ] + getEntitiesRestrictCriteria($table_item),
             ];
 
             $itemtype_object = new $itemtype();
@@ -225,16 +225,16 @@ class Report extends CommonGLPI
                             'glpi_computers_items'  => 'items_id',
                             $table_item             => 'id', [
                                 'AND' => [
-                                    'glpi_computers_items.itemtype' => $itemtype
-                                ]
-                            ]
-                        ]
-                    ]
+                                    'glpi_computers_items.itemtype' => $itemtype,
+                                ],
+                            ],
+                        ],
+                    ],
                 ];
             }
 
             $result = $DB->request($criteria)->current();
-            $number = (int)$result['cpt'];
+            $number = (int) $result['cpt'];
 
             echo "<tr class='tab_bg_2'><td>" . $itemtype::getTypeName(Session::getPluralNumber()) . "</td>";
             echo "<td class='numeric'>$number</td></tr>";
@@ -242,23 +242,23 @@ class Report extends CommonGLPI
 
         echo "<tr class='tab_bg_1'><td colspan='2' class='b'>" . OperatingSystem::getTypeName(1) . "</td></tr>";
 
-       // 2. Get some more number data (operating systems per computer)
+        // 2. Get some more number data (operating systems per computer)
         $iterator = $DB->request([
             'SELECT'    => [
                 'COUNT' => '* AS count',
-                'glpi_operatingsystems.name AS name'
+                'glpi_operatingsystems.name AS name',
             ],
             'FROM'      => 'glpi_items_operatingsystems',
             'LEFT JOIN' => [
                 'glpi_operatingsystems' => [
                     'ON' => [
                         'glpi_items_operatingsystems' => 'operatingsystems_id',
-                        'glpi_operatingsystems'       => 'id'
-                    ]
-                ]
+                        'glpi_operatingsystems'       => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => ['is_deleted' => 0] + getEntitiesRestrictCriteria('glpi_items_operatingsystems'),
-            'GROUPBY'   => 'glpi_operatingsystems.name'
+            'GROUPBY'   => 'glpi_operatingsystems.name',
         ]);
 
         foreach ($iterator as $data) {
@@ -269,7 +269,7 @@ class Report extends CommonGLPI
             echo "<td class='numeric'>" . $data['count'] . "</td></tr>";
         }
 
-       // Get counts of types
+        // Get counts of types
 
         $val   = array_flip($items);
         $items = array_flip($val);
@@ -292,21 +292,21 @@ class Report extends CommonGLPI
             $criteria = [
                 'SELECT'    => [
                     'COUNT'  => '* AS count',
-                    "$type_table.name AS name"
+                    "$type_table.name AS name",
                 ],
                 'FROM'      => $table_item,
                 'LEFT JOIN' => [
                     $type_table => [
                         'ON' => [
                             $table_item => $typefield,
-                            $type_table => 'id'
-                        ]
-                    ]
+                            $type_table => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
-                    "$table_item.is_deleted"   => 0
+                    "$table_item.is_deleted"   => 0,
                 ] + getEntitiesRestrictCriteria($table_item),
-                'GROUPBY'   => "$type_table.name"
+                'GROUPBY'   => "$type_table.name",
             ];
 
             $itemtype_object = new $itemtype();
@@ -320,17 +320,17 @@ class Report extends CommonGLPI
                         'glpi_computers_items'  => 'items_id',
                         $table_item             => 'id', [
                             'AND' => [
-                                'glpi_computers_items.itemtype'  => $itemtype
-                            ]
-                        ]
-                    ]
+                                'glpi_computers_items.itemtype'  => $itemtype,
+                            ],
+                        ],
+                    ],
                 ];
             }
 
             $iterator = $DB->request($criteria);
             foreach ($iterator as $data) {
                 if (empty($data['name'])) {
-                    $data['name'] = Dropdown:: EMPTY_VALUE;
+                    $data['name'] = Dropdown::EMPTY_VALUE;
                 }
                 echo "<tr class='tab_bg_2'><td>" . $data['name'] . "</td>";
                 echo "<td class='numeric'>" . $data['count'] . "</td></tr>";
@@ -369,9 +369,9 @@ class Report extends CommonGLPI
         /** @var \DBmysql $DB */
         global $DB;
 
-       // This SQL request matches the NetworkPort, then its NetworkName and IPAddreses. It also
-       //      match opposite NetworkPort, then its NetworkName and IPAddresses.
-       // Results are groupes by NetworkPort. Then all IPs are concatenated by comma as separator.
+        // This SQL request matches the NetworkPort, then its NetworkName and IPAddreses. It also
+        //      match opposite NetworkPort, then its NetworkName and IPAddresses.
+        // Results are groupes by NetworkPort. Then all IPs are concatenated by comma as separator.
 
         if (count($joincrit) === 3) {
             $andcrit = array_pop($joincrit);
@@ -395,13 +395,13 @@ class Report extends CommonGLPI
                 'PORT_2.id AS id_2',
                 'PORT_2.name AS port_2',
                 'PORT_2.mac AS mac_2',
-                new QueryExpression('GROUP_CONCAT(' . $DB->quoteName('ADDR_2.name') . ' SEPARATOR ' . $DB->quote(',') . ') AS ' . $DB->quoteName('ip_2'))
+                new QueryExpression('GROUP_CONCAT(' . $DB->quoteName('ADDR_2.name') . ' SEPARATOR ' . $DB->quote(',') . ') AS ' . $DB->quoteName('ip_2')),
             ], $select),
             'FROM'         => $from,
             'INNER JOIN'   => $innerjoin + [
                 'glpi_networkports AS PORT_1' => [
-                    'ON' => $joincrit
-                ]
+                    'ON' => $joincrit,
+                ],
             ],
             'LEFT JOIN'    => [
                 'glpi_networknames AS NAME_1' => [
@@ -410,10 +410,10 @@ class Report extends CommonGLPI
                         'NAME_1' => 'items_id', [
                             'AND'    => [
                                 'NAME_1.itemtype'    => 'NetworkPort',
-                                'NAME_1.is_deleted'  => 0
-                            ]
-                        ]
-                    ]
+                                'NAME_1.is_deleted'  => 0,
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_ipaddresses AS ADDR_1'  => [
                     'ON'  => [
@@ -421,20 +421,20 @@ class Report extends CommonGLPI
                         'ADDR_1' => 'items_id', [
                             'AND'    => [
                                 'ADDR_1.itemtype'    => 'NetworkName',
-                                'ADDR_1.is_deleted'  => 0
-                            ]
-                        ]
-                    ]
+                                'ADDR_1.is_deleted'  => 0,
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_networkports_networkports AS LINK'  => [
                     'ON'  => [
                         'LINK'   => 'networkports_id_1',
                         'PORT_1' => 'id', [
                             'OR'     => [
-                                'LINK.networkports_id_2'   => new QueryExpression($DB->quoteName('PORT_1.id'))
-                            ]
-                        ]
-                    ]
+                                'LINK.networkports_id_2'   => new QueryExpression($DB->quoteName('PORT_1.id')),
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_networkports AS PORT_2' => [
                     'ON'  => [
@@ -443,8 +443,8 @@ class Report extends CommonGLPI
                             'IF(' . $DB->quoteName('LINK.networkports_id_1') . ' = ' . $DB->quoteName('PORT_1.id') . ', ' .
                             $DB->quoteName('LINK.networkports_id_2') . ', ' .
                             $DB->quoteName('LINK.networkports_id_1') . ')'
-                        )
-                    ]
+                        ),
+                    ],
                 ],
                 'glpi_networknames AS NAME_2' => [
                     'ON'  => [
@@ -452,10 +452,10 @@ class Report extends CommonGLPI
                         'NAME_2' => 'items_id', [
                             'AND'    => [
                                 'NAME_2.itemtype'     => 'NetworkPort',
-                                'NAME_2.is_deleted'   => 0
-                            ]
-                        ]
-                    ]
+                                'NAME_2.is_deleted'   => 0,
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_ipaddresses AS ADDR_2'  => [
                     'ON'  => [
@@ -463,14 +463,14 @@ class Report extends CommonGLPI
                         'ADDR_2' => 'items_id', [
                             'AND'    => [
                                 'ADDR_2.itemtype'    => 'NetworkName',
-                                'ADDR_2.is_deleted'  => 0
-                            ]
-                        ]
-                    ]
-                ]
+                                'ADDR_2.is_deleted'  => 0,
+                            ],
+                        ],
+                    ],
+                ],
             ] + $leftjoin,
             'WHERE'        => $where,
-            'GROUPBY'      => ['PORT_1.id']
+            'GROUPBY'      => ['PORT_1.id'],
         ];
 
         if (count($order)) {
@@ -509,7 +509,7 @@ class Report extends CommonGLPI
             foreach ($iterator as $line) {
                 echo "<tr class='tab_bg_1'>";
 
-               // To ensure that the NetworkEquipment remain the first item, we test its type
+                // To ensure that the NetworkEquipment remain the first item, we test its type
                 if ($line['itemtype_2'] == 'NetworkEquipment') {
                     $idx = 2;
                 } else {
@@ -526,7 +526,7 @@ class Report extends CommonGLPI
                     $item_name = '';
                     if ($item = getItemForItemtype($itemtype)) {
                         if ($item->getFromDB($line["items_id_$idx"])) {
-                             $item_name = $item->getName();
+                            $item_name = $item->getName();
                         }
                     }
                     echo "<td>" . (empty($item_name) ? NOT_AVAILABLE : $item_name) . "</td>";
@@ -554,7 +554,7 @@ class Report extends CommonGLPI
                     $item_name = '';
                     if ($item = getItemForItemtype($itemtype)) {
                         if ($item->getFromDB($line["items_id_$idx"])) {
-                             $item_name = $item->getName();
+                            $item_name = $item->getName();
                         }
                     }
                     echo "<td>" . (empty($item_name) ? NOT_AVAILABLE : $item_name) . "</td>";

@@ -59,7 +59,7 @@ class MonitorTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"base64": "AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=", "caption": "DJCP6", "description": "32/2015", "manufacturer": "Sharp Corporation", "serial": "AFGHHDR0", "name": "DJCP6", "manufacturers_id": "Sharp Corporation", "monitormodels_id": "DJCP6", "is_dynamic": 1}'
+                'expected'  => '{"base64": "AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=", "caption": "DJCP6", "description": "32/2015", "manufacturer": "Sharp Corporation", "serial": "AFGHHDR0", "name": "DJCP6", "manufacturers_id": "Sharp Corporation", "monitormodels_id": "DJCP6", "is_dynamic": 1}',
             ], [ //no name but description
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -75,7 +75,7 @@ class MonitorTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"base64": "AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=", "description": "32/2015", "manufacturer": "Sharp Corporation", "serial": "00000000", "name": "32/2015", "manufacturers_id": "Sharp Corporation", "is_dynamic": 1}'
+                'expected'  => '{"base64": "AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=", "description": "32/2015", "manufacturer": "Sharp Corporation", "serial": "00000000", "name": "32/2015", "manufacturers_id": "Sharp Corporation", "is_dynamic": 1}',
             ], [ //no name, no description
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -90,7 +90,7 @@ class MonitorTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"base64": "AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=", "manufacturer": "Sharp Corporation", "serial": "00000000", "name": "", "manufacturers_id": "Sharp Corporation", "is_dynamic": 1}'
+                'expected'  => '{"base64": "AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=", "manufacturer": "Sharp Corporation", "serial": "00000000", "name": "", "manufacturers_id": "Sharp Corporation", "is_dynamic": 1}',
             ], [ //no serial, no manufacturer
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -105,7 +105,7 @@ class MonitorTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"base64": "AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=", "caption": "DJCP6", "description": "32/2015", "serial": "", "name": "DJCP6", "manufacturers_id": "", "monitormodels_id": "DJCP6", "is_dynamic": 1}'
+                'expected'  => '{"base64": "AP///////wBNEEkUAAAAACAZAQSlHRF4Dt5Qo1RMmSYPUFQAAAABAQEBAQEBAQEBAQEBAQEBGjaAoHA4H0AwIDUAJqUQAAAYAAAAEAAAAAAAAAAAAAAAAAAAAAAA/gBESkNQNoBMUTEzM00xAAAAAAACQQMoABIAAAsBCiAgAGY=", "caption": "DJCP6", "description": "32/2015", "serial": "", "name": "DJCP6", "manufacturers_id": "", "monitormodels_id": "DJCP6", "is_dynamic": 1}',
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -122,8 +122,8 @@ class MonitorTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"base64": "AP///////wAmzQth5AIAAAMaAQOANB14KizFpFZQoSgPUFS/7wDRwIGAlQCzAIFAcU+VDwEBAjqAGHE4LUBYLEUACSUhAAAeAAAA/QA3TB5TEQAKICAgICAgAAAA/wAxMTI2MVY2MTAwNzQwAAAA/ABQTDI0ODBICiAgICAgAdACAx7BSwECAwQFEBESExQfIwkHAYMBAABlAwwAEACMCtCKIOAtEBA+lgAJJSEAABgBHQByUdAeIG4oVQAJJSEAAB6MCtCQIEAxIAxAVQAJJSEAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAnw==", "caption": "PL2480H", "description": "3/2016", "manufacturer": "Iiyama North America", "serial": "11261V6100740", "name": "PL2480H", "manufacturers_id": "Iiyama North America", "monitormodels_id": "PL2480H", "is_dynamic": 1}'
-            ]
+                'expected'  => '{"base64": "AP///////wAmzQth5AIAAAMaAQOANB14KizFpFZQoSgPUFS/7wDRwIGAlQCzAIFAcU+VDwEBAjqAGHE4LUBYLEUACSUhAAAeAAAA/QA3TB5TEQAKICAgICAgAAAA/wAxMTI2MVY2MTAwNzQwAAAA/ABQTDI0ODBICiAgICAgAdACAx7BSwECAwQFEBESExQfIwkHAYMBAABlAwwAEACMCtCKIOAtEBA+lgAJJSEAABgBHQByUdAeIG4oVQAJJSEAAB6MCtCQIEAxIAxAVQAJJSEAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAnw==", "caption": "PL2480H", "description": "3/2016", "manufacturer": "Iiyama North America", "serial": "11261V6100740", "name": "PL2480H", "manufacturers_id": "Iiyama North America", "monitormodels_id": "PL2480H", "is_dynamic": 1}',
+            ],
         ];
     }
 
@@ -138,7 +138,7 @@ class MonitorTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Monitor($computer, $json->content->monitors);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -147,14 +147,14 @@ class MonitorTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no monitor linked to this computer
+        //first, check there are no monitor linked to this computer
         $ico = new \Computer_Item();
-                 $this->assertFalse(
-                     $ico->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Monitor']),
-                     'A monitor is already linked to computer!'
-                 );
+        $this->assertFalse(
+            $ico->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Monitor']),
+            'A monitor is already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -163,7 +163,7 @@ class MonitorTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Monitor($computer, $json->content->monitors);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
@@ -171,7 +171,7 @@ class MonitorTest extends AbstractInventoryAsset
         $agent->getEmpty();
         $asset->setAgent($agent);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
@@ -219,8 +219,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -254,8 +254,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -304,8 +304,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -339,8 +339,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -401,8 +401,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -436,8 +436,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -490,8 +490,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -567,8 +567,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -635,8 +635,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -712,8 +712,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -747,8 +747,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -811,8 +811,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -856,8 +856,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -913,7 +913,7 @@ class MonitorTest extends AbstractInventoryAsset
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_monitor' => 0
+                'import_monitor' => 0,
             ])
         );
         $this->logout();
@@ -925,7 +925,7 @@ class MonitorTest extends AbstractInventoryAsset
         $this->login();
         $this->assertTrue(
             $conf->saveConf([
-                'import_monitor' => 1
+                'import_monitor' => 1,
             ])
         );
         $this->logOut();
@@ -937,8 +937,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -959,8 +959,8 @@ class MonitorTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -1031,8 +1031,8 @@ class MonitorTest extends AbstractInventoryAsset
                 'OR' => [
                     'itemtype' => \Computer::class,
                     'itemtype' => \Monitor::class,
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -1074,8 +1074,8 @@ class MonitorTest extends AbstractInventoryAsset
             'WHERE' => [
                 'itemtype' => \Monitor::class,
                 'itemtype_link' => \Computer::class,
-                'linked_action' => \Log::HISTORY_DEL_RELATION
-            ]
+                'linked_action' => \Log::HISTORY_DEL_RELATION,
+            ],
         ]);
         $this->assertCount(1, $logs);
 
@@ -1124,8 +1124,8 @@ class MonitorTest extends AbstractInventoryAsset
             'WHERE' => [
                 'itemtype' => \Monitor::class,
                 'itemtype_link' => \Computer::class,
-                'linked_action' => \Log::HISTORY_ADD_RELATION
-            ]
+                'linked_action' => \Log::HISTORY_ADD_RELATION,
+            ],
         ]);
         $this->assertCount(1, $logs);
 

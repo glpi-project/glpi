@@ -97,7 +97,7 @@ class Item_Rack extends CommonDBRelation
                     if ($item->can($id, UPDATE, $input)) {
                         $relation_criteria = [
                             'itemtype' => $item->getType(),
-                            'items_id' => $item->getID()
+                            'items_id' => $item->getID(),
                         ];
                         if (countElementsInTable(Item_Rack::getTable(), $relation_criteria) > 0) {
                             if ($item_rack->deleteByCriteria($relation_criteria)) {
@@ -144,9 +144,9 @@ class Item_Rack extends CommonDBRelation
         $items = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'racks_id' => $rack->getID()
+                'racks_id' => $rack->getID(),
             ],
-            'ORDER' => 'position DESC'
+            'ORDER' => 'position DESC',
         ]);
         $link = new self();
 
@@ -180,7 +180,7 @@ class Item_Rack extends CommonDBRelation
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = [
                     'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                    'container'       => 'mass' . __CLASS__ . $rand
+                    'container'       => 'mass' . __CLASS__ . $rand,
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -231,13 +231,13 @@ class Item_Rack extends CommonDBRelation
         echo "<div id='viewgraph'>";
 
         $data = [];
-       //all rows; empty
-        for ($i = (int)$rack->fields['number_units']; $i > 0; --$i) {
+        //all rows; empty
+        for ($i = (int) $rack->fields['number_units']; $i > 0; --$i) {
             $data[Rack::FRONT][$i] = false;
             $data[Rack::REAR][$i] = false;
         }
 
-       //fill rows
+        //fill rows
         $outbound = [];
         foreach ($items as $row) {
             $rel  = new self();
@@ -301,10 +301,10 @@ class Item_Rack extends CommonDBRelation
                     'row'     => $row,
                     'item'    => $item,
                     'model'   => $model,
-                    'gs_item' => $gs_item
+                    'gs_item' => $gs_item,
                 ];
 
-               //add to other side if needed
+                //add to other side if needed
                 if (
                     $model == null
                     || $model->fields['depth'] >= 1
@@ -313,12 +313,12 @@ class Item_Rack extends CommonDBRelation
                     $flip_orientation = (int) !((bool) $row['orientation']);
                     if ($gs_item['half_rack']) {
                         $gs_item['x'] = (int) !((bool) $gs_item['x']);
-                       //$row['position'] = substr($row['position'], 0, -2)."_".$gs_item['x'];
+                        //$row['position'] = substr($row['position'], 0, -2)."_".$gs_item['x'];
                     }
                     $data[$flip_orientation][$row['position']] = [
                         'row'     => $row,
                         'item'    => $item,
-                        'gs_item' => $gs_item
+                        'gs_item' => $gs_item,
                     ];
                 }
             } else {
@@ -356,7 +356,7 @@ class Item_Rack extends CommonDBRelation
          <div class="racks_col">
          <h2>' . __('Front') . '</h2>
          <div class="rack_side rack_front">';
-       // append some spaces on top for having symetrical view between front and rear
+        // append some spaces on top for having symetrical view between front and rear
         for ($i = 0; $i < $nb_top_pdu; $i++) {
             echo "<div class='virtual_pdu_space'></div>";
         }
@@ -378,7 +378,7 @@ class Item_Rack extends CommonDBRelation
                     gs-h="1" gs-w="2" gs-x="0" gs-y="' . $rack->fields['number_units'] . '"></div>
             </div>
             <ul class="indexes"></ul>';
-       // append some spaces on bottom for having symetrical view between front and rear
+        // append some spaces on bottom for having symetrical view between front and rear
         for ($i = 0; $i < $nb_bot_pdu; $i++) {
             echo "<div class='virtual_pdu_space'></div>";
         }
@@ -453,8 +453,8 @@ JAVASCRIPT;
         $items = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'racks_id' => $rack->getID()
-            ]
+                'racks_id' => $rack->getID(),
+            ],
         ]);
 
         $weight = 0;
@@ -522,14 +522,14 @@ JAVASCRIPT;
         Html::progressBar('rack_weight', [
             'create' => true,
             'percent' => $weight_prct,
-            'message' => $weight . " / " . $rack->fields['max_weight']
+            'message' => $weight . " / " . $rack->fields['max_weight'],
         ]);
 
         echo "<h3>" . __("Power") . "</h3>";
         Html::progressBar('rack_power', [
             'create' => true,
             'percent' => $power_prct,
-            'message' => $power . " / " . $rack->fields['max_power']
+            'message' => $power . " / " . $rack->fields['max_power'],
         ]);
         echo "</div>";
         echo "</div>";
@@ -565,7 +565,7 @@ JAVASCRIPT;
                 'itemtype',
                 [
                     'id'    => "itemtype_$rand",
-                    'value' => 'PDU'
+                    'value' => 'PDU',
                 ]
             );
             echo PDU::getTypeName(1);
@@ -581,16 +581,16 @@ JAVASCRIPT;
                 [
                     'display_emptychoice'   => true,
                     'value'                 => $this->fields["itemtype"],
-                    'rand'                  => $rand
+                    'rand'                  => $rand,
                 ]
             );
         }
 
-       //get all used items
+        //get all used items
         $used = $used_reserved = [];
         $iterator = $DB->request([
             'SELECT' => ['itemtype', 'items_id', 'is_reserved'],
-            'FROM' => static::getTable()
+            'FROM' => static::getTable(),
         ]);
         foreach ($iterator as $row) {
             if ($row['is_reserved']) {
@@ -603,10 +603,10 @@ JAVASCRIPT;
             $used['PDU'][] = $used_pdu['pdus_id'];
         }
 
-       //items part of an enclosure should not be listed
+        //items part of an enclosure should not be listed
         $iterator = $DB->request([
             'SELECT' => ['itemtype', 'items_id'],
-            'FROM'   => Item_Enclosure::getTable()
+            'FROM'   => Item_Enclosure::getTable(),
         ]);
         foreach ($iterator as $row) {
             $used[$row['itemtype']][] = $row['items_id'];
@@ -615,14 +615,14 @@ JAVASCRIPT;
             'used',
             [
                 'id'    => "used_$rand",
-                'value' => json_encode($used)
+                'value' => json_encode($used),
             ]
         );
 
-       //TODO: update possible positions according to selected item number of units
-       //TODO: update positions on rack selection
-       //TODO: update hpos from item model info is_half_rack
-       //TODO: update orientation according to item model depth
+        //TODO: update possible positions according to selected item number of units
+        //TODO: update positions on rack selection
+        //TODO: update hpos from item model info is_half_rack
+        //TODO: update orientation according to item model depth
 
         echo "</td>";
         echo "<td><label for='dropdown_items_id$rand'>" . _n('Item', 'Items', 1) . "</label></td>";
@@ -633,7 +633,7 @@ JAVASCRIPT;
             $itemtype::dropdown([
                 'name'   => "items_id",
                 'value'  => $this->fields['items_id'],
-                'rand'   => $rand
+                'rand'   => $rand,
             ]);
         } else {
             Dropdown::showFromArray(
@@ -641,7 +641,7 @@ JAVASCRIPT;
                 [],
                 [
                     'display_emptychoice'   => true,
-                    'rand'                  => $rand
+                    'rand'                  => $rand,
                 ]
             );
         }
@@ -664,7 +664,7 @@ JAVASCRIPT;
                 'max'    => $rack->fields['number_units'],
                 'step'   => 1,
                 'used'   => $rack->getFilled($this->fields['itemtype'], $this->fields['items_id']),
-                'rand'   => $rand
+                'rand'   => $rand,
             ]
         );
         echo "</td>";
@@ -677,11 +677,11 @@ JAVASCRIPT;
             'orientation',
             [
                 Rack::FRONT => __('Front'),
-                Rack::REAR  => __('Rear')
+                Rack::REAR  => __('Rear'),
             ],
             [
                 'value' => $this->fields["orientation"],
-                'rand' => $rand
+                'rand' => $rand,
             ]
         );
         echo "</td>";
@@ -691,7 +691,7 @@ JAVASCRIPT;
             'bgcolor',
             [
                 'value'  => $this->fields['bgcolor'],
-                'rand'   => $rand
+                'rand'   => $rand,
             ]
         );
         echo "</td>";
@@ -705,11 +705,11 @@ JAVASCRIPT;
             [
                 Rack::POS_NONE    => __('None'),
                 Rack::POS_LEFT    => __('Left'),
-                Rack::POS_RIGHT   => __('Right')
+                Rack::POS_RIGHT   => __('Right'),
             ],
             [
                 'value'  => $this->fields['hpos'],
-                'rand'   => $rand
+                'rand'   => $rand,
             ]
         );
         echo "</td>";
@@ -734,7 +734,7 @@ JAVASCRIPT;
             -1,
             [
                 'rand'      => $rand,
-                'on_change' => 'toggleUsed(this.value)'
+                'on_change' => 'toggleUsed(this.value)',
             ]
         );
 
@@ -840,7 +840,7 @@ JAVASCRIPT;
                   </label>
                </span>";
             if (!empty($typename)) {
-                 $tip .= "<span>
+                $tip .= "<span>
                      <label>" . _n('Type', 'Types', 1) . ":</label>
                      $typename
                   </span>";
@@ -954,7 +954,7 @@ JAVASCRIPT;
         $hpos        = !$this->isNewItem() ? $this->fields['hpos'] : null;
         $orientation = !$this->isNewItem() ? $this->fields['orientation'] : null;
 
-       //check for requirements
+        //check for requirements
         if (
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))
@@ -1000,14 +1000,14 @@ JAVASCRIPT;
         }
 
         if (!count($error_detected)) {
-           //check if required U are available at position
+            //check if required U are available at position
             $rack = new Rack();
             $rack->getFromDB($racks_id);
 
             if ($this->isNewItem()) {
                 $filled = $rack->getFilled();
             } else {
-               // If object is existing, exclude current state from used positions
+                // If object is existing, exclude current state from used positions
                 $filled = $rack->getFilled($this->fields['itemtype'], $this->fields['items_id']);
             }
 
@@ -1047,7 +1047,7 @@ JAVASCRIPT;
                 $position + $required_units  > $rack->fields['number_units'] + 1
             ) {
                 $error_detected[] = __('Item is out of rack bounds');
-            } else if (!count($error_detected)) {
+            } elseif (!count($error_detected)) {
                 $i = 0;
                 while ($i < $required_units) {
                     $current_position = $position + $i;

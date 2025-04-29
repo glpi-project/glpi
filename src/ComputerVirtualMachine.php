@@ -48,7 +48,7 @@ use Glpi\Toolbox\Sanitizer;
  **/
 class ComputerVirtualMachine extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'Computer';
     public static $items_id = 'computers_id';
     public $dohistory       = true;
@@ -134,7 +134,7 @@ class ComputerVirtualMachine extends CommonDBChild
             $this->check($ID, READ);
             $comp->getFromDB($this->fields['computers_id']);
         } else {
-           // Create item
+            // Create item
             $this->check(-1, CREATE, $options);
             $comp->getFromDB($options['computers_id']);
         }
@@ -183,8 +183,8 @@ class ComputerVirtualMachine extends CommonDBChild
                 self::getTable(),
                 [
                     'RAW' => [
-                        'LOWER(uuid)' => self::getUUIDRestrictCriteria($comp->fields['uuid'])
-                    ]
+                        'LOWER(uuid)' => self::getUUIDRestrictCriteria($comp->fields['uuid']),
+                    ],
                 ]
             );
 
@@ -261,9 +261,9 @@ class ComputerVirtualMachine extends CommonDBChild
             self::getTable(),
             [
                 'WHERE'  => [
-                    'computers_id' => $ID
+                    'computers_id' => $ID,
                 ],
-                'ORDER'  => 'name'
+                'ORDER'  => 'name',
             ]
         );
 
@@ -328,7 +328,7 @@ class ComputerVirtualMachine extends CommonDBChild
                 echo "<td>" . $virtualmachine['ram'] . "</td>";
                 echo "<td>";
                 if ($link_computer = self::findVirtualMachine($virtualmachine)) {
-                     $computer = new Computer();
+                    $computer = new Computer();
                     if ($computer->can($link_computer, READ)) {
                         $url  = "<a href='" . $computer->getFormURLWithID($link_computer) . "'>";
                         $url .= $computer->fields["name"] . "</a>";
@@ -370,13 +370,13 @@ class ComputerVirtualMachine extends CommonDBChild
     public static function getUUIDRestrictCriteria($uuid)
     {
 
-       //More infos about uuid, please see wikipedia :
-       //http://en.wikipedia.org/wiki/Universally_unique_identifier
-       //Some uuid are not conform, so preprocessing is necessary
-       //A good uuid likes lik : 550e8400-e29b-41d4-a716-446655440000
+        //More infos about uuid, please see wikipedia :
+        //http://en.wikipedia.org/wiki/Universally_unique_identifier
+        //Some uuid are not conform, so preprocessing is necessary
+        //A good uuid likes lik : 550e8400-e29b-41d4-a716-446655440000
 
-       //Case one : for example some uuid are like that :
-       //56 4d 77 d0 6b ef 3d da-4d 67 5c 80 a9 52 e2 c9
+        //Case one : for example some uuid are like that :
+        //56 4d 77 d0 6b ef 3d da-4d 67 5c 80 a9 52 e2 c9
         $pattern  = "/([\w]{2})\ ([\w]{2})\ ([\w]{2})\ ([\w]{2})\ ";
         $pattern .= "([\w]{2})\ ([\w]{2})\ ([\w]{2})\ ([\w]{2})-";
         $pattern .= "([\w]{2})\ ([\w]{2})\ ([\w]{2})\ ([\w]{2})\ ";
@@ -385,12 +385,12 @@ class ComputerVirtualMachine extends CommonDBChild
             $uuid = preg_replace($pattern, "$1$2$3$4-$5$6-$7$8-$9$10-$11$12$13$14$15$16", $uuid);
         }
 
-       //Case two : why this code ? Because some dmidecode < 2.10 is buggy.
-       //On unix is flips first block of uuid and on windows flips 3 first blocks...
+        //Case two : why this code ? Because some dmidecode < 2.10 is buggy.
+        //On unix is flips first block of uuid and on windows flips 3 first blocks...
         $in      = [strtolower($uuid)];
         $regexes = [
             "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/"                                        => "$4$3$2$1$5",
-            "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})-([\w]{2})([\w]{2})-([\w]{2})([\w]{2})(.*)/"  => "$4$3$2$1-$6$5-$8$7$9"
+            "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})-([\w]{2})([\w]{2})-([\w]{2})([\w]{2})(.*)/"  => "$4$3$2$1-$6$5-$8$7$9",
         ];
         foreach ($regexes as $pattern => $replace) {
             $reverse_uuid = preg_replace($pattern, $replace, $uuid);
@@ -424,16 +424,16 @@ class ComputerVirtualMachine extends CommonDBChild
             'FROM'   => 'glpi_computers',
             'WHERE'  => [
                 'RAW' => [
-                    'LOWER(uuid)'  => self::getUUIDRestrictCriteria($fields['uuid'])
-                ]
-            ]
+                    'LOWER(uuid)'  => self::getUUIDRestrictCriteria($fields['uuid']),
+                ],
+            ],
         ]);
 
-       //Virtual machine found, return ID
+        //Virtual machine found, return ID
         if (count($iterator) == 1) {
             $result = $iterator->current();
             return $result['id'];
-        } else if (count($iterator) > 1) {
+        } elseif (count($iterator) > 1) {
             trigger_error(
                 sprintf(
                     'findVirtualMachine expects to get one result, %1$s found in query "%2$s".',
@@ -454,7 +454,7 @@ class ComputerVirtualMachine extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -505,7 +505,7 @@ class ComputerVirtualMachine extends CommonDBChild
         $name = _n('Virtual machine', 'Virtual machines', Session::getPluralNumber());
         $tab[] = [
             'id'                 => 'virtualmachine',
-            'name'               => $name
+            'name'               => $name,
         ];
 
         $tab[] = [
@@ -517,8 +517,8 @@ class ComputerVirtualMachine extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -533,10 +533,10 @@ class ComputerVirtualMachine extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => self::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'child'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'child',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -551,10 +551,10 @@ class ComputerVirtualMachine extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => self::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'child'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'child',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -569,10 +569,10 @@ class ComputerVirtualMachine extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => self::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'child'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'child',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -584,8 +584,8 @@ class ComputerVirtualMachine extends CommonDBChild
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -598,8 +598,8 @@ class ComputerVirtualMachine extends CommonDBChild
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -610,8 +610,8 @@ class ComputerVirtualMachine extends CommonDBChild
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -623,8 +623,8 @@ class ComputerVirtualMachine extends CommonDBChild
             'datatype'           => 'string',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         return $tab;

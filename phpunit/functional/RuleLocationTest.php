@@ -58,7 +58,7 @@ class RuleLocationTest extends DbTestCase
             'name'      => 'location rule 1',
             'match'     => 'AND',
             'sub_type'  => 'RuleLocation',
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rules_id = $rule->add($input);
         $this->assertGreaterThan(0, $rules_id);
@@ -68,7 +68,7 @@ class RuleLocationTest extends DbTestCase
             'rules_id'  => $rules_id,
             'criteria'  => "tag",
             'pattern'   => "testtag",
-            'condition' => \RuleImportEntity::PATTERN_IS
+            'condition' => \RuleImportEntity::PATTERN_IS,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -77,7 +77,7 @@ class RuleLocationTest extends DbTestCase
             'rules_id'    => $rules_id,
             'action_type' => 'assign',
             'field'       => 'locations_id',
-            'value'       => $locations_id
+            'value'       => $locations_id,
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 
@@ -91,7 +91,7 @@ class RuleLocationTest extends DbTestCase
 
         $expected = [
             'locations_id' => $locations_id,
-            '_ruleid'      => $rules_id
+            '_ruleid'      => $rules_id,
         ];
         $this->assertEquals($expected, $location_data);
 
@@ -102,7 +102,7 @@ class RuleLocationTest extends DbTestCase
 
         $expected = [
             '_no_rule_matches' => true,
-            '_rule_process'    => ""
+            '_rule_process'    => "",
         ];
         $this->assertEquals($expected, $location_data);
     }
@@ -123,7 +123,7 @@ class RuleLocationTest extends DbTestCase
             'name'      => 'location rule 1',
             'match'     => 'AND',
             'sub_type'  => 'RuleLocation',
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rules_id = $rule->add($input);
         $this->assertGreaterThan(0, $rules_id);
@@ -133,7 +133,7 @@ class RuleLocationTest extends DbTestCase
             'rules_id'  => $rules_id,
             'criteria'  => "tag",
             'pattern'   => " /(.*)/",
-            'condition' => \RuleImportEntity::REGEX_MATCH
+            'condition' => \RuleImportEntity::REGEX_MATCH,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -142,7 +142,7 @@ class RuleLocationTest extends DbTestCase
             'rules_id'    => $rules_id,
             'action_type' => 'regex_result',
             'field'       => 'locations_id',
-            'value'       => '#0'
+            'value'       => '#0',
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 
@@ -157,7 +157,7 @@ class RuleLocationTest extends DbTestCase
 
         $expected = [
             'locations_id' => $locations_id,
-            '_ruleid'      => $rules_id
+            '_ruleid'      => $rules_id,
         ];
         $this->assertEquals($expected, $location_data);
 
@@ -168,10 +168,10 @@ class RuleLocationTest extends DbTestCase
         $location_data = $ruleLocation->processAllRules($input, []);
 
         $this->assertArrayHasKey('locations_id', $location_data);
-        $this->assertGreaterThan(0, (int)$location_data['locations_id']);
-        $this->assertNotEquals($locations_id, (int)$location_data['locations_id']);
+        $this->assertGreaterThan(0, (int) $location_data['locations_id']);
+        $this->assertNotEquals($locations_id, (int) $location_data['locations_id']);
         $this->assertArrayHasKey('_ruleid', $location_data);
-        $this->assertGreaterThan(0, (int)$location_data['_ruleid']);
+        $this->assertGreaterThan(0, (int) $location_data['_ruleid']);
     }
 
 
@@ -191,7 +191,7 @@ class RuleLocationTest extends DbTestCase
             'name'      => 'location rule 1 - IP CIDR',
             'match'     => 'AND',
             'sub_type'  => 'RuleLocation',
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rules_id = $rule->add($input);
         $this->assertGreaterThan(0, $rules_id);
@@ -201,7 +201,7 @@ class RuleLocationTest extends DbTestCase
             'rules_id'  => $rules_id,
             'criteria'  => "ip",
             'pattern'   => "192.168.1.1/24",
-            'condition' => \RuleImportEntity::PATTERN_CIDR
+            'condition' => \RuleImportEntity::PATTERN_CIDR,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -210,7 +210,7 @@ class RuleLocationTest extends DbTestCase
             'rules_id'    => $rules_id,
             'action_type' => 'assign',
             'field'       => 'locations_id',
-            'value'       => $locations_id
+            'value'       => $locations_id,
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 
@@ -224,7 +224,7 @@ class RuleLocationTest extends DbTestCase
 
         $expected = [
             'locations_id' => $locations_id,
-            '_ruleid'      => $rules_id
+            '_ruleid'      => $rules_id,
         ];
         $this->assertEquals($expected, $location_data);
 
@@ -238,7 +238,7 @@ class RuleLocationTest extends DbTestCase
 
         $expected = [
             '_no_rule_matches' => true,
-            '_rule_process'    => ""
+            '_rule_process'    => "",
         ];
         $this->assertEquals($expected, $location_data);
     }
@@ -256,7 +256,7 @@ class RuleLocationTest extends DbTestCase
 
         $locations_id = $location->add([
             'locations_id' => $locations_parent_id,
-            'name' => 'Location 2 - child'
+            'name' => 'Location 2 - child',
         ]);
         $this->assertGreaterThan(0, $locations_id);
 
@@ -269,7 +269,7 @@ class RuleLocationTest extends DbTestCase
             'name'      => 'location rule 1 - IP CIDR',
             'match'     => 'AND',
             'sub_type'  => 'RuleLocation',
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rules_id = $rule->add($input);
         $this->assertGreaterThan(0, $rules_id);
@@ -279,7 +279,7 @@ class RuleLocationTest extends DbTestCase
             'rules_id'  => $rules_id,
             'criteria'  => "ip",
             'pattern'   => "192.168.1.1/24",
-            'condition' => \RuleImportEntity::PATTERN_CIDR
+            'condition' => \RuleImportEntity::PATTERN_CIDR,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -288,7 +288,7 @@ class RuleLocationTest extends DbTestCase
             'rules_id'    => $rules_id,
             'action_type' => 'assign',
             'field'       => 'locations_id',
-            'value'       => $locations_id
+            'value'       => $locations_id,
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 
@@ -302,7 +302,7 @@ class RuleLocationTest extends DbTestCase
 
         $expected = [
             'locations_id' => $locations_id,
-            '_ruleid'      => $rules_id
+            '_ruleid'      => $rules_id,
         ];
         $this->assertEquals($expected, $location_data);
 
@@ -316,7 +316,7 @@ class RuleLocationTest extends DbTestCase
 
         $expected = [
             '_no_rule_matches' => true,
-            '_rule_process'    => ""
+            '_rule_process'    => "",
         ];
         $this->assertEquals($expected, $location_data);
 
@@ -366,7 +366,7 @@ class RuleLocationTest extends DbTestCase
             'name'      => 'location rule test context',
             'match'     => 'AND',
             'sub_type'  => 'RuleLocation',
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rules_id = $rule->add($input);
         $this->assertGreaterThan(0, $rules_id);
@@ -376,7 +376,7 @@ class RuleLocationTest extends DbTestCase
             'rules_id'  => $rules_id,
             'criteria'  => "tag",
             'pattern'   => "/(.*)/",
-            'condition' => \RuleImportEntity::REGEX_MATCH
+            'condition' => \RuleImportEntity::REGEX_MATCH,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -385,7 +385,7 @@ class RuleLocationTest extends DbTestCase
             'rules_id'    => $rules_id,
             'action_type' => 'regex_result',
             'field'       => 'locations_id',
-            'value'       => "#0"
+            'value'       => "#0",
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 

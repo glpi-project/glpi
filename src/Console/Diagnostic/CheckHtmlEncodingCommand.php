@@ -415,7 +415,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
 
         if (in_array($itemtype, [Ticket::getType(), ITILFollowup::getType()]) && $field == 'content') {
             $searches[] = [
-                $field => ['REGEXP', $DB->escape('(&#38;amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&#38;amp;gt;)')]
+                $field => ['REGEXP', $DB->escape('(&#38;amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&#38;amp;gt;)')],
             ];
         }
 

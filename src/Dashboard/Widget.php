@@ -526,7 +526,7 @@ HTML;
             'rand'         => mt_rand(),
         ];
         $p = array_merge($default, $params);
-        $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
+        $p['cache_key'] ??= $p['rand'];
         $default_entry = [
             'url'    => '',
             'icon'   => '',
@@ -863,7 +863,7 @@ JAVASCRIPT;
             ];
         }
 
-       // chartist bar graphs are always multiple lines
+        // chartist bar graphs are always multiple lines
         if (!$params['distributed']) {
             $series = [$series];
         }
@@ -1005,7 +1005,7 @@ JAVASCRIPT;
         ];
         $p = array_merge($defaults, $params);
 
-        $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
+        $p['cache_key'] ??= $p['rand'];
         $nb_series = count($series);
         $nb_labels = min($p['limit'], count($labels));
         if ($p['distributed']) {
@@ -1146,7 +1146,7 @@ HTML;
             distributeSeries: true,";
         }
 
-       // just to avoid issues with syntax coloring
+        // just to avoid issues with syntax coloring
         $point_labels = $p['point_labels'] ? "true" : "false;";
         $is_multiple  = $p['multiple'] ? "true" : "false;";
 
@@ -1366,7 +1366,7 @@ JAVASCRIPT;
             ];
         }
 
-       // chartist line graphs are always multiple lines
+        // chartist line graphs are always multiple lines
         $series = [$series];
 
         return self::getLinesGraph($params, $labels, $series);
@@ -1466,7 +1466,7 @@ JAVASCRIPT;
             'rand'         => mt_rand(),
         ];
         $p = array_merge($defaults, $params);
-        $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
+        $p['cache_key'] ??= $p['rand'];
 
         $nb_series = count($series);
         $nb_labels = min($p['limit'], count($labels));
@@ -1724,7 +1724,7 @@ JAVASCRIPT;
         ];
         $p = array_merge($default, $params);
 
-       // fix auto-escaping
+        // fix auto-escaping
         if (isset($p['markdown_content'])) {
             $p['markdown_content'] = \Html::cleanPostForTextArea($p['markdown_content']);
         }
@@ -1733,7 +1733,7 @@ JAVASCRIPT;
         $fg_color     = Toolbox::getFgColor($p['color']);
         $border_color = Toolbox::getFgColor($p['color'], 10);
         $md           = new MarkdownExtra();
-       // Prevent escaping as code is already escaped by GLPI sanityze
+        // Prevent escaping as code is already escaped by GLPI sanityze
         $md->code_span_content_func  = function ($code) {
             return $code;
         };
@@ -1807,7 +1807,7 @@ HTML;
 
         $class = count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
 
-       // prepare search data
+        // prepare search data
         $_GET['_in_modal'] = true;
         $params = [
             'criteria' => $p['s_criteria'],
@@ -1816,14 +1816,14 @@ HTML;
 
         ob_start();
         $params = Search::manageParams($p['itemtype'], $params, false);
-       // remove parts of search list
+        // remove parts of search list
         $params = array_merge($params, [
             'showmassiveactions' => false,
             'dont_flush'         => true,
             'show_pager'         => false,
             'show_footer'        => false,
             'no_sort'            => true,
-            'list_limit'         => $p['limit']
+            'list_limit'         => $p['limit'],
         ]);
         Search::showList($p['itemtype'], $params);
 
@@ -1904,7 +1904,8 @@ HTML;
             $content_size = strlen($entry['content']);
             $content = strlen($entry['content'])
             ? RichText::getEnhancedHtml($entry['content']) .
-              ($content_size > 300
+              (
+                  $content_size > 300
                ? "<p class='read_more'><span class='read_more_button'>...</span></p>"
                : ""
               )
@@ -2029,12 +2030,12 @@ JAVASCRIPT;
         for ($i = 1; $i <= $nb_series; $i++) {
             $names[$i - 1] = $i - 1;
 
-           // adjust luminosity
+            // adjust luminosity
             $i_l_step = $i * $step_l + $min_l / 100;
             $hsl['L'] = min(1, $revert
             ? 1 - $i_l_step
             : $i_l_step);
-           // adjust saturation
+            // adjust saturation
             if ($hsl['H'] != 0 && $hsl['H'] != 1) {
                 $i_s_step = $i * $step_s + $min_s / 100;
                 $hsl['S'] = min(1, $revert

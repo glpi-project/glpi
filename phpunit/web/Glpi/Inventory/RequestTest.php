@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Inventory;
 
 use GuzzleHttp;
-use Psr\Http\Client\RequestExceptionInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
 
@@ -72,7 +71,7 @@ class RequestTest extends \GLPITestCase
         );
         $this->assertSame(
             "<?xml version=\"1.0\"?>\n<REPLY>$reply</REPLY>",
-            (string)$res->getBody()
+            (string) $res->getBody()
         );
     }
 
@@ -87,7 +86,7 @@ class RequestTest extends \GLPITestCase
             $response = $e->getResponse();
             $this->assertInstanceOf(Response::class, $response);
             $this->assertSame(405, $response->getStatusCode());
-            $this->assertSame('', (string)$response->getBody());
+            $this->assertSame('', (string) $response->getBody());
         }
     }
 
@@ -104,7 +103,7 @@ class RequestTest extends \GLPITestCase
             $this->assertSame(400, $response->getStatusCode());
             $this->assertSame(
                 '{"status":"error","message":"Protocol not supported","expiration":24}',
-                (string)$response->getBody()
+                (string) $response->getBody()
             );
         }
     }
@@ -117,8 +116,8 @@ class RequestTest extends \GLPITestCase
                 $this->base_uri . 'front/inventory.php',
                 [
                     'headers' => [
-                        'Content-Type' => 'application/xml'
-                    ]
+                        'Content-Type' => 'application/xml',
+                    ],
                 ]
             );
         } catch (RequestException $e) {
@@ -127,7 +126,7 @@ class RequestTest extends \GLPITestCase
             $this->assertSame(400, $response->getStatusCode());
             $this->assertSame(
                 "<?xml version=\"1.0\"?>\n<REPLY><ERROR><![CDATA[XML not well formed!]]></ERROR></REPLY>",
-                (string)$response->getBody()
+                (string) $response->getBody()
             );
         }
     }
@@ -140,8 +139,8 @@ class RequestTest extends \GLPITestCase
                 $this->base_uri . 'front/inventory.php',
                 [
                     'headers' => [
-                        'Content-Type' => 'application/json'
-                    ]
+                        'Content-Type' => 'application/json',
+                    ],
                 ]
             );
         } catch (RequestException $e) {
@@ -150,7 +149,7 @@ class RequestTest extends \GLPITestCase
             $this->assertSame(400, $response->getStatusCode());
             $this->assertSame(
                 '{"status":"error","message":"JSON not well formed!","expiration":24}',
-                (string)$response->getBody()
+                (string) $response->getBody()
             );
         }
 
@@ -160,9 +159,9 @@ class RequestTest extends \GLPITestCase
                 $this->base_uri . 'front/inventory.php',
                 [
                     'headers' => [
-                        'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13'
+                        'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13',
                     ],
-                    'body'   => '{ bad content'
+                    'body'   => '{ bad content',
                 ]
             );
         } catch (RequestException $e) {
@@ -171,7 +170,7 @@ class RequestTest extends \GLPITestCase
             $this->assertSame(400, $response->getStatusCode());
             $this->assertSame(
                 '{"status":"error","message":"JSON not well formed!","expiration":24}',
-                (string)$response->getBody()
+                (string) $response->getBody()
             );
         }
 
@@ -182,9 +181,9 @@ class RequestTest extends \GLPITestCase
                 [
                     'headers' => [
                         'Content-Type' => 'application/x-compress-zlib',
-                        'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13'
+                        'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13',
                     ],
-                    'body'   => gzcompress('{ bad content')
+                    'body'   => gzcompress('{ bad content'),
                 ]
             );
         } catch (RequestException $e) {
@@ -193,7 +192,7 @@ class RequestTest extends \GLPITestCase
             $this->assertSame(400, $response->getStatusCode());
             $this->assertSame(
                 gzcompress('{"status":"error","message":"JSON not well formed!","expiration":24}'),
-                (string)$response->getBody()
+                (string) $response->getBody()
             );
         }
     }
@@ -205,13 +204,13 @@ class RequestTest extends \GLPITestCase
             $this->base_uri . 'front/inventory.php',
             [
                 'headers' => [
-                    'Content-Type' => 'application/xml'
+                    'Content-Type' => 'application/xml',
                 ],
                 'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
                 '<REQUEST>' .
                   '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
                   '<QUERY>PROLOG</QUERY>' .
-                '</REQUEST>'
+                '</REQUEST>',
             ]
         );
         $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);

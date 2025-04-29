@@ -81,7 +81,7 @@ class BuildMissingTimestampsCommand extends AbstractCommand
             if (!is_a($itemtype, CommonDBTM::class, true)) {
                 continue; // getItemTypeForTable() may not return a class name ("UNKNOWN" for example)
             }
-           /* @var $item CommonDBTM */
+            /* @var $item CommonDBTM */
             $item = new $itemtype();
 
             if (!$item->dohistory) {
@@ -108,17 +108,17 @@ class BuildMissingTimestampsCommand extends AbstractCommand
             "
             );
             if (false === $result) {
-                 $message = sprintf(
-                     __('Update of `%s`.`%s` failed with message "(%s) %s".'),
-                     $table,
-                     $column,
-                     $this->db->errno(),
-                     $this->db->error()
-                 );
-                 $output->writeln(
-                     '<error>' . $message . '</error>',
-                     OutputInterface::VERBOSITY_QUIET
-                 );
+                $message = sprintf(
+                    __('Update of `%s`.`%s` failed with message "(%s) %s".'),
+                    $table,
+                    $column,
+                    $this->db->errno(),
+                    $this->db->error()
+                );
+                $output->writeln(
+                    '<error>' . $message . '</error>',
+                    OutputInterface::VERBOSITY_QUIET
+                );
             }
         }
 

@@ -57,7 +57,7 @@ class Ticket_Contract extends CommonDBRelation
                     $nb = count(self::getListForItem($item));
                 }
                 return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb);
-            } else if (get_class($item) == Contract::class) {
+            } elseif (get_class($item) == Contract::class) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = count(self::getListForItem($item));
                 }
@@ -80,7 +80,7 @@ class Ticket_Contract extends CommonDBRelation
             $add_label = __('Add a contract');
             $item_a_fkey = self::$items_id_1;
             $linked_itemtype = self::$itemtype_2;
-        } else if ($item instanceof Contract) {
+        } elseif ($item instanceof Contract) {
             $add_label = __('Add a ticket');
             $item_a_fkey = self::$items_id_2;
             $linked_itemtype = self::$itemtype_1;
@@ -139,7 +139,7 @@ class Ticket_Contract extends CommonDBRelation
                 ],
                 'extraparams'      => [$item_a_fkey => $item->getID()],
                 'width'            => 1000,
-                'height'           => 500
+                'height'           => 500,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -168,7 +168,7 @@ class Ticket_Contract extends CommonDBRelation
                     'id_for_massiveaction'   => $data['linkid'],
                     'ticket_stats'           => true,
                 ]);
-                 $i++;
+                $i++;
             }
             $linked_itemtype::commonListHeader(Search::HTML_OUTPUT, 'mass' . __CLASS__ . $rand, $header_params);
         }

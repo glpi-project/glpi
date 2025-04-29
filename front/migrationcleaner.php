@@ -47,7 +47,7 @@ global $CFG_GLPI, $DB;
 include('../inc/includes.php');
 
 Session::checkSeveralRightsOr(["networking" => UPDATE,
-    "internet"   => UPDATE
+    "internet"   => UPDATE,
 ]);
 
 if (!$DB->tableExists('glpi_networkportmigrations')) {

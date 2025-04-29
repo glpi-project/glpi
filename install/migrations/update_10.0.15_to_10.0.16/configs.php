@@ -38,5 +38,5 @@ Config::deleteConfigurationValues('core', [
     '_dbreplicate_dbhost',
     '_dbreplicate_dbuser',
     '_dbreplicate_dbpassword',
-    '_dbreplicate_dbdefault'
+    '_dbreplicate_dbdefault',
 ]);

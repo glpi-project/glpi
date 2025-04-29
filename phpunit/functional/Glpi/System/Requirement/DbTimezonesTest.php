@@ -81,7 +81,7 @@ class DbTimezonesTest extends \GLPITestCase
                     ->getMock();
                 if ($query === "SHOW DATABASES LIKE 'mysql'") {
                     $result->method('count')->willReturn(1);
-                } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
+                } elseif ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
                     $result->method('count')->willReturn(0);
                 }
                 return $result;
@@ -111,7 +111,7 @@ class DbTimezonesTest extends \GLPITestCase
                     ->getMock();
                 if ($query === "SHOW DATABASES LIKE 'mysql'") {
                     $result->method('count')->willReturn(1);
-                } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
+                } elseif ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
                     $result->method('count')->willReturn(1);
                 } else {
                     $result->method('current')->willReturn(['cpt' => 0]);
@@ -143,7 +143,7 @@ class DbTimezonesTest extends \GLPITestCase
                     ->getMock();
                 if ($query === "SHOW DATABASES LIKE 'mysql'") {
                     $result->method('count')->willReturn(1);
-                } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
+                } elseif ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
                     $result->method('count')->willReturn(1);
                 } else {
                     $result->method('current')->willReturn(['cpt' => 30]);

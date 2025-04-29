@@ -42,13 +42,13 @@
 /// Since version 0.84
 abstract class FQDNLabel extends CommonDBChild
 {
-   // Inherits from CommonDBChild as it must be attached to a specific element
-   // (NetworkName, NetworkPort, ...)
+    // Inherits from CommonDBChild as it must be attached to a specific element
+    // (NetworkName, NetworkPort, ...)
 
     public function getInternetName()
     {
 
-       // get the full computer name of the current object (for instance : forge.indepnet.net)
+        // get the full computer name of the current object (for instance : forge.indepnet.net)
         return self::getInternetNameFromLabelAndDomainID(
             $this->fields["name"],
             $this->fields["fqdns_id"]
@@ -92,7 +92,7 @@ abstract class FQDNLabel extends CommonDBChild
         } else {
             $fqdn_regex = "/^(?!-)[A-Za-z0-9-]{1,63}(?<!-)$/";
             if (!preg_match($fqdn_regex, $label, $regs)) {
-               //check also Internationalized domain name
+                //check also Internationalized domain name
                 $idn = idn_to_ascii($label);
                 if (!preg_match($fqdn_regex, $idn, $regs)) {
                     return false;
@@ -110,11 +110,11 @@ abstract class FQDNLabel extends CommonDBChild
     public function prepareLabelInput($input)
     {
         if (isset($input['name']) && !empty($input['name'])) {
-           // Empty names are allowed
+            // Empty names are allowed
 
             $input['name'] = strtolower($input['name']);
 
-           // Before adding a name, we must unsure its is valid : it conforms to RFC
+            // Before adding a name, we must unsure its is valid : it conforms to RFC
             if (!self::checkFQDNLabel($input['name'])) {
                 Session::addMessageAfterRedirect(sprintf(
                     __('Invalid internet name: %s'),
@@ -133,11 +133,11 @@ abstract class FQDNLabel extends CommonDBChild
     public function prepareIPNetworkFromInput($input)
     {
 
-       //getIPNetwork from IPV4 if not set
-        if (!isset($input['ipnetworks_id']) || (isset($input['ipnetworks_id']) && $input['ipnetworks_id'] == 0 )) {
+        //getIPNetwork from IPV4 if not set
+        if (!isset($input['ipnetworks_id']) || (isset($input['ipnetworks_id']) && $input['ipnetworks_id'] == 0)) {
             if (isset($input['_ipaddresses'])) {
                 foreach ($input['_ipaddresses'] as $value) {
-                   //if its an ipv4, find it's IPNetwork
+                    //if its an ipv4, find it's IPNetwork
                     if (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
                         // get first IPNetwork because :
                         // see IPNetwork::searchNetworks
@@ -200,13 +200,13 @@ abstract class FQDNLabel extends CommonDBChild
         $IDs = [];
         foreach (
             ['NetworkName'  => 'glpi_networknames',
-                'NetworkAlias' => 'glpi_networkaliases'
+                'NetworkAlias' => 'glpi_networkaliases',
             ] as $class => $table
         ) {
             $criteria = [
                 'SELECT' => 'id',
                 'FROM'   => $table,
-                'WHERE'  => ['name' => $relation]
+                'WHERE'  => ['name' => $relation],
             ];
 
             if (
@@ -293,7 +293,7 @@ abstract class FQDNLabel extends CommonDBChild
     {
 
         $labels_with_items = self::getItemsByFQDN($value);
-       // Filter : Do not keep ip not linked to asset
+        // Filter : Do not keep ip not linked to asset
         if (count($labels_with_items)) {
             foreach ($labels_with_items as $key => $tab) {
                 if (
@@ -310,12 +310,12 @@ abstract class FQDNLabel extends CommonDBChild
         }
 
         if (count($labels_with_items)) {
-           // Get the first item that is matching entity
+            // Get the first item that is matching entity
             foreach ($labels_with_items as $items) {
                 foreach ($items as $item) {
                     if ($item->getEntityID() == $entity) {
                         $result = ["id"       => $item->getID(),
-                            "itemtype" => $item->getType()
+                            "itemtype" => $item->getType(),
                         ];
                         unset($labels_with_items);
                         return $result;

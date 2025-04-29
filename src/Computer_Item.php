@@ -40,7 +40,7 @@
  **/
 class Computer_Item extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'Computer';
     public static $items_id_1          = 'computers_id';
 
@@ -75,7 +75,7 @@ class Computer_Item extends CommonDBRelation
             'glpi_computers_items',
             ['computers_id' => $comp->getField('id'),
                 'itemtype'     => $item->getType(),
-                'items_id'     => $item->getField('id')
+                'items_id'     => $item->getField('id'),
             ]
         );
     }
@@ -101,12 +101,12 @@ class Computer_Item extends CommonDBRelation
             !($comp instanceof Computer)
             || (self::countForAll($comp, $item) > 0)
         ) {
-           // no duplicates
+            // no duplicates
             return false;
         }
 
         if (!$item->isGlobal()) {
-           // Autoupdate some fields - should be in post_addItem (here to avoid more DB access)
+            // Autoupdate some fields - should be in post_addItem (here to avoid more DB access)
             $updates = [];
 
             if (
@@ -188,13 +188,13 @@ class Computer_Item extends CommonDBRelation
         global $CFG_GLPI;
 
         if (!isset($this->input['_no_auto_action'])) {
-           //Get the computer name
+            //Get the computer name
             $computer = new Computer();
             $computer->getFromDB($this->fields['computers_id']);
 
             $is_mainitem_dynamic = (bool) ($computer->fields['is_dynamic'] ?? false);
 
-           //Get device fields
+            //Get device fields
             if ($device = getItemForItemtype($this->fields['itemtype'])) {
                 if ($device->getFromDB($this->fields['items_id'])) {
                     if (!$device->getField('is_global')) {
@@ -206,10 +206,10 @@ class Computer_Item extends CommonDBRelation
                             $updates['users_id'] = 0;
                         }
                         if ($CFG_GLPI["is_group_autoclean"] && $device->isField('groups_id')) {
-                             $updates['groups_id'] = 0;
+                            $updates['groups_id'] = 0;
                         }
                         if ($CFG_GLPI["is_contact_autoclean"] && $device->isField('contact')) {
-                             $updates['contact'] = "";
+                            $updates['contact'] = "";
                         }
                         if ($CFG_GLPI["is_contact_autoclean"] && $device->isField('contact_num')) {
                             $updates['contact_num'] = "";
@@ -277,7 +277,7 @@ class Computer_Item extends CommonDBRelation
 
         $specificities['only_remove_all_at_once']                   = true;
 
-       // Set the labels for add_item and remove_item
+        // Set the labels for add_item and remove_item
         $specificities['button_labels']['add']                      = _sx('button', 'Connect');
         $specificities['button_labels']['remove']                   = _sx('button', 'Disconnect');
 
@@ -303,18 +303,18 @@ class Computer_Item extends CommonDBRelation
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [
                     'itemtype'  => $item->getType(),
-                    'items_id'  => $item->getID()
-                ]
+                    'items_id'  => $item->getID(),
+                ],
             ]);
 
             if (count($iterator) > 0) {
-                 $ok = true;
+                $ok = true;
                 foreach ($iterator as $data) {
                     if ($this->can($data["id"], UPDATE)) {
                         $ok &= $this->delete($data);
                     }
                 }
-                 return $ok;
+                return $ok;
             }
         }
         return false;
@@ -394,7 +394,7 @@ class Computer_Item extends CommonDBRelation
                     'specific_actions'
                            => ['purge' => _x('button', 'Disconnect')],
                     'container'
-                           => 'mass' . __CLASS__ . $rand
+                           => 'mass' . __CLASS__ . $rand,
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -487,7 +487,7 @@ class Computer_Item extends CommonDBRelation
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-       // Prints a direct connection to a computer
+        // Prints a direct connection to a computer
         /** @var \DBmysql $DB */
         global $DB;
 
@@ -500,7 +500,7 @@ class Computer_Item extends CommonDBRelation
         $canedit = $item->canEdit($ID);
         $rand    = mt_rand();
 
-       // Is global connection ?
+        // Is global connection ?
         $global  = $item->getField('is_global');
 
         $used    = [];
@@ -514,7 +514,7 @@ class Computer_Item extends CommonDBRelation
                     'itemtype'   => $item->getType(),
                     'items_id'   => $ID,
                     'is_deleted' => 0,
-                ]
+                ],
             ]
         );
         foreach ($result as $data) {
@@ -574,7 +574,7 @@ class Computer_Item extends CommonDBRelation
                 'specific_actions'
                         => ['purge' => _x('button', 'Disconnect')],
                 'container'
-                        => 'mass' . __CLASS__ . $rand
+                        => 'mass' . __CLASS__ . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -650,21 +650,21 @@ class Computer_Item extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Update item to unit management :
+        // Update item to unit management :
         if ($item->getField('is_global')) {
             $input = ['id'        => $item->fields['id'],
-                'is_global' => 0
+                'is_global' => 0,
             ];
             $item->update($input);
 
-           // Get connect_wire for this connection
+            // Get connect_wire for this connection
             $iterator = $DB->request([
                 'SELECT' => ['id'],
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
                     'items_id'  => $item->getID(),
-                    'itemtype'  => $item->getType()
-                ]
+                    'itemtype'  => $item->getType(),
+                ],
             ]);
 
             $first = true;
@@ -678,7 +678,7 @@ class Computer_Item extends CommonDBRelation
                     unset($temp->fields['id']);
                     if ($newID = $temp->add($temp->fields)) {
                         $conn->update(['id'       => $data['id'],
-                            'items_id' => $newID
+                            'items_id' => $newID,
                         ]);
                     }
                 }
@@ -724,7 +724,7 @@ class Computer_Item extends CommonDBRelation
                 'myname'          => $myname,
                 'onlyglobal'      => $onlyglobal,
                 'entity_restrict' => $entity_restrict,
-                'used'            => $used
+                'used'            => $used,
             ];
 
             if ($onlyglobal) {
@@ -881,9 +881,9 @@ class Computer_Item extends CommonDBRelation
                 ],
                 'FROM' => self::getTable(),
                 'WHERE' => [
-                    'computers_id' => $item->fields['id']
+                    'computers_id' => $item->fields['id'],
                 ],
-                'GROUP' => 'itemtype'
+                'GROUP' => 'itemtype',
             ]);
 
             foreach ($iterator as $data) {
@@ -900,14 +900,14 @@ class Computer_Item extends CommonDBRelation
                 'SELECT' => [
                     'itemtype',
                     new \QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ids'),
-                    'computers_id'
+                    'computers_id',
                 ],
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
                     'itemtype'  => $item->getType(),
-                    'items_id'  => $item->fields['id']
+                    'items_id'  => $item->fields['id'],
                 ],
-                'GROUP'  => 'itemtype'
+                'GROUP'  => 'itemtype',
             ]);
 
             foreach ($iterator as $data) {

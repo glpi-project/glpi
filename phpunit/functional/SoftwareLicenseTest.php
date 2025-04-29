@@ -54,31 +54,31 @@ class SoftwareLicenseTest extends DbTestCase
     {
         $license = new \SoftwareLicense();
 
-       //Without softwares_id, import refused
+        //Without softwares_id, import refused
         $input = [
             'name'         => 'not_inserted_software_license',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ];
         $this->assertFalse($license->prepareInputForAdd($input));
         $this->hasSessionMessages(ERROR, ['Please select a software for this license']);
 
-       //With a softwares_id, import ok
+        //With a softwares_id, import ok
         $input = [ 'name' => 'inserted_sofwarelicense', 'softwares_id' => 1];
         $license->input['softwares_id'] = 1;
         $expected = [ 'name' => 'inserted_sofwarelicense', 'softwares_id' => 1,
             'softwarelicenses_id' => 0, 'level' => 1,
-            'completename' => 'inserted_sofwarelicense'
+            'completename' => 'inserted_sofwarelicense',
         ];
         $this->assertSame($expected, $license->prepareInputForAdd($input));
 
-       //withtemplate, empty 'expire' should be ignored. id will be replaced in _oldID
+        //withtemplate, empty 'expire' should be ignored. id will be replaced in _oldID
         $input = [ 'name' => 'other_inserted_sofwarelicense', 'softwares_id' => 1,
             'id' => 1, 'withtemplate' => 0, 'expire' => '',
-            'softwarelicenses_id' => 0
+            'softwarelicenses_id' => 0,
         ];
         $expected = [ 'name' => 'other_inserted_sofwarelicense', 'softwares_id' => 1,
             'softwarelicenses_id' => 0, 'level' => 1,
-            'completename' => 'other_inserted_sofwarelicense', '_oldID' => 1
+            'completename' => 'other_inserted_sofwarelicense', '_oldID' => 1,
         ];
         $this->assertSame($expected, $license->prepareInputForAdd($input));
     }
@@ -94,9 +94,9 @@ class SoftwareLicenseTest extends DbTestCase
         $softwares_id = $software->add([
             'name'         => 'Software ' . $this->getUniqueString(),
             'is_template'  => 0,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
-        $this->assertGreaterThan(0, (int)$softwares_id);
+        $this->assertGreaterThan(0, (int) $softwares_id);
         $this->assertTrue($software->getFromDB($softwares_id));
 
         return $software;
@@ -118,9 +118,9 @@ class SoftwareLicenseTest extends DbTestCase
         $parentlicense_id = $parentlicense->add([
             'name'         => 'a_software_license',
             'softwares_id' => $software->getID(),
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
-        $this->assertGreaterThan(0, (int)$parentlicense_id);
+        $this->assertGreaterThan(0, (int) $parentlicense_id);
         $this->assertTrue($parentlicense->getFromDB($parentlicense_id));
 
         $this->assertSame("a_software_license", $parentlicense->fields['completename']);
@@ -133,7 +133,7 @@ class SoftwareLicenseTest extends DbTestCase
             'expire'                => '2017-01-01 00:00:00',
             'name'                  => 'a_child_license',
             'softwarelicenses_id'   => $parentlicense_id,
-            'entities_id'           => $parentlicense->fields['entities_id']
+            'entities_id'           => $parentlicense->fields['entities_id'],
         ];
         $lic_id = $license->add($input);
         $this->assertGreaterThan($parentlicense_id, $lic_id);
@@ -158,10 +158,10 @@ class SoftwareLicenseTest extends DbTestCase
             'expire'       => '2017-01-01 00:00:00',
             'name'         => 'Test licence ' . $this->getUniqueString(),
             'number'       => 3,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ];
         $lic_id = $license->add($input);
-        $this->assertGreaterThan(0, (int)$lic_id);
+        $this->assertGreaterThan(0, (int) $lic_id);
         $this->assertTrue($license->getFromDB($lic_id));
 
         $license_computer = new \Item_SoftwareLicense();
@@ -173,16 +173,16 @@ class SoftwareLicenseTest extends DbTestCase
             'items_id'              => $comp1->getID(),
             'itemtype'              => 'Computer',
             'is_deleted'            => 0,
-            'is_dynamic'            => 0
+            'is_dynamic'            => 0,
         ];
-        $this->assertGreaterThan(0, (int)$license_computer->add($input_comp));
+        $this->assertGreaterThan(0, (int) $license_computer->add($input_comp));
 
-       //Test if number is illimited
+        //Test if number is illimited
         $this->assertEquals(1, \SoftwareLicense::computeValidityIndicator($lic_id, -1));
         $this->assertEquals(0, \SoftwareLicense::computeValidityIndicator($lic_id, 0));
 
         $input_comp['computers_id'] = $comp2->getID();
-        $this->assertGreaterThan(0, (int)$license_computer->add($input_comp));
+        $this->assertGreaterThan(0, (int) $license_computer->add($input_comp));
 
         $this->assertEquals(1, \SoftwareLicense::computeValidityIndicator($lic_id, 2));
         $this->assertEquals(0, \SoftwareLicense::computeValidityIndicator($lic_id, 1));
@@ -201,10 +201,10 @@ class SoftwareLicenseTest extends DbTestCase
             'expire'       => '2017-01-01 00:00:00',
             'name'         => 'Test licence ' . $this->getUniqueString(),
             'number'       => 3,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ];
         $lic_id = $license->add($input);
-        $this->assertGreaterThan(0, (int)$lic_id);
+        $this->assertGreaterThan(0, (int) $lic_id);
 
         $input    = ['id' => $lic_id, 'number' => 3];
         $expected = ['id' => $lic_id, 'number' => 3, 'is_valid' => 1];
@@ -224,10 +224,10 @@ class SoftwareLicenseTest extends DbTestCase
             'expire'       => '2017-01-01 00:00:00',
             'name'         => 'Test licence ' . $this->getUniqueString(),
             'number'       => 3,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ];
         $lic_id = $license->add($input);
-        $this->assertGreaterThan(0, (int)$lic_id);
+        $this->assertGreaterThan(0, (int) $lic_id);
         $this->assertTrue($license->getFromDB($lic_id));
 
         $this->createLicenseInstall(
@@ -235,17 +235,17 @@ class SoftwareLicenseTest extends DbTestCase
             ['_test_pc01', '_test_pc02', '_test_pc22']
         );
 
-       //Delete a license installation
+        //Delete a license installation
         $license_computer = new \Item_SoftwareLicense();
         $input = [
             'softwarelicenses_id'   => $license->getID(),
             'items_id'              => $comp1->getID(),
-            'itemtype'              => 'Computer'
+            'itemtype'              => 'Computer',
         ];
         $this->assertTrue($license_computer->deleteByCriteria($input, true));
 
         $orig_number = $license->getField('number');
-       //Change the number of assets to 1
+        //Change the number of assets to 1
         $input = [
             'id'     => $license->getID(),
             'number' => 1,
@@ -253,21 +253,21 @@ class SoftwareLicenseTest extends DbTestCase
         $license->update($input);
         $this->assertTrue($license->getFromDB($license->getID()));
 
-        $this->assertGreaterThan(0, (int)$license->getID());
+        $this->assertGreaterThan(0, (int) $license->getID());
         $this->assertEquals($license->fields['number'], $input['number']);
 
-       //Update validity indicator
+        //Update validity indicator
         $license->updateValidityIndicator($license->getID());
         $this->assertEquals(0, $license->fields['is_valid']);
 
-       //cleanup
+        //cleanup
         $input = [
             'id'     => $license->getID(),
             'number' => $orig_number,
         ];
         $license->update($input);
 
-       //Update validity indicator
+        //Update validity indicator
         $license->updateValidityIndicator($license->fields['id']);
         $this->assertEquals(1, $license->fields['is_valid']);
     }
@@ -288,8 +288,8 @@ class SoftwareLicenseTest extends DbTestCase
             'items_id'              => $items_id,
             'itemtype'              => 'Computer',
             'is_dynamic'            => 0,
-            'is_deleted'            => 0
+            'is_deleted'            => 0,
         ];
-        $this->assertGreaterThan(0, (int)$license_computer->add($input));
+        $this->assertGreaterThan(0, (int) $license_computer->add($input));
     }
 }

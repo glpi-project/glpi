@@ -42,13 +42,13 @@ use Glpi\Toolbox\Sanitizer;
  **/
 class DBmysql
 {
-   //! Database Host - string or Array of string (round robin)
+    //! Database Host - string or Array of string (round robin)
     public $dbhost             = "";
-   //! Database User
+    //! Database User
     public $dbuser             = "";
-   //! Database Password
+    //! Database Password
     public $dbpassword         = "";
-   //! Default Database
+    //! Default Database
     public $dbdefault          = "";
 
     /**
@@ -57,10 +57,10 @@ class DBmysql
      */
     protected $dbh;
 
-   //! Database Error
+    //! Database Error
     public $error              = 0;
 
-   // Slave management
+    // Slave management
     public $slave              = false;
     private $in_transaction;
 
@@ -166,10 +166,10 @@ class DBmysql
      * if first attempt fail -> display a warning which indicates that glpi is in readonly
      **/
     public $first_connection   = true;
-   // Is connected to the DB ?
+    // Is connected to the DB ?
     public $connected          = false;
 
-   //to calculate execution time
+    //to calculate execution time
     public $execution_time          = false;
 
     private $cache_disabled = false;
@@ -221,8 +221,8 @@ class DBmysql
     {
         $this->connected = false;
 
-       // Do not trigger errors nor throw exceptions at PHP level
-       // as we already extract error and log while fetching result.
+        // Do not trigger errors nor throw exceptions at PHP level
+        // as we already extract error and log while fetching result.
         mysqli_report(MYSQLI_REPORT_OFF);
 
         $this->dbh = @new mysqli();
@@ -237,8 +237,8 @@ class DBmysql
         }
 
         if (is_array($this->dbhost)) {
-           // Round robin choice
-            $i    = (isset($choice) ? $choice : mt_rand(0, count($this->dbhost) - 1));
+            // Round robin choice
+            $i    = ($choice ?? mt_rand(0, count($this->dbhost) - 1));
             $host = $this->dbhost[$i];
         } else {
             $host = $this->dbhost;
@@ -246,10 +246,10 @@ class DBmysql
 
         $hostport = explode(":", $host);
         if (count($hostport) < 2) {
-           // Host
+            // Host
             $this->dbh->real_connect($host, $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault);
-        } else if (intval($hostport[1]) > 0) {
-           // Host:port
+        } elseif (intval($hostport[1]) > 0) {
+            // Host:port
             $this->dbh->real_connect($hostport[0], $this->dbuser, rawurldecode($this->dbpassword), $this->dbdefault, $hostport[1]);
         } else {
             // :Socket
@@ -259,13 +259,13 @@ class DBmysql
         if ($this->dbh->connect_error) {
             $this->connected = false;
             $this->error     = 1;
-        } else if (!defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE')) {
+        } elseif (!defined('MYSQLI_OPT_INT_AND_FLOAT_NATIVE')) {
             $this->connected = false;
             $this->error     = 2;
         } else {
             $this->setConnectionCharset();
 
-           // force mysqlnd to return int and float types correctly (not as strings)
+            // force mysqlnd to return int and float types correctly (not as strings)
             $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, true);
 
             $this->dbh->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
@@ -302,8 +302,8 @@ class DBmysql
                         'FROM'   => Config::getTable(),
                         'WHERE'  => [
                             'context'   => 'core',
-                            'name'      => 'timezone'
-                        ]
+                            'name'      => 'timezone',
+                        ],
                     ])->current();
                 }
                 $zone = !empty($conf_tz['value']) ? $conf_tz['value'] : date_default_timezone_get();
@@ -387,7 +387,7 @@ class DBmysql
 
         $res = $this->dbh->query($query);
         if (!$res) {
-           // no translation for error logs
+            // no translation for error logs
             $error = "  *** MySQL query error:\n  SQL: " . $query . "\n  Error: " .
                    $this->dbh->error . "\n";
             $error .= Toolbox::backtrace(false, 'DBmysql->query()', ['Toolbox::backtrace()']);
@@ -487,7 +487,7 @@ class DBmysql
     {
         $res = $this->doQuery($query);
         if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
                 __('%1$s - Error during the database query: %2$s - Error is %3$s'),
                 $message,
@@ -495,7 +495,7 @@ class DBmysql
                 $this->error()
             );
             if (isCommandLine()) {
-                 throw new \RuntimeException($message);
+                throw new \RuntimeException($message);
             } else {
                 echo $message . "\n";
                 die(1);
@@ -522,7 +522,7 @@ class DBmysql
 
         $res = $this->dbh->prepare($query);
         if (!$res) {
-           // no translation for error logs
+            // no translation for error logs
             $error = "  *** MySQL prepare error:\n  SQL: " . $query . "\n  Error: " .
                    $this->dbh->error . "\n";
             $error .= Toolbox::backtrace(false, 'DBmysql->prepare()', ['Toolbox::backtrace()']);
@@ -699,8 +699,8 @@ class DBmysql
             'WHERE'  => [
                 'table_schema' => $this->dbdefault,
                 'table_type'   => 'BASE TABLE',
-                'table_name'   => ['LIKE', $table]
-            ] + $where
+                'table_name'   => ['LIKE', $table],
+            ] + $where,
         ]);
         return $iterator;
     }
@@ -736,7 +736,7 @@ class DBmysql
     public function getNonUtf8mb4Tables(bool $exclude_plugins = false): DBmysqlIterator
     {
 
-       // Find tables that does not use utf8mb4 collation
+        // Find tables that does not use utf8mb4 collation
         $tables_query = [
             'SELECT'     => ['information_schema.tables.table_name as TABLE_NAME'],
             'DISTINCT'   => true,
@@ -749,7 +749,7 @@ class DBmysql
             ],
         ];
 
-       // Find columns that does not use utf8mb4 collation
+        // Find columns that does not use utf8mb4 collation
         $columns_query = [
             'SELECT'     => ['information_schema.columns.table_name as TABLE_NAME'],
             'DISTINCT'   => true,
@@ -764,17 +764,17 @@ class DBmysql
                                 'information_schema.tables.table_schema' => new QueryExpression(
                                     $this->quoteName('information_schema.columns.table_schema')
                                 ),
-                            ]
+                            ],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'information_schema.tables.table_schema' => $this->dbdefault,
                 'information_schema.tables.table_name'   => ['LIKE', 'glpi\_%'],
                 'information_schema.tables.table_type'    => 'BASE TABLE',
                 ['NOT' => ['information_schema.columns.collation_name' => null]],
-                ['NOT' => ['information_schema.columns.collation_name' => 'utf8mb4_unicode_ci']]
+                ['NOT' => ['information_schema.columns.collation_name' => 'utf8mb4_unicode_ci']],
             ],
         ];
 
@@ -787,7 +787,7 @@ class DBmysql
             'SELECT'   => ['TABLE_NAME'],
             'DISTINCT' => true,
             'FROM'     => new QueryUnion([$tables_query, $columns_query], true),
-            'ORDER'    => ['TABLE_NAME']
+            'ORDER'    => ['TABLE_NAME'],
         ]);
 
         return $iterator;
@@ -819,10 +819,10 @@ class DBmysql
                                 'information_schema.tables.table_schema' => new QueryExpression(
                                     $this->quoteName('information_schema.columns.table_schema')
                                 ),
-                            ]
+                            ],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             'WHERE'       => [
                 'information_schema.tables.table_schema' => $this->dbdefault,
@@ -830,7 +830,7 @@ class DBmysql
                 'information_schema.tables.table_type'   => 'BASE TABLE',
                 'information_schema.columns.data_type'   => 'datetime',
             ],
-            'ORDER'       => ['TABLE_NAME']
+            'ORDER'       => ['TABLE_NAME'],
         ];
 
         if ($exclude_plugins) {
@@ -874,10 +874,10 @@ class DBmysql
                                 'information_schema.tables.table_schema' => new QueryExpression(
                                     $this->quoteName('information_schema.columns.table_schema')
                                 ),
-                            ]
+                            ],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             'WHERE'       => [
                 'information_schema.tables.table_schema'  => $this->dbdefault,
@@ -893,7 +893,7 @@ class DBmysql
                 'information_schema.columns.data_type' => ['tinyint', 'smallint', 'mediumint', 'int', 'bigint'],
                 ['NOT' => ['information_schema.columns.column_type' => ['LIKE', '%unsigned%']]],
             ],
-            'ORDER'       => ['TABLE_NAME']
+            'ORDER'       => ['TABLE_NAME'],
         ];
 
         if ($exclude_plugins) {
@@ -929,7 +929,7 @@ class DBmysql
                 'referenced_table_schema' => $this->dbdefault,
                 'referenced_table_name'   => ['LIKE', 'glpi\_%'],
             ],
-            'ORDER'  => ['TABLE_NAME']
+            'ORDER'  => ['TABLE_NAME'],
         ];
 
         $iterator = $this->request($query);
@@ -1077,9 +1077,9 @@ class DBmysql
                     return false;
                 }
                 if (!isCommandLine()) {
-                  // Flush will prevent proxy to timeout as it will receive data.
-                  // Flush requires a content to be sent, so we sent spaces as multiple spaces
-                  // will be shown as a single one on browser.
+                    // Flush will prevent proxy to timeout as it will receive data.
+                    // Flush requires a content to be sent, so we sent spaces as multiple spaces
+                    // will be shown as a single one on browser.
                     echo ' ';
                     Html::glpi_flush();
                 }
@@ -1116,7 +1116,7 @@ class DBmysql
      */
     public function getInfo()
     {
-       // No translation, used in sysinfo
+        // No translation, used in sysinfo
         $ret = [];
         $req = $this->doQuery("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
 
@@ -1155,9 +1155,9 @@ class DBmysql
         $name          = addslashes($this->dbdefault . '.' . $name);
         $query         = "SELECT GET_LOCK('$name', 0)";
         $result        = $this->doQuery($query);
-        list($lock_ok) = $this->fetchRow($result);
+        [$lock_ok] = $this->fetchRow($result);
 
-        return (bool)$lock_ok;
+        return (bool) $lock_ok;
     }
 
     /**
@@ -1174,7 +1174,7 @@ class DBmysql
         $name          = addslashes($this->dbdefault . '.' . $name);
         $query         = "SELECT RELEASE_LOCK('$name')";
         $result        = $this->doQuery($query);
-        list($lock_ok) = $this->fetchRow($result);
+        [$lock_ok] = $this->fetchRow($result);
 
         return $lock_ok;
     }
@@ -1198,8 +1198,8 @@ class DBmysql
             return true;
         }
 
-       // Retrieve all tables if cache is empty but enabled, in order to fill cache
-       // with all known tables
+        // Retrieve all tables if cache is empty but enabled, in order to fill cache
+        // with all known tables
         $retrieve_all = !$this->cache_disabled && empty($this->table_cache);
 
         $result = $this->listTables($retrieve_all ? 'glpi\_%' : $tablename);
@@ -1267,11 +1267,11 @@ class DBmysql
      */
     public static function quoteName($name)
     {
-       //handle verbatim names
+        //handle verbatim names
         if ($name instanceof QueryExpression) {
             return $name->getValue();
         }
-       //handle aliases
+        //handle aliases
         $names = preg_split('/\s+AS\s+/i', $name);
         if (count($names) > 2) {
             throw new \RuntimeException(
@@ -1305,11 +1305,11 @@ class DBmysql
         if ($value instanceof QueryParam || $value instanceof QueryExpression) {
             //no quote for query parameters nor expressions
             $value = $value->getValue();
-        } else if ($value === null || $value === 'NULL' || $value === 'null') {
+        } elseif ($value === null || $value === 'NULL' || $value === 'null') {
             $value = 'NULL';
-        } else if (is_bool($value)) {
+        } elseif (is_bool($value)) {
             // transform boolean as int (prevent `false` to be transformed to empty string)
-            $value = "'" . (int)$value . "'";
+            $value = "'" . (int) $value . "'";
         } else {
             if (Sanitizer::isNsClassOrCallableIdentifier($value)) {
                 // Values that corresponds to an existing namespaced class are not sanitized (see `Glpi\Toolbox\Sanitizer::sanitize()`).
@@ -1320,7 +1320,7 @@ class DBmysql
                 $value = $DB instanceof DBmysql && $DB->connected ? $DB->escape($value) : $value;
             }
 
-           // phone numbers may start with '+' and will be considered as numeric
+            // phone numbers may start with '+' and will be considered as numeric
             $value = "'$value'";
         }
         return $value;
@@ -1396,7 +1396,7 @@ class DBmysql
         $insert = $this->buildInsert($table, $params);
         $res = $this->doQuery($insert);
         if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
                 __('%1$s - Error during the database query: %2$s - Error is %3$s'),
                 $message,
@@ -1404,7 +1404,7 @@ class DBmysql
                 $this->error()
             );
             if (isCommandLine()) {
-                 throw new \RuntimeException($message);
+                throw new \RuntimeException($message);
             } else {
                 echo $message . "\n";
                 die(1);
@@ -1428,7 +1428,7 @@ class DBmysql
      */
     public function buildUpdate($table, $params, $clauses, array $joins = [])
     {
-       //when no explicit "WHERE", we only have a WHERE clause.
+        //when no explicit "WHERE", we only have a WHERE clause.
         if (!isset($clauses['WHERE'])) {
             $clauses  = ['WHERE' => $clauses];
         } else {
@@ -1455,7 +1455,7 @@ class DBmysql
 
         $query  = "UPDATE " . self::quoteName($table);
 
-       //JOINS
+        //JOINS
         $it = new DBmysqlIterator($this);
         $query .= $it->analyseJoins($joins);
 
@@ -1467,7 +1467,7 @@ class DBmysql
 
         $query .= " WHERE " . $it->analyseCrit($clauses['WHERE']);
 
-       // ORDER BY
+        // ORDER BY
         if (isset($clauses['ORDER']) && !empty($clauses['ORDER'])) {
             $query .= $it->handleOrderClause($clauses['ORDER']);
         }
@@ -1520,7 +1520,7 @@ class DBmysql
         $update = $this->buildUpdate($table, $params, $where, $joins);
         $res = $this->doQuery($update);
         if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
                 __('%1$s - Error during the database query: %2$s - Error is %3$s'),
                 $message,
@@ -1528,7 +1528,7 @@ class DBmysql
                 $this->error()
             );
             if (isCommandLine()) {
-                 throw new \RuntimeException($message);
+                throw new \RuntimeException($message);
             } else {
                 echo $message . "\n";
                 die(1);
@@ -1555,7 +1555,7 @@ class DBmysql
         $data = array_merge($where, $params);
         if ($req->count() == 0) {
             return $this->insertOrDie($table, $data, 'Unable to create new element or update existing one');
-        } else if ($req->count() == 1 || !$onlyone) {
+        } elseif ($req->count() == 1 || !$onlyone) {
             return $this->updateOrDie($table, $data, $where, 'Unable to create new element or update existing one');
         } else {
             trigger_error('Update would change too many rows!', E_USER_WARNING);
@@ -1629,7 +1629,7 @@ class DBmysql
         $update = $this->buildDelete($table, $where, $joins);
         $res = $this->doQuery($update);
         if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
                 __('%1$s - Error during the database query: %2$s - Error is %3$s'),
                 $message,
@@ -1637,7 +1637,7 @@ class DBmysql
                 $this->error()
             );
             if (isCommandLine()) {
-                 throw new \RuntimeException($message);
+                throw new \RuntimeException($message);
             } else {
                 echo $message . "\n";
                 die(1);
@@ -1679,7 +1679,7 @@ class DBmysql
         $table_name = $this::quoteName($table);
         $res = $this->doQuery("TRUNCATE $table_name");
         if (!$res) {
-           //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
+            //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
             $message = sprintf(
                 __('%1$s - Error during the database query: %2$s - Error is %3$s'),
                 $message,
@@ -1687,7 +1687,7 @@ class DBmysql
                 $this->error()
             );
             if (isCommandLine()) {
-                 throw new \RuntimeException($message);
+                throw new \RuntimeException($message);
             }
             echo $message . "\n";
             die(1);
@@ -1751,7 +1751,7 @@ class DBmysql
             'VIEW',
             'INDEX',
             'FOREIGN KEY',
-            'FIELD'
+            'FIELD',
         ];
         if (!in_array($type, $known_types)) {
             throw new \InvalidArgumentException('Unknown type to drop: ' . $type);
@@ -1804,7 +1804,7 @@ class DBmysql
         if ($this->in_transaction) {
             $this->dbh->savepoint($name);
         } else {
-           // Not already in transaction or failed to start one now
+            // Not already in transaction or failed to start one now
             trigger_error('Unable to set DB savepoint because no transaction was started', E_USER_WARNING);
         }
     }
@@ -1868,7 +1868,7 @@ class DBmysql
      */
     public function setTimezone($timezone)
     {
-       //setup timezone
+        //setup timezone
         if ($this->use_timezones) {
             date_default_timezone_set($timezone);
             $this->dbh->query(sprintf("SET SESSION time_zone = %s", $this->quote($timezone)));
@@ -1898,7 +1898,7 @@ class DBmysql
         $iterator = $this->request([
             'SELECT' => 'Name',
             'FROM'   => 'mysql.time_zone_name',
-            'WHERE'  => ['Name' => $from_php]
+            'WHERE'  => ['Name' => $from_php],
         ]);
 
         foreach ($iterator as $from_mysql) {
@@ -1935,7 +1935,7 @@ class DBmysql
     public function quote($value, int $type = 2/*\PDO::PARAM_STR*/)
     {
         return "'" . $this->escape($value) . "'";
-       //return $this->dbh->quote($value, $type);
+        //return $this->dbh->quote($value, $type);
     }
 
     /**
@@ -1978,7 +1978,7 @@ class DBmysql
         $lines = explode("\n", $output);
         $output = "";
 
-       // try to keep mem. use down
+        // try to keep mem. use down
         $linecount = count($lines);
 
         $in_comment = false;
@@ -2013,7 +2013,7 @@ class DBmysql
     {
         $lines = explode("\n", $sql);
 
-       // try to keep mem. use down
+        // try to keep mem. use down
         $sql = "";
 
         $linecount = count($lines);
@@ -2045,7 +2045,7 @@ class DBmysql
         $warnings = [];
 
         if ($this->dbh->warning_count > 0 && $warnings_result = $this->dbh->query('SHOW WARNINGS')) {
-           // Warnings to exclude
+            // Warnings to exclude
             $excludes = [];
 
             if (!$this->use_utf8mb4 || !$this->log_deprecation_warnings) {
@@ -2136,7 +2136,7 @@ class DBmysql
                 ),
                 E_USER_WARNING
             );
-        } else if (!$this->use_utf8mb4 && preg_match('/(?<invalid>(utf8mb4(_[^\';\s]+)?))([\';\s]|$)/', $query, $charset_matches)) {
+        } elseif (!$this->use_utf8mb4 && preg_match('/(?<invalid>(utf8mb4(_[^\';\s]+)?))([\';\s]|$)/', $query, $charset_matches)) {
             trigger_error(
                 sprintf(
                     'Usage of "%s" charset/collation detected, should be "%s"',
@@ -2187,7 +2187,7 @@ class DBmysql
         $config_flags = [];
 
         if ($this->getTzIncompatibleTables(true)->count() === 0) {
-           // Disallow datetime if there is no core table still using this field type.
+            // Disallow datetime if there is no core table still using this field type.
             $config_flags[DBConnection::PROPERTY_ALLOW_DATETIME] = false;
 
             $timezones_requirement = new DbTimezones($this);
@@ -2198,17 +2198,17 @@ class DBmysql
         }
 
         if ($this->getNonUtf8mb4Tables(true)->count() === 0) {
-           // Use utf8mb4 charset for update process if there all core table are using this charset.
+            // Use utf8mb4 charset for update process if there all core table are using this charset.
             $config_flags[DBConnection::PROPERTY_USE_UTF8MB4] = true;
         }
 
         if ($this->getMyIsamTables(true)->count() === 0) {
-           // Disallow MyISAM if there is no core table still using this engine.
+            // Disallow MyISAM if there is no core table still using this engine.
             $config_flags[DBConnection::PROPERTY_ALLOW_MYISAM] = false;
         }
 
         if ($this->getSignedKeysColumns(true)->count() === 0) {
-           // Disallow MyISAM if there is no core table still using this engine.
+            // Disallow MyISAM if there is no core table still using this engine.
             $config_flags[DBConnection::PROPERTY_ALLOW_SIGNED_KEYS] = false;
         }
 

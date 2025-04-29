@@ -91,9 +91,9 @@ if (isset($AJAX_INCLUDE)) {
 
 /* On startup, register all plugins configured for use. */
 if (!isset($PLUGINS_INCLUDED)) {
-   // PLugin already included
+    // PLugin already included
     $PLUGINS_INCLUDED = 1;
-    $PLUGINS_EXCLUDED = isset($PLUGINS_EXCLUDED) ? $PLUGINS_EXCLUDED : [];
+    $PLUGINS_EXCLUDED ??= [];
     $plugin = new Plugin();
     $plugin->init(true, $PLUGINS_EXCLUDED);
 }
@@ -131,13 +131,13 @@ if (isset($_REQUEST['forcetab'])) {
     if (preg_match('/\/plugins\/([a-zA-Z]+)\/front\/([a-zA-Z]+).form.php/', $_SERVER['PHP_SELF'], $matches)) {
         $itemtype = 'plugin' . $matches[1] . $matches[2];
         Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
-    } else if (preg_match('/([a-zA-Z]+).form.php/', $_SERVER['PHP_SELF'], $matches)) {
+    } elseif (preg_match('/([a-zA-Z]+).form.php/', $_SERVER['PHP_SELF'], $matches)) {
         $itemtype = $matches[1];
         Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
-    } else if (preg_match('/\/plugins\/([a-zA-Z]+)\/front\/([a-zA-Z]+).php/', $_SERVER['PHP_SELF'], $matches)) {
+    } elseif (preg_match('/\/plugins\/([a-zA-Z]+)\/front\/([a-zA-Z]+).php/', $_SERVER['PHP_SELF'], $matches)) {
         $itemtype = 'plugin' . $matches[1] . $matches[2];
         Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
-    } else if (preg_match('/([a-zA-Z]+).php/', $_SERVER['PHP_SELF'], $matches)) {
+    } elseif (preg_match('/([a-zA-Z]+).php/', $_SERVER['PHP_SELF'], $matches)) {
         $itemtype = $matches[1];
         Session::setActiveTab($itemtype, $_REQUEST['forcetab']);
     }
@@ -158,11 +158,11 @@ if (
     && count($_POST) > 0
 ) {
     if (preg_match(':' . $CFG_GLPI['root_doc'] . '(/(plugins|marketplace)/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI']) === 1) {
-       // Keep CSRF token as many AJAX requests may be made at the same time.
-       // This is due to the fact that read operations are often made using POST method (see #277).
+        // Keep CSRF token as many AJAX requests may be made at the same time.
+        // This is due to the fact that read operations are often made using POST method (see #277).
         define('GLPI_KEEP_CSRF_TOKEN', true);
 
-       // For AJAX requests, check CSRF token located into "X-Glpi-Csrf-Token" header.
+        // For AJAX requests, check CSRF token located into "X-Glpi-Csrf-Token" header.
         Session::checkCSRF(['_glpi_csrf_token' => $_SERVER['HTTP_X_GLPI_CSRF_TOKEN'] ?? '']);
     } else {
         Session::checkCSRF($_POST);

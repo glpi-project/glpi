@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
         );
     }
     $lockedfield->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $lockedfield->check($_POST['id'], UPDATE);
     if ($lockedfield->delete($_POST, 1)) {
         Event::log(
@@ -74,6 +74,6 @@ if (isset($_POST["add"])) {
 } else {//print locked field information
     $menus = ["admin", "glpi\inventory\inventory", "lockedfield"];
     $lockedfield->displayFullPageForItem($_GET['id'], $menus, [
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

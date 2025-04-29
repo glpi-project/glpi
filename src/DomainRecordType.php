@@ -62,7 +62,7 @@ class DomainRecordType extends CommonDropdown
                     'key'         => 'target',
                     'label'       => 'Target',
                     'placeholder' => 'sip.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
             ],
         ], [
@@ -79,7 +79,7 @@ class DomainRecordType extends CommonDropdown
                     'key'         => 'server',
                     'label'       => 'Server',
                     'placeholder' => 'mail.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
             ],
         ], [
@@ -101,13 +101,13 @@ class DomainRecordType extends CommonDropdown
                     'key'         => 'primary_name_server',
                     'label'       => 'Primary name server',
                     'placeholder' => 'ns1.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
                 [
                     'key'         => 'primary_contact',
                     'label'       => 'Primary contact',
                     'placeholder' => 'admin.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
                 [
                     'key'         => 'serial',
@@ -159,7 +159,7 @@ class DomainRecordType extends CommonDropdown
                     'key'         => 'target',
                     'label'       => 'Target',
                     'placeholder' => 'sip.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
             ],
         ], [
@@ -196,7 +196,7 @@ class DomainRecordType extends CommonDropdown
                     'quote_value' => true,
                 ],
             ],
-        ]
+        ],
     ];
 
 
@@ -207,7 +207,7 @@ class DomainRecordType extends CommonDropdown
                 'name'  => 'fields',
                 'label' => __('Fields'),
                 'type'  => 'fields',
-            ]
+            ],
         ];
     }
 
@@ -261,8 +261,8 @@ class DomainRecordType extends CommonDropdown
             $old_fields = self::decodeFields($this->oldvalues['fields']);
             $new_fields = self::decodeFields($this->fields['fields']);
 
-           // Checks only for keys changes as fields order, label, placeholder or quote_value properties changes
-           // should have no impact on object representation.
+            // Checks only for keys changes as fields order, label, placeholder or quote_value properties changes
+            // should have no impact on object representation.
             $old_keys = array_column($old_fields, 'key');
             $new_keys = array_column($new_fields, 'key');
             sort($old_keys);

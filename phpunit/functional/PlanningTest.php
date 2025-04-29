@@ -46,9 +46,9 @@ class PlanningTest extends \DbTestCase
             'name'  => "test event to clone",
             'plan'  => [
                 'begin'     => date('Y-m-d H:i:s'),
-                '_duration' => 2 * HOUR_TIMESTAMP
+                '_duration' => 2 * HOUR_TIMESTAMP,
             ],
-            'rrule' => '{"freq":"weekly","interval":"1"}'
+            'rrule' => '{"freq":"weekly","interval":"1"}',
         ];
 
         $event = new \PlanningExternalEvent();
@@ -64,7 +64,7 @@ class PlanningTest extends \DbTestCase
                 'old_itemtype' => 'PlanningExternalEvent',
                 'old_items_id' => $event_id,
                 'start'        => $new_start,
-                'end'          => $new_end
+                'end'          => $new_end,
             ])
         );
 
@@ -144,7 +144,7 @@ class PlanningTest extends \DbTestCase
             [
                 'start'            => '2000-01-01 00:00:00',
                 'end'              => '2050-12-31 23:59:59',
-                'force_all_events' => true
+                'force_all_events' => true,
             ]
         );
         // Fetch events only for a given month
@@ -218,7 +218,7 @@ class PlanningTest extends \DbTestCase
             'itemtype' => 'InvalidType',
             'items_id' => 1,
             'start'    => '2020-01-01 00:00:00',
-            'end'      => '2020-01-01 01:00:00'
+            'end'      => '2020-01-01 01:00:00',
         ]));
 
         // Shouldn't be allowed to update item that doesn't exist
@@ -226,7 +226,7 @@ class PlanningTest extends \DbTestCase
             'itemtype' => 'TicketTask',
             'items_id' => 99999999,
             'start'    => '2020-01-01 00:00:00',
-            'end'      => '2020-01-01 01:00:00'
+            'end'      => '2020-01-01 01:00:00',
         ]));
 
         // Shouldn't be allowed to update task from closed ticket
@@ -240,22 +240,22 @@ class PlanningTest extends \DbTestCase
             'tickets_id' => $ticket->getID(),
             'content' => 'Test task',
             'begin' => '2020-01-01 00:00:00',
-            'end' => '2020-01-01 01:00:00'
+            'end' => '2020-01-01 01:00:00',
         ]);
         $ticket->update([
             'id' => $ticket->getID(),
-            'status' => \Ticket::CLOSED
+            'status' => \Ticket::CLOSED,
         ]);
         $this->assertFalse(\Planning::updateEventTimes([
             'itemtype' => 'TicketTask',
             'items_id' => $task->getID(),
             'start'    => '2020-01-02 00:00:00',
-            'end'      => '2020-01-02 01:00:00'
+            'end'      => '2020-01-02 01:00:00',
         ]));
 
         $ticket->update([
             'id' => $ticket->getID(),
-            'status' => \Ticket::INCOMING
+            'status' => \Ticket::INCOMING,
         ]);
 
         // General update test
@@ -265,7 +265,7 @@ class PlanningTest extends \DbTestCase
             'itemtype' => 'TicketTask',
             'items_id' => $task->getID(),
             'start'    => '2020-01-02 00:00:00',
-            'end'      => '2020-01-02 01:00:00'
+            'end'      => '2020-01-02 01:00:00',
         ]));
 
         // Allowed test
@@ -274,7 +274,7 @@ class PlanningTest extends \DbTestCase
             'itemtype' => 'TicketTask',
             'items_id' => $task->getID(),
             'start'    => '2020-01-02 00:00:00',
-            'end'      => '2020-01-02 01:00:00'
+            'end'      => '2020-01-02 01:00:00',
         ]));
     }
 
@@ -291,7 +291,7 @@ class PlanningTest extends \DbTestCase
             'plan' => [
                 'begin' => '2020-01-01 00:00:00',
                 'end'   => '2020-01-02 00:00:00',
-            ]
+            ],
         ]);
         $event->add([
             'name'  => __FUNCTION__ . '_recurring',
@@ -300,7 +300,7 @@ class PlanningTest extends \DbTestCase
                 'begin' => '2020-01-01 00:00:00',
                 'end'   => '2020-01-02 00:00:00',
             ],
-            'rrule' => '{"freq":"weekly","interval":"3","until":""}'
+            'rrule' => '{"freq":"weekly","interval":"3","until":""}',
         ]);
         $event->add([
             'name'  => __FUNCTION__ . '_not_allday',
@@ -308,14 +308,14 @@ class PlanningTest extends \DbTestCase
             'plan' => [
                 'begin' => '2020-01-01 01:00:00',
                 'end'   => '2020-01-02 01:00:00',
-            ]
+            ],
         ]);
 
         $events = \Planning::constructEventsArray([
             'start' => '2020-01-01 00:00:00',
             'end'   => '2020-01-30 00:00:00',
             'view_name' => 'listFull',
-            'force_all_events' => true
+            'force_all_events' => true,
         ]);
         $this->assertCount(3, $events);
         $this->assertEquals(__FUNCTION__, $events[0]['title']);

@@ -58,12 +58,12 @@ class StatDataSatisfaction extends StatDataAlwaysDisplay
             ], [
                 'name' => _nx('survey', 'Answered', 'Answered', Session::getPluralNumber()),
                 'data' => $answersatisfaction,
-            ]
+            ],
         ];
     }
 
     public function getTitle(): string
     {
-        return __('Satisfaction survey') . " - " .  __('Tickets');
+        return __('Satisfaction survey') . " - " . __('Tickets');
     }
 }

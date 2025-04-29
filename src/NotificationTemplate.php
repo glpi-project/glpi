@@ -43,13 +43,13 @@ class NotificationTemplate extends CommonDBTM
 {
     use Glpi\Features\Clonable;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
 
-   //Signature to add to the template
+    //Signature to add to the template
     public $signature = '';
 
-   //Store templates for each language
+    //Store templates for each language
     public $templates_by_languages = [];
 
     public static $rightname = 'config';
@@ -57,7 +57,7 @@ class NotificationTemplate extends CommonDBTM
     public function getCloneRelations(): array
     {
         return [
-            NotificationTemplateTranslation::class
+            NotificationTemplateTranslation::class,
         ];
     }
 
@@ -137,7 +137,7 @@ class NotificationTemplate extends CommonDBTM
             'itemtype',
             $CFG_GLPI["notificationtemplates_types"],
             ['value' => ($this->fields['itemtype']
-            ? $this->fields['itemtype'] : 'Ticket')
+            ? $this->fields['itemtype'] : 'Ticket'),
             ]
         );
         echo "</td></tr>";
@@ -162,7 +162,7 @@ class NotificationTemplate extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -181,7 +181,7 @@ class NotificationTemplate extends CommonDBTM
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'itemtypename',
             'itemtype_list'      => 'notificationtemplates_types',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -189,7 +189,7 @@ class NotificationTemplate extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         return $tab;
@@ -209,7 +209,7 @@ class NotificationTemplate extends CommonDBTM
             'name'       => $name,
             'value'     => $value,
             'comment'   => 1,
-            'condition' => ['itemtype' => addslashes($itemtype)]
+            'condition' => ['itemtype' => addslashes($itemtype)],
         ]);
     }
 
@@ -220,8 +220,8 @@ class NotificationTemplate extends CommonDBTM
     public function getAdditionnalProcessOption($options)
     {
 
-       //Additionnal option can be given for template processing
-       //For the moment, only option to see private tasks & followups is available
+        //Additionnal option can be given for template processing
+        //For the moment, only option to see private tasks & followups is available
         if (
             !empty($options)
             && isset($options['sendprivate'])
@@ -262,19 +262,19 @@ class NotificationTemplate extends CommonDBTM
         $tid  = sha1($tid);
 
         if (!isset($this->templates_by_languages[$tid])) {
-           //Switch to the desired language
-            $bak_dropdowntranslations = (isset($_SESSION['glpi_dropdowntranslations']) ? $_SESSION['glpi_dropdowntranslations'] : null);
+            //Switch to the desired language
+            $bak_dropdowntranslations = ($_SESSION['glpi_dropdowntranslations'] ?? null);
             $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($language);
             Session::loadLanguage($language);
             $bak_language = $_SESSION["glpilanguage"];
             $_SESSION["glpilanguage"] = $language;
 
-           //If event is raised by a plugin, load it in order to get the language file available
+            //If event is raised by a plugin, load it in order to get the language file available
             if ($plug = isPluginItemType(get_class($target->obj))) {
                 Plugin::loadLang(strtolower($plug['plugin']), $language);
             }
 
-           //Get template's language data for in this language
+            //Get template's language data for in this language
             $options['additionnaloption'] = $additionnaloption;
             $data = &$target->getForTemplate($event, $options);
 
@@ -283,7 +283,7 @@ class NotificationTemplate extends CommonDBTM
             $add_footer    = $target->getContentFooter();
 
             if ($template_datas = $this->getByLanguage($language)) {
-               //Template processing
+                //Template processing
 
                 $template_datas  = Sanitizer::unsanitize($template_datas);
                 $data            = Sanitizer::unsanitize($data);
@@ -292,7 +292,7 @@ class NotificationTemplate extends CommonDBTM
                 . self::process($template_datas['subject'], self::getDataForPlainText($data));
                 $lang['content_html'] = '';
 
-               //If no html content, then send only in text
+                //If no html content, then send only in text
                 if (!empty($template_datas['content_html'])) {
                     $signature_html = RichText::getSafeHtml($this->signature);
 
@@ -333,7 +333,7 @@ class NotificationTemplate extends CommonDBTM
                 $this->templates_by_languages[$tid] = $lang;
             }
 
-           // Restore default language
+            // Restore default language
             $_SESSION["glpilanguage"] = $bak_language;
             Session::loadLanguage();
             if ($bak_dropdowntranslations !== null) {
@@ -360,18 +360,18 @@ class NotificationTemplate extends CommonDBTM
     {
 
         $offset = $new_offset = 0;
-       //Template processed
+        //Template processed
         $output = "";
 
         $cleandata = [];
-       // clean data for strtr
+        // clean data for strtr
         foreach ($data as $field => $value) {
             if (!is_array($value)) {
                 $cleandata[$field] = $value;
             }
         }
 
-       //First of all process the FOREACH tag
+        //First of all process the FOREACH tag
         if (
             preg_match_all(
                 "/##FOREACH[ ]?(FIRST|LAST)?[ ]?([0-9]*)?[ ]?([a-z-0-9\._]*)##/i",
@@ -423,7 +423,7 @@ class NotificationTemplate extends CommonDBTM
             }
         }
 
-       //Now process IF statements
+        //Now process IF statements
         $string = self::processIf($string, $cleandata);
         $string = strtr($string, $cleandata);
 
@@ -483,20 +483,20 @@ class NotificationTemplate extends CommonDBTM
                     }
                 } else { // check exact match
                     if (isset($data['##' . $if_field . '##'])) {
-                      // Data value: the value for the field in the database
+                        // Data value: the value for the field in the database
                         $data_value = Html::entity_decode_deep($data['##' . $if_field . '##']);
 
-                      // Condition value: the expected value needed to validate the condition
+                        // Condition value: the expected value needed to validate the condition
                         $condition_value = Html::entity_decode_deep($out[2][$key]);
 
-                      // Special case for data returned by Dropdown::getYesNo, we
-                      // need to use the localized value in the comparison
+                        // Special case for data returned by Dropdown::getYesNo, we
+                        // need to use the localized value in the comparison
                         $to_translate = ["Yes", "No"];
                         if (in_array($condition_value, $to_translate)) {
-                              $condition_value = __($condition_value);
+                            $condition_value = __($condition_value);
                         }
 
-                      // Compare data value and condition value
+                        // Compare data value and condition value
                         $condition_ok = $condition_value == $data_value;
                     }
                 }
@@ -529,7 +529,7 @@ class NotificationTemplate extends CommonDBTM
                 continue;
             }
             if (!is_string($value)) {
-               // Only strings have to be transformed.
+                // Only strings have to be transformed.
                 continue;
             }
             $data[$tag] = RichText::isRichTextHtmlContent($value)
@@ -556,11 +556,11 @@ class NotificationTemplate extends CommonDBTM
                 continue;
             }
             if (!is_string($value)) {
-               // Only strings have to be transformed.
+                // Only strings have to be transformed.
                 continue;
             }
             if (RichText::isRichTextHtmlContent($value)) {
-               // Value is rich text, convert it to plain text
+                // Value is rich text, convert it to plain text
                 $data[$tag] = RichText::getTextFromHtml($value);
                 continue;
             }
@@ -591,16 +591,16 @@ class NotificationTemplate extends CommonDBTM
             'FROM'   => 'glpi_notificationtemplatetranslations',
             'WHERE'  => [
                 'notificationtemplates_id' => $this->getField('id'),
-                'language'                 => [$language, '']
+                'language'                 => [$language, ''],
             ],
             'ORDER'  => 'language DESC',
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
         if (count($iterator)) {
             return $iterator->current();
         }
 
-       //No template found at all!
+        //No template found at all!
         return false;
     }
 
@@ -656,7 +656,7 @@ class NotificationTemplate extends CommonDBTM
             ]
         );
 
-       // QueuedNotification does not extends CommonDBConnexity
+        // QueuedNotification does not extends CommonDBConnexity
         $queued = new QueuedNotification();
         $queued->deleteByCriteria(['notificationtemplates_id' => $this->fields['id']]);
     }

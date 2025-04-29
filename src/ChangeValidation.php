@@ -38,7 +38,7 @@
  */
 class ChangeValidation extends CommonITILValidation
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype           = 'Change';
     public static $items_id           = 'changes_id';
 

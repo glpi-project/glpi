@@ -61,28 +61,28 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
      *
      * @var integer
      */
-    const ERROR_NO_UNSTABLE_UPDATE = 1;
+    public const ERROR_NO_UNSTABLE_UPDATE = 1;
 
     /**
      * Error code returned when security key file is missing.
      *
      * @var integer
      */
-    const ERROR_MISSING_SECURITY_KEY_FILE = 2;
+    public const ERROR_MISSING_SECURITY_KEY_FILE = 2;
 
     /**
      * Error code returned when database is not a valid GLPI database.
      *
      * @var integer
      */
-    const ERROR_INVALID_DATABASE = 3;
+    public const ERROR_INVALID_DATABASE = 3;
 
     /**
      * Error code returned when database integrity check failed.
      *
      * @var integer
      */
-    const ERROR_DATABASE_INTEGRITY_CHECK_FAILED = 4;
+    public const ERROR_DATABASE_INTEGRITY_CHECK_FAILED = 4;
 
     protected $requires_db_up_to_date = false;
 
@@ -141,12 +141,12 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
 
         $update = new Update($this->db);
 
-       // Initialize entities
+        // Initialize entities
         $_SESSION['glpidefault_entity'] = 0;
         Session::initEntityProfiles(2);
         Session::changeProfile(4);
 
-       // Display current/future state information
+        // Display current/future state information
         $currents            = $update->getCurrents();
         $current_version     = $currents['version'];
         $current_db_version  = $currents['dbversion'];
@@ -179,7 +179,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
         }
 
         if (VersionParser::isStableRelease($current_version) && !VersionParser::isStableRelease(GLPI_VERSION) && !$allow_unstable) {
-           // Prevent unstable update unless explicitly asked
+            // Prevent unstable update unless explicitly asked
             $output->writeln(
                 sprintf(
                     '<error>' . __('%s is not a stable release. Please upgrade manually or add --allow-unstable option.') . '</error>',
@@ -228,7 +228,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
                     '<comment>' . sprintf(
                         __('It is recommended to run the "%s" command to validate that the database schema is consistent with the current GLPI version.'),
                         'php bin/console database:check_schema_integrity'
-                    ) . '</comment>'
+                    ) . '</comment>',
                 ],
                 OutputInterface::VERBOSITY_QUIET
             );
@@ -246,7 +246,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
                     '<error>' . sprintf(
                         __('It is recommended to run the "%s" command to see the differences.'),
                         'php bin/console database:check_schema_integrity'
-                    ) . '</error>'
+                    ) . '</error>',
                 ],
                 OutputInterface::VERBOSITY_QUIET
             );

@@ -56,7 +56,7 @@ function update0830to0831()
     $newtables     = [];
 
     foreach ($newtables as $new_table) {
-       // rename new tables if exists ?
+        // rename new tables if exists ?
         if ($DB->tableExists($new_table)) {
             $migration->dropTable("backup_$new_table");
             $migration->displayWarning("$new_table table already exists. " .
@@ -81,14 +81,14 @@ function update0830to0831()
         "char",
         ['after'     => "knowbase",
             'update'    => "1",
-            'condition' => " WHERE `config` = 'w'"
+            'condition' => " WHERE `config` = 'w'",
         ]
     );
 
     $migration->addField("glpi_configs", "display_count_on_home", "integer", ['value' => 5]);
     $migration->addField("glpi_users", "display_count_on_home", "int NULL DEFAULT NULL");
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->displayMessage('Migration of glpi_displaypreferences');
 
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
@@ -115,11 +115,11 @@ function update0830to0831()
                                   AND `itemtype` = '$type'";
                         if ($result2 = $DB->doQuery($query)) {
                             if ($DB->numrows($result2) == 0) {
-                                 $query = "INSERT INTO `glpi_displaypreferences`
+                                $query = "INSERT INTO `glpi_displaypreferences`
                                          (`itemtype` ,`num` ,`rank` ,`users_id`)
                                   VALUES ('$type', '$newval', '" . $rank++ . "',
                                           '" . $data['users_id'] . "')";
-                                 $DB->doQuery($query);
+                                $DB->doQuery($query);
                             }
                         }
                     }
@@ -136,7 +136,7 @@ function update0830to0831()
         }
     }
 
-   // must always be at the end
+    // must always be at the end
     $migration->executeMigration();
 
     return $updateresult;

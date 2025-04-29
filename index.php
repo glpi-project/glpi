@@ -149,21 +149,21 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                               && countElementsInTable('glpi_notifications', [
                                   'itemtype'  => 'User',
                                   'event'     => 'passwordforget',
-                                  'is_active' => 1
+                                  'is_active' => 1,
                               ]),
         'languages_dropdown'  => Dropdown::showLanguages('language', [
             'display'             => false,
             'rand'                => $rand,
             'display_emptychoice' => true,
             'emptylabel'          => __('Default (from user profile)'),
-            'width'               => '100%'
+            'width'               => '100%',
         ]),
         'right_panel'         => strlen($CFG_GLPI['text_login']) > 0
                                || count($PLUGIN_HOOKS[Hooks::DISPLAY_LOGIN] ?? []) > 0
                                || $CFG_GLPI["use_public_faq"],
         'auth_dropdown_login' => Auth::dropdownLogin(false, $rand),
         'copyright_message'   => Html::getCopyrightMessage(false),
-        'errors'              => $errors
+        'errors'              => $errors,
     ]);
 }
 // call cron

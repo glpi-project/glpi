@@ -84,7 +84,7 @@ class RuleTicketTest extends DbTestCase
                 'glpi_rules',
                 [
                     'name' => 'Ticket location from item',
-                    'is_active' => 0
+                    'is_active' => 0,
                 ]
             )
         );
@@ -94,7 +94,7 @@ class RuleTicketTest extends DbTestCase
                 'glpi_rules',
                 [
                     'name' => 'Ticket location from use',
-                    'is_active' => 1
+                    'is_active' => 1,
                 ]
             )
         );
@@ -111,22 +111,22 @@ class RuleTicketTest extends DbTestCase
         $ticket = new \Ticket();
         $tickets_id = $ticket->add($ticket_input = [
             'name'    => "test ticket, will trigger on rule (title)",
-            'content' => "test"
+            'content' => "test",
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->assertEquals(5, (int)$ticket->getField('urgency'));
+        $this->assertEquals(5, (int) $ticket->getField('urgency'));
 
         // test create ticket (trigger on user assign)
         $ticket = new \Ticket();
         $tickets_id = $ticket->add($ticket_input = [
             'name'             => "test ticket, will trigger on rule (user)",
             'content'          => "test",
-            '_users_id_assign' => getItemByTypeName('User', "tech", true)
+            '_users_id_assign' => getItemByTypeName('User', "tech", true),
         ]);
         // _users_id_assign is stored in glpi_tickets_users table, so remove it
         unset($ticket_input['_users_id_assign']);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->assertEquals(5, (int)$ticket->getField('urgency'));
+        $this->assertEquals(5, (int) $ticket->getField('urgency'));
     }
 
     public function testTriggerUpdate()
@@ -143,27 +143,27 @@ class RuleTicketTest extends DbTestCase
         $ticket = new \Ticket();
         $tickets_id = $ticket->add($ticket_input = [
             'name'    => "test ticket, will not trigger on rule",
-            'content' => "test"
+            'content' => "test",
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->assertEquals(3, (int)$ticket->getField('urgency'));
+        $this->assertEquals(3, (int) $ticket->getField('urgency'));
 
         // update ticket title and trigger rule on title updating
         $ticket->update([
             'id'   => $tickets_id,
-            'name' => 'test ticket, will trigger on rule (title)'
+            'name' => 'test ticket, will trigger on rule (title)',
         ]);
         $ticket->getFromDB($tickets_id);
-        $this->assertEquals(5, (int)$ticket->getField('urgency'));
+        $this->assertEquals(5, (int) $ticket->getField('urgency'));
 
         // test create ticket (for check triggering on actor after update)
         $ticket = new \Ticket();
         $tickets_id = $ticket->add($ticket_input = [
             'name'    => "test ticket, will not trigger on rule (actor)",
-            'content' => "test"
+            'content' => "test",
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->assertEquals(3, (int)$ticket->getField('urgency'));
+        $this->assertEquals(3, (int) $ticket->getField('urgency'));
 
         // update ticket title and trigger rule on actor addition
         $ticket->update([
@@ -172,14 +172,14 @@ class RuleTicketTest extends DbTestCase
             '_lgd'         => true,
             '_itil_assign' => [
                 '_type'    => 'user',
-                'users_id' => $users_id
-            ]
+                'users_id' => $users_id,
+            ],
         ]);
         $ticket->getFromDB($tickets_id);
         $ticket_user = new \Ticket_User();
         $actors = $ticket_user->getActors($tickets_id);
-        $this->assertEquals($users_id, (int)$actors[2][0]['users_id']);
-        $this->assertEquals(5, (int)$ticket->getField('urgency'));
+        $this->assertEquals($users_id, (int) $actors[2][0]['users_id']);
+        $this->assertEquals(5, (int) $ticket->getField('urgency'));
     }
 
     private function createTestTriggerRule($condition)
@@ -194,28 +194,28 @@ class RuleTicketTest extends DbTestCase
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
             'condition'    => $condition,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->checkInput($ruleticket, $ruletid, $ruletinput);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_CONTAIN,
-            'pattern'   => "trigger on rule (title)"
+            'pattern'   => "trigger on rule (title)",
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => '_users_id_assign',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => getItemByTypeName('User', "tech", true)
+            'pattern'   => getItemByTypeName('User', "tech", true),
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruletid,
             'action_type' => 'assign',
             'field'       => 'urgency',
-            'value'       => 5
+            'value'       => 5,
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
     }
@@ -254,7 +254,7 @@ class RuleTicketTest extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => '_users_id_assign',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => getItemByTypeName('User', 'tech', true)
+            'pattern'   => getItemByTypeName('User', 'tech', true),
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
@@ -271,11 +271,11 @@ class RuleTicketTest extends DbTestCase
         $tickets_id = $ticket->add($ticket_input = [
             'name'             => 'change status to waiting if new and assigned to tech',
             'content'          => 'test',
-            '_users_id_assign' => getItemByTypeName('User', 'tech', true)
+            '_users_id_assign' => getItemByTypeName('User', 'tech', true),
         ]);
         unset($ticket_input['_users_id_assign']); // _users_id_assign is stored in glpi_tickets_users table, so remove it
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->assertEquals(\Ticket::WAITING, (int)$ticket->getField('status'));
+        $this->assertEquals(\Ticket::WAITING, (int) $ticket->getField('status'));
     }
 
     /**
@@ -328,10 +328,10 @@ class RuleTicketTest extends DbTestCase
         $ticket = new \Ticket();
         $tickets_id = $ticket->add($ticket_input = [
             'name'    => 'assign to tech (on creation)',
-            'content' => 'test'
+            'content' => 'test',
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->assertEquals(\Ticket::INCOMING, (int)$ticket->getField('status'));
+        $this->assertEquals(\Ticket::INCOMING, (int) $ticket->getField('status'));
         $this->assertEquals(
             1,
             countElementsInTable(
@@ -349,7 +349,7 @@ class RuleTicketTest extends DbTestCase
         ]);
         unset($ticket_input['_users_id_assign']);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->assertEquals(\Ticket::ASSIGNED, (int)$ticket->getField('status'));
+        $this->assertEquals(\Ticket::ASSIGNED, (int) $ticket->getField('status'));
         $this->assertEquals(
             1,
             countElementsInTable(
@@ -365,7 +365,7 @@ class RuleTicketTest extends DbTestCase
             '_users_id_assign' => getItemByTypeName('User', 'glpi', true), // rule should erase this value
         ]));
         $this->assertTrue($ticket->getFromDB($tickets_id));
-        $this->assertEquals(\Ticket::INCOMING, (int)$ticket->getField('status'));
+        $this->assertEquals(\Ticket::INCOMING, (int) $ticket->getField('status'));
         $this->assertEquals(
             2,
             countElementsInTable(
@@ -386,7 +386,7 @@ class RuleTicketTest extends DbTestCase
             "code" => "itil_category_for_add",
         ]);
 
-        $this->assertGreaterThan(0, (int)$ITILCategoryForAddId);
+        $this->assertGreaterThan(0, (int) $ITILCategoryForAddId);
 
         // Create ITILCategory with code
         $ITILCategoryForUpdate = new \ITILCategory();
@@ -395,7 +395,7 @@ class RuleTicketTest extends DbTestCase
             "code" => "itil_category_for_update",
         ]);
 
-        $this->assertGreaterThan(0, (int)$ITILCategoryForUpdateId);
+        $this->assertGreaterThan(0, (int) $ITILCategoryForUpdateId);
 
         // Create rule
         $ruleticket = new \RuleTicket();
@@ -432,20 +432,20 @@ class RuleTicketTest extends DbTestCase
         $ticket = new \Ticket();
         $tickets_id = $ticket->add($ticket_input = [
             'name'    => 'some ticket (on insert)',
-            'content' => 'some text #itil_category_for_add# some text'
+            'content' => 'some text #itil_category_for_add# some text',
         ]);
 
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->assertEquals($ITILCategoryForAddId, (int)$ticket->getField('itilcategories_id'));
+        $this->assertEquals($ITILCategoryForAddId, (int) $ticket->getField('itilcategories_id'));
 
         $this->assertTrue($ticket->update($ticket_input = [
             'id'      => $tickets_id,
             'name'    => 'some ticket (on update)',
-            'content' => 'some text #itil_category_for_update# some text'
+            'content' => 'some text #itil_category_for_update# some text',
         ]));
 
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->assertEquals($ITILCategoryForUpdateId, (int)$ticket->getField('itilcategories_id'));
+        $this->assertEquals($ITILCategoryForUpdateId, (int) $ticket->getField('itilcategories_id'));
     }
 
     public function testITILSolutionAssignFromRule()
@@ -455,9 +455,9 @@ class RuleTicketTest extends DbTestCase
         // Create solution template
         $solutionTemplate = new \SolutionTemplate();
         $solutionTemplate_id = $solutionTemplate->add($solutionInput = [
-            'content' => Toolbox::addslashes_deep("<p>content of solution template  white ' quote</p>")
+            'content' => Toolbox::addslashes_deep("<p>content of solution template  white ' quote</p>"),
         ]);
-        $this->assertGreaterThan(0, (int)$solutionTemplate_id);
+        $this->assertGreaterThan(0, (int) $solutionTemplate_id);
 
         // Create rule
         $ruleticket = new \RuleTicket();
@@ -493,16 +493,16 @@ class RuleTicketTest extends DbTestCase
         $ticket = new \Ticket();
         $tickets_id = $ticket->add($ticket_input = [
             'name'    => 'some ticket',
-            'content' => 'some text some text'
+            'content' => 'some text some text',
         ]);
 
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->assertGreaterThan(0, (int)$tickets_id);
+        $this->assertGreaterThan(0, (int) $tickets_id);
 
         // update ticket content and trigger rule on content updating
         $ticket->update([
             'id'   => $tickets_id,
-            'content' => 'test ticket, will trigger on rule (content)'
+            'content' => 'test ticket, will trigger on rule (content)',
         ]);
 
         //load ITILSolution
@@ -510,14 +510,14 @@ class RuleTicketTest extends DbTestCase
         $this->assertTrue($itilSolution->getFromDBByCrit([
             'items_id' => $tickets_id,
             'itemtype' => 'Ticket',
-            'content'  => Sanitizer::sanitize("<p>content of solution template  white ' quote</p>")
+            'content'  => Sanitizer::sanitize("<p>content of solution template  white ' quote</p>"),
         ]));
 
         $this->assertGreaterThan(0, $itilSolution->getID());
 
         //reload and check ticket status
         $ticket->getFromDB($tickets_id);
-        $this->assertEquals(\CommonITILObject::SOLVED, (int)$ticket->getField('status'));
+        $this->assertEquals(\CommonITILObject::SOLVED, (int) $ticket->getField('status'));
     }
 
     public function testAssignGroup()
@@ -528,7 +528,7 @@ class RuleTicketTest extends DbTestCase
         $group1 = new \Group();
         $group_id1 = $group1->add($group_input1 = [
             "name" => "group1",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group1, $group_id1, $group_input1);
 
@@ -536,7 +536,7 @@ class RuleTicketTest extends DbTestCase
         $group2 = new \Group();
         $group_id2 = $group2->add($group_input2 = [
             "name" => "group2",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group2, $group_id2, $group_input2);
 
@@ -616,7 +616,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id1,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -626,7 +626,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id2,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
     }
@@ -672,7 +672,7 @@ class RuleTicketTest extends DbTestCase
         $group = new \Group();
         $group_id = $group->add($group_input = [
             "name" => "group1",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id, $group_input);
 
@@ -684,7 +684,7 @@ class RuleTicketTest extends DbTestCase
         $group_user = new Group_User();
         $group_user_id = $group_user->add($group_user_input = [
             "groups_id" => $group_id,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id, $group_user_input);
 
@@ -697,7 +697,7 @@ class RuleTicketTest extends DbTestCase
         $tickets_id = $ticket->add($ticket_input = [
             'name'             => 'Add group requester if requester have default group',
             'content'          => 'test',
-            '_users_id_requester' => $user->fields['id']
+            '_users_id_requester' => $user->fields['id'],
         ]);
         unset($ticket_input['_users_id_requester']); // _users_id_requester is stored in glpi_tickets_users table, so remove it
         $this->checkInput($ticket, $tickets_id, $ticket_input);
@@ -708,7 +708,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
     }
@@ -763,7 +763,7 @@ class RuleTicketTest extends DbTestCase
         $group = new \Group();
         $group_id = $group->add($group_input = [
             "name" => "group1",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id, $group_input);
 
@@ -775,7 +775,7 @@ class RuleTicketTest extends DbTestCase
         $group_user = new Group_User();
         $group_user_id = $group_user->add($group_user_input = [
             "groups_id" => $group_id,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id, $group_user_input);
 
@@ -799,7 +799,7 @@ class RuleTicketTest extends DbTestCase
         $tickets_id = $ticket->add($ticket_input = [
             'name'             => 'Add group requester if requester have default group',
             'content'          => 'test',
-            '_users_id_requester' => $user->fields['id']
+            '_users_id_requester' => $user->fields['id'],
         ]);
         unset($ticket_input['_users_id_requester']); // _users_id_requester is stored in glpi_tickets_users table, so remove it
         $this->checkInput($ticket, $tickets_id, $ticket_input);
@@ -813,14 +813,14 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
         //Update ticket to trigger rule
         $ticket->update($ticket_input = [
             'id' => $tickets_id,
-            'content' => 'test on update'
+            'content' => 'test on update',
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
 
@@ -830,7 +830,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -846,7 +846,7 @@ class RuleTicketTest extends DbTestCase
         // Create solution template
         $task_template = new TaskTemplate();
         $task_template_id = $task_template->add([
-            'content' => "<p>test content</p>"
+            'content' => "<p>test content</p>",
         ]);
         $this->assertGreaterThan(0, $task_template_id);
 
@@ -893,7 +893,7 @@ class RuleTicketTest extends DbTestCase
 
         $ticket_task_em = new TicketTask();
         $ticket_tasks = $ticket_task_em->find([
-            'tickets_id' => $ticket_id
+            'tickets_id' => $ticket_id,
         ]);
 
         $this->assertCount(1, $ticket_tasks);
@@ -915,7 +915,7 @@ class RuleTicketTest extends DbTestCase
 
         $ticket_task_em = new TicketTask();
         $ticket_tasks = $ticket_task_em->find([
-            'tickets_id' => $ticket_id
+            'tickets_id' => $ticket_id,
         ]);
 
         $this->assertCount(0, $ticket_tasks);
@@ -925,7 +925,7 @@ class RuleTicketTest extends DbTestCase
             'priority' => 5,
         ]);
         $ticket_tasks = $ticket_task_em->find([
-            'tickets_id' => $ticket_id
+            'tickets_id' => $ticket_id,
         ]);
 
         $this->assertCount(1, $ticket_tasks);
@@ -982,7 +982,7 @@ class RuleTicketTest extends DbTestCase
         // Create followup template
         $followup_template = new ITILFollowupTemplate();
         $followup_template_id = $followup_template->add([
-            'content' => "<p>test testFollowupTemplateAssignFromRule</p>"
+            'content' => "<p>test testFollowupTemplateAssignFromRule</p>",
         ]);
         $this->assertGreaterThan(0, $followup_template_id);
 
@@ -1163,21 +1163,21 @@ class RuleTicketTest extends DbTestCase
         $group = new \Group();
         $group_id1 = $group->add($group_input = [
             "name"         => "group1 (5215)",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id1, $group_input);
 
         //create group that matches the rule
         $group_id2 = $group->add($group_input = [
             "name"         => "group2 (13)",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id2, $group_input);
 
         //create group that not matches the rule
         $group_id3 = $group->add($group_input = [
             "name"         => "group3",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id3, $group_input);
 
@@ -1187,7 +1187,7 @@ class RuleTicketTest extends DbTestCase
         $tickets_id = $ticket->add($ticket_input = [
             'name'                  => 'Add group requester',
             'content'               => 'test',
-            '_users_id_requester'   => $user->fields['id']
+            '_users_id_requester'   => $user->fields['id'],
         ]);
         unset($ticket_input['_users_id_requester']);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
@@ -1198,7 +1198,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id1,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1207,7 +1207,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id2,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1216,7 +1216,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id3,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1224,21 +1224,21 @@ class RuleTicketTest extends DbTestCase
         $group_user = new Group_User();
         $group_user_id1 = $group_user->add($group_user_input = [
             "groups_id" => $group_id1,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id1, $group_user_input);
 
         $group_user = new Group_User();
         $group_user_id2 = $group_user->add($group_user_input = [
             "groups_id" => $group_id2,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id2, $group_user_input);
 
         $group_user = new Group_User();
         $group_user_id3 = $group_user->add($group_user_input = [
             "groups_id" => $group_id3,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id3, $group_user_input);
 
@@ -1255,7 +1255,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id1,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1264,7 +1264,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id2,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1273,7 +1273,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id3,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
     }
@@ -1320,21 +1320,21 @@ class RuleTicketTest extends DbTestCase
         $group = new \Group();
         $group_id1 = $group->add($group_input = [
             "name"         => "group1 (5215)",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id1, $group_input);
 
         //create group that matches the rule
         $group_id2 = $group->add($group_input = [
             "name"         => "group2 (13)",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id2, $group_input);
 
         //create group that not matches the rule
         $group_id3 = $group->add($group_input = [
             "name"         => "group3",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id3, $group_input);
 
@@ -1346,21 +1346,21 @@ class RuleTicketTest extends DbTestCase
         $group_user = new Group_User();
         $group_user_id1 = $group_user->add($group_user_input = [
             "groups_id" => $group_id1,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id1, $group_user_input);
 
         $group_user = new Group_User();
         $group_user_id2 = $group_user->add($group_user_input = [
             "groups_id" => $group_id2,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id2, $group_user_input);
 
         $group_user = new Group_User();
         $group_user_id3 = $group_user->add($group_user_input = [
             "groups_id" => $group_id3,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id3, $group_user_input);
 
@@ -1370,7 +1370,7 @@ class RuleTicketTest extends DbTestCase
         $tickets_id = $ticket->add($ticket_input = [
             'name'                  => 'Add group requester',
             'content'               => 'test',
-            '_users_id_requester'   => $user->fields['id']
+            '_users_id_requester'   => $user->fields['id'],
         ]);
         unset($ticket_input['_users_id_requester']);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
@@ -1381,7 +1381,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id1,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1390,7 +1390,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id2,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1399,7 +1399,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id3,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
     }
@@ -1445,21 +1445,21 @@ class RuleTicketTest extends DbTestCase
         $group = new \Group();
         $group_id1 = $group->add($group_input = [
             "name"         => "group1 (5215)",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id1, $group_input);
 
         //create group that matches the rule
         $group_id2 = $group->add($group_input = [
             "name"         => "group2 (13)",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id2, $group_input);
 
         //create group that not matches the rule
         $group_id3 = $group->add($group_input = [
             "name"         => "group3",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id3, $group_input);
 
@@ -1475,21 +1475,21 @@ class RuleTicketTest extends DbTestCase
         $group_user = new Group_User();
         $group_user_id1 = $group_user->add($group_user_input = [
             "groups_id" => $group_id1,
-            "users_id"  => $userNormal->fields['id']
+            "users_id"  => $userNormal->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id1, $group_user_input);
 
         $group_user = new Group_User();
         $group_user_id2 = $group_user->add($group_user_input = [
             "groups_id" => $group_id2,
-            "users_id"  => $userNormal->fields['id']
+            "users_id"  => $userNormal->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id2, $group_user_input);
 
         $group_user = new Group_User();
         $group_user_id3 = $group_user->add($group_user_input = [
             "groups_id" => $group_id3,
-            "users_id"  => $userNormal->fields['id']
+            "users_id"  => $userNormal->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id3, $group_user_input);
 
@@ -1499,7 +1499,7 @@ class RuleTicketTest extends DbTestCase
         $tickets_id = $ticket->add($ticket_input = [
             'name'                  => 'Add group requester',
             'content'               => 'test',
-            '_users_id_requester'   => $userPostOnly->fields['id']
+            '_users_id_requester'   => $userPostOnly->fields['id'],
         ]);
         unset($ticket_input['_users_id_requester']);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
@@ -1510,7 +1510,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id1,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1519,7 +1519,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id2,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1528,7 +1528,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id3,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1536,7 +1536,7 @@ class RuleTicketTest extends DbTestCase
         $ticket_user = new \Ticket_User();
         $ticket_user->deleteByCriteria([
             "users_id" => $userPostOnly->fields['id'],
-            "tickets_id" => $tickets_id
+            "tickets_id" => $tickets_id,
         ]);
 
         //update ticket and change requester
@@ -1545,8 +1545,8 @@ class RuleTicketTest extends DbTestCase
             'id'                    => $tickets_id,
             'content'               => 'test',
             '_itil_requester'   => ["_type" => "user",
-                "users_id" => $userNormal->fields['id']
-            ]
+                "users_id" => $userNormal->fields['id'],
+            ],
         ]);
         unset($ticket_input['_itil_requester']);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
@@ -1557,7 +1557,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id1,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1566,7 +1566,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id2,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1575,7 +1575,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id3,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
     }
@@ -1727,7 +1727,7 @@ class RuleTicketTest extends DbTestCase
         $tickets_id = $ticket->add($ticket_input = [
             'name'     => 'test validation action',
             'content'  => 'test validation action',
-            'priority' => 6
+            'priority' => 6,
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
         $this->assertTrue($ticket->getFromDB($tickets_id));
@@ -1788,7 +1788,7 @@ class RuleTicketTest extends DbTestCase
         $ticket = $this->createItem('Ticket', [
             'name'              => 'test category code',
             'content'           => 'test category code',
-            'itilcategories_id' => 0
+            'itilcategories_id' => 0,
         ]);
         $tickets_id = $ticket->getID();
 
@@ -1869,7 +1869,7 @@ class RuleTicketTest extends DbTestCase
         $category = new \ITILCategory();
         $category_id = $category->add($category_input = [
             "name" => "group1",
-            "code" => "R"
+            "code" => "R",
         ]);
         $this->checkInput($category, $category_id, $category_input);
 
@@ -1878,7 +1878,7 @@ class RuleTicketTest extends DbTestCase
         $tickets_id = $ticket->add($ticket_input = [
             'name'              => 'test category code',
             'content'           => 'test category code',
-            'itilcategories_id' => $category_id
+            'itilcategories_id' => $category_id,
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
 
@@ -1951,7 +1951,7 @@ class RuleTicketTest extends DbTestCase
         $applianceTest1 = new \Appliance();
         $appliancetest1_id = $applianceTest1->add($applianceTest1_input = [
             "name"                  => "appliance",
-            "is_helpdesk_visible"   => true
+            "is_helpdesk_visible"   => true,
         ]);
         $this->checkInput($applianceTest1, $appliancetest1_id, $applianceTest1_input);
 
@@ -1995,7 +1995,7 @@ class RuleTicketTest extends DbTestCase
         $ticketCreate = new \Ticket();
         $ticketsCreate_id = $ticketCreate->add($ticketCreate_input = [
             'name'              => 'test appliance',
-            'content'           => 'test appliance'
+            'content'           => 'test appliance',
         ]);
         $this->checkInput($ticketCreate, $ticketsCreate_id, $ticketCreate_input);
 
@@ -2006,7 +2006,7 @@ class RuleTicketTest extends DbTestCase
                 \Item_Ticket::getTable(),
                 ['itemtype'  =>  \Appliance::getType(),
                     'items_id'   => $appliancetest1_id,
-                    'tickets_id' => $ticketsCreate_id
+                    'tickets_id' => $ticketsCreate_id,
                 ]
             )
         );
@@ -2015,7 +2015,7 @@ class RuleTicketTest extends DbTestCase
         $ticketUpdate = new \Ticket();
         $ticketsUpdate_id = $ticketUpdate->add($ticketUpdate_input = [
             'name'              => 'test',
-            'content'           => 'test'
+            'content'           => 'test',
         ]);
         $this->checkInput($ticketUpdate, $ticketsUpdate_id, $ticketUpdate_input);
 
@@ -2026,7 +2026,7 @@ class RuleTicketTest extends DbTestCase
                 \Item_Ticket::getTable(),
                 ['itemtype'  =>  \Appliance::getType(),
                     'items_id'   => $appliancetest1_id,
-                    'tickets_id' => $ticketsUpdate_id
+                    'tickets_id' => $ticketsUpdate_id,
                 ]
             )
         );
@@ -2036,7 +2036,7 @@ class RuleTicketTest extends DbTestCase
             [
                 'id'      => $ticketsUpdate_id,
                 'name'    => 'test erp',
-                'content' => 'appliance'
+                'content' => 'appliance',
             ]
         );
 
@@ -2047,7 +2047,7 @@ class RuleTicketTest extends DbTestCase
                 \Item_Ticket::getTable(),
                 ['itemtype'  =>  \Appliance::getType(),
                     'items_id'   => $appliancetest1_id,
-                    'tickets_id' => $ticketsUpdate_id
+                    'tickets_id' => $ticketsUpdate_id,
                 ]
             )
         );
@@ -2061,7 +2061,7 @@ class RuleTicketTest extends DbTestCase
         $applianceTest1 = new \Appliance();
         $appliancetest1_id = $applianceTest1->add($applianceTest1_input = [
             "name"                  => "erp",
-            "is_helpdesk_visible"   => true
+            "is_helpdesk_visible"   => true,
         ]);
         $this->checkInput($applianceTest1, $appliancetest1_id, $applianceTest1_input);
 
@@ -2103,7 +2103,7 @@ class RuleTicketTest extends DbTestCase
         $ticketCreate = new \Ticket();
         $ticketsCreate_id = $ticketCreate->add($ticketCreate_input = [
             'name'              => 'test erp',
-            'content'           => 'test erp'
+            'content'           => 'test erp',
         ]);
 
         $this->checkInput($ticketCreate, $ticketsCreate_id, $ticketCreate_input);
@@ -2116,7 +2116,7 @@ class RuleTicketTest extends DbTestCase
                 \Item_Ticket::getTable(),
                 ['itemtype'  =>  \Appliance::getType(),
                     'items_id'   => $appliancetest1_id,
-                    'tickets_id' => $ticketsCreate_id
+                    'tickets_id' => $ticketsCreate_id,
                 ]
             )
         );
@@ -2125,7 +2125,7 @@ class RuleTicketTest extends DbTestCase
         $ticketUpdate = new \Ticket();
         $ticketsUpdate_id = $ticketUpdate->add($ticketUpdate_input = [
             'name'              => 'test',
-            'content'           => 'test'
+            'content'           => 'test',
         ]);
         $this->checkInput($ticketUpdate, $ticketsUpdate_id, $ticketUpdate_input);
 
@@ -2136,7 +2136,7 @@ class RuleTicketTest extends DbTestCase
                 \Item_Ticket::getTable(),
                 ['itemtype'  =>  \Appliance::getType(),
                     'items_id'   => $appliancetest1_id,
-                    'tickets_id' => $ticketsUpdate_id
+                    'tickets_id' => $ticketsUpdate_id,
                 ]
             )
         );
@@ -2145,7 +2145,7 @@ class RuleTicketTest extends DbTestCase
         $ticketUpdate->update(
             [
                 'id'      => $ticketsUpdate_id,
-                'name' => 'erp'
+                'name' => 'erp',
             ]
         );
 
@@ -2156,7 +2156,7 @@ class RuleTicketTest extends DbTestCase
                 \Item_Ticket::getTable(),
                 ['itemtype'  =>  \Appliance::getType(),
                     'items_id'   => $appliancetest1_id,
-                    'tickets_id' => $ticketsUpdate_id
+                    'tickets_id' => $ticketsUpdate_id,
                 ]
             )
         );
@@ -2170,7 +2170,7 @@ class RuleTicketTest extends DbTestCase
         $applianceTest1 = new \Appliance();
         $appliancetest1_id = $applianceTest1->add($applianceTest1_input = [
             "name"                  => "erp",
-            "is_helpdesk_visible"   => true
+            "is_helpdesk_visible"   => true,
         ]);
         $this->checkInput($applianceTest1, $appliancetest1_id, $applianceTest1_input);
 
@@ -2178,7 +2178,7 @@ class RuleTicketTest extends DbTestCase
         $applianceTest2 = new \Appliance();
         $appliancetest2_id = $applianceTest2->add($applianceTest2_input = [
             "name"                  => "glpi",
-            "is_helpdesk_visible"   => true
+            "is_helpdesk_visible"   => true,
         ]);
         $this->checkInput($applianceTest2, $appliancetest2_id, $applianceTest2_input);
 
@@ -2228,7 +2228,7 @@ class RuleTicketTest extends DbTestCase
         $ticketCreate = new \Ticket();
         $ticketsCreate_id = $ticketCreate->add($ticketCreate_input = [
             'name'              => 'test erp',
-            'content'           => 'test erp'
+            'content'           => 'test erp',
         ]);
 
         $this->checkInput($ticketCreate, $ticketsCreate_id, $ticketCreate_input);
@@ -2240,7 +2240,7 @@ class RuleTicketTest extends DbTestCase
             countElementsInTable(
                 \Item_Ticket::getTable(),
                 ['itemtype'  =>  \Appliance::getType(),
-                    'tickets_id' => $ticketsCreate_id
+                    'tickets_id' => $ticketsCreate_id,
                 ]
             )
         );
@@ -2249,7 +2249,7 @@ class RuleTicketTest extends DbTestCase
         $ticketUpdate = new \Ticket();
         $ticketsUpdate_id = $ticketUpdate->add($ticketUpdate_input = [
             'name'              => 'test',
-            'content'           => 'test'
+            'content'           => 'test',
         ]);
         $this->checkInput($ticketUpdate, $ticketsUpdate_id, $ticketUpdate_input);
 
@@ -2260,7 +2260,7 @@ class RuleTicketTest extends DbTestCase
                 \Item_Ticket::getTable(),
                 ['itemtype'  =>  \Appliance::getType(),
                     'items_id'   => $appliancetest1_id,
-                    'tickets_id' => $ticketsUpdate_id
+                    'tickets_id' => $ticketsUpdate_id,
                 ]
             )
         );
@@ -2269,7 +2269,7 @@ class RuleTicketTest extends DbTestCase
         $ticketUpdate->update(
             [
                 'id'      => $ticketsUpdate_id,
-                'name' => 'test erp'
+                'name' => 'test erp',
             ]
         );
 
@@ -2279,7 +2279,7 @@ class RuleTicketTest extends DbTestCase
             countElementsInTable(
                 \Item_Ticket::getTable(),
                 ['itemtype'  =>  \Appliance::getType(),
-                    'tickets_id' => $ticketsUpdate_id
+                    'tickets_id' => $ticketsUpdate_id,
                 ]
             )
         );
@@ -2293,7 +2293,7 @@ class RuleTicketTest extends DbTestCase
         $contractTest1 = new \Contract();
         $contracttest1_id = $contractTest1->add($contractTest1_input = [
             "name"                  => "zabbix",
-            "entities_id"           => 0
+            "entities_id"           => 0,
         ]);
         $this->checkInput($contractTest1, $contracttest1_id, $contractTest1_input);
 
@@ -2333,7 +2333,7 @@ class RuleTicketTest extends DbTestCase
         // Create category for ticket
         $category = new \ITILCategory();
         $category_id = $category->add($category_input = [
-            "name" => "zabbix"
+            "name" => "zabbix",
         ]);
         $this->checkInput($category, $category_id, $category_input);
 
@@ -2342,7 +2342,7 @@ class RuleTicketTest extends DbTestCase
         $ticketsCreate_id = $ticketCreate->add($ticketCreate_input = [
             'name'              => 'test zabbix',
             'content'           => 'test zabbix',
-            'itilcategories_id' => $category_id
+            'itilcategories_id' => $category_id,
         ]);
 
         $this->checkInput($ticketCreate, $ticketsCreate_id, $ticketCreate_input);
@@ -2354,7 +2354,7 @@ class RuleTicketTest extends DbTestCase
             countElementsInTable(
                 \Ticket_Contract::getTable(),
                 ['contracts_id'  => $contracttest1_id,
-                    'tickets_id' => $ticketsCreate_id
+                    'tickets_id' => $ticketsCreate_id,
                 ]
             )
         );
@@ -2439,8 +2439,8 @@ class RuleTicketTest extends DbTestCase
             'name'              => 'test ' . $header . ' header',
             'content'           => 'test ' . $header . ' header',
             '_head'             => [
-                $header => $pattern
-            ]
+                $header => $pattern,
+            ],
         ]);
 
         // Verify ticket has priority 5
@@ -2452,8 +2452,8 @@ class RuleTicketTest extends DbTestCase
             'name'              => 'test ' . $header . ' header',
             'content'           => 'test ' . $header . ' header',
             '_head'             => [
-                $header => 'header_foo_bar'
-            ]
+                $header => 'header_foo_bar',
+            ],
         ]);
 
         // Verify ticket does not have priority 5
@@ -2545,7 +2545,7 @@ class RuleTicketTest extends DbTestCase
         $ticket = new \Ticket();
         $tickets_id = $ticket->add($ticket_input = [
             'name'              => 'stopProcessingAction',
-            'content'           => 'test stopProcessingAction'
+            'content'           => 'test stopProcessingAction',
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
 
@@ -2560,7 +2560,7 @@ class RuleTicketTest extends DbTestCase
 
         $user = new \User();
         $user_id = $user->add($user_input = [
-            "name" => "user1"
+            "name" => "user1",
         ]);
         $this->checkInput($user, $user_id, $user_input);
 
@@ -2610,7 +2610,7 @@ class RuleTicketTest extends DbTestCase
             $ticketUser->getFromDBByCrit([
                 'tickets_id'    => $tickets_id,
                 'users_id'      => $user_id,
-                'type'          => \CommonITILActor::REQUESTER
+                'type'          => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -2619,7 +2619,7 @@ class RuleTicketTest extends DbTestCase
         $result = $ticketUser->getFromDBByCrit([
             'tickets_id'    => $tickets_id,
             'users_id'      => $user_id,
-            'type'          => \CommonITILActor::REQUESTER
+            'type'          => \CommonITILActor::REQUESTER,
         ]);
         $this->assertTrue($result);
 
@@ -2630,7 +2630,7 @@ class RuleTicketTest extends DbTestCase
         $result = $ticketUser->getFromDBByCrit([
             'tickets_id'    => $tickets_id,
             'users_id'      => $user_id,
-            'type'          => \CommonITILActor::REQUESTER
+            'type'          => \CommonITILActor::REQUESTER,
         ]);
         $this->assertTrue($result);
     }
@@ -2643,7 +2643,7 @@ class RuleTicketTest extends DbTestCase
         $group1 = new \Group();
         $group_id1 = $group1->add($group_input1 = [
             "name" => "group1",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group1, $group_id1, $group_input1);
 
@@ -2694,7 +2694,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $tickets_id,
                 'groups_id'          => $group_id1,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -2703,7 +2703,7 @@ class RuleTicketTest extends DbTestCase
         $result = $ticketGroup->getFromDBByCrit([
             'tickets_id'         => $tickets_id,
             'groups_id'          => $group_id1,
-            'type'               => \CommonITILActor::REQUESTER
+            'type'               => \CommonITILActor::REQUESTER,
         ]);
         $this->assertTrue($result);
 
@@ -2714,7 +2714,7 @@ class RuleTicketTest extends DbTestCase
         $result = $ticketGroup->getFromDBByCrit([
             'tickets_id'         => $tickets_id,
             'groups_id'          => $group_id1,
-            'type'               => \CommonITILActor::REQUESTER
+            'type'               => \CommonITILActor::REQUESTER,
         ]);
         $this->assertTrue($result);
     }
@@ -2726,7 +2726,7 @@ class RuleTicketTest extends DbTestCase
         $supplier = new \Supplier();
         $supplier_id = $supplier->add($group_input1 = [
             "name" => "supplier1",
-            'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true)
+            'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $this->checkInput($supplier, $supplier_id, $group_input1);
 
@@ -2777,7 +2777,7 @@ class RuleTicketTest extends DbTestCase
             $ticketSupplier->getFromDBByCrit([
                 'tickets_id'    => $tickets_id,
                 'suppliers_id'  => $supplier_id,
-                'type'          => \CommonITILActor::ASSIGN
+                'type'          => \CommonITILActor::ASSIGN,
             ])
         );
 
@@ -2786,7 +2786,7 @@ class RuleTicketTest extends DbTestCase
         $result = $ticketSupplier->getFromDBByCrit([
             'tickets_id'    => $tickets_id,
             'suppliers_id'  => $supplier_id,
-            'type'          => \CommonITILActor::ASSIGN
+            'type'          => \CommonITILActor::ASSIGN,
         ]);
         $this->assertTrue($result);
 
@@ -2797,7 +2797,7 @@ class RuleTicketTest extends DbTestCase
         $result = $ticketSupplier->getFromDBByCrit([
             'tickets_id'    => $tickets_id,
             'suppliers_id'  => $supplier_id,
-            'type'          => \CommonITILActor::ASSIGN
+            'type'          => \CommonITILActor::ASSIGN,
         ]);
         $this->assertTrue($result);
     }
@@ -2910,8 +2910,8 @@ class RuleTicketTest extends DbTestCase
                             [
                                 'itemtype' => $actoritemtype,
                                 'items_id' => $items_id,
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                 ]);
                 $ticket->getFromDB($tickets_id);
@@ -2929,8 +2929,8 @@ class RuleTicketTest extends DbTestCase
                     [
                         'itemtype' => 'Supplier',
                         'items_id' => $suppliers_id,
-                    ]
-                ]
+                    ],
+                ],
             ],
         ]);
         $ticket->getFromDB($tickets_id);
@@ -2944,7 +2944,7 @@ class RuleTicketTest extends DbTestCase
         //create project "project"
         $projectTest1 = new \Project();
         $projecttest1_id = $projectTest1->add($projectTest1_input = [
-            "name"                  => "project"
+            "name"                  => "project",
         ]);
         $this->checkInput($projectTest1, $projecttest1_id, $projectTest1_input);
 
@@ -2985,7 +2985,7 @@ class RuleTicketTest extends DbTestCase
         $ticketCreate = new \Ticket();
         $ticketsCreate_id = $ticketCreate->add($ticketCreate_input = [
             'name'              => 'test project',
-            'content'           => 'test project'
+            'content'           => 'test project',
         ]);
         $this->checkInput($ticketCreate, $ticketsCreate_id, $ticketCreate_input);
 
@@ -2996,7 +2996,7 @@ class RuleTicketTest extends DbTestCase
                 \Itil_Project::getTable(),
                 ['itemtype'  =>  \Ticket::getType(),
                     'projects_id'   => $projecttest1_id,
-                    'items_id' => $ticketsCreate_id
+                    'items_id' => $ticketsCreate_id,
                 ]
             )
         );
@@ -3005,7 +3005,7 @@ class RuleTicketTest extends DbTestCase
         $ticketUpdate = new \Ticket();
         $ticketsUpdate_id = $ticketUpdate->add($ticketUpdate_input = [
             'name'              => 'test',
-            'content'           => 'test'
+            'content'           => 'test',
         ]);
         $this->checkInput($ticketUpdate, $ticketsUpdate_id, $ticketUpdate_input);
 
@@ -3016,7 +3016,7 @@ class RuleTicketTest extends DbTestCase
                 \Itil_Project::getTable(),
                 ['itemtype'  =>  \Ticket::getType(),
                     'projects_id'   => $projecttest1_id,
-                    'items_id' => $ticketsUpdate_id
+                    'items_id' => $ticketsUpdate_id,
                 ]
             )
         );
@@ -3026,7 +3026,7 @@ class RuleTicketTest extends DbTestCase
             [
                 'id'      => $ticketsUpdate_id,
                 'name'    => 'test erp',
-                'content' => 'project'
+                'content' => 'project',
             ]
         );
 
@@ -3037,7 +3037,7 @@ class RuleTicketTest extends DbTestCase
                 \Itil_Project::getTable(),
                 ['itemtype'  =>  \Ticket::getType(),
                     'projects_id'   => $projecttest1_id,
-                    'items_id' => $ticketsUpdate_id
+                    'items_id' => $ticketsUpdate_id,
                 ]
             )
         );
@@ -3063,14 +3063,14 @@ class RuleTicketTest extends DbTestCase
         $group = new \Group();
         $group_id1 = $group->add($group_input = [
             "name"         => "group1",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id1, $group_input);
 
         //create group that doesn't match the rule
         $group_id2 = $group->add($group_input = [
             "name"         => "group2",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id2, $group_input);
 
@@ -3116,7 +3116,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $ticket_id,
                 'groups_id'          => $group_id1,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -3140,7 +3140,7 @@ class RuleTicketTest extends DbTestCase
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $ticket_id,
                 'groups_id'          => $group_id2,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -3171,7 +3171,7 @@ class RuleTicketTest extends DbTestCase
             $ticketUser->getFromDBByCrit([
                 'tickets_id'         => $ticket_id,
                 'users_id'           => $user_id,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -3199,7 +3199,7 @@ class RuleTicketTest extends DbTestCase
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
             'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->checkInput($ruleticket, $ruletid, $ruletinput);
 
@@ -3231,7 +3231,7 @@ class RuleTicketTest extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => 'slas_id_ttr',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => $slas_id_ttr
+            'pattern'   => $slas_id_ttr,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
@@ -3239,7 +3239,7 @@ class RuleTicketTest extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => 'urgency',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 5
+            'pattern'   => 5,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
@@ -3254,7 +3254,7 @@ class RuleTicketTest extends DbTestCase
             'rules_id'    => $ruletid,
             'action_type' => 'assign',
             'field'       => 'locations_id',
-            'value'       => $location_id
+            'value'       => $location_id,
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
 
@@ -3264,7 +3264,7 @@ class RuleTicketTest extends DbTestCase
             'name'              => 'test SLA',
             'content'           => 'test SLA',
             'slas_id_ttr'       => $slas_id_ttr,
-            'urgency'           => 5
+            'urgency'           => 5,
         ]);
         $this->checkInput($ticket, $ticket_id, $ticket_input);
 
@@ -3317,19 +3317,19 @@ class RuleTicketTest extends DbTestCase
             'rules_id'  => $rule->getID(),
             'criteria'  => 'locations_id',
             'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
-            'pattern'   => 1
+            'pattern'   => 1,
         ]);
         $this->createItem("RuleCriteria", [
             'rules_id'  => $rule->getID(),
             'criteria'  => '_locations_id_of_requester',
             'condition' => \Rule::PATTERN_EXISTS,
-            'pattern'   => 1
+            'pattern'   => 1,
         ]);
         $this->createItem("RuleAction", [
             'rules_id'    => $rule->getID(),
             'action_type' => 'fromuser',
             'field'       => 'locations_id',
-            'value'       => 1
+            'value'       => 1,
         ]);
 
         // Create location and set it to our user
@@ -3338,7 +3338,7 @@ class RuleTicketTest extends DbTestCase
             'entities_id' => $entity->getID(),
         ]);
         $this->updateItem('User', $user->getID(), [
-            'locations_id' => $user_location->getID()
+            'locations_id' => $user_location->getID(),
         ]);
 
         // Create another location
@@ -3368,7 +3368,7 @@ class RuleTicketTest extends DbTestCase
     {
         $provider = $this->testAssignLocationFromUserProvider();
         foreach ($provider as $row) {
-            list($input_locations_id, $expected_location_after_creation) = $row;
+            [$input_locations_id, $expected_location_after_creation] = $row;
 
             $input = [
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
@@ -3380,7 +3380,7 @@ class RuleTicketTest extends DbTestCase
                         [
                             'itemtype' => 'User',
                             'items_id' => getItemByTypeName('User', TU_USER, true),
-                        ]
+                        ],
                     ],
                     // Must have an assigned tech for the test to be meaningfull as this
                     // will trigger some post_update code that will run the rules again
@@ -3388,9 +3388,9 @@ class RuleTicketTest extends DbTestCase
                         [
                             'itemtype' => 'User',
                             'items_id' => getItemByTypeName('User', TU_USER, true),
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ];
 
             if (!is_null($input_locations_id)) {
@@ -3449,14 +3449,14 @@ class RuleTicketTest extends DbTestCase
 
         // Change category without triggering the rule
         $this->updateItem(Ticket::class, $ticket->getID(), [
-            'itilcategories_id' => $category2->getID()
+            'itilcategories_id' => $category2->getID(),
         ]);
         $ticket->getFromDB($ticket->getID());
         $this->assertNotEquals($urgency_if_rule_triggered, $ticket->fields['urgency']);
 
         // Change category and trigger the rule
         $this->updateItem(Ticket::class, $ticket->getID(), [
-            'itilcategories_id' => $category1->getID()
+            'itilcategories_id' => $category1->getID(),
         ]);
         $ticket->getFromDB($ticket->getID());
         $this->assertEquals($urgency_if_rule_triggered, $ticket->fields['urgency']);
@@ -3560,7 +3560,7 @@ class RuleTicketTest extends DbTestCase
             'name' => 'Test ticket',
             'content' => 'Test ticket content',
             'entities_id' => $entity,
-            '_users_id_requester' => $user->fields['id']
+            '_users_id_requester' => $user->fields['id'],
         ]);
 
 
@@ -3574,7 +3574,7 @@ class RuleTicketTest extends DbTestCase
         $this->assertTrue($user_ticket->deleteByCriteria([
             "tickets_id" => $ticket->fields['id'],
             "type" => \CommonITILActor::REQUESTER,
-            "users_id" => $user->fields['id']
+            "users_id" => $user->fields['id'],
         ]));
 
         //reload ticket
@@ -3590,8 +3590,8 @@ class RuleTicketTest extends DbTestCase
             'id'                    => $ticket->fields['id'],
             'content'               => 'test',
             '_itil_requester'   => ["_type" => "user",
-                "users_id" => $user->fields['id']
-            ]
+                "users_id" => $user->fields['id'],
+            ],
         ]));
 
         // Check if the location "Test location" is assigned
@@ -3649,8 +3649,8 @@ class RuleTicketTest extends DbTestCase
             'content'          => __METHOD__,
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->assertEquals($user_id, (int)$ticket->getField('users_id_recipient'));
-        $this->assertEquals($requesttypes_id, (int)$ticket->getField('requesttypes_id'));
+        $this->assertEquals($user_id, (int) $ticket->getField('users_id_recipient'));
+        $this->assertEquals($requesttypes_id, (int) $ticket->getField('requesttypes_id'));
     }
 
     public function testDoNotComputeStatusFollowupWithRule()
@@ -3720,16 +3720,16 @@ class RuleTicketTest extends DbTestCase
                 'requester' => [
                     [
                         'items_id' => $user1->getID(),
-                        'itemtype' => 'User'
-                    ]
+                        'itemtype' => 'User',
+                    ],
                 ],
                 'assign' => [
                     [
                         'items_id' => $user2->getID(),
-                        'itemtype' => 'User'
-                    ]
+                        'itemtype' => 'User',
+                    ],
                 ],
-            ]
+            ],
         ]);
         $this->assertGreaterThan(0, $tickets_id);
 
@@ -3826,10 +3826,10 @@ class RuleTicketTest extends DbTestCase
                 'requester' => [
                     [
                         'items_id' => $user1->getID(),
-                        'itemtype' => 'User'
-                    ]
+                        'itemtype' => 'User',
+                    ],
                 ],
-            ]
+            ],
         ]);
         $this->assertGreaterThan(0, $tickets_id);
 

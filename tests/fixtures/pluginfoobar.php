@@ -32,6 +32,4 @@
  * ---------------------------------------------------------------------
  */
 
-class PluginFooBar extends CommonDBTM
-{
-}
+class PluginFooBar extends CommonDBTM {}

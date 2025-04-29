@@ -54,20 +54,20 @@ if (isset($_GET['docid'])) {
 
     if (!file_exists(GLPI_DOC_DIR . "/" . $doc->fields['filepath'])) {
         Html::displayErrorAndDie(sprintf(__('File %s not found.'), $doc->fields['filename']), true); // Not found
-    } else if ($doc->canViewFile($_GET)) {
+    } elseif ($doc->canViewFile($_GET)) {
         if (
             $doc->fields['sha1sum']
             && $doc->fields['sha1sum'] != sha1_file(GLPI_DOC_DIR . "/" . $doc->fields['filepath'])
         ) {
             Html::displayErrorAndDie(__('File is altered (bad checksum)'), true); // Doc alterated
         } else {
-            $context = isset($_GET['context']) ? $_GET['context'] : null;
+            $context = $_GET['context'] ?? null;
             $doc->send($context);
         }
     } else {
         Html::displayErrorAndDie(__('Unauthorized access to this file'), true); // No right
     }
-} else if (isset($_GET["file"])) {
+} elseif (isset($_GET["file"])) {
     // Get file corresponding to given path.
 
     Session::checkLoginUser(); // Do not allow anonymous access
@@ -86,7 +86,7 @@ if (isset($_GET['docid'])) {
 
         if ($splitter[0] == "_pictures") {
             if (Document::isImage(GLPI_PICTURE_DIR . '/' . $splitter[1])) {
-               // Can use expires header as picture file path changes when picture changes.
+                // Can use expires header as picture file path changes when picture changes.
                 $expires_headers = true;
                 $send = GLPI_PICTURE_DIR . '/' . $splitter[1];
             }

@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $alias->check($_POST['id'], PURGE);
     $item = $alias->getItem();
     $alias->delete($_POST, 1);
@@ -82,7 +82,7 @@ if (isset($_POST["add"])) {
     } else {
         Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
     }
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $alias->check($_POST["id"], UPDATE);
     $alias->update($_POST);
 

@@ -185,13 +185,13 @@ class CacheManager
                 $client = MemcachedAdapter::createConnection($dsn, $options);
                 $stats = $client->getStats();
                 if ($stats === false) {
-                   // Memcached::getStats() will return false if server cannot be reached.
+                    // Memcached::getStats() will return false if server cannot be reached.
                     throw new \RuntimeException('Unable to connect to Memcached server.');
                 }
                 break;
             case self::SCHEME_REDIS:
             case self::SCHEME_REDISS:
-               // Init Redis connection to find potential connection errors.
+                // Init Redis connection to find potential connection errors.
                 $options['lazy'] = false; //force instant connection
                 RedisAdapter::createConnection($dsn, $options);
                 break;
@@ -249,7 +249,7 @@ class CacheManager
             $dsn       = $context_config['dsn'];
             $options   = $context_config['options'] ?? [];
             $scheme    = $this->extractScheme($dsn);
-            $namespace = $this->normalizeNamespace($namespace_prefix .  $context);
+            $namespace = $this->normalizeNamespace($namespace_prefix . $context);
 
             switch ($scheme) {
                 case self::SCHEME_MEMCACHED:
@@ -319,13 +319,13 @@ class CacheManager
 
         $success = true;
 
-       // Clear all cache contexts
+        // Clear all cache contexts
         $known_contexts = $this->getKnownContexts();
         foreach ($known_contexts as $context) {
             $success = $this->getCacheInstance($context)->clear() && $success;
         }
 
-       // Clear compiled templates
+        // Clear compiled templates
         $tpl_cache_dir = $this->cache_dir . '/templates';
         if (file_exists($tpl_cache_dir)) {
             $tpl_files = glob($tpl_cache_dir . '/**/*.php');
@@ -349,20 +349,20 @@ class CacheManager
      */
     public function getKnownContexts(): array
     {
-       // Core contexts
+        // Core contexts
         $contexts = [
             'core',
             'installer',
             'translations',
         ];
 
-       // Contexts defined in configuration.
-       // These may not be find in directories if they are configured to use a remote service.
+        // Contexts defined in configuration.
+        // These may not be find in directories if they are configured to use a remote service.
         $config = $this->getRawConfig();
         array_push($contexts, ...array_keys($config['contexts']));
 
-       // Context found from cache directories.
-       // These may not be find in configuration if they are using default configuration.
+        // Context found from cache directories.
+        // These may not be find in configuration if they are using default configuration.
         $directory_iterator = new DirectoryIterator($this->cache_dir);
         foreach ($directory_iterator as $file) {
             if ($file->isDot() || !$file->isDir() || !preg_match('/^plugin_/', $file->getFilename())) {
@@ -402,7 +402,7 @@ class CacheManager
                 return null; // Mixed schemes are not allowed
             }
             $scheme = reset($schemes);
-           // Only Memcached system accept multiple DSN.
+            // Only Memcached system accept multiple DSN.
             return $scheme === self::SCHEME_MEMCACHED ? $scheme : null;
         }
 
@@ -491,7 +491,7 @@ PHP;
         $core_contexts = ['core'];
 
         if (!$only_configurable) {
-           // 'installer' and 'translations' cache storages cannot not be configured (they always use the filesystem storage)
+            // 'installer' and 'translations' cache storages cannot not be configured (they always use the filesystem storage)
             $core_contexts[] = self::CONTEXT_INSTALLER;
             $core_contexts[] = self::CONTEXT_TRANSLATIONS;
         }
@@ -523,7 +523,7 @@ PHP;
                 return false; // Mixed schemes are not allowed
             }
 
-           // Only Memcached system accept multiple DSN.
+            // Only Memcached system accept multiple DSN.
             return reset($schemes) === self::SCHEME_MEMCACHED;
         }
 

@@ -110,13 +110,13 @@ class KnowbaseTest extends DbTestCase
             'key'    => 0,
             'parent' => null,
             'title'  => 'Root category <span class="badge bg-azure-lt" title="This category contains articles">2</span>',
-            'a_attr' => ['data-id' => 0]
+            'a_attr' => ['data-id' => 0],
         ];
 
         $tree = \Knowbase::getTreeCategoryList();
         $this->assertEquals([$expected_root_cat], $tree);
 
-         // Add a private item (not FAQ)
+        // Add a private item (not FAQ)
         $kbitem = new \KnowbaseItem();
         $kbitem_id = $kbitem->add(
             [
@@ -166,13 +166,13 @@ class KnowbaseTest extends DbTestCase
                                             'key'    => $cat_1_1_2_id,
                                             'parent' => $cat_1_1_id,
                                             'title'  => 'cat 1.1.2 <span class="badge bg-azure-lt" title="This category contains articles">1</span>',
-                                            'a_attr' => ['data-id' => $cat_1_1_2_id]
+                                            'a_attr' => ['data-id' => $cat_1_1_2_id],
                                         ],
-                                    ]
+                                    ],
                                 ],
-                            ]
+                            ],
                         ],
-                    ]
+                    ],
                 ]),
             ],
             $tree
@@ -219,19 +219,19 @@ class KnowbaseTest extends DbTestCase
                                             'key'    => $cat_1_1_2_id,
                                             'parent' => $cat_1_1_id,
                                             'title'  => 'cat 1.1.2 <span class="badge bg-azure-lt" title="This category contains articles">1</span>',
-                                            'a_attr' => ['data-id' => $cat_1_1_2_id]
+                                            'a_attr' => ['data-id' => $cat_1_1_2_id],
                                         ],
-                                    ]
+                                    ],
                                 ],
                                 [
                                     'key'    => $cat_1_3_id,
                                     'parent' => $cat_1_id,
                                     'title'  => 'cat 1.3 <span class="badge bg-azure-lt" title="This category contains articles">1</span>',
-                                    'a_attr' => ['data-id' => $cat_1_3_id]
-                                ]
-                            ]
+                                    'a_attr' => ['data-id' => $cat_1_3_id],
+                                ],
+                            ],
                         ],
-                    ]
+                    ],
                 ]),
             ],
             $tree
@@ -270,7 +270,7 @@ class KnowbaseTest extends DbTestCase
             'key'    => 0,
             'parent' => null,
             'title'  => 'Root category',
-            'a_attr' => ['data-id' => 0]
+            'a_attr' => ['data-id' => 0],
         ];
 
         // Check that tree contains root only (FAQ is not public) for anonymous user
@@ -310,12 +310,12 @@ class KnowbaseTest extends DbTestCase
                                             'key'    => $cat_1_2_1_id,
                                             'parent' => $cat_1_2_id,
                                             'title'  => 'cat 1.2.1 <span class="badge bg-azure-lt" title="This category contains articles">1</span>',
-                                            'a_attr' => ['data-id' => $cat_1_2_1_id]
+                                            'a_attr' => ['data-id' => $cat_1_2_1_id],
                                         ],
-                                    ]
+                                    ],
                                 ],
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                 ]),
             ],

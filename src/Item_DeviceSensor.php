@@ -56,7 +56,7 @@ class Item_DeviceSensor extends Item_Devices
     public function getImportCriteria(): array
     {
         return [
-            'serial' => 'equal'
+            'serial' => 'equal',
         ];
     }
 }

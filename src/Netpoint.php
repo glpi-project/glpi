@@ -48,7 +48,7 @@ class Netpoint extends Socket
 
     public function prepareInputForAdd($input)
     {
-       //Copy input to match new format
+        //Copy input to match new format
 
         if (!isset($input['wiring_side'])) {
             $input['wiring_side'] = Socket::FRONT;
@@ -96,7 +96,7 @@ class Netpoint extends Socket
             $input['networkports_id'] = 0;
         }
 
-       //Copy input to match new format
+        //Copy input to match new format
         return parent::prepareInputForUpdate($input);
     }
 }

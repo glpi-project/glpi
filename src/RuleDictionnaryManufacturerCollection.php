@@ -35,8 +35,8 @@
 
 class RuleDictionnaryManufacturerCollection extends RuleDictionnaryDropdownCollection
 {
-   // From RuleCollection
-   //public $rule_class_name = 'RuleDictionnaryManufacturer';
+    // From RuleCollection
+    //public $rule_class_name = 'RuleDictionnaryManufacturer';
 
     public $item_table  = "glpi_manufacturers";
     public $menu_option = "manufacturers";

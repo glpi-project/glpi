@@ -42,7 +42,7 @@ class SlaLevel extends LevelAgreementLevel
     protected $ruleactionclass    = 'SlaLevelAction';
     protected static $parentclass = 'SLA';
     protected static $fkparent    = 'slas_id';
-   // No criteria
+    // No criteria
     protected $rulecriteriaclass = 'SlaLevelCriteria';
 
 
@@ -56,7 +56,7 @@ class SlaLevel extends LevelAgreementLevel
     {
         parent::cleanDBonPurge();
 
-       // SlaLevel_Ticket does not extends CommonDBConnexity
+        // SlaLevel_Ticket does not extends CommonDBConnexity
         $slt = new SlaLevel_Ticket();
         $slt->deleteByCriteria([$this->rules_id_field => $this->fields['id']]);
     }
@@ -116,7 +116,7 @@ class SlaLevel extends LevelAgreementLevel
                 'execution_time',
                 ['max_time' => $delay,
                     'used'     => self::getAlreadyUsedExecutionTime($sla->fields['id']),
-                    'type'     => $sla->fields['type']
+                    'type'     => $sla->fields['type'],
                 ]
             );
 
@@ -134,9 +134,9 @@ class SlaLevel extends LevelAgreementLevel
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'slas_id'   => $ID
+                'slas_id'   => $ID,
             ],
-            'ORDER'  => 'execution_time'
+            'ORDER'  => 'execution_time',
         ]);
         $numrows = count($iterator);
 
@@ -144,7 +144,7 @@ class SlaLevel extends LevelAgreementLevel
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $numrows),
-                'container'      => 'mass' . __CLASS__ . $rand
+                'container'      => 'mass' . __CLASS__ . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -161,11 +161,11 @@ class SlaLevel extends LevelAgreementLevel
         Session::initNavigateListItems(
             'SlaLevel',
             //TRANS: %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                     sprintf(
-                                         __('%1$s = %2$s'),
-                                         SLA::getTypeName(1),
-                                         $sla->getName()
-                                     )
+            sprintf(
+                __('%1$s = %2$s'),
+                SLA::getTypeName(1),
+                $sla->getName()
+            )
         );
 
         foreach ($iterator as $data) {
@@ -275,7 +275,7 @@ class SlaLevel extends LevelAgreementLevel
                 'value'
                                              => $this->fields['execution_time'],
                 'type'
-            => $sla->fields['type']
+            => $sla->fields['type'],
             ]
         );
         echo "</td></tr>\n";
@@ -309,10 +309,10 @@ class SlaLevel extends LevelAgreementLevel
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'slas_id'   => $slas_id,
-                'is_active' => 1
+                'is_active' => 1,
             ],
             'ORDER'  => 'execution_time ASC',
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         if ($result = $iterator->current()) {
@@ -338,7 +338,7 @@ class SlaLevel extends LevelAgreementLevel
         $iterator = $DB->request([
             'SELECT' => 'execution_time',
             'FROM'   => self::getTable(),
-            'WHERE'  => ['id' => $slalevels_id]
+            'WHERE'  => ['id' => $slalevels_id],
         ]);
 
         if ($result = $iterator->current()) {
@@ -351,14 +351,14 @@ class SlaLevel extends LevelAgreementLevel
                     'slas_id'         => $slas_id,
                     'is_active'       => 1,
                     'id'              => ['<>', $slalevels_id],
-                    'execution_time'  => ['>', $execution_time]
+                    'execution_time'  => ['>', $execution_time],
                 ],
                 'ORDER'  => 'execution_time ASC',
-                'LIMIT'  => 1
+                'LIMIT'  => 1,
             ]);
 
             if ($result = $lvl_iterator->current()) {
-                 return $result['id'];
+                return $result['id'];
             }
         }
         return 0;

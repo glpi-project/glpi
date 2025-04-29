@@ -36,7 +36,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
 use Glpi\Inventory\Conf;
 
 class Drive extends Device
@@ -102,7 +101,7 @@ class Drive extends Device
             'reader',
             'sd[\s-]*card',
             'micro[\s-]*sd',
-            'mmc'
+            'mmc',
         ];
 
         foreach ($drives_regex as $regex) {

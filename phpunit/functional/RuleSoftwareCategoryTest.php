@@ -68,7 +68,7 @@ class RuleSoftwareCategoryTest extends DbTestCase
                 'glpi_rules',
                 [
                     'uuid' => 'glpi_rule_rule_software_category_import_category_from_inventory_tool',
-                    'is_active' => 0
+                    'is_active' => 0,
                 ]
             )
         );
@@ -78,7 +78,7 @@ class RuleSoftwareCategoryTest extends DbTestCase
                 'glpi_rules',
                 [
                     'uuid' => 'glpi_rule_rule_software_category_import_category_from_inventory_tool',
-                    'is_active' => 1
+                    'is_active' => 1,
                 ]
             )
         );
@@ -93,7 +93,7 @@ class RuleSoftwareCategoryTest extends DbTestCase
 
         $relations = [
             \RuleAction::class => 1,
-            \RuleCriteria::class  => 1
+            \RuleCriteria::class  => 1,
         ];
 
         foreach ($relations as $relation => $expected) {

@@ -43,15 +43,15 @@
  **/
 class SLM extends CommonDBTM
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
 
     protected static $forward_entity_to = ['SLA', 'OLA'];
 
     public static $rightname                   = 'slm';
 
-    const TTR = 0; // Time to resolve
-    const TTO = 1; // Time to own
+    public const TTR = 0; // Time to resolve
+    public const TTO = 1; // Time to own
 
     public static function getTypeName($nb = 0)
     {
@@ -136,8 +136,8 @@ class SLM extends CommonDBTM
                         'SELECT' => 'id',
                         'FROM'   => $child_class::getTable(),
                         'WHERE'  => [
-                            $this->getForeignKeyField() => $this->getID()
-                        ]
+                            $this->getForeignKeyField() => $this->getID(),
+                        ],
                     ]
                 );
                 foreach ($child_iterator as $child_data) {
@@ -199,7 +199,7 @@ class SLM extends CommonDBTM
         Calendar::dropdown([
             'value'      => $this->fields['use_ticket_calendar'] ? -1 : $this->fields['calendars_id'],
             'emptylabel' => __('24/7'),
-            'toadd'      => ['-1' => __('Calendar of the ticket')]
+            'toadd'      => ['-1' => __('Calendar of the ticket')],
         ]);
         echo "</td></tr>";
 
@@ -215,7 +215,7 @@ class SLM extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -233,7 +233,7 @@ class SLM extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -241,7 +241,7 @@ class SLM extends CommonDBTM
             'table'              => 'glpi_calendars',
             'field'              => 'name',
             'name'               => _n('Calendar', 'Calendars', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -249,7 +249,7 @@ class SLM extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         return $tab;

@@ -52,7 +52,7 @@ class NotificationEventMailing extends NotificationEventAbstract
             !isset($data[$field])
             && isset($data['users_id'])
         ) {
-           // No email set : get default for user
+            // No email set : get default for user
             $data[$field] = UserEmail::getDefaultForUser($data['users_id']);
         }
 
@@ -125,7 +125,7 @@ class NotificationEventMailing extends NotificationEventAbstract
         $processed = [];
 
         foreach ($data as $row) {
-           //make sure mailer is reset on each mail
+            //make sure mailer is reset on each mail
             $mmail = new GLPIMailer();
             $current = new QueuedNotification();
             $current->getFromResultSet($row);
@@ -146,12 +146,12 @@ class NotificationEventMailing extends NotificationEventAbstract
                             [
                                 '%uuid',
                                 '%itemtype',
-                                '%items_id'
+                                '%items_id',
                             ],
                             [
                                 Config::getUuid('notification'),
                                 $current->fields['itemtype'],
-                                $current->fields['items_id']
+                                $current->fields['items_id'],
                             ],
                             "In-Reply-To: <GLPI-%uuid-%itemtype-%items_id>"
                         )
@@ -207,7 +207,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 // these documents corresponds to inlined images.
                                 // If notification is in plain text, they should be kepts as they cannot be rendered in text.
                                 $doc_crit[] = [
-                                    'timeline_position' => ['>', CommonITILObject::NO_TIMELINE]
+                                    'timeline_position' => ['>', CommonITILObject::NO_TIMELINE],
                                 ];
                             }
                         }
@@ -398,7 +398,7 @@ class NotificationEventMailing extends NotificationEventAbstract
             if (!$mmail->Send()) {
                 self::handleFailedSend($current, $mmail->ErrorInfo);
             } else {
-               //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
+                //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
                 Toolbox::logInFile(
                     "mail",
                     sprintf(
@@ -413,7 +413,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                 $mmail->ClearAddresses();
                 $processed[] = $current->getID();
                 $current->update(['id'        => $current->fields['id'],
-                    'sent_time' => $_SESSION['glpi_currenttime']
+                    'sent_time' => $_SESSION['glpi_currenttime'],
                 ]);
                 $current->delete(['id'        => $current->fields['id']]);
             }
@@ -468,7 +468,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
         $input = [
             'id'        => $notification->fields['id'],
-            'sent_try'  => $notification->fields['sent_try'] + 1
+            'sent_try'  => $notification->fields['sent_try'] + 1,
         ];
 
         if ($CFG_GLPI["smtp_retry_time"] > 0) {
@@ -512,8 +512,8 @@ class NotificationEventMailing extends NotificationEventAbstract
             $encoding = PHPMailer::ENCODING_BASE64;
             $mime = mime_content_type($path);
             if ($mime == "message/rfc822") {
-               // messages/rfc822 can't be encoded in base64 according to RFC2046
-               // https://datatracker.ietf.org/doc/html/rfc2046
+                // messages/rfc822 can't be encoded in base64 according to RFC2046
+                // https://datatracker.ietf.org/doc/html/rfc2046
                 $encoding = PHPMailer::ENCODING_8BIT;
             }
 
@@ -527,7 +527,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
     protected static function extraRaise($params)
     {
-       //Set notification's signature (the one which corresponds to the entity)
+        //Set notification's signature (the one which corresponds to the entity)
         $entity = $params['notificationtarget']->getEntity();
         $params['template']->setSignature(Notification::getMailingSignature($entity));
     }

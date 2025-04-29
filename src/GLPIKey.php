@@ -80,7 +80,7 @@ class GLPIKey
             'smtp_passwd',
             'smtp_oauth_client_secret',
             'smtp_oauth_refresh_token',
-        ]
+        ],
     ];
 
     public function __construct(string $config_dir = GLPI_CONFIG_DIR)
@@ -101,7 +101,7 @@ class GLPIKey
     {
         if (version_compare($glpi_version, '9.4.6', '<')) {
             return null;
-        } else if (version_compare($glpi_version, '9.5.x', '<')) {
+        } elseif (version_compare($glpi_version, '9.5.x', '<')) {
             return $this->legacykeyfile;
         } else {
             return $this->keyfile;
@@ -151,7 +151,7 @@ class GLPIKey
         if (!file_exists($this->legacykeyfile)) {
             return GLPIKEY;
         }
-       //load key from existing config file
+        //load key from existing config file
         if (!is_readable($this->legacykeyfile) || ($key = file_get_contents($this->legacykeyfile)) === false) {
             trigger_error('Unable to get security legacy key file contents.', E_USER_WARNING);
             return null;
@@ -170,7 +170,7 @@ class GLPIKey
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Check ability to create/update key file.
+        // Check ability to create/update key file.
         if (
             (file_exists($this->keyfile) && !is_writable($this->keyfile))
             || (!file_exists($this->keyfile) && !is_writable(dirname($this->keyfile)))
@@ -179,7 +179,7 @@ class GLPIKey
             return false;
         }
 
-       // Fetch old key before generating the new one (but only if DB exists and there is something to migrate)
+        // Fetch old key before generating the new one (but only if DB exists and there is something to migrate)
         $previous_key = null;
         if ($DB instanceof DBmysql && $DB->connected) {
             if ($this->keyExists()) {
@@ -282,7 +282,7 @@ class GLPIKey
         $success = true;
 
         foreach ($this->getFields() as $field) {
-            list($table, $column) = explode('.', $field);
+            [$table, $column] = explode('.', $field);
 
             $iterator = $DB->request([
                 'SELECT' => ['id', $column],
@@ -291,7 +291,7 @@ class GLPIKey
             ]);
 
             foreach ($iterator as $row) {
-                 $value = (string)$row[$column];
+                $value = (string) $row[$column];
                 if ($sodium_key !== null) {
                     $pass = $this->encrypt($this->decrypt($value, $sodium_key));
                 } else {
@@ -304,7 +304,7 @@ class GLPIKey
                 );
 
                 if (!$success) {
-                     break;
+                    break;
                 }
             }
         }
@@ -333,11 +333,11 @@ class GLPIKey
                     'context'   => $context,
                     'name'      => $names,
                     ['NOT' => ['value' => null]],
-                ]
+                ],
             ]);
 
             foreach ($iterator as $row) {
-                 $value = (string)$row['value'];
+                $value = (string) $row['value'];
                 if ($sodium_key !== null) {
                     $pass = $this->encrypt($this->decrypt($value, $sodium_key));
                 } else {
@@ -350,7 +350,7 @@ class GLPIKey
                 );
 
                 if (!$success) {
-                     break;
+                    break;
                 }
             }
         }
@@ -373,8 +373,8 @@ class GLPIKey
         }
 
         if ($key === null) {
-           // Cannot encrypt string as key reading fails, returns a empty value
-           // to ensure sensitive data is not propagated unencrypted.
+            // Cannot encrypt string as key reading fails, returns a empty value
+            // to ensure sensitive data is not propagated unencrypted.
             return '';
         }
 
@@ -399,7 +399,7 @@ class GLPIKey
     public function decrypt(?string $string, $key = null): ?string
     {
         if (empty($string)) {
-           // Avoid sodium exception for blank content. Just return the null/empty value.
+            // Avoid sodium exception for blank content. Just return the null/empty value.
             return $string;
         }
 
@@ -408,7 +408,7 @@ class GLPIKey
         }
 
         if ($key === null) {
-           // Cannot decrypt string as key reading fails, returns encrypted value.
+            // Cannot decrypt string as key reading fails, returns encrypted value.
             return $string;
         }
 
@@ -458,7 +458,7 @@ class GLPIKey
         }
 
         if ($key === null) {
-           // Cannot decrypt string as key reading fails, returns encrypted value.
+            // Cannot decrypt string as key reading fails, returns encrypted value.
             return $string;
         }
 

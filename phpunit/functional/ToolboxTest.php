@@ -42,7 +42,6 @@ use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\Kanban;
 use Glpi\Features\PlanningEvent;
 use Glpi\Toolbox\Sanitizer;
-use Glpi\Toolbox\VersionParser;
 use ITILFollowup;
 use stdClass;
 use Ticket;
@@ -55,7 +54,7 @@ class ToolboxTest extends DbTestCase
     public function testGetRandomString()
     {
         for ($len = 20; $len < 50; $len += 5) {
-           // Low strength
+            // Low strength
             $str = \Toolbox::getRandomString($len);
             $this->assertSame($len, strlen($str));
             $this->assertTrue(ctype_alnum($str));
@@ -67,15 +66,15 @@ class ToolboxTest extends DbTestCase
         return [
             [
                 'string'   => 'My - string èé  Ê À ß',
-                'expected' => 'my-string-ee-e-a-ss'
+                'expected' => 'my-string-ee-e-a-ss',
             ], [
                 //https://github.com/glpi-project/glpi/issues/2946
                 'string'   => 'Έρευνα ικανοποίησης - Αιτήματα',
-                'expected' => 'ereuna-ikanopoieses-aitemata'
+                'expected' => 'ereuna-ikanopoieses-aitemata',
             ], [
                 'string'   => 'a-valid-one',
                 'expected' => 'a-valid-one',
-            ]
+            ],
         ];
     }
 
@@ -123,11 +122,11 @@ class ToolboxTest extends DbTestCase
                 'expected'  => '25-new-text-document.txt',
             ], [
                 'name'     => 'Έρευνα ικανοποίησης - Αιτήματα',
-                'expected' => 'ereuna-ikanopoieses-aitemata'
+                'expected' => 'ereuna-ikanopoieses-aitemata',
             ], [
                 'name'     => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc gravida, nisi vel scelerisque feugiat, tellus purus volutpat justo, vel aliquam nibh nibh sit amet risus. Aenean eget urna et felis molestie elementum nec sit amet magna. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nec malesuada elit, non luctus mi. Aliquam quis velit justo. Donec id pulvinar nunc. Phasellus.txt',
-                'expected' => 'lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit.-nunc-gravida-nisi-vel-scelerisque-feugiat-tellus-purus-volutpat-justo-vel-aliquam-.txt'
-            ]
+                'expected' => 'lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit.-nunc-gravida-nisi-vel-scelerisque-feugiat-tellus-purus-volutpat-justo-vel-aliquam-.txt',
+            ],
         ];
     }
 
@@ -233,14 +232,14 @@ class ToolboxTest extends DbTestCase
         return [
             [
                 '{"Monitor":[6],"Computer":[35]}',
-                ['Monitor' => [6], 'Computer' => [35]]
+                ['Monitor' => [6], 'Computer' => [35]],
             ], [
                 '{\"Monitor\":[\"6\"],\"Computer\":[\"35\"]}',
-                ['Monitor' => ["6"], 'Computer' => ["35"]]
+                ['Monitor' => ["6"], 'Computer' => ["35"]],
             ], [
                 '{\"content\":\"&#60;p&#62;HTML !&#60;/p&#62;\"}',
-                ['content' => '<p>HTML !</p>']
-            ]
+                ['content' => '<p>HTML !</p>'],
+            ],
         ];
     }
 
@@ -258,32 +257,32 @@ class ToolboxTest extends DbTestCase
         return [
             [
                 '{"validJson":true}',
-                true
+                true,
             ], [
                 '{"invalidJson":true',
-                false
+                false,
             ], [
                 '"valid"',
-                true
+                true,
             ], [
                 'null',
-                true
+                true,
             ], [
                 1000,
-                true
+                true,
             ], [
                 [1, 2, 3],
-                false
+                false,
             ], [
                 (object) ['json' => true],
-                false
+                false,
             ], [
                 '{ bad content',
-                false
+                false,
             ], [
                 file_get_contents(GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/computer_1.json'),
-                true
-            ]
+                true,
+            ],
         ];
     }
 
@@ -313,7 +312,7 @@ class ToolboxTest extends DbTestCase
             ['hello you', 'Hello you'],
             ['HEllO you', 'HEllO you'],
             ['éè', 'Éè'],
-            ['ÉÈ', 'ÉÈ']
+            ['ÉÈ', 'ÉÈ'],
         ];
     }
 
@@ -331,7 +330,7 @@ class ToolboxTest extends DbTestCase
             ['My menu', 'm', '<u>M</u>y menu'],
             ['Do something', 't', 'Do some<u>t</u>hing'],
             ['Any menu entry', 'z', 'Any menu entry'],
-            ['Computer', 'O', 'C<u>o</u>mputer']
+            ['Computer', 'O', 'C<u>o</u>mputer'],
         ];
     }
 
@@ -354,7 +353,7 @@ class ToolboxTest extends DbTestCase
             ['Where is Charlie?', 'e', 0, 2],
             ['Where is Charlie?', 'e', 2, 2],
             ['Where is Charlie?', 'e', 3, 4],
-            ['Où est Charlie ?', 'ù', 0, 1]
+            ['Où est Charlie ?', 'ù', 0, 1],
         ];
     }
 
@@ -378,7 +377,7 @@ class ToolboxTest extends DbTestCase
             ['éè', 10, " ", STR_PAD_LEFT, '        éè'],
             ['GLPI', 10, " ", STR_PAD_BOTH, '   GLPI   '],
             ['éè', 10, " ", STR_PAD_BOTH, '    éè    '],
-            ['123', 10, " ", STR_PAD_BOTH, '   123    ']
+            ['123', 10, " ", STR_PAD_BOTH, '   123    '],
         ];
     }
 
@@ -397,7 +396,7 @@ class ToolboxTest extends DbTestCase
     {
         return [
             ['GLPI', 4],
-            ['Où ça ?', 7]
+            ['Où ça ?', 7],
         ];
     }
 
@@ -417,7 +416,7 @@ class ToolboxTest extends DbTestCase
             ['I want a substring', 9, 3, 'sub'],
             ['Caractères accentués', 0, -1, 'Caractères accentués'],
             ['Caractères accentués', 11, -1, 'accentués'],
-            ['Caractères accentués', 11, 8, 'accentué']
+            ['Caractères accentués', 11, 8, 'accentué'],
         ];
     }
 
@@ -437,7 +436,7 @@ class ToolboxTest extends DbTestCase
         return [
             ['GLPI', 'glpi'],
             ['ÉÈ', 'éè'],
-            ['glpi', 'glpi']
+            ['glpi', 'glpi'],
         ];
     }
 
@@ -454,7 +453,7 @@ class ToolboxTest extends DbTestCase
         return [
             ['glpi', 'GLPI'],
             ['éè', 'ÉÈ'],
-            ['GlPI', 'GLPI']
+            ['GlPI', 'GLPI'],
         ];
     }
 
@@ -472,7 +471,7 @@ class ToolboxTest extends DbTestCase
             ['a simple string', true],
             ['caractère', true],
             [mb_convert_encoding('caractère', 'ISO-8859-15'), false],
-            [mb_convert_encoding('simple string', 'ISO-8859-15'), true]
+            [mb_convert_encoding('simple string', 'ISO-8859-15'), true],
         ];
     }
 
@@ -599,7 +598,7 @@ class ToolboxTest extends DbTestCase
 
         $img_tag = uniqid('', true);
 
-       // Create document in DB
+        // Create document in DB
         $document = new \Document();
         $doc_id = $document->add([
             'name'     => 'basic document',
@@ -607,7 +606,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id);
+        $this->assertGreaterThan(0, (int) $doc_id);
 
         $content_text   = '<img id="' . $img_tag . '" width="10" height="10" />';
         $expected_url   = str_replace('{docid}', $doc_id, $expected_url);
@@ -676,7 +675,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id);
+        $this->assertGreaterThan(0, (int) $doc_id);
 
         $content_text   = '<img id="' . $img_tag . '" width="10" height="10" />';
         $expected_url   = str_replace('{docid}', $doc_id, $expected_url);
@@ -710,7 +709,7 @@ class ToolboxTest extends DbTestCase
         $item = new \Ticket();
         $item->fields['id'] = mt_rand(1, 50);
 
-       // Create multiple documents in DB
+        // Create multiple documents in DB
         $document = new \Document();
         $doc_id_1 = $document->add([
             'name'     => 'document 1',
@@ -718,7 +717,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag_1,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id_1);
+        $this->assertGreaterThan(0, (int) $doc_id_1);
 
         $document = new \Document();
         $doc_id_2 = $document->add([
@@ -727,7 +726,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag_2,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id_2);
+        $this->assertGreaterThan(0, (int) $doc_id_2);
 
         $document = new \Document();
         $doc_id_3 = $document->add([
@@ -736,7 +735,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag_3,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id_3);
+        $this->assertGreaterThan(0, (int) $doc_id_3);
 
         $doc_data = [
             $doc_id_1 => ['tag' => $img_tag_1],
@@ -784,7 +783,7 @@ class ToolboxTest extends DbTestCase
         $item = new \Ticket();
         $item->fields['id'] = mt_rand(1, 50);
 
-       // Create multiple documents in DB
+        // Create multiple documents in DB
         $document = new \Document();
         $doc_id_1 = $document->add([
             'name'     => 'duplicated document 1',
@@ -792,7 +791,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id_1);
+        $this->assertGreaterThan(0, (int) $doc_id_1);
 
         $document = new \Document();
         $doc_id_2 = $document->add([
@@ -801,7 +800,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id_2);
+        $this->assertGreaterThan(0, (int) $doc_id_2);
 
         $content_text    = '<img id="' . $img_tag . '" width="10" height="10" />';
         $expected_url_1    = '/front/document.send.php?docid=' . $doc_id_1;
@@ -856,7 +855,7 @@ class ToolboxTest extends DbTestCase
         $item = new \Ticket();
         $item->fields['id'] = mt_rand(1, 50);
 
-       // Create multiple documents in DB
+        // Create multiple documents in DB
         $document = new \Document();
         $doc_id = $document->add([
             'name'     => 'img 1',
@@ -864,7 +863,7 @@ class ToolboxTest extends DbTestCase
             'mime'     => 'image/png',
             'tag'      => $img_tag,
         ]);
-        $this->assertGreaterThan(0, (int)$doc_id);
+        $this->assertGreaterThan(0, (int) $doc_id);
 
         $content_text     = '<img id="' . $img_tag . '" width="10" height="10" />';
         $content_text    .= $content_text;
@@ -947,7 +946,7 @@ HTML;
 
         $docs_data = [
             $document_1->getID() => ['tag' => $img_1_tag],
-            $document_2->getID() => ['tag' => $img_2_tag]
+            $document_2->getID() => ['tag' => $img_2_tag],
         ];
 
         // Processed data is expected to be sanitized, and expected result should remain sanitized
@@ -1056,7 +1055,7 @@ HTML;
                 'number'    => "test",
                 'precision' => 1,
                 'expected'  => 'test',
-            ]
+            ],
         ];
     }
 
@@ -1239,7 +1238,7 @@ HTML;
             ['https://localhost?test=true&othertest=false', true],
             ['https://localhost/front/computer.php?is_deleted=0&as_map=0&criteria[0][link]=AND&criteria[0][field]=80&criteria[0][searchtype]=equals&criteria[0][value]=254&search=Search&itemtype=Computer', true],
             ['https://localhost?test=true&#38;othertest=false', true], /* sanitized URL, &#38; is & */
-            ['https://localhost/this+is+a+test', true] // + to denote a space allowed
+            ['https://localhost/this+is+a+test', true], // + to denote a space allowed
         ];
     }
 
@@ -1319,11 +1318,11 @@ HTML;
 
     public function testGetDocumentsFromTag()
     {
-       // No tag provided in the tested text
+        // No tag provided in the tested text
         $output = \Toolbox::getDocumentsFromTag('');
         $this->AssertCount(0, $output);
 
-       // Create a document to emulate a document upload
+        // Create a document to emulate a document upload
         $filename = 'foo.png';
         copy(FIXTURE_DIR . '/uploads/foo.png', GLPI_TMP_DIR . '/' . $filename);
         $tag = \Rule::getUuid();
@@ -1337,7 +1336,7 @@ HTML;
             ],
             '_prefix_filename' => [
                 '5e5e92ffd9bd91.11111111',
-            ]
+            ],
         ];
         $document = new \Document();
         $document->add($input);
@@ -1353,45 +1352,45 @@ HTML;
             [
                 [
                     'a'   => 'test1',
-                    'b'   => 'test2'
-                ], '&', 'a=test1&b=test2'
+                    'b'   => 'test2',
+                ], '&', 'a=test1&b=test2',
             ],
             [
                 [
                     'a'   => [
-                        'test1', 'test2'
+                        'test1', 'test2',
                     ],
-                    'b'   => 'test3'
-                ], '&', 'a%5B0%5D=test1&a%5B1%5D=test2&b=test3' // '[' converted to %5B, ']' converted to %5D
+                    'b'   => 'test3',
+                ], '&', 'a%5B0%5D=test1&a%5B1%5D=test2&b=test3', // '[' converted to %5B, ']' converted to %5D
             ],
             [
                 [
                     'a'   => [
-                        'test1', 'test2'
+                        'test1', 'test2',
                     ],
-                    'b'   => 'test3*'
-                ], '&', 'a%5B0%5D=test1&a%5B1%5D=test2&b=test3%2A' // '[' converted to %5B, ']' converted to %5D
+                    'b'   => 'test3*',
+                ], '&', 'a%5B0%5D=test1&a%5B1%5D=test2&b=test3%2A', // '[' converted to %5B, ']' converted to %5D
             ],
             [
                 [
                     'a'   => 'test1',
-                    'b'   => 'test2'
-                ], '_', 'a=test1_b=test2'
+                    'b'   => 'test2',
+                ], '_', 'a=test1_b=test2',
             ],
             [
                 [
                     'a'   => [
-                        'test1', 'test2'
+                        'test1', 'test2',
                     ],
-                    'b'   => 'test3'
-                ], '_', 'a%5B0%5D=test1_a%5B1%5D=test2_b=test3' // '[' converted to %5B, ']' converted to %5D
+                    'b'   => 'test3',
+                ], '_', 'a%5B0%5D=test1_a%5B1%5D=test2_b=test3', // '[' converted to %5B, ']' converted to %5D
             ],
             [
                 [
                     'a'   => 'test1',
                     [], // Empty array Should be ignored
-                    'b'   => 'test2'
-                ], '&', 'a=test1&b=test2'
+                    'b'   => 'test2',
+                ], '&', 'a=test1&b=test2',
             ],
         ];
     }
@@ -1423,50 +1422,50 @@ HTML;
 
         yield [
             'value' => "1",
-            'expected' => false
+            'expected' => false,
         ];
 
         yield [
             'value' => "1.5",
-            'expected' => true
+            'expected' => true,
         ];
 
         yield [
             'value' => "7.5569569",
-            'expected' => true
+            'expected' => true,
         ];
 
         yield [
             'value' => "0",
-            'expected' => false
+            'expected' => false,
         ];
 
         yield [
             'value' => 3.4,
-            'expected' => true
+            'expected' => true,
         ];
 
         yield [
             'value' => 3,
-            'expected' => false
+            'expected' => false,
         ];
 
         yield [
             'value' => "not a float",
             'expected' => false,
-            'warning' => "Calling isFloat on string"
+            'warning' => "Calling isFloat on string",
         ];
 
         yield [
             'value' => new stdClass(),
             'expected' => false,
-            'warning' => "Calling isFloat on object"
+            'warning' => "Calling isFloat on object",
         ];
 
         yield [
             'value' => [],
             'expected' => false,
-            'warning' => "Calling isFloat on array"
+            'warning' => "Calling isFloat on array",
         ];
     }
 
@@ -1502,55 +1501,55 @@ HTML;
     {
         yield [
             'value' => "1",
-            'decimals' => 0
+            'decimals' => 0,
         ];
 
         yield [
             'value' => "1.5",
-            'decimals' => 1
+            'decimals' => 1,
         ];
 
         yield [
             'value' => "7.5569569",
-            'decimals' => 7
+            'decimals' => 7,
         ];
 
         yield [
             'value' => "0",
-            'decimals' => 0
+            'decimals' => 0,
         ];
 
         yield [
             'value' => 3.4,
-            'decimals' => 1
+            'decimals' => 1,
         ];
 
         yield [
             'value' => 3,
-            'decimals' => 0
+            'decimals' => 0,
         ];
 
         yield [
             'value' => "not a float",
             'decimals' => 0,
-            'warning' => "Calling getDecimalNumbers on string"
+            'warning' => "Calling getDecimalNumbers on string",
         ];
 
         yield [
             'value' => new stdClass(),
             'decimals' => 0,
-            'warning' => "Calling getDecimalNumbers on object"
+            'warning' => "Calling getDecimalNumbers on object",
         ];
 
         yield [
             'value' => [],
             'decimals' => 0,
-            'warning' => "Calling getDecimalNumbers on array"
+            'warning' => "Calling getDecimalNumbers on array",
         ];
 
         yield [
             'value' => 3.141592653589791415926535897914159265358979,
-            'decimals' => 13 // floatval() round up after 13 decimals
+            'decimals' => 13, // floatval() round up after 13 decimals
         ];
     }
 

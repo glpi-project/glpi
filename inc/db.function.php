@@ -660,8 +660,8 @@ function getEntitiesRestrictCriteria(
         $complete_request
     );
 
-   // Add another layer to the array to prevent losing duplicates keys if the
-   // result of the function is merged with another array
+    // Add another layer to the array to prevent losing duplicates keys if the
+    // result of the function is merged with another array
     if (count($res)) {
         $res = [crc32(serialize($res)) => $res];
     }

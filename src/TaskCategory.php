@@ -38,7 +38,7 @@
  **/
 class TaskCategory extends CommonTreeDropdown
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;
 
@@ -51,13 +51,13 @@ class TaskCategory extends CommonTreeDropdown
 
         $tab[] = ['name'  => 'is_active',
             'label' => __('Active'),
-            'type'  => 'bool'
+            'type'  => 'bool',
         ];
 
         $tab[] = ['name'  => 'knowbaseitemcategories_id',
             'label' => KnowbaseItemCategory::getTypeName(),
             'type'  => 'dropdownValue',
-            'list'  => true
+            'list'  => true,
         ];
 
         return $tab;
@@ -73,7 +73,7 @@ class TaskCategory extends CommonTreeDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         return $tab;

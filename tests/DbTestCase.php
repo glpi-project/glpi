@@ -143,7 +143,7 @@ class DbTestCase extends \GLPITestCase
      */
     protected function getClasses($function = false, array $excludes = [])
     {
-       // Add deprecated classes to excludes to prevent test failure
+        // Add deprecated classes to excludes to prevent test failure
         $excludes = array_merge(
             $excludes,
             [
@@ -168,8 +168,8 @@ class DbTestCase extends \GLPITestCase
             $is_excluded = false;
             foreach ($excludes as $exclude) {
                 if ($classname === $exclude || @preg_match($exclude, $classname) === 1) {
-                     $is_excluded = true;
-                     break;
+                    $is_excluded = true;
+                    break;
                 }
             }
             if ($is_excluded) {

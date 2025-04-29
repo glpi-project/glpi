@@ -63,7 +63,7 @@ class APIXmlrpcTest extends APIBaseClass
             $this->base_uri,
             [
                 'body'    => $request,
-                'headers' => $headers
+                'headers' => $headers,
             ]
         );
     }
@@ -73,9 +73,9 @@ class APIXmlrpcTest extends APIBaseClass
         //reconstruct params for xmlrpc (base params done for rest)
         $flat_params = array_merge(
             $params,
-            isset($params['query'])   ? $params['query']   : [],
-            isset($params['headers']) ? $params['headers'] : [],
-            isset($params['json'])    ? $params['json']    : []
+            $params['query'] ?? [],
+            $params['headers'] ?? [],
+            $params['json'] ?? []
         );
         unset(
             $flat_params['query'],
@@ -123,8 +123,8 @@ class APIXmlrpcTest extends APIBaseClass
             'initSession',
             ['query' => [
                 'login'    => TU_USER,
-                'password' => TU_PASS
-            ]
+                'password' => TU_PASS,
+            ],
             ]
         );
 
@@ -147,7 +147,7 @@ class APIXmlrpcTest extends APIBaseClass
      */
     public function testUpdateItem()
     {
-       //:parent::testUpdateItem($session_token, $computers_id);
+        //:parent::testUpdateItem($session_token, $computers_id);
 
         //try to update an item without input
         $this->query(
@@ -156,7 +156,7 @@ class APIXmlrpcTest extends APIBaseClass
                 'itemtype' => 'Computer',
                 'verb'     => 'PUT',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'json'     => []
+                'json'     => [],
             ],
             400,
             'ERROR_BAD_ARRAY'

@@ -55,25 +55,25 @@ class DeviceMemory extends CommonDevice
                     'label' => __('Size by default'),
                     'type'  => 'integer',
                     'min'   => 0,
-                    'unit'  => __('Mio')
+                    'unit'  => __('Mio'),
                 ],
                 [
                     'name'  => 'frequence',
                     'label' => sprintf(__('%1$s (%2$s)'), __('Frequency'), __('MHz')),
                     'type'  => 'integer',
                     'min'   => 0,
-                    'unit'  => __('MHz')
+                    'unit'  => __('MHz'),
                 ],
                 [
                     'name'  => 'devicememorytypes_id',
                     'label' => _n('Type', 'Types', 1),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 [
                     'name'  => 'devicememorymodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
-                ]
+                    'type'  => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -104,7 +104,7 @@ class DeviceMemory extends CommonDevice
             'table'              => 'glpi_devicememorytypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -112,7 +112,7 @@ class DeviceMemory extends CommonDevice
             'table'              => 'glpi_devicememorymodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -218,7 +218,7 @@ class DeviceMemory extends CommonDevice
         return ['designation'          => 'equal',
             'devicememorytypes_id' => 'equal',
             'manufacturers_id'     => 'equal',
-            'frequence'            => 'delta:10'
+            'frequence'            => 'delta:10',
         ];
     }
 
@@ -241,9 +241,9 @@ class DeviceMemory extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicememories',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
         ];
 
         $tab[] = [

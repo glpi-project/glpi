@@ -50,8 +50,8 @@ class NotificationAjax implements NotificationInterface
      **/
     public static function check($value, $options = [])
     {
-       //waiting for a user ID
-        $value = (int)$value;
+        //waiting for a user ID
+        $value = (int) $value;
         return $value > 0;
     }
 
@@ -67,7 +67,7 @@ class NotificationAjax implements NotificationInterface
             'subject'                     => 'Test notification',
             'content_text'                => "Hello, this is a test notification.",
             'to'                          => Session::getLoginUserID(),
-            'event'                       => 'test_notification'
+            'event'                       => 'test_notification',
         ]);
     }
 
@@ -97,7 +97,7 @@ class NotificationAjax implements NotificationInterface
             Session::addMessageAfterRedirect(__('Error inserting browser notification to queue'), true, ERROR);
             return false;
         } else {
-           //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
+            //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
             Toolbox::logInFile(
                 "notification",
                 sprintf(
@@ -134,8 +134,8 @@ class NotificationAjax implements NotificationInterface
                 'WHERE'  => [
                     'is_deleted'   => false,
                     'recipient'    => Session::getLoginUserID(),
-                    'mode'         => Notification_NotificationTemplate::MODE_AJAX
-                ]
+                    'mode'         => Notification_NotificationTemplate::MODE_AJAX,
+                ],
             ]);
 
             if ($iterator->numrows()) {
@@ -150,7 +150,7 @@ class NotificationAjax implements NotificationInterface
                         'id'     => $row['id'],
                         'title'  => $row['name'],
                         'body'   => $row['body_text'],
-                        'url'    => $url
+                        'url'    => $url,
                     ];
                 }
             }
@@ -180,11 +180,11 @@ class NotificationAjax implements NotificationInterface
             'glpi_queuednotifications',
             [
                 'sent_time'    => $now,
-                'is_deleted'   => 1
+                'is_deleted'   => 1,
             ],
             [
                 'id'        => $id,
-                'recipient' => Session::getLoginUserID()
+                'recipient' => Session::getLoginUserID(),
             ]
         );
     }

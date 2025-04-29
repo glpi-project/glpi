@@ -54,53 +54,53 @@ abstract class CommonITILObject extends CommonDBTM
     use \Glpi\Features\Kanban;
     use \Glpi\Features\Teamwork;
 
-   /// Users by type
+    /// Users by type
     protected $lazy_loaded_users = null;
     public $userlinkclass  = '';
-   /// Groups by type
+    /// Groups by type
     protected $lazy_loaded_groups = null;
     public $grouplinkclass = '';
 
-   /// Suppliers by type
+    /// Suppliers by type
     protected $lazy_loaded_suppliers = null;
     public $supplierlinkclass = '';
 
-   /// Use user entity to select entity of the object
+    /// Use user entity to select entity of the object
     protected $userentity_oncreate = false;
 
     public $deduplicate_queued_notifications = false;
 
     protected static $showTitleInNavigationHeader = true;
 
-    const MATRIX_FIELD         = '';
-    const URGENCY_MASK_FIELD   = '';
-    const IMPACT_MASK_FIELD    = '';
-    const STATUS_MATRIX_FIELD  = '';
+    public const MATRIX_FIELD         = '';
+    public const URGENCY_MASK_FIELD   = '';
+    public const IMPACT_MASK_FIELD    = '';
+    public const STATUS_MATRIX_FIELD  = '';
 
 
-   // STATUS
-    const INCOMING      = 1; // new
-    const ASSIGNED      = 2; // assign
-    const PLANNED       = 3; // plan
-    const WAITING       = 4; // waiting
-    const SOLVED        = 5; // solved
-    const CLOSED        = 6; // closed
-    const ACCEPTED      = 7; // accepted
-    const OBSERVED      = 8; // observe
-    const EVALUATION    = 9; // evaluation
-    const APPROVAL      = 10; // approbation
-    const TEST          = 11; // test
-    const QUALIFICATION = 12; // qualification
+    // STATUS
+    public const INCOMING      = 1; // new
+    public const ASSIGNED      = 2; // assign
+    public const PLANNED       = 3; // plan
+    public const WAITING       = 4; // waiting
+    public const SOLVED        = 5; // solved
+    public const CLOSED        = 6; // closed
+    public const ACCEPTED      = 7; // accepted
+    public const OBSERVED      = 8; // observe
+    public const EVALUATION    = 9; // evaluation
+    public const APPROVAL      = 10; // approbation
+    public const TEST          = 11; // test
+    public const QUALIFICATION = 12; // qualification
 
-    const NO_TIMELINE       = -1;
-    const TIMELINE_NOTSET   = 0;
-    const TIMELINE_LEFT     = 1;
-    const TIMELINE_MIDLEFT  = 2;
-    const TIMELINE_MIDRIGHT = 3;
-    const TIMELINE_RIGHT    = 4;
+    public const NO_TIMELINE       = -1;
+    public const TIMELINE_NOTSET   = 0;
+    public const TIMELINE_LEFT     = 1;
+    public const TIMELINE_MIDLEFT  = 2;
+    public const TIMELINE_MIDRIGHT = 3;
+    public const TIMELINE_RIGHT    = 4;
 
-    const TIMELINE_ORDER_NATURAL = 'natural';
-    const TIMELINE_ORDER_REVERSE = 'reverse';
+    public const TIMELINE_ORDER_NATURAL = 'natural';
+    public const TIMELINE_ORDER_REVERSE = 'reverse';
 
     abstract public static function getTaskClass();
 
@@ -511,7 +511,7 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // load existing actors (from existing itilobject)
+        // load existing actors (from existing itilobject)
         if (isset($this->users[$actortype])) {
             foreach ($this->users[$actortype] as $user) {
                 $name = getUserName($user['users_id']);
@@ -857,7 +857,7 @@ abstract class CommonITILObject extends CommonDBTM
             foreach ($params['_actors']['requester'] as $actor) {
                 if (
                     $actor['itemtype'] == "User"
-                    && (int)$actor['items_id'] > 0 // ignore actor that is added by only its email
+                    && (int) $actor['items_id'] > 0 // ignore actor that is added by only its email
                 ) {
                     $requesters[] = $actor['items_id'];
                 }
@@ -894,9 +894,7 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-    public function getAdditionalDatas()
-    {
-    }
+    public function getAdditionalDatas() {}
 
 
     /**
@@ -971,23 +969,23 @@ abstract class CommonITILObject extends CommonDBTM
     public function canAddFollowups()
     {
         return (
-         (
-            Session::haveRight("followup", ITILFollowup::ADDMYTICKET)
+            (
+                Session::haveRight("followup", ITILFollowup::ADDMYTICKET)
             && (
-               $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+                $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
                || (
-                  isset($this->fields["users_id_recipient"])
+                   isset($this->fields["users_id_recipient"])
                   && ($this->fields["users_id_recipient"] == Session::getLoginUserID())
                )
             )
-         )
-         || (
-            Session::haveRight("followup", ITILFollowup::ADD_AS_OBSERVER)
+            )
+            || (
+                Session::haveRight("followup", ITILFollowup::ADD_AS_OBSERVER)
             && $this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
-         )
-         || Session::haveRight('followup', ITILFollowup::ADDALLTICKET)
-         || (
-            Session::haveRight('followup', ITILFollowup::ADDGROUPTICKET)
+            )
+            || Session::haveRight('followup', ITILFollowup::ADDALLTICKET)
+            || (
+                Session::haveRight('followup', ITILFollowup::ADDGROUPTICKET)
             && isset($_SESSION["glpigroups"])
             && (
                 (
@@ -999,13 +997,13 @@ abstract class CommonITILObject extends CommonDBTM
                     && Session::haveRight("followup", ITILFollowup::ADD_AS_OBSERVER)
                 )
             )
-         )
-         || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-         || (
-            isset($_SESSION["glpigroups"])
+            )
+            || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+            || (
+                isset($_SESSION["glpigroups"])
             && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])
-         )
-         || $this->isValidator(Session::getLoginUserID())
+            )
+            || $this->isValidator(Session::getLoginUserID())
         );
     }
 
@@ -1071,12 +1069,12 @@ abstract class CommonITILObject extends CommonDBTM
     public function isValidator($users_id): bool
     {
         if (!$users_id) {
-           // Invalid parameter
+            // Invalid parameter
             return false;
         }
 
         if (!$this instanceof Ticket && !$this instanceof Change) {
-           // Not a valid validation target
+            // Not a valid validation target
             return false;
         }
 
@@ -1410,7 +1408,7 @@ abstract class CommonITILObject extends CommonDBTM
     public function getDefaultActor($type)
     {
 
-       /// TODO own_ticket -> own_itilobject
+        /// TODO own_ticket -> own_itilobject
         if ($type == CommonITILActor::ASSIGN) {
             if (Session::haveRight("ticket", Ticket::OWN)) {
                 return Session::getLoginUserID();
@@ -1467,8 +1465,8 @@ abstract class CommonITILObject extends CommonDBTM
                     "$itemtable.status" => array_merge(
                         $this->getSolvedStatusArray(),
                         $this->getClosedStatusArray()
-                    )
-                ]
+                    ),
+                ],
             ] + getEntitiesRestrictCriteria($itemtable)
         );
     }
@@ -1616,7 +1614,7 @@ abstract class CommonITILObject extends CommonDBTM
         $link_classes = [
             Itil_Project::class,
             ITILFollowup::class,
-            ITILSolution::class
+            ITILSolution::class,
         ];
 
         if (is_a($this->grouplinkclass, CommonDBConnexity::class, true)) {
@@ -1643,8 +1641,8 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function handleTemplateFields(array $input)
     {
-       //// check mandatory fields
-       // First get ticket template associated : entity and type/category
+        //// check mandatory fields
+        // First get ticket template associated : entity and type/category
         if (isset($input['entities_id'])) {
             $entid = $input['entities_id'];
         } else {
@@ -1654,7 +1652,7 @@ abstract class CommonITILObject extends CommonDBTM
         $type = null;
         if (isset($input['type'])) {
             $type = $input['type'];
-        } else if (isset($this->fields['type'])) {
+        } elseif (isset($this->fields['type'])) {
             $type = $this->fields['type'];
         }
 
@@ -1678,7 +1676,7 @@ abstract class CommonITILObject extends CommonDBTM
             if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
                 $allowed_fields[] = 'status';
 
-               // probably transfer
+                // probably transfer
                 $allowed_fields[] = 'entities_id';
                 $allowed_fields[] = 'itilcategories_id';
                 $allowed_fields[] = 'locations_id';
@@ -1706,7 +1704,7 @@ abstract class CommonITILObject extends CommonDBTM
                 ) {
                     $allowed_fields[] = 'global_validation';
                 }
-               // Manage assign and steal right
+                // Manage assign and steal right
                 if (static::getType() === Ticket::getType() && Session::haveRightsOr(static::$rightname, [Ticket::ASSIGN, Ticket::STEAL])) {
                     $allowed_fields[] = '_itil_assign';
                     $allowed_fields[] = '_users_id_assign';
@@ -1714,7 +1712,7 @@ abstract class CommonITILObject extends CommonDBTM
                     $allowed_fields[] = '_suppliers_id_assign';
                 }
 
-               // Can only update initial fields if no followup or task already added
+                // Can only update initial fields if no followup or task already added
                 if ($this->canUpdateItem()) {
                     $allowed_fields[] = 'content';
                     $allowed_fields[] = 'urgency';
@@ -1743,7 +1741,7 @@ abstract class CommonITILObject extends CommonDBTM
 
             $input = $ret;
 
-           // Only ID return false
+            // Only ID return false
             if (count($input) == 1) {
                 return false;
             }
@@ -1757,7 +1755,8 @@ abstract class CommonITILObject extends CommonDBTM
             foreach ($tt->mandatory as $key => $val) {
                 if (
                     (!$check_allowed_fields_for_template || in_array($key, $allowed_fields))
-                    && (isset($input[$key])
+                    && (
+                        isset($input[$key])
                     && (empty($input[$key]) || ($input[$key] == 'NULL'))
                     )
                 ) {
@@ -1765,7 +1764,7 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
             if (count($mandatory_missing)) {
-               //TRANS: %s are the fields concerned
+                //TRANS: %s are the fields concerned
                 $message = sprintf(
                     __('Mandatory fields are not filled. Please correct: %s'),
                     implode(", ", $mandatory_missing)
@@ -1785,11 +1784,11 @@ abstract class CommonITILObject extends CommonDBTM
             return false;
         }
 
-       // Add document if needed
+        // Add document if needed
         $this->getFromDB($input["id"]); // entities_id field required
 
         if ($this->getType() !== Ticket::getType()) {
-           //cannot be handled here for tickets. @see Ticket::prepareInputForUpdate()
+            //cannot be handled here for tickets. @see Ticket::prepareInputForUpdate()
             $input = $this->handleTemplateFields($input);
             if ($input === false) {
                 return false;
@@ -1803,7 +1802,7 @@ abstract class CommonITILObject extends CommonDBTM
                 if (
                     $docitem->add(['documents_id' => $input["document"],
                         'itemtype'     => $this->getType(),
-                        'items_id'     => $input["id"]
+                        'items_id'     => $input["id"],
                     ])
                 ) {
                     // Force date_mod of tracking
@@ -1826,7 +1825,7 @@ abstract class CommonITILObject extends CommonDBTM
             unset($input["solvedate"]);
         }
 
-       // "do not compute" flag set by business rules for "takeintoaccount_delay_stat" field
+        // "do not compute" flag set by business rules for "takeintoaccount_delay_stat" field
         $do_not_compute_takeintoaccount = $this->isTakeIntoAccountComputationBlocked($input);
 
         if (isset($input['_itil_requester'])) {
@@ -1935,9 +1934,9 @@ abstract class CommonITILObject extends CommonDBTM
                                 Session::addMessageAfterRedirect(__('Invalid email address'), false, ERROR);
                             }
                             if (
-                                 (isset($input['_itil_observer']['alternative_email'])
-                                 && $input['_itil_observer']['alternative_email'])
-                                 || ($input['_itil_observer']['users_id'] > 0)
+                                (isset($input['_itil_observer']['alternative_email'])
+                                && $input['_itil_observer']['alternative_email'])
+                                || ($input['_itil_observer']['users_id'] > 0)
                             ) {
                                 $useractors = new $this->userlinkclass();
                                 if (
@@ -2083,7 +2082,7 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // set last updater if interactive user
+        // set last updater if interactive user
         if (!Session::isCron()) {
             $input['users_id_lastupdater'] = Session::getLoginUserID();
         }
@@ -2104,7 +2103,7 @@ abstract class CommonITILObject extends CommonDBTM
             $input['closedate'] = 'NULL';
         }
 
-       // Setting a solution type means the ticket is solved
+        // Setting a solution type means the ticket is solved
         if (
             isset($input["solutiontypes_id"])
             && (!isset($input['status']) || !in_array($input["status"], $solvedclosed))
@@ -2116,11 +2115,11 @@ abstract class CommonITILObject extends CommonDBTM
                 'itemtype'           => $this->getType(),
                 'items_id'           => $this->getID(),
                 'solutiontypes_id'   => $input['solutiontypes_id'],
-                'content'            => 'Solved using type ' . $soltype->getName()
+                'content'            => 'Solved using type ' . $soltype->getName(),
             ]);
         }
 
-       // If status changed from pending to anything else, remove pending reason
+        // If status changed from pending to anything else, remove pending reason
         if (
             isset($this->input["status"])
             && $this->input["status"] != self::WAITING
@@ -2160,10 +2159,10 @@ abstract class CommonITILObject extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-       // get again object to reload actors
+        // get again object to reload actors
         $this->loadActors();
 
-       // Check dates change interval due to the fact that second are not displayed in form
+        // Check dates change interval due to the fact that second are not displayed in form
         if (
             (($key = array_search('date', $this->updates)) !== false)
             && (substr($this->fields["date"], 0, 16) === substr($this->oldvalues['date'], 0, 16))
@@ -2207,7 +2206,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $this->updates[]              = "solvedate";
                 $this->oldvalues['solvedate'] = $this->fields["solvedate"];
                 $this->fields["solvedate"]    = $_SESSION["glpi_currenttime"];
-               // If invalid date : set open date
+                // If invalid date : set open date
                 if ($this->fields["solvedate"] < $this->fields["date"]) {
                     $this->fields["solvedate"] = $this->fields["date"];
                 }
@@ -2220,11 +2219,11 @@ abstract class CommonITILObject extends CommonDBTM
                 $this->updates[]              = "closedate";
                 $this->oldvalues['closedate'] = $this->fields["closedate"];
                 $this->fields["closedate"]    = $_SESSION["glpi_currenttime"];
-               // If invalid date : set open date
+                // If invalid date : set open date
                 if ($this->fields["closedate"] < $this->fields["date"]) {
                     $this->fields["closedate"] = $this->fields["date"];
                 }
-               // Set solvedate to closedate
+                // Set solvedate to closedate
                 if (empty($this->fields["solvedate"])) {
                     $this->updates[]              = "solvedate";
                     $this->oldvalues['solvedate'] = $this->fields["solvedate"];
@@ -2233,9 +2232,9 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // check dates
+        // check dates
 
-       // check time_to_resolve (SLA)
+        // check time_to_resolve (SLA)
         if (
             (in_array("date", $this->updates) || in_array("time_to_resolve", $this->updates))
             && !is_null($this->fields["time_to_resolve"])
@@ -2254,7 +2253,7 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // check internal_time_to_resolve (OLA)
+        // check internal_time_to_resolve (OLA)
         if (
             (in_array("date", $this->updates) || in_array("internal_time_to_resolve", $this->updates))
             && !is_null($this->fields["internal_time_to_resolve"])
@@ -2273,13 +2272,13 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // Status close : check dates
+        // Status close : check dates
         if (
             in_array($this->fields["status"], $this->getClosedStatusArray())
             && (in_array("date", $this->updates) || in_array("closedate", $this->updates))
         ) {
-           // Invalid dates : no change
-           // closedate must be > solvedate
+            // Invalid dates : no change
+            // closedate must be > solvedate
             if ($this->fields["closedate"] < $this->fields["solvedate"]) {
                 Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
 
@@ -2289,7 +2288,7 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
 
-           // closedate must be > create date
+            // closedate must be > create date
             if ($this->fields["closedate"] < $this->fields["date"]) {
                 Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
                 if (($key = array_search('date', $this->updates)) !== false) {
@@ -2311,13 +2310,13 @@ abstract class CommonITILObject extends CommonDBTM
             unset($this->oldvalues['status']);
         }
 
-       // Status solved : check dates
+        // Status solved : check dates
         if (
             in_array($this->fields["status"], $this->getSolvedStatusArray())
             && (in_array("date", $this->updates) || in_array("solvedate", $this->updates))
         ) {
-           // Invalid dates : no change
-           // solvedate must be > create date
+            // Invalid dates : no change
+            // solvedate must be > create date
             if ($this->fields["solvedate"] < $this->fields["date"]) {
                 Session::addMessageAfterRedirect(__('Invalid dates. Update cancelled.'), false, ERROR);
 
@@ -2332,31 +2331,31 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // Manage come back to waiting state
+        // Manage come back to waiting state
         if (
             !is_null($this->fields['begin_waiting_date'])
             && ($key = array_search('status', $this->updates)) !== false
             && (
-            $this->oldvalues['status'] == self::WAITING
+                $this->oldvalues['status'] == self::WAITING
             // From solved to another state than closed
             || (
-               in_array($this->oldvalues["status"], $this->getSolvedStatusArray())
+                in_array($this->oldvalues["status"], $this->getSolvedStatusArray())
                && !in_array($this->fields["status"], $this->getClosedStatusArray())
             )
             // From closed to any open state
             || (
-               in_array($this->oldvalues["status"], $this->getClosedStatusArray())
+                in_array($this->oldvalues["status"], $this->getClosedStatusArray())
                && in_array($this->fields["status"], $this->getNotSolvedStatusArray())
             )
             )
         ) {
-           // Compute ticket waiting time use calendar if exists
+            // Compute ticket waiting time use calendar if exists
             $calendar     = new Calendar();
             $calendars_id = $this->getCalendar();
             $delay_time   = 0;
 
-           // Compute ticket waiting time use calendar if exists
-           // Using calendar
+            // Compute ticket waiting time use calendar if exists
+            // Using calendar
             if (
                 ($calendars_id > 0)
                 && $calendar->getFromDB($calendars_id)
@@ -2370,7 +2369,7 @@ abstract class CommonITILObject extends CommonDBTM
                            - strtotime($this->fields['begin_waiting_date']);
             }
 
-           // SLA case : compute sla_ttr duration
+            // SLA case : compute sla_ttr duration
             if (isset($this->fields['slas_id_ttr']) && ($this->fields['slas_id_ttr'] > 0)) {
                 $sla = new SLA();
                 if ($sla->getFromDB($this->fields['slas_id_ttr'])) {
@@ -2383,23 +2382,23 @@ abstract class CommonITILObject extends CommonDBTM
                     $this->fields["sla_waiting_duration"] += $delay_time_sla;
                 }
 
-               // Compute new time_to_resolve
+                // Compute new time_to_resolve
                 $this->updates[]                 = "time_to_resolve";
                 $this->fields['time_to_resolve'] = $sla->computeDate(
                     $this->fields['date'],
                     $this->fields["sla_waiting_duration"]
                 );
-               // Add current level to do
+                // Add current level to do
                 $sla->addLevelToDo($this);
             } else {
-               // Using calendar
+                // Using calendar
                 if (
                     ($calendars_id > 0)
                     && $calendar->getFromDB($calendars_id)
                     && $calendar->hasAWorkingDay()
                 ) {
-                    if ((int)$this->fields['time_to_resolve'] > 0) {
-                       // compute new due date using calendar
+                    if ((int) $this->fields['time_to_resolve'] > 0) {
+                        // compute new due date using calendar
                         $this->updates[]                 = "time_to_resolve";
                         $this->fields['time_to_resolve'] = $calendar->computeEndDate(
                             $this->fields['time_to_resolve'],
@@ -2407,8 +2406,8 @@ abstract class CommonITILObject extends CommonDBTM
                         );
                     }
                 } else { // Not calendar defined
-                    if ((int)$this->fields['time_to_resolve'] > 0) {
-                       // compute new due date : no calendar so add computed delay_time
+                    if ((int) $this->fields['time_to_resolve'] > 0) {
+                        // compute new due date : no calendar so add computed delay_time
                         $this->updates[]                 = "time_to_resolve";
                         $this->fields['time_to_resolve'] = date(
                             'Y-m-d H:i:s',
@@ -2418,7 +2417,7 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
 
-           // OLA case : compute ola_ttr duration
+            // OLA case : compute ola_ttr duration
             if (isset($this->fields['olas_id_ttr']) && ($this->fields['olas_id_ttr'] > 0)) {
                 $ola = new OLA();
                 if ($ola->getFromDB($this->fields['olas_id_ttr'])) {
@@ -2431,24 +2430,24 @@ abstract class CommonITILObject extends CommonDBTM
                     $this->fields["ola_waiting_duration"] += $delay_time_ola;
                 }
 
-               // Compute new internal_time_to_resolve
+                // Compute new internal_time_to_resolve
                 $this->updates[]                          = "internal_time_to_resolve";
                 $this->fields['internal_time_to_resolve'] = $ola->computeDate(
                     $this->fields['ola_ttr_begin_date'],
                     $this->fields["ola_waiting_duration"]
                 );
-               // Add current level to do
+                // Add current level to do
                 $ola->addLevelToDo($this, $this->fields["olalevels_id_ttr"]);
-            } else if (array_key_exists("internal_time_to_resolve", $this->fields)) {
-               // Change doesn't have internal_time_to_resolve
-               // Using calendar
+            } elseif (array_key_exists("internal_time_to_resolve", $this->fields)) {
+                // Change doesn't have internal_time_to_resolve
+                // Using calendar
                 if (
                     ($calendars_id > 0)
                     && $calendar->getFromDB($calendars_id)
                     && $calendar->hasAWorkingDay()
                 ) {
-                    if ((int)$this->fields['internal_time_to_resolve'] > 0) {
-                       // compute new internal_time_to_resolve using calendar
+                    if ((int) $this->fields['internal_time_to_resolve'] > 0) {
+                        // compute new internal_time_to_resolve using calendar
                         $this->updates[]                          = "internal_time_to_resolve";
                         $this->fields['internal_time_to_resolve'] = $calendar->computeEndDate(
                             $this->fields['internal_time_to_resolve'],
@@ -2456,8 +2455,8 @@ abstract class CommonITILObject extends CommonDBTM
                         );
                     }
                 } else { // Not calendar defined
-                    if ((int)$this->fields['internal_time_to_resolve'] > 0) {
-                       // compute new internal_time_to_resolve : no calendar so add computed delay_time
+                    if ((int) $this->fields['internal_time_to_resolve'] > 0) {
+                        // compute new internal_time_to_resolve : no calendar so add computed delay_time
                         $this->updates[]                          = "internal_time_to_resolve";
                         $this->fields['internal_time_to_resolve'] = date(
                             'Y-m-d H:i:s',
@@ -2471,12 +2470,12 @@ abstract class CommonITILObject extends CommonDBTM
             $this->updates[]                   = "waiting_duration";
             $this->fields["waiting_duration"] += $delay_time;
 
-           // Reset begin_waiting_date
+            // Reset begin_waiting_date
             $this->updates[]                    = "begin_waiting_date";
             $this->fields["begin_waiting_date"] = 'NULL';
         }
 
-       // Set begin waiting date if needed
+        // Set begin waiting date if needed
         if (
             (($key = array_search('status', $this->updates)) !== false)
             && (($this->fields['status'] == self::WAITING)
@@ -2485,7 +2484,7 @@ abstract class CommonITILObject extends CommonDBTM
             $this->updates[]                    = "begin_waiting_date";
             $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
 
-           // Specific for tickets
+            // Specific for tickets
             if (isset($this->fields['slas_id_ttr']) && ($this->fields['slas_id_ttr'] > 0)) {
                 SLA::deleteLevelsToDo($this);
             }
@@ -2495,12 +2494,12 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // solve_delay_stat : use delay between opendate and solvedate
+        // solve_delay_stat : use delay between opendate and solvedate
         if (in_array("solvedate", $this->updates)) {
             $this->updates[]                  = "solve_delay_stat";
             $this->fields['solve_delay_stat'] = $this->computeSolveDelayStat();
         }
-       // close_delay_stat : use delay between opendate and closedate
+        // close_delay_stat : use delay between opendate and closedate
         if (in_array("closedate", $this->updates)) {
             $this->updates[]                  = "close_delay_stat";
             $this->fields['close_delay_stat'] = $this->computeCloseDelayStat();
@@ -2512,7 +2511,7 @@ abstract class CommonITILObject extends CommonDBTM
             $this->fields['global_validation'] = $this->getValidationClassInstance()->computeValidationStatus($this);
         }
 
-       //Look for reopening
+        //Look for reopening
         $statuses = array_merge(
             $this->getSolvedStatusArray(),
             $this->getClosedStatusArray()
@@ -2534,18 +2533,18 @@ abstract class CommonITILObject extends CommonDBTM
                 [
                     'status'             => CommonITILValidation::REFUSED,
                     'users_id_approval'  => $users_id_reject,
-                    'date_approval'      => date('Y-m-d H:i:s')
+                    'date_approval'      => date('Y-m-d H:i:s'),
                 ],
                 [
                     'WHERE'  => [
                         'itemtype'  => static::getType(),
-                        'items_id'  => $this->getID()
+                        'items_id'  => $this->getID(),
                     ],
                     'ORDER'  => [
                         'date_creation DESC',
-                        'id DESC'
+                        'id DESC',
                     ],
-                    'LIMIT'  => 1
+                    'LIMIT'  => 1,
                 ]
             );
 
@@ -2555,29 +2554,29 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if (isset($this->input['_accepted'])) {
-           //Mark last solution as approved
+            //Mark last solution as approved
             $DB->update(
                 ITILSolution::getTable(),
                 [
                     'status'             => CommonITILValidation::ACCEPTED,
                     'users_id_approval'  => Session::getLoginUserID(),
-                    'date_approval'      => date('Y-m-d H:i:s')
+                    'date_approval'      => date('Y-m-d H:i:s'),
                 ],
                 [
                     'WHERE'  => [
                         'itemtype'  => static::getType(),
-                        'items_id'  => $this->getID()
+                        'items_id'  => $this->getID(),
                     ],
                     'ORDER'  => [
                         'date_creation DESC',
-                        'id DESC'
+                        'id DESC',
                     ],
-                    'LIMIT'  => 1
+                    'LIMIT'  => 1,
                 ]
             );
         }
 
-       // Do not take into account date_mod if no update is done
+        // Do not take into account date_mod if no update is done
         if (
             (count($this->updates) == 1)
             && (($key = array_search('date_mod', $this->updates)) !== false)
@@ -2598,10 +2597,10 @@ abstract class CommonITILObject extends CommonDBTM
 
         $input = $this->transformActorsInput($input);
 
-       // save value before clean;
+        // save value before clean;
         $title = ltrim($input['name']);
 
-       // Set default status to avoid notice
+        // Set default status to avoid notice
         if (!isset($input["status"])) {
             $input["status"] = self::INCOMING;
         }
@@ -2628,19 +2627,19 @@ abstract class CommonITILObject extends CommonDBTM
             $input["priority"] = $this->computePriority($input["urgency"], $input["impact"]);
         }
 
-       // set last updater if interactive user
+        // set last updater if interactive user
         if (!Session::isCron() && ($last_updater = Session::getLoginUserID(true))) {
             $input['users_id_lastupdater'] = $last_updater;
         }
 
         if (!isset($input['_skip_auto_assign']) || $input['_skip_auto_assign'] === false) {
-           // No Auto set Import for external source
+            // No Auto set Import for external source
             if (
                 ($uid = Session::getLoginUserID())
                 && !isset($input['_auto_import'])
             ) {
                 $input["users_id_recipient"] = $uid;
-            } else if (
+            } elseif (
                 isset($input["_users_id_requester"])
                 && !is_array($input['_users_id_requester'])
                 && !empty($input["_users_id_requester"])
@@ -2650,26 +2649,26 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // No name set name
+        // No name set name
         $input["name"]    = ltrim($input["name"]);
         $input['content'] = ltrim($input['content']);
         if (empty($input["name"])) {
-           // Build name based on content
+            // Build name based on content
 
-           // Unsanitize
+            // Unsanitize
             $content = Sanitizer::unsanitize($input['content']);
 
-           // Get unformatted text
+            // Get unformatted text
             $name = RichText::getTextFromHtml($content, false);
 
-           // Shorten result
+            // Shorten result
             $name = Toolbox::substr(preg_replace('/\s{2,}/', ' ', $name), 0, 70);
 
-           // Sanitize result
+            // Sanitize result
             $input['name'] = Sanitizer::sanitize($name);
         }
 
-       // Set default dropdown
+        // Set default dropdown
         $dropdown_fields = ['entities_id', 'itilcategories_id'];
         foreach ($dropdown_fields as $field) {
             if (!isset($input[$field])) {
@@ -2679,7 +2678,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $input = $this->computeDefaultValuesForAdd($input);
 
-       // Do not check mandatory on auto import (mailgates)
+        // Do not check mandatory on auto import (mailgates)
         $key = $this->getTemplateFormFieldName();
         if (!isset($input['_auto_import'])) {
             if (isset($input[$key]) && $input[$key]) {
@@ -2690,13 +2689,13 @@ abstract class CommonITILObject extends CommonDBTM
                         $mandatory_missing = [];
                         $fieldsname        = $tt->getAllowedFieldsNames(true);
                         foreach ($tt->mandatory as $key => $val) {
-                             // for title if mandatory (restore initial value)
+                            // for title if mandatory (restore initial value)
                             if ($key == 'name') {
                                 $input['name']                     = $title;
                             }
-                             // Check only defined values : Not defined not in form
+                            // Check only defined values : Not defined not in form
                             if (isset($input[$key])) {
-                             // If content is also predefined need to be different from predefined value
+                                // If content is also predefined need to be different from predefined value
                                 if (
                                     ($key == 'content')
                                     && isset($tt->predefined['content'])
@@ -2708,7 +2707,7 @@ abstract class CommonITILObject extends CommonDBTM
                                     $predefined_content = Sanitizer::encodeHtmlSpecialChars(
                                         Sanitizer::decodeHtmlSpecialChars($tt->predefined['content'])
                                     );
-                                 // Clean new lines to be fix encoding
+                                    // Clean new lines to be fix encoding
                                     if (
                                         strcmp(
                                             preg_replace(
@@ -2728,7 +2727,7 @@ abstract class CommonITILObject extends CommonDBTM
                                             false,
                                             ERROR
                                         );
-                                           $mandatory_missing[$key] = $fieldsname[$val];
+                                        $mandatory_missing[$key] = $fieldsname[$val];
                                     }
                                 }
 
@@ -2751,29 +2750,29 @@ abstract class CommonITILObject extends CommonDBTM
                             }
 
                             if (static::getType() === Ticket::getType()) {
-                               // For time_to_resolve and time_to_own : check also slas
-                               // For internal_time_to_resolve and internal_time_to_own : check also olas
+                                // For time_to_resolve and time_to_own : check also slas
+                                // For internal_time_to_resolve and internal_time_to_own : check also olas
                                 foreach ([SLM::TTR, SLM::TTO] as $slmType) {
-                                    list($dateField, $slaField) = SLA::getFieldNames($slmType);
+                                    [$dateField, $slaField] = SLA::getFieldNames($slmType);
                                     if (
                                         ($key == $dateField)
                                         && isset($input[$slaField]) && ($input[$slaField] > 0)
                                         && isset($mandatory_missing[$dateField])
                                     ) {
-                                          unset($mandatory_missing[$dateField]);
+                                        unset($mandatory_missing[$dateField]);
                                     }
-                                    list($dateField, $olaField) = OLA::getFieldNames($slmType);
+                                    [$dateField, $olaField] = OLA::getFieldNames($slmType);
                                     if (
                                         ($key == $dateField)
                                         && isset($input[$olaField]) && ($input[$olaField] > 0)
                                         && isset($mandatory_missing[$dateField])
                                     ) {
-                                          unset($mandatory_missing[$dateField]);
+                                        unset($mandatory_missing[$dateField]);
                                     }
                                 }
                             }
 
-                          // For document mandatory
+                            // For document mandatory
                             if (
                                 ($key == '_documents_id')
                                 && !isset($input['_filename'])
@@ -2788,7 +2787,7 @@ abstract class CommonITILObject extends CommonDBTM
                         }
 
                         if (count($mandatory_missing)) {
-                           //TRANS: %s are the fields concerned
+                            //TRANS: %s are the fields concerned
                             $message = sprintf(
                                 __('Mandatory fields are not filled. Please correct: %s'),
                                 implode(", ", $mandatory_missing)
@@ -2884,7 +2883,7 @@ abstract class CommonITILObject extends CommonDBTM
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
-       // Add default document if set in template
+        // Add default document if set in template
         if (
             isset($this->input['_documents_id'])
             && is_array($this->input['_documents_id'])
@@ -2895,7 +2894,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $docitem->add(['documents_id' => $docID,
                     '_do_notif'    => false,
                     'itemtype'     => $this->getType(),
-                    'items_id'     => $this->fields['id']
+                    'items_id'     => $this->fields['id'],
                 ]);
             }
         }
@@ -2975,7 +2974,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (isset($CFG_GLPI[static::MATRIX_FIELD][$urgency][$impact])) {
             return $CFG_GLPI[static::MATRIX_FIELD][$urgency][$impact];
         }
-       // Failback to trivial
+        // Failback to trivial
         return round(($urgency + $impact) / 2);
     }
 
@@ -3154,7 +3153,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 1:
                 return _x('priority', 'Very low');
 
-           // No standard one :
+                // No standard one :
             case 0:
                 return _x('priority', 'All');
             case -1:
@@ -3169,7 +3168,7 @@ abstract class CommonITILObject extends CommonDBTM
                 return _x('priority', 'At least very high');
 
             default:
-               // Return $value if not define
+                // Return $value if not define
                 return $value;
         }
     }
@@ -3277,7 +3276,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 1:
                 return _x('urgency', 'Very low');
 
-           // No standard one :
+                // No standard one :
             case 0:
                 return _x('urgency', 'All');
             case -1:
@@ -3292,7 +3291,7 @@ abstract class CommonITILObject extends CommonDBTM
                 return _x('urgency', 'At least very high');
 
             default:
-               // Return $value if not define
+                // Return $value if not define
                 return $value;
         }
     }
@@ -3400,7 +3399,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 1:
                 return _x('impact', 'Very low');
 
-           // No standard one :
+                // No standard one :
             case 0:
                 return _x('impact', 'All');
             case -1:
@@ -3415,7 +3414,7 @@ abstract class CommonITILObject extends CommonDBTM
                 return _x('impact', 'At least very high');
 
             default:
-               // Return $value if not define
+                // Return $value if not define
                 return $value;
         }
     }
@@ -3431,7 +3430,7 @@ abstract class CommonITILObject extends CommonDBTM
     public static function getAllStatusArray($withmetaforsearch = false)
     {
 
-       // To be overridden by class
+        // To be overridden by class
         $tab = [];
 
         return $tab;
@@ -3448,7 +3447,7 @@ abstract class CommonITILObject extends CommonDBTM
     public static function getClosedStatusArray()
     {
 
-       // To be overridden by class
+        // To be overridden by class
         $tab = [];
         return $tab;
     }
@@ -3464,7 +3463,7 @@ abstract class CommonITILObject extends CommonDBTM
     public static function getSolvedStatusArray()
     {
 
-       // To be overridden by class
+        // To be overridden by class
         $tab = [];
         return $tab;
     }
@@ -3505,7 +3504,7 @@ abstract class CommonITILObject extends CommonDBTM
     public static function getNewStatusArray()
     {
 
-       // To be overriden by class
+        // To be overriden by class
         $tab = [];
         return $tab;
     }
@@ -3526,7 +3525,7 @@ abstract class CommonITILObject extends CommonDBTM
     public static function getProcessStatus()
     {
 
-       // To be overridden by class
+        // To be overridden by class
         $tab = [];
         return $tab;
     }
@@ -3734,8 +3733,8 @@ abstract class CommonITILObject extends CommonDBTM
     {
 
         $tab  = static::getAllStatusArray(true);
-       // Return $value if not defined
-        return (isset($tab[$value]) ? $tab[$value] : $value);
+        // Return $value if not defined
+        return ($tab[$value] ?? $value);
     }
 
 
@@ -3874,7 +3873,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $types            = [0                          => Dropdown::EMPTY_VALUE,
                     CommonITILActor::REQUESTER => _n('Requester', 'Requesters', 1),
                     CommonITILActor::OBSERVER  => _n('Watcher', 'Watchers', 1),
-                    CommonITILActor::ASSIGN    => __('Assigned to')
+                    CommonITILActor::ASSIGN    => __('Assigned to'),
                 ];
                 $rand             = Dropdown::showFromArray('actortype', $types);
 
@@ -3894,7 +3893,7 @@ abstract class CommonITILObject extends CommonDBTM
                 echo "<br><br>";
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
-            return true;
+                return true;
         }
         return parent::showMassiveActionsSubForm($ma);
     }
@@ -3953,8 +3952,8 @@ abstract class CommonITILObject extends CommonDBTM
                         $linkclass = new $item->supplierlinkclass();
                         foreach ($linkclass->getActors($id) as $users) {
                             foreach ($users as $data) {
-                                 $data['use_notification'] = $input['use_notification'];
-                                 $linkclass->update($data);
+                                $data['use_notification'] = $input['use_notification'];
+                                $linkclass->update($data);
                             }
                         }
 
@@ -3982,7 +3981,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'taskcategories_id' => $input['taskcategories_id'],
                             'actiontime'        => $input['actiontime'],
                             'state'             => $input['state'],
-                            'content'           => $input['content']
+                            'content'           => $input['content'],
                         ];
                         if (
                             $task->can(-1, CREATE, $input2)
@@ -4024,7 +4023,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -4035,7 +4034,7 @@ abstract class CommonITILObject extends CommonDBTM
             'datatype'           => 'itemlink',
             'searchtype'         => 'contains',
             'massiveaction'      => false,
-            'additionalfields'   => ['id', 'status']
+            'additionalfields'   => ['id', 'status'],
         ];
 
         $tab[] = [
@@ -4045,7 +4044,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => __('Description'),
             'massiveaction'      => false,
             'datatype'           => 'text',
-            'htmltext'           => true
+            'htmltext'           => true,
         ];
 
         $tab[] = [
@@ -4054,7 +4053,7 @@ abstract class CommonITILObject extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -4063,7 +4062,7 @@ abstract class CommonITILObject extends CommonDBTM
             'field'              => 'status',
             'name'               => __('Status'),
             'searchtype'         => 'equals',
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -4072,7 +4071,7 @@ abstract class CommonITILObject extends CommonDBTM
             'field'              => 'urgency',
             'name'               => __('Urgency'),
             'searchtype'         => 'equals',
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -4081,7 +4080,7 @@ abstract class CommonITILObject extends CommonDBTM
             'field'              => 'impact',
             'name'               => __('Impact'),
             'searchtype'         => 'equals',
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -4090,7 +4089,7 @@ abstract class CommonITILObject extends CommonDBTM
             'field'              => 'priority',
             'name'               => __('Priority'),
             'searchtype'         => 'equals',
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -4099,7 +4098,7 @@ abstract class CommonITILObject extends CommonDBTM
             'field'              => 'date',
             'name'               => __('Opening date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -4108,7 +4107,7 @@ abstract class CommonITILObject extends CommonDBTM
             'field'              => 'closedate',
             'name'               => __('Closing date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -4119,7 +4118,7 @@ abstract class CommonITILObject extends CommonDBTM
             'datatype'           => 'datetime',
             'maybefuture'        => true,
             'massiveaction'      => false,
-            'additionalfields'   => ['solvedate', 'status']
+            'additionalfields'   => ['solvedate', 'status'],
         ];
 
         $tab[] = [
@@ -4139,7 +4138,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => __('Time to resolve exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
-            'computation'        => self::generateSLAOLAComputation('time_to_resolve')
+            'computation'        => self::generateSLAOLAComputation('time_to_resolve'),
         ];
 
         $tab[] = [
@@ -4148,7 +4147,7 @@ abstract class CommonITILObject extends CommonDBTM
             'field'              => 'solvedate',
             'name'               => __('Resolution date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -4157,7 +4156,7 @@ abstract class CommonITILObject extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $newtab = [
@@ -4165,7 +4164,7 @@ abstract class CommonITILObject extends CommonDBTM
             'table'              => 'glpi_itilcategories',
             'field'              => 'completename',
             'name'               => _n('Category', 'Categories', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         if (
@@ -4182,7 +4181,7 @@ abstract class CommonITILObject extends CommonDBTM
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -4192,7 +4191,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => __('Total duration'),
             'datatype'           => 'timestamp',
             'massiveaction'      => false,
-            'nosearch'           => true
+            'nosearch'           => true,
         ];
 
         $newtab = [
@@ -4203,23 +4202,23 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => __('Last edit by'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
-       // Filter search fields for helpdesk
+        // Filter search fields for helpdesk
         if (
             !Session::isCron() // no filter for cron
             && Session::getCurrentInterface() != 'central'
         ) {
-           // last updater no search
+            // last updater no search
             $newtab['nosearch'] = true;
         }
         $tab[] = $newtab;
 
-       // add objectlock search options
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
-       // For ITIL template
+        // For ITIL template
         $tab[] = [
             'id'                 => '142',
             'table'              => 'glpi_documents',
@@ -4236,10 +4235,10 @@ abstract class CommonITILObject extends CommonDBTM
                 'beforejoin'         => [
                     'table'              => 'glpi_documents_items',
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -4255,15 +4254,15 @@ abstract class CommonITILObject extends CommonDBTM
                 'beforejoin'         => [
                     'table'              => PendingReason_Item::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         $location_so = Location::rawSearchOptionsToAdd();
         foreach ($location_so as &$so) {
-           //duplicated search options :(
+            //duplicated search options :(
             switch ($so['id']) {
                 case 3:
                     $so['id'] = 83;
@@ -4299,7 +4298,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'solution',
-            'name'               => ITILSolution::getTypeName(1)
+            'name'               => ITILSolution::getTypeName(1),
         ];
 
         $tab[] = [
@@ -4315,9 +4314,9 @@ abstract class CommonITILObject extends CommonDBTM
                     'table'              => ITILSolution::getTable(),
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -4330,8 +4329,8 @@ abstract class CommonITILObject extends CommonDBTM
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -4345,8 +4344,8 @@ abstract class CommonITILObject extends CommonDBTM
             'massiveaction'       => false,
             'forcegroupby'        => true,
             'joinparams'          => [
-                'jointype' => 'itemtype_item'
-            ]
+                'jointype' => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -4361,21 +4360,21 @@ abstract class CommonITILObject extends CommonDBTM
             'forcegroupby'        => true,
             'joinparams'          => [
                 'jointype'  => 'itemtype_item',
-            // Get only last created solution
+                // Get only last created solution
                 'condition' => [
                     'NEWTABLE.id'  => ['=', new QuerySubQuery([
                         'SELECT' => 'id',
                         'FROM'   => ITILSolution::getTable(),
                         'WHERE'  => [
                             ITILSolution::getTable() . '.items_id' => new QueryExpression($DB->quoteName('REFTABLE.id')),
-                            ITILSolution::getTable() . '.itemtype' => static::getType()
+                            ITILSolution::getTable() . '.itemtype' => static::getType(),
                         ],
                         'ORDER'  => ITILSolution::getTable() . '.id DESC',
-                        'LIMIT'  => 1
-                    ])
-                    ]
-                ]
-            ]
+                        'LIMIT'  => 1,
+                    ]),
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -4390,7 +4389,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'jointype'           => 'itemtype_item',
             ],
             'computation' => 'MAX( ' . $DB->quoteName('TABLE.date_creation') . ')',
-            'nometa'             => true // cannot GROUP_CONCAT a MAX
+            'nometa'             => true, // cannot GROUP_CONCAT a MAX
         ];
 
         return $tab;
@@ -4403,7 +4402,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'stats',
-            'name'               => __('Statistics')
+            'name'               => __('Statistics'),
         ];
 
         $tab[] = [
@@ -4413,7 +4412,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => __('Resolution time'),
             'datatype'           => 'timestamp',
             'forcegroupby'       => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -4423,7 +4422,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => __('Closing time'),
             'datatype'           => 'timestamp',
             'forcegroupby'       => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -4433,7 +4432,7 @@ abstract class CommonITILObject extends CommonDBTM
             'name'               => __('Waiting time'),
             'datatype'           => 'timestamp',
             'forcegroupby'       => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -4446,7 +4445,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'requester',
-            'name'               => _n('Requester', 'Requesters', 1)
+            'name'               => _n('Requester', 'Requesters', 1),
         ];
 
         $newtab = [
@@ -4464,10 +4463,10 @@ abstract class CommonITILObject extends CommonDBTM
                     'table'              => getTableForItemType($this->userlinkclass),
                     'joinparams'         => [
                         'jointype'           => 'child',
-                        'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
-                    ]
-                ]
-            ]
+                        'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER],
+                    ],
+                ],
+            ],
         ];
 
         if (
@@ -4493,10 +4492,10 @@ abstract class CommonITILObject extends CommonDBTM
                     'table'              => getTableForItemType($this->grouplinkclass),
                     'joinparams'         => [
                         'jointype'           => 'child',
-                        'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
-                    ]
-                ]
-            ]
+                        'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER],
+                    ],
+                ],
+            ],
         ];
 
         if (
@@ -4517,7 +4516,7 @@ abstract class CommonITILObject extends CommonDBTM
             'datatype'           => 'dropdown',
             'right'              => 'all',
             'linkfield'          => 'users_id_recipient',
-            'name'               => __('Writer')
+            'name'               => __('Writer'),
         ];
 
         if (
@@ -4530,7 +4529,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'observer',
-            'name'               => _n('Watcher', 'Watchers', 1)
+            'name'               => _n('Watcher', 'Watchers', 1),
         ];
 
         $tab[] = [
@@ -4548,10 +4547,10 @@ abstract class CommonITILObject extends CommonDBTM
                     'table'              => getTableForItemType($this->userlinkclass),
                     'joinparams'         => [
                         'jointype'           => 'child',
-                        'condition'          => ['NEWTABLE.type' => CommonITILActor::OBSERVER]
-                    ]
-                ]
-            ]
+                        'condition'          => ['NEWTABLE.type' => CommonITILActor::OBSERVER],
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -4569,15 +4568,15 @@ abstract class CommonITILObject extends CommonDBTM
                     'table'              => getTableForItemType($this->grouplinkclass),
                     'joinparams'         => [
                         'jointype'           => 'child',
-                        'condition'          => ['NEWTABLE.type' => CommonITILActor::OBSERVER]
-                    ]
-                ]
-            ]
+                        'condition'          => ['NEWTABLE.type' => CommonITILActor::OBSERVER],
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
             'id'                 => 'assign',
-            'name'               => __('Assigned to')
+            'name'               => __('Assigned to'),
         ];
 
         $tab[] = [
@@ -4595,10 +4594,10 @@ abstract class CommonITILObject extends CommonDBTM
                     'table'              => getTableForItemType($this->userlinkclass),
                     'joinparams'         => [
                         'jointype'           => 'child',
-                        'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
-                    ]
-                ]
-            ]
+                        'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN],
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -4615,10 +4614,10 @@ abstract class CommonITILObject extends CommonDBTM
                     'table'              => getTableForItemType($this->supplierlinkclass),
                     'joinparams'         => [
                         'jointype'           => 'child',
-                        'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
-                    ]
-                ]
-            ]
+                        'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN],
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -4636,15 +4635,15 @@ abstract class CommonITILObject extends CommonDBTM
                     'table'              => getTableForItemType($this->grouplinkclass),
                     'joinparams'         => [
                         'jointype'           => 'child',
-                        'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN]
-                    ]
-                ]
-            ]
+                        'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN],
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
             'id'                 => 'notification',
-            'name'               => _n('Notification', 'Notifications', Session::getPluralNumber())
+            'name'               => _n('Notification', 'Notifications', Session::getPluralNumber()),
         ];
 
         $tab[] = [
@@ -4656,8 +4655,8 @@ abstract class CommonITILObject extends CommonDBTM
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
-            ]
+                'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER],
+            ],
         ];
 
         $tab[] = [
@@ -4669,8 +4668,8 @@ abstract class CommonITILObject extends CommonDBTM
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER]
-            ]
+                'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER],
+            ],
         ];
 
         return $tab;
@@ -4696,7 +4695,7 @@ abstract class CommonITILObject extends CommonDBTM
                  OR (' . $DB->quoteName($table . '.takeintoaccount_delay_stat') . ' = 0
                       AND ' . $DB->quoteName($table . '.' . $type) . ' < NOW())),
             1, 0)';
-            break;
+                break;
 
             case 'internal_time_to_resolve':
             case 'time_to_resolve':
@@ -4706,7 +4705,7 @@ abstract class CommonITILObject extends CommonDBTM
                   OR (' . $DB->quoteName($table . '.solvedate') . ' IS NULL
                      AND ' . $DB->quoteName($table . '.' . $type) . ' < NOW())),
             1, 0)';
-            break;
+                break;
         }
     }
 
@@ -4935,7 +4934,7 @@ abstract class CommonITILObject extends CommonDBTM
             'allow_email'     => (($type == CommonITILActor::OBSERVER)
                                             || $type == CommonITILActor::REQUESTER),
             'entity_restrict' => $entities_id,
-            'use_notif'       => Entity::getUsedConfig('is_notif_enable_default', $entities_id, '', 1)
+            'use_notif'       => Entity::getUsedConfig('is_notif_enable_default', $entities_id, '', 1),
         ];
 
         Ajax::updateItemOnSelectEvent(
@@ -4969,7 +4968,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $itemtype = $this->getType();
 
-       // For ticket templates : mandatories
+        // For ticket templates : mandatories
         $key = $this->getTemplateFormFieldName();
         if (isset($options[$key])) {
             $tt = $options[$key];
@@ -5001,7 +5000,7 @@ abstract class CommonITILObject extends CommonDBTM
             'entity' => Session::getMatchingActiveEntities($options['entities_id'] ?? $options['entity_restrict']),
         ];
 
-       //only for active ldap and corresponding right
+        //only for active ldap and corresponding right
         $ldap_methods = getAllDataFromTable('glpi_authldaps', ['is_active' => 1]);
         if (
             count($ldap_methods)
@@ -5031,7 +5030,7 @@ abstract class CommonITILObject extends CommonDBTM
                 '_user_index'      => $params['_user_index'],
                 'allow_email'      => $type == CommonITILActor::REQUESTER
                                || $type == CommonITILActor::OBSERVER,
-                'use_notification' => $options["_users_id_" . $typename . "_notif"]['use_notification']
+                'use_notification' => $options["_users_id_" . $typename . "_notif"]['use_notification'],
             ];
             if (isset($options["_users_id_" . $typename . "_notif"]['alternative_email'])) {
                 $paramscomment['alternative_email']
@@ -5041,7 +5040,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'value_fieldname' => 'value',
                 'to_update'       => "notif_" . $typename . "_$rand",
                 'url'             => $CFG_GLPI["root_doc"] . "/ajax/uemailUpdate.php",
-                'moreparams'      => $paramscomment
+                'moreparams'      => $paramscomment,
             ];
         }
 
@@ -5057,17 +5056,17 @@ abstract class CommonITILObject extends CommonDBTM
                 'value_fieldname' => 'value',
                 'to_update'       => "countassign_$rand",
                 'url'             => $CFG_GLPI["root_doc"] . "/ajax/actorinformation.php",
-                'moreparams'      => ['users_id_assign' => '__VALUE__']
+                'moreparams'      => ['users_id_assign' => '__VALUE__'],
             ];
             $params['toupdate'] = $toupdate;
         }
 
-       // List all users in the active entities
+        // List all users in the active entities
         echo "<div class='text-nowrap'>";
         User::dropdown($params);
 
         if ($itemtype == 'Ticket') {
-           // display opened tickets for user
+            // display opened tickets for user
             if (
                 ($type == CommonITILActor::REQUESTER)
                 && ($options["_users_id_" . $typename] > 0)
@@ -5101,8 +5100,8 @@ abstract class CommonITILObject extends CommonDBTM
         echo "</div>";
 
         if ($itemtype == 'Ticket') {
-           // Display active tickets for a tech
-           // Need to update information on dropdown changes
+            // Display active tickets for a tech
+            // Need to update information on dropdown changes
             if ($type == CommonITILActor::ASSIGN) {
                 echo "<span id='countassign_$rand'>";
                 echo "</span>";
@@ -5194,7 +5193,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'parent' => $item,
                 'entity' => $item->getEntityID(),
                 'noform' => true,
-                'nokb'   => true
+                'nokb'   => true,
             ]
         );
     }
@@ -5213,13 +5212,13 @@ abstract class CommonITILObject extends CommonDBTM
         global $DB;
 
         if ($this->getFromDB($ID)) {
-           // Force date mod and lastupdater
+            // Force date mod and lastupdater
             $update = ['date_mod' => $_SESSION['glpi_currenttime']];
 
-           // set last updater if interactive user
+            // set last updater if interactive user
             if (!Session::isCron()) {
                 $update['users_id_lastupdater'] = Session::getLoginUserID();
-            } else if ($users_id_lastupdater > 0) {
+            } elseif ($users_id_lastupdater > 0) {
                 $update['users_id_lastupdater'] = $users_id_lastupdater;
             }
 
@@ -5250,7 +5249,7 @@ abstract class CommonITILObject extends CommonDBTM
         $result = $DB->request([
             'SELECT' => ['SUM' => 'actiontime as sumtime'],
             'FROM'   => $tasktable,
-            'WHERE'  => [$this->getForeignKeyField() => $ID]
+            'WHERE'  => [$this->getForeignKeyField() => $ID],
         ])->current();
         $sum = $result['sumtime'];
         if (!is_null($sum)) {
@@ -5260,10 +5259,10 @@ abstract class CommonITILObject extends CommonDBTM
         $result = $DB->update(
             $this->getTable(),
             [
-                'actiontime' => $tot
+                'actiontime' => $tot,
             ],
             [
-                'id' => $ID
+                'id' => $ID,
             ]
         );
         return $result;
@@ -5281,11 +5280,11 @@ abstract class CommonITILObject extends CommonDBTM
          */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
-       /// TODO ticket_types -> itil_types
+        /// TODO ticket_types -> itil_types
 
         $types = [];
         $ptypes = [];
-       //Types of the plugins (keep the plugin hook for right check)
+        //Types of the plugins (keep the plugin hook for right check)
         if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
             foreach (array_keys($PLUGIN_HOOKS['assign_to_ticket']) as $plugin) {
                 if (!Plugin::isPluginActive($plugin)) {
@@ -5295,7 +5294,7 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
         asort($ptypes);
-       //Types of the core (after the plugin for robustness)
+        //Types of the core (after the plugin for robustness)
         foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
                 if (
@@ -5309,7 +5308,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
         asort($types); // core type first... asort could be better ?
 
-       // Drop not available plugins
+        // Drop not available plugins
         foreach (array_keys($ptypes) as $itemtype) {
             if (
                 !isset($_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
@@ -5355,7 +5354,7 @@ abstract class CommonITILObject extends CommonDBTM
             $calendars_id = $this->getCalendar();
             $calendar     = new Calendar();
 
-           // Using calendar
+            // Using calendar
             if (
                 ($calendars_id > 0)
                 && $calendar->getFromDB($calendars_id)
@@ -5366,7 +5365,7 @@ abstract class CommonITILObject extends CommonDBTM
                 )
                                                             - $this->fields["waiting_duration"]);
             }
-           // Not calendar defined
+            // Not calendar defined
             return max(0, strtotime($this->fields['solvedate']) - strtotime($this->fields['date'])
                        - $this->fields["waiting_duration"]);
         }
@@ -5388,7 +5387,7 @@ abstract class CommonITILObject extends CommonDBTM
             $calendars_id = $this->getCalendar();
             $calendar     = new Calendar();
 
-           // Using calendar
+            // Using calendar
             if (
                 ($calendars_id > 0)
                 && $calendar->getFromDB($calendars_id)
@@ -5399,7 +5398,7 @@ abstract class CommonITILObject extends CommonDBTM
                 )
                                                              - $this->fields["waiting_duration"]);
             }
-           // Not calendar defined
+            // Not calendar defined
             return max(0, strtotime($this->fields['closedate']) - strtotime($this->fields['date'])
                        - $this->fields["waiting_duration"]);
         }
@@ -5516,7 +5515,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'glpi_users.id AS users_id',
                 'glpi_users.name AS name',
                 'glpi_users.realname AS realname',
-                'glpi_users.firstname AS firstname'
+                'glpi_users.firstname AS firstname',
             ],
             'DISTINCT' => true,
             'FROM'            => $ctable,
@@ -5526,28 +5525,28 @@ abstract class CommonITILObject extends CommonDBTM
                         $linktable  => $this->getForeignKeyField(),
                         $ctable     => 'id', [
                             'AND' => [
-                                "$linktable.type"    => CommonITILActor::REQUESTER
-                            ]
-                        ]
-                    ]
-                ]
+                                "$linktable.type"    => CommonITILActor::REQUESTER,
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'INNER JOIN'      => [
                 'glpi_users'   => [
                     'ON' => [
                         $linktable     => 'users_id',
-                        'glpi_users'   => 'id'
-                    ]
-                ]
+                        'glpi_users'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                "$ctable.is_deleted" => 0
+                "$ctable.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($ctable),
             'ORDERBY'         => [
                 'realname',
                 'firstname',
-                'name'
-            ]
+                'name',
+            ],
         ];
 
         if (!empty($date1) || !empty($date2)) {
@@ -5555,7 +5554,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'OR' => [
                     getDateCriteria("$ctable.date", $date1, $date2),
                     getDateCriteria("$ctable.closedate", $date1, $date2),
-                ]
+                ],
             ];
         }
 
@@ -5570,7 +5569,7 @@ abstract class CommonITILObject extends CommonDBTM
                     $line['realname'],
                     $line['firstname'],
                     1
-                )
+                ),
             ];
         }
         return $tab;
@@ -5595,7 +5594,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'glpi_users.id AS user_id',
                 'glpi_users.name AS name',
                 'glpi_users.realname AS realname',
-                'glpi_users.firstname AS firstname'
+                'glpi_users.firstname AS firstname',
             ],
             'DISTINCT'        => true,
             'FROM'            => $ctable,
@@ -5603,18 +5602,18 @@ abstract class CommonITILObject extends CommonDBTM
                 'glpi_users'   => [
                     'ON' => [
                         $ctable        => 'users_id_recipient',
-                        'glpi_users'   => 'id'
-                    ]
-                ]
+                        'glpi_users'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                "$ctable.is_deleted" => 0
+                "$ctable.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($ctable),
             'ORDERBY'         => [
                 'realname',
                 'firstname',
-                'name'
-            ]
+                'name',
+            ],
         ];
 
         if (!empty($date1) || !empty($date2)) {
@@ -5622,7 +5621,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'OR' => [
                     getDateCriteria("$ctable.date", $date1, $date2),
                     getDateCriteria("$ctable.closedate", $date1, $date2),
-                ]
+                ],
             ];
         }
 
@@ -5638,7 +5637,7 @@ abstract class CommonITILObject extends CommonDBTM
                     $line['realname'],
                     $line['firstname'],
                     1
-                )
+                ),
             ];
         }
         return $tab;
@@ -5664,7 +5663,7 @@ abstract class CommonITILObject extends CommonDBTM
         $criteria = [
             'SELECT' => [
                 'glpi_groups.id',
-                'glpi_groups.completename'
+                'glpi_groups.completename',
             ],
             'DISTINCT'        => true,
             'FROM'            => $ctable,
@@ -5674,26 +5673,26 @@ abstract class CommonITILObject extends CommonDBTM
                         $linktable  => $this->getForeignKeyField(),
                         $ctable     => 'id', [
                             'AND' => [
-                                "$linktable.type"    => CommonITILActor::REQUESTER
-                            ]
-                        ]
-                    ]
-                ]
+                                "$linktable.type"    => CommonITILActor::REQUESTER,
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'INNER JOIN'      => [
                 'glpi_groups'   => [
                     'ON' => [
                         $linktable     => 'groups_id',
-                        'glpi_groups'   => 'id'
-                    ]
-                ]
+                        'glpi_groups'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                "$ctable.is_deleted" => 0
+                "$ctable.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($ctable),
             'ORDERBY'         => [
-                'glpi_groups.completename'
-            ]
+                'glpi_groups.completename',
+            ],
         ];
 
         if (!empty($date1) || !empty($date2)) {
@@ -5701,7 +5700,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'OR' => [
                     getDateCriteria("$ctable.date", $date1, $date2),
                     getDateCriteria("$ctable.closedate", $date1, $date2),
-                ]
+                ],
             ];
         }
 
@@ -5751,30 +5750,30 @@ abstract class CommonITILObject extends CommonDBTM
                 $linktable  => [
                     'ON' => [
                         $linktable  => $this->getForeignKeyField(),
-                        $ctable     => 'id'
-                    ]
+                        $ctable     => 'id',
+                    ],
                 ],
                 'glpi_users'   => [
                     'ON' => [
                         $linktable     => 'users_id',
-                        'glpi_users'   => 'id'
-                    ]
-                ]
+                        'glpi_users'   => 'id',
+                    ],
+                ],
             ],
             'LEFT JOIN'       => [
                 $table         => [
                     'ON' => [
                         'glpi_users'   => $field,
-                        $table         => 'id'
-                    ]
-                ]
+                        $table         => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                "$ctable.is_deleted" => 0
+                "$ctable.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($ctable),
             'ORDERBY'         => [
-                "glpi_users.$field"
-            ]
+                "glpi_users.$field",
+            ],
         ];
 
         if (!empty($date1) || !empty($date2)) {
@@ -5782,7 +5781,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'OR' => [
                     getDateCriteria("$ctable.date", $date1, $date2),
                     getDateCriteria("$ctable.closedate", $date1, $date2),
-                ]
+                ],
             ];
         }
 
@@ -5817,9 +5816,9 @@ abstract class CommonITILObject extends CommonDBTM
             'DISTINCT'        => true,
             'FROM'            => $ctable,
             'WHERE'           => [
-                "$ctable.is_deleted" => 0
+                "$ctable.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($ctable),
-            'ORDERBY'         => 'priority'
+            'ORDERBY'         => 'priority',
         ];
 
         if (!empty($date1) || !empty($date2)) {
@@ -5827,7 +5826,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'OR' => [
                     getDateCriteria("$ctable.date", $date1, $date2),
                     getDateCriteria("$ctable.closedate", $date1, $date2),
-                ]
+                ],
             ];
         }
 
@@ -5862,9 +5861,9 @@ abstract class CommonITILObject extends CommonDBTM
             'DISTINCT'        => true,
             'FROM'            => $ctable,
             'WHERE'           => [
-                "$ctable.is_deleted" => 0
+                "$ctable.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($ctable),
-            'ORDERBY'         => 'urgency'
+            'ORDERBY'         => 'urgency',
         ];
 
         if (!empty($date1) || !empty($date2)) {
@@ -5872,7 +5871,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'OR' => [
                     getDateCriteria("$ctable.date", $date1, $date2),
                     getDateCriteria("$ctable.closedate", $date1, $date2),
-                ]
+                ],
             ];
         }
 
@@ -5908,9 +5907,9 @@ abstract class CommonITILObject extends CommonDBTM
             'DISTINCT'        => true,
             'FROM'            => $ctable,
             'WHERE'           => [
-                "$ctable.is_deleted" => 0
+                "$ctable.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($ctable),
-            'ORDERBY'         => 'impact'
+            'ORDERBY'         => 'impact',
         ];
 
         if (!empty($date1) || !empty($date2)) {
@@ -5918,7 +5917,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'OR' => [
                     getDateCriteria("$ctable.date", $date1, $date2),
                     getDateCriteria("$ctable.closedate", $date1, $date2),
-                ]
+                ],
             ];
         }
 
@@ -5954,9 +5953,9 @@ abstract class CommonITILObject extends CommonDBTM
             'DISTINCT'        => true,
             'FROM'            => $ctable,
             'WHERE'           => [
-                "$ctable.is_deleted" => 0
+                "$ctable.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($ctable),
-            'ORDERBY'         => 'requesttypes_id'
+            'ORDERBY'         => 'requesttypes_id',
         ];
 
         if (!empty($date1) || !empty($date2)) {
@@ -5964,7 +5963,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'OR' => [
                     getDateCriteria("$ctable.date", $date1, $date2),
                     getDateCriteria("$ctable.closedate", $date1, $date2),
-                ]
+                ],
             ];
         }
 
@@ -6002,15 +6001,15 @@ abstract class CommonITILObject extends CommonDBTM
                 $ctable   => [
                     'ON' => [
                         ITILSolution::getTable()   => 'items_id',
-                        $ctable                    => 'id'
-                    ]
-                ]
+                        $ctable                    => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
                 ITILSolution::getTable() . ".itemtype" => $this->getType(),
-                "$ctable.is_deleted"                   => 0
+                "$ctable.is_deleted"                   => 0,
             ] + getEntitiesRestrictCriteria($ctable),
-            'ORDERBY'         => 'solutiontypes_id'
+            'ORDERBY'         => 'solutiontypes_id',
         ];
 
         if (!empty($date1) || !empty($date2)) {
@@ -6018,7 +6017,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'OR' => [
                     getDateCriteria("$ctable.date", $date1, $date2),
                     getDateCriteria("$ctable.closedate", $date1, $date2),
-                ]
+                ],
             ];
         }
 
@@ -6056,7 +6055,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'glpi_users.id AS users_id',
                 'glpi_users.name AS name',
                 'glpi_users.realname AS realname',
-                'glpi_users.firstname AS firstname'
+                'glpi_users.firstname AS firstname',
             ],
             'DISTINCT'        => true,
             'FROM'            => $ctable,
@@ -6066,26 +6065,26 @@ abstract class CommonITILObject extends CommonDBTM
                         $linktable  => $this->getForeignKeyField(),
                         $ctable     => 'id', [
                             'AND' => [
-                                "$linktable.type"    => CommonITILActor::ASSIGN
-                            ]
-                        ]
-                    ]
+                                "$linktable.type"    => CommonITILActor::ASSIGN,
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_users'   => [
                     'ON' => [
                         $linktable     => 'users_id',
-                        'glpi_users'   => 'id'
-                    ]
-                ]
+                        'glpi_users'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                "$ctable.is_deleted" => 0
+                "$ctable.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($ctable),
             'ORDERBY'         => [
                 'realname',
                 'firstname',
-                'name'
-            ]
+                'name',
+            ],
         ];
 
         if (!empty($date1) || !empty($date2)) {
@@ -6093,7 +6092,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'OR' => [
                     getDateCriteria("$ctable.date", $date1, $date2),
                     getDateCriteria("$ctable.closedate", $date1, $date2),
-                ]
+                ],
             ];
         }
 
@@ -6131,7 +6130,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'glpi_users.id AS users_id',
                 'glpi_users.name AS name',
                 'glpi_users.realname AS realname',
-                'glpi_users.firstname AS firstname'
+                'glpi_users.firstname AS firstname',
             ],
             'DISTINCT' => true,
             'FROM'            => $ctable,
@@ -6139,46 +6138,46 @@ abstract class CommonITILObject extends CommonDBTM
                 $linktable  => [
                     'ON' => [
                         $linktable  => $this->getForeignKeyField(),
-                        $ctable     => 'id'
-                    ]
+                        $ctable     => 'id',
+                    ],
                 ],
                 'glpi_users'   => [
                     'ON' => [
                         $linktable     => 'users_id',
-                        'glpi_users'   => 'id'
-                    ]
+                        'glpi_users'   => 'id',
+                    ],
                 ],
                 'glpi_profiles_users'   => [
                     'ON' => [
                         'glpi_users'            => 'id',
-                        'glpi_profiles_users'   => 'users_id'
-                    ]
+                        'glpi_profiles_users'   => 'users_id',
+                    ],
                 ],
                 'glpi_profiles'         => [
                     'ON' => [
                         'glpi_profiles'         => 'id',
-                        'glpi_profiles_users'   => 'profiles_id'
-                    ]
+                        'glpi_profiles_users'   => 'profiles_id',
+                    ],
                 ],
                 'glpi_profilerights'    => [
                     'ON' => [
                         'glpi_profiles'      => 'id',
-                        'glpi_profilerights' => 'profiles_id'
-                    ]
-                ]
+                        'glpi_profilerights' => 'profiles_id',
+                    ],
+                ],
             ],
             'WHERE'           => [
                 "$ctable.is_deleted"          => 0,
                 'glpi_profilerights.name'     => 'ticket',
                 'glpi_profilerights.rights'   => ['&', Ticket::OWN],
                 "$linktable.users_id"         => ['<>', 0],
-                ['NOT'                        => ["$linktable.users_id" => null]]
+                ['NOT'                        => ["$linktable.users_id" => null]],
             ] + getEntitiesRestrictCriteria($ctable),
             'ORDERBY'         => [
                 'realname',
                 'firstname',
-                'name'
-            ]
+                'name',
+            ],
         ];
 
         if (!empty($date1) || !empty($date2)) {
@@ -6186,7 +6185,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'OR' => [
                     getDateCriteria("$ctable.date", $date1, $date2),
                     getDateCriteria("$ctable.closedate", $date1, $date2),
-                ]
+                ],
             ];
         }
 
@@ -6222,7 +6221,7 @@ abstract class CommonITILObject extends CommonDBTM
         $criteria = [
             'SELECT'          => [
                 'glpi_suppliers.id AS suppliers_id_assign',
-                'glpi_suppliers.name AS name'
+                'glpi_suppliers.name AS name',
             ],
             'DISTINCT'        => true,
             'FROM'            => $ctable,
@@ -6232,24 +6231,24 @@ abstract class CommonITILObject extends CommonDBTM
                         $linktable  => $this->getForeignKeyField(),
                         $ctable     => 'id', [
                             'AND' => [
-                                "$linktable.type"    => CommonITILActor::ASSIGN
-                            ]
-                        ]
-                    ]
+                                "$linktable.type"    => CommonITILActor::ASSIGN,
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_suppliers'  => [
                     'ON' => [
                         $linktable        => 'suppliers_id',
-                        'glpi_suppliers'  => 'id'
-                    ]
-                ]
+                        'glpi_suppliers'  => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                "$ctable.is_deleted" => 0
+                "$ctable.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($ctable),
             'ORDERBY'         => [
-                'name'
-            ]
+                'name',
+            ],
         ];
 
         if (!empty($date1) || !empty($date2)) {
@@ -6257,7 +6256,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'OR' => [
                     getDateCriteria("$ctable.date", $date1, $date2),
                     getDateCriteria("$ctable.closedate", $date1, $date2),
-                ]
+                ],
             ];
         }
 
@@ -6292,7 +6291,7 @@ abstract class CommonITILObject extends CommonDBTM
         $criteria = [
             'SELECT' => [
                 'glpi_groups.id',
-                'glpi_groups.completename'
+                'glpi_groups.completename',
             ],
             'DISTINCT'        => true,
             'FROM'            => $ctable,
@@ -6302,24 +6301,24 @@ abstract class CommonITILObject extends CommonDBTM
                         $linktable  => $this->getForeignKeyField(),
                         $ctable     => 'id', [
                             'AND' => [
-                                "$linktable.type"    => CommonITILActor::ASSIGN
-                            ]
-                        ]
-                    ]
+                                "$linktable.type"    => CommonITILActor::ASSIGN,
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_groups'   => [
                     'ON' => [
                         $linktable     => 'groups_id',
-                        'glpi_groups'   => 'id'
-                    ]
-                ]
+                        'glpi_groups'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                "$ctable.is_deleted" => 0
+                "$ctable.is_deleted" => 0,
             ] + getEntitiesRestrictCriteria($ctable),
             'ORDERBY'         => [
-                'glpi_groups.completename'
-            ]
+                'glpi_groups.completename',
+            ],
         ];
 
         if (!empty($date1) || !empty($date2)) {
@@ -6327,7 +6326,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'OR' => [
                     getDateCriteria("$ctable.date", $date1, $date2),
                     getDateCriteria("$ctable.closedate", $date1, $date2),
-                ]
+                ],
             ];
         }
 
@@ -6379,12 +6378,12 @@ abstract class CommonITILObject extends CommonDBTM
 
         $rand = mt_rand();
 
-       /// TODO to be cleaned. Get datas and clean display links
+        /// TODO to be cleaned. Get datas and clean display links
 
-       // Prints a job in short form
-       // Should be called in a <table>-segment
-       // Print links or not in case of user view
-       // Make new job object and fill it from database, if success, print it
+        // Prints a job in short form
+        // Should be called in a <table>-segment
+        // Print links or not in case of user view
+        // Make new job object and fill it from database, if success, print it
         $item         = new static();
 
         $candelete   = static::canDelete();
@@ -6430,7 +6429,7 @@ abstract class CommonITILObject extends CommonDBTM
                         RichText::getEnhancedHtml($item->fields['content']),
                         ['display' => false,
                             'applyto' => $item->getType() . $item->fields["id"] .
-                        $rand
+                        $rand,
                         ]
                     )
                 );
@@ -6453,19 +6452,19 @@ abstract class CommonITILObject extends CommonDBTM
                     ($p['output_type'] == Search::HTML_OUTPUT ? '<br>' : '') .
                     Html::convDateTime($item->fields['closedate'])
                 );
-            } else if ($item->fields['status'] == static::SOLVED) {
+            } elseif ($item->fields['status'] == static::SOLVED) {
                 $fourth_col = sprintf(
                     __('Solved on %s'),
                     ($p['output_type'] == Search::HTML_OUTPUT ? '<br>' : '') .
                     Html::convDateTime($item->fields['solvedate'])
                 );
-            } else if ($item->fields['begin_waiting_date']) {
+            } elseif ($item->fields['begin_waiting_date']) {
                 $fourth_col = sprintf(
                     __('Put on hold on %s'),
                     ($p['output_type'] == Search::HTML_OUTPUT ? '<br>' : '') .
                     Html::convDateTime($item->fields['begin_waiting_date'])
                 );
-            } else if ($item->fields['time_to_resolve']) {
+            } elseif ($item->fields['time_to_resolve']) {
                 $fourth_col = sprintf(
                     __('%1$s: %2$s'),
                     __('Time to resolve'),
@@ -6481,11 +6480,11 @@ abstract class CommonITILObject extends CommonDBTM
             }
             echo Search::showItem($p['output_type'], $fourth_col, $item_num, $p['row_num'], $align . " width=130");
 
-           // fifth column
+            // fifth column
             $fifth_col = Html::convDateTime($item->fields["date_mod"]);
             echo Search::showItem($p['output_type'], $fifth_col, $item_num, $p['row_num'], $align . " width=90");
 
-           // sixth column
+            // sixth column
             if (count($_SESSION["glpiactiveentities"]) > 1) {
                 $sixth_col = Dropdown::getDropdownName('glpi_entities', $item->fields['entities_id']);
                 echo Search::showItem(
@@ -6497,7 +6496,7 @@ abstract class CommonITILObject extends CommonDBTM
                 );
             }
 
-           // seventh Column
+            // seventh Column
             echo Search::showItem(
                 $p['output_type'],
                 "<span class='b'>" . static::getPriorityName($item->fields["priority"]) . "</span>",
@@ -6506,7 +6505,7 @@ abstract class CommonITILObject extends CommonDBTM
                 "$align bgcolor='$bgcolor'"
             );
 
-           // eighth Column
+            // eighth Column
             $eighth_col = "";
             foreach ($item->getUsers(CommonITILActor::REQUESTER) as $d) {
                 $userdata    = getUserName($d["users_id"], 2);
@@ -6516,11 +6515,11 @@ abstract class CommonITILObject extends CommonDBTM
                     Html::showToolTip(
                         $userdata["comment"],
                         ['link'    => $userdata["link"],
-                            'display' => false
+                            'display' => false,
                         ]
                     )
                 );
-                 $eighth_col .= "<br>";
+                $eighth_col .= "<br>";
             }
 
             foreach ($item->getGroups(CommonITILActor::REQUESTER) as $d) {
@@ -6549,7 +6548,7 @@ abstract class CommonITILObject extends CommonDBTM
                         Html::showToolTip(
                             $userdata["comment"],
                             ['link'    => $userdata["link"],
-                                'display' => false
+                                'display' => false,
                             ]
                         )
                     );
@@ -6577,8 +6576,8 @@ abstract class CommonITILObject extends CommonDBTM
 
 
             if (!$p['ticket_stats']) {
-               // tenth Colum
-               // Ticket : simple link to item
+                // tenth Colum
+                // Ticket : simple link to item
                 $tenth_col  = "";
                 $is_deleted = false;
                 $item_ticket = new Item_Ticket();
@@ -6590,10 +6589,10 @@ abstract class CommonITILObject extends CommonDBTM
                             if (!empty($val["itemtype"]) && ($val["items_id"] > 0)) {
                                 if ($object = getItemForItemtype($val["itemtype"])) {
                                     if ($object->getFromDB($val["items_id"])) {
-                                         $is_deleted = $object->isDeleted();
+                                        $is_deleted = $object->isDeleted();
 
-                                         $tenth_col .= $object->getTypeName();
-                                         $tenth_col .= " - <span class='b'>";
+                                        $tenth_col .= $object->getTypeName();
+                                        $tenth_col .= " - <span class='b'>";
                                         if ($item->canView()) {
                                             $tenth_col .= $object->getLink();
                                         } else {
@@ -6611,7 +6610,7 @@ abstract class CommonITILObject extends CommonDBTM
                     echo Search::showItem($p['output_type'], $tenth_col, $item_num, $p['row_num'], ($is_deleted ? " class='center deleted' " : $align));
                 }
 
-               // Seventh column
+                // Seventh column
                 echo Search::showItem(
                     $p['output_type'],
                     "<span class='b'>" .
@@ -6625,7 +6624,7 @@ abstract class CommonITILObject extends CommonDBTM
                     $align
                 );
 
-               //eleventh column
+                //eleventh column
                 $eleventh_column  = '';
                 $planned_infos = '';
 
@@ -6655,11 +6654,11 @@ abstract class CommonITILObject extends CommonDBTM
                             Html::convDateTime($plan['end'])
                         );
                         if ($plan['users_id_tech']) {
-                                  $planned_infos .= sprintf(
-                                      __('By %s') .
-                                                ($p['output_type'] == Search::HTML_OUTPUT ? '<br>' : ''),
-                                      getUserName($plan['users_id_tech'])
-                                  );
+                            $planned_infos .= sprintf(
+                                __('By %s') .
+                                          ($p['output_type'] == Search::HTML_OUTPUT ? '<br>' : ''),
+                                getUserName($plan['users_id_tech'])
+                            );
                         }
                         $planned_infos .= "<br>";
                     }
@@ -6678,7 +6677,7 @@ abstract class CommonITILObject extends CommonDBTM
                             ['display' => false,
                                 'applyto' => $item->getType() .
                                                                               $item->fields["id"] .
-                            "planning" . $rand
+                            "planning" . $rand,
                             ]
                         )
                     );
@@ -6695,14 +6694,14 @@ abstract class CommonITILObject extends CommonDBTM
                 echo Search::showItem($p['output_type'], $second_column, $item_num, $p['row_num'], $align_desc . " width='200'");
 
                 $takeintoaccountdelay_column = "";
-               // Show only for tickets taken into account
+                // Show only for tickets taken into account
                 if ($item->fields['takeintoaccount_delay_stat'] > 0) {
                     $takeintoaccountdelay_column = Html::timestampToString($item->fields['takeintoaccount_delay_stat']);
                 }
                 echo Search::showItem($p['output_type'], $takeintoaccountdelay_column, $item_num, $p['row_num'], $align_desc . " width='150'");
 
                 $solvedelay_column = "";
-               // Show only for solved tickets
+                // Show only for solved tickets
                 if ($item->fields['solve_delay_stat'] > 0) {
                     $solvedelay_column = Html::timestampToString($item->fields['solve_delay_stat']);
                 }
@@ -6712,7 +6711,7 @@ abstract class CommonITILObject extends CommonDBTM
                 echo Search::showItem($p['output_type'], $waiting_duration_column, $item_num, $p['row_num'], $align_desc . " width='150'");
             }
 
-           // Finish Line
+            // Finish Line
             echo Search::showEndLine($p['output_type']);
         } else {
             echo "<tr class='tab_bg_2'>";
@@ -6731,9 +6730,9 @@ abstract class CommonITILObject extends CommonDBTM
     ) {
         $ticket_stats = $params['ticket_stats'] ?? false;
 
-       // New Line for Header Items Line
+        // New Line for Header Items Line
         echo Search::showNewLine($output_type);
-       // $show_sort if
+        // $show_sort if
         $header_num                      = 1;
 
         $items                           = [];
@@ -6770,7 +6769,7 @@ abstract class CommonITILObject extends CommonDBTM
             echo Search::showHeaderItem($output_type, $key, $header_num, $link);
         }
 
-       // End Line for column headers
+        // End Line for column headers
         echo Search::showEndLine($output_type);
     }
 
@@ -6807,21 +6806,21 @@ abstract class CommonITILObject extends CommonDBTM
         $itilobject->fields['id'] = $items_id;
         $actors = $itilobject->getITILActors();
 
-       // 1) rule for followups, documents, tasks and validations:
-       //    Matrix for position of timeline objects
-       //    R O A (R=Requester, O=Observer, A=AssignedTo)
-       //    0 0 0 -> depending on the interface: central -> right, helpdesk -> left
-       //    0 0 1 -> Right
-       //    0 1 0 -> Left
-       //    0 1 1 -> R
-       //    1 0 0 -> L
-       //    1 0 1 -> L
-       //    1 1 0 -> L
-       //    1 1 1 -> L
-       //    if users_id is not in the actor list, then pos is left
-       // 2) rule for solutions: always on the right side
+        // 1) rule for followups, documents, tasks and validations:
+        //    Matrix for position of timeline objects
+        //    R O A (R=Requester, O=Observer, A=AssignedTo)
+        //    0 0 0 -> depending on the interface: central -> right, helpdesk -> left
+        //    0 0 1 -> Right
+        //    0 1 0 -> Left
+        //    0 1 1 -> R
+        //    1 0 0 -> L
+        //    1 0 1 -> L
+        //    1 1 0 -> L
+        //    1 1 1 -> L
+        //    if users_id is not in the actor list, then pos is left
+        // 2) rule for solutions: always on the right side
 
-       // default position is left
+        // default position is left
         $pos = self::TIMELINE_LEFT;
 
         $pos_matrix = [];
@@ -6897,7 +6896,7 @@ abstract class CommonITILObject extends CommonDBTM
             'short_label'   => _x('button', 'Answer'),
             'template'      => 'components/itilobject/timeline/form_followup.html.twig',
             'item'          => $fup,
-            'hide_in_menu'  => !$canadd_fup
+            'hide_in_menu'  => !$canadd_fup,
         ];
         $itemtypes['task'] = [
             'type'          => 'ITILTask',
@@ -6907,7 +6906,7 @@ abstract class CommonITILObject extends CommonDBTM
             'short_label'   => _x('button', 'Task'),
             'template'      => 'components/itilobject/timeline/form_task.html.twig',
             'item'          => $task,
-            'hide_in_menu'  => !$canadd_task
+            'hide_in_menu'  => !$canadd_task,
         ];
         $itemtypes['solution'] = [
             'type'          => 'ITILSolution',
@@ -6917,7 +6916,7 @@ abstract class CommonITILObject extends CommonDBTM
             'short_label'   => _x('button', 'Solution'),
             'template'      => 'components/itilobject/timeline/form_solution.html.twig',
             'item'          => new ITILSolution(),
-            'hide_in_menu'  => !$canadd_solution
+            'hide_in_menu'  => !$canadd_solution,
         ];
         $itemtypes['document'] = [
             'type'          => 'Document_Item',
@@ -6927,7 +6926,7 @@ abstract class CommonITILObject extends CommonDBTM
             'short_label'   => _x('button', 'Document'),
             'template'      => 'components/itilobject/timeline/form_document_item.html.twig',
             'item'          => new Document_Item(),
-            'hide_in_menu'  => !$canadd_document
+            'hide_in_menu'  => !$canadd_document,
         ];
         if ($validation !== null) {
             $itemtypes['validation'] = [
@@ -6938,7 +6937,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'short_label'   => _x('button', 'Validation'),
                 'template'      => 'components/itilobject/timeline/form_validation.html.twig',
                 'item'          => $validation,
-                'hide_in_menu'  => !$canadd_validation
+                'hide_in_menu'  => !$canadd_validation,
             ];
         }
 
@@ -6985,7 +6984,7 @@ abstract class CommonITILObject extends CommonDBTM
         ob_start();
         Plugin::doHook(Hooks::TIMELINE_ACTIONS, [
             'rand'   => mt_rand(),
-            'item'   => $this
+            'item'   => $this,
         ]);
         $legacy_actions .= ob_get_clean() ?? '';
 
@@ -7053,7 +7052,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $canupdate_parent = $this->canUpdateItem() && !in_array($this->fields['status'], $this->getClosedStatusArray());
 
-       //checks rights
+        //checks rights
         $restrict_fup = $restrict_task = [];
         if (
             $params['hide_private_items']
@@ -7068,8 +7067,8 @@ abstract class CommonITILObject extends CommonDBTM
                 $restrict_fup = [
                     'OR' => [
                         'is_private' => 0,
-                        'users_id'   => Session::getCurrentInterface() === "central" ? (int)Session::getLoginUserID() : 0,
-                    ]
+                        'users_id'   => Session::getCurrentInterface() === "central" ? (int) Session::getLoginUserID() : 0,
+                    ],
                 ];
             }
         }
@@ -7095,9 +7094,9 @@ abstract class CommonITILObject extends CommonDBTM
                 $restrict_task = [
                     'OR' => [
                         'is_private' => 0,
-                        'users_id'   => Session::getCurrentInterface() === "central" ? (int)Session::getLoginUserID() : 0,
-                        'users_id_tech' => Session::getCurrentInterface() === "central" ? (int)Session::getLoginUserID() : 0,
-                    ]
+                        'users_id'   => Session::getCurrentInterface() === "central" ? (int) Session::getLoginUserID() : 0,
+                        'users_id_tech' => Session::getCurrentInterface() === "central" ? (int) Session::getLoginUserID() : 0,
+                    ],
                 ];
             }
         }
@@ -7128,7 +7127,7 @@ abstract class CommonITILObject extends CommonDBTM
                         'type'     => ITILFollowup::class,
                         'item'     => $followup_row,
                         'object'   => $followup,
-                        'itiltype' => 'Followup'
+                        'itiltype' => 'Followup',
                     ];
                 }
             }
@@ -7158,7 +7157,7 @@ abstract class CommonITILObject extends CommonDBTM
                         'type'     => $taskClass,
                         'item'     => $task_row,
                         'object'   => $task,
-                        'itiltype' => 'Task'
+                        'itiltype' => 'Task',
                     ];
                 }
             }
@@ -7168,7 +7167,7 @@ abstract class CommonITILObject extends CommonDBTM
         $solution_obj   = new ITILSolution();
         $solution_items = $solution_obj->find([
             'itemtype'  => static::getType(),
-            'items_id'  => $this->getID()
+            'items_id'  => $this->getID(),
         ]);
 
         foreach ($solution_items as $solution_item) {
@@ -7194,7 +7193,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'date_mod'           => $solution_item['date_mod'],
                     'users_id_approval'  => $solution_item['users_id_approval'],
                     'date_approval'      => $solution_item['date_approval'],
-                    'status'             => $solution_item['status']
+                    'status'             => $solution_item['status'],
                 ],
                 'object' => $solution,
             ];
@@ -7208,7 +7207,7 @@ abstract class CommonITILObject extends CommonDBTM
         ) {
             $valitation_obj = new $validation_class();
             $validations = $valitation_obj->find([
-                $foreignKey => $this->getID()
+                $foreignKey => $this->getID(),
             ]);
 
             foreach ($validations as $validations_id => $validation_row) {
@@ -7237,13 +7236,13 @@ abstract class CommonITILObject extends CommonDBTM
                         'can_edit'  => $canedit,
                         'can_answer'   => $cananswer,
                         'users_id_validate'  => $validation_row['users_id_validate'],
-                        'timeline_position' => $validation_row['timeline_position']
+                        'timeline_position' => $validation_row['timeline_position'],
                     ],
                     'itiltype' => 'Validation',
                     'class'    => 'validation-request ' .
-                    ($validation_row['status'] == CommonITILValidation::WAITING  ? "validation-waiting"  : "") .
+                    ($validation_row['status'] == CommonITILValidation::WAITING ? "validation-waiting" : "") .
                     ($validation_row['status'] == CommonITILValidation::ACCEPTED ? "validation-accepted" : "") .
-                    ($validation_row['status'] == CommonITILValidation::REFUSED  ? "validation-refused"  : ""),
+                    ($validation_row['status'] == CommonITILValidation::REFUSED ? "validation-refused" : ""),
                     'item_action' => 'validation-request',
                     'object'      => $validation,
                 ];
@@ -7277,7 +7276,7 @@ abstract class CommonITILObject extends CommonDBTM
             $document_obj      = new Document();
             $document_items    = $document_item_obj->find([
                 $this->getAssociatedDocumentsCriteria(!$params['check_view_rights']),
-                'timeline_position'  => ['>', self::NO_TIMELINE]
+                'timeline_position'  => ['>', self::NO_TIMELINE],
             ]);
             foreach ($document_items as $document_item) {
                 if (!$document_obj->getFromDB($document_item['documents_id'])) {
@@ -7299,14 +7298,14 @@ abstract class CommonITILObject extends CommonDBTM
 
                 $timeline_key = $document_item['itemtype'] . "_" . $document_item['items_id'];
                 if ($document_item['itemtype'] == static::getType()) {
-                  // document associated directly to itilobject
+                    // document associated directly to itilobject
                     $timeline["Document_" . $document_item['documents_id']] = [
                         'type' => 'Document_Item',
                         'item' => $item,
                         'object' => $document_obj,
                     ];
                 } elseif (isset($timeline[$timeline_key])) {
-                 // document associated to a sub item of itilobject
+                    // document associated to a sub item of itilobject
                     if (!isset($timeline[$timeline_key]['documents'])) {
                         $timeline[$timeline_key]['documents'] = [];
                     }
@@ -7328,12 +7327,12 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Add logs to timeline
         if ($params['with_logs'] && Session::getCurrentInterface() == "central") {
-           //add logs to timeline
+            //add logs to timeline
             $log_items = Log::getHistoryData($this, 0, 0, [
                 'OR' => [
                     'id_search_option' => ['>', 0],
                     'itemtype_link'    => ['User', 'Group', 'Supplier'],
-                ]
+                ],
             ]);
 
             foreach ($log_items as $log_row) {
@@ -7395,9 +7394,9 @@ abstract class CommonITILObject extends CommonDBTM
 
         if ($item instanceof Document_Item) {
             Document_Item::showAddFormForItem($params['parent'], '');
-        } else if ($item->getType() == $params['parent']->getType()) {
+        } elseif ($item->getType() == $params['parent']->getType()) {
             return self::showEditDescriptionForm($params['parent']);
-        } else if (
+        } elseif (
             method_exists($item, "showForm")
                  && $item->can(-1, CREATE, $params)
         ) {
@@ -7449,55 +7448,55 @@ abstract class CommonITILObject extends CommonDBTM
         $subquery1 = new \QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
-                'tu.type AS type'
+                'tu.type AS type',
             ],
             'FROM'      => "$users_table AS tu",
             'LEFT JOIN' => [
                 User::getTable() . ' AS usr' => [
                     'ON' => [
                         'tu'  => 'users_id',
-                        'usr' => 'id'
-                    ]
-                ]
+                        'usr' => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                "tu.$fk" => $this->getID()
-            ]
+                "tu.$fk" => $this->getID(),
+            ],
         ]);
 
         $subquery2 = new \QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
-                'gt.type AS type'
+                'gt.type AS type',
             ],
             'FROM'      => "$groups_table AS gt",
             'LEFT JOIN' => [
                 Group_User::getTable() . ' AS gu'   => [
                     'ON' => [
                         'gu'  => 'groups_id',
-                        'gt'  => 'groups_id'
-                    ]
+                        'gt'  => 'groups_id',
+                    ],
                 ],
                 User::getTable() . ' AS usr'        => [
                     'ON' => [
                         'gu'  => 'users_id',
-                        'usr' => 'id'
-                    ]
-                ]
+                        'usr' => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                "gt.$fk" => $this->getID()
-            ]
+                "gt.$fk" => $this->getID(),
+            ],
         ]);
 
         $union = new \QueryUnion([$subquery1, $subquery2], false, 'allactors');
         $iterator = $DB->request([
             'SELECT'          => [
                 'users_id',
-                'type'
+                'type',
             ],
             'DISTINCT'        => true,
-            'FROM'            => $union
+            'FROM'            => $union,
         ]);
 
         $users_keys = [];
@@ -7526,14 +7525,14 @@ abstract class CommonITILObject extends CommonDBTM
             $RESTRICT['is_private'] = 0;
         }
 
-       // Set number of followups
+        // Set number of followups
         $result = $DB->request([
             'COUNT'  => 'cpt',
             'FROM'   => 'glpi_itilfollowups',
             'WHERE'  => [
                 'itemtype'  => $this->getType(),
-                'items_id'  => $this->fields['id']
-            ] + $RESTRICT
+                'items_id'  => $this->fields['id'],
+            ] + $RESTRICT,
         ])->current();
 
         return $result['cpt'];
@@ -7555,19 +7554,19 @@ abstract class CommonITILObject extends CommonDBTM
 
         $RESTRICT = [];
         if ($with_private !== true && $this->getType() == 'Ticket') {
-           //No private tasks for Problems and Changes
+            //No private tasks for Problems and Changes
             $RESTRICT['is_private'] = 0;
         }
 
-       // Set number of tasks
+        // Set number of tasks
         $row = $DB->request([
             'COUNT'  => 'cpt',
             'FROM'   => $table,
             'WHERE'  => [
-                $this->getForeignKeyField()   => $this->fields['id']
-            ] + $RESTRICT
+                $this->getForeignKeyField()   => $this->fields['id'],
+            ] + $RESTRICT,
         ])->current();
-        return (int)$row['cpt'];
+        return (int) $row['cpt'];
     }
 
     /**
@@ -7678,13 +7677,13 @@ abstract class CommonITILObject extends CommonDBTM
         if (!$type && $this->getType() != Ticket::getType()) {
             $type = true;
         }
-       // Load template if available :
+        // Load template if available :
         $tplclass = static::getTemplateClass();
         $tt              = new $tplclass();
         $template_loaded = false;
 
         if ($force_template) {
-           // with type and categ
+            // with type and categ
             if ($tt->getFromDBWithData($force_template, true)) {
                 $template_loaded = true;
             }
@@ -7708,21 +7707,21 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // If template loaded from type and category do not check after
+        // If template loaded from type and category do not check after
         if ($template_loaded) {
             return $tt;
         }
 
-       //Get template from profile
+        //Get template from profile
         if (!$template_loaded && $type) {
             $field = $this->getTemplateFieldName($type);
             $field = str_replace(['_incident', '_demand'], ['', ''], $field);
-           // load default profile one if not already loaded
+            // load default profile one if not already loaded
             if (
                 isset($_SESSION['glpiactiveprofile'][$field])
                 && $_SESSION['glpiactiveprofile'][$field]
             ) {
-               // with type and categ
+                // with type and categ
                 if (
                     $tt->getFromDBWithData(
                         $_SESSION['glpiactiveprofile'][$field],
@@ -7734,12 +7733,12 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       //Get template from entity
+        //Get template from entity
         if (
             !$template_loaded
             && ($entities_id >= 0)
         ) {
-           // load default entity one if not already loaded
+            // load default entity one if not already loaded
             $template_id = Entity::getUsedConfig(
                 strtolower($this->getType()) . 'templates_strategy',
                 $entities_id,
@@ -7751,11 +7750,11 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // Check if profile / entity set type and category and try to load template for these values
+        // Check if profile / entity set type and category and try to load template for these values
         if ($template_loaded) { // template loaded for profile or entity
             $newtype              = $type;
             $newitilcategories_id = $itilcategories_id;
-           // Get predefined values for ticket template
+            // Get predefined values for ticket template
             if (isset($tt->predefined['itilcategories_id']) && $tt->predefined['itilcategories_id']) {
                 $newitilcategories_id = $tt->predefined['itilcategories_id'];
             }
@@ -7803,7 +7802,7 @@ abstract class CommonITILObject extends CommonDBTM
                     break;
 
                 case true:
-                   //for changes and problem, or from profiles
+                    //for changes and problem, or from profiles
                     break;
 
                 default:
@@ -7872,7 +7871,7 @@ abstract class CommonITILObject extends CommonDBTM
         $criteria = [
             'SELECT'          => [
                 "$table.*",
-                'glpi_itilcategories.completename AS catname'
+                'glpi_itilcategories.completename AS catname',
             ],
             'DISTINCT'        => true,
             'FROM'            => $table,
@@ -7880,48 +7879,48 @@ abstract class CommonITILObject extends CommonDBTM
                 $gtable  => [
                     'ON' => [
                         $table   => 'id',
-                        $gtable  => $fk
-                    ]
+                        $gtable  => $fk,
+                    ],
                 ],
                 $utable  => [
                     'ON' => [
                         $table   => 'id',
-                        $utable  => $fk
-                    ]
+                        $utable  => $fk,
+                    ],
                 ],
                 $stable  => [
                     'ON' => [
                         $table   => 'id',
-                        $stable  => $fk
-                    ]
+                        $stable  => $fk,
+                    ],
                 ],
                 'glpi_itilcategories'      => [
                     'ON' => [
                         $table                  => 'itilcategories_id',
-                        'glpi_itilcategories'   => 'id'
-                    ]
+                        'glpi_itilcategories'   => 'id',
+                    ],
                 ],
                 $itable  => [
                     'ON' => [
                         $table   => 'id',
-                        $itable  => $fk
-                    ]
-                ]
+                        $itable  => $fk,
+                    ],
+                ],
             ],
-            'ORDERBY'            => "$table.date_mod DESC"
+            'ORDERBY'            => "$table.date_mod DESC",
         ];
         if (count($_SESSION["glpiactiveentities"]) > 1) {
             $criteria['LEFT JOIN']['glpi_entities'] = [
                 'ON' => [
                     'glpi_entities'   => 'id',
-                    $table            => 'entities_id'
-                ]
+                    $table            => 'entities_id',
+                ],
             ];
             $criteria['SELECT'] = array_merge(
                 $criteria['SELECT'],
                 [
                     'glpi_entities.completename AS entityname',
-                    "$table.entities_id AS entityID"
+                    "$table.entities_id AS entityID",
                 ]
             );
         }
@@ -7933,7 +7932,7 @@ abstract class CommonITILObject extends CommonDBTM
         $excluded = parent::getForbiddenSingleMassiveActions();
 
         if (isset($this->fields['global_validation']) && $this->fields['global_validation'] != CommonITILValidation::NONE) {
-           //a validation has already been requested/done
+            //a validation has already been requested/done
             $excluded[] = 'TicketValidation:submit_validation';
         }
 
@@ -7956,14 +7955,14 @@ abstract class CommonITILObject extends CommonDBTM
         global $DB; // Used to get subquery results - better performance
 
         $or_crits = [
-         // documents associated to ITIL item directly
+            // documents associated to ITIL item directly
             [
                 Document_Item::getTableField('itemtype') => $this->getType(),
                 Document_Item::getTableField('items_id') => $this->getID(),
             ],
         ];
 
-       // documents associated to followups
+        // documents associated to followups
         if ($bypass_rights || ITILFollowup::canView()) {
             $fup_crits = [
                 ITILFollowup::getTableField('itemtype') => $this->getType(),
@@ -7989,7 +7988,7 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // documents associated to solutions
+        // documents associated to solutions
         if ($bypass_rights || ITILSolution::canView()) {
             // Run the subquery separately. It's better for huge databases
             $iterator_tmp = $DB->request([
@@ -8009,10 +8008,10 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // documents associated to ticketvalidation
+        // documents associated to ticketvalidation
         $validation_class = static::getType() . 'Validation';
         if (class_exists($validation_class) && ($bypass_rights ||  $validation_class::canView())) {
-             // Run the subquery separately. It's better for huge databases
+            // Run the subquery separately. It's better for huge databases
             $iterator_tmp = $DB->request([
                 'SELECT' => 'id',
                 'FROM'   => $validation_class::getTable(),
@@ -8029,7 +8028,7 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-       // documents associated to tasks
+        // documents associated to tasks
         if ($bypass_rights || $task_class::canView()) {
             $tasks_crit = [
                 $this->getForeignKeyField() => $this->getID(),
@@ -8039,7 +8038,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
                 ];
             }
-             // Run the subquery separately. It's better for huge databases
+            // Run the subquery separately. It's better for huge databases
             $iterator_tmp = $DB->request([
                 'SELECT' => 'id',
                 'FROM'   => $task_class::getTable(),
@@ -8065,7 +8064,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         if (isset($this->input['status'])) {
             $status = $this->input['status'];
-        } else if (isset($this->fields['status'])) {
+        } elseif (isset($this->fields['status'])) {
             $status = $this->fields['status'];
         } else {
             throw new \LogicException("Can't get status value: no object loaded");
@@ -8104,7 +8103,7 @@ abstract class CommonITILObject extends CommonDBTM
         $assets = $DB->request([
             'SELECT' => ["itemtype", "items_id"],
             'FROM'   => static::getItemsTable(),
-            'WHERE'  => [$this->getForeignKeyField() => $this->getID()]
+            'WHERE'  => [$this->getForeignKeyField() => $this->getID()],
         ]);
 
         $assets = iterator_to_array($assets);
@@ -8152,8 +8151,8 @@ abstract class CommonITILObject extends CommonDBTM
                 "$table.status" => array_merge(
                     static::getSolvedStatusArray(),
                     static::getClosedStatusArray()
-                )
-            ]
+                ),
+            ],
         ];
     }
 
@@ -8168,7 +8167,7 @@ abstract class CommonITILObject extends CommonDBTM
                         'items_id'                    => $items_id,
                         'itemtype'                    => $itemtype,
                         static::getForeignKeyField()  => $this->fields['id'],
-                        '_disablenotif'               => true
+                        '_disablenotif'               => true,
                     ]);
                 }
             }
@@ -8181,7 +8180,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function handleTaskTemplateInput()
     {
-       // Check input is valid
+        // Check input is valid
         if (
             !isset($this->input['_tasktemplates_id'])
             || !is_array($this->input['_tasktemplates_id'])
@@ -8190,7 +8189,7 @@ abstract class CommonITILObject extends CommonDBTM
             return;
         }
 
-       // Add tasks in tasktemplates if defined in itiltemplate
+        // Add tasks in tasktemplates if defined in itiltemplate
         $itiltask_class = $this->getType() . 'Task';
         $itiltask   = new $itiltask_class();
         foreach ($this->input['_tasktemplates_id'] as $tasktemplates_id) {
@@ -8198,7 +8197,7 @@ abstract class CommonITILObject extends CommonDBTM
                 '_tasktemplates_id'           => $tasktemplates_id,
                 $this->getForeignKeyField()   => $this->fields['id'],
                 'date'                        => $this->fields['date'],
-                '_disablenotif'               => true
+                '_disablenotif'               => true,
             ]);
         }
     }
@@ -8208,7 +8207,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function handleITILFollowupTemplateInput(): void
     {
-       // Check input is valid
+        // Check input is valid
         if (
             !isset($this->input['_itilfollowuptemplates_id'])
             || !is_array($this->input['_itilfollowuptemplates_id'])
@@ -8217,7 +8216,7 @@ abstract class CommonITILObject extends CommonDBTM
             return;
         }
 
-       // Add tasks in itilfollowup template if defined in itiltemplate
+        // Add tasks in itilfollowup template if defined in itiltemplate
         foreach ($this->input['_itilfollowuptemplates_id'] as $fup_templates_id) {
             $values = [
                 '_itilfollowuptemplates_id' => $fup_templates_id,
@@ -8227,7 +8226,7 @@ abstract class CommonITILObject extends CommonDBTM
                 '_do_not_compute_status' => $this->input['_do_not_compute_status'] ?? 0,
                 '_do_not_compute_takeintoaccount' => $this->input['_do_not_compute_takeintoaccount'] ?? 0,
             ];
-           // Insert new followup from template
+            // Insert new followup from template
             $fup = new ITILFollowup();
             $fup->add($values);
         }
@@ -8301,7 +8300,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (isset($input["_add_validation"])) {
             if (isset($input['entities_id'])) {
                 $entid = $input['entities_id'];
-            } else if (isset($this->fields['entities_id'])) {
+            } elseif (isset($this->fields['entities_id'])) {
                 $entid = $this->fields['entities_id'];
             } else {
                 return false;
@@ -8324,7 +8323,7 @@ abstract class CommonITILObject extends CommonDBTM
                                 ['is_manager' => 1]
                             );
                             foreach ($users as $data) {
-                                 $validations_to_send[] = $data['id'];
+                                $validations_to_send[] = $data['id'];
                             }
                         }
                         // Add to already set groups
@@ -8358,7 +8357,7 @@ abstract class CommonITILObject extends CommonDBTM
                                 ['is_manager' => 1]
                             );
                             foreach ($users as $data) {
-                                 $validations_to_send[] = $data['id'];
+                                $validations_to_send[] = $data['id'];
                             }
                         }
                         break;
@@ -8369,13 +8368,13 @@ abstract class CommonITILObject extends CommonDBTM
                                 foreach ($input['_users_id_requester'] as $users_id) {
                                     $user = new User();
                                     if ($user->getFromDB($users_id)) {
-                                          $validations_to_send[] = $user->getField('users_id_supervisor');
+                                        $validations_to_send[] = $user->getField('users_id_supervisor');
                                     }
                                 }
                             } else {
                                 $user = new User();
                                 if ($user->getFromDB($input['_users_id_requester'])) {
-                                     $validations_to_send[] = $user->getField('users_id_supervisor');
+                                    $validations_to_send[] = $user->getField('users_id_supervisor');
                                 }
                             }
                         }
@@ -8394,7 +8393,7 @@ abstract class CommonITILObject extends CommonDBTM
                                 $opt = [
                                     'groups_id' => $groups_id,
                                     'right'     => $validation_right,
-                                    'entity'    => $entid
+                                    'entity'    => $entid,
                                 ];
 
                                 $data_users = $validation->getGroupUserHaveRights($opt);
@@ -8420,7 +8419,7 @@ abstract class CommonITILObject extends CommonDBTM
                 } else {
                     foreach ($input['users_id_validate'] as $key => $validation_to_add) {
                         if (is_numeric($key)) {
-                             $validations_to_send[] = $validation_to_add;
+                            $validations_to_send[] = $validation_to_add;
                         }
                     }
                 }
@@ -8548,7 +8547,7 @@ abstract class CommonITILObject extends CommonDBTM
                                     E_USER_WARNING
                                 );
                             }
-                            $actor_id = (int)$actor_id;
+                            $actor_id = (int) $actor_id;
                             $actor = [
                                 'itemtype' => $actor_itemtype,
                                 'items_id' => $actor_id,
@@ -8591,7 +8590,7 @@ abstract class CommonITILObject extends CommonDBTM
                             $actors[$get_unique_key($actor)] = $actor;
                         }
                     } elseif (is_numeric($this->input[$actors_id_input_key])) {
-                        $actor_id = (int)$this->input[$actors_id_input_key];
+                        $actor_id = (int) $this->input[$actors_id_input_key];
                         $actor = [
                             'itemtype' => $actor_itemtype,
                             'items_id' => $actor_id,
@@ -8666,7 +8665,7 @@ abstract class CommonITILObject extends CommonDBTM
                             );
                             continue;
                         }
-                        $actor_id = (int)$actor_id;
+                        $actor_id = (int) $actor_id;
                         $actor = [
                             'itemtype' => $actor_itemtype,
                             'items_id' => $actor_id,
@@ -8770,7 +8769,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'id'                              => $this->getID(),
                             'status'                          => self::ASSIGNED,
                             '_do_not_compute_takeintoaccount' => $this->isTakeIntoAccountComputationBlocked($this->input),
-                            '_from_assignment'                => true
+                            '_from_assignment'                => true,
                         ]
                     );
                     $this->fields['status'] = $self->fields['status'];
@@ -8932,13 +8931,13 @@ abstract class CommonITILObject extends CommonDBTM
                 foreach ($input[$input_id_key] as $key => $actor_id) {
                     if (
                         // actor with valid ID
-                        (int)$actor_id > 0
+                        (int) $actor_id > 0
                         // or "email" actor
                         || (
                             $itemtype === User::class
-                            && (int)$actor_id === 0
+                            && (int) $actor_id === 0
                             && array_key_exists($input_notif_key, $input)
-                            && (bool)($input[$input_notif_key]['use_notification'][$key] ?? false) === true
+                            && (bool) ($input[$input_notif_key]['use_notification'][$key] ?? false) === true
                             && !empty($input[$input_notif_key]['alternative_email'][$key])
                         )
                     ) {
@@ -8947,7 +8946,7 @@ abstract class CommonITILObject extends CommonDBTM
                     }
                 }
             } elseif (is_numeric($input[$input_id_key])) {
-                $actor_id = (int)$input[$input_id_key];
+                $actor_id = (int) $input[$input_id_key];
                 if (
                     // actor with valid ID
                     $actor_id > 0
@@ -8976,9 +8975,9 @@ abstract class CommonITILObject extends CommonDBTM
                             && (
                                 (
                                     is_array($input[$input_notif_key]['use_notification'])
-                                    && (bool)($input[$input_notif_key]['use_notification'][0] ?? false) === true
+                                    && (bool) ($input[$input_notif_key]['use_notification'][0] ?? false) === true
                                 )
-                                || (bool)($input[$input_notif_key]['use_notification'] ?? false) === true
+                                || (bool) ($input[$input_notif_key]['use_notification'] ?? false) === true
                             )
                         )
                         && (
@@ -9036,7 +9035,7 @@ abstract class CommonITILObject extends CommonDBTM
         $base_common_itil_query = [
             'SELECT' => [static::getTableField('id')],
             'FROM'   => static::getTable(),
-            'WHERE'  => $WHERE
+            'WHERE'  => $WHERE,
         ];
 
         // Add JOIN
@@ -9075,14 +9074,14 @@ abstract class CommonITILObject extends CommonDBTM
                     User::getTable() => [
                         'ON'  => [
                             $user_link_table => 'users_id',
-                            User::getTable() => 'id'
-                        ]
-                    ]
+                            User::getTable() => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'  => [
                     'type' => CommonITILActor::ASSIGN,
-                    $self_fk_field => new QuerySubQuery($base_common_itil_query)
-                ]
+                    $self_fk_field => new QuerySubQuery($base_common_itil_query),
+                ],
             ]);
             foreach ($linked_user_iterator as $linked_user_row) {
                 $common_itil_id = $linked_user_row[$self_fk_field];
@@ -9123,14 +9122,14 @@ abstract class CommonITILObject extends CommonDBTM
                     Group::getTable() => [
                         'ON'  => [
                             $group_link_table => 'groups_id',
-                            Group::getTable() => 'id'
-                        ]
-                    ]
+                            Group::getTable() => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'  => [
                     'type' => CommonITILActor::ASSIGN,
-                    $self_fk_field => new QuerySubQuery($base_common_itil_query)
-                ]
+                    $self_fk_field => new QuerySubQuery($base_common_itil_query),
+                ],
             ]);
             foreach ($linked_group_iterator as $linked_group_row) {
                 $common_itil_id = $linked_group_row[$self_fk_field];
@@ -9164,14 +9163,14 @@ abstract class CommonITILObject extends CommonDBTM
                     Supplier::getTable() => [
                         'ON'  => [
                             $suplier_link_table => 'suppliers_id',
-                            Supplier::getTable() => 'id'
-                        ]
-                    ]
+                            Supplier::getTable() => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'  => [
                     'type' => CommonITILActor::ASSIGN,
-                    $self_fk_field => new QuerySubQuery($base_common_itil_query)
-                ]
+                    $self_fk_field => new QuerySubQuery($base_common_itil_query),
+                ],
             ]);
             foreach ($linked_supplier_iterator as $linked_supplier_row) {
                 $common_itil_id = $linked_supplier_row[$self_fk_field];
@@ -9206,14 +9205,14 @@ abstract class CommonITILObject extends CommonDBTM
                         Ticket::getTable() => [
                             'ON'  => [
                                 Ticket_Ticket::getTable() => 'tickets_id_2',
-                                Ticket::getTable() => 'id'
-                            ]
-                        ]
+                                Ticket::getTable() => 'id',
+                            ],
+                        ],
                     ],
                     'WHERE'  => [
                         'link' => Ticket_Ticket::PARENT_OF,
                         'tickets_id_1' => new QuerySubQuery($base_common_itil_query),
-                    ]
+                    ],
                 ],
                 // Get children tickets
                 [
@@ -9227,15 +9226,15 @@ abstract class CommonITILObject extends CommonDBTM
                         Ticket::getTable() => [
                             'ON'  => [
                                 Ticket_Ticket::getTable() => 'tickets_id_1',
-                                Ticket::getTable() => 'id'
-                            ]
-                        ]
+                                Ticket::getTable() => 'id',
+                            ],
+                        ],
                     ],
                     'WHERE'  => [
                         'link' => Ticket_Ticket::SON_OF,
                         'tickets_id_2' => new QuerySubQuery($base_common_itil_query),
-                    ]
-                ]
+                    ],
+                ],
             ]));
 
             foreach ($linked_tickets_iterator as $linked_ticket_row) {
@@ -9301,7 +9300,7 @@ abstract class CommonITILObject extends CommonDBTM
         });
         if (count($statuses_from_db)) {
             $criteria = [
-                static::getTableField('status') => $statuses_from_db
+                static::getTableField('status') => $statuses_from_db,
             ];
         }
 
@@ -9339,7 +9338,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $content .= $plugin_content_pre['content'];
             }
             $content .= "</div>";
-           // Core content
+            // Core content
             $content .= "<div class='kanban-core-content'>";
             if (isset($item['_steps']) && count($item['_steps'])) {
                 $done = count(array_filter($item['_steps'], static function ($l) {
@@ -9382,7 +9381,7 @@ abstract class CommonITILObject extends CommonDBTM
             $card['_metadata'] = Plugin::doHookFunction(Hooks::KANBAN_ITEM_METADATA, [
                 'itemtype' => $itemtype,
                 'items_id' => $item['id'],
-                'metadata' => $card['_metadata']
+                'metadata' => $card['_metadata'],
             ])['metadata'];
             $columns[$item[$column_field]]['items'][] = $card;
         }
@@ -9397,7 +9396,7 @@ abstract class CommonITILObject extends CommonDBTM
                 // If specific columns were asked for, such as when loading a user's Kanban view, we must preserve them.
                 // We always preserve the 'No Status' column.
                 unset($columns[$column_id]);
-            } else if (isset($column['items'])) {
+            } elseif (isset($column['items'])) {
                 foreach ($column['items'] as $item) {
                     if (isset($item['_metadata']['category'])) {
                         $category_ids[] = $item['_metadata']['category'];
@@ -9429,13 +9428,13 @@ abstract class CommonITILObject extends CommonDBTM
                                 'AND' => [
                                     $trans_table . '.itemtype' => ITILCategory::getType(),
                                     $trans_table . '.field' => 'name',
-                                    $trans_table . '.language' => $_SESSION['glpilanguage']
-                                ]
-                            ]
-                        ]
-                    ]
+                                    $trans_table . '.language' => $_SESSION['glpilanguage'],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
-                'WHERE' => ["$cat_table.id" => $category_ids]
+                'WHERE' => ["$cat_table.id" => $category_ids],
             ]);
             foreach ($it as $row) {
                 $categories[$row['id']] = $row['name'];
@@ -9478,16 +9477,16 @@ abstract class CommonITILObject extends CommonDBTM
             'icon' => static::getIcon(),
             'fields' => [
                 'name'   => [
-                    'placeholder'  => __('Name')
+                    'placeholder'  => __('Name'),
                 ],
                 'content'   => [
                     'placeholder'  => __('Content'),
-                    'type'         => 'textarea'
+                    'type'         => 'textarea',
                 ],
                 'users_id'  => [
                     'type'         => 'hidden',
-                    'value'        => $_SESSION['glpiID']
-                ]
+                    'value'        => $_SESSION['glpiID'],
+                ],
             ],
             'team_itemtypes'  => static::getTeamItemtypes(),
             'team_roles'      => $team_roles,
@@ -9495,7 +9494,7 @@ abstract class CommonITILObject extends CommonDBTM
         ];
         $column_field = [
             'id' => 'status',
-            'extra_fields' => []
+            'extra_fields' => [],
         ];
 
         $itemtype = static::class;
@@ -9505,7 +9504,7 @@ abstract class CommonITILObject extends CommonDBTM
             'create_column'                  => false,
             'modify_view'                    => true,
             'order_card'                     => true,
-            'create_card_limited_columns'    => []
+            'create_card_limited_columns'    => [],
         ];
 
         TemplateRenderer::getInstance()->display('components/kanban/kanban.html.twig', [
@@ -9516,40 +9515,40 @@ abstract class CommonITILObject extends CommonDBTM
             'column_field'                => $column_field,
             'item'                        => [
                 'itemtype'  => $itemtype,
-                'items_id'  => $ID
+                'items_id'  => $ID,
             ],
             'supported_filters'           => [
                 'title' => [
                     'description' => _x('filters', 'The title of the item'),
-                    'supported_prefixes' => ['!', '#'] // Support exclusions and regex
+                    'supported_prefixes' => ['!', '#'], // Support exclusions and regex
                 ],
                 'type' => [
                     'description' => _x('filters', 'The type of the item'),
-                    'supported_prefixes' => ['!']
+                    'supported_prefixes' => ['!'],
                 ],
                 'category' => [
                     'description' => _x('filters', 'The category of the item'),
-                    'supported_prefixes' => ['!', '#']
+                    'supported_prefixes' => ['!', '#'],
                 ],
                 'content' => [
                     'description' => _x('filters', 'The content of the item'),
-                    'supported_prefixes' => ['!', '#'] // Support exclusions and regex
+                    'supported_prefixes' => ['!', '#'], // Support exclusions and regex
                 ],
                 'team' => [
                     'description' => _x('filters', 'A team member for the item'),
-                    'supported_prefixes' => ['!']
+                    'supported_prefixes' => ['!'],
                 ],
                 'user' => [
                     'description' => _x('filters', 'A user in the team of the item'),
-                    'supported_prefixes' => ['!']
+                    'supported_prefixes' => ['!'],
                 ],
                 'group' => [
                     'description' => _x('filters', 'A group in the team of the item'),
-                    'supported_prefixes' => ['!']
+                    'supported_prefixes' => ['!'],
                 ],
                 'supplier' => [
                     'description' => _x('filters', 'A supplier in the team of the item'),
-                    'supported_prefixes' => ['!']
+                    'supported_prefixes' => ['!'],
                 ],
             ] + self::getKanbanPluginFilters(static::getType()),
         ]);
@@ -9557,9 +9556,9 @@ abstract class CommonITILObject extends CommonDBTM
 
     public static function getAllForKanban($active = true, $current_id = -1)
     {
-       // ITIL items only have a global view
+        // ITIL items only have a global view
         $items = [
-            -1 => __('Global')
+            -1 => __('Global'),
         ];
         return $items;
     }
@@ -9578,7 +9577,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'id'           => $status_id,
                     'name'         => $status,
                     'color_class'  => 'itilstatus ' . static::getStatusKey($status_id),
-                    'drop_only'    => (int) $status_id === self::CLOSED
+                    'drop_only'    => (int) $status_id === self::CLOSED,
                 ];
             }
         } else {
@@ -9648,7 +9647,7 @@ abstract class CommonITILObject extends CommonDBTM
         $result = $link_item->add([
             static::getForeignKeyField()     => $this->getID(),
             $itemtype::getForeignKeyField()  => $items_id,
-            'type'                           => $role
+            'type'                           => $role,
         ]);
         return (bool) $result;
     }
@@ -9680,7 +9679,7 @@ abstract class CommonITILObject extends CommonDBTM
         $result = $link_item->deleteByCriteria([
             static::getForeignKeyField()     => $this->getID(),
             $itemtype::getForeignKeyField()  => $items_id,
-            'type'                           => $role
+            'type'                           => $role,
         ]);
         return (bool) $result;
     }
@@ -9721,7 +9720,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $select = [
                     $link_class::getTable() . '.' . $itemtype::getForeignKeyField(), 'type', 'name',
                     new QueryExpression('NULL as realname'),
-                    new QueryExpression('NULL as firstname')
+                    new QueryExpression('NULL as firstname'),
                 ];
             }
 
@@ -9733,29 +9732,29 @@ abstract class CommonITILObject extends CommonDBTM
                     $itemtype::getTable() => [
                         'ON'  => [
                             $itemtype::getTable()   => 'id',
-                            $link_class::getTable() => $itemtype::getForeignKeyField()
-                        ]
-                    ]
-                ]
+                            $link_class::getTable() => $itemtype::getForeignKeyField(),
+                        ],
+                    ],
+                ],
             ]);
             foreach ($it as $data) {
-                 $items_id = $data[$itemtype::getForeignKeyField()];
-                 $member = [
-                     'itemtype'     => $itemtype,
-                     'items_id'     => $items_id,
-                     'role'         => $data['type'],
-                     'name'         => $data['name'],
-                     'realname'     => $data['realname'],
-                     'firstname'    => $data['firstname'],
-                     'display_name' => formatUserName($items_id, $data['name'], $data['realname'], $data['firstname'])
-                 ];
-                 $team[] = $member;
+                $items_id = $data[$itemtype::getForeignKeyField()];
+                $member = [
+                    'itemtype'     => $itemtype,
+                    'items_id'     => $items_id,
+                    'role'         => $data['type'],
+                    'name'         => $data['name'],
+                    'realname'     => $data['realname'],
+                    'firstname'    => $data['firstname'],
+                    'display_name' => formatUserName($items_id, $data['name'], $data['realname'], $data['firstname']),
+                ];
+                $team[] = $member;
             }
         }
 
         usort(
             $team,
-            fn (array $member_1, array $member_2) => strcasecmp($member_1['display_name'], $member_2['display_name'])
+            fn(array $member_1, array $member_2) => strcasecmp($member_1['display_name'], $member_2['display_name'])
         );
 
         return $team;
@@ -9771,7 +9770,7 @@ abstract class CommonITILObject extends CommonDBTM
             'percent_done'   => 0,
         ];
 
-       // compute itilobject duration
+        // compute itilobject duration
         $task_class  = $this->getType() . "Task";
         $task_table  = getTableForItemType($task_class);
         $foreign_key = $this->getForeignKeyField();
@@ -9779,7 +9778,7 @@ abstract class CommonITILObject extends CommonDBTM
         $criteria = [
             'SELECT' => ['SUM' => 'actiontime AS actiontime'],
             'FROM'   => $task_table,
-            'WHERE'  => [$foreign_key => $this->fields['id']]
+            'WHERE'  => [$foreign_key => $this->fields['id']],
         ];
 
         $req = $DB->request($criteria);
@@ -9787,10 +9786,10 @@ abstract class CommonITILObject extends CommonDBTM
             $stats['total_duration'] = $row['actiontime'];
         }
 
-       // compute itilobject percent done
+        // compute itilobject percent done
         $criteria    = [
             $foreign_key => $this->fields['id'],
-            'state'     => [Planning::TODO, Planning::DONE]
+            'state'     => [Planning::TODO, Planning::DONE],
         ];
         $total_tasks = countElementsInTable($task_table, $criteria);
         $criteria    = [

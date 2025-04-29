@@ -78,7 +78,7 @@ class NotificationAjaxTest extends DbTestCase
             'to'                          => \Session::getLoginUserID(),
             'from'                        => 'glpi@tests',
             'toname'                      => '',
-            'event'                       => 'test_notification'
+            'event'                       => 'test_notification',
         ]);
         $this->assertTrue($res);
 
@@ -97,7 +97,7 @@ class NotificationAjaxTest extends DbTestCase
                 [
                     'title'  => 'Test notification',
                     'body'   => 'Hello, this is a test notification.',
-                    'url'    => null
+                    'url'    => null,
                 ],
                 $notif
             );

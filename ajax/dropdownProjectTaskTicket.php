@@ -54,7 +54,7 @@ if (isset($_POST["projects_id"])) {
         'entity_restrict' => Session::getMatchingActiveEntities($_POST['entity_restrict']),
         'myname'          => $_POST["myname"],
         'condition'       => $condition,
-        'rand'            => $_POST["rand"]
+        'rand'            => $_POST["rand"],
     ];
 
     if (isset($_POST["used"]) && !empty($_POST["used"])) {

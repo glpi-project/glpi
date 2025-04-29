@@ -65,7 +65,7 @@ header('Content-Type: text/css');
 
 $is_cacheable = !isset($_GET['debug']) && !isset($_GET['nocache']);
 if ($is_cacheable) {
-   // Makes CSS cacheable by browsers and proxies
+    // Makes CSS cacheable by browsers and proxies
     $max_age = WEEK_TIMESTAMP;
     header_remove('Pragma');
     header('Cache-Control: public');

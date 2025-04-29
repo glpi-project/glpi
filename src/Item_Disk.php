@@ -40,15 +40,15 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class Item_Disk extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
     public $dohistory       = true;
 
-   // Encryption status
-    const ENCRYPTION_STATUS_NO = 0;
-    const ENCRYPTION_STATUS_YES = 1;
-    const ENCRYPTION_STATUS_PARTIALLY = 2;
+    // Encryption status
+    public const ENCRYPTION_STATUS_NO = 0;
+    public const ENCRYPTION_STATUS_YES = 1;
+    public const ENCRYPTION_STATUS_PARTIALLY = 2;
 
     public static function getTypeName($nb = 0)
     {
@@ -84,7 +84,7 @@ class Item_Disk extends CommonDBChild
                     [
                         'items_id'     => $item->getID(),
                         'itemtype'     => $item->getType(),
-                        'is_deleted'   => 0
+                        'is_deleted'   => 0,
                     ]
                 );
             }
@@ -134,7 +134,7 @@ class Item_Disk extends CommonDBChild
         $itemtype = null;
         if (isset($options['itemtype']) && !empty($options['itemtype'])) {
             $itemtype = $options['itemtype'];
-        } else if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
+        } elseif (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
             $itemtype = $this->fields['itemtype'];
         } else {
             throw new \RuntimeException('Unable to retrieve itemtype');
@@ -184,21 +184,21 @@ class Item_Disk extends CommonDBChild
         $iterator = $DB->request([
             'SELECT'    => [
                 Filesystem::getTable() . '.name AS fsname',
-                self::getTable() . '.*'
+                self::getTable() . '.*',
             ],
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
                 Filesystem::getTable() => [
                     'FKEY' => [
                         self::getTable()        => 'filesystems_id',
-                        Filesystem::getTable()  => 'id'
-                    ]
-                ]
+                        Filesystem::getTable()  => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'itemtype'     => $item->getType(),
-                'items_id'     => $item->fields['id']
-            ]
+                'items_id'     => $item->fields['id'],
+            ],
         ]);
         return $iterator;
     }
@@ -262,12 +262,12 @@ class Item_Disk extends CommonDBChild
             Session::initNavigateListItems(
                 __CLASS__,
                 //TRANS : %1$s is the itemtype name,
-                           //        %2$s is the name of the item (used for headings of a list)
-                                          sprintf(
-                                              __('%1$s = %2$s'),
-                                              $item::getTypeName(1),
-                                              $item->getName()
-                                          )
+                //        %2$s is the name of the item (used for headings of a list)
+                sprintf(
+                    __('%1$s = %2$s'),
+                    $item::getTypeName(1),
+                    $item->getName()
+                )
             );
 
             $disk = new self();
@@ -295,28 +295,28 @@ class Item_Disk extends CommonDBChild
                     'percent' => $percent,
                     'message' => "$percent %",
                 ]);
-                 echo "</td>";
-                 echo "<td class=\"center\">";
+                echo "</td>";
+                echo "<td class=\"center\">";
 
                 if ($data['encryption_status'] != self::ENCRYPTION_STATUS_NO) {
-                     $encryptionTooltip = "<strong>" . __('Partial encryption') . "</strong> : " .
-                        Dropdown::getYesNo($data['encryption_status'] == self::ENCRYPTION_STATUS_PARTIALLY) .
-                        "<br/>" .
-                        "<strong>" . __('Encryption tool') . "</strong> : " . $data['encryption_tool'] .
-                        "</br>" .
-                        "<strong>" . __('Encryption algorithm') . "</strong> : " .
-                        $data['encryption_algorithm'] . "</br>" .
-                        "<strong>" . __('Encryption type') . "</strong> : " . $data['encryption_type'] .
-                        "</br>";
+                    $encryptionTooltip = "<strong>" . __('Partial encryption') . "</strong> : " .
+                       Dropdown::getYesNo($data['encryption_status'] == self::ENCRYPTION_STATUS_PARTIALLY) .
+                       "<br/>" .
+                       "<strong>" . __('Encryption tool') . "</strong> : " . $data['encryption_tool'] .
+                       "</br>" .
+                       "<strong>" . __('Encryption algorithm') . "</strong> : " .
+                       $data['encryption_algorithm'] . "</br>" .
+                       "<strong>" . __('Encryption type') . "</strong> : " . $data['encryption_type'] .
+                       "</br>";
 
-                     Html::showTooltip($encryptionTooltip, [
-                         'awesome-class' => "fas fa-lock"
-                     ]);
+                    Html::showTooltip($encryptionTooltip, [
+                        'awesome-class' => "fas fa-lock",
+                    ]);
                 }
 
-                 echo "</td>";
-                 echo "</tr>";
-                 Session::addToNavigateListItems(__CLASS__, $data['id']);
+                echo "</td>";
+                echo "</tr>";
+                Session::addToNavigateListItems(__CLASS__, $data['id']);
             }
             echo $header;
         } else {
@@ -334,7 +334,7 @@ class Item_Disk extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -396,7 +396,7 @@ class Item_Disk extends CommonDBChild
         $name = _n('Volume', 'Volumes', Session::getPluralNumber());
         $tab[] = [
             'id'                 => 'disk',
-            'name'               => $name
+            'name'               => $name,
         ];
 
         $tab[] = [
@@ -408,8 +408,8 @@ class Item_Disk extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -424,8 +424,8 @@ class Item_Disk extends CommonDBChild
             'width'              => 1000,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -439,8 +439,8 @@ class Item_Disk extends CommonDBChild
             'width'              => 1000,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -451,14 +451,14 @@ class Item_Disk extends CommonDBChild
             'forcegroupby'       => true,
             'datatype'           => 'progressbar',
             'width'              => 2,
-         // NULLIF -> avoid divizion by zero by replacing it by null (division by null return null without warning)
+            // NULLIF -> avoid divizion by zero by replacing it by null (division by null return null without warning)
             'computation'        => 'LPAD(ROUND(100*TABLE.freesize/NULLIF(TABLE.totalsize, 0)), 3, 0)',
             'computationgroupby' => true,
             'unit'               => '%',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -470,8 +470,8 @@ class Item_Disk extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'string',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -483,8 +483,8 @@ class Item_Disk extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'string',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -499,10 +499,10 @@ class Item_Disk extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => self::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -516,8 +516,8 @@ class Item_Disk extends CommonDBChild
             'searchequalsonfield' => true,
             'datatype'           => 'specific',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -529,8 +529,8 @@ class Item_Disk extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'string',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -542,8 +542,8 @@ class Item_Disk extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'string',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -555,8 +555,8 @@ class Item_Disk extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'string',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         return $tab;
@@ -623,7 +623,7 @@ class Item_Disk extends CommonDBChild
             $values,
             [
                 'value'   => $value,
-                'display' => false
+                'display' => false,
             ]
         );
     }

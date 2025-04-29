@@ -64,15 +64,15 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
             'id'        => (int) $_POST['tasks_id'],
             $foreignKey => (int) $_POST[$foreignKey],
             'state'     => $new_state,
-            'users_id_editor' => Session::getLoginUserID()
+            'users_id_editor' => Session::getLoginUserID(),
         ]);
         $new_label = Planning::getState($new_state);
         echo json_encode([
             'state'  => $task->fields['state'],
-            'label'  => $new_label
+            'label'  => $new_label,
         ]);
     }
-} else if (($_REQUEST['action'] ?? null) === 'viewsubitem') {
+} elseif (($_REQUEST['action'] ?? null) === 'viewsubitem') {
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
     if (!isset($_REQUEST['type'])) {
@@ -98,26 +98,26 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     if (isset($_REQUEST[$parent::getForeignKeyField()])) {
         $parent->getFromDB($_REQUEST[$parent::getForeignKeyField()]);
     }
-    $id = isset($_REQUEST['id']) && (int)$_REQUEST['id'] > 0 ? $_REQUEST['id'] : null;
+    $id = isset($_REQUEST['id']) && (int) $_REQUEST['id'] > 0 ? $_REQUEST['id'] : null;
     if ($id) {
         $item->getFromDB($id);
     }
     $params = [
         'item'      => $parent,
-        'subitem'   => $item
+        'subitem'   => $item,
     ];
 
     if ($_REQUEST['type'] === ITILFollowup::class) {
         $template = 'form_followup';
-    } else if ($_REQUEST['type'] === ITILSolution::class) {
+    } elseif ($_REQUEST['type'] === ITILSolution::class) {
         $template = 'form_solution';
         $params['kb_id_toload'] = $_REQUEST['load_kb_sol'] ?? 0;
-    } else if (is_subclass_of($_REQUEST['type'], CommonITILTask::class)) {
+    } elseif (is_subclass_of($_REQUEST['type'], CommonITILTask::class)) {
         $template = 'form_task';
-    } else if (is_subclass_of($_REQUEST['type'], CommonITILValidation::class)) {
+    } elseif (is_subclass_of($_REQUEST['type'], CommonITILValidation::class)) {
         $template = 'form_validation';
         $params['form_mode'] = $_REQUEST['item_action'] === 'validation-answer' ? 'answer' : 'request';
-    } else if ($id !== null && $parent->getID() >= 0) {
+    } elseif ($id !== null && $parent->getID() >= 0) {
         $ol = ObjectLock::isLocked($_REQUEST['parenttype'], $parent->getID());
         if ($ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {
             ObjectLock::setReadOnlyProfile();

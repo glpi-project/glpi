@@ -41,7 +41,7 @@
  **/
 class RuleDictionnaryPrinter extends Rule
 {
-   // From Rule
+    // From Rule
     public $can_sort  = true;
 
     public static $rightname = 'rule_dictionnary_printer';

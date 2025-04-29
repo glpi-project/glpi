@@ -66,12 +66,12 @@ use Glpi\Toolbox\URL;
  **/
 class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
 
     public static $rightname    = 'rssfeed_public';
 
-    const PERSONAL = 128;
+    public const PERSONAL = 128;
 
     public static function getTypeName($nb = 0)
     {
@@ -100,7 +100,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     public function canViewItem()
     {
 
-       // Is my rssfeed or is in visibility
+        // Is my rssfeed or is in visibility
         return (($this->fields['users_id'] == Session::getLoginUserID())
               || (Session::haveRight('rssfeed_public', READ)
                   && $this->haveVisibilityAccess()));
@@ -109,7 +109,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public function canCreateItem()
     {
-       // Is my rssfeed
+        // Is my rssfeed
         return ($this->fields['users_id'] == Session::getLoginUserID());
     }
 
@@ -160,16 +160,16 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     public function post_getFromDB()
     {
 
-       // Users
+        // Users
         $this->users    = RSSFeed_User::getUsers($this->fields['id']);
 
-       // Entities
+        // Entities
         $this->entities = Entity_RSSFeed::getEntities($this->fields['id']);
 
-       // Group / entities
+        // Group / entities
         $this->groups   = Group_RSSFeed::getGroups($this->fields['id']);
 
-       // Profile / entities
+        // Profile / entities
         $this->profiles = Profile_RSSFeed::getProfiles($this->fields['id']);
     }
 
@@ -208,11 +208,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      **/
     public static function addVisibilityJoins($forceall = false)
     {
-       //not deprecated because used in Search
+        //not deprecated because used in Search
         /** @var \DBmysql $DB */
         global $DB;
 
-       //get and clean criteria
+        //get and clean criteria
         $criteria = self::getVisibilityCriteria();
         unset($criteria['WHERE']);
         $criteria['FROM'] = self::getTable();
@@ -236,9 +236,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      **/
     public static function addVisibilityRestrict()
     {
-       //not deprecated because used in Search
+        //not deprecated because used in Search
 
-       //get and clean criteria
+        //get and clean criteria
         $criteria = self::getVisibilityCriteria();
         unset($criteria['LEFT JOIN']);
         $criteria['FROM'] = self::getTable();
@@ -268,28 +268,28 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         if (!self::canView()) {
             return [
                 'LEFT JOIN' => $join,
-                'WHERE'     => $where
+                'WHERE'     => $where,
             ];
         }
 
-       //JOINs
-       // Users
+        //JOINs
+        // Users
         $join['glpi_rssfeeds_users'] = [
             'ON' => [
                 'glpi_rssfeeds_users'   => 'rssfeeds_id',
-                'glpi_rssfeeds'         => 'id'
-            ]
+                'glpi_rssfeeds'         => 'id',
+            ],
         ];
 
         $where = [
             'OR' => [
                 self::getTable() . '.users_id'   => Session::getLoginUserID(),
-                'glpi_rssfeeds_users.users_id'   => Session::getLoginUserID()
-            ]
+                'glpi_rssfeeds_users.users_id'   => Session::getLoginUserID(),
+            ],
         ];
         $orwhere = [];
 
-       // Groups
+        // Groups
         if (
             $forceall
             || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))
@@ -297,8 +297,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             $join['glpi_groups_rssfeeds'] = [
                 'ON' => [
                     'glpi_groups_rssfeeds'  => 'rssfeeds_id',
-                    'glpi_rssfeeds'         => 'id'
-                ]
+                    'glpi_rssfeeds'         => 'id',
+                ],
             ];
         }
 
@@ -310,11 +310,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                                                       : [-1],
                 'OR' => [
                     'glpi_groups_rssfeeds.no_entity_restriction' => 1,
-                ] + $restrict
+                ] + $restrict,
             ];
         }
 
-       // Profiles
+        // Profiles
         if (
             $forceall
             || (isset($_SESSION["glpiactiveprofile"])
@@ -323,8 +323,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             $join['glpi_profiles_rssfeeds'] = [
                 'ON' => [
                     'glpi_profiles_rssfeeds'   => 'rssfeeds_id',
-                    'glpi_rssfeeds'            => 'id'
-                ]
+                    'glpi_rssfeeds'            => 'id',
+                ],
             ];
         }
 
@@ -335,16 +335,16 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             }
             $ors = [
                 'glpi_profiles_rssfeeds.no_entity_restriction' => 1,
-                $restrict
+                $restrict,
             ];
 
             $orwhere[] = [
                 'glpi_profiles_rssfeeds.profiles_id' => $_SESSION["glpiactiveprofile"]['id'],
-                'OR' => $ors
+                'OR' => $ors,
             ];
         }
 
-       // Entities
+        // Entities
         if (
             $forceall
             || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))
@@ -352,13 +352,13 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             $join['glpi_entities_rssfeeds'] = [
                 'ON' => [
                     'glpi_entities_rssfeeds'   => 'rssfeeds_id',
-                    'glpi_rssfeeds'            => 'id'
-                ]
+                    'glpi_rssfeeds'            => 'id',
+                ],
             ];
         }
 
         if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
-           // Force complete SQL not summary when access to all entities
+            // Force complete SQL not summary when access to all entities
             $restrict = getEntitiesRestrictCriteria('glpi_entities_rssfeeds', '', '', true, true);
             if (count($restrict)) {
                 $orwhere[] = $restrict;
@@ -421,7 +421,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -441,7 +441,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'name'               => __('Creator'),
             'datatype'           => 'dropdown',
             'massiveaction'      => false,
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $tab[] = [
@@ -450,7 +450,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'field'              => 'url',
             'name'               => __('URL'),
             'datatype'           => 'string',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -459,7 +459,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'field'              => 'is_active',
             'name'               => __('Active'),
             'datatype'           => 'bool',
-            'massiveaction'      => true
+            'massiveaction'      => true,
         ];
 
         $tab[] = [
@@ -468,7 +468,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'field'              => 'have_error',
             'name'               => __('Error'),
             'datatype'           => 'bool',
-            'massiveaction'      => true
+            'massiveaction'      => true,
         ];
 
         $tab[] = [
@@ -481,7 +481,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'max'                => 100,
             'step'               => 5,
             'toadd'              => [1],
-            'massiveaction'      => true
+            'massiveaction'      => true,
         ];
 
         $tab[] = [
@@ -489,7 +489,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -505,11 +505,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                 5 * MINUTE_TIMESTAMP,
                 15 * MINUTE_TIMESTAMP,
                 30 * MINUTE_TIMESTAMP,
-                45 * MINUTE_TIMESTAMP
+                45 * MINUTE_TIMESTAMP,
             ],
             'display_emptychoice' => false,
             'massiveaction'      => true,
-            'searchtype'         => 'equals'
+            'searchtype'         => 'equals',
         ];
 
         $tab[] = [
@@ -518,7 +518,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -527,10 +527,10 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
-       // add objectlock search options
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
@@ -695,7 +695,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      **/
     public function showForm($ID, array $options = [])
     {
-       // Test _rss cache directory. I permission trouble : unable to edit
+        // Test _rss cache directory. I permission trouble : unable to edit
         if (Toolbox::testWriteAccessToDirectory(GLPI_RSS_DIR) > 0) {
             echo "<div class='center'>";
             printf(__('Check permissions to the directory: %s'), GLPI_RSS_DIR);
@@ -711,7 +711,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         $rowspan = 4;
 
         if (!$this->isNewID($ID)) {
-           // Force getting feed :
+            // Force getting feed :
             $feed = self::getRSSFeed($this->fields['url'], $this->fields['refresh_rate']);
             if (!$feed || $feed->error()) {
                 $this->setError(true);
@@ -760,8 +760,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                 'toadd'                => [5 * MINUTE_TIMESTAMP,
                     15 * MINUTE_TIMESTAMP,
                     30 * MINUTE_TIMESTAMP,
-                    45 * MINUTE_TIMESTAMP
-                ]
+                    45 * MINUTE_TIMESTAMP,
+                ],
             ]
         );
         echo "</td></tr>\n";
@@ -774,7 +774,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'max'                  => 100,
             'step'                 => 5,
             'toadd'                => [1],
-            'display_emptychoice'  => false
+            'display_emptychoice'  => false,
         ]);
         echo "</td></tr>\n";
 
@@ -808,16 +808,16 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             return;
         }
 
-       // Set error if not set
+        // Set error if not set
         if ($error && !$this->fields['have_error']) {
             $this->update(['id'         => $this->fields['id'],
-                'have_error' => 1
+                'have_error' => 1,
             ]);
         }
-       // Unset error if set
+        // Unset error if set
         if (!$error && $this->fields['have_error']) {
             $this->update(['id'         => $this->fields['id'],
-                'have_error' => 0
+                'have_error' => 0,
             ]);
         }
     }
@@ -833,7 +833,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             return false;
         }
         $rss_feed = [
-            'items'  => []
+            'items'  => [],
         ];
         echo "<div class='firstbloc'>";
         if ($feed = self::getRSSFeed($this->fields['url'], $this->fields['refresh_rate'])) {
@@ -855,7 +855,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         }
 
         TemplateRenderer::getInstance()->display('components/rss_feed.html.twig', [
-            'rss_feed'  => $rss_feed
+            'rss_feed'  => $rss_feed,
         ]);
     }
 
@@ -891,16 +891,16 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             if ($newfeed && !$newfeed->error()) {
                 $link = URL::sanitizeURL($newfeed->get_permalink());
                 if (!empty($link)) {
-                     echo "<a href='" . htmlspecialchars($newurl, ENT_QUOTES) . "'>" . $newfeed->get_title() . "</a>&nbsp;";
-                     Html::showSimpleForm(
-                         $this->getFormURL(),
-                         'update',
-                         _x('button', 'Use'),
-                         ['id'  => $this->getID(),
-                             'url' => $newurl
-                         ]
-                     );
-                     echo "<br>";
+                    echo "<a href='" . htmlspecialchars($newurl, ENT_QUOTES) . "'>" . $newfeed->get_title() . "</a>&nbsp;";
+                    Html::showSimpleForm(
+                        $this->getFormURL(),
+                        'update',
+                        _x('button', 'Use'),
+                        ['id'  => $this->getID(),
+                            'url' => $newurl,
+                        ]
+                    );
+                    echo "<br>";
                 }
             }
         }
@@ -992,11 +992,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'SELECT'   => "$table.*",
             'DISTINCT' => true,
             'FROM'     => $table,
-            'ORDER'    => "$table.name"
+            'ORDER'    => "$table.name",
         ];
 
         if ($personal) {
-           /// Personal notes only for central view
+            /// Personal notes only for central view
             if (Session::getCurrentInterface() == 'helpdesk') {
                 return false;
             }
@@ -1007,14 +1007,14 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             $titre = "<a href='" . $CFG_GLPI["root_doc"] . "/front/rssfeed.php'>" .
                     _n('Personal RSS feed', 'Personal RSS feeds', Session::getPluralNumber()) . "</a>";
         } else {
-           // Show public rssfeeds / not mines : need to have access to public rssfeeds
+            // Show public rssfeeds / not mines : need to have access to public rssfeeds
             if (!self::canView()) {
                 return false;
             }
 
             $criteria = $criteria + self::getVisibilityCriteria();
 
-           // Only personal on central so do not keep it
+            // Only personal on central so do not keep it
             if (Session::getCurrentInterface() == 'central') {
                 $criteria['WHERE']["$table.users_id"] = ['<>', $users_id];
             }
@@ -1033,7 +1033,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         $rssfeed = new self();
         foreach ($iterator as $data) {
             if ($rssfeed->getFromDB($data['id'])) {
-               // Force fetching feeds
+                // Force fetching feeds
                 if ($feed = self::getRSSFeed($data['url'], $data['refresh_rate'])) {
                     // Store feeds in array of feeds
                     $items = array_merge($items, $feed->get_items(0, $data['max_items']));
@@ -1088,7 +1088,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                 $output .= "</div>";
                 $output .= Html::showToolTip(RichText::getEnhancedHtml($item->get_content()), [
                     'applyto' => "rssitem$rand",
-                    'display' => false
+                    'display' => false,
                 ]);
                 $output .= "</td></tr>";
             }

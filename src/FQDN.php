@@ -58,8 +58,8 @@ class FQDN extends CommonDropdown
             'type'    => 'text',
             'comment'
                           => __('Fully Qualified Domain Name. Use the classical notation (labels separated by dots). For example: indepnet.net'),
-            'list'    => true
-        ]
+            'list'    => true,
+        ],
         ];
     }
 
@@ -80,16 +80,16 @@ class FQDN extends CommonDropdown
             isset($input['fqdn'])
             || $this->isNewID($this->getID())
         ) {
-           // Check that FQDN is not empty
+            // Check that FQDN is not empty
             if (empty($input['fqdn'])) {
                 Session::addMessageAfterRedirect(__('FQDN must not be empty'), false, ERROR);
                 return false;
             }
 
-           // Transform it to lower case
+            // Transform it to lower case
             $input["fqdn"] = strtolower($input['fqdn']);
 
-           // Then check its validity
+            // Then check its validity
             if (!self::checkFQDN($input["fqdn"])) {
                 Session::addMessageAfterRedirect(__('FQDN is not valid'), false, ERROR);
                 return false;
@@ -170,7 +170,7 @@ class FQDN extends CommonDropdown
         $iterator = $DB->request([
             'SELECT' => 'id',
             'FROM'   => self::getTable(),
-            'WHERE'  => ['fqdn' => $relation]
+            'WHERE'  => ['fqdn' => $relation],
         ]);
 
         $fqdns_id_list = [];
@@ -231,7 +231,7 @@ class FQDN extends CommonDropdown
     public static function checkFQDN($fqdn)
     {
 
-       // The FQDN must be compose of several labels separated by dots '.'
+        // The FQDN must be compose of several labels separated by dots '.'
         $labels = explode(".", $fqdn);
         foreach ($labels as $label) {
             if (($label == "") || (!FQDNLabel::checkFQDNLabel($label))) {

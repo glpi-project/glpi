@@ -40,7 +40,7 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 class ComputerTest extends AbstractInventoryAsset
 {
-    const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+    public const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
     public static function assetProvider(): array
     {
@@ -89,7 +89,7 @@ class ComputerTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'asset' => '{"chassis_type":"Laptop","datelastloggeduser":"Wed Oct 3 06:56","defaultgateway":"192.168.1.1","dns":"192.168.1.1\\/172.28.200.20","lastloggeduser":"trasher","memory":7822,"name":"glpixps","swap":7951,"uuid":"4c4c4544-0034-3010-8048-b6c04f503732","vmsystem":"Physical","workgroup":"teclib.infra","domains_id":"teclib.infra","users_id":0,"contact":"trasher","manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","computertypes_id":"Laptop","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","is_deleted": 0}'
+                'asset' => '{"chassis_type":"Laptop","datelastloggeduser":"Wed Oct 3 06:56","defaultgateway":"192.168.1.1","dns":"192.168.1.1\\/172.28.200.20","lastloggeduser":"trasher","memory":7822,"name":"glpixps","swap":7951,"uuid":"4c4c4544-0034-3010-8048-b6c04f503732","vmsystem":"Physical","workgroup":"teclib.infra","domains_id":"teclib.infra","users_id":0,"contact":"trasher","manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","computertypes_id":"Laptop","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","is_deleted": 0}',
             ], [ //only hardware
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -122,7 +122,7 @@ class ComputerTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'asset' => '{"chassis_type":"Laptop","datelastloggeduser":"Wed Oct 3 06:56","defaultgateway":"192.168.1.1","dns":"192.168.1.1\\/172.28.200.20","lastloggeduser":"trasher","memory":7822,"name":"glpixps","swap":7951,"uuid":"4c4c4544-0034-3010-8048-b6c04f503732","vmsystem":"Physical","workgroup":"teclib.infra","domains_id":"teclib.infra","users_id":0,"contact":"trasher","computertypes_id":"Laptop","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","is_deleted": 0}'
+                'asset' => '{"chassis_type":"Laptop","datelastloggeduser":"Wed Oct 3 06:56","defaultgateway":"192.168.1.1","dns":"192.168.1.1\\/172.28.200.20","lastloggeduser":"trasher","memory":7822,"name":"glpixps","swap":7951,"uuid":"4c4c4544-0034-3010-8048-b6c04f503732","vmsystem":"Physical","workgroup":"teclib.infra","domains_id":"teclib.infra","users_id":0,"contact":"trasher","computertypes_id":"Laptop","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","is_deleted": 0}',
             ], [ //only bios
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -144,7 +144,7 @@ class ComputerTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'asset' => '{"manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","is_deleted": 0}'
+                'asset' => '{"manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","is_deleted": 0}',
             ], [ //only bios - with otherserial
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -167,8 +167,8 @@ class ComputerTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'asset' => '{"manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","otherserial":"SER1234","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","is_deleted": 0}'
-            ]
+                'asset' => '{"manufacturers_id":"Dell Inc.","computermodels_id":"XPS 13 9350","serial":"640HP72","mserial":"\\/640HP72\\/CN129636460078\\/","otherserial":"SER1234","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","is_deleted": 0}',
+            ],
         ];
     }
 
@@ -186,7 +186,7 @@ class ComputerTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $main = new \Glpi\Inventory\Asset\Computer($computer, $json);
-        $main->setExtraData((array)$json->content);
+        $main->setExtraData((array) $json->content);
         $result = $main->prepare();
         $this->assertEquals(json_decode($asset), $result[0]);
     }
@@ -199,11 +199,11 @@ class ComputerTest extends AbstractInventoryAsset
         $manual_monitor = new \Monitor();
         $manual_monitor_id = $manual_monitor->add([
             "name" => "manual monitor",
-            "entities_id" => 0
+            "entities_id" => 0,
         ]);
         $this->assertGreaterThan(0, $manual_monitor_id);
 
-         $CFG_GLPI['is_user_autoupdate']     = 1;
+        $CFG_GLPI['is_user_autoupdate']     = 1;
 
         $xml =  "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -267,7 +267,7 @@ class ComputerTest extends AbstractInventoryAsset
             $item_monitor->add([
                 "itemtype" => "Monitor",
                 "items_id" => $manual_monitor_id,
-                "computers_id" => $computers_id
+                "computers_id" => $computers_id,
             ])
         );
 
@@ -337,7 +337,7 @@ class ComputerTest extends AbstractInventoryAsset
         $manual_monitor = new \Monitor();
         $manual_monitor_id = $manual_monitor->add([
             "name" => "manual monitor",
-            "entities_id" => 0
+            "entities_id" => 0,
         ]);
         $this->assertGreaterThan(0, $manual_monitor_id);
 
@@ -402,7 +402,7 @@ class ComputerTest extends AbstractInventoryAsset
             $item_monitor->add([
                 "itemtype" => "Monitor",
                 "items_id" => $manual_monitor_id,
-                "computers_id" => $computers_id
+                "computers_id" => $computers_id,
             ])
         );
 
@@ -533,7 +533,7 @@ class ComputerTest extends AbstractInventoryAsset
 
         $computer = new \Computer();
 
-        $data = (array)$json->content;
+        $data = (array) $json->content;
         $inventory = new \Glpi\Inventory\Inventory();
         $this->assertTrue($inventory->setData($json));
 
@@ -583,11 +583,11 @@ class ComputerTest extends AbstractInventoryAsset
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => []
+            'WHERE' => [],
         ];
         $iterator = $DB->request($criteria);
         $this->assertSame('Computer import (by serial + uuid)', $iterator->current()['name']);
@@ -665,11 +665,11 @@ class ComputerTest extends AbstractInventoryAsset
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => []
+            'WHERE' => [],
         ];
         $iterator = $DB->request($criteria);
         $this->assertSame('Computer import (by serial + uuid)', $iterator->current()['name']);
@@ -750,7 +750,7 @@ class ComputerTest extends AbstractInventoryAsset
                 'name'      => 'Manual state',
                 'states_id' => 0,
                 "entities_id" => 0,
-                'is_visible_computer' => 1
+                'is_visible_computer' => 1,
             ]
         );
         $this->assertGreaterThan(0, $state_1_id);
@@ -760,7 +760,7 @@ class ComputerTest extends AbstractInventoryAsset
                 'name'      => 'Inventory state',
                 'states_id' => 0,
                 "entities_id" => 0,
-                'is_visible_computer' => 1
+                'is_visible_computer' => 1,
             ]
         );
         $this->assertGreaterThan(0, $state_2_id);
@@ -772,7 +772,7 @@ class ComputerTest extends AbstractInventoryAsset
                 "name" => "glpixps",
                 "serial" => "640HP72",
                 "states_id" => $state_1_id,
-                "entities_id" => 0
+                "entities_id" => 0,
             ]
         );
 
@@ -798,7 +798,7 @@ class ComputerTest extends AbstractInventoryAsset
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'states_id_default' => '-1'
+                'states_id_default' => '-1',
             ])
         );
         $this->logout();
@@ -816,7 +816,7 @@ class ComputerTest extends AbstractInventoryAsset
         $this->login();
         $this->assertTrue(
             $conf->saveConf([
-                'states_id_default' => $state_2_id
+                'states_id_default' => $state_2_id,
             ])
         );
         $this->logOut();
@@ -841,7 +841,7 @@ class ComputerTest extends AbstractInventoryAsset
                 'name'      => 'Manual state',
                 'states_id' => 0,
                 "entities_id" => 0,
-                'is_visible_computer' => 1
+                'is_visible_computer' => 1,
             ]
         );
         $this->assertGreaterThan(0, $state_1_id);
@@ -870,7 +870,7 @@ class ComputerTest extends AbstractInventoryAsset
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'states_id_default' => '-1'
+                'states_id_default' => '-1',
             ])
         );
         $this->logout();
@@ -888,7 +888,7 @@ class ComputerTest extends AbstractInventoryAsset
         $this->login();
         $this->assertTrue(
             $conf->saveConf([
-                'states_id_default' => $state_1_id
+                'states_id_default' => $state_1_id,
             ])
         );
         $this->logOut();
@@ -939,7 +939,7 @@ class ComputerTest extends AbstractInventoryAsset
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'entities_id_default' => 1
+                'entities_id_default' => 1,
             ])
         );
         $this->logout();
@@ -1120,8 +1120,8 @@ class ComputerTest extends AbstractInventoryAsset
             'FROM' => \NetworkPort::getTable(),
             'WHERE' => [
                 'itemtype' => 'Computer',
-                'items_id' => $computers_id
-            ]
+                'items_id' => $computers_id,
+            ],
         ]);
         $this->assertCount(6, $it);
 
@@ -1136,8 +1136,8 @@ class ComputerTest extends AbstractInventoryAsset
                 'FROM' => \NetworkName::getTable(),
                 'WHERE' => [
                     'itemtype' => 'NetworkPort',
-                    'items_id' => $port['id']
-                ]
+                    'items_id' => $port['id'],
+                ],
             ]);
 
             $this->assertCount(1, $netname_it);
@@ -1219,8 +1219,8 @@ class ComputerTest extends AbstractInventoryAsset
             'FROM' => \NetworkPort::getTable(),
             'WHERE' => [
                 'itemtype' => \Computer::getType(),
-                'items_id' => $computers_id
-            ]
+                'items_id' => $computers_id,
+            ],
         ]);
         $this->assertCount(1, $networkcards);
 
@@ -1228,8 +1228,8 @@ class ComputerTest extends AbstractInventoryAsset
             'FROM' => \Item_DeviceNetworkCard::getTable(),
             'WHERE' => [
                 'itemtype' => \Computer::getType(),
-                'items_id' => $computers_id
-            ]
+                'items_id' => $computers_id,
+            ],
         ]);
         $this->assertCount(1, $item_networkcard);
     }
@@ -1705,7 +1705,7 @@ class ComputerTest extends AbstractInventoryAsset
             'name'      => 'Location os comment -> caen',
             'match'     => 'AND',
             'sub_type'  => 'RuleLocation',
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rules_id = $rule->add($input);
         $this->assertGreaterThan(0, $rules_id);
@@ -1715,7 +1715,7 @@ class ComputerTest extends AbstractInventoryAsset
             'rules_id'  => $rules_id,
             'criteria'  => "oscomment",
             'pattern'   => "Caen",
-            'condition' => \Rule::PATTERN_CONTAIN
+            'condition' => \Rule::PATTERN_CONTAIN,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -1724,7 +1724,7 @@ class ComputerTest extends AbstractInventoryAsset
             'rules_id'    => $rules_id,
             'action_type' => 'assign',
             'field'       => 'locations_id',
-            'value'       => $locations_id
+            'value'       => $locations_id,
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 

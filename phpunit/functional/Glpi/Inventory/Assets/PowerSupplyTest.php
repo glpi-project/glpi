@@ -58,8 +58,8 @@ class PowerSupplyTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"hotreplaceable": 1, "partnum": "High Efficiency", "plugged": 1, "status": "Present, Unknown", "designation": "High Efficiency", "is_dynamic": 1}'
-            ]
+                'expected'  => '{"hotreplaceable": 1, "partnum": "High Efficiency", "plugged": 1, "status": "Present, Unknown", "designation": "High Efficiency", "is_dynamic": 1}',
+            ],
         ];
     }
 
@@ -74,7 +74,7 @@ class PowerSupplyTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\PowerSupply($computer, $json->content->powersupplies);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -83,14 +83,14 @@ class PowerSupplyTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no power supply linked to this computer
+        //first, check there are no power supply linked to this computer
         $idp = new \Item_DevicePowerSupply();
-                 $this->assertFalse(
-                     $idp->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
-                     'A power supply is already linked to computer!'
-                 );
+        $this->assertFalse(
+            $idp->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            'A power supply is already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -99,11 +99,11 @@ class PowerSupplyTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\PowerSupply($computer, $json->content->powersupplies);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
@@ -139,21 +139,21 @@ class PowerSupplyTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //computer inventory knows only 1 power supply
+        //computer inventory knows only 1 power supply
         $inventory = $this->doInventory($xml_source, true);
 
         $computer = $inventory->getItem();
         $computers_id = $computer->fields['id'];
 
-       //we have 1 power supply
+        //we have 1 power supply
         $pws = $device_ps->find();
         $this->assertCount(1, $pws);
 
-       //we have 1 power supply items linked to the computer
+        //we have 1 power supply items linked to the computer
         $pws = $item_ps->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(1, $pws);
 
-       //power supply present in the inventory source is dynamic
+        //power supply present in the inventory source is dynamic
         $pws = $item_ps->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $pws);
     }

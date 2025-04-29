@@ -69,7 +69,7 @@ function update1000to1001()
             $DB->updateOrInsert(
                 "glpi_displaypreferences",
                 [
-                    'rank'      => $rank++
+                    'rank'      => $rank++,
                 ],
                 Toolbox::addslashes_deep(
                     [
@@ -87,7 +87,7 @@ function update1000to1001()
             Toolbox::addslashes_deep(
                 [
                     'itemtype'  => $type,
-                    'num'       => $tab
+                    'num'       => $tab,
                 ]
             )
         );

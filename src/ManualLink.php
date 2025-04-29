@@ -74,13 +74,13 @@ class ManualLink extends CommonDBChild
                 ]
             );
             if (Link::canView()) {
-                 $count += countElementsInTable(
-                     ['glpi_links_itemtypes', 'glpi_links'],
-                     [
-                         'glpi_links_itemtypes.links_id'  => new \QueryExpression(DBmysql::quoteName('glpi_links.id')),
-                         'glpi_links_itemtypes.itemtype'  => $item->getType()
-                     ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
-                 );
+                $count += countElementsInTable(
+                    ['glpi_links_itemtypes', 'glpi_links'],
+                    [
+                        'glpi_links_itemtypes.links_id'  => new \QueryExpression(DBmysql::quoteName('glpi_links.id')),
+                        'glpi_links_itemtypes.itemtype'  => $item->getType(),
+                    ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
+                );
             }
         }
         return self::createTabEntry(_n('Link', 'Links', Session::getPluralNumber()), $count);
@@ -158,13 +158,14 @@ class ManualLink extends CommonDBChild
             [
                 'id'       => $icon_selector_id,
                 'selected' => $this->fields['icon'],
-                'style'    => 'width:175px;'
+                'style'    => 'width:175px;',
             ]
         );
         echo '</td>';
         echo '</tr>';
         echo Html::script('js/Forms/FaIconSelector.js');
-        echo Html::scriptBlock(<<<JAVASCRIPT
+        echo Html::scriptBlock(
+            <<<JAVASCRIPT
          $(
             function() {
                var icon_selector = new GLPI.Forms.FaIconSelector(document.getElementById('{$icon_selector_id}'));
@@ -237,7 +238,7 @@ JAVASCRIPT
                 'itemtype'  => $item->getType(),
                 'items_id'  => $item->fields[$item->getIndexName()],
             ],
-            'ORDERBY'      => 'name'
+            'ORDERBY'      => 'name',
         ]);
 
         echo '<div class="spaced">';
@@ -247,8 +248,8 @@ JAVASCRIPT
         echo self::getTypeName(Session::getPluralNumber());
         echo '</th>';
         echo '<th class="right">';
-       // Create a fake link to check rights.
-       // This is mandatory as CommonDBChild needs to know itemtype and items_id to compute rights.
+        // Create a fake link to check rights.
+        // This is mandatory as CommonDBChild needs to know itemtype and items_id to compute rights.
         $link = new self();
         $link->fields['itemtype'] = $item->getType();
         $link->fields['items_id'] = $item->fields[$item->getIndexName()];
@@ -348,7 +349,7 @@ JAVASCRIPT
         switch ($field) {
             case '_virtual':
                 return self::getLinkHtml($values);
-            break;
+                break;
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

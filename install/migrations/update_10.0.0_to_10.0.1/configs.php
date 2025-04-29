@@ -44,11 +44,11 @@ $migration->addPreQuery(
     $DB->buildUpdate(
         Config::getTable(),
         [
-            'context' => 'inventory'
+            'context' => 'inventory',
         ],
         [
             'name' => 'inventory_frequency',
-            'context' => 'core'
+            'context' => 'core',
         ]
     )
 );

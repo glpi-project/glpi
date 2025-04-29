@@ -53,48 +53,48 @@ class MassiveActionTest extends DbTestCase
                 'itemtype'     => 'Computer',
                 'items_id'     => '_test_pc01',
                 'allcount'     => 21,
-                'singlecount'  => 13
+                'singlecount'  => 13,
             ], [
                 'itemtype'     => 'Monitor',
                 'items_id'     => '_test_monitor_1',
                 'allcount'     => 20,
-                'singlecount'  => 12
+                'singlecount'  => 12,
             ], [
                 'itemtype'     => 'SoftwareLicense',
                 'items_id'     => '_test_softlic_1',
                 'allcount'     => 15,
-                'singlecount'  => 9
+                'singlecount'  => 9,
             ], [
                 'itemtype'     => 'NetworkEquipment',
                 'items_id'     => '_test_networkequipment_1',
                 'allcount'     => 16,
-                'singlecount'  => 11
+                'singlecount'  => 11,
             ], [
                 'itemtype'     => 'Peripheral',
                 'items_id'     => '_test_peripheral_1',
                 'allcount'     => 18,
-                'singlecount'  => 12
+                'singlecount'  => 12,
             ], [
                 'itemtype'     => 'Printer',
                 'items_id'     => '_test_printer_all',
                 'allcount'     => 19,
-                'singlecount'  => 11
+                'singlecount'  => 11,
             ], [
                 'itemtype'     => 'Phone',
                 'items_id'     => '_test_phone_1',
                 'allcount'     => 19,
-                'singlecount'  => 11
+                'singlecount'  => 11,
             ], [
                 'itemtype'     => 'Ticket',
                 'items_id'     => '_ticket01',
                 'allcount'     => 20,
-                'singlecount'  => 10
+                'singlecount'  => 10,
             ], [
                 'itemtype'     => 'Profile',
                 'items_id'     => 'Super-Admin',
                 'allcount'     => 2,
-                'singlecount'  => 1
-            ]
+                'singlecount'  => 1,
+            ],
         ];
     }
 
@@ -109,9 +109,9 @@ class MassiveActionTest extends DbTestCase
             [
                 'item'            => [
                     $itemtype   => [
-                        $items_id => 1
-                    ]
-                ]
+                        $items_id => 1,
+                    ],
+                ],
             ],
             [],
             'initial'
@@ -126,9 +126,9 @@ class MassiveActionTest extends DbTestCase
             [
                 'item'   => [
                     $itemtype   => [
-                        $items_id => 1
-                    ]
-                ]
+                        $items_id => 1,
+                    ],
+                ],
             ],
             [],
             'initial',
@@ -217,7 +217,7 @@ class MassiveActionTest extends DbTestCase
         // Set rights if needed
         if ($has_right) {
             $_SESSION['glpiactiveentities'] = [
-                $item->getEntityID()
+                $item->getEntityID(),
             ];
         }
 
@@ -236,7 +236,7 @@ class MassiveActionTest extends DbTestCase
                 'comment' => $base_comment,
             ]);
             $this->assertTrue($update);
-        } else if (!$itemtype_is_compatible) {
+        } elseif (!$itemtype_is_compatible) {
             // Itemtype incompatible, the action won't run on any items
             $expected_ok = 0;
             $expected_ko = 0;
@@ -258,7 +258,7 @@ class MassiveActionTest extends DbTestCase
 
         // If the item was modified, check the new comment value
         if ($itemtype_is_compatible && $has_right) {
-           // Refresh data
+            // Refresh data
             $this->assertTrue($item->getFromDB($item->fields['id']));
             $this->assertSame(
                 "$base_comment\n\n$amendment",
@@ -298,7 +298,7 @@ class MassiveActionTest extends DbTestCase
         $note_search = [
             'items_id' => $item->fields['id'],
             'itemtype' => $item->getType(),
-            'content'  => $new_note_content
+            'content'  => $new_note_content,
         ];
 
         if ($has_right) {
@@ -308,7 +308,7 @@ class MassiveActionTest extends DbTestCase
         // Check expected rights
         $this->assertSame(
             $has_right,
-            (bool)Session::haveRight($item::$rightname, UPDATENOTE)
+            (bool) Session::haveRight($item::$rightname, UPDATENOTE)
         );
 
         if ($has_right) {
@@ -346,31 +346,31 @@ class MassiveActionTest extends DbTestCase
     {
         return [
             [
-            // Expected failure: wrong itemtype
+                // Expected failure: wrong itemtype
                 'item'      => getItemByTypeName("Computer", "_test_pc01"),
                 'input'     => [],
                 'has_right' => false,
             ],
             [
-            // Expected failure: missing rights
+                // Expected failure: missing rights
                 'item'      => getItemByTypeName("Ticket", "_ticket01"),
                 'input'     => [],
                 'has_right' => false,
             ],
             [
-            // Expected failure: input is empty
+                // Expected failure: input is empty
                 'item'      => getItemByTypeName("Ticket", "_ticket01"),
                 'input'     => [],
                 'has_right' => true,
             ],
             [
-            // Expected failure: input is invalid
+                // Expected failure: input is invalid
                 'item'      => getItemByTypeName("Ticket", "_ticket01"),
                 'input'     => ['problems_id' => -1],
                 'has_right' => true,
             ],
             [
-            // Should work
+                // Should work
                 'item'      => getItemByTypeName("Ticket", "_ticket01"),
                 'input'     => ['problems_id' => 1],
                 'has_right' => true,
@@ -399,7 +399,7 @@ class MassiveActionTest extends DbTestCase
         // Check rights set up was successful
         $this->assertSame(
             $has_right,
-            (bool)Session::haveRight(Problem::$rightname, UPDATE)
+            (bool) Session::haveRight(Problem::$rightname, UPDATE)
         );
 
         // If input is valid, make sure we have a matching problem
@@ -436,38 +436,38 @@ class MassiveActionTest extends DbTestCase
         $ticket = new Ticket();
         $id = $ticket->add([
             'name'    => 'test',
-            'content' => 'test'
+            'content' => 'test',
         ]);
         $ticket->getFromDB($id);
 
         return [
             [
-            // Expected failure: wrong itemtype
+                // Expected failure: wrong itemtype
                 'item'        => getItemByTypeName("Computer", "_test_pc01"),
                 'input'       => [],
                 'has_right'   => false,
                 'should_work' => false,
             ],
             [
-            // Expected failure: missing rights
+                // Expected failure: missing rights
                 'item'        => $ticket,
                 'input'       => [],
                 'has_right'   => false,
                 'should_work' => false,
             ],
             [
-            // Expected failure: input is empty
+                // Expected failure: input is empty
                 'item'        => $ticket,
                 'input'       => [],
                 'has_right'   => true,
                 'should_work' => false,
             ],
             [
-            // Should work
+                // Should work
                 'item'        => $ticket,
                 'input'       => [
                     'solutiontypes_id' => 0,
-                    'content'          => "Solution"
+                    'content'          => "Solution",
                 ],
                 'has_right'   => true,
                 'should_work' => true,
@@ -502,7 +502,7 @@ class MassiveActionTest extends DbTestCase
             // Check rights set up was successful
             $this->assertSame(
                 $has_right,
-                (bool)Session::haveRight(Ticket::$rightname, UPDATE)
+                (bool) Session::haveRight(Ticket::$rightname, UPDATE)
             );
 
             // Update expectation: this item should be OK
@@ -545,28 +545,28 @@ class MassiveActionTest extends DbTestCase
 
         return [
             [
-            // Expected failure: wrong itemtype
+                // Expected failure: wrong itemtype
                 'item'        => getItemByTypeName("Computer", "_test_pc01"),
                 'input'       => [],
                 'has_right'   => false,
                 'should_work' => false,
             ],
             [
-            // Expected failure: missing rights
+                // Expected failure: missing rights
                 'item'        => $ticket,
                 'input'       => [],
                 'has_right'   => false,
                 'should_work' => false,
             ],
             [
-            // Expected failure: input is empty
+                // Expected failure: input is empty
                 'item'        => $ticket,
                 'input'       => [],
                 'has_right'   => true,
                 'should_work' => false,
             ],
             [
-            // Should work
+                // Should work
                 'item'        => $ticket,
                 'input'       => [
                     'contracts_id' => $contract_id,
@@ -603,7 +603,7 @@ class MassiveActionTest extends DbTestCase
             // Check rights set up was successful
             $this->assertSame(
                 $has_right,
-                (bool)Session::haveRight(Ticket::$rightname, UPDATE)
+                (bool) Session::haveRight(Ticket::$rightname, UPDATE)
             );
 
             // Update expectation: this item should be OK
@@ -633,7 +633,7 @@ class MassiveActionTest extends DbTestCase
         $bk = new \SavedSearch();
         $bku = new \SavedSearch_User();
         $this->assertTrue(
-            (bool)$bk->add([
+            (bool) $bk->add([
                 'name'         => 'public root recursive',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
@@ -641,12 +641,12 @@ class MassiveActionTest extends DbTestCase
                 'is_private'   => 0,
                 'entities_id'  => $entity,
                 'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid,
             ])
         );
 
         $this->assertTrue(
-            (bool)$bku->add([
+            (bool) $bku->add([
                 'users_id'          => $uid,
                 'itemtype'          => 'Ticket',
                 'savedsearches_id'  => $bk->getID(),
@@ -660,7 +660,7 @@ class MassiveActionTest extends DbTestCase
             "input"        => $bk->input,
             "ok"           => 1,
             "ko"           => 0,
-            "action_class" => \SavedSearch::class
+            "action_class" => \SavedSearch::class,
         ];
 
         yield [
@@ -670,7 +670,7 @@ class MassiveActionTest extends DbTestCase
             "input"        => $bk->input,
             "ok"           => 1,
             "ko"           => 0,
-            "action_class" => \SavedSearch::class
+            "action_class" => \SavedSearch::class,
         ];
 
         yield [
@@ -680,7 +680,7 @@ class MassiveActionTest extends DbTestCase
             "input"        => $bk->input,
             "ok"           => 1,
             "ko"           => 0,
-            "action_class" => \SavedSearch::class
+            "action_class" => \SavedSearch::class,
         ];
     }
 

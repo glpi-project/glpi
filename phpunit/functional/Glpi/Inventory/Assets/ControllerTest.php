@@ -64,7 +64,7 @@ class ControllerTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"caption": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "driver": "skl_uncore", "manufacturer": "Intel Corporation", "name": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "pciclass": "0600", "pcislot": "00:00.0", "productid": "1904", "rev": "08", "type": "Host bridge", "vendorid": "8086", "designation": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "manufacturers_id": "Intel Corporation", "interfacetypes_id": "Host bridge", "is_dynamic": 1}'
+                'expected'  => '{"caption": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "driver": "skl_uncore", "manufacturer": "Intel Corporation", "name": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "pciclass": "0600", "pcislot": "00:00.0", "productid": "1904", "rev": "08", "type": "Host bridge", "vendorid": "8086", "designation": "Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers", "manufacturers_id": "Intel Corporation", "interfacetypes_id": "Host bridge", "is_dynamic": 1}',
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -86,8 +86,8 @@ class ControllerTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"caption": "NVMe SSD Controller SM951/PM951", "driver": "nvme", "manufacturer": "Samsung Electronics Co Ltd", "name": "NVMe SSD Controller SM951/PM951", "pciclass": "0108", "pcislot": "3c:00.0", "productid": "a802", "rev": "01", "type": "Non-Volatile memory controller", "vendorid": "144d", "designation": "NVMe SSD Controller SM951/PM951", "manufacturers_id": "Samsung Electronics Co Ltd", "interfacetypes_id": "Non-Volatile memory controller", "is_dynamic": 1}'
-            ]
+                'expected'  => '{"caption": "NVMe SSD Controller SM951/PM951", "driver": "nvme", "manufacturer": "Samsung Electronics Co Ltd", "name": "NVMe SSD Controller SM951/PM951", "pciclass": "0108", "pcislot": "3c:00.0", "productid": "a802", "rev": "01", "type": "Non-Volatile memory controller", "vendorid": "144d", "designation": "NVMe SSD Controller SM951/PM951", "manufacturers_id": "Samsung Electronics Co Ltd", "interfacetypes_id": "Non-Volatile memory controller", "is_dynamic": 1}',
+            ],
         ];
     }
 
@@ -102,7 +102,7 @@ class ControllerTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Controller($computer, $json->content->controllers);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -111,14 +111,14 @@ class ControllerTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no controller linked to this computer
+        //first, check there are no controller linked to this computer
         $idc = new \Item_DeviceControl();
-                 $this->assertFalse(
-                     $idc->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
-                     'A controller is already linked to computer!'
-                 );
+        $this->assertFalse(
+            $idc->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            'A controller is already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -127,11 +127,11 @@ class ControllerTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Controller($computer, $json->content->controllers);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
@@ -185,63 +185,63 @@ class ControllerTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //create manually a computer, with 3 controllers
+        //create manually a computer, with 3 controllers
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-            'name' => 'Intel Corporation'
+            'name' => 'Intel Corporation',
         ]);
         $this->assertGreaterThan(0, $manufacturers_id);
 
         $controller_1_id = $device_control->add([
             'designation' => 'Xeon E3-1200 v5/E3-1500 v5/6th Gen Core Processor Host Bridge/DRAM Registers',
             'manufacturers_id' => $manufacturers_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $controller_1_id);
 
         $item_controller_1_id = $item_control->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicecontrols_id' => $controller_1_id
+            'devicecontrols_id' => $controller_1_id,
         ]);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-            'name' => 'Samsung Electronics Co Ltd'
+            'name' => 'Samsung Electronics Co Ltd',
         ]);
 
         $controller_2_id = $device_control->add([
             'designation' => 'NVMe SSD Controller SM951/PM951',
             'manufacturers_id' => $manufacturers_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $controller_2_id);
 
         $item_controller_2_id = $item_control->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicecontrols_id' => $controller_2_id
+            'devicecontrols_id' => $controller_2_id,
         ]);
         $this->assertGreaterThan(0, $item_controller_2_id);
 
         $controller_3_id = $device_control->add([
             'designation' => 'My Controller',
             'manufacturers_id' => $manufacturers_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $controller_3_id);
 
         $item_controller_3_id = $item_control->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicecontrols_id' => $controller_3_id
+            'devicecontrols_id' => $controller_3_id,
         ]);
         $this->assertGreaterThan(0, $item_controller_3_id);
 
@@ -251,26 +251,26 @@ class ControllerTest extends AbstractInventoryAsset
             $this->assertEquals(0, $controller['is_dynamic']);
         }
 
-       //computer inventory knows only "Xeon" and "NVMe SSD" controllers
+        //computer inventory knows only "Xeon" and "NVMe SSD" controllers
         $this->doInventory($xml_source, true);
 
-       //we still have 3 controllers
+        //we still have 3 controllers
         $controllers = $device_control->find();
         $this->assertCount(3, $controllers);
 
-       //we still have 3 controllers items linked to the computer
+        //we still have 3 controllers items linked to the computer
         $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $controllers);
 
-       //controllers present in the inventory source are now dynamic
+        //controllers present in the inventory source are now dynamic
         $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $controllers);
 
-       //controller not present in the inventory is still not dynamic
+        //controller not present in the inventory is still not dynamic
         $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $controllers);
 
-       //Redo inventory, but with removed "NVMe SSD" controller
+        //Redo inventory, but with removed "NVMe SSD" controller
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -300,19 +300,19 @@ class ControllerTest extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-       //we still have 3 controllers
+        //we still have 3 controllers
         $controllers = $device_control->find();
         $this->assertCount(3, $controllers);
 
-       //we now have 2 controllers linked to computer only
+        //we now have 2 controllers linked to computer only
         $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(2, $controllers);
 
-       //controller present in the inventory source is still dynamic
+        //controller present in the inventory source is still dynamic
         $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $controllers);
 
-       //controller not present in the inventory is still not dynamic
+        //controller not present in the inventory is still not dynamic
         $controllers = $item_control->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $controllers);
     }

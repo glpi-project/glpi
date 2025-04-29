@@ -70,7 +70,7 @@ class Ajax
             'title'           => '',
             'extraparams'     => [],
             'display'         => true,
-            'js_modal_fields' => ''
+            'js_modal_fields' => '',
         ];
 
         if (count($options)) {
@@ -157,7 +157,7 @@ class Ajax
             'display'       => true,
             'dialog_class'  => 'modal-lg',
             'autoopen'      => false,
-            'reloadonclose' => false
+            'reloadonclose' => false,
         ];
 
         if (count($options)) {
@@ -167,7 +167,7 @@ class Ajax
                 }
             }
         }
-        $url .= (strstr($url, '?') ? '&' :  '?') . '_in_modal=1';
+        $url .= (strstr($url, '?') ? '&' : '?') . '_in_modal=1';
 
         $rand = mt_rand();
 
@@ -285,7 +285,7 @@ JAVASCRIPT;
 
         $active_tab = Session::getActiveTab($type);
 
-       // Compute tabs ids.
+        // Compute tabs ids.
         $active_id = null;
         foreach ($tabs as $key => $val) {
             $id = sprintf('tab-%s-%s', str_replace('$', '_', $key), mt_rand());
@@ -298,7 +298,7 @@ JAVASCRIPT;
         }
         $active_id = str_replace('\\', '_', $active_id);
 
-       // Display tabs
+        // Display tabs
         if (count($tabs) > 0) {
             if (count($tabs) == 1) {
                 $orientation = "horizontal";
@@ -376,7 +376,7 @@ JAVASCRIPT;
                      itemtype: '" . addslashes($type) . "',
                      id: '$ID',
                      tab_key: href_url_params.get('_glpi_tab'),
-                     withtemplate: " . (int)($_GET['withtemplate'] ?? 0) . "
+                     withtemplate: " . (int) ($_GET['withtemplate'] ?? 0) . "
                   }
                ).done(function() {
                     // try to restore the scroll on a specific anchor
@@ -560,7 +560,7 @@ JAVASCRIPT;
         if (count($forceloadfor) == 0) {
             $forceloadfor = ['*'];
         }
-       // Need to define min size for text search
+        // Need to define min size for text search
         if ($minsize < 0) {
             $minsize = 0;
         }
@@ -622,14 +622,14 @@ JAVASCRIPT;
                 $output .= Html::jsGetElementbyID(Html::cleanId($zone)) . ".on(
                '$event',
                function(event) {";
-               // TODO manage buffer time !!?
-               // if ($buffertime > 0) {
-               //    $output.= "var elapsed = new Date().getTime() - last$zone$event;
-               //          last$zone$event = new Date().getTime();
-               //          if (elapsed < $buffertime) {
-               //             return;
-               //          }";
-               // }
+                // TODO manage buffer time !!?
+                // if ($buffertime > 0) {
+                //    $output.= "var elapsed = new Date().getTime() - last$zone$event;
+                //          last$zone$event = new Date().getTime();
+                //          if (elapsed < $buffertime) {
+                //             return;
+                //          }";
+                // }
 
                 $condition = '';
                 if ($minsize >= 0) {
@@ -638,7 +638,7 @@ JAVASCRIPT;
                 if (count($forceloadfor)) {
                     foreach ($forceloadfor as $value) {
                         if (!empty($condition)) {
-                             $condition .= " || ";
+                            $condition .= " || ";
                         }
                         $condition .= Html::jsGetElementbyID(Html::cleanId($zone)) . ".val() == '$value'";
                     }
@@ -680,14 +680,14 @@ JAVASCRIPT;
         $field     = '';
 
         $output    = '';
-       // Old scheme
+        // Old scheme
         if (
             isset($options["update_item"])
             && (is_array($options["update_item"]) || (strlen($options["update_item"]) > 0))
         ) {
             $field     = "update_item";
         }
-       // New scheme
+        // New scheme
         if (
             isset($options["toupdate"])
             && (is_array($options["toupdate"]) || (strlen($options["toupdate"]) > 0))
@@ -698,7 +698,7 @@ JAVASCRIPT;
         if (!empty($field)) {
             $datas = $options[$field];
             if (is_array($datas) && count($datas)) {
-               // Put it in array
+                // Put it in array
                 if (isset($datas['to_update'])) {
                     $datas = [$datas];
                 }
@@ -762,7 +762,7 @@ JAVASCRIPT;
             $out .= ",{";
             $first = true;
             foreach ($parameters as $key => $val) {
-               // prevent xss attacks
+                // prevent xss attacks
                 if (!preg_match('/^[a-zA-Z_$][0-9a-zA-Z_$]*$/', $key)) {
                     continue;
                 }
@@ -777,7 +777,7 @@ JAVASCRIPT;
                 $regs = [];
                 if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/', $val ?? '', $regs)) {
                     $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve[$regs[1]])) . ".val()";
-                } else if (!is_array($val) && $val === "__VALUE__") {
+                } elseif (!is_array($val) && $val === "__VALUE__") {
                     $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve)) . ".val()";
                 } else {
                     $out .=  json_encode($val);

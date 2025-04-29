@@ -97,8 +97,8 @@ class Pdu_Plug extends CommonDBRelation
         $items = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'pdus_id' => $pdu->getID()
-            ]
+                'pdus_id' => $pdu->getID(),
+            ],
         ]);
         $link = new self();
 
@@ -120,12 +120,12 @@ class Pdu_Plug extends CommonDBRelation
             echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' method='post'>\n";
             echo "\t<input type='hidden' name='pdus_id' value='$ID'>\n";
-           //echo "\t<input type='hidden' name='itemtype' value='".$item->getType()."'>\n";
+            //echo "\t<input type='hidden' name='itemtype' value='".$item->getType()."'>\n";
             echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><td>";
             echo "<label for='dropdown_plugs_id$rand'>" . __('Add a new plug') . "</label></td><td>";
             Plug::dropdown([
                 'name'   => "plugs_id",
-                'rand'   => $rand
+                'rand'   => $rand,
             ]);
             echo "</td><td>";
             echo "<label for='number_plugs'>" . __('Number');
@@ -135,7 +135,7 @@ class Pdu_Plug extends CommonDBRelation
                 [
                     'id'     => 'number_plugs',
                     'type'   => 'number',
-                    'min'    => 1
+                    'min'    => 1,
                 ]
             );
             echo "</td><td>";
@@ -151,7 +151,7 @@ class Pdu_Plug extends CommonDBRelation
             if ($canedit) {
                 $massiveactionparams = [
                     'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                    'container'       => 'mass' . __CLASS__ . $rand
+                    'container'       => 'mass' . __CLASS__ . $rand,
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }

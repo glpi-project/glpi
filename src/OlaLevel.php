@@ -47,7 +47,7 @@ class OlaLevel extends LevelAgreementLevel
     protected $ruleactionclass    = 'OlaLevelAction';
     protected static $parentclass = 'OLA';
     protected static $fkparent    = 'olas_id';
-   // No criteria
+    // No criteria
     protected $rulecriteriaclass = 'OlaLevelCriteria';
 
 
@@ -62,7 +62,7 @@ class OlaLevel extends LevelAgreementLevel
 
         parent::cleanDBonPurge();
 
-       // OlaLevel_Ticket does not extends CommonDBConnexity
+        // OlaLevel_Ticket does not extends CommonDBConnexity
         $olt = new OlaLevel_Ticket();
         $olt->deleteByCriteria([$this->rules_id_field => $this->fields['id']]);
     }
@@ -132,7 +132,7 @@ class OlaLevel extends LevelAgreementLevel
         $iterator = $DB->request([
             'FROM'   => 'glpi_olalevels',
             'WHERE'  => ['olas_id' => $ID],
-            'ORDER'  => 'execution_time'
+            'ORDER'  => 'execution_time',
         ]);
         $numrows = count($iterator);
 
@@ -140,7 +140,7 @@ class OlaLevel extends LevelAgreementLevel
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed'  => $numrows,
-                'container'      => 'mass' . __CLASS__ . $rand
+                'container'      => 'mass' . __CLASS__ . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -157,11 +157,11 @@ class OlaLevel extends LevelAgreementLevel
         Session::initNavigateListItems(
             'OlaLevel',
             //TRANS: %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                     sprintf(
-                                         __('%1$s = %2$s'),
-                                         OLA::getTypeName(1),
-                                         $ola->getName()
-                                     )
+            sprintf(
+                __('%1$s = %2$s'),
+                OLA::getTypeName(1),
+                $ola->getName()
+            )
         );
 
         foreach ($iterator as $data) {
@@ -265,7 +265,7 @@ class OlaLevel extends LevelAgreementLevel
             ['max_time'  => $delay,
                 'used'      => self::getAlreadyUsedExecutionTime($ola->fields['id']),
                 'type'      => $ola->fields['type'],
-                'value'     => $this->fields['execution_time']
+                'value'     => $this->fields['execution_time'],
             ]
         );
         echo "</td></tr>\n";
@@ -300,10 +300,10 @@ class OlaLevel extends LevelAgreementLevel
             'FROM'   => 'glpi_olalevels',
             'WHERE'  => [
                 'olas_id'   => $olas_id,
-                'is_active' => 1
+                'is_active' => 1,
             ],
             'ORDER'  => 'execution_time ASC',
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         if (count($iterator)) {
@@ -330,7 +330,7 @@ class OlaLevel extends LevelAgreementLevel
         $iterator = $DB->request([
             'SELECT' => 'execution_time',
             'FROM'   => 'glpi_olalevels',
-            'WHERE'  => ['id' => $olalevels_id]
+            'WHERE'  => ['id' => $olalevels_id],
         ]);
 
         if (count($iterator)) {
@@ -344,15 +344,15 @@ class OlaLevel extends LevelAgreementLevel
                     'olas_id'         => $olas_id,
                     'id'              => ['<>', $olalevels_id],
                     'execution_time'  => ['>', $execution_time],
-                    'is_active'       => 1
+                    'is_active'       => 1,
                 ],
                 'ORDER'  => 'execution_time ASC',
-                'LIMIT'  => 1
+                'LIMIT'  => 1,
             ]);
 
             if (count($iterator)) {
-                 $result = $iterator->current();
-                 return $result['id'];
+                $result = $iterator->current();
+                return $result['id'];
             }
         }
         return 0;

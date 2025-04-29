@@ -69,10 +69,10 @@ $nbnoright  = $results['noright'];
 $msg_type = INFO;
 if ($nbnoaction > 0 && $nbok === 0 && $nbko === 0 && $nbnoright === 0) {
     $message = __('Operation was done but no action was required');
-} else if ($nbok == 0) {
+} elseif ($nbok == 0) {
     $message = __('Failed operation');
     $msg_type = ERROR;
-} else if ($nbnoright || $nbko) {
+} elseif ($nbnoright || $nbko) {
     $message = __('Operation performed partially successful');
     $msg_type = WARNING;
 } else {
@@ -82,7 +82,7 @@ if ($nbnoaction > 0 && $nbok === 0 && $nbko === 0 && $nbnoright === 0) {
     }
 }
 if ($nbnoright || $nbko) {
-   //TRANS: %$1d and %$2d are numbers
+    //TRANS: %$1d and %$2d are numbers
     $message .= "<br>" . sprintf(
         __('(%1$d authorizations problems, %2$d failures)'),
         $nbnoright,

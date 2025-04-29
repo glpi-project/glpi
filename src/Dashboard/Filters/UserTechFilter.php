@@ -72,7 +72,7 @@ class UserTechFilter extends AbstractFilter
         $users_id = null;
         if ((int) $value > 0) {
             $users_id = (int) $value;
-        } else if ($value === 'myself') {
+        } elseif ($value === 'myself') {
             $users_id = $_SESSION['glpiID'];
         }
 
@@ -81,7 +81,7 @@ class UserTechFilter extends AbstractFilter
                 $criteria["WHERE"] = [
                     "$table.users_id_tech" => $users_id,
                 ];
-            } else if (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
+            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
                 $itemtype  = getItemTypeForTable($table);
                 $main_item = getItemForItemtype($itemtype);
                 $userlink  = $main_item->userlinkclass;
@@ -93,8 +93,8 @@ class UserTechFilter extends AbstractFilter
                         'ON' => [
                             'ul'   => $fk,
                             $table => 'id',
-                        ]
-                    ]
+                        ],
+                    ],
                 ];
                 $criteria["WHERE"] = [
                     "ul.type"     => \CommonITILActor::ASSIGN,
@@ -119,14 +119,14 @@ class UserTechFilter extends AbstractFilter
                     'link'       => 'AND',
                     'field'      => self::getSearchOptionID($table, 'users_id_tech', 'glpi_users'),
                     'searchtype' => 'equals',
-                    'value'      =>  $value === 'myself' ? (int) Session::getLoginUserID() : (int) $value
+                    'value'      =>  $value === 'myself' ? (int) Session::getLoginUserID() : (int) $value,
                 ];
             } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
                 $criteria[] = [
                     'link'       => 'AND',
                     'field'      => 5,// tech
                     'searchtype' => 'equals',
-                    'value'      =>  is_numeric($value) ? (int) $value : $value
+                    'value'      =>  is_numeric($value) ? (int) $value : $value,
                 ];
             }
         }
@@ -146,8 +146,8 @@ class UserTechFilter extends AbstractFilter
                     [
                         'id'    => 'myself',
                         'text'  => __('Myself'),
-                    ]
-                ]
+                    ],
+                ],
             ]
         );
     }

@@ -39,7 +39,7 @@
  **/
 class TaskTemplate extends AbstractITILChildTemplate
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;
 
@@ -67,27 +67,27 @@ class TaskTemplate extends AbstractITILChildTemplate
             ['name'  => 'taskcategories_id',
                 'label' => TaskCategory::getTypeName(1),
                 'type'  => 'dropdownValue',
-                'list'  => true
+                'list'  => true,
             ],
             ['name'  => 'state',
                 'label' => __('Status'),
-                'type'  => 'state'
+                'type'  => 'state',
             ],
             ['name'  => 'is_private',
                 'label' => __('Private'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
             ['name'  => 'actiontime',
                 'label' => __('Duration'),
-                'type'  => 'actiontime'
+                'type'  => 'actiontime',
             ],
             ['name'  => 'users_id_tech',
                 'label' => __('By'),
-                'type'  => 'users_id_tech'
+                'type'  => 'users_id_tech',
             ],
             ['name'  => 'groups_id_tech',
                 'label' => Group::getTypeName(1),
-                'type'  => 'groups_id_tech'
+                'type'  => 'groups_id_tech',
             ],
         ];
     }
@@ -103,7 +103,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'field'              => 'content',
             'table'              => $this->getTable(),
             'datatype'           => 'text',
-            'htmltext'           => true
+            'htmltext'           => true,
         ];
 
         $tab[] = [
@@ -111,7 +111,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'name'               => TaskCategory::getTypeName(1),
             'field'              => 'name',
             'table'              => getTableForItemType('TaskCategory'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -119,7 +119,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'table'              => $this->getTable(),
             'field'              => 'is_private',
             'name'               => __('Private'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -129,7 +129,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'linkfield'          => 'users_id_tech',
             'name'               => __('By'),
             'datatype'           => 'dropdown',
-            'right'              => 'own_ticket'
+            'right'              => 'own_ticket',
         ];
 
         $tab[] = [
@@ -139,7 +139,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'linkfield'          => 'groups_id_tech',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_task' => 1],
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -148,7 +148,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'field'              => 'actiontime',
             'name'               => __('Total duration'),
             'datatype'           => 'timestamp',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -157,7 +157,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'field'              => 'state',
             'name'               => __('Status'),
             'searchtype'         => 'equals',
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         return $tab;
