@@ -455,5 +455,13 @@ class ChangeTest extends DbTestCase
         $output = ob_get_clean();
         $this->assertStringContainsString("Your changes to validate <span class='primary-bg primary-fg count'>1</span>", $output);
         $this->assertMatchesRegularExpression("/href='\/glpi\/front\/change.form.php\?id=" . $change->getID() . "[^']+'>/", $output);
+
+        // login as tech to check if the change validation is not shown
+        $this->login('tech', 'tech');
+
+        ob_start();
+        \Change::showCentralList(0, 'tovalidate', false);
+        $output = ob_get_clean();
+        $this->assertStringNotContainsString("Your changes to validate <span class='primary-bg primary-fg count'>1</span>", $output);
     }
 }
