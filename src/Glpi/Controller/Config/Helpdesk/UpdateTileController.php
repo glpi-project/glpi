@@ -75,6 +75,9 @@ final class UpdateTileController extends AbstractTileController
         return $this->render('pages/admin/helpdesk_home_config_tiles.html.twig', [
             'tiles_manager' => $this->tiles_manager,
             'tiles' => $tiles,
+            // If we reach this point, the item was editable so we must keep
+            // displaying the controls.
+            'editable' => true,
         ]);
     }
 }
