@@ -35,7 +35,6 @@
 $finder = (new PhpCsFixer\Finder())
     ->in(__DIR__)
     ->exclude([
-        '.git/',
         'config/',
         'files/',
         'marketplace/',
