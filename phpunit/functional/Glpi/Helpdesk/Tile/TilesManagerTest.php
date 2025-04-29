@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Helpdesk\TilesManagerTest;
 use CommonDBTM;
 use DbTestCase;
 use Entity;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Helpdesk\Tile\ExternalPageTile;
 use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
@@ -508,5 +509,28 @@ final class TilesManagerTest extends DbTestCase
         $after_copy_fields = array_map($normalize, $after_copy);
 
         $this->assertEquals($root_tiles_fields, $after_copy_fields);
+    }
+
+    public function testFormTileWithoutNameDoesntTriggerErrors(): void
+    {
+        // Arrange: create a form without a name and associate it to a tile
+        $builder = new FormBuilder("");
+        $form = $this->createForm($builder);
+        $tile = $this->createItem(FormTile::class, [
+            'forms_forms_id' => $form->getID(),
+        ]);
+
+        // Act: render the tiles
+        TemplateRenderer::getInstance()->render(
+            'pages/admin/helpdesk_home_config_tiles.html.twig',
+            [
+                'tiles_manager' => $this->getManager(),
+                'tiles' => [$tile],
+            ]
+        );
+
+        // Assert: no real assertions, we are just checking that the template
+        // above doesn't throw an error.
+        $this->assertTrue(true);
     }
 }

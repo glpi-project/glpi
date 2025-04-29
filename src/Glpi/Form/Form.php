@@ -1018,7 +1018,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
         return FormTranslation::translate(
             $this,
             static::TRANSLATION_KEY_NAME
-        );
+        ) ?? '';
     }
 
     #[Override]
