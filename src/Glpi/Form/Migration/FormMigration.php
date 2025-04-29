@@ -216,7 +216,7 @@ class FormMigration extends AbstractPluginMigration
             6 => ValueOperator::GREATER_THAN_OR_EQUALS,
             7 => ValueOperator::VISIBLE,
             8 => ValueOperator::NOT_VISIBLE,
-            9 => null, // TODO: Implement regex match
+            9 => ValueOperator::MATCH_REGEX,
             default => null
         };
     }

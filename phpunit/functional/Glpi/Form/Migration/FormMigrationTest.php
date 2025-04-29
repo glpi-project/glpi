@@ -1223,6 +1223,7 @@ final class FormMigrationTest extends DbTestCase
             6 => ValueOperator::GREATER_THAN_OR_EQUALS,
             7 => ValueOperator::VISIBLE,
             8 => ValueOperator::NOT_VISIBLE,
+            9 => ValueOperator::MATCH_REGEX,
         ];
         foreach ($value_operators as $key => $value_operator) {
             yield 'QuestionTypeShortText - Visible if condition with value operator ' . $value_operator->getLabel() => [
