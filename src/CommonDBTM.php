@@ -132,6 +132,10 @@ class CommonDBTM extends CommonGLPI
     /**
      * List of linked item types on which entities information should be forwarded on update.
      *
+     * An update is triggered on declared item types when the current item is updated.
+     * It happens if the current item is linked to an entity using relation (foreign key or itemtype/items_id)
+     * and other conditions (@see \CommonDBTM::forwardEntityInformations() and \CommonDBTM::forwardEntityInformations() call for more details).
+     *
      * @var string[]
      */
     protected static $forward_entity_to = [];

@@ -14,7 +14,7 @@ The present file will list all changes made to the project; according to the
 - Approval requests are grouped by validation step. 
 - Satisfaction surveys for Changes
 - New right for assigning service levels to ITIL Objects (UPDATE right also still allows this).
-- New right for impersonation of users with less rights (Config UPDATE right also still allows this globally).
+- New right for impersonation of users with fewer rights (Config UPDATE right also still allows this globally).
 - Marketplace availability configuration.
 - Toast popup message location configuration.
 - Datacenter room grid size configuration (per room).

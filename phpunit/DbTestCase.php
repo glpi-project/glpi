@@ -141,7 +141,7 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
-     * Assert added object is inserted as expected
+     * Assert added object is inserted as expected (reload the object from DB)
      *
      * @param  CommonDBTM $object The object to test
      * @param  int        $id     The id of added object
