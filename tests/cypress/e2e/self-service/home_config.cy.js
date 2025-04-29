@@ -152,6 +152,9 @@ for (const test of tests) {
                 "Browse help articles",
                 "View approval requests",
             ]);
+
+            // Make sure the state is still editable after the action
+            checkThatTilesAreEditable();
         });
 
         it(`can remove tiles (${test.label})`, () => {
@@ -170,6 +173,9 @@ for (const test of tests) {
                 "Make a reservation",
                 "View approval requests",
             ]);
+
+            // Make sure the state is still editable after the action
+            checkThatTilesAreEditable();
 
             // Refresh page to confirm deletion
             cy.reload();
@@ -200,6 +206,9 @@ for (const test of tests) {
                 "Make a reservation",
                 "View approval requests",
             ]);
+
+            // Make sure the state is still editable after the action
+            checkThatTilesAreEditable();
         });
 
         it(`can add a "Glpi page" tile (${test.label})`, () => {
@@ -231,6 +240,9 @@ for (const test of tests) {
                 "My title",
             ]);
             cy.findByText("My description").should('be.visible');
+
+            // Make sure the state is still editable after the action
+            checkThatTilesAreEditable();
         });
 
         it(`can add a "External page" tile (${test.label})`, () => {
@@ -493,4 +505,10 @@ function validateSvgSpriteIsShown() {
     cy.get('svg:visible').should('exist');
     // TODO: something like this would be better but I can't get it to work.
     // cy.get('svg:visible').find('use').shadow().find('symbol').should('exist');
+}
+
+function checkThatTilesAreEditable() {
+    // Using "should be.visible" instead of click would be more precise but
+    // it seems to lead to many false negative results.
+    cy.findByRole('button', {'name': "Add tile"}).click();
 }
