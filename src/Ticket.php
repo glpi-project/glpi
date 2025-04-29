@@ -3976,43 +3976,9 @@ JAVASCRIPT;
             $url_validate = Ticket::getSearchURL() . "?" . Toolbox::append_params($opt);
         }
 
-        $email  = UserEmail::getDefaultForUser($ID);
-        $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
-
         // Set default values...
-        $default_values = [
-            '_users_id_requester_notif' => [
-                'use_notification' => (($email == "") ? 0 : $default_use_notif),
-            ],
-            'nodelegate'                => 1,
-            '_users_id_requester'       => 0,
-            '_users_id_observer'        => 0,
-            '_users_id_observer_notif'  => [
-                'use_notification' => $default_use_notif,
-            ],
-            '_groups_id_observer'        => 0,
-            'name'                      => '',
-            'content'                   => '',
-            'itilcategories_id'         => 0,
-            'locations_id'              => 0,
-            'urgency'                   => 3,
-            'items_id'                  => [],
-            'entities_id'               => $_SESSION['glpiactive_entity'],
-            'plan'                      => [],
-            '_add_validation'           => 0,
-            'type'                      => Entity::getUsedConfig(
-                'tickettype',
-                $_SESSION['glpiactive_entity'],
-                '',
-                Ticket::INCIDENT_TYPE
-            ),
-            '_right'                    => "id",
-            '_content'                  => [],
-            '_tag_content'              => [],
-            '_filename'                 => [],
-            '_tag_filename'             => [],
-            '_tasktemplates_id'         => [],
-        ];
+        $default_values = self::getDefaultValues();
+
         $options = [];
 
         // Get default values from posted values on reload form
