@@ -108,7 +108,10 @@ class Supplier extends CommonDBTM
 
     public function getCloneRelations(): array
     {
-        return [];
+        return [
+            KnowbaseItem_Item::class,
+            ManualLink::class,
+        ];
     }
 
     public function defineTabs($options = [])

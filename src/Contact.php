@@ -95,7 +95,9 @@ class Contact extends CommonDBTM
 
     public function getCloneRelations(): array
     {
-        return [];
+        return [
+            ManualLink::class,
+        ];
     }
 
 
