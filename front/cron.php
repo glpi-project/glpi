@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-require_once(__DIR__ . '/_check_webserver_config.php');
-
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
@@ -134,6 +132,8 @@ if (PHP_SAPI === 'cli') {
     }
 } else {
     // Execution from the web context
+
+    require_once(__DIR__ . '/_check_webserver_config.php');
 
     // The advantage of using background-image is that cron is called in a separate
     // request and thus does not slow down output of the main page as it would if called
