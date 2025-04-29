@@ -627,7 +627,7 @@ var GLPIPlanning  = {
         // And another one during the calendar's changeView() call.
         // By adding it manually after rendering, onlyone call is done.
         this.calendar.addEventSource({
-            url: CFG_GLPI.root_doc + "/ajax/planning.php",
+            url: `${CFG_GLPI.root_doc}/ajax/planning.php`
             type: 'POST',
             extraParams: function () {
                 var view_name =  GLPIPlanning.calendar.state.viewType;
