@@ -3978,6 +3978,8 @@ JAVASCRIPT;
 
         // Set default values...
         $default_values = self::getDefaultValues();
+        $default_values['nodelegate']   = 1;
+        $default_values['_right']       = "id";
 
         $options = [];
 
