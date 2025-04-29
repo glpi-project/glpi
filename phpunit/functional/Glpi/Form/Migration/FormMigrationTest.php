@@ -80,7 +80,6 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
-use Glpi\Message\MessageType;
 use Glpi\Migration\PluginMigrationResult;
 use Glpi\Tests\FormTesterTrait;
 use Location;
@@ -919,15 +918,11 @@ final class FormMigrationTest extends DbTestCase
         $this->setPrivateProperty($migration, 'result', $result);
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
-        $errors = array_filter(
-            $result->getMessages(),
-            static fn (array $entry) => $entry['type'] === MessageType::Error
-        );
-        $this->assertCount(1, $errors);
-        $this->assertEquals(
-            current($errors)['message'],
-            'Section "Orphan section" has no form. It will not be migrated.'
-        );
+        // Check that the section hasn't been migrated
+        $section = new Section();
+        $this->assertFalse($section->getFromDBByCrit([
+            'name' => 'Orphan section',
+        ]));
     }
 
     public function testFormMigrationWithOrphanQuestion(): void
@@ -950,15 +945,11 @@ final class FormMigrationTest extends DbTestCase
         $this->setPrivateProperty($migration, 'result', $result);
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
-        $errors = array_filter(
-            $result->getMessages(),
-            static fn (array $entry) => $entry['type'] === MessageType::Error
-        );
-        $this->assertCount(1, $errors);
-        $this->assertEquals(
-            current($errors)['message'],
-            'Question "Orphan question" has no section. It will not be migrated.'
-        );
+        // Check that the question hasn't been migrated
+        $question = new Question();
+        $this->assertFalse($question->getFromDBByCrit([
+            'name' => 'Orphan question',
+        ]));
     }
 
     public function testFormMigrationUpdateHorizontalRanks(): void
@@ -1162,6 +1153,78 @@ final class FormMigrationTest extends DbTestCase
         $this->assertMatchesRegularExpression(
             $expectedPatternForContent,
             $content_config->getValue()
+        );
+    }
+
+    public function testFormMigrationWithRadioQuestion(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Insert a new form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name' => 'Test form migration for radio question',
+            ]
+        ));
+
+        // Insert a new section
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'name'                        => 'Test form migration for radio question - Section',
+                'plugin_formcreator_forms_id' => $DB->insertId()
+            ]
+        ));
+
+        // Insert a new question with type "radio"
+        $section_id = $DB->insertId();
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'plugin_formcreator_sections_id' => $section_id,
+                'name'                           => 'Test form migration for radio question - Question',
+                'fieldtype'                      => 'radios',
+                'default_values'                 => '1',
+                'values'                         => json_encode(['1', '2', '3']),
+            ]
+        ));
+
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Check that the question has been migrated
+        /** @var Question $question */
+        $question = getItemByTypeName(Question::class, 'Test form migration for radio question - Question');
+        $this->assertInstanceOf(Question::class, $question);
+
+        /** @var QuestionTypeRadio $question_type */
+        $question_type = $question->getQuestionType();
+        $this->assertInstanceOf(QuestionTypeRadio::class, $question_type);
+
+        $this->assertEquals(
+            [
+                [
+                    'uuid'    => 0,
+                    'value'   => '1',
+                    'checked' => true,
+                ],
+                [
+                    'uuid'    => 1,
+                    'value'   => '2',
+                    'checked' => false,
+                ],
+                [
+                    'uuid'    => 2,
+                    'value'   => '3',
+                    'checked' => false,
+                ]
+            ],
+            $question_type->getValues($question)
         );
     }
 

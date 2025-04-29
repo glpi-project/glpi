@@ -447,11 +447,10 @@ class FormMigration extends AbstractPluginMigration
                 'PluginFormcreatorForm',
                 $raw_section['plugin_formcreator_forms_id']
             )['items_id'] ?? 0;
+
+            // If the form ID is 0, it means the form does not exist
             if ($form_id === 0) {
-                $this->result->addMessage(MessageType::Error, sprintf(
-                    'Section "%s" has no form. It will not be migrated.',
-                    $raw_section['name']
-                ));
+                // No need to warn the user, as this section was not visible in formcreator anyway.
                 continue;
             }
 
@@ -509,11 +508,10 @@ class FormMigration extends AbstractPluginMigration
                 'PluginFormcreatorSection',
                 $raw_question['plugin_formcreator_sections_id']
             )['items_id'] ?? 0;
+
+            // If the section ID is 0, it means the section does not exist
             if ($section_id === 0) {
-                $this->result->addMessage(MessageType::Error, sprintf(
-                    'Question "%s" has no section. It will not be migrated.',
-                    $raw_question['name']
-                ));
+                // No need to warn the user, as this question was not visible in formcreator anyway.
                 continue;
             }
 
@@ -544,20 +542,34 @@ class FormMigration extends AbstractPluginMigration
                 'uuid'                        => $raw_question['uuid']
             ], fn ($value) => $value !== null);
 
-            $question = $this->importItem(
-                Question::class,
-                $data,
-                [
-                    'uuid' => $raw_question['uuid'],
-                ]
-            );
+            try {
+                $question = $this->importItem(
+                    Question::class,
+                    $data,
+                    [
+                        'uuid' => $raw_question['uuid'],
+                    ]
+                );
 
-            $this->mapItem(
-                'PluginFormcreatorQuestion',
-                $raw_question['id'],
-                Question::class,
-                $question->getID()
-            );
+                $this->mapItem(
+                    'PluginFormcreatorQuestion',
+                    $raw_question['id'],
+                    Question::class,
+                    $question->getID()
+                );
+            } catch (\Throwable $th) {
+                $section = Section::getById($section_id) ?: null;
+                $this->result->addMessage(
+                    MessageType::Error,
+                    sprintf(
+                        __('Error while importing question "%s" in section "%s" and form "%s": %s'),
+                        $raw_question['name'],
+                        $section?->getName(),
+                        $section?->getItem()?->getName(),
+                        $th->getMessage()
+                    )
+                );
+            }
 
             $this->progress_indicator?->advance();
         }
@@ -915,8 +927,11 @@ class FormMigration extends AbstractPluginMigration
             )['items_id'] ?? 0;
 
             $form = new Form();
+
+            // If the form is invalid, skip this target
             if (!$form->getFromDB($form_id)) {
-                throw new LogicException("Form with id {$raw_target['plugin_formcreator_forms_id']} not found");
+                // No need to warn the user, as this destination was not visible in formcreator anyway.
+                continue;
             }
 
             $fields_config = [];
@@ -934,9 +949,10 @@ class FormMigration extends AbstractPluginMigration
                         $this->result->addMessage(
                             MessageType::Error,
                             sprintf(
-                                __('The "%s" destination field configuration of the form "%s" cannot be imported.'),
+                                __('The "%s" destination field configuration of the form "%s" cannot be imported : %s'),
                                 $configurable_field->getLabel(),
-                                $form->getName()
+                                $form->getName(),
+                                $th->getMessage()
                             )
                         );
                     }
@@ -1018,8 +1034,11 @@ class FormMigration extends AbstractPluginMigration
                 $raw_target_actor['items_id']
             )['items_id'] ?? 0;
 
+            // The destination ID is 0 if the target was not migrated or not existing.
+            // In this case, we skip the actor
             if ($target_id === 0) {
-                throw new LogicException("Destination for target id {$raw_target_actor['items_id']} not found");
+                // No need to warn the user, as this actor config was not visible in formcreator anyway.
+                continue;
             }
 
             $targets_actors[$target_id][$raw_target_actor['actor_role']][$raw_target_actor['actor_type']][] =
