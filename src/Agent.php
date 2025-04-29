@@ -40,7 +40,6 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Inventory;
 use Glpi\Plugin\Hooks;
-use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Response;
 
 /**
