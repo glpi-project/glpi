@@ -168,7 +168,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @see CommonDBConnexity::getItemsAssociationRequest()
      * @since 9.5
      *
-     * @param string  $itemtype          the type of the item we want the resulting items to be associated to
+     * @param string  $itemtype          Itemtype for which we want data
      * @param string  $items_id          the name of the item we want the resulting items to be associated to
      *
      * @return array the items associated to the given one (empty if none was found)

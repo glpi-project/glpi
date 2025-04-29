@@ -41,7 +41,9 @@ abstract class CommonDBChild extends CommonDBConnexity
 {
     // Mapping between DB fields
     // * definition
-    public static $itemtype; // Class name or field name (start with itemtype) for link to Parent
+
+    /** @var class-string<\CommonDBTM>|string $itemtype Class name or field name (start with itemtype) for link to Parent */
+    public static $itemtype;
     public static $items_id; // Field name
     // * rights
     public static $checkParentRights  = self::HAVE_SAME_RIGHT_ON_ITEM;

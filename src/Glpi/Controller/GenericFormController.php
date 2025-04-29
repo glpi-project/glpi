@@ -44,6 +44,14 @@ use Glpi\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Display a form for a given item type Or Handle form submission
+ *
+ * Use GET method to display a form,
+ * to display a modal "add _in_modal=1" to query url otherwise it's a fullpage form.
+ *
+ * use POST method to submit a form,
+ */
 class GenericFormController extends AbstractController
 {
     private const SUPPORTED_ACTIONS = [
@@ -167,6 +175,7 @@ class GenericFormController extends AbstractController
 
     private function getFormAction(Request $request): ?string
     {
+        // form submission
         if ($request->getMethod() === 'POST') {
             foreach (self::SUPPORTED_ACTIONS as $action) {
                 if ($request->request->has($action)) {
@@ -182,6 +191,9 @@ class GenericFormController extends AbstractController
         return $request->getMethod() === 'GET' ? 'get' : null;
     }
 
+    /**
+     * Display a full form page
+     */
     public function displayForm(CommonDBTM $object, Request $request): Response
     {
         $form_options = $object->getFormOptionsFromUrl($request->query->all());
@@ -197,6 +209,9 @@ class GenericFormController extends AbstractController
         ]);
     }
 
+    /**
+     * Display a modal form
+     */
     private function displayModal(mixed $object, Request $request): Response
     {
         $form_options = [];

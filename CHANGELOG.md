@@ -13,7 +13,7 @@ The present file will list all changes made to the project; according to the
 - Group approval requests (any user from group can approve).
 - Satisfaction surveys for Changes
 - New right for assigning service levels to ITIL Objects (UPDATE right also still allows this).
-- New right for impersonation of users with less rights (Config UPDATE right also still allows this globally).
+- New right for impersonation of users with fewer rights (Config UPDATE right also still allows this globally).
 - Marketplace availability configuration.
 - Toast popup message location configuration.
 - Datacenter room grid size configuration (per room).
@@ -236,6 +236,7 @@ The present file will list all changes made to the project; according to the
 - `Software::merge()` method is now private.
 - The refusal of the collected emails corresponding to a GLPI notification will now be made based on a default rule.
 - The `$store_path` parameter has been removed from the `Dropdown::dropdownIcons()` method.
+- `CommonITILValidation::showSummary()` visibility changed from public to private and always returns void.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.
