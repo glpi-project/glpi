@@ -121,23 +121,23 @@ class ProviderTest extends DbTestCase
                 'series' => [
                     [
                         'name' => 'Late own and resolve',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'Late resolve',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'Late own',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'On time',
-                        'data' => [2, 1]
-                    ]
-                ]
+                        'data' => [2, 1],
+                    ],
+                ],
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'fas fa-stopwatch',
         ];
         $this->assertEquals($expected, $output);
 
@@ -150,7 +150,7 @@ class ProviderTest extends DbTestCase
                     'takeintoaccount_delay_stat' => 50000,
                 ],
                 [
-                    'id' => $ticket->getID()
+                    'id' => $ticket->getID(),
                 ]
             )
         );
@@ -163,7 +163,7 @@ class ProviderTest extends DbTestCase
                     'takeintoaccount_delay_stat' => 50000,
                 ],
                 [
-                    'id' => $ticket2->getID()
+                    'id' => $ticket2->getID(),
                 ]
             )
         );
@@ -178,23 +178,23 @@ class ProviderTest extends DbTestCase
                 'series' => [
                     [
                         'name' => 'Late own and resolve',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'Late resolve',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'Late own',
-                        'data' => [1, 1]
+                        'data' => [1, 1],
                     ],
                     [
                         'name' => 'On time',
-                        'data' => [0, 1]
-                    ]
-                ]
+                        'data' => [0, 1],
+                    ],
+                ],
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'fas fa-stopwatch',
         ];
         $this->assertEquals($expected, $output);
 
@@ -206,10 +206,10 @@ class ProviderTest extends DbTestCase
                     'time_to_own'                => '2021-01-01 01:00',
                     'takeintoaccount_delay_stat' => 60,
                     'solvedate'                  => '2021-02-01 00:00',
-                    'time_to_resolve'            => '2021-01-02 00:00'
+                    'time_to_resolve'            => '2021-01-02 00:00',
                 ],
                 [
-                    'id' => $ticket->getID()
+                    'id' => $ticket->getID(),
                 ]
             )
         );
@@ -221,10 +221,10 @@ class ProviderTest extends DbTestCase
                     'time_to_own'                => '2021-01-01 01:00',
                     'takeintoaccount_delay_stat' => 60,
                     'solvedate'                  => '2021-02-01 00:00',
-                    'time_to_resolve'            => '2021-01-02 00:00'
+                    'time_to_resolve'            => '2021-01-02 00:00',
                 ],
                 [
-                    'id' => $ticket2->getID()
+                    'id' => $ticket2->getID(),
                 ]
             )
         );
@@ -238,23 +238,23 @@ class ProviderTest extends DbTestCase
                 'series' => [
                     [
                         'name' => 'Late own and resolve',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'Late resolve',
-                        'data' => [1, 1]
+                        'data' => [1, 1],
                     ],
                     [
                         'name' => 'Late own',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'On time',
-                        'data' => [0, 1]
-                    ]
-                ]
+                        'data' => [0, 1],
+                    ],
+                ],
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'fas fa-stopwatch',
         ];
         $this->assertEquals($expected, $output);
 
@@ -266,10 +266,10 @@ class ProviderTest extends DbTestCase
                     'time_to_own'                => '2021-01-01 01:00',
                     'takeintoaccount_delay_stat' => 50000,
                     'solvedate'                  => '2021-02-01 00:00',
-                    'time_to_resolve'            => '2021-01-02 00:00'
+                    'time_to_resolve'            => '2021-01-02 00:00',
                 ],
                 [
-                    'id' => $ticket->getID()
+                    'id' => $ticket->getID(),
                 ]
             )
         );
@@ -281,10 +281,10 @@ class ProviderTest extends DbTestCase
                     'time_to_own'                => '2021-01-01 01:00',
                     'takeintoaccount_delay_stat' => 50000,
                     'solvedate'                  => '2021-02-01 00:00',
-                    'time_to_resolve'            => '2021-01-02 00:00'
+                    'time_to_resolve'            => '2021-01-02 00:00',
                 ],
                 [
-                    'id' => $ticket2->getID()
+                    'id' => $ticket2->getID(),
                 ]
             )
         );
@@ -296,10 +296,10 @@ class ProviderTest extends DbTestCase
                     'time_to_own'                => '2021-01-01 01:00',
                     'takeintoaccount_delay_stat' => 50000,
                     'solvedate'                  => '2021-02-01 00:00',
-                    'time_to_resolve'            => '2021-01-02 00:00'
+                    'time_to_resolve'            => '2021-01-02 00:00',
                 ],
                 [
-                    'id' => $ticket3->getID()
+                    'id' => $ticket3->getID(),
                 ]
             )
         );
@@ -314,23 +314,23 @@ class ProviderTest extends DbTestCase
                 'series' => [
                     [
                         'name' => 'Late own and resolve',
-                        'data' => [2, 1]
+                        'data' => [2, 1],
                     ],
                     [
                         'name' => 'Late resolve',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'Late own',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'On time',
-                        'data' => [0, 0]
-                    ]
-                ]
+                        'data' => [0, 0],
+                    ],
+                ],
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'fas fa-stopwatch',
         ];
         $this->assertEquals($expected, $output);
     }
@@ -432,23 +432,23 @@ class ProviderTest extends DbTestCase
                 'series' => [
                     [
                         'name' => 'Late own and resolve',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'Late resolve',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'Late own',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'On time',
-                        'data' => [2, 1]
-                    ]
-                ]
+                        'data' => [2, 1],
+                    ],
+                ],
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'fas fa-stopwatch',
         ];
         $this->assertEquals($expected, $output);
 
@@ -461,7 +461,7 @@ class ProviderTest extends DbTestCase
                     'takeintoaccount_delay_stat' => 50000,
                 ],
                 [
-                    'id' => $ticket->getID()
+                    'id' => $ticket->getID(),
                 ]
             )
         );
@@ -474,7 +474,7 @@ class ProviderTest extends DbTestCase
                     'takeintoaccount_delay_stat' => 50000,
                 ],
                 [
-                    'id' => $ticket2->getID()
+                    'id' => $ticket2->getID(),
                 ]
             )
         );
@@ -489,23 +489,23 @@ class ProviderTest extends DbTestCase
                 'series' => [
                     [
                         'name' => 'Late own and resolve',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'Late resolve',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'Late own',
-                        'data' => [1, 1]
+                        'data' => [1, 1],
                     ],
                     [
                         'name' => 'On time',
-                        'data' => [0, 1]
-                    ]
-                ]
+                        'data' => [0, 1],
+                    ],
+                ],
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'fas fa-stopwatch',
         ];
         $this->assertEquals($expected, $output);
 
@@ -517,10 +517,10 @@ class ProviderTest extends DbTestCase
                     'time_to_own'                => '2021-01-01 01:00',
                     'takeintoaccount_delay_stat' => 60,
                     'solvedate'                  => '2021-02-01 00:00',
-                    'time_to_resolve'            => '2021-01-02 00:00'
+                    'time_to_resolve'            => '2021-01-02 00:00',
                 ],
                 [
-                    'id' => $ticket->getID()
+                    'id' => $ticket->getID(),
                 ]
             )
         );
@@ -532,10 +532,10 @@ class ProviderTest extends DbTestCase
                     'time_to_own'                => '2021-01-01 01:00',
                     'takeintoaccount_delay_stat' => 60,
                     'solvedate'                  => '2021-02-01 00:00',
-                    'time_to_resolve'            => '2021-01-02 00:00'
+                    'time_to_resolve'            => '2021-01-02 00:00',
                 ],
                 [
-                    'id' => $ticket2->getID()
+                    'id' => $ticket2->getID(),
                 ]
             )
         );
@@ -549,23 +549,23 @@ class ProviderTest extends DbTestCase
                 'series' => [
                     [
                         'name' => 'Late own and resolve',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'Late resolve',
-                        'data' => [1, 1]
+                        'data' => [1, 1],
                     ],
                     [
                         'name' => 'Late own',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'On time',
-                        'data' => [0, 1]
-                    ]
-                ]
+                        'data' => [0, 1],
+                    ],
+                ],
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'fas fa-stopwatch',
         ];
         $this->assertEquals($expected, $output);
 
@@ -577,10 +577,10 @@ class ProviderTest extends DbTestCase
                     'time_to_own'                => '2021-01-01 01:00',
                     'takeintoaccount_delay_stat' => 50000,
                     'solvedate'                  => '2021-02-01 00:00',
-                    'time_to_resolve'            => '2021-01-02 00:00'
+                    'time_to_resolve'            => '2021-01-02 00:00',
                 ],
                 [
-                    'id' => $ticket->getID()
+                    'id' => $ticket->getID(),
                 ]
             )
         );
@@ -592,10 +592,10 @@ class ProviderTest extends DbTestCase
                     'time_to_own'                => '2021-01-01 01:00',
                     'takeintoaccount_delay_stat' => 50000,
                     'solvedate'                  => '2021-02-01 00:00',
-                    'time_to_resolve'            => '2021-01-02 00:00'
+                    'time_to_resolve'            => '2021-01-02 00:00',
                 ],
                 [
-                    'id' => $ticket2->getID()
+                    'id' => $ticket2->getID(),
                 ]
             )
         );
@@ -607,10 +607,10 @@ class ProviderTest extends DbTestCase
                     'time_to_own'                => '2021-01-01 01:00',
                     'takeintoaccount_delay_stat' => 50000,
                     'solvedate'                  => '2021-02-01 00:00',
-                    'time_to_resolve'            => '2021-01-02 00:00'
+                    'time_to_resolve'            => '2021-01-02 00:00',
                 ],
                 [
-                    'id' => $ticket3->getID()
+                    'id' => $ticket3->getID(),
                 ]
             )
         );
@@ -625,23 +625,23 @@ class ProviderTest extends DbTestCase
                 'series' => [
                     [
                         'name' => 'Late own and resolve',
-                        'data' => [2, 1]
+                        'data' => [2, 1],
                     ],
                     [
                         'name' => 'Late resolve',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'Late own',
-                        'data' => [0, 0]
+                        'data' => [0, 0],
                     ],
                     [
                         'name' => 'On time',
-                        'data' => [0, 0]
-                    ]
-                ]
+                        'data' => [0, 0],
+                    ],
+                ],
             ],
-            'icon' => 'fas fa-stopwatch'
+            'icon' => 'fas fa-stopwatch',
         ];
         $this->assertEquals($expected, $output);
     }
@@ -664,7 +664,7 @@ class ProviderTest extends DbTestCase
         $itemtype = $item->getType();
         $data = [
             \Glpi\Dashboard\Provider::bigNumberItem($item),
-            call_user_func(['\\Glpi\\Dashboard\\Provider', "bigNumber$itemtype"])
+            call_user_func(['\\Glpi\\Dashboard\\Provider', "bigNumber$itemtype"]),
         ];
 
         foreach ($data as $result) {
@@ -870,15 +870,15 @@ class ProviderTest extends DbTestCase
                 'monthyear' => '2019-01',
                 'expected'  => [
                     '2019-01-01 00:00:00',
-                    '2019-02-01 00:00:00'
-                ]
+                    '2019-02-01 00:00:00',
+                ],
             ], [
                 'monthyear' => '2019-12',
                 'expected'  => [
                     '2019-12-01 00:00:00',
-                    '2020-01-01 00:00:00'
-                ]
-            ]
+                    '2020-01-01 00:00:00',
+                ],
+            ],
         ];
     }
 
@@ -905,7 +905,7 @@ class ProviderTest extends DbTestCase
         // Change author to someone else
         $tech = getItemByTypeName(User::class, 'tech');
         $this->updateItem($reminder::getType(), $reminder->getID(), [
-            'users_id'  => $tech->getID()
+            'users_id'  => $tech->getID(),
         ]);
         yield ['expected' => 0];
 

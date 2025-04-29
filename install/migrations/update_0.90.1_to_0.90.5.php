@@ -49,7 +49,7 @@ function update0901to0905()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '0.90.5'));
     $migration->setVersion('0.90.5');
 
@@ -57,7 +57,7 @@ function update0901to0905()
     $newtables     = [];
 
     foreach ($newtables as $new_table) {
-       // rename new tables if exists ?
+        // rename new tables if exists ?
         if ($DB->tableExists($new_table)) {
             $migration->dropTable("backup_$new_table");
             $migration->displayWarning("$new_table table already exists. " .
@@ -73,14 +73,14 @@ function update0901to0905()
         );
     }
 
-   // fix https://github.com/glpi-project/glpi/issues/820
-   // remove empty suppliers in tickets
+    // fix https://github.com/glpi-project/glpi/issues/820
+    // remove empty suppliers in tickets
     $DB->deleteOrDie("glpi_suppliers_tickets", [
         'suppliers_id'       => 0,
-        'alternative_email'  => ""
+        'alternative_email'  => "",
     ]);
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

@@ -43,7 +43,7 @@ class Unmanaged extends CommonDBTM
 {
     use Glpi\Features\Inventoriable;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
     public static $rightname                   = 'unmanaged';
 
@@ -190,7 +190,7 @@ class Unmanaged extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_unmanaged' => 1]
+            'condition'          => ['is_visible_unmanaged' => 1],
         ];
 
         return $tab;
@@ -281,8 +281,8 @@ class Unmanaged extends CommonDBTM
             'FROM' => NetworkPort::getTable(),
             'WHERE' => [
                 'itemtype' => self::getType(),
-                'items_id' => $items_id
-            ]
+                'items_id' => $items_id,
+            ],
         ]);
 
         $iterator_rml = $DB->request([
@@ -290,8 +290,8 @@ class Unmanaged extends CommonDBTM
             'FROM' => RuleMatchedLog::getTable(),
             'WHERE' => [
                 'itemtype' => self::getType(),
-                'items_id' => $items_id
-            ]
+                'items_id' => $items_id,
+            ],
         ]);
 
         $iterator_lf = $DB->request([
@@ -299,8 +299,8 @@ class Unmanaged extends CommonDBTM
             'FROM' => Lockedfield::getTable(),
             'WHERE' => [
                 'itemtype' => self::getType(),
-                'items_id' => $items_id
-            ]
+                'items_id' => $items_id,
+            ],
         ]);
 
         if (!empty($this->fields['itemtype'])) {
@@ -313,7 +313,7 @@ class Unmanaged extends CommonDBTM
             'entities_id'   => $this->fields['entities_id'],
             'serial'        => $this->fields['serial'],
             'uuid'          => $this->fields['uuid'] ?? null,
-            'is_dynamic'    => 1
+            'is_dynamic'    => 1,
         ] + $this->fields;
         //do not keep Unmanaged ID
         unset($asset_data['id']);
@@ -323,7 +323,7 @@ class Unmanaged extends CommonDBTM
         foreach ($iterator_np as $row) {
             $row += [
                 'items_id' => $assets_id,
-                'itemtype' => $itemtype
+                'itemtype' => $itemtype,
             ];
             $netport->update(Toolbox::addslashes_deep($row));
         }
@@ -331,7 +331,7 @@ class Unmanaged extends CommonDBTM
         foreach ($iterator_rml as $row) {
             $row += [
                 'items_id' => $assets_id,
-                'itemtype' => $itemtype
+                'itemtype' => $itemtype,
             ];
             $rulematch->update(Toolbox::addslashes_deep($row));
         }
@@ -339,7 +339,7 @@ class Unmanaged extends CommonDBTM
         foreach ($iterator_lf as $row) {
             $row += [
                 'items_id' => $assets_id,
-                'itemtype' => $itemtype
+                'itemtype' => $itemtype,
             ];
             $lockfield->update(Toolbox::addslashes_deep($row));
         }

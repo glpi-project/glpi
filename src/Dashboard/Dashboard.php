@@ -107,16 +107,16 @@ class Dashboard extends \CommonDBTM
         $iterator = $DB->request([
             'FROM'  => self::getTable(),
             'WHERE' => [
-                'key' => $ID
+                'key' => $ID,
             ],
-            'LIMIT' => 1
+            'LIMIT' => 1,
         ]);
         if (count($iterator) == 1) {
             $this->fields = $iterator->current();
             $this->key    = $ID;
             $this->post_getFromDB();
             return true;
-        } else if (count($iterator) > 1) {
+        } elseif (count($iterator) > 1) {
             trigger_error(
                 sprintf('getFromDB expects to get one result, %1$s found!', count($iterator)),
                 E_USER_WARNING
@@ -252,19 +252,19 @@ class Dashboard extends \CommonDBTM
                 'users_id' => $this->fields['users_id'],
             ]),
             [
-                'key'  => $this->key
+                'key'  => $this->key,
             ]
         );
 
-       // reload dashboard
+        // reload dashboard
         $this->getFromDB($this->key);
 
-       //save items
+        //save items
         if (!$skip_child && count($this->items) > 0) {
             $this->saveItems($this->items);
         }
 
-       //save rights
+        //save rights
         if (!$skip_child && count($this->rights) > 0) {
             $this->saveRights($this->rights);
         }
@@ -389,21 +389,21 @@ class Dashboard extends \CommonDBTM
         $this->fields['users_id'] = Session::getLoginUserID();
         $this->key = \Toolbox::slugify($this->fields['name']) . '-' . Uuid::uuid4()->toString();
 
-       // replace gridstack_id (with uuid V4) in the copy, to avoid cache issue
+        // replace gridstack_id (with uuid V4) in the copy, to avoid cache issue
         $this->items = array_map(function (array $item) {
             $item['gridstack_id'] = $item['card_id'] . Uuid::uuid4();
 
             return $item;
         }, $this->items);
 
-       // convert right to the good format
+        // convert right to the good format
         $this->rights = self::convertRights($this->rights);
 
         $this->save();
 
         return [
             'title' => $this->fields['name'],
-            'key'   => $this->key
+            'key'   => $this->key,
         ];
     }
 
@@ -529,7 +529,7 @@ class Dashboard extends \CommonDBTM
             return false;
         }
 
-       // check specific rights
+        // check specific rights
         if (
             count(array_intersect($rights['entities_id'], $_SESSION['glpiactiveentities']))
             || in_array($_SESSION["glpiactiveprofile"]['id'], $rights['profiles_id'])
@@ -588,7 +588,7 @@ class Dashboard extends \CommonDBTM
         return $this->update([
             'id'       => $this->fields['id'],
             'key'      => $this->fields['key'],
-            'users_id' => ($is_private ? Session::getLoginUserID() : 0)
+            'users_id' => ($is_private ? Session::getLoginUserID() : 0),
         ]);
     }
 
@@ -608,7 +608,7 @@ class Dashboard extends \CommonDBTM
      */
     public function isPrivate(): bool
     {
-        if ((bool)$this->getPrivate() === false) {
+        if ((bool) $this->getPrivate() === false) {
             return false;
         }
         return $this->fields['users_id'] != Session::getLoginUserID();

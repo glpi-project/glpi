@@ -54,12 +54,12 @@ class KnowbaseItem_Comment extends CommonDBTM
             if ($item->getType() == KnowbaseItem::getType()) {
                 $where = [
                     'knowbaseitems_id' => $item->getID(),
-                    'language'         => null
+                    'language'         => null,
                 ];
             } else {
                 $where = [
                     'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
-                    'language'         => $item->fields['language']
+                    'language'         => $item->fields['language'],
                 ];
             }
 
@@ -88,16 +88,16 @@ class KnowbaseItem_Comment extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Total Number of comments
+        // Total Number of comments
         if ($item->getType() == KnowbaseItem::getType()) {
             $where = [
                 'knowbaseitems_id' => $item->getID(),
-                'language'         => null
+                'language'         => null,
             ];
         } else {
             $where = [
                 'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
-                'language'         => $item->fields['language']
+                'language'         => $item->fields['language'],
             ];
         }
 
@@ -123,7 +123,7 @@ class KnowbaseItem_Comment extends CommonDBTM
             echo "</div>";
         }
 
-       // No comments in database
+        // No comments in database
         if ($number < 1) {
             $no_txt = __('No comments');
             echo "<div class='center'>";
@@ -134,7 +134,7 @@ class KnowbaseItem_Comment extends CommonDBTM
             return;
         }
 
-       // Output events
+        // Output events
         echo "<div class='forcomments timeline_history'>";
         echo "<ul class='comments left'>";
         $comments = self::getCommentsForKbItem($where['knowbaseitems_id'], $where['language']);
@@ -221,7 +221,7 @@ class KnowbaseItem_Comment extends CommonDBTM
               });
             </script>";
 
-            echo "</div>";
+        echo "</div>";
     }
 
     /**
@@ -241,7 +241,7 @@ class KnowbaseItem_Comment extends CommonDBTM
         $where = [
             'knowbaseitems_id'  => $kbitem_id,
             'language'          => $lang,
-            'parent_comment_id' => $parent
+            'parent_comment_id' => $parent,
         ];
 
         $db_comments = $DB->request(

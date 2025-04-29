@@ -53,7 +53,7 @@ class StatDataAverageSatisfaction extends StatDataAlwaysDisplay
             [
                 'name' => __('Satisfaction'),
                 'data' => $avgsatisfaction,
-            ]
+            ],
         ];
     }
 

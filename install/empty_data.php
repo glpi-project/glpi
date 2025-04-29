@@ -39,33 +39,32 @@ use Glpi\Toolbox\Sanitizer;
 
 // Use anonymous class so we can have constants that define special values without polluting the global table
 // and adding unnecessary variables to IDE autocomplete data that may result in errors
-$empty_data_builder = new class
-{
+$empty_data_builder = new class {
     /** @var int Self-service profile ID */
-    const PROFILE_SELF_SERVICE = 1;
+    public const PROFILE_SELF_SERVICE = 1;
     /** @var int Observer profile ID */
-    const PROFILE_OBSERVER     = 2;
+    public const PROFILE_OBSERVER     = 2;
     /** @var int Admin profile ID */
-    const PROFILE_ADMIN        = 3;
+    public const PROFILE_ADMIN        = 3;
     /** @var int Super-admin profile ID */
-    const PROFILE_SUPER_ADMIN  = 4;
+    public const PROFILE_SUPER_ADMIN  = 4;
     /** @var int Hotliner profile ID */
-    const PROFILE_HOTLINER     = 5;
+    public const PROFILE_HOTLINER     = 5;
     /** @var int Technician profile ID */
-    const PROFILE_TECHNICIAN   = 6;
+    public const PROFILE_TECHNICIAN   = 6;
     /** @var int Supervisor profile ID */
-    const PROFILE_SUPERVISOR   = 7;
+    public const PROFILE_SUPERVISOR   = 7;
     /** @var int Read-only profile ID */
-    const PROFILE_READ_ONLY    = 8;
+    public const PROFILE_READ_ONLY    = 8;
 
-    const USER_GLPI            = 2;
-    const USER_POST_ONLY       = 3;
-    const USER_TECH            = 4;
-    const USER_NORMAL          = 5;
-    const USER_SYSTEM          = 6;
+    public const USER_GLPI            = 2;
+    public const USER_POST_ONLY       = 3;
+    public const USER_TECH            = 4;
+    public const USER_NORMAL          = 5;
+    public const USER_SYSTEM          = 6;
 
     /** @var int Value indicating no rights */
-    const RIGHT_NONE           = 0;
+    public const RIGHT_NONE           = 0;
 
     public function getEmptyData(): array
     {
@@ -795,7 +794,7 @@ $empty_data_builder = new class
             $items = $default_dashboard['_items'];
             unset($default_dashboard['_items']);
             $tables['glpi_dashboards_dashboards'][] = array_merge([
-                'id' => $i
+                'id' => $i,
             ], $default_dashboard);
 
             foreach ($items as $item) {
@@ -1793,7 +1792,7 @@ $empty_data_builder = new class
                 'itemtype' => 'Plugin',
                 'num' => '8',
                 'rank' => '7',
-            ]
+            ],
         ];
 
         $ADDTODISPLAYPREF['Cluster'] = [31, 19];
@@ -4907,7 +4906,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 &lt;ul&gt;##FOREACHplugins##
 &lt;li&gt;##plugin.name## :##plugin.old_version## -&gt; ##plugin.version##&lt;/li&gt;
 ##ENDFOREACHplugins##&lt;/ul&gt;
-&lt;p&gt;##lang.marketplace.url## : &lt;a title="##lang.marketplace.url##" href="##marketplace.url##" target="_blank" rel="noopener"&gt;##marketplace.url##&lt;/a&gt;&lt;/p&gt;'
+&lt;p&gt;##lang.marketplace.url## : &lt;a title="##lang.marketplace.url##" href="##marketplace.url##" target="_blank" rel="noopener"&gt;##marketplace.url##&lt;/a&gt;&lt;/p&gt;',
             ],
         ];
 
@@ -8458,8 +8457,8 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         $tables['glpi_agenttypes'] = [
             [
                 'id' => 1,
-                'name' => 'Core'
-            ]
+                'name' => 'Core',
+            ],
         ];
 
         $tables[SNMPCredential::getTable()] = [
@@ -8467,14 +8466,14 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'id' => 1,
                 'name' => 'Public community v1',
                 'snmpversion' => 1,
-                'community' => 'public'
+                'community' => 'public',
             ],
             [
                 'id' => 2,
                 'name' => 'Public community v2c',
                 'snmpversion' => 2,
-                'community' => 'public'
-            ]
+                'community' => 'public',
+            ],
         ];
 
         return $tables;

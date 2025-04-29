@@ -52,8 +52,8 @@ class Printer_CartridgeInfo extends CommonDBChild
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => [
-                self::$items_id => $printer->fields['id']
-            ]
+                self::$items_id => $printer->fields['id'],
+            ],
         ]);
 
         $info = [];
@@ -93,7 +93,7 @@ class Printer_CartridgeInfo extends CommonDBChild
                     _x('%1$s remaining page', '%1$s remaining pages', $pages),
                     $pages
                 );
-            } else if ($value == 'OK') {
+            } elseif ($value == 'OK') {
                 $value = __('OK');
             }
 
@@ -103,7 +103,7 @@ class Printer_CartridgeInfo extends CommonDBChild
                     'percent_text'      => $value,
                     'background-color'  => $bar_color,
                     'text-color'        => $text_color,
-                    'text'              => ''
+                    'text'              => '',
                 ];
 
 

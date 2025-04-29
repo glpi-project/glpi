@@ -61,7 +61,7 @@ abstract class LevelAgreementParameters extends AbstractParameters
     protected function defineValues(CommonDBTM $sla): array
     {
 
-       // Output "unsanitized" values
+        // Output "unsanitized" values
         $fields = Sanitizer::unsanitize($sla->fields);
 
         return [

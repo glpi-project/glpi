@@ -74,7 +74,7 @@ class NotificationMailingTest extends DbTestCase
             'to'                          => \Session::getLoginUserID(),
             'from'                        => 'glpi@tests',
             'toname'                      => '',
-            'event'                       => 'test_notification'
+            'event'                       => 'test_notification',
         ]);
         $this->assertTrue($res);
 
@@ -108,7 +108,7 @@ class NotificationMailingTest extends DbTestCase
                 'messageid'                => null,
                 'documents'                => '',
                 'mode'                     => 'mailing',
-                'event'                    => 'test_notification'
+                'event'                    => 'test_notification',
             ],
             $row
         );

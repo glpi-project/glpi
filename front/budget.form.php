@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $budget->check($_POST["id"], DELETE);
 
     if ($budget->delete($_POST)) {
@@ -78,7 +78,7 @@ if (isset($_POST["add"])) {
         );
     }
     $budget->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $budget->check($_POST["id"], DELETE);
 
     if ($budget->restore($_POST)) {
@@ -92,7 +92,7 @@ if (isset($_POST["add"])) {
         );
     }
     $budget->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $budget->check($_POST["id"], PURGE);
 
     if ($budget->delete($_POST, 1)) {
@@ -106,7 +106,7 @@ if (isset($_POST["add"])) {
         );
     }
     $budget->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $budget->check($_POST["id"], UPDATE);
 
     if ($budget->update($_POST)) {
@@ -120,14 +120,14 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-} else if (isset($_GET['_in_modal'])) {
-      Html::popHeader(Budget::getTypeName(1), $_SERVER['PHP_SELF'], true);
-      $budget->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
-      Html::popFooter();
+} elseif (isset($_GET['_in_modal'])) {
+    Html::popHeader(Budget::getTypeName(1), $_SERVER['PHP_SELF'], true);
+    $budget->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
+    Html::popFooter();
 } else {
     $menus = ["management", "budget"];
     Budget::displayFullPageForItem($_GET['id'], $menus, [
         'withtemplate' => $_GET["withtemplate"],
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

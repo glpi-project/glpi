@@ -120,7 +120,7 @@ if (
                 if (
                     !Session::validateIDOR([
                         'itemtype'    => $_POST['itemtype'],
-                        '_idor_token' => $_POST['_idor_token'] ?? ""
+                        '_idor_token' => $_POST['_idor_token'] ?? "",
                     ])
                 ) {
                     exit();

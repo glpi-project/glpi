@@ -73,7 +73,7 @@ class Notification_NotificationTemplateTest extends DbTestCase
         $toadd = $n_nt->fields;
         unset($toadd['id']);
         $toadd['mode'] = \Notification_NotificationTemplate::MODE_XMPP;
-        $this->assertGreaterThan(0, (int)$n_nt->add($toadd));
+        $this->assertGreaterThan(0, (int) $n_nt->add($toadd));
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $n_nt->getTabNameForItem($notif);
@@ -134,7 +134,7 @@ class Notification_NotificationTemplateTest extends DbTestCase
         $mode = \Notification_NotificationTemplate::getMode(\Notification_NotificationTemplate::MODE_MAIL);
         $expected = [
             'label'  => 'Email',
-            'from'   => 'core'
+            'from'   => 'core',
         ];
         $this->assertSame($expected, $mode);
 
@@ -148,12 +148,12 @@ class Notification_NotificationTemplateTest extends DbTestCase
         $expected = [
             \Notification_NotificationTemplate::MODE_MAIL   => [
                 'label'  => 'Email',
-                'from'   => 'core'
+                'from'   => 'core',
             ],
             \Notification_NotificationTemplate::MODE_AJAX   => [
                 'label'  => 'Browser',
-                'from'   => 'core'
-            ]
+                'from'   => 'core',
+            ],
         ];
         $this->assertSame($expected, $modes);
 
@@ -166,7 +166,7 @@ class Notification_NotificationTemplateTest extends DbTestCase
         $modes = \Notification_NotificationTemplate::getModes();
         $expected['test_mode'] = [
             'label'  => 'A test label',
-            'from'   => 'anyplugin'
+            'from'   => 'anyplugin',
         ];
         $this->assertSame($expected, $modes);
     }
@@ -209,7 +209,7 @@ class Notification_NotificationTemplateTest extends DbTestCase
         $class = \Notification_NotificationTemplate::getModeClass(\Notification_NotificationTemplate::MODE_MAIL, 'setting');
         $this->assertSame('NotificationMailingSetting', $class);
 
-       //register new mode
+        //register new mode
         \Notification_NotificationTemplate::registerMode(
             'testmode',
             'A test label',

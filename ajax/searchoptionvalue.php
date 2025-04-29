@@ -40,7 +40,7 @@ if (strpos($_SERVER['PHP_SELF'], "searchoptionvalue.php")) {
     include('../inc/includes.php');
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
-} else if (!defined('GLPI_ROOT')) {
+} elseif (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
@@ -62,7 +62,7 @@ if (isset($_POST['searchtype'])) {
     $options2          = [];
     $options2['value'] = $_POST['value'];
     $options2['width'] = '100%';
-   // For tree dropdpowns
+    // For tree dropdpowns
     $options2['permit_select_parent'] = true;
 
     switch ($_POST['searchtype']) {
@@ -75,7 +75,7 @@ if (isset($_POST['searchtype'])) {
             if (!$display && isset($searchopt['field'])) {
                 // Specific cases
                 switch ($searchopt['table'] . "." . $searchopt['field']) {
-                   // Add mygroups choice to searchopt
+                    // Add mygroups choice to searchopt
                     case "glpi_groups.completename":
                         $searchopt['toadd'] = ['mygroups' => __('My groups')];
                         break;
@@ -85,7 +85,7 @@ if (isset($_POST['searchtype'])) {
                             [
                                 'id'    => 'myself',
                                 'text'  => __('Myself'),
-                            ]
+                            ],
                         ];
                         break;
 
@@ -110,7 +110,7 @@ if (isset($_POST['searchtype'])) {
 
 
                     case "glpi_tickets.global_validation":
-                          $options2['all'] = true;
+                        $options2['all'] = true;
                         break;
 
 
@@ -131,7 +131,7 @@ if (isset($_POST['searchtype'])) {
                         case "date":
                         case "date_delay":
                         case "datetime":
-                              $options2['relative_dates'] = true;
+                            $options2['relative_dates'] = true;
                             break;
                     }
                 }
@@ -142,7 +142,7 @@ if (isset($_POST['searchtype'])) {
                     $display = true;
                 }
 
-               //Could display be handled by a plugin ?
+                //Could display be handled by a plugin ?
                 if (
                     !$display
                     && $plug = isPluginItemType(getItemTypeForTable($searchopt['table']))
@@ -154,7 +154,7 @@ if (isset($_POST['searchtype'])) {
                             'name'           => $inputname,
                             'searchtype'     => $_POST['searchtype'],
                             'searchoption'   => $searchopt,
-                            'value'          => $_POST['value']
+                            'value'          => $_POST['value'],
                         ]
                     );
                 }
@@ -162,7 +162,7 @@ if (isset($_POST['searchtype'])) {
             break;
     }
 
-   // Default case : text field
+    // Default case : text field
     if (!$display) {
         echo "<input type='text' size='13' name='$inputname' value=\"" .
                Html::cleanInputText($_POST['value']) . "\">";

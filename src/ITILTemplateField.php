@@ -48,7 +48,7 @@ abstract class ITILTemplateField extends CommonDBChild
 
     private $all_fields;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
 
 

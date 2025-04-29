@@ -51,12 +51,12 @@ class DeviceCase extends CommonDevice
             parent::getAdditionalFields(),
             [['name'  => 'devicecasetypes_id',
                 'label' => _n('Type', 'Types', 1),
-                'type'  => 'dropdownValue'
+                'type'  => 'dropdownValue',
             ],
                 ['name'  => 'devicecasemodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
-                ]
+                    'type'  => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -71,7 +71,7 @@ class DeviceCase extends CommonDevice
             'table'              => 'glpi_devicecasetypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -79,7 +79,7 @@ class DeviceCase extends CommonDevice
             'table'              => 'glpi_devicecasemodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -141,7 +141,7 @@ class DeviceCase extends CommonDevice
 
         return ['designation'        => 'equal',
             'manufacturers_id'   => 'equal',
-            'devicecasetypes_id' => 'equal'
+            'devicecasetypes_id' => 'equal',
         ];
     }
 }

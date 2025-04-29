@@ -68,12 +68,14 @@ parameters:
         - '/Class phpCAS not found/'
         - '/Instantiated class (DB|DBSlave) not found/'
         - '/Instantiated class XHProfRuns_Default not found/'
-        - '/\w+ has been replaced by \w+/'
+        -
+            message: '/\w+ has been replaced by \w+/'
+            reportUnmatched: false
         -
             message: '/LDAP\\Connection/'
             reportUnmatched: false
         -
-            message: '/\/config\/config_db.php" is not a file or it does not exist./'
+            message: '~/(xhprof_runs\.php|xhprof_lib\.php|downstream\.php|config_db\.php|config_db_slave\.php)" is not a file or it does not exist.~'
             reportUnmatched: false
 rules:
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule

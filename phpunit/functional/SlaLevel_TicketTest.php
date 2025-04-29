@@ -34,7 +34,6 @@
 
 namespace tests\units;
 
-use CommonITILObject;
 use DbTestCase;
 
 class SlaLevel_TicketTest extends DbTestCase
@@ -92,7 +91,7 @@ class SlaLevel_TicketTest extends DbTestCase
             'execution_time' => 0, //TIME TO OWN
             'is_active'      => 1,
             'match'          => 'AND',
-            'slas_id'        => $sla1_id
+            'slas_id'        => $sla1_id,
         ];
 
         // add levels
@@ -106,7 +105,7 @@ class SlaLevel_TicketTest extends DbTestCase
             'slalevels_id' => $slal1_id,
             'criteria'     => 'assign_project',
             'condition'    => 0, //is
-            'pattern'      => $project_id
+            'pattern'      => $project_id,
         ];
 
 
@@ -114,7 +113,7 @@ class SlaLevel_TicketTest extends DbTestCase
             'slalevels_id' => $slal1_id,
             'action_type'  => 'assign',
             'field'        => 'itilcategories_id',
-            'value'        => $category_id
+            'value'        => $category_id,
         ];
 
         $scrit    = new \SlaLevelCriteria();
@@ -136,9 +135,9 @@ class SlaLevel_TicketTest extends DbTestCase
             'slas_id_tto' => $sla1_id,
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->assertEquals($sla1_id, (int)$ticket->getField('slas_id_tto'));
-        $this->assertEquals(0, (int)$ticket->getField('itilcategories_id'));
-        $this->assertEquals(\CommonITILObject::INCOMING, (int)$ticket->getField('status'));
+        $this->assertEquals($sla1_id, (int) $ticket->getField('slas_id_tto'));
+        $this->assertEquals(0, (int) $ticket->getField('itilcategories_id'));
+        $this->assertEquals(\CommonITILObject::INCOMING, (int) $ticket->getField('status'));
 
         //add Project to ticket
         $itil_project = new \Itil_Project();
@@ -149,12 +148,12 @@ class SlaLevel_TicketTest extends DbTestCase
         //get SlaLevel_Ticket related to this ticket and SLM
         $slalevels_tickets = new \SlaLevel_Ticket();
         $this->assertTrue($slalevels_tickets->getFromDBByCrit([
-            'tickets_id' => $tickets_id, 'slalevels_id' => $slal1_id
+            'tickets_id' => $tickets_id, 'slalevels_id' => $slal1_id,
         ]));
 
         //fake glpi_slalevels_tickets.date to run crontask
         $this->assertTrue($slalevels_tickets->update([
-            'id' => $slalevels_tickets->fields['id'], 'date' => date("Y-m-d H:i:s", time() - 2 * HOUR_TIMESTAMP)
+            'id' => $slalevels_tickets->fields['id'], 'date' => date("Y-m-d H:i:s", time() - 2 * HOUR_TIMESTAMP),
         ]));
 
         //run automatic action
@@ -177,13 +176,13 @@ class SlaLevel_TicketTest extends DbTestCase
     {
         $this->login();
 
-         // Create followup template
-         $followuptemplate = new \ITILFollowupTemplate();
-         $templateid = $followuptemplate->add($templateinput = [
-             'name' => 'followuptemplate_' . __FUNCTION__,
-             'content' => 'Test',
-         ]);
-         $this->checkInput($followuptemplate, $templateid, $templateinput);
+        // Create followup template
+        $followuptemplate = new \ITILFollowupTemplate();
+        $templateid = $followuptemplate->add($templateinput = [
+            'name' => 'followuptemplate_' . __FUNCTION__,
+            'content' => 'Test',
+        ]);
+        $this->checkInput($followuptemplate, $templateid, $templateinput);
 
         // create SLM
         $slm    = new \SLM();
@@ -215,7 +214,7 @@ class SlaLevel_TicketTest extends DbTestCase
             'execution_time' => 0, //TIME TO OWN
             'is_active'      => 1,
             'match'          => 'AND',
-            'slas_id'        => $sla1_id
+            'slas_id'        => $sla1_id,
         ];
 
         // add levels
@@ -267,19 +266,19 @@ class SlaLevel_TicketTest extends DbTestCase
 
         // check ticket data
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->assertEquals($sla1_id, (int)$ticket->getField('slas_id_tto'));
-        $this->assertEquals(0, (int)$ticket->getField('takeintoaccount_delay_stat'));
-        $this->assertEquals(\CommonITILObject::INCOMING, (int)$ticket->getField('status'));
+        $this->assertEquals($sla1_id, (int) $ticket->getField('slas_id_tto'));
+        $this->assertEquals(0, (int) $ticket->getField('takeintoaccount_delay_stat'));
+        $this->assertEquals(\CommonITILObject::INCOMING, (int) $ticket->getField('status'));
 
         //get SlaLevel_Ticket related to this ticket and SLM
         $slalevels_tickets = new \SlaLevel_Ticket();
         $this->assertTrue($slalevels_tickets->getFromDBByCrit([
-            'tickets_id' => $tickets_id, 'slalevels_id' => $slal1_id
+            'tickets_id' => $tickets_id, 'slalevels_id' => $slal1_id,
         ]));
 
         //fake glpi_slalevels_tickets.date to run crontask
         $this->assertTrue($slalevels_tickets->update([
-            'id' => $slalevels_tickets->fields['id'], 'date' => date("Y-m-d H:i:s", time() - 2 * HOUR_TIMESTAMP)
+            'id' => $slalevels_tickets->fields['id'], 'date' => date("Y-m-d H:i:s", time() - 2 * HOUR_TIMESTAMP),
         ]));
 
         //run automatic action
@@ -289,9 +288,9 @@ class SlaLevel_TicketTest extends DbTestCase
 
         //reload ticket
         $this->assertTrue($ticket->getFromDB($tickets_id)); // reload ticket
-        $this->assertEquals($sla1_id, (int)$ticket->getField('slas_id_tto')); // check SLA
-        $this->assertEquals(0, (int)$ticket->getField('takeintoaccount_delay_stat')); // check takeintoaccount_delay_stat always 0
-        $this->assertEquals(\CommonITILObject::INCOMING, (int)$ticket->getField('status')); // check status always incoming
+        $this->assertEquals($sla1_id, (int) $ticket->getField('slas_id_tto')); // check SLA
+        $this->assertEquals(0, (int) $ticket->getField('takeintoaccount_delay_stat')); // check takeintoaccount_delay_stat always 0
+        $this->assertEquals(\CommonITILObject::INCOMING, (int) $ticket->getField('status')); // check status always incoming
 
         // followup well added
         $this->assertEquals(

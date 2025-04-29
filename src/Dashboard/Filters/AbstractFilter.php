@@ -56,11 +56,11 @@ abstract class AbstractFilter
      */
     abstract public static function getHtml($value): string;
 
-     /**
-     * Get the filter id
-     *
-     * @return string
-     */
+    /**
+    * Get the filter id
+    *
+    * @return string
+    */
     abstract public static function getId(): string;
 
     /**
@@ -131,10 +131,10 @@ abstract class AbstractFilter
         bool $filled = false
     ): string {
 
-         $rand  = mt_rand();
-         $class = $filled ? "filled" : "";
+        $rand  = mt_rand();
+        $class = $filled ? "filled" : "";
 
-         $js = <<<JAVASCRIPT
+        $js = <<<JAVASCRIPT
             $(function () {
                 $('#filter-{$rand} input')
                     .on('input', function() {
@@ -156,9 +156,9 @@ abstract class AbstractFilter
                     });
                 });
 JAVASCRIPT;
-         $js = Html::scriptBlock($js);
+        $js = Html::scriptBlock($js);
 
-         $html  = <<<HTML
+        $html  = <<<HTML
             <fieldset id='filter-{$rand}' class='filter $class' data-filter-id='{$id}'>
                 $field
                 <legend>$label</legend>
@@ -189,7 +189,7 @@ HTML;
             'placeholder'         => $label,
             'on_change'           => "on_change_{$rand}()",
             'allowClear'          => true,
-            'width'               => ''
+            'width'               => '',
         ] + $add_params);
 
         $js = <<<JAVASCRIPT
@@ -226,7 +226,7 @@ JAVASCRIPT;
                 'link'       => 'AND',
                 'field'      => $searchoption_id,
                 'searchtype' => 'morethan',
-                'value'      => date('Y-m-d 00:00:00', $begin)
+                'value'      => date('Y-m-d 00:00:00', $begin),
             ];
         } else {
             $end   = strtotime($dates[1]);
@@ -234,7 +234,7 @@ JAVASCRIPT;
                 'link'       => 'AND',
                 'field'      => $searchoption_id,
                 'searchtype' => 'lessthan',
-                'value'      => date('Y-m-d 00:00:00', $end)
+                'value'      => date('Y-m-d 00:00:00', $end),
             ];
         }
     }

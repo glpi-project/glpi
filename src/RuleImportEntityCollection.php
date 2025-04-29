@@ -36,7 +36,7 @@
 /// Import rules collection class
 class RuleImportEntityCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
     public $stop_on_first_match = true;
     public static $rightname           = 'rule_import';
     public $menu_option         = 'importentity';

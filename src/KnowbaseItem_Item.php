@@ -42,14 +42,14 @@
  */
 class KnowbaseItem_Item extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'KnowbaseItem';
     public static $items_id_1          = 'knowbaseitems_id';
     public static $itemtype_2          = 'itemtype';
     public static $items_id_2          = 'items_id';
     public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory          = true;
 
     public static function getTypeName($nb = 0)
@@ -132,7 +132,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             echo "</th><tr>";
             echo "<tr class='tab_bg_2'><td>";
             if ($item_type == KnowbaseItem::getType()) {
-               //TODO: pass used array to restrict visible items in list
+                //TODO: pass used array to restrict visible items in list
                 $rand = self::dropdownAllTypes($item, 'items_id');
             } else {
                 $visibility = KnowbaseItem::getVisibilityCriteria();
@@ -140,7 +140,7 @@ class KnowbaseItem_Item extends CommonDBRelation
                 $rand = KnowbaseItem::dropdown([
                     'entity'    => $item->getEntityID(),
                     'used'      => self::getItems($item, 0, 0, true),
-                    'condition' => $condition
+                    'condition' => $condition,
                 ]);
             }
             echo "</td><td>";
@@ -157,7 +157,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             Html::closeForm();
         }
 
-       // No Events in database
+        // No Events in database
         if ($number < 1) {
             $no_txt = ($item_type == KnowbaseItem::getType()) ?
             __('No linked items') :
@@ -170,7 +170,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             return;
         }
 
-       // Display the pager
+        // Display the pager
         $type_name = null;
         if ($item->getType() == KnowbaseItem::getType()) {
             $type_name = _n('Linked item', 'Linked items', 1);
@@ -179,7 +179,7 @@ class KnowbaseItem_Item extends CommonDBRelation
         }
         Html::printAjaxPager($type_name, $start, $number);
 
-       // Output events
+        // Output events
         echo "<div class='center table-responsive'>";
 
         if ($canedit) {
@@ -188,7 +188,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             = ['num_displayed'
                         => min($_SESSION['glpilist_limit'], $number),
                 'container'
-                        => 'mass' . __CLASS__ . $rand
+                        => 'mass' . __CLASS__ . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -279,7 +279,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             'entity_restrict' => $entity_restrict,
             'itemtypes'       => $CFG_GLPI['kb_types'],
             'onlyglobal'      => $onlyglobal,
-            'checkright'      => $checkright
+            'checkright'      => $checkright,
         ]);
 
         return $rand;
@@ -310,8 +310,8 @@ class KnowbaseItem_Item extends CommonDBRelation
                 'glpi_knowbaseitems_items.itemtype',
                 'glpi_knowbaseitems_items.items_id',
                 'glpi_knowbaseitems_items.date_creation',
-                'glpi_knowbaseitems_items.date_mod'
-            ]
+                'glpi_knowbaseitems_items.date_mod',
+            ],
         ];
 
         if ($item::getType() == KnowbaseItem::getType()) {
@@ -322,7 +322,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             $criteria = array_merge_recursive($criteria, self::getVisibilityCriteriaForItem($item));
             $criteria['WHERE'][] = [
                 'glpi_knowbaseitems_items.items_id' => $item->getID(),
-                'glpi_knowbaseitems_items.itemtype' => $item->getType()
+                'glpi_knowbaseitems_items.itemtype' => $item->getType(),
             ];
         }
 
@@ -404,10 +404,10 @@ class KnowbaseItem_Item extends CommonDBRelation
                     'glpi_knowbaseitems' => [
                         'ON' => [
                             'glpi_knowbaseitems_items' => 'knowbaseitems_id',
-                            'glpi_knowbaseitems'       => 'id'
-                        ]
-                    ]
-                ]
+                            'glpi_knowbaseitems'       => 'id',
+                        ],
+                    ],
+                ],
             ],
             KnowbaseItem::getVisibilityCriteria()
         );
@@ -417,8 +417,8 @@ class KnowbaseItem_Item extends CommonDBRelation
             $criteria['INNER JOIN'][$item->getTable()] = [
                 'ON' => [
                     'glpi_knowbaseitems_items' => 'items_id',
-                    $item->getTable()          => 'id'
-                ]
+                    $item->getTable()          => 'id',
+                ],
             ];
             $criteria['WHERE'][] = $entity_criteria;
         }

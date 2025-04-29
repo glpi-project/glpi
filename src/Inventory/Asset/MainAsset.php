@@ -65,11 +65,11 @@ abstract class MainAsset extends InventoryAsset
         'hardware'     => null,
         'bios'         => null,
         'users'        => null,
-        '\Glpi\Inventory\Asset\NetworkCard' => null
+        '\Glpi\Inventory\Asset\NetworkCard' => null,
     ];
     /** @var mixed */
     protected $raw_data;
-   /* @var array */
+    /* @var array */
     protected $hardware;
     /** @var integer */
     protected $states_id_default;
@@ -172,7 +172,7 @@ abstract class MainAsset extends InventoryAsset
      */
     protected function prepareForHardware($val)
     {
-        $hardware = (object)$this->extra_data['hardware'];
+        $hardware = (object) $this->extra_data['hardware'];
 
         $hw_mapping = [
             'name'           => 'name',
@@ -213,18 +213,18 @@ abstract class MainAsset extends InventoryAsset
             }
         } else {
             if (array_key_exists('bios', $this->extra_data)) {
-                $bios = (object)$this->extra_data['bios'];
+                $bios = (object) $this->extra_data['bios'];
                 if (
                     property_exists($hardware, 'chassis_type')
                     && !empty($hardware->chassis_type)
                 ) {
                     $val->$types_id = $hardware->chassis_type;
-                } else if (
+                } elseif (
                     property_exists($bios, 'type')
                     && !empty($bios->type)
                 ) {
                     $val->$types_id = $bios->type;
-                } else if (
+                } elseif (
                     property_exists($bios, 'mmodel')
                     && !empty($bios->mmodel)
                 ) {
@@ -256,9 +256,9 @@ abstract class MainAsset extends InventoryAsset
                     'SELECT' => 'id',
                     'FROM'   => 'glpi_users',
                     'WHERE'  => [
-                        'name'   => Sanitizer::sanitize($split_user[0])
+                        'name'   => Sanitizer::sanitize($split_user[0]),
                     ],
-                    'LIMIT'  => 1
+                    'LIMIT'  => 1,
                 ]);
 
                 if (count($iterator)) {
@@ -293,7 +293,7 @@ abstract class MainAsset extends InventoryAsset
                 }
                 if ($cnt == 0) {
                     if (property_exists($a_users, 'login')) {
-                       // Search on domain
+                        // Search on domain
                         $where_add = [];
                         if (
                             property_exists($a_users, 'domain')
@@ -303,7 +303,7 @@ abstract class MainAsset extends InventoryAsset
                                 'glpi_authldaps',
                                 ['WHERE'  => ['inventory_domain' => Sanitizer::sanitize($a_users->domain)]]
                             );
-                             $ldaps_ids = [];
+                            $ldaps_ids = [];
                             foreach ($ldaps as $data_LDAP) {
                                 $ldaps_ids[] = $data_LDAP['id'];
                             }
@@ -316,12 +316,12 @@ abstract class MainAsset extends InventoryAsset
                             'SELECT' => ['id'],
                             'FROM'   => 'glpi_users',
                             'WHERE'  => [
-                                'name'   => Sanitizer::sanitize($a_users->login)
+                                'name'   => Sanitizer::sanitize($a_users->login),
                             ] + $where_add,
-                            'LIMIT'  => 1
+                            'LIMIT'  => 1,
                         ]);
                         if ($row = $iterator->current()) {
-                              $val->users_id = $row['id'];
+                            $val->users_id = $row['id'];
                         }
                     }
                 }
@@ -329,7 +329,7 @@ abstract class MainAsset extends InventoryAsset
                 if ($user != '') {
                     if (property_exists($val, 'contact')) {
                         if ($val->contact == '') {
-                             $val->contact = $user;
+                            $val->contact = $user;
                         } else {
                             $val->contact .= "/" . $user;
                         }
@@ -347,7 +347,7 @@ abstract class MainAsset extends InventoryAsset
 
     protected function prepareForBios($val)
     {
-        $bios = (object)$this->extra_data['bios'];
+        $bios = (object) $this->extra_data['bios'];
 
         if (property_exists($bios, 'assettag') && !empty($bios->assettag)) {
             $val->otherserial = $bios->assettag;
@@ -355,10 +355,10 @@ abstract class MainAsset extends InventoryAsset
 
         if (property_exists($bios, 'smanufacturer') && !empty($bios->smanufacturer)) {
             $val->manufacturers_id = $bios->smanufacturer;
-        } else if (property_exists($bios, 'mmanufacturer') && !empty($bios->mmanufacturer)) {
+        } elseif (property_exists($bios, 'mmanufacturer') && !empty($bios->mmanufacturer)) {
             $val->manufacturers_id = $bios->mmanufacturer;
             $val->mmanufacturer = $bios->mmanufacturer;
-        } else if (property_exists($bios, 'bmanufacturer') && !empty($bios->bmanufacturer)) {
+        } elseif (property_exists($bios, 'bmanufacturer') && !empty($bios->bmanufacturer)) {
             $val->manufacturers_id = $bios->bmanufacturer;
             $val->bmanufacturer = $bios->bmanufacturer;
         }
@@ -366,7 +366,7 @@ abstract class MainAsset extends InventoryAsset
         $models_id = $this->getModelsFieldName();
         if (property_exists($bios, 'smodel') && $bios->smodel != '') {
             $val->$models_id = $bios->smodel;
-        } else if (property_exists($bios, 'mmodel') && $bios->mmodel != '') {
+        } elseif (property_exists($bios, 'mmodel') && $bios->mmodel != '') {
             $val->$models_id = $bios->mmodel;
             $val->model = $bios->mmodel;
         }
@@ -458,7 +458,7 @@ abstract class MainAsset extends InventoryAsset
                             }
                         }
                         if (property_exists($network, 'subnet') && !empty($network->subnet)) {
-                                $input['subnet'][] = $network->subnet;
+                            $input['subnet'][] = $network->subnet;
                         }
                     }
                 }
@@ -470,7 +470,7 @@ abstract class MainAsset extends InventoryAsset
                 ) {
                     foreach ($netports as $network) {
                         if (property_exists($network, 'mac') && !empty($network->mac)) {
-                             $input['mac'][] = $network->mac;
+                            $input['mac'][] = $network->mac;
                         }
                         foreach ($network->ipaddress as $ip) {
                             if ($ip != '127.0.0.1' && $ip != '::1') {
@@ -583,7 +583,7 @@ abstract class MainAsset extends InventoryAsset
             if (isset($datarules['_no_rule_matches']) and ($datarules['_no_rule_matches'] == '1')) {
                 //no rule matched, this is a new one
                 $this->rulepassed(0, $this->item->getType(), null);
-            } else if (!isset($datarules['found_inventories'])) {
+            } elseif (!isset($datarules['found_inventories'])) {
                 if ($this->isAccessPoint($data)) {
                     //Only main item is stored as refused, not all APs
                     unset($this->data[$key]);
@@ -608,7 +608,7 @@ abstract class MainAsset extends InventoryAsset
             'uuid'         => $input['uuid'] ?? '',
             'rules_id'     => $input['rules_id'],
             'entities_id'  => $input['entities_id'],
-            'autoupdatesystems_id' => $input['autoupdatesystems_id']
+            'autoupdatesystems_id' => $input['autoupdatesystems_id'],
         ];
 
         foreach (['ip', 'mac'] as $array) {
@@ -783,7 +783,7 @@ abstract class MainAsset extends InventoryAsset
             $criteria = [
                 'domains_id' => $domain->getID(),
                 'itemtype' => $itemtype,
-                'items_id' => $items_id
+                'items_id' => $items_id,
             ];
             if (!$ditem->getFromDBByCrit($criteria)) {
                 $ditem->add($criteria + ['domainrelations_id' => \DomainRelation::BELONGS, 'is_dynamic' => 1], [], false);
@@ -796,7 +796,7 @@ abstract class MainAsset extends InventoryAsset
                     'items_id' => $items_id,
                     'domainrelations_id' => \DomainRelation::BELONGS,
                     'is_dynamic' => 1,
-                    ['NOT' => ['domains_id' => $domain->getID()]]
+                    ['NOT' => ['domains_id' => $domain->getID()]],
                 ],
                 1,
                 0
@@ -836,8 +836,8 @@ abstract class MainAsset extends InventoryAsset
             'itemtype' => $this->item->getType(),
             'items_id' => $items_id,
             'NOT' => [
-                'id' => $this->agent->fields['id']
-            ]
+                'id' => $this->agent->fields['id'],
+            ],
         ]);
 
         if ($this->is_discovery === true && !$this->isNew()) {
@@ -848,7 +848,7 @@ abstract class MainAsset extends InventoryAsset
                 $itemtype == NetworkEquipment::getType()
                 ||
                 (
-                $itemtype == Printer::getType()
+                    $itemtype == Printer::getType()
                 && !AssetPrinter::needToBeUpdatedFromDiscovery($this->item, $val)
                 )
             ) {
@@ -858,7 +858,7 @@ abstract class MainAsset extends InventoryAsset
                     'autoupdatesystems_id'  => $input['autoupdatesystems_id'],
                     'last_inventory_update' => $input['last_inventory_update'],
                     'snmpcredentials_id'    => $input['snmpcredentials_id'],
-                    'is_dynamic'            => true
+                    'is_dynamic'            => true,
                 ]));
                 //add rule matched log
                 $rulesmatched = new RuleMatchedLog();
@@ -868,7 +868,7 @@ abstract class MainAsset extends InventoryAsset
                     'items_id'  => $items_id,
                     'itemtype'  => $itemtype,
                     'agents_id' => $this->agent->fields['id'],
-                    'method'    => Request::NETDISCOVERY_TASK
+                    'method'    => Request::NETDISCOVERY_TASK,
                 ];
                 $rulesmatched->add($inputrulelog, [], false);
                 $rulesmatched->cleanOlddata($items_id, $itemtype);
@@ -924,7 +924,7 @@ abstract class MainAsset extends InventoryAsset
             'items_id'  => $items_id,
             'itemtype'  => $itemtype,
             'agents_id' => $this->agent->fields['id'],
-            'method'    => $this->request_query ?? Request::INVENT_QUERY
+            'method'    => $this->request_query ?? Request::INVENT_QUERY,
         ];
         $rulesmatched->add($inputrulelog, [], false);
         $rulesmatched->cleanOlddata($items_id, $itemtype);

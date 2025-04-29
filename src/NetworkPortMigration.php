@@ -37,7 +37,7 @@
 /// @since 0.84
 class NetworkPortMigration extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype        = 'itemtype';
     public static $items_id        = 'items_id';
     public static $mustBeAttached  = true;
@@ -116,7 +116,7 @@ class NetworkPortMigration extends CommonDBChild
             'invalid_gateway'
                               => __('Gateway not include inside the network'),
             'invalid_address'
-                              => __('Invalid IP address')
+                              => __('Invalid IP address'),
         ];
     }
 
@@ -179,7 +179,7 @@ class NetworkPortMigration extends CommonDBChild
             $network = null;
         } else {
             $params = ["address" => $address,
-                "netmask" => $netmask
+                "netmask" => $netmask,
             ];
             if (isset($this->fields["address"])) {
                 $params["exclude IDs"] = $this->fields["address"];
@@ -321,7 +321,7 @@ class NetworkPortMigration extends CommonDBChild
         $iterator = $DB->request([
             'SELECT' => 'name',
             'FROM'   => 'glpi_networkinterfaces',
-            'WHERE'  => ['id' => $this->fields['networkinterfaces_id']]
+            'WHERE'  => ['id' => $this->fields['networkinterfaces_id']],
         ]);
         if (count($iterator)) {
             $row = $iterator->current();
@@ -386,10 +386,10 @@ class NetworkPortMigration extends CommonDBChild
                         ) {
                             if (empty($networkport->fields['instantiation_type'])) {
                                 if ($networkport->switchInstantiationType($input['transform_to']) !== false) {
-                                       $instantiation             = $networkport->getInstantiation();
-                                       $input2                    = $item->fields;
-                                       $input2['networkports_id'] = $input2['id'];
-                                       unset($input2['id']);
+                                    $instantiation             = $networkport->getInstantiation();
+                                    $input2                    = $item->fields;
+                                    $input2['networkports_id'] = $input2['id'];
+                                    unset($input2['id']);
                                     if ($instantiation->add($input2)) {
                                         $item->delete(['id' => $id]);
                                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
@@ -398,8 +398,8 @@ class NetworkPortMigration extends CommonDBChild
                                         $ma->addMessage($networkport->getErrorMessage(ERROR_ON_ACTION));
                                     }
                                 } else {
-                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                                     $ma->addMessage($networkport->getErrorMessage(ERROR_ON_ACTION));
+                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                    $ma->addMessage($networkport->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -424,14 +424,14 @@ class NetworkPortMigration extends CommonDBChild
         $tab = parent::rawSearchOptions();
 
         $optionIndex = 10;
-       // From 10 to 14
+        // From 10 to 14
         foreach (self::getMotives() as $motive => $name) {
             $tab[] = [
                 'id'                 => $optionIndex,
                 'table'              => $this->getTable(),
                 'field'              => $motive,
                 'name'               => $name,
-                'datatype'           => 'bool'
+                'datatype'           => 'bool',
             ];
 
             $optionIndex++;
@@ -442,7 +442,7 @@ class NetworkPortMigration extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'ip',
             'datatype'           => 'ip',
-            'name'               => IPAddress::getTypeName(1)
+            'name'               => IPAddress::getTypeName(1),
         ];
 
         $tab[] = [
@@ -450,7 +450,7 @@ class NetworkPortMigration extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'netmask',
             'datatype'           => 'string',
-            'name'               => IPNetmask::getTypeName(1)
+            'name'               => IPNetmask::getTypeName(1),
         ];
 
         $tab[] = [
@@ -458,7 +458,7 @@ class NetworkPortMigration extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'subnet',
             'datatype'           => 'string',
-            'name'               => __('Network address')
+            'name'               => __('Network address'),
         ];
 
         $tab[] = [
@@ -466,7 +466,7 @@ class NetworkPortMigration extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'gateway',
             'datatype'           => 'string',
-            'name'               => IPAddress::getTypeName(1)
+            'name'               => IPAddress::getTypeName(1),
         ];
 
         $tab[] = [
@@ -474,7 +474,7 @@ class NetworkPortMigration extends CommonDBChild
             'table'              => 'glpi_networkinterfaces',
             'field'              => 'name',
             'datatype'           => 'dropdown',
-            'name'               => NetworkInterface::getTypeName(1)
+            'name'               => NetworkInterface::getTypeName(1),
         ];
 
         return $tab;
@@ -495,7 +495,7 @@ class NetworkPortMigration extends CommonDBChild
         ?HTMLTableHeader $father = null,
         array $options = []
     ) {
-       // TODO : study to display the correct information for this undefined NetworkPort
+        // TODO : study to display the correct information for this undefined NetworkPort
         return null;
     }
 }

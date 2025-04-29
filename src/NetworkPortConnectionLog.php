@@ -82,8 +82,8 @@ class NetworkPortConnectionLog extends CommonDBChild
         return [
             'OR' => [
                 'networkports_id_source'      => $netport->fields['id'],
-                'networkports_id_destination' => $netport->fields['id']
-            ]
+                'networkports_id_destination' => $netport->fields['id'],
+            ],
         ];
     }
 
@@ -112,20 +112,20 @@ class NetworkPortConnectionLog extends CommonDBChild
 
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
-            'WHERE'  => $this->getCriteria($netport)
+            'WHERE'  => $this->getCriteria($netport),
         ]);
 
         echo "<table class='tab_cadre_fixehov'>";
         echo "<thead><tr>";
-        echo "<th>" . _n('State', 'States', 1)  . "</th>";
-        echo "<th>" . _n('Date', 'Dates', 1)  . "</th>";
-        echo "<th>" . __('Connected item')  . "</th>";
+        echo "<th>" . _n('State', 'States', 1) . "</th>";
+        echo "<th>" . _n('Date', 'Dates', 1) . "</th>";
+        echo "<th>" . __('Connected item') . "</th>";
         echo "</tr></thead>";
 
         echo "<tbody>";
 
         if (!count($iterator)) {
-            echo "<tr><td colspan='4' class='center'>" . __('No result found')  . "</td></tr>";
+            echo "<tr><td colspan='4' class='center'>" . __('No result found') . "</td></tr>";
         }
 
         foreach ($iterator as $row) {
@@ -141,7 +141,7 @@ class NetworkPortConnectionLog extends CommonDBChild
             }
             echo "<i class='fas $co_class' title='$title'></i> <span class='sr-only'>$title</span>";
             echo "</td>";
-            echo "<td>" . $row['date']  . "</td>";
+            echo "<td>" . $row['date'] . "</td>";
             echo "<td>";
 
             $is_source = $netport->fields['id'] == $row['networkports_id_source'];
@@ -163,7 +163,7 @@ class NetworkPortConnectionLog extends CommonDBChild
                     $cport_link,
                     $citem->getLink()
                 );
-            } else if ($row['connected'] == 1) {
+            } elseif ($row['connected'] == 1) {
                 echo __('No longer exists in database');
             }
 

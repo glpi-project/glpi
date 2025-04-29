@@ -58,7 +58,7 @@ class InventoryTest extends \GLPITestCase
             $this->base_uri . 'front/inventory.php',
             [
                 'headers' => [
-                    'Content-Type' => 'application/xml'
+                    'Content-Type' => 'application/xml',
                 ],
                 'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
                   "<REQUEST>
@@ -125,13 +125,13 @@ class InventoryTest extends \GLPITestCase
                   </CONTENT>
                   <DEVICEID>computer-2018-07-09-09-07-13</DEVICEID>
                   <QUERY>INVENTORY</QUERY>
-                  </REQUEST>"
+                  </REQUEST>",
             ]
         );
         $this->assertSame(200, $res->getStatusCode());
         $this->assertSame(
             "<?xml version=\"1.0\"?>\n<REPLY><RESPONSE>SEND</RESPONSE></REPLY>",
-            (string)$res->getBody()
+            (string) $res->getBody()
         );
         $this->assertSame(
             'application/xml',
@@ -148,13 +148,13 @@ class InventoryTest extends \GLPITestCase
             'agenttypes_id'   => 1,
             'locked'          => 0,
             'itemtype'        => 'Computer',
-            'items_id'        => 0
+            'items_id'        => 0,
         ];
 
         foreach ($expected as $key => $value) {
             if ($key === 'items_id') {
                 //FIXME: retrieve created items_id
-                $this->assertGreaterThan(0, (int)$agent->fields[$key]);
+                $this->assertGreaterThan(0, (int) $agent->fields[$key]);
             } else {
                 $this->assertEquals($value, $agent->fields[$key], "$key differs");
             }

@@ -52,7 +52,7 @@ class ConfigureCommand extends AbstractCommand implements ConfigurationCommandIn
      *
      * @var int
      */
-    const ERROR_UNABLE_TO_WRITE_CONFIG = 1;
+    public const ERROR_UNABLE_TO_WRITE_CONFIG = 1;
 
     protected $requires_db = false;
 
@@ -141,14 +141,14 @@ class ConfigureCommand extends AbstractCommand implements ConfigurationCommandIn
             throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
                 __('Either --dsn or --use-default options have to be used.')
             );
-        } else if (count($dsn) > 0 && $use_default) {
+        } elseif (count($dsn) > 0 && $use_default) {
             throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
                 __('--dsn and --use-default options cannot be used simultaneously.')
             );
         }
 
         if ($use_default) {
-           // Reset configuration for given context.
+            // Reset configuration for given context.
             $success = $this->cache_manager->unsetConfiguration($context);
             if (!$success) {
                 throw new \Glpi\Console\Exception\EarlyExitException(
@@ -163,7 +163,7 @@ class ConfigureCommand extends AbstractCommand implements ConfigurationCommandIn
             return 0; // Success
         }
 
-       // Transform $dsn into single string if only one value is passed
+        // Transform $dsn into single string if only one value is passed
         if (count($dsn) === 1) {
             $dsn = reset($dsn);
         }
@@ -174,7 +174,7 @@ class ConfigureCommand extends AbstractCommand implements ConfigurationCommandIn
             );
         }
 
-       // Check connection
+        // Check connection
         if (!$input->getOption('skip-connection-checks')) {
             try {
                 $this->cache_manager->testConnection($dsn);
@@ -187,7 +187,7 @@ class ConfigureCommand extends AbstractCommand implements ConfigurationCommandIn
             }
         }
 
-       // Store configuration
+        // Store configuration
         $success = $this->cache_manager->setConfiguration($context, $dsn, []);
 
         if (!$success) {

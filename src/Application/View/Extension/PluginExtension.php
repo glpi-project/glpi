@@ -142,7 +142,7 @@ class PluginExtension extends AbstractExtension
                         'path' => "$plugin_web_dir/$file",
                         'options' => [
                             'version' => $plugin_version,
-                        ]
+                        ],
                     ];
                 }
             }
@@ -181,7 +181,7 @@ class PluginExtension extends AbstractExtension
                             'path' => $plugin_web_dir . "/{$file}",
                             'options' => [
                                 'version' => $plugin_version,
-                            ]
+                            ],
                         ];
                     } else {
                         trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);
@@ -223,7 +223,7 @@ class PluginExtension extends AbstractExtension
                             'path' => $plugin_web_dir . "/{$file}",
                             'options' => [
                                 'version' => $plugin_version,
-                            ]
+                            ],
                         ];
                     } else {
                         trigger_error("{$file} file not found from plugin $plugin!", E_USER_WARNING);

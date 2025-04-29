@@ -56,35 +56,35 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
      *
      * @var integer
      */
-    const SUCCESS = 0;
+    public const SUCCESS = 0;
 
     /**
      * Error code returned if DB connection initialization fails.
      *
      * @var integer
      */
-    const ERROR_DB_CONNECTION_FAILED = 1;
+    public const ERROR_DB_CONNECTION_FAILED = 1;
 
     /**
      * Error code returned if DB engine is unsupported.
      *
      * @var integer
      */
-    const ERROR_DB_ENGINE_UNSUPPORTED = 2;
+    public const ERROR_DB_ENGINE_UNSUPPORTED = 2;
 
     /**
      * Error code returned when trying to configure and having a DB config already set.
      *
      * @var integer
      */
-    const ERROR_DB_CONFIG_ALREADY_SET = 3;
+    public const ERROR_DB_CONFIG_ALREADY_SET = 3;
 
     /**
      * Error code returned when failing to save database configuration file.
      *
      * @var integer
      */
-    const ERROR_DB_CONFIG_FILE_NOT_SAVED = 4;
+    public const ERROR_DB_CONFIG_FILE_NOT_SAVED = 4;
 
     protected $requires_db_up_to_date = false;
 
@@ -266,11 +266,11 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
             $db = new class ($db_hostport, $db_user, $db_pass, $db_name) extends DBmysql {
                 public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault)
                 {
-                      $this->dbhost     = $dbhost;
-                      $this->dbuser     = $dbuser;
-                      $this->dbpassword = $dbpassword;
-                      $this->dbdefault  = $dbdefault;
-                      parent::__construct();
+                    $this->dbhost     = $dbhost;
+                    $this->dbuser     = $dbuser;
+                    $this->dbpassword = $dbpassword;
+                    $this->dbdefault  = $dbdefault;
+                    parent::__construct();
                 }
             };
             $config_flags = $db->getComputedConfigBooleanFlags();
@@ -340,20 +340,20 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
                 $allow_datetime,
                 $allow_signed_keys
             ) {
-                  $this->dbhost     = $dbhost;
-                  $this->dbuser     = $dbuser;
-                  $this->dbpassword = $dbpassword;
-                  $this->dbdefault  = $dbdefault;
+                $this->dbhost     = $dbhost;
+                $this->dbuser     = $dbuser;
+                $this->dbpassword = $dbpassword;
+                $this->dbdefault  = $dbdefault;
 
-                  $this->use_timezones     = $use_timezones;
-                  $this->use_utf8mb4       = $use_utf8mb4;
-                  $this->allow_myisam      = $allow_myisam;
-                  $this->allow_datetime    = $allow_datetime;
-                  $this->allow_signed_keys = $allow_signed_keys;
+                $this->use_timezones     = $use_timezones;
+                $this->use_utf8mb4       = $use_utf8mb4;
+                $this->allow_myisam      = $allow_myisam;
+                $this->allow_datetime    = $allow_datetime;
+                $this->allow_signed_keys = $allow_signed_keys;
 
-                  $this->log_deprecation_warnings = $log_deprecation_warnings;
+                $this->log_deprecation_warnings = $log_deprecation_warnings;
 
-                  $this->clearSchemaCache();
+                $this->clearSchemaCache();
             }
         };
     }
@@ -450,7 +450,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
         $db = new class ($mysqli) extends DBmysql {
             public function __construct($dbh)
             {
-                  $this->dbh = $dbh;
+                $this->dbh = $dbh;
             }
         };
         $timezones_requirement = new DbTimezones($db);
@@ -465,11 +465,11 @@ abstract class AbstractConfigureCommand extends AbstractCommand implements Force
                 OutputInterface::VERBOSITY_QUIET
             );
             if ($this->input->getOption('no-interaction')) {
-                 $message = sprintf(
-                     __('Fix them and run the "%1$s" command to enable timezones.'),
-                     'php bin/console database:enable_timezones'
-                 );
-                 $this->output->writeln('<comment>' . $message . '</comment>', OutputInterface::VERBOSITY_QUIET);
+                $message = sprintf(
+                    __('Fix them and run the "%1$s" command to enable timezones.'),
+                    'php bin/console database:enable_timezones'
+                );
+                $this->output->writeln('<comment>' . $message . '</comment>', OutputInterface::VERBOSITY_QUIET);
             } else {
                 $this->askForConfirmation();
             }

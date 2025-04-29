@@ -76,7 +76,7 @@ if (isset($_GET['getvcard'])) {
     }
     $user->check($_GET['id'], READ);
     $user->generateVcard();
-} else if (isset($_POST["add"])) {
+} elseif (isset($_POST["add"])) {
     $user->check(-1, CREATE, $_POST);
 
     if (($newID = $user->add($_POST))) {
@@ -92,7 +92,7 @@ if (isset($_GET['getvcard'])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $user->check($_POST['id'], DELETE);
     $user->delete($_POST);
     Event::log(
@@ -104,7 +104,7 @@ if (isset($_GET['getvcard'])) {
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
     $user->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $user->check($_POST['id'], DELETE);
     $user->restore($_POST);
     Event::log(
@@ -116,7 +116,7 @@ if (isset($_GET['getvcard'])) {
         sprintf(__('%s restores an item'), $_SESSION["glpiname"])
     );
     $user->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $user->check($_POST['id'], PURGE);
     $user->delete($_POST, 1);
     Event::log(
@@ -127,19 +127,19 @@ if (isset($_GET['getvcard'])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $user->redirectToList();
-} else if (isset($_POST["force_ldap_resynch"])) {
+} elseif (isset($_POST["force_ldap_resynch"])) {
     Session::checkRight('user', User::UPDATEAUTHENT);
 
     $user->getFromDB($_POST["id"]);
     AuthLDAP::forceOneUserSynchronization($user);
     Html::back();
-} else if (isset($_POST["clean_ldap_fields"])) {
+} elseif (isset($_POST["clean_ldap_fields"])) {
     Session::checkRight('user', User::UPDATEAUTHENT);
 
     $user->getFromDB($_POST["id"]);
     AuthLDAP::forceOneUserSynchronization($user, true);
     Html::back();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $user->check($_POST['id'], UPDATE);
     $user->update($_POST);
     Event::log(
@@ -151,7 +151,7 @@ if (isset($_GET['getvcard'])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["addgroup"])) {
+} elseif (isset($_POST["addgroup"])) {
     $groupuser->check(-1, CREATE, $_POST);
     if ($groupuser->add($_POST)) {
         Event::log(
@@ -164,7 +164,7 @@ if (isset($_GET['getvcard'])) {
         );
     }
     Html::back();
-} else if (isset($_POST["deletegroup"])) {
+} elseif (isset($_POST["deletegroup"])) {
     if (count($_POST["item"])) {
         foreach (array_keys($_POST["item"]) as $key) {
             if ($groupuser->can($key, DELETE)) {
@@ -181,30 +181,30 @@ if (isset($_GET['getvcard'])) {
         sprintf(__('%s deletes users from a group'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["change_auth_method"])) {
+} elseif (isset($_POST["change_auth_method"])) {
     Session::checkRight('user', User::UPDATEAUTHENT);
 
     if (isset($_POST["auths_id"])) {
         User::changeAuthMethod([$_POST["id"]], $_POST["authtype"], $_POST["auths_id"]);
     }
     Html::back();
-} else if (isset($_POST['language']) && !GLPI_DEMO_MODE) {
+} elseif (isset($_POST['language']) && !GLPI_DEMO_MODE) {
     $user->update(
         [
             'id'        => Session::getLoginUserID(),
-            'language'  => $_POST['language']
+            'language'  => $_POST['language'],
         ]
     );
     Session::addMessageAfterRedirect(__('Lang has been changed!'));
     Html::back();
-} else if (isset($_POST['impersonate']) && $_POST['impersonate']) {
+} elseif (isset($_POST['impersonate']) && $_POST['impersonate']) {
     if (!Session::startImpersonating($_POST['id'])) {
         Session::addMessageAfterRedirect(__('Unable to impersonate user'), false, ERROR);
         Html::back();
     }
 
     Html::redirect($CFG_GLPI['root_doc'] . '/');
-} else if (isset($_POST['impersonate']) && !$_POST['impersonate']) {
+} elseif (isset($_POST['impersonate']) && !$_POST['impersonate']) {
     $impersonated_user_id = Session::getLoginUserID();
 
     if (!Session::stopImpersonating()) {
@@ -218,19 +218,19 @@ if (isset($_GET['getvcard'])) {
         Html::header(User::getTypeName(Session::getPluralNumber()), '', "admin", "user");
         User::showAddExtAuthForm();
         Html::footer();
-    } else if (isset($_POST['add_ext_auth_ldap'])) {
+    } elseif (isset($_POST['add_ext_auth_ldap'])) {
         Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
 
         if (isset($_POST['login']) && !empty($_POST['login'])) {
             AuthLDAP::importUserFromServers(['name' => $_POST['login']]);
         }
         Html::back();
-    } else if (isset($_POST['add_ext_auth_simple'])) {
+    } elseif (isset($_POST['add_ext_auth_simple'])) {
         if (isset($_POST['login']) && !empty($_POST['login'])) {
             Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
             $input = ['name'     => $_POST['login'],
                 '_extauth' => 1,
-                'add'      => 1
+                'add'      => 1,
             ];
             $user->check(-1, CREATE, $input);
             $newID = $user->add($input);
@@ -247,11 +247,11 @@ if (isset($_GET['getvcard'])) {
             );
         }
 
-         Html::back();
+        Html::back();
     } else {
         $menus = ["admin", "user"];
         User::displayFullPageForItem($_GET["id"], $menus, [
-            'formoptions'  => "data-track-changes=true"
+            'formoptions'  => "data-track-changes=true",
         ]);
     }
 }

@@ -117,7 +117,7 @@ trait Clonable
 
             $override_input[$classname::getItemField($this->getType())] = $this->getID();
 
-           // Force entity / recursivity based on cloned parent, with fallback on session values
+            // Force entity / recursivity based on cloned parent, with fallback on session values
             if ($classname::$disableAutoEntityForwarding !== true) {
                 $override_input['entities_id'] = $this->isEntityAssign() ? $this->getEntityID() : Session::getActiveEntity();
                 $override_input['is_recursive'] = $this->maybeRecursive() ? $this->isRecursive() : Session::getIsActiveEntityRecursive();
@@ -153,7 +153,7 @@ trait Clonable
                 if ($relation_newitem->isField($foreignkey) && isset($cloned[$itemtype][$relation_newitem->fields[$foreignkey]])) {
                     $relation_newitem->update([
                         'id' => $relation_newitem->getID(),
-                        $foreignkey => $cloned[$itemtype][$relation_newitem->fields[$foreignkey]]
+                        $foreignkey => $cloned[$itemtype][$relation_newitem->fields[$foreignkey]],
                     ]);
                 }
             }
@@ -332,7 +332,5 @@ trait Clonable
      * @param $source
      * @param $history
      */
-    public function post_clone($source, $history)
-    {
-    }
+    public function post_clone($source, $history) {}
 }

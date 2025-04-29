@@ -56,9 +56,9 @@ $subType = [
 $result = $DB->request(
     [
         'SELECT'    => [
-            'glpi_rulecriterias.id AS criteria_id' ,
-            'glpi_rulecriterias.criteria' ,
-            'glpi_rules.sub_type' ,
+            'glpi_rulecriterias.id AS criteria_id',
+            'glpi_rulecriterias.criteria',
+            'glpi_rules.sub_type',
         ],
         'FROM'      => 'glpi_rulecriterias',
         'LEFT JOIN' => [
@@ -66,12 +66,12 @@ $result = $DB->request(
                 'FKEY' => [
                     'glpi_rulecriterias'   => 'rules_id',
                     'glpi_rules'            => 'id',
-                ]
-            ]
+                ],
+            ],
         ],
         'WHERE'     => [
             'glpi_rulecriterias.criteria'      => 'name',
-            'glpi_rules.sub_type' => array_values($subType)
+            'glpi_rules.sub_type' => array_values($subType),
         ],
     ]
 );

@@ -51,10 +51,10 @@ Session::checkLoginUser();
 $tasktemplates_id = $_POST['tasktemplates_id'] ?? null;
 if ($tasktemplates_id === null) {
     Response::sendError(400, "Missing or invalid parameter: 'tasktemplates_id'");
-} else if ($tasktemplates_id == 0) {
-   // Reset form
+} elseif ($tasktemplates_id == 0) {
+    // Reset form
     echo json_encode([
-        'content' => ""
+        'content' => "",
     ]);
     die;
 }

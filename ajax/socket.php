@@ -46,7 +46,7 @@ switch ($_POST['action']) {
         if ($_POST['itemtype'] && class_exists($_POST['itemtype'])) {
             $_POST['itemtype']::dropdown(['name'                => $_POST['dom_name'],
                 'display_emptychoice' => true,
-                'rand' => $_POST['dom_rand']
+                'rand' => $_POST['dom_rand'],
             ]);
         }
         break;
@@ -55,8 +55,8 @@ switch ($_POST['action']) {
         NetworkPort::dropdown(['name'                => 'networkports_id',
             'display_emptychoice' => true,
             'condition'           => ["items_id" => $_POST['items_id'],
-                "itemtype" => $_POST['itemtype']
-            ]
+                "itemtype" => $_POST['itemtype'],
+            ],
         ]);
         break;
 }

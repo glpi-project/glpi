@@ -59,7 +59,7 @@ if (!$DB->fieldExists('glpi_softwareversions', 'arch', false)) {
         'arch',
         'string',
         [
-            'after' => 'name'
+            'after' => 'name',
         ]
     );
     $migration->addKey('glpi_softwareversions', 'arch');

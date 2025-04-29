@@ -52,7 +52,7 @@ class InstallCommand extends AbstractPluginCommand
      *
      * @var integer
      */
-    const ERROR_PLUGIN_INSTALLATION_FAILED = 1;
+    public const ERROR_PLUGIN_INSTALLATION_FAILED = 1;
 
     protected function configure()
     {
@@ -144,7 +144,7 @@ class InstallCommand extends AbstractPluginCommand
             }
             $plugin->install($plugin->fields['id'], $params);
 
-           // Check state after installation
+            // Check state after installation
             if (!in_array($plugin->fields['state'], [Plugin::NOTACTIVATED, Plugin::TOBECONFIGURED])) {
                 $this->output->writeln(
                     '<error>' . sprintf(__('Plugin "%s" installation failed.'), $directory) . '</error>',
@@ -183,7 +183,7 @@ class InstallCommand extends AbstractPluginCommand
 
         $only_not_installed = !$this->input->getOption('force');
 
-       // Fetch directory list
+        // Fetch directory list
         $directories = [];
         foreach (PLUGINS_DIRECTORIES as $plugins_directory) {
             $directory_handle  = opendir($plugins_directory);
@@ -197,7 +197,7 @@ class InstallCommand extends AbstractPluginCommand
             }
         }
 
-       // Fetch plugins information
+        // Fetch plugins information
         $choices = [];
         foreach ($directories as $directory) {
             $plugin = new Plugin();
@@ -239,7 +239,7 @@ class InstallCommand extends AbstractPluginCommand
 
         $user = new User();
         if ($user->getFromDBbyName($username)) {
-           // Store computed output parameters
+            // Store computed output parameters
             $lang = $_SESSION['glpilanguage'];
             $session_use_mode = $_SESSION['glpi_use_mode'];
 
@@ -248,7 +248,7 @@ class InstallCommand extends AbstractPluginCommand
             $auth->user = $user;
             Session::init($auth);
 
-           // Force usage of computed output parameters
+            // Force usage of computed output parameters
             $_SESSION['glpilanguage'] = $lang;
             $_SESSION['glpi_use_mode'] = $session_use_mode;
             Session::loadLanguage();
@@ -293,7 +293,7 @@ class InstallCommand extends AbstractPluginCommand
 
         $plugin = new Plugin();
 
-       // Check that directory is valid
+        // Check that directory is valid
         $informations = $plugin->getInformationsFromDirectory($directory);
         if (empty($informations)) {
             $this->output->writeln(
@@ -303,7 +303,7 @@ class InstallCommand extends AbstractPluginCommand
             return false;
         }
 
-       // Check if plugin is not already installed
+        // Check if plugin is not already installed
         if (
             !$allow_reinstall
             && ($this->isAlreadyInstalled($directory)
@@ -323,7 +323,7 @@ class InstallCommand extends AbstractPluginCommand
 
         Plugin::load($directory, true);
 
-       // Check that required functions exists
+        // Check that required functions exists
         $function = 'plugin_' . $directory . '_install';
         if (!function_exists($function)) {
             $message = sprintf(
@@ -338,7 +338,7 @@ class InstallCommand extends AbstractPluginCommand
             return false;
         }
 
-       // Check prerequisites
+        // Check prerequisites
         ob_start();
         $requirements_met = $plugin->checkVersions($directory);
         $check_function   = 'plugin_' . $directory . '_check_prerequisites';
@@ -376,7 +376,7 @@ class InstallCommand extends AbstractPluginCommand
         $params = [];
         foreach ($input_params as $input_param) {
             $parts = explode('=', $input_param);
-            $params[$parts[0]] = isset($parts[1]) ? $parts[1] : true;
+            $params[$parts[0]] = $parts[1] ?? true;
         }
 
         return $params;

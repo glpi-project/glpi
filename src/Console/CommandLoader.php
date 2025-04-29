@@ -176,7 +176,7 @@ class CommandLoader implements CommandLoaderInterface
             );
 
             if (null === $class) {
-                 continue;
+                continue;
             }
 
             $this->registerCommand(new $class());
@@ -236,25 +236,25 @@ class CommandLoader implements CommandLoaderInterface
                         continue;
                     }
 
-                     // Prefixes can be:
-                     // - GlpiPlugin\Myplugin if class is namespaced
-                     // - PluginMyplugin if class is not namespaced nor PSR-4 compliant
-                     // - empty if class is not namespaced but PSR-4 compliant
-                     $class = $this->getCommandClassnameFromFile(
-                         $file,
-                         $plugin_basedir,
-                         [
-                             NS_PLUG . ucfirst($plugin_directory->getFilename()) . '\\',
-                             'Plugin' . ucfirst($plugin_directory->getFilename()),
-                             '',
-                         ]
-                     );
+                    // Prefixes can be:
+                    // - GlpiPlugin\Myplugin if class is namespaced
+                    // - PluginMyplugin if class is not namespaced nor PSR-4 compliant
+                    // - empty if class is not namespaced but PSR-4 compliant
+                    $class = $this->getCommandClassnameFromFile(
+                        $file,
+                        $plugin_basedir,
+                        [
+                            NS_PLUG . ucfirst($plugin_directory->getFilename()) . '\\',
+                            'Plugin' . ucfirst($plugin_directory->getFilename()),
+                            '',
+                        ]
+                    );
 
                     if (null === $class) {
-                          continue;
+                        continue;
                     }
 
-                     $this->registerCommand(new $class());
+                    $this->registerCommand(new $class());
                 }
             }
 
@@ -326,12 +326,12 @@ class CommandLoader implements CommandLoaderInterface
     private function getCommandClassnameFromFile(SplFileInfo $file, $basedir, array $prefixes = [])
     {
 
-       // Check if file is readable
+        // Check if file is readable
         if (!$file->isReadable() || !$file->isFile()) {
             return null;
         }
 
-       // Check if is a class file and finishes by "command"
+        // Check if is a class file and finishes by "command"
         if (
             !preg_match('/^(.*)command\.class\.php$/', $file->getFilename())
             && !preg_match('/^(.*)Command\.php$/', $file->getFilename())
@@ -339,7 +339,7 @@ class CommandLoader implements CommandLoaderInterface
             return null;
         }
 
-       // Classname will be lowercased, but it is ok for PHP.
+        // Classname will be lowercased, but it is ok for PHP.
         $classname = str_replace(
             ['.class.php', '.php', DIRECTORY_SEPARATOR],
             ['', '', '\\'],
@@ -355,8 +355,8 @@ class CommandLoader implements CommandLoaderInterface
             include_once($file->getPathname()); // Required as ReflectionClass will not use autoload
 
             if (!class_exists($classname_to_check, false)) {
-               // Try with other prefixes.
-               // Needed as a file located in root source dir of Glpi can be either namespaced either not.
+                // Try with other prefixes.
+                // Needed as a file located in root source dir of Glpi can be either namespaced either not.
                 continue;
             }
 
@@ -379,13 +379,13 @@ class CommandLoader implements CommandLoaderInterface
     private function getRelativePath($basedir, $filepath)
     {
 
-       // Strip (multiple) ending directory separator to normalize input
+        // Strip (multiple) ending directory separator to normalize input
         while (strrpos($basedir, DIRECTORY_SEPARATOR) == strlen($basedir) - 1) {
             $basedir = substr($basedir, 0, -1);
         }
 
-       // Assume that filepath is prefixed by basedir
-       // Cannot use realpath to normalize path as it will not work when using a virtual fs (unit tests)
+        // Assume that filepath is prefixed by basedir
+        // Cannot use realpath to normalize path as it will not work when using a virtual fs (unit tests)
         return str_replace($basedir . DIRECTORY_SEPARATOR, '', $filepath);
     }
 }

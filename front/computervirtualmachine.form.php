@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $computer_vm->check($_POST["id"], DELETE);
     $computer_vm->delete($_POST);
 
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
     $computer->getFromDB($computer_vm->fields['computers_id']);
     Html::redirect(Toolbox::getItemTypeFormURL('Computer') . '?id=' . $computer_vm->fields['computers_id'] .
                   ($computer->fields['is_template'] ? "&withtemplate=1" : ""));
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $computer_vm->check($_POST["id"], PURGE);
 
     if ($computer_vm->delete($_POST, 1)) {
@@ -98,7 +98,7 @@ if (isset($_POST["add"])) {
     $computer->getFromDB($computer_vm->fields['computers_id']);
     Html::redirect(Toolbox::getItemTypeFormURL('Computer') . '?id=' . $computer_vm->fields['computers_id'] .
                   ($computer->fields['is_template'] ? "&withtemplate=1" : ""));
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $computer_vm->check($_POST["id"], UPDATE);
 
     if ($computer_vm->update($_POST)) {
@@ -112,7 +112,7 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $computer_vm->check($_POST['id'], DELETE);
     if ($computer_vm->restore($_POST)) {
         Event::log(
@@ -128,6 +128,6 @@ if (isset($_POST["add"])) {
 } else {
     $menus = ["assets", "computer"];
     ComputerVirtualMachine::displayFullPageForItem($_GET["id"], $menus, [
-        'computers_id' => $_GET["computers_id"]
+        'computers_id' => $_GET["computers_id"],
     ]);
 }

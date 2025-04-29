@@ -47,7 +47,7 @@ class DatabaseInstance extends InventoryAsset
     {
         $mapping = [
             'type' => 'databaseinstancetypes_id',
-            'manufacturer' => 'manufacturers_id'
+            'manufacturer' => 'manufacturers_id',
         ];
 
         foreach ($this->data as &$val) {
@@ -86,13 +86,13 @@ class DatabaseInstance extends InventoryAsset
             'SELECT' => [
                 'id',
                 'name',
-                'is_dynamic'
+                'is_dynamic',
             ],
             'FROM'   => GDatabaseInstance::getTable(),
             'WHERE'  => [
                 'itemtype'     => $this->item->getType(),
-                'items_id'     => $this->item->fields['id']
-            ]
+                'items_id'     => $this->item->fields['id'],
+            ],
         ]);
 
         foreach ($iterator as $row) {
@@ -120,8 +120,8 @@ class DatabaseInstance extends InventoryAsset
                 'entities_id'  => $this->item->fields['entities_id'],
                 'linked_item' => [
                     'itemtype' => $this->item->getType(),
-                    'items_id' => $this->item->fields['id']
-                ]
+                    'items_id' => $this->item->fields['id'],
+                ],
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
 
@@ -136,7 +136,7 @@ class DatabaseInstance extends InventoryAsset
                     $input += [
                         'entities_id'  => $this->entities_id,
                         'itemtype'     => $this->item->getType(),
-                        'items_id'     => $this->item->fields['id']
+                        'items_id'     => $this->item->fields['id'],
                     ];
                     $items_id = $instance->add(Sanitizer::sanitize($input));
                 } else {
@@ -153,14 +153,14 @@ class DatabaseInstance extends InventoryAsset
                     foreach ($existing_databases as $dbkey => $existing_database) {
                         foreach ($databases as $key => $database) {
                             if ($existing_database['name'] == $database->name) {
-                                 $dbinput = (array)$database;
-                                 $dbinput += ['id' => $dbkey, 'is_deleted' => 0, 'is_dynamic' => 1];
-                                 $odatabase->update(Sanitizer::sanitize($dbinput));
-                                 unset(
-                                     $existing_databases[$dbkey],
-                                     $databases[$key]
-                                 );
-                                 break;
+                                $dbinput = (array) $database;
+                                $dbinput += ['id' => $dbkey, 'is_deleted' => 0, 'is_dynamic' => 1];
+                                $odatabase->update(Sanitizer::sanitize($dbinput));
+                                unset(
+                                    $existing_databases[$dbkey],
+                                    $databases[$key]
+                                );
+                                break;
                             }
                         }
                     }
@@ -175,10 +175,10 @@ class DatabaseInstance extends InventoryAsset
 
                 //create new databases
                 foreach ($databases as $database) {
-                    $dbinput = (array)$database;
+                    $dbinput = (array) $database;
                     $dbinput += [
                         'databaseinstances_id' => $instance->fields['id'],
-                        'is_dynamic' => 1
+                        'is_dynamic' => 1,
                     ];
                     $odatabase->add(Sanitizer::sanitize($dbinput));
                 }
@@ -195,7 +195,7 @@ class DatabaseInstance extends InventoryAsset
                     'items_id'  => $items_id,
                     'itemtype'  => $itemtype,
                     'agents_id' => $agents_id,
-                    'method'    => 'inventory'
+                    'method'    => 'inventory',
                 ];
                 $rulesmatched->add($inputrulelog, [], false);
                 $rulesmatched->cleanOlddata($items_id, $itemtype);
@@ -215,7 +215,7 @@ class DatabaseInstance extends InventoryAsset
         }
 
         if (count($db_instances) != 0) {
-           //remove no longer existing databases
+            //remove no longer existing databases
             foreach ($db_instances as $idtmp => $data) {
                 if ($data['is_dynamic'] == 1) {
                     $instance->delete(['id' => $idtmp]);

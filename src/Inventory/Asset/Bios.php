@@ -36,8 +36,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
-use DeviceFirmwareType;
 use Glpi\Inventory\Conf;
 
 class Bios extends Device
@@ -48,10 +46,10 @@ class Bios extends Device
             'bdate'           => 'date',
             'bversion'        => 'version',
             'bmanufacturer'   => 'manufacturers_id',
-            'biosserial'      => 'serial'
+            'biosserial'      => 'serial',
         ];
 
-        $val = (object)$this->data;
+        $val = (object) $this->data;
         foreach ($mapping as $origin => $dest) {
             if (property_exists($val, $origin)) {
                 $val->$dest = $val->$origin;

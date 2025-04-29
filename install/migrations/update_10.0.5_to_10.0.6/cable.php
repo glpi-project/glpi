@@ -44,5 +44,5 @@ if (!$DB->fieldExists($table, 'is_deleted', false)) {
 }
 
 $migration->updateRight('cable_management', READ | UPDATE | CREATE | DELETE | PURGE, [
-    'cable_management' => READ | UPDATE | CREATE | PURGE
+    'cable_management' => READ | UPDATE | CREATE | PURGE,
 ]);

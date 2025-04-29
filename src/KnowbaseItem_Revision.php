@@ -59,12 +59,12 @@ class KnowbaseItem_Revision extends CommonDBTM
             if ($item instanceof KnowbaseItem) {
                 $where = [
                     'knowbaseitems_id' => $item->getID(),
-                    'language'         => ''
+                    'language'         => '',
                 ];
             } else {
                 $where = [
                     'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
-                    'language'         => $item->fields['language']
+                    'language'         => $item->fields['language'],
                 ];
             }
 
@@ -123,7 +123,7 @@ class KnowbaseItem_Revision extends CommonDBTM
             $where
         );
 
-       // No revisions in database
+        // No revisions in database
         if ($number < 1) {
             $no_txt = __('No revisions');
             echo "<div class='center'>";
@@ -133,15 +133,15 @@ class KnowbaseItem_Revision extends CommonDBTM
             echo "</div>";
             return;
         }
-       // Display the pager
+        // Display the pager
 
         Html::printAjaxPager(self::getTypeName(1), $start, $number);
-       // Output events
+        // Output events
         echo "<table class='tab_cadre_fixehov'>";
         $header = '<tr>';
         $header .= "<th title='" . _sn('Revision', 'Revisions', 1) . "'>#</th>";
         $header .= "<th>&nbsp;</th>";
-        $header .= "<th>" . __('Author')  . "</th>";
+        $header .= "<th>" . __('Author') . "</th>";
         $header .= "<th>" . __('Creation date') . "</th>";
         $header .= "<th></th></tr>";
         echo $header;
@@ -149,9 +149,9 @@ class KnowbaseItem_Revision extends CommonDBTM
         $user = new User();
         $user->getFromDB($item->fields['users_id']);
 
-       //current contents
+        //current contents
         echo "<tr class='tab_bg_2'>";
-        echo "<td>(" . __('cur')  . ")</td>" .
+        echo "<td>(" . __('cur') . ")</td>" .
               "<td><input type='radio' name='oldid' value='0' style='visibility:hidden'/>" .
               "<input type='radio' name='diff' value='0' checked='checked'/></td>" .
               "<td>" . $user->getLink() . "</td>" .
@@ -166,12 +166,12 @@ class KnowbaseItem_Revision extends CommonDBTM
 
         $is_checked = true;
         foreach ($revisions as $revision) {
-           // Before GLPI 9.3.1, author was not stored in revision.
-           // See https://github.com/glpi-project/glpi/issues/4377.
+            // Before GLPI 9.3.1, author was not stored in revision.
+            // See https://github.com/glpi-project/glpi/issues/4377.
             $hasRevUser = $user->getFromDB($revision['users_id']);
 
             echo "<tr class='tab_bg_2'>";
-            echo "<td>" . $revision['revision']  . "</td>" .
+            echo "<td>" . $revision['revision'] . "</td>" .
                  "<td><input type='radio' name='oldid' value='{$revision['id']}'";
 
             if ($is_checked) {
@@ -191,14 +191,14 @@ class KnowbaseItem_Revision extends CommonDBTM
                 $form = KnowbaseItemTranslation::getFormURLWithID($revision['knowbaseitems_id']);
             }
 
-            echo "<td><a href='#' data-rev='" . $revision['revision']  . "'
-                    data-revid='" . $revision['id']  . "' class='show_rev'>" . __('show') . "</a>
+            echo "<td><a href='#' data-rev='" . $revision['revision'] . "'
+                    data-revid='" . $revision['id'] . "' class='show_rev'>" . __('show') . "</a>
                  - <a href='$form&to_rev={$revision['id']}' class='restore_rev'>" .
-                    __('restore')  . "</a></td>";
+                    __('restore') . "</a></td>";
             echo "</tr>";
         }
 
-       // TODO: move script to deferred js loading
+        // TODO: move script to deferred js loading
         echo Html::script("public/lib/jquery-prettytextdiff.js");
         echo Html::scriptBlock("
          $(function() {
@@ -373,13 +373,13 @@ class KnowbaseItem_Revision extends CommonDBTM
             'FROM'   => 'glpi_knowbaseitems_revisions',
             'WHERE'  => [
                 'knowbaseitems_id'   => $this->fields['knowbaseitems_id'],
-                'language'           => $this->fields['language']
-            ]
+                'language'           => $this->fields['language'],
+            ],
         ])->current();
 
         $rev = $result['revision'];
         if ($rev === null) {
-           //no revisions yet
+            //no revisions yet
             $rev = 1;
         } else {
             ++$rev;

@@ -51,7 +51,7 @@ function update93xto940()
     $ADDTODISPLAYPREF = [];
     $config_to_drop = [];
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '9.4.0'));
     $migration->setVersion('9.4.0');
 
@@ -70,7 +70,7 @@ function update93xto940()
 
     /** Add requester field on glpi_mailcollectors */
     $migration->addField("glpi_mailcollectors", "requester_field", "integer", [
-        'value' => '0'
+        'value' => '0',
     ]);
     /** /Add requester field on glpi_mailcollectors */
 
@@ -86,12 +86,12 @@ function update93xto940()
         'condition'    => 3,
         'entities_id'  => 0,
         'uuid'         => 'fbeb1115-7a37b143-5a3a6fc1afdc17.92779763',
-        'match'        => \Rule::AND_MATCHING
+        'match'        => \Rule::AND_MATCHING,
     ];
     $criteria = [
         ['criteria' => '_itemtype', 'condition' => \Rule::PATTERN_IS, 'pattern' => 'Computer'],
         ['criteria' => '_auto', 'condition' => \Rule::PATTERN_IS, 'pattern' => 1],
-        ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*)@/']
+        ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*)@/'],
     ];
     $action = [['action_type' => 'regex_result', 'field' => '_affect_user_by_regex', 'value' => '#0']];
     $migration->createRule($rule, $criteria, $action);
@@ -103,12 +103,12 @@ function update93xto940()
         'condition'    => 3,
         'entities_id'  => 0,
         'uuid'         => 'fbeb1115-7a37b143-5a3a6fc1b03762.88595154',
-        'match'        => \Rule::AND_MATCHING
+        'match'        => \Rule::AND_MATCHING,
     ];
     $criteria = [
         ['criteria' => '_itemtype', 'condition' => \Rule::PATTERN_IS, 'pattern' => 'Computer'],
         ['criteria' => '_auto', 'condition' => \Rule::PATTERN_IS, 'pattern' => 1],
-        ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*),/']
+        ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*),/'],
     ];
     $migration->createRule($rule, $criteria, $action);
 
@@ -119,12 +119,12 @@ function update93xto940()
         'condition'    => 3,
         'entities_id'  => 0,
         'uuid'         => 'fbeb1115-7a37b143-5a3a6fc1b073e1.16257440',
-        'match'        => \Rule::AND_MATCHING
+        'match'        => \Rule::AND_MATCHING,
     ];
     $criteria = [
         ['criteria' => '_itemtype', 'condition' => \Rule::PATTERN_IS, 'pattern' => 'Computer'],
         ['criteria' => '_auto', 'condition' => \Rule::PATTERN_IS, 'pattern' => 1],
-        ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*)/']
+        ['criteria' => 'contact', 'condition' => \Rule::REGEX_MATCH, 'pattern' => '/(.*)/'],
     ];
     $migration->createRule($rule, $criteria, $action);
 
@@ -154,7 +154,7 @@ function update93xto940()
         $migration->renameTable('glpi_changes_projects', 'glpi_itils_projects');
 
         $migration->dropKey('glpi_itils_projects', 'unicity');
-       // Key have to be dropped now to be able to create a new one having same name
+        // Key have to be dropped now to be able to create a new one having same name
         $migration->migrationOneTable('glpi_itils_projects');
 
         $migration->addField(
@@ -204,7 +204,7 @@ function update93xto940()
 
     Config::deleteConfigurationValues('core', $config_to_drop);
 
-   // Add a config entry for the CAS version
+    // Add a config entry for the CAS version
     $migration->addConfig(['cas_version' => 'CAS_VERSION_2_0']);
 
     /** Drop old embed ocs search options */
@@ -221,8 +221,8 @@ function update93xto940()
                 105,
                 106,
                 110,
-                111
-            ]
+                111,
+            ],
         ]
     );
     /** /Drop old embed ocs search options */
@@ -236,17 +236,17 @@ function update93xto940()
         '15'  => '114',
         '34'  => '115',
         '39'  => '116',
-        '95'  => '117'
+        '95'  => '117',
     ];
     foreach ($so_maping as $old => $new) {
         $DB->updateOrDie(
             'glpi_displaypreferences',
             [
-                'num' => $new
+                'num' => $new,
             ],
             [
                 'num'       => $old,
-                'itemtype'  => 'Computer'
+                'itemtype'  => 'Computer',
             ]
         );
     }
@@ -254,7 +254,7 @@ function update93xto940()
 
     /** Add followup tables for new ITILFollowup class */
     if (!$DB->tableExists('glpi_itilfollowups')) {
-       //Migrate ticket followups
+        //Migrate ticket followups
         $migration->renameTable('glpi_ticketfollowups', 'glpi_itilfollowups');
         $migration->addField(
             'glpi_itilfollowups',
@@ -342,7 +342,7 @@ function update93xto940()
         $rank = 1;
         foreach ($tab as $newval) {
             $DB->updateOrInsert("glpi_displaypreferences", [
-                'rank'      => $rank++
+                'rank'      => $rank++,
             ], [
                 'users_id'  => "0",
                 'itemtype'  => $type,
@@ -371,10 +371,10 @@ function update93xto940()
             $DB->buildUpdate(
                 'glpi_rulecriterias',
                 [
-                    'criteria' => $new_fieldname
+                    'criteria' => $new_fieldname,
                 ],
                 [
-                    'criteria' => $old_fieldname
+                    'criteria' => $old_fieldname,
                 ]
             )
         );
@@ -383,10 +383,10 @@ function update93xto940()
             $DB->buildUpdate(
                 'glpi_ruleactions',
                 [
-                    'field' => $new_fieldname
+                    'field' => $new_fieldname,
                 ],
                 [
-                    'field' => $old_fieldname
+                    'field' => $old_fieldname,
                 ]
             )
         );
@@ -421,7 +421,7 @@ function update93xto940()
         }
     }
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

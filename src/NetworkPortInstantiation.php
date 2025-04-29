@@ -53,15 +53,15 @@ use Glpi\Socket;
  **/
 class NetworkPortInstantiation extends CommonDBChild
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $auto_message_on_action   = false;
 
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype       = 'NetworkPort';
     public static $items_id       = 'networkports_id';
     public $dohistory             = false;
 
-   // Instantiation properties
+    // Instantiation properties
     public $canHaveVLAN           = true;
     public $canHaveVirtualPort    = true;
     public $haveMAC               = true;
@@ -92,7 +92,7 @@ class NetworkPortInstantiation extends CommonDBChild
     public function prepareInput($input)
     {
 
-       // Try to get mac address from the instantiation ...
+        // Try to get mac address from the instantiation ...
         if (!empty($input['mac'])) {
             $input['mac'] = strtolower($input['mac']);
         }
@@ -122,7 +122,7 @@ class NetworkPortInstantiation extends CommonDBChild
 
     public function manageSocket()
     {
-       //add link to define
+        //add link to define
         if (isset($this->input['sockets_id']) && $this->input['sockets_id'] > 0) {
             $networkport = new NetworkPort();
             if ($networkport->getFromDB($this->fields['networkports_id'])) {
@@ -159,17 +159,17 @@ class NetworkPortInstantiation extends CommonDBChild
     public static function getGlobalInstantiationNetworkPortDisplayOptions()
     {
         return ['mac'           => ['name'    => __('MAC'),
-            'default' => true
+            'default' => true,
         ],
             'vlans'         => ['name'    => Vlan::getTypeName(1),
-                'default' => false
+                'default' => false,
             ],
             'virtual_ports' => ['name'    => __('Virtual ports'),
-                'default' => false
+                'default' => false,
             ],
             'port_opposite' => ['name'    => __('Opposite link'),
-                'default' => false
-            ]
+                'default' => false,
+            ],
         ];
     }
 
@@ -270,8 +270,8 @@ class NetworkPortInstantiation extends CommonDBChild
     ) {
 
         $connect_cell_value = [['function'   => [__CLASS__, 'showConnection'],
-            'parameters' => [clone $netport]
-        ]
+            'parameters' => [clone $netport],
+        ],
         ];
 
         $oppositePort = NetworkPort_NetworkPort::getOpposite($netport);
@@ -294,12 +294,12 @@ class NetworkPortInstantiation extends CommonDBChild
 
                 $oppositeInstantiationPort = $oppositePort->getInstantiation();
                 if ($oppositeInstantiationPort !== false) {
-                     $oppositeInstantiationPort->getPeerInstantiationHTMLTable(
-                         $oppositePort,
-                         $row,
-                         $opposite_cell,
-                         $opposite_options
-                     );
+                    $oppositeInstantiationPort->getPeerInstantiationHTMLTable(
+                        $oppositePort,
+                        $row,
+                        $opposite_cell,
+                        $opposite_options
+                    );
                 }
             } else {
                 $cell = $row->addCell(
@@ -351,20 +351,20 @@ class NetworkPortInstantiation extends CommonDBChild
                         [
                             'SELECT' => 'networkports_id',
                             'FROM'   => 'glpi_networkportaliases',
-                            'WHERE'  => ['networkports_id_alias' => $netport->getID()]
+                            'WHERE'  => ['networkports_id_alias' => $netport->getID()],
                         ], [
                             'SELECT' => 'networkports_id',
                             'FROM'   => 'glpi_networkportaggregates',
-                            'WHERE'  => ['networkports_id_list' => ['LIKE', '%"' . $netport->getID() . '"%']]
-                        ]
+                            'WHERE'  => ['networkports_id_list' => ['LIKE', '%"' . $netport->getID() . '"%']],
+                        ],
                     ],
                     false,
                     'networkports'
-                )
+                ),
             ]);
 
             if (count($iterator)) {
-                 $new_father = $row->addCell($virtual_header, __('this port'), $father);
+                $new_father = $row->addCell($virtual_header, __('this port'), $father);
             } else {
                 $new_father = $row->addCell($virtual_header, '', $father);
             }
@@ -456,7 +456,7 @@ class NetworkPortInstantiation extends CommonDBChild
             $iterator = $DB->request([
                 'SELECT' => 'id',
                 'FROM'   => $netport->getTable(),
-                'WHERE'  => ['mac' => $relation]
+                'WHERE'  => ['mac' => $relation],
             ]);
 
             foreach ($iterator as $element) {
@@ -504,12 +504,12 @@ class NetworkPortInstantiation extends CommonDBChild
         }
 
         if (count($macs_with_items)) {
-           // Get the first item that is matching entity
+            // Get the first item that is matching entity
             foreach ($macs_with_items as $items) {
                 foreach ($items as $item) {
                     if ($item->getEntityID() == $entity) {
                         $result = ["id"       => $item->getID(),
-                            "itemtype" => $item->getType()
+                            "itemtype" => $item->getType(),
                         ];
                         unset($macs_with_items);
                         return $result;
@@ -565,21 +565,21 @@ class NetworkPortInstantiation extends CommonDBChild
                 $criteria = [
                     'SELECT'    => [
                         'link.id AS link_id',
-                        'device.designation AS name'
+                        'device.designation AS name',
                     ],
                     'FROM'      => 'glpi_devicenetworkcards AS device',
                     'INNER JOIN' => [
                         'glpi_items_devicenetworkcards AS link'   => [
                             'ON' => [
                                 'link'   => 'devicenetworkcards_id',
-                                'device' => 'id'
-                            ]
-                        ]
+                                'device' => 'id',
+                            ],
+                        ],
                     ],
                     'WHERE'     => [
                         'link.items_id'   => $lastItem->getID(),
-                        'link.itemtype'   => $lastItem->getType()
-                    ]
+                        'link.itemtype'   => $lastItem->getType(),
+                    ],
                 ];
 
                 // $deviceFields contains the list of fields to update
@@ -591,14 +591,14 @@ class NetworkPortInstantiation extends CommonDBChild
 
                 $iterator = $DB->request($criteria);
 
-              // Add the javascript to update each field
+                // Add the javascript to update each field
                 echo "\n<script type=\"text/javascript\">
    var deviceAttributs = [];\n";
 
                 $deviceNames = [0 => ""]; // First option : no network card
                 foreach ($iterator as $availableDevice) {
-                     $linkid               = $availableDevice['link_id'];
-                     $deviceNames[$linkid] = $availableDevice['name'];
+                    $linkid               = $availableDevice['link_id'];
+                    $deviceNames[$linkid] = $availableDevice['name'];
                     if (isset($availableDevice['mac'])) {
                         $deviceNames[$linkid] = sprintf(
                             __('%1$s - %2$s'),
@@ -607,18 +607,18 @@ class NetworkPortInstantiation extends CommonDBChild
                         );
                     }
 
-                     // get fields that must be copied from those of the network card
-                     $deviceInformations = [];
+                    // get fields that must be copied from those of the network card
+                    $deviceInformations = [];
                     foreach ($deviceFields as $field) {
-                     // No gettext here
+                        // No gettext here
                         $deviceInformations[] = "$field: '" . $availableDevice[$field] . "'";
                     }
-                     //addslashes_deep($deviceInformations);
-                     // Fill the javascript array
-                     echo "  deviceAttributs[$linkid] = {" . implode(', ', $deviceInformations) . "};\n";
+                    //addslashes_deep($deviceInformations);
+                    // Fill the javascript array
+                    echo "  deviceAttributs[$linkid] = {" . implode(', ', $deviceInformations) . "};\n";
                 }
 
-              // And add the javascript function that updates the other fields
+                // And add the javascript function that updates the other fields
                 echo "
    function updateNetworkPortForm(devID) {
       for (var fieldName in deviceAttributs[devID]) {
@@ -631,12 +631,12 @@ class NetworkPortInstantiation extends CommonDBChild
 </script>\n";
 
                 if (count($deviceNames) > 0) {
-                      $options = ['value'
-                                => $this->fields['items_devicenetworkcards_id'],
-                          'on_change'
-                                => 'updateNetworkPortForm(this.options[this.selectedIndex].value)'
-                      ];
-                      Dropdown::showFromArray('items_devicenetworkcards_id', $deviceNames, $options);
+                    $options = ['value'
+                              => $this->fields['items_devicenetworkcards_id'],
+                        'on_change'
+                              => 'updateNetworkPortForm(this.options[this.selectedIndex].value)',
+                    ];
+                    Dropdown::showFromArray('items_devicenetworkcards_id', $deviceNames, $options);
                 } else {
                     echo __('No network card available');
                 }
@@ -660,7 +660,7 @@ class NetworkPortInstantiation extends CommonDBChild
     public function showMacField(NetworkPort $netport, $options = [])
     {
 
-       // Show device MAC adresses
+        // Show device MAC adresses
         echo "<td>" . __('MAC') . "</td>\n<td>";
         echo Html::input('mac', ['value' => $netport->fields['mac']]);
         echo "</td>\n";
@@ -683,7 +683,7 @@ class NetworkPortInstantiation extends CommonDBChild
         if (count($recursiveItems) > 0) {
             $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
-           //find socket attached to NetworkPortEthernet
+            //find socket attached to NetworkPortEthernet
             $socket = new Socket();
             $value = 0;
             if ($netport->getID() && $socket->getFromDBByCrit(["networkports_id" => $netport->getID()])) {
@@ -711,7 +711,7 @@ class NetworkPortInstantiation extends CommonDBChild
 
         $netports = [];
 
-       // Manage alias
+        // Manage alias
         if (isset($this->fields['networkports_id_alias'])) {
             $links_id = $this->fields['networkports_id_alias'];
             $netport  = new NetworkPort();
@@ -719,7 +719,7 @@ class NetworkPortInstantiation extends CommonDBChild
                 $netports[] = $netport->getLink();
             }
         }
-       // Manage aggregate
+        // Manage aggregate
         if (isset($this->fields['networkports_id_list'])) {
             $links_id = $this->fields['networkports_id_list'];
             $netport  = new NetworkPort();
@@ -801,15 +801,15 @@ class NetworkPortInstantiation extends CommonDBChild
                 'SELECT' => [
                     'port.id',
                     'port.name',
-                    'port.mac'
+                    'port.mac',
                 ],
                 'FROM'   => 'glpi_networkports AS port',
                 'WHERE'  => [
                     'items_id'           => $lastItem->getID(),
                     'itemtype'           => $lastItem->getType(),
-                    'instantiation_type' => $netport_type
+                    'instantiation_type' => $netport_type,
                 ],
-                'ORDER'  => ['logical_number', 'name']
+                'ORDER'  => ['logical_number', 'name'],
             ]);
 
             if (count($iterator)) {
@@ -817,10 +817,10 @@ class NetworkPortInstantiation extends CommonDBChild
                     [$netport_type, 'getTypeName'],
                     count($iterator)
                 );
-                 $possible_ports[$array_element_name] = [];
+                $possible_ports[$array_element_name] = [];
 
                 foreach ($iterator as $portEntry) {
-                     $macAddresses[$portEntry['id']] = $portEntry['mac'];
+                    $macAddresses[$portEntry['id']] = $portEntry['mac'];
                     if (!empty($portEntry['mac'])) {
                         $portEntry['name'] = sprintf(
                             __('%1$s - %2$s'),
@@ -828,7 +828,7 @@ class NetworkPortInstantiation extends CommonDBChild
                             $portEntry['mac']
                         );
                     }
-                     $possible_ports[$array_element_name][$portEntry['id']] = $portEntry['name'];
+                    $possible_ports[$array_element_name][$portEntry['id']] = $portEntry['name'];
                 }
             }
         }
@@ -888,9 +888,7 @@ class NetworkPortInstantiation extends CommonDBChild
      * @param $tab          array
      * @param $joinparams   array
      **/
-    public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams)
-    {
-    }
+    public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams) {}
 
 
     /**
@@ -922,13 +920,13 @@ class NetworkPortInstantiation extends CommonDBChild
             if ($device2->can($device2->fields["id"], READ)) {
                 echo $oppositePort->getLink();
                 if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
-                     echo "<br>(" . Dropdown::getDropdownName(
-                         "glpi_entities",
-                         $device2->getEntityID()
-                     ) . ")";
+                    echo "<br>(" . Dropdown::getDropdownName(
+                        "glpi_entities",
+                        $device2->getEntityID()
+                    ) . ")";
                 }
 
-               // write rights on dev1 + READ on dev2 OR READ on dev1 + write rights on dev2
+                // write rights on dev1 + READ on dev2 OR READ on dev1 + write rights on dev2
                 if (
                     $canedit
                     || $device2->canEdit($device2->fields["id"])
@@ -968,7 +966,7 @@ class NetworkPortInstantiation extends CommonDBChild
                             $ID,
                             ['name'        => 'NetworkPortConnect_networkports_id_2',
                                 'entity'      => $device1->fields["entities_id"],
-                                'entity_sons' => $device1->isRecursive()
+                                'entity_sons' => $device1->isRecursive(),
                             ]
                         );
                     } else {
@@ -1012,7 +1010,7 @@ class NetworkPortInstantiation extends CommonDBChild
             }
         }
 
-       // Manage entity_sons
+        // Manage entity_sons
         if (!($p['entity'] < 0) && $p['entity_sons']) {
             if (is_array($p['entity'])) {
                 echo "entity_sons options is not available with entity option as array";
@@ -1029,7 +1027,7 @@ class NetworkPortInstantiation extends CommonDBChild
             'networkports_id'    => $ID,
             'comments'           => $p['comments'],
             'myname'             => $p['name'],
-            'instantiation_type' => get_called_class()
+            'instantiation_type' => get_called_class(),
         ];
 
         Ajax::updateItemOnSelectEvent(

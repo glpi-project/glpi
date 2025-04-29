@@ -38,7 +38,7 @@ class Preference extends CommonGLPI
 {
     public static function getTypeName($nb = 0)
     {
-       // Always plural
+        // Always plural
         return __('Settings');
     }
 

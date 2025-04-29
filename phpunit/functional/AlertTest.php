@@ -59,7 +59,7 @@ class AlertTest extends DbTestCase
 
         // Getters
         $this->assertFalse(\Alert::alertExists($comp->getType(), $comp->getID(), \Alert::NOTICE));
-        $this->assertSame($id, (int)\Alert::alertExists($comp->getType(), $comp->getID(), \Alert::END));
+        $this->assertSame($id, (int) \Alert::alertExists($comp->getType(), $comp->getID(), \Alert::END));
         $this->assertSame($date, \Alert::getAlertDate($comp->getType(), $comp->getID(), \Alert::END));
 
         // Display

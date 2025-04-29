@@ -50,7 +50,7 @@ echo "<table class='tab_cadre' width='500'><tr class='tab_bg_2'>";
 echo "<td class='center' width='300'>";
 User::dropdown(['name'   => 'id',
     'value'  => $_GET["id"],
-    'right'  => 'reservation'
+    'right'  => 'reservation',
 ]);
 
 echo "</td>";

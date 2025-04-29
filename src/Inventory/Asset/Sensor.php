@@ -35,7 +35,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
 use Glpi\Inventory\Conf;
 
 class Sensor extends Device
@@ -46,7 +45,7 @@ class Sensor extends Device
         $mapping = [
             'manufacturer' => 'manufacturers_id',
             'type'         => 'devicesensortypes_id',
-            'name'         => 'designation'
+            'name'         => 'designation',
         ];
 
         foreach ($this->data as &$val) {

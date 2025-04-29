@@ -108,16 +108,16 @@ class SearchTest extends DbTestCase
             'start'        => 0,
             'criteria'     => [0 => ['field'      => 'view',
                 'searchtype' => 'contains',
-                'value'      => ''
-            ]
+                'value'      => '',
+            ],
             ],
             'metacriteria' => [0 => ['link'       => 'AND',
                 'itemtype'   => 'OperatingSystem',
                 'field'      => 1, //name
                 'searchtype' => 'contains',
-                'value'      => 'windows'
-            ]
-            ]
+                'value'      => 'windows',
+            ],
+            ],
         ];
 
         $data = $this->doSearch('Computer', $search_params);
@@ -149,22 +149,22 @@ class SearchTest extends DbTestCase
             'start'        => 0,
             'criteria'     => [0 => ['field'      => 'view',
                 'searchtype' => 'contains',
-                'value'      => ''
-            ]
+                'value'      => '',
+            ],
             ],
             'metacriteria' => [0 => ['link'       => 'AND',
                 'itemtype'   => 'Software',
                 'field'      => 163,
                 'searchtype' => 'contains',
-                'value'      => '>0'
+                'value'      => '>0',
             ],
                 1 => ['link'       => 'AND',
                     'itemtype'   => 'Software',
                     'field'      => 160,
                     'searchtype' => 'contains',
-                    'value'      => 'firefox'
-                ]
-            ]
+                    'value'      => 'firefox',
+                ],
+            ],
         ];
 
         $data = $this->doSearch('Computer', $search_params);
@@ -218,38 +218,38 @@ class SearchTest extends DbTestCase
             'search'       => 'Search',
             'criteria'     => [0 => ['field'      => 'view',
                 'searchtype' => 'contains',
-                'value'      => ''
-            ]
+                'value'      => '',
             ],
-                                           // user login
+            ],
+            // user login
             'metacriteria' => [0 => ['link'       => 'AND',
                 'itemtype'   => 'User',
                 'field'      => 1,
                 'searchtype' => 'equals',
-                'value'      => 2
+                'value'      => 2,
             ],
-                                           // user profile
+                // user profile
                 1 => ['link'       => 'AND',
                     'itemtype'   => 'User',
                     'field'      => 20,
                     'searchtype' => 'equals',
-                    'value'      => 4
+                    'value'      => 4,
                 ],
-                                           // user entity
+                // user entity
                 2 => ['link'       => 'AND',
                     'itemtype'   => 'User',
                     'field'      => 80,
                     'searchtype' => 'equals',
-                    'value'      => 0
+                    'value'      => 0,
                 ],
-                                           // user profile
+                // user profile
                 3 => ['link'       => 'AND',
                     'itemtype'   => 'User',
                     'field'      => 13,
                     'searchtype' => 'equals',
-                    'value'      => 1
-                ]
-            ]
+                    'value'      => 1,
+                ],
+            ],
         ];
 
         $this->doSearch('Computer', $search_params);
@@ -265,7 +265,7 @@ class SearchTest extends DbTestCase
                 0 => [
                     'field'      => 12,
                     'searchtype' => 'equals',
-                    'value'      => 'notold'
+                    'value'      => 'notold',
                 ],
                 1 => [
                     'link'       => 'AND',
@@ -273,13 +273,13 @@ class SearchTest extends DbTestCase
                         0 => [
                             'field'      => 'view',
                             'searchtype' => 'contains',
-                            'value'      => 'test1'
+                            'value'      => 'test1',
                         ],
                         1 => [
                             'link'       => 'OR',
                             'field'      => 'view',
                             'searchtype' => 'contains',
-                            'value'      => 'test2'
+                            'value'      => 'test2',
                         ],
                         2 => [
                             'link'       => 'OR',
@@ -287,9 +287,9 @@ class SearchTest extends DbTestCase
                             'itemtype'   => 'Computer',
                             'field'      => 1,
                             'searchtype' => 'contains',
-                            'value'      => 'test3'
+                            'value'      => 'test3',
                         ],
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -308,45 +308,45 @@ class SearchTest extends DbTestCase
                 0 => [
                     'field'      => 'view',
                     'searchtype' => 'contains',
-                    'value'      => ''
+                    'value'      => '',
                 ],
-            // user login
+                // user login
                 1 => [
                     'link'       => 'AND',
                     'itemtype'   => 'User',
                     'field'      => 1,
                     'meta'       => 1,
                     'searchtype' => 'equals',
-                    'value'      => 2
+                    'value'      => 2,
                 ],
-            // user profile
+                // user profile
                 2 => [
                     'link'       => 'AND',
                     'itemtype'   => 'User',
                     'field'      => 20,
                     'meta'       => 1,
                     'searchtype' => 'equals',
-                    'value'      => 4
+                    'value'      => 4,
                 ],
-            // user entity
+                // user entity
                 3 => [
                     'link'       => 'AND',
                     'itemtype'   => 'User',
                     'field'      => 80,
                     'meta'       => 1,
                     'searchtype' => 'equals',
-                    'value'      => 0
+                    'value'      => 0,
                 ],
-            // user profile
+                // user profile
                 4 => [
                     'link'       => 'AND',
                     'itemtype'   => 'User',
                     'field'      => 13,
                     'meta'       => 1,
                     'searchtype' => 'equals',
-                    'value'      => 1
-                ]
-            ]
+                    'value'      => 1,
+                ],
+            ],
         ];
 
         $data = $this->doSearch('Computer', $search_params);
@@ -415,10 +415,10 @@ class SearchTest extends DbTestCase
                                     'field'      => 70,
                                     'searchtype' => 'equals',
                                     'value'      => 3,
-                                ]
-                            ]
-                        ]
-                    ]
+                                ],
+                            ],
+                        ],
+                    ],
                 ], [
                     'link'       => 'AND NOT',
                     'itemtype'   => 'Budget',
@@ -433,8 +433,8 @@ class SearchTest extends DbTestCase
                     'field'      => 1,
                     'searchtype' => 'contains',
                     'value'      => 'HP',
-                ]
-            ]
+                ],
+            ],
         ];
 
         $data = $this->doSearch('Computer', $search_params);
@@ -449,7 +449,7 @@ class SearchTest extends DbTestCase
             '/LEFT JOIN\s*`glpi_computers_items`\s*AS `glpi_computers_items_Printer`\s*ON\s*\(`glpi_computers_items_Printer`\.`computers_id`\s*=\s*`glpi_computers`\.`id`\s*AND\s*`glpi_computers_items_Printer`.`itemtype`\s*=\s*\'Printer\'\s*AND\s*`glpi_computers_items_Printer`.`is_deleted`\s*=\s*0\)/im',
             '/LEFT JOIN\s*`glpi_printers`\s*ON\s*\(`glpi_computers_items_Printer`\.`items_id`\s*=\s*`glpi_printers`\.`id`/im',
             // match having
-            "/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/"
+            "/HAVING\s*\(`ITEM_Budget_2`\s+<>\s+5\)\s+AND\s+\(\(`ITEM_Printer_1`\s+NOT LIKE\s+'%HP%'\s+OR\s+`ITEM_Printer_1`\s+IS NULL\)\s*\)/",
         ];
 
         foreach ($regexps as $regexp) {
@@ -470,7 +470,7 @@ class SearchTest extends DbTestCase
             "OR (`glpi_computers`.`id`  LIKE '%test2%'",
             "AND (`glpi_locations`.`id` = '11')",
             "(`glpi_users`.`id` = '2')",
-            "OR (`glpi_users`.`id` = '3')"
+            "OR (`glpi_users`.`id` = '3')",
         ];
 
         foreach ($contains as $contain) {
@@ -495,7 +495,7 @@ class SearchTest extends DbTestCase
                     'searchtype' => 'contains',
                     'value'      => 'test',
                 ],
-            ]
+            ],
         ]);
 
         $default_charset = DBConnection::getDefaultCharset();
@@ -504,7 +504,7 @@ class SearchTest extends DbTestCase
             "`glpi_computers`.`is_deleted` = 0",
             "AND `glpi_computers`.`is_template` = 0",
             "`glpi_computers`.`entities_id` IN ('1', '2', '3')",
-            "OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0))"
+            "OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0))",
         ];
 
         foreach ($contains as $contain) {
@@ -523,7 +523,7 @@ class SearchTest extends DbTestCase
             "/OR\s*\(`glpi_computertypes`\.`name`\s*LIKE '%test%'\s*\)/",
             "/OR\s*\(`glpi_computermodels`\.`name`\s*LIKE '%test%'\s*\)/",
             "/OR\s*\(`glpi_locations`\.`completename`\s*LIKE '%test%'\s*\)/",
-            "/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/"
+            "/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/",
         ];
 
 
@@ -548,7 +548,7 @@ class SearchTest extends DbTestCase
                         'value'      => 'test',
                     ],
                 ],
-                'expected' => 9
+                'expected' => 9,
             ],
             [
                 'itemtype' => 'Computer',
@@ -560,7 +560,7 @@ class SearchTest extends DbTestCase
                         'value'      => '_test_pc01',
                     ],
                 ],
-                'expected' => 1
+                'expected' => 1,
             ],
             [
                 'itemtype' => 'Computer',
@@ -572,7 +572,7 @@ class SearchTest extends DbTestCase
                         'value'      => 'test',
                     ],
                 ],
-                'expected' => 0
+                'expected' => 0,
             ],
             [
                 'itemtype' => 'Computer',
@@ -584,7 +584,7 @@ class SearchTest extends DbTestCase
                         'value'      => '_test_pc01',
                     ],
                 ],
-                'expected' => 8
+                'expected' => 8,
             ],
             [
                 'itemtype' => 'Computer',
@@ -596,7 +596,7 @@ class SearchTest extends DbTestCase
                         'value'      => 'test',
                     ],
                 ],
-                'expected' => 0
+                'expected' => 0,
             ],
             [
                 'itemtype' => 'Computer',
@@ -608,7 +608,7 @@ class SearchTest extends DbTestCase
                         'value'      => '_test_pc01',
                     ],
                 ],
-                'expected' => 8
+                'expected' => 8,
             ],
             [
                 'itemtype' => 'Computer',
@@ -620,7 +620,7 @@ class SearchTest extends DbTestCase
                         'value'      => 'test',
                     ],
                 ],
-                'expected' => 9
+                'expected' => 9,
             ],
             [
                 'itemtype' => 'Computer',
@@ -632,7 +632,7 @@ class SearchTest extends DbTestCase
                         'value'      => '_test_pc01',
                     ],
                 ],
-                'expected' => 1
+                'expected' => 1,
             ],
             [
                 'itemtype' => 'Computer',
@@ -644,7 +644,7 @@ class SearchTest extends DbTestCase
                         'value'      => 'test',
                     ],
                 ],
-                'expected' => 9
+                'expected' => 9,
             ],
             [
                 'itemtype' => 'Computer',
@@ -656,7 +656,7 @@ class SearchTest extends DbTestCase
                         'value'      => '_test_pc01',
                     ],
                 ],
-                'expected' => 1
+                'expected' => 1,
             ],
             [
                 'itemtype' => 'Computer',
@@ -668,7 +668,7 @@ class SearchTest extends DbTestCase
                         'value'      => 'test',
                     ],
                 ],
-                'expected' => 0
+                'expected' => 0,
             ],
             [
                 'itemtype' => 'Computer',
@@ -680,7 +680,7 @@ class SearchTest extends DbTestCase
                         'value'      => '_test_pc01',
                     ],
                 ],
-                'expected' => 8
+                'expected' => 8,
             ],
             [
                 'itemtype' => 'Computer',
@@ -692,7 +692,7 @@ class SearchTest extends DbTestCase
                         'value'      => 'test',
                     ],
                 ],
-                'expected' => 0
+                'expected' => 0,
             ],
             [
                 'itemtype' => 'Computer',
@@ -704,7 +704,7 @@ class SearchTest extends DbTestCase
                         'value'      => '_test_pc01',
                     ],
                 ],
-                'expected' => 8
+                'expected' => 8,
             ],
             [
                 'itemtype' => 'Computer',
@@ -716,7 +716,7 @@ class SearchTest extends DbTestCase
                         'value'      => 'test',
                     ],
                 ],
-                'expected' => 9
+                'expected' => 9,
             ],
             [
                 'itemtype' => 'Computer',
@@ -728,7 +728,7 @@ class SearchTest extends DbTestCase
                         'value'      => '_test_pc01',
                     ],
                 ],
-                'expected' => 1
+                'expected' => 1,
             ],
         ];
     }
@@ -743,7 +743,7 @@ class SearchTest extends DbTestCase
             'is_deleted' => 0,
             'start'      => 0,
             'search'     => 'Search',
-            'criteria'   => $criteria
+            'criteria'   => $criteria,
         ]);
 
         $this->assertSame($expected, $data['data']['totalcount']);
@@ -764,7 +764,7 @@ class SearchTest extends DbTestCase
                     'searchtype' => 'equals',
                     'value'      => '1',
                 ],
-            ]
+            ],
         ]);
 
         $this->assertStringContainsString(
@@ -786,30 +786,30 @@ class SearchTest extends DbTestCase
         $search_params = ['is_deleted'   => 0,
             'start'        => 0,
             'search'       => 'Search',
-                                                     // profile
+            // profile
             'criteria'     => [0 => ['field'      => '20',
                 'searchtype' => 'contains',
-                'value'      => 'super-admin'
+                'value'      => 'super-admin',
             ],
-                                           // login
+                // login
                 1 => ['link'       => 'AND',
                     'field'      => '1',
                     'searchtype' => 'contains',
-                    'value'      => 'glpi'
+                    'value'      => 'glpi',
                 ],
-                                           // entity
+                // entity
                 2 => ['link'       => 'AND',
                     'field'      => '80',
                     'searchtype' => 'equals',
-                    'value'      => 0
+                    'value'      => 0,
                 ],
-                                           // is not not active
+                // is not not active
                 3 => ['link'       => 'AND',
                     'field'      => '8',
                     'searchtype' => 'notequals',
-                    'value'      => 0
-                ]
-            ]
+                    'value'      => 0,
+                ],
+            ],
         ];
         $data = $this->doSearch('User', $search_params);
 
@@ -921,7 +921,7 @@ class SearchTest extends DbTestCase
         foreach ($classes as $class) {
             $item = new $class();
 
-           //load all options; so rawSearchOptionsToAdd to be tested
+            //load all options; so rawSearchOptionsToAdd to be tested
             $options = \Search::getCleanedOptions($item->getType());
 
             $multi_criteria = [];
@@ -937,24 +937,24 @@ class SearchTest extends DbTestCase
                         'is_deleted'   => 0,
                         'start'        => 0,
                         'criteria'     => [$criterion_params],
-                        'metacriteria' => []
+                        'metacriteria' => [],
                     ]
                 );
 
                 $multi_criteria[] = $criterion_params;
 
                 if (count($multi_criteria) > 50) {
-                     // Limit criteria count to 50 to prevent performances issues
-                     // and also prevent exceeding of MySQL join limit.
-                     break;
+                    // Limit criteria count to 50 to prevent performances issues
+                    // and also prevent exceeding of MySQL join limit.
+                    break;
                 }
             }
 
-          // do a search query with all criteria at the same time
+            // do a search query with all criteria at the same time
             $search_params = ['is_deleted'   => 0,
                 'start'        => 0,
                 'criteria'     => $multi_criteria,
-                'metacriteria' => []
+                'metacriteria' => [],
             ];
             $this->doSearch($class, $search_params);
         }
@@ -970,7 +970,7 @@ class SearchTest extends DbTestCase
 
         $classes = $this->getSearchableClasses();
 
-       // extract metacriteria
+        // extract metacriteria
         $itemtype_criteria = [];
         foreach ($classes as $class) {
             $itemtype = $class::getType();
@@ -1001,7 +1001,7 @@ class SearchTest extends DbTestCase
 
             $first_criteria_by_metatype = [];
 
-           // Search with each meta criteria independently.
+            // Search with each meta criteria independently.
             foreach ($criteria as $criterion_params) {
                 if (!array_key_exists($criterion_params['itemtype'], $first_criteria_by_metatype)) {
                     $first_criteria_by_metatype[$criterion_params['itemtype']] = $criterion_params;
@@ -1011,10 +1011,10 @@ class SearchTest extends DbTestCase
                     'start'        => 0,
                     'criteria'     => [0 => ['field'      => 'view',
                         'searchtype' => 'contains',
-                        'value'      => ''
-                    ]
+                        'value'      => '',
                     ],
-                    'metacriteria' => [$criterion_params]
+                    ],
+                    'metacriteria' => [$criterion_params],
                 ];
                 $this->doSearch($itemtype, $search_params);
             }
@@ -1028,10 +1028,10 @@ class SearchTest extends DbTestCase
                     'start'        => 0,
                     'criteria'     => [0 => ['field'      => 'view',
                         'searchtype' => 'contains',
-                        'value'      => ''
-                    ]
+                        'value'      => '',
                     ],
-                    'metacriteria' => $criteria_chunk
+                    ],
+                    'metacriteria' => $criteria_chunk,
                 ];
                 $this->doSearch($itemtype, $search_params);
             }
@@ -1067,7 +1067,7 @@ class SearchTest extends DbTestCase
                 $val = date('Y-m-d');
                 break;
             case 'datetime':
-               // Search class expects seconds to be ":00".
+                // Search class expects seconds to be ":00".
                 $val = date('Y-m-d H:i:00');
                 break;
             case 'right':
@@ -1089,7 +1089,7 @@ class SearchTest extends DbTestCase
         return [
             'field'      => $so_key,
             'searchtype' => $searchtype,
-            'value'      => $val
+            'value'      => $val,
         ];
     }
 
@@ -1100,17 +1100,17 @@ class SearchTest extends DbTestCase
             'search'       => 'Search',
             'criteria'     => [0 => ['field'      => 'view',
                 'searchtype' => 'contains',
-                'value'      => ''
-            ]
+                'value'      => '',
             ],
-                                                     // group is_notify
+            ],
+            // group is_notify
             'metacriteria' => [0 => ['link'       => 'AND',
                 'itemtype'   => 'Group',
                 'field'      => 20,
                 'searchtype' => 'equals',
-                'value'      => 1
-            ]
-            ]
+                'value'      => 1,
+            ],
+            ],
         ];
         $this->login();
         $this->setEntity('_test_root_entity', true);
@@ -1129,7 +1129,7 @@ class SearchTest extends DbTestCase
                 'name'         => '_test_group01',
                 'is_notify'    => '1',
                 'entities_id'  => $computer1->fields['entities_id'],
-                'is_recursive' => 1
+                'is_recursive' => 1,
             ]
         );
         $this->assertGreaterThan(0, $gid);
@@ -1138,7 +1138,7 @@ class SearchTest extends DbTestCase
         $updated = $computer1->update(
             [
                 'id'        => $computer1->getID(),
-                'groups_id' => $gid
+                'groups_id' => $gid,
             ]
         );
         $this->assertTrue($updated);
@@ -1149,7 +1149,7 @@ class SearchTest extends DbTestCase
         $updated = $computer1->update(
             [
                 'id'        => $computer1->getID(),
-                'groups_id' => 0
+                'groups_id' => 0,
             ]
         );
         $this->assertTrue($updated);
@@ -1159,7 +1159,7 @@ class SearchTest extends DbTestCase
 
     public function testDateBeforeOrNot()
     {
-       //tickets created since one week
+        //tickets created since one week
         $search_params = [
             'is_deleted'   => 0,
             'start'        => 0,
@@ -1167,16 +1167,16 @@ class SearchTest extends DbTestCase
                 0 => [
                     'field'      => 'view',
                     'searchtype' => 'contains',
-                    'value'      => ''
+                    'value'      => '',
                 ],
-            // creation date
+                // creation date
                 1 => [
                     'link'       => 'AND',
                     'field'      => '15',
                     'searchtype' => 'morethan',
-                    'value'      => '-1WEEK'
-                ]
-            ]
+                    'value'      => '-1WEEK',
+                ],
+            ],
         ];
 
         $data = $this->doSearch('Ticket', $search_params);
@@ -1225,7 +1225,7 @@ class SearchTest extends DbTestCase
                     0 => [
                         'field' => 12,
                         'searchtype' => 'equals',
-                        'value' => 'notold'
+                        'value' => 'notold',
                     ],
                 ],
                 'metacriteria' => [],
@@ -1238,14 +1238,14 @@ class SearchTest extends DbTestCase
         // now add a bookmark on Ticket view
         $bk = new \SavedSearch();
         $this->assertTrue(
-            (bool)$bk->add(['name'         => 'All my tickets',
+            (bool) $bk->add(['name'         => 'All my tickets',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
                 'users_id'     => $uid,
                 'is_private'   => 1,
                 'entities_id'  => 0,
                 'is_recursive' => 1,
-                'url'         => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid
+                'url'         => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $uid,
             ])
         );
 
@@ -1253,9 +1253,9 @@ class SearchTest extends DbTestCase
 
         $bk_user = new \SavedSearch_User();
         $this->assertTrue(
-            (bool)$bk_user->add(['users_id' => $uid,
+            (bool) $bk_user->add(['users_id' => $uid,
                 'itemtype' => 'Ticket',
-                'savedsearches_id' => $bk_id
+                'savedsearches_id' => $bk_id,
             ])
         );
 
@@ -1271,7 +1271,7 @@ class SearchTest extends DbTestCase
                     0 => [
                         'field' => '5',
                         'searchtype' => 'equals',
-                        'value' => $uid
+                        'value' => $uid,
                     ],
                 ],
                 'metacriteria' => [],
@@ -1297,7 +1297,7 @@ class SearchTest extends DbTestCase
                         'field' => 'view',
                         'link'  => 'contains',
                         'value' => '',
-                    ]
+                    ],
                 ],
                 'metacriteria' => [],
                 'as_map'       => 0,
@@ -1309,14 +1309,14 @@ class SearchTest extends DbTestCase
         // now add a bookmark on Computer view
         $bk = new \SavedSearch();
         $this->assertTrue(
-            (bool)$bk->add(['name'         => 'Computer test',
+            (bool) $bk->add(['name'         => 'Computer test',
                 'type'         => 1,
                 'itemtype'     => 'Computer',
                 'users_id'     => $uid,
                 'is_private'   => 1,
                 'entities_id'  => 0,
                 'is_recursive' => 1,
-                'url'         => 'front/computer.php?itemtype=Computer&sort=31&order=DESC&criteria%5B0%5D%5Bfield%5D=view&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=test'
+                'url'         => 'front/computer.php?itemtype=Computer&sort=31&order=DESC&criteria%5B0%5D%5Bfield%5D=view&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=test',
             ])
         );
 
@@ -1324,9 +1324,9 @@ class SearchTest extends DbTestCase
 
         $bk_user = new \SavedSearch_User();
         $this->assertTrue(
-            (bool)$bk_user->add(['users_id' => $uid,
+            (bool) $bk_user->add(['users_id' => $uid,
                 'itemtype' => 'Computer',
-                'savedsearches_id' => $bk_id
+                'savedsearches_id' => $bk_id,
             ])
         );
 
@@ -1342,7 +1342,7 @@ class SearchTest extends DbTestCase
                     0 => [
                         'field' => 'view',
                         'searchtype' => 'contains',
-                        'value' => 'test'
+                        'value' => 'test',
                     ],
                 ],
                 'metacriteria' => [],
@@ -1362,15 +1362,15 @@ class SearchTest extends DbTestCase
                 'itemtype'  => 'Computer',
                 'ID'        => 24, // users_id_tech
                 'sql'       => '`glpi_users_users_id_tech`.`name` AS `ITEM_Computer_24`, `glpi_users_users_id_tech`.`realname` AS `ITEM_Computer_24_realname`,
-                           `glpi_users_users_id_tech`.`id` AS `ITEM_Computer_24_id`, `glpi_users_users_id_tech`.`firstname` AS `ITEM_Computer_24_firstname`,'
-            ]
+                           `glpi_users_users_id_tech`.`id` AS `ITEM_Computer_24_id`, `glpi_users_users_id_tech`.`firstname` AS `ITEM_Computer_24_firstname`,',
+            ],
             ],
             'regular_fk' => [[
                 'itemtype'  => 'Computer',
                 'ID'        => 70, // users_id
                 'sql'       => '`glpi_users`.`name` AS `ITEM_Computer_70`, `glpi_users`.`realname` AS `ITEM_Computer_70_realname`,
-                           `glpi_users`.`id` AS `ITEM_Computer_70_id`, `glpi_users`.`firstname` AS `ITEM_Computer_70_firstname`,'
-            ]
+                           `glpi_users`.`id` AS `ITEM_Computer_70_id`, `glpi_users`.`firstname` AS `ITEM_Computer_70_firstname`,',
+            ],
             ],
         ];
     }
@@ -1405,8 +1405,8 @@ class SearchTest extends DbTestCase
                         'table'      => \ProjectTeam::getTable(),
                         'joinparams' => [
                             'jointype' => 'child',
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'sql' => "LEFT JOIN `glpi_projectteams`
                         ON (`glpi_projects`.`id` = `glpi_projectteams`.`projects_id`
@@ -1414,8 +1414,8 @@ class SearchTest extends DbTestCase
                       LEFT JOIN `glpi_contacts`  AS `glpi_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`
                         ON (`glpi_contacts_id_d36f89b191ea44cf6f7c8414b12e1e50`.`id` = `glpi_projectteams`.`items_id`
                         AND `glpi_projectteams`.`itemtype` = 'Contact'
-                         )"
-            ]
+                         )",
+            ],
             ],
             'special_fk' => [[
                 'itemtype'           => 'Computer',
@@ -1425,8 +1425,8 @@ class SearchTest extends DbTestCase
                 'meta'               => false,
                 'meta_type'          => null,
                 'joinparams'         => [],
-                'sql' => "LEFT JOIN `glpi_users` AS `glpi_users_users_id_tech` ON (`glpi_computers`.`users_id_tech` = `glpi_users_users_id_tech`.`id` )"
-            ]
+                'sql' => "LEFT JOIN `glpi_users` AS `glpi_users_users_id_tech` ON (`glpi_computers`.`users_id_tech` = `glpi_users_users_id_tech`.`id` )",
+            ],
             ],
             'regular_fk' => [[
                 'itemtype'           => 'Computer',
@@ -1436,8 +1436,8 @@ class SearchTest extends DbTestCase
                 'meta'               => false,
                 'meta_type'          => null,
                 'joinparams'         => [],
-                'sql' => "LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id` )"
-            ]
+                'sql' => "LEFT JOIN `glpi_users` ON (`glpi_computers`.`users_id` = `glpi_users`.`id` )",
+            ],
             ],
 
             'linkfield in beforejoin' => [[
@@ -1460,12 +1460,12 @@ class SearchTest extends DbTestCase
                                         'table'                  => \TicketValidation::getTable(),
                                         'joinparams'                 => [
                                             'jointype'                   => 'child',
-                                        ]
-                                    ]
-                                ]
-                            ]
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
-                    ]
+                    ],
                 ],
                 // This is a real use case. Ensure the LEFT JOIN chain uses consistent table names (see glpi_users_users_id_validate)
                 'sql' => "LEFT JOIN `glpi_ticketvalidations` "
@@ -1475,8 +1475,8 @@ class SearchTest extends DbTestCase
                 . "LEFT JOIN `glpi_validatorsubstitutes` AS `glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632` "
                 . "ON (`glpi_users_users_id_validate_57751ba960bd8511d2ad8a01bd8487f4`.`id` = `glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`users_id` )"
                 . "LEFT JOIN `glpi_validatorsubstitutes` AS `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48` "
-                . "ON (`glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`validatorsubstitutes_id` = `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48`.`id` )"
-            ]
+                . "ON (`glpi_validatorsubstitutes_f1e9cbef8429d6d41e308371824d1632`.`validatorsubstitutes_id` = `glpi_validatorsubstitutes_c9b716cdcdcfe62bc267613fce4d1f48`.`id` )",
+            ],
             ],
         ];
     }
@@ -1509,35 +1509,35 @@ class SearchTest extends DbTestCase
     public static function addOrderByBCProvider(): array
     {
         return [
-         // Generic examples
+            // Generic examples
             [
                 'Computer', 5, 'ASC',
-                ' ORDER BY `ITEM_Computer_5` ASC '
+                ' ORDER BY `ITEM_Computer_5` ASC ',
             ],
             [
                 'Computer', 5, 'DESC',
-                ' ORDER BY `ITEM_Computer_5` DESC '
+                ' ORDER BY `ITEM_Computer_5` DESC ',
             ],
             [
                 'Computer', 5, 'INVALID',
-                ' ORDER BY `ITEM_Computer_5` DESC '
+                ' ORDER BY `ITEM_Computer_5` DESC ',
             ],
-         // Simple Hard-coded cases
+            // Simple Hard-coded cases
             [
                 'IPAddress', 1, 'ASC',
-                ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) ASC '
+                ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) ASC ',
             ],
             [
                 'IPAddress', 1, 'DESC',
-                ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) DESC '
+                ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) DESC ',
             ],
             [
                 'User', 1, 'ASC',
-                ' ORDER BY `glpi_users`.`name` ASC '
+                ' ORDER BY `glpi_users`.`name` ASC ',
             ],
             [
                 'User', 1, 'DESC',
-                ' ORDER BY `glpi_users`.`name` DESC '
+                ' ORDER BY `glpi_users`.`name` DESC ',
             ],
         ];
     }
@@ -1545,105 +1545,105 @@ class SearchTest extends DbTestCase
     public static function addOrderByProvider(): array
     {
         return [
-         // Generic examples
+            // Generic examples
             [
                 'Computer',
                 [
                     [
                         'searchopt_id' => 5,
-                        'order'        => 'ASC'
-                    ]
-                ], ' ORDER BY `ITEM_Computer_5` ASC '
+                        'order'        => 'ASC',
+                    ],
+                ], ' ORDER BY `ITEM_Computer_5` ASC ',
             ],
             [
                 'Computer',
                 [
                     [
                         'searchopt_id' => 5,
-                        'order'        => 'DESC'
-                    ]
-                ], ' ORDER BY `ITEM_Computer_5` DESC '
+                        'order'        => 'DESC',
+                    ],
+                ], ' ORDER BY `ITEM_Computer_5` DESC ',
             ],
             [
                 'Computer',
                 [
                     [
                         'searchopt_id' => 5,
-                        'order'        => 'INVALID'
-                    ]
-                ], ' ORDER BY `ITEM_Computer_5` DESC '
+                        'order'        => 'INVALID',
+                    ],
+                ], ' ORDER BY `ITEM_Computer_5` DESC ',
             ],
             [
                 'Computer',
                 [
                     [
                         'searchopt_id' => 5,
-                    ]
-                ], ' ORDER BY `ITEM_Computer_5` ASC '
+                    ],
+                ], ' ORDER BY `ITEM_Computer_5` ASC ',
             ],
-         // Simple Hard-coded cases
+            // Simple Hard-coded cases
             [
                 'IPAddress',
                 [
                     [
                         'searchopt_id' => 1,
-                        'order'        => 'ASC'
-                    ]
-                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) ASC '
+                        'order'        => 'ASC',
+                    ],
+                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) ASC ',
             ],
             [
                 'IPAddress',
                 [
                     [
                         'searchopt_id' => 1,
-                        'order'        => 'DESC'
-                    ]
-                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) DESC '
+                        'order'        => 'DESC',
+                    ],
+                ], ' ORDER BY INET6_ATON(`glpi_ipaddresses`.`name`) DESC ',
             ],
             [
                 'User',
                 [
                     [
                         'searchopt_id' => 1,
-                        'order'        => 'ASC'
-                    ]
-                ], ' ORDER BY `glpi_users`.`name` ASC '
+                        'order'        => 'ASC',
+                    ],
+                ], ' ORDER BY `glpi_users`.`name` ASC ',
             ],
             [
                 'User',
                 [
                     [
                         'searchopt_id' => 1,
-                        'order'        => 'DESC'
-                    ]
-                ], ' ORDER BY `glpi_users`.`name` DESC '
+                        'order'        => 'DESC',
+                    ],
+                ], ' ORDER BY `glpi_users`.`name` DESC ',
             ],
-         // Multiple sort cases
+            // Multiple sort cases
             [
                 'Computer',
                 [
                     [
                         'searchopt_id' => 5,
-                        'order'        => 'ASC'
+                        'order'        => 'ASC',
                     ],
                     [
                         'searchopt_id' => 6,
-                        'order'        => 'ASC'
+                        'order'        => 'ASC',
                     ],
-                ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` ASC '
+                ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` ASC ',
             ],
             [
                 'Computer',
                 [
                     [
                         'searchopt_id' => 5,
-                        'order'        => 'ASC'
+                        'order'        => 'ASC',
                     ],
                     [
                         'searchopt_id' => 6,
-                        'order'        => 'DESC'
+                        'order'        => 'DESC',
                     ],
-                ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` DESC '
+                ], ' ORDER BY `ITEM_Computer_5` ASC, `ITEM_Computer_6` DESC ',
             ],
         ];
     }
@@ -1765,8 +1765,8 @@ class SearchTest extends DbTestCase
         $user_order_1 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
-                'order'        => 'ASC'
-            ]
+                'order'        => 'ASC',
+            ],
         ]);
         $this->assertEquals(
             " ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
@@ -1785,8 +1785,8 @@ class SearchTest extends DbTestCase
         $user_order_2 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
-                'order'        => 'DESC'
-            ]
+                'order'        => 'DESC',
+            ],
         ]);
         $this->assertEquals(
             " ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
@@ -1807,8 +1807,8 @@ class SearchTest extends DbTestCase
         $user_order_3 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
-                'order'        => 'ASC'
-            ]
+                'order'        => 'ASC',
+            ],
         ]);
         $this->assertEquals(
             " ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
@@ -1827,8 +1827,8 @@ class SearchTest extends DbTestCase
         $user_order_4 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
-                'order'        => 'DESC'
-            ]
+                'order'        => 'DESC',
+            ],
         ]);
         $this->assertEquals(
             " ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
@@ -1863,14 +1863,14 @@ class SearchTest extends DbTestCase
                 'content' => '',
                 '_actors' => [
                     'requester' => [['itemtype' => 'User', 'items_id' => $user_1]],
-                ]
+                ],
             ],
             [
                 'name' => 'testAddOrderByUser user 2 (R)',
                 'content' => '',
                 '_actors' => [
                     'requester' => [['itemtype' => 'User', 'items_id' => $user_2]],
-                ]
+                ],
             ],
             [
                 'name' => 'testAddOrderByUser user 1 (R) + user 2 (R)',
@@ -1880,7 +1880,7 @@ class SearchTest extends DbTestCase
                         ['itemtype' => 'User', 'items_id' => $user_1],
                         ['itemtype' => 'User', 'items_id' => $user_2],
                     ],
-                ]
+                ],
             ],
             [
                 'name' => 'testAddOrderByUser anonymous user (R)',
@@ -1891,17 +1891,17 @@ class SearchTest extends DbTestCase
                             'itemtype' => 'User',
                             'items_id' => 0,
                             "alternative_email" => "myemail@email.com",
-                            'use_notification' => true
-                        ]
+                            'use_notification' => true,
+                        ],
                     ],
-                ]
+                ],
             ],
             [
                 'name' => 'testAddOrderByUser group 1 (R)',
                 'content' => '',
                 '_actors' => [
                     'requester' => [['itemtype' => 'Group', 'items_id' => $group_1]],
-                ]
+                ],
             ],
             [
                 'name' => 'testAddOrderByUser user 1 (R) + group 1 (R)',
@@ -1911,7 +1911,7 @@ class SearchTest extends DbTestCase
                         ['itemtype' => 'User', 'items_id' => $user_1],
                         ['itemtype' => 'Group', 'items_id' => $group_1],
                     ],
-                ]
+                ],
             ],
         ]);
 
@@ -1938,7 +1938,7 @@ class SearchTest extends DbTestCase
                 'testAddOrderByUser user 2 (R)',               //  glpi
                 'testAddOrderByUser anonymous user (R)',       //  myemail@email.com
             ],
-            'row_name' => 'ITEM_Change_1'
+            'row_name' => 'ITEM_Change_1',
         ];
 
         yield [
@@ -1964,7 +1964,7 @@ class SearchTest extends DbTestCase
                 'testAddOrderByUser user 1 (R) + group 1 (R)', //  _test_user
                 'testAddOrderByUser group 1 (R)',              //  no requester
             ],
-            'row_name' => 'ITEM_Change_1'
+            'row_name' => 'ITEM_Change_1',
         ];
 
         // Creates Peripheral with different users
@@ -2006,7 +2006,7 @@ class SearchTest extends DbTestCase
                 'testAddOrderByUser user 1 (U)', // _test_user
                 'testAddOrderByUser user 2 (U)', // glpi
             ],
-            'row_name' => 'ITEM_Peripheral_1'
+            'row_name' => 'ITEM_Peripheral_1',
         ];
 
         yield [
@@ -2029,7 +2029,7 @@ class SearchTest extends DbTestCase
                 'testAddOrderByUser user 1 (U)', // _test_user
                 'testAddOrderByUser no user',
             ],
-            'row_name' => 'ITEM_Peripheral_1'
+            'row_name' => 'ITEM_Peripheral_1',
         ];
 
         // Creates Problems with different writers
@@ -2071,7 +2071,7 @@ class SearchTest extends DbTestCase
                 'testAddOrderByUser by glpi',
                 'testAddOrderByUser by tech',
             ],
-            'row_name' => 'ITEM_Problem_1'
+            'row_name' => 'ITEM_Problem_1',
         ];
 
         yield [
@@ -2093,7 +2093,7 @@ class SearchTest extends DbTestCase
                 'testAddOrderByUser by tech',
                 'testAddOrderByUser by glpi',
             ],
-            'row_name' => 'ITEM_Problem_1'
+            'row_name' => 'ITEM_Problem_1',
         ];
 
         // Last edit by
@@ -2116,7 +2116,7 @@ class SearchTest extends DbTestCase
                 'testAddOrderByUser by glpi',
                 'testAddOrderByUser by tech',
             ],
-            'row_name' => 'ITEM_Problem_1'
+            'row_name' => 'ITEM_Problem_1',
         ];
 
         yield [
@@ -2138,7 +2138,7 @@ class SearchTest extends DbTestCase
                 'testAddOrderByUser by tech',
                 'testAddOrderByUser by glpi',
             ],
-            'row_name' => 'ITEM_Problem_1'
+            'row_name' => 'ITEM_Problem_1',
         ];
     }
 
@@ -2220,13 +2220,13 @@ class SearchTest extends DbTestCase
         // reduce the right of tech profile
         // to have only the right of display their own problems (created, assign)
         \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
-            'Problem' => (\Problem::READMY + READNOTE + UPDATENOTE)
+            'Problem' => (\Problem::READMY + READNOTE + UPDATENOTE),
         ]);
 
         // add a group for tech user
         $group = new \Group();
         $groups_id = $group->add([
-            'name' => "test group for tech user"
+            'name' => "test group for tech user",
         ]);
         $this->assertGreaterThan(0, $groups_id);
         $group_user = new \Group_User();
@@ -2234,7 +2234,7 @@ class SearchTest extends DbTestCase
             0,
             $group_user->add([
                 'groups_id' => $groups_id,
-                'users_id'  => $tech_users_id
+                'users_id'  => $tech_users_id,
             ])
         );
 
@@ -2245,7 +2245,7 @@ class SearchTest extends DbTestCase
             $problem->add([
                 'name'              => "test problem visibility for tech",
                 'content'           => "test problem visibility for tech",
-                '_groups_id_assign' => $groups_id
+                '_groups_id_assign' => $groups_id,
             ])
         );
 
@@ -2276,13 +2276,13 @@ class SearchTest extends DbTestCase
         // reduce the right of tech profile
         // to have only the right of display their own changes (created, assign)
         \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
-            'Change' => (\Change::READMY + READNOTE + UPDATENOTE)
+            'Change' => (\Change::READMY + READNOTE + UPDATENOTE),
         ]);
 
         // add a group for tech user
         $group = new \Group();
         $groups_id = $group->add([
-            'name' => "test group for tech user"
+            'name' => "test group for tech user",
         ]);
         $this->assertGreaterThan(0, $groups_id);
 
@@ -2291,7 +2291,7 @@ class SearchTest extends DbTestCase
             0,
             $group_user->add([
                 'groups_id' => $groups_id,
-                'users_id'  => $tech_users_id
+                'users_id'  => $tech_users_id,
             ])
         );
 
@@ -2302,7 +2302,7 @@ class SearchTest extends DbTestCase
             $change->add([
                 'name'              => "test Change visibility for tech",
                 'content'           => "test Change visibility for tech",
-                '_groups_id_assign' => $groups_id
+                '_groups_id_assign' => $groups_id,
             ])
         );
 
@@ -2340,7 +2340,7 @@ class SearchTest extends DbTestCase
 
         $sid = $state->add([
             'name'         => 'A test state',
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->assertGreaterThan(0, $sid);
 
@@ -2352,7 +2352,7 @@ class SearchTest extends DbTestCase
                 'items_id'  => $state->fields['id'],
                 'language'  => 'fr_FR',
                 'field'     => 'completename',
-                'value'     => 'Un status de test'
+                'value'     => 'Un status de test',
             ])
         );
 
@@ -2365,10 +2365,10 @@ class SearchTest extends DbTestCase
                 0 => [
                     'field'      => 'view',
                     'searchtype' => 'contains',
-                    'value'      => 'test'
-                ]
+                    'value'      => 'test',
+                ],
             ],
-            'metacriteria' => []
+            'metacriteria' => [],
         ];
 
         $data = $this->doSearch('State', $search_params);
@@ -2599,10 +2599,10 @@ class SearchTest extends DbTestCase
                 [
                     'field'      => $ID,
                     'searchtype' => $searchtype,
-                    'value'      => $val
-                ]
+                    'value'      => $val,
+                ],
             ],
-            'metacriteria' => []
+            'metacriteria' => [],
         ];
 
         // Run a search to trigger a test failure if anything goes wrong.
@@ -2619,9 +2619,9 @@ class SearchTest extends DbTestCase
             'search'       => 'Search',
             'criteria'     => [0 => ['field'      => 'view',
                 'searchtype' => 'contains',
-                'value'      => 'pc'
-            ]
-            ]
+                'value'      => 'pc',
+            ],
+            ],
         ];
         $data = $this->doSearch('Computer', $search_params);
 
@@ -2666,8 +2666,8 @@ class SearchTest extends DbTestCase
                     'field'      => '22', // Recipient
                     'searchtype' => 'equals',
                     'value'      => $user_normal_id,
-                ]
-            ]
+                ],
+            ],
         ];
         $data = $this->doSearch('Ticket', $search_params);
 
@@ -2689,7 +2689,7 @@ class SearchTest extends DbTestCase
                                     IFNULL(`glpi_users_users_id_recipient`.`realname`, ''),
                                     IFNULL(`glpi_users_users_id_recipient`.`firstname`, ''),
                                     IFNULL(`glpi_users_users_id_recipient`.`name`, '')
-                                ) ASC"
+                                ) ASC",
         ];
         foreach ($contains as $contain) {
             $this->assertStringContainsString($contain, $data['sql']['search']);
@@ -2710,7 +2710,7 @@ class SearchTest extends DbTestCase
                     'searchtype' => 'contains',
                     'value'      => 'test',
                 ],
-            ]
+            ],
         ]);
 
         $this->assertMatchesRegularExpression(
@@ -2783,7 +2783,7 @@ class SearchTest extends DbTestCase
 
     public function testGroupParamAfterMeta()
     {
-       // Try to run this query without warnings
+        // Try to run this query without warnings
         $this->doSearch('Ticket', [
             'reset'      => 'reset',
             'is_deleted' => 0,
@@ -2812,10 +2812,10 @@ class SearchTest extends DbTestCase
                             'field'      => 'view',
                             'searchtype' => 'contains',
                             'value'      => '233',
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ]);
     }
 
@@ -2865,7 +2865,7 @@ class SearchTest extends DbTestCase
                 'NetworkPortInstantiation', // Should be abstract (or have $notable = true)
                 'NetworkPortMigration', // Tables only exists in specific cases
                 'NotificationSettingConfig', // Stores its data in glpi_configs, does not acts as a CommonDBTM
-                'PendingReasonCron'
+                'PendingReasonCron',
             ]
         );
         $searchable_classes = [];
@@ -2901,7 +2901,7 @@ class SearchTest extends DbTestCase
                     '_ticket03',
                     '_ticket100',
                     '_ticket101',
-                ]
+                ],
             ],
             [
                 'params' => [
@@ -2922,7 +2922,7 @@ class SearchTest extends DbTestCase
                     '_test_pc13',
                     '_test_pc21',
                     '_test_pc22',
-                ]
+                ],
             ],
         ];
     }
@@ -2987,7 +2987,7 @@ class SearchTest extends DbTestCase
         }
 
         return [
-         // Case 1: Search for tickets where 'TU_USER' is an observer
+            // Case 1: Search for tickets where 'TU_USER' is an observer
             [
                 'criteria' => [
                     [
@@ -2995,15 +2995,15 @@ class SearchTest extends DbTestCase
                         'field'      => 66, // Observer search option
                         'searchtype' => 'equals',
                         'value'      => $TU_USER_users_id,
-                    ]
+                    ],
                 ],
                 'expected' => [
                     'testMyselfSearchCriteriaProvider 1',
                     'testMyselfSearchCriteriaProvider 2',
                     'testMyselfSearchCriteriaProvider 3',
-                ]
+                ],
             ],
-         // Case 2: Search for tickets where 'tech' is an observer
+            // Case 2: Search for tickets where 'tech' is an observer
             [
                 'criteria' => [
                     [
@@ -3011,13 +3011,13 @@ class SearchTest extends DbTestCase
                         'field'      => 66, // Observer search option
                         'searchtype' => 'equals',
                         'value'      => $tech_users_id,
-                    ]
+                    ],
                 ],
                 'expected' => [
                     'testMyselfSearchCriteriaProvider 4',
-                ]
+                ],
             ],
-         // Case 3: Search for tickets where the current user (TU_USER) is an observer
+            // Case 3: Search for tickets where the current user (TU_USER) is an observer
             [
                 'criteria' => [
                     [
@@ -3025,13 +3025,13 @@ class SearchTest extends DbTestCase
                         'field'      => 66, // Observer search option
                         'searchtype' => 'equals',
                         'value'      => 'myself',
-                    ]
+                    ],
                 ],
                 'expected' => [
                     'testMyselfSearchCriteriaProvider 1',
                     'testMyselfSearchCriteriaProvider 2',
                     'testMyselfSearchCriteriaProvider 3',
-                ]
+                ],
             ],
         ];
     }
@@ -3112,7 +3112,7 @@ class SearchTest extends DbTestCase
                     'field'      => $field,
                     'searchtype' => $searchtype,
                     'value'      => $value,
-                ]
+                ],
             ],
             'expected' => $expected,
         ];
@@ -3125,7 +3125,7 @@ class SearchTest extends DbTestCase
                     'field'      => $field,
                     'searchtype' => $not_searchtype,
                     'value'      => $value,
-                ]
+                ],
             ],
             'expected' => $expected,
         ];
@@ -3141,9 +3141,9 @@ class SearchTest extends DbTestCase
                             'field'      => $field,
                             'searchtype' => $searchtype,
                             'value'      => $value,
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             'expected' => $expected,
         ];
@@ -3159,9 +3159,9 @@ class SearchTest extends DbTestCase
                             'field'      => $field,
                             'searchtype' => $not_searchtype,
                             'value'      => $value,
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             'expected' => $expected,
         ];
@@ -3177,9 +3177,9 @@ class SearchTest extends DbTestCase
                             'field'      => $field,
                             'searchtype' => $not_searchtype,
                             'value'      => $value,
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             'expected' => $expected,
         ];
@@ -3195,9 +3195,9 @@ class SearchTest extends DbTestCase
                             'field'      => $field,
                             'searchtype' => $searchtype,
                             'value'      => $value,
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             'expected' => $expected,
         ];
@@ -3212,7 +3212,7 @@ class SearchTest extends DbTestCase
                     'field'      => $field,
                     'searchtype' => $searchtype,
                     'value'      => $value,
-                ]
+                ],
             ],
             'expected' => $not_expected,
         ];
@@ -3225,7 +3225,7 @@ class SearchTest extends DbTestCase
                     'field'      => $field,
                     'searchtype' => $not_searchtype,
                     'value'      => $value,
-                ]
+                ],
             ],
             'expected' => $not_expected,
         ];
@@ -3241,9 +3241,9 @@ class SearchTest extends DbTestCase
                             'field'      => $field,
                             'searchtype' => $not_searchtype,
                             'value'      => $value,
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             'expected' => $not_expected,
         ];
@@ -3259,9 +3259,9 @@ class SearchTest extends DbTestCase
                             'field'      => $field,
                             'searchtype' => $searchtype,
                             'value'      => $value,
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             'expected' => $not_expected,
         ];
@@ -3277,9 +3277,9 @@ class SearchTest extends DbTestCase
                             'field'      => $field,
                             'searchtype' => $searchtype,
                             'value'      => $value,
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             'expected' => $not_expected,
         ];
@@ -3295,9 +3295,9 @@ class SearchTest extends DbTestCase
                             'field'      => $field,
                             'searchtype' => $not_searchtype,
                             'value'      => $value,
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             'expected' => $not_expected,
         ];
@@ -3323,7 +3323,7 @@ class SearchTest extends DbTestCase
                     'field'      => 7, // Category
                     'searchtype' => 'equals',
                     'value'      => $category,
-                ]
+                ],
             ],
             'expected' => [],
         ];
@@ -3389,7 +3389,7 @@ class SearchTest extends DbTestCase
                 'itilcategories_id' => $category,
                 '_actors' => [
                     'observer' => [['itemtype' => 'Group', 'items_id' => $group_1]],
-                ]
+                ],
             ],
             [
                 'name' => 'Ticket group 2 (W)',
@@ -3397,8 +3397,8 @@ class SearchTest extends DbTestCase
                 'entities_id' => $root,
                 'itilcategories_id' => $category,
                 '_actors' => [
-                    'observer' => [['itemtype' => 'Group', 'items_id' => $group_2]]
-                ]
+                    'observer' => [['itemtype' => 'Group', 'items_id' => $group_2]],
+                ],
             ],
             [
                 'name' => 'Ticket group 1 (W) + group 2 (W)',
@@ -3409,8 +3409,8 @@ class SearchTest extends DbTestCase
                     'observer' => [
                         ['itemtype' => 'Group', 'items_id' => $group_1],
                         ['itemtype' => 'Group', 'items_id' => $group_2],
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'name' => 'Ticket group 1A (W) + group 2 (W)',
@@ -3421,8 +3421,8 @@ class SearchTest extends DbTestCase
                     'observer' => [
                         ['itemtype' => 'Group', 'items_id' => $group_1A],
                         ['itemtype' => 'Group', 'items_id' => $group_2],
-                    ]
-                ]
+                    ],
+                ],
             ],
 
             // Test set on assigned group
@@ -3433,7 +3433,7 @@ class SearchTest extends DbTestCase
                 'itilcategories_id' => $category,
                 '_actors' => [
                     'assign' => [['itemtype' => 'Group', 'items_id' => $group_1]],
-                ]
+                ],
             ],
 
             // Test set on requester group
@@ -3444,7 +3444,7 @@ class SearchTest extends DbTestCase
                 'itilcategories_id' => $category,
                 '_actors' => [
                     'requester' => [['itemtype' => 'Group', 'items_id' => $group_1]],
-                ]
+                ],
             ],
 
             // Test set on supplier
@@ -3455,7 +3455,7 @@ class SearchTest extends DbTestCase
                 'itilcategories_id' => $category,
                 '_actors' => [
                     'assign' => [['itemtype' => 'Supplier', 'items_id' => $supplier_1]],
-                ]
+                ],
             ],
             [
                 'name' => 'Ticket supplier 2',
@@ -3464,7 +3464,7 @@ class SearchTest extends DbTestCase
                 'itilcategories_id' => $category,
                 '_actors' => [
                     'assign' => [['itemtype' => 'Supplier', 'items_id' => $supplier_2]],
-                ]
+                ],
             ],
             [
                 'name' => 'Ticket supplier 1 + supplier 2',
@@ -3476,7 +3476,7 @@ class SearchTest extends DbTestCase
                         ['itemtype' => 'Supplier', 'items_id' => $supplier_1],
                         ['itemtype' => 'Supplier', 'items_id' => $supplier_2],
                     ],
-                ]
+                ],
             ],
 
             // Test set on requester
@@ -3487,7 +3487,7 @@ class SearchTest extends DbTestCase
                 'itilcategories_id' => $category,
                 '_actors' => [
                     'requester' => [['itemtype' => 'User', 'items_id' => $user_1]],
-                ]
+                ],
             ],
             [
                 'name' => 'Ticket user 2 (R)',
@@ -3496,7 +3496,7 @@ class SearchTest extends DbTestCase
                 'itilcategories_id' => $category,
                 '_actors' => [
                     'requester' => [['itemtype' => 'User', 'items_id' => $user_2]],
-                ]
+                ],
             ],
             [
                 'name' => 'Ticket user 1 (R) + user 2 (R)',
@@ -3508,7 +3508,7 @@ class SearchTest extends DbTestCase
                         ['itemtype' => 'User', 'items_id' => $user_1],
                         ['itemtype' => 'User', 'items_id' => $user_2],
                     ],
-                ]
+                ],
             ],
             [
                 'name' => 'Ticket anonymous user (R)',
@@ -3521,10 +3521,10 @@ class SearchTest extends DbTestCase
                             'itemtype' => 'User',
                             'items_id' => 0,
                             "alternative_email" => "myemail@email.com",
-                            'use_notification' => true
-                        ]
+                            'use_notification' => true,
+                        ],
                     ],
-                ]
+                ],
             ],
 
             // Test set on watcher
@@ -3535,7 +3535,7 @@ class SearchTest extends DbTestCase
                 'itilcategories_id' => $category,
                 '_actors' => [
                     'observer' => [['itemtype' => 'User', 'items_id' => $user_1]],
-                ]
+                ],
             ],
 
             // Test set on assigned
@@ -3546,7 +3546,7 @@ class SearchTest extends DbTestCase
                 'itilcategories_id' => $category,
                 '_actors' => [
                     'assign' => [['itemtype' => 'User', 'items_id' => $user_1]],
-                ]
+                ],
             ],
         ]);
 
@@ -3912,11 +3912,11 @@ class SearchTest extends DbTestCase
         );
 
         // Data set for tests on user searches
-        list (
+        [
             $user_without_groups,
             $user_group_1,
             $user_group_1_and_2
-        ) = $this->createItems(User::class, [
+        ] = $this->createItems(User::class, [
             ['name' => 'user_without_groups'],
             ['name' => 'user_group_1'],
             ['name' => 'user_group_1_and_2'],
@@ -3954,20 +3954,20 @@ class SearchTest extends DbTestCase
             "Group 1"
         );
 
-        list (
+        [
             $computer_without_appliance,
             $computer_appliance_1,
             $computer_appliance_1_and_2,
-        ) = $this->createItems(Computer::class, [
+        ] = $this->createItems(Computer::class, [
             ['name' => 'computer_without_appliance', 'entities_id' => $root],
             ['name' => 'computer_appliance_1', 'entities_id' => $root],
             ['name' => 'computer_appliance_1_and_2', 'entities_id' => $root],
         ]);
 
-        list (
+        [
             $appliance1,
             $appliance2,
-        ) = $this->createItems(Appliance::class, [
+        ] = $this->createItems(Appliance::class, [
             ['name' => 'appliance1'],
             ['name' => 'appliance2'],
         ]);
@@ -4027,7 +4027,7 @@ class SearchTest extends DbTestCase
 
             // Run search
             $data = \Search::getDatas($itemtype, [
-                'criteria' => $criteria
+                'criteria' => $criteria,
             ]);
 
             // Parse results
@@ -5272,7 +5272,7 @@ class SearchTest extends DbTestCase
                             'field' => $search_option,
                             'searchtype' => 'contains',
                             'value' => $value,
-                        ]
+                        ],
                     ],
                 ];
 
@@ -5327,48 +5327,48 @@ class SearchTest extends DbTestCase
         $this->createItems('Ticket', [
             [
                 'name' => 'Ticket 1',
-                'content' => '<p>This is a test ticket</p>'
+                'content' => '<p>This is a test ticket</p>',
             ],
             [
                 'name' => 'Ticket 2',
-                'content' => '<p>This is a test ticket with &amp; in description</p>'
+                'content' => '<p>This is a test ticket with &amp; in description</p>',
             ],
             [
                 'name' => 'Ticket 3',
-                'content' => '<p>This is a test ticket with matching followup</p>'
+                'content' => '<p>This is a test ticket with matching followup</p>',
             ],
             [
                 'name' => 'Ticket 4',
-                'content' => '<p>This is a test ticket with task</p>'
+                'content' => '<p>This is a test ticket with task</p>',
             ],
             [
                 'name' => 'Ticket & 5',
-                'content' => '<p>This is a test ticket</p>'
+                'content' => '<p>This is a test ticket</p>',
             ],
             [
                 'name' => 'Ticket > 6',
-                'content' => '<p>This is a test ticket</p>'
+                'content' => '<p>This is a test ticket</p>',
             ],
         ]);
 
         $this->createItem('ITILFollowup', [
             'itemtype' => 'Ticket',
             'items_id' => getItemByTypeName('Ticket', 'Ticket 1')->getID(),
-            'content' => '<p>This is a followup</p>'
+            'content' => '<p>This is a followup</p>',
         ]);
         $this->createItem('ITILFollowup', [
             'itemtype' => 'Ticket',
             'items_id' => getItemByTypeName('Ticket', 'Ticket 3')->getID(),
-            'content' => '<p>This is a followup with &amp; in description</p>'
+            'content' => '<p>This is a followup with &amp; in description</p>',
         ]);
 
         $this->createItem('TicketTask', [
             'tickets_id' => getItemByTypeName('Ticket', 'Ticket 1')->getID(),
-            'content' => '<p>This is a task</p>'
+            'content' => '<p>This is a task</p>',
         ]);
         $this->createItem('TicketTask', [
             'tickets_id' => getItemByTypeName('Ticket', 'Ticket 4')->getID(),
-            'content' => '<p>This is a task with &amp; in description</p>'
+            'content' => '<p>This is a task with &amp; in description</p>',
         ]);
 
         // When user searches for a `&`, the criteria is sanitized and its value is therefore `&#38;`
@@ -5383,13 +5383,13 @@ class SearchTest extends DbTestCase
                         'link'       => 'AND',
                         'field'      => 1, // title
                         'searchtype' => 'contains',
-                        'value'      => $sanitized_ampersand_criteria
-                    ]
+                        'value'      => $sanitized_ampersand_criteria,
+                    ],
                 ],
             ],
             'expected' => [
-                'Ticket &#38; 5'
-            ]
+                'Ticket &#38; 5',
+            ],
         ];
 
         yield [
@@ -5401,13 +5401,13 @@ class SearchTest extends DbTestCase
                         'link'       => 'AND',
                         'field'      => 21, // ticket content
                         'searchtype' => 'contains',
-                        'value'      => $sanitized_ampersand_criteria
-                    ]
+                        'value'      => $sanitized_ampersand_criteria,
+                    ],
                 ],
             ],
             'expected' => [
-                'Ticket 2'
-            ]
+                'Ticket 2',
+            ],
         ];
 
         yield [
@@ -5419,13 +5419,13 @@ class SearchTest extends DbTestCase
                         'link'       => 'AND',
                         'field'      => 25, // followup content
                         'searchtype' => 'contains',
-                        'value'      => $sanitized_ampersand_criteria
-                    ]
+                        'value'      => $sanitized_ampersand_criteria,
+                    ],
                 ],
             ],
             'expected' => [
-                'Ticket 3'
-            ]
+                'Ticket 3',
+            ],
         ];
 
         yield [
@@ -5437,13 +5437,13 @@ class SearchTest extends DbTestCase
                         'link'       => 'AND',
                         'field'      => 26, // task content
                         'searchtype' => 'contains',
-                        'value'      => $sanitized_ampersand_criteria
-                    ]
+                        'value'      => $sanitized_ampersand_criteria,
+                    ],
                 ],
             ],
             'expected' => [
-                'Ticket 4'
-            ]
+                'Ticket 4',
+            ],
         ];
 
         yield [
@@ -5455,31 +5455,31 @@ class SearchTest extends DbTestCase
                         'link' => 'AND',
                         'field' => 'view', // items seen
                         'searchtype' => 'contains',
-                        'value' => $sanitized_ampersand_criteria
+                        'value' => $sanitized_ampersand_criteria,
                     ],
                     1 => [
                         'link' => 'AND',
                         'field' => 1, //title
                         'searchtype' => 'contains',
-                        'value' => ''
+                        'value' => '',
                     ],
                     2 => [
                         'link' => 'AND',
                         'field' => 21, // ticket content
                         'searchtype' => 'contains',
-                        'value' => ''
+                        'value' => '',
                     ],
                     3 => [
                         'link' => 'AND',
                         'field' => 25, // followup content
                         'searchtype' => 'contains',
-                        'value' => ''
+                        'value' => '',
                     ],
                     4 => [
                         'link' => 'AND',
                         'field' => 26, // task content
                         'searchtype' => 'contains',
-                        'value' => ''
+                        'value' => '',
                     ],
                 ],
             ],
@@ -5487,8 +5487,8 @@ class SearchTest extends DbTestCase
                 'Ticket 2',
                 'Ticket 3',
                 'Ticket 4',
-                'Ticket &#38; 5'
-            ]
+                'Ticket &#38; 5',
+            ],
         ];
     }
 
@@ -5522,9 +5522,9 @@ class SearchTest extends DbTestCase
                 0 => [
                     'field' => 'view', // items seen
                     'searchtype' => 'contains',
-                    'value' => 'any string'
-                ]
-            ]
+                    'value' => 'any string',
+                ],
+            ],
         ];
 
         $displaypref = new \DisplayPreference();
@@ -5578,12 +5578,12 @@ class DupSearchOpt extends \CommonDBTM
 
         $tab[] = [
             'id'     => '12',
-            'name'   => 'One search option'
+            'name'   => 'One search option',
         ];
 
         $tab[] = [
             'id'     => '12',
-            'name'   => 'Any option'
+            'name'   => 'Any option',
         ];
 
         return $tab;
@@ -5591,6 +5591,7 @@ class DupSearchOpt extends \CommonDBTM
 }
 
 // phpcs:ignore SlevomatCodingStandard.Namespaces
+
 namespace SearchTest;
 
 // @codingStandardsIgnoreStart

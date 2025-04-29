@@ -138,7 +138,7 @@ class CronTaskTest extends DbTestCase
 
     public static function unregisterProvider()
     {
-       // Only plugins are supported with the unregister method.
+        // Only plugins are supported with the unregister method.
         return [
             [
                 'plugin_name'       => 'Test',
@@ -176,7 +176,7 @@ class CronTaskTest extends DbTestCase
         $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => \CronTask::getTable(),
-            'WHERE'  => ['itemtype' => addslashes($itemtype), 'name' => $name]
+            'WHERE'  => ['itemtype' => addslashes($itemtype), 'name' => $name],
         ]);
         $this->assertEquals(1, $iterator->count());
 
@@ -188,7 +188,7 @@ class CronTaskTest extends DbTestCase
         $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => \CronTask::getTable(),
-            'WHERE'  => ['itemtype' => addslashes($itemtype), 'name' => $name]
+            'WHERE'  => ['itemtype' => addslashes($itemtype), 'name' => $name],
         ]);
         $this->assertEquals($should_unregister ? 0 : 1, $iterator->count());
     }

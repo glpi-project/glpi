@@ -49,7 +49,7 @@ class OperatingSystemEditionTest extends CommonDropdown
             [\OperatingSystemEdition::getTypeName(), 'Editions'],
             [\OperatingSystemEdition::getTypeName(0), 'Editions'],
             [\OperatingSystemEdition::getTypeName(10), 'Editions'],
-            [\OperatingSystemEdition::getTypeName(1), 'Edition']
+            [\OperatingSystemEdition::getTypeName(1), 'Edition'],
         ];
     }
 
@@ -77,7 +77,7 @@ class OperatingSystemEditionTest extends CommonDropdown
         $this->assertGreaterThan(
             0,
             $instance->add([
-                'name' => 'OS name ' . $this->getUniqueString()
+                'name' => 'OS name ' . $this->getUniqueString(),
             ])
         );
         $this->assertTrue($instance->getFromDB($instance->getID()));

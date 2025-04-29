@@ -41,7 +41,7 @@ if (strpos($_SERVER['PHP_SELF'], "ruleaction.php")) {
     include('../inc/includes.php');
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
-} else if (!defined('GLPI_ROOT')) {
+} elseif (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
@@ -60,7 +60,7 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
         exit();
     }
 
-   // Existing action
+    // Existing action
     if ($_POST['ruleactions_id'] > 0) {
         $already_used = false;
     } else { // New action
@@ -80,7 +80,7 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
         'name'        => "action_type",
         'field'       => $_POST["field"],
         'value'       => $action_type,
-        'alreadyused' => $already_used
+        'alreadyused' => $already_used,
     ]);
 
     echo "</td><td>";
@@ -90,7 +90,7 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
     $paramsaction = ['action_type'                   => '__VALUE__',
         'field'                         => $_POST["field"],
         'sub_type'                      => $_POST["sub_type"],
-        $item->getForeignKeyField()     => $_POST[$item->getForeignKeyField()]
+        $item->getForeignKeyField()     => $_POST[$item->getForeignKeyField()],
     ];
 
     Ajax::updateItemOnSelectEvent(

@@ -40,7 +40,7 @@ use Glpi\Event;
  **/
 class Reservation extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype          = 'ReservationItem';
     public static $items_id          = 'reservationitems_id';
 
@@ -100,9 +100,9 @@ class Reservation extends CommonDBChild
             && (($this->fields["users_id"] === Session::getLoginUserID())
               || Session::haveRight("reservation", PURGE))
         ) {
-           // Processing Email
+            // Processing Email
             if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-               // Only notify for non-completed reservations
+                // Only notify for non-completed reservations
                 if (strtotime($this->fields['end']) > time()) {
                     NotificationEvent::raiseEvent("delete", $this);
                 }
@@ -152,8 +152,8 @@ class Reservation extends CommonDBChild
             && !isset($this->input['_disablenotif'])
         ) {
             NotificationEvent::raiseEvent("update", $this);
-           //$mail = new MailingResa($this,"update");
-           //$mail->send();
+            //$mail = new MailingResa($this,"update");
+            //$mail->send();
         }
 
         parent::post_updateItem($history);
@@ -165,12 +165,12 @@ class Reservation extends CommonDBChild
      **/
     public function prepareInputForAdd($input)
     {
-       // Error on previous added reservation on several add
+        // Error on previous added reservation on several add
         if (isset($input['_ok']) && !$input['_ok']) {
             return false;
         }
 
-       // set new date.
+        // set new date.
         $this->fields["reservationitems_id"] = $input["reservationitems_id"];
         $this->fields["begin"] = $input["begin"];
         $this->fields["end"] = $input["end"];
@@ -229,7 +229,7 @@ class Reservation extends CommonDBChild
                     'end' => $end,
                     'reservationitems_id' => $reservationitems_id,
                     'comment' => $input['comment'],
-                    'users_id' => (int)$input['users_id'],
+                    'users_id' => (int) $input['users_id'],
                 ];
                 if (count($dates_to_add) > 1) {
                     $reservation_input['group'] = $group;
@@ -310,7 +310,7 @@ class Reservation extends CommonDBChild
     }
 
 
-   // SPECIFIC FUNCTIONS
+    // SPECIFIC FUNCTIONS
 
     /**
      * @param $reservationitems_id
@@ -328,10 +328,10 @@ class Reservation extends CommonDBChild
                 'FROM'   => 'glpi_reservations',
                 'WHERE'  => [
                     'reservationitems_id'   => $reservationitems_id,
-                    'group'                 => $rand
-                ]
+                    'group'                 => $rand,
+                ],
             ])->current();
-            $count = (int)$result['cpt'];
+            $count = (int) $result['cpt'];
         } while ($count > 0);
 
         return $rand;
@@ -355,7 +355,7 @@ class Reservation extends CommonDBChild
             return true;
         }
 
-       // When modify a reservation do not itself take into account
+        // When modify a reservation do not itself take into account
         $where = [];
         if (isset($this->fields["id"])) {
             $where['id'] = ['<>', $this->fields['id']];
@@ -367,8 +367,8 @@ class Reservation extends CommonDBChild
             'WHERE'  => $where + [
                 'reservationitems_id'   => $this->fields['reservationitems_id'],
                 'end'                   => ['>', $this->fields['begin']],
-                'begin'                 => ['<', $this->fields['end']]
-            ]
+                'begin'                 => ['<', $this->fields['end']],
+            ],
         ])->current();
         return $result['cpt'] > 0;
     }
@@ -454,7 +454,7 @@ class Reservation extends CommonDBChild
     public function canChildItem($methodItem, $methodNotItem)
     {
 
-       // Original user always have right
+        // Original user always have right
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
             return true;
         }
@@ -488,12 +488,12 @@ class Reservation extends CommonDBChild
                 'FROM'   => 'glpi_reservations',
                 'WHERE'  => [
                     'reservationitems_id'   => $this->fields['reservationitems_id'],
-                    'group'                 => $this->fields['group']
-                ]
+                    'group'                 => $this->fields['group'],
+                ],
             ]);
             $rr = clone $this;
             foreach ($iterator as $data) {
-                 $rr->delete(['id' => $data['id']]);
+                $rr->delete(['id' => $data['id']]);
             }
         }
     }
@@ -515,10 +515,10 @@ class Reservation extends CommonDBChild
 
         $rand = mt_rand();
 
-       // scheduler feature key
-       // schedular part of fullcalendar is distributed with opensource licence (GLPv3)
-       // but this licence is incompatible with GLPI (GPLv2)
-       // see https://fullcalendar.io/license
+        // scheduler feature key
+        // schedular part of fullcalendar is distributed with opensource licence (GLPv3)
+        // but this licence is incompatible with GLPI (GPLv2)
+        // see https://fullcalendar.io/license
         $scheduler_key = Plugin::doHookFunction('planning_scheduler_key');
 
         $is_all = $ID === 0 ? "true" : "false";
@@ -631,14 +631,14 @@ JAVASCRIPT;
                 $res_i_table => [
                     'ON' => [
                         $res_i_table => 'id',
-                        $res_table   => 'reservationitems_id'
-                    ]
-                ]
+                        $res_table   => 'reservationitems_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'end'   => ['>', $start],
                 'begin' => ['<', $end],
-            ] + $where
+            ] + $where,
         ]);
 
         $events = [];
@@ -703,8 +703,8 @@ JAVASCRIPT;
             ],
             'FROM'   => $res_i_table,
             'WHERE'  => [
-                'is_active'  => 1
-            ]
+                'is_active'  => 1,
+            ],
         ]);
 
         $resources = [];
@@ -784,7 +784,7 @@ JAVASCRIPT;
             if (!$resa->can($ID, UPDATE)) {
                 return false;
             }
-           // Set item if not set
+            // Set item if not set
             if (
                 (!isset($options['item']) || (count($options['item']) == 0))
                 && ($itemid = $resa->getField('reservationitems_id'))
@@ -811,7 +811,7 @@ JAVASCRIPT;
         echo "<table class='tab_cadre' width='100%'>";
         echo "<tr><th colspan='2'>" . __('Reserve an item') . "</th></tr>\n";
 
-       // Add Hardware name
+        // Add Hardware name
         $r = new ReservationItem();
 
         echo "<tr class='tab_bg_1'><td>" . _n('Item', 'Items', 1) . "</td>";
@@ -820,17 +820,17 @@ JAVASCRIPT;
         $temp_item  = $options['item'];
         $first_item = array_pop($temp_item);
         if (count($options['item']) == 1 && $first_item == 0) {
-           // only one id = 0, display an item dropdown
+            // only one id = 0, display an item dropdown
             Dropdown::showSelectItemFromItemtypes([
                 'items_id_name'   => 'items[]',
                 'itemtypes'       => self::getReservableItemtypes(),
                 'entity_restrict' => Session::getActiveEntity(),
                 'checkright'      => false,
-                'ajax_page'       => $CFG_GLPI['root_doc'] . '/ajax/reservable_items.php'
+                'ajax_page'       => $CFG_GLPI['root_doc'] . '/ajax/reservable_items.php',
             ]);
             echo "<span id='item_dropdown'>";
         } else {
-           // existing item(s)
+            // existing item(s)
             foreach ($options['item'] as $itemID) {
                 $r->getFromDB($itemID);
                 $type = $r->fields["itemtype"];
@@ -875,14 +875,14 @@ JAVASCRIPT;
                 'value'        => $uid,
                 'entity'       => $entities_id,
                 'entity_sons'  => $is_recursive,
-                'right'        => 'all'
+                'right'        => 'all',
             ]);
         }
         echo "</td></tr>\n";
         echo "<tr class='tab_bg_2'><td>" . __('Start date') . "</td><td>";
         Html::showDateTimeField("resa[begin]", [
             'value'      => $resa->fields["begin"],
-            'maybeempty' => false
+            'maybeempty' => false,
         ]);
         echo "</td></tr>";
         $default_delay = floor((strtotime($resa->fields["end"]) - strtotime($resa->fields["begin"]))
@@ -894,13 +894,13 @@ JAVASCRIPT;
             'max'        => 24 * HOUR_TIMESTAMP,
             'value'      => $default_delay,
             'emptylabel' => __('Specify an end date'),
-            'allow_max_change' => false
+            'allow_max_change' => false,
         ]);
         echo "<br><div id='date_end$rand'></div>";
         $params = [
             'duration'     => '__VALUE__',
             'end'          => $resa->fields["end"],
-            'name'         => "resa[end]"
+            'name'         => "resa[end]",
         ];
         Ajax::updateItemOnSelectEvent(
             "dropdown_resa[_duration]$rand",
@@ -923,7 +923,7 @@ JAVASCRIPT;
                 ''      => _x('periodicity', 'None'),
                 'day'   => _x('periodicity', 'Daily'),
                 'week'  => _x('periodicity', 'Weekly'),
-                'month' => _x('periodicity', 'Monthly')
+                'month' => _x('periodicity', 'Monthly'),
             ]);
             $field_id = Html::cleanId("dropdown_periodicity[type]$rand");
 
@@ -933,7 +933,7 @@ JAVASCRIPT;
                 $CFG_GLPI["root_doc"] . "/ajax/resaperiod.php",
                 [
                     'type'     => '__VALUE__',
-                    'end'      => $resa->fields["end"]
+                    'end'      => $resa->fields["end"],
                 ]
             );
             echo "<br><div id='resaperiodcontent$rand'></div>";
@@ -1021,11 +1021,11 @@ JAVASCRIPT;
                 case 'week':
                     $dates = [];
 
-                   // No days set add 1 week
+                    // No days set add 1 week
                     if (!isset($options['days'])) {
                         $dates = [['begin' => strtotime('+1 week', $begin_time),
-                            'end'   => strtotime('+1 week', $end_time)
-                        ]
+                            'end'   => strtotime('+1 week', $end_time),
+                        ],
                         ];
                     } else {
                         if (is_array($options['days'])) {
@@ -1038,7 +1038,7 @@ JAVASCRIPT;
                                     $end_day = date('l', strtotime($day . ' +1 day'));
                                 }
                                 $dates[] = ['begin' => strtotime("next $day", $begin_time) + $begin_hour,
-                                    'end'   => strtotime("next $end_day", $end_time) + $end_hour
+                                    'end'   => strtotime("next $end_day", $end_time) + $end_hour,
                                 ];
                             }
                         }
@@ -1086,17 +1086,17 @@ JAVASCRIPT;
                                 $calc_end_time   = strtotime("next $dayofweek", $calc_end_time) + $end_hour;
 
                                 while ($calc_begin_time < $repeat_end) {
-                                     $toadd[date('Y-m-d H:i:s', $calc_begin_time)] = date(
-                                         'Y-m-d H:i:s',
-                                         $calc_end_time
-                                     );
-                                       $i++;
-                                       $calc_begin_time = strtotime("+$i month", $begin_time);
-                                       $calc_end_time   = strtotime("+$i month", $end_time);
-                                       $calc_begin_time = strtotime("next $dayofweek", $calc_begin_time)
-                                              + $begin_hour;
-                                       $calc_end_time   = strtotime("next $dayofweek", $calc_end_time)
-                                              + $end_hour;
+                                    $toadd[date('Y-m-d H:i:s', $calc_begin_time)] = date(
+                                        'Y-m-d H:i:s',
+                                        $calc_end_time
+                                    );
+                                    $i++;
+                                    $calc_begin_time = strtotime("+$i month", $begin_time);
+                                    $calc_end_time   = strtotime("+$i month", $end_time);
+                                    $calc_begin_time = strtotime("next $dayofweek", $calc_begin_time)
+                                           + $begin_hour;
+                                    $calc_end_time   = strtotime("next $dayofweek", $calc_end_time)
+                                           + $end_hour;
                                 }
                                 break;
                         }
@@ -1121,10 +1121,10 @@ JAVASCRIPT;
             return false;
         }
 
-       // scheduler feature key
-       // schedular part of fullcalendar is distributed with opensource licence (GLPv3)
-       // but this licence is incompatible with GLPI (GPLv2)
-       // see https://fullcalendar.io/license
+        // scheduler feature key
+        // schedular part of fullcalendar is distributed with opensource licence (GLPv3)
+        // but this licence is incompatible with GLPI (GPLv2)
+        // see https://fullcalendar.io/license
         $scheduler_key = Plugin::doHookFunction('planning_scheduler_key');
 
         echo "<div class='firstbloc'>";
@@ -1135,7 +1135,7 @@ JAVASCRIPT;
             return;
         }
 
-       // js vars
+        // js vars
         $rand   = mt_rand();
         $ID     = $ri->fields['id'];
 
@@ -1191,7 +1191,7 @@ JAVASCRIPT;
         echo "<div class='firstbloc'>";
         $now = $_SESSION["glpi_currenttime"];
 
-       // Print reservation in progress
+        // Print reservation in progress
         $iterator = $DB->request([
             'SELECT'    => [
                 'begin',
@@ -1201,28 +1201,28 @@ JAVASCRIPT;
                 'users_id',
                 'glpi_reservations.comment',
                 'reservationitems_id',
-                'completename'
+                'completename',
             ],
             'FROM'      => 'glpi_reservations',
             'LEFT JOIN' => [
                 'glpi_reservationitems' => [
                     'ON' => [
                         'glpi_reservationitems' => 'id',
-                        'glpi_reservations'     => 'reservationitems_id'
-                    ]
+                        'glpi_reservations'     => 'reservationitems_id',
+                    ],
                 ],
                 'glpi_entities' => [
                     'ON' => [
                         'glpi_reservationitems' => 'entities_id',
-                        'glpi_entities'         => 'id'
-                    ]
-                ]
+                        'glpi_entities'         => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'end'       => ['>', $now],
-                'users_id'  => $ID
+                'users_id'  => $ID,
             ],
-            'ORDERBY'   => 'begin'
+            'ORDERBY'   => 'begin',
         ]);
 
         $ri = new ReservationItem();
@@ -1250,7 +1250,7 @@ JAVASCRIPT;
 
                     if ($item = getItemForItemtype($ri->fields['itemtype'])) {
                         if ($item->getFromDB($ri->fields['items_id'])) {
-                             $link = $item->getLink();
+                            $link = $item->getLink();
                         }
                     }
                     echo "<td class='center'>$link</td>";
@@ -1262,7 +1262,7 @@ JAVASCRIPT;
                 echo "<td class='center'>" . getUserName($data["users_id"]) . "</td>";
                 echo "<td class='center'>" . nl2br($data["comment"]) . "</td>";
                 echo "<td class='center'>";
-                list($annee, $mois, $jour) = explode("-", $data["begin"]);
+                [$annee, $mois, $jour] = explode("-", $data["begin"]);
                 echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/reservation.php?reservationitems_id=" .
                   $data["reservationitems_id"] . "&amp;mois_courant=$mois&amp;" .
                   "annee_courante=$annee' title=\"" . __s('See planning') . "\">";
@@ -1273,7 +1273,7 @@ JAVASCRIPT;
         }
         echo "</table></div>\n";
 
-       // Print old reservations
+        // Print old reservations
         $iterator = $DB->request([
             'SELECT'    => [
                 'begin',
@@ -1283,28 +1283,28 @@ JAVASCRIPT;
                 'users_id',
                 'glpi_reservations.comment',
                 'reservationitems_id',
-                'completename'
+                'completename',
             ],
             'FROM'      => 'glpi_reservations',
             'LEFT JOIN' => [
                 'glpi_reservationitems' => [
                     'ON' => [
                         'glpi_reservationitems' => 'id',
-                        'glpi_reservations'     => 'reservationitems_id'
-                    ]
+                        'glpi_reservations'     => 'reservationitems_id',
+                    ],
                 ],
                 'glpi_entities'         => [
                     'ON' => [
                         'glpi_reservationitems' => 'entities_id',
-                        'glpi_entities'         => 'id'
-                    ]
-                ]
+                        'glpi_entities'         => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'end'       => ['<=', $now],
-                'users_id'  => $ID
+                'users_id'  => $ID,
             ],
-            'ORDERBY'   => 'begin DESC'
+            'ORDERBY'   => 'begin DESC',
         ]);
 
         echo "<div class='spaced'>";
@@ -1333,7 +1333,7 @@ JAVASCRIPT;
 
                     if ($item = getItemForItemtype($ri->fields['itemtype'])) {
                         if ($item->getFromDB($ri->fields['items_id'])) {
-                             $link = $item->getLink();
+                            $link = $item->getLink();
                         }
                     }
                     echo "<td>$link</td>";
@@ -1347,7 +1347,7 @@ JAVASCRIPT;
                 echo "<td>" . nl2br($data["comment"]) . "</td>";
                 echo "<td>";
                 if ($item instanceof CommonDBTM) {
-                    list($annee, $mois, $jour) = explode("-", $data["begin"]);
+                    [$annee, $mois, $jour] = explode("-", $data["begin"]);
                     echo "<a href='" . $item::getFormURLWithID($ri->fields['items_id']) .
                      "&forcetab=Reservation$1&tab_params[defaultDate]={$data["begin"]}' " .
                       "title=\"" . __s('See planning') . "\">";
@@ -1373,7 +1373,7 @@ JAVASCRIPT;
 
         return array_filter(
             $CFG_GLPI['reservation_types'],
-            fn ($type) => ReservationItem::countAvailableItems($type) > 0
+            fn($type) => ReservationItem::countAvailableItems($type) > 0
         );
     }
 

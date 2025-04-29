@@ -42,7 +42,7 @@ if (!($dropdown instanceof CommonDropdown)) {
     Html::displayErrorAndDie('');
 }
 if (!$dropdown->canView()) {
-   // Gestion timeout session
+    // Gestion timeout session
     Session::redirectIfNotLoggedIn();
     Html::displayRightError();
 }

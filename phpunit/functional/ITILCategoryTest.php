@@ -94,7 +94,7 @@ class ITILCategoryTest extends DbTestCase
 
         $category = new \ITILCategory();
 
-        $category_id = (int)$category->add([
+        $category_id = (int) $category->add([
             'name' => '_test_itilcategory_1',
             'comment' => '_test_itilcategory_1',
         ]);

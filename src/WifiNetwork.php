@@ -76,7 +76,7 @@ class WifiNetwork extends CommonDropdown
             'repeater'  => __('Repeater'),
             'secondary' => __('Secondary'),
             'monitor'   => Monitor::getTypeName(1),
-            'auto'      => __('Automatic')
+            'auto'      => __('Automatic'),
         ];
     }
 
@@ -86,7 +86,7 @@ class WifiNetwork extends CommonDropdown
 
         return [''               => Dropdown::EMPTY_VALUE,
             'infrastructure' => __('Infrastructure (with access point)'),
-            'ad-hoc'         => __('Ad-hoc (without access point)')
+            'ad-hoc'         => __('Ad-hoc (without access point)'),
         ];
     }
 
@@ -108,13 +108,13 @@ class WifiNetwork extends CommonDropdown
         return [['name'  => 'essid',
             'label' => __('ESSID'),
             'type'  => 'text',
-            'list'  => true
+            'list'  => true,
         ],
             ['name'  => 'mode',
                 'label' => __('Wifi network type'),
                 'type'  => 'wifi_mode',
-                'list'  => true
-            ]
+                'list'  => true,
+            ],
         ];
     }
 

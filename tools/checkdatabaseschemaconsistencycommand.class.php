@@ -45,7 +45,7 @@ class CheckDatabaseSchemaConsistencyCommand extends AbstractCommand
      *
      * @var integer
      */
-    const ERROR_FOUND_MISSING_FIELDS = 1;
+    public const ERROR_FOUND_MISSING_FIELDS = 1;
 
     protected function configure()
     {

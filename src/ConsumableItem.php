@@ -48,7 +48,7 @@ class ConsumableItem extends CommonDBTM
 
     use AssetImage;
 
-   // From CommonDBTM
+    // From CommonDBTM
     protected static $forward_entity_to = ['Consumable', 'Infocom'];
     public $dohistory                   = true;
     protected $usenotepad               = true;
@@ -112,7 +112,7 @@ class ConsumableItem extends CommonDBTM
             ]
         );
 
-       // Alert does not extends CommonDBConnexity
+        // Alert does not extends CommonDBConnexity
         $alert = new Alert();
         $alert->cleanDBonItemDelete($this->getType(), $this->fields['id']);
     }
@@ -158,7 +158,7 @@ class ConsumableItem extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'datatype'           => 'number',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -182,7 +182,7 @@ class ConsumableItem extends CommonDBTM
             'table'              => 'glpi_consumableitemtypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -190,7 +190,7 @@ class ConsumableItem extends CommonDBTM
             'table'              => 'glpi_manufacturers',
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -203,7 +203,7 @@ class ConsumableItem extends CommonDBTM
             'massiveaction'      => false,
             'nosearch'           => true,
             'nosort'             => true,
-            'additionalfields'   => ['alarm_threshold']
+            'additionalfields'   => ['alarm_threshold'],
         ];
 
         $tab[] = [
@@ -217,8 +217,8 @@ class ConsumableItem extends CommonDBTM
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NOT' => ['NEWTABLE.date_out' => null]]
-            ]
+                'condition'          => ['NOT' => ['NEWTABLE.date_out' => null]],
+            ],
         ];
 
         $tab[] = [
@@ -232,8 +232,8 @@ class ConsumableItem extends CommonDBTM
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.date_out' => null]
-            ]
+                'condition'          => ['NEWTABLE.date_out' => null],
+            ],
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -245,7 +245,7 @@ class ConsumableItem extends CommonDBTM
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
             'datatype'           => 'dropdown',
-            'right'              => 'own_ticket'
+            'right'              => 'own_ticket',
         ];
 
         $tab[] = [
@@ -255,7 +255,7 @@ class ConsumableItem extends CommonDBTM
             'linkfield'          => 'groups_id_tech',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -265,8 +265,8 @@ class ConsumableItem extends CommonDBTM
             'name'               => __('Alert threshold'),
             'datatype'           => 'number',
             'toadd'              => [
-                '-1'                 => 'Never'
-            ]
+                '-1'                 => 'Never',
+            ],
         ];
 
         $tab[] = [
@@ -274,7 +274,7 @@ class ConsumableItem extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -283,7 +283,7 @@ class ConsumableItem extends CommonDBTM
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -341,8 +341,8 @@ class ConsumableItem extends CommonDBTM
                                     [
                                         'AND' => ['glpi_alerts.itemtype' => 'ConsumableItem'],
                                     ],
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'WHERE'     => [
                             'glpi_consumableitems.is_deleted'      => 0,
@@ -364,8 +364,8 @@ class ConsumableItem extends CommonDBTM
                         ($unused = Consumable::getUnusedNumber($consumable["consID"]))
                               <= $consumable["threshold"]
                     ) {
-                       // define message alert
-                       //TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining number
+                        // define message alert
+                        //TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining number
                         $message .= sprintf(
                             __('Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s - Remaining %3$d'),
                             $consumable['name'],
@@ -376,7 +376,7 @@ class ConsumableItem extends CommonDBTM
 
                         $items[$consumable["consID"]] = $consumable;
 
-                       // if alert exists -> delete
+                        // if alert exists -> delete
                         if (!empty($consumable["alertID"])) {
                             $alert->delete(["id" => $consumable["alertID"]]);
                         }
@@ -391,17 +391,17 @@ class ConsumableItem extends CommonDBTM
 
                     if (NotificationEvent::raiseEvent('alert', new ConsumableItem(), $options)) {
                         if ($task) {
-                             $task->log(Dropdown::getDropdownName(
-                                 "glpi_entities",
-                                 $entity
-                             ) . " :  $message\n");
-                               $task->addVolume(1);
+                            $task->log(Dropdown::getDropdownName(
+                                "glpi_entities",
+                                $entity
+                            ) . " :  $message\n");
+                            $task->addVolume(1);
                         } else {
-                             Session::addMessageAfterRedirect(Dropdown::getDropdownName(
-                                 "glpi_entities",
-                                 $entity
-                             ) .
-                                                      " :  $message");
+                            Session::addMessageAfterRedirect(Dropdown::getDropdownName(
+                                "glpi_entities",
+                                $entity
+                            ) .
+                                                     " :  $message");
                         }
 
                         $input = [
@@ -409,7 +409,7 @@ class ConsumableItem extends CommonDBTM
                             'itemtype' => 'ConsumableItem',
                         ];
 
-                      // add alerts
+                        // add alerts
                         foreach ($items as $ID => $consumable) {
                             $input["items_id"] = $ID;
                             $alert->add($input);
@@ -417,7 +417,7 @@ class ConsumableItem extends CommonDBTM
                         }
                     } else {
                         $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
-                     //TRANS: %s is entity name
+                        //TRANS: %s is entity name
                         $msg = sprintf(__('%s: send consumable alert failed'), $entityname);
                         if ($task) {
                             $task->log($msg);
@@ -444,12 +444,12 @@ class ConsumableItem extends CommonDBTM
     public function showDebug()
     {
 
-       // see query_alert in cronConsumable()
+        // see query_alert in cronConsumable()
         $item = ['consID'    => $this->fields['id'],
             'entity'    => $this->fields['entities_id'],
             'ref'       => $this->fields['ref'],
             'name'      => $this->fields['name'],
-            'threshold' => $this->fields['alarm_threshold']
+            'threshold' => $this->fields['alarm_threshold'],
         ];
 
         $options = [];

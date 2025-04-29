@@ -63,7 +63,7 @@ class Item_OperatingSystemTest extends DbTestCase
             $this->assertGreaterThan(
                 0,
                 $instance->add([
-                    'name' => $classname . ' ' . $this->getUniqueInteger()
+                    'name' => $classname . ' ' . $this->getUniqueInteger(),
                 ])
             );
             $this->assertTrue($instance->getFromDB($instance->getID()));
@@ -86,7 +86,7 @@ class Item_OperatingSystemTest extends DbTestCase
             'operatingsystemversions_id'        => $objects['Version']->getID(),
             'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
             'licenseid'                         => $this->getUniqueString(),
-            'license_number'                    => $this->getUniqueString()
+            'license_number'                    => $this->getUniqueString(),
         ];
         $this->assertGreaterThan(
             0,
@@ -122,7 +122,7 @@ class Item_OperatingSystemTest extends DbTestCase
             'operatingsystemversions_id'        => $objects['Version']->getID(),
             'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
             'licenseid'                         => $this->getUniqueString(),
-            'license_number'                    => $this->getUniqueString()
+            'license_number'                    => $this->getUniqueString(),
         ];
         $this->assertGreaterThan(
             0,
@@ -162,7 +162,7 @@ class Item_OperatingSystemTest extends DbTestCase
             'operatingsystemversions_id'        => $objects['Version']->getID(),
             'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
             'licenseid'                         => $this->getUniqueString(),
-            'license_number'                    => $this->getUniqueString()
+            'license_number'                    => $this->getUniqueString(),
         ];
         $this->assertGreaterThan(
             0,
@@ -187,7 +187,7 @@ class Item_OperatingSystemTest extends DbTestCase
             'operatingsystemversions_id'        => $objects['Version']->getID(),
             'operatingsystemkernelversions_id'  => $objects['KernelVersion']->getID(),
             'licenseid'                         => $this->getUniqueString(),
-            'license_number'                    => $this->getUniqueString()
+            'license_number'                    => $this->getUniqueString(),
         ];
         $this->assertGreaterThan(
             0,
@@ -216,7 +216,7 @@ class Item_OperatingSystemTest extends DbTestCase
             $computer->add([
                 'name'         => 'Test Item/OS',
                 'entities_id'  => $eid,
-                'is_recursive' => 0
+                'is_recursive' => 0,
             ])
         );
 
@@ -224,7 +224,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $os->add([
-                'name' => 'Test OS'
+                'name' => 'Test OS',
             ])
         );
 
@@ -234,7 +234,7 @@ class Item_OperatingSystemTest extends DbTestCase
             $ios->add([
                 'operatingsystems_id'   => $os->getID(),
                 'itemtype'              => 'Computer',
-                'items_id'              => $computer->getID()
+                'items_id'              => $computer->getID(),
             ])
         );
         $this->assertTrue($ios->getFromDB($ios->getID()));
@@ -259,7 +259,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->assertTrue(
             $computer->update([
                 'id'           => $computer->getID(),
-                'is_recursive' => 1
+                'is_recursive' => 1,
             ])
         );
         $this->assertTrue($ios->getFromDB($ios->getID()));

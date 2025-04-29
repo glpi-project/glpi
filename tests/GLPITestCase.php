@@ -56,10 +56,10 @@ class GLPITestCase extends atoum
 
     public function beforeTestMethod($method)
     {
-       // By default, no session, not connected
+        // By default, no session, not connected
         $this->resetSession();
 
-       // Ensure cache is clear
+        // Ensure cache is clear
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
 

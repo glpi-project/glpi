@@ -79,7 +79,7 @@ class AttributeParameter extends AbstractParameterType
 
     public function getDocumentationUsage(?string $parent = null): string
     {
-        $parent = !empty($parent)       ? "$parent."          : "";
+        $parent = !empty($parent) ? "$parent." : "";
         $filter = !empty($this->filter) ? "| {$this->filter}" : "";
         return "{{ {$parent}{$this->key} $filter }}";
     }

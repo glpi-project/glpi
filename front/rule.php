@@ -49,7 +49,7 @@ echo TemplateRenderer::getInstance()->render(
                 'type'    => __('Rule type'),
                 'entries' => RuleCollection::getRules(),
             ],
-        ]
+        ],
     ]
 );
 

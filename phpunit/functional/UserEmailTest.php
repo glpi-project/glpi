@@ -86,7 +86,7 @@ class UserEmailTest extends DbTestCase
                 'tech'      => false,
                 'normal'    => false,
                 'post-only' => true,
-            ]
+            ],
         ];
 
         foreach ($users_matrix as $login => $targer_users_names) {

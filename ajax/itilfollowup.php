@@ -51,10 +51,10 @@ Session::checkLoginUser();
 $itilfollowuptemplates_id = $_POST['itilfollowuptemplates_id'] ?? null;
 if ($itilfollowuptemplates_id === null) {
     Response::sendError(400, "Missing or invalid parameter: 'itilfollowuptemplates_id'");
-} else if ($itilfollowuptemplates_id == 0) {
-   // Reset form
+} elseif ($itilfollowuptemplates_id == 0) {
+    // Reset form
     echo json_encode([
-        'content' => ""
+        'content' => "",
     ]);
     die;
 }

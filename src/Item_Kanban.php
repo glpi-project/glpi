@@ -69,7 +69,7 @@ class Item_Kanban extends CommonDBRelation
         }
 
         if ($state === null || $state === 'null' || $state === false) {
-           // Save was probably denied in prepareKanbanStateForUpdate or an invalid state was given
+            // Save was probably denied in prepareKanbanStateForUpdate or an invalid state was given
             return false;
         }
 
@@ -78,20 +78,20 @@ class Item_Kanban extends CommonDBRelation
             'items_id'  => $items_id,
             'users_id'  => $users_id,
             'state'     => json_encode($state, JSON_FORCE_OBJECT),
-            'date_mod'  => $_SESSION['glpi_currenttime']
+            'date_mod'  => $_SESSION['glpi_currenttime'],
         ];
         $criteria = [
             'users_id' => $users_id,
             'itemtype' => $itemtype,
-            'items_id' => $items_id
+            'items_id' => $items_id,
         ];
         if (countElementsInTable('glpi_items_kanbans', $criteria)) {
             $DB->update('glpi_items_kanbans', [
-                'date_mod'  => $_SESSION['glpi_currenttime']
+                'date_mod'  => $_SESSION['glpi_currenttime'],
             ] + $common_input, $criteria);
         } else {
             $DB->insert('glpi_items_kanbans', [
-                'date_creation'   => $_SESSION['glpi_currenttime']
+                'date_creation'   => $_SESSION['glpi_currenttime'],
             ] + $common_input);
         }
         return true;
@@ -126,8 +126,8 @@ class Item_Kanban extends CommonDBRelation
             'WHERE'  => [
                 'users_id' => $force_global ? 0 : Session::getLoginUserID(),
                 'itemtype' => $itemtype,
-                'items_id' => $items_id
-            ]
+                'items_id' => $items_id,
+            ],
         ]);
 
         if (count($iterator)) {
@@ -136,13 +136,13 @@ class Item_Kanban extends CommonDBRelation
                 if (strtotime($timestamp) < strtotime($data['date_mod'])) {
                     return json_decode($data['state'], true);
                 } else {
-                   // No changes since last check
+                    // No changes since last check
                     return null;
                 }
             }
             return json_decode($data['state'], true);
         } else {
-           // State is not saved
+            // State is not saved
             return [];
         }
     }
@@ -155,7 +155,7 @@ class Item_Kanban extends CommonDBRelation
             $position = 0;
         }
 
-       // Search for old location and remove card
+        // Search for old location and remove card
         foreach ($state as $column_index => $col) {
             if (isset($col['cards'])) {
                 foreach ($col['cards'] as $card_index => $card_id) {
@@ -214,7 +214,7 @@ class Item_Kanban extends CommonDBRelation
                 'column' => $column,
                 'visible' => true,
                 'folded' => false,
-                'cards' => []
+                'cards' => [],
             ];
         }
         self::saveStateForItem($itemtype, $items_id, $state);

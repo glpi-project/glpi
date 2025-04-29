@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $ola->check($_POST["id"], PURGE);
     $ola->delete($_POST, 1);
 
@@ -78,7 +78,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $ola->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $ola->check($_POST["id"], UPDATE);
     $ola->update($_POST);
 

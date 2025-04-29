@@ -44,7 +44,7 @@ $user = new User();
 $success = $user->update(
     [
         'id'        => Session::getLoginUserID(),
-        'fold_menu' => (bool)$_SESSION['glpifold_menu'] ? 0 : 1,
+        'fold_menu' => (bool) $_SESSION['glpifold_menu'] ? 0 : 1,
     ]
 );
 

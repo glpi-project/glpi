@@ -104,7 +104,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
         $networkEquipment = new \NetworkEquipment();
         $networkequipments_id = $networkEquipment->add([
             'serial'      => 'FOC147UJEU4',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $networkequipments_id);
 
@@ -178,7 +178,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
         $computer         = new \Computer();
         $computers_id = $computer->add([
             'serial'      => 'XB63J7D',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
 
         $networkports = $networkPort->find(['mac' => 'cc:f9:54:a1:03:35']);
@@ -215,7 +215,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
             'locations_id' => 0,
             'is_dynamic' => 1,
             'serial' => 'XXS6BEF3',
-            'comment' => 'with a comment'
+            'comment' => 'with a comment',
         ]);
         $this->assertGreaterThan(0, $unmanageds_id);
 
@@ -227,7 +227,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
             'instantiation_type' => 'NetworkPortEthernet',
             'name' => 'general',
             'mac' => '00:00:00:43:ae:0f',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertGreaterThan(0, $networkports_id);
 
@@ -236,7 +236,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
             'itemtype' => $netport->getType(),
             'items_id' => $networkports_id,
             'name' => '',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertGreaterThan(0, $networknames_id);
 
@@ -248,7 +248,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
                 'itemtype' => $netname->getType(),
                 'items_id' => $networknames_id,
                 'name' => '192.168.20.1',
-                'is_dynamic' => 1
+                'is_dynamic' => 1,
             ])
         );
 
@@ -306,7 +306,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
             'ifalias' => null,
             'portduplex' => null,
             'trunk' => 0,
-            'lastup' => null
+            'lastup' => null,
         ];
         $this->assertEquals($expected, $netport->fields);
 
@@ -342,7 +342,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
             'is_deleted'  => 0,
             'is_dynamic'  => 1,
             'mainitems_id'  => $neteq->fields['id'],
-            'mainitemtype'  => 'NetworkEquipment'
+            'mainitemtype'  => 'NetworkEquipment',
         ];
         unset($ip->fields['id']);
         $this->assertEquals($expected, $ip->fields);

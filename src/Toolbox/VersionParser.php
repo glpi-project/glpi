@@ -78,7 +78,7 @@ class VersionParser
                 '(\.(?<bugfix>\d+))?', // Bugfix numero, not always present (e.g. GLPI 9.2)
                 '(\.(?<tag_fail>\d+))?', // Redo tag operation numero, rarely present (e.g. GLPI 9.4.1.1)
                 '(?<stability_flag>-' . self::UNSTABLE_FLAG_PATTERN . ')?', // Stability flag, optional
-                '$/'
+                '$/',
             ]
         );
         $version_matches = [];

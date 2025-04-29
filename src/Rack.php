@@ -42,26 +42,26 @@ class Rack extends CommonDBTM
 {
     use Glpi\Features\DCBreadcrumb;
 
-    const FRONT    = 0;
-    const REAR     = 1;
+    public const FRONT    = 0;
+    public const REAR     = 1;
 
-    const POS_NONE = 0;
-    const POS_LEFT = 1;
-    const POS_RIGHT = 2;
+    public const POS_NONE = 0;
+    public const POS_LEFT = 1;
+    public const POS_RIGHT = 2;
 
-   // orientation in room
-    const ROOM_O_NORTH = 1;
-    const ROOM_O_EAST  = 2;
-    const ROOM_O_SOUTH = 3;
-    const ROOM_O_WEST  = 4;
+    // orientation in room
+    public const ROOM_O_NORTH = 1;
+    public const ROOM_O_EAST  = 2;
+    public const ROOM_O_SOUTH = 3;
+    public const ROOM_O_WEST  = 4;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
     public static $rightname                   = 'datacenter';
 
     public static function getTypeName($nb = 0)
     {
-       //TRANS: Test of comment for translation (mark : //TRANS)
+        //TRANS: Test of comment for translation (mark : //TRANS)
         return _n('Rack', 'Racks', $nb);
     }
 
@@ -87,7 +87,7 @@ class Rack extends CommonDBTM
         return [
             [
                 'id'                 => 'rack',
-                'name'               => _n('Rack', 'Racks', Session::getPluralNumber())
+                'name'               => _n('Rack', 'Racks', Session::getPluralNumber()),
             ],
             [
                 'id'                 => '180',
@@ -101,10 +101,10 @@ class Rack extends CommonDBTM
                         'table'              => Item_Rack::getTable(),
                         'joinparams'         => [
                             'jointype'           => 'itemtype_item',
-                            'specific_itemtype'  => $itemtype
-                        ]
-                    ]
-                ]
+                            'specific_itemtype'  => $itemtype,
+                        ],
+                    ],
+                ],
             ],
             [
                 'id'                 => '181',
@@ -115,8 +115,8 @@ class Rack extends CommonDBTM
                 'massiveaction'      => false,
                 'joinparams'         => [
                     'jointype'           => 'itemtype_item',
-                    'specific_itemtype'  => $itemtype
-                ]
+                    'specific_itemtype'  => $itemtype,
+                ],
             ],
         ];
     }
@@ -153,7 +153,7 @@ class Rack extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false, // implicit field is id
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -163,7 +163,7 @@ class Rack extends CommonDBTM
             'table'              => 'glpi_racktypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -171,7 +171,7 @@ class Rack extends CommonDBTM
             'table'              => 'glpi_rackmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -180,7 +180,7 @@ class Rack extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_rack' => 1]
+            'condition'          => ['is_visible_rack' => 1],
         ];
 
         $tab[] = [
@@ -204,7 +204,7 @@ class Rack extends CommonDBTM
             'table'              => DCRoom::getTable(),
             'field'              => 'name',
             'name'               => DCRoom::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -212,7 +212,7 @@ class Rack extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'number_units',
             'name'               => __('Number of units'),
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -220,7 +220,7 @@ class Rack extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -229,7 +229,7 @@ class Rack extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -238,7 +238,7 @@ class Rack extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -246,7 +246,7 @@ class Rack extends CommonDBTM
             'table'              => 'glpi_manufacturers',
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -256,7 +256,7 @@ class Rack extends CommonDBTM
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
             'datatype'           => 'dropdown',
-            'right'              => 'own_ticket'
+            'right'              => 'own_ticket',
         ];
 
         $tab[] = [
@@ -266,7 +266,7 @@ class Rack extends CommonDBTM
             'linkfield'          => 'groups_id_tech',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -285,7 +285,7 @@ class Rack extends CommonDBTM
             'table'              => 'glpi_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -297,8 +297,8 @@ class Rack extends CommonDBTM
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => DCRoom::getTable(),
-                ]
-            ]
+                ],
+            ],
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -319,7 +319,7 @@ class Rack extends CommonDBTM
                         self::getTable(),
                         [
                             'dcrooms_id'   => $item->getID(),
-                            'is_deleted'   => 0
+                            'is_deleted'   => 0,
                         ]
                     );
                 }
@@ -327,7 +327,7 @@ class Rack extends CommonDBTM
                     self::getTypeName(Session::getPluralNumber()),
                     $nb
                 );
-             break;
+                break;
         }
         return '';
     }
@@ -372,8 +372,8 @@ class Rack extends CommonDBTM
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'dcrooms_id'   => $room->getID(),
-                'is_deleted'   => 0
-            ]
+                'is_deleted'   => 0,
+            ],
         ]);
 
         Session::initNavigateListItems(
@@ -404,7 +404,7 @@ class Rack extends CommonDBTM
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = [
                     'num_displayed'   => min($_SESSION['glpilist_limit'], count($racks)),
-                    'container'       => 'mass' . __CLASS__ . $rand
+                    'container'       => 'mass' . __CLASS__ . $rand,
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -446,8 +446,8 @@ class Rack extends CommonDBTM
 
         echo "<div id='viewgraph'>";
 
-        $rows     = (int)$room->fields['vis_rows'];
-        $cols     = (int)$room->fields['vis_cols'];
+        $rows     = (int) $room->fields['vis_rows'];
+        $cols     = (int) $room->fields['vis_cols'];
         if ($cols === 0) {
             $cols = 1; //prevent divizion by zero
         }
@@ -468,9 +468,9 @@ class Rack extends CommonDBTM
             $x = $y = 0;
             $coord = explode(',', $item['position']);
             if (is_array($coord) && count($coord) == 2) {
-                list($x, $y) = $coord;
-                $item['_x'] = (int)$x - 1;
-                $item['_y'] = (int)$y - 1;
+                [$x, $y] = $coord;
+                $item['_x'] = (int) $x - 1;
+                $item['_y'] = (int) $y - 1;
             } else {
                 $item['_x'] = null;
                 $item['_y'] = null;
@@ -752,7 +752,7 @@ JAVASCRIPT;
     private function prepareInput($input)
     {
         if (!array_key_exists('dcrooms_id', $input) || $input['dcrooms_id'] == 0) {
-           // Position is not set if room not selected
+            // Position is not set if room not selected
             return $input;
         }
 
@@ -768,7 +768,7 @@ JAVASCRIPT;
         $where = [
             'dcrooms_id'   => $input['dcrooms_id'],
             'position'     => $input['position'],
-            'is_deleted'   => false
+            'is_deleted'   => false,
         ];
 
         if (!$this->isNewItem()) {
@@ -806,8 +806,8 @@ JAVASCRIPT;
         $iterator = $DB->request([
             'FROM'   => Item_Rack::getTable(),
             'WHERE'  => [
-                'racks_id'   => $this->getID()
-            ]
+                'racks_id'   => $this->getID(),
+            ],
         ]);
 
         $filled = [];
@@ -837,7 +837,7 @@ JAVASCRIPT;
                 while (--$units >= 0) {
                     $content_filled = [
                         self::POS_LEFT    => [0, 0, 0, 0],
-                        self::POS_RIGHT   => [0, 0, 0, 0]
+                        self::POS_RIGHT   => [0, 0, 0, 0],
                     ];
 
                     if (isset($filled[$position + $units])) {

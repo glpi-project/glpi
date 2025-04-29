@@ -82,12 +82,12 @@ class TemplateDocumentation
     {
         $content = "";
 
-       // Build header
+        // Build header
         $header = new MarkdownBuilder();
         $header->addH1(sprintf(__("Available variables (%s)"), $this->context));
         $content .= $header->getMarkdown();
 
-       // Build summary
+        // Build summary
         $summary = new MarkdownBuilder();
         $summary->addH2(_x("Documentation", "Summary"), "summary");
         foreach ($this->summary as $section_title) {
@@ -95,7 +95,7 @@ class TemplateDocumentation
         }
         $content .= $summary->getMarkdown();
 
-       // Build main content
+        // Build main content
         foreach ($this->sections as $section) {
             $content .= $section->getMarkdown();
         }
@@ -115,19 +115,19 @@ class TemplateDocumentation
         array $parameters,
         ?string $fields_prefix = null
     ) {
-       // Check if this section is already defined, needed as some parameters
-       // might have the same references
+        // Check if this section is already defined, needed as some parameters
+        // might have the same references
         if (isset($this->sections[$title])) {
             return;
         }
 
-       // Keep track of this section in the summary
+        // Keep track of this section in the summary
         $this->summary[] = $title;
 
         $new_section = new MarkdownBuilder();
         $new_section->addH2($title);
 
-       // Set table header
+        // Set table header
         $new_section->addTableHeader([
             __("Variable"),
             __("Label"),
@@ -135,10 +135,10 @@ class TemplateDocumentation
             __("References"),
         ]);
 
-       // Keep track of parameters needing aditionnal references
+        // Keep track of parameters needing aditionnal references
         $references = [];
 
-       // Add a row for each parameters
+        // Add a row for each parameters
         foreach ($parameters as $parameter) {
             /** @var \Glpi\ContentTemplates\Parameters\ParametersTypes\ParameterTypeInterface $parameter */
             $row = [
@@ -158,7 +158,7 @@ class TemplateDocumentation
 
         $this->sections[$title] = $new_section;
 
-       // Add sections for each references
+        // Add sections for each references
         foreach ($references as $reference) {
             $this->addSection(
                 $reference->getObjectLabel(),

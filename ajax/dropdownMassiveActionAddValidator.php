@@ -52,7 +52,7 @@ if (isset($_POST["validatortype"])) {
             echo "<input type='hidden' name='groups_id' value=0 />";
             User::dropdown(['name'   => 'users_id_validate',
                 'entity' => $_SESSION["glpiactive_entity"],
-                'right'  => ['validate_request', 'validate_incident']
+                'right'  => ['validate_request', 'validate_incident'],
             ]);
 
             echo "<br><br>" . __('Comments') . " ";
@@ -64,12 +64,12 @@ if (isset($_POST["validatortype"])) {
         case 'group':
             echo "<input type='hidden' name='users_id_validate' value=0 />";
             $rand = Group::dropdown(['name'      => 'groups_id',
-                'entity'    => $_SESSION["glpiactive_entity"]
+                'entity'    => $_SESSION["glpiactive_entity"],
             ]);
 
             $param = ['validatortype'      => 'group_user',
                 'groups_id' => '__VALUE__',
-                'right'     => ['validate_request', 'validate_incident']
+                'right'     => ['validate_request', 'validate_incident'],
             ];
 
             Ajax::updateItemOnSelectEvent(
@@ -85,7 +85,7 @@ if (isset($_POST["validatortype"])) {
         case 'group_user':
             $opt = ['groups_id'   => $_POST["groups_id"],
                 'right'     => $_POST['right'],
-                'entity'    => $_SESSION["glpiactive_entity"]
+                'entity'    => $_SESSION["glpiactive_entity"],
             ];
 
             $groups_users = TicketValidation::getGroupUserHaveRights($opt);
@@ -114,7 +114,7 @@ if (isset($_POST["validatortype"])) {
 
             Dropdown::showFromArray("users_id_validate", $users, $param);
 
-           // Display all/none buttons to select all or no users in group
+            // Display all/none buttons to select all or no users in group
             if (!empty($_POST['groups_id'])) {
                 echo "<a id='all_users' class='btn btn-primary'>" . __('All') . "</a>";
                 $param_button = [

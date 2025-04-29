@@ -96,14 +96,14 @@ class NotificationTargetTicketTest extends DbTestCase
                 '##task.user##'            => '_test_user',
                 '##task.group##'           => '',
                 '##task.begin##'           => '',
-                '##task.end##'             => ''
-            ]
+                '##task.end##'             => '',
+            ],
         ];
 
         $basic_options = [
             'additionnaloption' => [
-                'usertype' => ''
-            ]
+                'usertype' => '',
+            ],
         ];
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
 
@@ -116,7 +116,7 @@ class NotificationTargetTicketTest extends DbTestCase
         (new \DropdownTranslation())->generateCompletename([
             'itemtype' => \TaskCategory::class,
             'items_id' => getItemByTypeName(\TaskCategory::class, '_cat_1', true),
-            'language' => 'fr_FR'
+            'language' => 'fr_FR',
         ]);
         $_SESSION["glpilanguage"] = \Session::loadLanguage('fr_FR');
         $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
@@ -138,8 +138,8 @@ class NotificationTargetTicketTest extends DbTestCase
                 '##task.user##'            => '_test_user',
                 '##task.group##'           => '',
                 '##task.begin##'           => '',
-                '##task.end##'             => ''
-            ]
+                '##task.end##'             => '',
+            ],
         ];
 
         $this->assertSame($expected, $ret['tasks']);
@@ -264,7 +264,7 @@ class NotificationTargetTicketTest extends DbTestCase
                 'usertype' => NotificationTarget::GLPI_USER,
                 'is_self_service' => false,
                 'show_private'    => true,
-            ]
+            ],
         ];
 
         $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $ticket);
@@ -314,19 +314,19 @@ class NotificationTargetTicketTest extends DbTestCase
                 "##timelineitems.description##" => $fup_tech->fields['content'],
                 "##timelineitems.position##" => "right",
                 "##timelineitems.author##" => "tech",
-            ]
+            ],
         ];
 
         $this->assertSame($expected, $ret['timelineitems']);
 
-        $this->assertTrue((bool)$this->login('post-only', 'postonly', true));
+        $this->assertTrue((bool) $this->login('post-only', 'postonly', true));
 
         $basic_options = [
             'additionnaloption' => [
                 'usertype' => NotificationTarget::GLPI_USER,
                 'is_self_service' => true,
                 'show_private'    => false,
-            ]
+            ],
         ];
 
         $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
@@ -361,7 +361,7 @@ class NotificationTargetTicketTest extends DbTestCase
                 "##timelineitems.description##" => $fup_tech->fields['content'],
                 "##timelineitems.position##" => "right",
                 "##timelineitems.author##" => "tech",
-            ]
+            ],
         ];
 
         //add a test for tech, but force the `show_private` option to false to ensure that presence of this option will
@@ -371,7 +371,7 @@ class NotificationTargetTicketTest extends DbTestCase
                 'usertype' => NotificationTarget::GLPI_USER,
                 'is_self_service' => false,
                 'show_private'    => false,
-            ]
+            ],
         ];
 
         $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
@@ -406,7 +406,7 @@ class NotificationTargetTicketTest extends DbTestCase
                 "##timelineitems.description##" => $fup_tech->fields['content'],
                 "##timelineitems.position##" => "right",
                 "##timelineitems.author##" => "tech",
-            ]
+            ],
         ];
 
         $this->assertSame($expected, $ret['timelineitems']);

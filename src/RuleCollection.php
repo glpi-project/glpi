@@ -40,21 +40,21 @@ class RuleCollection extends CommonDBTM
     public const MOVE_BEFORE = 'before';
     public const MOVE_AFTER = 'after';
 
-   /// Rule type
+    /// Rule type
     public $sub_type;
-   /// process collection stop on first matched rule
+    /// process collection stop on first matched rule
     public $stop_on_first_match                   = false;
-   /// field used to order rules
+    /// field used to order rules
     public $orderby                               = "ranking";
-   /// Processing several rules : use result of the previous one to computer the current one
+    /// Processing several rules : use result of the previous one to computer the current one
     public $use_output_rule_process_as_next_input = false;
-   /// Rule collection can be replay (for dictionary)
+    /// Rule collection can be replay (for dictionary)
     public $can_replay_rules                      = false;
-   /// List of rules of the rule collection
+    /// List of rules of the rule collection
     public $RuleList                              = null;
-   /// Menu type
+    /// Menu type
     public $menu_type                             = "rule";
-   /// Menu option
+    /// Menu option
     public $menu_option                           = "";
 
     public $entity                                = 0;
@@ -62,7 +62,7 @@ class RuleCollection extends CommonDBTM
     public static $rightname                             = 'config';
 
 
-   /// Tab orientation : horizontal or vertical
+    /// Tab orientation : horizontal or vertical
     public $taborientation = 'horizontal';
 
     public static function getTable($classname = null)
@@ -145,8 +145,8 @@ class RuleCollection extends CommonDBTM
             'SELECT' => Rule::getTable() . '.*',
             'FROM'   => Rule::getTable(),
             'ORDER'  => [
-                $this->orderby . ' ASC'
-            ]
+                $this->orderby . ' ASC',
+            ],
         ];
 
         $where = [];
@@ -155,19 +155,19 @@ class RuleCollection extends CommonDBTM
         }
 
         if ($p['condition'] > 0) {
-            $where['condition'] = ['&', (int)$p['condition']];
+            $where['condition'] = ['&', (int) $p['condition']];
         }
 
-       //Select all the rules of a different type
+        //Select all the rules of a different type
         $where['sub_type'] = $this->getRuleClassName();
         if ($this->isRuleRecursive()) {
             $criteria['LEFT JOIN'] = [
                 Entity::getTable() => [
                     'ON' => [
                         Entity::getTable()   => 'id',
-                        Rule::getTable()     => 'entities_id'
-                    ]
-                ]
+                        Rule::getTable()     => 'entities_id',
+                    ],
+                ],
             ];
 
             if (!$p['childrens']) {
@@ -184,13 +184,13 @@ class RuleCollection extends CommonDBTM
 
             $criteria['ORDER'] = [
                 Entity::getTable() . '.level ASC',
-                $this->orderby . ' ASC'
+                $this->orderby . ' ASC',
             ];
         }
 
         if ($p['limit']) {
-            $criteria['LIMIT'] = (int)$p['limit'];
-            $criteria['START'] = (int)$p['start'];
+            $criteria['LIMIT'] = (int) $p['limit'];
+            $criteria['START'] = (int) $p['start'];
         }
 
         $criteria['WHERE'] = $where;
@@ -230,11 +230,11 @@ class RuleCollection extends CommonDBTM
             $p[$key] = $value;
         }
 
-       // no need to use SingletonRuleList::getInstance because we read only 1 page
+        // no need to use SingletonRuleList::getInstance because we read only 1 page
         $this->RuleList       = new SingletonRuleList();
         $this->RuleList->list = [];
 
-       //Select all the rules of a different type
+        //Select all the rules of a different type
         $criteria   = $this->getRuleListCriteria($p);
 
         $iterator   = $DB->request($criteria);
@@ -243,7 +243,7 @@ class RuleCollection extends CommonDBTM
         $can_sort = !(str_starts_with($this->getType() . '$', $active_tab));
 
         foreach ($iterator as $data) {
-           //For each rule, get a Rule object with all the criterias and actions
+            //For each rule, get a Rule object with all the criterias and actions
             $tempRule               = $this->getRuleClass();
             $tempRule->fields       = $data;
             $tempRule->can_sort = $can_sort;
@@ -273,9 +273,9 @@ class RuleCollection extends CommonDBTM
         }
         $need = 1 + ($retrieve_criteria ? 2 : 0) + ($retrieve_action ? 4 : 0) + (8 * $condition);
 
-       // check if load required
+        // check if load required
         if (($need & $this->RuleList->load) != $need) {
-           //Select all the rules of a different type
+            //Select all the rules of a different type
             $criteria = $this->getRuleListCriteria(['condition' => $condition]);
             $iterator = $DB->request($criteria);
 
@@ -432,24 +432,24 @@ class RuleCollection extends CommonDBTM
 
         echo "<table class='tab_cadre_fixe'><tr><th>";
 
-       //Display information about how the rules engine process the rules
+        //Display information about how the rules engine process the rules
         if ($this->stop_on_first_match) {
-           //The engine stop on the first matched rule
+            //The engine stop on the first matched rule
             echo "<span class='center b'>" . __('The engine stops on the first checked rule.') .
               "</span><br>";
         } else {
-           //The engine process all the rules
+            //The engine process all the rules
             echo "<span class='center b'>" . __('The engine treats all the rules.') . "</span><br>";
         }
 
         if ($this->use_output_rule_process_as_next_input) {
-           //The engine keep the result of a rule to be processed further
+            //The engine keep the result of a rule to be processed further
             echo "<span class='center b'>" .
                 __('The engine passes the result of a rule to the following one.') . "</span><br>";
         }
 
         if ($this->isRuleUseConditions()) {
-           //The engine keep the result of a rule to be processed further
+            //The engine keep the result of a rule to be processed further
             echo "<span class='center b'>" .
                 __('Rules are conditionals. Each one can be used on multiple actions.');
             echo "</span><br>";
@@ -505,7 +505,7 @@ class RuleCollection extends CommonDBTM
         $display_criterias = $p['display_criterias'];
         $display_actions   = $p['display_actions'];
 
-       // Do not know what it is ?
+        // Do not know what it is ?
         $canedit    = (self::canUpdate()
                      && !$display_entities);
 
@@ -523,13 +523,13 @@ class RuleCollection extends CommonDBTM
             echo __('Rules used for') . "</td><td>";
             $rule->dropdownConditions(['value' => $p['condition'],
                 'on_change'  => 'reloadTab("start=0&inherited=' . $p['inherited']
-                                                         . '&childrens=' . $p['childrens'] . '&condition="+this.value)'
+                                                         . '&childrens=' . $p['childrens'] . '&condition="+this.value)',
             ]);
             echo "</td></tr></table>";
         }
 
         $nb         = $this->getCollectionSize($p['inherited'], $p['condition'], $p['childrens']);
-        $p['start'] = (isset($options["start"]) ? $options["start"] : 0);
+        $p['start'] = ($options["start"] ?? 0);
 
         if ($p['start'] >= $nb) {
             $p['start'] = 0;
@@ -549,8 +549,8 @@ class RuleCollection extends CommonDBTM
                 'extraparams'   => ['entity' => $this->entity,
                     'condition' => $p['condition'],
                     'rule_class_name'
-                                                                 => $this->getRuleClassName()
-                ]
+                                                                 => $this->getRuleClassName(),
+                ],
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -721,9 +721,7 @@ JAVASCRIPT;
      *
      * @return void
      **/
-    public function showAdditionalInformationsInForm($target)
-    {
-    }
+    public function showAdditionalInformationsInForm($target) {}
 
 
     /**
@@ -743,26 +741,26 @@ JAVASCRIPT;
         $criteria = [
             'SELECT' => 'ranking',
             'FROM'   => 'glpi_rules',
-            'WHERE'  => ['id' => $ID]
+            'WHERE'  => ['id' => $ID],
         ];
 
         $add_condition = [];
         if ($condition > 0) {
-            $add_condition = ['condition' => ['&', (int)$condition]];
+            $add_condition = ['condition' => ['&', (int) $condition]];
         }
 
         $iterator = $DB->request($criteria);
         if (count($iterator) == 1) {
             $result = $iterator->current();
             $current_rank = $result['ranking'];
-           // Search rules to switch
+            // Search rules to switch
             $criteria = [
                 'SELECT' => ['id', 'ranking'],
                 'FROM'   => 'glpi_rules',
                 'WHERE'  => [
-                    'sub_type'  => $this->getRuleClassName()
+                    'sub_type'  => $this->getRuleClassName(),
                 ] + $add_condition,
-                'LIMIT'  => 1
+                'LIMIT'  => 1,
             ];
 
             switch ($action) {
@@ -793,7 +791,7 @@ JAVASCRIPT;
                 $criteria = [
                     'SELECT' => ['id', 'ranking'],
                     'FROM'   => 'glpi_rules',
-                    'WHERE'  => ['sub_type' => $this->getRuleClassName()]
+                    'WHERE'  => ['sub_type' => $this->getRuleClassName()],
                 ];
                 $diff = $new_rank - $current_rank;
                 switch ($action) {
@@ -802,7 +800,7 @@ JAVASCRIPT;
                             $criteria['WHERE'],
                             [
                                 ['ranking' => ['>', $new_rank]],
-                                ['ranking' => ['<=', $current_rank]]
+                                ['ranking' => ['<=', $current_rank]],
                             ]
                         );
                         $diff += 1;
@@ -813,7 +811,7 @@ JAVASCRIPT;
                             $criteria['WHERE'],
                             [
                                 ['ranking' => ['>=', $current_rank]],
-                                ['ranking' => ['<', $new_rank]]
+                                ['ranking' => ['<', $new_rank]],
                             ]
                         );
                         $diff -= 1;
@@ -824,25 +822,25 @@ JAVASCRIPT;
                 }
 
                 if ($diff != 0) {
-                   // Move several rules
+                    // Move several rules
                     $iterator3 = $DB->request($criteria);
                     foreach ($iterator3 as $data) {
                         $data['ranking'] += $diff;
                         $result = $rule->update($data);
                     }
                 } else {
-                   // Only move one
+                    // Only move one
                     $result = $rule->update([
                         'id'      => $ID,
-                        'ranking' => $new_rank
+                        'ranking' => $new_rank,
                     ]);
                 }
 
-               // Update reference
+                // Update reference
                 if ($result) {
                     $result = $rule->update([
                         'id'      => $other_ID,
-                        'ranking' => $current_rank
+                        'ranking' => $current_rank,
                     ]);
                 }
                 return $result;
@@ -867,11 +865,11 @@ JAVASCRIPT;
         $result = $DB->update(
             'glpi_rules',
             [
-                'ranking' => new \QueryExpression($DB->quoteName('ranking') . ' - 1')
+                'ranking' => new \QueryExpression($DB->quoteName('ranking') . ' - 1'),
             ],
             [
                 'sub_type'  => $this->getRuleClassName(),
-                'ranking'   => ['>', $ranking]
+                'ranking'   => ['>', $ranking],
             ]
         );
         return $result;
@@ -894,24 +892,24 @@ JAVASCRIPT;
 
         $ruleDescription = new Rule();
 
-       // Get actual ranking of Rule to move
+        // Get actual ranking of Rule to move
         $ruleDescription->getFromDB($ID);
         $old_rank = $ruleDescription->fields["ranking"];
 
-       // Compute new ranking
+        // Compute new ranking
         if ($ref_ID) { // Move after/before an existing rule
             $ruleDescription->getFromDB($ref_ID);
             $rank = $ruleDescription->fields["ranking"];
-        } else if ($type == self::MOVE_AFTER) {
-           // Move after all
+        } elseif ($type == self::MOVE_AFTER) {
+            // Move after all
             $result = $DB->request([
                 'SELECT' => ['MAX' => 'ranking AS maxi'],
                 'FROM'   => 'glpi_rules',
-                'WHERE'  => ['sub_type' => $this->getRuleClassName()]
+                'WHERE'  => ['sub_type' => $this->getRuleClassName()],
             ])->current();
             $rank   = $result['maxi'];
         } else {
-           // Move before all
+            // Move before all
             $rank = 1;
         }
 
@@ -919,40 +917,40 @@ JAVASCRIPT;
 
         $result = false;
 
-       // Move others rules in the collection
+        // Move others rules in the collection
         if ($old_rank < $rank) {
             if ($type == self::MOVE_BEFORE) {
                 $rank--;
             }
 
-           // Move back all rules between old and new rank
+            // Move back all rules between old and new rank
             $iterator = $DB->request([
                 'SELECT' => ['id', 'ranking'],
                 'FROM'   => 'glpi_rules',
                 'WHERE'  => [
                     'sub_type'  => $this->getRuleClassName(),
                     ['ranking'  => ['>', $old_rank]],
-                    ['ranking'  => ['<=', $rank]]
-                ]
+                    ['ranking'  => ['<=', $rank]],
+                ],
             ]);
             foreach ($iterator as $data) {
                 $data['ranking']--;
                 $result = $rule->update($data);
             }
-        } else if ($old_rank > $rank) {
+        } elseif ($old_rank > $rank) {
             if ($type == self::MOVE_AFTER) {
                 $rank++;
             }
 
-           // Move forward all rule  between old and new rank
+            // Move forward all rule  between old and new rank
             $iterator = $DB->request([
                 'SELECT' => ['id', 'ranking'],
                 'FROM'   => 'glpi_rules',
                 'WHERE'  => [
                     'sub_type'  => $this->getRuleClassName(),
                     ['ranking'  => ['>=', $rank]],
-                    ['ranking'  => ['<', $old_rank]]
-                ]
+                    ['ranking'  => ['<', $old_rank]],
+                ],
             ]);
             foreach ($iterator as $data) {
                 $data['ranking']++;
@@ -962,11 +960,11 @@ JAVASCRIPT;
             $result = false;
         }
 
-       // Move the rule
+        // Move the rule
         if ($result && ($old_rank != $rank)) {
             $result = $rule->update([
                 'id'      => $ID,
-                'ranking' => $rank
+                'ranking' => $rank,
             ]);
         }
         return ($result ? true : false);
@@ -1021,10 +1019,10 @@ JAVASCRIPT;
         $rulecritera    = new RuleCriteria();
         $ruleaction     = new RuleAction();
 
-       //create xml
+        //create xml
         $xmlE           = new SimpleXMLElement('<rules/>');
 
-       //parse all rules
+        //parse all rules
         foreach ($items as $key => $ID) {
             $rulecollection->getFromDB($ID);
             if (!class_exists($rulecollection->fields['sub_type'])) {
@@ -1040,15 +1038,15 @@ JAVASCRIPT;
             );
             $rulecollection->fields['entities_id'] = $name;
 
-           //add root node
+            //add root node
             $xmlERule = $xmlE->addChild('rule');
 
-           //convert rule direct indexes in XML
+            //convert rule direct indexes in XML
             foreach ($rulecollection->fields as $key => $val) {
                 $xmlERule->$key = $val;
             }
 
-           //find criterias
+            //find criterias
             $criterias = $rulecritera->find(['rules_id' => $ID]);
             foreach ($criterias as &$criteria) {
                 unset($criteria['id']);
@@ -1067,20 +1065,20 @@ JAVASCRIPT;
                     );
                 }
 
-               //convert criterias in XML
+                //convert criterias in XML
                 $xmlECritiera = $xmlERule->addChild('rulecriteria');
                 foreach ($criteria as $key => $val) {
                     $xmlECritiera->$key = $val;
                 }
             }
 
-           //find actions
+            //find actions
             $actions = $ruleaction->find(['rules_id' => $ID]);
             foreach ($actions as &$action) {
                 unset($action['id']);
                 unset($action['rules_id']);
 
-               //process FK (just in case of "assign" action)
+                //process FK (just in case of "assign" action)
                 if (
                     ($action['action_type'] == "assign")
                     && (strpos($action['field'], '_id') !== false)
@@ -1103,7 +1101,7 @@ JAVASCRIPT;
                     );
                 }
 
-               //convert actions in XML
+                //convert actions in XML
                 $xmlEAction = $xmlERule->addChild('ruleaction');
                 foreach ($action as $key => $val) {
                     $xmlEAction->$key = $val;
@@ -1111,15 +1109,15 @@ JAVASCRIPT;
             }
         }
 
-       //convert SimpleXMLElement to xml string
+        //convert SimpleXMLElement to xml string
         $xml = $xmlE->asXML();
 
-       //send attachment to browser
+        //send attachment to browser
         header('Content-type: application/xml');
         header('Content-Disposition: attachment; filename="rules.xml"');
         echo $xml;
 
-       //exit;
+        //exit;
     }
 
 
@@ -1143,7 +1141,7 @@ JAVASCRIPT;
         echo "<input type='submit' name='import' value=\"" . _sx('button', 'Import') .
              "\" class='btn btn-primary'>";
 
-       // Close for Form
+        // Close for Form
         echo "</div>";
         Html::closeForm();
     }
@@ -1197,26 +1195,26 @@ JAVASCRIPT;
             Session::addMessageAfterRedirect(__("No file was uploaded"));
             return false;
         }
-       //get xml file content
+        //get xml file content
         $xml           = file_get_contents($_FILES["xml_file"]["tmp_name"]);
-       //convert a xml string into a SimpleXml object
+        //convert a xml string into a SimpleXml object
         if (!$xmlE = simplexml_load_string($xml)) {
             Session::addMessageAfterRedirect(__('Unauthorized file type'), false, ERROR);
         }
-       //convert SimpleXml object into an array and store it in session
+        //convert SimpleXml object into an array and store it in session
         $rules         = json_decode(json_encode((array) $xmlE), true);
-       //check rules (check if entities, criterias and actions is always good in this glpi)
+        //check rules (check if entities, criterias and actions is always good in this glpi)
         $entity        = new Entity();
         $rules_refused = [];
 
-       //In case there's only one rule to import, recreate an array with key => value
+        //In case there's only one rule to import, recreate an array with key => value
         if (isset($rules['rule']['entities_id'])) {
             $rules['rule'] = [0 => $rules['rule']];
         }
 
         foreach ($rules['rule'] as $k_rule => &$rule) {
             $tmprule = new $rule['sub_type']();
-           //check entities
+            //check entities
             if ($tmprule->isEntityAssign()) {
                 $rule['entities_id'] = $DB->escape(Html::entity_decode_deep($rule['entities_id']));
                 $entities_found = $entity->find(['completename' => $rule['entities_id']]);
@@ -1225,7 +1223,7 @@ JAVASCRIPT;
                 }
             }
 
-           //process direct attributes
+            //process direct attributes
             foreach ($rule as &$val) {
                 if (
                     is_array($val)
@@ -1235,9 +1233,9 @@ JAVASCRIPT;
                 }
             }
 
-           //check criterias
+            //check criterias
             if (isset($rule['rulecriteria'])) {
-               //check and correct criterias array format
+                //check and correct criterias array format
                 if (isset($rule['rulecriteria']['criteria'])) {
                     $rule['rulecriteria'] = [$rule['rulecriteria']];
                 }
@@ -1250,7 +1248,7 @@ JAVASCRIPT;
 
                     $available_criteria = $tmprule->getCriterias();
                     $crit               = $criteria['criteria'];
-                   //check FK (just in case of "is", "is_not" and "under" criteria)
+                    //check FK (just in case of "is", "is_not" and "under" criteria)
                     if (
                         self::isCriteraADropdown(
                             $available_criteria,
@@ -1258,7 +1256,7 @@ JAVASCRIPT;
                             $crit
                         )
                     ) {
-                       //escape pattern
+                        //escape pattern
                         $criteria['pattern'] = $DB->escape(Html::entity_decode_deep($criteria['pattern']));
                         $itemtype = getItemTypeForTable($available_criteria[$crit]['table']);
                         $item     = new $itemtype();
@@ -1277,9 +1275,9 @@ JAVASCRIPT;
                 }
             }
 
-           //check actions
+            //check actions
             if (isset($rule['ruleaction'])) {
-               //check and correct actions array format
+                //check and correct actions array format
                 if (isset($rule['ruleaction']['field'])) {
                     $rule['ruleaction'] = [$rule['ruleaction']];
                 }
@@ -1297,7 +1295,7 @@ JAVASCRIPT;
                         && (isset($available_actions[$act]['type'])
                         && ($available_actions[$act]['type'] == 'dropdown'))
                     ) {
-                       //pass root entity and empty array (N/A value)
+                        //pass root entity and empty array (N/A value)
                         if (
                             (in_array($action['field'], ['entities_id', 'new_entities_id'], true))
                             && (($action['value'] == 0)
@@ -1306,7 +1304,7 @@ JAVASCRIPT;
                             continue;
                         }
 
-                       //escape value
+                        //escape value
                         $action['value'] = $DB->escape(Html::entity_decode_deep($action['value']));
                         $itemtype = getItemTypeForTable($available_actions[$act]['table']);
                         $item     = new $itemtype();
@@ -1326,16 +1324,16 @@ JAVASCRIPT;
             }
         }
 
-       //save rules for ongoing processing
+        //save rules for ongoing processing
         $_SESSION['glpi_import_rules']         = $rules;
         $_SESSION['glpi_import_rules_refused'] = $rules_refused;
 
-       //if no conflict detected, we can directly process the import
+        //if no conflict detected, we can directly process the import
         if (!count($rules_refused)) {
             Html::redirect("rule.backup.php?action=process_import");
         }
 
-       //print report
+        //print report
         echo "<form name='form' method='post' action='rule.backup.php' >";
         echo "<div class='spaced' id='tabsbody'>";
         echo "<table class='tab_cadre'>";
@@ -1365,7 +1363,7 @@ JAVASCRIPT;
             echo "<td>";
 
             echo "<table class='tab_cadre' style='width:100%'>";
-           //show entity select
+            //show entity select
             if (!isset($refused['criterias']) && !isset($refused['actions'])) {
                 if (isset($refused['entity'])) {
                     echo "<tr class='tab_bg_1_2'>";
@@ -1382,7 +1380,7 @@ JAVASCRIPT;
                         'Entity',
                         ['comments' => false,
                             'name'     => "new_entities[" .
-                        $rules['rule'][$k_rule]['uuid'] . "]"
+                        $rules['rule'][$k_rule]['uuid'] . "]",
                         ]
                     );
                     echo "</td>";
@@ -1390,7 +1388,7 @@ JAVASCRIPT;
                 }
             }
 
-           //show criterias refused for this rule
+            //show criterias refused for this rule
             if (isset($refused['criterias'])) {
                 echo "<tr class='tab_bg_1_2'>";
                 echo "<td>" . __('Criteria refused') . "</td>";
@@ -1405,7 +1403,7 @@ JAVASCRIPT;
                 foreach ($refused['criterias'] as $k_criteria) {
                     $criteria = $rules['rule'][$k_rule]['rulecriteria'][$k_criteria];
 
-                   //fix empty empty array values
+                    //fix empty empty array values
                     if (empty($criteria['value'])) {
                         $criteria['value'] = null;
                     }
@@ -1424,7 +1422,7 @@ JAVASCRIPT;
                 echo "</tr>";
             }
 
-           //show actions refused for this rule
+            //show actions refused for this rule
             if (isset($refused['actions'])) {
                 echo "<tr class='tab_bg_1_2'>";
                 echo "<td>" . __('Actions refused') . "</td>";
@@ -1438,7 +1436,7 @@ JAVASCRIPT;
                 echo "</tr>\n";
                 foreach ($refused['actions'] as $k_action) {
                     $action = $rules['rule'][$k_rule]['ruleaction'][$k_action];
-                   //fix empty empty array values
+                    //fix empty empty array values
                     if (empty($action['value'])) {
                         $action['value'] = null;
                     }
@@ -1456,14 +1454,14 @@ JAVASCRIPT;
             echo "</td></tr>";
         }
 
-       //display buttons
+        //display buttons
         $class = ($odd ? " class='tab_bg_1' " : " class='tab_bg_2' ");
         echo "<tr $class><td colspan='3' class='center'>";
         echo "<input type='submit' name='import' value=\"" . _sx('button', 'Post') .
              "\" class='btn btn-primary'>";
         echo "</td></tr>";
 
-       // Close for Form
+        // Close for Form
         echo "</table></div>";
         Html::closeForm();
 
@@ -1486,14 +1484,14 @@ JAVASCRIPT;
         $ruleAction   = new RuleAction();
         $entity       = new Entity();
 
-       //get session vars
+        //get session vars
         $rules         = $_SESSION['glpi_import_rules'];
         $rules_refused = $_SESSION['glpi_import_rules_refused'];
         $rr_keys       = array_keys($rules_refused);
         unset($_SESSION['glpi_import_rules']);
         unset($_SESSION['glpi_import_rules_refused']);
 
-       // unset all refused rules
+        // unset all refused rules
         foreach ($rules['rule'] as $k_rule => &$rule) {
             if (in_array($k_rule, $rr_keys)) {
                 //Do not process rule with actions or criterias refused
@@ -1508,7 +1506,7 @@ JAVASCRIPT;
             }
         }
 
-       //import all right rules
+        //import all right rules
         while (!empty($rules['rule'])) {
             $current_rule             = array_shift($rules['rule']);
             $add_criteria_and_actions = false;
@@ -1516,7 +1514,7 @@ JAVASCRIPT;
             $itemtype                 = $current_rule['sub_type'];
             $item                     = new $itemtype();
 
-           //Find a rule by it's uuid
+            //Find a rule by it's uuid
             $found    = $item->find(['uuid' => $current_rule['uuid']]);
             $params   = Toolbox::addslashes_deep($current_rule);
             unset($params['rulecriteria']);
@@ -1534,15 +1532,15 @@ JAVASCRIPT;
                 }
             }
             foreach (['is_recursive', 'is_active'] as $field) {
-               //Should not be necessary but without it there's an sql error...
+                //Should not be necessary but without it there's an sql error...
                 if (!isset($params[$field]) || ($params[$field] == '')) {
                     $params[$field] = 0;
                 }
             }
 
-           //if uuid not exist, create rule
+            //if uuid not exist, create rule
             if (empty($found)) {
-               //Manage entity
+                //Manage entity
                 $params['_add'] = true;
                 $rules_id       = $item->add($params);
                 if ($rules_id) {
@@ -1569,7 +1567,7 @@ JAVASCRIPT;
                         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
                     );
 
-                   //remove all dependent criterias and action
+                    //remove all dependent criterias and action
                     $ruleCriteria->deleteByCriteria(["rules_id" => $rules_id]);
                     $ruleAction->deleteByCriteria(["rules_id" => $rules_id]);
                     $add_criteria_and_actions = true;
@@ -1577,7 +1575,7 @@ JAVASCRIPT;
             }
 
             if ($add_criteria_and_actions) {
-               //Add criteria
+                //Add criteria
                 if (isset($current_rule['rulecriteria'])) {
                     foreach ($current_rule['rulecriteria'] as $criteria) {
                         $criteria['rules_id'] = $rules_id;
@@ -1591,14 +1589,14 @@ JAVASCRIPT;
                     }
                 }
 
-               //Add actions
+                //Add actions
                 if (isset($current_rule['ruleaction'])) {
                     foreach ($current_rule['ruleaction'] as $action) {
                         $action['rules_id'] = $rules_id;
-                       //fix array in value key
-                       //(simplexml bug, empty xml node are converted in empty array instead of null)
+                        //fix array in value key
+                        //(simplexml bug, empty xml node are converted in empty array instead of null)
                         if (is_array($action['value'])) {
-                             $action['value'] = null;
+                            $action['value'] = null;
                         }
                         $action = Toolbox::addslashes_deep($action);
                         $ruleAction->add($action);
@@ -1653,7 +1651,7 @@ JAVASCRIPT;
                     continue;
                 }
 
-               //If the rule is active, process it
+                //If the rule is active, process it
 
                 if ($rule->fields["is_active"]) {
                     $output["_rule_process"] = false;
@@ -1701,7 +1699,7 @@ JAVASCRIPT;
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th colspan='2'>" . _n('Criterion', 'Criteria', Session::getPluralNumber()) . "</th></tr>\n";
 
-           //Brower all criterias
+            //Brower all criterias
             foreach ($input as $criteria) {
                 echo "<tr class='tab_bg_1'>";
 
@@ -1717,16 +1715,16 @@ JAVASCRIPT;
                     $criteria,
                     $criteria,
                     Rule::PATTERN_IS,
-                    isset($values[$criteria]) ? $values[$criteria] : ''
+                    $values[$criteria] ?? ''
                 );
                 echo "</td></tr>\n";
             }
 
-           // Add all used criteria on rule as `Rule::showSpecificCriteriasForPreview()`
-           // adapt its output depending on used criteria
+            // Add all used criteria on rule as `Rule::showSpecificCriteriasForPreview()`
+            // adapt its output depending on used criteria
             $rule->criterias = [];
             foreach ($input as $criteria) {
-                $rule->criterias[] = (object)[
+                $rule->criterias[] = (object) [
                     'fields' => ['criteria' => $criteria],
                 ];
             }
@@ -1761,7 +1759,7 @@ JAVASCRIPT;
     public function testAllRules($input = [], $output = [], $params = [], $condition = 0)
     {
 
-       // Get Collection data
+        // Get Collection data
         $this->getCollectionDatas(1, 1, $condition);
         $input = $this->prepareInputDataForProcess($input, $params);
 
@@ -1780,13 +1778,13 @@ JAVASCRIPT;
                         $output["result"][$rule->fields["id"]]["result"] = 1;
                         $output["_ruleid"]                               = $rule->fields["id"];
                         return $output;
-                    } else if ($output["_rule_process"]) {
+                    } elseif ($output["_rule_process"]) {
                         $output["result"][$rule->fields["id"]]["result"] = 1;
                     } else {
                         $output["result"][$rule->fields["id"]]["result"] = 0;
                     }
                 } else {
-                   //Rule is inactive
+                    //Rule is inactive
                     $output["result"][$rule->fields["id"]]["result"] = 2;
                 }
 
@@ -1841,8 +1839,8 @@ JAVASCRIPT;
                         'ruleCollectionPrepareInputDataForProcess',
                         ['rule_itemtype' => $this->getRuleClassName(),
                             'values'        => ['input' => $input,
-                                'params' => $params
-                            ]
+                                'params' => $params,
+                            ],
                         ]
                     );
                     if (is_array($results)) {
@@ -1871,7 +1869,7 @@ JAVASCRIPT;
 
         $limit = [];
         if ($condition > 0) {
-            $limit = ['glpi_rules.condition' => ['&', (int)$condition]];
+            $limit = ['glpi_rules.condition' => ['&', (int) $condition]];
         }
         $input = [];
 
@@ -1883,14 +1881,14 @@ JAVASCRIPT;
                 'glpi_rules'   => [
                     'ON' => [
                         'glpi_rulecriterias' => 'rules_id',
-                        'glpi_rules'         => 'id'
-                    ]
-                ]
+                        'glpi_rules'         => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
                 'glpi_rules.is_active'  => 1,
-                'glpi_rules.sub_type'   => $this->getRuleClassName()
-            ] + $limit
+                'glpi_rules.sub_type'   => $this->getRuleClassName(),
+            ] + $limit,
         ]);
 
         foreach ($iterator as $data) {
@@ -1974,7 +1972,7 @@ JAVASCRIPT;
         $rule   = $this->getRuleClass();
         $actions = $rule->getAllActions();
 
-       //If output array contains keys begining with _ : drop it
+        //If output array contains keys begining with _ : drop it
         foreach ($output as $criteria => $value) {
             if ($criteria[0] == '_' && !isset($actions[$criteria])) {
                 unset($output[$criteria]);
@@ -2009,7 +2007,7 @@ JAVASCRIPT;
             if (isset($actions[$criteria])) {
                 echo "<tr class='tab_bg_2'>";
                 echo "<td>" . $actions[$criteria]["name"] . "</td>";
-                $action_type = (isset($actions[$criteria]['action_type']) ? $actions[$criteria]['action_type'] : '');
+                $action_type = ($actions[$criteria]['action_type'] ?? '');
                 echo "<td>" . $rule->getActionValue($criteria, $action_type, $value);
                 echo "</td></tr>\n";
             }
@@ -2039,7 +2037,7 @@ JAVASCRIPT;
                         $plugin,
                         "preProcessRuleCollectionPreviewResults",
                         ['output' => $output,
-                            'params' => $params
+                            'params' => $params,
                         ]
                     );
                     if (is_array($results)) {
@@ -2059,9 +2057,7 @@ JAVASCRIPT;
      *
      * @return void
      **/
-    public function title()
-    {
-    }
+    public function title() {}
 
 
     /**
@@ -2132,18 +2128,18 @@ JAVASCRIPT;
                 'glpi_rules'   => [
                     'ON' => [
                         'glpi_rulecriterias' => 'rules_id',
-                        'glpi_rules'         => 'id'
-                    ]
-                ]
+                        'glpi_rules'         => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
                 'glpi_rules.is_active'  => 1,
-                'glpi_rules.sub_type'   => $this->getRuleClassName()
-            ]
+                'glpi_rules.sub_type'   => $this->getRuleClassName(),
+            ],
         ]);
 
         foreach ($iterator as $data) {
-             $params[] = Toolbox::strtolower($data["criteria"]);
+            $params[] = Toolbox::strtolower($data["criteria"]);
         }
         return $params;
     }
@@ -2198,7 +2194,7 @@ JAVASCRIPT;
             }
             $title = $item->getMainTabLabel();
             if ($item->isRuleRecursive()) {
-               //TRANS: %s is the entity name
+                //TRANS: %s is the entity name
                 $title = sprintf(
                     __('Local rules: %s'),
                     Dropdown::getDropdownName(
@@ -2342,7 +2338,7 @@ JAVASCRIPT;
         if (count($entries)) {
             $dictionnaries[] = [
                 'type'      => __('Global dictionary'),
-                'entries'   => $entries
+                'entries'   => $entries,
             ];
         }
 
@@ -2374,8 +2370,8 @@ JAVASCRIPT;
                         'label'  => PhoneModel::getTypeName(Session::getPluralNumber()),
                         'link'   => 'ruledictionnaryphonemodel.php',
                         'icon'   => PhoneModel::getIcon(),
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
 
@@ -2407,8 +2403,8 @@ JAVASCRIPT;
                         'label'  => PhoneType::getTypeName(Session::getPluralNumber()),
                         'link'   => 'ruledictionnaryphonetype.php',
                         'icon'   => PhoneType::getIcon(),
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
 
@@ -2436,8 +2432,8 @@ JAVASCRIPT;
                         'label'  => OperatingSystemEdition::getTypeName(Session::getPluralNumber()),
                         'link'   => 'ruledictionnaryoperatingsystemedition.php',
                         'icon'   => OperatingSystemEdition::getIcon(),
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
 

@@ -47,7 +47,7 @@ $DB->updateOrDie(
     'glpi_crontasks',
     [
         'itemtype' => 'CommonITILRecurrentCron',
-        'name'     => 'RecurrentItems'
+        'name'     => 'RecurrentItems',
     ],
     [
         'itemtype' => 'TicketRecurrent',

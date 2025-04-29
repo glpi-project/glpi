@@ -42,7 +42,7 @@ include("../inc/includes.php");
 Session::checkCentralAccess();
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
-} else if (isset($_POST['action'])) {
+} elseif (isset($_POST['action'])) {
     $action = $_POST['action'];
 } else {
     $action = "import";
@@ -63,6 +63,7 @@ switch ($action) {
         }
         //seems wanted not to break; I do no understand why
 
+        // no break
     case "import":
         $rulecollection->checkGlobal(UPDATE);
         RuleCollection::displayImportRulesForm();

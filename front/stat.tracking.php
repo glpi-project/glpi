@@ -55,13 +55,13 @@ if (!$item = getItemForItemtype($_GET['itemtype'])) {
 if (empty($_GET["type"])) {
     $_GET["type"] = "user";
 } else {
-    $_GET["type"] = (string)$_GET["type"];
+    $_GET["type"] = (string) $_GET["type"];
 }
 
 if (empty($_GET["showgraph"])) {
     $_GET["showgraph"] = 0;
 } else {
-    $_GET["showgraph"] = (int)$_GET["showgraph"];
+    $_GET["showgraph"] = (int) $_GET["showgraph"];
 }
 
 if (empty($_GET["value2"])) {
@@ -70,7 +70,7 @@ if (empty($_GET["value2"])) {
 
 //sanitize dates
 foreach (['date1', 'date2'] as $key) {
-    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)$_GET[$key]) !== 1) {
+    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $_GET[$key]) !== 1) {
         unset($_GET[$key]);
     }
 }
@@ -93,7 +93,7 @@ if (
 if (!isset($_GET["start"])) {
     $_GET["start"] = 0;
 } else {
-    $_GET["start"] = (int)$_GET["start"];
+    $_GET["start"] = (int) $_GET["start"];
 }
 
 $stat = new Stat();
@@ -104,7 +104,7 @@ $requester = ['user'               => ['title' => _n('Requester', 'Requesters', 
     'group'              => ['title' => Group::getTypeName(1)],
     'group_tree'         => ['title' => __('Group tree')],
     'usertitles_id'      => ['title' => _x('person', 'Title')],
-    'usercategories_id'  => ['title' => _n('Category', 'Categories', 1)]
+    'usercategories_id'  => ['title' => _n('Category', 'Categories', 1)],
 ];
 
 $caract    = ['itilcategories_id'   => ['title' => _n('Category', 'Categories', 1)],
@@ -112,7 +112,7 @@ $caract    = ['itilcategories_id'   => ['title' => _n('Category', 'Categories', 
     'urgency'             => ['title' => __('Urgency')],
     'impact'              => ['title' => __('Impact')],
     'priority'            => ['title' => __('Priority')],
-    'solutiontypes_id'    => ['title' => SolutionType::getTypeName(1)]
+    'solutiontypes_id'    => ['title' => SolutionType::getTypeName(1)],
 ];
 
 if ($_GET['itemtype'] == 'Ticket') {
@@ -134,8 +134,8 @@ $items = [_n('Requester', 'Requesters', 1)       => $requester,
         'groups_tree_assign'
                                                    => ['title' => __('Group tree')],
         'suppliers_id_assign'
-                                                   => ['title' => Supplier::getTypeName(1)]
-    ]
+                                                   => ['title' => Supplier::getTypeName(1)],
+    ],
 ];
 
 $values = [];
@@ -183,7 +183,7 @@ $params = ['type'   => $_GET["type"],
     'date1'  => $_GET["date1"],
     'date2'  => $_GET["date2"],
     'value2' => $_GET["value2"],
-    'start'  => $_GET["start"]
+    'start'  => $_GET["start"],
 ];
 
 Html::printPager(

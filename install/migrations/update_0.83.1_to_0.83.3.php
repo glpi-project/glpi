@@ -56,7 +56,7 @@ function update0831to0833()
     $newtables     = [];
 
     foreach ($newtables as $new_table) {
-       // rename new tables if exists ?
+        // rename new tables if exists ?
         if ($DB->tableExists($new_table)) {
             $migration->dropTable("backup_$new_table");
             $migration->displayWarning("$new_table table already exists. " .
@@ -81,7 +81,7 @@ function update0831to0833()
                        `doc_i`.`is_recursive` = `doc`.`is_recursive`";
     $DB->doQueryOrDie($query_doc_i, "0.83 update entities_id and is_recursive in glpi_documents_items");
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->displayMessage('Migration of glpi_displaypreferences');
 
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
@@ -108,11 +108,11 @@ function update0831to0833()
                                   AND `itemtype` = '$type'";
                         if ($result2 = $DB->doQuery($query)) {
                             if ($DB->numrows($result2) == 0) {
-                                 $query = "INSERT INTO `glpi_displaypreferences`
+                                $query = "INSERT INTO `glpi_displaypreferences`
                                          (`itemtype` ,`num` ,`rank` ,`users_id`)
                                   VALUES ('$type', '$newval', '" . $rank++ . "',
                                           '" . $data['users_id'] . "')";
-                                 $DB->doQuery($query);
+                                $DB->doQuery($query);
                             }
                         }
                     }
@@ -129,7 +129,7 @@ function update0831to0833()
         }
     }
 
-   // must always be at the end
+    // must always be at the end
     $migration->executeMigration();
 
     return $updateresult;

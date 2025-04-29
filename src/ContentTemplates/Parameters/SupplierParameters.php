@@ -82,7 +82,7 @@ class SupplierParameters extends TreeDropdownParameters
     protected function defineValues(CommonDBTM $user): array
     {
 
-       // Output "unsanitized" values
+        // Output "unsanitized" values
         $fields = Sanitizer::unsanitize($user->fields);
 
         return [

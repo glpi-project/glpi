@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $ent->check($_POST["id"], DELETE);
     $ent->delete($_POST);
     Event::log(
@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
     $ent->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $ent->check($_POST["id"], DELETE);
     $ent->restore($_POST);
     Event::log(
@@ -87,7 +87,7 @@ if (isset($_POST["add"])) {
     );
 
     $ent->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $ent->check($_POST["id"], PURGE);
     $ent->delete($_POST, 1);
     Event::log(
@@ -100,7 +100,7 @@ if (isset($_POST["add"])) {
     );
 
     $ent->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $ent->check($_POST["id"], UPDATE);
     $ent->update($_POST);
     Event::log(
@@ -115,6 +115,6 @@ if (isset($_POST["add"])) {
 } else {
     $menus = ["management", "supplier"];
     Supplier::displayFullPageForItem($_GET["id"], $menus, [
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

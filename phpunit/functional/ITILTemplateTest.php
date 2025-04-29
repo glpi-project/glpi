@@ -44,7 +44,7 @@ class ITILTemplateTest extends DbTestCase
         return [
             ['Ticket'],
             ['Change'],
-            ['Problem']
+            ['Problem'],
         ];
     }
 
@@ -58,8 +58,8 @@ class ITILTemplateTest extends DbTestCase
         //create template
         $tpl_class = '\\' . $itiltype . 'Template';
         $tpl = new $tpl_class();
-        $tpl_id = (int)$tpl->add([
-            'name'   => 'Template for ' . $itiltype
+        $tpl_id = (int) $tpl->add([
+            'name'   => 'Template for ' . $itiltype,
         ]);
         $this->assertGreaterThan(0, $tpl_id);
 
@@ -68,39 +68,39 @@ class ITILTemplateTest extends DbTestCase
         $mandat = new $mandat_class();
         $this->assertGreaterThan(
             0,
-            (int)$mandat->add([
+            (int) $mandat->add([
                 $mandat::$items_id   => $tpl_id,
-                'num'                => $mandat->getFieldNum($tpl, 'Title')
+                'num'                => $mandat->getFieldNum($tpl, 'Title'),
             ])
         );
 
         if ($itiltype === \Ticket::getType()) {
             $this->assertGreaterThan(
                 0,
-                (int)$mandat->add([
+                (int) $mandat->add([
                     $mandat::$items_id   => $tpl_id,
-                    'num'                => $mandat->getFieldNum($tpl, 'Location')
+                    'num'                => $mandat->getFieldNum($tpl, 'Location'),
                 ])
             );
         }
 
         $this->assertGreaterThan(
             0,
-            (int)$mandat->add([
+            (int) $mandat->add([
                 $mandat::$items_id   => $tpl_id,
-                'num'                => $mandat->getFieldNum($tpl, 'Description')
+                'num'                => $mandat->getFieldNum($tpl, 'Description'),
             ])
         );
 
-       //add a predefined field
+        //add a predefined field
         $predef_class = '\\' . $itiltype . 'TemplatePredefinedField';
         $predef = new $predef_class();
         $this->assertGreaterThan(
             0,
-            (int)$predef->add([
+            (int) $predef->add([
                 $mandat::$items_id   => $tpl_id,
                 'num'                => $predef->getFieldNum($tpl, 'Description'), //Description
-                'value'              => 'Description from template'
+                'value'              => 'Description from template',
             ])
         );
 
@@ -109,9 +109,9 @@ class ITILTemplateTest extends DbTestCase
         if ($itiltype === \Ticket::getType()) {
             $cat_field .= '_demand';
         }
-        $cat_id = (int)$category->add([
+        $cat_id = (int) $category->add([
             'name'      => 'Category for a template',
-            $cat_field  => $tpl_id
+            $cat_field  => $tpl_id,
         ]);
         $this->assertGreaterThan(0, $cat_id);
 
@@ -123,12 +123,12 @@ class ITILTemplateTest extends DbTestCase
             'itilcategories_id'     => $cat_id,
             $tpl_key                => $tpl_id,
             'entities_id'           => 0,
-            'locations_id'          => 'NULL'
+            'locations_id'          => 'NULL',
         ];
         if ($itiltype === \Ticket::getType()) {
             $content['type'] = \Ticket::INCIDENT_TYPE;
         }
-        $tid = (int)$object->add($content);
+        $tid = (int) $object->add($content);
         $this->assertSame(0, $tid);
 
         $err_msg = 'Mandatory fields are not filled. Please correct: Title' .
@@ -139,19 +139,19 @@ class ITILTemplateTest extends DbTestCase
         $content['content']        = 'Description from template';
         $content['locations_id']   = getItemByTypeName('Location', '_location01', true);
 
-        $tid = (int)$object->add($content);
+        $tid = (int) $object->add($content);
         $this->assertSame(0, $tid);
 
         $this->hasSessionMessages(
             ERROR,
             [
                 'You cannot use predefined description verbatim',
-                'Mandatory fields are not filled. Please correct: Description'
+                'Mandatory fields are not filled. Please correct: Description',
             ]
         );
 
         $content['content'] = 'A content for our ' . $itiltype;
-        $tid = (int)$object->add($content);
+        $tid = (int) $object->add($content);
         $this->assertGreaterThan(0, $tid);
     }
 
@@ -191,8 +191,8 @@ class ITILTemplateTest extends DbTestCase
                 "$field in $itiltype"
             );
         } else {
-           //howto test dynamic fields (those wich names begin with a "_")?
-           //howto test items_id (from Ticket at least)?
+            //howto test dynamic fields (those wich names begin with a "_")?
+            //howto test items_id (from Ticket at least)?
             $empty = true;
         }
     }
@@ -234,7 +234,7 @@ class ITILTemplateTest extends DbTestCase
                     185 => 'Internal time to own',
                     193 => 'Contract',
                     14 => 'Type',
-                ]
+                ],
             ], [
                 'Change',
                 [
@@ -264,7 +264,7 @@ class ITILTemplateTest extends DbTestCase
                     62 => 'Deployment plan',
                     63 => 'Backup plan',
                     67 => 'Checklist',
-                ]
+                ],
             ], [
                 'Problem',
                 [
@@ -292,8 +292,8 @@ class ITILTemplateTest extends DbTestCase
                     60 => 'Impacts',
                     61 => 'Causes',
                     62 => 'Symptoms',
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -324,12 +324,12 @@ class ITILTemplateTest extends DbTestCase
             case 'Ticket':
                 $expected = [
                     1 => 'Standard interface',
-                    2 => 'Simplified interface'
+                    2 => 'Simplified interface',
                 ];
                 break;
             default:
                 $expected = [
-                    1 => 'Preview'
+                    1 => 'Preview',
                 ];
                 break;
         }
@@ -343,51 +343,51 @@ class ITILTemplateTest extends DbTestCase
     {
         $this->login();
 
-       //create template
+        //create template
         $tpl_class = '\\' . $itiltype . 'Template';
         $tpl = new $tpl_class();
 
         $mandat_class = '\\' . $itiltype . 'TemplateMandatoryField';
         $mandat = new $mandat_class();
 
-        $tpl_id = (int)$tpl->add([
-            'name'   => 'Template for ' . $itiltype
+        $tpl_id = (int) $tpl->add([
+            'name'   => 'Template for ' . $itiltype,
         ]);
         $this->assertGreaterThan(0, $tpl_id);
 
         $task_tpl = new \TaskTemplate();
-        $tid1 = (int)$task_tpl->add([
+        $tid1 = (int) $task_tpl->add([
             'name'         => 'First task template',
             'content'      => 'First task content',
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->assertGreaterThan(0, $tid1);
         $this->assertTrue($task_tpl->getFromDB($tid1));
 
-        $tid2 = (int)$task_tpl->add([
+        $tid2 = (int) $task_tpl->add([
             'name'         => 'Second task template',
             'content'      => 'Second task content',
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->assertGreaterThan(0, $tid1);
 
         //add predefined tasks
         $predef_class = '\\' . $itiltype . 'TemplatePredefinedField';
         $predef = new $predef_class();
-        $puid = (int)$predef->add([
+        $puid = (int) $predef->add([
             $mandat::$items_id   => $tpl_id,
             'num'                => $predef->getFieldNum($tpl, 'Tasks'),
             'value'              => $tid1,
-            'is_recursive'       => 1
+            'is_recursive'       => 1,
         ]);
         $this->assertGreaterThan(0, $puid);
         $this->assertTrue($predef->getFromDB($puid));
 
-        $puid = (int)$predef->add([
+        $puid = (int) $predef->add([
             $mandat::$items_id   => $tpl_id,
             'num'                => $predef->getFieldNum($tpl, 'Tasks'),
             'value'              => $tid2,
-            'is_recursive'       => 1
+            'is_recursive'       => 1,
         ]);
         $this->assertGreaterThan(0, $puid);
         $this->assertTrue($predef->getFromDB($puid));
@@ -397,9 +397,9 @@ class ITILTemplateTest extends DbTestCase
         if ($itiltype === \Ticket::getType()) {
             $cat_field .= '_demand';
         }
-        $cat_id = (int)$category->add([
+        $cat_id = (int) $category->add([
             'name'      => 'Category for a template',
-            $cat_field  => $tpl_id
+            $cat_field  => $tpl_id,
         ]);
         $this->assertGreaterThan(0, $cat_id);
 
@@ -413,14 +413,14 @@ class ITILTemplateTest extends DbTestCase
             'entities_id'           => 0,
             '_tasktemplates_id'     => [
                 $tid1,
-                $tid2
-            ]
+                $tid2,
+            ],
         ];
         if ($itiltype === \Ticket::getType()) {
             $content['type'] = \Ticket::INCIDENT_TYPE;
         }
 
-        $tid = (int)$object->add($content);
+        $tid = (int) $object->add($content);
         $this->assertGreaterThan(0, $tid);
 
         global $DB;
@@ -428,8 +428,8 @@ class ITILTemplateTest extends DbTestCase
         $iterator = $DB->request([
             'FROM'   => $task_class::getTable(),
             'WHERE'  => [
-                $object->getForeignKeyField() => $tid
-            ]
+                $object->getForeignKeyField() => $tid,
+            ],
         ]);
         $this->assertCount(2, $iterator);
     }
@@ -456,9 +456,9 @@ class ITILTemplateTest extends DbTestCase
         if ($itiltype === \Ticket::getType()) {
             $cat_field .= '_demand';
         }
-        $cat_id = (int)$category->add([
+        $cat_id = (int) $category->add([
             'name'      => 'Category for a ' . $itiltype . ' template',
-            $cat_field  => $category_tpl_id
+            $cat_field  => $category_tpl_id,
         ]);
         $this->assertGreaterThan(0, $cat_id);
 
@@ -468,7 +468,7 @@ class ITILTemplateTest extends DbTestCase
             $tt->isNewItem(),
             'Not template expected from category assignment'
         );
-        $this->assertSame($category_tpl_id, (int)$tt->fields['id']);
+        $this->assertSame($category_tpl_id, (int) $tt->fields['id']);
 
         //3- edit existing entity with new template as default
         //   and check the correct template is returned
@@ -487,14 +487,14 @@ class ITILTemplateTest extends DbTestCase
             $tt->isNewItem(),
             'Not template expected from entity assignment'
         );
-        $this->assertSame($entity_tpl_id, (int)$tt->fields['id']);
+        $this->assertSame($entity_tpl_id, (int) $tt->fields['id']);
 
         $tt = $itilobject->getITILTemplateToUse(0, $type, $cat_id, $entity->fields['id']);
         $this->assertFalse(
             $tt->isNewItem(),
             'Not template expected from entity assignment overrided with category'
         );
-        $this->assertSame($category_tpl_id, (int)$tt->fields['id']);
+        $this->assertSame($category_tpl_id, (int) $tt->fields['id']);
 
         //4- set default to a new template fo tech profile
         //   check the correct template is returned
@@ -512,21 +512,21 @@ class ITILTemplateTest extends DbTestCase
             $tt->isNewItem(),
             'Not template expected from profile assignment'
         );
-        $this->assertSame($profile_tpl_id, (int)$tt->fields['id']);
+        $this->assertSame($profile_tpl_id, (int) $tt->fields['id']);
 
         $tt = $itilobject->getITILTemplateToUse(0, $type, 0, $entity->fields['id']);
         $this->assertFalse(
             $tt->isNewItem(),
             'Not template expected from entity assignment overrided by profile'
         );
-        $this->assertSame($profile_tpl_id, (int)$tt->fields['id']);
+        $this->assertSame($profile_tpl_id, (int) $tt->fields['id']);
 
         $tt = $itilobject->getITILTemplateToUse(0, $type, $cat_id, $entity->fields['id']);
         $this->assertFalse(
             $tt->isNewItem(),
             'Not template expected'
         );
-        $this->assertSame($category_tpl_id, (int)$tt->fields['id']);
+        $this->assertSame($category_tpl_id, (int) $tt->fields['id']);
     }
 
     /**
@@ -553,8 +553,8 @@ class ITILTemplateTest extends DbTestCase
         //create template
         $tpl_class = '\\' . $itiltype . 'Template';
         $tpl = new $tpl_class();
-        $tpl_id = (int)$tpl->add([
-            'name'   => 'Template for ' . $itiltype
+        $tpl_id = (int) $tpl->add([
+            'name'   => 'Template for ' . $itiltype,
         ]);
         $this->assertGreaterThan(0, $tpl_id);
         return $tpl_id;
@@ -574,7 +574,7 @@ class ITILTemplateTest extends DbTestCase
         $tpl_id = $this->createItem(
             $tpl_class,
             [
-                'name' => 'Template for ' . $itiltype
+                'name' => 'Template for ' . $itiltype,
             ]
         )->getID();
 
@@ -585,7 +585,7 @@ class ITILTemplateTest extends DbTestCase
             $mandat_class,
             [
                 $mandat::$items_id => $tpl_id,
-                'num'              => $mandat->getFieldNum($tpl, 'Title')
+                'num'              => $mandat->getFieldNum($tpl, 'Title'),
             ]
         )->getID();
 
@@ -597,7 +597,7 @@ class ITILTemplateTest extends DbTestCase
             [
                 $mandat::$items_id   => $tpl_id,
                 'num'                => $predef->getFieldNum($tpl, 'Description'), //Description
-                'value'              => 'Description from template'
+                'value'              => 'Description from template',
             ]
         )->getID();
 
@@ -608,7 +608,7 @@ class ITILTemplateTest extends DbTestCase
             $hidden_class,
             [
                 $mandat::$items_id => $tpl_id,
-                'num'              => $hidden->getFieldNum($tpl, 'Status')
+                'num'              => $hidden->getFieldNum($tpl, 'Status'),
             ]
         )->getID();
 

@@ -98,14 +98,14 @@ function isPluginItemType($classname)
         $plug['plugin'] = $matches[1];
         $plug['class']  = $matches[2];
         return $plug;
-    } else if (substr($classname, 0, \strlen(NS_PLUG)) === NS_PLUG) {
+    } elseif (substr($classname, 0, \strlen(NS_PLUG)) === NS_PLUG) {
         $tab = explode('\\', $classname, 3);
         $plug           = [];
         $plug['plugin'] = $tab[1];
         $plug['class']  = $tab[2];
         return $plug;
     }
-   // Standard case
+    // Standard case
     return false;
 }
 
@@ -242,12 +242,12 @@ function _sn($sing, $plural, $nb, $domain = 'glpi')
 function _x($ctx, $str, $domain = 'glpi')
 {
 
-   // simulate pgettext
+    // simulate pgettext
     $msg   = $ctx . "\004" . $str;
     $trans = __($msg, $domain);
 
     if ($trans == $msg) {
-       // No translation
+        // No translation
         return $str;
     }
     return $trans;
@@ -270,17 +270,17 @@ function _x($ctx, $str, $domain = 'glpi')
 function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi')
 {
 
-   // simulate pgettext
+    // simulate pgettext
     $singmsg    = $ctx . "\004" . $sing;
     $pluralmsg  = $ctx . "\004" . $plural;
     $trans      = _n($singmsg, $pluralmsg, $nb, $domain);
 
     if ($trans == $singmsg) {
-       // No translation
+        // No translation
         return $sing;
     }
     if ($trans == $pluralmsg) {
-       // No translation
+        // No translation
         return $plural;
     }
     return $trans;
@@ -348,7 +348,7 @@ function glpi_autoload($classname)
     $psr4_styled_path = sprintf('%s/src/%s.php', $plugin_path, str_replace('\\', '/', $classname));
     if (file_exists($legacy_path)) {
         include_once($legacy_path);
-    } else if (strpos($classname, NS_PLUG) !== 0 && file_exists($psr4_styled_path)) {
+    } elseif (strpos($classname, NS_PLUG) !== 0 && file_exists($psr4_styled_path)) {
         // PSR-4 styled autoloading for classes without namespace
         include_once($psr4_styled_path);
     }
@@ -362,12 +362,12 @@ $needrun  = false;
 $autoload = GLPI_ROOT . '/vendor/autoload.php';
 if (!file_exists($autoload)) {
     $needrun = true;
-} else if (file_exists(GLPI_ROOT . '/composer.lock')) {
+} elseif (file_exists(GLPI_ROOT . '/composer.lock')) {
     if (!file_exists(GLPI_ROOT . '/.composer.hash')) {
-       /* First time */
+        /* First time */
         $needrun = true;
-    } else if (sha1_file(GLPI_ROOT . '/composer.lock') != file_get_contents(GLPI_ROOT . '/.composer.hash')) {
-       /* update */
+    } elseif (sha1_file(GLPI_ROOT . '/composer.lock') != file_get_contents(GLPI_ROOT . '/.composer.hash')) {
+        /* update */
         $needrun = true;
     }
 }
@@ -375,12 +375,12 @@ if (!file_exists($autoload)) {
 // node dependencies
 if (!file_exists(GLPI_ROOT . '/public/lib')) {
     $needrun = true;
-} else if (file_exists(GLPI_ROOT . '/package-lock.json')) {
+} elseif (file_exists(GLPI_ROOT . '/package-lock.json')) {
     if (!file_exists(GLPI_ROOT . '/.package.hash')) {
-       /* First time */
+        /* First time */
         $needrun = true;
-    } else if (sha1_file(GLPI_ROOT . '/package-lock.json') != file_get_contents(GLPI_ROOT . '/.package.hash')) {
-       /* update */
+    } elseif (sha1_file(GLPI_ROOT . '/package-lock.json') != file_get_contents(GLPI_ROOT . '/.package.hash')) {
+        /* update */
         $needrun = true;
     }
 }
@@ -403,8 +403,8 @@ $po_files = preg_grep('/\.po$/', $locales_files);
 $mo_files = preg_grep('/\.mo$/', $locales_files);
 if (count($mo_files) < count($po_files)) {
     $need_mo_compile = true;
-} else if (file_exists(GLPI_ROOT . '/locales/glpi.pot')) {
-   // Assume that `locales/glpi.pot` file only exists when installation mode is GIT
+} elseif (file_exists(GLPI_ROOT . '/locales/glpi.pot')) {
+    // Assume that `locales/glpi.pot` file only exists when installation mode is GIT
     foreach ($po_files as $po_file) {
         $po_file = GLPI_ROOT . '/locales/' . $po_file;
         $mo_file = preg_replace('/\.po$/', '.mo', $po_file);

@@ -39,9 +39,9 @@
  **/
 class HTMLTableSuperHeader extends HTMLTableHeader
 {
-   /// The headers of each column
+    /// The headers of each column
     private $headerSets = [];
-   /// The table that owns the current super header
+    /// The table that owns the current super header
     private $table;
 
 

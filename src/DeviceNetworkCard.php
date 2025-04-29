@@ -68,15 +68,15 @@ class DeviceNetworkCard extends CommonDevice
             parent::getAdditionalFields(),
             [['name'  => 'mac_default',
                 'label' => __('MAC address by default'),
-                'type'  => 'text'
+                'type'  => 'text',
             ],
                 ['name'  => 'bandwidth',
                     'label' => __('Flow'),
-                    'type'  => 'text'
+                    'type'  => 'text',
                 ],
                 ['name'  => 'devicenetworkcardmodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 ['name'  => 'none',
                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
@@ -86,8 +86,8 @@ class DeviceNetworkCard extends CommonDevice
                                             null,
                                             false
                                         ),
-                    'type'  => 'registeredIDChooser'
-                ]
+                    'type'  => 'registeredIDChooser',
+                ],
             ]
         );
     }
@@ -118,7 +118,7 @@ class DeviceNetworkCard extends CommonDevice
             'table'              => 'glpi_devicenetworkcardmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -226,9 +226,9 @@ class DeviceNetworkCard extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicenetworkcards',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -239,7 +239,7 @@ class DeviceNetworkCard extends CommonDevice
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'datatype'           => 'string',
-            'joinparams'         => $main_joinparams
+            'joinparams'         => $main_joinparams,
         ];
 
         return $tab;

@@ -82,13 +82,13 @@ if (
         Session::haveRight('followup', ITILFollowup::SEEPUBLIC)
         || Session::haveRight('task', TicketTask::SEEPUBLIC)
         || Session::haveRightsOr('ticketvalidation', [TicketValidation::VALIDATEREQUEST,
-            TicketValidation::VALIDATEINCIDENT
+            TicketValidation::VALIDATEINCIDENT,
         ])
     ) {
         Html::redirect($CFG_GLPI['root_doc'] . "/front/ticket.php");
-    } else if (Session::haveRightsOr('reservation', [READ, ReservationItem::RESERVEANITEM])) {
+    } elseif (Session::haveRightsOr('reservation', [READ, ReservationItem::RESERVEANITEM])) {
         Html::redirect($CFG_GLPI['root_doc'] . "/front/reservationitem.php");
-    } else if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
+    } elseif (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
         Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.faq.php");
     }
 }

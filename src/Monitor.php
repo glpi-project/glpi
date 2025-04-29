@@ -44,10 +44,10 @@ class Monitor extends CommonDBTM
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
     protected static $forward_entity_to = ['Infocom', 'ReservationItem', 'Item_OperatingSystem', 'NetworkPort',
-        'Item_SoftwareVersion'
+        'Item_SoftwareVersion',
     ];
 
     public static $rightname                   = 'monitor';
@@ -62,7 +62,7 @@ class Monitor extends CommonDBTM
             Contract_Item::class,
             Document_Item::class,
             Computer_Item::class,
-            KnowbaseItem_Item::class
+            KnowbaseItem_Item::class,
         ];
     }
 
@@ -171,8 +171,8 @@ class Monitor extends CommonDBTM
             'FROM'   => 'glpi_computers_items',
             'WHERE'  => [
                 'itemtype'  => $this->getType(),
-                'items_id'  => $this->fields['id']
-            ]
+                'items_id'  => $this->fields['id'],
+            ],
         ]);
         $tab = [];
         foreach ($iterator as $data) {
@@ -191,7 +191,7 @@ class Monitor extends CommonDBTM
             $actions += [
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
                => "<i class='ma-icon fas fa-key'></i>" .
-                  _x('button', 'Add a license')
+                  _x('button', 'Add a license'),
             ];
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
         }
@@ -210,7 +210,7 @@ class Monitor extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -220,7 +220,7 @@ class Monitor extends CommonDBTM
             'table'              => 'glpi_monitortypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -228,7 +228,7 @@ class Monitor extends CommonDBTM
             'table'              => 'glpi_monitormodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -237,7 +237,7 @@ class Monitor extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_monitor' => 1]
+            'condition'          => ['is_visible_monitor' => 1],
         ];
 
         $tab[] = [
@@ -286,7 +286,7 @@ class Monitor extends CommonDBTM
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $tab[] = [
@@ -295,7 +295,7 @@ class Monitor extends CommonDBTM
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -304,7 +304,7 @@ class Monitor extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -313,7 +313,7 @@ class Monitor extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -321,7 +321,7 @@ class Monitor extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -337,7 +337,7 @@ class Monitor extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'have_micro',
             'name'               => __('Microphone'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -345,7 +345,7 @@ class Monitor extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'have_speaker',
             'name'               => __('Speakers'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -353,7 +353,7 @@ class Monitor extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'have_subd',
             'name'               => __('Sub-D'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -361,7 +361,7 @@ class Monitor extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'have_bnc',
             'name'               => __('BNC'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -369,7 +369,7 @@ class Monitor extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'have_dvi',
             'name'               => __('DVI'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -377,7 +377,7 @@ class Monitor extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'have_pivot',
             'name'               => __('Pivot'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -385,7 +385,7 @@ class Monitor extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'have_hdmi',
             'name'               => __('HDMI'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -393,7 +393,7 @@ class Monitor extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'have_displayport',
             'name'               => __('DisplayPort'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -401,7 +401,7 @@ class Monitor extends CommonDBTM
             'table'              => 'glpi_manufacturers',
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -411,7 +411,7 @@ class Monitor extends CommonDBTM
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
             'datatype'           => 'dropdown',
-            'right'              => 'own_ticket'
+            'right'              => 'own_ticket',
         ];
 
         $tab[] = [
@@ -421,7 +421,7 @@ class Monitor extends CommonDBTM
             'linkfield'          => 'groups_id_tech',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -441,7 +441,7 @@ class Monitor extends CommonDBTM
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -450,7 +450,7 @@ class Monitor extends CommonDBTM
             'field'              => 'is_global',
             'name'               => __('Global management'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -464,18 +464,18 @@ class Monitor extends CommonDBTM
         return $tab;
     }
 
-   /**
-    * @param $itemtype
-    *
-    * @return array
-    */
+    /**
+     * @param $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         $tab = [];
 
         $tab[] = [
             'id'                 => 'monitor',
-            'name'               => self::getTypeName(Session::getPluralNumber())
+            'name'               => self::getTypeName(Session::getPluralNumber()),
         ];
 
         $tab[] = [
@@ -489,8 +489,8 @@ class Monitor extends CommonDBTM
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.itemtype' => 'Monitor']
-            ]
+                'condition'          => ['NEWTABLE.itemtype' => 'Monitor'],
+            ],
         ];
 
         return $tab;

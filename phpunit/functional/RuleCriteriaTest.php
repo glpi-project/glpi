@@ -65,16 +65,16 @@ class RuleCriteriaTest extends DbTestCase
             'sub_type'    => 'RuleDictionnarySoftware',
             'match'       => \Rule::AND_MATCHING,
             'condition'   => 0,
-            'description' => ''
+            'description' => '',
         ]);
-        $this->assertGreaterThan(0, (int)$rules_id);
+        $this->assertGreaterThan(0, (int) $rules_id);
 
         $criteria_id = $criteria->add(['rules_id'  => $rules_id,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 'Mozilla Firefox 52'
+            'pattern'   => 'Mozilla Firefox 52',
         ]);
-        $this->assertGreaterThan(0, (int)$criteria_id);
+        $this->assertGreaterThan(0, (int) $criteria_id);
 
         $this->assertTrue($criteria->getFromDB($criteria_id));
         $this->assertSame('RuleDictionnarySoftware', $criteria::$itemtype);
@@ -97,16 +97,16 @@ class RuleCriteriaTest extends DbTestCase
             'sub_type'    => 'RuleDictionnarySoftware',
             'match'       => \Rule::AND_MATCHING,
             'condition'   => 0,
-            'description' => ''
+            'description' => '',
         ]);
-        $this->assertGreaterThan(0, (int)$rules_id);
+        $this->assertGreaterThan(0, (int) $rules_id);
 
         $criteria_id = $criteria->add(['rules_id'  => $rules_id,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 'Mozilla Firefox 52'
+            'pattern'   => 'Mozilla Firefox 52',
         ]);
-        $this->assertGreaterThan(0, (int)$criteria_id);
+        $this->assertGreaterThan(0, (int) $criteria_id);
 
         $this->assertTrue($criteria->getFromDB($criteria_id));
         $this->assertSame('Software is Mozilla Firefox 52', $criteria->getFriendlyName());
@@ -126,7 +126,7 @@ class RuleCriteriaTest extends DbTestCase
             'condition'   => 0,
             'description' => '',
         ]);
-        $this->assertGreaterThan(0, (int)$rules_id);
+        $this->assertGreaterThan(0, (int) $rules_id);
 
         $this->assertTrue($rule->getFromDB($rules_id));
         $this->updateDateMod($rules_id, '2017-03-31 00:00:00');
@@ -134,9 +134,9 @@ class RuleCriteriaTest extends DbTestCase
         $criteria_id = $criteria->add(['rules_id'  => $rules_id,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 'Mozilla Firefox 52'
+            'pattern'   => 'Mozilla Firefox 52',
         ]);
-        $this->assertGreaterThan(0, (int)$criteria_id);
+        $this->assertGreaterThan(0, (int) $criteria_id);
 
         $this->assertTrue($rule->getFromDB($rules_id));
 
@@ -158,22 +158,22 @@ class RuleCriteriaTest extends DbTestCase
             'condition'   => 0,
             'description' => '',
         ]);
-        $this->assertGreaterThan(0, (int)$rules_id);
+        $this->assertGreaterThan(0, (int) $rules_id);
 
         $this->assertTrue($rule->getFromDB($rules_id));
 
         $criteria_id = $criteria->add(['rules_id'  => $rules_id,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 'Mozilla Firefox 52'
+            'pattern'   => 'Mozilla Firefox 52',
         ]);
-        $this->assertGreaterThan(0, (int)$criteria_id);
+        $this->assertGreaterThan(0, (int) $criteria_id);
         $this->updateDateMod($rules_id, '2017-03-31 00:00:00');
 
         $this->assertTrue($criteria->delete(['id' => $criteria_id], true));
         $this->assertTrue($rule->getFromDB($rules_id));
 
-       //By adding a critera, rule's date_mod must have been updated
+        //By adding a critera, rule's date_mod must have been updated
         $this->assertTrue($rule->fields['date_mod'] > '2017-03-31 00:00:00');
     }
 
@@ -194,7 +194,7 @@ class RuleCriteriaTest extends DbTestCase
             'condition'   => 0,
             'description' => '',
         ]);
-        $this->assertGreaterThan(0, (int)$rules_id);
+        $this->assertGreaterThan(0, (int) $rules_id);
 
         $this->assertTrue($rule->getFromDB($rules_id));
 
@@ -225,25 +225,25 @@ class RuleCriteriaTest extends DbTestCase
             'condition'   => 0,
             'description' => '',
         ]);
-        $this->assertGreaterThan(0, (int)$rules_id);
+        $this->assertGreaterThan(0, (int) $rules_id);
 
         $this->assertGreaterThan(
             0,
-            (int)$criteria->add([
+            (int) $criteria->add([
                 'rules_id'  => $rules_id,
                 'criteria'  => 'name',
                 'condition' => \Rule::PATTERN_IS,
-                'pattern'   => 'Mozilla Firefox 52'
+                'pattern'   => 'Mozilla Firefox 52',
             ])
         );
 
         $this->assertGreaterThan(
             0,
-            (int)$criteria->add([
+            (int) $criteria->add([
                 'rules_id'  => $rules_id,
                 'criteria'  => 'version',
                 'condition' => \Rule::REGEX_NOT_MATCH,
-                'pattern'   => '/(.*)/'
+                'pattern'   => '/(.*)/',
             ])
         );
 
@@ -265,7 +265,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => \Rule::RULE_WILDCARD
+            'pattern'   => \Rule::RULE_WILDCARD,
         ];
 
         $results      = [];
@@ -283,7 +283,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_FIND,
-            'pattern'   => \Rule::RULE_WILDCARD
+            'pattern'   => \Rule::RULE_WILDCARD,
         ];
         $this->assertTrue(
             $criteria->match(
@@ -303,7 +303,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 'Mozilla Firefox'
+            'pattern'   => 'Mozilla Firefox',
         ];
 
         $results      = [];
@@ -355,7 +355,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_IS_NOT,
-            'pattern'   => 'Mozilla Firefox'
+            'pattern'   => 'Mozilla Firefox',
         ];
 
         $results = [];
@@ -378,7 +378,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_EXISTS,
-            'pattern'   => ''
+            'pattern'   => '',
         ];
 
         $results      = [];
@@ -425,7 +425,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_CONTAIN,
-            'pattern'   => 'Firefox'
+            'pattern'   => 'Firefox',
         ];
 
         $results      = [];
@@ -474,7 +474,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_NOT_CONTAIN,
-            'pattern'   => 'Firefox'
+            'pattern'   => 'Firefox',
         ];
 
         $results      = [];
@@ -499,7 +499,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_BEGIN,
-            'pattern'   => 'Mozilla'
+            'pattern'   => 'Mozilla',
         ];
 
         $results      = [];
@@ -554,7 +554,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_END,
-            'pattern'   => 'Firefox'
+            'pattern'   => 'Firefox',
         ];
 
         $results      = [];
@@ -605,7 +605,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => '/Mozilla Firefox (.*)/'
+            'pattern'   => '/Mozilla Firefox (.*)/',
         ];
 
         $results      = [];
@@ -634,7 +634,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::REGEX_NOT_MATCH,
-            'pattern'   => '/Mozilla Firefox (.*)/'
+            'pattern'   => '/Mozilla Firefox (.*)/',
         ];
 
         $results      = [];
@@ -667,7 +667,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => '/Mozilla (Firefox|Thunderbird) (.*)/'
+            'pattern'   => '/Mozilla (Firefox|Thunderbird) (.*)/',
         ];
 
         $results      = [];
@@ -701,7 +701,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => '/CN=([0-9a-z]+) VPN/'
+            'pattern'   => '/CN=([0-9a-z]+) VPN/',
         ];
 
         $results      = [];
@@ -726,18 +726,18 @@ class RuleCriteriaTest extends DbTestCase
         $location = new \Location();
 
         $loc_1 = $location->import(['completename' => 'loc1',
-            'entities_id' => 0, 'is_recursive' => 1
+            'entities_id' => 0, 'is_recursive' => 1,
         ]);
         $this->assertGreaterThan(0, $loc_1);
 
         $loc_2 = $location->import(['completename' => 'loc1 > sloc1',
             'entities_id' => 0, 'is_recursive' => 1,
-            'locations_id' => $loc_1
+            'locations_id' => $loc_1,
         ]);
         $this->assertGreaterThan(0, $loc_2);
 
         $loc_3 = $location->import(['completename' => 'loc3',
-            'entities_id' => 0, 'is_recursive' => 1
+            'entities_id' => 0, 'is_recursive' => 1,
         ]);
         $this->assertGreaterThan(0, $loc_3);
 
@@ -745,7 +745,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'locations_id',
             'condition' => \Rule::PATTERN_UNDER,
-            'pattern'   => $loc_1
+            'pattern'   => $loc_1,
         ];
 
         $results      = [];
@@ -782,7 +782,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'locations_id',
             'condition' => \Rule::PATTERN_NOT_UNDER,
-            'pattern'   => $loc_1
+            'pattern'   => $loc_1,
         ];
 
         $results      = [];
@@ -861,7 +861,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::REGEX_MATCH,
-            'pattern'   => '/Mozilla Firefox (.*)' //bad regexp pattern
+            'pattern'   => '/Mozilla Firefox (.*)', //bad regexp pattern
         ];
 
         $results      = [];
@@ -886,7 +886,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => \Rule::REGEX_NOT_MATCH,
-            'pattern'   => '/Firefox (.*)' //bad regexp pattern
+            'pattern'   => '/Firefox (.*)', //bad regexp pattern
         ];
 
         $results      = [];
@@ -916,145 +916,145 @@ class RuleCriteriaTest extends DbTestCase
                     'condition' => \Rule::PATTERN_BEGIN,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("Besoin d'un") : "Besoin d'un",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
                 yield [
                     'condition' => \Rule::PATTERN_BEGIN,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("<R&D>") : "<R&D>",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
                 yield [
                     'condition' => \Rule::PATTERN_BEGIN,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("\o") : "\o",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
 
                 yield [
                     'condition' => \Rule::PATTERN_END,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("d'un ordinateur") : "d'un ordinateur",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
                 yield [
                     'condition' => \Rule::PATTERN_END,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("<R&D>") : "<R&D>",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("Test <R&D>") : "Test <R&D>",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
                 yield [
                     'condition' => \Rule::PATTERN_END,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("/") : "/",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
 
                 yield [
                     'condition' => \Rule::PATTERN_CONTAIN,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("d'un") : "d'un",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
                 yield [
                     'condition' => \Rule::PATTERN_CONTAIN,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("<R&D>") : "<R&D>",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
                 yield [
                     'condition' => \Rule::PATTERN_CONTAIN,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("\\") : "\\",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
 
                 yield [
                     'condition' => \Rule::PATTERN_NOT_CONTAIN,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("d'un") : "d'un",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'matches'   => false
+                    'matches'   => false,
                 ];
                 yield [
                     'condition' => \Rule::PATTERN_NOT_CONTAIN,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("<R&D>") : "<R&D>",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
-                    'matches'   => false
+                    'matches'   => false,
                 ];
                 yield [
                     'condition' => \Rule::PATTERN_NOT_CONTAIN,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("\\") : "\\",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'matches'   => false
+                    'matches'   => false,
                 ];
 
                 yield [
                     'condition' => \Rule::PATTERN_IS,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
                 yield [
                     'condition' => \Rule::PATTERN_IS,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
                 yield [
                     'condition' => \Rule::PATTERN_NOT_CONTAIN,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'matches'   => false
+                    'matches'   => false,
                 ];
 
                 yield [
                     'condition' => \Rule::PATTERN_IS_NOT,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'matches'   => false
+                    'matches'   => false,
                 ];
                 yield [
                     'condition' => \Rule::PATTERN_IS_NOT,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
-                    'matches'   => false
+                    'matches'   => false,
                 ];
                 yield [
                     'condition' => \Rule::PATTERN_IS_NOT,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'matches'   => false
+                    'matches'   => false,
                 ];
 
                 yield [
                     'condition' => \Rule::REGEX_MATCH,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("/d'un/") : "/d'un/",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
                 yield [
                     'condition' => \Rule::REGEX_MATCH,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("/<R&D>/") : "/<R&D>/",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
                 yield [
                     'condition' => \Rule::REGEX_MATCH,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("/\\\.+\/$/") : "/\\\.+\/$/",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
                 yield [
                     'condition' => \Rule::REGEX_MATCH,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("/line1.*line2/") : "/line1.*line2/",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("line1\nline2") : "line1\nline2",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
                 yield [
                     'condition' => \Rule::REGEX_MATCH,
                     'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("/line1.*line3/") : "/line1.*line3/",
                     'value'     => $value_sanitized ? Sanitizer::sanitize("line1\n<p>line2<p>\nline3") : "line1\n<p>line2</p>\nline3",
-                    'matches'   => true
+                    'matches'   => true,
                 ];
             }
         }
@@ -1071,7 +1071,7 @@ class RuleCriteriaTest extends DbTestCase
             'rules_id'  => 1,
             'criteria'  => 'name',
             'condition' => $condition,
-            'pattern'   => $pattern
+            'pattern'   => $pattern,
         ];
 
         $results      = [];

@@ -58,7 +58,7 @@ if (
         case 'Group':
         case 'Profile':
             $params = ['value' => $_SESSION['glpiactive_entity'],
-                'name'  => $prefix . 'entities_id' . $suffix
+                'name'  => $prefix . 'entities_id' . $suffix,
             ];
             if (Session::canViewAllEntities()) {
                 $params['toadd'] = [-1 => __('No restriction')];

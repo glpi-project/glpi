@@ -93,7 +93,7 @@ if ($isValidItemtype) {
         }
     }
 
-   // Add context if defined
+    // Add context if defined
     if (!empty($context)) {
         $p["context"] = $context;
     }
@@ -105,7 +105,7 @@ if ($isValidItemtype) {
         $p
     );
 
-   // Auto update summary of active or just solved tickets
+    // Auto update summary of active or just solved tickets
     echo "<span id='item_ticket_selection_information{$_POST["myname"]}_$rand' class='ms-1'></span>";
     Ajax::updateItemOnSelectEvent(
         $field_id,
@@ -113,7 +113,7 @@ if ($isValidItemtype) {
         $CFG_GLPI["root_doc"] . "/ajax/ticketiteminformation.php",
         [
             'items_id' => '__VALUE__',
-            'itemtype' => $_POST['itemtype']
+            'itemtype' => $_POST['itemtype'],
         ]
     );
 }

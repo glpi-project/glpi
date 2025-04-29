@@ -40,7 +40,7 @@ class Location extends CommonTreeDropdown
 {
     use MapGeolocation;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;
 
@@ -56,57 +56,57 @@ class Location extends CommonTreeDropdown
                 'name'  => $this->getForeignKeyField(),
                 'label' => __('As child of'),
                 'type'  => 'parent',
-                'list'  => false
+                'list'  => false,
             ], [
                 'name'   => 'address',
                 'label'  => __('Address'),
                 'type'   => 'text',
-                'list'   => true
+                'list'   => true,
             ], [
                 'name'   => 'postcode',
                 'label'  => __('Postal code'),
                 'type'   => 'text',
-                'list'   => true
+                'list'   => true,
             ], [
                 'name'   => 'town',
                 'label'  => __('Town'),
                 'type'   => 'text',
-                'list'   => true
+                'list'   => true,
             ], [
                 'name'   => 'state',
                 'label'  => _x('location', 'State'),
                 'type'   => 'text',
-                'list'   => true
+                'list'   => true,
             ], [
                 'name'   => 'country',
                 'label'  => __('Country'),
                 'type'   => 'text',
-                'list'   => true
+                'list'   => true,
             ], [
                 'name'  => 'building',
                 'label' => __('Building number'),
                 'type'  => 'text',
-                'list'  => true
+                'list'  => true,
             ], [
                 'name'  => 'room',
                 'label' => __('Room number'),
                 'type'  => 'text',
-                'list'  => true
+                'list'  => true,
             ], [
                 'name'  => 'latitude',
                 'label' => __('Latitude'),
                 'type'  => 'text',
-                'list'  => true
+                'list'  => true,
             ], [
                 'name'  => 'longitude',
                 'label' => __('Longitude'),
                 'type'  => 'text',
-                'list'  => true
+                'list'  => true,
             ], [
                 'name'  => 'altitude',
                 'label' => __('Altitude'),
                 'type'  => 'text',
-                'list'  => true
+                'list'  => true,
             ], [
                 'name'   => 'setlocation',
                 'type'   => 'setlocation',
@@ -117,8 +117,8 @@ class Location extends CommonTreeDropdown
                     'full_width_adapt_column' => false,
                     'label_class' => 'col-xxl-2',
                     'input_class' => 'col-xxl-10',
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -138,7 +138,7 @@ class Location extends CommonTreeDropdown
             'table'              => 'glpi_locations',
             'field'              => 'completename',
             'name'               => Location::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -147,7 +147,7 @@ class Location extends CommonTreeDropdown
             'field'              => 'address',
             'name'               => __('Address'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -156,7 +156,7 @@ class Location extends CommonTreeDropdown
             'field'              => 'postcode',
             'name'               => __('Postal code'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -165,7 +165,7 @@ class Location extends CommonTreeDropdown
             'field'              => 'town',
             'name'               => __('Town'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -174,7 +174,7 @@ class Location extends CommonTreeDropdown
             'field'              => 'state',
             'name'               => _x('location', 'State'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -183,7 +183,7 @@ class Location extends CommonTreeDropdown
             'field'              => 'country',
             'name'               => __('Country'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -192,7 +192,7 @@ class Location extends CommonTreeDropdown
             'field'              => 'building',
             'name'               => __('Building number'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -201,7 +201,7 @@ class Location extends CommonTreeDropdown
             'field'              => 'room',
             'name'               => __('Room number'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -210,7 +210,7 @@ class Location extends CommonTreeDropdown
             'field'              => 'comment',
             'name'               => __('Location comments'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -219,7 +219,7 @@ class Location extends CommonTreeDropdown
             'field'              => 'latitude',
             'name'               => __('Latitude'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -228,7 +228,7 @@ class Location extends CommonTreeDropdown
             'field'              => 'longitude',
             'name'               => __('Longitude'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         return $tab;
@@ -260,7 +260,7 @@ class Location extends CommonTreeDropdown
             'field'              => 'address',
             'name'               => __('Address'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -269,7 +269,7 @@ class Location extends CommonTreeDropdown
             'field'              => 'postcode',
             'name'               => __('Postal code'),
             'massiveaction'      => true,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -278,7 +278,7 @@ class Location extends CommonTreeDropdown
             'field'              => 'town',
             'name'               => __('Town'),
             'massiveaction'      => true,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -445,7 +445,7 @@ class Location extends CommonTreeDropdown
                 'FROM'   => $table,
                 'WHERE'  => [
                     "$table.locations_id"   => $locations_id,
-                ]
+                ],
             ];
             if ($item->maybeDeleted()) {
                 $itemtype_criteria['WHERE']['is_deleted'] = 0;
@@ -465,7 +465,7 @@ class Location extends CommonTreeDropdown
 
         $iterator = $DB->request($criteria);
 
-       // Execute a second request to get the total number of rows
+        // Execute a second request to get the total number of rows
         unset($criteria['SELECT']);
         unset($criteria['START']);
         unset($criteria['LIMIT']);
@@ -473,7 +473,7 @@ class Location extends CommonTreeDropdown
         $criteria['COUNT'] = 'total';
         $number = $DB->request($criteria)->current()['total'];
 
-       // Mini Search engine
+        // Mini Search engine
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr class='tab_bg_1'><th colspan='2'>" . _n('Type', 'Types', 1) . "</th></tr>";
         echo "<tr class='tab_bg_1'><td class='center'>";
@@ -483,7 +483,7 @@ class Location extends CommonTreeDropdown
             $all_types,
             [
                 'value'      => $current_itemtype,
-                'on_change'  => 'reloadTab("start=0&criterion="+this.value)'
+                'on_change'  => 'reloadTab("start=0&criterion="+this.value)',
             ]
         );
         echo "</td></tr></table>";

@@ -49,7 +49,7 @@ class ProjectTeamTest extends DbTestCase
 
         $expanded_team = \ProjectTeam::expandTeamData([
             'User'   => [
-                ['items_id'  => $user->fields['id']]
+                ['items_id'  => $user->fields['id']],
             ],
             'Group'  => [
                 ['items_id'  => $group_1->fields['id']],

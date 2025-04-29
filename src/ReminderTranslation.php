@@ -133,7 +133,7 @@ class ReminderTranslation extends CommonDBChild
             $params = ['type'             => __CLASS__,
                 'parenttype'       => get_class($item),
                 'reminders_id' => $item->fields['id'],
-                'id'               => -1
+                'id'               => -1,
             ];
             Ajax::updateItemJsCode(
                 "viewtranslation" . $item->getID() . "$rand",
@@ -218,7 +218,7 @@ class ReminderTranslation extends CommonDBChild
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $item                = $options['parent'];
             $options['itemtype'] = get_class($item);
             $options['reminders_id'] = $item->getID();
@@ -237,7 +237,7 @@ class ReminderTranslation extends CommonDBChild
                 "language",
                 ['display_none' => false,
                     'value'        => $_SESSION['glpilanguage'],
-                    'used'         => self::getAlreadyTranslatedForItem($item)
+                    'used'         => self::getAlreadyTranslatedForItem($item),
                 ]
             );
         }
@@ -255,7 +255,7 @@ class ReminderTranslation extends CommonDBChild
         Html::textarea(['name'              => 'text',
             'value'             => RichText::getSafeHtml($this->fields["text"], true),
             'enable_richtext'   => true,
-            'enable_fileupload' => false
+            'enable_fileupload' => false,
         ]);
         echo "</td></tr>\n";
 
@@ -277,7 +277,7 @@ class ReminderTranslation extends CommonDBChild
         $obj   = new self();
         $found = $obj->find([
             'reminders_id'   => $item->getID(),
-            'language'           => $_SESSION['glpilanguage']
+            'language'           => $_SESSION['glpilanguage'],
         ]);
 
         if (
@@ -355,7 +355,7 @@ class ReminderTranslation extends CommonDBChild
 
         $iterator = $DB->request([
             'FROM'   => getTableForItemType(__CLASS__),
-            'WHERE'  => ['reminders_id' => $item->getID()]
+            'WHERE'  => ['reminders_id' => $item->getID()],
         ]);
 
         foreach ($iterator as $data) {

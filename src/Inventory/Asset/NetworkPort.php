@@ -75,7 +75,7 @@ class NetworkPort extends InventoryAsset
             'ifportduplex' => 'portduplex',
             'ifinoctets'   => 'ifinbytes',
             'ips'          => 'ipaddress',
-            'ifoutoctets'  => 'ifoutbytes'
+            'ifoutoctets'  => 'ifoutbytes',
         ];
 
         foreach ($this->data as $k => &$val) {
@@ -105,7 +105,7 @@ class NetworkPort extends InventoryAsset
             }
 
             if (!$keep) {
-               //port cannot be imported, remove from data source
+                //port cannot be imported, remove from data source
                 unset($this->data[$k]);
                 continue;
             }
@@ -122,7 +122,7 @@ class NetworkPort extends InventoryAsset
 
             if (property_exists($val, 'aggregate')) {
                 $this->aggregates[$val->ifnumber] = [
-                    'aggregates' => array_fill_keys($val->aggregate, 0)
+                    'aggregates' => array_fill_keys($val->aggregate, 0),
                 ];
                 unset($val->aggregate);
             }
@@ -171,11 +171,11 @@ class NetworkPort extends InventoryAsset
             'ifnumber'  => 'logical_number',
             'model'     => 'networkportmodels_id',
             'sysmac'    => 'mac',
-            'sysname'   => 'name'
+            'sysname'   => 'name',
         ];
 
         foreach ($connections as $connection) {
-            $connection = (object)$connection;
+            $connection = (object) $connection;
             if ($this->isLLDP($port)) {
                 // LLDP provides ChassisId (sysmac) and PortID as one of: local number, mac, interface name
                 // We'll try to find the real mac and logical_number of the connection
@@ -185,10 +185,10 @@ class NetworkPort extends InventoryAsset
                     if (property_exists($connection, 'ifnumber')) {
                         $field = 'logical_number';
                         $val = $connection->ifnumber;
-                    } else if (property_exists($connection, 'mac')) {
+                    } elseif (property_exists($connection, 'mac')) {
                         $field = 'mac';
                         $val = $connection->mac;
-                    } else if (property_exists($connection, 'ifdescr')) {
+                    } elseif (property_exists($connection, 'ifdescr')) {
                         $field = 'name';
                         $val = $connection->ifdescr;
                     }
@@ -200,7 +200,7 @@ class NetworkPort extends InventoryAsset
                             'WHERE'     => [
                                 'n1.' . $field => $val,
                                 'n2.mac'       => $connection->sysmac,
-                            ]
+                            ],
                         ];
                         $criteria['LEFT JOIN'][\NetworkPort::getTable() . ' AS n2'][] =
                             new \QueryExpression("`n1`.`items_id`=`n2`.`items_id` AND `n1`.`itemtype`=`n2`.`itemtype`");
@@ -208,7 +208,7 @@ class NetworkPort extends InventoryAsset
                         $iterator = $DB->request($criteria);
                         if (count($iterator)) {
                             $result = $iterator->current();
-                            $connection->logical_number = (int)$result['logical_number'];
+                            $connection->logical_number = (int) $result['logical_number'];
                             $connection->mac = $result['mac'];
                             // make sure mac does't get overwritten below
                             unset($lldp_mapping['sysmac']);
@@ -225,8 +225,8 @@ class NetworkPort extends InventoryAsset
                     $connection->name = $connection->ifdescr;
                 }
                 $results[$ifnumber][] = $connection;
-            } else if (property_exists($connection, 'mac') && !empty($connection->mac)) {
-                $results[$ifnumber] = array_merge(($results[$ifnumber] ?? []), (array)$connection->mac);
+            } elseif (property_exists($connection, 'mac') && !empty($connection->mac)) {
+                $results[$ifnumber] = array_merge(($results[$ifnumber] ?? []), (array) $connection->mac);
             } else {
                 continue;
             }
@@ -247,11 +247,11 @@ class NetworkPort extends InventoryAsset
         $results = [];
 
         $mapping = [
-            'number'  => 'tag'
+            'number'  => 'tag',
         ];
 
         foreach ($vlans as $vlan) {
-            $vlan = (object)$vlan;
+            $vlan = (object) $vlan;
             foreach ($mapping as $origin => $dest) {
                 if (property_exists($vlan, $origin)) {
                     $vlan->$dest = $vlan->$origin;
@@ -271,7 +271,7 @@ class NetworkPort extends InventoryAsset
             return;
         }
 
-       //reset, will be populated from rulepassed
+        //reset, will be populated from rulepassed
         $this->connection_ports = [];
         $this->current_port = $port;
 
@@ -281,11 +281,11 @@ class NetworkPort extends InventoryAsset
             $input = ['entities_id' => $this->entities_id];
             $props = [
                 'ifdescr',
-             /*'sysdescr',*/
+                /*'sysdescr',*/
                 'ifnumber',
                 'mac',
                 'model',
-                'ip'
+                'ip',
             ];
 
             foreach ($props as $prop) {
@@ -360,7 +360,7 @@ class NetworkPort extends InventoryAsset
             return;
         }
         if (count($found_macs) > 1) { // MultipleMac
-           //do not manage MAC addresses if we found one NetworkEquipment
+            //do not manage MAC addresses if we found one NetworkEquipment
             if (isset($this->connection_ports['NetworkEquipment'])) {
                 return;
             }
@@ -386,10 +386,10 @@ class NetworkPort extends InventoryAsset
             // multiple computers mean a hub
             if (count($items_ids) > 1) {
                 $this->handleHub($found_macs, $netports_id);
-            } else if (count($real_port_ids) == 1) {
+            } elseif (count($real_port_ids) == 1) {
                 // the only remaining option is multiple macs on the same computer,
                 $this->addPortsWiring($netports_id, array_key_first($real_port_ids));
-            } else if (count($real_port_ids) > 1) {
+            } elseif (count($real_port_ids) > 1) {
                 trigger_error('Multiple non-virtual NetworkPorts on the computer ('
                     . join(',', array_keys($real_port_ids)) . ')', E_USER_WARNING);
                 return;
@@ -431,13 +431,13 @@ class NetworkPort extends InventoryAsset
                 $vtable => [
                     'ON'  => [
                         $vtable  => 'id',
-                        $pvtable => 'vlans_id'
-                    ]
-                ]
+                        $pvtable => 'vlans_id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'networkports_id' => $netports_id
-            ]
+                'networkports_id' => $netports_id,
+            ],
         ]);
 
         foreach ($iterator as $row) {
@@ -468,7 +468,7 @@ class NetworkPort extends InventoryAsset
 
         $db_vlans = [];
         $vlans_iterator = $DB->request([
-            'FROM'   => \Vlan::getTable()
+            'FROM'   => \Vlan::getTable(),
         ]);
         foreach ($vlans_iterator as $row) {
             $db_vlans[$row['name'] . '|' . $row['tag']] = $row['id'];
@@ -482,7 +482,7 @@ class NetworkPort extends InventoryAsset
             if (!$exists) {
                 $stmt_columns = [
                     'name' => $vlan_data->name ?? '',
-                    'tag'  => $vlan_data->tag
+                    'tag'  => $vlan_data->tag,
                 ];
                 $stmt_types = str_repeat('s', count($stmt_columns));
 
@@ -512,7 +512,7 @@ class NetworkPort extends InventoryAsset
             $pvlan_stmt_columns = [
                 'networkports_id' => $netports_id,
                 'vlans_id'        => $vlans_id,
-                'tagged'          => $vlan_data->tagged ?? 0
+                'tagged'          => $vlan_data->tagged ?? 0,
             ];
             $pvlan_stmt_types = str_repeat('s', count($pvlan_stmt_columns));
 
@@ -538,7 +538,7 @@ class NetworkPort extends InventoryAsset
 
     private function handleMetrics(\stdClass $port, int $netports_id)
     {
-        $input = (array)$port;
+        $input = (array) $port;
         //only update networkport metric if needed
         if (isset($input['ifinbytes'], $input['ifoutbytes'], $input['ifinerrors'], $input['ifouterrors'])) {
             $netport = new GlobalNetworkPort();
@@ -559,17 +559,17 @@ class NetworkPort extends InventoryAsset
         }
 
         if (!count($this->aggregates)) {
-           //no aggregation to manage, pass.
+            //no aggregation to manage, pass.
             return;
         }
 
         foreach ($this->aggregates as $ifnumber => &$data) {
             if ($ifnumber == $port->logical_number) {
-               //main part of the aggregate
+                //main part of the aggregate
                 $data['networkports_id'] = $netports_id;
                 return;
             } else {
-               //last part of the aggregate. find ifnumber and keep ports_id
+                //last part of the aggregate. find ifnumber and keep ports_id
                 foreach ($data['aggregates'] as $lifnumber => &$ldata) {
                     if ($lifnumber == $port->logical_number) {
                         $ldata = $netports_id;
@@ -588,13 +588,13 @@ class NetworkPort extends InventoryAsset
             $aggregates = $data['aggregates'];
             $netports_id = $data['networkports_id'];
 
-           //create main aggregate port, if t does not exists
+            //create main aggregate port, if t does not exists
             if ($netport_aggregate->getFromDB($netports_id)) {
                 $input = $netport_aggregate->fields;
             } else {
                 $input = [
                     'networkports_id'       => $netports_id,
-                    'networkports_id_list'  => []
+                    'networkports_id_list'  => [],
                 ];
                 $input['id'] = $netport_aggregate->add($input);
             }
@@ -659,7 +659,7 @@ class NetworkPort extends InventoryAsset
 
         if ($items_id == "0") {
             //not yet existing, create
-            $input = (array)$port;
+            $input = (array) $port;
             $input['entities_id'] = $this->entities_id;
             if (property_exists($port, 'mac') && (!property_exists($port, 'name') || empty($port->name) || is_numeric($port->name) || preg_match('@([\w-]+)?(\d+)/\d+(/\d+)?@', $port->name))) {
                 if ($name = $this->getNameForMac($port->mac)) {
@@ -681,17 +681,17 @@ class NetworkPort extends InventoryAsset
             'items_id'  => $items_id,
             'itemtype'  => $itemtype,
             'agents_id' => $agents_id,
-            'method'    => 'inventory'
+            'method'    => 'inventory',
         ];
         $rulesmatched->add($inputrulelog, [], false);
         $rulesmatched->cleanOlddata($items_id, $itemtype);
 
         if (!count($ports_id)) {
-           //create network port
+            //create network port
             $input = [
                 'items_id'           => $items_id,
                 'itemtype'           => $itemtype,
-                'instantiation_type' => 'NetworkPortEthernet'
+                'instantiation_type' => 'NetworkPortEthernet',
             ];
             if (property_exists($port, 'ip')) {
                 $input += [
@@ -699,8 +699,8 @@ class NetworkPort extends InventoryAsset
                     'NetworkName_name'         => '',
                     'NetworkName_fqdns_id'     => 0,
                     'NetworkName__ipaddresses' => [
-                        '-1' => $port->ip
-                    ]
+                        '-1' => $port->ip,
+                    ],
                 ];
             }
 
@@ -775,7 +775,7 @@ class NetworkPort extends InventoryAsset
         if (!property_exists($port, 'lldp') && !property_exists($port, 'cdp')) {
             return false;
         }
-        return (bool)($port->lldp ?? $port->cdp);
+        return (bool) ($port->lldp ?? $port->cdp);
     }
 
     public function handlePorts($itemtype = null, $items_id = null)
@@ -792,7 +792,7 @@ class NetworkPort extends InventoryAsset
                     "itemtype"           => $this->item->getType(),
                     "items_id"           => $this->item->getID(),
                     "instantiation_type" => NetworkPortAggregate::getType(),
-                    "name"               => "Management"
+                    "name"               => "Management",
                 ], 1);
             }
         }
@@ -836,7 +836,7 @@ class NetworkPort extends InventoryAsset
 
         $this->handlePortsTrait($itemtype, $items_id);
         if (isset($bkp_ports)) {
-           //all ports must be kept for next stack iteration
+            //all ports must be kept for next stack iteration
             $this->ports = $bkp_ports;
         }
     }
@@ -866,7 +866,7 @@ class NetworkPort extends InventoryAsset
                 //a hub is connected, updated connections
                 $hubs_id = $unmanaged->fields['id'];
             } else {
-               //direct connections, drop to recreate
+                //direct connections, drop to recreate
                 $link->disconnectFrom($id);
             }
         }
@@ -883,7 +883,7 @@ class NetworkPort extends InventoryAsset
         $glpi_ports = [];
         $dbports = $netport->find([
             'items_id' => $hubs_id,
-            'itemtype' => Unmanaged::getType()
+            'itemtype' => Unmanaged::getType(),
         ]);
         foreach ($dbports as $dbport) {
             $id = $link->getOppositeContact($dbport['id']);
@@ -894,7 +894,7 @@ class NetworkPort extends InventoryAsset
 
         foreach ($found_macs as $ports_id) {
             if (!isset($glpi_ports[$ports_id])) {
-            // Connect port (port found in GLPI)
+                // Connect port (port found in GLPI)
                 $link->connectToHub($ports_id, $hubs_id);
             }
         }

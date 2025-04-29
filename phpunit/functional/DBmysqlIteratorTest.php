@@ -35,7 +35,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Log;
 use Monolog\Logger;
 use Psr\Log\LogLevel;
 use QueryExpression;
@@ -74,8 +73,7 @@ class DBmysqlIteratorTest extends DbTestCase
         yield [
             'input'  => <<<SQL
                 SELECT * FROM glpi_computers
-SQL
-            ,
+SQL,
             'output' => ' SELECT * FROM glpi_computers',
         ];
     }
@@ -356,16 +354,16 @@ SQL
                     'bar' => [
                         'FKEY' => [
                             'bar' => 'id',
-                            'foo' => 'fk'
-                        ]
+                            'foo' => 'fk',
+                        ],
                     ],
                     'baz' => [
                         'FKEY' => [
                             'baz' => 'id',
-                            'foo' => 'baz_id'
-                        ]
-                    ]
-                ]
+                            'foo' => 'baz_id',
+                        ],
+                    ],
+                ],
             ]
         );
         $this->assertSame(
@@ -395,11 +393,11 @@ SQL
                         'FKEY' => [
                             'bar' => 'id',
                             'foo' => 'fk', [
-                                'OR'  => ['field' => ['>', 20]]
-                            ]
-                        ]
-                    ]
-                ]
+                                'OR'  => ['field' => ['>', 20]],
+                            ],
+                        ],
+                    ],
+                ],
             ]
         );
         $this->assertSame(
@@ -415,11 +413,11 @@ SQL
                         'FKEY' => [
                             'bar' => 'id',
                             'foo' => 'fk', [
-                                'AND'  => ['field' => 42]
-                            ]
-                        ]
-                    ]
-                ]
+                                'AND'  => ['field' => 42],
+                            ],
+                        ],
+                    ],
+                ],
             ]
         );
         $this->assertSame(
@@ -436,10 +434,10 @@ SQL
                         'TABLE'  => new \QuerySubQuery(['FROM' => 'bar'], 't2'),
                         'FKEY'   => [
                             't2'  => 'id',
-                            'foo' => 'fk'
-                        ]
-                    ]
-                ]
+                            'foo' => 'fk',
+                        ],
+                    ],
+                ],
             ]
         );
         $this->assertSame(
@@ -641,11 +639,11 @@ SQL
                 'OR' => [
                     [
                         'items_id' => 15,
-                        'itemtype' => 'Computer'
+                        'itemtype' => 'Computer',
                     ],
                     [
                         'items_id' => 3,
-                        'itemtype' => 'Document'
+                        'itemtype' => 'Document',
                     ],
                 ],
             ],
@@ -681,8 +679,8 @@ SQL
             'FROM'   => 'foo',
             'WHERE'  => [
                 'bar' => 'baz',
-                'RAW' => ['SELECT COUNT(*) FROM xyz' => 5]
-            ]
+                'RAW' => ['SELECT COUNT(*) FROM xyz' => 5],
+            ],
         ];
         $it = $this->it->execute($crit);
         $this->assertSame("SELECT * FROM `foo` WHERE `bar` = 'baz' AND ((SELECT COUNT(*) FROM xyz) = '5')", $it->getSql());
@@ -691,8 +689,8 @@ SQL
             'FROM'   => 'foo',
             'WHERE'  => [
                 'bar' => 'baz',
-                'RAW' => ['SELECT COUNT(*) FROM xyz' => ['>', 2]]
-            ]
+                'RAW' => ['SELECT COUNT(*) FROM xyz' => ['>', 2]],
+            ],
         ];
         $it = $this->it->execute($crit);
         $this->assertSame("SELECT * FROM `foo` WHERE `bar` = 'baz' AND ((SELECT COUNT(*) FROM xyz) > '2')", $it->getSql());
@@ -701,8 +699,8 @@ SQL
             'FROM'   => 'foo',
             'WHERE'  => [
                 'bar' => 'baz',
-                'RAW' => ['SELECT COUNT(*) FROM xyz' => [3, 4]]
-            ]
+                'RAW' => ['SELECT COUNT(*) FROM xyz' => [3, 4]],
+            ],
         ];
         $it = $this->it->execute($crit);
         $this->assertSame("SELECT * FROM `foo` WHERE `bar` = 'baz' AND ((SELECT COUNT(*) FROM xyz) IN ('3', '4'))", $it->getSql());
@@ -767,10 +765,10 @@ SQL
                 'foo AS f' => [
                     'FKEY' => [
                         'b'   => 'fid',
-                        'f'   => 'id'
-                    ]
-                ]
-            ]
+                        'f'   => 'id',
+                    ],
+                ],
+            ],
         ]);
         $this->assertSame('SELECT * FROM `bar` AS `b` INNER JOIN `foo` AS `f` ON (`b`.`fid` = `f`.`id`)', $it->getSql());
 
@@ -781,10 +779,10 @@ SQL
                 'foo AS  f' => [
                     'FKEY' => [
                         'b'   => 'fid',
-                        'f'   => 'id'
-                    ]
-                ]
-            ]
+                        'f'   => 'id',
+                    ],
+                ],
+            ],
         ]);
         $this->assertSame('SELECT `id`, `field` AS `f`, `baz` AS `Z` FROM `bar` AS `b` INNER JOIN `foo` AS `f` ON (`b`.`fid` = `f`.`id`)', $it->getSql());
     }
@@ -835,7 +833,7 @@ SQL
 
         $it = $this->it->execute([
             'SELECT' => ['bar', $sub_query],
-            'FROM'   => 'foo'
+            'FROM'   => 'foo',
         ]);
         $this->assertSame(
             "SELECT `bar`, $raw_subq AS `thesubquery` FROM `foo`",
@@ -847,7 +845,7 @@ SQL
     {
         $union_crit = [
             ['FROM' => 'table1'],
-            ['FROM' => 'table2']
+            ['FROM' => 'table2'],
         ];
         $union = new \QueryUnion($union_crit);
         $union_raw_query = '((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`))';
@@ -899,44 +897,44 @@ SQL
         $subquery1 = new \QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
-                'tu.type AS type'
+                'tu.type AS type',
             ],
             'FROM'      => "$users_table AS tu",
             'LEFT JOIN' => [
                 \User::getTable() . ' AS usr' => [
                     'ON' => [
                         'tu'  => 'users_id',
-                        'usr' => 'id'
-                    ]
-                ]
+                        'usr' => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                "tu.$fk" => 42
-            ]
+                "tu.$fk" => 42,
+            ],
         ]);
         $subquery2 = new \QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
-                'gt.type AS type'
+                'gt.type AS type',
             ],
             'FROM'      => "$groups_table AS gt",
             'LEFT JOIN' => [
                 \Group_User::getTable() . ' AS gu'   => [
                     'ON' => [
                         'gu'  => 'groups_id',
-                        'gt'  => 'groups_id'
-                    ]
+                        'gt'  => 'groups_id',
+                    ],
                 ],
                 \User::getTable() . ' AS usr'        => [
                     'ON' => [
                         'gu'  => 'users_id',
-                        'usr' => 'id'
-                    ]
-                ]
+                        'usr' => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                "gt.$fk" => 42
-            ]
+                "gt.$fk" => 42,
+            ],
         ]);
 
         $raw_query = "SELECT DISTINCT `users_id`, `type`"
@@ -956,10 +954,10 @@ SQL
         $it = $this->it->execute([
             'FIELDS'          => [
                 'users_id',
-                'type'
+                'type',
             ],
             'DISTINCT'        => true,
-            'FROM'            => $union
+            'FROM'            => $union,
         ]);
         $this->assertSame($raw_query, $it->getSql());
     }
@@ -968,7 +966,7 @@ SQL
     {
         global $CFG_GLPI, $DB;
 
-       //Old build way
+        //Old build way
         $queries = [];
 
         foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
@@ -1070,7 +1068,7 @@ SQL
         $union_raw_query = '(' . preg_replace('/\s+/', ' ', implode(' UNION ALL ', $queries)) . ')';
         $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
 
-       //New build way
+        //New build way
         $queries = [];
         $main_criteria = [
             'SELECT'       => [
@@ -1092,23 +1090,23 @@ SQL
                         'LINK'   => 'ipaddresses_id', [
                             'AND' => [
                                 'ADDR.itemtype' => 'NetworkName',
-                                'ADDR.is_deleted' => 0
-                            ]
-                        ]
-                    ]
-                ]
+                                'ADDR.is_deleted' => 0,
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'LEFT JOIN'    => [
                 'glpi_entities'             => [
                     'ON' => [
                         'ADDR'            => 'entities_id',
-                        'glpi_entities'   => 'id'
-                    ]
-                ]
+                        'glpi_entities'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'        => [
                 'LINK.ipnetworks_id' => 42,
-            ]
+            ],
         ];
 
         foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
@@ -1118,7 +1116,7 @@ SQL
                 'NAME.id AS name_id',
                 'PORT.id AS port_id',
                 'ITEM.id AS item_id',
-                new \QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type'))
+                new \QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type')),
             ]);
             $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
                 'glpi_networknames AS NAME'   => [
@@ -1126,27 +1124,27 @@ SQL
                         'NAME'   => 'id',
                         'ADDR'   => 'items_id', [
                             'AND' => [
-                                'NAME.itemtype' => 'NetworkPort'
-                            ]
-                        ]
-                    ]
+                                'NAME.itemtype' => 'NetworkPort',
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_networkports AS PORT'   => [
                     'ON' => [
                         'NAME'   => 'items_id',
                         'PORT'   => 'id', [
                             'AND' => [
-                                'PORT.itemtype' => $itemtype
-                            ]
-                        ]
-                    ]
+                                'PORT.itemtype' => $itemtype,
+                            ],
+                        ],
+                    ],
                 ],
                 "$table AS ITEM"              => [
                     'ON' => [
                         'ITEM'   => 'id',
-                        'PORT'   => 'items_id'
-                    ]
-                ]
+                        'PORT'   => 'items_id',
+                    ],
+                ],
             ];
             $queries[] = $criteria;
         }
@@ -1164,10 +1162,10 @@ SQL
                     'NAME'   => 'id',
                     'ADDR'   => 'items_id', [
                         'AND' => [
-                            'NAME.itemtype' => 'NetworkPort'
-                        ]
-                    ]
-                ]
+                            'NAME.itemtype' => 'NetworkPort',
+                        ],
+                    ],
+                ],
             ],
             'glpi_networkports AS PORT'   => [
                 'ON' => [
@@ -1175,12 +1173,12 @@ SQL
                     'PORT'   => 'id', [
                         'AND' => [
                             'NOT' => [
-                                'PORT.itemtype' => $CFG_GLPI['networkport_types']
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                'PORT.itemtype' => $CFG_GLPI['networkport_types'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
         $queries[] = $criteria;
 
@@ -1189,7 +1187,7 @@ SQL
             'NAME.id AS name_id',
             new \QueryExpression("NULL AS " . $DB->quoteName('port_id')),
             new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-            new \QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+            new \QueryExpression("NULL AS " . $DB->quoteName('item_type')),
         ]);
         $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
             'glpi_networknames AS NAME'   => [
@@ -1197,11 +1195,11 @@ SQL
                     'NAME'   => 'id',
                     'ADDR'   => 'items_id', [
                         'AND' => [
-                            'NAME.itemtype' => ['!=', 'NetworkPort']
-                        ]
-                    ]
-                ]
-            ]
+                            'NAME.itemtype' => ['!=', 'NetworkPort'],
+                        ],
+                    ],
+                ],
+            ],
         ];
         $queries[] = $criteria;
 
@@ -1210,7 +1208,7 @@ SQL
             new \QueryExpression("NULL AS " . $DB->quoteName('name_id')),
             new \QueryExpression("NULL AS " . $DB->quoteName('port_id')),
             new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-            new \QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+            new \QueryExpression("NULL AS " . $DB->quoteName('item_type')),
         ]);
         $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!=', 'NetworkName'];
         $queries[] = $criteria;
@@ -1229,8 +1227,8 @@ SQL
         $crit = [new \QuerySubQuery([
             'SELECT' => ['COUNT' => ['users_id']],
             'FROM'   => 'glpi_groups_users',
-            'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
-        ])
+            'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')],
+        ]),
         ];
         $this->assertSame(
             "(SELECT COUNT(`users_id`) FROM `glpi_groups_users` WHERE `groups_id` = glpi_groups.id)",
@@ -1242,11 +1240,11 @@ SQL
     {
         global $DB;
 
-       // Select "id" field, keys will correspond to ids
+        // Select "id" field, keys will correspond to ids
         $iterator = $DB->request(
             [
                 'SELECT' => ['id', 'name'],
-                'FROM'   => $this->getUsersFakeTable()
+                'FROM'   => $this->getUsersFakeTable(),
             ]
         );
 
@@ -1264,11 +1262,11 @@ SQL
     {
         global $DB;
 
-       // Do not select "id" field, keys will be numeric, starting at 0
+        // Do not select "id" field, keys will be numeric, starting at 0
         $iterator = $DB->request(
             [
                 'SELECT' => 'name',
-                'FROM'   => $this->getUsersFakeTable()
+                'FROM'   => $this->getUsersFakeTable(),
             ]
         );
 
@@ -1289,7 +1287,7 @@ SQL
         $iterator = $DB->request(
             [
                 'SELECT' => ['id', 'name'],
-                'FROM'   => $this->getUsersFakeTable()
+                'FROM'   => $this->getUsersFakeTable(),
             ]
         );
 
@@ -1310,7 +1308,7 @@ SQL
         $iterator = $DB->request(
             [
                 'SELECT' => ['name'],
-                'FROM'   => $this->getUsersFakeTable()
+                'FROM'   => $this->getUsersFakeTable(),
             ]
         );
 
@@ -1324,7 +1322,7 @@ SQL
         $iterator = $DB->request(
             [
                 'SELECT' => ['name'],
-                'FROM'   => $this->getUsersFakeTable()
+                'FROM'   => $this->getUsersFakeTable(),
             ]
         );
 
@@ -1345,7 +1343,7 @@ SQL
         $iterator = $DB->request(
             [
                 'SELECT' => ['name'],
-                'FROM'   => $this->getUsersFakeTable()
+                'FROM'   => $this->getUsersFakeTable(),
             ]
         );
 
@@ -1366,7 +1364,7 @@ SQL
         $iterator = $DB->request(
             [
                 'SELECT' => ['id', 'name'],
-                'FROM'   => $this->getUsersFakeTable()
+                'FROM'   => $this->getUsersFakeTable(),
             ]
         );
 
@@ -1407,7 +1405,7 @@ SQL
         $this->assertEquals(
             "glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)",
             $this->it->analyseCrit([
-                'ON' => new QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)")
+                'ON' => new QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)"),
             ])
         );
     }

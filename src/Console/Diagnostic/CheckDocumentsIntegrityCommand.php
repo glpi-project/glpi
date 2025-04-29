@@ -35,7 +35,6 @@
 
 namespace Glpi\Console\Diagnostic;
 
-use DBmysqlIterator;
 use Document;
 use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Command\Command;

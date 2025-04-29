@@ -213,7 +213,7 @@ trait CalDAVUriUtilTrait
                     'FROM'   => getTableForItemType($itemtype),
                     'WHERE'  => [
                         'uuid' => $uid,
-                    ]
+                    ],
                 ]
             );
         }
@@ -222,7 +222,7 @@ trait CalDAVUriUtilTrait
             [
                 'SELECT'   => [
                     'id',
-                    'itemtype'
+                    'itemtype',
                 ],
                 'DISTINCT' => true,
                 'FROM'     => $union,

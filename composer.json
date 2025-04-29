@@ -79,6 +79,7 @@
         "ext-xml": "*",
         "atoum/atoum": "^4.1",
         "atoum/stubs": "^2.6",
+        "friendsofphp/php-cs-fixer": "^3.75",
         "friendsoftwig/twigcs": "^6.1",
         "glpi-project/tools": "^0.7",
         "maglnet/composer-require-checker": "^3.5",
@@ -88,7 +89,6 @@
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpunit/phpunit": "^9.6",
-        "squizlabs/php_codesniffer": "^3.12",
         "symfony/browser-kit": "^5.4",
         "symfony/http-client": "^5.4",
         "symfony/mime": "^5.4"
@@ -137,8 +137,6 @@
         "testweb": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/web",
         "testldap": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/LDAP",
         "testimap": "atoum -p 'php -d memory_limit=512M' --debug --force-terminal --use-dot-report --bootstrap-file tests/bootstrap.php --no-code-coverage --max-children-number 1 -d tests/imap",
-        "csp": "phpcs --parallel=500 --cache -p --extensions=php --ignore=\"/.git/,^$(pwd)/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/\" ./",
-        "cs": "phpcs -d memory_limit=512M --cache -p --extensions=php --ignore=\"/.git/,^$(pwd)/(config|files|lib|marketplace|node_modules|plugins|tests/config|vendor)/\" ./",
         "lint": "parallel-lint  --exclude files --exclude marketplace --exclude plugins --exclude vendor --exclude tools/vendor .",
         "post-install-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",

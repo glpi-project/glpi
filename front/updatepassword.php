@@ -78,7 +78,7 @@ if (array_key_exists('update', $_POST)) {
         ];
         if ($input['password'] === $input['current_password']) {
             $error_messages = [__('The new password must be different from current password')];
-        } else if ($input['password'] !== $input['password2']) {
+        } elseif ($input['password'] !== $input['password2']) {
             $error_messages = [__('The two passwords do not match')];
         } else {
             try {

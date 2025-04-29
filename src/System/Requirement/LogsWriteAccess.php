@@ -64,7 +64,7 @@ class LogsWriteAccess extends AbstractRequirement
 
     protected function check()
     {
-       // Only write test for GLPI_LOG as SElinux prevent removing log file.
+        // Only write test for GLPI_LOG as SElinux prevent removing log file.
         try {
             $this->logger->warning('Test logger');
             $this->validated = true;

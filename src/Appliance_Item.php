@@ -48,7 +48,7 @@ class Appliance_Item extends CommonDBRelation
     public function getCloneRelations(): array
     {
         return [
-            Appliance_Item_Relation::class
+            Appliance_Item_Relation::class,
         ];
     }
 
@@ -72,7 +72,7 @@ class Appliance_Item extends CommonDBRelation
                 }
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
-        } else if (in_array($item->getType(), Appliance::getTypes(true))) {
+        } elseif (in_array($item->getType(), Appliance::getTypes(true))) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
@@ -123,8 +123,8 @@ class Appliance_Item extends CommonDBRelation
         $items = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                self::$items_id_1 => $ID
-            ]
+                self::$items_id_1 => $ID,
+            ],
         ]);
 
         Session::initNavigateListItems(
@@ -181,7 +181,7 @@ class Appliance_Item extends CommonDBRelation
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = [
                     'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                    'container'       => 'mass' . __CLASS__ . $rand
+                    'container'       => 'mass' . __CLASS__ . $rand,
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -282,7 +282,7 @@ class Appliance_Item extends CommonDBRelation
             echo "<tr class='tab_bg_1'><td>";
             Appliance::dropdown([
                 'entity'  => $item->getEntityID(),
-                'used'    => $used
+                'used'    => $used,
             ]);
 
             echo "</td><td class='center'>";
@@ -298,7 +298,7 @@ class Appliance_Item extends CommonDBRelation
             if ($canedit && $number) {
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                    'container'     => 'mass' . __CLASS__ . $rand
+                    'container'     => 'mass' . __CLASS__ . $rand,
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -320,12 +320,12 @@ class Appliance_Item extends CommonDBRelation
             Session::initNavigateListItems(
                 __CLASS__,
                 //TRANS : %1$s is the itemtype name,
-                              //         %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            $item->getTypeName(1),
-                                            $item->getName()
-                                        )
+                //         %2$s is the name of the item (used for headings of a list)
+                sprintf(
+                    __('%1$s = %2$s'),
+                    $item->getTypeName(1),
+                    $item->getName()
+                )
             );
             foreach ($appliances as $data) {
                 $cID         = $data["id"];
@@ -395,7 +395,7 @@ class Appliance_Item extends CommonDBRelation
     {
         $error_detected = [];
 
-       //check for requirements
+        //check for requirements
         if (
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))

@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $group->check($_POST["id"], PURGE);
     if (
         $group->isUsed()
@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
         );
         $group->redirectToList();
     }
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $group->check($_POST["id"], UPDATE);
     $group->update($_POST);
     Event::log(
@@ -100,11 +100,11 @@ if (isset($_POST["add"])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_GET['_in_modal'])) {
+} elseif (isset($_GET['_in_modal'])) {
     Html::popHeader(Group::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], true);
     $group->showForm($_GET["id"]);
     Html::popFooter();
-} else if (isset($_POST["replace"])) {
+} elseif (isset($_POST["replace"])) {
     $group->check($_POST["id"], PURGE);
     $group->delete($_POST, 1);
 
@@ -120,6 +120,6 @@ if (isset($_POST["add"])) {
 } else {
     $menus = ["admin", "group"];
     Group::displayFullPageForItem($_GET["id"], $menus, [
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

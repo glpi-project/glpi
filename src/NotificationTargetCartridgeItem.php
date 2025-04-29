@@ -99,20 +99,20 @@ class NotificationTargetCartridgeItem extends NotificationTarget
             'cartridge.stock_target'   => __('Stock target'),
             'cartridge.to_order'       => __('To order'),
             'cartridge.url'            => __('URL'),
-            'cartridge.entity'         => Entity::getTypeName(1)
+            'cartridge.entity'         => Entity::getTypeName(1),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
 
         $this->addTagToList(['tag'     => 'cartridges',
             'label'   => __('Device list'),
             'value'   => false,
-            'foreach' => true
+            'foreach' => true,
         ]);
 
         asort($this->tag_descriptions);

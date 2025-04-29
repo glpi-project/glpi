@@ -143,7 +143,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
             'field'              => 'version',
             'name'               => __('IP version'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -152,7 +152,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
             'field'              => 'address',
             'name'               => IPAddress::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -161,7 +161,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
             'field'              => 'netmask',
             'name'               => IPNetmask::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -178,7 +178,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
             'table'              => $this->getTable(),
             'field'              => 'addressable',
             'name'               => __('Addressable network'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         return $tab;
@@ -230,7 +230,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     public function post_getFromDB()
     {
 
-       // Be sure to remove addresses, otherwise reusing will provide old objects for getAddress, ...
+        // Be sure to remove addresses, otherwise reusing will provide old objects for getAddress, ...
         $this->address = null;
         $this->netmask = null;
         $this->gateway = null;
@@ -263,18 +263,18 @@ class IPNetwork extends CommonImplicitTreeDropdown
             'label'    => self::getTypeName(1),
             'type'     => 'text',
             'list'     => true,
-            'comment'  => __('Set the network using notation address/mask')
+            'comment'  => __('Set the network using notation address/mask'),
         ],
             ['name'     => 'gateway',
                 'label'    => __('Gateway'),
                 'type'     => 'text',
-                'list'     => true
+                'list'     => true,
             ],
             ['name'     => 'addressable',
                 'label'    => __('Addressable network'),
                 'comment'  => __('An addressable network is a network defined on an equipment'),
-                'type'     => 'bool'
-            ]
+                'type'     => 'bool',
+            ],
         ];
     }
 
@@ -284,7 +284,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
         if ($this->data_for_implicit_update !== null) {
             $params = ["address" => $this->data_for_implicit_update['address'],
-                "netmask" => $this->data_for_implicit_update['netmask']
+                "netmask" => $this->data_for_implicit_update['netmask'],
             ];
 
             if (isset($this->fields['id'])) {
@@ -298,7 +298,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
             );
 
             if ((is_array($parents)) && (count($parents) > 0)) {
-                 return $parents[0];
+                return $parents[0];
             }
         }
 
@@ -312,25 +312,25 @@ class IPNetwork extends CommonImplicitTreeDropdown
     public function prepareInput($input)
     {
 
-       // In case of entity transfer, $input['network'] is not defined
+        // In case of entity transfer, $input['network'] is not defined
         if (!isset($input['network']) && isset($this->fields['network'])) {
             $input['network'] = $this->fields['network'];
         }
 
-       // In case of entity transfer, $input['gateway'] is not defined
+        // In case of entity transfer, $input['gateway'] is not defined
         if (!isset($input['gateway']) && isset($this->fields['gateway'])) {
             $input['gateway'] = $this->fields['gateway'];
         }
 
-       // If $this->fields["id"] is not set then, we are adding a new network
-       // Or if $this->fields["network"] != $input["network"] we a updating the network
+        // If $this->fields["id"] is not set then, we are adding a new network
+        // Or if $this->fields["network"] != $input["network"] we a updating the network
         $address = new IPAddress();
         $netmask = new IPNetmask();
-       // Don't validate an empty network
+        // Don't validate an empty network
         if (empty($input["network"])) {
             return [
                 'error' => __('Missing network property (In CIDR notation. Ex: 192.168.1.1/24)'),
-                'input' => false
+                'input' => false,
             ];
         }
         if (
@@ -341,28 +341,28 @@ class IPNetwork extends CommonImplicitTreeDropdown
             $network = explode("/", $input["network"]);
             if (count($network) != 2) {
                 return ['error' => __('Invalid input format for the network'),
-                    'input' => false
+                    'input' => false,
                 ];
             }
             if (!$address->setAddressFromString(trim($network[0]))) {
                 return ['error' => __('Invalid network address'),
-                    'input' => false
+                    'input' => false,
                 ];
             }
             if (!$netmask->setNetmaskFromString(trim($network[1]), $address->getVersion())) {
                 return ['error' => __('Invalid subnet mask'),
-                    'input' => false
+                    'input' => false,
                 ];
             }
 
-           // After checking that address and netmask are valid, modify the address to be the "real"
-           // network address : the first address of the network. This is not required for SQL, but
-           // that looks better for the human
+            // After checking that address and netmask are valid, modify the address to be the "real"
+            // network address : the first address of the network. This is not required for SQL, but
+            // that looks better for the human
             self::computeNetworkRangeFromAdressAndNetmask($address, $netmask, $address);
 
-           // Now, we look for already existing same network inside the database
+            // Now, we look for already existing same network inside the database
             $params = ["address" => $address,
-                "netmask" => $netmask
+                "netmask" => $netmask,
             ];
             if (isset($this->fields["id"])) {
                 $params["exclude IDs"] = $this->fields["id"];
@@ -370,26 +370,26 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
             if (isset($this->fields["entities_id"])) {
                 $entities_id = $this->fields["entities_id"];
-            } else if (isset($input["entities_id"])) {
+            } elseif (isset($input["entities_id"])) {
                 $entities_id = $input["entities_id"];
             } else {
                 $entities_id = -1;
             }
 
-           // TODO : what is the best way ? recursive or not ?
+            // TODO : what is the best way ? recursive or not ?
             $sameNetworks = self::searchNetworks("equals", $params, $entities_id, false);
-           // Check unicity !
+            // Check unicity !
             if ($sameNetworks && (count($sameNetworks) > 0)) {
                 return ['error' => __('Network already defined in visible entities'),
-                    'input' => false
+                    'input' => false,
                 ];
             }
 
-           // Then, update $input to reflect the network and the netmask
+            // Then, update $input to reflect the network and the netmask
             $input = $address->setArrayFromAddress($input, "version", "address", "address");
             $input = $netmask->setArrayFromAddress($input, "", "netmask", "netmask");
 
-           // We check to see if the network is modified
+            // We check to see if the network is modified
             $previousAddress = new IPAddress();
             $previousAddress->setAddressFromArray($this->fields, "version", "address", "address");
             $previousNetmask = new IPNetmask();
@@ -404,23 +404,23 @@ class IPNetwork extends CommonImplicitTreeDropdown
                 $this->networkUpdate = true;
             }
         } else {
-           // If netmask and address are not modified, then, load them from DB to check the validity
-           // of the gateway
+            // If netmask and address are not modified, then, load them from DB to check the validity
+            // of the gateway
             $this->networkUpdate = false;
             $address->setAddressFromArray($this->fields, "version", "address", "address");
             $netmask->setAddressFromArray($this->fields, "version", "netmask", "netmask");
             $entities_id = $this->fields['entities_id'];
         }
 
-       // Update class for the CommonImplicitTree update ...
+        // Update class for the CommonImplicitTree update ...
         $this->data_for_implicit_update = ['address'     => $address,
             'netmask'     => $netmask,
-            'entities_id' => $entities_id
+            'entities_id' => $entities_id,
         ];
 
         $returnValue = [];
-       // If the gateway has been altered, or the network information (address or netmask) changed,
-       // then, we must revalidate the gateway !
+        // If the gateway has been altered, or the network information (address or netmask) changed,
+        // then, we must revalidate the gateway !
         if (
             !isset($this->fields["gateway"])
             || ($input["gateway"] != $this->fields["gateway"])
@@ -536,7 +536,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         if ($this->data_for_implicit_update !== null) {
             $params = ["address"     => $this->data_for_implicit_update['address'],
                 "netmask"     => $this->data_for_implicit_update['netmask'],
-                "exclude IDs" => $this->getID()
+                "exclude IDs" => $this->getID(),
             ];
 
             $mysons = self::searchNetworks(
@@ -546,7 +546,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
             );
 
             if (is_array($mysons)) {
-                 return $mysons;
+                return $mysons;
             }
         }
 
@@ -579,10 +579,10 @@ class IPNetwork extends CommonImplicitTreeDropdown
             'contains',
             ['address'  => $IP,
                 'netmask'  => [0xffffffff, 0xffffffff,
-                    0xffffffff, 0xffffffff
+                    0xffffffff, 0xffffffff,
                 ],
                 'fields'   => $fields,
-                'where'    => $where
+                'where'    => $where,
             ],
             $entityID,
             $recursive
@@ -653,7 +653,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         ) {
             $addressPa = new IPAddress($condition["address"]);
 
-           // Check version equality ...
+            // Check version equality ...
             if ($version != $addressPa->getVersion()) {
                 if ($version != 0) {
                     return false;
@@ -663,11 +663,11 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
             $netmaskPa = new IPNetmask($condition["netmask"], $version);
 
-           // Get the array of the adresses
+            // Get the array of the adresses
             $addressPa = $addressPa->getBinary();
             $netmaskPa = $netmaskPa->getBinary();
 
-           // Check the binary is valid
+            // Check the binary is valid
             if (!is_array($addressPa) || (count($addressPa) != 4)) {
                 return false;
             }
@@ -681,7 +681,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
                 for ($i = $startIndex; $i < 4; ++$i) {
                     $WHERE[] = [
                         new \QueryExpression("(" . $DB->quoteName($addressDB[$i]) . " & " . $DB->quoteValue($netmaskPa[$i]) . ") = (" . $DB->quoteValue($addressPa[$i]) . " & " . $DB->quoteValue($netmaskPa[$i]) . ")"),
-                        $netmaskDB[$i]  => $netmaskPa[$i]
+                        $netmaskDB[$i]  => $netmaskPa[$i],
                     ];
                 }
             } else {
@@ -694,7 +694,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
                     $WHERE[] = [
                         new \QueryExpression("(" . $DB->quoteName($addressDB[$i]) . " & $globalNetmask) = (" . $DB->quoteValue($addressPa[$i]) . " & $globalNetmask)"),
-                        new \QueryExpression("(" . $DB->quoteValue($netmaskPa[$i]) . " & " . $DB->quoteName($netmaskDB[$i]) . ")=$globalNetmask")
+                        new \QueryExpression("(" . $DB->quoteValue($netmaskPa[$i]) . " & " . $DB->quoteName($netmaskDB[$i]) . ")=$globalNetmask"),
                     ];
                 }
             }
@@ -744,9 +744,9 @@ class IPNetwork extends CommonImplicitTreeDropdown
         }
 
         $ORDER = [];
-       // By ordering on the netmask, we ensure that the first element is the nearest one (ie:
-       // the last should be 0.0.0.0/0.0.0.0 of x.y.z.a/255.255.255.255 regarding the interested
-       // element)
+        // By ordering on the netmask, we ensure that the first element is the nearest one (ie:
+        // the last should be 0.0.0.0/0.0.0.0 of x.y.z.a/255.255.255.255 regarding the interested
+        // element)
         for ($i = $startIndex; $i < 4; ++$i) {
             $ORDER[] = new \QueryExpression("BIT_COUNT(" . $DB->quoteName($netmaskDB[$i]) . ") $ORDER_ORIENTATION");
         }
@@ -759,7 +759,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
             'SELECT' => $fields,
             'FROM'   => self::getTable(),
             'WHERE'  => $WHERE,
-            'ORDER'  => $ORDER
+            'ORDER'  => $ORDER,
         ]);
 
         $returnValues = [];
@@ -816,7 +816,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         $result = [];
         for ($i = ($version == 4 ? 3 : 0); $i < 4; ++$i) {
             $result[] = new \QueryExpression(
-                "({$DB->quoteName($tableName.'.'.$binaryFieldPrefix.'_'.$i)} & " . $this->fields["netmask_$i"] . ") = ({$start[$i]})"
+                "({$DB->quoteName($tableName . '.' . $binaryFieldPrefix . '_' . $i)} & " . $this->fields["netmask_$i"] . ") = ({$start[$i]})"
             );
         }
         $result["$tableName.version"] = $version;
@@ -913,8 +913,8 @@ class IPNetwork extends CommonImplicitTreeDropdown
         $second     = true;
         for ($i = $startIndex; $i < 4; ++$i) {
             $and     = ($firstNetmask[$i] & $secondNetmask[$i]);
-           // Be carefull : php integers are 32 bits SIGNED.
-           // Thus, checking equality must be done by XOR ...
+            // Be carefull : php integers are 32 bits SIGNED.
+            // Thus, checking equality must be done by XOR ...
             $first  &= (($and ^ $firstNetmask[$i]) == 0);
             $second &= (($and ^ $secondNetmask[$i]) == 0);
         }
@@ -926,7 +926,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         if ($first && $second) {
             $result = "equals";
             $mask   = &$firstNetmask;
-        } else if ($first) {
+        } elseif ($first) {
             $result = "first contains second";
             $mask   = &$firstNetmask;
         } else { // $second == true
@@ -1006,7 +1006,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         $end   = [];
         for ($i = 0; $i < 4; ++$i) {
             $start[$i] = IPAddress::convertNegativeIntegerToPositiveFloat($address[$i] & $netmask[$i]);
-            $end[$i]   = IPAddress::convertNegativeIntegerToPositiveFloat($address[$i] | ~(int)$netmask[$i]);
+            $end[$i]   = IPAddress::convertNegativeIntegerToPositiveFloat($address[$i] | ~(int) $netmask[$i]);
         }
 
         if ($excludeBroadcastAndNetwork) {
@@ -1043,21 +1043,21 @@ class IPNetwork extends CommonImplicitTreeDropdown
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Reset the tree
+        // Reset the tree
         $DB->update(
             'glpi_ipnetworks',
             [
                 'ipnetworks_id'   => 0,
                 'level'           => 1,
-                'completename'    => new \QueryExpression($DB->quoteName('name'))
+                'completename'    => new \QueryExpression($DB->quoteName('name')),
             ],
             [true]
         );
 
-       // Foreach IPNetwork ...
+        // Foreach IPNetwork ...
         $iterator = $DB->request([
             'SELECT' => 'id',
-            'FROM'   => self::getTable()
+            'FROM'   => self::getTable(),
         ]);
 
         $network = new self();
@@ -1148,7 +1148,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
                 $address = $network->getAddress();
                 $netmask = $network->getNetmask();
 
-               // Stop if we failed to retrieve address or netmask
+                // Stop if we failed to retrieve address or netmask
                 if (!$address || !$netmask) {
                     continue;
                 }
@@ -1157,7 +1157,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
                     $row = $row->createRow();
                 }
 
-               //TRANS: %1$s is address, %2$s is netmask
+                //TRANS: %1$s is address, %2$s is netmask
                 $content = sprintf(
                     __('%1$s / %2$s'),
                     $address->getTextual(),
@@ -1165,7 +1165,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
                 );
 
                 if ($network->fields['addressable'] == 1) {
-                     $content = "<span class='b'>" . $content . "</span>";
+                    $content = "<span class='b'>" . $content . "</span>";
                 }
                 $content = sprintf(__('%1$s - %2$s'), $content, $network->getLink());
                 $row->addCell($header, $content, $father, $network);
@@ -1188,7 +1188,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         $rand = mt_rand();
         self::dropdown(['entity' => $entities_id,
             'rand'   => $rand,
-            'value' => $value
+            'value' => $value,
         ]);
 
         $params = ['ipnetworks_id' => '__VALUE__'];

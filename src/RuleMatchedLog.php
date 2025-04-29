@@ -124,7 +124,7 @@ class RuleMatchedLog extends CommonDBTM
             }
             if (!$continue) {
                 return [];
-            } else if (empty($array_ret)) {
+            } elseif (empty($array_ret)) {
                 $cnt = self::countForItem($item);
                 $array_ret[1] = self::createTabEntry(__('Import information'), $cnt);
             }
@@ -143,7 +143,7 @@ class RuleMatchedLog extends CommonDBTM
                     $rulematched->showFormAgent($item->getID());
                     return true;
                 }
-            } else if ($tabnum == '1') {
+            } elseif ($tabnum == '1') {
                 if ($item->getID() > 0) {
                     $rulematched->showItemForm($item->getID(), $item->getType());
                     return true;
@@ -171,11 +171,11 @@ class RuleMatchedLog extends CommonDBTM
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'items_id'   => $items_id,
-                'itemtype'  => $itemtype
+                'itemtype'  => $itemtype,
             ],
             'ORDER'  => 'date DESC',
             'START'  => 30,
-            'LIMIT'  => '50000'
+            'LIMIT'  => '50000',
         ]);
         foreach ($iterator as $data) {
             $this->delete(['id' => $data['id']]);
@@ -208,14 +208,14 @@ class RuleMatchedLog extends CommonDBTM
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'itemtype'  => $itemtype,
-                'items_id'  => intval($items_id)
+                'items_id'  => intval($items_id),
             ],
-            'COUNT'  => 'cpt'
+            'COUNT'  => 'cpt',
         ];
         $iterator = $DB->request($params);
         $number   = $iterator->current()['cpt'];
 
-       // Display the pager
+        // Display the pager
         Html::printAjaxPager(self::getTypeName(2), $start, $number);
 
         echo "<table class='tab_cadre_fixe' cellpadding='1'>";
@@ -250,11 +250,11 @@ class RuleMatchedLog extends CommonDBTM
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'itemtype'  => $itemtype,
-                'items_id'  => intval($items_id)
+                'items_id'  => intval($items_id),
             ],
             'ORDER'  => 'date DESC',
-            'START'  => (int)$start,
-            'LIMIT'  => (int)$_SESSION['glpilist_limit']
+            'START'  => (int) $start,
+            'LIMIT'  => (int) $_SESSION['glpilist_limit'],
         ];
         foreach ($DB->request($params) as $data) {
             echo "<tr class='tab_bg_1'>";
@@ -278,7 +278,7 @@ class RuleMatchedLog extends CommonDBTM
         }
         echo "</table>";
 
-       // Display the pager
+        // Display the pager
         Html::printAjaxPager(self::getTypeName(2), $start, $number);
 
         return true;

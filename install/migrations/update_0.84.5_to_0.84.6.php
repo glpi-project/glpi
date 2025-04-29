@@ -49,7 +49,7 @@ function update0845to0846()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '0.84.6'));
     $migration->setVersion('0.84.6');
 
@@ -57,7 +57,7 @@ function update0845to0846()
     $newtables     = [];
 
     foreach ($newtables as $new_table) {
-       // rename new tables if exists ?
+        // rename new tables if exists ?
         if ($DB->tableExists($new_table)) {
             $migration->dropTable("backup_$new_table");
             $migration->displayWarning("$new_table table already exists. " .
@@ -73,7 +73,7 @@ function update0845to0846()
         );
     }
 
-   // correct entities_id in documents_items
+    // correct entities_id in documents_items
     $query_doc_i = "UPDATE `glpi_documents_items` as `doc_i`
                    INNER JOIN `glpi_documents` as `doc`
                      ON  `doc`.`id` = `doc_i`.`documents_id`
@@ -92,9 +92,9 @@ function update0845to0846()
         'evaluation'    => CommonITILObject::EVALUATION,
         'approbation'   => CommonITILObject::APPROVAL,
         'test'          => CommonITILObject::TEST,
-        'qualification' => CommonITILObject::QUALIFICATION
+        'qualification' => CommonITILObject::QUALIFICATION,
     ];
-   // Migrate datas
+    // Migrate datas
     foreach ($status as $old => $new) {
         $query = "UPDATE `glpi_tickettemplatepredefinedfields`
                 SET `value` = '$new'
@@ -108,7 +108,7 @@ function update0845to0846()
         $migration->addKey($table, ['itemtype', 'items_id', 'is_deleted'], 'item');
     }
 
-   // must always be at the end
+    // must always be at the end
     $migration->executeMigration();
 
     return $updateresult;

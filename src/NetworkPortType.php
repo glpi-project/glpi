@@ -53,17 +53,17 @@ class NetworkPortType extends CommonDropdown
                 'name'   => 'value_decimal',
                 'label'  => __('Decimal'),
                 'type'   => 'integer',
-                'max'    => 1000
+                'max'    => 1000,
             ], [
                 'name'  => 'is_importable',
                 'label' => __('Import'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ], [
                 'name'  => 'instantiation_type',
                 'label' => __('Instanciation type'),
                 'type'           => 'itemtypename',
                 'itemtype_list'      => 'networkport_instantiations',
-            ]
+            ],
         ];
     }
 
@@ -76,7 +76,7 @@ class NetworkPortType extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'value_decimal',
             'name'               => __('Decimal'),
-            'datatype'           => 'integer'
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
@@ -84,7 +84,7 @@ class NetworkPortType extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_importable',
             'name'               => __('Import'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -107,7 +107,7 @@ class NetworkPortType extends CommonDropdown
         $default_instanciations = [
             'Ethernet'     => [6, 7, 62, 117, 169],
             'Wifi'         => [71],
-            'Fiberchannel' => [56]
+            'Fiberchannel' => [56],
         ];
 
         $template = [
@@ -119,7 +119,7 @@ class NetworkPortType extends CommonDropdown
             'is_importable'      => 0,
             'instantiation_type' => null,
             'date_creation'      => $_SESSION['glpi_currenttime'],
-            'date_mod'           => $_SESSION['glpi_currenttime']
+            'date_mod'           => $_SESSION['glpi_currenttime'],
         ];
 
         $defaults = [];
@@ -135,11 +135,11 @@ class NetworkPortType extends CommonDropdown
             }
 
             $row = array_merge($template, [
-                'value_decimal'      => (int)$iftype['decimal'],
+                'value_decimal'      => (int) $iftype['decimal'],
                 'name'               => $iftype['name'],
                 'comment'            => trim($iftype['description'] . ' ' . $iftype['references']),
                 'is_importable'      => $importable,
-                'instantiation_type' => $instanciation
+                'instantiation_type' => $instanciation,
             ]);
             $defaults[] = $row;
         }
@@ -169,8 +169,8 @@ class NetworkPortType extends CommonDropdown
             $iterator = $DB->request([
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
-                    'is_importable'   => true
-                ]
+                    'is_importable'   => true,
+                ],
             ]);
 
             $import_types = [];

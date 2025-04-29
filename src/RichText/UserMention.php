@@ -73,13 +73,13 @@ final class UserMention
             }
 
             if (array_key_exists($content_field, $item->oldvalues)) {
-               // Update case: content field was updated
+                // Update case: content field was updated
                 $previous_value = $item->oldvalues[$content_field];
-            } else if (count($item->updates) > 0) {
-               // Update case: content field was not updated
+            } elseif (count($item->updates) > 0) {
+                // Update case: content field was not updated
                 $previous_value = $item->fields[$content_field];
             } else {
-               // Creation case
+                // Creation case
                 $previous_value = null;
             }
 
@@ -100,14 +100,14 @@ final class UserMention
             }
         }
 
-       // Keep only newly mentioned actors
+        // Keep only newly mentioned actors
         $mentionned_actors_ids = array_diff($mentionned_actors_ids, $previously_mentionned_actors_ids);
 
         if (empty($mentionned_actors_ids)) {
             return;
         }
 
-       // Retrieve main item
+        // Retrieve main item
         $main_item = $item;
         $options = [];
         if ($item instanceof CommonITILTask) {
@@ -117,15 +117,15 @@ final class UserMention
             ];
 
             $main_item = $item->getItem();
-        } else if ($item instanceof CommonITILValidation) {
+        } elseif ($item instanceof CommonITILValidation) {
             $options = [
                 'validation_id'     => $item->fields['id'],
-                'validation_status' => $item->fields['status']
+                'validation_status' => $item->fields['status'],
             ];
 
             $main_item = getItemForItemtype($item->getItilObjectItemType());
             $main_item->getFromDB($item->fields[$item::$items_id]);
-        } else if ($item instanceof ITILFollowup) {
+        } elseif ($item instanceof ITILFollowup) {
             $options = [
                 'followup_id' => $item->fields['id'],
                 'is_private'  => $item->isPrivate(),
@@ -133,12 +133,12 @@ final class UserMention
 
             $main_item = getItemForItemtype($item->fields['itemtype']);
             $main_item->getFromDB($item->fields['items_id']);
-        } else if ($item instanceof ITILSolution) {
+        } elseif ($item instanceof ITILSolution) {
             $main_item = getItemForItemtype($item->fields['itemtype']);
             $main_item->getFromDB($item->fields['items_id']);
         }
 
-       // Send a "you have been mentioned" notification
+        // Send a "you have been mentioned" notification
         foreach ($mentionned_actors_ids as $user_id) {
             $options['users_id'] = $user_id;
             NotificationEvent::raiseEvent('user_mention', $main_item, $options);
@@ -149,7 +149,7 @@ final class UserMention
                 return; // Cannot add observers
             }
 
-           // Retrieve current actors list
+            // Retrieve current actors list
             $userlink = new $main_item->userlinkclass();
             $current_actors_ids = [];
             $current_actors = $userlink->getActors($main_item->fields['id']);
@@ -159,7 +159,7 @@ final class UserMention
                 }
             }
 
-           // Add newly mentioned actors as observers
+            // Add newly mentioned actors as observers
             foreach ($mentionned_actors_ids as $user_id) {
                 if (in_array($user_id, $current_actors_ids)) {
                     continue;
@@ -202,8 +202,8 @@ final class UserMention
             // with bad HTML content.
             $content_as_xml = @simplexml_import_dom($dom);
         } catch (\Throwable $e) {
-           // Sanitize process does not handle correctly `<` and `>` chars that are not surrounding html tags.
-           // This generates invalid HTML that cannot be loaded by `SimpleXMLElement`.
+            // Sanitize process does not handle correctly `<` and `>` chars that are not surrounding html tags.
+            // This generates invalid HTML that cannot be loaded by `SimpleXMLElement`.
             return [];
         }
 
@@ -213,7 +213,7 @@ final class UserMention
 
         $mention_elements = $content_as_xml->xpath('//*[@data-user-mention="true"]');
         foreach ($mention_elements as $mention_element) {
-            $ids[] = (int)$mention_element->attributes()->{'data-user-id'};
+            $ids[] = (int) $mention_element->attributes()->{'data-user-id'};
         }
 
         return $ids;

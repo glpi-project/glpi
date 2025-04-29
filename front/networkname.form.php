@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $nn->check($_POST["id"], DELETE);
     $nn->delete($_POST);
 
@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
         Html::redirect($nn->getLinkURL());
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $nn->check($_POST['id'], PURGE);
     $nn->delete($_POST, 1);
     Event::log(
@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
         }
     }
     $nn->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $nn->check($_POST['id'], UPDATE);
     $nn->update($_POST);
     Event::log(
@@ -101,7 +101,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["unaffect"])) {
+} elseif (isset($_POST["unaffect"])) {
     $nn->check($_POST['id'], UPDATE);
     $nn->unaffectAddressByID($_POST['id']);
     Event::log(
@@ -118,7 +118,7 @@ if (isset($_POST["add"])) {
         }
     }
     $nn->redirectToList();
-} else if (isset($_POST['assign_address'])) { // From NetworkPort or NetworkEquipement
+} elseif (isset($_POST['assign_address'])) { // From NetworkPort or NetworkEquipement
     $nn->check($_POST['addressID'], UPDATE);
 
     if ((!empty($_POST['itemtype'])) && (!empty($_POST['items_id']))) {

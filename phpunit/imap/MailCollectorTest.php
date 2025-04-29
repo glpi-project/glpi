@@ -87,17 +87,17 @@ class MailCollectorTest extends DbTestCase
         return [
             [
                 'raw'       => 'This is a subject',
-                'expected'  => 'This is a subject'
+                'expected'  => 'This is a subject',
             ], [
                 'raw'       => "With a \ncarriage return",
-                'expected'  => "With a \ncarriage return"
+                'expected'  => "With a \ncarriage return",
             ], [
                 'raw'       => 'We have a problem, <strong>URGENT</strong>',
-                'expected'  => 'We have a problem, <strong>URGENT</strong>'
+                'expected'  => 'We have a problem, <strong>URGENT</strong>',
             ], [ //dunno why...
                 'raw'       => 'Subject with =20 character',
-                'expected'  => "Subject with \n character"
-            ]
+                'expected'  => "Subject with \n character",
+            ],
         ];
     }
 
@@ -133,7 +133,7 @@ class MailCollectorTest extends DbTestCase
             'mail_server' => 'test',
             'server_type' => '/imap',
             'passwd'    => 'Ph34r',
-            'is_active' => true
+            'is_active' => true,
         ];
 
         $prepared = $instance->prepareInput($oinput, 'add');
@@ -146,7 +146,7 @@ class MailCollectorTest extends DbTestCase
             'mail_server' => 'test',
             'server_type' => '/imap',
             'passwd'    => '',
-            'is_active' => true
+            'is_active' => true,
         ];
 
         $this->assertSame(
@@ -154,7 +154,7 @@ class MailCollectorTest extends DbTestCase
                 'mail_server' => 'test',
                 'server_type' => '/imap',
                 'is_active' => true,
-                'host' => '{test/imap}'
+                'host' => '{test/imap}',
             ],
             $instance->prepareInput($oinput, 'add')
         );
@@ -175,7 +175,7 @@ class MailCollectorTest extends DbTestCase
             'mail_server'     => 'mail.example.com',
             'server_type' => '/imap',
             'server_port'     => 143,
-            'server_mailbox'  => 'bugs'
+            'server_mailbox'  => 'bugs',
         ];
 
         $this->assertSame(
@@ -184,7 +184,7 @@ class MailCollectorTest extends DbTestCase
                 'server_type' => '/imap',
                 'server_port'      => 143,
                 'server_mailbox'   => 'bugs',
-                'host'             => '{mail.example.com:143/imap}bugs'
+                'host'             => '{mail.example.com:143/imap}bugs',
             ],
             $instance->prepareInput($oinput, 'add')
         );
@@ -201,7 +201,7 @@ class MailCollectorTest extends DbTestCase
                 'server_type' => '/imap',
                 'passwd' => '',
                 '_blank_passwd' => true,
-                'host' => '{mail.example.com/imap}'
+                'host' => '{mail.example.com/imap}',
             ],
             $instance->prepareInputForUpdate($oinput)
         );
@@ -209,17 +209,17 @@ class MailCollectorTest extends DbTestCase
         unset($_SESSION['glpicronuserrunning']);
         $this->assertFalse($instance->prepareInput(['mail_server' => '', 'server_type' => '/imap']));
         $this->hasSessionMessages(ERROR, [
-            'Mandatory fields are not filled. Please correct: Server'
+            'Mandatory fields are not filled. Please correct: Server',
         ]);
 
         $this->assertFalse($instance->prepareInput(['mail_server' => 'test', 'server_type' => '']));
         $this->hasSessionMessages(ERROR, [
-            'Mandatory fields are not filled. Please correct: Connection options'
+            'Mandatory fields are not filled. Please correct: Connection options',
         ]);
 
         $this->assertFalse($instance->prepareInput([]));
         $this->hasSessionMessages(ERROR, [
-            'Mandatory fields are not filled. Please correct: Server, Connection options'
+            'Mandatory fields are not filled. Please correct: Server, Connection options',
         ]);
     }
 
@@ -233,11 +233,11 @@ class MailCollectorTest extends DbTestCase
         $this->assertEquals(0, $instance->countCollectors());
 
         //Add an active collector
-        $nid = (int)$instance->add([
+        $nid = (int) $instance->add([
             'name'      => 'Maille name',
             'mail_server' => 'test',
             'server_type' => '/imap',
-            'is_active' => true
+            'is_active' => true,
         ]);
         $this->assertGreaterThan(0, $nid);
 
@@ -248,7 +248,7 @@ class MailCollectorTest extends DbTestCase
         $this->assertTrue(
             $instance->update([
                 'id'        => $instance->fields['id'],
-                'is_active' => false
+                'is_active' => false,
             ])
         );
 
@@ -642,7 +642,7 @@ class MailCollectorTest extends DbTestCase
             $collector = $this->collector;
         }
 
-        $this->mailgate_id = (int)$collector->add([
+        $this->mailgate_id = (int) $collector->add([
             'name'                  => 'testuser',
             'login'                 => 'testuser',
             'is_active'             => true,
@@ -678,19 +678,19 @@ class MailCollectorTest extends DbTestCase
         $uemail = new \UserEmail();
         $this->assertGreaterThan(
             0,
-            (int)$uemail->add([
+            (int) $uemail->add([
                 'users_id'     => $nuid,
                 'is_default'   => 1,
-                'email'        => 'normal@glpi-project.org'
+                'email'        => 'normal@glpi-project.org',
             ])
         );
         $tuid = getItemByTypeName('User', 'tech', true);
         $this->assertGreaterThan(
             0,
-            (int)$uemail->add([
+            (int) $uemail->add([
                 'users_id'     => $tuid,
                 'is_default'   => 1,
-                'email'        => 'tech@glpi-project.org'
+                'email'        => 'tech@glpi-project.org',
             ])
         );
 
@@ -700,7 +700,7 @@ class MailCollectorTest extends DbTestCase
             0,
             $doctype->add([
                 'name'   => 'Type test',
-                'ext'    => '/^1234567890(_\\\d+)?$/'
+                'ext'    => '/^1234567890(_\\\d+)?$/',
             ])
         );
 
@@ -764,7 +764,7 @@ class MailCollectorTest extends DbTestCase
                 'from'    => '', // '' as value is not nullable in DB
                 'to'      => '', // '' as value is not nullable in DB
                 'reason'  => \NotImportedEmail::FAILED_OPERATION,
-            ]
+            ],
         ];
         $iterator = $DB->request(['FROM' => \NotImportedEmail::getTable()]);
         $this->assertEquals(count($not_imported_specs), count($iterator));
@@ -792,7 +792,7 @@ class MailCollectorTest extends DbTestCase
                     'Ticket with observer',
                     'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine',
                     'A message without to header',
-                ]
+                ],
             ],
             // Mails having "normal" user as requester
             [
@@ -833,7 +833,7 @@ class MailCollectorTest extends DbTestCase
                     '41 - Image src without quotes',
                     '42 - Missing Content Type',
                     '43 - Korean encoding issue',
-                ]
+                ],
             ],
             // Mails having "normal" user as observer (add_cc_to_observer = true)
             [
@@ -841,7 +841,7 @@ class MailCollectorTest extends DbTestCase
                 'actor_type'    => \CommonITILActor::OBSERVER,
                 'tickets_names' => [
                     'Ticket with observer',
-                ]
+                ],
             ],
         ];
 
@@ -966,14 +966,14 @@ PLAINTEXT,
                     \Ticket_User::getTable() . " AS tu"  => [
                         'ON'  => [
                             't'   => 'id',
-                            'tu'  => 'tickets_id'
-                        ]
-                    ]
+                            'tu'  => 'tickets_id',
+                        ],
+                    ],
                 ],
                 'WHERE'  => [
                     'tu.users_id'  => $actor_specs['users_id'],
                     'tu.type'      => $actor_specs['actor_type'],
-                ]
+                ],
             ]);
 
             $this->assertSame(count($actor_specs['tickets_names']), count($iterator));
@@ -1027,11 +1027,11 @@ PLAINTEXT,
                                 'AND' => [
                                     'd_item.itemtype'      => 'Ticket',
                                     'd_item.date_creation' => $_SESSION["glpi_currenttime"],
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ]
         );
 
@@ -1399,7 +1399,7 @@ PLAINTEXT,
             'BlacklistedMailContent',
             [
                 'name' => __METHOD__,
-                'content' => $filter
+                'content' => $filter,
             ]
         );
 

@@ -33,6 +33,4 @@
  * ---------------------------------------------------------------------
  */
 
-class HTMLTableCellFatherSameRow extends \Exception
-{
-}
+class HTMLTableCellFatherSameRow extends \Exception {}

@@ -58,7 +58,7 @@ abstract class CommonITILCost extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-       // can exists for template
+        // can exists for template
         if (
             (get_class($item) == static::$itemtype)
             && ($item instanceof CommonDBTM)
@@ -96,7 +96,7 @@ abstract class CommonITILCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -115,7 +115,7 @@ abstract class CommonITILCost extends CommonDBChild
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -123,7 +123,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -131,7 +131,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'begin_date',
             'name'               => __('Begin date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -139,7 +139,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'end_date',
             'name'               => __('End date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -147,7 +147,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'actiontime',
             'name'               => __('Duration'),
-            'datatype'           => 'timestamp'
+            'datatype'           => 'timestamp',
         ];
 
         $tab[] = [
@@ -155,7 +155,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'cost_time',
             'name'               => __('Time cost'),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
         ];
 
         $tab[] = [
@@ -163,7 +163,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'cost_fixed',
             'name'               => __('Fixed cost'),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
         ];
 
         $tab[] = [
@@ -171,7 +171,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'cost_material',
             'name'               => __('Material cost'),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
         ];
 
         $tab[] = [
@@ -179,7 +179,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => 'glpi_budgets',
             'field'              => 'name',
             'name'               => Budget::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -188,7 +188,7 @@ abstract class CommonITILCost extends CommonDBChild
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -204,7 +204,7 @@ abstract class CommonITILCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'cost',
-            'name'               => _n('Cost', 'Costs', 1)
+            'name'               => _n('Cost', 'Costs', 1),
         ];
 
         $tab[] = [
@@ -217,7 +217,7 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'computation'        =>
             '(SUM(' . $DB->quoteName('TABLE.actiontime') . ' * ' .
@@ -239,7 +239,7 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'computation'        =>
             '(SUM(' . $DB->quoteName('TABLE.actiontime') . ' * ' .
@@ -259,8 +259,8 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -273,7 +273,7 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'computation'        =>
             '(SUM(' . $DB->quoteName('TABLE.cost_fixed') . ') / COUNT(' .
@@ -292,7 +292,7 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'computation'        =>
             '(SUM(' . $DB->quoteName('TABLE.cost_material') . ') / COUNT(' .
@@ -319,7 +319,7 @@ abstract class CommonITILCost extends CommonDBChild
             return false;
         }
 
-       // Set actiontime to
+        // Set actiontime to
         $this->fields['actiontime']
                     = max(
                         0,
@@ -363,7 +363,7 @@ abstract class CommonITILCost extends CommonDBChild
         $result = $DB->request([
             'SELECT' => ['SUM' => 'actiontime AS sumtime'],
             'FROM'   => $this->getTable(),
-            'WHERE'  => [static::$items_id => $items_id]
+            'WHERE'  => [static::$items_id => $items_id],
         ])->current();
         return $result['sumtime'];
     }
@@ -382,12 +382,12 @@ abstract class CommonITILCost extends CommonDBChild
         $result = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => [
-                static::$items_id => $items_id
+                static::$items_id => $items_id,
             ],
             'ORDER'  => [
                 'end_date DESC',
-                'id DESC'
-            ]
+                'id DESC',
+            ],
         ])->current();
         return $result;
     }
@@ -410,7 +410,7 @@ abstract class CommonITILCost extends CommonDBChild
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $options[static::$items_id] = $options['parent']->fields["id"];
             $this->check(-1, CREATE, $options);
             $this->initBasedOnPrevious();
@@ -486,7 +486,7 @@ abstract class CommonITILCost extends CommonDBChild
         echo "<tr class='tab_bg_1'><td>" . Budget::getTypeName(1) . "</td>";
         echo "<td>";
         Budget::dropdown(['value'  => $this->fields["budgets_id"],
-            'entity' => $this->fields["entities_id"]
+            'entity' => $this->fields["entities_id"],
         ]);
         echo "</td></tr>";
 
@@ -541,9 +541,9 @@ abstract class CommonITILCost extends CommonDBChild
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => [
-                static::$items_id   => $items_ids
+                static::$items_id   => $items_ids,
             ],
-            'ORDER'  => 'begin_date'
+            'ORDER'  => 'begin_date',
         ]);
 
         $rand   = mt_rand();
@@ -561,7 +561,7 @@ abstract class CommonITILCost extends CommonDBChild
             $params = ['type'             => static::getType(),
                 'parenttype'       => static::$itemtype,
                 static::$items_id  => $ID,
-                'id'               => -1
+                'id'               => -1,
             ];
             Ajax::updateItemJsCode(
                 "viewcost" . $ID . "_$rand",
@@ -614,12 +614,12 @@ abstract class CommonITILCost extends CommonDBChild
             Session::initNavigateListItems(
                 static::getType(),
                 //TRANS : %1$s is the itemtype name,
-                           //        %2$s is the name of the item (used for headings of a list)
-                                          sprintf(
-                                              __('%1$s = %2$s'),
-                                              $item->getTypeName(1),
-                                              $item->getName()
-                                          )
+                //        %2$s is the name of the item (used for headings of a list)
+                sprintf(
+                    __('%1$s = %2$s'),
+                    $item->getTypeName(1),
+                    $item->getName()
+                )
             );
 
             foreach ($iterator as $data) {
@@ -627,61 +627,61 @@ abstract class CommonITILCost extends CommonDBChild
                      ($canedit
                      ? "style='cursor:pointer' onClick=\"viewEditCost" . $data[static::$items_id] . "_" .
                         $data['id'] . "_$rand();\"" : '') . ">";
-                 $name = (empty($data['name']) ? sprintf(
-                     __('%1$s (%2$s)'),
-                     $data['name'],
-                     $data['id']
-                 )
-                                          : $data['name']);
+                $name = (empty($data['name']) ? sprintf(
+                    __('%1$s (%2$s)'),
+                    $data['name'],
+                    $data['id']
+                )
+                                         : $data['name']);
 
                 if ($forproject) {
-                     $ticket->getFromDB($data['tickets_id']);
-                     echo "<td>" . $ticket->getLink() . "</td>";
+                    $ticket->getFromDB($data['tickets_id']);
+                    echo "<td>" . $ticket->getLink() . "</td>";
                 }
-                 echo "<td>";
-                 printf(
-                     __('%1$s %2$s'),
-                     $name,
-                     Html::showToolTip($data['comment'], ['display' => false])
-                 );
+                echo "<td>";
+                printf(
+                    __('%1$s %2$s'),
+                    $name,
+                    Html::showToolTip($data['comment'], ['display' => false])
+                );
                 if ($canedit) {
-                     echo "\n<script type='text/javascript' >\n";
-                     echo "function viewEditCost" . $data[static::$items_id] . "_" . $data["id"] . "_$rand() {\n";
-                     $params = ['type'            => static::getType(),
-                         'parenttype'       => static::$itemtype,
-                         static::$items_id  => $data[static::$items_id],
-                         'id'               => $data["id"]
-                     ];
-                     Ajax::updateItemJsCode(
-                         "viewcost" . $ID . "_$rand",
-                         $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                         $params
-                     );
-                     echo "};";
-                     echo "</script>\n";
+                    echo "\n<script type='text/javascript' >\n";
+                    echo "function viewEditCost" . $data[static::$items_id] . "_" . $data["id"] . "_$rand() {\n";
+                    $params = ['type'            => static::getType(),
+                        'parenttype'       => static::$itemtype,
+                        static::$items_id  => $data[static::$items_id],
+                        'id'               => $data["id"],
+                    ];
+                    Ajax::updateItemJsCode(
+                        "viewcost" . $ID . "_$rand",
+                        $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
+                        $params
+                    );
+                    echo "};";
+                    echo "</script>\n";
                 }
-                 echo "</td>";
-                 echo "<td>" . Html::convDate($data['begin_date']) . "</td>";
-                 echo "<td>" . Html::convDate($data['end_date']) . "</td>";
-                 echo "<td>" . Dropdown::getDropdownName('glpi_budgets', $data['budgets_id']) . "</td>";
-                 echo "<td>" . CommonITILObject::getActionTime($data['actiontime']) . "</td>";
-                 $total_time += $data['actiontime'];
-                 echo "<td class='numeric'>" . Html::formatNumber($data['cost_time']) . "</td>";
-                 $total_costtime += ($data['actiontime'] * $data['cost_time'] / HOUR_TIMESTAMP);
-                 echo "<td class='numeric'>" . Html::formatNumber($data['cost_fixed']) . "</td>";
-                 $total_fixed += $data['cost_fixed'];
-                 echo "<td class='numeric'>" . Html::formatNumber($data['cost_material']) . "</td>";
-                 $total_material += $data['cost_material'];
-                 $cost            = self::computeTotalCost(
-                     $data['actiontime'],
-                     $data['cost_time'],
-                     $data['cost_fixed'],
-                     $data['cost_material']
-                 );
-                 echo "<td class='numeric'>" . Html::formatNumber($cost) . "</td>";
-                 $total += $cost;
-                 echo "</tr>";
-                 Session::addToNavigateListItems(static::getType(), $data['id']);
+                echo "</td>";
+                echo "<td>" . Html::convDate($data['begin_date']) . "</td>";
+                echo "<td>" . Html::convDate($data['end_date']) . "</td>";
+                echo "<td>" . Dropdown::getDropdownName('glpi_budgets', $data['budgets_id']) . "</td>";
+                echo "<td>" . CommonITILObject::getActionTime($data['actiontime']) . "</td>";
+                $total_time += $data['actiontime'];
+                echo "<td class='numeric'>" . Html::formatNumber($data['cost_time']) . "</td>";
+                $total_costtime += ($data['actiontime'] * $data['cost_time'] / HOUR_TIMESTAMP);
+                echo "<td class='numeric'>" . Html::formatNumber($data['cost_fixed']) . "</td>";
+                $total_fixed += $data['cost_fixed'];
+                echo "<td class='numeric'>" . Html::formatNumber($data['cost_material']) . "</td>";
+                $total_material += $data['cost_material'];
+                $cost            = self::computeTotalCost(
+                    $data['actiontime'],
+                    $data['cost_time'],
+                    $data['cost_fixed'],
+                    $data['cost_material']
+                );
+                echo "<td class='numeric'>" . Html::formatNumber($cost) . "</td>";
+                $total += $cost;
+                echo "</tr>";
+                Session::addToNavigateListItems(static::getType(), $data['id']);
             }
             $colspan = 4;
             if ($forproject) {
@@ -722,7 +722,7 @@ abstract class CommonITILCost extends CommonDBChild
                     static::$items_id      => $ID,
                 ],
                 'ORDER'     => [
-                    'begin_date'
+                    'begin_date',
                 ],
             ]
         );
@@ -731,7 +731,7 @@ abstract class CommonITILCost extends CommonDBChild
             'actiontime'   => 0,
             'costfixed'    => 0,
             'costtime'     => 0,
-            'costmaterial' => 0
+            'costmaterial' => 0,
         ];
 
         foreach ($result as $data) {

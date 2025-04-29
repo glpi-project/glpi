@@ -49,18 +49,18 @@ function update910to911()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '9.1.1'));
     $migration->setVersion('9.1.1');
 
     $backup_tables = false;
-   // table already exist but deleted during the migration
-   // not table created during the migration
-   // not table created during the migration
+    // table already exist but deleted during the migration
+    // not table created during the migration
+    // not table created during the migration
     $newtables     = [];
 
     foreach ($newtables as $new_table) {
-       // rename new tables if exists ?
+        // rename new tables if exists ?
         if ($DB->tableExists($new_table)) {
             $migration->dropTable("backup_$new_table");
             $migration->displayWarning("$new_table table already exists. " .
@@ -76,7 +76,7 @@ function update910to911()
         );
     }
 
-   // rectify missing right in 9.1 update
+    // rectify missing right in 9.1 update
     if (countElementsInTable("glpi_profilerights", ['name' => 'license']) == 0) {
         foreach ($DB->request("glpi_profilerights", ["name" => 'software']) as $profrights) {
             $DB->insertOrDie(
@@ -85,16 +85,16 @@ function update910to911()
                     'id'           => null,
                     'profiles_id'  => $profrights['profiles_id'],
                     'name'         => "license",
-                    'rights'       => $profrights['rights']
+                    'rights'       => $profrights['rights'],
                 ],
                 "9.1 add right for softwarelicense"
             );
         }
     }
 
-   //put you migration script here
+    //put you migration script here
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

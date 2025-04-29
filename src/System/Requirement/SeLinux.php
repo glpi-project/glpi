@@ -77,7 +77,7 @@ class SeLinux extends AbstractRequirement
                 // Make it human-readable, with same output as the command
                 if ($mode == 1) {
                     $mode = 'enforcing';
-                } else if ($mode == 0) {
+                } elseif ($mode == 0) {
                     $mode = 'permissive';
                 }
             }
@@ -117,7 +117,7 @@ class SeLinux extends AbstractRequirement
                 $state = $this->getSelinuxBoolean($bool);
                 if ($state == 1) {
                     $state = 'on';
-                } else if ($state == 0) {
+                } elseif ($state == 0) {
                     $state = 'off';
                 }
             } else {

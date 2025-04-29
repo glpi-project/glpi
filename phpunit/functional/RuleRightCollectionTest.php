@@ -44,23 +44,23 @@ class RuleRightCollectionTest extends DbTestCase
             [
                 [],
                 ['type' => \Auth::DB_GLPI, 'login' => 'glpi'],
-                ['TYPE' => \Auth::DB_GLPI, 'LOGIN' => 'glpi']
+                ['TYPE' => \Auth::DB_GLPI, 'LOGIN' => 'glpi'],
             ],
             [
                 [],
                 ['TYPE' => \Auth::DB_GLPI, 'loGin' => 'glpi'],
-                ['TYPE' => \Auth::DB_GLPI, 'LOGIN' => 'glpi']
+                ['TYPE' => \Auth::DB_GLPI, 'LOGIN' => 'glpi'],
             ],
             [
                 [],
                 ['type' => \Auth::MAIL, 'login' => 'glpi', 'mail_server' => 'mail.example.com'],
-                ['TYPE' => \Auth::MAIL, 'LOGIN' => 'glpi', 'MAIL_SERVER' => 'mail.example.com']
+                ['TYPE' => \Auth::MAIL, 'LOGIN' => 'glpi', 'MAIL_SERVER' => 'mail.example.com'],
             ],
             [
                 [],
                 ['type' => \Auth::MAIL, 'login' => 'glpi', 'MAIL_server' => 'mail.example.com'],
-                ['TYPE' => \Auth::MAIL, 'LOGIN' => 'glpi', 'MAIL_SERVER' => 'mail.example.com']
-            ]
+                ['TYPE' => \Auth::MAIL, 'LOGIN' => 'glpi', 'MAIL_SERVER' => 'mail.example.com'],
+            ],
         ];
     }
 

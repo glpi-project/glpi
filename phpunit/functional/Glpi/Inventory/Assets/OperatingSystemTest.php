@@ -59,9 +59,9 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'     => 'linux',
                     'KERNEL_VERSION'  => '4.18.9-200.fc28.x86_64',
                     'NAME'            => 'Fedora',
-                    'VERSION'         => '28 (Workstation Edition)'
+                    'VERSION'         => '28 (Workstation Edition)',
                 ],
-                'expected'  => '{"arch": "x86_64", "boot_time": "2018-10-02 08:56:09", "dns_domain": "teclib.infra", "fqdn": "glpixps.teclib.infra", "full_name": "Fedora 28 (Workstation Edition)", "hostid": "a8c07701", "kernel_name": "linux", "kernel_version": "4.18.9-200.fc28.x86_64", "name": "Fedora", "version": "28 (Workstation Edition)", "timezone": {"name": "CEST", "offset": "+0200"}, "operatingsystems_id": "Fedora 28 (Workstation Edition)", "operatingsystemversions_id": "28 (Workstation Edition)", "operatingsystemarchitectures_id": "x86_64", "operatingsystemkernels_id": "linux", "operatingsystemkernelversions_id": "4.18.9-200.fc28.x86_64"}'
+                'expected'  => '{"arch": "x86_64", "boot_time": "2018-10-02 08:56:09", "dns_domain": "teclib.infra", "fqdn": "glpixps.teclib.infra", "full_name": "Fedora 28 (Workstation Edition)", "hostid": "a8c07701", "kernel_name": "linux", "kernel_version": "4.18.9-200.fc28.x86_64", "name": "Fedora", "version": "28 (Workstation Edition)", "timezone": {"name": "CEST", "offset": "+0200"}, "operatingsystems_id": "Fedora 28 (Workstation Edition)", "operatingsystemversions_id": "28 (Workstation Edition)", "operatingsystemarchitectures_id": "x86_64", "operatingsystemkernels_id": "linux", "operatingsystemkernelversions_id": "4.18.9-200.fc28.x86_64"}',
             ], [
                 'nodes'  => [
                     'ARCH'           => '64-bit',
@@ -70,7 +70,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_VERSION' => '6.1.7600',
                     'NAME'           => 'Windows',
                     'SERVICE_PACK'   => '',
-                    'INSTALL_DATE'   => '2022-01-01 10:35:07'
+                    'INSTALL_DATE'   => '2022-01-01 10:35:07',
                 ],
                 'expected'  => [
                     'operatingsystemarchitectures_id'   => '64-bit',
@@ -78,8 +78,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'operatingsystemkernelversions_id'  => '6.1.7600',
                     'operatingsystems_id'               => 'Microsoft Windows 7 Enterprise',
                     'install_date'                      => '2022-01-01',
-                ]
-            ]
+                ],
+            ],
         ] + self::commonProvider();
     }
 
@@ -96,8 +96,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array)$json->content->operatingsystem);
-        $asset->setExtraData((array)$json->content);
+        $asset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array) $json->content->operatingsystem);
+        $asset->setExtraData((array) $json->content);
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $asset->checkConf($conf)
@@ -126,200 +126,200 @@ class OperatingSystemTest extends AbstractInventoryAsset
                 "full_name" => "Fedora 28 (Workstation Edition)",
                 "name" => "Fedora",
                 "version" => "28",
-                "edition" => "Workstation Edition"
+                "edition" => "Workstation Edition",
             ],
             "fedora_02" => [
                 "full_name" => "Fedora release 25 (Twenty Five)",
                 "name" => "Fedora",
                 "version" => "25",
-                "edition" => "Twenty Five"
+                "edition" => "Twenty Five",
             ],
             "ubuntu_01" => [
                 "full_name" => "Ubuntu 16.04.5 LTS",
                 "name" => "Ubuntu",
                 "version" => "16.04.5",
-                "edition" => "LTS"
+                "edition" => "LTS",
             ],
             "ubuntu_02" => [
                 "full_name" => "Ubuntu 16.10",
                 "name" => "Ubuntu",
                 "version" => "16.10",
-                "edition" => ""
+                "edition" => "",
             ],
             "ubuntu_03" => [
                 "full_name" => "Ubuntu 16.10 LTS",
                 "name" => "Ubuntu",
                 "version" => "16.10",
-                "edition" => "LTS"
+                "edition" => "LTS",
             ],
             "redhat_01" => [
                 "full_name" => "Red Hat Enterprise Linux Server release 7.9 (Maipo)",
                 "name" => "Red Hat",
                 "version" => "7.9",
-                "edition" => "Maipo"
+                "edition" => "Maipo",
             ],
             "redhat_02" => [
                 "full_name" => "Red Hat Enterprise Linux 8.4 (Ootpa)",
                 "name" => "Red Hat",
                 "version" => "8.4",
-                "edition" => "Ootpa"
+                "edition" => "Ootpa",
             ],
             "redhat_03" => [
                 "full_name" => "Red Hat Enterprise Linux Server",
                 "name" => "Red Hat",
                 "version" => "",
-                "edition" => ""
+                "edition" => "",
             ],
             "oracle_01" => [
                 "full_name" => "Oracle Linux Server release 7.3",
                 "name" => "Oracle",
                 "version" => "7.3",
-                "edition" => ""
+                "edition" => "",
             ],
             "oracle_01" => [
                 "full_name" => "Oracle Linux Server release 7.3",
                 "name" => "Oracle",
                 "version" => "7.3",
-                "edition" => ""
+                "edition" => "",
             ],
             "debian_01" => [
                 "full_name" => "Debian GNU/Linux 9.4 (stretch)",
                 "name" => "Debian",
                 "version" => "9.4",
-                "edition" => "stretch"
+                "edition" => "stretch",
             ],
             "debian_02" => [
                 "full_name" => "Debian GNU/Linux 8.5",
                 "name" => "Debian",
                 "version" => "8.5",
-                "edition" => ""
+                "edition" => "",
             ],
             "debian_03" => [
                 "full_name" => "Debian GNU/Linux 7.11 (wheezy)",
                 "name" => "Debian",
                 "version" => "7.11",
-                "edition" => "wheezy"
+                "edition" => "wheezy",
             ],
             "centos_01" => [
                 "full_name" => "CentOS release 6.6 (Final)",
                 "name" => "CentOS",
                 "version" => "6.6",
-                "edition" => "Final"
+                "edition" => "Final",
             ],
             "centos_02" => [
                 "full_name" => "CentOS release 6.10 (Final)",
                 "name" => "CentOS",
                 "version" => "6.10",
-                "edition" => "Final"
+                "edition" => "Final",
             ],
             "centos_03" => [
                 "full_name" => "CentOS Linux release 7.7.1908 (Core)",
                 "name" => "CentOS",
                 "version" => "7.7.1908",
-                "edition" => "Core"
+                "edition" => "Core",
             ],
             "centos_04" => [
                 "full_name" => "CentOS Linux 8",
                 "name" => "CentOS",
                 "version" => "8",
-                "edition" => ""
+                "edition" => "",
             ],
             "centos_05" => [
                 "full_name" => "CentOS Linux 8 (Core)",
                 "name" => "CentOS",
                 "version" => "8",
-                "edition" => "Core"
+                "edition" => "Core",
             ],
             "alma_01" => [
                 "full_name" => "AlmaLinux 9.0 (Emerald Puma)",
                 "name" => "AlmaLinux",
                 "version" => "9.0",
-                "edition" => "Emerald Puma"
+                "edition" => "Emerald Puma",
             ],
             "alma_02" => [
                 "full_name" => "AlmaLinux 8.5 (Arctic Sphynx)",
                 "name" => "AlmaLinux",
                 "version" => "8.5",
-                "edition" => "Arctic Sphynx"
+                "edition" => "Arctic Sphynx",
             ],
             "amzn_01" => [
                 "full_name" => "Amazon Linux 2",
                 "name" => "Amazon Linux",
                 "version" => "2",
-                "edition" => ""
+                "edition" => "",
             ],
             "amzn_02" => [
                 "full_name" => "Amazon Linux 2023",
                 "name" => "Amazon Linux",
                 "version" => "2023",
-                "edition" => ""
+                "edition" => "",
             ],
             "windows_01" => [
                 "full_name" => "Microsoft Windows XP Professionnel",
                 "name" => "Windows",
                 "version" => "XP",
-                "edition" => "Professionnel"
+                "edition" => "Professionnel",
             ],
             "windows_02" => [
                 "full_name" => "Microsoft® Windows Vista™ Professionnel",
                 "name" => "Windows",
                 "version" => "Vista",
-                "edition" => "Professionnel"
+                "edition" => "Professionnel",
             ],
             "windows_03" => [
                 "full_name" => "Microsoft Windows 2000 Professionnel",
                 "name" => "Windows",
                 "version" => "2000",
-                "edition" => "Professionnel"
+                "edition" => "Professionnel",
             ],
             "windows_04" => [
                 "full_name" => "Microsoft Windows 11 Professionnel",
                 "name" => "Windows",
                 "version" => "11",
-                "edition" => "Professionnel"
+                "edition" => "Professionnel",
             ],
             "windows_05" => [
                 "full_name" => "Microsoft Windows 10 Entreprise",
                 "name" => "Windows",
                 "version" => "10",
-                "edition" => "Entreprise"
+                "edition" => "Entreprise",
             ],
             "windows_server_01" => [
                 "full_name" => "Microsoft Windows Server 2012 R2 Datacenter",
                 "name" => "Windows Server",
                 "version" => "2012 R2",
-                "edition" => "Datacenter"
+                "edition" => "Datacenter",
             ],
             "windows_server_02" => [
                 "full_name" => "Microsoft(R) Windows(R) Server 2003, Standard Edition x64",
                 "name" => "Windows Server",
                 "version" => "2003",
-                "edition" => "Standard"
+                "edition" => "Standard",
             ],
             "windows_server_03" => [
                 "full_name" => "Microsoft Windows Server 2016 Standard",
                 "name" => "Windows Server",
                 "version" => "2016",
-                "edition" => "Standard"
+                "edition" => "Standard",
             ],
             "windows_server_04" => [
                 "full_name" => "Microsoft Hyper-V Server 2012 R2",
                 "name" => "Hyper-V Server",
                 "version" => "2012 R2",
-                "edition" => ""
+                "edition" => "",
             ],
             "windows_server_05" => [
                 "full_name" => "Microsoft(R) Windows(R) Server 2003, Standard Edition",
                 "name" => "Windows Server",
                 "version" => "2003",
-                "edition" => "Standard"
+                "edition" => "Standard",
             ],
             "windows_server_06" => [
                 "full_name" => "Microsoft® Windows Server® 2008 Standard",
                 "name" => "Windows Server",
                 "version" => "2008",
-                "edition" => "Standard"
-            ]
+                "edition" => "Standard",
+            ],
         ];
 
         $data = [];
@@ -358,7 +358,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     "operatingsystemkernels_id": "linux",
                     "operatingsystemkernelversions_id": "4.18.9-200.fc28.x86_64",
                     "operatingsystemeditions_id": "' . $value['edition'] . '"
-                    }'
+                    }',
             ];
         }
         return $data  + self::commonProvider();
@@ -382,7 +382,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                         RuleDictionnaryOperatingSystem::class,
                         RuleDictionnaryOperatingSystemEdition::class,
                         RuleDictionnaryOperatingSystemVersion::class,
-                    ]
+                    ],
             ]
         );
 
@@ -394,8 +394,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array)$json->content->operatingsystem);
-        $asset->setExtraData((array)$json->content);
+        $asset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array) $json->content->operatingsystem);
+        $asset->setExtraData((array) $json->content);
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $asset->checkConf($conf)
@@ -471,7 +471,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'kernversion' => '6.1.7600',
                     'os'          => 'Windows',
                     'osversion'   => '7',
-                    'edition'     => 'Enterprise'
+                    'edition'     => 'Enterprise',
                 ],
                 [
                     'arch'        => '64-bit',
@@ -479,8 +479,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'kernversion' => '6.1.7600',
                     'os'          => 'Microsoft Windows 7 Enterprise',
                     'osversion'   => '',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -489,7 +489,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_VERSION' => '3.12.43-52.6-default',
                     'NAME'           => 'SuSE',
                     'SERVICE_PACK'   => '0',
-                    'VERSION'        => '12'
+                    'VERSION'        => '12',
                 ],
                 [
                     'arch'        => 'x86_64',
@@ -498,7 +498,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'SuSE',
                     'osversion'   => '12',
                     'servicepack' => '',
-                    'edition'     => 'Enterprise Server'
+                    'edition'     => 'Enterprise Server',
                 ],
                 [
                     'arch'        => '',
@@ -507,8 +507,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'SUSE Linux Enterprise Server 12 (x86_64)',
                     'osversion'   => '12',
                     'servicepack' => '',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -516,7 +516,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'linux',
                     'KERNEL_VERSION' => '3.2.0-4-amd64',
                     'NAME'           => 'Debian',
-                    'VERSION'        => '7.8'
+                    'VERSION'        => '7.8',
                 ],
                 [
                     'arch'        => '',
@@ -525,7 +525,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Debian',
                     'osversion'   => '7.8',
                     'servicepack' => '',
-                    'edition'     => ''
+                    'edition'     => '',
                 ],
                 [
                     'arch'        => '',
@@ -534,8 +534,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Debian GNU/Linux 7.8 (wheezy)',
                     'osversion'   => '7.8',
                     'servicepack' => '',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -544,7 +544,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'linux',
                     'KERNEL_VERSION' => '3.16.0-4-amd64',
                     'NAME'           => 'Debian',
-                    'VERSION'        => '8.4'
+                    'VERSION'        => '8.4',
                 ],
                 [
                     'arch'        => 'x86_64',
@@ -553,7 +553,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Debian',
                     'osversion'   => '8.4',
                     'servicepack' => '',
-                    'edition'     => ''
+                    'edition'     => '',
                 ],
                 [
                     'arch'        => 'x86_64',
@@ -562,8 +562,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Debian GNU/Linux 8.4 (jessie)',
                     'osversion'   => '8.4',
                     'servicepack' => '',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -571,7 +571,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'MSWin32',
                     'KERNEL_VERSION' => '6.3.9600',
                     'NAME'           => 'Windows',
-                    'SERVICE_PACK'   => ''
+                    'SERVICE_PACK'   => '',
                 ],
                 [
                     'arch'        => '',
@@ -580,7 +580,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Windows',
                     'osversion'   => '2012 R2',
                     'servicepack' => '',
-                    'edition'     => 'Server Datacenter'
+                    'edition'     => 'Server Datacenter',
                 ],
                 [
                     'arch'        => '',
@@ -589,8 +589,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Microsoft Windows Server 2012 R2 Datacenter',
                     'osversion'   => '',
                     'servicepack' => '',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -599,7 +599,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'MSWin32',
                     'KERNEL_VERSION' => '6.1.7601',
                     'NAME'           => 'Windows',
-                    'SERVICE_PACK'   => 'Service Pack 1'
+                    'SERVICE_PACK'   => 'Service Pack 1',
                 ],
                 [
                     'arch'        => '64-bit',
@@ -608,7 +608,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Windows',
                     'osversion'   => '2008 R2',
                     'servicepack' => 'Service Pack 1',
-                    'edition'     => 'Server Datacenter'
+                    'edition'     => 'Server Datacenter',
                 ],
                 [
                     'arch'        => '64-bit',
@@ -617,8 +617,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Microsoft Windows Server 2008 R2 Datacenter',
                     'osversion'   => '',
                     'servicepack' => 'Service Pack 1',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -626,7 +626,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'MSWin32',
                     'KERNEL_VERSION' => '6.0.6001',
                     'NAME'           => 'Windows',
-                    'SERVICE_PACK'   => 'Service Pack 1'
+                    'SERVICE_PACK'   => 'Service Pack 1',
                 ],
                 [
                     'arch'        => '',
@@ -635,7 +635,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Windows',
                     'osversion'   => 'Vista',
                     'servicepack' => 'Service Pack 1',
-                    'edition'     => 'Professionnel'
+                    'edition'     => 'Professionnel',
                 ],
                 [
                     'arch'        => '',
@@ -644,8 +644,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Microsoft® Windows Vista™ Professionnel',
                     'osversion'   => '',
                     'servicepack' => 'Service Pack 1',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -653,7 +653,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'MSWin32',
                     'KERNEL_VERSION' => '5.2.3790',
                     'NAME'           => 'Windows',
-                    'SERVICE_PACK'   => 'Service Pack 2'
+                    'SERVICE_PACK'   => 'Service Pack 2',
                 ],
                 [
                     'arch'        => '',
@@ -662,7 +662,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Windows',
                     'osversion'   => '2003',
                     'servicepack' => 'Service Pack 2',
-                    'edition'     => 'Server Standard Edition x64'
+                    'edition'     => 'Server Standard Edition x64',
                 ],
                 [
                     'arch'        => '',
@@ -671,8 +671,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Microsoft(R) Windows(R) Server 2003, Standard Edition x64',
                     'osversion'   => '',
                     'servicepack' => 'Service Pack 2',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -680,7 +680,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'MSWin32',
                     'KERNEL_VERSION' => '5.1.2600',
                     'NAME'           => 'Windows',
-                    'SERVICE_PACK'   => 'Service Pack 3'
+                    'SERVICE_PACK'   => 'Service Pack 3',
                 ],
                 [
                     'arch'        => '',
@@ -689,7 +689,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Windows',
                     'osversion'   => 'XP',
                     'servicepack' => 'Service Pack 3',
-                    'edition'     => 'Édition familiale'
+                    'edition'     => 'Édition familiale',
                 ],
                 [
                     'arch'        => '',
@@ -698,8 +698,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Microsoft Windows XP Édition familiale',
                     'osversion'   => '',
                     'servicepack' => 'Service Pack 3',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -707,7 +707,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'MSWin32',
                     'KERNEL_VERSION' => '5.0.2195',
                     'NAME'           => 'Windows',
-                    'SERVICE_PACK'   => 'Service Pack 4'
+                    'SERVICE_PACK'   => 'Service Pack 4',
                 ],
                 [
                     'arch'        => '',
@@ -716,7 +716,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Windows',
                     'osversion'   => '2000',
                     'servicepack' => 'Service Pack 4',
-                    'edition'     => 'Professionnel'
+                    'edition'     => 'Professionnel',
                 ],
                 [
                     'arch'        => '',
@@ -725,8 +725,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Microsoft Windows 2000 Professionnel',
                     'osversion'   => '',
                     'servicepack' => 'Service Pack 4',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -734,7 +734,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'MSWin32',
                     'KERNEL_VERSION' => '6.3.9600',
                     'NAME'           => 'Windows',
-                    'SERVICE_PACK'   => ''
+                    'SERVICE_PACK'   => '',
                 ],
                 [
                     'arch'        => '',
@@ -743,7 +743,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Windows',
                     'osversion'   => '2012 R2',
                     'servicepack' => '',
-                    'edition'     => 'Hyper-V Server'
+                    'edition'     => 'Hyper-V Server',
                 ],
                 [
                     'arch'        => '',
@@ -752,8 +752,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Microsoft Hyper-V Server 2012 R2',
                     'osversion'   => '',
                     'servicepack' => '',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
 
             ],
             [
@@ -763,7 +763,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'linux',
                     'KERNEL_VERSION' => '4.4.6-301.fc23.x86_64',
                     'NAME'           => 'Fedora',
-                    'VERSION'        => '23'
+                    'VERSION'        => '23',
                 ],
                 [
                     'arch'        => 'x86_64',
@@ -772,7 +772,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Fedora',
                     'osversion'   => '23',
                     'servicepack' => '',
-                    'edition'     => ''
+                    'edition'     => '',
                 ],
                 [
                     'arch'        => 'x86_64',
@@ -781,8 +781,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Fedora release 23 (Twenty Three)',
                     'osversion'   => '23',
                     'servicepack' => '',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -790,7 +790,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'linux',
                     'KERNEL_VERSION' => '3.8.13-hp',
                     'NAME'           => 'ThinPro',
-                    'VERSION'        => '5.2.0'
+                    'VERSION'        => '5.2.0',
                 ],
                 [
                     'arch'        => '',
@@ -799,7 +799,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'ThinPro',
                     'osversion'   => '5.2.0',
                     'servicepack' => '',
-                    'edition'     => ''
+                    'edition'     => '',
                 ],
                 [
                     'arch'        => '',
@@ -808,8 +808,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'ThinPro 5.2.0',
                     'osversion'   => '5.2.0',
                     'servicepack' => '',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -818,7 +818,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'MSWin32',
                     'KERNEL_VERSION' => '10.0.10586',
                     'NAME'           => 'Windows',
-                    'SERVICE_PACK'   => ''
+                    'SERVICE_PACK'   => '',
                 ],
                 [
                     'arch'        => '64-bit',
@@ -827,7 +827,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Windows',
                     'osversion'   => '10',
                     'servicepack' => '',
-                    'edition'     => 'Professionnel'
+                    'edition'     => 'Professionnel',
                 ],
                 [
                     'arch'        => '64-bit',
@@ -836,8 +836,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Microsoft Windows 10 Professionnel',
                     'osversion'   => '',
                     'servicepack' => '',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -851,7 +851,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Debian',
                     'osversion'   => '7.4 (wheezy)',
                     'servicepack' => '',
-                    'edition'     => ''
+                    'edition'     => '',
                 ],
                 [
                     'arch'        => '',
@@ -860,8 +860,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Debian GNU/Linux 7.4 (wheezy)',
                     'osversion'   => '3.2.0-2-amd64',
                     'servicepack' => '',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -869,7 +869,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'MSWin32',
                     'KERNEL_VERSION' => '6.3.9600',
                     'NAME'           => 'Windows',
-                    'SERVICE_PACK'   => ''
+                    'SERVICE_PACK'   => '',
                 ],
                 [
                     'arch'        => '',
@@ -878,7 +878,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Windows',
                     'osversion'   => '8.1',
                     'servicepack' => '',
-                    'edition'     => 'Профессиональная'
+                    'edition'     => 'Профессиональная',
                 ],
                 [
                     'arch'        => '',
@@ -887,8 +887,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Майкрософт Windows 8.1 Профессиональная',
                     'osversion'   => '',
                     'servicepack' => '',
-                    'edition'     => ''
-                ]
+                    'edition'     => '',
+                ],
             ],
             [
                 [
@@ -896,7 +896,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'KERNEL_NAME'    => 'MSWin32',
                     'KERNEL_VERSION' => '10.0.10586',
                     'NAME'           => 'Windows',
-                    'SERVICE_PACK'   => ''
+                    'SERVICE_PACK'   => '',
                 ],
                 [
                     'arch'        => '',
@@ -905,7 +905,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Windows',
                     'osversion'   => '10',
                     'servicepack' => '',
-                    'edition'     => 'Pro'
+                    'edition'     => 'Pro',
                 ],
                 [
                     'arch'        => '',
@@ -914,9 +914,9 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     'os'          => 'Майкрософт Windows 10 Pro',
                     'osversion'   => '',
                     'servicepack' => '',
-                    'edition'     => ''
-                ]
-            ]
+                    'edition'     => '',
+                ],
+            ],
         ];
 
         $mapping = [
@@ -925,7 +925,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
             'kernversion' => 'operatingsystemkernelversions_id',
             'os'          => 'operatingsystems_id',
             'osversion'   => 'operatingsystemversions_id',
-            'servicepack' => 'operatingsystemservicepacks_id'
+            'servicepack' => 'operatingsystemservicepacks_id',
         ];
 
         $result = [];
@@ -939,7 +939,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
 
             $result[] = [
                 'nodes'  => $row[0],
-                'expected' => $standard
+                'expected' => $standard,
             ];
         }
         return $result;
@@ -964,8 +964,8 @@ class OperatingSystemTest extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array)$json->content->operatingsystem);
-        $asset->setExtraData((array)$json->content);
+        $asset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array) $json->content->operatingsystem);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
@@ -1017,23 +1017,23 @@ class OperatingSystemTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //create manually a computer, with an operating system
+        //create manually a computer, with an operating system
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
         $os_id = $os->add([
-            'name' => 'Fedora 28 (Workstation Edition)'
+            'name' => 'Fedora 28 (Workstation Edition)',
         ]);
         $this->assertGreaterThan(0, $os_id);
 
         $cos_id = $cos->add([
             'itemtype' => 'Computer',
             'items_id' => $computers_id,
-            'operatingsystems_id' => $os_id
+            'operatingsystems_id' => $os_id,
         ]);
         $this->assertGreaterThan(0, $cos_id);
 
@@ -1042,7 +1042,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
         $list = $os->find();
         $this->assertCount(1, $list);
 
-       //check that OS is linked to computer, and is now dynamic
+        //check that OS is linked to computer, and is now dynamic
         $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(1, $list);
         $theos = current($list);
@@ -1054,7 +1054,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
         $this->assertSame("a8c07701", $theos['hostid']);
 
 
-       //Redo inventory, but with updated operating system
+        //Redo inventory, but with updated operating system
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -1091,7 +1091,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-       //We now have 2 operating systems
+        //We now have 2 operating systems
         $list = $os->find();
         $this->assertCount(2, $list);
 
@@ -1188,7 +1188,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
                     "sub_type" =>
                     [
                         RuleDictionnaryOperatingSystem::class,
-                    ]
+                    ],
                 ]
             )
         );

@@ -55,7 +55,7 @@ class Item_DeviceSensorTest extends DbTestCase
             'entities_id'        => 0,
         ];
         $id = $obj->add($in);
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan(0, (int) $id);
         $this->assertTrue($obj->getFromDB($id));
 
         // getField methods

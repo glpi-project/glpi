@@ -40,7 +40,7 @@
  **/
 class ProfileRight extends CommonDBChild
 {
-   // From CommonDBChild:
+    // From CommonDBChild:
     public static $itemtype = 'Profile';
     public static $items_id = 'profiles_id'; // Field name
     public $dohistory       = true;
@@ -65,7 +65,7 @@ class ProfileRight extends CommonDBChild
             $iterator = $DB->request([
                 'SELECT'          => 'name',
                 'DISTINCT'        => true,
-                'FROM'            => self::getTable()
+                'FROM'            => self::getTable(),
             ]);
             foreach ($iterator as $right) {
                 // By default, all rights are NULL ...
@@ -95,13 +95,13 @@ class ProfileRight extends CommonDBChild
         global $DB;
 
         if (!version_compare(Config::getCurrentDBVersion(), '0.84', '>=')) {
-           //table does not exists.
+            //table does not exists.
             return [];
         }
 
         $query = [
             'FROM'   => 'glpi_profilerights',
-            'WHERE'  => ['profiles_id' => $profiles_id]
+            'WHERE'  => ['profiles_id' => $profiles_id],
         ];
         if (count($rights) > 0) {
             $query['WHERE']['name'] = $rights;
@@ -133,7 +133,7 @@ class ProfileRight extends CommonDBChild
 
         $iterator = $DB->request([
             'SELECT'   => ['id'],
-            'FROM'     => Profile::getTable()
+            'FROM'     => Profile::getTable(),
         ]);
 
         foreach ($iterator as $profile) {
@@ -143,11 +143,11 @@ class ProfileRight extends CommonDBChild
                     self::getTable(),
                     [
                         'profiles_id'  => $profiles_id,
-                        'name'         => $name
+                        'name'         => $name,
                     ]
                 );
                 if (!$res) {
-                     $ok = false;
+                    $ok = false;
                 }
             }
         }
@@ -174,11 +174,11 @@ class ProfileRight extends CommonDBChild
             $result = $DB->delete(
                 self::getTable(),
                 [
-                    'name' => $name
+                    'name' => $name,
                 ]
             );
             if (!$result) {
-                 $ok = false;
+                $ok = false;
             }
         }
         return $ok;
@@ -206,11 +206,11 @@ class ProfileRight extends CommonDBChild
             $result = $DB->update(
                 'glpi_profilerights',
                 [
-                    'rights' => new \QueryExpression($DB->quoteName('rights') . ' | ' . (int)$value)
+                    'rights' => new \QueryExpression($DB->quoteName('rights') . ' | ' . (int) $value),
                 ],
                 [
                     'name'         => $right,
-                    'profiles_id'  => $profiles
+                    'profiles_id'  => $profiles,
                 ]
             );
             if (!$result) {
@@ -240,7 +240,7 @@ class ProfileRight extends CommonDBChild
 
         $criteria = [
             'FROM'   => self::getTable(),
-            'WHERE'  => ['name' => $initialright] + $condition
+            'WHERE'  => ['name' => $initialright] + $condition,
         ];
         $iterator = $DB->request($criteria);
 
@@ -252,15 +252,15 @@ class ProfileRight extends CommonDBChild
                 $res = $DB->update(
                     self::getTable(),
                     [
-                        'rights' => $val
+                        'rights' => $val,
                     ],
                     [
                         'profiles_id'  => $key,
-                        'name'         => $newright
+                        'name'         => $newright,
                     ]
                 );
                 if (!$res) {
-                     $ok = false;
+                    $ok = false;
                 }
             }
         }
@@ -279,8 +279,8 @@ class ProfileRight extends CommonDBChild
             'FROM'   => 'glpi_profilerights AS CURRENT',
             'WHERE'  => [
                 'CURRENT.profiles_id'   => $profiles_id,
-                'CURRENT.NAME'          => new \QueryExpression('POSSIBLE.NAME')
-            ]
+                'CURRENT.NAME'          => new \QueryExpression('POSSIBLE.NAME'),
+            ],
         ]);
 
         $expr = 'NOT EXISTS ' . $subq->getQuery();
@@ -289,8 +289,8 @@ class ProfileRight extends CommonDBChild
             'DISTINCT'        => true,
             'FROM'            => 'glpi_profilerights AS POSSIBLE',
             'WHERE'           => [
-                new \QueryExpression($expr)
-            ]
+                new \QueryExpression($expr),
+            ],
         ]);
 
         if ($iterator->count() === 0) {
@@ -326,24 +326,24 @@ class ProfileRight extends CommonDBChild
             if (isset($right)) {
                 if (
                     $me->getFromDBByCrit(['profiles_id'   => $profiles_id,
-                        'name'          => $name
+                        'name'          => $name,
                     ])
                 ) {
                     $input = ['id'          => $me->getID(),
-                        'rights'      => $right
+                        'rights'      => $right,
                     ];
                     $me->update($input);
                 } else {
                     $input = ['profiles_id' => $profiles_id,
                         'name'        => $name,
-                        'rights'      => $right
+                        'rights'      => $right,
                     ];
                     $me->add($input);
                 }
             }
         }
 
-       // Don't forget to complete the profile rights ...
+        // Don't forget to complete the profile rights ...
         self::fillProfileRights($profiles_id);
     }
 
@@ -356,7 +356,7 @@ class ProfileRight extends CommonDBChild
     public function post_updateItem($history = true)
     {
 
-       // update current profile
+        // update current profile
         if (
             isset($_SESSION['glpiactiveprofile']['id'])
             && $_SESSION['glpiactiveprofile']['id'] == $this->fields['profiles_id']
@@ -384,7 +384,7 @@ class ProfileRight extends CommonDBChild
         $rights   = '';
         $prem     = true;
         foreach ($item->getRights() as $val => $name) {
-            if (is_numeric($values['rights']) && ((int)$values['rights'] & $val)) {
+            if (is_numeric($values['rights']) && ((int) $values['rights'] & $val)) {
                 if ($prem) {
                     $prem = false;
                 } else {

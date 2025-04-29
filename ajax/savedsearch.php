@@ -42,7 +42,7 @@ Session::checkLoginUser();
 $savedsearch = new SavedSearch();
 
 if (isset($_POST["name"])) {
-   //Add a new saved search
+    //Add a new saved search
     header("Content-Type: application/json; charset=UTF-8");
     $savedsearch->check(-1, CREATE, $_POST);
     if ($savedsearch->add($_POST)) {
@@ -71,7 +71,7 @@ if (
 
     if ($_GET["mark_default"] > 0) {
         $savedsearch->markDefault($_GET["id"]);
-    } else if ($_GET["mark_default"] == 0) {
+    } elseif ($_GET["mark_default"] == 0) {
         $savedsearch->unmarkDefault($_GET["id"]);
     }
 }
@@ -104,15 +104,15 @@ if ($action == 'create') {
     if (!isset($_REQUEST['type'])) {
         $_REQUEST['type'] = -1;
     } else {
-        $_REQUEST['type']  = (int)$_REQUEST['type'];
+        $_REQUEST['type']  = (int) $_REQUEST['type'];
     }
 
     $id = 0;
     $saved_search = new SavedSearch();
 
-   // If an id was supplied in the query and that the matching saved search
-   // is private OR the current user is allowed to edit public searches, then
-   // pass the id to showForm
+    // If an id was supplied in the query and that the matching saved search
+    // is private OR the current user is allowed to edit public searches, then
+    // pass the id to showForm
     if (($requested_id = $_REQUEST['id'] ?? 0) > 0 && $saved_search->getFromDB($requested_id)) {
         $is_private = $saved_search->fields['is_private'];
         $can_update_public = Session::haveRight(SavedSearch::$rightname, UPDATE);
@@ -128,7 +128,7 @@ if ($action == 'create') {
             'type'      => $_REQUEST['type'],
             'url'       => $_REQUEST["url"],
             'itemtype'  => $_REQUEST["itemtype"],
-            'ajax'      => true
+            'ajax'      => true,
         ]
     );
     return;

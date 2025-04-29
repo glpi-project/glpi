@@ -35,7 +35,7 @@
 
 class RuleAssetCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
     public $stop_on_first_match = false;
     public static $rightname           = 'rule_asset';
     public $menu_option         = 'ruleasset';

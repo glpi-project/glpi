@@ -102,7 +102,7 @@ class APIRestTest extends APIBaseClass
             $params['headers']['Content-Type'] = "application/json";
         }
         if (isset($params['multipart'])) {
-           // Guzzle lib will automatically push the correct Content-type
+            // Guzzle lib will automatically push the correct Content-type
             unset($params['headers']['Content-Type']);
         }
         return $this->http_client->request(
@@ -123,15 +123,14 @@ class APIRestTest extends APIBaseClass
             $expected_codes = [$expected_codes];
         }
 
-        $verb         = isset($params['verb'])
-                        ? $params['verb']
-                        : 'GET';
+        $verb         = $params['verb']
+                        ?? 'GET';
 
         $resource_path  = parse_url($resource, PHP_URL_PATH);
         $resource_query = parse_url($resource, PHP_URL_QUERY);
 
         $relative_uri = (!in_array($resource_path, ['getItem', 'getItems', 'createItems',
-            'updateItems', 'deleteItems'
+            'updateItems', 'deleteItems',
         ])
                          ? $resource_path . '/'
                          : '') .
@@ -144,9 +143,8 @@ class APIRestTest extends APIBaseClass
                       (isset($params['itemtype'])
                          ? $params['itemtype'] . '/'
                          : '') .
-                      (isset($params['id'])
-                         ? $params['id']
-                         : '') .
+                      ($params['id']
+                         ?? '') .
                       (!empty($resource_query)
                          ? '?' . $resource_query
                          : '');
@@ -161,13 +159,13 @@ class APIRestTest extends APIBaseClass
             $params['verb'],
             $params['server_errors']
         );
-       // launch query
+        // launch query
         try {
             $res = $this->doHttpRequest($verb, $relative_uri, $params);
         } catch (\GuzzleHttp\Exception\ClientException $e) {
             $response = $e->getResponse();
             if (!in_array($response->getStatusCode(), $expected_codes)) {
-               //throw exceptions not expected
+                //throw exceptions not expected
                 throw $e;
             }
             $this->assertContains($response->getStatusCode(), $expected_codes);
@@ -209,8 +207,8 @@ class APIRestTest extends APIBaseClass
             ['headers' => [
                 'Origin' => "http://localhost",
                 'Access-Control-Request-Method'  => 'GET',
-                'Access-Control-Request-Headers' => 'X-Requested-With'
-            ]
+                'Access-Control-Request-Headers' => 'X-Requested-With',
+            ],
             ]
         );
 
@@ -295,8 +293,8 @@ class APIRestTest extends APIBaseClass
             'initSession?get_full_session=true',
             [
                 'headers' => [
-                    'Authorization' => "user_token $token"
-                ]
+                    'Authorization' => "user_token $token",
+                ],
             ]
         );
 
@@ -324,8 +322,8 @@ class APIRestTest extends APIBaseClass
                 'parent_id'       => 0,
                 'parent_itemtype' => 'Entity',
                 'headers'         => [
-                    'Session-Token' => $this->session_token
-                ]
+                    'Session-Token' => $this->session_token,
+                ],
             ],
             400,
             'ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM'
@@ -346,13 +344,13 @@ class APIRestTest extends APIBaseClass
                 'id'       => $computers_id,
                 'verb'     => 'PUT',
                 'headers'  => [
-                    'Session-Token' => $this->session_token
+                    'Session-Token' => $this->session_token,
                 ],
                 'json'     => [
                     'input' => [
-                        'serial' => "abcdefg"
-                    ]
-                ]
+                        'serial' => "abcdefg",
+                    ],
+                ],
             ]
         );
 
@@ -364,10 +362,10 @@ class APIRestTest extends APIBaseClass
         $this->assertIsArray($computer);
         $this->assertArrayHasKey($computers_id, $computer);
         $this->assertArrayHasKey('message', $computer);
-        $this->assertTrue((bool)$computer[$computers_id]);
+        $this->assertTrue((bool) $computer[$computers_id]);
 
         $computer = new \Computer();
-        $this->assertTrue((bool)$computer->getFromDB($computers_id));
+        $this->assertTrue((bool) $computer->getFromDB($computers_id));
         $this->assertSame('abcdefg', $computer->fields['serial']);
     }
 
@@ -377,7 +375,7 @@ class APIRestTest extends APIBaseClass
      */
     public function testUploadDocument()
     {
-       // we will try to upload the README.md file
+        // we will try to upload the README.md file
         $document_name = "My document uploaded by api";
         $filename      = "README.md";
         $filecontent   = file_get_contents($filename);
@@ -387,26 +385,26 @@ class APIRestTest extends APIBaseClass
             ['verb'      => 'POST',
                 'itemtype'  => 'Document',
                 'headers'   => [
-                    'Session-Token' => $this->session_token
+                    'Session-Token' => $this->session_token,
                 ],
                 'multipart' => [
-                              // the document part
+                    // the document part
                     [
                         'name'     => 'uploadManifest',
                         'contents' => json_encode([
                             'input' => [
                                 'name'       => $document_name,
                                 '_filename'  => [$filename],
-                            ]
-                        ])
+                            ],
+                        ]),
                     ],
-                              // the FILE part
+                    // the FILE part
                     [
                         'name'     => 'filename[]',
                         'contents' => $filecontent,
-                        'filename' => $filename
-                    ]
-                ]
+                        'filename' => $filename,
+                    ],
+                ],
             ],
             201
         );
@@ -416,10 +414,10 @@ class APIRestTest extends APIBaseClass
         $this->assertArrayHasKey('message', $data);
         $documents_id = $data['id'];
         $this->assertTrue(is_numeric($documents_id));
-        $this->assertGreaterThan(0, (int)$documents_id);
+        $this->assertGreaterThan(0, (int) $documents_id);
 
         $document        = new \Document();
-        $this->assertTrue((bool)$document->getFromDB($documents_id));
+        $this->assertTrue((bool) $document->getFromDB($documents_id));
 
         $this->assertIsArray($document->fields);
         $this->assertSame('text/plain', $document->fields['mime']);
@@ -443,7 +441,7 @@ class APIRestTest extends APIBaseClass
             ['itemtype' => 'Computer',
                 'verb'     => 'PUT',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'json'     => []
+                'json'     => [],
             ],
             400,
             'ERROR_JSON_PAYLOAD_INVALID'
@@ -462,23 +460,23 @@ class APIRestTest extends APIBaseClass
 
         $tt_id = $ticketTemplate->add([
             'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
-            'name'        => 'test'
+            'name'        => 'test',
         ]);
-        $this->assertTrue((bool)$tt_id);
+        $this->assertTrue((bool) $tt_id);
 
         $ttmf_id = $ticketTMF->add([
             'tickettemplates_id' => $tt_id,
-            'num'                => 7
+            'num'                => 7,
         ]);
-        $this->assertTrue((bool)$ttmf_id);
+        $this->assertTrue((bool) $ttmf_id);
 
         $data = $this->query(
             'getItems',
             ['query'     => [
-                'searchText' => ['tickettemplates_id' => "^" . $tt_id . "$"]
+                'searchText' => ['tickettemplates_id' => "^" . $tt_id . "$"],
             ],
                 'itemtype'   => 'TicketTemplateMandatoryField',
-                'headers'    => ['Session-Token' => $this->session_token]
+                'headers'    => ['Session-Token' => $this->session_token],
             ],
             200
         );
@@ -661,7 +659,7 @@ class APIRestTest extends APIBaseClass
         $data = $this->query("$deprecated_itemtype", [
             'headers' => $headers,
             'verb'    => "POST",
-            'json'    => ['input' => $input]
+            'json'    => ['input' => $input],
         ], 201);
 
         $this->assertGreaterThan(0, $data['id']);
@@ -682,7 +680,7 @@ class APIRestTest extends APIBaseClass
      */
     public function testDeprecatedUpdateItems(string $provider)
     {
-       // Get params from provider
+        // Get params from provider
         $deprecated_itemtype   = $provider::getDeprecatedType();
         $itemtype              = $provider::getCurrentType();
         $add_input             = $provider::getCurrentAddInput();
@@ -702,7 +700,7 @@ class APIRestTest extends APIBaseClass
             [
                 'headers' => $headers,
                 'verb'    => "PUT",
-                'json'    => ['input' => $update_input]
+                'json'    => ['input' => $update_input],
             ],
             200
         );
@@ -814,11 +812,11 @@ class APIRestTest extends APIBaseClass
 
     protected function testGetMassiveActionsProvider(): array
     {
-       // Create a computer with "is_deleted = 1" for our tests
+        // Create a computer with "is_deleted = 1" for our tests
         $computer = new Computer();
         $deleted_computers_id = $computer->add([
             'name' => 'test deleted PC',
-            'entities_id' => getItemByTypeName("Entity", '_test_root_entity', true)
+            'entities_id' => getItemByTypeName("Entity", '_test_root_entity', true),
         ]);
         $this->assertGreaterThan(0, $deleted_computers_id);
         $this->assertTrue($computer->delete(['id' => $deleted_computers_id]));
@@ -949,13 +947,13 @@ class APIRestTest extends APIBaseClass
                 'url' => 'getMassiveActionParameters/Computer',
                 'status' => 400,
                 'response' => [],
-                'error' => "ERROR_MASSIVEACTION_KEY"
+                'error' => "ERROR_MASSIVEACTION_KEY",
             ],
             [
                 'url' => 'getMassiveActionParameters/Computer/MassiveAction:doesnotexist',
                 'status' => 400,
                 'response' => [],
-                'error' => "ERROR_MASSIVEACTION_KEY"
+                'error' => "ERROR_MASSIVEACTION_KEY",
             ],
             [
                 'url' => 'getMassiveActionParameters/Computer/MassiveAction:update',
@@ -1112,7 +1110,7 @@ class APIRestTest extends APIBaseClass
                 ],
                 'status' => 400,
                 'response' => [],
-                'error' => "ERROR_MASSIVEACTION_KEY"
+                'error' => "ERROR_MASSIVEACTION_KEY",
             ],
             [
                 'url' => 'applyMassiveAction/Computer/MassiveAction:doesnotexist',
@@ -1121,7 +1119,7 @@ class APIRestTest extends APIBaseClass
                 ],
                 'status' => 400,
                 'response' => [],
-                'error' => "ERROR_MASSIVEACTION_KEY"
+                'error' => "ERROR_MASSIVEACTION_KEY",
             ],
             [
                 'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment',
@@ -1130,14 +1128,14 @@ class APIRestTest extends APIBaseClass
                 ],
                 'status' => 400,
                 'response' => [],
-                'error' => "ERROR_MASSIVEACTION_NO_IDS"
+                'error' => "ERROR_MASSIVEACTION_NO_IDS",
             ],
             [
                 'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment',
                 'payload' => [
                     'ids' => [
                         getItemByTypeName('Computer', '_test_pc01', true),
-                        getItemByTypeName('Computer', '_test_pc02', true)
+                        getItemByTypeName('Computer', '_test_pc02', true),
                     ],
                     'input' => [
                         'amendment' => "newtexttoadd",
@@ -1155,7 +1153,7 @@ class APIRestTest extends APIBaseClass
                 'before_test' => function () {
                     $computers = ['_test_pc01', '_test_pc02'];
                     foreach ($computers as $computer) {
-                       // Init "comment" field for all targets
+                        // Init "comment" field for all targets
                         $computer = getItemByTypeName('Computer', $computer);
                         $update = $computer->update([
                             'id'      => $computer->getId(),
@@ -1168,18 +1166,18 @@ class APIRestTest extends APIBaseClass
                 'after_test' => function () {
                     $computers = ['_test_pc01', '_test_pc02'];
                     foreach ($computers as $computer) {
-                       // Check that "comment" field was modified as expected
+                        // Check that "comment" field was modified as expected
                         $computer = getItemByTypeName('Computer', $computer);
                         $this->assertEquals("test comment\n\nnewtexttoadd", $computer->fields['comment']);
                     }
-                }
+                },
             ],
             [
                 'url' => 'applyMassiveAction/Computer/MassiveAction:add_note',
                 'payload' => [
                     'ids' => [
                         getItemByTypeName('Computer', '_test_pc01', true),
-                        getItemByTypeName('Computer', '_test_pc02', true)
+                        getItemByTypeName('Computer', '_test_pc02', true),
                     ],
                     'input' => [
                         'add_note' => "new note",
@@ -1203,13 +1201,13 @@ class APIRestTest extends APIBaseClass
                             'items_id' => getItemByTypeName('Computer', $computer, true),
                         ]);
 
-                       // Delete all existing note for this item
+                        // Delete all existing note for this item
                         foreach ($existing_notes as $existing_note) {
                             $deletion = $note->delete(['id' => $existing_note['id']]);
                             $this->assertTrue($deletion);
                         }
 
-                       // Check that the items have no notes remaining
+                        // Check that the items have no notes remaining
                         $this->assertCount(
                             0,
                             $note->find([
@@ -1228,15 +1226,15 @@ class APIRestTest extends APIBaseClass
                             'items_id' => getItemByTypeName('Computer', $computer, true),
                         ]);
 
-                       // Check that the items have one note
+                        // Check that the items have one note
                         $this->assertCount(1, $existing_notes);
 
                         foreach ($existing_notes as $existing_note) {
                             $this->assertEquals("new note", $existing_note['content']);
                         }
                     }
-                }
-            ]
+                },
+            ],
         ];
     }
 
@@ -1394,8 +1392,8 @@ class APIRestTest extends APIBaseClass
         $input = [
             'input' => [
                 'name' => "test_ActorUpdate_Ticket_$rand",
-                'content' => 'content'
-            ]
+                'content' => 'content',
+            ],
         ];
         $data = $this->query(
             "/Ticket",
@@ -1418,10 +1416,10 @@ class APIRestTest extends APIBaseClass
                             'itemtype' => "Group",
                             'items_id' => $groups_id,
                             'use_notification' => 1,
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->query(
             "/Ticket/$tickets_id/",
@@ -1471,11 +1469,11 @@ class APIRestTest extends APIBaseClass
                             'input' => [
                                 'serial' => 'abcdefg',
                                 'comment' => 'This computer has been updated.',
-                            ]
+                            ],
                         ],
                         '',
                         '&'
-                    )
+                    ),
                 ]
             );
         } catch (\GuzzleHttp\Exception\RequestException $e) {
@@ -1489,16 +1487,16 @@ class APIRestTest extends APIBaseClass
         $this->assertEquals(
             [
                 [
-                    (string)$computers_id => true,
+                    (string) $computers_id => true,
                     'message'             => '',
-                ]
+                ],
             ],
             json_decode($body, true)
         );
 
         // Check computer is updated
         $computer = new \Computer();
-        $this->assertTrue((bool)$computer->getFromDB($computers_id));
+        $this->assertTrue((bool) $computer->getFromDB($computers_id));
         $this->assertSame('abcdefg', $computer->fields['serial']);
         $this->assertSame('This computer has been updated.', $computer->fields['comment']);
     }
@@ -1525,10 +1523,10 @@ class APIRestTest extends APIBaseClass
                     'body' => http_build_query(
                         [
                             'input' => [
-                                'id' => $computers_id
-                            ]
+                                'id' => $computers_id,
+                            ],
                         ]
-                    )
+                    ),
                 ]
             );
         } catch (\GuzzleHttp\Exception\RequestException $e) {
@@ -1542,17 +1540,17 @@ class APIRestTest extends APIBaseClass
         $this->assertEquals(
             [
                 [
-                    (string)$computers_id => true,
+                    (string) $computers_id => true,
                     'message'             => '',
-                ]
+                ],
             ],
             json_decode($body, true)
         );
 
         // Check computer is updated
         $computer = new \Computer();
-        $this->assertTrue((bool)$computer->getFromDB($computers_id));
-        $this->assertTrue((bool)$computer->getField('is_deleted'));
+        $this->assertTrue((bool) $computer->getFromDB($computers_id));
+        $this->assertTrue((bool) $computer->getField('is_deleted'));
     }
 
     public function testSearchTextResponseCode()
@@ -1562,7 +1560,7 @@ class APIRestTest extends APIBaseClass
             [
                 'itemtype' => Computer::class,
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['searchText' => ['test' => 'test']]
+                'query'    => ['searchText' => ['test' => 'test']],
             ],
             400,
             'ERROR_FIELD_NOT_FOUND'
@@ -1574,7 +1572,7 @@ class APIRestTest extends APIBaseClass
             'getItems',
             ['itemtype' => Computer::class,
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['searchText' => ['name' => 'test']]
+                'query'    => ['searchText' => ['name' => 'test']],
             ],
             200,
         );

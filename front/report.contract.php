@@ -62,7 +62,7 @@ foreach ($CFG_GLPI["contract_types"] as $itemtype) {
     }
 }
 Dropdown::showFromArray('item_type', $values, ['value'    => 0,
-    'multiple' => true
+    'multiple' => true,
 ]);
 echo "</td> ";
 
@@ -74,7 +74,7 @@ for ($i = ($y - 10); $i < ($y + 10); $i++) {
     $values[$i] = $i;
 }
 Dropdown::showFromArray('year', $values, ['value'    => $y,
-    'multiple' => true
+    'multiple' => true,
 ]);
 
 echo "</td></tr>";

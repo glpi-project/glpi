@@ -60,10 +60,10 @@ $columns_iterator = $DB->request(
                             'information_schema.tables.table_schema' => new QueryExpression(
                                 $DB->quoteName('information_schema.columns.table_schema')
                             ),
-                        ]
+                        ],
                     ],
-                ]
-            ]
+                ],
+            ],
         ],
         'WHERE'  => [
             'information_schema.tables.table_schema' => $DB->dbdefault,

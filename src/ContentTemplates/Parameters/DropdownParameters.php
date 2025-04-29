@@ -57,7 +57,7 @@ abstract class DropdownParameters extends AbstractParameters
     protected function defineValues(CommonDBTM $item): array
     {
 
-       // Output "unsanitized" values
+        // Output "unsanitized" values
         $fields = Sanitizer::unsanitize($item->fields);
 
         return [

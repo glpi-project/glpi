@@ -164,7 +164,7 @@ final class Profile
             'sql' => [
                 'queries' => [],
             ],
-            'globals' => []
+            'globals' => [],
         ];
 
         if ($this->parent_id === null) {

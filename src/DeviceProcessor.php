@@ -80,7 +80,7 @@ class DeviceProcessor extends CommonDevice
                     'name'  => 'deviceprocessormodels_id',
                     'label' => _n('Model', 'Models', 1),
                     'type'  => 'dropdownValue',
-                ]
+                ],
             ]
         );
     }
@@ -111,7 +111,7 @@ class DeviceProcessor extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'nbcores_default',
             'name'               => __('Number of cores'),
-            'datatype'           => 'integer'
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
@@ -119,7 +119,7 @@ class DeviceProcessor extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'nbthreads_default',
             'name'               => __('Number of threads'),
-            'datatype'           => 'integer'
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
@@ -127,7 +127,7 @@ class DeviceProcessor extends CommonDevice
             'table'              => 'glpi_deviceprocessormodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -145,7 +145,7 @@ class DeviceProcessor extends CommonDevice
 
         foreach (
             ['frequence', 'frequency_default', 'nbcores_default',
-                'nbthreads_default'
+                'nbthreads_default',
             ] as $field
         ) {
             if (isset($input[$field]) && !is_numeric($input[$field])) {
@@ -216,7 +216,7 @@ class DeviceProcessor extends CommonDevice
 
         return ['designation'          => 'equal',
             'manufacturers_id'     => 'equal',
-            'frequence'            => 'delta:10'
+            'frequence'            => 'delta:10',
         ];
     }
 
@@ -239,9 +239,9 @@ class DeviceProcessor extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_deviceprocessors',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
         ];
 
         $tab[] = [

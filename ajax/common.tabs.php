@@ -79,21 +79,21 @@ if (!isset($_GET["withtemplate"])) {
 }
 
 if (isset($_GET['id']) && !empty($_GET['id'])) {
-    $_GET['id'] = (int)$_GET['id'];
+    $_GET['id'] = (int) $_GET['id'];
 }
 
 if ($item = getItemForItemtype($_UGET['_itemtype'])) {
     if ($item->get_item_to_display_tab) {
-       // No id if ruleCollection but check right
+        // No id if ruleCollection but check right
         if ($item instanceof RuleCollection) {
             if (!$item->canList()) {
                 exit();
             }
-        } else if (!isset($_GET["id"]) || $item->isNewID($_GET["id"])) {
+        } elseif (!isset($_GET["id"]) || $item->isNewID($_GET["id"])) {
             if (!$item->can(-1, CREATE, $_GET)) {
                 exit();
             }
-        } else if (!$item->can($_GET["id"], READ)) {
+        } elseif (!$item->can($_GET["id"], READ)) {
             exit();
         }
     }
@@ -117,15 +117,15 @@ if (isset($options['locked'])) {
 }
 
 \Glpi\Debug\Profiler::getInstance()->start('CommonGLPI::displayStandardTab');
-CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'], (int)$_GET["withtemplate"], $options);
+CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'], (int) $_GET["withtemplate"], $options);
 \Glpi\Debug\Profiler::getInstance()->stop('CommonGLPI::displayStandardTab');
 
 
 if (isset($_GET['full_page_tab'])) {
-   // I think that we should display this warning, because tabs are not prepare
-   // for being used full space ...
+    // I think that we should display this warning, because tabs are not prepare
+    // for being used full space ...
     if (!isset($_SESSION['glpi_warned_about_full_page_tab'])) {
-       // Debug string : not really need translation.
+        // Debug string : not really need translation.
         $msg  = 'WARNING: full page tabs are only for debug/validation purpose !\n';
         $msg .= 'Actions on this page may have undefined result.';
         echo "<script type='text/javascript' >\n";

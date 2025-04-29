@@ -67,7 +67,7 @@ if (
             echo "<td>";
             $params = [
                 'right' => isset($_POST['allusers']) ? 'all' : $_POST['right'],
-                'name' => $prefix . 'users_id' . $suffix
+                'name' => $prefix . 'users_id' . $suffix,
             ];
             User::dropdown($params);
             echo "</td>";
@@ -77,7 +77,7 @@ if (
         case 'Group':
             echo "<td>";
             $params             = ['rand' => $rand,
-                'name' => $prefix . 'groups_id' . $suffix
+                'name' => $prefix . 'groups_id' . $suffix,
             ];
             $params['toupdate'] = ['value_fieldname'
                                                   => 'value',
@@ -85,8 +85,8 @@ if (
                 'url'        => $CFG_GLPI["root_doc"] . "/ajax/subvisibility.php",
                 'moreparams' => ['items_id' => '__VALUE__',
                     'type'     => $_POST['type'],
-                    'prefix'   => $_POST['prefix']
-                ]
+                    'prefix'   => $_POST['prefix'],
+                ],
             ];
 
             Group::dropdown($params);
@@ -100,7 +100,7 @@ if (
             echo "<td>";
             Entity::dropdown(['entity' => $_SESSION['glpiactiveentities'],
                 'value'  => $_SESSION['glpiactive_entity'],
-                'name'   => $prefix . 'entities_id' . $suffix
+                'name'   => $prefix . 'entities_id' . $suffix,
             ]);
             echo "</td><td>";
             echo __('Child entities');
@@ -123,8 +123,8 @@ if (
                 'name'      => $prefix . 'profiles_id' . $suffix,
                 'condition' => [
                     'glpi_profilerights.name'     => $righttocheck,
-                    'glpi_profilerights.rights'   => ['&', $checkright]
-                ]
+                    'glpi_profilerights.rights'   => ['&', $checkright],
+                ],
             ];
             $params['toupdate'] = ['value_fieldname'
                                                   => 'value',
@@ -132,8 +132,8 @@ if (
                 'url'        => $CFG_GLPI["root_doc"] . "/ajax/subvisibility.php",
                 'moreparams' => ['items_id' => '__VALUE__',
                     'type'     => $_POST['type'],
-                    'prefix'   => $_POST['prefix']
-                ]
+                    'prefix'   => $_POST['prefix'],
+                ],
             ];
 
             Profile::dropdown($params);
@@ -148,7 +148,7 @@ if (
         echo "<td><input type='submit' name='addvisibility' value=\"" . _sx('button', 'Add') . "\"
                    class='btn btn-primary'></td>";
     } else {
-       // For table w3c
+        // For table w3c
         echo "<td>&nbsp;</td>";
     }
     echo "</tr></table>";

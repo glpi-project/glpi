@@ -40,7 +40,7 @@
  **/
 class Notification_NotificationTemplate extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1       = 'Notification';
     public static $items_id_1       = 'notifications_id';
     public static $itemtype_2       = 'NotificationTemplate';
@@ -50,12 +50,12 @@ class Notification_NotificationTemplate extends CommonDBRelation
     public $no_form_page    = false;
     protected $displaylist  = false;
 
-    const MODE_MAIL      = 'mailing';
-    const MODE_AJAX      = 'ajax';
-    const MODE_WEBSOCKET = 'websocket';
-    const MODE_SMS       = 'sms';
-    const MODE_XMPP      = 'xmpp';
-    const MODE_IRC       = 'irc';
+    public const MODE_MAIL      = 'mailing';
+    public const MODE_AJAX      = 'ajax';
+    public const MODE_WEBSOCKET = 'websocket';
+    public const MODE_SMS       = 'sms';
+    public const MODE_XMPP      = 'xmpp';
+    public const MODE_IRC       = 'irc';
 
     public static function getTypeName($nb = 0)
     {
@@ -142,7 +142,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
 
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
-            'WHERE'  => ['notifications_id' => $ID]
+            'WHERE'  => ['notifications_id' => $ID],
         ]);
 
         echo "<table class='tab_cadre_fixehov'>";
@@ -159,21 +159,21 @@ class Notification_NotificationTemplate extends CommonDBRelation
             Session::initNavigateListItems(
                 __CLASS__,
                 //TRANS : %1$s is the itemtype name,
-                           //        %2$s is the name of the item (used for headings of a list)
-                                          sprintf(
-                                              __('%1$s = %2$s'),
-                                              Notification::getTypeName(1),
-                                              $notif->getName()
-                                          )
+                //        %2$s is the name of the item (used for headings of a list)
+                sprintf(
+                    __('%1$s = %2$s'),
+                    Notification::getTypeName(1),
+                    $notif->getName()
+                )
             );
 
             $notiftpl = new self();
             foreach ($iterator as $data) {
-                 $notiftpl->getFromDB($data['id']);
-                 $tpl = new NotificationTemplate();
-                 $tpl->getFromDB($data['notificationtemplates_id']);
+                $notiftpl->getFromDB($data['id']);
+                $tpl = new NotificationTemplate();
+                $tpl->getFromDB($data['notificationtemplates_id']);
 
-                 $tpl_link = $tpl->getLink();
+                $tpl_link = $tpl->getLink();
                 if (empty($tpl_link)) {
                     $tpl_link = "<i class='fa fa-exclamation-triangle red'></i>&nbsp;
                             <a href='" . $notiftpl->getLinkUrl() . "'>" .
@@ -181,10 +181,10 @@ class Notification_NotificationTemplate extends CommonDBRelation
                           "</a>";
                 }
 
-                 echo "<tr class='tab_bg_2'>";
-                 echo "<td>" . $notiftpl->getLink() . "</td>";
-                 echo "<td>$tpl_link</td>";
-                 $mode = self::getMode($data['mode']);
+                echo "<tr class='tab_bg_2'>";
+                echo "<td>" . $notiftpl->getLink() . "</td>";
+                echo "<td>$tpl_link</td>";
+                $mode = self::getMode($data['mode']);
                 if ($mode === NOT_AVAILABLE) {
                     $mode = "{$data['mode']} ($mode)";
                 } else {
@@ -230,7 +230,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
 
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
-            'WHERE'  => ['notificationtemplates_id' => $ID]
+            'WHERE'  => ['notificationtemplates_id' => $ID],
         ]);
 
         echo "<table class='tab_cadre_fixehov'>";
@@ -256,13 +256,13 @@ class Notification_NotificationTemplate extends CommonDBRelation
             );
 
             foreach ($iterator as $data) {
-                 $notification = new Notification();
-                 $notification->getFromDB($data['notifications_id']);
+                $notification = new Notification();
+                $notification->getFromDB($data['notifications_id']);
 
-                 echo "<tr class='tab_bg_2'>";
-                 echo "<td>" . $data['id'] . "</td>";
-                 echo "<td>" . $notification->getLink() . "</td>";
-                 $mode = self::getMode($data['mode']);
+                echo "<tr class='tab_bg_2'>";
+                echo "<td>" . $data['id'] . "</td>";
+                echo "<td>" . $notification->getLink() . "</td>";
+                $mode = self::getMode($data['mode']);
                 if ($mode === NOT_AVAILABLE) {
                     $mode = "{$data['mode']} ($mode)";
                 } else {
@@ -401,7 +401,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
         self::getModes();
         $CFG_GLPI['notifications_modes'][$mode] = [
             'label'  => $label,
-            'from'   => $from
+            'from'   => $from,
         ];
     }
 
@@ -418,13 +418,13 @@ class Notification_NotificationTemplate extends CommonDBRelation
         $core_modes = [
             self::MODE_MAIL      => [
                 'label'  => _n('Email', 'Emails', 1),
-                'from'   => 'core'
+                'from'   => 'core',
             ],
             self::MODE_AJAX      => [
                 'label'  => __('Browser'),
-                'from'   => 'core'
-            ]
-         /*self::MODE_WEBSOCKET => [
+                'from'   => 'core',
+            ],
+            /*self::MODE_WEBSOCKET => [
             'label'  => __('Websocket'),
             'from'   => 'core'
          ],
@@ -437,7 +437,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
         if (!isset($CFG_GLPI['notifications_modes']) || !is_array($CFG_GLPI['notifications_modes'])) {
             $CFG_GLPI['notifications_modes'] = $core_modes;
         } else {
-           //check that core modes are part of the config
+            //check that core modes are part of the config
             foreach ($core_modes as $mode => $conf) {
                 if (!isset($CFG_GLPI['notifications_modes'][$mode])) {
                     $CFG_GLPI['notifications_modes'][$mode] = $conf;
@@ -527,7 +527,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
     {
         if ($extratype == 'event') {
             $classname = 'NotificationEvent' . ucfirst($mode);
-        } else if ($extratype == 'setting') {
+        } elseif ($extratype == 'setting') {
             $classname = 'Notification' . ucfirst($mode) . 'Setting';
         } else {
             if ($extratype != '') {

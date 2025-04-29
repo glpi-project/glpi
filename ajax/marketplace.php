@@ -52,8 +52,8 @@ if (($_GET["action"] ?? null) == "get_dl_progress") {
 }
 
 if (in_array($_POST["action"] ?? null, ['download_plugin', 'update_plugin'])) {
-   // Do not load plugin that will be updated, to be able to load its new information
-   // by redefining its plugin_version_ function after files replacement.
+    // Do not load plugin that will be updated, to be able to load its new information
+    // by redefining its plugin_version_ function after files replacement.
     $PLUGINS_EXCLUDED = [$_POST['key']];
 }
 
@@ -93,7 +93,7 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
     }
 
     echo MarketplaceView::getButtons($_POST['key']);
-} else if (($_GET["action"] ?? null) == "refresh_plugin_list") {
+} elseif (($_GET["action"] ?? null) == "refresh_plugin_list") {
     switch ($_GET['tab']) {
         default:
         case 'discover':
@@ -110,7 +110,7 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
             MarketplaceView::installed(true, true, $_GET['filter'] ?? "");
             break;
     }
-} else if (($_GET["action"] ?? null) == "getPagination") {
+} elseif (($_GET["action"] ?? null) == "getPagination") {
     echo MarketplaceView::getPaginationHtml(
         (int) $_GET['page'],
         (int) $_GET['total'],

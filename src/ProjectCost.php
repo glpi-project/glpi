@@ -37,7 +37,7 @@
 /// since version 0.85
 class ProjectCost extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'Project';
     public static $items_id = 'projects_id';
     public $dohistory       = true;
@@ -91,7 +91,7 @@ class ProjectCost extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-       // can exists for template
+        // can exists for template
         if ((get_class($item) == Project::class) && Project::canView()) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -122,7 +122,7 @@ class ProjectCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -141,7 +141,7 @@ class ProjectCost extends CommonDBChild
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -149,7 +149,7 @@ class ProjectCost extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -157,7 +157,7 @@ class ProjectCost extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'begin_date',
             'name'               => __('Begin date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -165,7 +165,7 @@ class ProjectCost extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'end_date',
             'name'               => __('End date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -173,7 +173,7 @@ class ProjectCost extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'cost',
             'name'               => _n('Cost', 'Costs', 1),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
         ];
 
         $tab[] = [
@@ -181,7 +181,7 @@ class ProjectCost extends CommonDBChild
             'table'              => 'glpi_budgets',
             'field'              => 'name',
             'name'               => Budget::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -190,7 +190,7 @@ class ProjectCost extends CommonDBChild
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -240,7 +240,7 @@ class ProjectCost extends CommonDBChild
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => ['projects_id' => $projects_id],
-            'ORDER'  => ['end_date DESC', 'id DESC']
+            'ORDER'  => ['end_date DESC', 'id DESC'],
         ]);
 
         if (count($iterator)) {
@@ -262,7 +262,7 @@ class ProjectCost extends CommonDBChild
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $options['projects_id'] = $options['parent']->getField('id');
             $this->check(-1, CREATE, $options);
             $this->initBasedOnPrevious();
@@ -339,7 +339,7 @@ class ProjectCost extends CommonDBChild
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => ['projects_id' => $ID],
-            'ORDER'  => ['begin_date']
+            'ORDER'  => ['begin_date'],
         ]);
 
         $rand   = mt_rand();
@@ -351,7 +351,7 @@ class ProjectCost extends CommonDBChild
             $params = ['type'         => __CLASS__,
                 'parenttype'   => 'Project',
                 'projects_id' => $ID,
-                'id'           => -1
+                'id'           => -1,
             ];
             Ajax::updateItemJsCode(
                 "viewcost" . $ID . "_$rand",
@@ -380,12 +380,12 @@ class ProjectCost extends CommonDBChild
             Session::initNavigateListItems(
                 __CLASS__,
                 //TRANS : %1$s is the itemtype name,
-                           //        %2$s is the name of the item (used for headings of a list)
-                                       sprintf(
-                                           __('%1$s = %2$s'),
-                                           Project::getTypeName(1),
-                                           $project->getName()
-                                       )
+                //        %2$s is the name of the item (used for headings of a list)
+                sprintf(
+                    __('%1$s = %2$s'),
+                    Project::getTypeName(1),
+                    $project->getName()
+                )
             );
 
             foreach ($iterator as $data) {
@@ -393,42 +393,42 @@ class ProjectCost extends CommonDBChild
                   ($canedit
                      ? "style='cursor:pointer' onClick=\"viewEditCost" . $data['projects_id'] . "_" .
                      $data['id'] . "_$rand();\"" : '') . ">";
-                 $name = (empty($data['name']) ? sprintf(
-                     __('%1$s (%2$s)'),
-                     $data['name'],
-                     $data['id']
-                 )
-                                          : $data['name']);
-                 echo "<td>";
-                 printf(
-                     __('%1$s %2$s'),
-                     $name,
-                     Html::showToolTip($data['comment'], ['display' => false])
-                 );
+                $name = (empty($data['name']) ? sprintf(
+                    __('%1$s (%2$s)'),
+                    $data['name'],
+                    $data['id']
+                )
+                                         : $data['name']);
+                echo "<td>";
+                printf(
+                    __('%1$s %2$s'),
+                    $name,
+                    Html::showToolTip($data['comment'], ['display' => false])
+                );
                 if ($canedit) {
-                     echo "\n<script type='text/javascript' >\n";
-                     echo "function viewEditCost" . $data['projects_id'] . "_" . $data["id"] . "_$rand() {\n";
-                     $params = ['type'         => __CLASS__,
-                         'parenttype'   => 'Project',
-                         'projects_id' => $data["projects_id"],
-                         'id'           => $data["id"]
-                     ];
-                     Ajax::updateItemJsCode(
-                         "viewcost" . $ID . "_$rand",
-                         $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                         $params
-                     );
-                     echo "};";
-                     echo "</script>\n";
+                    echo "\n<script type='text/javascript' >\n";
+                    echo "function viewEditCost" . $data['projects_id'] . "_" . $data["id"] . "_$rand() {\n";
+                    $params = ['type'         => __CLASS__,
+                        'parenttype'   => 'Project',
+                        'projects_id' => $data["projects_id"],
+                        'id'           => $data["id"],
+                    ];
+                    Ajax::updateItemJsCode(
+                        "viewcost" . $ID . "_$rand",
+                        $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
+                        $params
+                    );
+                    echo "};";
+                    echo "</script>\n";
                 }
-                 echo "</td>";
-                 echo "<td>" . Html::convDate($data['begin_date']) . "</td>";
-                 echo "<td>" . Html::convDate($data['end_date']) . "</td>";
-                 echo "<td>" . Dropdown::getDropdownName('glpi_budgets', $data['budgets_id']) . "</td>";
-                 echo "<td class='numeric'>" . Html::formatNumber($data['cost']) . "</td>";
-                 $total += $data['cost'];
-                 echo "</tr>";
-                 Session::addToNavigateListItems(__CLASS__, $data['id']);
+                echo "</td>";
+                echo "<td>" . Html::convDate($data['begin_date']) . "</td>";
+                echo "<td>" . Html::convDate($data['end_date']) . "</td>";
+                echo "<td>" . Dropdown::getDropdownName('glpi_budgets', $data['budgets_id']) . "</td>";
+                echo "<td class='numeric'>" . Html::formatNumber($data['cost']) . "</td>";
+                $total += $data['cost'];
+                echo "</tr>";
+                Session::addToNavigateListItems(__CLASS__, $data['id']);
             }
             echo "<tr class='b noHover'><td colspan='3'>&nbsp;</td>";
             echo "<td class='right'>" . __('Total cost') . '</td>';

@@ -37,7 +37,7 @@
 /// since version 0.83
 class TicketTemplateHiddenField extends ITILTemplateHiddenField
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype  = 'TicketTemplate';
     public static $items_id  = 'tickettemplates_id';
     public static $itiltype = 'Ticket';

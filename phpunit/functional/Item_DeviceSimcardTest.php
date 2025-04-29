@@ -43,7 +43,7 @@ class Item_DeviceSimcardTest extends DbTestCase
         $this->login();
         $obj = new \Item_DeviceSimcard();
 
-       // Add
+        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->assertInstanceOf('\Computer', $computer);
         $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
@@ -55,10 +55,10 @@ class Item_DeviceSimcardTest extends DbTestCase
             'entities_id'        => 0,
         ];
         $id = $obj->add($in);
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan(0, (int) $id);
         $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
+        // getField methods
         $this->assertEquals($id, $obj->getField('id'));
         foreach ($in as $k => $v) {
             $this->assertEquals($v, $obj->getField($k));
@@ -70,7 +70,7 @@ class Item_DeviceSimcardTest extends DbTestCase
         $this->login();
         $obj = new \Item_DeviceSimcard();
 
-       // Add
+        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->assertInstanceOf('\Computer', $computer);
         $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
@@ -83,7 +83,7 @@ class Item_DeviceSimcardTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $id);
 
-       // Update
+        // Update
         $id = $obj->getID();
         $in = [
             'id'                       => $id,
@@ -95,7 +95,7 @@ class Item_DeviceSimcardTest extends DbTestCase
         $this->assertTrue($obj->update($in));
         $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
+        // getField methods
         foreach ($in as $k => $v) {
             $this->assertEquals($v, $obj->getField($k));
         }
@@ -104,31 +104,31 @@ class Item_DeviceSimcardTest extends DbTestCase
     public function testDenyPinPukUpdate()
     {
         global $DB;
-       //drop update access on item_devicesimcard
+        //drop update access on item_devicesimcard
         $DB->update(
             'glpi_profilerights',
             ['rights' => 1],
             [
                 'profiles_id'  => 4,
-                'name'         => 'devicesimcard_pinpuk'
+                'name'         => 'devicesimcard_pinpuk',
             ]
         );
 
-       // Profile changed then login
+        // Profile changed then login
         $this->login();
-       //reset rights. Done here so ACLs are reset even if tests fails.
+        //reset rights. Done here so ACLs are reset even if tests fails.
         $DB->update(
             'glpi_profilerights',
             ['rights' => 3],
             [
                 'profiles_id'  => 4,
-                'name'         => 'devicesimcard_pinpuk'
+                'name'         => 'devicesimcard_pinpuk',
             ]
         );
 
         $obj = new \Item_DeviceSimcard();
 
-       // Add
+        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->assertInstanceOf('\Computer', $computer);
         $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
@@ -145,7 +145,7 @@ class Item_DeviceSimcardTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $id);
 
-       // Update
+        // Update
         $id = $obj->getID();
         $in = [
             'id'                 => $id,
@@ -157,7 +157,7 @@ class Item_DeviceSimcardTest extends DbTestCase
         $this->assertTrue($obj->update($in));
         $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
+        // getField methods
         unset($in['id']);
         foreach ($in as $k => $v) {
             $this->assertNotEquals($v, $obj->getField($k));
@@ -170,7 +170,7 @@ class Item_DeviceSimcardTest extends DbTestCase
         $this->login();
         $obj = new \Item_DeviceSimcard();
 
-       // Add
+        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->assertInstanceOf('\Computer', $computer);
         $deviceSimcard = getItemByTypeName('DeviceSimcard', '_test_simcard_1');
@@ -183,7 +183,7 @@ class Item_DeviceSimcardTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $id);
 
-       // Delete
+        // Delete
         $in = [
             'id'                       => $obj->getID(),
         ];

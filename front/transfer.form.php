@@ -60,7 +60,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"])
     );
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $transfer->check($_POST["id"], PURGE);
 
     $transfer->delete($_POST, 1);
@@ -73,7 +73,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     Html::redirect($CFG_GLPI["root_doc"] . "/front/transfer.php");
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $transfer->check($_POST["id"], UPDATE);
 
     $transfer->update($_POST);
@@ -90,5 +90,5 @@ if (isset($_POST["add"])) {
 
 $menus = ['admin', 'rule', 'transfer'];
 Transfer::displayFullPageForItem($_GET["id"], $menus, [
-    'target' => $transfer->getFormURL()
+    'target' => $transfer->getFormURL(),
 ]);

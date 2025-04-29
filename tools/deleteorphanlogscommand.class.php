@@ -60,7 +60,7 @@ class DeleteOrphanLogsCommand extends AbstractCommand
     {
 
         if (!$input->getOption('no-interaction') && !$input->getOption('dry-run')) {
-           // Ask for confirmation (unless --no-interaction)
+            // Ask for confirmation (unless --no-interaction)
             $output->writeln(__('You are about to delete orphan logs of GLPI log table (glpi_logs).'));
 
             $this->askForConfirmation(false);
@@ -107,7 +107,7 @@ class DeleteOrphanLogsCommand extends AbstractCommand
                         if ($i % 1000 == 0 || count($result) === $total) {
                             $this->db->delete('glpi_logs', ['id' => $ids]);
                             $progress_bar->advance($i);
-                         //reset
+                            //reset
                             $ids = [];
                             $i = 0;
                         }
@@ -124,7 +124,7 @@ class DeleteOrphanLogsCommand extends AbstractCommand
                 '<info>' . __('No orphans found in the glpi_logs table.') . '</info>',
                 OutputInterface::VERBOSITY_QUIET
             );
-        } else if (!$dry_run) {
+        } elseif (!$dry_run) {
             $output->writeln(
                 '<info>' . __('Deletion done.') . '</info>',
                 OutputInterface::VERBOSITY_QUIET

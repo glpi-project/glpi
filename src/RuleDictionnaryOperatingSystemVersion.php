@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
 
 class RuleDictionnaryOperatingSystemVersion extends RuleDictionnaryDropdown
 {

@@ -49,11 +49,11 @@ class Calendar_HolidayTest extends DbTestCase
 
         $default_calendar_id = getItemByTypeName('Calendar', 'Default', true);
 
-       // No default holidays
+        // No default holidays
         $holidays = $calendar_holiday->getHolidaysForCalendar($default_calendar_id);
         $this->assertEquals([], $holidays);
 
-       // Add holidays
+        // Add holidays
         $this->addHolidaysToCalendar($default_calendar_id);
 
         $holidays = $calendar_holiday->getHolidaysForCalendar($default_calendar_id);
@@ -67,7 +67,7 @@ class Calendar_HolidayTest extends DbTestCase
             $holidays
         );
 
-       // Check that calendar filtering is not buggy
+        // Check that calendar filtering is not buggy
         $calendar = new Calendar();
         $calendar_id = $calendar->add(['name' => 'Test']);
         $this->assertGreaterThan(0, $calendar_id);
@@ -164,7 +164,7 @@ class Calendar_HolidayTest extends DbTestCase
         $holiday = new Holiday();
         $calendar_holiday = new \Calendar_Holiday();
 
-        $holiday_id = (int)$holiday->add(
+        $holiday_id = (int) $holiday->add(
             [
                 'name'         => 'New Year՛s Day',
                 'entities_id'  => 0,
@@ -175,7 +175,7 @@ class Calendar_HolidayTest extends DbTestCase
             ]
         );
         $this->assertGreaterThan(0, $holiday_id);
-        $calendar_holiday_id = (int)$calendar_holiday->add(
+        $calendar_holiday_id = (int) $calendar_holiday->add(
             [
                 'holidays_id'  => $holiday_id,
                 'calendars_id' => $calendar_id,
@@ -183,7 +183,7 @@ class Calendar_HolidayTest extends DbTestCase
         );
         $this->assertGreaterThan(0, $calendar_holiday_id);
 
-        $holiday_id = (int)$holiday->add(
+        $holiday_id = (int) $holiday->add(
             [
                 'name'         => 'Spring holidays',
                 'entities_id'  => 0,
@@ -194,7 +194,7 @@ class Calendar_HolidayTest extends DbTestCase
             ]
         );
         $this->assertGreaterThan(0, $holiday_id);
-        $calendar_holiday_id = (int)$calendar_holiday->add(
+        $calendar_holiday_id = (int) $calendar_holiday->add(
             [
                 'holidays_id'  => $holiday_id,
                 'calendars_id' => $calendar_id,
@@ -202,7 +202,7 @@ class Calendar_HolidayTest extends DbTestCase
         );
         $this->assertGreaterThan(0, $calendar_holiday_id);
 
-        $holiday_id = (int)$holiday->add(
+        $holiday_id = (int) $holiday->add(
             [
                 'name'         => 'Summer holidays',
                 'entities_id'  => 0,
@@ -213,7 +213,7 @@ class Calendar_HolidayTest extends DbTestCase
             ]
         );
         $this->assertGreaterThan(0, $holiday_id);
-        $calendar_holiday_id = (int)$calendar_holiday->add(
+        $calendar_holiday_id = (int) $calendar_holiday->add(
             [
                 'holidays_id'  => $holiday_id,
                 'calendars_id' => $calendar_id,
@@ -221,7 +221,7 @@ class Calendar_HolidayTest extends DbTestCase
         );
         $this->assertGreaterThan(0, $calendar_holiday_id);
 
-        $holiday_id = (int)$holiday->add(
+        $holiday_id = (int) $holiday->add(
             [
                 'name'         => 'Winter holidays',
                 'entities_id'  => 0,
@@ -232,7 +232,7 @@ class Calendar_HolidayTest extends DbTestCase
             ]
         );
         $this->assertGreaterThan(0, $holiday_id);
-        $calendar_holiday_id = (int)$calendar_holiday->add(
+        $calendar_holiday_id = (int) $calendar_holiday->add(
             [
                 'holidays_id'  => $holiday_id,
                 'calendars_id' => $calendar_id,

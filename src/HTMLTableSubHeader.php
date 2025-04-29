@@ -38,7 +38,7 @@
  **/
 class HTMLTableSubHeader extends HTMLTableHeader
 {
-   // The headers of each column
+    // The headers of each column
     private $header;
     public $numberOfSubHeaders;
 

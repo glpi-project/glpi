@@ -73,7 +73,7 @@ class ProblemTest extends DbTestCase
         $this->assertFalse($entity->isNewID($entityId));
 
         $entity->getFromDB($entityId);
-        $this->assertEquals(\Entity::CONFIG_NEVER, (int)$entity->fields['auto_assign_mode']);
+        $this->assertEquals(\Entity::CONFIG_NEVER, (int) $entity->fields['auto_assign_mode']);
 
         // Login again to access the new entity
         $this->login('glpi', 'glpi');
@@ -229,7 +229,7 @@ class ProblemTest extends DbTestCase
         $task = new \ProblemTask();
         $this->assertGreaterThan(
             0,
-            (int)$task->add([
+            (int) $task->add([
                 'problems_id'   => $problem_id,
                 'content'      => 'A simple Task',
                 'date'         => '2015-01-01 00:00:00',
@@ -238,7 +238,7 @@ class ProblemTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$task->add([
+            (int) $task->add([
                 'problems_id'   => $problem_id,
                 'content'      => 'A simple Task',
                 'date'         => $last_task_date,
@@ -247,7 +247,7 @@ class ProblemTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$task->add([
+            (int) $task->add([
                 'problems_id'   => $problem_id,
                 'content'      => 'A simple Task',
                 'date'         => '2016-01-01 00:00:00',
@@ -257,7 +257,7 @@ class ProblemTest extends DbTestCase
         $solution = new \ITILSolution();
         $this->assertGreaterThan(
             0,
-            (int)$solution->add([
+            (int) $solution->add([
                 'itemtype'  => $problem::getType(),
                 'items_id' => $problem_id,
                 'content'    => 'solution content',
@@ -268,7 +268,7 @@ class ProblemTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$followup->add([
+            (int) $followup->add([
                 'itemtype'  => $problem::getType(),
                 'items_id'  => $problem_id,
                 'add_reopen'   => '1',
@@ -279,7 +279,7 @@ class ProblemTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$solution->add([
+            (int) $solution->add([
                 'itemtype'  => $problem::getType(),
                 'items_id' => $problem_id,
                 'content'    => 'solution content',
@@ -293,7 +293,7 @@ class ProblemTest extends DbTestCase
                 'field' => 2,
                 'searchtype' => 'contains',
                 'value' => $problem_id,
-            ]
+            ],
         ];
         $data   = \Search::getDatas($problem->getType(), ["criteria" => $criteria], [72,73,74]);
         $this->assertSame(1, $data['data']['totalcount']);

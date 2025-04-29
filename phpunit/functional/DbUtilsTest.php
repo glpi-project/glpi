@@ -60,7 +60,7 @@ class DbUtilsTest extends DbTestCase
             ['glpi_computers', 'computers_id'],
             ['glpi_users', 'users_id'],
             ['glpi_plugin_foo_bars', 'plugin_foo_bars_id'],
-            ['glpi_plugin_fooglpis', 'plugin_fooglpis_id']
+            ['glpi_plugin_fooglpis', 'plugin_fooglpis_id'],
         ];
     }
 
@@ -70,7 +70,7 @@ class DbUtilsTest extends DbTestCase
         return [
             ['glpi_computers', 'computers_id'],
             ['glpi_users', 'users_id'],
-            ['glpi_plugin_foo_bars', 'plugin_foo_bars_id']
+            ['glpi_plugin_foo_bars', 'plugin_foo_bars_id'],
         ];
     }
 
@@ -222,7 +222,7 @@ class DbUtilsTest extends DbTestCase
             $this->assertFalse($instance->getItemForItemtype($itemtype));
         }
 
-       //keep testing old method from db.function
+        //keep testing old method from db.function
         if ($is_valid) {
             $this->assertInstanceOf($expected_class, getItemForItemtype($itemtype));
         } else {
@@ -293,7 +293,7 @@ class DbUtilsTest extends DbTestCase
             ['memory', 'memories'],
             ['licence', 'licences'],
             ['pdu', 'pdus'],
-            ['metrics', 'metrics']
+            ['metrics', 'metrics'],
         ];
     }
 
@@ -787,20 +787,20 @@ class DbUtilsTest extends DbTestCase
         $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
         $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-       //Cache tests:
-       //- if $cache === 0; we do not expect anything,
-       //- if $cache === 1; we expect cache to be empty before call, and populated after
-       //- if $hit   === 1; we expect cache to be populated
+        //Cache tests:
+        //- if $cache === 0; we do not expect anything,
+        //- if $cache === 1; we expect cache to be empty before call, and populated after
+        //- if $hit   === 1; we expect cache to be populated
 
         $ckey_ent0 = 'ancestors_cache_glpi_entities_' . $ent0;
         $ckey_ent1 = 'ancestors_cache_glpi_entities_' . $ent1;
         $ckey_ent2 = 'ancestors_cache_glpi_entities_' . $ent2;
 
-       //test on ent0
+        //test on ent0
         $expected = [0 => 0];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent0));
-        } else if ($cache === true && $hit === true) {
+        } elseif ($cache === true && $hit === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent0));
         }
 
@@ -811,11 +811,11 @@ class DbUtilsTest extends DbTestCase
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent0));
         }
 
-       //test on ent1
+        //test on ent1
         $expected = [0 => 0, 1 => $ent0];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent1));
-        } else if ($cache === true && $hit === true) {
+        } elseif ($cache === true && $hit === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
         }
 
@@ -830,7 +830,7 @@ class DbUtilsTest extends DbTestCase
         $expected = [0 => 0, 1 => $ent0];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent2));
-        } else if ($cache === true && $hit === true) {
+        } elseif ($cache === true && $hit === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent2));
         }
 
@@ -849,7 +849,7 @@ class DbUtilsTest extends DbTestCase
             $entity = new \Entity();
             $new_id = $entity->add([
                 'name'         => 'Sub child entity',
-                'entities_id'  => $ent1
+                'entities_id'  => $ent1,
             ]);
             $this->assertGreaterThan(0, $new_id);
         }
@@ -873,7 +873,7 @@ class DbUtilsTest extends DbTestCase
             $entity = new \Entity();
             $new_id2 = $entity->add([
                 'name'         => 'Sub child entity 2',
-                'entities_id'  => $ent2
+                'entities_id'  => $ent2,
             ]);
             $this->assertGreaterThan(0, $new_id2);
         }
@@ -891,12 +891,12 @@ class DbUtilsTest extends DbTestCase
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_new_id2));
         }
 
-       //test on multiple entities
+        //test on multiple entities
         $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
         $ckey_new_all = 'ancestors_cache_glpi_entities_' . md5($new_id . '|' . $new_id2);
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_new_all));
-        } else if ($cache === true && $hit === true) {
+        } elseif ($cache === true && $hit === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_new_all));
         }
 
@@ -912,7 +912,7 @@ class DbUtilsTest extends DbTestCase
     {
         global $DB;
         $this->login();
-       //ensure db cache is unset
+        //ensure db cache is unset
         $DB->update('glpi_entities', ['ancestors_cache' => null], [true]);
         $this->runGetAncestorsOf();
 
@@ -921,7 +921,7 @@ class DbUtilsTest extends DbTestCase
             countElementsInTable(
                 'glpi_entities',
                 [
-                    'NOT' => ['ancestors_cache' => null]
+                    'NOT' => ['ancestors_cache' => null],
                 ]
             )
         );
@@ -979,7 +979,7 @@ class DbUtilsTest extends DbTestCase
         $expected = [$ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent0));
-        } else if ($cache === true && $hit === true) {
+        } elseif ($cache === true && $hit === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent0));
         }
 
@@ -994,7 +994,7 @@ class DbUtilsTest extends DbTestCase
         $expected = [$ent1 => $ent1];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent1));
-        } else if ($cache === true && $hit === true) {
+        } elseif ($cache === true && $hit === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent1));
         }
 
@@ -1009,7 +1009,7 @@ class DbUtilsTest extends DbTestCase
         $expected = [$ent2 => $ent2];
         if ($cache === true && $hit === false) {
             $this->assertFalse($GLPI_CACHE->has($ckey_ent2));
-        } else if ($cache === true && $hit === true) {
+        } elseif ($cache === true && $hit === true) {
             $this->assertSame($expected, $GLPI_CACHE->get($ckey_ent2));
         }
 
@@ -1026,9 +1026,9 @@ class DbUtilsTest extends DbTestCase
         $new_id = getItemByTypeName('Entity', 'Sub child entity', true);
         if (!$new_id) {
             $entity = new \Entity();
-            $new_id = (int)$entity->add([
+            $new_id = (int) $entity->add([
                 'name'         => 'Sub child entity',
-                'entities_id'  => $ent1
+                'entities_id'  => $ent1,
             ]);
             $this->assertGreaterThan(0, $new_id);
         }
@@ -1049,9 +1049,9 @@ class DbUtilsTest extends DbTestCase
         $new_id2 = getItemByTypeName('Entity', 'Sub child entity 2', true);
         if (!$new_id2) {
             $entity = new \Entity();
-            $new_id2 = (int)$entity->add([
+            $new_id2 = (int) $entity->add([
                 'name'         => 'Sub child entity 2',
-                'entities_id'  => $ent1
+                'entities_id'  => $ent1,
             ]);
             $this->assertGreaterThan(0, $new_id2);
         }
@@ -1113,11 +1113,11 @@ class DbUtilsTest extends DbTestCase
             $instance->countElementsInTable(
                 'glpi_entities',
                 [
-                    'NOT' => ['sons_cache' => null]
+                    'NOT' => ['sons_cache' => null],
                 ]
             )
         );
-       //run a second time: db cache must be set
+        //run a second time: db cache must be set
         $this->runGetSonsOf();
     }
 
@@ -1446,17 +1446,17 @@ class DbUtilsTest extends DbTestCase
     public static function autoNameProvider()
     {
         return [
-         //will return name without changes
+            //will return name without changes
             [
-            //not a template
+                //not a template
                 'name'         => 'Computer 1',
                 'field'        => 'name',
                 'is_template'  => false,
                 'itemtype'     => 'Computer',
                 'entities_id'  => -1, //default
-                'expected'     => 'Computer 1'
+                'expected'     => 'Computer 1',
             ], [
-            //not a template
+                //not a template
                 'name'         => '&lt;abc&gt;',
                 'field'        => 'name',
                 'is_template'  => false,
@@ -1465,7 +1465,7 @@ class DbUtilsTest extends DbTestCase
                 'expected'     => '&lt;abc&gt;',
                 'deprecated'   => false, // is_template=false result in exiting before deprecation warning
             ], [
-            //does not match pattern
+                //does not match pattern
                 'name'         => '&lt;abc&gt;',
                 'field'        => 'name',
                 'is_template'  => true,
@@ -1474,7 +1474,7 @@ class DbUtilsTest extends DbTestCase
                 'expected'     => '&lt;abc&gt;',
                 'deprecated'   => true,
             ], [
-            //first added
+                //first added
                 'name'         => '&lt;####&gt;',
                 'field'       => 'name',
                 'is_template'  => true,
@@ -1483,7 +1483,7 @@ class DbUtilsTest extends DbTestCase
                 'expected'     => '0001',
                 'deprecated'   => true,
             ], [
-            //existing
+                //existing
                 'name'         => '&lt;_test_pc##&gt;',
                 'field'       => 'name',
                 'is_template'  => true,
@@ -1492,7 +1492,7 @@ class DbUtilsTest extends DbTestCase
                 'expected'     => '_test_pc23',
                 'deprecated'   => true,
             ], [
-            //not existing on entity
+                //not existing on entity
                 'name'         => '&lt;_test_pc##&gt;',
                 'field'       => 'name',
                 'is_template'  => true,
@@ -1501,23 +1501,23 @@ class DbUtilsTest extends DbTestCase
                 'expected'     => '_test_pc01',
                 'deprecated'   => true,
             ], [
-            // not existing on entity, with multibyte strings
+                // not existing on entity, with multibyte strings
                 'name'         => '<自動名稱測試_##>',
                 'field'       => 'name',
                 'is_template'  => true,
                 'itemtype'     => 'Computer',
                 'entities_id'  => 0,
-                'expected'     => '自動名稱測試_01'
+                'expected'     => '自動名稱測試_01',
             ], [
-            // not existing on entity, with multibyte strings
+                // not existing on entity, with multibyte strings
                 'name'         => '<自動名稱—####—測試>',
                 'field'       => 'name',
                 'is_template'  => true,
                 'itemtype'     => 'Computer',
                 'entities_id'  => 0,
-                'expected'     => '自動名稱—0001—測試'
+                'expected'     => '自動名稱—0001—測試',
             ], [
-            //existing on entity
+                //existing on entity
                 'name'         => '&lt;_test_pc##&gt;',
                 'field'       => 'name',
                 'is_template'  => true,
@@ -1526,7 +1526,7 @@ class DbUtilsTest extends DbTestCase
                 'expected'     => '_test_pc04',
                 'deprecated'   => true,
             ], [
-            //existing on entity
+                //existing on entity
                 'name'         => '&lt;_test_pc##&gt;',
                 'field'       => 'name',
                 'is_template'  => true,
@@ -1535,7 +1535,7 @@ class DbUtilsTest extends DbTestCase
                 'expected'     => '_test_pc14',
                 'deprecated'   => true,
             ], [
-            // existing on entity, new XSS clean output
+                // existing on entity, new XSS clean output
                 'name'         => '&#60;_test_pc##&#62;',
                 'field'       => 'name',
                 'is_template'  => true,
@@ -1544,15 +1544,15 @@ class DbUtilsTest extends DbTestCase
                 'expected'     => '_test_pc14',
                 'deprecated'   => true,
             ], [
-            // existing on entity, not sanitized
+                // existing on entity, not sanitized
                 'name'         => '<_test_pc##>',
                 'field'       => 'name',
                 'is_template'  => true,
                 'itemtype'     => 'Computer',
                 'entities_id'  => 2,
-                'expected'     => '_test_pc14'
+                'expected'     => '_test_pc14',
             ], [
-            // not existing on entity, new XSS clean output, and containing a special char
+                // not existing on entity, new XSS clean output, and containing a special char
                 'name'         => '&#60;pc_&#60;_##&#62;',
                 'field'       => 'name',
                 'is_template'  => true,
@@ -1561,13 +1561,13 @@ class DbUtilsTest extends DbTestCase
                 'expected'     => 'pc_&#60;_01',
                 'deprecated'   => true,
             ], [
-            // not existing on entity, not sanitized, and containing a special char
+                // not existing on entity, not sanitized, and containing a special char
                 'name'         => '<pc_>_##>',
                 'field'       => 'name',
                 'is_template'  => true,
                 'itemtype'     => 'Computer',
                 'entities_id'  => 2,
-                'expected'     => 'pc_>_01'
+                'expected'     => 'pc_>_01',
             ],
         ];
     }

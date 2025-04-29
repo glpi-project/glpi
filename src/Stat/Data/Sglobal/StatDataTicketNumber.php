@@ -66,7 +66,7 @@ class StatDataTicketNumber extends StatDataAlwaysDisplay
             ], [
                 'name' => __('Closed'),
                 'data' => $closed,
-            ]
+            ],
         ];
     }
 

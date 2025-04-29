@@ -98,8 +98,8 @@ class Item_Cluster extends CommonDBRelation
         $items = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'clusters_id' => $ID
-            ]
+                'clusters_id' => $ID,
+            ],
         ]);
 
         Session::initNavigateListItems(
@@ -121,7 +121,7 @@ class Item_Cluster extends CommonDBRelation
                 __('Add new item to this cluster...'),
                 [
                     'cluster'   => $ID,
-                    'position'  => 1
+                    'position'  => 1,
                 ]
             );
             echo "</div>";
@@ -137,7 +137,7 @@ class Item_Cluster extends CommonDBRelation
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = [
                     'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                    'container'       => 'mass' . __CLASS__ . $rand
+                    'container'       => 'mass' . __CLASS__ . $rand,
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -210,14 +210,14 @@ class Item_Cluster extends CommonDBRelation
             [
                 'display_emptychoice'   => true,
                 'value'                 => $this->fields["itemtype"],
-                'rand'                  => $rand
+                'rand'                  => $rand,
             ]
         );
 
-       //get all used items
+        //get all used items
         $used = [];
         $iterator = $DB->request([
-            'FROM'   => $this->getTable()
+            'FROM'   => $this->getTable(),
         ]);
         foreach ($iterator as $row) {
             $used [$row['itemtype']][] = $row['items_id'];
@@ -232,7 +232,7 @@ class Item_Cluster extends CommonDBRelation
                 'name'      => 'items_id',
                 'value'     => $this->fields['items_id'],
                 'rand'      => $rand,
-                'used'      => $used
+                'used'      => $used,
             ]
         );
 
@@ -245,7 +245,7 @@ class Item_Cluster extends CommonDBRelation
             $itemtype::dropdown([
                 'name'   => "items_id",
                 'value'  => $this->fields['items_id'],
-                'rand'   => $rand
+                'rand'   => $rand,
             ]);
         } else {
             Dropdown::showFromArray(
@@ -253,7 +253,7 @@ class Item_Cluster extends CommonDBRelation
                 [],
                 [
                     'display_emptychoice'   => true,
-                    'rand'                  => $rand
+                    'rand'                  => $rand,
                 ]
             );
         }
@@ -294,7 +294,7 @@ class Item_Cluster extends CommonDBRelation
     {
         $error_detected = [];
 
-       //check for requirements
+        //check for requirements
         if (
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))

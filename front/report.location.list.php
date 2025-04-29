@@ -47,7 +47,7 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
 
     Report::title();
 
-   // Titre
+    // Titre
     $name = Dropdown::getDropdownName("glpi_locations", $_POST["locations_id"]);
     echo "<div class='center spaced'><h2>" . sprintf(__('Network report by location: %s'), $name) .
         "</h2></div>";
@@ -65,15 +65,15 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
             'glpi_sockets'  => [
                 'ON'  => [
                     'glpi_sockets'  => 'locations_id',
-                    'glpi_locations'  => 'id'
-                ]
+                    'glpi_locations'  => 'id',
+                ],
             ],
             'glpi_networkportethernets'   => [
                 'ON'  => [
                     'glpi_networkportethernets' => 'networkports_id',
-                    'glpi_sockets'              => 'networkports_id'
-                ]
-            ]
+                    'glpi_sockets'              => 'networkports_id',
+                ],
+            ],
         ], //inner join
         ['glpi_locations.completename', 'PORT_1.name'], //order
         Socket::getTypeName()

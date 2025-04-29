@@ -48,7 +48,7 @@ class ContractTest extends DbTestCase
         $contract = new \Contract();
         $input = [
             'name' => 'A test contract',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ];
         $cid = $contract->add($input);
         $this->assertGreaterThan(0, $cid);
@@ -56,7 +56,7 @@ class ContractTest extends DbTestCase
         $cost = new \ContractCost();
         $cost_id = $cost->add([
             'contracts_id' => $cid,
-            'name'         => 'Test cost'
+            'name'         => 'Test cost',
         ]);
         $this->assertGreaterThan(0, $cost_id);
 
@@ -66,7 +66,7 @@ class ContractTest extends DbTestCase
         $link_supplier = new \Contract_Supplier();
         $link_id = $link_supplier->add([
             'suppliers_id' => $suppliers_id,
-            'contracts_id' => $cid
+            'contracts_id' => $cid,
         ]);
         $this->assertGreaterThan(0, $link_id);
 
@@ -78,7 +78,7 @@ class ContractTest extends DbTestCase
         $citems_id = $citem->add([
             'contracts_id' => $cid,
             'itemtype'     => 'Computer',
-            'items_id'     => getItemByTypeName('Computer', '_test_pc01', true)
+            'items_id'     => getItemByTypeName('Computer', '_test_pc01', true),
         ]);
         $this->assertGreaterThan(0, $citems_id);
 
@@ -110,9 +110,9 @@ class ContractTest extends DbTestCase
                     'begin_date' => '2020-01-01',
                     'duration' => 6,
                     'renewal' => \Contract::RENEWAL_NEVER,
-                    'periodicity' => 0
+                    'periodicity' => 0,
                 ],
-                'expected' => "<span class='red'>2020-07-01</span>"
+                'expected' => "<span class='red'>2020-07-01</span>",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -120,9 +120,9 @@ class ContractTest extends DbTestCase
                     'begin_date' => '2020-01-01',
                     'duration' => 6,
                     'renewal' => \Contract::RENEWAL_TACIT,
-                    'periodicity' => 0
+                    'periodicity' => 0,
                 ],
-                'expected' => "2024-07-01"
+                'expected' => "2024-07-01",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -130,9 +130,9 @@ class ContractTest extends DbTestCase
                     'begin_date' => '2020-01-01',
                     'duration' => 6,
                     'renewal' => \Contract::RENEWAL_EXPRESS,
-                    'periodicity' => 0
+                    'periodicity' => 0,
                 ],
-                'expected' => "<span class='red'>2020-07-01</span>"
+                'expected' => "<span class='red'>2020-07-01</span>",
             ],
             [
                 'field' => '_virtual_expiration',
@@ -140,9 +140,9 @@ class ContractTest extends DbTestCase
                     'begin_date' => '2025-01-01',
                     'duration' => 6,
                     'renewal' => \Contract::RENEWAL_NEVER,
-                    'periodicity' => 0
+                    'periodicity' => 0,
                 ],
-                'expected' => '2025-07-01'
+                'expected' => '2025-07-01',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -150,9 +150,9 @@ class ContractTest extends DbTestCase
                     'begin_date' => '2025-01-01',
                     'duration' => 6,
                     'renewal' => \Contract::RENEWAL_TACIT,
-                    'periodicity' => 0
+                    'periodicity' => 0,
                 ],
-                'expected' => '2025-07-01'
+                'expected' => '2025-07-01',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -160,9 +160,9 @@ class ContractTest extends DbTestCase
                     'begin_date' => '2025-01-01',
                     'duration' => 6,
                     'renewal' => \Contract::RENEWAL_EXPRESS,
-                    'periodicity' => 0
+                    'periodicity' => 0,
                 ],
-                'expected' => '2025-07-01'
+                'expected' => '2025-07-01',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -170,9 +170,9 @@ class ContractTest extends DbTestCase
                     'begin_date' => '2019-01-01',
                     'duration' => 60,
                     'renewal' => \Contract::RENEWAL_TACIT,
-                    'periodicity' => 12
+                    'periodicity' => 12,
                 ],
-                'expected' => '2025-01-01'
+                'expected' => '2025-01-01',
             ],
             [
                 'field' => '_virtual_expiration',
@@ -180,9 +180,9 @@ class ContractTest extends DbTestCase
                     'begin_date' => '2025-01-01',
                     'duration' => 6,
                     'renewal' => \Contract::RENEWAL_EXPRESS,
-                    'periodicity' => 3
+                    'periodicity' => 3,
                 ],
-                'expected' => '2025-10-01'
+                'expected' => '2025-10-01',
             ],
         ];
     }

@@ -124,8 +124,8 @@ class RuleLocation extends Rule
                 'force_actions' => [
                     'assign',
                     'regex_result',
-                ]
-            ]
+                ],
+            ],
         ];
     }
 

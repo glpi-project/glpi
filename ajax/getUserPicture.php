@@ -46,7 +46,7 @@ Session::checkLoginUser();
 
 if (!isset($_REQUEST['users_id'])) {
     Response::sendError(400, "Missing users_id parameter");
-} else if (!is_array($_REQUEST['users_id'])) {
+} elseif (!is_array($_REQUEST['users_id'])) {
     $_REQUEST['users_id'] = [$_REQUEST['users_id']];
 }
 
@@ -76,15 +76,15 @@ foreach ($_REQUEST['users_id'] as $user_id) {
                 'data-bs-toggle' => 'tooltip',
                 'width'          => $_REQUEST['size'],
                 'height'         => $_REQUEST['size'],
-                'class'          => $_REQUEST['class'] ?? ''
+                'class'          => $_REQUEST['class'] ?? '',
             ]);
             if (isset($_REQUEST['link']) && $_REQUEST['link']) {
-                 $imgs[$user_id] = Html::link($img, User::getFormURLWithID($user_id));
+                $imgs[$user_id] = Html::link($img, User::getFormURLWithID($user_id));
             } else {
                 $imgs[$user_id] = $img;
             }
         } else {
-           // No picture and default image is not allowed.
+            // No picture and default image is not allowed.
             continue;
         }
     }

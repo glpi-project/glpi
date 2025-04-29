@@ -52,23 +52,23 @@ class DeviceFirmware extends CommonDevice
                 [
                     'name'  => 'devicefirmwaretypes_id',
                     'label' => _n('Type', 'Types', 1),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 [
                     'name'   => 'date',
                     'label'  => __('Release date'),
-                    'type'   => 'date'
+                    'type'   => 'date',
                 ],
                 [
                     'name'   => 'version',
                     'label'  => _n('Version', 'Versions', 1),
-                    'type'   => 'text'
+                    'type'   => 'text',
                 ],
                 [
                     'name'   => 'devicefirmwaremodels_id',
                     'label'  => _n('Model', 'Models', 1),
-                    'type'   => 'dropdownValue'
-                ]
+                    'type'   => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -83,7 +83,7 @@ class DeviceFirmware extends CommonDevice
             'table'              => $this->getTable(),
             'field'              => 'date',
             'name'               => __('Release date'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -91,7 +91,7 @@ class DeviceFirmware extends CommonDevice
             'table'              => 'glpi_devicefirmwaremodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -99,7 +99,7 @@ class DeviceFirmware extends CommonDevice
             'table'              => 'glpi_devicefirmwaretypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -129,9 +129,9 @@ class DeviceFirmware extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicefirmwares',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -146,9 +146,9 @@ class DeviceFirmware extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicefirmwares',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -164,11 +164,11 @@ class DeviceFirmware extends CommonDevice
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
-                            'joinparams' => ['jointype' => 'itemtype_item']
-                        ]
-                    ]
-                ]
-            ]
+                            'joinparams' => ['jointype' => 'itemtype_item'],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -184,11 +184,11 @@ class DeviceFirmware extends CommonDevice
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
-                            'joinparams' => ['jointype' => 'itemtype_item']
-                        ]
-                    ]
-                ]
-            ]
+                            'joinparams' => ['jointype' => 'itemtype_item'],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -204,11 +204,11 @@ class DeviceFirmware extends CommonDevice
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
-                            'joinparams' => ['jointype' => 'itemtype_item']
-                        ]
-                    ]
-                ]
-            ]
+                            'joinparams' => ['jointype' => 'itemtype_item'],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         //SO defined from relation (glpi_items_devicefirmwares) table
@@ -312,7 +312,7 @@ class DeviceFirmware extends CommonDevice
             'designation'              => 'equal',
             'devicefirmwaretypes_id'   => 'equal',
             'manufacturers_id'         => 'equal',
-            'version'                  => 'equal'
+            'version'                  => 'equal',
         ];
     }
 

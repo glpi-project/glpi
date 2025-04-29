@@ -45,7 +45,7 @@ class PrinterLogTest extends DbTestCase
         $printer = new \Printer();
         $printers_id = $printer->add([
             'name'   => 'Inventoried printer',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $printers_id);
 
@@ -62,7 +62,7 @@ class PrinterLogTest extends DbTestCase
             'color_pages' => 1799,
             'rv_pages' => 4389,
             'scanned' => 7846,
-            'date' => $cdate1->format('Y-m-d')
+            'date' => $cdate1->format('Y-m-d'),
         ];
         $this->assertGreaterThan(0, $log->add($input));
 
@@ -75,7 +75,7 @@ class PrinterLogTest extends DbTestCase
             'color_pages' => 2151,
             'rv_pages' => 5987,
             'scanned' => 15542,
-            'date' => $cdate2->format('Y-m-d')
+            'date' => $cdate2->format('Y-m-d'),
         ];
         $this->assertGreaterThan(0, $log->add($input));
 
@@ -86,14 +86,14 @@ class PrinterLogTest extends DbTestCase
             'color_pages' => 3041,
             'rv_pages' => 7654,
             'scanned' => 28177,
-            'date' => $now->format('Y-m-d')
+            'date' => $now->format('Y-m-d'),
         ];
         $this->assertGreaterThan(0, $log->add($input));
 
-       //per default, get 1Y old, first not included
+        //per default, get 1Y old, first not included
         $this->assertCount(2, $log->getMetrics($printer));
 
-       //change filter to include first one
+        //change filter to include first one
         $this->assertCount(3, $log->getMetrics($printer, ['date' => ['>=', $cdate1->format('Y-m-d')]]));
     }
 }

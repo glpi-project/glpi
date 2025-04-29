@@ -49,14 +49,14 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
             return false;
         }
 
-       // Add autocompletion for ticket properties (twig templates)
+        // Add autocompletion for ticket properties (twig templates)
         $parameters = ParametersPreset::getForAbstractTemplates();
         Html::activateUserTemplateAutocompletion(
             'textarea[name=content]',
             TemplateManager::computeParameters($parameters)
         );
 
-       // Add related documentation
+        // Add related documentation
         Html::addTemplateDocumentationLinkJS(
             'textarea[name=content]',
             ParametersPreset::ITIL_CHILD_TEMPLATE

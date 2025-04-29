@@ -116,22 +116,22 @@ class TestUpdatedDataCommand extends Command
         $fresh_db = new class ($hostport, $user, $pass, $input->getOption('fresh-db')) extends DBmysql {
             public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault)
             {
-                  $this->dbhost     = $dbhost;
-                  $this->dbuser     = $dbuser;
-                  $this->dbpassword = $dbpassword;
-                  $this->dbdefault  = $dbdefault;
-                  parent::__construct();
+                $this->dbhost     = $dbhost;
+                $this->dbuser     = $dbuser;
+                $this->dbpassword = $dbpassword;
+                $this->dbdefault  = $dbdefault;
+                parent::__construct();
             }
         };
 
         $updated_db = new class ($hostport, $user, $pass, $input->getOption('updated-db')) extends DBmysql {
             public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault)
             {
-                  $this->dbhost     = $dbhost;
-                  $this->dbuser     = $dbuser;
-                  $this->dbpassword = $dbpassword;
-                  $this->dbdefault  = $dbdefault;
-                  parent::__construct();
+                $this->dbhost     = $dbhost;
+                $this->dbuser     = $dbuser;
+                $this->dbpassword = $dbpassword;
+                $this->dbdefault  = $dbdefault;
+                parent::__construct();
             }
         };
 
@@ -169,12 +169,12 @@ class TestUpdatedDataCommand extends Command
                         continue; // Ignore fields that would be subject to legitimate changes
                     }
                     if ($value === null && !in_array($this->getFieldType($fresh_db, $table_name, $key), ['datetime', 'timestamp'])) {
-                       // some fields were not nullable in previous GLPI versions
+                        // some fields were not nullable in previous GLPI versions
                         $criteria[] = [
                             'OR' => [
                                 [$key => ''],
                                 [$key => null],
-                            ]
+                            ],
                         ];
                     } else {
                         $criteria[$key] = $value;
@@ -188,9 +188,9 @@ class TestUpdatedDataCommand extends Command
                     ]
                 );
                 if ($found_in_updated->count() !== 1) {
-                     $missing = true;
-                     $msg = sprintf('Unable to found following object in table "%s": %s', $table_name, json_encode($row_data));
-                     $output->writeln('<error>‣</error> ' . $msg, OutputInterface::VERBOSITY_QUIET);
+                    $missing = true;
+                    $msg = sprintf('Unable to found following object in table "%s": %s', $table_name, json_encode($row_data));
+                    $output->writeln('<error>‣</error> ' . $msg, OutputInterface::VERBOSITY_QUIET);
                 }
             }
         }
@@ -206,18 +206,18 @@ class TestUpdatedDataCommand extends Command
     private function getExcludedTables(): array
     {
         return [
-         // Root entity configuration is never updated during migration
+            // Root entity configuration is never updated during migration
             'glpi_entities',
 
-         // Migration may produce logs
+            // Migration may produce logs
             'glpi_logs',
 
-         // Profiles are not automatically updated
+            // Profiles are not automatically updated
             'glpi_profilerights',
             'glpi_profiles',
             'glpi_profiles_users',
 
-         // Rules are not automatically updated
+            // Rules are not automatically updated
             'glpi_rules',
             'glpi_rulecriterias',
             'glpi_ruleactions',
@@ -252,7 +252,7 @@ class TestUpdatedDataCommand extends Command
                 'is_active', // Active status was not changed by migration (9.1.x to 9.2.0)
             ],
             'glpi_notificationtemplatetranslations' => [
-            // Notification content is not automatically updated
+                // Notification content is not automatically updated
                 'content_text',
                 'content_html',
                 'subject',
@@ -306,13 +306,13 @@ class TestUpdatedDataCommand extends Command
                 ]
             );
             foreach ($fields_iterator as $field_data) {
-                 $table_name = $field_data['TABLE_NAME'];
-                 $field_name = $field_data['COLUMN_NAME'];
-                 $field_type = $field_data['DATA_TYPE'];
+                $table_name = $field_data['TABLE_NAME'];
+                $field_name = $field_data['COLUMN_NAME'];
+                $field_type = $field_data['DATA_TYPE'];
                 if (!array_key_exists($table_name, $types)) {
                     $types[$table_name] = [];
                 }
-                 $types[$table_name][$field_name] = $field_type;
+                $types[$table_name][$field_name] = $field_type;
             }
         }
 

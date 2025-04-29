@@ -38,7 +38,7 @@
  */
 class AuthMail extends CommonDBTM
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
 
     public static $rightname = 'config';
@@ -93,7 +93,7 @@ class AuthMail extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Email server')
+            'name'               => __('Email server'),
         ];
 
         $tab[] = [
@@ -102,7 +102,7 @@ class AuthMail extends CommonDBTM
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -111,7 +111,7 @@ class AuthMail extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'datatype'           => 'number',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -119,7 +119,7 @@ class AuthMail extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'host',
             'name'               => __('Server'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -128,7 +128,7 @@ class AuthMail extends CommonDBTM
             'field'              => 'connect_string',
             'name'               => __('Connection string'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -136,7 +136,7 @@ class AuthMail extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -145,7 +145,7 @@ class AuthMail extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -153,7 +153,7 @@ class AuthMail extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         return $tab;
@@ -204,7 +204,7 @@ class AuthMail extends CommonDBTM
         echo "<textarea class='form-control' name='comment'>" . $this->fields["comment"] . "</textarea>";
         if ($ID > 0) {
             echo "<br>";
-           //TRANS: %s is the datetime of update
+            //TRANS: %s is the datetime of update
             printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
         }
 
@@ -297,12 +297,12 @@ class AuthMail extends CommonDBTM
                 $password
             );
             if ($auth->auth_succeded) {
-                 $auth->extauth      = 1;
-                 $auth->user_present = $auth->user->getFromDBbyName(addslashes($login));
-                 $auth->user->getFromIMAP($mail_method, Toolbox::decodeFromUtf8($login));
-                 //Update the authentication method for the current user
-                 $auth->user->fields["authtype"] = Auth::MAIL;
-                 $auth->user->fields["auths_id"] = $mail_method["id"];
+                $auth->extauth      = 1;
+                $auth->user_present = $auth->user->getFromDBbyName(addslashes($login));
+                $auth->user->getFromIMAP($mail_method, Toolbox::decodeFromUtf8($login));
+                //Update the authentication method for the current user
+                $auth->user->fields["authtype"] = Auth::MAIL;
+                $auth->user->fields["auths_id"] = $mail_method["id"];
             }
         }
         return $auth;
@@ -334,8 +334,8 @@ class AuthMail extends CommonDBTM
                     }
                 }
             }
-        } else if (array_key_exists($auths_id, $auth->authtypes["mail"])) {
-           //Check if the mail server indicated as the last good one still exists !
+        } elseif (array_key_exists($auths_id, $auth->authtypes["mail"])) {
+            //Check if the mail server indicated as the last good one still exists !
             $auth = self::mailAuth($auth, $login, $password, $auth->authtypes["mail"][$auths_id]);
         }
         return $auth;

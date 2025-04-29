@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::redirect($CFG_GLPI["root_doc"] . "/front/slm.php");
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $slm->check($_POST["id"], PURGE);
     $slm->delete($_POST, 1);
 
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $slm->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $slm->check($_POST["id"], UPDATE);
     $slm->update($_POST);
 

@@ -90,8 +90,8 @@ class Update
         Session::start();
 
         if (isCommandLine()) {
-           // Init debug variable
-            $_SESSION = ['glpilanguage' => (isset($this->args['lang']) ? $this->args['lang'] : 'en_GB')];
+            // Init debug variable
+            $_SESSION = ['glpilanguage' => ($this->args['lang'] ?? 'en_GB')];
             $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
         }
     }
@@ -123,23 +123,23 @@ class Update
                     'language'  => 'en_GB',
                 ];
             }
-        } else if (!$DB->tableExists("glpi_configs")) {
+        } elseif (!$DB->tableExists("glpi_configs")) {
             // >= 0.31 and < 0.78
             // Get current version
             $result = $DB->request([
                 'SELECT' => ['version', 'language'],
-                'FROM'   => 'glpi_config'
+                'FROM'   => 'glpi_config',
             ])->current();
 
             $currents['version']    = trim($result['version']);
             $currents['dbversion']  = $currents['version'];
             $currents['language']   = trim($result['language']);
-        } else if ($DB->fieldExists('glpi_configs', 'version')) {
+        } elseif ($DB->fieldExists('glpi_configs', 'version')) {
             // < 0.85
             // Get current version and language
             $result = $DB->request([
                 'SELECT' => ['version', 'language'],
-                'FROM'   => 'glpi_configs'
+                'FROM'   => 'glpi_configs',
             ])->current();
 
             $currents['version']    = trim($result['version']);
@@ -234,10 +234,10 @@ class Update
             $DB->doQuery(sprintf('SET SESSION sql_mode = %s', $DB->quote(implode(',', $sql_mode_flags))));
         }
 
-       // To prevent problem of execution time
+        // To prevent problem of execution time
         ini_set("max_execution_time", "0");
 
-       // Update process desactivate all plugins
+        // Update process desactivate all plugins
         $plugin = new Plugin();
         $plugin->unactivateAll();
 
@@ -308,24 +308,24 @@ class Update
         Config::setConfigurationValues('core', ['version'             => GLPI_VERSION,
             'dbversion'           => GLPI_SCHEMA_VERSION,
             'language'            => $this->language,
-            'founded_new_version' => ''
+            'founded_new_version' => '',
         ]);
 
         if (defined('GLPI_SYSTEM_CRON')) {
-           // Downstream packages may provide a good system cron
+            // Downstream packages may provide a good system cron
             $DB->updateOrDie(
                 'glpi_crontasks',
                 [
-                    'mode'   => 2
+                    'mode'   => 2,
                 ],
                 [
                     'name'      => ['!=', 'watcher'],
-                    'allowmode' => ['&', 2]
+                    'allowmode' => ['&', 2],
                 ]
             );
         }
 
-       // Reset telemetry if its state is running, assuming it remained stuck due to telemetry service issue (see #7492).
+        // Reset telemetry if its state is running, assuming it remained stuck due to telemetry service issue (see #7492).
         $crontask_telemetry = new CronTask();
         $crontask_telemetry->getFromDBbyName("Telemetry", "telemetry");
         if ($crontask_telemetry->fields['state'] === CronTask::STATE_RUNNING) {
@@ -333,7 +333,7 @@ class Update
             $crontask_telemetry->resetState();
         }
 
-       //generate security key if missing, and update db
+        //generate security key if missing, and update db
         $glpikey = new GLPIKey();
         if (!$glpikey->keyExists() && !$glpikey->generate()) {
             $this->migration->displayWarning(
@@ -411,9 +411,9 @@ class Update
 
             $force_migration = false;
             if ($current_version === '9.2.2' && $versions_matches['target_version'] === '9.2.2') {
-               //9.2.2 upgrade script was not run from the release, see https://github.com/glpi-project/glpi/issues/3659
+                //9.2.2 upgrade script was not run from the release, see https://github.com/glpi-project/glpi/issues/3659
                 $force_migration = true;
-            } else if ($force_latest && version_compare($versions_matches['target_version'], $current_version, '=')) {
+            } elseif ($force_latest && version_compare($versions_matches['target_version'], $current_version, '=')) {
                 $force_migration = true;
             }
             if (version_compare($versions_matches['target_version'], $current_version, '>') || $force_migration) {

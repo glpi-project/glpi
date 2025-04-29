@@ -49,7 +49,7 @@ function update0841to0843()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '0.84.3'));
     $migration->setVersion('0.84.3');
 
@@ -57,7 +57,7 @@ function update0841to0843()
     $newtables     = [];
 
     foreach ($newtables as $new_table) {
-       // rename new tables if exists ?
+        // rename new tables if exists ?
         if ($DB->tableExists($new_table)) {
             $migration->dropTable("backup_$new_table");
             $migration->displayWarning("$new_table table already exists. " .
@@ -73,7 +73,7 @@ function update0841to0843()
         );
     }
 
-   // Upgrade ticket bookmarks and clean _glpi_csrf_token
+    // Upgrade ticket bookmarks and clean _glpi_csrf_token
     $status =  ['new'           => CommonITILObject::INCOMING,
         'assign'        => CommonITILObject::ASSIGNED,
         'plan'          => CommonITILObject::PLANNED,
@@ -85,7 +85,7 @@ function update0841to0843()
         'evaluation'    => CommonITILObject::EVALUATION,
         'approbation'   => CommonITILObject::APPROVAL,
         'test'          => CommonITILObject::TEST,
-        'qualification' => CommonITILObject::QUALIFICATION
+        'qualification' => CommonITILObject::QUALIFICATION,
     ];
 
     $query = "SELECT *
@@ -104,11 +104,11 @@ function update0841to0843()
                     unset($options['_glpi_csrf_token']);
                 }
                 if (isset($options['field'])) {
-                   // update ticket statuses
+                    // update ticket statuses
                     if (
                         (($data['itemtype'] == 'Ticket')
                         || ($data['itemtype'] == 'Problem'))
-                        && ( $data['type'] == Bookmark::SEARCH)
+                        && ($data['type'] == Bookmark::SEARCH)
                     ) {
                         foreach ($options['field'] as $key => $val) {
                             if (
@@ -122,7 +122,7 @@ function update0841to0843()
                         }
                     }
 
-                   // Fix computer / allassets bookmarks : 17 -> 7 / 18 -> 8 / 7 -> 17
+                    // Fix computer / allassets bookmarks : 17 -> 7 / 18 -> 8 / 7 -> 17
                     if (
                         (($data['itemtype'] == 'Computer')
                         || ($data['itemtype'] == 'AllAssets'))
@@ -161,8 +161,8 @@ function update0841to0843()
         }
     }
 
-   // ************ Keep it at the end **************
-   //TRANS: %s is the table or item to migrate
+    // ************ Keep it at the end **************
+    //TRANS: %s is the table or item to migrate
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
@@ -189,11 +189,11 @@ function update0841to0843()
                                   AND `itemtype` = '$type'";
                         if ($result2 = $DB->doQuery($query)) {
                             if ($DB->numrows($result2) == 0) {
-                                 $query = "INSERT INTO `glpi_displaypreferences`
+                                $query = "INSERT INTO `glpi_displaypreferences`
                                          (`itemtype` ,`num` ,`rank` ,`users_id`)
                                   VALUES ('$type', '$newval', '" . $rank++ . "',
                                           '" . $data['users_id'] . "')";
-                                 $DB->doQuery($query);
+                                $DB->doQuery($query);
                             }
                         }
                     }
@@ -210,7 +210,7 @@ function update0841to0843()
         }
     }
 
-   // must always be at the end
+    // must always be at the end
     $migration->executeMigration();
 
     return $updateresult;

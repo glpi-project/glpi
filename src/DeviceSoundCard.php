@@ -53,7 +53,7 @@ class DeviceSoundCard extends CommonDevice
             parent::getAdditionalFields(),
             [['name'  => 'type',
                 'label' => _n('Type', 'Types', 1),
-                'type'  => 'text'
+                'type'  => 'text',
             ],
                 ['name'  => 'none',
                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
@@ -63,12 +63,12 @@ class DeviceSoundCard extends CommonDevice
                                             null,
                                             false
                                         ),
-                    'type'  => 'registeredIDChooser'
+                    'type'  => 'registeredIDChooser',
                 ],
                 ['name'  => 'devicesoundcardmodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
-                ]
+                    'type'  => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -91,7 +91,7 @@ class DeviceSoundCard extends CommonDevice
             'table'              => 'glpi_devicesoundcardmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -162,9 +162,9 @@ class DeviceSoundCard extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicesoundcards',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
         ];
 
         return $tab;

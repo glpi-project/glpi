@@ -67,14 +67,14 @@ class State extends CommonTreeDropdown
         $fields   = parent::getAdditionalFields();
         $fields[] = ['label' => __('Visibility'),
             'name'  => 'header',
-            'list'  => false
+            'list'  => false,
         ];
 
         foreach ($this->getvisibilityFields() as $type => $field) {
             $fields[] = ['name'  => $field,
                 'label' => $type::getTypeName(Session::getPluralNumber()),
                 'type'  => 'bool',
-                'list'  => true
+                'list'  => true,
             ];
         }
         return $fields;
@@ -102,7 +102,7 @@ class State extends CommonTreeDropdown
         $iterator = $DB->request([
             'SELECT' => ['id', 'name'],
             'FROM'   => 'glpi_states',
-            'ORDER'  => 'name'
+            'ORDER'  => 'name',
         ]);
 
         foreach ($iterator as $data) {
@@ -140,11 +140,11 @@ class State extends CommonTreeDropdown
                     $iterator = $DB->request([
                         'SELECT' => [
                             'states_id',
-                            'COUNT'  => '* AS cpt'
+                            'COUNT'  => '* AS cpt',
                         ],
                         'FROM'   => $table,
                         'WHERE'  => $WHERE,
-                        'GROUP'  => 'states_id'
+                        'GROUP'  => 'states_id',
                     ]);
 
                     foreach ($iterator as $data) {
@@ -157,10 +157,10 @@ class State extends CommonTreeDropdown
         if (count($states)) {
             $total = [];
 
-           // Produce headline
+            // Produce headline
             echo "<div class='center'><table class='tab_cadrehov'><tr>";
 
-           // Type
+            // Type
             echo "<th>" . __('Status') . "</th>";
 
             foreach ($state_type as $key => $itemtype) {
@@ -178,10 +178,10 @@ class State extends CommonTreeDropdown
             $iterator = $DB->request([
                 'FROM'   => 'glpi_states',
                 'WHERE'  => getEntitiesRestrictCriteria('glpi_states', '', '', true),
-                'ORDER'  => 'completename'
+                'ORDER'  => 'completename',
             ]);
 
-           // No state
+            // No state
             $tot = 0;
             echo "<tr class='tab_bg_2'><td>---</td>";
             foreach ($state_type as $itemtype) {
@@ -208,9 +208,9 @@ class State extends CommonTreeDropdown
                     'start'    => 0,
                     'criteria' => ['0' => ['value' => '$$$$' . $data['id'],
                         'searchtype' => 'contains',
-                        'field' => 31
-                    ]
-                    ]
+                        'field' => 31,
+                    ],
+                    ],
                 ];
 
                 $url = AllAssets::getSearchURL();
@@ -291,7 +291,7 @@ class State extends CommonTreeDropdown
         $input = parent::prepareInputForAdd($input);
 
         $state = new self();
-       // Get visibility information from parent if not set
+        // Get visibility information from parent if not set
         if (isset($input['states_id']) && $state->getFromDB($input['states_id'])) {
             foreach ($this->getvisibilityFields() as $type => $field) {
                 if (!isset($input[$field]) && isset($state->fields[$field])) {
@@ -312,7 +312,7 @@ class State extends CommonTreeDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_visible_computer',
             'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Computer::getTypeName(Session::getPluralNumber())),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -324,7 +324,7 @@ class State extends CommonTreeDropdown
                 __('Visibility'),
                 SoftwareVersion::getTypeName(Session::getPluralNumber())
             ),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -332,7 +332,7 @@ class State extends CommonTreeDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_visible_monitor',
             'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Monitor::getTypeName(Session::getPluralNumber())),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -340,7 +340,7 @@ class State extends CommonTreeDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_visible_printer',
             'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Printer::getTypeName(Session::getPluralNumber())),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -348,7 +348,7 @@ class State extends CommonTreeDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_visible_peripheral',
             'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Peripheral::getTypeName(Session::getPluralNumber())),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -356,7 +356,7 @@ class State extends CommonTreeDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_visible_phone',
             'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Phone::getTypeName(Session::getPluralNumber())),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -368,7 +368,7 @@ class State extends CommonTreeDropdown
                 __('Visibility'),
                 NetworkEquipment::getTypeName(Session::getPluralNumber())
             ),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -380,7 +380,7 @@ class State extends CommonTreeDropdown
                 __('Visibility'),
                 SoftwareLicense::getTypeName(Session::getPluralNumber())
             ),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -392,7 +392,7 @@ class State extends CommonTreeDropdown
                 __('Visibility'),
                 Certificate::getTypeName(Session::getPluralNumber())
             ),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -404,7 +404,7 @@ class State extends CommonTreeDropdown
                 __('Visibility'),
                 Rack::getTypeName(Session::getPluralNumber())
             ),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -416,7 +416,7 @@ class State extends CommonTreeDropdown
                 __('Visibility'),
                 Line::getTypeName(Session::getPluralNumber())
             ),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -428,7 +428,7 @@ class State extends CommonTreeDropdown
                 __('Visibility'),
                 Enclosure::getTypeName(Session::getPluralNumber())
             ),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -440,7 +440,7 @@ class State extends CommonTreeDropdown
                 __('Visibility'),
                 PDU::getTypeName(Session::getPluralNumber())
             ),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -452,7 +452,7 @@ class State extends CommonTreeDropdown
                 __('Visibility'),
                 Cluster::getTypeName(Session::getPluralNumber())
             ),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -464,7 +464,7 @@ class State extends CommonTreeDropdown
                 __('Visibility'),
                 PassiveDCEquipment::getTypeName(Session::getPluralNumber())
             ),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -476,7 +476,7 @@ class State extends CommonTreeDropdown
                 __('Visibility'),
                 Contract::getTypeName(Session::getPluralNumber())
             ),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -488,7 +488,7 @@ class State extends CommonTreeDropdown
                 __('Visibility'),
                 Appliance::getTypeName(Session::getPluralNumber())
             ),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -500,7 +500,7 @@ class State extends CommonTreeDropdown
                 __('Visibility'),
                 Cable::getTypeName(Session::getPluralNumber())
             ),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -512,7 +512,7 @@ class State extends CommonTreeDropdown
                 __('Visibility'),
                 DatabaseInstance::getTypeName(Session::getPluralNumber())
             ),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         return $tab;
@@ -560,7 +560,7 @@ class State extends CommonTreeDropdown
             }
         }
         if (!$has_changed) {
-           //state has not changed; this is OK.
+            //state has not changed; this is OK.
             return true;
         }
 
@@ -573,10 +573,10 @@ class State extends CommonTreeDropdown
         $query = [
             'FROM'   => $this->getTable(),
             'COUNT'  => 'cpt',
-            'WHERE'  => $where
+            'WHERE'  => $where,
         ];
         $row = $DB->request($query)->current();
-        return ((int)$row['cpt'] === 0);
+        return ((int) $row['cpt'] === 0);
     }
 
     /**

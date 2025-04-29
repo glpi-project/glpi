@@ -51,12 +51,12 @@ class DeviceMotherboard extends CommonDevice
             parent::getAdditionalFields(),
             [['name'  => 'chipset',
                 'label' => __('Chipset'),
-                'type'  => 'text'
+                'type'  => 'text',
             ],
                 ['name'  => 'devicemotherboardmodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
-                ]
+                    'type'  => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -79,7 +79,7 @@ class DeviceMotherboard extends CommonDevice
             'table'              => 'glpi_devicemotherboardmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -134,7 +134,7 @@ class DeviceMotherboard extends CommonDevice
 
         return ['designation'      => 'equal',
             'manufacturers_id' => 'equal',
-            'chipset'          => 'equal'
+            'chipset'          => 'equal',
         ];
     }
 
@@ -153,9 +153,9 @@ class DeviceMotherboard extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicemotherboards',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
         ];
 
         return $tab;

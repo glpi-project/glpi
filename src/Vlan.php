@@ -55,8 +55,8 @@ class Vlan extends CommonDropdown
         return [['name'     => 'tag',
             'label'    => __('ID TAG'),
             'type'     => '',
-            'list'     => true
-        ]
+            'list'     => true,
+        ],
         ];
     }
 
@@ -86,7 +86,7 @@ class Vlan extends CommonDropdown
             'name'               => __('ID TAG'),
             'datatype'           => 'number',
             'min'                => 1,
-            'max'                => 4094
+            'max'                => 4094,
         ];
 
         return $tab;

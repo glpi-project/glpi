@@ -49,7 +49,7 @@ function update0900to0901()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '0.90.1'));
     $migration->setVersion('0.90.1');
 
@@ -57,7 +57,7 @@ function update0900to0901()
     $newtables     = [];
 
     foreach ($newtables as $new_table) {
-       // rename new tables if exists ?
+        // rename new tables if exists ?
         if ($DB->tableExists($new_table)) {
             $migration->dropTable("backup_$new_table");
             $migration->displayWarning("$new_table table already exists. " .
@@ -73,10 +73,10 @@ function update0900to0901()
         );
     }
 
-   // Add missing fill in 0.90 empty version
+    // Add missing fill in 0.90 empty version
     $migration->addField("glpi_entities", 'inquest_duration', "integer", ['value' => 0]);
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

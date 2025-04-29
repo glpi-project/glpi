@@ -45,7 +45,7 @@ class NetworkPortTypeTest extends DbTestCase
         global $DB;
 
         $iterator = $DB->request([
-            'FROM'   => \NetworkPortType::getTable()
+            'FROM'   => \NetworkPortType::getTable(),
         ]);
         $this->assertGreaterThanOrEqual(
             300,
@@ -54,7 +54,7 @@ class NetworkPortTypeTest extends DbTestCase
 
         $iterator = $DB->request([
             'FROM'   => \NetworkPortType::getTable(),
-            'WHERE'  => ['is_importable' => true]
+            'WHERE'  => ['is_importable' => true],
         ]);
         $this->assertSame(7, count($iterator));
 
@@ -101,7 +101,7 @@ class NetworkPortTypeTest extends DbTestCase
                 'comment' => 'Multirate HDSL2 [Bob_Ray]',
                 'is_importable' => 1,
                 'instantiation_type' => 'NetworkPortEthernet',
-            ]
+            ],
         ];
 
         foreach ($iterator as $row) {

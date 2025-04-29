@@ -50,7 +50,7 @@ function update084xto0850()
     $ADDTODISPLAYPREF   = [];
     $DELFROMDISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '0.85'));
     $migration->setVersion('0.85');
 
@@ -68,13 +68,13 @@ function update084xto0850()
         'glpi_projectstates', 'glpi_projecttasks', 'glpi_projecttasks_tickets',
         'glpi_projecttaskteams', 'glpi_projecttasktypes',
         'glpi_projectteams', 'glpi_projecttypes',
-        'glpi_queuedmails'
-                          // Only do profilerights once : so not delete it
-                          /*, 'glpi_profilerights'*/
+        'glpi_queuedmails',
+        // Only do profilerights once : so not delete it
+        /*, 'glpi_profilerights'*/
     ];
 
     foreach ($newtables as $new_table) {
-       // rename new tables if exists ?
+        // rename new tables if exists ?
         if ($DB->tableExists($new_table)) {
             $migration->dropTable("backup_$new_table");
             $migration->displayWarning("$new_table table already exists. " .
@@ -102,7 +102,7 @@ function update084xto0850()
                  WHERE `id` = '1'";
         $result_of_configs = $DB->doQuery($query);
 
-       // Update glpi_configs
+        // Update glpi_configs
         $migration->addField(
             'glpi_configs',
             'context',
@@ -184,7 +184,7 @@ function update084xto0850()
                     || ($profile[$right] == '1')
                 ) {
                     $new_right = READ;
-                } else if ($profile[$right] == 'w') {
+                } elseif ($profile[$right] == 'w') {
                     $new_right = ALLSTANDARDRIGHT;
                 }
 
@@ -198,9 +198,9 @@ function update084xto0850()
         $migration->dropTable('origin_glpi_profiles');
     }
 
-   // New system of profiles
+    // New system of profiles
 
-   // delete import_externalauth_users
+    // delete import_externalauth_users
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -218,19 +218,19 @@ function update084xto0850()
              WHERE `name` = 'import_externalauth_users'";
     $DB->doQueryOrDie($query, "0.85 delete import_externalauth_users right");
 
-   // save value of rule_ticket to root_rule_ticket
+    // save value of rule_ticket to root_rule_ticket
     $query  = "UPDATE `glpi_profilerights`
               SET `name` = 'root_rule_ticket'
               WHERE `name` = 'rule_ticket'";
     $DB->doQueryOrDie($query, "0.85 rename rule_ticket to root_rule_ticket");
 
-   // rename entity_rule_ticket to rule_ticket
+    // rename entity_rule_ticket to rule_ticket
     $query  = "UPDATE `glpi_profilerights`
               SET `name` = 'rule_ticket'
               WHERE `name` = 'entity_rule_ticket'";
     $DB->doQueryOrDie($query, "0.85 rename entity_rule_ticket to rule_ticket");
 
-   // delete root_rule_ticket
+    // delete root_rule_ticket
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -249,7 +249,7 @@ function update084xto0850()
              WHERE `name` = 'root_rule_ticket'";
     $DB->doQueryOrDie($query, "0.85 delete old rule_ticket right");
 
-   // delete knowbase_admin
+    // delete knowbase_admin
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -267,7 +267,7 @@ function update084xto0850()
              WHERE `name` = 'knowbase_admin'";
     $DB->doQueryOrDie($query, "0.85 delete knowbase_admin right");
 
-   // delete faq
+    // delete faq
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -298,7 +298,7 @@ function update084xto0850()
              WHERE `name` = 'faq'";
     $DB->doQueryOrDie($query, "0.85 delete faq right");
 
-   // delete user_authtype
+    // delete user_authtype
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -321,7 +321,7 @@ function update084xto0850()
                  SET `rights` = `rights` | " . User::READAUTHENT . " | " . User::UPDATEAUTHENT . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                        AND `name` = 'user'";
-         $DB->doQueryOrDie($query, "0.85 update user with write user_authtype right");
+        $DB->doQueryOrDie($query, "0.85 update user with write user_authtype right");
     }
 
     $query = "DELETE
@@ -329,7 +329,7 @@ function update084xto0850()
              WHERE `name` = 'user_authtype'";
     $DB->doQueryOrDie($query, "0.85 delete user_authtype right");
 
-   // delete entity_helpdesk
+    // delete entity_helpdesk
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -340,7 +340,7 @@ function update084xto0850()
                  SET `rights` = `rights` | " . Entity::READHELPDESK . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                        AND `name` = 'entity'";
-         $DB->doQueryOrDie($query, "0.85 update entity with read entity_helpdesk right");
+        $DB->doQueryOrDie($query, "0.85 update entity with read entity_helpdesk right");
     }
     foreach (
         $DB->request(
@@ -352,14 +352,14 @@ function update084xto0850()
                  SET `rights` = `rights` | " . Entity::READHELPDESK . " | " . Entity::UPDATEHELPDESK . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                        AND `name` = 'entity'";
-         $DB->doQueryOrDie($query, "0.85 update user with write entity_helpdesk right");
+        $DB->doQueryOrDie($query, "0.85 update user with write entity_helpdesk right");
     }
     $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'entity_helpdesk'";
     $DB->doQueryOrDie($query, "0.85 delete entity_helpdesk right");
 
-   // delete reservation_helpdesk
+    // delete reservation_helpdesk
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -370,22 +370,22 @@ function update084xto0850()
                  SET `rights` = `rights` | " . ReservationItem::RESERVEANITEM . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'reservation_central'";
-         $DB->doQueryOrDie($query, "0.85 update reservation_central with reservation_helpdesk right");
+        $DB->doQueryOrDie($query, "0.85 update reservation_central with reservation_helpdesk right");
     }
     $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'reservation_helpdesk'";
     $DB->doQueryOrDie($query, "0.85 delete reservation_helpdesk right");
 
-   // rename reservation_central
+    // rename reservation_central
     $query  = "UPDATE `glpi_profilerights`
               SET `name` = 'reservation'
               WHERE `name` = 'reservation_central'";
     $DB->doQueryOrDie($query, "0.85 delete reservation_central");
 
-   // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
+    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
     if (countElementsInTable("glpi_profilerights", ['name' => 'ticket']) == 0) {
-       // rename create_ticket
+        // rename create_ticket
         $query  = "UPDATE `glpi_profilerights`
                  SET `name` = 'ticket'
                  WHERE `name` = 'create_ticket'";
@@ -398,7 +398,7 @@ function update084xto0850()
         $DB->doQueryOrDie($query, "0.85 update ticket with create_ticket right");
     }
 
-   // delete update_ticket
+    // delete update_ticket
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -406,7 +406,7 @@ function update084xto0850()
         ) as $profrights
     ) {
         $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . UPDATE  . "
+                 SET `rights` = `rights` | " . UPDATE . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'ticket'";
         $DB->doQueryOrDie($query, "0.85 update ticket with update_ticket right");
@@ -416,7 +416,7 @@ function update084xto0850()
              WHERE `name` = 'update_ticket'";
     $DB->doQueryOrDie($query, "0.85 delete update_ticket right");
 
-   // delete delete_ticket
+    // delete delete_ticket
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -434,7 +434,7 @@ function update084xto0850()
              WHERE `name` = 'delete_ticket'";
     $DB->doQueryOrDie($query, "0.85 delete delete_ticket right");
 
-   // delete show_all_ticket
+    // delete show_all_ticket
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -452,7 +452,7 @@ function update084xto0850()
              WHERE `name` = 'show_all_ticket'";
     $DB->doQueryOrDie($query, "0.85 delete show_all_ticket right");
 
-   // delete show_group_ticket
+    // delete show_group_ticket
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -470,7 +470,7 @@ function update084xto0850()
              WHERE `name` = 'show_group_ticket'";
     $DB->doQueryOrDie($query, "0.85 delete show_group_ticket right");
 
-   // delete show_assign_ticket
+    // delete show_assign_ticket
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -481,14 +481,14 @@ function update084xto0850()
                  SET `rights` = `rights` | " . Ticket::READASSIGN . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'ticket'";
-         $DB->doQueryOrDie($query, "0.85 update ticket with show_assign_ticket right");
+        $DB->doQueryOrDie($query, "0.85 update ticket with show_assign_ticket right");
     }
     $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'show_assign_ticket'";
     $DB->doQueryOrDie($query, "0.85 delete show_assign_ticket right");
 
-   // delete assign_ticket
+    // delete assign_ticket
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -506,7 +506,7 @@ function update084xto0850()
              WHERE `name` = 'assign_ticket'";
     $DB->doQueryOrDie($query, "0.85 delete assign_ticket right");
 
-   // delete steal_ticket
+    // delete steal_ticket
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -524,7 +524,7 @@ function update084xto0850()
              WHERE `name` = 'steal_ticket'";
     $DB->doQueryOrDie($query, "0.85 delete steal_ticket right");
 
-   // delete own_ticket
+    // delete own_ticket
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -542,7 +542,7 @@ function update084xto0850()
              WHERE `name` = 'own_ticket'";
     $DB->doQueryOrDie($query, "0.85 delete own_ticket right");
 
-   // delete update_priority
+    // delete update_priority
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -553,16 +553,16 @@ function update084xto0850()
                  SET `rights` = `rights` | " . Ticket::CHANGEPRIORITY . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'ticket'";
-         $DB->doQueryOrDie($query, "0.85 update ticket with update_priority right");
+        $DB->doQueryOrDie($query, "0.85 update ticket with update_priority right");
     }
     $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'update_priority'";
     $DB->doQueryOrDie($query, "0.85 delete update_priority right");
 
-   // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
+    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
     if (countElementsInTable("glpi_profilerights", ['name' => 'followup']) == 0) {
-       // rename create_ticket
+        // rename create_ticket
         $query  = "UPDATE `glpi_profilerights`
                  SET `name` = 'followup'
                  WHERE `name` = 'global_add_followups'";
@@ -575,7 +575,7 @@ function update084xto0850()
         $DB->doQueryOrDie($query, "0.85 update followup with global_add_followups right");
     }
 
-   // delete add_followups
+    // delete add_followups
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -583,17 +583,17 @@ function update084xto0850()
         ) as $profrights
     ) {
         $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . ITILFollowup::ADDMYTICKET  . "
+                 SET `rights` = `rights` | " . ITILFollowup::ADDMYTICKET . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'followup'";
-         $DB->doQueryOrDie($query, "0.85 update followup with add_followups right");
+        $DB->doQueryOrDie($query, "0.85 update followup with add_followups right");
     }
     $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'add_followups'";
     $DB->doQueryOrDie($query, "0.85 delete add_followups right");
 
-   // delete group_add_followups
+    // delete group_add_followups
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -601,7 +601,7 @@ function update084xto0850()
         ) as $profrights
     ) {
         $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . ITILFollowup::ADDGROUPTICKET  . "
+                 SET `rights` = `rights` | " . ITILFollowup::ADDGROUPTICKET . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'followup'";
         $DB->doQueryOrDie($query, "0.85 update followup with group_add_followups right");
@@ -611,7 +611,7 @@ function update084xto0850()
              WHERE `name` = 'group_add_followups'";
     $DB->doQueryOrDie($query, "0.85 delete group_add_followups right");
 
-   // delete observe_ticket for followup
+    // delete observe_ticket for followup
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -619,14 +619,14 @@ function update084xto0850()
         ) as $profrights
     ) {
         $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . ITILFollowup::SEEPUBLIC  . "
+                 SET `rights` = `rights` | " . ITILFollowup::SEEPUBLIC . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'followup'";
         $DB->doQueryOrDie($query, "0.85 update followup with observe_ticket right");
     }
     // don't delete observe_ticket because already use for task
 
-   // delete show_full_ticket for followup
+    // delete show_full_ticket for followup
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -638,11 +638,11 @@ function update084xto0850()
                                               ITILFollowup::SEEPRIVATE . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'followup'";
-         $DB->doQueryOrDie($query, "0.85 update followup with show_full_ticket right");
+        $DB->doQueryOrDie($query, "0.85 update followup with show_full_ticket right");
     }
-   // don't delete show_full_ticket because already use for task
+    // don't delete show_full_ticket because already use for task
 
-   // delete update_followups
+    // delete update_followups
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -650,7 +650,7 @@ function update084xto0850()
         ) as $profrights
     ) {
         $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . READ  . " | " . ITILFollowup::UPDATEALL  . "
+                 SET `rights` = `rights` | " . READ . " | " . ITILFollowup::UPDATEALL . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'followup'";
         $DB->doQueryOrDie($query, "0.85 update followup with update_followups right");
@@ -660,7 +660,7 @@ function update084xto0850()
              WHERE `name` = 'update_followups'";
     $DB->doQueryOrDie($query, "0.85 delete update_followups right");
 
-   // delete update_own_followups
+    // delete update_own_followups
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -668,7 +668,7 @@ function update084xto0850()
         ) as $profrights
     ) {
         $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . READ  . " | " . ITILFollowup::UPDATEMY  . "
+                 SET `rights` = `rights` | " . READ . " | " . ITILFollowup::UPDATEMY . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'followup'";
         $DB->doQueryOrDie($query, "0.85 update followup with update_own_followups right");
@@ -678,7 +678,7 @@ function update084xto0850()
              WHERE `name` = 'update_own_followups'";
     $DB->doQueryOrDie($query, "0.85 delete update_own_followups right");
 
-   // delete delete_followups
+    // delete delete_followups
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -686,7 +686,7 @@ function update084xto0850()
         ) as $profrights
     ) {
         $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . PURGE  . "
+                 SET `rights` = `rights` | " . PURGE . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'followup'";
         $DB->doQueryOrDie($query, "0.85 update followup with delete_followups right");
@@ -696,9 +696,9 @@ function update084xto0850()
              WHERE `name` = 'delete_followups'";
     $DB->doQueryOrDie($query, "0.85 delete delete_followups right");
 
-   // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
+    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
     if (countElementsInTable("glpi_profilerights", ['name' => 'task']) == 0) {
-       // rename create_ticket
+        // rename create_ticket
         $query  = "UPDATE `glpi_profilerights`
                  SET `name` = 'task'
                  WHERE `name` = 'global_add_tasks'";
@@ -711,7 +711,7 @@ function update084xto0850()
         $DB->doQueryOrDie($query, "0.85 update followup with global_add_tasks right");
     }
 
-   // delete update_tasks
+    // delete update_tasks
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -719,7 +719,7 @@ function update084xto0850()
         ) as $profrights
     ) {
         $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . READ  . " | " . TicketTask::UPDATEALL  . " | " . PURGE . "
+                 SET `rights` = `rights` | " . READ . " | " . TicketTask::UPDATEALL . " | " . PURGE . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'task'";
         $DB->doQueryOrDie($query, "0.85 update task with update_tasks right");
@@ -729,7 +729,7 @@ function update084xto0850()
              WHERE `name` = 'update_tasks'";
     $DB->doQueryOrDie($query, "0.85 delete update_tasks right");
 
-   // delete observe_ticket for task
+    // delete observe_ticket for task
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -737,17 +737,17 @@ function update084xto0850()
         ) as $profrights
     ) {
         $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . TicketTask::SEEPUBLIC  . "
+                 SET `rights` = `rights` | " . TicketTask::SEEPUBLIC . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'task'";
-         $DB->doQueryOrDie($query, "0.85 update task with observe_ticket right");
+        $DB->doQueryOrDie($query, "0.85 update task with observe_ticket right");
     }
     $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'observe_ticket'";
     $DB->doQueryOrDie($query, "0.85 delete observe_ticket right");
 
-   // delete show_full_ticket for task
+    // delete show_full_ticket for task
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -758,16 +758,16 @@ function update084xto0850()
                  SET `rights` = `rights` | " . TicketTask::SEEPUBLIC . " | " . TicketTask::SEEPRIVATE . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'task'";
-         $DB->doQueryOrDie($query, "0.85 update task with show_full_ticket right");
+        $DB->doQueryOrDie($query, "0.85 update task with show_full_ticket right");
     }
     $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'show_full_ticket'";
     $DB->doQueryOrDie($query, "0.85 delete show_full_ticket right");
 
-   // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
+    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
     if (countElementsInTable("glpi_profilerights", ['name' => 'ticketvalidation']) == 0) {
-       // rename delete_validations
+        // rename delete_validations
         $query  = "UPDATE `glpi_profilerights`
                  SET `name` = 'ticketvalidation'
                  WHERE `name` = 'delete_validations'";
@@ -780,7 +780,7 @@ function update084xto0850()
         $DB->doQueryOrDie($query, "0.85 update ticketvalidation with delete_validations right");
     }
 
-   // delete create_request_validation
+    // delete create_request_validation
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -798,7 +798,7 @@ function update084xto0850()
              WHERE `name` = 'create_request_validation'";
     $DB->doQueryOrDie($query, "0.85 delete create_request_validation right");
 
-   // delete create_incident_validation
+    // delete create_incident_validation
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -816,7 +816,7 @@ function update084xto0850()
              WHERE `name` = 'create_incident_validation'";
     $DB->doQueryOrDie($query, "0.85 delete create_incident_validation right");
 
-   // delete validate_request
+    // delete validate_request
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -834,7 +834,7 @@ function update084xto0850()
              WHERE `name` = 'validate_request'";
     $DB->doQueryOrDie($query, "0.85 delete validate_request right");
 
-   // delete validate_incident
+    // delete validate_incident
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -852,8 +852,8 @@ function update084xto0850()
              WHERE `name` = 'validate_incident'";
     $DB->doQueryOrDie($query, "0.85 delete validate_incident right");
 
-   // must be done after ticket right
-   // pour que la proc??dure soit r??-entrante
+    // must be done after ticket right
+    // pour que la proc??dure soit r??-entrante
     if (countElementsInTable("glpi_profilerights", ['name' => 'change']) == 0) {
         ProfileRight::addProfileRights(['change']);
 
@@ -901,18 +901,18 @@ function update084xto0850()
         );
     }
 
-   // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
+    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
     if (countElementsInTable("glpi_profilerights", ['name' => 'planning']) == 0) {
-       // rename show_planning
+        // rename show_planning
         $query  = "UPDATE `glpi_profilerights`
                  SET `name` = 'planning'
                  WHERE `name` = 'show_planning'";
         $DB->doQueryOrDie($query, "0.85 rename show_planning to planning");
 
-       // READMY = 1 => do update needed
+        // READMY = 1 => do update needed
     }
 
-   // delete show_group_planning
+    // delete show_group_planning
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -920,7 +920,7 @@ function update084xto0850()
         ) as $profrights
     ) {
         $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Planning::READGROUP  . "
+                 SET `rights` = `rights` | " . Planning::READGROUP . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'planning'";
         $DB->doQueryOrDie($query, "0.85 update planning with show_group_planning right");
@@ -930,7 +930,7 @@ function update084xto0850()
              WHERE `name` = 'show_group_planning'";
     $DB->doQueryOrDie($query, "0.85 delete show_group_planning right");
 
-   // delete show_all_planning
+    // delete show_all_planning
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -938,7 +938,7 @@ function update084xto0850()
         ) as $profrights
     ) {
         $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Planning::READALL  . "
+                 SET `rights` = `rights` | " . Planning::READALL . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'planning'";
         $DB->doQueryOrDie($query, "0.85 update planning with show_all_planning right");
@@ -948,18 +948,18 @@ function update084xto0850()
              WHERE `name` = 'show_all_planning'";
     $DB->doQueryOrDie($query, "0.85 delete show_all_planning right");
 
-   // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
+    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
     if (countElementsInTable("glpi_profilerights", ['name' => 'problem']) == 0) {
-       // rename show_my_problem
+        // rename show_my_problem
         $query  = "UPDATE `glpi_profilerights`
                  SET `name` = 'problem'
                  WHERE `name` = 'show_my_problem'";
         $DB->doQueryOrDie($query, "0.85 rename show_my_problem to problem");
 
-       // READMY = 1 => do update needed
+        // READMY = 1 => do update needed
     }
 
-   // delete show_all_problem
+    // delete show_all_problem
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -967,7 +967,7 @@ function update084xto0850()
         ) as $profrights
     ) {
         $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = `rights` | " . Problem::READALL  . "
+                 SET `rights` = `rights` | " . Problem::READALL . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'problem'";
         $DB->doQueryOrDie($query, "0.85 update problem with show_all_problem right");
@@ -977,7 +977,7 @@ function update084xto0850()
              WHERE `name` = 'show_all_problem'";
     $DB->doQueryOrDie($query, "0.85 delete show_all_problem right");
 
-   // delete edit_all_problem
+    // delete edit_all_problem
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -988,14 +988,14 @@ function update084xto0850()
                  SET `rights` = `rights` | " . CREATE . " | " . UPDATE . " | " . PURGE . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'problem'";
-         $DB->doQueryOrDie($query, "0.85 update problem with edit_all_problem right");
+        $DB->doQueryOrDie($query, "0.85 update problem with edit_all_problem right");
     }
     $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'edit_all_problem'";
     $DB->doQueryOrDie($query, "0.85 delete edit_all_problem right");
 
-   // delete delete_problem
+    // delete delete_problem
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -1013,7 +1013,7 @@ function update084xto0850()
              WHERE `name` = 'delete_problem'";
     $DB->doQueryOrDie($query, "0.85 delete problem right");
 
-   // update search_config
+    // update search_config
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -1027,7 +1027,7 @@ function update084xto0850()
         $DB->doQueryOrDie($query, "0.85 update search_config with search_config");
     }
 
-   // delete search_config_global
+    // delete search_config_global
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -1045,7 +1045,7 @@ function update084xto0850()
              WHERE `name` = 'search_config_global'";
     $DB->doQueryOrDie($query, "0.85 delete search_config_global right");
 
-   // delete check_update
+    // delete check_update
     foreach (
         $DB->request(
             "glpi_profilerights",
@@ -1056,16 +1056,16 @@ function update084xto0850()
                  SET `rights` = `rights` | " . 1024 /*Backup::CHECKUPDATE*/ . "
                  WHERE `profiles_id` = '" . $profrights['profiles_id'] . "'
                       AND `name` = 'backup'";
-         $DB->doQueryOrDie($query, "0.85 update backup with check_update");
+        $DB->doQueryOrDie($query, "0.85 update backup with check_update");
     }
     $query = "DELETE
              FROM `glpi_profilerights`
              WHERE `name` = 'check_update'";
     $DB->doQueryOrDie($query, "0.85 delete check_update right");
 
-   // entity_dropdown => right by object
+    // entity_dropdown => right by object
 
-   // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
+    // pour que la proc??dure soit r??-entrante et ne pas perdre les s??lections dans le profile
     if (countElementsInTable("glpi_profilerights", ['name' => 'domain']) == 0) {
         ProfileRight::addProfileRights(['domain']);
         ProfileRight::updateProfileRightsAsOtherRights('domain', 'entity_dropdown');
@@ -1111,10 +1111,10 @@ function update084xto0850()
              WHERE `name` = 'entity_dropdown'";
     $DB->doQueryOrDie($query, "0.85 delete entity_dropdown right");
 
-   // delete notes
+    // delete notes
     $tables = ['budget', 'cartridge', 'change','computer', 'consumable', 'contact_enterprise',
         'contract', 'document', 'entity', 'monitor', 'networking', 'peripheral',
-        'phone', 'printer', 'problem', 'software'
+        'phone', 'printer', 'problem', 'software',
     ];
 
     foreach (
@@ -1152,7 +1152,7 @@ function update084xto0850()
 
     $DELFROMDISPLAYPREF['Profile'] = [29, 35, 37, 43, 53, 54, 57, 65, 66, 67, 68, 69, 70, 71,
         72, 73, 74, 75, 76, 77, 78, 80, 81, 88, 93, 94, 95, 96,
-        97, 98, 99, 104, 113, 114, 116, 117, 121, 122, 123
+        97, 98, 99, 104, 113, 114, 116, 117, 121, 122, 123,
     ];
 
     $migration->displayMessage('Update for mailqueue');
@@ -1244,14 +1244,14 @@ function update084xto0850()
         )
     ) {
         $migration->migrationOneTable('glpi_entities');
-       // Set directly to root entity
+        // Set directly to root entity
         $query = 'UPDATE `glpi_entities`
                 SET `delay_send_emails` = 0
                 WHERE `id` = 0';
         $DB->doQueryOrDie($query, "0.85 default value for delay_send_emails for root entity");
     }
 
-   // pour que la proc??dure soit r??-entrante
+    // pour que la proc??dure soit r??-entrante
     if (countElementsInTable("glpi_profilerights", ['name' => 'queuedmail']) == 0) {
         ProfileRight::addProfileRights(['queuedmail']);
 
@@ -1260,7 +1260,7 @@ function update084xto0850()
 
     $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Change'));
 
-   // changes management
+    // changes management
     if (!$DB->tableExists('glpi_changes')) {
         $query = "CREATE TABLE `glpi_changes` (
                   `id` int NOT NULL AUTO_INCREMENT,
@@ -1479,7 +1479,7 @@ function update084xto0850()
         $DB->doQueryOrDie($query, "0.85 add table glpi_changevalidations");
     }
 
-   // Change notifications
+    // Change notifications
     $query = "SELECT *
              FROM `glpi_notificationtemplates`
              WHERE `itemtype` = 'Change'";
@@ -1561,14 +1561,14 @@ function update084xto0850()
 
             $notifications = ['new'         => [],
                 'update'      => [Notification::ASSIGN_TECH,
-                    Notification::OLD_TECH_IN_CHARGE
+                    Notification::OLD_TECH_IN_CHARGE,
                 ],
                 'solved'      => [],
                 'add_task'    => [],
                 'update_task' => [],
                 'delete_task' => [],
                 'closed'      => [],
-                'delete'      => []
+                'delete'      => [],
             ];
 
             $notif_names   = ['new'         => 'New Change',
@@ -1578,7 +1578,7 @@ function update084xto0850()
                 'update_task' => 'Update Task',
                 'delete_task' => 'Delete Task',
                 'closed'      => 'Close Change',
-                'delete'      => 'Delete Change'
+                'delete'      => 'Delete Change',
             ];
 
             foreach ($notifications as $key => $val) {
@@ -1616,7 +1616,7 @@ function update084xto0850()
         ['comment' => "json encoded array of from/dest allowed status change"]
     );
 
-   // Add problem costs
+    // Add problem costs
     if (!$DB->tableExists('glpi_problemcosts')) {
         $query = "CREATE TABLE `glpi_problemcosts` (
                `id` int NOT NULL AUTO_INCREMENT,
@@ -1670,7 +1670,7 @@ function update084xto0850()
     $migration->migrationOneTable('glpi_rules');
     $migration->migrationOneTable('glpi_slalevels');
 
-   // Dropdown translations
+    // Dropdown translations
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_knowbaseitemtranslations'));
 
     Config::setConfigurationValues('core', ['translate_kb' => 0]);
@@ -1688,7 +1688,7 @@ function update084xto0850()
         $DB->doQueryOrDie($query, "0.85 add table glpi_knowbaseitemtranslations");
     }
 
-   // kb translations
+    // kb translations
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_dropdowntranslations'));
 
     Config::setConfigurationValues('core', ['translate_dropdowns' => 0]);
@@ -1710,49 +1710,49 @@ function update084xto0850()
         $DB->doQueryOrDie($query, "0.85 add table glpi_dropdowntranslations");
     }
 
-   //generate uuid for the basic rules of glpi
-   // we use a complete sql where for cover all migration case (0.78 -> 0.85)
+    //generate uuid for the basic rules of glpi
+    // we use a complete sql where for cover all migration case (0.78 -> 0.85)
     $rules = [['sub_type'    => 'RuleImportEntity',
         'name'        => 'Root',
         'match'       => 'AND',
-        'description' => ''
+        'description' => '',
     ],
 
         ['sub_type'    => 'RuleRight',
             'name'        => 'Root',
             'match'       => 'AND',
-            'description' => ''
+            'description' => '',
         ],
 
         ['sub_type'    => 'RuleMailCollector',
             'name'        => 'Root',
             'match'       => 'AND',
-            'description' => ''
+            'description' => '',
         ],
 
         ['sub_type'    => 'RuleMailCollector',
             'name'        => 'Auto-Reply X-Auto-Response-Suppress',
             'match'       => 'AND',
-            'description' => 'Exclude Auto-Reply emails using X-Auto-Response-Suppress header'
+            'description' => 'Exclude Auto-Reply emails using X-Auto-Response-Suppress header',
         ],
 
         ['sub_type'    => 'RuleMailCollector',
             'name'        => 'Auto-Reply Auto-Submitted',
             'match'       => 'AND',
-            'description' => 'Exclude Auto-Reply emails using Auto-Submitted header'
+            'description' => 'Exclude Auto-Reply emails using Auto-Submitted header',
         ],
 
         ['sub_type'    => 'RuleTicket',
             'name'        => 'Ticket location from item',
             'match'       => 'AND',
-            'description' => ''
+            'description' => '',
         ],
 
         ['sub_type'    => 'RuleTicket',
             'name'        => 'Ticket location from user',
             'match'       => 'AND',
-            'description' => ''
-        ]
+            'description' => '',
+        ],
     ];
 
     $i = 0;
@@ -1771,7 +1771,7 @@ function update084xto0850()
         $i++;
     }
 
-   //generate uuid for the rules of user
+    //generate uuid for the rules of user
     foreach ($DB->request('glpi_rules', ['uuid' => null]) as $data) {
         $uuid  = Rule::getUuid();
         $query = "UPDATE `glpi_rules`
@@ -1800,8 +1800,8 @@ function update084xto0850()
     $migration->dropField("glpi_users", 'is_categorized_soft_expanded');
     $migration->dropField("glpi_users", 'is_not_categorized_soft_expanded');
 
-   // Config::setConfigurationValues('core', array('use_unicodefont' => 0));
-   // $migration->addField("glpi_users", 'use_unicodefont', "int DEFAULT NULL");
+    // Config::setConfigurationValues('core', array('use_unicodefont' => 0));
+    // $migration->addField("glpi_users", 'use_unicodefont', "int DEFAULT NULL");
     Config::deleteConfigurationValues('core', ['use_unicodefont']);
     $migration->dropField("glpi_users", 'use_unicodefont');
     Config::setConfigurationValues('core', ['pdffont' => 'helvetica']);
@@ -1818,7 +1818,7 @@ function update084xto0850()
     foreach (
         ['is_visible_computer', 'is_visible_monitor', 'is_visible_networkequipment',
             'is_visible_peripheral', 'is_visible_phone', 'is_visible_printer',
-            'is_visible_softwareversion'
+            'is_visible_softwareversion',
         ] as $field
     ) {
         $migration->addField(
@@ -1830,46 +1830,46 @@ function update084xto0850()
         $migration->addKey('glpi_states', $field);
     }
 
-   // glpi_domains by entity
+    // glpi_domains by entity
     $migration->addField('glpi_domains', 'entities_id', 'integer', ['after' => 'name']);
     $migration->addField('glpi_domains', 'is_recursive', 'bool', ['update' => '1',
-        'after'  => 'entities_id'
+        'after'  => 'entities_id',
     ]);
 
-   // glpi_states by entity
+    // glpi_states by entity
     $migration->addField('glpi_states', 'entities_id', 'integer', ['after' => 'name']);
     $migration->addField('glpi_states', 'is_recursive', 'bool', ['update' => '1',
-        'after'  => 'entities_id'
+        'after'  => 'entities_id',
     ]);
 
-   // add validity date for a user
+    // add validity date for a user
     $migration->addField('glpi_users', 'begin_date', 'datetime');
     $migration->addField('glpi_users', 'end_date', 'datetime');
 
-   // add validity date for a knowbaseitem
+    // add validity date for a knowbaseitem
     $migration->addField('glpi_knowbaseitems', 'begin_date', 'datetime');
     $migration->addField('glpi_knowbaseitems', 'end_date', 'datetime');
 
-   // Add validation percent for tickets
+    // Add validation percent for tickets
     $migration->addField('glpi_tickets', 'validation_percent', 'integer', ['value' => 0]);
 
-   // Add missing key
+    // Add missing key
     $migration->addKey('glpi_tickettasks', 'state');
     $migration->addKey('glpi_tickettasks', 'users_id_tech');
     $migration->addKey('glpi_tickettasks', 'begin');
     $migration->addKey('glpi_tickettasks', 'end');
 
-   // Create notification for reply to satisfaction survey based on satisfaction notif
-   // Check if notifications already exists
+    // Create notification for reply to satisfaction survey based on satisfaction notif
+    // Check if notifications already exists
     if (
         countElementsInTable(
             'glpi_notifications',
             ['itemtype' => 'Ticket',
-                'event'    => 'replysatisfaction'
+                'event'    => 'replysatisfaction',
             ]
         ) == 0
     ) {
-       // No notifications duplicate all
+        // No notifications duplicate all
 
         $query = "SELECT *
                 FROM `glpi_notifications`
@@ -1891,14 +1891,14 @@ function update084xto0850()
             $query2 = "SELECT *
                     FROM `glpi_notificationtargets`
                     WHERE `notifications_id` = '" . $notif['id'] . "'";
-           // Add same recipent of satisfaction
+            // Add same recipent of satisfaction
             foreach ($DB->request($query2) as $target) {
                 $query = "INSERT INTO `glpi_notificationtargets`
                              (`notifications_id`, `type`, `items_id`)
                       VALUES ($newID, '" . $target['type'] . "', '" . $target['items_id'] . "')";
                 $DB->doQueryOrDie($query, "0.85 insert targets for replysatisfaction notification");
             }
-           // Add Tech in charge
+            // Add Tech in charge
             $query = "INSERT INTO `glpi_notificationtargets`
                              (`notifications_id`, `type`, `items_id`)
                       VALUES ($newID, '" . Notification::USER_TYPE . "', '" . Notification::ASSIGN_TECH . "')";
@@ -1908,13 +1908,13 @@ function update084xto0850()
 
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_slas'));
 
-   // * Convert SLA resolution time to new system (ticket #4346)
+    // * Convert SLA resolution time to new system (ticket #4346)
     if (!$DB->fieldExists("glpi_slas", "definition_time")) {
         $migration->addField("glpi_slas", 'definition_time', "string");
         $migration->addField("glpi_slas", 'end_of_working_day', "bool");
         $migration->migrationOneTable('glpi_slas');
 
-       // Minutes
+        // Minutes
         $query = "SELECT *
                 FROM `glpi_slas`
                 WHERE `resolution_time` <= '3000'";
@@ -1930,7 +1930,7 @@ function update084xto0850()
                         WHERE `id` IN (" . implode(",", $a_ids) . ")");
             }
         }
-       // Hours
+        // Hours
         $query = "SELECT *
                 FROM `glpi_slas`
                 WHERE `resolution_time` > '3000'
@@ -1947,7 +1947,7 @@ function update084xto0850()
                         WHERE `id` IN (" . implode(",", $a_ids) . ")");
             }
         }
-       // Days
+        // Days
         $query = "SELECT *
                 FROM `glpi_slas`
                 WHERE `resolution_time` > '82800'";
@@ -2066,12 +2066,12 @@ function update084xto0850()
              SET `tag` = `id`";
     $DB->doQueryOrDie($query, "0.85 set tag to all documents");
 
-   // increase password length
+    // increase password length
     $migration->changeField('glpi_users', 'password', 'password', 'string');
 
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_softwarecategories'));
 
-   // Hierarchical software category
+    // Hierarchical software category
     $migration->addField('glpi_softwarecategories', 'softwarecategories_id', 'integer');
     $migration->addField("glpi_softwarecategories", 'completename', "text");
     $migration->addField("glpi_softwarecategories", 'level', "integer");
@@ -2083,13 +2083,13 @@ function update084xto0850()
 
     $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'various'));
 
-   // glpi_cartridgeitems  glpi_consumableitems by entity
+    // glpi_cartridgeitems  glpi_consumableitems by entity
     $migration->addField(
         'glpi_consumableitems',
         'is_recursive',
         'bool',
         ['update' => '1',
-            'after'  => 'entities_id'
+            'after'  => 'entities_id',
         ]
     );
     $migration->addField(
@@ -2097,10 +2097,10 @@ function update084xto0850()
         'is_recursive',
         'bool',
         ['update' => '1',
-            'after'  => 'entities_id'
+            'after'  => 'entities_id',
         ]
     );
-   // Fix events
+    // Fix events
     $query = "UPDATE `glpi_events`
              SET `type` = 'consumableitems'
              WHERE `type` = 'consumables'";
@@ -2111,10 +2111,10 @@ function update084xto0850()
              WHERE `type` = 'cartridges';";
     $DB->doQueryOrDie($query, "0.85 fix events for cartridges");
 
-   // Bookmark order :
+    // Bookmark order :
     $migration->addField('glpi_users', 'privatebookmarkorder', 'longtext');
 
-   // Pref to comme back ticket created
+    // Pref to comme back ticket created
     if ($migration->addField('glpi_users', 'backcreated', 'TINYINT DEFAULT NULL')) {
         $query = "INSERT INTO `glpi_configs`
                        (`context`, `name`, `value`)
@@ -2254,16 +2254,16 @@ function update084xto0850()
         $ADDTODISPLAYPREF['ProjectState'] = [12,11];
         $states = ['new' => ['name'        => _x('ticket', 'New'),
             'color'       => '#06ff00',
-            'is_finished' => 0
+            'is_finished' => 0,
         ],
             'do'  => ['name'        => __('Processing'),
                 'color'       => '#ffb800',
-                'is_finished' => 0
+                'is_finished' => 0,
             ],
             'end' => ['name'        => __('Closed'),
                 'color'       => '#ff0000',
-                'is_finished' => 1
-            ]
+                'is_finished' => 1,
+            ],
         ];
         foreach ($states as $key => $val) {
             $query = "INSERT INTO `glpi_projectstates`
@@ -2284,7 +2284,7 @@ function update084xto0850()
         $DB->doQueryOrDie($query, "0.85 create glpi_projecttypes");
     }
     $migration->addField("glpi_groups", 'is_manager', "bool", ['update' => "`is_assign`",
-        'value'  => 1
+        'value'  => 1,
     ]);
     $migration->addKey('glpi_groups', 'is_manager');
 
@@ -2405,7 +2405,7 @@ function update084xto0850()
         $DB->doQueryOrDie($query, "0.85 add table glpi_projecttasks_tickets");
     }
 
-   // Project notifications
+    // Project notifications
     $query = "SELECT *
              FROM `glpi_notificationtemplates`
              WHERE `itemtype` = 'Project'";
@@ -2464,12 +2464,12 @@ function update084xto0850()
 
             $notifications = ['new'         => [],
                 'update'      => [],
-                'delete'      => []
+                'delete'      => [],
             ];
 
             $notif_names   = ['new'         => 'New Project',
                 'update'      => 'Update Project',
-                'delete'      => 'Delete Project'
+                'delete'      => 'Delete Project',
             ];
 
             foreach ($notifications as $key => $val) {
@@ -2498,7 +2498,7 @@ function update084xto0850()
         }
     }
 
-   // Project Task notifications
+    // Project Task notifications
     $query = "SELECT *
              FROM `glpi_notificationtemplates`
              WHERE `itemtype` = 'ProjectTask'";
@@ -2554,12 +2554,12 @@ function update084xto0850()
 
             $notifications = ['new'         => [],
                 'update'      => [],
-                'delete'      => []
+                'delete'      => [],
             ];
 
             $notif_names   = ['new'         => 'New Project Task',
                 'update'      => 'Update Project Task',
-                'delete'      => 'Delete Project Task'
+                'delete'      => 'Delete Project Task',
             ];
 
             foreach ($notifications as $key => $val) {
@@ -2589,7 +2589,7 @@ function update084xto0850()
     }
 
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'notepad'));
-   // Create new notepad table
+    // Create new notepad table
     if (!$DB->tableExists('glpi_notepads')) {
         $query = "CREATE TABLE `glpi_notepads` (
                   `id` int NOT NULL AUTO_INCREMENT,
@@ -2614,11 +2614,11 @@ function update084xto0850()
             'glpi_contracts', 'glpi_documents', 'glpi_entities',
             'glpi_monitors', 'glpi_networkequipments', 'glpi_peripherals',
             'glpi_phones', 'glpi_printers', 'glpi_problems', 'glpi_projects',
-            'glpi_projecttasks', 'glpi_softwares', 'glpi_suppliers'
+            'glpi_projecttasks', 'glpi_softwares', 'glpi_suppliers',
         ];
 
         foreach ($notepad_tables as $t) {
-           // Migrate data
+            // Migrate data
             if ($DB->fieldExists($t, 'notepad', false)) {
                 $query = "SELECT id, notepad
                       FROM `$t`
@@ -2649,10 +2649,10 @@ function update084xto0850()
     $status  = ['none'     => CommonITILValidation::NONE,
         'waiting'  => CommonITILValidation::WAITING,
         'accepted' => CommonITILValidation::ACCEPTED,
-        'rejected' => CommonITILValidation::REFUSED
+        'rejected' => CommonITILValidation::REFUSED,
     ];
 
-   // Migrate datas
+    // Migrate datas
     foreach ($status as $old => $new) {
         $query = "UPDATE `glpi_ticketvalidations`
                 SET `status` = '$new'
@@ -2703,7 +2703,7 @@ function update084xto0850()
         $DB->doQueryOrDie($query, "0.85 value in glpi_tickettemplatepredefinedfields $old to $new");
     }
 
-   // Migrate templates
+    // Migrate templates
     $query = "SELECT `glpi_notificationtemplatetranslations`.*
              FROM `glpi_notificationtemplatetranslations`
              INNER JOIN `glpi_notificationtemplates`
@@ -2746,7 +2746,7 @@ function update084xto0850()
         }
     }
 
-   // Upgrade ticket bookmarks
+    // Upgrade ticket bookmarks
     $query = "SELECT *
              FROM `glpi_bookmarks`";
 
@@ -2758,10 +2758,10 @@ function update084xto0850()
                 $options = [];
                 parse_str($data["query"], $options);
                 if (isset($options['field'])) {
-                   // update ticket statuses
+                    // update ticket statuses
                     if (
                         ($data['itemtype'] = 'Ticket')
-                        && ( $data['type'] == Bookmark::SEARCH)
+                        && ($data['type'] == Bookmark::SEARCH)
                     ) {
                         foreach ($options['field'] as $key => $val) {
                             if (
@@ -2784,8 +2784,8 @@ function update084xto0850()
         }
     }
 
-   //////////////////////////////////////////////////
-   // Device update
+    //////////////////////////////////////////////////
+    // Device update
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'Devices'));
 
     $devices = [
@@ -2812,7 +2812,7 @@ function update084xto0850()
         'Item_DeviceSoundCard',
         'Item_DevicePci',
         'Item_DeviceCase',
-        'Item_DevicePowerSupply'
+        'Item_DevicePowerSupply',
     ];
 
     foreach ($devices as $itemtype) {
@@ -2823,14 +2823,14 @@ function update084xto0850()
         }
         if (!$DB->fieldExists($table, 'is_recursive')) {
             $migration->addField($table, 'is_recursive', 'bool', ['update' => '1',
-                'after'  => 'entities_id'
+                'after'  => 'entities_id',
             ]);
             $migration->addKey($table, ['is_recursive'], 'is_recursive');
         }
     }
 
-   // Adding the Registered ID class that contains PCI IDs and USB IDs for vendors
-   // as well devices
+    // Adding the Registered ID class that contains PCI IDs and USB IDs for vendors
+    // as well devices
     if (!$DB->tableExists('glpi_registeredids')) {
         $query = "CREATE TABLE `glpi_registeredids` (
                  `id` int NOT NULL AUTO_INCREMENT,
@@ -2846,12 +2846,12 @@ function update084xto0850()
         $DB->doQueryOrDie($query, "0.85 add table glpi_registeredids");
     }
 
-   // Complete the item_devices
+    // Complete the item_devices
     foreach (
         ['glpi_items_devicecases', 'glpi_items_devicecontrols', 'glpi_items_devicedrives',
             'glpi_items_devicegraphiccards', 'glpi_items_devicemotherboards',
             'glpi_items_devicenetworkcards', 'glpi_items_devicepcis',
-            'glpi_items_devicepowersupplies', 'glpi_items_devicesoundcards'
+            'glpi_items_devicepowersupplies', 'glpi_items_devicesoundcards',
         ] as $table
     ) {
         if (!$DB->fieldExists($table, 'serial')) {
@@ -2865,7 +2865,7 @@ function update084xto0850()
             'glpi_items_devicegraphiccards', 'glpi_items_deviceharddrives',
             'glpi_items_devicememories', 'glpi_items_devicenetworkcards',
             'glpi_items_devicepcis', 'glpi_items_deviceprocessors',
-            'glpi_items_devicesoundcards'
+            'glpi_items_devicesoundcards',
         ] as $table
     ) {
         if (!$DB->fieldExists($table, 'busID')) {
@@ -2874,14 +2874,14 @@ function update084xto0850()
         }
     }
 
-   // Add key
+    // Add key
     foreach (
         ['glpi_items_devicecases', 'glpi_items_devicecontrols', 'glpi_items_devicedrives',
             'glpi_items_devicegraphiccards', 'glpi_items_deviceharddrives',
             'glpi_items_devicememories', 'glpi_items_devicemotherboards',
             'glpi_items_devicenetworkcards', 'glpi_items_devicepcis',
             'glpi_items_devicepowersupplies', 'glpi_items_deviceprocessors',
-            'glpi_items_devicesoundcards'
+            'glpi_items_devicesoundcards',
         ] as $table
     ) {
         $migration->dropKey($table, 'item');
@@ -2901,22 +2901,22 @@ function update084xto0850()
     $migration->addField("glpi_changes_suppliers", "use_notification", "bool");
     $migration->addField("glpi_changes_suppliers", "alternative_email", "string");
 
-   // Add field for locations
+    // Add field for locations
     $migration->addField("glpi_locations", "latitude", "string");
     $migration->addField("glpi_locations", "longitude", "string");
     $migration->addField("glpi_locations", "altitude", "string");
 
-   // Add fixed columns as variables :
+    // Add fixed columns as variables :
     $ADDTODISPLAYPREF['CartridgeItem']   = [9];
     $ADDTODISPLAYPREF['ConsumableItem']  = [9];
     $ADDTODISPLAYPREF['ReservationItem'] = [9];
 
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'License validity'));
-   // for licence validity
+    // for licence validity
     if ($migration->addField("glpi_softwarelicenses", "is_valid", "bool", ["value" => 1])) {
         $migration->migrationOneTable("glpi_softwarelicenses");
 
-       // Force all entities
+        // Force all entities
         if (!isset($_SESSION['glpishowallentities'])) {
             $_SESSION['glpishowallentities'] = 0;
         }
@@ -2938,16 +2938,16 @@ function update084xto0850()
                     'glpi_computers'  => [
                         'FKEY'   => [
                             'glpi_computers'                    => 'id',
-                            'glpi_computers_softwarelicenses'   => 'computers_id'
-                        ]
-                    ]
+                            'glpi_computers_softwarelicenses'   => 'computers_id',
+                        ],
+                    ],
                 ],
                 'WHERE'        => [
                     'glpi_computers_softwarelicenses.softwarelicenses_id' => $datal['id'],
                     'glpi_computers.is_deleted'                           => 0,
                     'glpi_computers.is_template'                          => 0,
-                    'glpi_computers_softwarelicenses.is_deleted'          => 0
-                ]
+                    'glpi_computers_softwarelicenses.is_deleted'          => 0,
+                ],
             ])->current()['cpt'];
 
             if ($datal['number'] < $count_for_license) {
@@ -2979,19 +2979,19 @@ function update084xto0850()
         }
     }
 
-   // Add condition to rules
+    // Add condition to rules
     $migration->addField('glpi_rules', 'condition', 'integer');
     $migration->addKey('glpi_rules', 'condition');
     $migration->migrationOneTable('glpi_rules');
 
-   // Update condition for RuleTicket : only on add
+    // Update condition for RuleTicket : only on add
     $query = "UPDATE `glpi_rules`
              SET `condition` = 1
              WHERE `sub_type` = 'RuleTicket'";
 
     $DB->doQueryOrDie($query, "0.85 update condition for RuleTicket");
 
-   // Update ticket_status for helpdeks profiles
+    // Update ticket_status for helpdeks profiles
     $newcycle =  [ 1 =>  [ 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, ],
         2 =>  [ 1 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, ],
         3 =>  [ 1 => 0, 2 => 0, 4 => 0, 5 => 0, 6 => 0, ],
@@ -3005,11 +3005,11 @@ function update084xto0850()
 
     $DB->doQueryOrDie($query, "0.85 update default life cycle for helpdesk");
 
-   //Add comment field to a virtualmachine
+    //Add comment field to a virtualmachine
     $migration->addField('glpi_computervirtualmachines', 'comment', 'text');
 
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'IP improvment'));
-   // Ip search improve
+    // Ip search improve
     $migration->addField('glpi_ipaddresses', 'mainitems_id', 'integer');
     $migration->addField('glpi_ipaddresses', 'mainitemtype', 'string', ['after'  => 'mainitems_id']);
     $migration->migrationOneTable('glpi_ipaddresses');
@@ -3026,7 +3026,7 @@ function update084xto0850()
                        `ip`.`mainitems_id` = `netport`.`items_id`";
     $DB->doQueryOrDie($query_doc_i, "0.85 update mainitems fields of ipaddresses");
 
-   // Upgrade ticket bookmarks
+    // Upgrade ticket bookmarks
     $query = "SELECT *
              FROM `glpi_bookmarks`
              WHERE `type` = '" . Bookmark::SEARCH . "'";
@@ -3039,23 +3039,23 @@ function update084xto0850()
                 $options = [];
                 parse_str($data["query"], $options);
 
-               // Copy itemtype if not set
+                // Copy itemtype if not set
                 if (!isset($options['itemtype'])) {
                     $options['itemtype'] = $data['itemtype'];
                 }
-               // Move criteria
+                // Move criteria
                 if (isset($options['field']) && is_array($options['field'])) {
                     $newkey = 0;
                     foreach ($options['field'] as $key => $val) {
                         $options['criteria'][$newkey]['field'] = $val;
 
-                      //  other field
+                        //  other field
                         if (isset($options['link'][$key])) {
-                              $options['criteria'][$newkey]['link'] = $options['link'][$key];
+                            $options['criteria'][$newkey]['link'] = $options['link'][$key];
                         }
 
                         if (isset($options['searchtype'][$key])) {
-                             $options['criteria'][$newkey]['searchtype'] = $options['searchtype'][$key];
+                            $options['criteria'][$newkey]['searchtype'] = $options['searchtype'][$key];
                         } else {
                             $options['criteria'][$newkey]['searchtype'] = 'contains';
                         }
@@ -3081,13 +3081,13 @@ function update084xto0850()
                     foreach ($options['field2'] as $key => $val) {
                         $options['metacriteria'][$newkey]['field'] = $val;
 
-                      //  other field
+                        //  other field
                         if (isset($options['itemtype2'][$key])) {
-                              $options['metacriteria'][$newkey]['itemtype'] = $options['itemtype2'][$key];
+                            $options['metacriteria'][$newkey]['itemtype'] = $options['itemtype2'][$key];
                         }
 
                         if (isset($options['link2'][$newkey])) {
-                             $options['metacriteria'][$newkey]['link'] = $options['link2'][$key];
+                            $options['metacriteria'][$newkey]['link'] = $options['link2'][$key];
                         }
 
                         if (isset($options['searchtype2'][$key])) {
@@ -3121,12 +3121,12 @@ function update084xto0850()
             }
         }
     }
-   // ************ Keep it at the end **************
-   //TRANS: %s is the table or item to migrate
+    // ************ Keep it at the end **************
+    //TRANS: %s is the table or item to migrate
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
-   // Clean display prefs
-   // Notepad
+    // Clean display prefs
+    // Notepad
     $query = "UPDATE `glpi_displaypreferences`
              SET `num` = 90
              WHERE `itemtype` = 'Entity'
@@ -3139,7 +3139,7 @@ function update084xto0850()
 
     $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
 
-   // must always be at the end
+    // must always be at the end
     $migration->executeMigration();
 
     return $updateresult;

@@ -57,7 +57,7 @@ class SoftwareCategory extends CommonTreeDropdown
         parent::cleanRelationData();
 
         if ($this->isUsedAsCategoryOnSoftwareDeletion()) {
-            $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+            $newval = ($this->input['_replace_by'] ?? 0);
 
             Config::setConfigurationValues(
                 'core',

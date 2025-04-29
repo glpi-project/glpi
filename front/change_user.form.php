@@ -59,7 +59,7 @@ if (isset($_POST["update"])) {
     echo "<script type='text/javascript' >\n";
     echo "window.parent.location.reload();";
     echo "</script>";
-} else if (isset($_POST['delete'])) {
+} elseif (isset($_POST['delete'])) {
     $link->check($_POST['id'], DELETE);
     $link->delete($_POST);
 
@@ -82,7 +82,7 @@ if (isset($_POST["update"])) {
     );
 
     Html::redirect($CFG_GLPI["root_doc"] . "/front/change.php");
-} else if (isset($_GET["id"])) {
+} elseif (isset($_GET["id"])) {
     $link->showUserNotificationForm($_GET["id"]);
 } else {
     Html::displayErrorAndDie('Lost');

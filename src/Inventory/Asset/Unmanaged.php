@@ -89,12 +89,12 @@ class Unmanaged extends MainAsset
     protected function prepareForNetworkDevice(\stdClass $val): void
     {
         if (isset($this->extra_data['network_device'])) {
-            $device = (object)$this->extra_data['network_device'];
+            $device = (object) $this->extra_data['network_device'];
 
             $dev_mapping = [
                 'mac'       => 'mac',
                 'name'      => 'name',
-                'ips'       => 'ips'
+                'ips'       => 'ips',
             ];
 
             foreach ($dev_mapping as $origin => $dest) {
@@ -120,7 +120,7 @@ class Unmanaged extends MainAsset
                 $port->logical_number = 0;
                 $port->ipaddress = [];
 
-               //add internal port(s)
+                //add internal port(s)
                 foreach ($device->ips as $ip) {
                     if ($ip != '127.0.0.1' && $ip != '::1' && !in_array($ip, $port->ipaddress)) {
                         $port->ipaddress[] = $ip;
@@ -236,8 +236,8 @@ class Unmanaged extends MainAsset
                 'itemtype' => $this->item->getType(),
                 'items_id' => $items_id,
                 'NOT' => [
-                    'id' => $this->agent->fields['id']
-                ]
+                    'id' => $this->agent->fields['id'],
+                ],
             ]);
         }
 
@@ -282,7 +282,7 @@ class Unmanaged extends MainAsset
             'items_id'  => $items_id,
             'itemtype'  => $itemtype,
             'agents_id' => $this->agent->fields['id'],
-            'method'    => $this->request_query ?? Request::INVENT_QUERY
+            'method'    => $this->request_query ?? Request::INVENT_QUERY,
         ];
         $rulesmatched->add($inputrulelog, [], false);
         $rulesmatched->cleanOlddata($items_id, $itemtype);

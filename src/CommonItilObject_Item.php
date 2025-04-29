@@ -61,11 +61,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                             $values[$field],
                             1
                         );
-                         return sprintf(
-                             __('%1$s %2$s'),
-                             $tmp['name'],
-                             Html::showToolTip($tmp['comment'], ['display' => false])
-                         );
+                        return sprintf(
+                            __('%1$s %2$s'),
+                            $tmp['name'],
+                            Html::showToolTip($tmp['comment'], ['display' => false])
+                        );
                     }
                     return Dropdown::getDropdownName(
                         getTableForItemType($values['itemtype']),
@@ -113,7 +113,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $params = [static::$items_id_1 => 0,
             'used'       => [],
             'multiple'   => 0,
-            'rand'       => mt_rand()
+            'rand'       => mt_rand(),
         ];
 
         foreach ($options as $key => $val) {
@@ -133,7 +133,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     Ticket::HELPDESK_ALL_HARDWARE
                 )
             ) {
-               // Display a message if view my hardware
+                // Display a message if view my hardware
                 if (
                     $users_id
                     && ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] & pow(
@@ -155,7 +155,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     ['emptylabel' => $emptylabel,
                         'value'      => $itemtype,
                         'rand'       => $rand,
-                        'display_emptychoice' => true
+                        'display_emptychoice' => true,
                     ]
                 );
                 $found_type = isset($types[$itemtype]);
@@ -166,7 +166,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     'used'            => $params['used'],
                     'multiple'        => $params['multiple'],
                     'rand'            => $rand,
-                    'myname'          => "add_items_id"
+                    'myname'          => "add_items_id",
                 ];
 
                 Ajax::updateItemOnSelectEvent(
@@ -178,7 +178,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 );
                 echo "<span id='results_$myname$rand'>\n";
 
-               // Display default value if itemtype is displayed
+                // Display default value if itemtype is displayed
                 if (
                     $found_type
                     && $itemtype

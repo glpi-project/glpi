@@ -64,8 +64,8 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
 
     public function prepareInputForAdd($input)
     {
-       // Use massiveaction system to manage add system.
-       // Need to update data : value not set but
+        // Use massiveaction system to manage add system.
+        // Need to update data : value not set but
         if (!isset($input['value'])) {
             if (isset($input['field']) && isset($input[$input['field']])) {
                 $input['value'] = $input[$input['field']];
@@ -101,21 +101,21 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         $itemtype_id = $itil_object->getSearchOptionIDByField('field', 'itemtype', $itil_object->getTable());
         $items_id_id = $itil_object->getSearchOptionIDByField('field', 'items_id', $itil_object->getTable());
 
-       // Try to delete itemtype -> delete items_id
+        // Try to delete itemtype -> delete items_id
         if ($this->fields['num'] == $itemtype_id) {
             $iterator = $DB->request([
                 'SELECT' => 'id',
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [
                     static::$items_id => $this->fields[static::$items_id],
-                    'num'             => $items_id_id
-                ]
+                    'num'             => $items_id_id,
+                ],
             ]);
 
             if (count($iterator)) {
-                 $result = $iterator->current();
-                 $a = new static();
-                 $a->delete(['id' => $result['id']]);
+                $result = $iterator->current();
+                $a = new static();
+                $a->delete(['id' => $result['id']]);
             }
         }
     }
@@ -124,7 +124,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-       // can exists for template
+        // can exists for template
         if (
             $item instanceof ITILTemplate
             && Session::haveRight("itiltemplate", READ)
@@ -168,7 +168,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => [static::$items_id => $ID],
-            'ORDER'  => 'id'
+            'ORDER'  => 'id',
         ]);
 
         $tt_class       = static::$itemtype;
@@ -225,7 +225,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         $fields = [
             $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
             $itil_object->getSearchOptionIDByField('field', 'items_id', $itemstable),
-            $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_tasktemplates')
+            $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_tasktemplates'),
         ];
 
         return $fields;
@@ -285,13 +285,13 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => [static::$items_id => $ID],
-            'ORDER'  => 'id'
+            'ORDER'  => 'id',
         ]);
 
         $display_options = [
             'relative_dates' => true,
             'comments'       => true,
-            'html'           => true
+            'html'           => true,
         ];
 
         $predeffields = [];
@@ -314,7 +314,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
             $display_fields[-1] = Dropdown::EMPTY_VALUE;
             $display_fields    += $fields;
 
-           // Unset multiple items
+            // Unset multiple items
             $multiple = self::getMultiplePredefinedValues();
             foreach ($multiple as $val) {
                 if (isset($used[$val])) {
@@ -323,7 +323,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
             }
 
             $rand_dp  = Dropdown::showFromArray('num', $display_fields, ['used' => $used,
-                'toadd'
+                'toadd',
             ]);
             echo "</td><td class='top'>";
             $paramsmassaction = ['id_field'         => '__VALUE__',
@@ -335,8 +335,8 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
                     'with_days'          => 0,
                     'with_specific_date' => 0,
                     'itemlink_as_string' => 1,
-                    'entity'             => $tt->getEntityID()
-                ]
+                    'entity'             => $tt->getEntityID(),
+                ],
             ];
 
             Ajax::updateItemOnSelectEvent(
@@ -357,7 +357,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . static::getType() . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                'container'     => 'mass' . static::getType() . $rand
+                'container'     => 'mass' . static::getType() . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -383,7 +383,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
 
             foreach ($predeffields as $data) {
                 if (!isset($fields[$data['num']])) {
-                   // could happen when itemtype removed and items_id present
+                    // could happen when itemtype removed and items_id present
                     continue;
                 }
                 echo "<tr class='tab_bg_2'>";

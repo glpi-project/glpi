@@ -170,7 +170,7 @@ class TicketTemplate extends ITILTemplate
             return false;
         }
         if ($tt->getFromDBWithData($tt->getID())) {
-            $ticket = new  Ticket();
+            $ticket = new Ticket();
             $ticket->showFormHelpdesk(Session::getLoginUserID(), $tt->getID());
         }
     }

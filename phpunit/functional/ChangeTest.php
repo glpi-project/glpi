@@ -73,7 +73,7 @@ class ChangeTest extends DbTestCase
 
         $this->assertFalse($entity->isNewID($entityId));
         $entity->getFromDB($entityId);
-        $this->assertEquals(\Entity::CONFIG_NEVER, (int)$entity->fields['auto_assign_mode']);
+        $this->assertEquals(\Entity::CONFIG_NEVER, (int) $entity->fields['auto_assign_mode']);
 
         // Login again to acess the new entity
         $this->login('glpi', 'glpi');
@@ -256,8 +256,8 @@ class ChangeTest extends DbTestCase
                 [
                     'users_id' => $users_id,
                     'use_notification'  => 0,
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertTrue($result);
 
@@ -267,8 +267,8 @@ class ChangeTest extends DbTestCase
                 [
                     'users_id' => $users_id,
                     'use_notification'  => 0,
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertTrue($result);
     }
@@ -310,7 +310,7 @@ class ChangeTest extends DbTestCase
             'content' => 'Test followup content',
             'requesttypes_id' => 1,
             'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
-            'add_reopen' => ''
+            'add_reopen' => '',
         ]);
         $this->assertGreaterThan(0, $followup_id);
 
@@ -353,7 +353,7 @@ class ChangeTest extends DbTestCase
         $task = new \ChangeTask();
         $this->assertGreaterThan(
             0,
-            (int)$task->add([
+            (int) $task->add([
                 'changes_id'   => $change_id,
                 'content'      => 'A simple Task',
                 'date'         => '2015-01-01 00:00:00',
@@ -362,7 +362,7 @@ class ChangeTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$task->add([
+            (int) $task->add([
                 'changes_id'   => $change_id,
                 'content'      => 'A simple Task',
                 'date'         => $last_task_date,
@@ -371,7 +371,7 @@ class ChangeTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$task->add([
+            (int) $task->add([
                 'changes_id'   => $change_id,
                 'content'      => 'A simple Task',
                 'date'         => '2016-01-01 00:00:00',
@@ -381,7 +381,7 @@ class ChangeTest extends DbTestCase
         $solution = new \ITILSolution();
         $this->assertGreaterThan(
             0,
-            (int)$solution->add([
+            (int) $solution->add([
                 'itemtype'  => $change::getType(),
                 'items_id' => $change_id,
                 'content'    => 'solution content',
@@ -392,7 +392,7 @@ class ChangeTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$followup->add([
+            (int) $followup->add([
                 'itemtype'  => $change::getType(),
                 'items_id'  => $change_id,
                 'add_reopen'   => '1',
@@ -403,7 +403,7 @@ class ChangeTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$solution->add([
+            (int) $solution->add([
                 'itemtype'  => $change::getType(),
                 'items_id' => $change_id,
                 'content'    => 'solution content',
@@ -417,7 +417,7 @@ class ChangeTest extends DbTestCase
                 'field' => 2,
                 'searchtype' => 'contains',
                 'value' => $change_id,
-            ]
+            ],
         ];
         $data   = \Search::getDatas($change->getType(), ["criteria" => $criteria], [72,73,74]);
         $this->assertSame(1, $data['data']['totalcount']);

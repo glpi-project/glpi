@@ -110,15 +110,15 @@ class NetworkPortMetrics extends CommonDBChild
         $bdate = new DateTime();
         $bdate->sub(new DateInterval('P1Y'));
         $filters = [
-            'date' => ['>', $bdate->format('Y-m-d')]
+            'date' => ['>', $bdate->format('Y-m-d')],
         ];
         $filters = array_merge($filters, $user_filters);
 
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => [
-                static::$items_id  => $netport->fields['id']
-            ] + $filters
+                static::$items_id  => $netport->fields['id'],
+            ] + $filters,
         ]);
 
         return iterator_to_array($iterator);
@@ -133,7 +133,7 @@ class NetworkPortMetrics extends CommonDBChild
     {
         $raw_metrics = $this->getMetrics($netport);
 
-       //build graph data
+        //build graph data
         $params = [
             'label'         => $this->getTypeName(),
             'icon'          => NetworkPort::getIcon(),
@@ -171,10 +171,10 @@ class NetworkPortMetrics extends CommonDBChild
             'label' => __('Input/Output megabytes'),
             'icon'  => $params['icon'],
             'color' => '#ffffff',
-            'distributed' => false
+            'distributed' => false,
         ];
 
-       //display bytes graph
+        //display bytes graph
         echo "<div class='dashboard netports_metrics bytes'>";
         echo Widget::multipleLines($bytes_bar_conf);
         echo "</div>";
@@ -187,12 +187,12 @@ class NetworkPortMetrics extends CommonDBChild
             'label' => __('Input/Output errors'),
             'icon'  => $params['icon'],
             'color' => '#ffffff',
-            'distributed' => false
+            'distributed' => false,
         ];
 
         echo "</br>";
 
-       //display error graph
+        //display error graph
         echo "<div class='dashboard netports_metrics'>";
         echo Widget::multipleLines($errors_bar_conf);
         echo "</div>";

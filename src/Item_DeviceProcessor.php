@@ -73,7 +73,7 @@ class Item_DeviceProcessor extends Item_Devices
                 'id'         => 22,
                 'datatype'   => 'integer',
             ],
-            'busID'     => parent::getSpecificities('busID')
+            'busID'     => parent::getSpecificities('busID'),
         ];
     }
 

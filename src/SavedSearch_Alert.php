@@ -41,18 +41,18 @@ use Glpi\Plugin\Hooks;
  **/
 class SavedSearch_Alert extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'SavedSearch';
     public static $items_id = 'savedsearches_id';
     public $dohistory       = true;
     protected $displaylist  = false;
 
-    const OP_LESS     = 0;
-    const OP_LESSEQ   = 1;
-    const OP_EQ       = 2;
-    const OP_NOT      = 3;
-    const OP_GREATEQ  = 4;
-    const OP_GREAT    = 5;
+    public const OP_LESS     = 0;
+    public const OP_LESSEQ   = 1;
+    public const OP_EQ       = 2;
+    public const OP_NOT      = 3;
+    public const OP_GREATEQ  = 4;
+    public const OP_GREAT    = 5;
 
     public static function getTypeName($nb = 0)
     {
@@ -63,7 +63,7 @@ class SavedSearch_Alert extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-       // can exists for template
+        // can exists for template
         if (
             ($item instanceof SavedSearch)
             && SavedSearch::canView()
@@ -112,9 +112,9 @@ class SavedSearch_Alert extends CommonDBChild
     public function showForm($ID, array $options = [])
     {
 
-       /*if (!Session::haveRight("savedsearch", UPDATE)) {
-         return false;
-       }*/
+        /*if (!Session::haveRight("savedsearch", UPDATE)) {
+          return false;
+        }*/
 
         $search = new SavedSearch();
         if ($ID > 0) {
@@ -219,8 +219,8 @@ class SavedSearch_Alert extends CommonDBChild
             'FROM'   => Notification::getTable(),
             'WHERE'  => [
                 'itemtype'  => self::getType(),
-                'event'     => 'alert' . ($search->getField('is_private') ? '' : '_' . $search->getID())
-            ]
+                'event'     => 'alert' . ($search->getField('is_private') ? '' : '_' . $search->getID()),
+            ],
         ]);
 
         if (!$iterator->numRows()) {
@@ -261,7 +261,7 @@ class SavedSearch_Alert extends CommonDBChild
 
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
-            'WHERE'  => ['savedsearches_id' => $ID]
+            'WHERE'  => ['savedsearches_id' => $ID],
         ]);
 
         echo "<table class='tab_cadre_fixehov'>";
@@ -313,7 +313,7 @@ class SavedSearch_Alert extends CommonDBChild
             self::OP_EQ       => '=',
             self::OP_NOT      => '!=',
             self::OP_GREATEQ  => '>=',
-            self::OP_GREAT    => '>'
+            self::OP_GREAT    => '>',
         ];
         return ($id === null ? $ops : $ops[$id]);
     }
@@ -377,7 +377,7 @@ class SavedSearch_Alert extends CommonDBChild
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_savedsearches_alerts.*'
+                'glpi_savedsearches_alerts.*',
             ],
             'FROM'   => self::getTable(),
             'LEFT JOIN' => [
@@ -391,8 +391,8 @@ class SavedSearch_Alert extends CommonDBChild
                                 'glpi_alerts.type'     => Alert::PERIODICITY,
                             ],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'glpi_savedsearches_alerts.is_active' => true,
@@ -401,11 +401,11 @@ class SavedSearch_Alert extends CommonDBChild
                     ['glpi_alerts.date' => ['<', new QueryExpression(sprintf(
                         'CURRENT_TIMESTAMP() - INTERVAL %s second',
                         $DB->quoteName('glpi_savedsearches_alerts.frequency')
-                    ))
-                    ]
+                    )),
                     ],
-                ]
-            ]
+                    ],
+                ],
+            ],
         ]);
 
         if ($iterator->numrows()) {
@@ -416,15 +416,15 @@ class SavedSearch_Alert extends CommonDBChild
                 $_SESSION['glpiname'] = 'crontab';
             }
 
-           // Will save $_SESSION and $CFG_GLPI cron context into an array
+            // Will save $_SESSION and $CFG_GLPI cron context into an array
             $context = self::saveContext();
 
             foreach ($iterator as $row) {
-               //execute saved search to get results
+                //execute saved search to get results
                 try {
                     $savedsearch->getFromDB($row['savedsearches_id']);
                     if (isCommandLine()) {
-                       //search requires a logged in user...
+                        //search requires a logged in user...
                         $user = new User();
                         $user->getFromDB($savedsearch->fields['users_id']);
                         $auth = new Auth();
@@ -435,11 +435,11 @@ class SavedSearch_Alert extends CommonDBChild
 
                     $count = null;
                     if ($data = $savedsearch->execute(true)) {
-                        $count = (int)$data['data']['totalcount'];
+                        $count = (int) $data['data']['totalcount'];
                     } else {
                         $data = [];
                     }
-                    $value = (int)$row['value'];
+                    $value = (int) $row['value'];
 
                     $notify = false;
                     $tr_op = null;
@@ -454,12 +454,12 @@ class SavedSearch_Alert extends CommonDBChild
                             $tr_op = __('less or equals than');
                             break;
                         case self::OP_EQ:
-                               $notify = $count == $value;
-                               $tr_op = __('equals to');
+                            $notify = $count == $value;
+                            $tr_op = __('equals to');
                             break;
                         case self::OP_NOT:
-                               $notify = $count != $value;
-                               $tr_op = __('not equals to');
+                            $notify = $count != $value;
+                            $tr_op = __('not equals to');
                             break;
                         case self::OP_GREATEQ:
                             $notify = $count >= $value;
@@ -490,23 +490,23 @@ class SavedSearch_Alert extends CommonDBChild
                     self::restoreContext($context);
 
                     if ($notify) {
-                          $event = 'alert' . ($savedsearch->getField('is_private') ? '' : '_' . $savedsearch->getID());
-                          $savedsearch_alert = new self();
-                          $savedsearch_alert->getFromDB($row['id']);
-                          $data['savedsearch'] = $savedsearch;
-                          NotificationEvent::raiseEvent($event, $savedsearch_alert, $data);
-                          $task->addVolume(1);
+                        $event = 'alert' . ($savedsearch->getField('is_private') ? '' : '_' . $savedsearch->getID());
+                        $savedsearch_alert = new self();
+                        $savedsearch_alert->getFromDB($row['id']);
+                        $data['savedsearch'] = $savedsearch;
+                        NotificationEvent::raiseEvent($event, $savedsearch_alert, $data);
+                        $task->addVolume(1);
 
-                          $alert = new Alert();
-                          $alert->deleteByCriteria([
-                              'itemtype' => SavedSearch_Alert::class,
-                              'items_id' => $row['id'],
-                          ], 1);
-                          $alert->add([
-                              'type'     => Alert::PERIODICITY,
-                              'itemtype' => SavedSearch_Alert::class,
-                              'items_id' => $row['id'],
-                          ]);
+                        $alert = new Alert();
+                        $alert->deleteByCriteria([
+                            'itemtype' => SavedSearch_Alert::class,
+                            'items_id' => $row['id'],
+                        ], 1);
+                        $alert->add([
+                            'type'     => Alert::PERIODICITY,
+                            'itemtype' => SavedSearch_Alert::class,
+                            'items_id' => $row['id'],
+                        ]);
                     }
                 } catch (\Throwable $e) {
                     self::restoreContext($context);

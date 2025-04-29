@@ -63,7 +63,7 @@ class RuleRightTest extends DbTestCase
                 [
                     'name'      => 'Root',
                     'is_active' => 1,
-                    'sub_type'  => 'RuleRight'
+                    'sub_type'  => 'RuleRight',
                 ]
             )
         );
@@ -214,7 +214,7 @@ class RuleRightTest extends DbTestCase
         $pu = new \Profile_User();
         $res = $pu->update([
             'id' => $right2['id'],
-            'profiles_id' => 2
+            'profiles_id' => 2,
         ]);
         $this->assertTrue($res);
         $this->assertTrue($pu->getFromDB($right2['id']));

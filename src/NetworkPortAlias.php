@@ -47,7 +47,7 @@ class NetworkPortAlias extends NetworkPortInstantiation
     public function prepareInput($input)
     {
 
-       // Try to get mac address from the instantiation ...
+        // Try to get mac address from the instantiation ...
 
         if (
             !isset($input['mac'])

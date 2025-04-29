@@ -40,7 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class SNMPCredential extends CommonDBTM
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
     public static $rightname = 'snmpcredential';
 
@@ -55,7 +55,7 @@ class SNMPCredential extends CommonDBTM
 
         $tab[] = [
             'id'                => 'snmpcredential',
-            'name'              => SNMPCredential::getTypeName(0)
+            'name'              => SNMPCredential::getTypeName(0),
         ];
 
         $tab[] = [
@@ -132,7 +132,7 @@ class SNMPCredential extends CommonDBTM
         switch ($this->fields['snmpversion']) {
             case 1:
             case 3:
-                return (string)$this->fields['snmpversion'];
+                return (string) $this->fields['snmpversion'];
             case 2:
                 return '2c';
             default:

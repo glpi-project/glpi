@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $soft->check($_POST["id"], DELETE);
     $soft->delete($_POST);
 
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
     );
 
     $soft->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $soft->check($_POST["id"], DELETE);
 
     $soft->restore($_POST);
@@ -90,7 +90,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s restores an item'), $_SESSION["glpiname"])
     );
     $soft->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $soft->check($_POST["id"], PURGE);
 
     $soft->delete($_POST, 1);
@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $soft->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $soft->check($_POST["id"], UPDATE);
 
     $soft->update($_POST);
@@ -120,6 +120,6 @@ if (isset($_POST["add"])) {
     $menus = ["assets", "software"];
     Software::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

@@ -114,22 +114,22 @@ abstract class AbstractRightsDropdown
     {
         $possible_rights = [];
 
-       // Add profiles if enabled
+        // Add profiles if enabled
         if (self::isTypeEnabled(Profile::getType())) {
             $possible_rights[Profile::getType()] = self::getProfiles($text);
         }
 
-       // Add entities if enabled
+        // Add entities if enabled
         if (self::isTypeEnabled(Entity::getType())) {
             $possible_rights[Entity::getType()] = self::getEntities($text);
         }
 
-       // Add users if enabled
+        // Add users if enabled
         if (self::isTypeEnabled(User::getType())) {
             $possible_rights[User::getType()] = self::getUsers($text);
         }
 
-       // Add groups if enabled
+        // Add groups if enabled
         if (self::isTypeEnabled(Group::getType())) {
             $possible_rights[Group::getType()] = self::getGroups($text);
         }
@@ -152,7 +152,7 @@ abstract class AbstractRightsDropdown
 
         $ret = [
             'results' => Sanitizer::unsanitize($results),
-            'count' =>  count($results)
+            'count' =>  count($results),
         ];
 
         return $ret;
@@ -191,7 +191,7 @@ abstract class AbstractRightsDropdown
     {
         $profile_item = new Profile();
         $profiles = $profile_item->find([
-            'name' => ["LIKE", "%$text%"]
+            'name' => ["LIKE", "%$text%"],
         ], [], self::LIMIT);
         $profiles_items = [];
         foreach ($profiles as $profile) {
@@ -214,7 +214,7 @@ abstract class AbstractRightsDropdown
         $entity_item = new Entity();
         $entities = $entity_item->find(
             [
-                'name' => ["LIKE", "%$text%"]
+                'name' => ["LIKE", "%$text%"],
             ] + getEntitiesRestrictCriteria(Entity::getTable()),
             [],
             self::LIMIT
@@ -259,7 +259,7 @@ abstract class AbstractRightsDropdown
         $group_item = new Group();
         $groups = $group_item->find(
             [
-                'name' => ["LIKE", "%$text%"]
+                'name' => ["LIKE", "%$text%"],
             ] + getEntitiesRestrictCriteria(Group::getTable()),
             [],
             self::LIMIT
@@ -302,7 +302,7 @@ abstract class AbstractRightsDropdown
             // Split fkey and ids
             $parsed_values = explode("-", $value);
             $fkey  = $parsed_values[0];
-            $value = (int)$parsed_values[1];
+            $value = (int) $parsed_values[1];
 
             if ($fkey == $class::getForeignKeyField()) {
                 $inflated_values[] = $value;

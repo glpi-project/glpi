@@ -48,7 +48,7 @@ function update0801to0803()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '0.80.3'));
     $migration->setVersion('0.80.3');
 
@@ -63,7 +63,7 @@ function update0801to0803()
         "UNIQUE"
     );
 
-   // must always be at the end
+    // must always be at the end
     $migration->executeMigration();
 
     return $updateresult;

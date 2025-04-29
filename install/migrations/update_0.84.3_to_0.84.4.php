@@ -49,7 +49,7 @@ function update0843to0844()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '0.84.4'));
     $migration->setVersion('0.84.4');
 
@@ -57,7 +57,7 @@ function update0843to0844()
     $newtables     = [];
 
     foreach ($newtables as $new_table) {
-       // rename new tables if exists ?
+        // rename new tables if exists ?
         if ($DB->tableExists($new_table)) {
             $migration->dropTable("backup_$new_table");
             $migration->displayWarning("$new_table table already exists. " .
@@ -73,7 +73,7 @@ function update0843to0844()
         );
     }
 
-   // Upgrade ticket bookmarks and clean _glpi_csrf_token
+    // Upgrade ticket bookmarks and clean _glpi_csrf_token
     $status =  ['new'           => CommonITILObject::INCOMING,
         'assign'        => CommonITILObject::ASSIGNED,
         'plan'          => CommonITILObject::PLANNED,
@@ -85,10 +85,10 @@ function update0843to0844()
         'evaluation'    => CommonITILObject::EVALUATION,
         'approbation'   => CommonITILObject::APPROVAL,
         'test'          => CommonITILObject::TEST,
-        'qualification' => CommonITILObject::QUALIFICATION
+        'qualification' => CommonITILObject::QUALIFICATION,
     ];
 
-   // Migrate templates : back for validation
+    // Migrate templates : back for validation
     $query = "SELECT `glpi_notificationtemplatetranslations`.*
                FROM `glpi_notificationtemplatetranslations`
                INNER JOIN `glpi_notificationtemplates`
@@ -119,8 +119,8 @@ function update0843to0844()
         }
     }
 
-   // ************ Keep it at the end **************
-   //TRANS: %s is the table or item to migrate
+    // ************ Keep it at the end **************
+    //TRANS: %s is the table or item to migrate
     $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
@@ -147,11 +147,11 @@ function update0843to0844()
                                   AND `itemtype` = '$type'";
                         if ($result2 = $DB->doQuery($query)) {
                             if ($DB->numrows($result2) == 0) {
-                                 $query = "INSERT INTO `glpi_displaypreferences`
+                                $query = "INSERT INTO `glpi_displaypreferences`
                                          (`itemtype` ,`num` ,`rank` ,`users_id`)
                                   VALUES ('$type', '$newval', '" . $rank++ . "',
                                           '" . $data['users_id'] . "')";
-                                 $DB->doQuery($query);
+                                $DB->doQuery($query);
                             }
                         }
                     }
@@ -168,7 +168,7 @@ function update0843to0844()
         }
     }
 
-   // must always be at the end
+    // must always be at the end
     $migration->executeMigration();
 
     return $updateresult;

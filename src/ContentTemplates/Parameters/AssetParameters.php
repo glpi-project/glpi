@@ -79,7 +79,7 @@ class AssetParameters extends AbstractParameters
     protected function defineValues(CommonDBTM $asset): array
     {
 
-       // Output "unsanitized" values
+        // Output "unsanitized" values
         $fields = Sanitizer::unsanitize($asset->fields);
 
         $values = [
@@ -89,7 +89,7 @@ class AssetParameters extends AbstractParameters
             'serial'   => $fields['serial'],
         ];
 
-       // Add asset's entity
+        // Add asset's entity
         if ($entity = Entity::getById($fields['entities_id'])) {
             $entity_parameters = new EntityParameters();
             $values['entity'] = $entity_parameters->getValues($entity);

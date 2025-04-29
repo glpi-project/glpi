@@ -35,7 +35,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
 use Glpi\Inventory\Conf;
 
 class Firmware extends Device
@@ -45,7 +44,7 @@ class Firmware extends Device
         $mapping = [
             'name'         => 'designation',
             'manufacturer' => 'manufacturers_id',
-            'type'         => 'devicefirmwaretypes_id'
+            'type'         => 'devicefirmwaretypes_id',
         ];
 
         foreach ($this->data as &$val) {

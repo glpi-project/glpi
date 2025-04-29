@@ -46,12 +46,12 @@ class DBConnectionTest extends \GLPITestCase
             [
                 'utf8mb4'          => true,
                 'expected_charset' => 'utf8mb4',
-                'expected_query'   => "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';"
+                'expected_query'   => "SET NAMES 'utf8mb4' COLLATE 'utf8mb4_unicode_ci';",
             ],
             [
                 'utf8mb4'          => false,
                 'expected_charset' => 'utf8',
-                'expected_query'   => "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';"
+                'expected_query'   => "SET NAMES 'utf8' COLLATE 'utf8_unicode_ci';",
             ],
         ];
     }
@@ -101,7 +101,7 @@ class DB extends DBmysql {
    public $dbdefault = 'glpi_db';
 }
 
-PHP
+PHP,
             ],
             [
                 'host'                     => '127.0.0.1',
@@ -128,7 +128,7 @@ class DB extends DBmysql {
    public $allow_signed_keys = false;
 }
 
-PHP
+PHP,
             ],
             [
                 'host'                     => '127.0.0.1',
@@ -151,7 +151,7 @@ class DB extends DBmysql {
    public $log_deprecation_warnings = true;
 }
 
-PHP
+PHP,
             ],
         ];
     }
@@ -218,7 +218,7 @@ class DBSlave extends DBmysql {
    public $dbdefault = 'glpi_db';
 }
 
-PHP
+PHP,
             ],
             [
                 'host'                     => 'slave1.db.domain.org slave2.db.domain.org slave3.db.domain.org ',
@@ -250,7 +250,7 @@ class DBSlave extends DBmysql {
    public $allow_signed_keys = false;
 }
 
-PHP
+PHP,
             ],
             [
                 'host'                     => '127.0.0.1',
@@ -274,7 +274,7 @@ class DBSlave extends DBmysql {
    public $log_deprecation_warnings = true;
 }
 
-PHP
+PHP,
             ],
         ];
     }
@@ -321,7 +321,7 @@ PHP
     {
         return [
             [
-            // Add new boolean + string variables, update float + array variables without slave
+                // Add new boolean + string variables, update float + array variables without slave
                 'init_config_files'     => [
                     'config_db.php' => <<<PHP
 <?php
@@ -331,8 +331,7 @@ class DB extends DBmysql {
    public \$prop        = ['e'];
    public \$version     = 9.4;
 }
-PHP
-               ,
+PHP,
                 ],
                 'properties'            => [
                     'use_utf8mb4' => false,
@@ -355,12 +354,11 @@ class DB extends DBmysql {
    public \$use_utf8mb4 = false;
    public \$test = 'foobar';
 }
-PHP
-               ,
+PHP,
                 ],
             ],
             [
-            // Add new boolean + float + array variables, update string variables with slave
+                // Add new boolean + float + array variables, update string variables with slave
                 'init_config_files'     => [
                     'config_db.php' => <<<PHP
 <?php
@@ -369,8 +367,7 @@ class DB extends DBmysql {
    public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
 }
-PHP
-               ,
+PHP,
                     'config_db_slave.php' => <<<PHP
 <?php
 class DB extends DBmysql {
@@ -379,8 +376,7 @@ class DB extends DBmysql {
    public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
 }
-PHP
-               ,
+PHP,
                 ],
                 'properties'            => [
                     'use_utf8mb4' => false,
@@ -403,8 +399,7 @@ class DB extends DBmysql {
   1 => 'b',
 );
 }
-PHP
-               ,
+PHP,
                     'config_db_slave.php' => <<<PHP
 <?php
 class DB extends DBmysql {
@@ -419,12 +414,11 @@ class DB extends DBmysql {
   1 => 'b',
 );
 }
-PHP
-               ,
+PHP,
                 ],
             ],
             [
-            // Add new float variable, update string variable without updating slave
+                // Add new float variable, update string variable without updating slave
                 'init_config_files'     => [
                     'config_db.php' => <<<PHP
 <?php
@@ -433,8 +427,7 @@ class DB extends DBmysql {
    public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
 }
-PHP
-               ,
+PHP,
                     'config_db_slave.php' => <<<PHP
 <?php
 class DBSlave extends DBmysql {
@@ -443,8 +436,7 @@ class DBSlave extends DBmysql {
    public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
 }
-PHP
-               ,
+PHP,
                 ],
                 'properties'            => [
                     'test'    => 'barfoo',
@@ -460,8 +452,7 @@ class DB extends DBmysql {
    public \$test        = 'barfoo';
    public \$version = 10.2;
 }
-PHP
-               ,
+PHP,
                     'config_db_slave.php' => <<<PHP
 <?php
 class DBSlave extends DBmysql {
@@ -470,12 +461,11 @@ class DBSlave extends DBmysql {
    public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
 }
-PHP
-               ,
+PHP,
                 ],
             ],
             [
-            // Cannot update a config that not exists
+                // Cannot update a config that not exists
                 'init_config_files'     => [],
                 'properties'            => [
                     'test'    => 'foobar',

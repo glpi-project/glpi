@@ -75,7 +75,7 @@ abstract class APIBaseClass extends TestCase
             'id'                              => 1,
             'enable_api'                      => true,
             'enable_api_login_credentials'    => true,
-            'enable_api_login_external_token' => true
+            'enable_api_login_external_token' => true,
         ]);
     }
 
@@ -89,7 +89,7 @@ abstract class APIBaseClass extends TestCase
         $user = new User();
         $uid = getItemByTypeName('User', TU_USER, true);
         $user->getFromDB($uid);
-        $token = isset($user->fields['api_token']) ? $user->fields['api_token'] : "";
+        $token = $user->fields['api_token'] ?? "";
         if (empty($token)) {
             $token = $user->getAuthToken('api_token');
         }
@@ -111,7 +111,7 @@ abstract class APIBaseClass extends TestCase
         $apiclient = new APIClient();
         $this->assertGreaterThan(
             0,
-            (int)$apiclient->add([
+            (int) $apiclient->add([
                 'name'             => 'test app token',
                 'is_active'        => 1,
                 'ipv4_range_start' => '127.0.0.1',
@@ -131,8 +131,8 @@ abstract class APIBaseClass extends TestCase
                 'query' => [
                     'login'     => TU_USER,
                     'password'  => TU_PASS,
-                    'app_token' => $app_token
-                ]
+                    'app_token' => $app_token,
+                ],
             ]
         );
         $this->assertNotFalse($data);
@@ -144,8 +144,8 @@ abstract class APIBaseClass extends TestCase
             ['query' => [
                 'login'     => TU_USER,
                 'password'  => TU_PASS,
-                'app_token' => "test_invalid_token"
-            ]
+                'app_token' => "test_invalid_token",
+            ],
             ],
             400,
             'ERROR_WRONG_APP_TOKEN_PARAMETER'
@@ -164,8 +164,8 @@ abstract class APIBaseClass extends TestCase
                 'headers' => ['Session-Token' => $this->session_token],
                 'json'    => [
                     'entities_id'   => 'all',
-                    'is_recursive'  => true
-                ]
+                    'is_recursive'  => true,
+                ],
             ],
             200
         );
@@ -219,7 +219,7 @@ abstract class APIBaseClass extends TestCase
             'changeActiveProfile',
             ['verb'    => 'POST',
                 'headers' => ['Session-Token' => $this->session_token],
-                'json'    => ['profiles_id'   => 4]
+                'json'    => ['profiles_id'   => 4],
             ]
         );
 
@@ -228,7 +228,7 @@ abstract class APIBaseClass extends TestCase
             'changeActiveProfile',
             ['verb'    => 'POST',
                 'headers' => ['Session-Token' => $this->session_token],
-                'json'    => ['profiles_id'   => 9999]
+                'json'    => ['profiles_id'   => 9999],
             ],
             404,
             'ERROR_ITEM_NOT_FOUND'
@@ -239,7 +239,7 @@ abstract class APIBaseClass extends TestCase
             'changeActiveProfile',
             ['verb'    => 'POST',
                 'headers' => ['Session-Token' => $this->session_token],
-                'json'    => ['something_bad' => 4]
+                'json'    => ['something_bad' => 4],
             ],
             400,
             'ERROR'
@@ -317,15 +317,15 @@ abstract class APIBaseClass extends TestCase
             ['headers' => ['Session-Token' => $this->session_token],
                 'query'   => [
                     'items'            => [['itemtype' => 'User',
-                        'items_id' => $uid
+                        'items_id' => $uid,
                     ],
                         ['itemtype' => 'Entity',
-                            'items_id' => $eid
-                        ]
+                            'items_id' => $eid,
+                        ],
                     ],
                     'with_logs'        => true,
-                    'expand_dropdowns' => true
-                ]
+                    'expand_dropdowns' => true,
+                ],
             ]
         );
 
@@ -356,7 +356,7 @@ abstract class APIBaseClass extends TestCase
         $data = $this->query(
             'listSearchOptions',
             ['itemtype' => 'Computer',
-                'headers'  => ['Session-Token' => $this->session_token]
+                'headers'  => ['Session-Token' => $this->session_token],
             ]
         );
 
@@ -391,8 +391,8 @@ abstract class APIBaseClass extends TestCase
                     'order'         => 'DESC',
                     'range'         => '0-10',
                     'forcedisplay'  => '81',
-                    'rawdata'       => true
-                ]
+                    'rawdata'       => true,
+                ],
             ]
         );
 
@@ -435,8 +435,8 @@ abstract class APIBaseClass extends TestCase
                     'order'         => 'DESC',
                     'range'         => '0-2',
                     'forcedisplay'  => '81',
-                    'rawdata'       => true
-                ]
+                    'rawdata'       => true,
+                ],
             ],
             206
         );
@@ -480,9 +480,9 @@ abstract class APIBaseClass extends TestCase
                             'field'      => 1,
                             'searchtype' => 'contains',
                             'value'      => 'nonexistent',
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ]
         );
 
@@ -521,9 +521,9 @@ abstract class APIBaseClass extends TestCase
                         'field'      => '134343',
                         'searchtype' => 'contains',
                         'value'      => 'dsadasd',
-                    ]
-                    ]
-                ]
+                    ],
+                    ],
+                ],
             ],
             400,   // 400 code expected (error, bad request)
             'ERROR'
@@ -540,9 +540,9 @@ abstract class APIBaseClass extends TestCase
                         'field'      => '\134343',
                         'searchtype' => 'contains',
                         'value'      => 'dsadasd',
-                    ]
-                    ]
-                ]
+                    ],
+                    ],
+                ],
             ],
             400,   // 400 code expected (error, bad request)
             'ERROR'
@@ -558,9 +558,9 @@ abstract class APIBaseClass extends TestCase
                     'criteria' => [[
                         'field'      => '134343',
                         'searchtype' => 'contains',
-                    ]
-                    ]
-                ]
+                    ],
+                    ],
+                ],
             ],
             400,  // 400 code expected (error, bad request)
             'ERROR'
@@ -576,8 +576,8 @@ abstract class APIBaseClass extends TestCase
             'badEndpoint',
             [
                 'headers' => [
-                    'Session-Token' => $this->session_token
-                ]
+                    'Session-Token' => $this->session_token,
+                ],
             ],
             $expected_code,
             $expected_symbol
@@ -596,7 +596,7 @@ abstract class APIBaseClass extends TestCase
             ['verb'     => 'POST',
                 'itemtype' => 'Computer',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'json'     => ['input' => ['name' => "My single computer "]]
+                'json'     => ['input' => ['name' => "My single computer "]],
             ],
             201
         );
@@ -607,10 +607,10 @@ abstract class APIBaseClass extends TestCase
 
         $computers_id = $data['id'];
         $this->assertTrue(is_numeric($computers_id));
-        $this->assertGreaterThanOrEqual(0, (int)$computers_id);
+        $this->assertGreaterThanOrEqual(0, (int) $computers_id);
 
         $computer = new Computer();
-        $this->assertTrue((bool)$computer->getFromDB($computers_id));
+        $this->assertTrue((bool) $computer->getFromDB($computers_id));
         return $computer;
     }
 
@@ -637,15 +637,15 @@ abstract class APIBaseClass extends TestCase
                         'itemtype'                 => "Computer",
                         'NetworkName_name'         => "testname",
                         'NetworkName_fqdns_id'     => 0,
-                                  // add an extra key to the next array
-                                  // to avoid xmlrpc losing -1 key.
-                                  // see https://bugs.php.net/bug.php?id=37746
+                        // add an extra key to the next array
+                        // to avoid xmlrpc losing -1 key.
+                        // see https://bugs.php.net/bug.php?id=37746
                         'NetworkName__ipaddresses' => ['-1'                => "1.2.3.4",
-                            '_xmlrpc_fckng_fix' => ''
+                            '_xmlrpc_fckng_fix' => '',
                         ],
-                        '_create_children'         => true
-                    ]
-                ]
+                        '_create_children'         => true,
+                    ],
+                ],
             ],
             201
         );
@@ -673,9 +673,9 @@ abstract class APIBaseClass extends TestCase
                     'input' => [
                         'itemtype' => 'Computer',
                         'items_id' => $computers_id,
-                        'content'  => 'note about a computer'
-                    ]
-                ]
+                        'content'  => 'note about a computer',
+                    ],
+                ],
             ],
             201
         );
@@ -714,14 +714,14 @@ abstract class APIBaseClass extends TestCase
                 'headers'  => ['Session-Token' => $this->session_token],
                 'json'     => [
                     'input' => [[
-                        'name' => "My computer 2"
+                        'name' => "My computer 2",
                     ],[
-                        'name' => "My computer 3"
+                        'name' => "My computer 3",
                     ],[
-                        'name' => "My computer 4"
-                    ]
-                    ]
-                ]
+                        'name' => "My computer 4",
+                    ],
+                    ],
+                ],
             ],
             201
         );
@@ -739,12 +739,12 @@ abstract class APIBaseClass extends TestCase
         $this->assertTrue(is_numeric($first_computer['id']));
         $this->assertTrue(is_numeric($second_computer['id']));
 
-        $this->assertGreaterThanOrEqual(0, (int)$first_computer['id']);
-        $this->assertGreaterThanOrEqual(0, (int)$second_computer['id']);
+        $this->assertGreaterThanOrEqual(0, (int) $first_computer['id']);
+        $this->assertGreaterThanOrEqual(0, (int) $second_computer['id']);
 
         $computer = new Computer();
-        $this->assertTrue((bool)$computer->getFromDB($first_computer['id']));
-        $this->assertTrue((bool)$computer->getFromDB($second_computer['id']));
+        $this->assertTrue((bool) $computer->getFromDB($first_computer['id']));
+        $this->assertTrue((bool) $computer->getFromDB($second_computer['id']));
 
         unset($data['headers']);
         return $data;
@@ -767,8 +767,8 @@ abstract class APIBaseClass extends TestCase
                 'headers'  => ['Session-Token' => $this->session_token],
                 'query'    => [
                     'expand_dropdowns' => true,
-                    'with_logs'        => true
-                ]
+                    'with_logs'        => true,
+                ],
             ]
         );
 
@@ -788,7 +788,7 @@ abstract class APIBaseClass extends TestCase
             ['itemtype' => 'Entity',
                 'id'       => $eid,
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['get_hateoas' => false]
+                'query'    => ['get_hateoas' => false],
             ]
         );
 
@@ -804,7 +804,7 @@ abstract class APIBaseClass extends TestCase
             ['itemtype' => 'Computer',
                 'id'       => $computers_id,
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['with_networkports' => true]
+                'query'    => ['with_networkports' => true],
             ]
         );
 
@@ -824,7 +824,7 @@ abstract class APIBaseClass extends TestCase
             ['itemtype' => 'Computer',
                 'id'       => $computers_id,
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['with_networkports' => true]
+                'query'    => ['with_networkports' => true],
             ]
         );
 
@@ -869,7 +869,7 @@ abstract class APIBaseClass extends TestCase
             ['itemtype' => 'Computer',
                 'id'       => $computers_id,
                 'headers'  => ['Session-Token'     => $this->session_token],
-                'query'    => ['with_notes' => true]
+                'query'    => ['with_notes' => true],
             ]
         );
 
@@ -898,8 +898,8 @@ abstract class APIBaseClass extends TestCase
             ['itemtype' => 'User',
                 'headers'  => ['Session-Token' => $this->session_token],
                 'query'    => [
-                    'expand_dropdowns' => true
-                ]
+                    'expand_dropdowns' => true,
+                ],
             ]
         );
 
@@ -925,8 +925,8 @@ abstract class APIBaseClass extends TestCase
                 'headers'  => ['Session-Token' => $this->session_token],
                 'query'    => [
                     'range' => '0-1',
-                    'expand_dropdowns' => true
-                ]
+                    'expand_dropdowns' => true,
+                ],
             ],
             206
         );
@@ -949,7 +949,7 @@ abstract class APIBaseClass extends TestCase
             'getItems',
             ['itemtype' => 'User',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['searchText' => ['name' => 'gl']]
+                'query'    => ['searchText' => ['name' => 'gl']],
             ]
         );
 
@@ -969,7 +969,7 @@ abstract class APIBaseClass extends TestCase
             'getItems',
             ['itemtype' => 'User',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['only_id' => true]
+                'query'    => ['only_id' => true],
             ]
         );
 
@@ -988,7 +988,7 @@ abstract class APIBaseClass extends TestCase
             'getItems',
             ['itemtype' => 'Config',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['expand_dropdowns' => true]
+                'query'    => ['expand_dropdowns' => true],
             ],
             206
         );
@@ -1017,8 +1017,8 @@ abstract class APIBaseClass extends TestCase
                 'headers'  => ['Session-Token' => $this->session_token],
                 'query'    => [
                     'range' => '100-105',
-                    'expand_dropdowns' => true
-                ]
+                    'expand_dropdowns' => true,
+                ],
             ],
             400,
             'ERROR_RANGE_EXCEED_TOTAL'
@@ -1040,8 +1040,8 @@ abstract class APIBaseClass extends TestCase
             'initSession',
             ['query' => [
                 'login'    => 'post-only',
-                'password' => 'postonly'
-            ]
+                'password' => 'postonly',
+            ],
             ]
         );
 
@@ -1049,9 +1049,9 @@ abstract class APIBaseClass extends TestCase
         $ticket = new \Ticket();
         $tickets_id = $ticket->add(['name'                => 'test post-only',
             'content'             => 'test post-only',
-            '_users_id_requester' => 2
+            '_users_id_requester' => 2,
         ]);
-        $this->assertGreaterThan(0, (int)$tickets_id);
+        $this->assertGreaterThan(0, (int) $tickets_id);
 
         // try to access this ticket with post-only
         $this->query(
@@ -1059,8 +1059,8 @@ abstract class APIBaseClass extends TestCase
             ['itemtype' => 'Ticket',
                 'id'       => $tickets_id,
                 'headers'  => [
-                    'Session-Token' => $data['session_token']
-                ]
+                    'Session-Token' => $data['session_token'],
+                ],
             ],
             403,
             'ERROR_RIGHT_MISSING'
@@ -1072,9 +1072,9 @@ abstract class APIBaseClass extends TestCase
             ['itemtype' => 'Ticket',
                 'headers'  => ['Session-Token' => $data['session_token'],
                     'query'    => [
-                        'expand_dropdowns' => true
-                    ]
-                ]
+                        'expand_dropdowns' => true,
+                    ],
+                ],
             ]
         );
 
@@ -1103,9 +1103,9 @@ abstract class APIBaseClass extends TestCase
                 'json'     => [
                     'input' => [
                         'id'     => $computers_id,
-                        'serial' => "abcdef"
-                    ]
-                ]
+                        'serial' => "abcdef",
+                    ],
+                ],
             ]
         );
 
@@ -1115,10 +1115,10 @@ abstract class APIBaseClass extends TestCase
         $this->assertIsArray($computer);
         $this->assertArrayHasKey($computers_id, $computer);
         $this->assertArrayHasKey('message', $computer);
-        $this->assertTrue((bool)$computer[$computers_id]);
+        $this->assertTrue((bool) $computer[$computers_id]);
 
         $computer = new Computer();
-        $this->assertTrue((bool)$computer->getFromDB($computers_id));
+        $this->assertTrue((bool) $computer->getFromDB($computers_id));
         $this->assertSame('abcdef', $computer->fields['serial']);
     }
 
@@ -1133,7 +1133,7 @@ abstract class APIBaseClass extends TestCase
         $computer = new Computer();
         foreach ($computers_id_collection as $key => $computers_id) {
             $input[] = ['id'          => $computers_id['id'],
-                'otherserial' => "abcdef"
+                'otherserial' => "abcdef",
             ];
         }
         $data = $this->query(
@@ -1141,7 +1141,7 @@ abstract class APIBaseClass extends TestCase
             ['itemtype' => 'Computer',
                 'verb'     => 'PUT',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'json'     => ['input' => $input]
+                'json'     => ['input' => $input],
             ]
         );
 
@@ -1155,7 +1155,7 @@ abstract class APIBaseClass extends TestCase
             $this->assertArrayHasKey('message', $row);
             $this->assertTrue(true, (bool) $row[$computers_id]);
 
-            $this->assertTrue((bool)$computer->getFromDB($computers_id));
+            $this->assertTrue((bool) $computer->getFromDB($computers_id));
             $this->assertSame('abcdef', $computer->fields['otherserial']);
         }
     }
@@ -1174,7 +1174,7 @@ abstract class APIBaseClass extends TestCase
             0,
             $computer->add([
                 'name'         => 'A computer to delete',
-                'entities_id'  => $eid
+                'entities_id'  => $eid,
             ])
         );
         $computers_id = $computer->getID();
@@ -1185,7 +1185,7 @@ abstract class APIBaseClass extends TestCase
                 'id'       => $computers_id,
                 'verb'     => 'DELETE',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['force_purge' => "true"]
+                'query'    => ['force_purge' => "true"],
             ]
         );
 
@@ -1198,7 +1198,7 @@ abstract class APIBaseClass extends TestCase
         $this->assertArrayHasKey('message', $computer);
 
         $computer = new \Computer();
-        $this->assertFalse((bool)$computer->getFromDB($computers_id));
+        $this->assertFalse((bool) $computer->getFromDB($computers_id));
     }
 
 
@@ -1222,8 +1222,8 @@ abstract class APIBaseClass extends TestCase
                 'headers'  => ['Session-Token' => $this->session_token],
                 'json'     => [
                     'input'       => $input,
-                    'force_purge' => true
-                ]
+                    'force_purge' => true,
+                ],
             ]
         );
 
@@ -1235,16 +1235,16 @@ abstract class APIBaseClass extends TestCase
             $this->assertIsArray($row);
             $this->assertArrayHasKey($computers_id, $row);
             $this->assertArrayHasKey('message', $row);
-            $this->assertTrue((bool)$row[$computers_id]);
+            $this->assertTrue((bool) $row[$computers_id]);
 
-            $this->assertFalse((bool)$computer->getFromDB($computers_id));
+            $this->assertFalse((bool) $computer->getFromDB($computers_id));
         }
 
         // Test multiple delete with multi-status
         $input = [];
         $computers_id_collection = [
             ['id'  => $lastComputer['id']],
-            ['id'  => $lastComputer['id'] + 1] // Non existing computer id
+            ['id'  => $lastComputer['id'] + 1], // Non existing computer id
         ];
         foreach ($computers_id_collection as $key => $computers_id) {
             $input[] = ['id' => $computers_id['id']];
@@ -1256,8 +1256,8 @@ abstract class APIBaseClass extends TestCase
                 'headers'  => ['Session-Token' => $this->session_token],
                 'json'     => [
                     'input'       => $input,
-                    'force_purge' => true
-                ]
+                    'force_purge' => true,
+                ],
             ],
             207
         );
@@ -1282,9 +1282,9 @@ abstract class APIBaseClass extends TestCase
                 'json'    => [
                     'input' => [
                         'name'        => "my computer', (SELECT `password` from `glpi_users` as `otherserial` WHERE `id`=2), '0 ' , '2016-10-26 00:00:00', '2016-10-26 00 :00 :00')#",
-                        'otherserial' => "Not hacked"
-                    ]
-                ]
+                        'otherserial' => "Not hacked",
+                    ],
+                ],
             ],
             201
         );
@@ -1293,7 +1293,7 @@ abstract class APIBaseClass extends TestCase
         $new_id = $data['id'];
 
         $computer = new Computer();
-        $this->assertTrue((bool)$computer->getFromDB($new_id));
+        $this->assertTrue((bool) $computer->getFromDB($new_id));
 
         //Add SQL injection spotted!
         $this->assertFalse($computer->fields['otherserial'] != 'Not hacked');
@@ -1306,13 +1306,13 @@ abstract class APIBaseClass extends TestCase
                 'json'    => [
                     'input' => [
                         'id'     => $new_id,
-                        'serial' => "abcdef', `otherserial`='injected"
-                    ]
-                ]
+                        'serial' => "abcdef', `otherserial`='injected",
+                    ],
+                ],
             ]
         );
 
-        $this->assertTrue((bool)$computer->getFromDB($new_id));
+        $this->assertTrue((bool) $computer->getFromDB($new_id));
         //Update SQL injection spotted!
         $this->assertFalse($computer->fields['otherserial'] === 'injected');
 
@@ -1348,7 +1348,7 @@ abstract class APIBaseClass extends TestCase
                 'getItem',
                 ['itemtype' => 'Config',
                     'id'       => $row['id'],
-                    'headers' => ['Session-Token' => $this->session_token]
+                    'headers' => ['Session-Token' => $this->session_token],
                 ]
             );
             $this->assertArrayNotHasKey('value', $data);
@@ -1361,7 +1361,7 @@ abstract class APIBaseClass extends TestCase
             'getItem',
             ['itemtype' => 'Config',
                 'id'       => $config->getID(),
-                'headers' => ['Session-Token' => $this->session_token]
+                'headers' => ['Session-Token' => $this->session_token],
             ]
         );
 
@@ -1378,7 +1378,7 @@ abstract class APIBaseClass extends TestCase
             'search',
             ['itemtype' => 'Config',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => []
+                'query'    => [],
             ],
             206
         );
@@ -1430,7 +1430,7 @@ abstract class APIBaseClass extends TestCase
             ['rights' => 2],
             [
                 'profiles_id'  => 4,
-                'name'         => 'devicesimcard_pinpuk'
+                'name'         => 'devicesimcard_pinpuk',
             ]
         );
 
@@ -1445,7 +1445,7 @@ abstract class APIBaseClass extends TestCase
             ['rights' => 3],
             [
                 'profiles_id'  => 4,
-                'name'         => 'devicesimcard_pinpuk'
+                'name'         => 'devicesimcard_pinpuk',
             ]
         );
         $this->session_token = $backupSessionToken;
@@ -1455,7 +1455,7 @@ abstract class APIBaseClass extends TestCase
             'getItem',
             ['itemtype' => 'Item_DeviceSimcard',
                 'id'       => $id,
-                'headers'  => ['Session-Token' => $limitedSessionToken]
+                'headers'  => ['Session-Token' => $limitedSessionToken],
             ]
         );
         foreach ($sensitiveFields as $field) {
@@ -1467,7 +1467,7 @@ abstract class APIBaseClass extends TestCase
             'getItem',
             ['itemtype' => 'Item_DeviceSimcard',
                 'id'       => $id,
-                'headers'  => ['Session-Token' => $this->session_token]
+                'headers'  => ['Session-Token' => $this->session_token],
             ]
         );
         foreach ($sensitiveFields as $field) {
@@ -1482,10 +1482,10 @@ abstract class APIBaseClass extends TestCase
                 'query'    => ['criteria' => [
                     0 => ['field'      => 15,
                         'searchtype' => 'equals',
-                        'value'      => $input['pin']
-                    ]
-                ]
-                ]
+                        'value'      => $input['pin'],
+                    ],
+                ],
+                ],
             ],
             400,
             'ERROR'
@@ -1497,8 +1497,8 @@ abstract class APIBaseClass extends TestCase
             ['itemtype' => 'Item_DeviceSimcard',
                 'headers'  => ['Session-Token' => $this->session_token],
                 'query'    => [
-                    'forcedisplay'  => [15]
-                ]
+                    'forcedisplay'  => [15],
+                ],
             ],
             400,
             'ERROR'
@@ -1524,16 +1524,16 @@ abstract class APIBaseClass extends TestCase
 
     public function testUndisclosedField()
     {
-       // test common cases
+        // test common cases
         $itemtypes = [
-            'APIClient', 'AuthLDAP', 'MailCollector', 'User'
+            'APIClient', 'AuthLDAP', 'MailCollector', 'User',
         ];
         foreach ($itemtypes as $itemtype) {
             $data = $this->query(
                 'getItems',
                 [
                     'itemtype' => $itemtype,
-                    'headers'  => ['Session-Token' => $this->session_token]
+                    'headers'  => ['Session-Token' => $this->session_token],
                 ]
             );
 
@@ -1551,7 +1551,7 @@ abstract class APIBaseClass extends TestCase
         // test specific cases
         // Config
         $data = $this->query('getGlpiConfig', [
-            'headers'  => ['Session-Token' => $this->session_token]
+            'headers'  => ['Session-Token' => $this->session_token],
         ]);
 
         // Test undisclosed data are actually not disclosed
@@ -1620,7 +1620,7 @@ abstract class APIBaseClass extends TestCase
         // Disable notifications
         Config::setConfigurationValues('core', [
             'use_notifications' => '0',
-            'notifications_mailing' => '0'
+            'notifications_mailing' => '0',
         ]);
 
         // Check that disabled notifications prevent password changes
@@ -1628,8 +1628,8 @@ abstract class APIBaseClass extends TestCase
             'lostPassword',
             ['verb'    => 'PUT',
                 'json'    => [
-                    'email'  => $email
-                ]
+                    'email'  => $email,
+                ],
             ],
             400,
             'ERROR'
@@ -1638,7 +1638,7 @@ abstract class APIBaseClass extends TestCase
         // Enable notifications
         Config::setConfigurationValues('core', [
             'use_notifications' => '1',
-            'notifications_mailing' => '1'
+            'notifications_mailing' => '1',
         ]);
 
         // Test an unknown email, query will succeed to avoid exposing whether
@@ -1647,11 +1647,11 @@ abstract class APIBaseClass extends TestCase
         $this->query('lostPassword', [
             'verb'    => 'PUT',
             'json'    => [
-                'email'  => 'nonexistent@localhost.local'
+                'email'  => 'nonexistent@localhost.local',
             ],
             'server_errors' => [
-                "Failed to find a single user for 'nonexistent@localhost.local', 0 user(s) found."
-            ]
+                "Failed to find a single user for 'nonexistent@localhost.local', 0 user(s) found.",
+            ],
         ], 200);
 
         // Test a valid email is accepted
@@ -1659,8 +1659,8 @@ abstract class APIBaseClass extends TestCase
             'lostPassword',
             ['verb'    => 'PATCH',
                 'json'    => [
-                    'email'  => $email
-                ]
+                    'email'  => $email,
+                ],
             ],
             200
         );
@@ -1678,7 +1678,7 @@ abstract class APIBaseClass extends TestCase
                     'email'                 => $email,
                     'password_forget_token' => $token . 'bad',
                     'password'              => 'NewPassword',
-                ]
+                ],
             ],
             400,
             'ERROR'
@@ -1692,7 +1692,7 @@ abstract class APIBaseClass extends TestCase
                     'email'                 => $email,
                     'password_forget_token' => $token,
                     'password'              => 'NewPassword',
-                ]
+                ],
             ],
             200
         );
@@ -1721,7 +1721,7 @@ abstract class APIBaseClass extends TestCase
         //diable notifications
         Config::setConfigurationValues('core', [
             'use_notifications' => '0',
-            'notifications_mailing' => '0'
+            'notifications_mailing' => '0',
         ]);
     }
 
@@ -1761,7 +1761,7 @@ abstract class APIBaseClass extends TestCase
         // Enable notifications
         Config::setConfigurationValues('core', [
             'use_notifications' => '1',
-            'notifications_mailing' => '1'
+            'notifications_mailing' => '1',
         ]);
 
         // Trigger a notification sending
@@ -1771,8 +1771,8 @@ abstract class APIBaseClass extends TestCase
             [
                 'verb'    => 'PATCH',
                 'json'    => [
-                    'email'  => $user->getDefaultEmail()
-                ]
+                    'email'  => $user->getDefaultEmail(),
+                ],
             ],
             200
         );
@@ -1783,8 +1783,8 @@ abstract class APIBaseClass extends TestCase
             [
                 'query' => [
                     'login'    => 'glpi',
-                    'password' => 'glpi'
-                ]
+                    'password' => 'glpi',
+                ],
             ]
         );
         $this->assertArrayHasKey('session_token', $data);
@@ -1803,7 +1803,7 @@ abstract class APIBaseClass extends TestCase
 
         $notifications = \array_filter(
             $result,
-            fn ($notification) => $notification['name'] === '[GLPI] Forgotten password?'
+            fn($notification) => $notification['name'] === '[GLPI] Forgotten password?'
         );
 
         $this->assertNotEmpty($notifications);
@@ -1821,8 +1821,8 @@ abstract class APIBaseClass extends TestCase
                 'headers'  => ['Session-Token' => $data['session_token']],
                 'query'    => [
                     'reset'         => 'reset',
-                    'forcedisplay'  => [12, 13]
-                ]
+                    'forcedisplay'  => [12, 13],
+                ],
             ],
             200
         );
@@ -1834,7 +1834,7 @@ abstract class APIBaseClass extends TestCase
 
         $notifications = \array_filter(
             $result['data'],
-            fn ($notification) => $notification['1'] === '[GLPI] Forgotten password?'
+            fn($notification) => $notification['1'] === '[GLPI] Forgotten password?'
         );
 
         foreach ($notifications as $notification) {

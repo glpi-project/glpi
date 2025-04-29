@@ -69,7 +69,7 @@ if (isset($_GET['refused'])) {
             E_USER_WARNING
         );
     }
-} else if (!isCommandLine() && $_SERVER['REQUEST_METHOD'] != 'POST') {
+} elseif (!isCommandLine() && $_SERVER['REQUEST_METHOD'] != 'POST') {
     if (isset($_GET['action']) && $_GET['action'] == 'getConfig') {
         /**
          * Even if Fusion protocol is not supported for getConfig requests, they

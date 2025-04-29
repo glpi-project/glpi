@@ -88,8 +88,8 @@ class RemoteManagement extends InventoryAsset
             'FROM'   => Item_RemoteManagement::getTable(),
             'WHERE'  => [
                 'itemtype' => $this->item->getType(),
-                'items_id' => $this->item->fields['id']
-            ]
+                'items_id' => $this->item->fields['id'],
+            ],
         ]);
         foreach ($iterator as $data) {
             $idtmp = $data['id'];
@@ -113,8 +113,8 @@ class RemoteManagement extends InventoryAsset
             foreach ($db_mgmt as $keydb => $arraydb) {
                 unset($arraydb['is_dynamic']);
                 if ($compare == $arraydb) {
-                    $input = (array)$val + [
-                        'id'           => $keydb
+                    $input = (array) $val + [
+                        'id'           => $keydb,
                     ];
                     $mgmt->update(Sanitizer::sanitize($input));
                     unset($value[$k]);
@@ -136,7 +136,7 @@ class RemoteManagement extends InventoryAsset
             $val->itemtype = $this->item->getType();
             $val->items_id = $this->item->fields['id'];
             $val->is_dynamic = 1;
-            $mgmt->add(Sanitizer::sanitize((array)$val));
+            $mgmt->add(Sanitizer::sanitize((array) $val));
         }
     }
 

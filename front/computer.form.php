@@ -66,8 +66,8 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 
-   // delete a computer
-} else if (isset($_POST["delete"])) {
+    // delete a computer
+} elseif (isset($_POST["delete"])) {
     $computer->check($_POST['id'], DELETE);
     $ok = $computer->delete($_POST);
     if ($ok) {
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
         );
     }
     $computer->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $computer->check($_POST['id'], DELETE);
     if ($computer->restore($_POST)) {
         Event::log(
@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
         );
     }
     $computer->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $computer->check($_POST['id'], PURGE);
     if ($computer->delete($_POST, 1)) {
         Event::log(
@@ -108,8 +108,8 @@ if (isset($_POST["add"])) {
     }
     $computer->redirectToList();
 
-   //update a computer
-} else if (isset($_POST["update"])) {
+    //update a computer
+} elseif (isset($_POST["update"])) {
     $computer->check($_POST['id'], UPDATE);
     $computer->update($_POST);
     Event::log(
@@ -122,7 +122,7 @@ if (isset($_POST["add"])) {
     );
     Html::back();
 
-   // Disconnect a computer from a printer/monitor/phone/peripheral
+    // Disconnect a computer from a printer/monitor/phone/peripheral
 } else {//print computer information
     $menus = ["assets", "computer"];
     Computer::displayFullPageForItem($_GET['id'], $menus, [

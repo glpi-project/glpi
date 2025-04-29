@@ -52,15 +52,15 @@ class Search
      * @var int
      * @see GLOBAL_SEARCH
      */
-    const GLOBAL_DISPLAY_COUNT = 10;
+    public const GLOBAL_DISPLAY_COUNT = 10;
 
-   // EXPORT TYPE
+    // EXPORT TYPE
     /**
      * The global search view (Search across many item types).
      * This is NOT the same as the AllAssets view which is just a special itemtype.
      * @var int
      */
-    const GLOBAL_SEARCH        = -1;
+    public const GLOBAL_SEARCH        = -1;
 
     /**
      * The standard view.
@@ -70,49 +70,49 @@ class Search
      * - Browse
      * @var int
      */
-    const HTML_OUTPUT          = 0;
+    public const HTML_OUTPUT          = 0;
 
     /**
      * SYLK export format
      * @var int
      */
-    const SYLK_OUTPUT          = 1;
+    public const SYLK_OUTPUT          = 1;
 
     /**
      * PDF export format (Landscape mode)
      * @var int
      */
-    const PDF_OUTPUT_LANDSCAPE = 2;
+    public const PDF_OUTPUT_LANDSCAPE = 2;
 
     /**
      * CSV export format
      * @var int
      */
-    const CSV_OUTPUT           = 3;
+    public const CSV_OUTPUT           = 3;
 
     /**
      * PDF export format (Portrait mode)
      * @var int
      */
-    const PDF_OUTPUT_PORTRAIT  = 4;
+    public const PDF_OUTPUT_PORTRAIT  = 4;
 
     /**
      * Names list export format
      * @var int
      */
-    const NAMES_OUTPUT         = 5;
+    public const NAMES_OUTPUT         = 5;
 
     /**
      * Placeholder for a <br> line break
      * @var string
      */
-    const LBBR = '#LBBR#';
+    public const LBBR = '#LBBR#';
 
     /**
      * Placeholder for a <hr> line break
      * @var string
      */
-    const LBHR = '#LBHR#';
+    public const LBHR = '#LBHR#';
 
     /**
      * Separator used to separate values of a same element in CONCAT MySQL function.
@@ -120,7 +120,7 @@ class Search
      * @var string
      * @see LONGSEP
      */
-    const SHORTSEP = '$#$';
+    public const SHORTSEP = '$#$';
 
     /**
      * Separator used to separate each element in GROUP_CONCAT MySQL function.
@@ -128,13 +128,13 @@ class Search
      * @var string
      * @see SHORTSEP
      */
-    const LONGSEP  = '$$##$$';
+    public const LONGSEP  = '$$##$$';
 
     /**
      * Placeholder for a null value
      * @var string
      */
-    const NULLVALUE = '__NULL__';
+    public const NULLVALUE = '__NULL__';
 
     /**
      * The output format for the search results
@@ -233,7 +233,7 @@ class Search
         if ($itemtype == 'Location') {
             $latitude = 21;
             $longitude = 20;
-        } else if ($itemtype == 'Entity') {
+        } elseif ($itemtype == 'Entity') {
             $latitude = 67;
             $longitude = 68;
         } else {
@@ -245,13 +245,13 @@ class Search
             'link'         => 'AND NOT',
             'field'        => $latitude,
             'searchtype'   => 'contains',
-            'value'        => 'NULL'
+            'value'        => 'NULL',
         ];
         $params['criteria'][] = [
             'link'         => 'AND NOT',
             'field'        => $longitude,
             'searchtype'   => 'contains',
-            'value'        => 'NULL'
+            'value'        => 'NULL',
         ];
 
         $data = self::getDatas($itemtype, $params);
@@ -266,18 +266,18 @@ class Search
                 'link'         => 'AND',
                 'field'        => ($itemtype == 'Location' || $itemtype == 'Entity') ? 1 : (($itemtype == 'Ticket') ? 83 : 3),
                 'searchtype'   => 'equals',
-                'value'        => 'CURLOCATION'
+                'value'        => 'CURLOCATION',
             ];
             $globallinkto = Toolbox::append_params(
                 [
                     'criteria'     => Sanitizer::unsanitize($criteria),
-                    'metacriteria' => Sanitizer::unsanitize($data['search']['metacriteria'])
+                    'metacriteria' => Sanitizer::unsanitize($data['search']['metacriteria']),
                 ],
                 '&amp;'
             );
             $sort_params = Toolbox::append_params([
                 'sort'   => $data['search']['sort'],
-                'order'  => $data['search']['order']
+                'order'  => $data['search']['order'],
             ], '&amp;');
             $parameters = "as_map=0&amp;" . $sort_params . '&amp;' .
                         $globallinkto;
@@ -471,7 +471,7 @@ class Search
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Default values of parameters
+        // Default values of parameters
         $p['criteria']            = [];
         $p['metacriteria']        = [];
         $p['sort']                = ['1'];
@@ -497,9 +497,9 @@ class Search
             switch ($key) {
                 case 'order':
                     if (!is_array($val)) {
-                     // Backward compatibility with GLPI < 10.0 links
+                        // Backward compatibility with GLPI < 10.0 links
                         if (in_array($val, ['ASC', 'DESC'])) {
-                              $p[$key] = [$val];
+                            $p[$key] = [$val];
                         }
                         break;
                     }
@@ -527,9 +527,9 @@ class Search
             }
         }
 
-       // Set display type for export if define
+        // Set display type for export if define
         if (isset($p['display_type'])) {
-           // Limit to 10 element
+            // Limit to 10 element
             if ($p['display_type'] == self::GLOBAL_SEARCH) {
                 $p['list_limit'] = self::GLOBAL_DISPLAY_COUNT;
             }
@@ -545,7 +545,7 @@ class Search
         $data['search']   = $p;
         $data['itemtype'] = $itemtype;
 
-       // Instanciate an object to access method
+        // Instanciate an object to access method
         $data['item'] = null;
 
         if ($itemtype != AllAssets::getType()) {
@@ -569,8 +569,8 @@ class Search
             }
         }
 
-       /// Get the items to display
-       // Add searched items
+        /// Get the items to display
+        // Add searched items
 
         $forcetoview = false;
         if (is_array($forcedisplay) && count($forcedisplay)) {
@@ -578,13 +578,13 @@ class Search
         }
         $data['search']['all_search']  = false;
         $data['search']['view_search'] = false;
-       // If no research limit research to display item and compute number of item using simple request
+        // If no research limit research to display item and compute number of item using simple request
         $data['search']['no_search']   = true;
 
         $data['toview'] = self::addDefaultToView($itemtype, $params);
         $data['meta_toview'] = [];
         if (!$forcetoview) {
-           // Add items to display depending of personal prefs
+            // Add items to display depending of personal prefs
             $displaypref = DisplayPreference::getForTypeUser($itemtype, Session::getLoginUserID());
             if (count($displaypref)) {
                 foreach ($displaypref as $val) {
@@ -596,14 +596,14 @@ class Search
         }
 
         if (count($p['criteria']) > 0) {
-           // use a recursive closure to push searchoption when using nested criteria
+            // use a recursive closure to push searchoption when using nested criteria
             $parse_criteria = function ($criteria) use (&$parse_criteria, &$data) {
                 foreach ($criteria as $criterion) {
-                     // recursive call
+                    // recursive call
                     if (isset($criterion['criteria'])) {
                         $parse_criteria($criterion['criteria']);
                     } else {
-                   // normal behavior
+                        // normal behavior
                         if (
                             isset($criterion['field'])
                             && !in_array($criterion['field'], $data['toview'])
@@ -615,9 +615,9 @@ class Search
                                 || !$criterion['meta'])
                             ) {
                                 array_push($data['toview'], $criterion['field']);
-                            } else if ($criterion['field'] == 'all') {
+                            } elseif ($criterion['field'] == 'all') {
                                 $data['search']['all_search'] = true;
-                            } else if ($criterion['field'] == 'view') {
+                            } elseif ($criterion['field'] == 'view') {
                                 $data['search']['view_search'] = true;
                             }
                         }
@@ -632,7 +632,7 @@ class Search
                 }
             };
 
-           // call the closure
+            // call the closure
             $parse_criteria($p['criteria']);
         }
 
@@ -640,17 +640,17 @@ class Search
             $data['search']['no_search'] = false;
         }
 
-       // Add order item
+        // Add order item
         $to_add_view = array_diff($p['sort'], $data['toview']);
         array_push($data['toview'], ...$to_add_view);
 
-       // Special case for CommonITILObjects : put ID in front
+        // Special case for CommonITILObjects : put ID in front
         if (is_a($itemtype, CommonITILObject::class, true)) {
             array_unshift($data['toview'], 2);
         }
 
         $limitsearchopt   = self::getCleanedOptions($itemtype);
-       // Clean and reorder toview
+        // Clean and reorder toview
         $tmpview = [];
         foreach ($data['toview'] as $val) {
             if (isset($limitsearchopt[$val]) && !in_array($val, $tmpview)) {
@@ -660,7 +660,7 @@ class Search
         $data['toview']    = $tmpview;
         $data['tocompute'] = $data['toview'];
 
-       // Force item to display
+        // Force item to display
         if ($forcetoview) {
             foreach ($data['toview'] as $val) {
                 if (!in_array($val, $data['tocompute'])) {
@@ -715,21 +715,21 @@ class Search
             $itemtable = $orig_table;
         }
 
-       // hack for AllAssets and ReservationItem
+        // hack for AllAssets and ReservationItem
         if (isset($CFG_GLPI['union_search_type'][$data['itemtype']])) {
             $entity_restrict = true;
         } else {
             $entity_restrict = $data['item']->isEntityAssign() && $data['item']->isField('entities_id');
         }
 
-       // Construct the request
+        // Construct the request
 
-       //// 1 - SELECT
-       // request currentuser for SQL supervision, not displayed
+        //// 1 - SELECT
+        // request currentuser for SQL supervision, not displayed
         $SELECT = "SELECT DISTINCT `$itemtable`.`id` AS id, '" . Toolbox::addslashes_deep($_SESSION['glpiname']) . "' AS currentuser,
                         " . self::addDefaultSelect($data['itemtype']);
 
-       // Add select for all toview item
+        // Add select for all toview item
         foreach ($data['toview'] as $val) {
             $SELECT .= self::addSelect($data['itemtype'], $val);
         }
@@ -738,20 +738,20 @@ class Search
             $SELECT .= ' `glpi_locations`.`id` AS loc_id, ';
         }
 
-       //// 2 - FROM AND LEFT JOIN
-       // Set reference table
+        //// 2 - FROM AND LEFT JOIN
+        // Set reference table
         $FROM = " FROM `$itemtable`";
 
-       // Init already linked tables array in order not to link a table several times
+        // Init already linked tables array in order not to link a table several times
         $already_link_tables = [];
-       // Put reference table
+        // Put reference table
         array_push($already_link_tables, $itemtable);
 
-       // Add default join
+        // Add default join
         $COMMONLEFTJOIN = self::addDefaultJoin($data['itemtype'], $itemtable, $already_link_tables);
         $FROM          .= $COMMONLEFTJOIN;
 
-       // Add all table for toview items
+        // Add all table for toview items
         foreach ($data['tocompute'] as $val) {
             if (!in_array($searchopt[$val]["table"], $blacklist_tables)) {
                 $FROM .= self::addLeftJoin(
@@ -768,10 +768,10 @@ class Search
             }
         }
 
-       // Search all case :
+        // Search all case :
         if ($data['search']['all_search']) {
             foreach ($searchopt as $key => $val) {
-               // Do not search on Group Name
+                // Do not search on Group Name
                 if (is_array($val) && isset($val['table'])) {
                     if (!in_array($searchopt[$key]["table"], $blacklist_tables)) {
                         $FROM .= self::addLeftJoin(
@@ -790,23 +790,23 @@ class Search
             }
         }
 
-       //// 3 - WHERE
+        //// 3 - WHERE
 
-       // default string
+        // default string
         $COMMONWHERE = self::addDefaultWhere($data['itemtype']);
         $first       = empty($COMMONWHERE);
 
-       // Add deleted if item have it
+        // Add deleted if item have it
         if ($data['item'] && $data['item']->maybeDeleted()) {
             $LINK = " AND ";
             if ($first) {
                 $LINK  = " ";
                 $first = false;
             }
-            $COMMONWHERE .= $LINK . "`$itemtable`.`is_deleted` = " . (int)$data['search']['is_deleted'] . " ";
+            $COMMONWHERE .= $LINK . "`$itemtable`.`is_deleted` = " . (int) $data['search']['is_deleted'] . " ";
         }
 
-       // Remove template items
+        // Remove template items
         if ($data['item'] && $data['item']->maybeTemplate()) {
             $LINK = " AND ";
             if ($first) {
@@ -816,7 +816,7 @@ class Search
             $COMMONWHERE .= $LINK . "`$itemtable`.`is_template` = 0 ";
         }
 
-       // Add Restrict to current entities
+        // Add Restrict to current entities
         if ($entity_restrict) {
             $LINK = " AND ";
             if ($first) {
@@ -826,8 +826,8 @@ class Search
 
             if ($data['itemtype'] == 'Entity') {
                 $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable);
-            } else if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
-               // Will be replace below in Union/Recursivity Hack
+            } elseif (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+                // Will be replace below in Union/Recursivity Hack
                 $COMMONWHERE .= $LINK . " ENTITYRESTRICT ";
             } else {
                 $COMMONWHERE .= getEntitiesRestrictRequest(
@@ -842,17 +842,17 @@ class Search
         $WHERE  = "";
         $HAVING = "";
 
-       // Add search conditions
-       // If there is search items
+        // Add search conditions
+        // If there is search items
         if (count($data['search']['criteria'])) {
             $WHERE  = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt);
             $HAVING = self::constructCriteriaSQL($data['search']['criteria'], $data, $searchopt, true);
 
-           // if criteria (with meta flag) need additional join/from sql
+            // if criteria (with meta flag) need additional join/from sql
             self::constructAdditionalSqlForMetacriteria($data['search']['criteria'], $SELECT, $FROM, $already_link_tables, $data);
         }
 
-       //// 4 - ORDER
+        //// 4 - ORDER
         $ORDER = " ORDER BY `id` ";
         $sort_fields = [];
         $sort_count = count($data['search']['sort']);
@@ -861,7 +861,7 @@ class Search
                 if ($data['search']['sort'][$i] == $val) {
                     $sort_fields[] = [
                         'searchopt_id' => $data['search']['sort'][$i],
-                        'order'        => $data['search']['order'][$i] ?? null
+                        'order'        => $data['search']['order'][$i] ?? null,
                     ];
                 }
             }
@@ -872,9 +872,9 @@ class Search
 
         $SELECT = rtrim(trim($SELECT), ',');
 
-       //// 7 - Manage GROUP BY
+        //// 7 - Manage GROUP BY
         $GROUPBY = "";
-       // Meta Search / Search All / Count tickets
+        // Meta Search / Search All / Count tickets
         $criteria_with_meta = array_filter($data['search']['criteria'], function ($criterion) {
             return isset($criterion['meta'])
                 && $criterion['meta'];
@@ -901,12 +901,12 @@ class Search
 
         $LIMIT   = "";
         $numrows = 0;
-       //No search : count number of items using a simple count(ID) request and LIMIT search
+        //No search : count number of items using a simple count(ID) request and LIMIT search
         if ($data['search']['no_search']) {
-            $LIMIT = " LIMIT " . (int)$data['search']['start'] . ", " . (int)$data['search']['list_limit'];
+            $LIMIT = " LIMIT " . (int) $data['search']['start'] . ", " . (int) $data['search']['list_limit'];
 
             $count = "count(DISTINCT `$itemtable`.`id`)";
-           // request currentuser for SQL supervision, not displayed
+            // request currentuser for SQL supervision, not displayed
             $query_num = "SELECT $count,
                               '" . Toolbox::addslashes_deep($_SESSION['glpiname']) . "' AS currentuser
                        FROM `$itemtable`" .
@@ -922,7 +922,7 @@ class Search
                 }
                 $query_num .= $LINK . $COMMONWHERE;
             }
-           // Union Search :
+            // Union Search :
             if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
                 $tmpquery = $query_num;
 
@@ -942,12 +942,12 @@ class Search
                             $query_num  = str_replace($data['itemtype'], $ctype, $query_num);
                             $query_num .= " AND `$ctable`.`id` IS NOT NULL ";
 
-                         // Add deleted if item have it
+                            // Add deleted if item have it
                             if ($citem && $citem->maybeDeleted()) {
-                                  $query_num .= " AND `$ctable`.`is_deleted` = 0 ";
+                                $query_num .= " AND `$ctable`.`is_deleted` = 0 ";
                             }
 
-                         // Remove template items
+                            // Remove template items
                             if ($citem && $citem->maybeTemplate()) {
                                 $query_num .= " AND `$ctable`.`is_template` = 0 ";
                             }
@@ -989,7 +989,7 @@ class Search
                             ),
                             $query_num
                         );
-                         $data['sql']['count'][] = $query_num;
+                        $data['sql']['count'][] = $query_num;
                     }
                 }
             } else {
@@ -997,7 +997,7 @@ class Search
             }
         }
 
-       // If export_all reset LIMIT condition
+        // If export_all reset LIMIT condition
         if ($data['search']['export_all']) {
             $LIMIT = "";
         }
@@ -1015,7 +1015,7 @@ class Search
             $HAVING = ' HAVING ' . $HAVING;
         }
 
-       // Create QUERY
+        // Create QUERY
         if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
             $first = true;
             $QUERY = "";
@@ -1031,20 +1031,20 @@ class Search
                         $QUERY .= " UNION ALL ";
                     }
                     $tmpquery = "";
-                   // AllAssets case
+                    // AllAssets case
                     if ($data['itemtype'] == AllAssets::getType()) {
-                         $tmpquery = $SELECT . ", '$ctype' AS TYPE " .
-                             $FROM .
-                             $WHERE;
+                        $tmpquery = $SELECT . ", '$ctype' AS TYPE " .
+                            $FROM .
+                            $WHERE;
 
-                         $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
+                        $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
 
-                         // Add deleted if item have it
+                        // Add deleted if item have it
                         if ($citem && $citem->maybeDeleted()) {
                             $tmpquery .= " AND `$ctable`.`is_deleted` = 0 ";
                         }
 
-                       // Remove template items
+                        // Remove template items
                         if ($citem && $citem->maybeTemplate()) {
                             $tmpquery .= " AND `$ctable`.`is_template` = 0 ";
                         }
@@ -1052,7 +1052,7 @@ class Search
                         $tmpquery .= $GROUPBY .
                              $HAVING;
 
-                      // Replace 'asset_types' by itemtype table name
+                        // Replace 'asset_types' by itemtype table name
                         $tmpquery = str_replace(
                             $CFG_GLPI["union_search_type"][$data['itemtype']],
                             $ctable,
@@ -1112,7 +1112,7 @@ class Search
                         $tmpquery
                     );
 
-                     // SOFTWARE HACK
+                    // SOFTWARE HACK
                     if ($ctype == 'Software') {
                         $tmpquery = str_replace("`glpi_softwares`.`serial`", "''", $tmpquery);
                         $tmpquery = str_replace("`glpi_softwares`.`otherserial`", "''", $tmpquery);
@@ -1134,7 +1134,7 @@ class Search
                 'GROUPBY' => $GROUPBY,
                 'HAVING' => $HAVING,
                 'ORDER' => $ORDER,
-                'LIMIT' => $LIMIT
+                'LIMIT' => $LIMIT,
             ];
             $QUERY = $SELECT .
                   $FROM .
@@ -1189,11 +1189,11 @@ class Search
                 $meta = true;
                 $meta_searchopt = self::getOptions($itemtype);
             } else {
-               // Not a meta, use the same search option everywhere
+                // Not a meta, use the same search option everywhere
                 $meta_searchopt = $searchopt;
             }
 
-           // common search
+            // common search
             if (
                 !isset($criterion['field'])
                 || ($criterion['field'] != "all"
@@ -1217,7 +1217,7 @@ class Search
                     $tmplink = " AND ";
                 }
 
-               // Manage Link if not first item
+                // Manage Link if not first item
                 if (!empty($sql)) {
                     $LINK = $tmplink;
                 }
@@ -1226,17 +1226,17 @@ class Search
                     $sub_sql = self::constructCriteriaSQL($criterion['criteria'], $data, $meta_searchopt, $is_having);
                     if (strlen($sub_sql)) {
                         if ($NOT) {
-                             $sql .= "$LINK NOT($sub_sql)";
+                            $sql .= "$LINK NOT($sub_sql)";
                         } else {
                             $sql .= "$LINK ($sub_sql)";
                         }
                     }
-                } else if (
+                } elseif (
                     isset($meta_searchopt[$criterion['field']]["usehaving"])
                        || ($meta && "AND NOT" === $criterion['link'])
                 ) {
                     if (!$is_having) {
-                       // the having part will be managed in a second pass
+                        // the having part will be managed in a second pass
                         continue;
                     }
 
@@ -1253,7 +1253,7 @@ class Search
                     }
                 } else {
                     if ($is_having) {
-                       // the having part has been already managed in the first pass
+                        // the having part has been already managed in the first pass
                         continue;
                     }
 
@@ -1270,7 +1270,7 @@ class Search
                         $sql .= $new_where;
                     }
                 }
-            } else if (
+            } elseif (
                 isset($criterion['value'])
                     && strlen($criterion['value']) > 0
             ) { // view and all search
@@ -1320,7 +1320,7 @@ class Search
                         continue;
                     }
                     if (is_array($val2)) {
-                       // Add Where clause if not to be done in HAVING CLAUSE
+                        // Add Where clause if not to be done in HAVING CLAUSE
                         if (!$is_having && !isset($val2["usehaving"])) {
                             $tmplink = $LINK;
                             if ($first2) {
@@ -1337,8 +1337,8 @@ class Search
                                 $meta
                             );
                             if ($new_where !== false) {
-                                 $first2  = false;
-                                 $view_sql .=  $new_where;
+                                $first2  = false;
+                                $view_sql .=  $new_where;
                             }
                         }
                     }
@@ -1373,7 +1373,7 @@ class Search
     ) {
         $data['meta_toview'] = [];
         foreach ($criteria as $criterion) {
-           // manage sub criteria
+            // manage sub criteria
             if (isset($criterion['criteria'])) {
                 self::constructAdditionalSqlForMetacriteria(
                     $criterion['criteria'],
@@ -1385,7 +1385,7 @@ class Search
                 continue;
             }
 
-           // parse only criterion with meta flag
+            // parse only criterion with meta flag
             if (
                 !isset($criterion['itemtype'])
                 || empty($criterion['itemtype'])
@@ -1401,7 +1401,7 @@ class Search
             $metaopt = self::getOptions($m_itemtype);
             $sopt    = $metaopt[$criterion['field']];
 
-           //add toview for meta criterion
+            //add toview for meta criterion
             $data['meta_toview'][$m_itemtype][] = $criterion['field'];
 
             $SELECT .= self::addSelect(
@@ -1465,13 +1465,13 @@ class Search
             $data['data']['execution_time'] = $DBread->execution_time;
             if (isset($data['search']['savedsearches_id'])) {
                 SavedSearch::updateExecutionTime(
-                    (int)$data['search']['savedsearches_id'],
+                    (int) $data['search']['savedsearches_id'],
                     $DBread->execution_time
                 );
             }
 
             $data['data']['totalcount'] = 0;
-           // if real search or complete export : get numrows from request
+            // if real search or complete export : get numrows from request
             if (
                 !$data['search']['no_search']
                 || $data['search']['export_all']
@@ -1492,7 +1492,7 @@ class Search
             }
 
             if ($onlycount) {
-               //we just want to coutn results; no need to continue process
+                //we just want to coutn results; no need to continue process
                 return;
             }
 
@@ -1500,18 +1500,18 @@ class Search
                 $data['search']['start'] = 0;
             }
 
-           // Search case
+            // Search case
             $data['data']['begin'] = $data['search']['start'];
             $data['data']['end']   = min(
                 $data['data']['totalcount'],
                 $data['search']['start'] + $data['search']['list_limit']
             ) - 1;
-           //map case
+            //map case
             if (isset($data['search']['as_map'])  && $data['search']['as_map'] == 1) {
                 $data['data']['end'] = $data['data']['totalcount'] - 1;
             }
 
-           // No search Case
+            // No search Case
             if ($data['search']['no_search']) {
                 $data['data']['begin'] = 0;
                 $data['data']['end']   = min(
@@ -1519,13 +1519,13 @@ class Search
                     $data['search']['list_limit']
                 ) - 1;
             }
-           // Export All case
+            // Export All case
             if ($data['search']['export_all']) {
                 $data['data']['begin'] = 0;
                 $data['data']['end']   = $data['data']['totalcount'] - 1;
             }
 
-           // Get columns
+            // Get columns
             $data['data']['cols'] = [];
 
             $searchopt = self::getOptions($data['itemtype']);
@@ -1540,7 +1540,7 @@ class Search
                 ];
             }
 
-           // manage toview column for criteria with meta flag
+            // manage toview column for criteria with meta flag
             foreach ($data['meta_toview'] as $m_itemtype => $toview) {
                 $m_searchopt = self::getOptions($m_itemtype);
                 foreach ($toview as $opt_id) {
@@ -1555,7 +1555,7 @@ class Search
                 }
             }
 
-           // Display columns Headers for meta items
+            // Display columns Headers for meta items
             $already_printed = [];
 
             if (count($data['search']['metacriteria'])) {
@@ -1582,9 +1582,9 @@ class Search
                 }
             }
 
-           // search group (corresponding of dropdown optgroup) of current col
+            // search group (corresponding of dropdown optgroup) of current col
             foreach ($data['data']['cols'] as $num => $col) {
-               // search current col in searchoptions ()
+                // search current col in searchoptions ()
                 while (
                     key($searchopt) !== null
                     && key($searchopt) != $col['id']
@@ -1592,7 +1592,7 @@ class Search
                     next($searchopt);
                 }
                 if (key($searchopt) !== null) {
-                   //search optgroup (non array option)
+                    //search optgroup (non array option)
                     while (
                         key($searchopt) !== null
                         && is_numeric(key($searchopt))
@@ -1608,13 +1608,13 @@ class Search
                         $data['data']['cols'][$num]['groupname'] = current($searchopt);
                     }
                 }
-               //reset
+                //reset
                 reset($searchopt);
             }
 
-           // Get rows
+            // Get rows
 
-           // if real search seek to begin of items to display (because of complete search)
+            // if real search seek to begin of items to display (because of complete search)
             if (!$data['search']['no_search']) {
                 $DBread->dataSeek($result, $data['search']['start']);
             }
@@ -1633,7 +1633,7 @@ class Search
                 $newrow        = [];
                 $newrow['raw'] = $row;
 
-               // Parse datas
+                // Parse datas
                 foreach ($newrow['raw'] as $key => $val) {
                     if (preg_match('/ITEM(_(\w[^\d]+))?_(\d+)(_(.+))?/', $key, $matches)) {
                         $j = $matches[3];
@@ -1705,7 +1705,7 @@ class Search
                                         if ($split2[0] == self::NULLVALUE) {
                                             $newrow[$j][$key2][$fieldname] = null;
                                         } else {
-                                             $newrow[$j][$key2][$fieldname] = $split2[0];
+                                            $newrow[$j][$key2][$fieldname] = $split2[0];
                                         }
                                         $handled = true;
                                     }
@@ -1723,7 +1723,7 @@ class Search
                             }
                         } else {
                             $newrow[$key] = $val;
-                           // Add id to items list
+                            // Add id to items list
                             if ($key == 'id') {
                                 $data['data']['items'][$val] = $i;
                             }
@@ -1786,15 +1786,15 @@ class Search
             }
         }
 
-       // Contruct parameters
+        // Contruct parameters
         $globallinkto  = Toolbox::append_params([
             'criteria'     => Sanitizer::unsanitize($search['criteria']),
-            'metacriteria' => Sanitizer::unsanitize($search['metacriteria'])
+            'metacriteria' => Sanitizer::unsanitize($search['metacriteria']),
         ], '&');
 
         $parameters = http_build_query([
             'sort'   => $search['sort'],
-            'order'  => $search['order']
+            'order'  => $search['order'],
         ]);
 
         $parameters .= "&{$globallinkto}";
@@ -1803,7 +1803,7 @@ class Search
             $parameters .= "&_in_modal=1";
         }
 
-       // For plugin add new parameter if available
+        // For plugin add new parameter if available
         if ($plug = isPluginItemType($data['itemtype'])) {
             $out = Plugin::doOneHook($plug['plugin'], 'addParamFordynamicReport', $data['itemtype']);
             if (is_array($out) && count($out)) {
@@ -1836,7 +1836,8 @@ class Search
             'posthref'            => $globallinkto,
             'showmassiveactions'  => ($search['showmassiveactions'] ?? true)
                                   && $data['display_type'] != self::GLOBAL_SEARCH
-                                  && ($itemtype == AllAssets::getType()
+                                  && (
+                                      $itemtype == AllAssets::getType()
                                     || count(MassiveAction::getAllMassiveActions($item, $is_deleted))
                                   ),
             'massiveactionparams' => $data['search']['massiveactionparams'] + [
@@ -1846,7 +1847,7 @@ class Search
             ],
             'can_config'          => Session::haveRightsOr('search_config', [
                 DisplayPreference::PERSONAL,
-                DisplayPreference::GENERAL
+                DisplayPreference::GENERAL,
             ]),
             'may_be_deleted'      => $item instanceof CommonDBTM && $item->maybeDeleted() && !$item->useDeletedToLockIfDynamic(),
             'may_be_located'      => $item instanceof CommonDBTM && $item->maybeLocated(),
@@ -1865,7 +1866,7 @@ class Search
             }
         }
 
-       // Clean previous selection
+        // Clean previous selection
         $_SESSION['glpimassiveactionselected'] = [];
     }
 
@@ -1890,19 +1891,19 @@ class Search
             return false;
         }
 
-       // Define begin and end var for loop
-       // Search case
+        // Define begin and end var for loop
+        // Search case
         $begin_display = $data['data']['begin'];
         $end_display   = $data['data']['end'];
 
-       // Compute number of columns to display
-       // Add toview elements
+        // Compute number of columns to display
+        // Add toview elements
         $nbcols          = count($data['data']['cols']);
 
-       // Display List Header
+        // Display List Header
         echo self::showHeader($data['display_type'], $end_display - $begin_display + 1, $nbcols);
 
-       // New Line for Header Items Line
+        // New Line for Header Items Line
         $headers_line        = '';
         $headers_line_top    = '';
 
@@ -1911,12 +1912,12 @@ class Search
 
         $header_num = 1;
 
-       // Display column Headers for toview items
+        // Display column Headers for toview items
         $metanames = [];
         foreach ($data['data']['cols'] as $val) {
             $name = $val["name"];
 
-           // prefix by group name (corresponding to optgroup in dropdown) if exists
+            // prefix by group name (corresponding to optgroup in dropdown) if exists
             if (isset($val['groupname'])) {
                 $groupname = $val['groupname'];
                 if (is_array($groupname)) {
@@ -1926,7 +1927,7 @@ class Search
                 $name  = "$groupname - $name";
             }
 
-           // Not main itemtype add itemtype to display
+            // Not main itemtype add itemtype to display
             if ($data['itemtype'] != $val['itemtype']) {
                 if (!isset($metanames[$val['itemtype']])) {
                     if ($metaitem = getItemForItemtype($val['itemtype'])) {
@@ -1951,7 +1952,7 @@ class Search
             );
         }
 
-       // Add specific column Header
+        // Add specific column Header
         if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
             $headers_line .= self::showHeaderItem(
                 $data['display_type'],
@@ -1959,7 +1960,7 @@ class Search
                 $header_num
             );
         }
-       // End Line for column headers
+        // End Line for column headers
         $headers_line .= self::showEndLine($data['display_type'], true);
 
         $headers_line_top    .= $headers_line;
@@ -1967,23 +1968,23 @@ class Search
 
         echo $headers_line_top;
 
-       // Num of the row (1=header_line)
+        // Num of the row (1=header_line)
         $row_num = 1;
 
         $typenames = [];
-       // Display Loop
+        // Display Loop
         foreach ($data['data']['rows'] as $row) {
-           // Column num
+            // Column num
             $item_num = 1;
             $row_num++;
-           // New line
+            // New line
             echo self::showNewLine(
                 $data['display_type'],
                 ($row_num % 2),
                 $data['search']['is_deleted']
             );
 
-           // Print other toview items
+            // Print other toview items
             foreach ($data['data']['cols'] as $col) {
                 $colkey = "{$col['itemtype']}_{$col['id']}";
                 if (!$col['meta']) {
@@ -2021,11 +2022,11 @@ class Search
                     $row_num
                 );
             }
-           // End Line
+            // End Line
             echo self::showEndLine($data['display_type']);
         }
 
-       // Create title
+        // Create title
         $title = '';
         if (
             ($data['display_type'] == self::PDF_OUTPUT_LANDSCAPE)
@@ -2034,7 +2035,7 @@ class Search
             $title = self::computeTitle($data);
         }
 
-       // Display footer (close table)
+        // Display footer (close table)
         echo self::showFooter($data['display_type'], $title, $data['data']['count']);
     }
 
@@ -2051,13 +2052,13 @@ class Search
         $title = "";
 
         if (count($data['search']['criteria'])) {
-           //Drop the first link as it is not needed, or convert to clean link (AND NOT -> NOT)
+            //Drop the first link as it is not needed, or convert to clean link (AND NOT -> NOT)
             if (isset($data['search']['criteria']['0']['link'])) {
                 $notpos = strpos($data['search']['criteria']['0']['link'], 'NOT');
                 //If link was like '%NOT%' just use NOT. Otherwise remove the link
                 if ($notpos > 0) {
                     $data['search']['criteria']['0']['link'] = 'NOT';
-                } else if (!$notpos) {
+                } elseif (!$notpos) {
                     unset($data['search']['criteria']['0']['link']);
                 }
             }
@@ -2071,7 +2072,7 @@ class Search
                 $titlecontain = '';
 
                 if (isset($criteria['criteria'])) {
-                   //This is a group criteria, call computeTitle again and concat
+                    //This is a group criteria, call computeTitle again and concat
                     $newdata = $data;
                     $oldlink = $criteria['link'];
                     $newdata['search'] = $criteria;
@@ -2084,7 +2085,7 @@ class Search
                 } else {
                     if (strlen($criteria['value']) > 0) {
                         if (isset($criteria['link'])) {
-                             $titlecontain = " " . $criteria['link'] . " ";
+                            $titlecontain = " " . $criteria['link'] . " ";
                         }
                         $gdname    = '';
                         $valuename = '';
@@ -2302,43 +2303,43 @@ class Search
                             break;
 
                         case "contains":
-                              $titlecontain2 = sprintf(
-                                  __('%1$s = %2$s'),
-                                  $titlecontain2,
-                                  '%' . $metacriteria['value'] . '%'
-                              );
+                            $titlecontain2 = sprintf(
+                                __('%1$s = %2$s'),
+                                $titlecontain2,
+                                '%' . $metacriteria['value'] . '%'
+                            );
                             break;
 
                         case "notcontains":
-                               $titlecontain2 = sprintf(
-                                   __('%1$s <> %2$s'),
-                                   $titlecontain2,
-                                   '%' . $metacriteria['value'] . '%'
-                               );
+                            $titlecontain2 = sprintf(
+                                __('%1$s <> %2$s'),
+                                $titlecontain2,
+                                '%' . $metacriteria['value'] . '%'
+                            );
                             break;
 
                         case "under":
-                              $titlecontain2 = sprintf(
-                                  __('%1$s %2$s'),
-                                  $titlecontain2,
-                                  sprintf(
-                                      __('%1$s %2$s'),
-                                      __('under'),
-                                      $gdname2
-                                  )
-                              );
+                            $titlecontain2 = sprintf(
+                                __('%1$s %2$s'),
+                                $titlecontain2,
+                                sprintf(
+                                    __('%1$s %2$s'),
+                                    __('under'),
+                                    $gdname2
+                                )
+                            );
                             break;
 
                         case "notunder":
-                             $titlecontain2 = sprintf(
-                                 __('%1$s %2$s'),
-                                 $titlecontain2,
-                                 sprintf(
-                                     __('%1$s %2$s'),
-                                     __('not under'),
-                                     $gdname2
-                                 )
-                             );
+                            $titlecontain2 = sprintf(
+                                __('%1$s %2$s'),
+                                $titlecontain2,
+                                sprintf(
+                                    __('%1$s %2$s'),
+                                    __('not under'),
+                                    $gdname2
+                                )
+                            );
                             break;
 
                         default:
@@ -2377,7 +2378,7 @@ class Search
         $linked = [];
         foreach ($CFG_GLPI as $key => $values) {
             if ($key === 'link_types') {
-               // Links are associated to all items of a type, it does not make any sense to use them in meta search
+                // Links are associated to all items of a type, it does not make any sense to use them in meta search
                 continue;
             }
             if ($key === 'ticket_types' && $item instanceof CommonITILObject) {
@@ -2388,10 +2389,10 @@ class Search
 
             foreach (self::getMetaParentItemtypesForTypesConfig($key) as $config_itemtype) {
                 if ($itemtype === $config_itemtype::getType()) {
-                   // List is related to source itemtype, all types of list are so linked
+                    // List is related to source itemtype, all types of list are so linked
                     $linked = array_merge($linked, $values);
                 } elseif (in_array($itemtype, $values)) {
-                   // Source itemtype is inside list, type corresponding to list is so linked
+                    // Source itemtype is inside list, type corresponding to list is so linked
                     $linked[] = $config_itemtype::getType();
                 }
             }
@@ -2425,9 +2426,9 @@ class Search
             'directconnect_types'  => ['Computer'],
             'infocom_types'        => ['Budget', 'Infocom'],
             'linkgroup_types'      => ['Group'],
-         // 'linkgroup_tech_types' => ['Group'], // Cannot handle ambiguity with 'Group' from 'linkgroup_types'
+            // 'linkgroup_tech_types' => ['Group'], // Cannot handle ambiguity with 'Group' from 'linkgroup_types'
             'linkuser_types'       => ['User'],
-         // 'linkuser_tech_types'  => ['User'], // Cannot handle ambiguity with 'User' from 'linkuser_types'
+            // 'linkuser_tech_types'  => ['User'], // Cannot handle ambiguity with 'User' from 'linkuser_types'
             'project_asset_types'  => ['Project'],
             'rackable_types'       => ['Enclosure', 'Rack'],
             'socket_types'         => [Socket::class],
@@ -2494,7 +2495,7 @@ class Search
             return $itemtype;
         }
 
-       // Use reference type if given itemtype extends a reference type.
+        // Use reference type if given itemtype extends a reference type.
         $types = [
             'Computer',
             'Problem',
@@ -2504,7 +2505,7 @@ class Search
             'Monitor',
             'Peripheral',
             'Software',
-            'Phone'
+            'Phone',
         ];
         foreach ($types as $type) {
             if (is_a($itemtype, $type, true)) {
@@ -2526,7 +2527,7 @@ class Search
         if ($only_not) {
             return [
                 'AND'     => Dropdown::EMPTY_VALUE,
-                'AND NOT' => __("NOT")
+                'AND NOT' => __("NOT"),
             ];
         }
 
@@ -2534,7 +2535,7 @@ class Search
             'AND'     => __('AND'),
             'OR'      => __('OR'),
             'AND NOT' => __('AND NOT'),
-            'OR NOT'  => __('OR NOT')
+            'OR NOT'  => __('OR NOT'),
         ];
     }
 
@@ -2554,7 +2555,7 @@ class Search
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Default values of parameters
+        // Default values of parameters
         $p['sort']         = '';
         $p['is_deleted']   = 0;
         $p['as_map']       = 0;
@@ -2581,7 +2582,7 @@ class Search
         }
         $p['target'] = URL::sanitizeURL($p['target']);
 
-       // Itemtype name used in JS function names, etc
+        // Itemtype name used in JS function names, etc
         $normalized_itemtype = strtolower(str_replace('\\', '', $itemtype));
         $rand_criteria = mt_rand();
         $main_block_class = '';
@@ -2598,20 +2599,20 @@ class Search
         echo "<div id='searchcriteria$rand_criteria' class='$main_block_class' >";
         $nbsearchcountvar      = 'nbcriteria' . $normalized_itemtype . mt_rand();
         $searchcriteriatableid = 'criteriatable' . $normalized_itemtype . mt_rand();
-       // init criteria count
+        // init criteria count
         echo Html::scriptBlock("
          var $nbsearchcountvar = " . count($p['criteria']) . ";
       ");
 
         echo "<div class='list-group list-group-flush list-group-hoverable criteria-list pt-2' id='$searchcriteriatableid'>";
 
-       // Display normal search parameters
+        // Display normal search parameters
         $i = 0;
         foreach (array_keys($p['criteria']) as $i) {
             self::displayCriteria([
                 'itemtype' => $itemtype,
                 'num'      => $i,
-                'p'        => $p
+                'p'        => $p,
             ]);
         }
 
@@ -2621,7 +2622,7 @@ class Search
 
         echo "</div>"; // .list
 
-       // Keep track of the current savedsearches on reload
+        // Keep track of the current savedsearches on reload
         if (isset($_GET['savedsearches_id'])) {
             echo Html::input("savedsearches_id", [
                 'type' => "hidden",
@@ -2677,7 +2678,7 @@ class Search
         }
         echo "</div>"; //.search_actions
 
-       // idor checks
+        // idor checks
         $idor_display_criteria       = Session::getNewIDORToken($itemtype);
         $idor_display_meta_criteria  = Session::getNewIDORToken($itemtype);
         $idor_display_criteria_group = Session::getNewIDORToken($itemtype);
@@ -2766,9 +2767,9 @@ JAVASCRIPT;
         }
 
         if ($p['mainform']) {
-           // For dropdown
+            // For dropdown
             echo Html::hidden('itemtype', ['value' => $itemtype]);
-           // Reset to start when submit new search
+            // Reset to start when submit new search
             echo Html::hidden('start', ['value'    => 0]);
         }
 
@@ -2811,7 +2812,7 @@ JAVASCRIPT;
         $rowid       = 'searchrow' . $normalized_itemtype . $randrow;
         $addclass    = $num == 0 ? ' headerRow' : '';
         $prefix      = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit'], ENT_QUOTES) : '';
-        $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
+        $parents_num = $p['parents_num'] ?? [];
         $criteria    = [];
         $from_meta   = isset($request['from_meta']) && $request['from_meta'];
 
@@ -2850,13 +2851,13 @@ JAVASCRIPT;
         echo "<div class='row g-1'>";
 
         if (!$from_meta) {
-           // First line display add / delete images for normal and meta search items
+            // First line display add / delete images for normal and meta search items
             if (
                 $num == 0
                 && isset($p['mainform'])
                 && $p['mainform']
             ) {
-               // Instanciate an object to access method
+                // Instanciate an object to access method
                 $item = null;
                 if ($request["itemtype"] != AllAssets::getType()) {
                     $item = getItemForItemtype($request["itemtype"]);
@@ -2864,16 +2865,16 @@ JAVASCRIPT;
                 if ($item && $item->maybeDeleted()) {
                     echo Html::hidden('is_deleted', [
                         'value' => $p['is_deleted'],
-                        'id'    => 'is_deleted'
+                        'id'    => 'is_deleted',
                     ]);
                 }
                 echo Html::hidden('as_map', [
                     'value' => $p['as_map'],
-                    'id'    => 'as_map'
+                    'id'    => 'as_map',
                 ]);
                 echo Html::hidden('browse', [
                     'value' => $p['browse'],
-                    'id'    => 'browse'
+                    'id'    => 'browse',
                 ]);
             }
             echo "<div class='col-auto'>";
@@ -2885,7 +2886,7 @@ JAVASCRIPT;
             echo "</div>";
         }
 
-       // Display link item
+        // Display link item
         $value = '';
         if (!$from_meta) {
             echo "<div class='col-auto'>";
@@ -2900,7 +2901,7 @@ JAVASCRIPT;
         }
 
         $values   = [];
-       // display select box to define search item
+        // display select box to define search item
         if ($CFG_GLPI['allow_search_view'] == 2 && !isset($request['from_meta'])) {
             $values['view'] = __('Items seen');
         }
@@ -2909,10 +2910,10 @@ JAVASCRIPT;
         $group = '';
 
         foreach ($options as $key => $val) {
-           // print groups
+            // print groups
             if (!is_array($val)) {
                 $group = $val;
-            } else if (count($val) == 1) {
+            } elseif (count($val) == 1) {
                 $group = $val['name'];
             } else {
                 if (
@@ -2947,14 +2948,13 @@ JAVASCRIPT;
         echo "<div class='row g-1' id='$spanid'>";
 
         $used_itemtype = $request["itemtype"];
-       // Force Computer itemtype for AllAssets to permit to show specific items
+        // Force Computer itemtype for AllAssets to permit to show specific items
         if ($request["itemtype"] == AllAssets::getType()) {
             $used_itemtype = 'Computer';
         }
 
-        $searchtype = isset($criteria['searchtype'])
-                     ? $criteria['searchtype']
-                     : "";
+        $searchtype = $criteria['searchtype']
+                     ?? "";
         $p_value    = isset($criteria['value'])
                      ? Sanitizer::dbUnescape($criteria['value'])
                      : "";
@@ -3010,13 +3010,13 @@ JAVASCRIPT;
         $p            = $request['p'];
         $num          = (int) $request['num'];
         $prefix       = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit'], ENT_QUOTES) : '';
-        $parents_num  = isset($p['parents_num']) ? $p['parents_num'] : [];
+        $parents_num  = $p['parents_num'] ?? [];
         $itemtype     = $request["itemtype"];
         $metacriteria = [];
 
         if (!$metacriteria = self::findCriteriaInSession($itemtype, $num, $parents_num)) {
             $metacriteria = [];
-           // Set default field
+            // Set default field
             $options  = Search::getCleanedOptions($itemtype);
 
             foreach ($options as $key => $val) {
@@ -3042,20 +3042,19 @@ JAVASCRIPT;
       </button>";
         echo "</div>";
 
-       // Display link item (not for the first item)
+        // Display link item (not for the first item)
         echo "<div class='col-auto'>";
         Dropdown::showFromArray(
             "criteria{$prefix}[$num][link]",
             Search::getLogicalOperators(),
             [
-                'value' => isset($metacriteria["link"])
-               ? $metacriteria["link"]
-               : "",
+                'value' => $metacriteria["link"]
+               ?? "",
             ]
         );
         echo "</div>";
 
-       // Display select of the linked item type available
+        // Display select of the linked item type available
         echo "<div class='col-auto'>";
         $rand = Dropdown::showItemTypes("criteria{$prefix}[$num][itemtype]", $linked, [
             'value' => isset($metacriteria['itemtype'])
@@ -3065,11 +3064,11 @@ JAVASCRIPT;
         ]);
         echo "</div>";
         echo Html::hidden("criteria{$prefix}[$num][meta]", [
-            'value' => true
+            'value' => true,
         ]);
         $field_id = Html::cleanId("dropdown_criteria{$prefix}[$num][itemtype]$rand");
         $spanid   = Html::cleanId("show_" . $request["itemtype"] . "_" . $prefix . $num . "_$rand");
-       // Ajax script for display search met& item
+        // Ajax script for display search met& item
 
         $params = [
             'action'          => 'display_criteria',
@@ -3079,8 +3078,8 @@ JAVASCRIPT;
             'num'             => $num,
             'p'               => $request["p"],
             '_idor_token'     => Session::getNewIDORToken("", [
-                'parent_itemtype' => $request['itemtype']
-            ])
+                'parent_itemtype' => $request['itemtype'],
+            ]),
         ];
         Ajax::updateItemOnSelectEvent(
             $field_id,
@@ -3122,7 +3121,7 @@ JAVASCRIPT;
         $rowid       = 'searchrow' . $request['itemtype'] . $randrow;
         $addclass    = $num == 0 ? ' headerRow' : '';
         $prefix      = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit'], ENT_QUOTES) : '';
-        $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
+        $parents_num = $p['parents_num'] ?? [];
 
         if (!$criteria = self::findCriteriaInSession($request['itemtype'], $num, $parents_num)) {
             $criteria = [
@@ -3142,11 +3141,11 @@ JAVASCRIPT;
         echo "</div>";
         echo "<div class='col-auto'>";
         Dropdown::showFromArray("criteria{$prefix}[$num][link]", Search::getLogicalOperators(), [
-            'value' => isset($criteria["link"]) ? $criteria["link"] : '',
+            'value' => $criteria["link"] ?? '',
         ]);
         echo "</div>";
 
-        $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
+        $parents_num = $p['parents_num'] ?? [];
         array_push($parents_num, $num);
         $params = [
             'mainform'    => false,
@@ -3235,8 +3234,8 @@ JAVASCRIPT;
             [
                 'field' => $field,
                 'link'  => 'contains',
-                'value' => ''
-            ]
+                'value' => '',
+            ],
         ];
     }
 
@@ -3283,7 +3282,7 @@ JAVASCRIPT;
 
         $actions = Search::getActionsFor($request["itemtype"], $request["field"]);
 
-       // is it a valid action for type ?
+        // is it a valid action for type ?
         if (
             count($actions)
             && (empty($request['searchtype']) || !isset($actions[$request['searchtype']]))
@@ -3303,7 +3302,7 @@ JAVASCRIPT;
         $searchopt = [];
         $fieldsearch_id = null;
         if (count($actions) > 0) {
-           // get already get search options
+            // get already get search options
             if (isset($actions['searchopt'])) {
                 $searchopt = $actions['searchopt'];
                 // No name for clean array with quotes
@@ -3327,9 +3326,8 @@ JAVASCRIPT;
             'num'         => $num,
             'itemtype'    => $request["itemtype"],
             '_idor_token' => Session::getNewIDORToken($request["itemtype"]),
-            'from_meta'   => isset($request['from_meta'])
-                           ? $request['from_meta']
-                           : false,
+            'from_meta'   => $request['from_meta']
+                           ?? false,
             'field'       => $request["field"],
             'p'           => $p,
         ];
@@ -3368,7 +3366,7 @@ JAVASCRIPT;
 
         $p                 = $request['p'];
         $prefix            = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit'], ENT_QUOTES) : '';
-        $searchopt         = isset($request['searchopt']) ? $request['searchopt'] : [];
+        $searchopt         = $request['searchopt'] ?? [];
         $request['value']  = rawurldecode($request['value']);
         $fieldname         = isset($request['meta']) && $request['meta']
                               ? 'metacriteria'
@@ -3379,7 +3377,7 @@ JAVASCRIPT;
         $options2          = [];
         $options2['value'] = $request['value'];
         $options2['width'] = '100%';
-       // For tree dropdpowns
+        // For tree dropdpowns
         $options2['permit_select_parent'] = true;
 
         switch ($request['searchtype']) {
@@ -3392,9 +3390,9 @@ JAVASCRIPT;
                 if (!$display && isset($searchopt['field'])) {
                     // Specific cases
                     switch ($searchopt['table'] . "." . $searchopt['field']) {
-                      // Add mygroups choice to searchopt
+                        // Add mygroups choice to searchopt
                         case "glpi_groups.completename":
-                             $searchopt['toadd'] = ['mygroups' => __('My groups')];
+                            $searchopt['toadd'] = ['mygroups' => __('My groups')];
                             break;
 
                         case "glpi_changes.status":
@@ -3417,21 +3415,21 @@ JAVASCRIPT;
                             break;
 
                         case "glpi_tickets.global_validation":
-                                $options2['all'] = true;
+                            $options2['all'] = true;
                             break;
 
                         case "glpi_ticketvalidations.status":
-                              $options2['all'] = true;
+                            $options2['all'] = true;
                             break;
 
                         case "glpi_users.name":
-                            $options2['right']            = (isset($searchopt['right']) ? $searchopt['right'] : 'all');
+                            $options2['right']            = ($searchopt['right'] ?? 'all');
                             $options2['inactive_deleted'] = 1;
                             $searchopt['toadd'] = [
                                 [
                                     'id'    => 'myself',
                                     'text'  => __('Myself'),
-                                ]
+                                ],
                             ];
 
                             break;
@@ -3450,11 +3448,11 @@ JAVASCRIPT;
 
                     $out = $item->getValueToSelect($searchopt, $inputname, $request['value'], $options2);
                     if (strlen($out)) {
-                         echo $out;
-                         $display = true;
+                        echo $out;
+                        $display = true;
                     }
 
-                   //Could display be handled by a plugin ?
+                    //Could display be handled by a plugin ?
                     if (
                         !$display
                         && $plug = isPluginItemType(getItemTypeForTable($searchopt['table']))
@@ -3466,7 +3464,7 @@ JAVASCRIPT;
                                 'name'           => $inputname,
                                 'searchtype'     => $request['searchtype'],
                                 'searchoption'   => $searchopt,
-                                'value'          => $request['value']
+                                'value'          => $request['value'],
                             ]
                         );
                     }
@@ -3474,7 +3472,7 @@ JAVASCRIPT;
                 break;
         }
 
-       // Default case : text field
+        // Default case : text field
         if (!$display) {
             echo "<input type='text' class='form-control' size='13' name='$inputname' value=\"" .
                   Html::cleanInputText($request['value']) . "\">";
@@ -3510,7 +3508,7 @@ JAVASCRIPT;
         $table = $searchopt[$ID]["table"];
         $NAME = "ITEM_{$itemtype}_{$ID}";
 
-       // Plugin can override core definition for its type
+        // Plugin can override core definition for its type
         if ($plug = isPluginItemType($itemtype)) {
             $out = Plugin::doOneHook(
                 $plug['plugin'],
@@ -3527,8 +3525,8 @@ JAVASCRIPT;
             }
         }
 
-       //// Default cases
-       // Link with plugin tables
+        //// Default cases
+        // Link with plugin tables
         if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
             if (count($matches) == 2) {
                 $plug     = $matches[1];
@@ -3543,7 +3541,7 @@ JAVASCRIPT;
                     "{$itemtype}_{$ID}"
                 );
                 if (!empty($out)) {
-                     return $out;
+                    return $out;
                 }
             }
         }
@@ -3552,7 +3550,7 @@ JAVASCRIPT;
             $NOT = !$NOT;
         }
 
-       // Preformat items
+        // Preformat items
         if (isset($searchopt[$ID]["datatype"])) {
             if ($searchopt[$ID]["datatype"] == "mio") {
                 // Parse value as it may contain a few different formats
@@ -3591,7 +3589,7 @@ JAVASCRIPT;
                     }
 
                     return " {$LINK} ({$DB->quoteName($NAME)} $operator {$DB->quoteValue($val)}) ";
-                break;
+                    break;
                 case "count":
                 case "mio":
                 case "number":
@@ -3622,7 +3620,7 @@ JAVASCRIPT;
                                      OR `$NAME` < " .
                                         (intval($val) - $searchopt[$ID]["width"]) . " ) ";
                         }
-                       // Exact search
+                        // Exact search
                         if (!$NOT) {
                             return " $LINK (`$NAME` = " . (intval($val)) . ") ";
                         }
@@ -3658,15 +3656,15 @@ JAVASCRIPT;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // BC parameter conversion
+        // BC parameter conversion
         if (!is_array($sort_fields)) {
-           // < 10.0.0 parameters
+            // < 10.0.0 parameters
             Toolbox::deprecated('The parameters for Search::addOrderBy have changed to allow sorting by multiple fields. Please update your calling code.');
             $sort_fields = [
                 [
                     'searchopt_id' => $sort_fields,
-                    'order'        => $_id
-                ]
+                    'order'        => $_id,
+                ],
             ];
         }
 
@@ -3679,7 +3677,7 @@ JAVASCRIPT;
                 continue;
             }
             $order = $sort_field['order'] ?? 'ASC';
-           // Order security check
+            // Order security check
             if ($order != 'ASC') {
                 $order = 'DESC';
             }
@@ -3713,7 +3711,7 @@ JAVASCRIPT;
                 $criterion = "`ITEM_{$itemtype}_{$ID}` $order";
             }
 
-           // Plugin can override core definition for its type
+            // Plugin can override core definition for its type
             if ($criterion === null && $plug = isPluginItemType($itemtype)) {
                 $out = Plugin::doOneHook(
                     $plug['plugin'],
@@ -3725,14 +3723,14 @@ JAVASCRIPT;
                 );
                 $out = $out !== null ? trim($out) : null;
                 if (!empty($out)) {
-                     $out = preg_replace('/^ORDER BY /', '', $out);
-                     $criterion = $out;
+                    $out = preg_replace('/^ORDER BY /', '', $out);
+                    $criterion = $out;
                 }
             }
 
             if ($criterion === null) {
                 switch ($table . "." . $field) {
-                   // FIXME Dead case? Can't see any itemtype referencing this table in their search options to be able to get here.
+                    // FIXME Dead case? Can't see any itemtype referencing this table in their search options to be able to get here.
                     case "glpi_auth_tables.name":
                         $user_searchopt = self::getOptions('User');
                         $criterion = "`glpi_users`.`authtype` $order,
@@ -3785,7 +3783,7 @@ JAVASCRIPT;
                             $criterion = "`" . $table . $addtable . "`.`name` $order";
                         }
                         break;
-                   //FIXME glpi_networkequipments.ip seems like a dead case
+                        //FIXME glpi_networkequipments.ip seems like a dead case
                     case "glpi_networkequipments.ip":
                     case "glpi_ipaddresses.name":
                         $criterion = "INET6_ATON(`$table$addtable`.`$field`) $order";
@@ -3793,9 +3791,9 @@ JAVASCRIPT;
                 }
             }
 
-           //// Default cases
+            //// Default cases
 
-           // Link with plugin tables
+            // Link with plugin tables
             if ($criterion === null && preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
                 if (count($matches) == 2) {
                     $plug = $matches[1];
@@ -3809,13 +3807,13 @@ JAVASCRIPT;
                     );
                     $out = $out !== null ? trim($out) : null;
                     if (!empty($out)) {
-                           $out = preg_replace('/^ORDER BY /', '', $out);
-                           $criterion = $out;
+                        $out = preg_replace('/^ORDER BY /', '', $out);
+                        $criterion = $out;
                     }
                 }
             }
 
-           // Preformat items
+            // Preformat items
             if ($criterion === null && isset($searchopt[$ID]["datatype"])) {
                 switch ($searchopt[$ID]["datatype"]) {
                     case "date_delay":
@@ -3866,15 +3864,15 @@ JAVASCRIPT;
             $item = getItemForItemtype($itemtype);
             $entity_check = $item->isEntityAssign();
         }
-       // Add first element (name)
+        // Add first element (name)
         array_push($toview, 1);
 
         if (isset($params['as_map']) && $params['as_map'] == 1) {
-           // Add location name when map mode
+            // Add location name when map mode
             array_push($toview, ($itemtype == 'Location' ? 1 : ($itemtype == 'Ticket' ? 83 : 3)));
         }
 
-       // Add entity view :
+        // Add entity view :
         if (
             Session::isMultiEntitiesMode()
             && $entity_check
@@ -3914,7 +3912,7 @@ JAVASCRIPT;
                 break;
 
             default:
-               // Plugin can override core definition for its type
+                // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
                     $ret = Plugin::doOneHook(
                         $plug['plugin'],
@@ -3925,7 +3923,7 @@ JAVASCRIPT;
         }
         if ($itemtable == 'glpi_entities') {
             $ret .= "`$itemtable`.`id` AS entities_id, '1' AS is_recursive, ";
-        } else if ($mayberecursive) {
+        } elseif ($mayberecursive) {
             if ($item->isField('entities_id')) {
                 $ret .= $DB->quoteName("$itemtable.entities_id") . ", ";
             }
@@ -3990,7 +3988,7 @@ JAVASCRIPT;
 
         $addmeta = "";
         if ($meta) {
-           // $NAME = "META";
+            // $NAME = "META";
             if ($meta_type::getTable() != $table) {
                 $addmeta = "_" . $meta_type;
                 $addtable  .= $addmeta;
@@ -3998,7 +3996,7 @@ JAVASCRIPT;
             }
         }
 
-       // Plugin can override core definition for its type
+        // Plugin can override core definition for its type
         if ($plug = isPluginItemType($itemtype)) {
             $out = Plugin::doOneHook(
                 $plug['plugin'],
@@ -4037,7 +4035,7 @@ JAVASCRIPT;
             }
         }
 
-       // Virtual display no select : only get additional fields
+        // Virtual display no select : only get additional fields
         if (strpos($field, '_virtual') === 0) {
             return $ADDITONALFIELDS;
         }
@@ -4052,11 +4050,11 @@ JAVASCRIPT;
                             && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
                             && in_array($searchopt[$ID]['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
                         ) { // For tickets_users
-                             $ticket_user_table
-                             = $searchopt[$ID]['joinparams']['beforejoin']['table'] .
-                             "_" . self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']
-                                                                   ['joinparams']) . $addmeta;
-                               $addaltemail
+                            $ticket_user_table
+                            = $searchopt[$ID]['joinparams']['beforejoin']['table'] .
+                            "_" . self::computeComplexJoinID($searchopt[$ID]['joinparams']['beforejoin']
+                                                                  ['joinparams']) . $addmeta;
+                            $addaltemail
                               = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`, ' ',
                                                         `$ticket_user_table`.`alternative_email`)
                                                         SEPARATOR '" . self::LONGSEP . "') AS `" . $NAME . "_2`, ";
@@ -4089,6 +4087,7 @@ JAVASCRIPT;
                          $ADDITONALFIELDS";
                 }
 
+                // no break
             case "glpi_profiles.name":
                 if (
                     ($itemtype == 'User')
@@ -4171,7 +4170,7 @@ JAVASCRIPT;
                                                      `$table$addtable2`.`id`) SEPARATOR '" . self::LONGSEP . "')
                                      AS `" . $NAME . "`,
                         $ADDITONALFIELDS";
-                } else if ($itemtype == 'Software') {
+                } elseif ($itemtype == 'Software') {
                     return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwareversions`.`name`, ' - ',
                                                      `$table$addtable`.`$field`,'" . self::SHORTSEP . "',
                                                      `$table$addtable`.`id`) SEPARATOR '" . self::LONGSEP . "')
@@ -4184,7 +4183,7 @@ JAVASCRIPT;
             case "glpi_tickettasks.content":
             case "glpi_changetasks.content":
                 if (is_subclass_of($itemtype, "CommonITILObject")) {
-                   // force ordering by date desc
+                    // force ordering by date desc
                     return " GROUP_CONCAT(
                   DISTINCT CONCAT(
                      IFNULL($tocompute, '" . self::NULLVALUE . "'),
@@ -4201,8 +4200,8 @@ JAVASCRIPT;
                 break;
         }
 
-       //// Default cases
-       // Link with plugin tables
+        //// Default cases
+        // Link with plugin tables
         if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table, $matches)) {
             if (count($matches) == 2) {
                 $plug     = $matches[1];
@@ -4214,7 +4213,7 @@ JAVASCRIPT;
                     "{$itemtype}_{$ID}"
                 );
                 if (!empty($out)) {
-                     return $out;
+                    return $out;
                 }
             }
         }
@@ -4224,7 +4223,7 @@ JAVASCRIPT;
             $tocompute = str_replace($DB->quoteName('TABLE'), 'TABLE', $tocompute);
             $tocompute = str_replace("TABLE", $DB->quoteName("$table$addtable"), $tocompute);
         }
-       // Preformat items
+        // Preformat items
         if (isset($searchopt[$ID]["datatype"])) {
             switch ($searchopt[$ID]["datatype"]) {
                 case "count":
@@ -4283,7 +4282,7 @@ JAVASCRIPT;
             }
         }
 
-       // Default case
+        // Default case
         if (
             $meta
             || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]
@@ -4341,9 +4340,9 @@ JAVASCRIPT;
                 }
                 break;
 
-           // No link
+                // No link
             case 'User':
-               // View all entities
+                // View all entities
                 if (!Session::canViewAllEntities()) {
                     $condition = getEntitiesRestrictRequest("", "glpi_profiles_users", '', '', true);
                 }
@@ -4382,7 +4381,7 @@ JAVASCRIPT;
                 break;
 
             case 'Ticket':
-               // Same structure in addDefaultJoin
+                // Same structure in addDefaultJoin
                 $condition = '';
                 if (!Session::haveRight("ticket", Ticket::READALL)) {
                     $searchopt
@@ -4417,7 +4416,7 @@ JAVASCRIPT;
                     $condition = "(";
 
                     if (Session::haveRight("ticket", Ticket::READMY)) {
-                          $condition .= " $requester_table.users_id = '" . Session::getLoginUserID() . "'
+                        $condition .= " $requester_table.users_id = '" . Session::getLoginUserID() . "'
                                     OR $observer_table.users_id = '" . Session::getLoginUserID() . "'
                                     OR `glpi_tickets`.`users_id_recipient` = '" . Session::getLoginUserID() . "'";
                     } else {
@@ -4452,7 +4451,7 @@ JAVASCRIPT;
                         Session::haveRightsOr(
                             'ticketvalidation',
                             [TicketValidation::VALIDATEINCIDENT,
-                                TicketValidation::VALIDATEREQUEST
+                                TicketValidation::VALIDATEREQUEST,
                             ]
                         )
                     ) {
@@ -4469,12 +4468,12 @@ JAVASCRIPT;
                     $right       = 'change';
                     $table       = 'changes';
                     $groupetable = "`glpi_changes_groups_";
-                } else if ($itemtype == 'Problem') {
+                } elseif ($itemtype == 'Problem') {
                     $right       = 'problem';
                     $table       = 'problems';
                     $groupetable = "`glpi_groups_problems_";
                 }
-               // Same structure in addDefaultJoin
+                // Same structure in addDefaultJoin
                 $condition = '';
                 if (!Session::haveRight("$right", $itemtype::READALL)) {
                     $searchopt       = self::getOptions($itemtype);
@@ -4532,7 +4531,7 @@ JAVASCRIPT;
                 break;
 
             case 'TicketTask':
-               // Filter on is_private
+                // Filter on is_private
                 $allowed_is_private = [];
                 if (Session::haveRight(TicketTask::$rightname, CommonITILTask::SEEPRIVATE)) {
                     $allowed_is_private[] = 1;
@@ -4541,7 +4540,7 @@ JAVASCRIPT;
                     $allowed_is_private[] = 0;
                 }
 
-               // If the user can't see public and private
+                // If the user can't see public and private
                 if (!count($allowed_is_private)) {
                     $condition = "0 = 1";
                     break;
@@ -4550,12 +4549,12 @@ JAVASCRIPT;
                 $in = "IN ('" . implode("','", $allowed_is_private) . "')";
                 $condition = "(`glpi_tickettasks`.`is_private` $in ";
 
-               // Check for assigned or created tasks
+                // Check for assigned or created tasks
                 $condition .= "OR `glpi_tickettasks`.`users_id` = " . Session::getLoginUserID() . " ";
                 $condition .= "OR `glpi_tickettasks`.`users_id_tech` = " . Session::getLoginUserID() . " ";
 
-               // Check for parent item visibility unless the user can see all the
-               // possible parents
+                // Check for parent item visibility unless the user can see all the
+                // possible parents
                 if (!Session::haveRight('ticket', Ticket::READALL)) {
                     $condition .= "AND " . TicketTask::buildParentCondition();
                 }
@@ -4565,7 +4564,7 @@ JAVASCRIPT;
                 break;
 
             case 'ITILFollowup':
-               // Filter on is_private
+                // Filter on is_private
                 $allowed_is_private = [];
                 if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
                     $allowed_is_private[] = 1;
@@ -4574,7 +4573,7 @@ JAVASCRIPT;
                     $allowed_is_private[] = 0;
                 }
 
-               // If the user can't see public and private
+                // If the user can't see public and private
                 if (!count($allowed_is_private)) {
                     $condition = "0 = 1";
                     break;
@@ -4588,7 +4587,7 @@ JAVASCRIPT;
                     $entity_restrictions[] = getEntitiesRestrictRequest(
                         '',
                         $itil_itemtype::getTable() . '_items_id_' . self::computeComplexJoinID([
-                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
+                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'",
                         ]),
                         'entities_id',
                         ''
@@ -4599,14 +4598,14 @@ JAVASCRIPT;
                 $in = "IN ('" . implode("','", $allowed_is_private) . "')";
                 $condition .= " AND (`glpi_itilfollowups`.`is_private` $in ";
 
-               // Now filter on parent item visiblity
+                // Now filter on parent item visiblity
                 $condition .= "AND (";
 
-               // Filter for "ticket" parents
+                // Filter for "ticket" parents
                 $condition .= ITILFollowup::buildParentCondition(\Ticket::getType());
                 $condition .= "OR ";
 
-               // Filter for "change" parents
+                // Filter for "change" parents
                 $condition .= ITILFollowup::buildParentCondition(
                     \Change::getType(),
                     'changes_id',
@@ -4615,7 +4614,7 @@ JAVASCRIPT;
                 );
                 $condition .= "OR ";
 
-               // Fitler for "problem" parents
+                // Fitler for "problem" parents
                 $condition .= ITILFollowup::buildParentCondition(
                     \Problem::getType(),
                     'problems_id',
@@ -4631,15 +4630,15 @@ JAVASCRIPT;
                 break;
 
             default:
-               // Plugin can override core definition for its type
+                // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
                     $condition = Plugin::doOneHook($plug['plugin'], 'addDefaultWhere', $itemtype);
                 }
                 break;
         }
 
-       /* Hook to restrict user right on current itemtype */
-        list($itemtype, $condition) = Plugin::doHookFunction('add_default_where', [$itemtype, $condition]);
+        /* Hook to restrict user right on current itemtype */
+        [$itemtype, $condition] = Plugin::doHookFunction('add_default_where', [$itemtype, $condition]);
         return $condition;
     }
 
@@ -4700,13 +4699,13 @@ JAVASCRIPT;
             $table .= $addmeta;
         }
 
-       // Hack to allow search by ID on every sub-table
+        // Hack to allow search by ID on every sub-table
         if (preg_match('/^\$\$\$\$([0-9]+)$/', $val, $regs)) {
             return $link . " (`$table`.`id` " . ($nott ? "<>" : "=") . $regs[1] . " " .
                          (($regs[1] == 0) ? " OR `$table`.`id` IS NULL" : '') . ") ";
         }
 
-       // Preparse value
+        // Preparse value
         if (isset($searchopt[$ID]["datatype"])) {
             switch ($searchopt[$ID]["datatype"]) {
                 case "datetime":
@@ -4752,7 +4751,8 @@ JAVASCRIPT;
         switch ($searchtype) {
             case "notcontains":
                 $nott = !$nott;
-               //negated, use contains case
+                //negated, use contains case
+                // no break
             case "contains":
                 // FIXME
                 // `field LIKE '%test%'` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
@@ -4878,7 +4878,7 @@ JAVASCRIPT;
                 break;
         }
 
-       //Check in current item if a specific where is defined
+        //Check in current item if a specific where is defined
         if (method_exists($itemtype, 'addWhere')) {
             $out = $itemtype::addWhere($link, $nott, $itemtype, $ID, $searchtype, $val);
             if (!empty($out)) {
@@ -4886,7 +4886,7 @@ JAVASCRIPT;
             }
         }
 
-       // Plugin can override core definition for its type
+        // Plugin can override core definition for its type
         if ($plug = isPluginItemType($itemtype)) {
             $out = Plugin::doOneHook(
                 $plug['plugin'],
@@ -4904,7 +4904,7 @@ JAVASCRIPT;
         }
 
         switch ($inittable . "." . $field) {
-           // case "glpi_users_validation.name" :
+            // case "glpi_users_validation.name" :
 
             case "glpi_users.name":
                 if ($val === 'myself') {
@@ -4973,7 +4973,7 @@ JAVASCRIPT;
                     ) {
                         $bj        = $searchopt[$ID]["joinparams"]["beforejoin"];
                         $linktable = $bj['table'] . '_' . self::computeComplexJoinID($bj['joinparams']) . $addmeta;
-                       //$toadd     = "`$linktable`.`alternative_email` $SEARCH $tmplink ";
+                        //$toadd     = "`$linktable`.`alternative_email` $SEARCH $tmplink ";
                         $toadd     = self::makeTextCriteria(
                             "`$linktable`.`alternative_email`",
                             $val,
@@ -4983,7 +4983,7 @@ JAVASCRIPT;
                         // TODO: Should be deleted on next major, same as doing "Is -----"
                         // No reason to maiting a specific code + syntax for the same thing
                         if ($val == '^$') {
-                             return $link . " ((`$linktable`.`users_id` IS NULL)
+                            return $link . " ((`$linktable`.`users_id` IS NULL)
                             OR `$linktable`.`alternative_email` IS NULL)";
                         }
                     }
@@ -5016,6 +5016,7 @@ JAVASCRIPT;
                         $toadd2) $toadd)";
                 }
 
+                // no break
             case "glpi_groups.completename":
                 if ($val == 'mygroups') {
                     switch ($searchtype) {
@@ -5045,7 +5046,7 @@ JAVASCRIPT;
                         case 'notunder':
                             $groups = $_SESSION['glpigroups'];
                             foreach ($_SESSION['glpigroups'] as $g) {
-                                 $groups += getSonsOf($inittable, $g);
+                                $groups += getSonsOf($inittable, $g);
                             }
                             $groups = array_unique($groups);
 
@@ -5180,7 +5181,7 @@ JAVASCRIPT;
                         $compare = ($nott ? '<' : '>=');
                         return $link . " `$table`.`$field` $compare '" . abs($val) . "'";
                     }
-                   // Show all
+                    // Show all
                     $compare = ($nott ? '<' : '>=');
                     return $link . " `$table`.`$field` $compare '0' ";
                 }
@@ -5208,16 +5209,16 @@ JAVASCRIPT;
             case "glpi_notifications.event":
                 if (in_array($searchtype, ['equals', 'notequals']) && strpos($val, self::SHORTSEP)) {
                     $not = 'notequals' === $searchtype ? 'NOT' : '';
-                    list($itemtype_val, $event_val) = explode(self::SHORTSEP, $val);
+                    [$itemtype_val, $event_val] = explode(self::SHORTSEP, $val);
                     return " $link $not(`$table`.`event` = '$event_val'
                                AND `$table`.`itemtype` = '$itemtype_val')";
                 }
                 break;
         }
 
-       //// Default cases
+        //// Default cases
 
-       // Link with plugin tables
+        // Link with plugin tables
         if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $inittable, $matches)) {
             if (count($matches) == 2) {
                 $plug     = $matches[1];
@@ -5232,7 +5233,7 @@ JAVASCRIPT;
                     $searchtype
                 );
                 if (!empty($out)) {
-                     return $out;
+                    return $out;
                 }
             }
         }
@@ -5245,7 +5246,7 @@ JAVASCRIPT;
             $tocompute = str_replace("TABLE", $DB->quoteName("$table"), $tocompute);
         }
 
-       // Preformat items
+        // Preformat items
         if (isset($searchopt[$ID]["datatype"])) {
             if ($searchopt[$ID]["datatype"] == "mio") {
                 // Parse value as it may contain a few different formats
@@ -5274,10 +5275,10 @@ JAVASCRIPT;
                 case "date":
                 case "date_delay":
                     if ($searchopt[$ID]["datatype"] == 'datetime') {
-                       // Specific search for datetime
+                        // Specific search for datetime
                         if (in_array($searchtype, ['equals', 'notequals'])) {
-                             $val = preg_replace("/:00$/", '', $val);
-                             $val = '^' . $val;
+                            $val = preg_replace("/:00$/", '', $val);
+                            $val = '^' . $val;
                             if ($searchtype == 'notequals') {
                                 $nott = !$nott;
                             }
@@ -5337,18 +5338,18 @@ JAVASCRIPT;
                             return $link . " $date_computation " . $regs[1] . $regs[2] . "
                             ADDDATE(NOW(), INTERVAL " . $numeric_matches[1] . $numeric_matches[2] . " $search_unit) ";
                         }
-                       // ELSE Reformat date if needed
+                        // ELSE Reformat date if needed
                         $regs[3] = preg_replace(
                             '@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@',
                             '\5-\3-\1',
                             $regs[3]
                         );
                         if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/', $regs[3])) {
-                             $ret = $link;
+                            $ret = $link;
                             if ($nott) {
                                 $ret .= " NOT(";
                             }
-                             $ret .= " $date_computation {$regs[1]}{$regs[2]} '{$regs[3]}'";
+                            $ret .= " $date_computation {$regs[1]}{$regs[2]} '{$regs[3]}'";
                             if ($nott) {
                                 $ret .= ")";
                             }
@@ -5356,8 +5357,8 @@ JAVASCRIPT;
                         }
                         return "";
                     }
-                   // ELSE standard search
-                   // Date format modification if needed
+                    // ELSE standard search
+                    // Date format modification if needed
                     $val = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@', '\5-\3-\1', $val);
                     if ($date_computation) {
                         return self::makeTextCriteria($date_computation, $val, $nott, $link);
@@ -5373,12 +5374,12 @@ JAVASCRIPT;
                 case "bool":
                     if (!is_numeric($val)) {
                         if (strcasecmp($val, __('No')) == 0) {
-                             $val = 0;
-                        } else if (strcasecmp($val, __('Yes')) == 0) {
+                            $val = 0;
+                        } elseif (strcasecmp($val, __('Yes')) == 0) {
                             $val = 1;
                         }
                     }
-                   // No break here : use number comparaison case
+                    // no break here : use number comparaison case
 
                 case "count":
                 case "mio":
@@ -5481,7 +5482,7 @@ JAVASCRIPT;
                 //     FROM `glpi_groups_tickets`
                 //     WHERE `groups_id` = '4' AND `glpi_groups_tickets`.`type` = '3'
                 // )
-                if (is_numeric($val) && (int)$val === 0) {
+                if (is_numeric($val) && (int) $val === 0) {
                     // Special case, search criteria is empty
                     $subquery_operator = $subquery_operator == "IN" ? "NOT IN" : "IN";
                     $out = " $link `$main_table`.`id` $subquery_operator (
@@ -5536,7 +5537,7 @@ JAVASCRIPT;
             return $out;
         }
 
-       // Default case
+        // Default case
         if (in_array($searchtype, ['equals', 'notequals','under', 'notunder'])) {
             if (
                 (!isset($searchopt[$ID]['searchequalsonfield'])
@@ -5551,8 +5552,8 @@ JAVASCRIPT;
             if ($searchtype == 'notequals') {
                 $nott = !$nott;
             }
-           // Add NULL if $val = 0 and not negative search
-           // Or negative search on real value
+            // Add NULL if $val = 0 and not negative search
+            // Or negative search on real value
             if (
                 (!$nott && ($val == 0))
                 || ($nott && ($val != 0))
@@ -5586,7 +5587,7 @@ JAVASCRIPT;
         $out = '';
 
         switch ($itemtype) {
-           // No link
+            // No link
             case 'User':
                 $out = self::addLeftJoin(
                     $itemtype,
@@ -5619,7 +5620,7 @@ JAVASCRIPT;
                 break;
 
             case 'ProjectTask':
-               // Same structure in addDefaultWhere
+                // Same structure in addDefaultWhere
                 $out .= self::addLeftJoin(
                     $itemtype,
                     $ref_table,
@@ -5640,7 +5641,7 @@ JAVASCRIPT;
                 break;
 
             case 'Project':
-               // Same structure in addDefaultWhere
+                // Same structure in addDefaultWhere
                 if (!Session::haveRight("project", Project::READALL)) {
                     $out .= self::addLeftJoin(
                         $itemtype,
@@ -5656,11 +5657,11 @@ JAVASCRIPT;
                 break;
 
             case 'Ticket':
-               // Same structure in addDefaultWhere
+                // Same structure in addDefaultWhere
                 if (!Session::haveRight("ticket", Ticket::READALL)) {
                     $searchopt = self::getOptions($itemtype);
 
-                   // show mine : requester
+                    // show mine : requester
                     $out .= self::addLeftJoin(
                         $itemtype,
                         $ref_table,
@@ -5688,7 +5689,7 @@ JAVASCRIPT;
                         }
                     }
 
-                   // show mine : observer
+                    // show mine : observer
                     $out .= self::addLeftJoin(
                         $itemtype,
                         $ref_table,
@@ -5701,16 +5702,16 @@ JAVASCRIPT;
                     );
 
                     if (count($_SESSION['glpigroups'])) {
-                           $out .= self::addLeftJoin(
-                               $itemtype,
-                               $ref_table,
-                               $already_link_tables,
-                               "glpi_groups_tickets",
-                               "groups_tickets_id",
-                               0,
-                               0,
-                               $searchopt[65]['joinparams']['beforejoin']['joinparams']
-                           );
+                        $out .= self::addLeftJoin(
+                            $itemtype,
+                            $ref_table,
+                            $already_link_tables,
+                            "glpi_groups_tickets",
+                            "groups_tickets_id",
+                            0,
+                            0,
+                            $searchopt[65]['joinparams']['beforejoin']['joinparams']
+                        );
                     }
 
                     if (Session::haveRight("ticket", Ticket::OWN)) { // Can own ticket : show assign to me
@@ -5739,17 +5740,17 @@ JAVASCRIPT;
                         );
 
                         if (count($_SESSION['glpigroups'])) {
-                              $out .= self::addLeftJoin(
-                                  $itemtype,
-                                  $ref_table,
-                                  $already_link_tables,
-                                  "glpi_groups_tickets",
-                                  "groups_tickets_id",
-                                  0,
-                                  0,
-                                  $searchopt[8]['joinparams']['beforejoin']
-                                  ['joinparams']
-                              );
+                            $out .= self::addLeftJoin(
+                                $itemtype,
+                                $ref_table,
+                                $already_link_tables,
+                                "glpi_groups_tickets",
+                                "groups_tickets_id",
+                                0,
+                                0,
+                                $searchopt[8]['joinparams']['beforejoin']
+                                ['joinparams']
+                            );
                         }
                     }
 
@@ -5757,7 +5758,7 @@ JAVASCRIPT;
                         Session::haveRightsOr(
                             'ticketvalidation',
                             [TicketValidation::VALIDATEINCIDENT,
-                                TicketValidation::VALIDATEREQUEST
+                                TicketValidation::VALIDATEREQUEST,
                             ]
                         )
                     ) {
@@ -5782,20 +5783,20 @@ JAVASCRIPT;
                     $table       = 'changes';
                     $groupetable = "glpi_changes_groups";
                     $linkfield   = "changes_groups_id";
-                } else if ($itemtype == 'Problem') {
+                } elseif ($itemtype == 'Problem') {
                     $right       = 'problem';
                     $table       = 'problems';
                     $groupetable = "glpi_groups_problems";
                     $linkfield   = "groups_problems_id";
                 }
 
-               // Same structure in addDefaultWhere
+                // Same structure in addDefaultWhere
                 $out = '';
                 if (!Session::haveRight("$right", $itemtype::READALL)) {
                     $searchopt = self::getOptions($itemtype);
 
                     if (Session::haveRight("$right", $itemtype::READMY)) {
-                       // show mine : requester
+                        // show mine : requester
                         $out .= self::addLeftJoin(
                             $itemtype,
                             $ref_table,
@@ -5807,19 +5808,19 @@ JAVASCRIPT;
                             $searchopt[4]['joinparams']['beforejoin']['joinparams']
                         );
                         if (count($_SESSION['glpigroups'])) {
-                              $out .= self::addLeftJoin(
-                                  $itemtype,
-                                  $ref_table,
-                                  $already_link_tables,
-                                  $groupetable,
-                                  $linkfield,
-                                  0,
-                                  0,
-                                  $searchopt[71]['joinparams']['beforejoin']['joinparams']
-                              );
+                            $out .= self::addLeftJoin(
+                                $itemtype,
+                                $ref_table,
+                                $already_link_tables,
+                                $groupetable,
+                                $linkfield,
+                                0,
+                                0,
+                                $searchopt[71]['joinparams']['beforejoin']['joinparams']
+                            );
                         }
 
-                       // show mine : observer
+                        // show mine : observer
                         $out .= self::addLeftJoin(
                             $itemtype,
                             $ref_table,
@@ -5831,19 +5832,19 @@ JAVASCRIPT;
                             $searchopt[66]['joinparams']['beforejoin']['joinparams']
                         );
                         if (count($_SESSION['glpigroups'])) {
-                              $out .= self::addLeftJoin(
-                                  $itemtype,
-                                  $ref_table,
-                                  $already_link_tables,
-                                  $groupetable,
-                                  $linkfield,
-                                  0,
-                                  0,
-                                  $searchopt[65]['joinparams']['beforejoin']['joinparams']
-                              );
+                            $out .= self::addLeftJoin(
+                                $itemtype,
+                                $ref_table,
+                                $already_link_tables,
+                                $groupetable,
+                                $linkfield,
+                                0,
+                                0,
+                                $searchopt[65]['joinparams']['beforejoin']['joinparams']
+                            );
                         }
 
-                       // show mine : assign
+                        // show mine : assign
                         $out .= self::addLeftJoin(
                             $itemtype,
                             $ref_table,
@@ -5855,16 +5856,16 @@ JAVASCRIPT;
                             $searchopt[5]['joinparams']['beforejoin']['joinparams']
                         );
                         if (count($_SESSION['glpigroups'])) {
-                              $out .= self::addLeftJoin(
-                                  $itemtype,
-                                  $ref_table,
-                                  $already_link_tables,
-                                  $groupetable,
-                                  $linkfield,
-                                  0,
-                                  0,
-                                  $searchopt[8]['joinparams']['beforejoin']['joinparams']
-                              );
+                            $out .= self::addLeftJoin(
+                                $itemtype,
+                                $ref_table,
+                                $already_link_tables,
+                                $groupetable,
+                                $linkfield,
+                                0,
+                                0,
+                                $searchopt[8]['joinparams']['beforejoin']['joinparams']
+                            );
                         }
                     }
                 }
@@ -5883,20 +5884,20 @@ JAVASCRIPT;
                         false,
                         '',
                         [
-                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
+                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'",
                         ]
                     );
                 }
                 break;
 
             default:
-               // Plugin can override core definition for its type
+                // Plugin can override core definition for its type
                 if ($plug = isPluginItemType($itemtype)) {
                     $plugin_name   = $plug['plugin'];
                     $hook_function = 'plugin_' . strtolower($plugin_name) . '_addDefaultJoin';
                     $hook_closure  = function () use ($hook_function, $itemtype, $ref_table, &$already_link_tables) {
                         if (is_callable($hook_function)) {
-                              return $hook_function($itemtype, $ref_table, $already_link_tables);
+                            return $hook_function($itemtype, $ref_table, $already_link_tables);
                         }
                     };
                     $out = Plugin::doOneHook($plugin_name, $hook_closure);
@@ -5904,7 +5905,7 @@ JAVASCRIPT;
                 break;
         }
 
-        list($itemtype, $out) = Plugin::doHookFunction('add_default_join', [$itemtype, $out]);
+        [$itemtype, $out] = Plugin::doHookFunction('add_default_join', [$itemtype, $out]);
         return $out;
     }
 
@@ -5936,12 +5937,12 @@ JAVASCRIPT;
         $field = ''
     ) {
 
-       // Rename table for meta left join
+        // Rename table for meta left join
         $AS = "";
         $nt = $new_table;
         $cleannt    = $nt;
 
-       // Virtual field no link
+        // Virtual field no link
         if (strpos($linkfield, '_virtual') === 0) {
             return '';
         }
@@ -5951,7 +5952,7 @@ JAVASCRIPT;
         $is_fkey_composite_on_self = getTableNameForForeignKeyField($linkfield) == $ref_table
          && $linkfield != getForeignKeyFieldForTable($ref_table);
 
-       // Auto link
+        // Auto link
         if (
             ($ref_table == $new_table)
             && empty($complexjoin)
@@ -5970,7 +5971,7 @@ JAVASCRIPT;
             return "";
         }
 
-       // Multiple link possibilies case
+        // Multiple link possibilies case
         if (!empty($linkfield) && ($linkfield != getForeignKeyFieldForTable($new_table))) {
             $nt .= "_" . $linkfield;
             $AS  = " AS `$nt`";
@@ -5990,7 +5991,7 @@ JAVASCRIPT;
             $nt         = $nt . $addmetanum;
         }
 
-       // Do not take into account standard linkfield
+        // Do not take into account standard linkfield
         $tocheck = $nt . "." . $linkfield;
         if ($linkfield == getForeignKeyFieldForTable($new_table)) {
             $tocheck = $nt;
@@ -6003,19 +6004,19 @@ JAVASCRIPT;
 
         $specific_leftjoin = '';
 
-       // Plugin can override core definition for its type
+        // Plugin can override core definition for its type
         if ($plug = isPluginItemType($itemtype)) {
             $plugin_name   = $plug['plugin'];
             $hook_function = 'plugin_' . strtolower($plugin_name) . '_addLeftJoin';
             $hook_closure  = function () use ($hook_function, $itemtype, $ref_table, $new_table, $linkfield, &$already_link_tables) {
                 if (is_callable($hook_function)) {
-                      return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
+                    return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
                 }
             };
             $specific_leftjoin = Plugin::doOneHook($plugin_name, $hook_closure);
         }
 
-       // Link with plugin tables : need to know left join structure
+        // Link with plugin tables : need to know left join structure
         if (
             empty($specific_leftjoin)
             && preg_match("/^glpi_plugin_([a-z0-9]+)/", $new_table, $matches)
@@ -6025,7 +6026,7 @@ JAVASCRIPT;
                 $hook_function = 'plugin_' . strtolower($plugin_name) . '_addLeftJoin';
                 $hook_closure  = function () use ($hook_function, $itemtype, $ref_table, $new_table, $linkfield, &$already_link_tables) {
                     if (is_callable($hook_function)) {
-                          return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
+                        return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
                     }
                 };
                 $specific_leftjoin = Plugin::doOneHook($plugin_name, $hook_closure);
@@ -6050,7 +6051,7 @@ JAVASCRIPT;
 
                         $interjoinparams = [];
                         if (isset($tab['joinparams'])) {
-                             $interjoinparams = $tab['joinparams'];
+                            $interjoinparams = $tab['joinparams'];
                         }
                         $before .= self::addLeftJoin(
                             $itemtype,
@@ -6101,30 +6102,30 @@ JAVASCRIPT;
 
             if (empty($specific_leftjoin)) {
                 switch ($new_table) {
-                   // No link
+                    // No link
                     case "glpi_auth_tables":
-                         $user_searchopt     = self::getOptions('User');
+                        $user_searchopt     = self::getOptions('User');
 
-                         $specific_leftjoin  = self::addLeftJoin(
-                             $itemtype,
-                             $rt,
-                             $already_link_tables,
-                             "glpi_authldaps",
-                             'auths_id',
-                             0,
-                             0,
-                             $user_searchopt[30]['joinparams']
-                         );
-                           $specific_leftjoin .= self::addLeftJoin(
-                               $itemtype,
-                               $rt,
-                               $already_link_tables,
-                               "glpi_authmails",
-                               'auths_id',
-                               0,
-                               0,
-                               $user_searchopt[31]['joinparams']
-                           );
+                        $specific_leftjoin  = self::addLeftJoin(
+                            $itemtype,
+                            $rt,
+                            $already_link_tables,
+                            "glpi_authldaps",
+                            'auths_id',
+                            0,
+                            0,
+                            $user_searchopt[30]['joinparams']
+                        );
+                        $specific_leftjoin .= self::addLeftJoin(
+                            $itemtype,
+                            $rt,
+                            $already_link_tables,
+                            "glpi_authmails",
+                            'auths_id',
+                            0,
+                            0,
+                            $user_searchopt[31]['joinparams']
+                        );
                         break;
                 }
             }
@@ -6144,7 +6145,7 @@ JAVASCRIPT;
                         break;
 
                     case 'item_item':
-                       // Item_Item join
+                        // Item_Item join
                         $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                           ON ((`$rt`.`id`
                                                 = `$nt`.`" . getForeignKeyFieldForTable($cleanrt) . "_1`
@@ -6154,7 +6155,7 @@ JAVASCRIPT;
                         break;
 
                     case 'item_item_revert':
-                       // Item_Item join reverting previous item_item
+                        // Item_Item join reverting previous item_item
                         $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                           ON ((`$nt`.`id`
                                                 = `$rt`.`" . getForeignKeyFieldForTable($cleannt) . "_1`
@@ -6165,8 +6166,9 @@ JAVASCRIPT;
 
                     case "mainitemtype_mainitem":
                         $addmain = 'main';
-                       //addmain defined to be used in itemtype_item case
+                        //addmain defined to be used in itemtype_item case
 
+                        // no break
                     case "itemtype_item":
                         if (!isset($addmain)) {
                             $addmain = '';
@@ -6178,7 +6180,7 @@ JAVASCRIPT;
                         ) {
                             $used_itemtype = $joinparams['specific_itemtype'];
                         }
-                       // Itemtype join
+                        // Itemtype join
                         $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                           ON (`$rt`.`id` = `$nt`.`" . $addmain . "items_id`
                                               AND `$nt`.`" . $addmain . "itemtype` = '$used_itemtype'
@@ -6193,7 +6195,7 @@ JAVASCRIPT;
                         ) {
                             $used_itemtype = $joinparams['specific_itemtype'];
                         }
-                       // Itemtype join
+                        // Itemtype join
                         $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                           ON (`$nt`.`id` = `$rt`.`" . "items_id`
                                               AND `$rt`.`" . "itemtype` = '$used_itemtype'
@@ -6208,14 +6210,14 @@ JAVASCRIPT;
                         ) {
                             $used_itemtype = $joinparams['specific_itemtype'];
                         }
-                       // Itemtype join
+                        // Itemtype join
                         $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                           ON (`$nt`.`itemtype` = '$used_itemtype'
                                               $addcondition) ";
                         break;
 
                     default:
-                       // Standard join
+                        // Standard join
                         $specific_leftjoin = "LEFT JOIN `$new_table` $AS
                                           ON (`$rt`.`$linkfield` = `$nt`.`id`
                                               $addcondition)";
@@ -6274,9 +6276,9 @@ JAVASCRIPT;
 
         $JOIN = "";
 
-       // Specific JOIN
+        // Specific JOIN
         if ($from_referencetype === 'Software' && in_array($to_type, $CFG_GLPI['software_types'])) {
-           // From Software to software_types
+            // From Software to software_types
             $softwareversions_table = "glpi_softwareversions{$alias_suffix}";
             if (!in_array($softwareversions_table, $already_link_tables2)) {
                 array_push($already_link_tables2, $softwareversions_table);
@@ -6302,7 +6304,7 @@ JAVASCRIPT;
         }
 
         if ($to_type === 'Software' && in_array($from_referencetype, $CFG_GLPI['software_types'])) {
-           // From software_types to Software
+            // From software_types to Software
             $items_softwareversions_table = "glpi_items_softwareversions{$alias_suffix}";
             if (!in_array($items_softwareversions_table, $already_link_tables2)) {
                 array_push($already_link_tables2, $items_softwareversions_table);
@@ -6333,7 +6335,7 @@ JAVASCRIPT;
         }
 
         if ($from_referencetype === 'Budget' && in_array($to_type, $CFG_GLPI['infocom_types'])) {
-           // From Budget to infocom_types
+            // From Budget to infocom_types
             $infocom_alias = "glpi_infocoms{$alias_suffix}";
             if (!in_array($infocom_alias, $already_link_tables2)) {
                 array_push($already_link_tables2, $infocom_alias);
@@ -6351,7 +6353,7 @@ JAVASCRIPT;
         }
 
         if ($to_type === 'Budget' && in_array($from_referencetype, $CFG_GLPI['infocom_types'])) {
-           // From infocom_types to Budget
+            // From infocom_types to Budget
             $infocom_alias = "glpi_infocoms{$alias_suffix}";
             if (!in_array($infocom_alias, $already_link_tables2)) {
                 array_push($already_link_tables2, $infocom_alias);
@@ -6369,7 +6371,7 @@ JAVASCRIPT;
         }
 
         if ($from_referencetype === 'Reservation' && in_array($to_type, $CFG_GLPI['reservation_types'])) {
-           // From Reservation to reservation_types
+            // From Reservation to reservation_types
             $reservationitems_alias = "glpi_reservationitems{$alias_suffix}";
             if (!in_array($reservationitems_alias, $already_link_tables2)) {
                 array_push($already_link_tables2, $reservationitems_alias);
@@ -6387,7 +6389,7 @@ JAVASCRIPT;
         }
 
         if ($to_type === 'Reservation' && in_array($from_referencetype, $CFG_GLPI['reservation_types'])) {
-           // From reservation_types to Reservation
+            // From reservation_types to Reservation
             $reservationitems_alias = "glpi_reservationitems{$alias_suffix}";
             if (!in_array($reservationitems_alias, $already_link_tables2)) {
                 array_push($already_link_tables2, $reservationitems_alias);
@@ -6404,7 +6406,7 @@ JAVASCRIPT;
             return $JOIN;
         }
 
-       // Generic JOIN
+        // Generic JOIN
         $from_obj      = getItemForItemtype($from_referencetype);
         $from_item_obj = null;
         $to_obj        = getItemForItemtype($to_type);
@@ -6423,23 +6425,23 @@ JAVASCRIPT;
         }
 
         if ($from_obj && $from_obj->isField($to_fk)) {
-           // $from_table has a foreign key corresponding to $to_table
+            // $from_table has a foreign key corresponding to $to_table
             if (!in_array($to_table, $already_link_tables2)) {
                 array_push($already_link_tables2, $to_table);
                 $JOIN .= "$LINK `$to_table`
                          ON (`$from_table`.`$to_fk` = `$to_table`.`id`
                              $to_entity_restrict) ";
             }
-        } else if ($to_obj && $to_obj->isField($from_fk)) {
-           // $to_table has a foreign key corresponding to $from_table
+        } elseif ($to_obj && $to_obj->isField($from_fk)) {
+            // $to_table has a foreign key corresponding to $from_table
             if (!in_array($to_table, $already_link_tables2)) {
                 array_push($already_link_tables2, $to_table);
                 $JOIN .= "$LINK `$to_table`
                          ON (`$from_table`.`id` = `$to_table`.`$from_fk`
                              $to_entity_restrict) ";
             }
-        } else if ($from_obj && $from_obj->isField('itemtype') && $from_obj->isField('items_id')) {
-           // $from_table has items_id/itemtype fields
+        } elseif ($from_obj && $from_obj->isField('itemtype') && $from_obj->isField('items_id')) {
+            // $from_table has items_id/itemtype fields
             if (!in_array($to_table, $already_link_tables2)) {
                 array_push($already_link_tables2, $to_table);
                 $JOIN .= "$LINK `$to_table`
@@ -6447,8 +6449,8 @@ JAVASCRIPT;
                              AND `$from_table`.`itemtype` = '$to_type'
                              $to_entity_restrict) ";
             }
-        } else if ($to_obj && $to_obj->isField('itemtype') && $to_obj->isField('items_id')) {
-           // $to_table has items_id/itemtype fields
+        } elseif ($to_obj && $to_obj->isField('itemtype') && $to_obj->isField('items_id')) {
+            // $to_table has items_id/itemtype fields
             if (!in_array($to_table, $already_link_tables2)) {
                 array_push($already_link_tables2, $to_table);
                 $JOIN .= "$LINK `$to_table`
@@ -6456,8 +6458,8 @@ JAVASCRIPT;
                              AND `$to_table`.`itemtype` = '$from_type'
                              $to_entity_restrict) ";
             }
-        } else if ($from_item_obj && $from_item_obj->isField($from_fk)) {
-           // glpi_$from_items table exists and has a foreign key corresponding to $to_table
+        } elseif ($from_item_obj && $from_item_obj->isField($from_fk)) {
+            // glpi_$from_items table exists and has a foreign key corresponding to $to_table
             $items_table = $from_item_obj::getTable();
             $items_table_alias = $items_table . $alias_suffix;
             if (!in_array($items_table_alias, $already_link_tables2)) {
@@ -6474,8 +6476,8 @@ JAVASCRIPT;
                          ON (`$items_table_alias`.`items_id` = `$to_table`.`id`
                              $to_entity_restrict) ";
             }
-        } else if ($to_item_obj && $to_item_obj->isField($to_fk)) {
-           // glpi_$to_items table exists and has a foreign key corresponding to $from_table
+        } elseif ($to_item_obj && $to_item_obj->isField($to_fk)) {
+            // glpi_$to_items table exists and has a foreign key corresponding to $from_table
             $items_table = $to_item_obj::getTable();
             $items_table_alias = $items_table . $alias_suffix;
             if (!in_array($items_table_alias, $already_link_tables2)) {
@@ -6517,7 +6519,7 @@ JAVASCRIPT;
         $table      = $searchopt[$ID]["table"];
         $field      = $searchopt[$ID]["field"];
 
-       // Plugin can override core definition for its type
+        // Plugin can override core definition for its type
         if ($plug = isPluginItemType($itemtype)) {
             $out = Plugin::doOneHook(
                 $plug['plugin'],
@@ -6528,7 +6530,7 @@ JAVASCRIPT;
                 "{$itemtype}_{$ID}"
             );
             if (!empty($out)) {
-                 return $out;
+                return $out;
             }
         }
 
@@ -6677,8 +6679,8 @@ JAVASCRIPT;
                 $oparams = $searchopt[$ID]['addobjectparams'];
             }
 
-           // Search option may not exists in subtype
-           // This is the case for "Inventory number" for a Software listed from ReservationItem search
+            // Search option may not exists in subtype
+            // This is the case for "Inventory number" for a Software listed from ReservationItem search
             $subtype_so = self::getOptions($data["TYPE"]);
             if (!array_key_exists($ID, $subtype_so)) {
                 return '';
@@ -6693,7 +6695,7 @@ JAVASCRIPT;
         if (count($addobjectparams)) {
             $so = array_merge($so, $addobjectparams);
         }
-       // Plugin can override core definition for its type
+        // Plugin can override core definition for its type
         if ($plug = isPluginItemType($itemtype)) {
             $out = Plugin::doOneHook(
                 $plug['plugin'],
@@ -6721,7 +6723,7 @@ JAVASCRIPT;
             $field     = $so["field"];
             $linkfield = $so["linkfield"];
 
-           /// TODO try to clean all specific cases using SpecificToDisplay
+            /// TODO try to clean all specific cases using SpecificToDisplay
             switch ($table . '.' . $field) {
                 case "glpi_users.name":
                     // USER search case
@@ -6768,7 +6770,7 @@ JAVASCRIPT;
                                                 $tooltip = Html::showToolTip(
                                                     $userdata["comment"],
                                                     ['link'    => $userdata["link"],
-                                                        'display' => false
+                                                        'display' => false,
                                                     ]
                                                 );
                                             }
@@ -6782,12 +6784,12 @@ JAVASCRIPT;
                                     $count_display++;
                                 }
 
-                           // Manage alternative_email for tickets_users
+                                // Manage alternative_email for tickets_users
                                 if (
                                     is_subclass_of($itemtype, CommonITILObject::class)
                                     && isset($data[$ID][$k][2])
                                 ) {
-                                        $split = explode(self::LONGSEP, $data[$ID][$k][2]);
+                                    $split = explode(self::LONGSEP, $data[$ID][$k][2]);
                                     for ($l = 0; $l < count($split); $l++) {
                                         $split2 = explode(" ", $split[$l]);
                                         if ((count($split2) == 2) && ($split2[0] == 0) && !empty($split2[1])) {
@@ -6813,7 +6815,7 @@ JAVASCRIPT;
                             $toadd    = Html::showToolTip(
                                 $userdata["comment"],
                                 ['link'    => $userdata["link"],
-                                    'display' => false
+                                    'display' => false,
                                 ]
                             );
                         }
@@ -6866,7 +6868,7 @@ JAVASCRIPT;
                                         $data[$ID][$k]['entities_id']
                                     )
                                 );
-                                   $comp = '';
+                                $comp = '';
                                 if ($data[$ID][$k]['is_recursive']) {
                                     $comp = __('R');
                                     if ($data[$ID][$k]['is_dynamic']) {
@@ -6987,7 +6989,7 @@ JAVASCRIPT;
                                  : $data[$ID][$k]['tickets_id_2'];
 
                         // If link ID is int or integer string, force conversion to int. Coversion to int and then string to compare is needed to ensure it isn't a decimal
-                        if (is_numeric($linkid) && ((string)(int)$linkid === (string)$linkid)) {
+                        if (is_numeric($linkid) && ((string) (int) $linkid === (string) $linkid)) {
                             $linkid = (int) $linkid;
                         }
                         if ((is_int($linkid) && $linkid > 0) && !isset($displayed[$linkid])) {
@@ -7052,7 +7054,7 @@ JAVASCRIPT;
                             && Session::haveRight("ticket", Ticket::READALL)
                         ) {
                             if ($itemtype == 'User') {
-                            // Requester
+                                // Requester
                                 if ($ID == 'User_60') {
                                     $options['criteria'][0]['field']      = 4;
                                     $options['criteria'][0]['searchtype'] = 'equals';
@@ -7060,21 +7062,21 @@ JAVASCRIPT;
                                     $options['criteria'][0]['link']       = 'AND';
                                 }
 
-                            // Writer
+                                // Writer
                                 if ($ID == 'User_61') {
                                     $options['criteria'][0]['field']      = 22;
                                     $options['criteria'][0]['searchtype'] = 'equals';
                                     $options['criteria'][0]['value']      = $data['id'];
                                     $options['criteria'][0]['link']       = 'AND';
                                 }
-                            // Assign
+                                // Assign
                                 if ($ID == 'User_64') {
                                     $options['criteria'][0]['field']      = 5;
                                     $options['criteria'][0]['searchtype'] = 'equals';
                                     $options['criteria'][0]['value']      = $data['id'];
                                     $options['criteria'][0]['link']       = 'AND';
                                 }
-                            } else if ($itemtype == 'ITILCategory') {
+                            } elseif ($itemtype == 'ITILCategory') {
                                 $options['criteria'][0]['field']      = 7;
                                 $options['criteria'][0]['searchtype'] = 'equals';
                                 $options['criteria'][0]['value']      = $data['id'];
@@ -7112,7 +7114,7 @@ JAVASCRIPT;
                 case "glpi_tickets.time_to_own":
                 case "glpi_tickets.internal_time_to_own":
                 case "glpi_tickets.internal_time_to_resolve":
-                   // Due date + progress
+                    // Due date + progress
                     if (in_array($orig_id, [151, 158, 181, 186])) {
                         $out = Html::convDateTime($data[$ID][0]['name']);
 
@@ -7149,7 +7151,7 @@ JAVASCRIPT;
                         $slaField    = 'slas_id';
                         $sla_class   = 'SLA';
 
-                       // define correct sla field
+                        // define correct sla field
                         switch ($table . '.' . $field) {
                             case "glpi_tickets.time_to_resolve":
                                 $slaField = 'slas_id_ttr';
@@ -7170,11 +7172,11 @@ JAVASCRIPT;
                         }
 
                         switch ($table . '.' . $field) {
-                           // If ticket has been taken into account : no progression display
+                            // If ticket has been taken into account : no progression display
                             case "glpi_tickets.time_to_own":
                             case "glpi_tickets.internal_time_to_own":
                                 if (($item->fields['takeintoaccount_delay_stat'] > 0)) {
-                                     return $out;
+                                    return $out;
                                 }
                                 break;
                         }
@@ -7219,7 +7221,7 @@ JAVASCRIPT;
                         if (($totaltime - $waitingtime) != 0) {
                             $percentage  = round((100 * ($currenttime - $waitingtime)) / ($totaltime - $waitingtime));
                         } else {
-                           // Total time is null : no active time
+                            // Total time is null : no active time
                             $percentage = 100;
                         }
                         if ($percentage > 100) {
@@ -7232,10 +7234,10 @@ JAVASCRIPT;
                         if ($_SESSION['glpiduedatewarning_unit'] == '%') {
                             $less_warn_limit = $_SESSION['glpiduedatewarning_less'];
                             $less_warn       = (100 - $percentage);
-                        } else if ($_SESSION['glpiduedatewarning_unit'] == 'hour') {
+                        } elseif ($_SESSION['glpiduedatewarning_unit'] == 'hour') {
                             $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * HOUR_TIMESTAMP;
                             $less_warn       = ($totaltime - $currenttime);
-                        } else if ($_SESSION['glpiduedatewarning_unit'] == 'day') {
+                        } elseif ($_SESSION['glpiduedatewarning_unit'] == 'day') {
                             $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * DAY_TIMESTAMP;
                             $less_warn       = ($totaltime - $currenttime);
                         }
@@ -7245,10 +7247,10 @@ JAVASCRIPT;
                         if ($_SESSION['glpiduedatecritical_unit'] == '%') {
                             $less_crit_limit = $_SESSION['glpiduedatecritical_less'];
                             $less_crit       = (100 - $percentage);
-                        } else if ($_SESSION['glpiduedatecritical_unit'] == 'hour') {
+                        } elseif ($_SESSION['glpiduedatecritical_unit'] == 'hour') {
                             $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * HOUR_TIMESTAMP;
                             $less_crit       = ($totaltime - $currenttime);
-                        } else if ($_SESSION['glpiduedatecritical_unit'] == 'day') {
+                        } elseif ($_SESSION['glpiduedatecritical_unit'] == 'day') {
                             $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * DAY_TIMESTAMP;
                             $less_crit       = ($totaltime - $currenttime);
                         }
@@ -7257,7 +7259,7 @@ JAVASCRIPT;
                             $color = $_SESSION['glpiduedateok_color'];
                             if ($less_crit < $less_crit_limit) {
                                 $color = $_SESSION['glpiduedatecritical_color'];
-                            } else if ($less_warn < $less_warn_limit) {
+                            } elseif ($less_warn < $less_warn_limit) {
                                 $color = $_SESSION['glpiduedatewarning_color'];
                             }
                         }
@@ -7270,7 +7272,7 @@ JAVASCRIPT;
                             'text'         => Html::convDateTime($data[$ID][0]['name']),
                             'percent'      => $percentage,
                             'percent_text' => $percentage_text,
-                            'color'        => $color
+                            'color'        => $color,
                         ];
                     }
                     break;
@@ -7425,7 +7427,7 @@ JAVASCRIPT;
                                 [
                                     'applyto' => $itemtype . $data[$ID][0]['id'],
                                     'display' => false,
-                                    'url'     => "/ajax/get_item_content.php?itemtype=$itemtype&items_id=$id"
+                                    'url'     => "/ajax/get_item_content.php?itemtype=$itemtype&items_id=$id",
                                 ]
                             )
                         );
@@ -7437,10 +7439,10 @@ JAVASCRIPT;
                     $out   = '';
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if ($data[$ID][$k]['name']) {
-                             $status  = TicketValidation::getStatus($data[$ID][$k]['name']);
-                             $bgcolor = TicketValidation::getStatusColor($data[$ID][$k]['name']);
-                             $out    .= (empty($out) ? '' : self::LBBR) .
-                                 "<div style=\"background-color:" . $bgcolor . ";\">" . $status . '</div>';
+                            $status  = TicketValidation::getStatus($data[$ID][$k]['name']);
+                            $bgcolor = TicketValidation::getStatusColor($data[$ID][$k]['name']);
+                            $out    .= (empty($out) ? '' : self::LBBR) .
+                                "<div style=\"background-color:" . $bgcolor . ";\">" . $status . '</div>';
                         }
                     }
                     return $out;
@@ -7449,16 +7451,16 @@ JAVASCRIPT;
                     $out   = '';
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if ($data[$ID][$k]['name']) {
-                             $status  = ChangeValidation::getStatus($data[$ID][$k]['name']);
-                             $bgcolor = ChangeValidation::getStatusColor($data[$ID][$k]['name']);
-                             $out    .= (empty($out) ? '' : self::LBBR) .
-                                 "<div style=\"background-color:" . $bgcolor . ";\">" . $status . '</div>';
+                            $status  = ChangeValidation::getStatus($data[$ID][$k]['name']);
+                            $bgcolor = ChangeValidation::getStatusColor($data[$ID][$k]['name']);
+                            $out    .= (empty($out) ? '' : self::LBBR) .
+                                "<div style=\"background-color:" . $bgcolor . ";\">" . $status . '</div>';
                         }
                     }
                     return $out;
 
                 case 'glpi_cables.color':
-                   //do not display 'real' value (#.....)
+                    //do not display 'real' value (#.....)
                     return "";
 
                 case 'glpi_ticketsatisfactions.satisfaction':
@@ -7500,8 +7502,8 @@ JAVASCRIPT;
                     );
 
                 case 'glpi_links._virtual':
-                     $out = '';
-                     $link = new Link();
+                    $out = '';
+                    $link = new Link();
                     if (
                         ($item = getItemForItemtype($itemtype))
                          && $item->getFromDB($data['id'])
@@ -7530,6 +7532,7 @@ JAVASCRIPT;
                         return '';
                     }
 
+                    // no break
                 case "glpi_tickets.priority":
                 case "glpi_problems.priority":
                 case "glpi_changes.priority":
@@ -7543,7 +7546,7 @@ JAVASCRIPT;
             }
         }
 
-       //// Default case
+        //// Default case
 
         if (
             $itemtype == 'Ticket'
@@ -7553,11 +7556,11 @@ JAVASCRIPT;
                 $itemtype::getById($data['id'])->getEntityId()
             ))
         ) {
-           // Assigned groups
+            // Assigned groups
             return $anon_name;
         }
 
-       // Link with plugin tables : need to know left join structure
+        // Link with plugin tables : need to know left join structure
         if (isset($table) && isset($field)) {
             if (preg_match("/^glpi_plugin_([a-z0-9]+)/", $table . '.' . $field, $matches)) {
                 if (count($matches) == 2) {
@@ -7581,7 +7584,7 @@ JAVASCRIPT;
             $unit = $so['unit'];
         }
 
-       // Preformat items
+        // Preformat items
         if (isset($so["datatype"])) {
             switch ($so["datatype"]) {
                 case "itemlink":
@@ -7603,7 +7606,7 @@ JAVASCRIPT;
                             $page  = $linkitemtype::getFormURLWithID($data[$ID][$k]['id']);
                             $name  = $data[$ID][$k]['name'];
                             if ($_SESSION["glpiis_ids_visible"] || empty($data[$ID][$k]['name'])) {
-                                 $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
+                                $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
                             }
                             if (isset($field) && $field === 'completename') {
                                 $chunks = preg_split('/ > /', $name);
@@ -7632,7 +7635,7 @@ JAVASCRIPT;
                     $out           = '';
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string)$data[$ID][$k]['name'])) > 0) {
+                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
                             if ($count_display) {
                                 $out .= $separate;
                             }
@@ -7729,7 +7732,7 @@ JAVASCRIPT;
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
                         if ($count_display) {
-                             $out .= self::LBBR;
+                            $out .= self::LBBR;
                         }
                         $count_display++;
                         if (!empty($data[$ID][$k]['name'])) {
@@ -7741,13 +7744,13 @@ JAVASCRIPT;
                     return (empty($out) ? '' : $out);
 
                 case "weblink":
-                    $orig_link = trim((string)$data[$ID][0]['name']);
+                    $orig_link = trim((string) $data[$ID][0]['name']);
                     if (!empty($orig_link) && Toolbox::isValidWebUrl($orig_link)) {
-                       // strip begin of link
+                        // strip begin of link
                         $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/', '', $orig_link);
                         $link = preg_replace('/\/$/', '', $link);
                         if (Toolbox::strlen($link) > $CFG_GLPI["url_maxlength"]) {
-                             $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"]) . "...";
+                            $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"]) . "...";
                         }
                         return "<a href=\"" . Toolbox::formatOutputWebLink($orig_link) . "\" target='_blank'>$link</a>";
                     }
@@ -7760,7 +7763,7 @@ JAVASCRIPT;
                     $out           = "";
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string)$data[$ID][$k]['name'])) > 0) {
+                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
                             if ($count_display) {
                                 $out .= self::LBBR;
                             }
@@ -7782,7 +7785,7 @@ JAVASCRIPT;
                     $out           = "";
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string)$data[$ID][$k]['name'])) > 0) {
+                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
                             if ($count_display) {
                                 $out .= self::LBBR;
                             }
@@ -7804,7 +7807,7 @@ JAVASCRIPT;
                     $out           = "";
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string)$data[$ID][$k]['name'])) > 0) {
+                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
                             if ($count_display) {
                                 $out .= self::LBBR;
                             }
@@ -7833,7 +7836,7 @@ JAVASCRIPT;
                             'percent'      => $percent,
                             'percent_text' => $percent,
                             'color'        => $bar_color,
-                            'text'         => ''
+                            'text'         => '',
                         ];
                     }
 
@@ -7855,10 +7858,10 @@ HTML;
                     }
 
                     return $out;
-                break;
+                    break;
             }
         }
-       // Manage items with need group by / group_concat
+        // Manage items with need group by / group_concat
         $out           = "";
         $count_display = 0;
         $separate      = self::LBBR;
@@ -7870,12 +7873,12 @@ HTML;
                 $out .= $separate;
             }
             $count_display++;
-           // Get specific display if available
+            // Get specific display if available
             if (isset($table) && isset($field)) {
                 $itemtype = getItemTypeForTable($table);
                 if ($item = getItemForItemtype($itemtype)) {
                     $tmpdata  = $data[$ID][$k];
-                   // Copy name to real field
+                    // Copy name to real field
                     $tmpdata[$field] = $data[$ID][$k]['name'] ?? '';
 
                     $specific = $item->getSpecificValueToDisplay(
@@ -7884,7 +7887,7 @@ HTML;
                         [
                             'html'      => true,
                             'searchopt' => $so,
-                            'raw_data'  => $data
+                            'raw_data'  => $data,
                         ]
                     );
                 }
@@ -7958,48 +7961,48 @@ HTML;
         $default_values["browse"]      = 0;
 
         if (isset($params['start'])) {
-            $params['start'] = (int)$params['start'];
+            $params['start'] = (int) $params['start'];
         }
 
         $default_values["criteria"]     = self::getDefaultCriteria($itemtype);
         $default_values["metacriteria"] = [];
 
-       // Reorg search array
-       // start
-       // order
-       // sort
-       // is_deleted
-       // itemtype
-       // criteria : array (0 => array (link =>
-       //                               field =>
-       //                               searchtype =>
-       //                               value =>   (contains)
-       // metacriteria : array (0 => array (itemtype =>
-       //                                  link =>
-       //                                  field =>
-       //                                  searchtype =>
-       //                                  value =>   (contains)
+        // Reorg search array
+        // start
+        // order
+        // sort
+        // is_deleted
+        // itemtype
+        // criteria : array (0 => array (link =>
+        //                               field =>
+        //                               searchtype =>
+        //                               value =>   (contains)
+        // metacriteria : array (0 => array (itemtype =>
+        //                                  link =>
+        //                                  field =>
+        //                                  searchtype =>
+        //                                  value =>   (contains)
 
         if ($itemtype != AllAssets::getType() && class_exists($itemtype)) {
-           // retrieve default values for current itemtype
+            // retrieve default values for current itemtype
             $itemtype_default_values = [];
             if (method_exists($itemtype, 'getDefaultSearchRequest')) {
                 $itemtype_default_values = call_user_func([$itemtype, 'getDefaultSearchRequest']);
             }
 
-           // retrieve default values for the current user
+            // retrieve default values for the current user
             $user_default_values = SavedSearch_User::getDefault(Session::getLoginUserID(), $itemtype);
             if ($user_default_values === false) {
                 $user_default_values = [];
             }
 
-           // we construct default values in this order:
-           // - general default
-           // - itemtype default
-           // - user default
-           //
-           // The last ones erase values or previous
-           // So, we can combine each part (order from itemtype, criteria from user, etc)
+            // we construct default values in this order:
+            // - general default
+            // - itemtype default
+            // - user default
+            //
+            // The last ones erase values or previous
+            // So, we can combine each part (order from itemtype, criteria from user, etc)
             $default_values = array_merge(
                 $default_values,
                 $itemtype_default_values,
@@ -8007,7 +8010,7 @@ HTML;
             );
         }
 
-       // First view of the page or force bookmark : try to load a bookmark
+        // First view of the page or force bookmark : try to load a bookmark
         if (
             $forcebookmark
             || ($usesession
@@ -8017,7 +8020,7 @@ HTML;
             $user_default_values = SavedSearch_User::getDefault(Session::getLoginUserID(), $itemtype);
             if ($user_default_values) {
                 $_SESSION['glpisearch'][$itemtype] = [];
-               // Only get datas for bookmarks
+                // Only get datas for bookmarks
                 if ($forcebookmark) {
                     $params = $user_default_values;
                 } else {
@@ -8026,7 +8029,7 @@ HTML;
                 }
             }
         }
-       // Force reorder criterias
+        // Force reorder criterias
         if (
             isset($params["criteria"])
             && is_array($params["criteria"])
@@ -8039,13 +8042,13 @@ HTML;
             }
         }
 
-       // transform legacy meta-criteria in criteria (with flag meta=true)
-       // at the end of the array, as before there was only at the end of the query
+        // transform legacy meta-criteria in criteria (with flag meta=true)
+        // at the end of the array, as before there was only at the end of the query
         if (
             isset($params["metacriteria"])
             && is_array($params["metacriteria"])
         ) {
-           // as we will append meta to criteria, check the key exists
+            // as we will append meta to criteria, check the key exists
             if (!isset($params["criteria"])) {
                 $params["criteria"] = [];
             }
@@ -8095,17 +8098,17 @@ HTML;
     public static function cleanParams(array $params): array
     {
         $int_params = [
-            'sort'
+            'sort',
         ];
 
         foreach ($params as $key => &$val) {
             if (in_array($key, $int_params)) {
                 if (is_array($val)) {
                     foreach ($val as &$subval) {
-                        $subval = (int)$subval;
+                        $subval = (int) $subval;
                     }
                 } else {
-                    $val = (int)$val;
+                    $val = (int) $val;
                 }
             }
         }
@@ -8156,7 +8159,7 @@ HTML;
             $todel      = array_merge($todel, array_keys($itemstodel));
         }
 
-       // do not show priority if you don't have right in profile
+        // do not show priority if you don't have right in profile
         if (
             ($itemtype == 'Ticket')
             && ($action == UPDATE)
@@ -8231,7 +8234,7 @@ HTML;
         $item = null;
 
         if (!isset(self::$search[$itemtype])) {
-           // standard type first
+            // standard type first
             switch ($itemtype) {
                 case 'Internet':
                     self::$search[$itemtype]['common']            = __('Characteristics');
@@ -8358,14 +8361,14 @@ HTML;
                                                                         => 'glpi_items_tickets',
                                                                   'joinparams'
                                                                         => ['jointype'
-                                                                                  => 'itemtype_item'
-                                                                        ]
+                                                                                  => 'itemtype_item',
+                                                                        ],
                                                               ],
                     'condition'
                                                               => getEntitiesRestrictRequest(
                                                                   'AND',
                                                                   'NEWTABLE'
-                                                              )
+                                                              ),
                 ];
 
                 self::$search[$itemtype][140]['table']         = 'glpi_problems';
@@ -8380,14 +8383,14 @@ HTML;
                                                                         => 'glpi_items_problems',
                                                                   'joinparams'
                                                                         => ['jointype'
-                                                                                  => 'itemtype_item'
-                                                                        ]
+                                                                                  => 'itemtype_item',
+                                                                        ],
                                                               ],
                     'condition'
                                                               => getEntitiesRestrictRequest(
                                                                   'AND',
                                                                   'NEWTABLE'
-                                                              )
+                                                              ),
                 ];
 
                 self::$search[$itemtype][141]['table']         = 'glpi_changes';
@@ -8402,14 +8405,14 @@ HTML;
                     => 'glpi_changes_items',
                     'joinparams'
                         => ['jointype'
-                        => 'itemtype_item'
-                        ]
+                        => 'itemtype_item',
+                        ],
                 ],
                     'condition'
                     => getEntitiesRestrictRequest(
                         'AND',
                         'NEWTABLE'
-                    )
+                    ),
                 ];
             }
 
@@ -8479,7 +8482,7 @@ HTML;
             }
 
             if ($withplugins) {
-               // Search options added by plugins
+                // Search options added by plugins
                 $plugsearch = Plugin::getAddSearchOptions($itemtype);
                 $plugsearch = $plugsearch + Plugin::getAddSearchOptionsNew($itemtype);
                 if (count($plugsearch)) {
@@ -8488,7 +8491,7 @@ HTML;
                 }
             }
 
-           // Complete linkfield if not define
+            // Complete linkfield if not define
             if (is_null($item)) { // Special union type
                 $itemtable = $CFG_GLPI['union_search_type'][$itemtype];
             } else {
@@ -8497,15 +8500,15 @@ HTML;
 
             foreach (self::$search[$itemtype] as $key => $val) {
                 if (!is_array($val) || count($val) == 1) {
-                   // skip sub-menu
+                    // skip sub-menu
                     continue;
                 }
-               // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
+                // Compatibility before 0.80 : Force massive action to false if linkfield is empty :
                 if (isset($val['linkfield']) && empty($val['linkfield'])) {
                     self::$search[$itemtype][$key]['massiveaction'] = false;
                 }
 
-               // Set default linkfield
+                // Set default linkfield
                 if (!isset($val['linkfield']) || empty($val['linkfield'])) {
                     if (
                         (strcmp($itemtable, $val['table']) == 0)
@@ -8516,7 +8519,7 @@ HTML;
                         self::$search[$itemtype][$key]['linkfield'] = getForeignKeyFieldForTable($val['table']);
                     }
                 }
-               // Add default joinparams
+                // Add default joinparams
                 if (!isset($val['joinparams'])) {
                     self::$search[$itemtype][$key]['joinparams'] = [];
                 }
@@ -8560,15 +8563,15 @@ HTML;
         $actions   = [
             'contains'    => __('contains'),
             'notcontains' => __('not contains'),
-            'searchopt'   => []
+            'searchopt'   => [],
         ];
 
         if (isset($searchopt[$field_num]) && isset($searchopt[$field_num]['table'])) {
             $actions['searchopt'] = $searchopt[$field_num];
 
-           // Force search type
+            // Force search type
             if (isset($actions['searchopt']['searchtype'])) {
-               // Reset search option
+                // Reset search option
                 $actions              = [];
                 $actions['searchopt'] = $searchopt[$field_num];
                 if (!is_array($actions['searchopt']['searchtype'])) {
@@ -8585,12 +8588,12 @@ HTML;
                             break;
 
                         case "contains":
-                             $actions['contains']    = __('contains');
-                             $actions['notcontains'] = __('not contains');
+                            $actions['contains']    = __('contains');
+                            $actions['notcontains'] = __('not contains');
                             break;
 
                         case "notcontains":
-                             $actions['notcontains'] = __('not contains');
+                            $actions['notcontains'] = __('not contains');
                             break;
 
                         case "under":
@@ -8624,7 +8627,7 @@ HTML;
                             'notcontains' => __('not contains'),
                             'equals'      => __('is'),
                             'notequals'   => __('is not'),
-                            'searchopt'   => $searchopt[$field_num]
+                            'searchopt'   => $searchopt[$field_num],
                         ];
                         // No is / isnot if no limits defined
                         if (
@@ -8634,9 +8637,9 @@ HTML;
                             unset($opt['equals']);
                             unset($opt['notequals']);
 
-                         // https://github.com/glpi-project/glpi/issues/6917
-                         // change filter wording for numeric values to be more
-                         // obvious if the number dropdown will not be used
+                            // https://github.com/glpi-project/glpi/issues/6917
+                            // change filter wording for numeric values to be more
+                            // obvious if the number dropdown will not be used
                             $opt['contains']    = __('is');
                             $opt['notcontains'] = __('is not');
                         }
@@ -8648,19 +8651,19 @@ HTML;
                             'notequals'   => __('is not'),
                             'contains'    => __('contains'),
                             'notcontains' => __('not contains'),
-                            'searchopt'   => $searchopt[$field_num]
+                            'searchopt'   => $searchopt[$field_num],
                         ];
 
                     case 'right':
                         return ['equals'    => __('is'),
                             'notequals' => __('is not'),
-                            'searchopt' => $searchopt[$field_num]
+                            'searchopt' => $searchopt[$field_num],
                         ];
 
                     case 'itemtypename':
                         return ['equals'    => __('is'),
                             'notequals' => __('is not'),
-                            'searchopt' => $searchopt[$field_num]
+                            'searchopt' => $searchopt[$field_num],
                         ];
 
                     case 'date':
@@ -8673,23 +8676,23 @@ HTML;
                             'morethan'    => __('after'),
                             'contains'    => __('contains'),
                             'notcontains' => __('not contains'),
-                            'searchopt'   => $searchopt[$field_num]
+                            'searchopt'   => $searchopt[$field_num],
                         ];
                 }
             }
 
-           // switch ($searchopt[$field_num]['table']) {
-           //    case 'glpi_users_validation' :
-           //       return array('equals'    => __('is'),
-           //                    'notequals' => __('is not'),
-           //                    'searchopt' => $searchopt[$field_num]);
-           // }
+            // switch ($searchopt[$field_num]['table']) {
+            //    case 'glpi_users_validation' :
+            //       return array('equals'    => __('is'),
+            //                    'notequals' => __('is not'),
+            //                    'searchopt' => $searchopt[$field_num]);
+            // }
 
             switch ($searchopt[$field_num]['field']) {
                 case 'id':
                     return ['equals'    => __('is'),
                         'notequals' => __('is not'),
-                        'searchopt' => $searchopt[$field_num]
+                        'searchopt' => $searchopt[$field_num],
                     ];
 
                 case 'name':
@@ -8699,10 +8702,10 @@ HTML;
                         'notcontains' => __('not contains'),
                         'equals'      => __('is'),
                         'notequals'   => __('is not'),
-                        'searchopt'   => $searchopt[$field_num]
+                        'searchopt'   => $searchopt[$field_num],
                     ];
 
-                   // Specific case of TreeDropdown : add under
+                    // Specific case of TreeDropdown : add under
                     $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['table']);
                     if ($itemlinked = getItemForItemtype($itemtype_linked)) {
                         if ($itemlinked instanceof CommonTreeDropdown) {
@@ -8847,24 +8850,24 @@ HTML;
                 break;
 
             case self::NAMES_OUTPUT:
-               // We only want to display one column (the name of the item).
-               // The name field is always the first column expect for tickets
-               // which have their ids as the first column instead, thus moving the
-               // name to the second column.
-               // We don't have access to the itemtype so we must rely on data
-               // types to figure which column to use :
-               //    - Ticket will have a numeric first column (id) and an HTML
-               //    link containing the name as the second column.
-               //    - Other items will have an HTML link containing the name as
-               //    the first column and a simple string containing the entity
-               //    name as the second column.
-               // -> We can check that the column is the first or second AND is html
+                // We only want to display one column (the name of the item).
+                // The name field is always the first column expect for tickets
+                // which have their ids as the first column instead, thus moving the
+                // name to the second column.
+                // We don't have access to the itemtype so we must rely on data
+                // types to figure which column to use :
+                //    - Ticket will have a numeric first column (id) and an HTML
+                //    link containing the name as the second column.
+                //    - Other items will have an HTML link containing the name as
+                //    the first column and a simple string containing the entity
+                //    name as the second column.
+                // -> We can check that the column is the first or second AND is html
                 if (
                     strip_tags($value) !== $value
                     && ($num == 1 || $num == 2)
                 ) {
-                   // Use a regex to keep only the link, there may be other content
-                   // after that we don't need (script, tooltips, ...)
+                    // Use a regex to keep only the link, there may be other content
+                    // after that we don't need (script, tooltips, ...)
                     if (preg_match('/<a.*<\/a>/', $value, $matches)) {
                         $out = Sanitizer::decodeHtmlSpecialChars(strip_tags($matches[0]));
                     }
@@ -8901,7 +8904,7 @@ HTML;
                             'awesome-class'   => 'fa-comments',
                             'display'         => false,
                             'autoclose'       => false,
-                            'onclick'         => true
+                            'onclick'         => true,
                         ]
                     );
                     $out .= $values[0] . $valTip;
@@ -8993,18 +8996,18 @@ HTML;
                  * @var array $SYLK_SIZE
                  */
                 global $SYLK_ARRAY, $SYLK_HEADER, $SYLK_SIZE;
-               // largeurs des colonnes
+                // largeurs des colonnes
                 foreach ($SYLK_SIZE as $num => $val) {
                     $out .= "F;W" . $num . " " . $num . " " . min(50, $val) . "\n";
                 }
                 $out .= "\n";
-               // Header
+                // Header
                 foreach ($SYLK_HEADER as $num => $val) {
                     $out .= "F;SDM4;FG0C;" . ($num == 1 ? "Y1;" : "") . "X$num\n";
                     $out .= "C;N;K\"$val\"\n";
                     $out .= "\n";
                 }
-               // Datas
+                // Datas
                 foreach ($SYLK_ARRAY as $row => $tab) {
                     foreach ($tab as $num => $val) {
                         $out .= "F;P3;FG0L;" . ($num == 1 ? "Y" . $row . ";" : "") . "X$num\n";
@@ -9057,28 +9060,28 @@ HTML;
                 $SYLK_ARRAY  = [];
                 $SYLK_HEADER = [];
                 $SYLK_SIZE   = [];
-               // entetes HTTP
+                // entetes HTTP
                 header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
                 header('Pragma: private'); /// IE BUG + SSL
                 header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
                 header("Content-disposition: filename=glpi.slk");
                 header('Content-type: application/octetstream');
-               // entete du fichier
+                // entete du fichier
                 echo "ID;PGLPI_EXPORT\n"; // ID;Pappli
                 echo "\n";
-               // formats
+                // formats
                 echo "P;PGeneral\n";
                 echo "P;P#,##0.00\n";       // P;Pformat_1 (reels)
                 echo "P;P#,##0\n";          // P;Pformat_2 (entiers)
                 echo "P;P@\n";              // P;Pformat_3 (textes)
                 echo "\n";
-               // polices
+                // polices
                 echo "P;EArial;M200\n";
                 echo "P;EArial;M200\n";
                 echo "P;EArial;M200\n";
                 echo "P;FArial;M200;SB\n";
                 echo "\n";
-               // nb lignes * nb colonnes
+                // nb lignes * nb colonnes
                 echo "B;Y" . $rows;
                 echo ";X" . $cols . "\n"; // B;Yligmax;Xcolmax
                 echo "\n";
@@ -9090,7 +9093,7 @@ HTML;
                 header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
                 header("Content-disposition: filename=glpi.csv");
                 header('Content-type: text/csv');
-               // zero width no break space (for excel)
+                // zero width no break space (for excel)
                 echo"\xEF\xBB\xBF";
                 break;
 
@@ -9277,7 +9280,7 @@ HTML;
             }
         }
 
-       // For jointype == child
+        // For jointype == child
         if (
             isset($joinparams['jointype']) && ($joinparams['jointype'] == 'child')
             && isset($joinparams['linkfield'])
@@ -9422,7 +9425,7 @@ HTML;
         // At this point, backslashes are already escaped, so escaped backslashes (\\) have to be transformed to \\\\.
         $val = str_replace('\\\\', '\\\\\\\\', $val);
 
-       // escape _ char used as wildcard in mysql likes
+        // escape _ char used as wildcard in mysql likes
         $val = str_replace('_', '\\_', $val);
 
         // special case for & char
@@ -9435,7 +9438,7 @@ HTML;
         $val = trim($val);
 
         if ($val === '^') {
-           // Special case, searching "^" means we are searching for a non empty/null field
+            // Special case, searching "^" means we are searching for a non empty/null field
             return '%';
         }
 
@@ -9444,18 +9447,18 @@ HTML;
         }
 
         if (preg_match('/^\^/', $val)) {
-           // Remove leading `^`
+            // Remove leading `^`
             $val = ltrim(preg_replace('/^\^/', '', $val));
         } else {
-           // Add % wildcard before searched string if not begining by a `^`
+            // Add % wildcard before searched string if not begining by a `^`
             $val = '%' . $val;
         }
 
         if (preg_match('/\$$/', $val)) {
-           // Remove trailing `$`
+            // Remove trailing `$`
             $val = rtrim(preg_replace('/\$$/', '', $val));
         } else {
-           // Add % wildcard after searched string if not ending by a `$`
+            // Add % wildcard after searched string if not ending by a `$`
             $val = $val . '%';
         }
 
@@ -9501,7 +9504,7 @@ HTML;
         $tab = explode($pattern, $subject);
 
         if (isset($tab[1]) && !is_numeric($tab[1])) {
-           // Report $ to tab[0]
+            // Report $ to tab[0]
             if (preg_match('/^(\\$*)(.*)/', $tab[1], $matchs)) {
                 if (isset($matchs[2]) && is_numeric($matchs[2])) {
                     $tab[1]  = $matchs[2];
@@ -9509,7 +9512,7 @@ HTML;
                 }
             }
         }
-       // Manage NULL value
+        // Manage NULL value
         if ($tab[0] == self::NULLVALUE) {
             $tab[0] = null;
         }

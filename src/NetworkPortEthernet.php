@@ -117,7 +117,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation
             'speed',
             $standard_speeds,
             ['value' => $this->fields['speed'],
-                'other' => $speed
+                'other' => $speed,
             ]
         );
         echo "</td>";
@@ -210,7 +210,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -221,8 +221,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation
             'name'               => __('MAC'),
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'empty'
-            ]
+                'jointype'           => 'empty',
+            ],
         ];
 
         $tab[] = [
@@ -231,7 +231,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation
             'field'              => 'type',
             'name'               => __('Ethernet port type'),
             'massiveaction'      => false,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -240,7 +240,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation
             'field'              => 'speed',
             'name'               => __('Ethernet port speed'),
             'massiveaction'      => false,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         return $tab;
@@ -291,11 +291,11 @@ class NetworkPortEthernet extends NetworkPortInstantiation
 
             if ((($val % 100) == 0) && ($val > 1000)) {
                 $val /= 100;
-               //TRANS: %f is the speed
+                //TRANS: %f is the speed
                 return sprintf(__('%.1f Gbit/s'), $val / 10);
             }
 
-           //TRANS: %d is the speed
+            //TRANS: %d is the speed
             return sprintf(__('%d Mbit/s'), $val);
         } else {
             $val = preg_replace('/\s+/', '', strtolower($val));
@@ -306,11 +306,11 @@ class NetworkPortEthernet extends NetworkPortInstantiation
             }
 
             if (($unit == 'mbit/s') || ($unit == 'mb/s')) {
-                return (int)$speed;
+                return (int) $speed;
             }
 
             if (($unit == 'gbit/s') || ($unit == 'gb/s')) {
-                return (int)($speed * 1000);
+                return (int) ($speed * 1000);
             }
 
             return false;
@@ -329,12 +329,12 @@ class NetworkPortEthernet extends NetworkPortInstantiation
     {
 
         $tmp = [0     => '',
-                   //TRANS: %d is the speed
+            //TRANS: %d is the speed
             10    => sprintf(__('%d Mbit/s'), 10),
             100   => sprintf(__('%d Mbit/s'), 100),
-                   //TRANS: %d is the speed
+            //TRANS: %d is the speed
             1000  => sprintf(__('%d Gbit/s'), 1),
-            10000 => sprintf(__('%d Gbit/s'), 10)
+            10000 => sprintf(__('%d Gbit/s'), 10),
         ];
 
         if (is_null($val)) {
@@ -415,9 +415,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation
                 'linkfield'           => 'networkports_id',
                 'beforejoin'         => [
                     'table'              => 'glpi_networkportethernets',
-                    'joinparams'         => $joinparams
-                ]
-            ]
+                    'joinparams'         => $joinparams,
+                ],
+            ],
         ];
     }
 }

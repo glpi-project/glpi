@@ -95,7 +95,7 @@ $toADD = "";
 // Redirect management
 if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
     $toADD = "?redirect=" . $_POST['redirect'];
-} else if (isset($_GET['redirect']) && (strlen($_GET['redirect']) > 0)) {
+} elseif (isset($_GET['redirect']) && (strlen($_GET['redirect']) > 0)) {
     $toADD = "?redirect=" . $_GET['redirect'];
 }
 

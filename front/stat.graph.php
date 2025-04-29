@@ -57,10 +57,10 @@ if (!$item = getItemForItemtype($_GET['itemtype'])) {
 
 //sanitize dates
 foreach (['date1', 'date2'] as $key) {
-    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)$_GET[$key]) !== 1) {
+    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $_GET[$key]) !== 1) {
         unset($_GET[$key]);
     }
-    if (array_key_exists($key, $_POST) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)$_POST[$key]) !== 1) {
+    if (array_key_exists($key, $_POST) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $_POST[$key]) !== 1) {
         unset($_POST[$key]);
     }
 }
@@ -150,9 +150,10 @@ switch ($_GET["type"]) {
         break;
 
     case "itilcategories_tree":
-        $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
-       // nobreak;
+        $parent = ($_GET['champ'] ?? 0);
+        // nobreak;
 
+        // no break
     case "itilcategories_id":
         $val1    = $_GET["id"];
         $val2    = "";
@@ -171,9 +172,10 @@ switch ($_GET["type"]) {
         break;
 
     case 'locations_tree':
-        $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
-       // nobreak;
+        $parent = ($_GET['champ'] ?? 0);
+        // nobreak;
 
+        // no break
     case 'locations_id':
         $val1    = $_GET['id'];
         $val2    = '';
@@ -200,9 +202,10 @@ switch ($_GET["type"]) {
 
     case 'group_tree':
     case 'groups_tree_assign':
-        $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
-       // nobreak;
+        $parent = ($_GET['champ'] ?? 0);
+        // nobreak;
 
+        // no break
     case "group":
         $val1    = $_GET["id"];
         $val2    = "";
@@ -312,8 +315,8 @@ switch ($_GET["type"]) {
                 'SELECT' => ['designation'],
                 'FROM'   => $device_table,
                 'WHERE'  => [
-                    'id' => $_GET['id']
-                ]
+                    'id' => $_GET['id'],
+                ],
             ]);
             $current = $iterator->current();
 

@@ -202,7 +202,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
             $iterator = $this->db->request([
                 'FROM'  => $relation_itemtype::getTable(),
                 'WHERE' => ['itemtype' => 'PluginDatabasesDatabase'],
-                'ORDER' => 'id ASC'
+                'ORDER' => 'id ASC',
             ]);
 
             if ($iterator->count() === 0) {
@@ -251,8 +251,8 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
                 );
 
                 if ($core_relation_id !== null) {
-                     // If relation already exist in DB, there is nothing to change
-                     continue;
+                    // If relation already exist in DB, there is nothing to change
+                    continue;
                 }
 
                 $relation_input = $relation_data;
@@ -288,7 +288,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
 
         $iterator = $this->db->request([
             'FROM'  => 'glpi_plugin_databases_databasecategories',
-            'ORDER' => 'id ASC'
+            'ORDER' => 'id ASC',
         ]);
 
         if ($iterator->count() === 0) {
@@ -317,7 +317,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
                 Toolbox::addslashes_deep(
                     [
                         'name'      => $category_data['name'],
-                        'comment'   => $category_data['comment']
+                        'comment'   => $category_data['comment'],
                     ]
                 )
             );
@@ -348,7 +348,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
         );
         $iterator = $this->db->request([
             'FROM'  => 'glpi_plugin_databases_instances', // Database in GLPI core corresponds to PluginDatabasesInstance
-            'ORDER' => 'id ASC'
+            'ORDER' => 'id ASC',
         ]);
 
         if ($iterator->count() === 0) {
@@ -431,11 +431,11 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
         $this->output->write(PHP_EOL);
     }
 
-   /**
-    * Import databases instances.
-    *
-    * @return void
-    */
+    /**
+     * Import databases instances.
+     *
+     * @return void
+     */
     private function importDatabaseInstances(): void
     {
         $this->output->writeln(
@@ -444,7 +444,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
         );
         $iterator = $this->db->request([
             'FROM'  => 'glpi_plugin_databases_databases', // Database in GLPI core corresponds to PluginDatabasesDatabase
-            'ORDER' => 'id ASC'
+            'ORDER' => 'id ASC',
         ]);
 
         if ($iterator->count() === 0) {
@@ -517,7 +517,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
                 'FROM'  => 'glpi_plugin_databases_databases_items',
                 'WHERE' => [
                     'plugin_databases_databases_id' => $instance_data['id'],
-                    'itemtype' => 'Computer'
+                    'itemtype' => 'Computer',
                 ],
             ]);
 
@@ -526,7 +526,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
                     $databaseinstance_data['itemtype'] = $row['itemtype'];
                     $databaseinstance_data['items_id'] = $row['items_id'];
                 }
-            } else if ($related_item_iterator->count() > 1) {
+            } elseif ($related_item_iterator->count() > 1) {
                 $this->handleImportError(
                     sprintf(
                         __('More than one Computer linked to %s #%s.'),
@@ -576,7 +576,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
 
         $iterator = $this->db->request([
             'FROM'  => 'glpi_plugin_databases_databasetypes',
-            'ORDER' => 'id ASC'
+            'ORDER' => 'id ASC',
         ]);
 
         if ($iterator->count() === 0) {

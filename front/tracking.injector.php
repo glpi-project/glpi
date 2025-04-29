@@ -62,7 +62,7 @@ if (count($_POST) == 0) {
 
 if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
     Html::nullHeader(Ticket::getTypeName(Session::getPluralNumber()));
-} else if ($_POST["_from_helpdesk"]) {
+} elseif ($_POST["_from_helpdesk"]) {
     Html::helpHeader(__('Simplified interface'));
 } else {
     Html::header(__('Simplified interface'), '', $_SESSION["glpiname"], "helpdesk", "tracking");
@@ -83,7 +83,7 @@ if (isset($_POST['add'])) {
     }
     $_POST['check_delegatee'] = true;
     if (isset($_POST['_actors'])) {
-       // with self-service, we only have observers
+        // with self-service, we only have observers
         unset($_POST['_actors']['requester'], $_POST['_actors']['assign']);
     }
     if ($track->add($_POST)) {

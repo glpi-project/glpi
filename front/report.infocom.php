@@ -110,7 +110,7 @@ function display_infocoms_report($itemtype, $begin, $end)
     global $CFG_GLPI, $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $stat, $chart_opts;
 
     $itemtable = getTableForItemType($itemtype);
-   // report need name and ticket_tco, many asset type don't have it therefore are not compatible
+    // report need name and ticket_tco, many asset type don't have it therefore are not compatible
     if (!$DB->fieldExists($itemtable, "ticket_tco", false)) {
         return false;
     }
@@ -120,7 +120,7 @@ function display_infocoms_report($itemtype, $begin, $end)
             "$itemtable.name AS name",
             "$itemtable.ticket_tco",
             'glpi_entities.completename AS entname',
-            'glpi_entities.id AS entID'
+            'glpi_entities.id AS entID',
 
         ],
         'FROM'         => 'glpi_infocoms',
@@ -130,30 +130,30 @@ function display_infocoms_report($itemtype, $begin, $end)
                     'glpi_infocoms'   => 'items_id',
                     $itemtable        => 'id', [
                         'AND' => [
-                            'glpi_infocoms.itemtype'   => $itemtype
-                        ]
-                    ]
-                ]
-            ]
+                            'glpi_infocoms.itemtype'   => $itemtype,
+                        ],
+                    ],
+                ],
+            ],
         ],
         'LEFT JOIN'    => [
             'glpi_entities'   => [
                 'ON'  => [
                     'glpi_entities'   => 'id',
-                    $itemtable        => 'entities_id'
-                ]
-            ]
+                    $itemtable        => 'entities_id',
+                ],
+            ],
         ],
         'WHERE'        => ["$itemtable.is_template" => 0] + getEntitiesRestrictCriteria($itemtable),
-        'ORDERBY'      => ['entname ASC', 'buy_date', 'use_date']
+        'ORDERBY'      => ['entname ASC', 'buy_date', 'use_date'],
     ];
 
     if (!empty($begin)) {
         $criteria['WHERE'][] = [
             'OR'  => [
                 'glpi_infocoms.buy_date'   => ['>=', $begin],
-                'glpi_infocoms.use_date'   => ['>=', $begin]
-            ]
+                'glpi_infocoms.use_date'   => ['>=', $begin],
+            ],
         ];
     }
 
@@ -161,8 +161,8 @@ function display_infocoms_report($itemtype, $begin, $end)
         $criteria['WHERE'][] = [
             'OR'  => [
                 'glpi_infocoms.buy_date'   => ['<=', $end],
-                'glpi_infocoms.use_date'   => ['<=', $end]
-            ]
+                'glpi_infocoms.use_date'   => ['<=', $end],
+            ],
         ];
     }
 
@@ -294,8 +294,8 @@ function display_infocoms_report($itemtype, $begin, $end)
                 array_keys($valeurnettegraphdisplay),
                 [
                     [
-                        'data' => $valeurnettegraphdisplay
-                    ]
+                        'data' => $valeurnettegraphdisplay,
+                    ],
                 ],
                 $chart_opts
             );
@@ -323,8 +323,8 @@ function display_infocoms_report($itemtype, $begin, $end)
                 array_keys($valeurgraphdisplay),
                 [
                     [
-                        'data' => $valeurgraphdisplay
-                    ]
+                        'data' => $valeurgraphdisplay,
+                    ],
                 ],
                 $chart_opts
             );
@@ -381,8 +381,8 @@ if (count($valeurnettegraphtot) > 0) {
         array_keys($valeurnettegraphtotdisplay),
         [
             [
-                'data' => $valeurnettegraphtotdisplay
-            ]
+                'data' => $valeurnettegraphtotdisplay,
+            ],
         ],
         $chart_opts
     );
@@ -395,8 +395,8 @@ if (count($valeurgraphtot) > 0) {
         array_keys($valeurgraphtotdisplay),
         [
             [
-                'data' => $valeurgraphtotdisplay
-            ]
+                'data' => $valeurgraphtotdisplay,
+            ],
         ],
         $chart_opts
     );

@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     foreach ($_POST["item"] as $key => $val) {
         $input = ['id' => $key];
         if ($val == 1) {

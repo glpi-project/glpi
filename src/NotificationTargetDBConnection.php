@@ -84,22 +84,22 @@ class NotificationTargetDBConnection extends NotificationTarget
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
                 'value' => true,
-                'lang'  => true
+                'lang'  => true,
             ]);
         }
 
-       //Tags with just lang
+        //Tags with just lang
         $tags = ['dbconnection.title'
                                  => __('Replica database out of sync!'),
             'dbconnection.delay'
-                                 => __('The replica database is desynchronized. The difference is of:')
+                                 => __('The replica database is desynchronized. The difference is of:'),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
                 'value' => false,
-                'lang'  => true
+                'lang'  => true,
             ]);
         }
 

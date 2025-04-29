@@ -42,19 +42,19 @@ $pdu = new PDU();
 
 if (isset($_POST['update'])) {
     $pdup->check($_POST['id'], UPDATE);
-   //update existing relation
+    //update existing relation
     if ($pdup->update($_POST)) {
         $url = $pdu->getFormURLWithID($_POST['pdus_id']);
     } else {
         $url = $pdup->getFormURLWithID($_POST['id']);
     }
     Html::redirect($url);
-} else if (isset($_POST['add'])) {
+} elseif (isset($_POST['add'])) {
     $pdup->check(-1, CREATE, $_POST);
     $pdup->add($_POST);
     $url = $pdu->getFormURLWithID($_POST['pdus_id']);
     Html::redirect($url);
-} else if (isset($_POST['purge'])) {
+} elseif (isset($_POST['purge'])) {
     $pdup->check($_POST['id'], PURGE);
     $pdup->delete($_POST, 1);
     $url = $pdu->getFormURLWithID($_POST['pdus_id']);
@@ -72,7 +72,7 @@ if (isset($_GET['id'])) {
     $params = [
         'pdus_id'      => $_GET['pdus_id'],
         'plugs_id'     => $_GET['plugs_id'],
-        'number_plug'  => $_GET['number_plug']
+        'number_plug'  => $_GET['number_plug'],
     ];
 }
 $ajax = isset($_REQUEST['ajax']) ? true : false;

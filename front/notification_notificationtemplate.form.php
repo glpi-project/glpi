@@ -53,11 +53,11 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $notiftpl->check($_POST["id"], PURGE);
     $notiftpl->delete($_POST, 1);
     Html::redirect(Notification::getFormURLWithID($notiftpl->fields['notifications_id']));
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $notiftpl->check($_POST["id"], UPDATE);
 
     $notiftpl->update($_POST);

@@ -117,7 +117,7 @@ class DbTestCase extends \GLPITestCase
     {
         $input = Sanitizer::dbUnescapeRecursive($input); // slashes in input should not be stored in DB
 
-        $this->assertGreaterThan($object instanceof Entity ? -1 : 0, (int)$id);
+        $this->assertGreaterThan($object instanceof Entity ? -1 : 0, (int) $id);
         $this->assertTrue($object->getFromDB($id));
         $this->assertEquals($id, $object->getField('id'));
 
@@ -144,7 +144,7 @@ class DbTestCase extends \GLPITestCase
      */
     protected function getClasses($function = false, array $excludes = [])
     {
-       // Add deprecated classes to excludes to prevent test failure
+        // Add deprecated classes to excludes to prevent test failure
         $excludes = array_merge(
             $excludes,
             [
@@ -169,8 +169,8 @@ class DbTestCase extends \GLPITestCase
             $is_excluded = false;
             foreach ($excludes as $exclude) {
                 if ($classname === $exclude || @preg_match($exclude, $classname) === 1) {
-                     $is_excluded = true;
-                     break;
+                    $is_excluded = true;
+                    break;
                 }
             }
             if ($is_excluded) {

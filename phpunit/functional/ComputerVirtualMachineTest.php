@@ -56,7 +56,7 @@ class ComputerVirtualMachineTest extends DbTestCase
                 'name'         => 'Virtu Hall',
                 'uuid'         => $uuid,
                 'vcpu'         => 1,
-                'ram'          => 1024
+                'ram'          => 1024,
             ])
         );
         $this->assertTrue($obj->getFromDB($id));
@@ -71,7 +71,7 @@ class ComputerVirtualMachineTest extends DbTestCase
             $cid = $computer->add([
                 'name'         => 'Virtu Hall',
                 'uuid'         => $uuid,
-                'entities_id'  => 0
+                'entities_id'  => 0,
             ])
         );
 

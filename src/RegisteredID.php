@@ -39,10 +39,10 @@
  **/
 class RegisteredID extends CommonDBChild
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $auto_message_on_action = false;
 
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype        = 'itemtype';
     public static $items_id        = 'items_id';
     public $dohistory              = true;
@@ -52,7 +52,7 @@ class RegisteredID extends CommonDBChild
     {
 
         return ['PCI' => __('PCI'),
-            'USB' => __('USB')
+            'USB' => __('USB'),
         ];
     }
 

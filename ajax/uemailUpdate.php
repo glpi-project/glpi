@@ -93,18 +93,18 @@ if (
       </div>";
 
     $email_string = '';
-   // Only one email
+    // Only one email
     if (
         (count($emails) == 1)
         && !empty($default_email)
         && NotificationMailing::isUserAddressValid($default_email[$user_index])
     ) {
         $email_string =  $default_email[$user_index];
-       // Clean alternative email
+        // Clean alternative email
         echo "<input type='hidden' size='25' name='" . $_POST['field'] . "[alternative_email][]'
              value=''>";
-    } else if (count($emails) > 1) {
-       // Several emails : select in the list
+    } elseif (count($emails) > 1) {
+        // Several emails : select in the list
         $emailtab = [];
         foreach ($emails as $new_email) {
             if ($new_email != $default_email) {
@@ -118,7 +118,7 @@ if (
             $emailtab,
             [
                 'value'   => '',
-                'display' => false
+                'display' => false,
             ]
         );
     } else {

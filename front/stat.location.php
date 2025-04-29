@@ -52,12 +52,12 @@ Session::checkRight("statistic", READ);
 if (empty($_GET["showgraph"])) {
     $_GET["showgraph"] = 0;
 } else {
-    $_GET["showgraph"] = (int)$_GET["showgraph"];
+    $_GET["showgraph"] = (int) $_GET["showgraph"];
 }
 
 //sanitize dates
 foreach (['date1', 'date2'] as $key) {
-    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)$_GET[$key]) !== 1) {
+    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $_GET[$key]) !== 1) {
         unset($_GET[$key]);
     }
 }
@@ -80,19 +80,19 @@ if (
 if (!isset($_GET["start"])) {
     $_GET["start"] = 0;
 } else {
-    $_GET["start"] = (int)$_GET["start"];
+    $_GET["start"] = (int) $_GET["start"];
 }
 
 if (empty($_GET["dropdown"])) {
     $_GET["dropdown"] = "ComputerType";
 } else {
-    $_GET["dropdown"] = (string)$_GET["dropdown"];
+    $_GET["dropdown"] = (string) $_GET["dropdown"];
 }
 
 if (!isset($_GET['itemtype'])) {
     $_GET['itemtype'] = 'Ticket';
 } else {
-    $_GET['itemtype'] = (string)$_GET["itemtype"];
+    $_GET['itemtype'] = (string) $_GET["itemtype"];
 }
 
 $stat = new Stat();
@@ -106,7 +106,7 @@ echo "<table class='tab_cadre_fixe' ><tr class='tab_bg_2'><td rowspan='2' width=
 $values = [_n('Dropdown', 'Dropdowns', Session::getPluralNumber()) => ['ComputerType'    => _n('Type', 'Types', 1),
     'ComputerModel'   => _n('Model', 'Models', 1),
     'OperatingSystem' => OperatingSystem::getTypeName(1),
-    'Location'        => Location::getTypeName(1)
+    'Location'        => Location::getTypeName(1),
 ],
 ];
 $devices = Dropdown::getDeviceItemTypes();
@@ -140,14 +140,14 @@ echo "</form>";
 if (
     !($item = getItemForItemtype($_GET["dropdown"]))
 ) {
-   // Do nothing
+    // Do nothing
     Html::footer();
     exit();
 }
 
 
 if (!($item instanceof CommonDevice)) {
-   // echo "Dropdown";
+    // echo "Dropdown";
     $type = "comp_champ";
 
     $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"], $_GET["dropdown"]);
@@ -155,10 +155,10 @@ if (!($item instanceof CommonDevice)) {
         'dropdown' => $_GET["dropdown"],
         'date1'    => $_GET["date1"],
         'date2'    => $_GET["date2"],
-        'start'    => $_GET["start"]
+        'start'    => $_GET["start"],
     ];
 } else {
-   //   echo "Device";
+    //   echo "Device";
     $type  = "device";
 
     $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"], $_GET["dropdown"]);
@@ -166,7 +166,7 @@ if (!($item instanceof CommonDevice)) {
         'dropdown' => $_GET["dropdown"],
         'date1'    => $_GET["date1"],
         'date2'    => $_GET["date2"],
-        'start'    => $_GET["start"]
+        'start'    => $_GET["start"],
     ];
 }
 

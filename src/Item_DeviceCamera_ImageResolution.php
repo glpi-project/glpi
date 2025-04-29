@@ -56,7 +56,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
             $nb = countElementsInTable(
                 self::getTable(),
                 [
-                    'items_devicecameras_id' => $item->getID()
+                    'items_devicecameras_id' => $item->getID(),
                 ]
             );
         }
@@ -110,13 +110,13 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
                 ImageResolution::getTable() => [
                     'ON' => [
                         ImageResolution::getTable() => 'id',
-                        self::getTable() => 'imageresolutions_id'
-                    ]
-                ]
+                        self::getTable() => 'imageresolutions_id',
+                    ],
+                ],
             ],
             'WHERE'  => [
-                'items_devicecameras_id' => $camera->getID()
-            ]
+                'items_devicecameras_id' => $camera->getID(),
+            ],
         ]);
         $link = new self();
 
@@ -141,7 +141,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = [
                     'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                    'container'       => 'mass' . __CLASS__ . $rand
+                    'container'       => 'mass' . __CLASS__ . $rand,
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }

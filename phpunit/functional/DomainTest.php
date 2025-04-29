@@ -62,8 +62,8 @@ class DomainTest extends DbTestCase
         $this->login();
 
         $domain = new \Domain();
-        $domains_id = (int)$domain->add([
-            'name'   => 'glpi-project.org'
+        $domains_id = (int) $domain->add([
+            'name'   => 'glpi-project.org',
         ]);
         $this->assertGreaterThan(0, $domains_id);
 
@@ -73,7 +73,7 @@ class DomainTest extends DbTestCase
             $domain_item->add([
                 'domains_id'   => $domains_id,
                 'itemtype'     => 'Computer',
-                'items_id'     => getItemByTypeName('Computer', '_test_pc01', true)
+                'items_id'     => getItemByTypeName('Computer', '_test_pc01', true),
             ])
         );
 
@@ -84,7 +84,7 @@ class DomainTest extends DbTestCase
                 $record->add([
                     'name'         => $sub,
                     'data'         => 'glpi-project.org.',
-                    'domains_id'   => $domains_id
+                    'domains_id'   => $domains_id,
                 ])
             );
         }
@@ -109,7 +109,7 @@ class DomainTest extends DbTestCase
                 'id'                                      => $entity->fields['id'],
                 'use_domains_alert'                       => 1,
                 'send_domains_alert_close_expiries_delay' => 7,
-                'send_domains_alert_expired_delay'        => 1
+                'send_domains_alert_expired_delay'        => 1,
             ])
         );
         $this->assertTrue($entity->getFromDB($entity->fields['id']));
@@ -144,8 +144,8 @@ class DomainTest extends DbTestCase
     {
         $this->login();
         $domain = new \Domain();
-        $domains_id = (int)$domain->add([
-            'name'   => 'glpi-project.org'
+        $domains_id = (int) $domain->add([
+            'name'   => 'glpi-project.org',
         ]);
         $this->assertGreaterThan(0, $domains_id);
 
@@ -156,7 +156,7 @@ class DomainTest extends DbTestCase
                 $record->add([
                     'name'         => $sub,
                     'data'         => 'glpi-project.org.',
-                    'domains_id'   => $domains_id
+                    'domains_id'   => $domains_id,
                 ])
             );
         }
@@ -179,15 +179,15 @@ class DomainTest extends DbTestCase
         unset($_SESSION['glpitransfer_list']);
 
         $this->assertTrue($domain->getFromDB($domains_id));
-        $this->assertSame($entities_id, (int)$domain->fields['entities_id']);
+        $this->assertSame($entities_id, (int) $domain->fields['entities_id']);
 
         global $DB;
         $records = $DB->request([
             'FROM'   => \DomainRecord::getTable(),
-            'WHERE'  => ['domains_id' => $domains_id]
+            'WHERE'  => ['domains_id' => $domains_id],
         ]);
         foreach ($records as $row) {
-            $this->assertSame($entities_id, (int)$row['entities_id']);
+            $this->assertSame($entities_id, (int) $row['entities_id']);
         }
     }
 

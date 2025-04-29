@@ -43,7 +43,7 @@ $item = new Item_Ticket();
 
 if (isset($_POST["add"])) {
     if (isset($_POST['my_items']) && !empty($_POST['my_items'])) {
-        list($_POST['itemtype'], $_POST['items_id']) = explode('_', $_POST['my_items']);
+        [$_POST['itemtype'], $_POST['items_id']] = explode('_', $_POST['my_items']);
     }
 
     if (isset($_POST['add_items_id'])) {
@@ -72,11 +72,11 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $item_ticket = new Item_Ticket();
     $item_ticket->deleteByCriteria(['tickets_id' => $_POST['tickets_id'],
         'items_id'   => $_POST['items_id'],
-        'itemtype'   => $_POST['itemtype']
+        'itemtype'   => $_POST['itemtype'],
     ]);
     Html::back();
 }

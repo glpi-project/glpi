@@ -37,7 +37,7 @@
 // @deprecated 10.0.0 @see RuleImportAssetCollection
 class RuleImportComputerCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
     public $stop_on_first_match = true;
     public static $rightname           = 'rule_import';
     public $menu_option         = 'linkcomputer';

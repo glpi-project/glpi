@@ -62,13 +62,13 @@ final class RichText
 
         $content = self::normalizeHtmlContent($content, true);
 
-       // Remove unsafe HTML using htmLawed
+        // Remove unsafe HTML using htmLawed
         $config = Toolbox::getHtmLawedSafeConfig();
         $config['keep_bad'] = 6; // remove invalid/disallowed tag but keep content intact
         $content = htmLawed($content, $config);
 
-       // Special case : remove the 'denied:' for base64 img in case the base64 have characters
-       // combinaison introduce false positive
+        // Special case : remove the 'denied:' for base64 img in case the base64 have characters
+        // combinaison introduce false positive
         foreach (['png', 'gif', 'jpg', 'jpeg'] as $imgtype) {
             $content = str_replace(
                 sprintf('src="denied:data:image/%s;base64,', $imgtype),
@@ -77,7 +77,7 @@ final class RichText
             );
         }
 
-       // Remove extra lines
+        // Remove extra lines
         $content = trim($content, "\r\n");
 
         if ($encode_output_entities) {
@@ -119,7 +119,7 @@ final class RichText
             } else {
                 $options = ['width' => 0];
 
-               // Convert domain relative links to absolute links
+                // Convert domain relative links to absolute links
                 $content = preg_replace(
                     '/((?:href|src)=[\'"])(\/[^\/].*)([\'"])/',
                     '$1' . $CFG_GLPI['url_base'] . '$2$3',
@@ -141,7 +141,7 @@ final class RichText
             };
             $content = $html->getText();
         } else {
-           // Remove HTML tags using htmLawed
+            // Remove HTML tags using htmLawed
             $config = Toolbox::getHtmLawedSafeConfig();
             $config['elements'] = 'none';
             $config['keep_bad'] = 6; // remove invalid/disallowed tag but keep content intact
@@ -164,7 +164,7 @@ final class RichText
             $content = Html::entity_decode_deep($content);
         }
 
-       // Remove extra lines
+        // Remove extra lines
         $content = trim($content, "\r\n");
 
         if ($encode_output_entities) {
@@ -184,7 +184,7 @@ final class RichText
     public static function isRichTextHtmlContent(string $content): bool
     {
         $html_tags = [
-         // Most common inlined tag (handle manual HTML input, usefull for $CFG_GLPI['text_login'])
+            // Most common inlined tag (handle manual HTML input, usefull for $CFG_GLPI['text_login'])
             'a',
             'b',
             'em',
@@ -193,11 +193,11 @@ final class RichText
             'span',
             'strong',
 
-         // Content separators
+            // Content separators
             'br',
             'hr',
 
-         // Main blocks
+            // Main blocks
             'blockquote',
             'div',
             'h1',
@@ -229,10 +229,10 @@ final class RichText
         $content = Sanitizer::getVerbatimValue($content);
 
         if (self::isRichTextHtmlContent($content)) {
-           // Remove contentless HTML tags
-           // Remove also surrounding spaces:
-           // - only horizontal spacing chars leading the tag in its line (\h*),
-           // - any spacing char that follow the tag unless they are preceded by a newline (\s*\n+?).
+            // Remove contentless HTML tags
+            // Remove also surrounding spaces:
+            // - only horizontal spacing chars leading the tag in its line (\h*),
+            // - any spacing char that follow the tag unless they are preceded by a newline (\s*\n+?).
             $leading_spaces = '\h*';
             $following_spaces = '\s*\n+?';
             $content = preg_replace(
@@ -246,19 +246,19 @@ final class RichText
                 $content
             );
         } else {
-           // If content is not rich text content, convert it to HTML.
-           // Required to correctly render content that came:
-           // - from "simple text mode" from GLPI prior to 9.4.0;
-           // - from a basic textarea;
-           // - from an external input (API, CalDAV client, ...).
+            // If content is not rich text content, convert it to HTML.
+            // Required to correctly render content that came:
+            // - from "simple text mode" from GLPI prior to 9.4.0;
+            // - from a basic textarea;
+            // - from an external input (API, CalDAV client, ...).
 
             if (preg_match('/(<|>)/', $content)) {
-               // Input was not HTML, and special chars were not saved as HTML entities.
-               // We have to encode them into HTML entities.
+                // Input was not HTML, and special chars were not saved as HTML entities.
+                // We have to encode them into HTML entities.
                 $content = Html::entities_deep($content);
             }
 
-           // Plain text line breaks have to be transformed into <br /> tags.
+            // Plain text line breaks have to be transformed into <br /> tags.
             $content = '<p>' . nl2br($content) . '</p>';
         }
 
@@ -297,7 +297,7 @@ final class RichText
 
         $content_size = strlen($content ?? '');
 
-       // Sanitize content first (security and to decode HTML entities)
+        // Sanitize content first (security and to decode HTML entities)
         $content = self::getSafeHtml($content);
 
         if ($p['user_mentions']) {
@@ -431,7 +431,7 @@ HTML;
                             'h'   => $imgsize[1],
                             'thumbnail_w' => $width,
                             'thumbnail_h' => $height,
-                        ]
+                        ],
                     ]);
                     $content = str_replace($img_tag, $gallery, $content);
                 }
@@ -464,7 +464,7 @@ HTML;
                 'zoom'         => true,
             ],
             'rand'               => mt_rand(),
-            'gallery_item_class' => ''
+            'gallery_item_class' => '',
         ];
 
         if (is_array($options) && count($options)) {

@@ -122,7 +122,7 @@ class ParametersPreset
             new AttributeParameter('itemtype', __('Itemtype')),
             new ObjectParameter(new TicketParameters()),
             new ObjectParameter(new ChangeParameters()),
-            new ObjectParameter(new ProblemParameters())
+            new ObjectParameter(new ProblemParameters()),
         ];
     }
 

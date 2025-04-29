@@ -44,7 +44,7 @@ if (!($dropdown instanceof CommonDropdown)) {
     Html::displayErrorAndDie('');
 }
 if (!$dropdown->canView()) {
-   // Gestion timeout session
+    // Gestion timeout session
     Session::redirectIfNotLoggedIn();
     Html::displayRightError();
 }
@@ -52,7 +52,7 @@ if (!$dropdown->canView()) {
 
 if (isset($_POST["id"])) {
     $_GET["id"] = $_POST["id"];
-} else if (!isset($_GET["id"])) {
+} elseif (!isset($_GET["id"])) {
     $_GET["id"] = -1;
 }
 
@@ -90,7 +90,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $dropdown->check($_POST["id"], PURGE);
     if (
         $dropdown->isUsed()
@@ -118,7 +118,7 @@ if (isset($_POST["add"])) {
         );
         $dropdown->redirectToList();
     }
-} else if (isset($_POST["replace"])) {
+} elseif (isset($_POST["replace"])) {
     $dropdown->check($_POST["id"], PURGE);
     $dropdown->delete($_POST, 1);
 
@@ -131,7 +131,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s replaces an item'), $_SESSION["glpiname"])
     );
     $dropdown->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $dropdown->check($_POST["id"], UPDATE);
     $dropdown->update($_POST);
 
@@ -144,7 +144,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (
+} elseif (
     isset($_POST['execute'])
            && isset($_POST['_method'])
 ) {
@@ -155,7 +155,7 @@ if (isset($_POST["add"])) {
     } else {
         Html::displayErrorAndDie(__('No selected element or badly defined operation'));
     }
-} else if (isset($_GET['_in_modal'])) {
+} elseif (isset($_GET['_in_modal'])) {
     Html::popHeader(
         $dropdown->getTypeName(1),
         $_SERVER['PHP_SELF'],

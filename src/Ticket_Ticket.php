@@ -36,7 +36,7 @@
 /// Class Ticket links
 class Ticket_Ticket extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1     = 'Ticket';
     public static $items_id_1     = 'tickets_id_1';
     public static $itemtype_2     = 'Ticket';
@@ -44,11 +44,11 @@ class Ticket_Ticket extends CommonDBRelation
 
     public static $check_entity_coherency = false;
 
-   // Ticket links
-    const LINK_TO        = 1;
-    const DUPLICATE_WITH = 2;
-    const SON_OF         = 3;
-    const PARENT_OF      = 4;
+    // Ticket links
+    public const LINK_TO        = 1;
+    public const DUPLICATE_WITH = 2;
+    public const SON_OF         = 3;
+    public const PARENT_OF      = 4;
 
 
     public static function getTypeName($nb = 0)
@@ -100,11 +100,11 @@ class Ticket_Ticket extends CommonDBRelation
                 ) {
                     if ($item->getFromDB($input['tickets_id_1'])) {
                         foreach ($ids as $id) {
-                              $input2                          = [];
-                              $input2['id']                    = $input['tickets_id_1'];
-                              $input2['_link']['tickets_id_1'] = $id;
-                              $input2['_link']['link']         = $input['link'];
-                              $input2['_link']['tickets_id_2'] = $input['tickets_id_1'];
+                            $input2                          = [];
+                            $input2['id']                    = $input['tickets_id_1'];
+                            $input2['_link']['tickets_id_1'] = $id;
+                            $input2['_link']['link']         = $input['link'];
+                            $input2['_link']['tickets_id_2'] = $input['tickets_id_1'];
                             if ($item->can($input['tickets_id_1'], UPDATE)) {
                                 if ($ticket->update($input2)) {
                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
@@ -138,7 +138,7 @@ class Ticket_Ticket extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Make new database object and fill variables
+        // Make new database object and fill variables
         if (empty($ID)) {
             return [];
         }
@@ -150,15 +150,15 @@ class Ticket_Ticket extends CommonDBRelation
             'WHERE'  => [
                 'OR'  => [
                     'tickets_id_1' => $ID,
-                    'tickets_id_2' => $ID
-                ]
-            ]
+                    'tickets_id_2' => $ID,
+                ],
+            ],
         ];
         if ($check_view_rights && !Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
             $ticket_table = Ticket::getTable();
             $criteria['LEFT JOIN'] = [
                 $ticket_table => [
-                    'ON' => new QueryExpression("{$ticket_table}.id=(CASE WHEN {$table}.tickets_id_1={$ID} THEN {$table}.tickets_id_2 ELSE {$table}.tickets_id_1 END)")
+                    'ON' => new QueryExpression("{$ticket_table}.id=(CASE WHEN {$table}.tickets_id_1={$ID} THEN {$table}.tickets_id_2 ELSE {$table}.tickets_id_1 END)"),
                 ],
             ];
             $unused_ref = [];
@@ -177,12 +177,12 @@ class Ticket_Ticket extends CommonDBRelation
                 $tickets[$data['id']] = [
                     'link'         => $data['link'],
                     'tickets_id_1' => $data['tickets_id_1'],
-                    'tickets_id'   => $data['tickets_id_1']
+                    'tickets_id'   => $data['tickets_id_1'],
                 ];
             } else {
                 $tickets[$data['id']] = [
                     'link'       => $data['link'],
-                    'tickets_id' => $data['tickets_id_2']
+                    'tickets_id' => $data['tickets_id_2'],
                 ];
             }
         }
@@ -255,11 +255,11 @@ class Ticket_Ticket extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
-       // Clean values
+        // Clean values
         $input['tickets_id_1'] = Toolbox::cleanInteger($input['tickets_id_1']);
         $input['tickets_id_2'] = Toolbox::cleanInteger($input['tickets_id_2']);
 
-       // Check of existance of rights on both Ticket(s) is done by the parent
+        // Check of existance of rights on both Ticket(s) is done by the parent
         if ($input['tickets_id_2'] == $input['tickets_id_1']) {
             return false;
         }
@@ -270,7 +270,7 @@ class Ticket_Ticket extends CommonDBRelation
 
         $this->checkParentSon($input);
 
-       // No multiple links
+        // No multiple links
         $tickets = self::getLinkedTicketsTo($input['tickets_id_1']);
         if (count($tickets)) {
             foreach ($tickets as $key => $t) {
@@ -310,7 +310,7 @@ class Ticket_Ticket extends CommonDBRelation
     public function checkParentSon(&$input)
     {
         if (isset($input['link']) && $input['link'] == Ticket_Ticket::PARENT_OF) {
-           //a PARENT_OF relation is an inverted SON_OF one :)
+            //a PARENT_OF relation is an inverted SON_OF one :)
             $id1 = $input['tickets_id_2'];
             $id2 = $input['tickets_id_1'];
             $input['tickets_id_1'] = $id1;
@@ -379,19 +379,19 @@ class Ticket_Ticket extends CommonDBRelation
                 Ticket::getTable() . ' AS tickets' => [
                     'ON' => [
                         'links'     => 'tickets_id_1',
-                        'tickets'   => 'id'
-                    ]
-                ]
+                        'tickets'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'        => [
                 'links.link'         => self::SON_OF,
                 'links.tickets_id_2' => $pid,
                 'NOT'                => [
-                    'tickets.status'  => Ticket::getClosedStatusArray() + Ticket::getSolvedStatusArray()
-                ]
-            ]
+                    'tickets.status'  => Ticket::getClosedStatusArray() + Ticket::getSolvedStatusArray(),
+                ],
+            ],
         ])->current();
-        return (int)$result['cpt'];
+        return (int) $result['cpt'];
     }
 
 
@@ -429,19 +429,19 @@ class Ticket_Ticket extends CommonDBRelation
         );
 
         if (null === $solution) {
-           // Change status without adding a solution
-           // This will be done if a ticket is solved/closed without a solution
+            // Change status without adding a solution
+            // This will be done if a ticket is solved/closed without a solution
             foreach ($tickets as $data) {
                 $linked_ticket = new Ticket();
                 $linked_ticket->update(
                     [
                         'id'     => $data['tickets_id'],
-                        'status' => $ticket->fields['status']
+                        'status' => $ticket->fields['status'],
                     ]
                 );
             }
         } else {
-           // Add same solution to duplicates
+            // Add same solution to duplicates
             $solution_data = $solution->fields;
             unset($solution_data['id']);
             unset($solution_data['date_creation']);

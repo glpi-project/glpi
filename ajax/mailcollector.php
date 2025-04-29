@@ -50,16 +50,16 @@ $mailcollector = new MailCollector();
 if (isset($_REQUEST['action'])) {
     switch ($_REQUEST['action']) {
         case "getFoldersList":
-           // Load config if already exists
-           // Necessary if password is not updated
+            // Load config if already exists
+            // Necessary if password is not updated
             if (array_key_exists('id', $_REQUEST)) {
                 $mailcollector->getFromDB($_REQUEST['id']);
             }
 
-           // Update fields with input values
+            // Update fields with input values
             $input = $_REQUEST;
             if (array_key_exists('passwd', $input)) {
-               // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
+                // Password must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
                 $input['passwd'] = $_UREQUEST['passwd'];
             }
             $input['login'] = stripslashes($input['login']);

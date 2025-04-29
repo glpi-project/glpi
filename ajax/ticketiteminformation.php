@@ -55,7 +55,7 @@ if (
     isset($_POST['itemtype'])
     && isset($_POST['items_id']) && ($_POST['items_id'] > 0)
 ) {
-   // Security
+    // Security
     if (!class_exists($_POST['itemtype'])) {
         exit();
     }

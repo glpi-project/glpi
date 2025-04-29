@@ -37,7 +37,7 @@ class Calendar_Holiday extends CommonDBRelation
 {
     public $auto_message_on_action = false;
 
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1 = 'Calendar';
     public static $items_id_1 = 'calendars_id';
     public static $itemtype_2 = 'Holiday';
@@ -82,7 +82,7 @@ class Calendar_Holiday extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_calendars_holidays.id AS linkid',
-                'glpi_holidays.*'
+                'glpi_holidays.*',
             ],
             'DISTINCT'        => true,
             'FROM'            => 'glpi_calendars_holidays',
@@ -90,14 +90,14 @@ class Calendar_Holiday extends CommonDBRelation
                 'glpi_holidays'   => [
                     'ON' => [
                         'glpi_calendars_holidays'  => 'holidays_id',
-                        'glpi_holidays'            => 'id'
-                    ]
-                ]
+                        'glpi_holidays'            => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                'glpi_calendars_holidays.calendars_id' => $ID
+                'glpi_calendars_holidays.calendars_id' => $ID,
             ],
-            'ORDERBY'         => 'glpi_holidays.name'
+            'ORDERBY'         => 'glpi_holidays.name',
         ]);
 
         $numrows = count($iterator);
@@ -118,7 +118,7 @@ class Calendar_Holiday extends CommonDBRelation
             echo "<tr class='tab_bg_2'><td class='right'  colspan='4'>";
             echo "<input type='hidden' name='calendars_id' value='$ID'>";
             Holiday::dropdown(['used'   => $used,
-                'entity' => $calendar->fields["entities_id"]
+                'entity' => $calendar->fields["entities_id"],
             ]);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -133,7 +133,7 @@ class Calendar_Holiday extends CommonDBRelation
         if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                'container'     => 'mass' . __CLASS__ . $rand
+                'container'     => 'mass' . __CLASS__ . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -156,11 +156,11 @@ class Calendar_Holiday extends CommonDBRelation
             Session::initNavigateListItems(
                 'Holiday',
                 //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            Calendar::getTypeName(1),
-                                            $calendar->fields["name"]
-                                        )
+                sprintf(
+                    __('%1$s = %2$s'),
+                    Calendar::getTypeName(1),
+                    $calendar->fields["name"]
+                )
             );
 
             foreach ($holidays as $data) {

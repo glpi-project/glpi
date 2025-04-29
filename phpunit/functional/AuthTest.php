@@ -56,7 +56,7 @@ class AuthTest extends DbTestCase
             ['john^doe', false],
             ['john$doe', false],
             [null, false],
-            ['', false]
+            ['', false],
         ];
     }
 
@@ -73,7 +73,7 @@ class AuthTest extends DbTestCase
         $methods = \Auth::getLoginAuthMethods();
         $expected = [
             '_default'  => 'local',
-            'local'     => 'GLPI internal database'
+            'local'     => 'GLPI internal database',
         ];
         $this->assertSame($expected, $methods);
     }
@@ -174,6 +174,6 @@ class AuthTest extends DbTestCase
 
         $this->assertSame(!$expected_lock, $is_logged);
         $this->assertTrue($user->getFromDB($user->fields['id']));
-        $this->assertSame(!$expected_lock, (bool)$user->fields['is_active']);
+        $this->assertSame(!$expected_lock, (bool) $user->fields['is_active']);
     }
 }

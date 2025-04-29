@@ -38,10 +38,10 @@
  **/
 class SoftwareVersion extends CommonDBChild
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
 
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype  = 'Software';
     public static $items_id  = 'softwares_id';
 
@@ -141,11 +141,11 @@ class SoftwareVersion extends CommonDBChild
         echo "<tr class='tab_bg_1'><td>" . __('Status') . "</td><td>";
         State::dropdown(['value'     => $this->fields["states_id"],
             'entity'    => $this->fields["entities_id"],
-            'condition' => ['is_visible_softwareversion' => 1]
+            'condition' => ['is_visible_softwareversion' => 1],
         ]);
         echo "</td></tr>\n";
 
-       // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
+        // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
         if (
             (SoftwareLicense::countForVersion($ID) > 0)
             || (Item_SoftwareVersion::countForVersion($ID) > 0)
@@ -165,7 +165,7 @@ class SoftwareVersion extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -181,7 +181,7 @@ class SoftwareVersion extends CommonDBChild
             'table'              => 'glpi_operatingsystems',
             'field'              => 'name',
             'name'               => OperatingSystem::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -189,7 +189,7 @@ class SoftwareVersion extends CommonDBChild
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -198,7 +198,7 @@ class SoftwareVersion extends CommonDBChild
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_softwareversion' => 1]
+            'condition'          => ['is_visible_softwareversion' => 1],
         ];
 
         $tab[] = [
@@ -207,7 +207,7 @@ class SoftwareVersion extends CommonDBChild
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -232,7 +232,7 @@ class SoftwareVersion extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       //$softwares_id,$value=0
+        //$softwares_id,$value=0
         $p['softwares_id']          = 0;
         $p['value']                 = 0;
         $p['name']                  = 'softwareversions_id';
@@ -245,11 +245,11 @@ class SoftwareVersion extends CommonDBChild
             }
         }
 
-       // Make a select box
+        // Make a select box
         $criteria = [
             'SELECT'    => [
                 'glpi_softwareversions.*',
-                'glpi_states.name AS sname'
+                'glpi_states.name AS sname',
             ],
             'DISTINCT'  => true,
             'FROM'      => 'glpi_softwareversions',
@@ -257,14 +257,14 @@ class SoftwareVersion extends CommonDBChild
                 'glpi_states'  => [
                     'ON' => [
                         'glpi_softwareversions' => 'states_id',
-                        'glpi_states'           => 'id'
-                    ]
-                ]
+                        'glpi_states'           => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'glpi_softwareversions.softwares_id'   => $p['softwares_id']
+                'glpi_softwareversions.softwares_id'   => $p['softwares_id'],
             ],
-            'ORDERBY'   => 'name'
+            'ORDERBY'   => 'name',
         ];
 
         if (count($p['used'])) {
@@ -321,32 +321,32 @@ class SoftwareVersion extends CommonDBChild
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_softwareversions.*',
-                'glpi_states.name AS sname'
+                'glpi_states.name AS sname',
             ],
             'FROM'      => 'glpi_softwareversions',
             'LEFT JOIN' => [
                 'glpi_states'  => [
                     'ON' => [
                         'glpi_softwareversions' => 'states_id',
-                        'glpi_states'           => 'id'
-                    ]
-                ]
+                        'glpi_states'           => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'softwares_id' => $softwares_id
+                'softwares_id' => $softwares_id,
             ],
-            'ORDERBY'   => 'name'
+            'ORDERBY'   => 'name',
         ]);
 
         Session::initNavigateListItems(
             'SoftwareVersion',
             //TRANS : %1$s is the itemtype name,
             //       %2$s is the name of the item (used for headings of a list)
-                                     sprintf(
-                                         __('%1$s = %2$s'),
-                                         Software::getTypeName(1),
-                                         $soft->getName()
-                                     )
+            sprintf(
+                __('%1$s = %2$s'),
+                Software::getTypeName(1),
+                $soft->getName()
+            )
         );
 
         if (count($iterator)) {

@@ -44,7 +44,7 @@ class GLPIUploadHandler extends UploadHandler
         $default_params = [
             'name'           => '',
             'showfilesize'   => false,
-            'print_response' => true
+            'print_response' => true,
         ];
         $params = array_merge($default_params, $params);
 
@@ -54,7 +54,7 @@ class GLPIUploadHandler extends UploadHandler
         $upload_handler = new self(['param_name' => $pname]);
         $response       = $upload_handler->post(false);
 
-       // clean compute display filesize
+        // clean compute display filesize
         if (isset($response[$pname]) && is_array($response[$pname])) {
             foreach ($response[$pname] as &$val) {
                 if (isset($val->error) && file_exists($upload_dir . $val->name)) {
@@ -75,7 +75,7 @@ class GLPIUploadHandler extends UploadHandler
             }
         }
 
-       // send answer
+        // send answer
         return $upload_handler->generate_response($response, $params['print_response']);
     }
 

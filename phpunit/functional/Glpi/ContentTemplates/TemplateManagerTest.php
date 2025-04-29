@@ -91,7 +91,7 @@ class TemplateManagerTest extends DbTestCase
                 'params'    => [],
                 'expected'  => "",
                 'error'     => 'Unexpected token "end of template" of value "" in "template" at line 1.',
-                'validation_error' => 'Invalid twig template syntax'
+                'validation_error' => 'Invalid twig template syntax',
             ],
             [
                 'content'   => '&#60;h1&#62;Test sanitized template&#60;/h1&#62;&#60;hr /&#62;{{content|raw}}',
@@ -162,7 +162,7 @@ class TemplateManagerTest extends DbTestCase
 
     public function testGetSecurityPolicy(): void
     {
-       // Not much to test here, maybe keepk this for code coverage ?
+        // Not much to test here, maybe keepk this for code coverage ?
         $manager = new TemplateManager();
         $this->assertInstanceOf(\Twig\Sandbox\SecurityPolicy::class, $manager->getSecurityPolicy());
     }
@@ -177,7 +177,7 @@ class TemplateManagerTest extends DbTestCase
         return [
             [Ticket::class],
             [Change::class],
-            [Problem::class]
+            [Problem::class],
         ];
     }
 
@@ -217,9 +217,9 @@ class TemplateManagerTest extends DbTestCase
             '_tasktemplates_id' => [$task_template->getID()],
             '_actors'            => [
                 'requester' => [
-                    ['itemtype' => 'User', 'items_id' => $user->getID()]
-                ]
-            ]
+                    ['itemtype' => 'User', 'items_id' => $user->getID()],
+                ],
+            ],
         ]);
 
         // Validate requester

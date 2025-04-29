@@ -49,11 +49,11 @@ function update0800to0801()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '0.80.1'));
     $migration->setVersion('0.80.1');
 
-   // Clean duplicates
+    // Clean duplicates
     $query = "SELECT COUNT(*) AS CPT, `tickets_id`, `type`, `groups_id`
              FROM `glpi_groups_tickets`
              GROUP BY `tickets_id`, `type`, `groups_id`
@@ -91,7 +91,7 @@ function update0800to0801()
         "UNIQUE"
     );
 
-   // Clean duplicates
+    // Clean duplicates
     $query = "SELECT COUNT(*) AS CPT, `tickets_id`, `type`, `users_id`, `alternative_email`
              FROM `glpi_tickets_users`
              GROUP BY `tickets_id`, `type`, `users_id`, `alternative_email`
@@ -140,7 +140,7 @@ function update0800to0801()
         $entities[0] = "Root";
 
         foreach (array_keys($entities) as $entID) {
-           // Non recursive ones
+            // Non recursive ones
             $query3 = "UPDATE `glpi_slalevels`
                     SET `entities_id` = $entID, `is_recursive` = 0
                     WHERE `slas_id` IN (SELECT `id`
@@ -149,7 +149,7 @@ function update0800to0801()
                                               AND `is_recursive` = 0)";
             $DB->doQueryOrDie($query3, "0.80.1 update entities_id and is_recursive=0 in glpi_slalevels");
 
-           // Recursive ones
+            // Recursive ones
             $query3 = "UPDATE `glpi_slalevels`
                     SET `entities_id` = $entID, `is_recursive` = 1
                     WHERE `slas_id` IN (SELECT `id`
@@ -160,7 +160,7 @@ function update0800to0801()
         }
     }
 
-   // must always be at the end
+    // must always be at the end
     $migration->executeMigration();
 
     return $updateresult;

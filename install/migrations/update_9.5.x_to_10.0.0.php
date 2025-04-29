@@ -50,7 +50,7 @@ function update95xto1000()
     $DELFROMDISPLAYPREF = [];
     $update_dir = __DIR__ . '/update_9.5.x_to_10.0.0/';
 
-   //TRANS: %s is the number of new version
+    //TRANS: %s is the number of new version
     $migration->displayTitle(sprintf(__('Update to %s'), '10.0.0'));
     $migration->setVersion('10.0.0');
 
@@ -62,14 +62,14 @@ function update95xto1000()
         require $update_dir . $update_script;
     }
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
         $rank = 1;
         foreach ($tab as $newval) {
             $DB->updateOrInsert(
                 "glpi_displaypreferences",
                 [
-                    'rank'      => $rank++
+                    'rank'      => $rank++,
                 ],
                 Toolbox::addslashes_deep(
                     [
@@ -87,7 +87,7 @@ function update95xto1000()
             Toolbox::addslashes_deep(
                 [
                     'itemtype'  => $type,
-                    'num'       => $tab
+                    'num'       => $tab,
                 ]
             )
         );

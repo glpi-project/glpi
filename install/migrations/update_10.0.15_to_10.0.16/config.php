@@ -43,7 +43,7 @@ $or_criteria = [];
 foreach (NotificationMailingSetting::getRelatedConfigKeys() as $field) {
     // `old_value` starts with the field name, followed by a space, then the field value
     $or_criteria[] = [
-        'old_value' => ['LIKE', $field . '\\ %']
+        'old_value' => ['LIKE', $field . '\\ %'],
     ];
 }
 $migration->addPostQuery(

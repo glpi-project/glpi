@@ -69,18 +69,18 @@ class GroupTechFilter extends AbstractFilter
         $criteria = [];
 
         $groups_id = null;
-        if ((int)$value > 0) {
+        if ((int) $value > 0) {
             $groups_id = (int) $value;
-        } else if ($value == 'mygroups') {
+        } elseif ($value == 'mygroups') {
             $groups_id = $_SESSION['glpigroups'];
         }
 
         if ($groups_id != null) {
             if ($DB->fieldExists($table, 'groups_id_tech')) {
                 $criteria["WHERE"] = [
-                    "$table.groups_id_tech" => $groups_id
+                    "$table.groups_id_tech" => $groups_id,
                 ];
-            } else if (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
+            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
                 $itemtype  = getItemTypeForTable($table);
                 $main_item = getItemForItemtype($itemtype);
                 $grouplink = $main_item->grouplinkclass;
@@ -92,12 +92,12 @@ class GroupTechFilter extends AbstractFilter
                         'ON' => [
                             'gl'   => $fk,
                             $table => 'id',
-                        ]
-                    ]
+                        ],
+                    ],
                 ];
                 $criteria["WHERE"] = [
                     "gl.type"      => \CommonITILActor::ASSIGN,
-                    "gl.groups_id" => $groups_id
+                    "gl.groups_id" => $groups_id,
                 ];
             }
         }
@@ -115,7 +115,7 @@ class GroupTechFilter extends AbstractFilter
         $groups_id = null;
         if ((int) $value > 0) {
             $groups_id =  (int) $value;
-        } else if ($value == 'mygroups') {
+        } elseif ($value == 'mygroups') {
             $groups_id =  'mygroups';
         }
 
@@ -125,14 +125,14 @@ class GroupTechFilter extends AbstractFilter
                     'link'       => 'AND',
                     'field'      => self::getSearchOptionID($table, 'groups_id_tech', 'glpi_groups'),
                     'searchtype' => 'equals',
-                    'value'      => $groups_id
+                    'value'      => $groups_id,
                 ];
-            } else if (in_array($table, [Ticket::getTable(), Change::getTable(),Problem::getTable()])) {
+            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(),Problem::getTable()])) {
                 $criteria[] = [
                     'link'       => 'AND',
                     'field'      => 8, // group tech
                     'searchtype' => 'equals',
-                    'value'      => $groups_id
+                    'value'      => $groups_id,
                 ];
             }
         }

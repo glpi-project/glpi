@@ -40,7 +40,7 @@ use ReflectionProperty;
 
 class Common
 {
-   //Global headers
+    //Global headers
     /**
      * "Content-Type" HTTP header
      *
@@ -83,7 +83,7 @@ class Common
      */
     protected $pragma = 'no-cache';
 
-   //GLPI agent headers
+    //GLPI agent headers
     /**
      * "GLPI-Agent-ID" HTTP header
      * Required
@@ -128,14 +128,14 @@ class Common
             'pragma',
             'glpi_agent_id',
             'cache_control',
-            'connection'
+            'connection',
         ];
     }
 
     public function getHeadersNames(): array
     {
         return [
-            'glpi_cryptokey_id' => 'GLPI-CryptoKey-ID'
+            'glpi_cryptokey_id' => 'GLPI-CryptoKey-ID',
         ];
     }
 
@@ -148,7 +148,7 @@ class Common
      */
     public function getHeaders($legacy = true): array
     {
-       //parse class attributes and normalize key name
+        //parse class attributes and normalize key name
         $reflect = new ReflectionClass($this);
         $props   = $reflect->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED);
 
@@ -159,7 +159,7 @@ class Common
             $headername = $this->getHeaderName($propname);
             if (!empty($this->$propname)) {
                 $headers[$headername] = $this->$propname;
-            } else if (in_array($propname, $this->getRequireds()) && $legacy === false) {
+            } elseif (in_array($propname, $this->getRequireds()) && $legacy === false) {
                 throw new \RuntimeException(
                     sprintf(
                         '%1$s HTTP header is mandatory!',

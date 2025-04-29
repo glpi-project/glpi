@@ -101,9 +101,7 @@ class ErrorHandler extends \GLPITestCase
             $data[] = [
                 'error_call'           => function () {
                     $inst = new class {
-                        public function nonstatic()
-                        {
-                        }
+                        public function nonstatic() {}
                     };
                     $inst::nonstatic();
                 },
@@ -142,7 +140,7 @@ class ErrorHandler extends \GLPITestCase
         $handler = $this->newMockInstance('Monolog\Handler\TestHandler');
         $logger = $this->newMockInstance('Monolog\\Logger', null, null, ['test-logger', [$handler]]);
 
-       // Force session in debug mode (to get debug output)
+        // Force session in debug mode (to get debug output)
         $previous_use_mode         = $_SESSION['glpi_use_mode'];
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
 
@@ -150,14 +148,14 @@ class ErrorHandler extends \GLPITestCase
         $this->testedInstance->setForwardToInternalHandler(false);
         $this->testedInstance->register();
 
-       // Assert that nothing is logged when using '@' operator
+        // Assert that nothing is logged when using '@' operator
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         @$error_call();
         $_SESSION['glpi_use_mode'] = $previous_use_mode;
         $this->integer(count($handler->getRecords()))->isEqualTo(0);
         $this->output->isEmpty();
 
-       // Assert that error handler acts as expected when not using '@' operator
+        // Assert that error handler acts as expected when not using '@' operator
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         $error_call();
         $_SESSION['glpi_use_mode'] = $previous_use_mode;
@@ -271,29 +269,29 @@ class ErrorHandler extends \GLPITestCase
         $handler = $this->newMockInstance('Monolog\Handler\TestHandler');
         $logger = $this->newMockInstance('Monolog\\Logger', null, null, ['test-logger', [$handler]]);
 
-       // Force session in debug mode (to get debug output)
+        // Force session in debug mode (to get debug output)
         $previous_use_mode         = $_SESSION['glpi_use_mode'];
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
 
         $this->newTestedInstance($logger);
         $this->testedInstance->setForwardToInternalHandler(false);
 
-       // Assert that nothing is logged when using '@' operator
+        // Assert that nothing is logged when using '@' operator
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         @$this->testedInstance->handleError($error_code, 'err_msg', __FILE__, __LINE__);
         $_SESSION['glpi_use_mode'] = $previous_use_mode;
         $this->integer(count($handler->getRecords()))->isEqualTo(0);
         $this->output->isEmpty();
 
-       // Assert that error handler acts as expected when not using '@' operator
-       // Fatal error are not logged by function, but other errors should be
+        // Assert that error handler acts as expected when not using '@' operator
+        // Fatal error are not logged by function, but other errors should be
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         $this->testedInstance->handleError($error_code, 'err_msg', __FILE__, __LINE__);
         $_SESSION['glpi_use_mode'] = $previous_use_mode;
 
         if ($is_fatal_error) {
-           // If error is a Fatal error, message logging should be delegated to
-           // the 'handleFatalError' method which will be used as shutdown function.
+            // If error is a Fatal error, message logging should be delegated to
+            // the 'handleFatalError' method which will be used as shutdown function.
             $this->integer(count($handler->getRecords()))->isEqualTo(0);
 
             $this->function->error_get_last = [
@@ -327,12 +325,12 @@ class ErrorHandler extends \GLPITestCase
          . '\d+'
          . '/';
 
-       // Force session in debug mode (to get debug output)
+        // Force session in debug mode (to get debug output)
         $previous_use_mode         = $_SESSION['glpi_use_mode'];
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         $this->newTestedInstance($logger);
 
-       // Assert that exception handler logs exception and output error when quiet parameter is not set
+        // Assert that exception handler logs exception and output error when quiet parameter is not set
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         $this->testedInstance->handleException($exception);
         $_SESSION['glpi_use_mode'] = $previous_use_mode;
@@ -342,7 +340,7 @@ class ErrorHandler extends \GLPITestCase
         $this->output->matches($expected_msg_pattern);
         $handler->reset(); // Remove records
 
-       // Assert that exception handler logs exception and DO NOT output error when parameter mode is set to true
+        // Assert that exception handler logs exception and DO NOT output error when parameter mode is set to true
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         $this->testedInstance->handleException($exception, true);
         $_SESSION['glpi_use_mode'] = $previous_use_mode;
@@ -352,7 +350,7 @@ class ErrorHandler extends \GLPITestCase
         $this->output->isEmpty();
         $handler->reset(); // Remove records
 
-       // Assert that exception handler logs exception and output error when parameter mode is set to false
+        // Assert that exception handler logs exception and output error when parameter mode is set to false
         $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         $this->testedInstance->handleException($exception, false);
         $_SESSION['glpi_use_mode'] = $previous_use_mode;

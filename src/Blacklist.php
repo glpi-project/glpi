@@ -40,7 +40,7 @@
  **/
 class Blacklist extends CommonDropdown
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
 
     public static $rightname = 'config';
@@ -54,14 +54,14 @@ class Blacklist extends CommonDropdown
      */
     private $blacklists;
 
-    const IP             = 1;
-    const MAC            = 2;
-    const SERIAL         = 3;
-    const UUID           = 4;
-    const EMAIL          = 5;
-    const MODEL          = 6;
-    const NAME           = 7;
-    const MANUFACTURER   = 8;
+    public const IP             = 1;
+    public const MAC            = 2;
+    public const SERIAL         = 3;
+    public const UUID           = 4;
+    public const EMAIL          = 5;
+    public const MODEL          = 6;
+    public const NAME           = 7;
+    public const MANUFACTURER   = 8;
 
     public function maxActionsCount()
     {
@@ -89,13 +89,13 @@ class Blacklist extends CommonDropdown
         return [['name'  => 'value',
             'label' => __('Value'),
             'type'  => 'text',
-            'list'  => true
+            'list'  => true,
         ],
             ['name'  => 'type',
                 'label' => _n('Type', 'Types', 1),
                 'type'  => '',
-                'list'  => true
-            ]
+                'list'  => true,
+            ],
         ];
     }
 
@@ -129,7 +129,7 @@ class Blacklist extends CommonDropdown
             'field'              => 'type',
             'name'               => _n('Type', 'Types', 1),
             'searchtype'         => ['equals', 'notequals'],
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         return $tab;
@@ -245,10 +245,10 @@ class Blacklist extends CommonDropdown
             self::SERIAL           => __('Serial number'),
             self::UUID             => __('UUID'),
             self::EMAIL            => _n('Email', 'Emails', 1),
-         //'Windows product key' => 'winProdKey',
+            //'Windows product key' => 'winProdKey',
             self::MODEL            => _n('Model', 'Models', 1),
             self::NAME             => __('Name'),
-            self::MANUFACTURER     => _n('Manufacturer', 'Manufacturers', 1)
+            self::MANUFACTURER     => _n('Manufacturer', 'Manufacturers', 1),
         ];
 
         return $options;
@@ -389,12 +389,12 @@ class Blacklist extends CommonDropdown
             'empty',
             'Not Specified',
             'OEM_Serial',
-            'SystemSerialNumb'
+            'SystemSerialNumb',
         ];
         foreach ($serials as $serial) {
             $defaults[self::SERIAL][] = [
                 'name' => 'invalid serial',
-                'value' => $serial
+                'value' => $serial,
             ];
         }
 
@@ -403,12 +403,12 @@ class Blacklist extends CommonDropdown
             '03000200-0400-0500-0006-000700080009',
             '6AB5B300-538D-1014-9FB5-B0684D007B53',
             '01010101-0101-0101-0101-010101010101',
-            '2'
+            '2',
         ];
         foreach ($uuids as $uuid) {
             $defaults[self::UUID][] = [
                 'name' => 'invalid UUID',
-                'value' => $uuid
+                'value' => $uuid,
             ];
         }
 
@@ -431,12 +431,12 @@ class Blacklist extends CommonDropdown
             '/00:50:56:C0:[0-9a-f]+:[0-9a-f]+/i',//VMware MAC address
             'FE:FF:FF:FF:FF:FF',
             '00:00:00:00:00:00',
-            '00:0b:ca:fe:00:00'
+            '00:0b:ca:fe:00:00',
         ];
         foreach ($macs as $mac) {
             $defaults[self::MAC][] = [
                 'name' => 'invalid MAC',
-                'value' => $mac
+                'value' => $mac,
             ];
         }
 
@@ -447,12 +447,12 @@ class Blacklist extends CommonDropdown
             'System Product Name',
             'Product Name',
             'System Name',
-            'All Series'
+            'All Series',
         ];
         foreach ($models as $model) {
             $defaults[self::MODEL][] = [
                 'name' => $model,
-                'value' => $model
+                'value' => $model,
             ];
         }
 
@@ -461,17 +461,17 @@ class Blacklist extends CommonDropdown
         $defaults[self::IP] = [
             [
                 'name' => 'empty IP',
-                'value' => ''
+                'value' => '',
             ], [
                 'name' => 'zero IP',
-                'value' => '0.0.0.0'
+                'value' => '0.0.0.0',
             ], [
                 'name' => 'localhost',
-                'value' => '127.0.0.1'
+                'value' => '127.0.0.1',
             ], [
                 'name' => 'IPV6 localhost',
-                'value' => '::1'
-            ]
+                'value' => '::1',
+            ],
         ];
 
         return $defaults;
@@ -484,7 +484,7 @@ class Blacklist extends CommonDropdown
         foreach ($criteria as $criterion) {
             if (preg_match('|/.+/(a-zZ-a)?|', $criterion['value']) && preg_match($criterion['value'], $value)) {
                 return '';
-            } else if (strcasecmp($value, $criterion['value']) === 0) {
+            } elseif (strcasecmp($value, $criterion['value']) === 0) {
                 return '';
             }
         }
@@ -541,7 +541,7 @@ class Blacklist extends CommonDropdown
                         unset($ips[$k]);
                     }
                 }
-            } else if ('' == $this->process(self::IP, $ips)) {
+            } elseif ('' == $this->process(self::IP, $ips)) {
                 unset($value->$property);
             }
         }

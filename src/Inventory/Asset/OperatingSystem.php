@@ -61,7 +61,7 @@ class OperatingSystem extends InventoryAsset
             'kernel_version' => 'operatingsystemkernelversions_id',
         ];
 
-        $val = (object)$this->data;
+        $val = (object) $this->data;
         foreach ($mapping as $origin => $dest) {
             if (property_exists($val, $origin)) {
                 $val->$dest = $val->$origin;
@@ -97,23 +97,23 @@ class OperatingSystem extends InventoryAsset
         $mapping = [
             'operatingsystems_id'               => [
                 "collection_class" => RuleDictionnaryOperatingSystemCollection::class,
-                "main_value" => $val->operatingsystems_id ?? ''
+                "main_value" => $val->operatingsystems_id ?? '',
             ],
             'operatingsystemversions_id'        => [
                 "collection_class" => RuleDictionnaryOperatingSystemVersionCollection::class,
-                "main_value" => $val->operatingsystemversions_id ?? ''
+                "main_value" => $val->operatingsystemversions_id ?? '',
             ],
             'operatingsystemservicepacks_id'    => [
                 "collection_class" => RuleDictionnaryOperatingSystemServicePackCollection::class,
-                "main_value" => $val->operatingsystemservicepacks_id ?? ''
+                "main_value" => $val->operatingsystemservicepacks_id ?? '',
             ],
             'operatingsystemarchitectures_id'   => [
-                "collection_class" => RuleDictionnaryOperatingSystemArchitectureCollection::class ,
-                "main_value" => $val->operatingsystemarchitectures_id ?? ''
+                "collection_class" => RuleDictionnaryOperatingSystemArchitectureCollection::class,
+                "main_value" => $val->operatingsystemarchitectures_id ?? '',
             ],
             'operatingsystemeditions_id'        => [
                 "collection_class" => RuleDictionnaryOperatingSystemEditionCollection::class,
-                "main_value" => $val->operatingsystemeditions_id ?? ''
+                "main_value" => $val->operatingsystemeditions_id ?? '',
             ],
         ];
 
@@ -153,14 +153,14 @@ class OperatingSystem extends InventoryAsset
 
         $ios->getFromDBByCrit([
             'itemtype'  => $this->item->getType(),
-            'items_id'  => $this->item->fields['id']
+            'items_id'  => $this->item->fields['id'],
         ]);
 
         $input_os = $this->handleInput($val, $ios) + [
             'itemtype'                          => $this->item->getType(),
             'items_id'                          => $this->item->fields['id'],
             'is_dynamic'                        => 1,
-            'entities_id'                       => $this->item->fields['entities_id']
+            'entities_id'                       => $this->item->fields['entities_id'],
         ];
 
         if (!$ios->isNewItem()) {
@@ -190,8 +190,8 @@ class OperatingSystem extends InventoryAsset
                 'WHERE' => [
                     'itemtype'  => $this->item->getType(),
                     'items_id'  => $this->item->fields['id'],
-                    'NOT'       => ['id' => $ios->fields['id']]
-                ]
+                    'NOT'       => ['id' => $ios->fields['id']],
+                ],
             ]);
 
             foreach ($iterator as $row) {

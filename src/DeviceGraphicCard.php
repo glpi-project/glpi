@@ -53,31 +53,31 @@ class DeviceGraphicCard extends CommonDevice
                 [
                     'name'  => 'chipset',
                     'label' => __('Chipset'),
-                    'type'  => 'text'
+                    'type'  => 'text',
                 ],
                 [
                     'name'  => 'memory_default',
                     'label' => __('Memory by default'),
                     'type'  => 'integer',
                     'min'  => 0,
-                    'unit'  => __('Mio')
+                    'unit'  => __('Mio'),
                 ],
                 [
                     'name'  => 'interfacetypes_id',
                     'label' => __('Interface'),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 [
                     'name'  => 'none',
                     'label' => RegisteredID::getTypeName(Session::getPluralNumber())
                         . RegisteredID::showAddChildButtonForItemForm($this, '_registeredID', null, false),
-                    'type'  => 'registeredIDChooser'
+                    'type'  => 'registeredIDChooser',
                 ],
                 [
                     'name'  => 'devicegraphiccardmodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
-                ]
+                    'type'  => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -108,7 +108,7 @@ class DeviceGraphicCard extends CommonDevice
             'table'              => 'glpi_interfacetypes',
             'field'              => 'name',
             'name'               => __('Interface'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -116,7 +116,7 @@ class DeviceGraphicCard extends CommonDevice
             'table'              => 'glpi_devicegraphiccardmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -231,9 +231,9 @@ class DeviceGraphicCard extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicegraphiccards',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
         ];
 
         return $tab;

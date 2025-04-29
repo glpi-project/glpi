@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $client->check($_POST["id"], UPDATE);
     $client->update($_POST);
     Event::log(
@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $client->check($_POST["id"], PURGE);
     $client->delete($_POST);
     Event::log(

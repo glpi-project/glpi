@@ -119,7 +119,7 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
 
         $types_iterator = $this->db->request([
             'FROM'   => 'glpi_plugin_domains_domaintypes',
-            'ORDER'  => 'id ASC'
+            'ORDER'  => 'id ASC',
         ]);
 
         if ($types_iterator->count() === 0) {
@@ -182,7 +182,7 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
 
         $domains_iterator = $this->db->request([
             'FROM'   => 'glpi_plugin_domains_domains',
-            'ORDER'  => 'id ASC'
+            'ORDER'  => 'id ASC',
         ]);
 
         if ($domains_iterator->count() === 0) {
@@ -234,7 +234,7 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
                         //suppliers_id handled in infocom
                         'comment'               => $domain_data['comment'],
                         'date_mod'              => $domain_data['date_mod'],
-                        'is_deleted'            => $domain_data['is_deleted']
+                        'is_deleted'            => $domain_data['is_deleted'],
                     ]
                 ),
                 $progress_bar
@@ -270,7 +270,7 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
 
         $items_iterator = $this->db->request([
             'FROM'   => 'glpi_plugin_domains_domains_items',
-            'ORDER'  => 'id ASC'
+            'ORDER'  => 'id ASC',
         ]);
 
         if ($items_iterator->count() === 0) {
@@ -316,15 +316,15 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
             );
 
             if ($core_relation_id !== null) {
-                 //if it already exist in DB, there is nothing to change
-                 continue;
+                //if it already exist in DB, there is nothing to change
+                continue;
             }
 
             $item_input = Toolbox::addslashes_deep([
                 'domains_id'            => $domains_id,
                 'itemtype'              => $relation_data['itemtype'],
                 'items_id'              => $relation_data['items_id'],
-                'domainrelations_id'    => 0
+                'domainrelations_id'    => 0,
             ]);
 
             $item = new Domain_Item();
