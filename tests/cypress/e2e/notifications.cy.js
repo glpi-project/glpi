@@ -69,21 +69,24 @@ describe('Notifications', () => {
             });
         });
 
-        cy.get('.tab-content .tab-pane.active[id^="tab"] .btn').contains('Add a template').click();
+        cy.findByRole('tabpanel').within(() => {
+            cy.findByRole('button', { name: /Add a template/ }).click();
+        });
+
         // Should be redirected to notification_notificationtemplate form
         cy.url().should('include', '/front/notification_notificationtemplate.form.php').and('include', 'notifications_id=2');
         cy.get('label').contains('Notification').next().find('a').invoke('attr', 'href').should('contain', '/front/notification.form.php?id=2');
 
         // Go back to the notification form
         cy.go('back');
-        cy.get('#tabspanel .nav-item').contains('Templates').click();
+        cy.findByRole('tab', { name: /Templates/ }).click();
 
         cy.get('table.table tbody td a[href*="notificationtemplate.form.php?id=4"]').click();
-        cy.get('#tabspanel .nav-item').contains('Template translations').click();
+        cy.findByRole('tab', { name: /Template translations/ }).click();
         // Click the default template translation link
         cy.get('table.table tbody td a').contains('Default translation').click();
-        cy.get('#tabspanel .nav-item').contains('Template translation').click();
-        cy.get('.tab-content .tab-pane.active[id^="tab"]').within(() => {
+        cy.findByRole('tab', { name: /Template translation/ }).click();
+        cy.findByRole('tabpanel').within(() => {
             cy.get('select[name=language]').should('have.value', '');
             cy.get('select[name=language] option:selected').should('have.text', 'Default translation');
         });
