@@ -43,6 +43,10 @@ define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:80');
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 
+// Check the resources state before trying to be sure that the tests are executed with up-to-date dependencies.
+require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
+(new \Glpi\Application\ResourcesChecker(dirname(__DIR__)))->checkResources();
+
 // Make sure cached content like twig template is cleared before running the tests.
 // It seems calling $cache_manager->resetAllCaches(); mess up with the kernel
 // leading to some issues. It is safer to use the console directly as it goes
