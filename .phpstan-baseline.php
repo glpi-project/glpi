@@ -590,30 +590,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Api/APIXmlrpc.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Api/Deprecated/Computer_SoftwareLicense.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Api/Deprecated/Computer_SoftwareVersion.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Api/Deprecated/Netpoint.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Api/Deprecated/TicketFollowup.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'identifier' => 'deadCode.unreachable',
 	'count' => 1,
@@ -688,12 +664,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.expr',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Loose comparison using \\=\\= between \'external\' and \'external\' will always evaluate to true\\.$#',
-	'identifier' => 'equal.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Auth.php',
 ];
@@ -2570,12 +2540,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ITILTemplatePredefinedField.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Impact.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type TKey of int\\|string\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 2,
@@ -3854,12 +3818,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Planning\\:\\:checkAvailability\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 3,
@@ -4316,14 +4274,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleAction.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCollection.php',
+    'message' => '#^Elseif condition is always false\\.$#',
+    'identifier' => 'elseif.alwaysFalse',
+    'count' => 1,
+    'path' => __DIR__ . '/src/RuleCollection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
+	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
@@ -4424,12 +4382,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Search.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Loose comparison using \\=\\= between \'Problem\' and \'Problem\' will always evaluate to true\\.$#',
-	'identifier' => 'equal.alwaysTrue',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Loose comparison using \\=\\= between 2 and 2 will always evaluate to true\\.$#',
 	'identifier' => 'equal.alwaysTrue',
 	'count' => 6,
@@ -4474,7 +4426,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 3,
+	'count' => 2,
 	'path' => __DIR__ . '/src/Search.php',
 ];
 $ignoreErrors[] = [
@@ -4810,12 +4762,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^If condition is always true\\.$#',
 	'identifier' => 'if.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between CommonDBTM and CommonDBTM will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
