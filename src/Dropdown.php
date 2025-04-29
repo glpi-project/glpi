@@ -1037,7 +1037,7 @@ JAVASCRIPT;
             </div>
 HTML;
 
-            trigger_error(sprintf(__('Error reading directory %s'), $icon_path), E_USER_WARNING);
+            trigger_error(sprintf('Error reading directory %s', $icon_path), E_USER_WARNING);
         }
     }
 
