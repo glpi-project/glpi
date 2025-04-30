@@ -492,6 +492,52 @@ final class FormSerializerTest extends \DbTestCase
         ], $questions_data);
     }
 
+    public function testExportAndImportSubmitButtonConditions(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with submit button conditions
+        $builder = new FormBuilder();
+        $builder->addSection("My first section")
+            ->addQuestion("My first question", QuestionTypeShortText::class);
+        $builder->setSubmitButtonVisibility(
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My first question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "my value",
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate the condition exist on the submit button
+        $submit_button_conditions = json_decode($form_copy->fields['submit_button_conditions'], true);
+        $question_uuid = Question::getById(
+            $this->getQuestionId($form_copy, "My first question")
+        )->fields['uuid'];
+
+        $expected_data = [
+            (new ConditionData(
+                item_uuid: $question_uuid,
+                item_type: Type::QUESTION->value,
+                logic_operator: LogicOperator::AND->value,
+                value_operator: ValueOperator::EQUALS->value,
+                value: "my value",
+            ))->jsonSerialize(),
+        ];
+        $this->assertEquals(
+            $expected_data,
+            $submit_button_conditions
+        );
+    }
+
     public function testExportAndImportQuestionConditions(): void
     {
         $this->login();

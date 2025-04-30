@@ -67,7 +67,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => "correct value",
-                ]
+                ],
             ]
         );
 
@@ -522,6 +522,7 @@ final class EngineTest extends DbTestCase
         ];
     }
 
+    #[DataProvider('conditionsOnForm')]
     #[DataProvider('conditionsOnQuestions')]
     #[DataProvider('conditionsOnComments')]
     #[DataProvider('conditionsOnSections')]
@@ -541,6 +542,11 @@ final class EngineTest extends DbTestCase
         $output = $engine->computeVisibility();
 
         // Assert: validate output
+        $this->assertEquals(
+            $expected_output['submit_button'] ?? true,
+            $output->isFormVisible(),
+            "Submit button does not have the expected visibility.",
+        );
         foreach (($expected_output['questions'] ?? []) as $name => $expected_visibility) {
             $id = $this->getQuestionId($form, $name);
             $this->assertEquals(

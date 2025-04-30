@@ -49,6 +49,10 @@ final class FormContentSpecification
     public string $entity_name;
     public bool $is_recursive;
     public bool $is_active;
+    public string $submit_button_visibility_strategy;
+
+    /** @var ConditionDataSpecification[] $conditions */
+    public array $submit_button_conditions;
 
     /** @var SectionContentSpecification[] $sections */
     public array $sections = [];

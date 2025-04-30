@@ -9,6 +9,8 @@
             "entity_name": "E2ETestEntity",
             "is_recursive": false,
             "is_active": false,
+            "submit_button_visibility_strategy": "always_visible",
+            "submit_button_conditions": [],
             "sections": [
                 {
                     "id": 1,
@@ -60,6 +62,8 @@
             "entity_name": "Missing entity",
             "is_recursive": false,
             "is_active": false,
+            "submit_button_visibility_strategy": "always_visible",
+            "submit_button_conditions": [],
             "sections": [
                 {
                     "id": 2,

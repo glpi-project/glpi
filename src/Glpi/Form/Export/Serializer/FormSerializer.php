@@ -266,15 +266,17 @@ final class FormSerializer extends AbstractFormSerializer
     private function exportBasicFormProperties(
         Form $form,
     ): FormContentSpecification {
-        $spec               = new FormContentSpecification();
-        $spec->id           = $form->fields['id'];
-        $spec->uuid         = $form->fields['uuid'];
-        $spec->name         = $form->fields['name'];
-        $spec->header       = $form->fields['header'];
-        $spec->description  = $form->fields['description'];
-        $spec->illustration = $form->fields['illustration'];
-        $spec->is_recursive = $form->fields['is_recursive'];
-        $spec->is_active    = $form->fields['is_active'];
+        $spec                                    = new FormContentSpecification();
+        $spec->id                                = $form->fields['id'];
+        $spec->uuid                              = $form->fields['uuid'];
+        $spec->name                              = $form->fields['name'];
+        $spec->header                            = $form->fields['header'];
+        $spec->description                       = $form->fields['description'];
+        $spec->illustration                      = $form->fields['illustration'];
+        $spec->is_recursive                      = $form->fields['is_recursive'];
+        $spec->is_active                         = $form->fields['is_active'];
+        $spec->submit_button_visibility_strategy = $form->fields['submit_button_visibility_strategy'];
+        $spec->submit_button_conditions          = $this->prepareConditionDataForExport($form);
 
         // Export entity
         $entity = Entity::getById($form->fields['entities_id']);
@@ -303,16 +305,17 @@ final class FormSerializer extends AbstractFormSerializer
 
         $form = new Form();
         $id = $form->add([
-            '_from_import'          => true,
-            'name'                  => $spec->name,
-            'header'                => $spec->header ?? null,
-            'description'           => $spec->description ?? null,
-            'illustration'          => $spec->illustration,
-            'forms_categories_id'   => $categories_id ?? 0,
-            'entities_id'           => $entities_id,
-            'is_recursive'          => $spec->is_recursive,
-            'is_active'             => $spec->is_active,
-            '_init_sections'        => false,
+            '_from_import'                      => true,
+            'name'                              => $spec->name,
+            'header'                            => $spec->header ?? null,
+            'description'                       => $spec->description ?? null,
+            'illustration'                      => $spec->illustration,
+            'forms_categories_id'               => $categories_id ?? 0,
+            'entities_id'                       => $entities_id,
+            'is_recursive'                      => $spec->is_recursive,
+            'is_active'                         => $spec->is_active,
+            'submit_button_visibility_strategy' => $spec->submit_button_visibility_strategy,
+            '_init_sections'                    => false,
         ]);
         if (!$form->getFromDB($id)) {
             throw new RuntimeException("Failed to create form");
@@ -609,6 +612,15 @@ final class FormSerializer extends AbstractFormSerializer
         FormContentSpecification $form_spec,
         DatabaseMapper $mapper,
     ): Form {
+        $this->importCondition(
+            id: $mapper->getItemId(Form::class, $form_spec->id),
+            itemtype: new Form(),
+            conditions: $this->prepareConditionsForImport(
+                $form_spec->submit_button_conditions,
+                $mapper,
+            )
+        );
+
         foreach ($form_spec->sections as $section_spec) {
             $this->importCondition(
                 id: $mapper->getItemId(Section::class, $section_spec->id),

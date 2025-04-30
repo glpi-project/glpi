@@ -147,21 +147,42 @@ trait FormTesterTrait
 
         // Add visibility conditions on form
         if (!empty($builder->getSubmitButtonVisibility())) {
-            $form_conditions = array_map(
-                fn ($condition) => [
-                    'item'           => $condition['item_type']->value . "-" . $condition['item_name'],
+            $form_conditions = array_map(function ($condition) use ($form) {
+                // Find the correct UUID
+                if ($condition['item_type'] == Type::SECTION) {
+                    $item = Section::getById($this->getSectionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::QUESTION) {
+                    $item = Question::getById($this->getQuestionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::COMMENT) {
+                    $item = Comment::getById($this->getCommentId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } else {
+                    throw new RuntimeException("Unknown type");
+                }
+                $item_uuid = $item->fields['uuid'];
+
+                return [
+                    'item'           => $condition['item_type']->value . "-" . $item_uuid,
                     'item_type'      => $condition['item_type'],
-                    'item_uuid'      => $condition['item_name'],
+                    'item_uuid'      => $item_uuid,
                     'value'          => $condition['value'],
                     'value_operator' => $condition['value_operator']->value,
                     'logic_operator' => $condition['logic_operator']->value,
-                ],
-                $builder->getSubmitButtonVisibility()['conditions']
-            );
+                ];
+            }, $builder->getSubmitButtonVisibility()['conditions']);
+
             $this->updateItem(Form::class, $form->getID(), [
                 'submit_button_visibility_strategy' => $builder->getSubmitButtonVisibility()['strategy'],
-                'submit_button_conditions'          => $form_conditions,
-            ], ['conditions']);
+                'submit_button_conditions'          => json_encode($form_conditions),
+            ], ['submit_button_conditions']);
         }
 
         // Add visibility conditions on questions

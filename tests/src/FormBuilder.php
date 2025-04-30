@@ -527,7 +527,7 @@ class FormBuilder
         VisibilityStrategy $strategy,
         array $conditions
     ): void {
-        $this->submit_buttons_visibilities[] = [
+        $this->submit_buttons_visibilities = [
             'strategy' => $strategy->value,
             'conditions' => $conditions,
         ];
