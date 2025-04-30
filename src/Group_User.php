@@ -637,14 +637,6 @@ class Group_User extends CommonDBRelation
             'datatype'           => 'bool',
         ];
 
-        $tab[] = [
-            'id'                 => '7',
-            'table'              => static::getTable(),
-            'field'              => 'is_userdelegate',
-            'name'               => __('Delegatee'),
-            'datatype'           => 'bool',
-        ];
-
         return $tab;
     }
 
