@@ -178,34 +178,46 @@
             <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
 
             <div class="card-body">
-               {% if subitem.isNewItem() %}
-                  {# Validation template #}
-                  {{ fields.dropdownField(
-                     'ITILValidationTemplate',
-                     'itilvalidationtemplates_id',
-                     '',
-                     _n('Template', 'Templates', 1),
-                     {
-                        'full_width': true,
-                        'on_change': 'itilvalidationtemplate_update' ~ rand ~ '(this.value);',
-                        'entity': item.fields['entities_id'],
-                        'rand': rand,
-                     },
-                  ) }}
-               {% endif %}
+                {% if subitem.isNewItem() %}
+                    {# Validation template #}
+                    {{ fields.dropdownField(
+                        'ITILValidationTemplate',
+                        'itilvalidationtemplates_id',
+                        '',
+                        _n('Template', 'Templates', 1),
+                        {
+                            'full_width': true,
+                            'on_change': 'itilvalidationtemplate_update' ~ rand ~ '(this.value);',
+                            'entity': item.fields['entities_id'],
+                            'rand': rand,
+                        },
+                    ) }}
 
-               {# Validation step #}
-               {{ fields.dropdownField(
-                  'ValidationStep',
-                  '_validationsteps_id',
-                  _validationsteps_id,
-                  _n('Approval step', 'Approval step', 1),
-                  {
-                     'full_width': true,
-                     'rand': rand,
-                     'required': true,
-                  }
-               ) }}
+                    {# Validation step #}
+                    {{ fields.dropdownField(
+                        'ValidationStep',
+                        '_validationsteps_id',
+                        _validationsteps_id,
+                        _n('Approval step', 'Approval step', 1),
+                        {
+                            'full_width': true,
+                            'rand': rand,
+                            'required': true,
+                        }
+                    ) }}
+                {% else %}
+                    {{ fields.readOnlyField(
+                        '',
+                        get_item_name(
+                            'ValidationStep',
+                            get_item(item.getValidationStepClassName(), subitem.fields['itils_validationsteps_id']).fields['validationsteps_id']
+                        ),
+                        _n('Approval step', 'Approval step', 1),
+                        {
+                            'full_width': true,
+                        }
+                    ) }}
+                {% endif %}
 
                 {# Requester #}
                 {{ fields.readOnlyField(
