@@ -248,6 +248,14 @@ trait PlanningEvent
             return "";
         }
 
+        if (empty($rrule['byday'])) {
+            unset($rrule['byday']);
+        }
+
+        if (empty($rrule['bymonth'])) {
+            unset($rrule['bymonth']);
+        }
+
         if (isset($rrule['exceptions'])) {
             if (is_string($rrule['exceptions']) && strlen($rrule['exceptions'])) {
                 $rrule['exceptions'] = explode(', ', $rrule['exceptions']);
@@ -607,8 +615,8 @@ trait PlanningEvent
                                           : [],
                     ];
 
-                    // when checking avaibility, we need to explode rrules events
-                    // to check if future occurences of the primary event
+                    // when checking availability, we need to explode rrules events
+                    // to check if future occurrences of the primary event
                     // doesn't match current range
                     if ($options['check_planned'] && count($events[$key]['rrule'])) {
                         $event      = $events[$key];
@@ -618,28 +626,28 @@ trait PlanningEvent
 
                         // - rrule object doesn't any duration property,
                         //   so we remove the duration from the begin part of the range
-                        //   (minus 1second to avoid mathing precise end date)
+                        //   (minus 1 second to avoid matching precise end date)
                         //   to check if event started before begin and could be still valid
                         // - also set begin and end dates like it was as UTC
                         //   (Rrule lib will always compare with UTC)
                         $begin_datetime = new DateTime($options['begin'], new DateTimeZone('UTC'));
                         $begin_datetime->sub(new DateInterval("PT" . ($duration - 1) . "S"));
                         $end_datetime   = new DateTime($options['end'], new DateTimeZone('UTC'));
-                        $occurences = $rset->getOccurrencesBetween($begin_datetime, $end_datetime);
+                        $occurrences = $rset->getOccurrencesBetween($begin_datetime, $end_datetime);
 
-                        // add the found occurences to the final tab after replacing their dates
-                        foreach ($occurences as $currentDate) {
-                            $occurence_begin = $currentDate;
-                            $occurence_end   = (clone $currentDate)->add(new DateInterval("PT" . $duration . "S"));
+                        // add the found occurrences to the final tab after replacing their dates
+                        foreach ($occurrences as $currentDate) {
+                            $occurrence_begin = $currentDate;
+                            $occurrence_end   = (clone $currentDate)->add(new DateInterval("PT" . $duration . "S"));
 
                             $events_toadd[] = array_merge($event, [
-                                'begin' => $occurence_begin->format('Y-m-d H:i:s'),
-                                'end'   => $occurence_end->format('Y-m-d H:i:s'),
+                                'begin' => $occurrence_begin->format('Y-m-d H:i:s'),
+                                'end'   => $occurrence_end->format('Y-m-d H:i:s'),
                             ]);
                         }
 
                         // remove primary event (with rrule)
-                        // as the final array now have all the occurences
+                        // as the final array now have all the occurrences
                         unset($events[$key]);
                     }
                 }
@@ -771,12 +779,21 @@ trait PlanningEvent
             'on_change' => "$(\"#toggle_ar\").toggle($(\"#dropdown_rrule_freq_$rand\").val().length > 0)",
         ]);
 
+        $byday = $rrule['byday'] ?? [];
+        if (!is_array($byday)) {
+            $byday = explode(',', $byday);
+        }
+        $bymonth = $rrule['bymonth'] ?? [];
+        if (!is_array($bymonth)) {
+            $bymonth = explode(',', $bymonth);
+        }
+
         $display_tar = $rrule['freq'] == null ? "none" : "inline";
         $display_ar  = $rrule['freq'] == null
                      || !($rrule['interval'] > 1
                           || $rrule['until'] != null
-                          || count($rrule['byday']) > 0
-                          || count($rrule['bymonth']) > 0)
+                          || count($byday) > 0
+                          || count($bymonth) > 0)
                         ? "none" : "table";
 
         $out .= "<span id='toggle_ar' style='display: $display_tar'>";
@@ -817,7 +834,7 @@ trait PlanningEvent
             'SA' => __('Saturday'),
             'SU' => __('Sunday'),
         ], [
-            'values'              => $rrule['byday'],
+            'values'              => $byday,
             'rand'                => $rand,
             'display'             => false,
             'display_emptychoice' => true,
@@ -842,7 +859,7 @@ trait PlanningEvent
             11 => __('November'),
             12 => __('December'),
         ], [
-            'values'              => $rrule['bymonth'],
+            'values'              => $bymonth,
             'rand'                => $rand,
             'display'             => false,
             'display_emptychoice' => true,
@@ -903,10 +920,10 @@ trait PlanningEvent
     }
 
     /**
-     * Returns RSet occurence corresponding to rrule field value.
+     * Returns RSet occurrence corresponding to rrule field value.
      *
      * @param array  $rrule    RRule field value
-     * @param string $dtstart  Start of first occurence
+     * @param string $dtstart  Start of first occurrence
      *
      * @return \RRule\RSet
      */
@@ -931,7 +948,7 @@ trait PlanningEvent
                 $rset->addExDate($exdate->format('Y-m-d\TH:i:s\Z'));
             }
 
-            // remove exceptions key (as libraries throw exception for unknow keys)
+            // remove exceptions key (as libraries throw exception for unknown keys)
             unset($rrule['exceptions']);
         }
 
