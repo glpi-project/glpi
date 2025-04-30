@@ -962,6 +962,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Computer.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Computer\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Computer.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Offset \'contact\' on array\\{\\}\\|array\\{states_id\\?\\: mixed, locations_id\\?\\: mixed\\} in isset\\(\\) does not exist\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
@@ -1162,6 +1168,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(DatabaseInstance\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DatabaseInstance.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method DatabaseInstance\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DatabaseInstance.php',
 ];
@@ -1790,6 +1802,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Asset\\\\Asset\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type Glpi\\\\Asset\\\\AssetModel is not subtype of native type string\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
@@ -2134,6 +2152,18 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always false\\.$#',
 	'identifier' => 'booleanNot.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Cartridge.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'cartridgeblackmatte\'\\|\'cartridgeblackphoto\' on array\\{tonerblack\\: array\\{\'tonerblack2\'\\}, tonerblackmax\\: array\\{\'tonerblack2max\'\\}, tonerblackused\\: array\\{\'tonerblack2used\'\\}, tonerblackremaining\\: array\\{\'tonerblack2remaining\'\\}\\} in isset\\(\\) does not exist\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Cartridge.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'cartridgematteblack\'\\|\'cartridgephotoblack\' on array\\{tonerblack\\: array\\{\'tonerblack2\'\\}, tonerblackmax\\: array\\{\'tonerblack2max\'\\}, tonerblackused\\: array\\{\'tonerblack2used\'\\}, tonerblackremaining\\: array\\{\'tonerblack2remaining\'\\}\\} in isset\\(\\) does not exist\\.$#',
+	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Cartridge.php',
 ];
@@ -2528,7 +2558,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method PhpOffice\\\\PhpSpreadsheet\\\\Writer\\\\IWriter\\:\\:setOrientation\\(\\)\\.$#',
+	'message' => '#^Call to an undefined method PhpOffice\\\\PhpSpreadsheet\\\\Writer\\\\BaseWriter\\:\\:setOrientation\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Output/Pdf.php',
@@ -3470,6 +3500,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Monitor.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Monitor\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Monitor.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
@@ -3496,6 +3532,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Instanceof between static\\(NetworkEquipment\\) and PDU will always evaluate to false\\.$#',
 	'identifier' => 'instanceof.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NetworkEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method NetworkEquipment\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkEquipment.php',
 ];
@@ -3746,6 +3788,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Peripheral.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Peripheral\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Peripheral.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
@@ -3760,6 +3808,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Phone\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Phone.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Phone\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Phone.php',
 ];
@@ -3898,6 +3952,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Printer\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Printer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Printer\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Printer.php',
 ];
@@ -4050,6 +4110,12 @@ $ignoreErrors[] = [
 	'identifier' => 'booleanAnd.rightAlwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Rack.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method RefusedEquipment\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RefusedEquipment.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Document\\:\\:getBaseComponent\\(\\)\\.$#',
@@ -4668,6 +4734,12 @@ $ignoreErrors[] = [
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Unmanaged\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Unmanaged.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
