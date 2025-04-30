@@ -1084,8 +1084,7 @@ class Toolbox
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
         if ($plug = isPluginItemType($itemtype)) {
-            /* PluginFooBar => /plugins/foo/front/bar */
-            $dir .= Plugin::getPhpDir(strtolower($plug['plugin']), false);
+            $dir .= "/plugins/" . strtolower($plug['plugin']);
             $item = str_replace('\\', '/', strtolower($plug['class']));
         } else { // Standard case
             $item = strtolower($itemtype);
@@ -1114,7 +1113,7 @@ class Toolbox
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
         if ($plug = isPluginItemType($itemtype)) {
-            $dir .= Plugin::getPhpDir(strtolower($plug['plugin']), false);
+            $dir .= "/plugins/" . strtolower($plug['plugin']);
             $item = str_replace('\\', '/', strtolower($plug['class']));
         } else { // Standard case
             if ($itemtype == 'Cartridge') {
