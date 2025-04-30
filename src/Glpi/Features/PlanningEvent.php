@@ -248,27 +248,23 @@ trait PlanningEvent
             return "";
         }
 
-        if (isset($rrule['byday']) && empty($rrule['byday'])) {
+        if (empty($rrule['byday'])) {
             $rrule['byday'] = [];
-        } elseif (!is_array($rrule['byday'])) {
-            $rrule['byday'] = [$rrule['byday']];
         }
 
-        if (isset($rrule['bymonth']) && empty($rrule['bymonth'])) {
+        if (empty($rrule['bymonth'])) {
             $rrule['bymonth'] = [];
-        } elseif (!is_array($rrule['bymonth'])) {
-            $rrule['bymonth'] = [$rrule['bymonth']];
         }
 
         if (!empty($rrule['exceptions'])) {
-            if (is_string($rrule['exceptions']) && strlen($rrule['exceptions'])) { //@phpstan-ignore-line
+            if (is_string($rrule['exceptions']) && strlen($rrule['exceptions'])) {
                 $rrule['exceptions'] = explode(', ', $rrule['exceptions']);
             }
             if (!is_array($rrule['exceptions']) || count($rrule['exceptions']) === 0) {
-                unset($rrule['exceptions']);
+                $rrule['exceptions'] = [];
             }
         } else {
-            unset($rrule['exceptions']);
+            $rrule['exceptions'] = [];
         }
 
         if (count($rrule) > 0) {
@@ -920,7 +916,7 @@ trait PlanningEvent
      * Returns RSet occurence corresponding to rrule field value.
      *
      * @param array  $rrule    RRule field value
-     * @param string $dtstart  Start of first occurrence
+     * @param string $dtstart  Start of first occurence
      *
      * @return \RRule\RSet
      */
@@ -945,11 +941,11 @@ trait PlanningEvent
                 $rset->addExDate($exdate->format('Y-m-d\TH:i:s\Z'));
             }
 
-            // remove exceptions key (as libraries throw exception for unknow keys)
+            // remove exceptions key (as libraries throw exception for unknown keys)
             unset($rrule['exceptions']);
         }
 
-        // remove specific change from js library to match rfc
+       // remove specific change from js library to match rfc
         if (isset($rrule['byweekday']) || isset($rrule['BYWEEKDAY'])) {
             $rrule['byday'] = $rrule['byweekday'] ?? $rrule['BYWEEKDAY'];
             unset($rrule['byweekday'], $rrule['BYWEEKDAY']);
