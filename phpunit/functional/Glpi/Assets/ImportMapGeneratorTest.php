@@ -61,22 +61,66 @@ class ImportMapGeneratorTest extends GLPITestCase
                 'modules' => [
                     'Forms' => [
                         'GlpiFormConditionEditorController.js' => '// Some JS content 1',
-                        'GlpiFormDestinationAutoConfigController.js' => '// Some JS content 2'
+                        'GlpiFormDestinationAutoConfigController.js' => '// Some JS content 2',
                     ],
                     'Utils' => [
-                        'HelperFunctions.js' => '// Some helper functions'
-                    ]
-                ]
+                        'HelperFunctions.js' => '// Some helper functions',
+                    ],
+                ],
+            ],
+            'public' => [
+                'lib' => [
+                    'vendor1' => [
+                        'library1.js' => '// Library 1 content',
+                    ],
+                    'vendor2' => [
+                        'library2.js' => '// Library 2 content',
+                    ],
+                ],
+                'build' => [
+                    'compiled.js' => '// Compiled JS content',
+                    'assets' => [
+                        'module1.js' => '// Built module 1',
+                        'module2.js' => '// Built module 2',
+                    ],
+                ],
             ],
             'plugins' => [
                 'myplugin' => [
                     'js' => [
                         'modules' => [
-                            'CustomModule.js' => '// Plugin JS content'
-                        ]
-                    ]
-                ]
-            ]
+                            'CustomModule.js' => '// Plugin JS content',
+                        ],
+                    ],
+                    'public' => [
+                        'lib' => [
+                            'plugin-lib.js' => '// Plugin library',
+                        ],
+                        'build' => [
+                            'plugin-build.js' => '// Plugin built file',
+                        ],
+                    ],
+                ],
+            ],
+            'marketplace' => [
+                'myotherplugin' => [
+                    'js' => [
+                        'modules' => [
+                            'AnotherModule.js' => '// Another plugin JS content',
+                        ],
+                    ],
+                    'public' => [
+                        'lib' => [
+                            'other-lib.js' => '// Another plugin library',
+                        ],
+                        'build' => [
+                            'component' => [
+                                'other-build.js' => '// Another plugin built file',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ]);
     }
 
@@ -90,16 +134,16 @@ class ImportMapGeneratorTest extends GLPITestCase
     {
         /** @var ImportMapGenerator|MockObject $generator */
         $generator = $this->getMockBuilder(ImportMapGenerator::class)
-            ->setConstructorArgs([self::ROOT_URL, $this->createCacheMock()])
-            ->onlyMethods(['getGlpiRoot', 'getPluginList'])
+            ->setConstructorArgs([self::ROOT_URL, $virtual_fs_path, $this->createCacheMock()])
+            ->onlyMethods(['getPluginDirList'])
             ->getMock();
 
-        // Configure mocks
-        $generator->method('getGlpiRoot')
-            ->willReturn($virtual_fs_path);
-
-        $generator->method('getPluginList')
-            ->willReturn(['myplugin']);
+        // Configure mock
+        $generator->method('getPluginDirList')
+            ->willReturn([
+                $virtual_fs_path . '/plugins/myplugin',
+                $virtual_fs_path . '/marketplace/myotherplugin',
+            ]);
 
         return $generator;
     }
@@ -138,18 +182,46 @@ class ImportMapGeneratorTest extends GLPITestCase
         // Assertions for structure and entries
         $this->assertArrayHasKey('imports', $import_map, 'Import map should have an imports key');
 
-        // Check for core modules
+        // Check for core modules in js/modules
         $this->assertArrayHasKey('Forms/GlpiFormConditionEditorController', $import_map['imports']);
         $this->assertArrayHasKey('Forms/GlpiFormDestinationAutoConfigController', $import_map['imports']);
         $this->assertArrayHasKey('Utils/HelperFunctions', $import_map['imports']);
 
-        // Check for plugin modules
+        // Check for core modules in public/lib and public/build
+        $this->assertArrayHasKey('vendor1/library1', $import_map['imports']);
+        $this->assertArrayHasKey('vendor2/library2', $import_map['imports']);
+        $this->assertArrayHasKey('compiled', $import_map['imports']);
+        $this->assertArrayHasKey('assets/module1', $import_map['imports']);
+        $this->assertArrayHasKey('assets/module2', $import_map['imports']);
+
+        // Check for plugin modules in js/modules
         $this->assertArrayHasKey('myplugin/CustomModule', $import_map['imports']);
+        $this->assertArrayHasKey('myotherplugin/AnotherModule', $import_map['imports']);
+
+        // Check for plugin modules in public/lib and public/build
+        $this->assertArrayHasKey('myplugin/plugin-lib', $import_map['imports']);
+        $this->assertArrayHasKey('myplugin/plugin-build', $import_map['imports']);
+        $this->assertArrayHasKey('myotherplugin/other-lib', $import_map['imports']);
+        $this->assertArrayHasKey('myotherplugin/component/other-build', $import_map['imports']);
 
         // Verify all URLs have version parameters
         foreach ($import_map['imports'] as $module_name => $url) {
             $this->assertStringContainsString('?v=', $url, "URL for $module_name should include a version parameter");
         }
+
+        // Verify URL paths are correct
+        $this->assertStringContainsString(
+            self::ROOT_URL . '/js/modules/Forms/GlpiFormConditionEditorController.js',
+            $import_map['imports']['Forms/GlpiFormConditionEditorController']
+        );
+        $this->assertStringContainsString(
+            self::ROOT_URL . '/public/lib/vendor1/library1.js',
+            $import_map['imports']['vendor1/library1']
+        );
+        $this->assertStringContainsString(
+            self::ROOT_URL . '/plugins/myplugin/public/lib/plugin-lib.js',
+            $import_map['imports']['myplugin/plugin-lib']
+        );
     }
 
     /**
@@ -161,9 +233,9 @@ class ImportMapGeneratorTest extends GLPITestCase
         $root = vfsStream::setup('glpi', null, [
             'js' => [
                 'modules' => [
-                    'TestModule.js' => '// Initial content'
-                ]
-            ]
+                    'TestModule.js' => '// Initial content',
+                ],
+            ],
         ]);
 
         // Create generator and get reflection access to private method

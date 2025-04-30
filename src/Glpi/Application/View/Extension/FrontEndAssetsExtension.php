@@ -283,6 +283,7 @@ JAVASCRIPT;
 
         $generator = new ImportMapGenerator(
             $CFG_GLPI['root_doc'],
+            GLPI_ROOT,
             (new CacheManager())->getCoreCacheInstance()
         );
 

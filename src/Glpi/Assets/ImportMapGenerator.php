@@ -39,9 +39,12 @@ use Plugin;
 use Psr\SimpleCache\CacheInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Generates an import map for JavaScript modules with cache busting parameters
+ *
+ * @final
  */
 class ImportMapGenerator
 {
@@ -49,6 +52,11 @@ class ImportMapGenerator
      * @var string
      */
     private $root_doc;
+
+    /**
+     * @var string
+     */
+    private $glpi_root;
 
     /**
      * @var CacheInterface|null
@@ -59,20 +67,11 @@ class ImportMapGenerator
      * @param string $root_doc Root document URL path
      * @param CacheInterface|null $cache Optional cache instance
      */
-    public function __construct(string $root_doc, ?CacheInterface $cache = null)
+    public function __construct(string $root_doc, string $glpi_root, ?CacheInterface $cache = null)
     {
-        $this->root_doc = $root_doc;
-        $this->cache = $cache;
-    }
-
-    /**
-     * Get the GLPI root directory
-     *
-     * @return string The GLPI root directory
-     */
-    protected function getGlpiRoot(): string
-    {
-        return GLPI_ROOT;
+        $this->root_doc  = $root_doc;
+        $this->glpi_root = $glpi_root;
+        $this->cache     = $cache;
     }
 
     /**
@@ -80,15 +79,18 @@ class ImportMapGenerator
      *
      * @return array Array of plugin names
      */
-    protected function getPluginList(): array
+    protected function getPluginDirList(): array
     {
-        return Plugin::getPlugins();
+        return array_map(
+            fn($plugin_key) => Plugin::getPhpDir($plugin_key, true),
+            Plugin::getPlugins()
+        );
     }
 
     /**
      * Generate the import map data
      *
-     * @return array The import map data
+     * @return array{imports: array<string, string>} The import map data with module names as keys and URLs as values
      */
     public function generate(): array
     {
@@ -102,17 +104,31 @@ class ImportMapGenerator
         }
 
         $import_map = [
-            'imports' => []
+            'imports' => [],
         ];
 
-        // Scan GLPI core modules
-        $this->addModulesToImportMap($import_map, $this->getGlpiRoot() . '/js/modules');
+        // Scan GLPI core directories
+        $this->addModulesToImportMap($import_map, $this->glpi_root . '/js/modules');
+        $this->addModulesToImportMap($import_map, $this->glpi_root . '/public/lib');
+        $this->addModulesToImportMap($import_map, $this->glpi_root . '/public/build');
 
-        // Scan plugin modules
-        foreach ($this->getPluginList() as $plugin_key) {
-            $plugin_dir = $this->getGlpiRoot() . '/plugins/' . $plugin_key;
-            if (is_dir($plugin_dir . '/js/modules')) {
-                $this->addModulesToImportMap($import_map, $plugin_dir . '/js/modules');
+        // Scan plugin directories
+        foreach ($this->getPluginDirList() as $plugin_dir) {
+            // Check all the possible module directories for plugins
+            $plugin_module_dirs = [
+                $plugin_dir . '/js/modules',
+                $plugin_dir . '/public/lib',
+                $plugin_dir . '/public/build',
+            ];
+
+            foreach ($plugin_module_dirs as $module_dir) {
+                if (is_dir($module_dir)) {
+                    $this->addModulesToImportMap(
+                        $import_map,
+                        $module_dir,
+                        Path::getFilenameWithoutExtension($plugin_dir) . '/'
+                    );
+                }
             }
         }
 
@@ -126,19 +142,14 @@ class ImportMapGenerator
     /**
      * Add modules from a directory to the import map
      *
-     * @param array $import_map Reference to the import map array
+     * @param array{imports: array<string, string>} $import_map Reference to the import map array
      * @param string $dir Directory to scan
+     * @param string $path_prefix Path prefix to use for the module names
      */
-    private function addModulesToImportMap(array &$import_map, string $dir): void
+    private function addModulesToImportMap(array &$import_map, string $dir, string $path_prefix = ""): void
     {
         if (!is_dir($dir)) {
             return;
-        }
-
-        // Determine if we're in a plugin directory and extract plugin name
-        $plugin_prefix = '';
-        if (preg_match('#' . preg_quote($this->getGlpiRoot() . '/plugins/', '#') . '([^/]+)#', $dir, $matches)) {
-            $plugin_prefix = $matches[1] . '/';
         }
 
         $iterator = new RecursiveIteratorIterator(
@@ -148,21 +159,20 @@ class ImportMapGenerator
         foreach ($iterator as $file) {
             if ($file->isFile() && $file->getExtension() === 'js') {
                 $file_path = $file->getPathname();
-                $relative_path = str_replace($this->getGlpiRoot(), '', $file_path);
+                $relative_path = Path::makeRelative($file_path, $this->glpi_root);
 
                 // Calculate module name - remove module base dir and extension
-                $module_path = str_replace($dir . '/', '', $file_path);
-                $module_path = str_replace('\\', '/', $module_path); // Normalize for Windows paths
+                $module_path = Path::makeRelative($file_path, $dir);
                 $module_name = preg_replace('/\.js$/', '', $module_path);
 
                 // Add plugin prefix for plugin modules
-                $import_key = $plugin_prefix . $module_name;
+                $import_key = $path_prefix . $module_name;
 
                 // Generate version parameter
                 $version_param = $this->generateVersionParam($file_path);
 
                 // Add to import map
-                $import_map['imports'][$import_key] = $this->root_doc . $relative_path . '?v=' . $version_param;
+                $import_map['imports'][$import_key] = $this->root_doc . '/' . $relative_path . '?v=' . $version_param;
             }
         }
     }
@@ -179,6 +189,6 @@ class ImportMapGenerator
             return 'missing';
         }
 
-        return substr(md5_file($file_path), 0, 8);
+        return hash_file('CRC32c', $file_path);
     }
 }
