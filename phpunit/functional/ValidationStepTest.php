@@ -171,8 +171,8 @@ class ValidationStepTest extends \DbTestCase
         foreach ([\Ticket::class, \Change::class] as $itil_class) {
             $validation_step = $this->createValidationStep($mininal_required_validation_percent);
             // single itil_validation step with 100% required
-            [$itil, $itils_validationstep] = $this->createITILSValidationStepWithValidations($validation_step, $validation_states, itil_classname: $itil_class);
-            $result_status = $itil::getValidationStepClassName()::getITILValidationStepStatus($itils_validationstep->getID());
+            [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($validation_step, $validation_states, itil_classname: $itil_class);
+            $result_status = $itil_validationstep->getStatus();
 
             $this->assertValidationStatusEquals($expected_status, $result_status);
         }
@@ -185,17 +185,17 @@ class ValidationStepTest extends \DbTestCase
             $vs = $this->createValidationStep(100);
             // accepted
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
-            $achievements = $itil::getValidationStepClassName()::getITILValidationStepAchievements($itil_validationstep->getID());
+            $achievements = $itil_validationstep->getAchievements();
             $this->assertEquals(100, $achievements[CommonITILValidation::ACCEPTED]);
 
             // refused
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::REFUSED], itil_classname: $itil_class);
-            $achievements = $itil::getValidationStepClassName()::getITILValidationStepAchievements($itil_validationstep->getID());
+            $achievements = $itil_validationstep->getAchievements();
             $this->assertEquals(100, $achievements[CommonITILValidation::REFUSED]);
 
             // waiting
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::WAITING], itil_classname: $itil_class);
-            $achievements = $itil::getValidationStepClassName()::getITILValidationStepAchievements($itil_validationstep->getID());
+            $achievements = $itil_validationstep->getAchievements();
             $this->assertEquals(100, $achievements[CommonITILValidation::WAITING]);
         }
     }
@@ -207,46 +207,46 @@ class ValidationStepTest extends \DbTestCase
             $vs = $this->createValidationStep(100);
             // 2 validations with same status
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
-            $achievements = $itil::getValidationStepClassName()::getITILValidationStepAchievements($itil_validationstep->getID());
+            $achievements = $itil_validationstep->getAchievements();
             $this->assertEquals(100, $achievements[CommonITILValidation::ACCEPTED]);
             // test sum of % is 100
             $this->assertEquals(100, array_sum($achievements));
 
             // multiple validations with same status
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::WAITING], itil_classname: $itil_class);
-            $achievements = $itil::getValidationStepClassName()::getITILValidationStepAchievements($itil_validationstep->getID());
+            $achievements = $itil_validationstep->getAchievements();
             $this->assertEquals(100, $achievements[CommonITILValidation::WAITING]);
             $this->assertEquals(100, array_sum($achievements));
 
             // multiple validations with different status
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED], itil_classname: $itil_class);
-            $achievements = $itil::getValidationStepClassName()::getITILValidationStepAchievements($itil_validationstep->getID());
+            $achievements = $itil_validationstep->getAchievements();
             $this->assertEquals(50, $achievements[CommonITILValidation::WAITING]);
             $this->assertEquals(50, $achievements[CommonITILValidation::REFUSED]);
             $this->assertEquals(100, array_sum($achievements));
 
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
-            $achievements = $itil::getValidationStepClassName()::getITILValidationStepAchievements($itil_validationstep->getID());
+            $achievements = $itil_validationstep->getAchievements();
             $this->assertEquals(33, $achievements[CommonITILValidation::REFUSED]);
             $this->assertEquals(34, $achievements[CommonITILValidation::ACCEPTED]);
             $this->assertEquals(33, $achievements[CommonITILValidation::WAITING]);
 
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
-            $achievements = $itil::getValidationStepClassName()::getITILValidationStepAchievements($itil_validationstep->getID());
+            $achievements = $itil_validationstep->getAchievements();
             $this->assertEquals(67, $achievements[CommonITILValidation::REFUSED]);
             $this->assertEquals(33, $achievements[CommonITILValidation::ACCEPTED]);
             $this->assertEquals(0, $achievements[CommonITILValidation::WAITING]);
 
             // 4 validations with different status
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::WAITING, CommonITILValidation::WAITING, CommonITILValidation::REFUSED, CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
-            $achievements = $itil::getValidationStepClassName()::getITILValidationStepAchievements($itil_validationstep->getID());
+            $achievements = $itil_validationstep->getAchievements();
             $this->assertEquals(50, $achievements[CommonITILValidation::WAITING]);
             $this->assertEquals(25, $achievements[CommonITILValidation::REFUSED]);
             $this->assertEquals(25, $achievements[CommonITILValidation::ACCEPTED]);
 
             // 5 validations with different status
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::REFUSED, CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
-            $achievements = $itil::getValidationStepClassName()::getITILValidationStepAchievements($itil_validationstep->getID());
+            $achievements = $itil_validationstep->getAchievements();
             $this->assertEquals(60, $achievements[CommonITILValidation::REFUSED]);
             $this->assertEquals(40, $achievements[CommonITILValidation::ACCEPTED]);
             $this->assertEquals(100, array_sum($achievements));

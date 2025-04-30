@@ -104,11 +104,11 @@ trait ValidationStepTrait
         // check created itil validation step has the exepected status
         // expected status is explicitely given in argument
         if (!is_null($expected_status)) {
-            $checked_status = $ivs::getITILValidationStepStatus($ivs->getID());
+            $checked_status = $ivs->getStatus();
             assert($expected_status === $checked_status, 'failed to create itil_validation step with status ' . $this->statusToLabel($expected_status) . ' it has status ' . $this->statusToLabel($checked_status));
         } elseif (count($validations_statuses) === 1 && $validations_statuses[0] !== CommonITILValidation::NONE) {
             // expected status is implicitely the only status given in argument (except NONE)
-            $checked_status = $ivs::getITILValidationStepStatus($ivs->getID());
+            $checked_status = $ivs->getStatus();
             assert($validations_statuses[0] === $checked_status, 'failed to create itil_validation step with status ' . $this->statusToLabel($validations_statuses[0]) . ' it has status ' . $this->statusToLabel($checked_status));
         }
 

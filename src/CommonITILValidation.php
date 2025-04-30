@@ -1090,8 +1090,8 @@ abstract class CommonITILValidation extends CommonDBChild
                 $edit_button = $this->getModalFormHtmlElements('editapproval_modal', __('Edit Approval'), $itil->getID(), $validation["id"]) + ['anchor_title' => __('Edit') ];
             }
 
-            $itils_validationsteps_id = $validation['itils_validationsteps_id'];
-            $validations[$itils_validationsteps_id]['entries'][] = [
+            $itil_validationstep_id = $validation['itils_validationsteps_id'];
+            $validations[$itil_validationstep_id]['entries'][] = [
                 'edit'                  => $edit_button,
                 'status'                => $status,
                 'type_name'             => $type_name,
@@ -1105,9 +1105,9 @@ abstract class CommonITILValidation extends CommonDBChild
                 'user'                  => getUserName($validation["users_id"]),
             ];
 
-            $itil_edit_js_identifier = 'itilvalidation_edit_' . $itils_validationsteps_id;
-            $url = $itil::getValidationStepClassName()::getFormURLWithId($itils_validationsteps_id);
-            $validations[$itils_validationsteps_id]['edit_link_js']['js'] = Ajax::createIframeModalWindow(
+            $itil_edit_js_identifier = 'itilvalidation_edit_' . $itil_validationstep_id;
+            $url = $itil::getValidationStepClassName()::getFormURLWithId($itil_validationstep_id);
+            $validations[$itil_validationstep_id]['edit_link_js']['js'] = Ajax::createIframeModalWindow(
                 $itil_edit_js_identifier,
                 $url,
                 [
@@ -1117,23 +1117,22 @@ abstract class CommonITILValidation extends CommonDBChild
                     'height'          => 120,
                 ]
             );
-            $validations[$itils_validationsteps_id]['edit_link_js']['target'] = "$itil_edit_js_identifier";
+            $validations[$itil_validationstep_id]['edit_link_js']['target'] = "$itil_edit_js_identifier";
 
-            if ($itils_validationsteps_id !== $validationstep_id_inloop) {
-                $itils_validationsteps = $itil::getValidationStepInstance();
-                $itils_validationsteps->getFromDB($itils_validationsteps_id);
-                if (!$itils_validationsteps->getFromDB($itils_validationsteps_id)) {
-                    throw new Exception("itil Approval step not found " . $itils_validationsteps_id);
+            if ($itil_validationstep_id !== $validationstep_id_inloop) {
+                $itil_validationstep = $itil::getValidationStepInstance();
+                if (!$itil_validationstep->getFromDB($itil_validationstep_id)) {
+                    throw new Exception("itil Approval step not found " . $itil_validationstep_id);
                 }
 
-                $validation_step_status = $itils_validationsteps::getITILValidationStepStatus($itils_validationsteps_id);
-                $validation_step_achievements = $itils_validationsteps::getITILValidationStepAchievements($itils_validationsteps_id);
+                $validation_step_status = $itil_validationstep->getStatus();
+                $validation_step_achievements = $itil_validationstep->getAchievements();
 
-                $vs = $itils_validationsteps;
+                $vs = $itil_validationstep;
                 $vs->getFromDB($validation['itils_validationsteps_id']);
                 $validationsteps_id = $vs->fields['validationsteps_id'];
 
-                $validations[$itils_validationsteps_id]['validationstep'] = [
+                $validations[$itil_validationstep_id]['validationstep'] = [
                     'id' => $validation['itils_validationsteps_id'],
                     'name' => Dropdown::getDropdownName(ValidationStep::getTable(), $validationsteps_id),
                     // structured to be later replaced by a DTO with Status::isAccepted()|isRefused()|isWaiting() & getStatus()
@@ -1148,10 +1147,10 @@ abstract class CommonITILValidation extends CommonDBChild
                         'refused' => $validation_step_achievements[self::REFUSED],
                         'accepted' => $validation_step_achievements[self::ACCEPTED],
                     ],
-                    'minimal_required_validation_percent' => $itils_validationsteps->fields['minimal_required_validation_percent'],
+                    'minimal_required_validation_percent' => $itil_validationstep->fields['minimal_required_validation_percent'],
                 ];
 
-                $validationstep_id_inloop = $itils_validationsteps_id;
+                $validationstep_id_inloop = $itil_validationstep_id;
             }
         }
 

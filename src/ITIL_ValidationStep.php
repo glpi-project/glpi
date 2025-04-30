@@ -119,23 +119,15 @@ abstract class ITIL_ValidationStep extends CommonDBTM
     }
 
     /**
-     * Validation status for an itil validation step
+     * Validation status computed from all the attached validations.
      *
-     * @param int $itils_validationsteps_id
-     *
-     * @return int CommonITILValidation::WAITING|CommonITILValidation::ACCEPTED|CommonITILValidation::REFUSED
+     * @return CommonITILValidation::WAITING|CommonITILValidation::ACCEPTED|CommonITILValidation::REFUSED
      */
-    public static function getITILValidationStepStatus(int $itils_validationsteps_id): int
+    public function getStatus(): int
     {
-        // get Validation step $required_percent
-        $vs = new static();
-        if (!$vs->getFromDB($itils_validationsteps_id)) {
-            throw new InvalidArgumentException('ITILValidation step not found #' . $itils_validationsteps_id);
-        }
+        $required_percent = $this->fields['minimal_required_validation_percent'];
 
-        $required_percent = $vs->fields['minimal_required_validation_percent'];
-
-        $achievements = static::getITILValidationStepAchievements($itils_validationsteps_id);
+        $achievements = $this->getAchievements();
         // special case for 0% required validation
         if ($required_percent == 0) {
             if ($achievements[CommonITILValidation::ACCEPTED] > 0) {
@@ -160,18 +152,18 @@ abstract class ITIL_ValidationStep extends CommonDBTM
     }
 
     /**
-     * Get validation step achievements by status for a ticket
+     * Validation step achievements by status.
      *
      * In case of non integer percentages, values will be rounded down (floor) and one of the status will get a have a higher percentage to reach 100%.
      * The affected status is the one with a non-zero value, the highest decimal part and comming first in the list of statuses (accepted at the moment).
      *
-     * @param int $itils_validationsteps_id
-     *
      * @return array{2: int, 3: int, 4: int} array keys are the status constants
      */
-    public static function getITILValidationStepAchievements(int $itils_validationsteps_id): array
+    public function getAchievements(): array
     {
-        $validations = static::getValidationsForITILValidationStep($itils_validationsteps_id);
+        $validations = (new static::$validation_classname())->find([
+            'itils_validationsteps_id' => $this->getID(),
+        ]);
         $validations_count = count($validations);
 
         $count_by_status = fn($status) => count(array_filter($validations, fn($v) => $v["status"] === $status));
@@ -214,18 +206,6 @@ abstract class ITIL_ValidationStep extends CommonDBTM
         }
 
         return $result;
-    }
-
-    /**
-     * @param int $itils_validationsteps_id
-     * @return CommonITILValidation[]
-     */
-    protected static function getValidationsForITILValidationStep(int $itils_validationsteps_id): array
-    {
-        // collect all related validations in TicketValidation, ChangeValidation, etc.
-        return (new static::$validation_classname())->find([
-            'itils_validationsteps_id' => $itils_validationsteps_id,
-        ]);
     }
 
     /**
@@ -279,10 +259,17 @@ abstract class ITIL_ValidationStep extends CommonDBTM
         // find all itils_validationsteps_id related to the validations
         $itils_validationstep_ids = array_unique(array_column($validations, 'itils_validationsteps_id'));
 
-        return array_map(
-            fn($itil_vs_id) => static::getITILValidationStepStatus($itil_vs_id),
-            $itils_validationstep_ids
-        );
+        $result = [];
+        foreach ($itils_validationstep_ids as $itils_validationstep_id) {
+            $itil_vs = new static();
+            if (!$itil_vs->getFromDB($itils_validationstep_id)) {
+                throw new \RuntimeException();
+            }
+
+            $result[$itils_validationstep_id] = $itil_vs->getStatus();
+        }
+
+        return $result;
     }
 
     public function getFormFields(): array
