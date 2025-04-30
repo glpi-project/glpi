@@ -66,7 +66,7 @@
         "spin.js": "^4.1.2",
         "swagger-ui-dist": "^5.20.2",
         "tinycolor2": "^1.6.0",
-        "tinymce": "^7.7.2",
+        "tinymce": "^7.8.0",
         "tinymce-i18n": "^25.3.17",
         "vue": "^3.5.13"
     },
