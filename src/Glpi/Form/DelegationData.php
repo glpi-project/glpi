@@ -40,6 +40,5 @@ final class DelegationData
         public readonly ?int $users_id = null,
         public readonly ?bool $use_notification = null,
         public readonly ?string $alternative_email = null
-    ) {
-    }
+    ) {}
 }

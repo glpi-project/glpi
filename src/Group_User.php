@@ -92,7 +92,7 @@ class Group_User extends CommonDBRelation
                 'glpi_groups_users.id AS linkid',
                 'glpi_groups_users.is_dynamic AS is_dynamic',
                 'glpi_groups_users.is_manager AS is_manager',
-                'glpi_groups_users.is_userdelegate AS is_userdelegate'
+                'glpi_groups_users.is_userdelegate AS is_userdelegate',
             ],
             'FROM'   => self::getTable(),
             'LEFT JOIN'    => [
@@ -134,7 +134,7 @@ class Group_User extends CommonDBRelation
                 'glpi_groups_users.id AS linkid',
                 'glpi_groups_users.is_dynamic AS is_dynamic',
                 'glpi_groups_users.is_manager AS is_manager',
-                'glpi_groups_users.is_userdelegate AS is_userdelegate'
+                'glpi_groups_users.is_userdelegate AS is_userdelegate',
             ],
             'FROM'   => self::getTable(),
             'LEFT JOIN'    => [
@@ -206,7 +206,7 @@ class Group_User extends CommonDBRelation
                 'group'    => $group->getLink(),
                 'dynamic'  => $data['is_dynamic'] ? $yes_icon : $no_icon,
                 'manager'  => $data['is_manager'] ? $yes_icon : $no_icon,
-                'delegatee' => $data['is_userdelegate'] ? $yes_icon : $no_icon
+                'delegatee' => $data['is_userdelegate'] ? $yes_icon : $no_icon,
             ];
         }
 
@@ -218,13 +218,13 @@ class Group_User extends CommonDBRelation
                 'group' => Group::getTypeName(1),
                 'dynamic' => __('Dynamic'),
                 'manager' => _n('Manager', 'Managers', 1),
-                'delegatee' => __('Delegatee')
+                'delegatee' => __('Delegatee'),
             ],
             'formatters' => [
                 'group' => 'raw_html',
                 'dynamic' => 'raw_html',
                 'manager' => 'raw_html',
-                'delegatee' => 'raw_html'
+                'delegatee' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -322,7 +322,7 @@ class Group_User extends CommonDBRelation
                 'glpi_groups_users.groups_id',
                 'glpi_groups_users.is_dynamic AS is_dynamic',
                 'glpi_groups_users.is_manager AS is_manager',
-                'glpi_groups_users.is_userdelegate AS is_userdelegate'
+                'glpi_groups_users.is_userdelegate AS is_userdelegate',
             ],
             'DISTINCT'  => true,
             'FROM'      => $group_users_table,

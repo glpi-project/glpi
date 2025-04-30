@@ -130,14 +130,14 @@ enum ITILActorFieldStrategy: string
                     'items_id' => $delegation->users_id ?? $user_id,
                     'use_notification' => $delegation->use_notification ?? 0,
                     'alternative_email' => $delegation->alternative_email ?? '',
-                ]
+                ],
             ];
         } else {
             return [
                 [
                     'itemtype' => User::class,
-                    'items_id' => $user_id
-                ]
+                    'items_id' => $user_id,
+                ],
             ];
         }
     }
@@ -160,8 +160,8 @@ enum ITILActorFieldStrategy: string
         return [
             [
                 'itemtype' => User::class,
-                'items_id' => (int) $supervisor_id
-            ]
+                'items_id' => (int) $supervisor_id,
+            ],
         ];
     }
 
@@ -185,7 +185,7 @@ enum ITILActorFieldStrategy: string
 
                 $actors[] = [
                     'itemtype' => $itemtype,
-                    'items_id' => (int) $id
+                    'items_id' => (int) $id,
                 ];
             }
         }
@@ -243,7 +243,7 @@ enum ITILActorFieldStrategy: string
 
             $carry[] = [
                 'itemtype' => $value['itemtype'],
-                'items_id' => (int) $value['items_id']
+                'items_id' => (int) $value['items_id'],
             ];
             return $carry;
         }, []);
@@ -332,7 +332,7 @@ enum ITILActorFieldStrategy: string
         $itemtype = getItemtypeForForeignKeyField(str_replace('_tech', '', $fk_field));
         return array_map(fn($actor_id) => [
             'itemtype' => $itemtype,
-            'items_id' => (int) $actor_id
+            'items_id' => (int) $actor_id,
         ], $actors_ids);
     }
 }

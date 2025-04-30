@@ -2083,12 +2083,12 @@ class Ticket extends CommonITILObject
      */
     public static function canDelegateeCreateTicket(int $requester_id, ?int $entity_restrict = null): bool
     {
-       // if the user is a technician, no need to check delegates
+        // if the user is a technician, no need to check delegates
         if (Session::getCurrentInterface() == "central") {
             return true;
         }
 
-       // if the connected user is the ticket requester, we can create
+        // if the connected user is the ticket requester, we can create
         if ($requester_id == $_SESSION['glpiID']) {
             return true;
         }
@@ -2097,22 +2097,22 @@ class Ticket extends CommonITILObject
             $entity_restrict = $_SESSION["glpiactive_entity"] ?? 0;
         }
 
-       // if user has no delegate groups, he can't create ticket for another user
+        // if user has no delegate groups, he can't create ticket for another user
         $delegate_groups = User::getDelegateGroupsForUser($entity_restrict);
         if (count($delegate_groups) == 0) {
             return false;
         }
 
-       // retrieve users to check if given requester is part of them
+        // retrieve users to check if given requester is part of them
         $users_delegatee_iterator = User::getSqlSearchResult(false, 'delegate', $entity_restrict);
         foreach ($users_delegatee_iterator as $user_data) {
             if ($user_data['id'] == $requester_id) {
-               // user found
+                // user found
                 return true;
             }
         }
 
-       // user not found
+        // user not found
         return false;
     }
 

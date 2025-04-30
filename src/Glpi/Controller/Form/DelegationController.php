@@ -64,7 +64,7 @@ final class DelegationController extends AbstractController
             throw new NotFoundHttpException('Selected user not found');
         }
         return $this->render('components/helpdesk_forms/delegation_alert.html.twig', [
-            'selected_user' => $selected_user
+            'selected_user' => $selected_user,
         ]);
     }
 }

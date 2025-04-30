@@ -187,7 +187,7 @@ class AnswersSetTest extends DbTestCase
             Group::class,
             [
                 'name'        => 'Test group',
-                'entities_id' => 0
+                'entities_id' => 0,
             ]
         );
 
@@ -197,14 +197,14 @@ class AnswersSetTest extends DbTestCase
             [
                 'groups_id'       => $group->getID(),
                 'users_id'        => getItemByTypeName(User::class, 'post-only')->getID(),
-                'is_userdelegate' => 1
+                'is_userdelegate' => 1,
             ]
         );
         $this->createItem(
             Group_User::class,
             [
                 'groups_id' => $group->getID(),
-                'users_id'  => getItemByTypeName(User::class, 'glpi')->getID()
+                'users_id'  => getItemByTypeName(User::class, 'glpi')->getID(),
             ]
         );
 

@@ -3675,14 +3675,14 @@ HTML;
                 'glpi_groups'  => [
                     'FKEY'   => [
                         'glpi_groups_users'  => 'groups_id',
-                        'glpi_groups'        => 'id'
-                    ]
-                ]
+                        'glpi_groups'        => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
                 'glpi_groups_users.users_id'        => Session::getLoginUserID(),
-                'glpi_groups_users.is_userdelegate' => 1
-            ] + getEntitiesRestrictCriteria('glpi_groups', '', $entities_id, 1)
+                'glpi_groups_users.is_userdelegate' => 1,
+            ] + getEntitiesRestrictCriteria('glpi_groups', '', $entities_id, 1),
         ]);
 
         $groups = [];
@@ -3790,20 +3790,20 @@ HTML;
                             'glpi_users'   => [
                                 'FKEY'   => [
                                     'glpi_groups_users'  => 'users_id',
-                                    'glpi_users'         => 'id'
-                                ]
-                            ]
+                                    'glpi_users'         => 'id',
+                                ],
+                            ],
                         ],
                         'WHERE'     => [
                             'glpi_groups_users.groups_id' => $groups,
-                            'glpi_groups_users.users_id'  => ['<>', Session::getLoginUserID()]
-                        ]
+                            'glpi_groups_users.users_id'  => ['<>', Session::getLoginUserID()],
+                        ],
                     ]);
                     foreach ($iterator as $data) {
-                           $users[$data["id"]] = $data["id"];
+                        $users[$data["id"]] = $data["id"];
                     }
                 }
-               // Add me to users list for central
+                // Add me to users list for central
                 if (Session::getCurrentInterface() == 'central') {
                     $users[Session::getLoginUserID()] = Session::getLoginUserID();
                 }
