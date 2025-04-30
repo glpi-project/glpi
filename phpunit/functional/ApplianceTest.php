@@ -72,7 +72,7 @@ class ApplianceTest extends DbTestCase
         // Add
         $id = $app->add([
             'name'        => $this->getUniqueString(),
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $id);
 
@@ -89,7 +89,7 @@ class ApplianceTest extends DbTestCase
             $iapp->add([
                 'appliances_id'   => $id,
                 'itemtype'        => 'Computer',
-                'items_id'        => getItemByTypeName('Computer', '_test_pc01', true)
+                'items_id'        => getItemByTypeName('Computer', '_test_pc01', true),
             ])
         );
 
@@ -99,7 +99,7 @@ class ApplianceTest extends DbTestCase
             $rapp->add([
                 'appliances_items_id'   => $iapp->fields['id'],
                 'itemtype'              => 'Location',
-                'items_id'              => getItemByTypeName('Location', '_location01', true)
+                'items_id'              => getItemByTypeName('Location', '_location01', true),
             ])
         );
 
@@ -109,13 +109,13 @@ class ApplianceTest extends DbTestCase
             0,
             $infocom->add([
                 'itemtype'  => 'Appliance',
-                'items_id'  => $id
+                'items_id'  => $id,
             ])
         );
 
         //add document
         $document = new \Document();
-        $docid = (int)$document->add(['name' => 'Test link document']);
+        $docid = (int) $document->add(['name' => 'Test link document']);
         $this->assertGreaterThan(0, $docid);
 
         $docitem = new \Document_Item();
@@ -124,12 +124,12 @@ class ApplianceTest extends DbTestCase
             $docitem->add([
                 'documents_id' => $docid,
                 'itemtype'     => 'Appliance',
-                'items_id'     => $id
+                'items_id'     => $id,
             ])
         );
 
         // Test item cloning
-        $added = (int)$app->clone();
+        $added = (int) $app->clone();
         $this->assertGreaterThan(0, $added);
         $this->assertNotEquals($app->fields['id'], $added);
 
@@ -184,21 +184,21 @@ class ApplianceTest extends DbTestCase
         $computer = new \Computer();
         $computers_id = $computer->add([
             'name' => 'Test computer',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
         $cluster = new \Cluster();
         $clusters_id = $cluster->add([
             'name' => 'Test cluster',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $this->assertGreaterThan(0, $clusters_id);
 
         $appliance = new \Appliance();
         $appliances_id = $appliance->add([
             'name' => 'Test appliance',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $this->assertGreaterThan(0, $appliances_id);
 
@@ -208,7 +208,7 @@ class ApplianceTest extends DbTestCase
             $appliance_item->add([
                 'appliances_id' => $appliances_id,
                 'itemtype'      => 'Computer',
-                'items_id'      => $computers_id
+                'items_id'      => $computers_id,
             ])
         );
 
@@ -217,7 +217,7 @@ class ApplianceTest extends DbTestCase
             $appliance_item->add([
                 'appliances_id' => $appliances_id,
                 'itemtype'      => 'Cluster',
-                'items_id'      => $clusters_id
+                'items_id'      => $clusters_id,
             ])
         );
 
@@ -229,7 +229,7 @@ class ApplianceTest extends DbTestCase
                 'field' => 1, //Name
                 'searchtype' => 'contains',
                 'value' => 'computer',
-            ]
+            ],
         ];
         $data = \Search::getDatas('Appliance', [
             'criteria' => $criteria,
@@ -245,7 +245,7 @@ class ApplianceTest extends DbTestCase
                 'field' => 1, //Name
                 'searchtype' => 'contains',
                 'value' => 'cluster',
-            ]
+            ],
         ];
         $data = \Search::getDatas('Appliance', [
             'criteria' => $criteria,

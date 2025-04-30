@@ -73,7 +73,7 @@ if (
             'WHERE'  => [
                 $devicetype::getForeignKeyField() => $_POST['items_id'],
                 'itemtype'                        => '',
-            ]
+            ],
         ]
     );
     echo "<table class='w-100'><tr><td>" . __s('Choose an existing device') . "</td><td rowspan='2'>" .

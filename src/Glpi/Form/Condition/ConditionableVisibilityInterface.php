@@ -34,8 +34,6 @@
 
 namespace Glpi\Form\Condition;
 
-use Glpi\Form\Condition\VisibilityStrategy;
-
 interface ConditionableVisibilityInterface extends ConditionableInterface
 {
     /**

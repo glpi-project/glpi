@@ -265,7 +265,7 @@ class HasNetworkPortCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => NetworkPort::class,
-            'expected' => '%d network ports attached to %d assets'
+            'expected' => '%d network ports attached to %d assets',
         ];
     }
 }

@@ -35,7 +35,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Psr\Log\LogLevel;
 
 /* Test for inc/ticket_ticket.class.php */
 
@@ -49,7 +48,7 @@ class Ticket_TicketTest extends DbTestCase
         $tone = new \Ticket();
         $this->assertGreaterThan(
             0,
-            (int)$tone->add([
+            (int) $tone->add([
                 'name'         => 'Linked ticket 01',
                 'description'  => 'Linked ticket 01',
                 'content'            => '',
@@ -61,7 +60,7 @@ class Ticket_TicketTest extends DbTestCase
         $ttwo = new \Ticket();
         $this->assertGreaterThan(
             0,
-            (int)$ttwo->add([
+            (int) $ttwo->add([
                 'name'         => 'Linked ticket 02',
                 'description'  => 'Linked ticket 02',
                 'content'            => '',
@@ -78,10 +77,10 @@ class Ticket_TicketTest extends DbTestCase
         $ttwo = $this->ttwo;
 
         $link = new \Ticket_Ticket();
-        $lid = (int)$link->add([
+        $lid = (int) $link->add([
             'tickets_id_1' => $tone->getID(),
             'tickets_id_2' => $ttwo->getID(),
-            'link'         => \CommonITILObject_CommonITILObject::LINK_TO
+            'link'         => \CommonITILObject_CommonITILObject::LINK_TO,
         ]);
         $this->assertGreaterThan(0, $lid);
 
@@ -90,17 +89,17 @@ class Ticket_TicketTest extends DbTestCase
             $link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \CommonITILObject_CommonITILObject::LINK_TO
+                'link'         => \CommonITILObject_CommonITILObject::LINK_TO,
             ])
         );
 
         //but can be reclassed as a duplicate
         $this->assertGreaterThan(
             0,
-            (int)$link->add([
+            (int) $link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \CommonITILObject_CommonITILObject::DUPLICATE_WITH
+                'link'         => \CommonITILObject_CommonITILObject::DUPLICATE_WITH,
             ])
         );
         $this->assertFalse($link->getFromDB($lid));
@@ -110,7 +109,7 @@ class Ticket_TicketTest extends DbTestCase
             $link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \CommonITILObject_CommonITILObject::LINK_TO
+                'link'         => \CommonITILObject_CommonITILObject::LINK_TO,
             ])
         );
     }
@@ -124,10 +123,10 @@ class Ticket_TicketTest extends DbTestCase
         $link = new \Ticket_Ticket();
         $this->assertGreaterThan(
             0,
-            (int)$link->add([
+            (int) $link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \CommonITILObject_CommonITILObject::SON_OF
+                'link'         => \CommonITILObject_CommonITILObject::SON_OF,
             ])
         );
 
@@ -137,7 +136,7 @@ class Ticket_TicketTest extends DbTestCase
             $link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \CommonITILObject_CommonITILObject::SON_OF
+                'link'         => \CommonITILObject_CommonITILObject::SON_OF,
             ])
         );
 
@@ -148,10 +147,10 @@ class Ticket_TicketTest extends DbTestCase
         $link = new \Ticket_Ticket();
         $this->assertGreaterThan(
             0,
-            (int)$link->add([
+            (int) $link->add([
                 'tickets_id_1' => $tone->getID(),
                 'tickets_id_2' => $ttwo->getID(),
-                'link'         => \CommonITILObject_CommonITILObject::PARENT_OF
+                'link'         => \CommonITILObject_CommonITILObject::PARENT_OF,
             ])
         );
         $this->assertTrue($link->getFromDB($link->getID()));
@@ -174,9 +173,9 @@ class Ticket_TicketTest extends DbTestCase
         $tickets_id = $ticket->add([
             'name'     => 'test',
             'content'  => 'test',
-            'status'   => \Ticket::INCOMING
+            'status'   => \Ticket::INCOMING,
         ]);
-        $this->assertGreaterThan(0, (int)$tickets_id);
+        $this->assertGreaterThan(0, (int) $tickets_id);
 
         // Create 5 other tickets
         $tickets = [];
@@ -184,9 +183,9 @@ class Ticket_TicketTest extends DbTestCase
             $linked_tickets_id = $ticket->add([
                 'name'     => 'test' . $i,
                 'content'  => 'test' . $i,
-                'status'   => \Ticket::INCOMING
+                'status'   => \Ticket::INCOMING,
             ]);
-            $this->assertGreaterThan(0, (int)$linked_tickets_id);
+            $this->assertGreaterThan(0, (int) $linked_tickets_id);
             $tickets[] = $linked_tickets_id;
         }
 
@@ -195,10 +194,10 @@ class Ticket_TicketTest extends DbTestCase
         foreach ($tickets as $linked_ticket_id) {
             $this->assertGreaterThan(
                 0,
-                (int)$link->add([
+                (int) $link->add([
                     'tickets_id_1' => $tickets_id,
                     'tickets_id_2' => $linked_ticket_id,
-                    'link'         => \CommonITILObject_CommonITILObject::LINK_TO
+                    'link'         => \CommonITILObject_CommonITILObject::LINK_TO,
                 ])
             );
         }
@@ -222,7 +221,7 @@ class Ticket_TicketTest extends DbTestCase
             $ticket_ticket->add([
                 'tickets_id_1' => $this->tone->getID(),
                 'tickets_id_2' => $this->ttwo->getID(),
-                'link'         => \Ticket_Ticket::LINK_TO
+                'link'         => \Ticket_Ticket::LINK_TO,
             ])
         );
 
@@ -243,7 +242,7 @@ class Ticket_TicketTest extends DbTestCase
             $ticket_ticket->add([
                 'tickets_id_1' => $this->tone->getID(),
                 'tickets_id_2' => $other_tickets_id,
-                'link'         => \Ticket_Ticket::LINK_TO
+                'link'         => \Ticket_Ticket::LINK_TO,
             ])
         );
 

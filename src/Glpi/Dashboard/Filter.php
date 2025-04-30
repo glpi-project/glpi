@@ -163,7 +163,7 @@ class Filter extends \CommonDBChild
             'WHERE' => [
                 'dashboards_dashboards_id' => $dashboards_id,
                 'users_id'                 => Session::getLoginUserID(),
-            ]
+            ],
         ]);
 
         $settings = $dr_iterator->count() === 1 ? $dr_iterator->current()['filter'] : null;

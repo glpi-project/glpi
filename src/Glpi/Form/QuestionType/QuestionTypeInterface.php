@@ -251,13 +251,13 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
         ?JsonFieldInterface $extra_data_config,
     ): DynamicExportDataField;
 
-     /**
-     * Must return a DynamicExportDataField object constructed from the
-     * following values:
-     *  - field_id: "default_value"
-     *  - data: the default value content with db names instead of ids
-     *  - requirements: one requirement per database id in the original default values
-     */
+    /**
+    * Must return a DynamicExportDataField object constructed from the
+    * following values:
+    *  - field_id: "default_value"
+    *  - data: the default value content with db names instead of ids
+    *  - requirements: one requirement per database id in the original default values
+    */
     public function exportDynamicDefaultValue(
         ?JsonFieldInterface $extra_data_config,
         array|int|float|bool|string|null $default_value_config,

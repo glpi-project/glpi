@@ -76,13 +76,13 @@ class QuestionTest extends DbTestCase
         // Second set: Invalid values
         $question = new Question();
         $question->fields = [
-            'type' => "not a type"
+            'type' => "not a type",
         ];
         yield [$question, null];
 
         $question = new Question();
         $question->fields = [
-            'type' => Computer::class
+            'type' => Computer::class,
         ];
         yield [$question, null];
 

@@ -58,9 +58,7 @@ final class AnswersHandler
     /**
      * Private constructor to prevent instantiation (singleton)
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Get the singleton instance

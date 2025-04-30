@@ -58,7 +58,7 @@ function update951to952()
         'ITILFollowup' => 'content',
         'ITILSolution' => 'content',
         'Reminder'     => 'text',
-        'KnowbaseItem' => 'answer'
+        'KnowbaseItem' => 'answer',
     ];
 
     foreach (['Change', 'Problem', 'Ticket'] as $itiltype) {
@@ -75,8 +75,8 @@ function update951to952()
             'SELECT' => ['id', $field, $user_field],
             'FROM'   => $itemtype::getTable(),
             'WHERE'  => [
-                $field => ['REGEXP', $regexPattern]
-            ]
+                $field => ['REGEXP', $regexPattern],
+            ],
         ]);
 
         foreach ($result as $data) {
@@ -95,7 +95,7 @@ function update951to952()
                         'FROM'   => 'glpi_documents',
                         'WHERE'  => [
                             'id' => $docid,
-                        ]
+                        ],
                     ]
                 );
                 if ($document->count() === 0) {
@@ -133,23 +133,23 @@ function update951to952()
     }
     /* /Fix document_item migration */
 
-   /* Register missing DomainAlert crontask */
+    /* Register missing DomainAlert crontask */
     $migration->addCrontask(
         'Domain',
         'DomainsAlert',
         DAY_TIMESTAMP,
     );
-   /* /Register missing DomainAlert crontask */
+    /* /Register missing DomainAlert crontask */
 
-   //add option to collect only unread mail
+    //add option to collect only unread mail
     $migration->addField('glpi_mailcollectors', 'collect_only_unread', 'bool', ['value' => 0]);
 
-   /* Appliances rewrite */
+    /* Appliances rewrite */
     $migration->addField('glpi_appliances', 'is_helpdesk_visible', 'bool', ['after' => 'otherserial', 'value' => 1]);
     $migration->addKey('glpi_appliances', 'is_helpdesk_visible');
     $migration->addField('glpi_states', 'is_visible_appliance', 'bool', [
         'value' => 1,
-        'after' => 'is_visible_contract'
+        'after' => 'is_visible_contract',
     ]);
     $migration->addKey('glpi_states', 'is_visible_appliance');
 
@@ -180,10 +180,10 @@ function update951to952()
                 'glpi_appliances AS app' => [
                     'ON'  => [
                         'app'    => 'id',
-                        'items'  => 'appliances_id'
-                    ]
-                ]
-            ]
+                        'items'  => 'appliances_id',
+                    ],
+                ],
+            ],
         ]);
         foreach ($iterator as $row) {
             $itemtype = null;
@@ -203,19 +203,19 @@ function update951to952()
                 $DB->buildUpdate(
                     'glpi_appliances_items_relations',
                     [
-                        'itemtype'  => $itemtype
+                        'itemtype'  => $itemtype,
                     ],
                     [
-                        'appliances_items_id'   => $row['id']
+                        'appliances_items_id'   => $row['id'],
                     ]
                 )
             );
         }
         $migration->dropField('glpi_appliances', 'relationtype');
     }
-   /* /Appliances rewrite */
+    /* /Appliances rewrite */
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

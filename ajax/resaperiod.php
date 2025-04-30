@@ -72,7 +72,7 @@ if (isset($_POST['type'], $_POST['end'])) {
             echo "<tr><td colspan='2'>";
             $values = [
                 'date' => __('Each month, same date'),
-                'day'  => __('Each month, same day of week')
+                'day'  => __('Each month, same day of week'),
             ];
             Dropdown::showFromArray('periodicity[subtype]', $values);
             echo "</td></tr>";

@@ -63,7 +63,7 @@ if (
 
 $rev = [
     'name'   => $revision->fields['name'],
-    'answer' => RichText::getEnhancedHtml($revision->fields['answer'])
+    'answer' => RichText::getEnhancedHtml($revision->fields['answer']),
 ];
 
 echo json_encode($rev);

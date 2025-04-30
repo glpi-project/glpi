@@ -49,7 +49,7 @@ class ClonableTest extends \DbTestCase
             [\Software::class, true],
             [\Ticket::class, true],
             [\Plugin::class, false],
-            [\Config::class, false]
+            [\Config::class, false],
         ];
     }
 
@@ -67,7 +67,7 @@ class ClonableTest extends \DbTestCase
             $item = $this->createItem($class, [
                 'name' => 'Test',
                 'entities_id' => $this->getTestRootEntity(true),
-                'content' => ''
+                'content' => '',
             ], ['content']);
             if ($item->maybeTemplate()) {
                 $specific_actions = \MassiveAction::getAllMassiveActions($class, false, $item, $item->getID());

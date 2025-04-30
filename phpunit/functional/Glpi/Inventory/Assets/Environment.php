@@ -76,7 +76,7 @@ class Environment extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '[{"key":"LC_ALL","val":"C","value":"C","is_dynamic":1},{"key":"LANG","val":"C","value":"C","is_dynamic":1},{"key":"SHELL","val":"\\/bin\\/zsh","value":"\\/bin\\/zsh","is_dynamic":1},{"key":"PATH","val":"\\/usr\\/local\\/sbin:\\/usr\\/local\\/bin:\\/usr\\/sbin:\\/usr\\/bin:\\/root\\/bin","value":"\\/usr\\/local\\/sbin:\\/usr\\/local\\/bin:\\/usr\\/sbin:\\/usr\\/bin:\\/root\\/bin","is_dynamic":1}]'
+                'expected'  => '[{"key":"LC_ALL","val":"C","value":"C","is_dynamic":1},{"key":"LANG","val":"C","value":"C","is_dynamic":1},{"key":"SHELL","val":"\\/bin\\/zsh","value":"\\/bin\\/zsh","is_dynamic":1},{"key":"PATH","val":"\\/usr\\/local\\/sbin:\\/usr\\/local\\/bin:\\/usr\\/sbin:\\/usr\\/bin:\\/root\\/bin","value":"\\/usr\\/local\\/sbin:\\/usr\\/local\\/bin:\\/usr\\/sbin:\\/usr\\/bin:\\/root\\/bin","is_dynamic":1}]',
             ],
         ];
     }
@@ -97,7 +97,7 @@ class Environment extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Environment($computer, $json->content->envs);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
 
         $this->assertTrue($asset->checkConf($conf));
 
@@ -132,7 +132,7 @@ class Environment extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Environment($computer, $json->content->envs);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
 
         $this->assertTrue($asset->checkConf($conf));
 
@@ -160,7 +160,7 @@ class Environment extends AbstractInventoryAsset
             system_name: 'MyAsset' . $this->getUniqueString(),
             capacities: array_merge(
                 [
-                    \Glpi\Asset\Capacity\IsInventoriableCapacity::class
+                    \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
                 ]
             )
         );

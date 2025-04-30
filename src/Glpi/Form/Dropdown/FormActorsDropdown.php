@@ -185,7 +185,7 @@ final class FormActorsDropdown extends AbstractRightsDropdown
 
         $ret = [
             'results' => $results,
-            'count' =>  count($results)
+            'count' =>  count($results),
         ];
 
         return $ret;

@@ -76,7 +76,7 @@ class DirectoriesWriteAccessTest extends \GLPITestCase
                 'not_writable' => [],
             ]
         );
-        $structure->getChild('not_writable')->chmod(0444);
+        $structure->getChild('not_writable')->chmod(0o444);
 
         $writable_path = vfsStream::url('root/writable');
         $not_writable_path = vfsStream::url('root/not_writable');

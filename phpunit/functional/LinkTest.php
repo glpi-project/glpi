@@ -117,7 +117,7 @@ TEXT,
             'safe_url' => false,
             'expected' => [
                 'ip%IP1_ID%' => 'Test computer aa:aa:aa:aa:aa:aa 10.10.13.12',
-                'ip%IP2_ID%' => 'Test computer bb:bb:bb:bb:bb:bb 10.10.13.13'
+                'ip%IP2_ID%' => 'Test computer bb:bb:bb:bb:bb:bb 10.10.13.13',
             ],
         ];
     }
@@ -193,14 +193,14 @@ TEXT,
             'itemtype' => 'Computer',
             'items_id' => $item->getID(),
             'instantiation_type' => 'NetworkPortEthernet',
-            'mac' => 'aa:aa:aa:aa:aa:aa'
+            'mac' => 'aa:aa:aa:aa:aa:aa',
         ]);
         $networkport_2 = $this->createItem('NetworkPort', [
             'name' => 'eth1',
             'itemtype' => 'Computer',
             'items_id' => $item->getID(),
             'instantiation_type' => 'NetworkPortEthernet',
-            'mac' => 'bb:bb:bb:bb:bb:bb'
+            'mac' => 'bb:bb:bb:bb:bb:bb',
         ]);
         $networkname_1 = $this->createItem('NetworkName', [
             'itemtype' => 'NetworkPort',
@@ -273,7 +273,7 @@ TEXT,
         return [
             ['{{'],
             ['{% if ID'],
-            ['{% if ID %}']
+            ['{% if ID %}'],
         ];
     }
 
@@ -282,16 +282,16 @@ TEXT,
     {
         $link = new \Link();
         $this->assertFalse($link->add([
-            'link' => $content
+            'link' => $content,
         ]));
         $this->hasSessionMessages(ERROR, [
-            __('Invalid twig template syntax')
+            __('Invalid twig template syntax'),
         ]);
         $this->assertFalse($link->add([
-            'data' => $content
+            'data' => $content,
         ]));
         $this->hasSessionMessages(ERROR, [
-            __('Invalid twig template syntax')
+            __('Invalid twig template syntax'),
         ]);
     }
 }

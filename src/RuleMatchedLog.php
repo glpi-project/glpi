@@ -117,7 +117,7 @@ class RuleMatchedLog extends CommonDBTM
             }
             if (!$continue) {
                 return [];
-            } else if (empty($array_ret)) {
+            } elseif (empty($array_ret)) {
                 $cnt = self::countForItem($item);
                 $array_ret[1] = self::createTabEntry(__('Import information'), $cnt, $item::class);
             }
@@ -151,11 +151,11 @@ class RuleMatchedLog extends CommonDBTM
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'items_id'   => $items_id,
-                'itemtype'  => $itemtype
+                'itemtype'  => $itemtype,
             ],
             'ORDER'  => 'date DESC',
             'START'  => 30,
-            'LIMIT'  => '50000'
+            'LIMIT'  => '50000',
         ]);
         foreach ($iterator as $data) {
             $this->delete(['id' => $data['id']]);
@@ -183,7 +183,7 @@ class RuleMatchedLog extends CommonDBTM
         if ($item instanceof Agent) {
             $criteria['WHERE'] = [
                 'agents_id' => $item->getID(),
-                'itemtype'  => $CFG_GLPI['inventory_types']
+                'itemtype'  => $CFG_GLPI['inventory_types'],
             ];
         } else {
             $criteria['WHERE'] = [
@@ -192,15 +192,15 @@ class RuleMatchedLog extends CommonDBTM
             ];
         }
 
-        $start = (int)($_GET['start'] ?? 0);
+        $start = (int) ($_GET['start'] ?? 0);
         $count = $DB->request($criteria + ['COUNT' => 'cpt'])->current()['cpt'];
-        $limit = (int)$_SESSION['glpilist_limit'];
+        $limit = (int) $_SESSION['glpilist_limit'];
 
         $iterator = $DB->request(
             $criteria + [
                 'ORDER'  => 'date DESC',
                 'START'  => $start,
-                'LIMIT'  => $limit
+                'LIMIT'  => $limit,
             ]
         );
 

@@ -53,45 +53,45 @@ use GLPIKey;
  */
 abstract class AbstractRequest
 {
-    const DEFAULT_FREQUENCY = 24;
+    public const DEFAULT_FREQUENCY = 24;
 
-    const XML_MODE    = 0;
-    const JSON_MODE   = 1;
+    public const XML_MODE    = 0;
+    public const JSON_MODE   = 1;
 
-   //FusionInventory agent
-    const PROLOG_QUERY = 'prolog';
-    const INVENT_QUERY = 'inventory';
-    const SNMP_QUERY   = 'snmp';
-    const OLD_SNMP_QUERY   = 'snmpquery';
+    //FusionInventory agent
+    public const PROLOG_QUERY = 'prolog';
+    public const INVENT_QUERY = 'inventory';
+    public const SNMP_QUERY   = 'snmp';
+    public const OLD_SNMP_QUERY   = 'snmpquery';
 
-   //GLPI AGENT ACTION
-    const CONTACT_ACTION = 'contact';
-    const REGISTER_ACTION = 'register';
-    const CONFIG_ACTION = 'configuration';
-    const INVENT_ACTION = 'inventory';
-    const NETDISCOVERY_ACTION = 'netdiscovery';
-    const NETINV_ACTION = 'netinventory';
-    const ESX_ACTION = 'esx';
-    const COLLECT_ACTION = 'collect';
-    const DEPLOY_ACTION = 'deploy';
-    const WOL_ACTION = 'wakeonlan';
-    const GET_PARAMS = 'get_params';
+    //GLPI AGENT ACTION
+    public const CONTACT_ACTION = 'contact';
+    public const REGISTER_ACTION = 'register';
+    public const CONFIG_ACTION = 'configuration';
+    public const INVENT_ACTION = 'inventory';
+    public const NETDISCOVERY_ACTION = 'netdiscovery';
+    public const NETINV_ACTION = 'netinventory';
+    public const ESX_ACTION = 'esx';
+    public const COLLECT_ACTION = 'collect';
+    public const DEPLOY_ACTION = 'deploy';
+    public const WOL_ACTION = 'wakeonlan';
+    public const GET_PARAMS = 'get_params';
 
-   //GLPI AGENT TASK
-    const INVENT_TASK = 'inventory';
-    const NETDISCOVERY_TASK = 'netdiscovery';
-    const NETINV_TASK = 'netinventory';
-    const ESX_TASK = 'esx';
-    const COLLECT_TASK = 'collect';
-    const DEPLOY_TASK = 'deploy';
-    const WOL_TASK = 'wakeonlan';
-    const REMOTEINV_TASK = 'remoteinventory';
+    //GLPI AGENT TASK
+    public const INVENT_TASK = 'inventory';
+    public const NETDISCOVERY_TASK = 'netdiscovery';
+    public const NETINV_TASK = 'netinventory';
+    public const ESX_TASK = 'esx';
+    public const COLLECT_TASK = 'collect';
+    public const DEPLOY_TASK = 'deploy';
+    public const WOL_TASK = 'wakeonlan';
+    public const REMOTEINV_TASK = 'remoteinventory';
 
-    const COMPRESS_NONE = 0;
-    const COMPRESS_ZLIB = 1;
-    const COMPRESS_GZIP = 2;
-    const COMPRESS_BR   = 3;
-    const COMPRESS_DEFLATE = 4;
+    public const COMPRESS_NONE = 0;
+    public const COMPRESS_ZLIB = 1;
+    public const COMPRESS_GZIP = 2;
+    public const COMPRESS_BR   = 3;
+    public const COMPRESS_DEFLATE = 4;
 
     /** @var ?integer */
     protected ?int $mode = null;
@@ -242,7 +242,7 @@ abstract class AbstractRequest
                     $inventory_password = (new GLPIKey())
                         ->decrypt(\Config::getConfigurationValue('inventory', 'basic_auth_password'));
                     $agent_credential = base64_decode($matches[1]);
-                    list($agent_login, $agent_password) = explode(':', $agent_credential, 2);
+                    [$agent_login, $agent_password] = explode(':', $agent_credential, 2);
                     if (
                         $inventory_login == $agent_login &&
                         $inventory_password == $agent_password
@@ -264,7 +264,7 @@ abstract class AbstractRequest
         // and may take up to 2 minutes on server that has low performances.
         //
         // Setting limits to 1GB / 5 minutes should permit to handle any inventories request.
-        $memory_limit       = (int)Toolbox::getMemoryLimit();
+        $memory_limit       = (int) Toolbox::getMemoryLimit();
         $max_execution_time = ini_get('max_execution_time');
         if ($memory_limit > 0 && $memory_limit < (1024 * 1024 * 1024)) {
             ini_set('memory_limit', '1024M');
@@ -303,7 +303,7 @@ abstract class AbstractRequest
             $this->guessMode($data);
         }
 
-       //load and check data
+        //load and check data
         return match ($this->mode) {
             self::XML_MODE => $this->handleXMLRequest($data),
             self::JSON_MODE => $this->handleJSONRequest($data),
@@ -361,11 +361,11 @@ abstract class AbstractRequest
             $this->addError('XML not well formed!', 400);
             return false;
         }
-        $this->deviceid = (string)$xml->DEVICEID;
+        $this->deviceid = (string) $xml->DEVICEID;
         //query is not mandatory. Defaults to inventory
         $action = self::INVENT_QUERY;
         if (property_exists($xml, 'QUERY')) {
-            $action = strtolower((string)$xml->QUERY);
+            $action = strtolower((string) $xml->QUERY);
         }
 
         return $this->handleAction($action, $xml);
@@ -391,7 +391,7 @@ abstract class AbstractRequest
         $action = self::INVENT_ACTION;
         if (property_exists($jdata, 'action')) {
             $action = $jdata->action;
-        } else if (property_exists($jdata, 'query')) {
+        } elseif (property_exists($jdata, 'query')) {
             $action = $jdata->query;
         }
 
@@ -428,7 +428,7 @@ abstract class AbstractRequest
                 $this->addToResponse([
                     'status' => 'error',
                     'message' => $message,
-                    'expiration' => self::DEFAULT_FREQUENCY
+                    'expiration' => self::DEFAULT_FREQUENCY,
                 ]);
             } else {
                 $this->addToResponse([
@@ -436,7 +436,7 @@ abstract class AbstractRequest
                         'content'    => $message,
                         'attributes' => [],
                         'type'       => XML_CDATA_SECTION_NODE,
-                    ]
+                    ],
                 ]);
             }
         }
@@ -460,7 +460,7 @@ abstract class AbstractRequest
             foreach ($entries as $name => $content) {
                 if ($name == "message" && isset($this->response[$name])) {
                     $this->response[$name] .= ";$content";
-                } else if ($name == "disabled") {
+                } elseif ($name == "disabled") {
                     $this->response[$name][] = $content;
                 } else {
                     $this->response[$name] = $content;
@@ -678,7 +678,7 @@ abstract class AbstractRequest
     {
         $encodings = [
             'gzip',
-            'deflate'
+            'deflate',
         ];
 
         if (!function_exists('brotli_compress')) {

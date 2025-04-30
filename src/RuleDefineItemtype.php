@@ -35,14 +35,12 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Asset\Capacity\IsInventoriableCapacity;
 
 class RuleDefineItemtype extends Rule
 {
-    const PATTERN_ENTITY_RESTRICT       = 202;
-    const PATTERN_NETWORK_PORT_RESTRICT = 203;
-    const PATTERN_ONLY_CRITERIA_RULE    = 204;
+    public const PATTERN_ENTITY_RESTRICT       = 202;
+    public const PATTERN_NETWORK_PORT_RESTRICT = 203;
+    public const PATTERN_ONLY_CRITERIA_RULE    = 204;
 
     public $restrict_matching = Rule::AND_MATCHING;
 
@@ -76,8 +74,8 @@ class RuleDefineItemtype extends Rule
         $actions = [
             '_assign'   => [
                 'name'   => __('Assign itemtype'),
-                'type'   => 'inventory_itemtype'
-            ]
+                'type'   => 'inventory_itemtype',
+            ],
         ];
         return $actions;
     }
@@ -252,7 +250,7 @@ TWIG, $twig_params);
             'mac',
             'ip',
             'ifnumber',
-            'ifdescr'
+            'ifdescr',
         ];
     }
 
@@ -279,7 +277,7 @@ TWIG, $twig_params);
                     [
                         'sub_type' => static::class,
                         'display' => false,
-                        'name' => $name
+                        'name' => $name,
                     ] + $options
                 );
         }

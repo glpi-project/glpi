@@ -179,7 +179,7 @@ abstract class CommonITILSatisfaction extends DbTestCase
 
         $this->assertTrue($satisfaction->update([
             $itilobject_type::getForeignKeyField() => $items_id, // These items don't use `id` as the index field...
-            'satisfaction' => 5
+            'satisfaction' => 5,
         ]));
 
         $this->assertNotNull($satisfaction->fields['date_answered']);

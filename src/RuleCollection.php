@@ -42,19 +42,19 @@ class RuleCollection extends CommonDBTM
     public const MOVE_BEFORE = 'before';
     public const MOVE_AFTER = 'after';
 
-   /// Rule type
+    /// Rule type
     public $sub_type;
-   /// process collection stop on first matched rule
+    /// process collection stop on first matched rule
     public $stop_on_first_match                   = false;
-   /// Processing several rules : use result of the previous one to computer the current one
+    /// Processing several rules : use result of the previous one to computer the current one
     public $use_output_rule_process_as_next_input = false;
-   /// Rule collection can be replay (for dictionary)
+    /// Rule collection can be replay (for dictionary)
     public $can_replay_rules                      = false;
     /** @var SingletonRuleList $RuleList */
     public $RuleList                              = null;
-   /// Menu type
+    /// Menu type
     public $menu_type                             = "rule";
-   /// Menu option
+    /// Menu option
     public $menu_option                           = "";
 
     public $entity                                = 0;
@@ -142,8 +142,8 @@ class RuleCollection extends CommonDBTM
             'SELECT' => Rule::getTable() . '.*',
             'FROM'   => Rule::getTable(),
             'ORDER'  => [
-                'ranking ASC'
-            ]
+                'ranking ASC',
+            ],
         ];
 
         $where = [];
@@ -152,19 +152,19 @@ class RuleCollection extends CommonDBTM
         }
 
         if ($p['condition'] > 0) {
-            $where['condition'] = ['&', (int)$p['condition']];
+            $where['condition'] = ['&', (int) $p['condition']];
         }
 
-       //Select all the rules of a different type
+        //Select all the rules of a different type
         $where['sub_type'] = static::getRuleClassName();
         if ($this->isRuleRecursive()) {
             $criteria['LEFT JOIN'] = [
                 Entity::getTable() => [
                     'ON' => [
                         Entity::getTable()   => 'id',
-                        Rule::getTable()     => 'entities_id'
-                    ]
-                ]
+                        Rule::getTable()     => 'entities_id',
+                    ],
+                ],
             ];
 
             if (!$p['childrens']) {
@@ -181,13 +181,13 @@ class RuleCollection extends CommonDBTM
 
             $criteria['ORDER'] = [
                 Entity::getTable() . '.level ASC',
-                'ranking ASC'
+                'ranking ASC',
             ];
         }
 
         if ($p['limit']) {
-            $criteria['LIMIT'] = (int)$p['limit'];
-            $criteria['START'] = (int)$p['start'];
+            $criteria['LIMIT'] = (int) $p['limit'];
+            $criteria['START'] = (int) $p['start'];
         }
 
         $criteria['WHERE'] = $where;
@@ -237,7 +237,7 @@ class RuleCollection extends CommonDBTM
         $iterator   = $DB->request($criteria);
 
         foreach ($iterator as $data) {
-           //For each rule, get a Rule object with all the criterias and actions
+            //For each rule, get a Rule object with all the criterias and actions
             $tempRule               = $this->getRuleClass();
             $tempRule->fields       = $data;
 
@@ -265,9 +265,9 @@ class RuleCollection extends CommonDBTM
         }
         $need = 1 + ($retrieve_criteria ? 2 : 0) + ($retrieve_action ? 4 : 0) + (8 * $condition);
 
-       // check if load required
+        // check if load required
         if (($need & $this->RuleList->load) != $need) {
-           //Select all the rules of a different type
+            //Select all the rules of a different type
             $criteria = $this->getRuleListCriteria(['condition' => $condition]);
             $iterator = $DB->request($criteria);
 
@@ -421,7 +421,7 @@ class RuleCollection extends CommonDBTM
     public function showEngineSummary()
     {
         TemplateRenderer::getInstance()->display('pages/admin/rules/engine_summary.html.twig', [
-            'collection' => $this
+            'collection' => $this,
         ]);
     }
 
@@ -436,7 +436,7 @@ class RuleCollection extends CommonDBTM
                 'RuleLocation',
                 'RuleImportAsset',
                 'RuleAsset',
-                'RuleDefineItemtype'
+                'RuleDefineItemtype',
             ]);
         });
 
@@ -447,7 +447,7 @@ class RuleCollection extends CommonDBTM
                     'icon'    => 'ti ti-book',
                     'entries' => $rules,
                 ],
-            ]
+            ],
         ]);
     }
 
@@ -489,7 +489,7 @@ class RuleCollection extends CommonDBTM
         $display_criterias = $p['display_criterias'];
         $display_actions   = $p['display_actions'];
 
-       // Do not know what it is ?
+        // Do not know what it is ?
         $canedit    = self::canUpdate() && !$display_entities;
 
         $use_conditions = false;
@@ -503,7 +503,7 @@ class RuleCollection extends CommonDBTM
             $twig_params = [
                 'label' => __('Rules used for'),
                 'conditions' => $rule::getConditionsArray(),
-                'p' => $p
+                'p' => $p,
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -571,7 +571,7 @@ TWIG, $twig_params);
                 'actions' => 'raw_html',
                 'entity' => 'raw_html',
                 'is_active' => 'raw_html',
-                'sort' => 'raw_html'
+                'sort' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => $nb,
@@ -583,10 +583,10 @@ TWIG, $twig_params);
                 'extraparams'   => [
                     'entity' => $this->entity,
                     'condition' => $p['condition'],
-                    'rule_class_name' => static::getRuleClassName()
+                    'rule_class_name' => static::getRuleClassName(),
                 ],
-                'item'          => $this
-            ]
+                'item'          => $this,
+            ],
         ]);
         $collection_classname = static::class;
         echo <<<HTML
@@ -628,7 +628,7 @@ HTML;
             'reset_warning' => __('Rules will be erased and recreated from defaults. All existing rules will be lost.'),
             'test_label' => __('Test rules engine'),
             'replay_label' => __('Replay the dictionary rules'),
-            'test_url' => $url . "/front/rulesengine.test.php?sub_type=" . $rule::class . "&condition={$p['condition']}"
+            'test_url' => $url . "/front/rulesengine.test.php?sub_type=" . $rule::class . "&condition={$p['condition']}",
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -670,9 +670,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public function showAdditionalInformationsInForm($target)
-    {
-    }
+    public function showAdditionalInformationsInForm($target) {}
 
     /**
      * Modify rule's ranking and automatically reorder all rules
@@ -691,26 +689,26 @@ TWIG, $twig_params);
         $criteria = [
             'SELECT' => 'ranking',
             'FROM'   => 'glpi_rules',
-            'WHERE'  => ['id' => $ID]
+            'WHERE'  => ['id' => $ID],
         ];
 
         $add_condition = [];
         if ($condition > 0) {
-            $add_condition = ['condition' => ['&', (int)$condition]];
+            $add_condition = ['condition' => ['&', (int) $condition]];
         }
 
         $iterator = $DB->request($criteria);
         if (count($iterator) === 1) {
             $result = $iterator->current();
             $current_rank = $result['ranking'];
-           // Search rules to switch
+            // Search rules to switch
             $criteria = [
                 'SELECT' => ['id', 'ranking'],
                 'FROM'   => 'glpi_rules',
                 'WHERE'  => [
-                    'sub_type'  => static::getRuleClassName()
+                    'sub_type'  => static::getRuleClassName(),
                 ] + $add_condition,
-                'LIMIT'  => 1
+                'LIMIT'  => 1,
             ];
 
             switch ($action) {
@@ -741,7 +739,7 @@ TWIG, $twig_params);
                 $criteria = [
                     'SELECT' => ['id', 'ranking'],
                     'FROM'   => 'glpi_rules',
-                    'WHERE'  => ['sub_type' => static::getRuleClassName()]
+                    'WHERE'  => ['sub_type' => static::getRuleClassName()],
                 ];
                 $diff = $new_rank - $current_rank;
                 switch ($action) {
@@ -750,7 +748,7 @@ TWIG, $twig_params);
                             $criteria['WHERE'],
                             [
                                 ['ranking' => ['>', $new_rank]],
-                                ['ranking' => ['<=', $current_rank]]
+                                ['ranking' => ['<=', $current_rank]],
                             ]
                         );
                         $diff += 1;
@@ -761,7 +759,7 @@ TWIG, $twig_params);
                             $criteria['WHERE'],
                             [
                                 ['ranking' => ['>=', $current_rank]],
-                                ['ranking' => ['<', $new_rank]]
+                                ['ranking' => ['<', $new_rank]],
                             ]
                         );
                         $diff -= 1;
@@ -772,25 +770,25 @@ TWIG, $twig_params);
                 }
 
                 if ($diff != 0) {
-                   // Move several rules
+                    // Move several rules
                     $iterator3 = $DB->request($criteria);
                     foreach ($iterator3 as $data) {
                         $data['ranking'] += $diff;
                         $result = $rule->update($data);
                     }
                 } else {
-                   // Only move one
+                    // Only move one
                     $result = $rule->update([
                         'id'      => $ID,
-                        'ranking' => $new_rank
+                        'ranking' => $new_rank,
                     ]);
                 }
 
-               // Update reference
+                // Update reference
                 if ($result) {
                     $result = $rule->update([
                         'id'      => $other_ID,
-                        'ranking' => $current_rank
+                        'ranking' => $current_rank,
                     ]);
                 }
                 return $result;
@@ -814,11 +812,11 @@ TWIG, $twig_params);
         $result = $DB->update(
             'glpi_rules',
             [
-                'ranking' => new QueryExpression($DB::quoteName('ranking') . ' - 1')
+                'ranking' => new QueryExpression($DB::quoteName('ranking') . ' - 1'),
             ],
             [
                 'sub_type'  => static::getRuleClassName(),
-                'ranking'   => ['>', $ranking]
+                'ranking'   => ['>', $ranking],
             ]
         );
         return $result;
@@ -847,7 +845,7 @@ TWIG, $twig_params);
         $max_ranking_criteria = [
             'SELECT' => ['MAX' => 'ranking AS maxi'],
             'FROM' => 'glpi_rules',
-            'WHERE' => ['sub_type' => static::getRuleClassName()]
+            'WHERE' => ['sub_type' => static::getRuleClassName()],
         ];
 
         if (is_numeric($type)) {
@@ -864,7 +862,7 @@ TWIG, $twig_params);
             if ($ref_ID) { // Move after/before an existing rule
                 $ruleDescription->getFromDB($ref_ID);
                 $rank = $ruleDescription->fields["ranking"];
-            } else if ($type === self::MOVE_AFTER) {
+            } elseif ($type === self::MOVE_AFTER) {
                 // Move after all
                 $result = $DB->request($max_ranking_criteria)->current();
                 $rank = $result['maxi'];
@@ -895,14 +893,14 @@ TWIG, $twig_params);
                 'WHERE'  => [
                     'sub_type'  => static::getRuleClassName(),
                     ['ranking'  => ['>', $old_rank]],
-                    ['ranking'  => ['<=', $rank]]
-                ]
+                    ['ranking'  => ['<=', $rank]],
+                ],
             ]);
             foreach ($iterator as $data) {
                 $data['_ranking']--;
                 $result = $rule->update($data);
             }
-        } else if ($new_rule || $old_rank > $rank) {
+        } elseif ($new_rule || $old_rank > $rank) {
             if ($type === self::MOVE_AFTER) {
                 $rank++;
             }
@@ -914,8 +912,8 @@ TWIG, $twig_params);
                 'WHERE'  => [
                     'sub_type'  => static::getRuleClassName(),
                     ['ranking'  => ['>=', $rank]],
-                    ['ranking'  => ['<', $old_rank]]
-                ]
+                    ['ranking'  => ['<', $old_rank]],
+                ],
             ]);
             foreach ($iterator as $data) {
                 $data['_ranking']++;
@@ -929,7 +927,7 @@ TWIG, $twig_params);
         if ($result && ($old_rank !== $rank)) {
             $result = $rule->update([
                 'id'      => $ID,
-                '_ranking' => $rank
+                '_ranking' => $rank,
             ]);
         }
         return $result;
@@ -967,10 +965,10 @@ TWIG, $twig_params);
         $rulecritera    = new RuleCriteria();
         $ruleaction     = new RuleAction();
 
-       //create xml
+        //create xml
         $xmlE           = new SimpleXMLElement('<rules/>');
 
-       //parse all rules
+        //parse all rules
         foreach ($items as $ID) {
             $rulecollection->getFromDB($ID);
             if (!class_exists($rulecollection->fields['sub_type'])) {
@@ -988,12 +986,12 @@ TWIG, $twig_params);
             // add root node
             $xmlERule = $xmlE->addChild('rule');
 
-           //convert rule direct indexes in XML
+            //convert rule direct indexes in XML
             foreach ($rulecollection->fields as $key => $val) {
                 $xmlERule->$key = $val;
             }
 
-           //find criterias
+            //find criterias
             $criterias = $rulecritera->find(['rules_id' => $ID]);
             foreach ($criterias as &$criteria) {
                 unset($criteria['id'], $criteria['rules_id']);
@@ -1011,20 +1009,20 @@ TWIG, $twig_params);
                     );
                 }
 
-               //convert criterias in XML
+                //convert criterias in XML
                 $xmlECritiera = $xmlERule->addChild('rulecriteria');
                 foreach ($criteria as $key => $val) {
                     $xmlECritiera->$key = $val;
                 }
             }
 
-           //find actions
+            //find actions
             $actions = $ruleaction->find(['rules_id' => $ID]);
             foreach ($actions as &$action) {
                 unset($action['id']);
                 unset($action['rules_id']);
 
-               //process FK (just in case of "assign" action)
+                //process FK (just in case of "assign" action)
                 if (
                     ($action['action_type'] === "assign")
                     && (str_contains($action['field'], '_id'))
@@ -1047,7 +1045,7 @@ TWIG, $twig_params);
                     );
                 }
 
-               //convert actions in XML
+                //convert actions in XML
                 $xmlEAction = $xmlERule->addChild('ruleaction');
                 foreach ($action as $key => $val) {
                     $xmlEAction->$key = $val;
@@ -1229,7 +1227,7 @@ TWIG, $twig_params);
                         && (isset($available_actions[$act]['type'])
                         && ($available_actions[$act]['type'] === 'dropdown'))
                     ) {
-                       //pass root entity and empty array (N/A value)
+                        //pass root entity and empty array (N/A value)
                         if (
                             (in_array($action['field'], ['entities_id', 'new_entities_id'], true))
                             && (($action['value'] == 0)
@@ -1276,10 +1274,10 @@ TWIG, $twig_params);
                 $r['entity'] = true;
             }
             if (isset($rule['reasons']['criteria'])) {
-                $r['criterias'] = array_map(static fn ($c) => $c['id'], $rule['reasons']['criteria']);
+                $r['criterias'] = array_map(static fn($c) => $c['id'], $rule['reasons']['criteria']);
             }
             if (isset($rule['reasons']['actions'])) {
-                $r['actions'] = array_map(static fn ($c) => $c['id'], $rule['reasons']['actions']);
+                $r['actions'] = array_map(static fn($c) => $c['id'], $rule['reasons']['actions']);
             }
             $rules_refused_for_session[$k] = $r;
         }
@@ -1292,7 +1290,7 @@ TWIG, $twig_params);
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/rules/import_preview.html.twig', [
-            'refused_rules' => $rules_refused
+            'refused_rules' => $rules_refused,
         ]);
 
         return true;
@@ -1422,7 +1420,7 @@ TWIG, $twig_params);
                         // fix array in value key
                         // (simplexml bug, empty xml node are converted in empty array instead of null)
                         if (is_array($action['value'])) {
-                             $action['value'] = null;
+                            $action['value'] = null;
                         }
                         $ruleAction->add($action);
                     }
@@ -1519,11 +1517,11 @@ TWIG, $twig_params);
         $criterias = $rule->getAllCriteria();
 
         if (count($input)) {
-           // Add all used criteria on rule as `Rule::showSpecificCriteriasForPreview()`
-           // adapt its output depending on used criteria
+            // Add all used criteria on rule as `Rule::showSpecificCriteriasForPreview()`
+            // adapt its output depending on used criteria
             $rule->criterias = [];
             foreach ($input as $criteria) {
-                $rule->criterias[] = (object)[
+                $rule->criterias[] = (object) [
                     'fields' => ['criteria' => $criteria],
                 ];
             }
@@ -1543,7 +1541,7 @@ TWIG, $twig_params);
             'condition' => $condition,
             'params' => [
                 'target' => $target,
-            ]
+            ],
         ]);
 
         return $input;
@@ -1581,13 +1579,13 @@ TWIG, $twig_params);
                         $output["result"][$rule->fields["id"]]["result"] = 1;
                         $output["_ruleid"]                               = $rule->fields["id"];
                         return $output;
-                    } else if ($output["_rule_process"]) {
+                    } elseif ($output["_rule_process"]) {
                         $output["result"][$rule->fields["id"]]["result"] = 1;
                     } else {
                         $output["result"][$rule->fields["id"]]["result"] = 0;
                     }
                 } else {
-                   //Rule is inactive
+                    //Rule is inactive
                     $output["result"][$rule->fields["id"]]["result"] = 2;
                 }
 
@@ -1640,8 +1638,8 @@ TWIG, $twig_params);
                         'ruleCollectionPrepareInputDataForProcess',
                         ['rule_itemtype' => static::getRuleClassName(),
                             'values'        => ['input' => $input,
-                                'params' => $params
-                            ]
+                                'params' => $params,
+                            ],
                         ]
                     );
                     if (is_array($results)) {
@@ -1669,7 +1667,7 @@ TWIG, $twig_params);
 
         $limit = [];
         if ($condition > 0) {
-            $limit = ['glpi_rules.condition' => ['&', (int)$condition]];
+            $limit = ['glpi_rules.condition' => ['&', (int) $condition]];
         }
         $input = [];
 
@@ -1681,14 +1679,14 @@ TWIG, $twig_params);
                 'glpi_rules'   => [
                     'ON' => [
                         'glpi_rulecriterias' => 'rules_id',
-                        'glpi_rules'         => 'id'
-                    ]
-                ]
+                        'glpi_rules'         => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
                 'glpi_rules.is_active'  => 1,
-                'glpi_rules.sub_type'   => static::getRuleClassName()
-            ] + $limit
+                'glpi_rules.sub_type'   => static::getRuleClassName(),
+            ] + $limit,
         ]);
 
         foreach ($iterator as $data) {
@@ -1728,7 +1726,7 @@ TWIG, $twig_params);
                 'SELECT' => ['name'],
                 'FROM'   => $rule::getTable(),
                 'WHERE'  => ['id' => $ID],
-                'LIMIT'  => 1
+                'LIMIT'  => 1,
             ]);
             $name = $it->current()['name'] ?? '';
             $result = match ($rule_result['result']) {
@@ -1738,7 +1736,7 @@ TWIG, $twig_params);
             };
             $results[] = [
                 'name'   => $name,
-                'result' => $result
+                'result' => $result,
             ];
         }
 
@@ -1813,7 +1811,7 @@ TWIG, $twig_params);
                         $plugin,
                         "preProcessRuleCollectionPreviewResults",
                         ['output' => $output,
-                            'params' => $params
+                            'params' => $params,
                         ]
                     );
                     if (is_array($results)) {
@@ -1832,9 +1830,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public function title()
-    {
-    }
+    public function title() {}
 
     /**
      * Get rulecollection classname by giving his itemtype
@@ -1901,18 +1897,18 @@ TWIG, $twig_params);
                 'glpi_rules'   => [
                     'ON' => [
                         'glpi_rulecriterias' => 'rules_id',
-                        'glpi_rules'         => 'id'
-                    ]
-                ]
+                        'glpi_rules'         => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
                 'glpi_rules.is_active'  => 1,
-                'glpi_rules.sub_type'   => static::getRuleClassName()
-            ]
+                'glpi_rules.sub_type'   => static::getRuleClassName(),
+            ],
         ]);
 
         foreach ($iterator as $data) {
-             $params[] = Toolbox::strtolower($data["criteria"]);
+            $params[] = Toolbox::strtolower($data["criteria"]);
         }
         return $params;
     }
@@ -1963,7 +1959,7 @@ TWIG, $twig_params);
             }
             $title = $item->getMainTabLabel();
             if ($item->isRuleRecursive()) {
-               //TRANS: %s is the entity name
+                //TRANS: %s is the entity name
                 $title = sprintf(
                     __('Local rules: %s'),
                     Dropdown::getDropdownName(
@@ -2039,7 +2035,7 @@ TWIG, $twig_params);
                     'label'    => $title,
                     'link'     => $ruleClassName::getSearchURL(),
                     'icon'     => $ruleClassName::getIcon(),
-                    'sub_type' => $ruleClassName
+                    'sub_type' => $ruleClassName,
                 ];
             }
         }
@@ -2052,7 +2048,7 @@ TWIG, $twig_params);
                 'label'    => Transfer::getTypeName(),
                 'link'     => Transfer::getSearchURL(),
                 'icon'     => Transfer::getIcon(),
-                'sub_type' => Transfer::class
+                'sub_type' => Transfer::class,
             ];
         }
 
@@ -2106,7 +2102,7 @@ TWIG, $twig_params);
         if (count($entries)) {
             $dictionnaries[] = [
                 'type'      => __('Global dictionary'),
-                'entries'   => $entries
+                'entries'   => $entries,
             ];
         }
 
@@ -2140,8 +2136,8 @@ TWIG, $twig_params);
                         'label'  => PhoneModel::getTypeName(Session::getPluralNumber()),
                         'link'   => 'ruledictionnaryphonemodel.php',
                         'icon'   => PhoneModel::getIcon(),
-                    ]
-                ]
+                    ],
+                ],
             ];
 
             foreach ($custom_assets as $custom_asset) {
@@ -2184,8 +2180,8 @@ TWIG, $twig_params);
                         'label'  => PhoneType::getTypeName(Session::getPluralNumber()),
                         'link'   => 'ruledictionnaryphonetype.php',
                         'icon'   => PhoneType::getIcon(),
-                    ]
-                ]
+                    ],
+                ],
             ];
 
             foreach ($custom_assets as $custom_asset) {
@@ -2224,8 +2220,8 @@ TWIG, $twig_params);
                         'label'  => OperatingSystemEdition::getTypeName(Session::getPluralNumber()),
                         'link'   => 'ruledictionnaryoperatingsystemedition.php',
                         'icon'   => OperatingSystemEdition::getIcon(),
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
 

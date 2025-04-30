@@ -37,7 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Contact_Supplier extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1 = 'Contact';
     public static $items_id_1 = 'contacts_id';
 
@@ -101,7 +101,7 @@ class Contact_Supplier extends CommonDBRelation
      */
     public static function showForContact(Contact $contact)
     {
-        $instID = (int)$contact->fields['id'];
+        $instID = (int) $contact->fields['id'];
 
         if (!$contact->can($instID, READ)) {
             return;
@@ -187,7 +187,7 @@ class Contact_Supplier extends CommonDBRelation
             'columns' => $columns,
             'formatters' => [
                 'supplier' => 'raw_html',
-                'website' => 'raw_html'
+                'website' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -196,7 +196,7 @@ class Contact_Supplier extends CommonDBRelation
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 
@@ -288,7 +288,7 @@ class Contact_Supplier extends CommonDBRelation
             'columns' => $columns,
             'formatters' => [
                 'contact' => 'raw_html',
-                'email' => 'raw_html'
+                'email' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -297,7 +297,7 @@ class Contact_Supplier extends CommonDBRelation
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 }

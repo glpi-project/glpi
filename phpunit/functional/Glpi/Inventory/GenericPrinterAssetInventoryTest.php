@@ -59,9 +59,9 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
                     new \Glpi\Asset\Capacity(
                         name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
                         config: new \Glpi\Asset\CapacityConfig([
-                            'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericPrinterAsset::class
+                            'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericPrinterAsset::class,
                         ])
-                    )
+                    ),
                 ]
             )
         );
@@ -168,11 +168,11 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => ['itemtype' => $classname]
+            'WHERE' => ['itemtype' => $classname],
         ];
 
         $iterator = $DB->request($neteq_criteria);
@@ -221,7 +221,7 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
         $asset = $this->inventoryPrinter([
             new \Glpi\Asset\Capacity(
                 name: \Glpi\Asset\Capacity\HasNetworkPortCapacity::class
-            )
+            ),
         ]);
 
         $printers_id = $asset->getID();
@@ -247,15 +247,15 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
                 'glpi_rulecriterias' => [
                     'FKEY' => [
                         'glpi_rules' => 'id',
-                        'glpi_rulecriterias' => 'rules_id'
-                    ]
-                ]
+                        'glpi_rulecriterias' => 'rules_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'sub_type' => \RuleImportAsset::class,
                 'criteria' => 'itemtype',
-                'pattern' => \Printer::class
-            ]
+                'pattern' => \Printer::class,
+            ],
         ];
         $iterator = $DB->request($criteria);
         $tpl_rules_count = $iterator->current()['cnt'];
@@ -270,7 +270,7 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
                     new \Glpi\Asset\Capacity(
                         name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
                         config: new \Glpi\Asset\CapacityConfig(['inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericPrinterAsset::class])
-                    )
+                    ),
                 ]
             )
         );

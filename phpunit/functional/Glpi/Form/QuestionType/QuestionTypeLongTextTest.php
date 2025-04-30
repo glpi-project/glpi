@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use DbTestCase;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;

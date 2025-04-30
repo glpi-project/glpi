@@ -52,9 +52,7 @@ final class OauthConfig
     /**
      * Singleton constructor. Keep it private to force usage of `getInstance()`.
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Get singleton instance.
@@ -125,7 +123,7 @@ final class OauthConfig
             [
                 'clientId'     => $client_id,
                 'clientSecret' => $client_secret,
-                'redirectUri'  => $config['url_base'] . '/front/smtp_oauth2_callback.php'
+                'redirectUri'  => $config['url_base'] . '/front/smtp_oauth2_callback.php',
             ] + $provider_options
         );
 

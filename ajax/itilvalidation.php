@@ -46,10 +46,10 @@ Html::header_nocache();
 $validationtemplates_id = $_POST['validationtemplates_id'] ?? null;
 if ($validationtemplates_id === null) {
     throw new BadRequestHttpException("Missing or invalid parameter: 'validationtemplates_id'");
-} else if ($validationtemplates_id == 0) {
+} elseif ($validationtemplates_id == 0) {
     // Reset form
     echo json_encode([
-        'content' => ""
+        'content' => "",
     ]);
     return;
 }
@@ -98,5 +98,5 @@ echo json_encode(array_merge($template->fields, [
     'validatortype'   => $itemtype,
     'groups_id'       => $itemtype == 'Group_User' ? $target['groups_id'] : null,
     'items_id_target' => ($itemtype == 'Group' || $itemtype == 'User') && count($items_id_target) == 1 ?
-        $items_id_target[0] : $items_id_target
+        $items_id_target[0] : $items_id_target,
 ]));

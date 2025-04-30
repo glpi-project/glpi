@@ -74,7 +74,7 @@ class SolutionTemplate extends AbstractITILChildTemplate
                 // When an element will be created from a template, tinymce will catch the base64 image and trigger the
                 // document upload process.
                 'convert_images_to_documents' => false,
-            ]
+            ],
         ];
     }
 
@@ -89,7 +89,7 @@ class SolutionTemplate extends AbstractITILChildTemplate
             'field'              => 'content',
             'table'              => $this->getTable(),
             'datatype'           => 'text',
-            'htmltext'           => true
+            'htmltext'           => true,
         ];
 
         $tab[] = [
@@ -97,7 +97,7 @@ class SolutionTemplate extends AbstractITILChildTemplate
             'name'               => SolutionType::getTypeName(1),
             'field'              => 'name',
             'table'              => getTableForItemType('SolutionType'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;

@@ -56,7 +56,7 @@ class SlaLevelAction extends RuleAction
 
     public function rawSearchOptions()
     {
-       // RuleAction search options requires value of rules_id field which does not exists here
+        // RuleAction search options requires value of rules_id field which does not exists here
         return [];
     }
 }

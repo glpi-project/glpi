@@ -47,7 +47,7 @@ if (isset($_POST['entity_restrict'])) {
 
 // Make a select box
 if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
-   // Link to user for search only > normal users
+    // Link to user for search only > normal users
     $link = "getDropdownValue.php";
 
     if ($_POST["idtable"] == 'User') {
@@ -112,7 +112,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
 
     if (!empty($_POST['showItemSpecificity'])) {
         $params = ['items_id' => '__VALUE__',
-            'itemtype' => $_POST["idtable"]
+            'itemtype' => $_POST["idtable"],
         ];
         if (isset($_POST['entity_restrict'])) {
             $params['entity_restrict'] = $_POST['entity_restrict'];

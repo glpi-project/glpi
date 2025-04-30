@@ -62,7 +62,7 @@ function update921to922()
     $migration->addPostQuery(
         $DB->buildDelete("glpi_configs", [
             'context'   => "core",
-            'name'      => "default_graphtype"
+            'name'      => "default_graphtype",
         ])
     );
 
@@ -73,7 +73,7 @@ function update921to922()
         )
     );
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

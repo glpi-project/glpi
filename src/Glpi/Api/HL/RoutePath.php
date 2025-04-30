@@ -331,7 +331,7 @@ final class RoutePath
             if (empty($doc->getMethods())) {
                 // Non-specific. Store in $result in case a specific doc is found later
                 $result = $doc;
-            } else if (in_array($method, $doc->getMethods(), true)) {
+            } elseif (in_array($method, $doc->getMethods(), true)) {
                 // Specific. Return immeditately
                 return $doc;
             }

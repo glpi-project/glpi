@@ -62,22 +62,22 @@ switch ($action) {
             Socket::dropdown(['name'         =>  $_GET['dom_name'],
                 'condition'    => ['socketmodels_id'   => $_GET['socketmodels_id'] ?? 0,
                     'itemtype'           => $_GET['itemtype'],
-                    'items_id'           => $_GET['items_id']
+                    'items_id'           => $_GET['items_id'],
                 ],
-                'used'         => (int)$_GET['items_id'] > 0 ? Socket::getSocketAlreadyLinked($_GET['itemtype'], (int)$_GET['items_id']) : [],
+                'used'         => (int) $_GET['items_id'] > 0 ? Socket::getSocketAlreadyLinked($_GET['itemtype'], (int) $_GET['items_id']) : [],
                 'displaywith'  => ['itemtype', 'items_id', 'networkports_id'],
             ]);
         }
         break;
 
     case 'get_networkport_dropdown':
-         NetworkPort::dropdown(['name'                => 'networkports_id',
-             'display_emptychoice' => true,
-             'condition'           => ['items_id' => $_GET['items_id'],
-                 'itemtype' => $_GET['itemtype']
-             ],
-             'comments' => false
-         ]);
+        NetworkPort::dropdown(['name'                => 'networkports_id',
+            'display_emptychoice' => true,
+            'condition'           => ['items_id' => $_GET['items_id'],
+                'itemtype' => $_GET['itemtype'],
+            ],
+            'comments' => false,
+        ]);
         break;
 
 

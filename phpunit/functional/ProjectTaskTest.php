@@ -47,63 +47,63 @@ class ProjectTaskTest extends DbTestCase
         $this->login();
 
         $user = getItemByTypeName('User', 'tech');
-        $users_id = (int)$user->fields['id'];
+        $users_id = (int) $user->fields['id'];
 
         $ptask = new \ProjectTask();
         $this->assertSame(
             0,
-            (int)$ptask->add([
-                'name'   => 'test'
+            (int) $ptask->add([
+                'name'   => 'test',
             ])
         );
 
         $this->hasSessionMessages(ERROR, ['A linked project is mandatory']);
 
         $project = new \Project();
-        $pid = (int)$project->add([
-            'name'   => 'Test project'
+        $pid = (int) $project->add([
+            'name'   => 'Test project',
         ]);
         $this->assertGreaterThan(0, $pid);
 
         $this->assertGreaterThan(
             0,
-            (int)$ptask->add([
+            (int) $ptask->add([
                 'name'                     => 'first test, whole period',
                 'projects_id'              => $pid,
                 'plan_start_date'          => '2019-08-10',
                 'plan_end_date'            => '2019-08-20',
-                'projecttasktemplates_id'  => 0
+                'projecttasktemplates_id'  => 0,
             ])
         );
         $this->hasNoSessionMessages([ERROR, WARNING]);
         $task_id = $ptask->fields['id'];
 
         $team = new \ProjectTaskTeam();
-        $tid = (int)$team->add([
+        $tid = (int) $team->add([
             'projecttasks_id' => $ptask->fields['id'],
             'itemtype'        => \User::getType(),
-            'items_id'        => $users_id
+            'items_id'        => $users_id,
         ]);
         $this->hasNoSessionMessages([ERROR, WARNING]);
         $this->assertGreaterThan(0, $tid);
 
         $this->assertGreaterThan(
             0,
-            (int)$ptask->add([
+            (int) $ptask->add([
                 'name'                     => 'test, subperiod',
                 'projects_id'              => $pid,
                 'plan_start_date'          => '2019-08-13',
                 'plan_end_date'            => '2019-08-14',
-                'projecttasktemplates_id'  => 0
+                'projecttasktemplates_id'  => 0,
             ])
         );
         $this->hasNoSessionMessages([ERROR, WARNING]);
 
         $team = new \ProjectTaskTeam();
-        $tid = (int)$team->add([
+        $tid = (int) $team->add([
             'projecttasks_id' => $ptask->fields['id'],
             'itemtype'        => \User::getType(),
-            'items_id'        => $users_id
+            'items_id'        => $users_id,
         ]);
 
         $usr_str = '<a href="' . $user->getFormURLWithID($users_id) . '">' . $user->getName() . '</a>';
@@ -111,7 +111,7 @@ class ProjectTaskTest extends DbTestCase
             WARNING,
             [
                 "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-13 00:00 to 2019-08-14 00:00:<br/><a href='" .
-            $ptask->getFormURLWithID($task_id) . "'>first test, whole period</a><br/>"
+            $ptask->getFormURLWithID($task_id) . "'>first test, whole period</a><br/>",
             ]
         );
         $this->assertGreaterThan(0, $tid);
@@ -119,21 +119,21 @@ class ProjectTaskTest extends DbTestCase
         //check when updating. first create a new task out of existing bouds
         $this->assertGreaterThan(
             0,
-            (int)$ptask->add([
+            (int) $ptask->add([
                 'name'                     => 'test subperiod, out of bounds',
                 'projects_id'              => $pid,
                 'plan_start_date'          => '2018-08-13',
                 'plan_end_date'            => '2018-08-24',
-                'projecttasktemplates_id'  => 0
+                'projecttasktemplates_id'  => 0,
             ])
         );
         $this->hasNoSessionMessages([ERROR, WARNING]);
 
         $team = new \ProjectTaskTeam();
-        $tid = (int)$team->add([
+        $tid = (int) $team->add([
             'projecttasks_id' => $ptask->fields['id'],
             'itemtype'        => \User::getType(),
-            'items_id'        => $users_id
+            'items_id'        => $users_id,
         ]);
         $this->hasNoSessionMessages([ERROR, WARNING]);
         $this->assertGreaterThan(0, $tid);
@@ -145,7 +145,7 @@ class ProjectTaskTest extends DbTestCase
                 'projects_id'              => $pid,
                 'plan_start_date'          => '2019-08-13',
                 'plan_end_date'            => '2019-08-24',
-                'projecttasktemplates_id'  => 0
+                'projecttasktemplates_id'  => 0,
             ])
         );
 
@@ -156,29 +156,29 @@ class ProjectTaskTest extends DbTestCase
         $ticket = new \Ticket();
         $this->assertGreaterThan(
             0,
-            (int)$ticket->add([
+            (int) $ticket->add([
                 'name'               => 'ticket title',
                 'description'        => 'a description',
                 'content'            => '',
                 'entities_id'        => getItemByTypeName('Entity', '_test_root_entity', true),
-                '_users_id_assign'   => getItemByTypeName('User', 'tech', true)
+                '_users_id_assign'   => getItemByTypeName('User', 'tech', true),
             ])
         );
 
         $this->assertFalse($ticket->isNewItem());
-        $tid = (int)$ticket->fields['id'];
+        $tid = (int) $ticket->fields['id'];
 
         $ttask = new \TicketTask();
-        $ttask_id = (int)$ttask->add([
+        $ttask_id = (int) $ttask->add([
             'name'               => 'A ticket task in bounds',
             'content'            => 'A ticket task in bounds',
             'tickets_id'         => $tid,
             'plan'               => [
                 'begin'  => '2019-08-11',
-                'end'    => '2019-08-12'
+                'end'    => '2019-08-12',
             ],
             'users_id_tech'      => $users_id,
-            'tasktemplates_id'   => 0
+            'tasktemplates_id'   => 0,
         ]);
         $usr_str = '<a href="' . $user->getFormURLWithID($users_id) . '">' . $user->getName() . '</a>';
 
@@ -186,7 +186,7 @@ class ProjectTaskTest extends DbTestCase
             WARNING,
             [
                 "The user $usr_str is busy at the selected timeframe.<br/>- Project task: from 2019-08-11 00:00 to 2019-08-12 00:00:<br/><a href='" .
-            $ptask->getFormURLWithID($task_id) . "'>first test, whole period</a><br/>"
+            $ptask->getFormURLWithID($task_id) . "'>first test, whole period</a><br/>",
             ]
         );
         $this->assertGreaterThan(0, $ttask_id);
@@ -218,13 +218,13 @@ class ProjectTaskTest extends DbTestCase
         $project = new \Project();
         $projects_id = $project->add([
             'name'      => 'Team test',
-            'content'   => 'Team test'
+            'content'   => 'Team test',
         ]);
 
         $projecttasks_id = $project_task->add([
             'projects_id'  => $projects_id,
             'name'         => 'Team test',
-            'content'      => 'Team test'
+            'content'      => 'Team test',
         ]);
         $this->assertGreaterThan(0, $projecttasks_id);
 
@@ -376,7 +376,7 @@ class ProjectTaskTest extends DbTestCase
         $this->createItems('User', [['name' => $user_name]]);
         $users_id = getItemByTypeName("User", $user_name, true);
 
-       // Create a group
+        // Create a group
         $group_name = 'Project testClone - Group' . random_int(0, 99999);
         $this->createItems('Group', [['name' => $group_name]]);
         $groups_id = getItemByTypeName("Group", $group_name, true);
@@ -473,7 +473,7 @@ class ProjectTaskTest extends DbTestCase
                 'name' => 'Project Task 1',
                 'auto_projectstates' => 1,
                 'projects_id' => $project->getID(),
-                'percent_done'  => 0
+                'percent_done'  => 0,
             ]
         );
 
@@ -485,7 +485,7 @@ class ProjectTaskTest extends DbTestCase
             'result' => [
                 'percent_done' => '0',
                 'projectstates_id' => 1,
-            ]
+            ],
         ];
         yield [
             'input' => [ // Task with percent_done == 50
@@ -495,7 +495,7 @@ class ProjectTaskTest extends DbTestCase
             'result' => [
                 'percent_done' => '50',
                 'projectstates_id' => 2,
-            ]
+            ],
         ];
         yield [
             'input' => [ // Task with percent_done == 100
@@ -505,7 +505,7 @@ class ProjectTaskTest extends DbTestCase
             'result' => [
                 'percent_done' => '100',
                 'projectstates_id' => 3,
-            ]
+            ],
         ];
         yield [
             'input' => [ // Task with percent_done == 25
@@ -515,7 +515,7 @@ class ProjectTaskTest extends DbTestCase
             'result' => [
                 'percent_done' => '25',
                 'projectstates_id' => 2,
-            ]
+            ],
         ];
         yield [
             'input' => [ // Task with percent_done < 0
@@ -525,7 +525,7 @@ class ProjectTaskTest extends DbTestCase
             'result' => [
                 'percent_done' => '-1',
                 'projectstates_id' => 1,
-            ]
+            ],
         ];
     }
 
@@ -566,7 +566,7 @@ class ProjectTaskTest extends DbTestCase
             'result' => [
                 'real_start_date' => \Session::getCurrentTime(),
                 'real_end_date'   => null,
-            ]
+            ],
         ];
         yield [
             'input' => [ // Task with percent_done < 100 and > 0
@@ -577,7 +577,7 @@ class ProjectTaskTest extends DbTestCase
             'result' => [
                 'real_start_date' => \Session::getCurrentTime(),
                 'real_end_date'   => null,
-            ]
+            ],
         ];
         yield [
             'input' => [ // Task with percent_done = 100
@@ -588,24 +588,24 @@ class ProjectTaskTest extends DbTestCase
             'result' => [
                 'real_start_date' => \Session::getCurrentTime(),
                 'real_end_date'   => \Session::getCurrentTime(),
-            ]
+            ],
         ];
         $tasks = [
             [
                 'name'         => 'Task 3',
-                'percent_done' => '0'
+                'percent_done' => '0',
             ],
             [
-                'name' => 'Task 4'
+                'name' => 'Task 4',
             ],
             [
                 'name'         => 'Task 5',
-                'percent_done' => null
+                'percent_done' => null,
             ],
             [
                 'name'            => 'Task 7',
                 'real_start_date' => null,
-                'real_end_date'   => null
+                'real_end_date'   => null,
             ],
         ];
         foreach ($tasks as $task) {
@@ -614,8 +614,8 @@ class ProjectTaskTest extends DbTestCase
                 'input' => $task,
                 'result' => [
                     'real_start_date' => null,
-                    'real_end_date'   => null
-                ]
+                    'real_end_date'   => null,
+                ],
             ];
         }
         yield [
@@ -628,8 +628,8 @@ class ProjectTaskTest extends DbTestCase
             ],
             'result' => [
                 'real_start_date' => '2024-10-10 10:10:10',
-                'real_end_date'   => null
-            ]
+                'real_end_date'   => null,
+            ],
         ];
         yield [
             'input' => [ // Task with empty real_start_date and real_end_date
@@ -640,8 +640,8 @@ class ProjectTaskTest extends DbTestCase
             ],
             'result' => [
                 'real_start_date' => null,
-                'real_end_date'   => null
-            ]
+                'real_end_date'   => null,
+            ],
         ];
         yield [
             'input' => [ // Task with percent_done = 100 and real_start_date and real_end_date
@@ -653,8 +653,8 @@ class ProjectTaskTest extends DbTestCase
             ],
             'result' => [
                 'real_start_date' => '2023-05-12 11:54:23',
-                'real_end_date'   => '2023-09-05 16:21:46'
-            ]
+                'real_end_date'   => '2023-09-05 16:21:46',
+            ],
         ];
     }
 
@@ -695,7 +695,7 @@ class ProjectTaskTest extends DbTestCase
                 'percent_done'    => 0,
                 'real_start_date' => null,
                 'real_end_date'   => null,
-            ]
+            ],
         ];
 
         // `real_start_date` is automatically set reset when `percent_done` is set to something else than 0%
@@ -710,7 +710,7 @@ class ProjectTaskTest extends DbTestCase
                 'result' => [
                     'percent_done'    => $percent_done,
                     'real_start_date' => \Session::getCurrentTime(),
-                ]
+                ],
             ];
         }
 
@@ -728,7 +728,7 @@ class ProjectTaskTest extends DbTestCase
                 'percent_done'    => 100,
                 'real_start_date' => '2023-12-12 04:56:35',
                 'real_end_date'   => '2023-12-22 12:23:35',
-            ]
+            ],
         ];
 
         // `real_start_date` is not reset when `percent_done` is set to 100%
@@ -745,7 +745,7 @@ class ProjectTaskTest extends DbTestCase
             [
                 'percent_done'    => 100,
                 'real_start_date' => '2023-12-12 04:56:35',
-            ]
+            ],
         ];
         foreach ($initial_fields_sets as $fields) {
             yield [
@@ -778,7 +778,7 @@ class ProjectTaskTest extends DbTestCase
                 'percent_done'    => 100,
                 'real_start_date' => '2023-12-12 04:56:35',
                 'real_end_date'   => '2023-12-22 12:23:35',
-            ]
+            ],
         ];
         foreach ($initial_fields_sets as $fields) {
             yield [
@@ -841,7 +841,7 @@ class ProjectTaskTest extends DbTestCase
         // Create project
         $project = $this->createItem(\Project::getType(), [
             'name'         => 'project',
-            'entities_id'  => $entity
+            'entities_id'  => $entity,
         ]);
 
         // Check if a user with a project with no tasks returns an empty array
@@ -918,7 +918,7 @@ class ProjectTaskTest extends DbTestCase
         $project = $this->createItem(\Project::getType(), [
             'name'         => 'project',
             'entities_id'  => $entity,
-            'groups_id'    => $group->getID()
+            'groups_id'    => $group->getID(),
         ]);
 
         // Check if a group with a project with no tasks returns an empty array

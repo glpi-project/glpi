@@ -73,7 +73,7 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $cost->check($_POST["id"], PURGE);
     if ($cost->delete($_POST, 1)) {
         Event::log(
@@ -86,7 +86,7 @@ if (isset($_POST["add"])) {
         );
     }
     Html::redirect($itemtype::getFormURLWithID($cost->fields[$fk]));
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $cost->check($_POST["id"], UPDATE);
 
     if ($cost->update($_POST)) {

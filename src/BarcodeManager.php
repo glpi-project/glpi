@@ -52,7 +52,7 @@ class BarcodeManager
             -2,
             -2,
             'black',
-            array(-2, -2, -2, -2)
+            [-2, -2, -2, -2]
         )->setBackgroundColor('white');
         return $qrcode;
     }

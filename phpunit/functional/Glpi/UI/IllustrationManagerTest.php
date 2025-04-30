@@ -44,11 +44,11 @@ final class IllustrationManagerTest extends GLPITestCase
     {
         yield [
             'filter' => 'Service',
-            'expected' => ['request-service']
+            'expected' => ['request-service'],
         ];
         yield [
             'filter' => 'backup And restoration',
-            'expected' => ['backup-restoration-1', 'backup-restoration-2']
+            'expected' => ['backup-restoration-1', 'backup-restoration-2'],
         ];
     }
 

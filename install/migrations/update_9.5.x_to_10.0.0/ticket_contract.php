@@ -62,7 +62,7 @@ if (!$DB->fieldExists("glpi_entities", "contracts_id_default")) {
             'after'     => "anonymize_support_agents",
             'value'     => -2,               // Inherit as default value
             'update'    => '0',              // Not enabled for root entity
-            'condition' => 'WHERE `id` = 0'
+            'condition' => 'WHERE `id` = 0',
         ]
     );
 

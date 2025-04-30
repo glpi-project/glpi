@@ -45,8 +45,7 @@ final class QuestionTypeUserDevicesConfig implements JsonFieldInterface
 
     public function __construct(
         private bool $is_multiple_devices = false,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

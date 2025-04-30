@@ -45,7 +45,7 @@ class NetworkPortTypeTest extends DbTestCase
         global $DB;
 
         $iterator = $DB->request([
-            'FROM'   => \NetworkPortType::getTable()
+            'FROM'   => \NetworkPortType::getTable(),
         ]);
         $this->assertGreaterThanOrEqual(
             300,
@@ -54,7 +54,7 @@ class NetworkPortTypeTest extends DbTestCase
 
         $iterator = $DB->request([
             'FROM'   => \NetworkPortType::getTable(),
-            'WHERE'  => ['is_importable' => true]
+            'WHERE'  => ['is_importable' => true],
         ]);
 
         $expecteds = [
@@ -106,7 +106,7 @@ class NetworkPortTypeTest extends DbTestCase
                 'comment' => 'MAC layer over radio links [Daniele_Behar]',
                 'is_importable' => 1,
                 'instantiation_type' => 'NetworkPortWifi',
-            ]
+            ],
         ];
 
         $this->assertCount(count($expecteds), $iterator);

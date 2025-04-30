@@ -36,7 +36,6 @@ namespace tests\units;
 
 use Auth;
 use DbTestCase;
-use CommonGLPI;
 use Computer;
 use Preference;
 use DbUtils;
@@ -125,7 +124,7 @@ class ValidatorSubstituteTest extends DbTestCase
         $this->login('glpi', 'glpi');
         yield [
             'input' => [
-                'users_id' => 1
+                'users_id' => 1,
             ],
             'expected' => false,
         ];
@@ -162,14 +161,14 @@ class ValidatorSubstituteTest extends DbTestCase
         $_SESSION['glpiID'] = 2;
         yield [
             'input' => [
-                'users_id' => 1
+                'users_id' => 1,
             ],
             'expected' => false,
         ];
 
         yield [
             'input' => [
-                'users_id' => User::getIdByName('glpi')
+                'users_id' => User::getIdByName('glpi'),
             ],
             'expected' => true,
         ];
@@ -198,14 +197,14 @@ class ValidatorSubstituteTest extends DbTestCase
         $_SESSION['glpiID'] = 2;
         yield [
             'input' => [
-                'users_id' => 1
+                'users_id' => 1,
             ],
             'expected' => false,
         ];
 
         yield [
             'input' => [
-                'users_id' => User::getIdByName('glpi')
+                'users_id' => User::getIdByName('glpi'),
             ],
             'expected' => true,
         ];
@@ -234,14 +233,14 @@ class ValidatorSubstituteTest extends DbTestCase
         $_SESSION['glpiID'] = 2;
         yield [
             'input' => [
-                'users_id' => 1
+                'users_id' => 1,
             ],
             'expected' => false,
         ];
 
         yield [
             'input' => [
-                'users_id' => User::getIdByName('glpi')
+                'users_id' => User::getIdByName('glpi'),
             ],
             'expected' => true,
         ];
@@ -270,14 +269,14 @@ class ValidatorSubstituteTest extends DbTestCase
         $_SESSION['glpiID'] = 2;
         yield [
             'input' => [
-                'users_id' => 1
+                'users_id' => 1,
             ],
             'expected' => false,
         ];
 
         yield [
             'input' => [
-                'users_id' => User::getIdByName('glpi')
+                'users_id' => User::getIdByName('glpi'),
             ],
             'expected' => true,
         ];
@@ -477,7 +476,7 @@ class ValidatorSubstituteTest extends DbTestCase
                 'rows' => [
                     [
                         'users_id_substitute' => User::getIdByName('glpi'),
-                    ]
+                    ],
                 ],
             ],
         ];

@@ -82,7 +82,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_c"],
             'submitted_answer'    => ["option_b"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Equals check - case 2 for $type" => [
             'question_type'       => $type,
@@ -90,7 +90,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_c"],
             'submitted_answer'    => ["option_c"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Equals check - case 3 for $type" => [
             'question_type'       => $type,
@@ -98,7 +98,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_c"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Equals check - case 4 for $type" => [
             'question_type'       => $type,
@@ -106,7 +106,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Equals check - case 5 for $type" => [
             'question_type'       => $type,
@@ -114,7 +114,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_c", "option_a"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Equals check - case 6 for $type" => [
             'question_type'       => $type,
@@ -122,7 +122,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a", "option_c"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Equals check - case 7 for $type" => [
             'question_type'       => $type,
@@ -130,7 +130,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a", "option_c", "option_b"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
 
         // Test with the NOT EQUALS operator
@@ -140,7 +140,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_c"],
             'submitted_answer'    => ["option_b"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not equals check - case 2 for $type" => [
             'question_type'       => $type,
@@ -148,7 +148,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_c"],
             'submitted_answer'    => ["option_c"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not equals check - case 3 for $type" => [
             'question_type'       => $type,
@@ -156,7 +156,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_c"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not equals check - case 4 for $type" => [
             'question_type'       => $type,
@@ -164,7 +164,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not equals check - case 5 for $type" => [
             'question_type'       => $type,
@@ -172,7 +172,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_c", "option_a"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not equals check - case 6 for $type" => [
             'question_type'       => $type,
@@ -180,7 +180,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a", "option_c"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not equals check - case 7 for $type" => [
             'question_type'       => $type,
@@ -188,7 +188,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a", "option_c", "option_b"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
 
         // Test with the CONTAINS operator
@@ -198,7 +198,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_c"],
             'submitted_answer'    => ["option_b"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Contains check - case 2 for $type" => [
             'question_type'       => $type,
@@ -206,7 +206,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_c"],
             'submitted_answer'    => ["option_c"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Contains check - case 3 for $type" => [
             'question_type'       => $type,
@@ -214,7 +214,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_c"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Contains check - case 4 for $type" => [
             'question_type'       => $type,
@@ -222,7 +222,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Contains check - case 5 for $type" => [
             'question_type'       => $type,
@@ -230,7 +230,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_c", "option_a"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Contains check - case 6 for $type" => [
             'question_type'       => $type,
@@ -238,7 +238,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a", "option_c"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Contains check - case 7 for $type" => [
             'question_type'       => $type,
@@ -246,7 +246,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a"],
             'submitted_answer'    => ["option_c", "option_a"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Contains check - case 8 for $type" => [
             'question_type'       => $type,
@@ -254,7 +254,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_b"],
             'submitted_answer'    => ["option_c", "option_b", "option_a"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
 
         // Test with the NOT CONTAINS operator
@@ -264,7 +264,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_c"],
             'submitted_answer'    => ["option_b"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not contains check - case 2 for $type" => [
             'question_type'       => $type,
@@ -272,7 +272,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_c"],
             'submitted_answer'    => ["option_c"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not contains check - case 3 for $type" => [
             'question_type'       => $type,
@@ -280,7 +280,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_c"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not contains check - case 4 for $type" => [
             'question_type'       => $type,
@@ -288,7 +288,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a"],
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not contains check - case 5 for $type" => [
             'question_type'       => $type,
@@ -296,7 +296,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_c", "option_a"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not contains check - case 6 for $type" => [
             'question_type'       => $type,
@@ -304,7 +304,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_c"],
             'submitted_answer'    => ["option_a", "option_c"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not contains check - case 7 for $type" => [
             'question_type'       => $type,
@@ -312,7 +312,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a"],
             'submitted_answer'    => ["option_c", "option_a"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not contains check - case 8 for $type" => [
             'question_type'       => $type,
@@ -320,7 +320,7 @@ final class MultipleChoiceFromValuesConditionHandlerTest extends AbstractConditi
             'condition_value'     => ["option_a", "option_b"],
             'submitted_answer'    => ["option_c", "option_b", "option_a"],
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
     }
 }

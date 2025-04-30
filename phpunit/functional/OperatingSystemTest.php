@@ -49,7 +49,7 @@ class OperatingSystemTest extends CommonDropdown
             [\OperatingSystem::getTypeName(), 'Operating systems'],
             [\OperatingSystem::getTypeName(0), 'Operating systems'],
             [\OperatingSystem::getTypeName(10), 'Operating systems'],
-            [\OperatingSystem::getTypeName(1), 'Operating system']
+            [\OperatingSystem::getTypeName(1), 'Operating system'],
         ];
     }
 
@@ -71,7 +71,7 @@ class OperatingSystemTest extends CommonDropdown
         $this->assertGreaterThan(
             0,
             $instance->add([
-                'name' => 'OS name ' . $this->getUniqueString()
+                'name' => 'OS name ' . $this->getUniqueString(),
             ])
         );
         $this->assertTrue($instance->getFromDB($instance->getID()));

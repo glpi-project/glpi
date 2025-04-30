@@ -69,7 +69,7 @@ $migration->addCrontask(
 if (!$DB->fieldExists('glpi_entities', 'max_closedate_change')) {
     $migration->addField('glpi_entities', 'max_closedate_change', 'timestamp', [
         'after' => 'inquest_URL',
-        'null'  => true
+        'null'  => true,
     ]);
 }
 if (!$DB->fieldExists('glpi_entities', 'inquest_config_change')) {
@@ -78,13 +78,13 @@ if (!$DB->fieldExists('glpi_entities', 'inquest_config_change')) {
         'value'     => -2,
         // Internal survey for root entity
         'update'    => '1',
-        'condition' => 'WHERE `id` = 0'
+        'condition' => 'WHERE `id` = 0',
     ]);
 }
 if (!$DB->fieldExists('glpi_entities', 'inquest_rate_change')) {
     $migration->addField('glpi_entities', 'inquest_rate_change', 'integer', [
         'after' => 'inquest_config_change',
-        'value' => 0
+        'value' => 0,
     ]);
 }
 if (!$DB->fieldExists('glpi_entities', 'inquest_delay_change')) {
@@ -93,43 +93,43 @@ if (!$DB->fieldExists('glpi_entities', 'inquest_delay_change')) {
         'value'     => -10,
         // Unlimited for root entity
         'update'    => '0',
-        'condition' => 'WHERE `id` = 0'
+        'condition' => 'WHERE `id` = 0',
     ]);
 }
 if (!$DB->fieldExists('glpi_entities', 'inquest_URL_change')) {
     $migration->addField('glpi_entities', 'inquest_URL_change', 'string', [
         'after' => 'inquest_delay_change',
-        'null'  => true
+        'null'  => true,
     ]);
 }
 if (!$DB->fieldExists('glpi_entities', 'inquest_max_rate_change')) {
     $migration->addField('glpi_entities', 'inquest_max_rate_change', 'integer', [
         'after' => 'inquest_URL_change',
-        'value' => 5
+        'value' => 5,
     ]);
 }
 if (!$DB->fieldExists('glpi_entities', 'inquest_default_rate_change')) {
     $migration->addField('glpi_entities', 'inquest_default_rate_change', 'integer', [
         'after' => 'inquest_max_rate_change',
-        'value' => 3
+        'value' => 3,
     ]);
 }
 if (!$DB->fieldExists('glpi_entities', 'inquest_mandatory_comment_change')) {
     $migration->addField('glpi_entities', 'inquest_mandatory_comment_change', 'integer', [
         'after' => 'inquest_default_rate_change',
-        'value' => 0
+        'value' => 0,
     ]);
 }
 if (!$DB->fieldExists('glpi_entities', 'inquest_duration_change')) {
     $migration->addField('glpi_entities', 'inquest_duration_change', 'integer', [
         'after' => 'inquest_duration',
-        'value' => 0
+        'value' => 0,
     ]);
 }
 
 $migration->addRight('change', CommonITILObject::SURVEY, [
     'change' => [
-        Change::READMY
+        Change::READMY,
     ],
 ]);
 
@@ -154,7 +154,7 @@ foreach (['glpi_changesatisfactions', 'glpi_ticketsatisfactions'] as $table) {
         ]);
         $migration->addPostQuery(
             $DB->buildUpdate($table, [
-                'satisfaction_scaled_to_5' => new QueryExpression($DB->quoteName('satisfaction'))
+                'satisfaction_scaled_to_5' => new QueryExpression($DB->quoteName('satisfaction')),
             ], [1])
         );
     }

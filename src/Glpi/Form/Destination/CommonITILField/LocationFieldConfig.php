@@ -51,8 +51,7 @@ final class LocationFieldConfig implements
         private LocationFieldStrategy $strategy,
         private ?int $specific_question_id = null,
         private ?int $specific_location_id = null,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

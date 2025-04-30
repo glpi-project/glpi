@@ -55,7 +55,7 @@ trait Inventoriable
     {
         $file_name = $this->getInventoryFileName();
         if ($file_name === null) {
-           //file does not exist
+            //file does not exist
             return true;
         }
 
@@ -123,7 +123,7 @@ trait Inventoriable
                 $download_file
             );
             $title = sprintf(
-             //TRANS: parameter is the name of the asset
+                //TRANS: parameter is the name of the asset
                 __s('Download "%1$s" inventory file'),
                 htmlescape($this->getName())
             );
@@ -165,7 +165,7 @@ HTML;
             $this->displayAgentInformation();
         }
 
-       // Display auto inventory information
+        // Display auto inventory information
         if (
             !empty($this->fields['id'])
             && $this->maybeDynamic() && $this->fields["is_dynamic"]
@@ -204,7 +204,7 @@ HTML;
         echo "<i id='update-status' class='ti ti-refresh' style='float: right;cursor: pointer;' title='" . __s('Ask agent about its current status') . "'></i>";
         echo '</td>';
         echo '<td id="agent_status">' . __s('Unknown') . '</td>';
-        echo '<td>' .  __s('Request inventory');
+        echo '<td>' . __s('Request inventory');
         echo "<i id='update-inventory' class='ti ti-refresh' style='float: right;cursor: pointer;' title='" . __s('Request agent to proceed an new inventory') . "'></i>";
         echo '</td>';
         echo '<td id="inventory_status">' . __s('None') . '</td>';
@@ -212,7 +212,7 @@ HTML;
 
         $status = Agent::ACTION_STATUS;
         $inventory = Agent::ACTION_INVENTORY;
-        $agents_id = (int)$this->agent->fields['id'];
+        $agents_id = (int) $this->agent->fields['id'];
         $js = <<<JAVASCRIPT
          $(function() {
             $('#update-status').on('click', function() {
@@ -272,13 +272,13 @@ JAVASCRIPT;
                 [
                     'SELECT' => [
                         'itemtype_peripheral',
-                        'items_id_peripheral'
+                        'items_id_peripheral',
                     ],
                     'FROM'   => Asset_PeripheralAsset::getTable(),
                     'WHERE'  => [
                         'itemtype_asset' => Computer::class,
-                        'items_id_asset' => $this->getID()
-                    ]
+                        'items_id_asset' => $this->getID(),
+                    ],
                 ]
             );
             if (count($relations_iterator) > 0) {
@@ -295,7 +295,7 @@ JAVASCRIPT;
                     if (count($ids) > 0) {
                         $conditions['OR'][] = [
                             'itemtype' => $itemtype,
-                            'items_id' => $ids
+                            'items_id' => $ids,
                         ];
                     }
                 }
@@ -325,7 +325,7 @@ JAVASCRIPT;
             'FROM'      => Agent::getTable(),
             'WHERE'     => $conditions,
             'ORDERBY'   => ['last_contact DESC'],
-            'LIMIT'     => 1
+            'LIMIT'     => 1,
         ]);
         if (count($iterator) === 0) {
             return null;

@@ -49,7 +49,7 @@ class OperatingSystemKernelTest extends CommonDropdown
             [\OperatingSystemKernel::getTypeName(), 'Kernels'],
             [\OperatingSystemKernel::getTypeName(0), 'Kernels'],
             [\OperatingSystemKernel::getTypeName(10), 'Kernels'],
-            [\OperatingSystemKernel::getTypeName(1), 'Kernel']
+            [\OperatingSystemKernel::getTypeName(1), 'Kernel'],
         ];
     }
 
@@ -71,7 +71,7 @@ class OperatingSystemKernelTest extends CommonDropdown
         $this->assertGreaterThan(
             0,
             $instance->add([
-                'name' => 'Kernel name ' . $this->getUniqueString()
+                'name' => 'Kernel name ' . $this->getUniqueString(),
             ])
         );
         $this->assertTrue($instance->getFromDB($instance->getID()));

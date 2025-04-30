@@ -37,5 +37,5 @@
  */
 
 $migration->addRight('rule_location', ALLSTANDARDRIGHT, [
-    'rule_import' => UPDATE
+    'rule_import' => UPDATE,
 ]);

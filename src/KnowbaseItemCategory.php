@@ -36,13 +36,13 @@
 /// Class KnowbaseItemCategory
 class KnowbaseItemCategory extends CommonTreeDropdown
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;
 
     public static $rightname          = 'knowbasecategory';
 
-    const SEEALL = -1;
+    public const SEEALL = -1;
 
     public static function getTypeName($nb = 0)
     {

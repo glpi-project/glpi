@@ -38,7 +38,7 @@
 
 $dc_model_dropdowns = [
     'EnclosureModel', 'PeripheralModel', 'PDUModel', 'NetworkEquipmentModel', 'MonitorModel', 'ComputerModel',
-    'PassiveDCEquipmentModel'
+    'PassiveDCEquipmentModel',
 ];
 
 foreach ($dc_model_dropdowns as $model_dropdown) {

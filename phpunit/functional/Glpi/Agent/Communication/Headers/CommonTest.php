@@ -46,20 +46,20 @@ class CommonTest extends GLPITestCase
         return [
             [
                 'propname' => 'content_type',
-                'headername' => 'Content-Type'
+                'headername' => 'Content-Type',
             ], [
                 'propname' => 'glpi_agent_id',
-                'headername' => 'GLPI-Agent-ID'
+                'headername' => 'GLPI-Agent-ID',
             ], [
                 'propname' => 'glpi_cryptokey_id',
-                'headername' => 'GLPI-CryptoKey-ID'
+                'headername' => 'GLPI-CryptoKey-ID',
             ], [
                 'propname' => 'glpi_any_any',
-                'headername' => 'GLPI-Any-Any'
+                'headername' => 'GLPI-Any-Any',
             ], [
                 'propname' => 'header_with_id_in',
-                'headername' => 'Header-With-ID-In'
-            ]
+                'headername' => 'Header-With-ID-In',
+            ],
         ];
     }
 
@@ -73,18 +73,18 @@ class CommonTest extends GLPITestCase
         );
     }
 
-   /* Useful only when legacy will no longer be the default */
-   /*public function testGetHeadersWException() {
-      $this
-         ->exception(
-            function() {
-               $this
-                  ->if($this->newTestedInstance)
-                  ->then
-                  ->array($this->testedInstance->getHeaders());
-            }
-         )->hasMessage('Content-Type HTTP header is mandatory!');
-   }*/
+    /* Useful only when legacy will no longer be the default */
+    /*public function testGetHeadersWException() {
+       $this
+          ->exception(
+             function() {
+                $this
+                   ->if($this->newTestedInstance)
+                   ->then
+                   ->array($this->testedInstance->getHeaders());
+             }
+          )->hasMessage('Content-Type HTTP header is mandatory!');
+    }*/
 
     public function testGetHeaders()
     {
@@ -100,7 +100,7 @@ class CommonTest extends GLPITestCase
         $instance = new \Glpi\Agent\Communication\Headers\Common();
         $instance->setHeaders([
             'Content-Type' => 'application/xml',
-            'GLPI-Agent-ID' => 'anything'
+            'GLPI-Agent-ID' => 'anything',
         ]);
 
         $headers = $instance->getHeaders();

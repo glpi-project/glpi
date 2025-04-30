@@ -101,7 +101,7 @@ class HasDomainsCapacity extends AbstractCapacity
         $domains = new Domain_Item();
         $domains->deleteByCriteria(
             [
-                'itemtype' => $classname
+                'itemtype' => $classname,
             ],
             force: true,
             history: false

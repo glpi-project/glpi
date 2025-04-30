@@ -232,7 +232,7 @@ class HasNotepadCapacityTest extends DbTestCase
             $classname,
             [
                 'name' => __FUNCTION__,
-                'entities_id' => $root_entity_id
+                'entities_id' => $root_entity_id,
             ]
         );
 
@@ -310,7 +310,7 @@ class HasNotepadCapacityTest extends DbTestCase
             getAllDataFromTable(Notepad::getTable(), [
                 'itemtype' => $asset::getType(),
                 'items_id' => $clone_id,
-                'content'  => 'A note related to the asset'
+                'content'  => 'A note related to the asset',
             ])
         );
     }
@@ -318,7 +318,7 @@ class HasNotepadCapacityTest extends DbTestCase
     public static function provideIsUsed(): iterable
     {
         yield [
-            'target_classname' => Notepad::class
+            'target_classname' => Notepad::class,
         ];
     }
 
@@ -326,7 +326,7 @@ class HasNotepadCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Notepad::class,
-            'expected' => '%d notes attached to %d assets'
+            'expected' => '%d notes attached to %d assets',
         ];
     }
 }

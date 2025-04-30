@@ -84,22 +84,22 @@ class FormAccessControlTest extends DbTestCase
         yield [
             'glpi',
             'glpi',
-            ['view' => true, 'create' => true, 'update' => true, 'delete' => false, 'purge' => false]
+            ['view' => true, 'create' => true, 'update' => true, 'delete' => false, 'purge' => false],
         ];
         yield [
             'tech',
             'tech',
-            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false]
+            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false],
         ];
         yield [
             'normal',
             'normal',
-            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false]
+            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false],
         ];
         yield [
             'post-only',
             'postonly',
-            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false]
+            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false],
         ];
     }
 
@@ -363,7 +363,7 @@ class FormAccessControlTest extends DbTestCase
         $this->assertEquals([
             '_no_message_link' => true,
             'strategy'         => DirectAccess::class,
-            'config'           => json_encode(new DirectAccessConfig(token: "my_token"))
+            'config'           => json_encode(new DirectAccessConfig(token: "my_token")),
         ], $prepared_input);
     }
 

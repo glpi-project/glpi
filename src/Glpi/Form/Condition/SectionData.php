@@ -39,8 +39,7 @@ final class SectionData
     public function __construct(
         private string $uuid,
         private string $name,
-    ) {
-    }
+    ) {}
 
     public function getName(): string
     {

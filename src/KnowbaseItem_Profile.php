@@ -37,7 +37,7 @@
 /// since version 0.83
 class KnowbaseItem_Profile extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'KnowbaseItem';
     public static $items_id_1          = 'knowbaseitems_id';
     public static $itemtype_2          = 'Profile';
@@ -64,8 +64,8 @@ class KnowbaseItem_Profile extends CommonDBRelation
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'knowbaseitems_id' => $knowbaseitems_id
-            ]
+                'knowbaseitems_id' => $knowbaseitems_id,
+            ],
         ]);
 
         foreach ($iterator as $data) {

@@ -190,8 +190,8 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
                 'link'       => 'AND',
                 'field'      => 6,  // Service catalog category
                 'searchtype' => 'equals',
-                'value'      => $item->getID()
-            ]
+                'value'      => $item->getID(),
+            ],
         ], 1 /* Sort by name */);
         return true;
     }
@@ -207,7 +207,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
             'field'         => 'id',
             'name'          => __('ID'),
             'massiveaction' => false,
-            'datatype'      => 'number'
+            'datatype'      => 'number',
         ];
         $search_options[] = [
             'id'            => '80',
@@ -222,7 +222,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
             'table'    => $this->getTable(),
             'field'    => 'is_active',
             'name'     => __('Active'),
-            'datatype' => 'bool'
+            'datatype' => 'bool',
         ];
         $search_options[] = [
             'id'            => '4',
@@ -230,7 +230,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
             'field'         => 'date_mod',
             'name'          => __('Last update'),
             'datatype'      => 'datetime',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
         $search_options[] = [
             'id'            => '5',
@@ -238,7 +238,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface, Prov
             'field'         => 'date_creation',
             'name'          => __('Creation date'),
             'datatype'      => 'datetime',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
         $search_options[] = [
             'id'            => '6',

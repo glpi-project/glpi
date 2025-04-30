@@ -54,9 +54,9 @@
  */
 class XHProf
 {
-   // this can be overloaded in config/local_define.php
-    const XHPROF_PATH = '/usr/share/xhprof/xhprof_lib';
-    const XHPROF_URL  = '/xhprof';
+    // this can be overloaded in config/local_define.php
+    public const XHPROF_PATH = '/usr/share/xhprof/xhprof_lib';
+    public const XHPROF_URL  = '/xhprof';
 
 
     private static $run = false;
@@ -115,7 +115,7 @@ class XHProf
             $id   = $runs->save_run($data, 'glpi');
 
             $url  = (defined('XHPROF_URL') ? XHPROF_URL : self::XHPROF_URL);
-            $host = (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost');
+            $host = ($_SERVER['HTTP_HOST'] ?? 'localhost');
             $link = "http://" . $host . "$url/index.php?run=$id&source=glpi";
             Toolbox::logDebug("Stop profiling with XHProf, result URL", $link);
 

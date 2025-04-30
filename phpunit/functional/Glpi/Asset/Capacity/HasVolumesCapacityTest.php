@@ -114,7 +114,7 @@ class HasVolumesCapacityTest extends DbTestCase
                 174,
                 175,
                 176,
-                177
+                177,
             ];
             $options = $item->getOptions();
             foreach ($so_keys as $so_key) {
@@ -264,7 +264,7 @@ class HasVolumesCapacityTest extends DbTestCase
     public static function provideIsUsed(): iterable
     {
         yield [
-            'target_classname' => Item_Disk::class
+            'target_classname' => Item_Disk::class,
         ];
     }
 
@@ -272,7 +272,7 @@ class HasVolumesCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Item_Disk::class,
-            'expected' => '%d volumes attached to %d assets'
+            'expected' => '%d volumes attached to %d assets',
         ];
     }
 }

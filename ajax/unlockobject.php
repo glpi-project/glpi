@@ -47,7 +47,7 @@ Html::header_nocache();
 
 $ret = 0;
 if (isset($_POST['unlock']) && isset($_POST["id"])) {
-   // then we may have something to unlock
+    // then we may have something to unlock
     $ol = new ObjectLock();
     if (
         $ol->getFromDB($_POST["id"])
@@ -64,17 +64,17 @@ if (isset($_POST['unlock']) && isset($_POST["id"])) {
         }
         $ret = 1;
     }
-} else if (
+} elseif (
     isset($_POST['requestunlock'])
            && isset($_POST["id"])
 ) {
-   // the we must ask for unlock
+    // the we must ask for unlock
     $ol = new ObjectLock();
     if ($ol->getFromDB($_POST["id"])) {
         NotificationEvent::raiseEvent('unlock', $ol);
         $ret = 1;
     }
-} else if (
+} elseif (
     isset($_GET['lockstatus'])
            && isset($_GET["id"])
 ) {

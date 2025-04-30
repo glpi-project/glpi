@@ -91,7 +91,7 @@ trait AssetImage
             $to_remove = [];
             foreach ($input_keys as $input_key) {
                 if (strpos($input_key, '_blank_pictures_') === 0 && $input[$input_key]) {
-                    $i = (int)str_replace('_blank_pictures_', '', $input_key);
+                    $i = (int) str_replace('_blank_pictures_', '', $input_key);
                     if (isset($pictures[$i])) {
                         Toolbox::deletePicture($pictures[$i]);
                         $to_remove[] = $i;

@@ -58,7 +58,7 @@ $migration->addKey(
 // Insert without duplicates
 $quote_tmp_table = $DB->quoteName($tmp_table);
 $select = $DB->request([
-    'FROM' => $table
+    'FROM' => $table,
 ])->getSql();
 
 // "IGNORE" keyword used to avoid duplicates

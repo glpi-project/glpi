@@ -70,7 +70,7 @@ if (isset($_REQUEST['totp_cancel'])) {
 $mfa_params = [];
 if (!empty($_POST['totp_code'])) {
     $mfa_params['totp_code'] = $_POST['totp_code'];
-} else if (!empty($_POST['backup_code'])) {
+} elseif (!empty($_POST['backup_code'])) {
     $mfa_params['backup_code'] = $_POST['backup_code'];
 }
 if ($auth->login($_POST['login_name'] ?? '', $_POST['login_password'] ?? '', ($_REQUEST["noAUTO"] ?? false), $remember, $_POST['auth'] ?? '', $mfa_params)) {

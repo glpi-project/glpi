@@ -38,7 +38,6 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_Environment;
-use Toolbox;
 
 final class Environment extends InventoryAsset
 {
@@ -67,8 +66,8 @@ final class Environment extends InventoryAsset
             'FROM'   => Item_Environment::getTable(),
             'WHERE'  => [
                 'items_id' => $this->item->fields['id'],
-                'itemtype' => $this->item->getType()
-            ]
+                'itemtype' => $this->item->getType(),
+            ],
         ]);
         foreach ($iterator as $data) {
             $dbid = $data['id'];
@@ -97,7 +96,7 @@ final class Environment extends InventoryAsset
             foreach ($db_itemEnvs as $keydb => $arraydb) {
                 unset($arraydb['is_dynamic']);
                 if ($db_elt == $arraydb) {
-                    $input = (array)$val + [
+                    $input = (array) $val + [
                         'id'           => $keydb,
                     ];
                     $itemEnv->update($input);
@@ -109,7 +108,7 @@ final class Environment extends InventoryAsset
         }
 
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_itemEnvs) != 0) {
-           // Delete Item_Environment in DB
+            // Delete Item_Environment in DB
             foreach ($db_itemEnvs as $dbid => $data) {
                 if ($data['is_dynamic'] == 1) {
                     //Delete only dynamics
@@ -119,9 +118,9 @@ final class Environment extends InventoryAsset
         }
         if (count($value)) {
             foreach ($value as $val) {
-                $input = (array)$val + [
+                $input = (array) $val + [
                     'items_id'     => $this->item->fields['id'],
-                    'itemtype'     => $this->item->getType()
+                    'itemtype'     => $this->item->getType(),
                 ];
 
                 $itemEnv->add($input);

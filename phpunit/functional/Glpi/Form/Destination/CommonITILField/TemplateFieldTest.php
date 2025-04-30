@@ -167,7 +167,7 @@ final class TemplateFieldTest extends AbstractDestinationFieldTest
             ],
             'field_config' => new TemplateFieldConfig(
                 TemplateFieldStrategy::DEFAULT_TEMPLATE
-            )
+            ),
         ];
 
         yield 'Specific Ticket Template strategy' => [
@@ -178,7 +178,7 @@ final class TemplateFieldTest extends AbstractDestinationFieldTest
             'field_config' => new TemplateFieldConfig(
                 TemplateFieldStrategy::SPECIFIC_TEMPLATE,
                 getItemByTypeName(TicketTemplate::class, 'Default', true)
-            )
+            ),
         ];
     }
 

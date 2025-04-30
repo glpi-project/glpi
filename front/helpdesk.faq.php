@@ -49,10 +49,10 @@ if (Session::getLoginUserID()) {
     Html::helpHeader(__('FAQ'), 'faq');
 } else {
     $_SESSION["glpilanguage"] = $_SESSION['glpilanguage'] ?? Session::getPreferredLanguage();
-   // Anonymous FAQ
+    // Anonymous FAQ
     Html::simpleHeader(__('FAQ'), [
         __('Authentication') => '/',
-        __('FAQ')            => '/front/helpdesk.faq.php'
+        __('FAQ')            => '/front/helpdesk.faq.php',
     ]);
 }
 
@@ -62,7 +62,7 @@ if (isset($_GET["id"])) {
         $kb->showFull();
     }
 } else {
-   // Manage forcetab : non standard system (file name <> class name)
+    // Manage forcetab : non standard system (file name <> class name)
     if (isset($_GET['forcetab'])) {
         Session::setActiveTab('Knowbase', $_GET['forcetab']);
         unset($_GET['forcetab']);

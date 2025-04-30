@@ -140,7 +140,7 @@ class Grid
             || !isset(self::$all_dashboards[$this->current]['items'])
         ) {
             self::$all_dashboards[$this->current] = [
-                'items' => []
+                'items' => [],
             ];
         }
 
@@ -148,7 +148,7 @@ class Grid
             $card_id      = $specs['card_id'] ?? $specs['gridstack_id'] ?? $specs['id'];
             $gridstack_id = $specs['gridstack_id']   ?? $specs['id'];
             $card_options = ($specs['card_options'] ?? []) + [
-                'card_id' => $card_id
+                'card_id' => $card_id,
             ];
 
             $card_html    = <<<HTML
@@ -176,7 +176,7 @@ HTML;
      */
     public function canViewCurrent(): bool
     {
-       // check global (admin) right
+        // check global (admin) right
         if (Dashboard::canView()) {
             return true;
         }
@@ -223,7 +223,7 @@ HTML;
 
         $dashboard = new Dashboard($key);
         $dashboard->load();
-       // check global (admin) right
+        // check global (admin) right
         if (Dashboard::canView() && !$dashboard->isPrivate()) {
             return true;
         }
@@ -267,7 +267,7 @@ HTML;
         $can_purge     = Session::haveRight('dashboard', PURGE) && $nb_dashboards;
         $can_clone     = $can_create && $nb_dashboards;
 
-       // prepare html for add controls
+        // prepare html for add controls
         $add_controls = "";
         for ($y = 0; $y < $this->grid_rows; $y++) {
             for ($x = 0; $x < $this->grid_cols; $x++) {
@@ -278,10 +278,10 @@ HTML;
         // prepare all available cards
         $cards = $this->getAllDasboardCards();
 
-       // prepare all available widgets
+        // prepare all available widgets
         $all_widgets = Widget::getAllTypes();
 
-       // prepare labels
+        // prepare labels
         $embed_label      = __("Share or embed this dashboard");
         $delete_label     = __("Delete this dashboard");
         $history_label    = __("Toggle auto-refresh");
@@ -303,7 +303,7 @@ HTML;
                 'class'        => 'dashboard_select form-select',
                 'can_view_all' => $can_view_all,
                 'noselect2'    => true,
-                'context'      => $this->context
+                'context'      => $this->context,
             ]);
         }
 
@@ -449,8 +449,8 @@ TWIG, $params);
                 'embed'         => self::$embed,
                 'token'         => $token,
                 'entities_id'   => $_SESSION['glpiactive_entity'],
-                'is_recursive'  => $_SESSION['glpiactive_entity_recursive'] ? 1 : 0
-            ]
+                'is_recursive'  => $_SESSION['glpiactive_entity_recursive'] ? 1 : 0,
+            ],
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -532,7 +532,7 @@ TWIG, $twig_params);
             'dashboard'    => '',
             'entities_id'  => 0,
             'is_recursive' => 0,
-            'token'        => ''
+            'token'        => '',
         ];
         $params = array_merge($defaults, $params);
 
@@ -573,7 +573,7 @@ TWIG, $twig_params);
             'dashboard'    => '',
             'entities_id'  => 0,
             'is_recursive' => 0,
-            'token'        => ''
+            'token'        => '',
         ];
         $params = array_merge($defaults, $params);
 
@@ -621,7 +621,7 @@ TWIG, $twig_params);
 HTML;
         }
 
-       // append all elements to insert them in html
+        // append all elements to insert them in html
         return implode("", $this->items);
     }
 
@@ -649,7 +649,7 @@ HTML;
         array $data_option = []
     ) {
 
-       // let grid-stack to autoposition item
+        // let grid-stack to autoposition item
         $autoposition = 'gs-auto-position="true"';
         $coordinates  = '';
         if ((int) $x >= 0 && (int) $y >= 0) {
@@ -660,7 +660,7 @@ HTML;
         $color    = $data_option['color'] ?? "#FFFFFF";
         $fg_color = Toolbox::getFgColor($color, 100, true);
 
-       // add card options in data attribute
+        // add card options in data attribute
         $data_option_attr = "";
         if (count($data_option)) {
             $data_option_attr = "data-card-options='" . json_encode($data_option, JSON_HEX_APOS) . "'";
@@ -712,7 +712,7 @@ HTML;
 
         echo Html::submit(_x('button', "Add"), [
             'icon'  => 'ti ti-plus',
-            'class' => 'btn btn-primary submit-new-dashboard'
+            'class' => 'btn btn-primary submit-new-dashboard',
         ]);
 
         echo "</form>"; // .card.display-widget-form
@@ -759,7 +759,7 @@ HTML;
         $edit         = $params['action'] === "display_edit_widget";
         $cards        = $this->getAllDasboardCards();
         $card         = $cards[$card_id] ?? [];
-       // append card id to options
+        // append card id to options
         if (!isset($cardopt['card_id'])) {
             $cardopt['card_id'] = $card_id;
         }
@@ -830,7 +830,7 @@ HTML;
 
         echo Html::submit(_x('button', "Add"), [
             'icon'  => 'ti ti-plus',
-            'class' => 'btn btn-primary mt-2'
+            'class' => 'btn btn-primary mt-2',
         ]);
         echo "</form>"; // form.card.display-filter-form
     }
@@ -914,7 +914,7 @@ HTML;
             (self::$all_dashboards[$this->current]['users_id'] == '0' ? '0' : '1'),
             -1,
             [
-                'display' => false
+                'display' => false,
             ]
         );
         echo "</div>";
@@ -950,7 +950,7 @@ HTML;
 
         $force = ($card_options['args']['force'] ?? $card_options['force'] ?? false);
 
-       // retrieve card
+        // retrieve card
         $notfound_html = "<div class='empty-card card-warning '>
          <i class='ti ti-alert-triangle'></i>" .
          __('empty card!') . "
@@ -990,8 +990,8 @@ HTML;
             if (isset($card['provider'])) {
                 $provider_args = ($card['args'] ?? []) + [
                     'params' => [
-                        'label' => $card['label'] ?? ""
-                    ]
+                        'label' => $card['label'] ?? "",
+                    ],
                 ];
 
                 /** @var array $CFG_GLPI */
@@ -1123,7 +1123,7 @@ HTML;
         array_walk($menu, static function ($firstlvl) use (&$menu_itemtypes) {
             $key = $firstlvl['title'];
             if (isset($firstlvl['types'])) {
-                  $menu_itemtypes[$key] = array_merge($menu_itemtypes[$key] ?? [], $firstlvl['types']);
+                $menu_itemtypes[$key] = array_merge($menu_itemtypes[$key] ?? [], $firstlvl['types']);
             }
         });
 
@@ -1133,7 +1133,7 @@ HTML;
                     in_array($itemtype, $exclude)
                     || !is_subclass_of($itemtype, 'CommonDBTM')
                 ) {
-                      return false;
+                    return false;
                 }
 
                 $testClass = new \ReflectionClass($itemtype);
@@ -1297,7 +1297,7 @@ HTML;
                         'case'   => $case,
                         'params' => [
                             'validation_check_user' => true,
-                        ]
+                        ],
                     ],
                     'cache'      => false,
                     'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
@@ -1313,7 +1313,7 @@ HTML;
                         'case'   => $case,
                         'params' => [
                             'validation_check_user' => true,
-                        ]
+                        ],
                     ],
                     'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
                 ];
@@ -1439,7 +1439,7 @@ HTML;
                 'group'        => __('Others'),
                 'card_options' => [
                     'content' => __("Toggle edit mode to edit content"),
-                ]
+                ],
             ];
 
             if (!Environment::get()->shouldExpectResourcesToChange()) {
@@ -1466,8 +1466,8 @@ HTML;
             CREATE => __('Create'),
             PURGE  => [
                 'short' => __('Purge'),
-                'long'  => _x('button', 'Delete permanently')
-            ]
+                'long'  => _x('button', 'Delete permanently'),
+            ],
         ];
     }
 

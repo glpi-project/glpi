@@ -66,8 +66,8 @@ class HasImpactCapacity extends AbstractCapacity
         return countElementsInTable(ImpactRelation::getTable(), [
             'OR' => [
                 'itemtype_source' => $classname,
-                'itemtype_impacted' => $classname
-            ]
+                'itemtype_impacted' => $classname,
+            ],
         ]);
     }
 
@@ -146,7 +146,7 @@ class HasImpactCapacity extends AbstractCapacity
                 'OR' => [
                     'itemtype_source' => $classname,
                     'itemtype_impacted' => $classname,
-                ]
+                ],
             ],
             force: true,
             history: false

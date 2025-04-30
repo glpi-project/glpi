@@ -40,7 +40,6 @@ use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
-use PHPUnit\Framework\Attributes\DataProvider;
 
 class SectionTest extends DbTestCase
 {

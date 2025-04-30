@@ -41,7 +41,7 @@ use Glpi\Event;
  **/
 class Reservation extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype          = 'ReservationItem';
     public static $items_id          = 'reservationitems_id';
 
@@ -84,9 +84,9 @@ class Reservation extends CommonDBChild
             && (($this->fields["users_id"] === Session::getLoginUserID())
               || Session::haveRight("reservation", PURGE))
         ) {
-           // Processing Email
+            // Processing Email
             if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-               // Only notify for non-completed reservations
+                // Only notify for non-completed reservations
                 if (strtotime($this->fields['end']) > time()) {
                     NotificationEvent::raiseEvent("delete", $this);
                 }
@@ -195,7 +195,7 @@ class Reservation extends CommonDBChild
                     'end' => $end,
                     'reservationitems_id' => $reservationitems_id,
                     'comment' => $input['comment'],
-                    'users_id' => (int)$input['users_id'],
+                    'users_id' => (int) $input['users_id'],
                 ];
                 if (count($dates_to_add) > 1) {
                     $reservation_input['group'] = $group;
@@ -272,7 +272,7 @@ class Reservation extends CommonDBChild
         parent::post_addItem();
     }
 
-   // SPECIFIC FUNCTIONS
+    // SPECIFIC FUNCTIONS
 
     /**
      * Returns an integer that is not already used as a group for the given reservation item.
@@ -292,10 +292,10 @@ class Reservation extends CommonDBChild
                 'FROM'   => 'glpi_reservations',
                 'WHERE'  => [
                     'reservationitems_id'   => $reservationitems_id,
-                    'group'                 => $rand
-                ]
+                    'group'                 => $rand,
+                ],
             ])->current();
-            $count = (int)$result['cpt'];
+            $count = (int) $result['cpt'];
         } while ($count > 0);
 
         return $rand;
@@ -330,8 +330,8 @@ class Reservation extends CommonDBChild
             'WHERE'  => $where + [
                 'reservationitems_id'   => $this->fields['reservationitems_id'],
                 'end'                   => ['>', $this->fields['begin']],
-                'begin'                 => ['<', $this->fields['end']]
-            ]
+                'begin'                 => ['<', $this->fields['end']],
+            ],
         ])->current();
         return $result['cpt'] > 0;
     }
@@ -407,12 +407,12 @@ class Reservation extends CommonDBChild
                 'FROM'   => 'glpi_reservations',
                 'WHERE'  => [
                     'reservationitems_id'   => $this->fields['reservationitems_id'],
-                    'group'                 => $this->fields['group']
-                ]
+                    'group'                 => $this->fields['group'],
+                ],
             ]);
             $rr = clone $this;
             foreach ($iterator as $data) {
-                 $rr->delete(['id' => $data['id']]);
+                $rr->delete(['id' => $data['id']]);
             }
         }
     }
@@ -541,14 +541,14 @@ JAVASCRIPT;
                 $res_i_table => [
                     'ON' => [
                         $res_i_table => 'id',
-                        $res_table   => 'reservationitems_id'
-                    ]
-                ]
+                        $res_table   => 'reservationitems_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'end'   => ['>', $start],
                 'begin' => ['<', $end],
-            ] + $where
+            ] + $where,
         ]);
 
         $events = [];
@@ -612,8 +612,8 @@ JAVASCRIPT;
             ],
             'FROM'   => $res_i_table,
             'WHERE'  => [
-                'is_active'  => 1
-            ]
+                'is_active'  => 1,
+            ],
         ]);
 
         $resources = [];
@@ -693,7 +693,7 @@ JAVASCRIPT;
             if (!$resa->can($ID, UPDATE)) {
                 return false;
             }
-           // Set item if not set
+            // Set item if not set
             if (
                 (!isset($options['item']) || (count($options['item']) === 0))
                 && ($itemid = $resa->getField('reservationitems_id'))
@@ -806,8 +806,8 @@ JAVASCRIPT;
                 // No days set add 1 week
                 if (!isset($options['days'])) {
                     $dates = [['begin' => strtotime('+1 week', $begin_time),
-                        'end'   => strtotime('+1 week', $end_time)
-                    ]
+                        'end'   => strtotime('+1 week', $end_time),
+                    ],
                     ];
                 } else {
                     if (is_array($options['days'])) {
@@ -820,7 +820,7 @@ JAVASCRIPT;
                                 $end_day = date('l', strtotime($day . ' +1 day'));
                             }
                             $dates[] = ['begin' => strtotime("next $day", $begin_time) + $begin_hour,
-                                'end'   => strtotime("next $end_day", $end_time) + $end_hour
+                                'end'   => strtotime("next $end_day", $end_time) + $end_hour,
                             ];
                         }
                     }
@@ -868,17 +868,17 @@ JAVASCRIPT;
                             $calc_end_time   = strtotime("next $dayofweek", $calc_end_time) + $end_hour;
 
                             while ($calc_begin_time < $repeat_end) {
-                                 $toadd[date('Y-m-d H:i:s', $calc_begin_time)] = date(
-                                     'Y-m-d H:i:s',
-                                     $calc_end_time
-                                 );
-                                   $i++;
-                                   $calc_begin_time = strtotime("+$i month", $begin_time);
-                                   $calc_end_time   = strtotime("+$i month", $end_time);
-                                   $calc_begin_time = strtotime("next $dayofweek", $calc_begin_time)
-                                          + $begin_hour;
-                                   $calc_end_time   = strtotime("next $dayofweek", $calc_end_time)
-                                          + $end_hour;
+                                $toadd[date('Y-m-d H:i:s', $calc_begin_time)] = date(
+                                    'Y-m-d H:i:s',
+                                    $calc_end_time
+                                );
+                                $i++;
+                                $calc_begin_time = strtotime("+$i month", $begin_time);
+                                $calc_end_time   = strtotime("+$i month", $end_time);
+                                $calc_begin_time = strtotime("next $dayofweek", $calc_begin_time)
+                                       + $begin_hour;
+                                $calc_end_time   = strtotime("next $dayofweek", $calc_end_time)
+                                       + $end_hour;
                             }
                             break;
                     }
@@ -912,7 +912,7 @@ JAVASCRIPT;
 
         // js vars
         $rand   = mt_rand();
-        $ID     = (int)$ri->fields['id'];
+        $ID     = (int) $ri->fields['id'];
 
         echo "<br>";
         echo "<h1>" . __s('Reservations for this item') . "</h1>";
@@ -960,26 +960,26 @@ JAVASCRIPT;
                 'users_id',
                 'glpi_reservations.comment',
                 'reservationitems_id',
-                'completename'
+                'completename',
             ],
             'FROM'      => 'glpi_reservations',
             'LEFT JOIN' => [
                 'glpi_reservationitems' => [
                     'ON' => [
                         'glpi_reservationitems' => 'id',
-                        'glpi_reservations'     => 'reservationitems_id'
-                    ]
+                        'glpi_reservations'     => 'reservationitems_id',
+                    ],
                 ],
                 'glpi_entities' => [
                     'ON' => [
                         'glpi_reservationitems' => 'entities_id',
-                        'glpi_entities'         => 'id'
-                    ]
-                ]
+                        'glpi_entities'         => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'users_id'  => $users_id
-            ]
+                'users_id'  => $users_id,
+            ],
         ];
 
         // Print reservation in progress
@@ -1027,7 +1027,7 @@ JAVASCRIPT;
 
         return [
             'in_progress' => $progress_entries,
-            'old' => $old_entries
+            'old' => $old_entries,
         ];
     }
 
@@ -1068,7 +1068,7 @@ JAVASCRIPT;
                 $entry['planning'] .= "<i class='" . Planning::getIcon() . "'></i>";
                 $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
                 $entry['planning'] .= "</a>";
-            } else if ($item instanceof CommonDBTM) {
+            } elseif ($item instanceof CommonDBTM) {
                 $href = htmlescape($item::getFormURLWithID($item->getID()) . "&forcetab=Reservation$1&tab_params[defaultDate]={$data["start_date"]}");
                 $entry['planning'] = "<a href='$href' title=\"" . __s('See planning') . "\">";
                 $entry['planning'] .= "<i class='" . Planning::getIcon() . "'></i>";
@@ -1089,14 +1089,14 @@ JAVASCRIPT;
             'entity'     => Entity::getTypeName(1),
             'by'         => __('By'),
             'comments'   => __('Comments'),
-            'planning'  => ''
+            'planning'  => '',
         ];
         $formatters = [
             'start_date' => 'datetime',
             'end_date'   => 'datetime',
             'item' => 'raw_html',
             'planning' => 'raw_html',
-            'comments' => 'raw_html' // To preserve <br>. Text was already sanitized.
+            'comments' => 'raw_html', // To preserve <br>. Text was already sanitized.
         ];
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
@@ -1110,7 +1110,7 @@ JAVASCRIPT;
             'entries' => $entries,
             'total_number' => count($entries),
             'filtered_number' => count($entries),
-            'showmassiveactions' => false
+            'showmassiveactions' => false,
         ]);
     }
 
@@ -1144,7 +1144,7 @@ JAVASCRIPT;
 
         return array_filter(
             $CFG_GLPI['reservation_types'],
-            static fn ($type) => ReservationItem::countAvailableItems($type) > 0
+            static fn($type) => ReservationItem::countAvailableItems($type) > 0
         );
     }
 
@@ -1212,7 +1212,7 @@ JAVASCRIPT;
                         $result = $reservation_item->add([
                             'itemtype' => $item->getType(),
                             'items_id' => $id,
-                            'is_active' => 1
+                            'is_active' => 1,
                         ]);
                         $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     }
@@ -1233,7 +1233,7 @@ JAVASCRIPT;
                     if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
                         $result = $reservation_item->update([
                             'id' => $reservation_item->getID(),
-                            'is_active' => 1
+                            'is_active' => 1,
                         ]);
                         $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     } else {
@@ -1246,7 +1246,7 @@ JAVASCRIPT;
                     if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
                         $result = $reservation_item->update([
                             'id' => $reservation_item->getID(),
-                            'is_active' => 0
+                            'is_active' => 0,
                         ]);
                         $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     } else {

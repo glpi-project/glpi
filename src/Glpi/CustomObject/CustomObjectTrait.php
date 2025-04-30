@@ -102,7 +102,7 @@ trait CustomObjectTrait
                     'ON'  => [
                         $base_class::getTable()       => $definition_class::getForeignKeyField(),
                         $definition_class::getTable() => $definition_class::getIndexName(),
-                    ]
+                    ],
                 ],
             ],
             'WHERE' => [
@@ -159,14 +159,14 @@ trait CustomObjectTrait
 
         if (
             array_key_exists($definition_fkey, $input)
-            && (int)$input[$definition_fkey] !== $definition_id
+            && (int) $input[$definition_fkey] !== $definition_id
         ) {
             throw new \RuntimeException('Definition does not match the current concrete class.');
         }
 
         if (
             !$this->isNewItem()
-            && (int)$this->fields[$definition_fkey] !== $definition_id
+            && (int) $this->fields[$definition_fkey] !== $definition_id
         ) {
             throw new \RuntimeException('Definition cannot be changed.');
         }

@@ -90,7 +90,7 @@ class SimpleCacheTest extends \GLPITestCase
         // Test multiple set/get
         $instance->setMultiple($values);
         foreach ($values as $key => $value) {
-           // Cached value exists and is equal to value that was set
+            // Cached value exists and is equal to value that was set
             $this->assertTrue($instance->has($key));
             $this->assertEquals($value, $instance->get($key));
         }
@@ -107,7 +107,7 @@ class SimpleCacheTest extends \GLPITestCase
             $this->assertFalse($instance->has($key));
         }
 
-       // Test global clear
+        // Test global clear
         $instance->clear();
         foreach (array_keys($values) as $key) {
             // Cached value should not exist as it has been deleted

@@ -87,7 +87,7 @@ final class SQLProvider implements SearchProviderInterface
             $SELECT .= \Search::addSelect($data['itemtype'], $val);
         }
 
-        $as_map = isset($data['search']['as_map']) && (int)$data['search']['as_map'] === 1;
+        $as_map = isset($data['search']['as_map']) && (int) $data['search']['as_map'] === 1;
         if ($as_map && $data['itemtype'] !== 'Entity') {
             $SELECT .= ' `glpi_locations`.`id` AS loc_id, ';
         }
@@ -130,7 +130,7 @@ final class SQLProvider implements SearchProviderInterface
         if ($itemtable === 'glpi_entities') {
             $ret[] = "`$itemtable`.`id` AS entities_id";
             $ret[] = "'1' AS is_recursive";
-        } else if ($mayberecursive) {
+        } elseif ($mayberecursive) {
             if ($item->isField('entities_id')) {
                 $ret[] = $DB::quoteName("$itemtable.entities_id");
             }
@@ -233,7 +233,7 @@ final class SQLProvider implements SearchProviderInterface
                                     value: new QueryExpression($DB::quoteValue(\Search::NULLVALUE))
                                 ),
                                 new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                                $tocomputeid
+                                $tocomputeid,
                             ]),
                             separator: \Search::LONGSEP,
                             distinct: true,
@@ -269,7 +269,7 @@ final class SQLProvider implements SearchProviderInterface
                                 expression: QueryFunction::concat([
                                     "{$ticket_user_table}.users_id",
                                     new QueryExpression($DB::quoteValue(' ')),
-                                    "{$ticket_user_table}.alternative_email"
+                                    "{$ticket_user_table}.alternative_email",
                                 ]),
                                 separator: \Search::LONGSEP,
                                 distinct: true,
@@ -394,7 +394,7 @@ final class SQLProvider implements SearchProviderInterface
                             new QueryExpression($DB::quoteValue(" - ")),
                             "{$_table_add_table}.{$field}",
                             new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                            "{$_table_add_table}.id"
+                            "{$_table_add_table}.id",
                         ]),
                         separator: \Search::LONGSEP,
                         distinct: true,
@@ -422,7 +422,7 @@ final class SQLProvider implements SearchProviderInterface
                         ),
                     ];
                     return array_merge($SELECT, $ADDITONALFIELDS);
-                } else if ($meta_type === Software::class) {
+                } elseif ($meta_type === Software::class) {
                     $SELECT = [
                         QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
@@ -451,7 +451,7 @@ final class SQLProvider implements SearchProviderInterface
                             expression: QueryFunction::concat([
                                 QueryFunction::ifnull($tocompute, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
                                 new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                                $tocomputeid
+                                $tocomputeid,
                             ]),
                             separator: \Search::LONGSEP,
                             distinct: true,
@@ -535,7 +535,7 @@ final class SQLProvider implements SearchProviderInterface
                                 expression: QueryFunction::concat([
                                     QueryFunction::ifnull($tocomputetrans, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
                                     new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                                    $tocomputeid
+                                    $tocomputeid,
                                 ]),
                                 separator: \Search::LONGSEP,
                                 distinct: true,
@@ -581,7 +581,7 @@ final class SQLProvider implements SearchProviderInterface
                     expression: QueryFunction::concat([
                         QueryFunction::ifnull($tocomputetrans, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
                         new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                        $tocomputeid
+                        $tocomputeid,
                     ]),
                     separator: $DB::quoteValue(\Search::LONGSEP),
                     distinct: true,
@@ -594,7 +594,7 @@ final class SQLProvider implements SearchProviderInterface
                     expression: QueryFunction::concat([
                         QueryFunction::ifnull($tocompute, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
                         new QueryExpression($DB::quoteValue(\Search::SHORTSEP)),
-                        $tocomputeid
+                        $tocomputeid,
                     ]),
                     separator: \Search::LONGSEP,
                     distinct: true,
@@ -651,12 +651,12 @@ final class SQLProvider implements SearchProviderInterface
             case 'Notification':
                 if (!\Config::canView()) {
                     $criteria = [
-                        'NOT' => ['glpi_notifications.itemtype' => ['CronTask', 'DBConnection']]
+                        'NOT' => ['glpi_notifications.itemtype' => ['CronTask', 'DBConnection']],
                     ];
                 }
                 break;
 
-            // No link
+                // No link
             case 'User':
                 // View all entities
                 if (!Session::canViewAllEntities()) {
@@ -672,41 +672,41 @@ final class SQLProvider implements SearchProviderInterface
                     if (count($_SESSION['glpigroups'])) {
                         $group_criteria = [
                             "$teamtable.itemtype" => Group::class,
-                            "$teamtable.items_id" => $_SESSION['glpigroups']
+                            "$teamtable.items_id" => $_SESSION['glpigroups'],
                         ];
                     }
                     $user_criteria = [
                         "$teamtable.itemtype" => User::class,
-                        "$teamtable.items_id" => Session::getLoginUserID()
+                        "$teamtable.items_id" => Session::getLoginUserID(),
                     ];
                     $criteria = [
                         "glpi_projects.is_template" => 0,
                         'OR' => [
-                            $user_criteria
-                        ]
+                            $user_criteria,
+                        ],
                     ];
                     if (!empty($group_criteria)) {
                         $criteria['OR'][] = $group_criteria;
                     }
-                } else if (Session::haveRight('project', \Project::READMY)) {
+                } elseif (Session::haveRight('project', \Project::READMY)) {
                     // User must be the manager, in the manager group or in the project team
                     $teamtable = 'glpi_projectteams';
                     $group_criteria = [];
                     if (count($_SESSION['glpigroups'])) {
                         $group_criteria = [
                             "$teamtable.itemtype" => Group::class,
-                            "$teamtable.items_id" => $_SESSION['glpigroups']
+                            "$teamtable.items_id" => $_SESSION['glpigroups'],
                         ];
                     }
                     $user_criteria = [
                         "$teamtable.itemtype" => User::class,
-                        "$teamtable.items_id" => Session::getLoginUserID()
+                        "$teamtable.items_id" => Session::getLoginUserID(),
                     ];
                     $criteria = [
                         'OR' => [
                             $user_criteria,
-                            'glpi_projects.users_id' => Session::getLoginUserID()
-                        ]
+                            'glpi_projects.users_id' => Session::getLoginUserID(),
+                        ],
                     ];
                     if (!empty($group_criteria)) {
                         $criteria['OR'][] = $group_criteria;
@@ -719,19 +719,19 @@ final class SQLProvider implements SearchProviderInterface
                     $teamtable  = 'glpi_projectteams';
                     $user_criteria = [
                         "$teamtable.itemtype" => User::class,
-                        "$teamtable.items_id" => Session::getLoginUserID()
+                        "$teamtable.items_id" => Session::getLoginUserID(),
                     ];
                     $group_criteria = [
                         "$teamtable.itemtype" => Group::class,
-                        "$teamtable.items_id" => $_SESSION['glpigroups']
+                        "$teamtable.items_id" => $_SESSION['glpigroups'],
                     ];
                     $criteria = [
                         "OR" => [
                             "glpi_projects.users_id" => Session::getLoginUserID(),
                             $user_criteria,
                             "glpi_projects.groups_id" => $_SESSION['glpigroups'],
-                            $group_criteria
-                        ]
+                            $group_criteria,
+                        ],
                     ];
                 }
                 break;
@@ -771,15 +771,15 @@ final class SQLProvider implements SearchProviderInterface
                     $condition = "(";
 
                     $criteria = [
-                        'OR' => []
+                        'OR' => [],
                     ];
                     if (Session::haveRight("ticket", \Ticket::READMY)) {
                         $criteria['OR'][] = [
                             'OR' => [
                                 "$requester_table.users_id" => Session::getLoginUserID(),
                                 "$observer_table.users_id" => Session::getLoginUserID(),
-                                "glpi_tickets.users_id_recipient" => Session::getLoginUserID()
-                            ]
+                                "glpi_tickets.users_id_recipient" => Session::getLoginUserID(),
+                            ],
                         ];
                     } else {
                         $criteria['OR'][] = new QueryExpression('false');
@@ -790,32 +790,32 @@ final class SQLProvider implements SearchProviderInterface
                             $criteria['OR'][] = [
                                 'OR' => [
                                     "$requestergroup_table.groups_id" => $_SESSION['glpigroups'],
-                                    "$observergroup_table.groups_id" => $_SESSION['glpigroups']
-                                ]
+                                    "$observergroup_table.groups_id" => $_SESSION['glpigroups'],
+                                ],
                             ];
                         }
                     }
 
                     if (Session::haveRight("ticket", \Ticket::OWN)) {// Can own ticket : show assign to me
                         $criteria['OR'][] = [
-                            "$assign_table.users_id" => Session::getLoginUserID()
+                            "$assign_table.users_id" => Session::getLoginUserID(),
                         ];
                     }
 
                     if (Session::haveRight("ticket", \Ticket::READASSIGN)) { // assign to me
                         $criteria['OR'][] = [
-                            "$assign_table.users_id" => Session::getLoginUserID()
+                            "$assign_table.users_id" => Session::getLoginUserID(),
                         ];
                         if (count($_SESSION['glpigroups'])) {
                             $criteria['OR'][] = [
-                                "$assigngroup_table.groups_id" => $_SESSION['glpigroups']
+                                "$assigngroup_table.groups_id" => $_SESSION['glpigroups'],
                             ];
                         }
                     }
 
                     if (Session::haveRight('ticket', \Ticket::READNEWTICKET)) {
                         $criteria['OR'][] = [
-                            'glpi_tickets.status' => \CommonITILObject::INCOMING
+                            'glpi_tickets.status' => \CommonITILObject::INCOMING,
                         ];
                     }
 
@@ -823,22 +823,22 @@ final class SQLProvider implements SearchProviderInterface
                         Session::haveRightsOr(
                             'ticketvalidation',
                             [\TicketValidation::VALIDATEINCIDENT,
-                                \TicketValidation::VALIDATEREQUEST
+                                \TicketValidation::VALIDATEREQUEST,
                             ]
                         )
                     ) {
                         $criteria['OR'][] = [
                             'AND' => [
                                 "`glpi_ticketvalidations`.`itemtype_target`" => User::class,
-                                "`glpi_ticketvalidations`.`items_id_target`" => Session::getLoginUserID()
-                            ]
+                                "`glpi_ticketvalidations`.`items_id_target`" => Session::getLoginUserID(),
+                            ],
                         ];
                         if (count($_SESSION['glpigroups'])) {
                             $criteria['OR'][] = [
                                 'AND' => [
                                     "`glpi_ticketvalidations`.`itemtype_target`" => Group::class,
-                                    "`glpi_ticketvalidations`.`items_id_target`" => $_SESSION['glpigroups']
-                                ]
+                                    "`glpi_ticketvalidations`.`items_id_target`" => $_SESSION['glpigroups'],
+                                ],
                             ];
                         }
                     }
@@ -851,7 +851,7 @@ final class SQLProvider implements SearchProviderInterface
                     $right       = 'change';
                     $table       = 'changes';
                     $groupetable = "`glpi_changes_groups_";
-                } else if ($itemtype === Problem::class) {
+                } elseif ($itemtype === Problem::class) {
                     $right       = 'problem';
                     $table       = 'problems';
                     $groupetable = "`glpi_groups_problems_";
@@ -860,7 +860,7 @@ final class SQLProvider implements SearchProviderInterface
                 $condition = '';
                 if (!Session::haveRight("$right", $itemtype::READALL)) {
                     $criteria = [
-                        'OR' => []
+                        'OR' => [],
                     ];
 
                     $searchopt       = SearchOption::getOptionsForItemtype($itemtype);
@@ -891,16 +891,16 @@ final class SQLProvider implements SearchProviderInterface
                                 "$requester_table.users_id" => Session::getLoginUserID(),
                                 "$observer_table.users_id" => Session::getLoginUserID(),
                                 "$assign_table.users_id" => Session::getLoginUserID(),
-                                "glpi_" . $table . ".users_id_recipient" => Session::getLoginUserID()
-                            ]
+                                "glpi_" . $table . ".users_id_recipient" => Session::getLoginUserID(),
+                            ],
                         ];
                         if (count($_SESSION['glpigroups'])) {
                             $criteria['OR'][] = [
                                 'OR' => [
                                     "$requestergroup_table.groups_id" => $_SESSION['glpigroups'],
                                     "$observergroup_table.groups_id" => $_SESSION['glpigroups'],
-                                    "$assigngroup_table.groups_id" => $_SESSION['glpigroups']
-                                ]
+                                    "$assigngroup_table.groups_id" => $_SESSION['glpigroups'],
+                                ],
                             ];
                         }
                     } else {
@@ -940,14 +940,14 @@ final class SQLProvider implements SearchProviderInterface
                         // Check for assigned or created tasks
                         'glpi_tickettasks.users_id' => Session::getLoginUserID(),
                         'glpi_tickettasks.users_id_tech' => Session::getLoginUserID(),
-                    ]
+                    ],
                 ];
 
                 // Check for parent item visibility unless the user can see all the
                 // possible parents
                 if (!Session::haveRight('ticket', \Ticket::READALL)) {
                     $criteria[] = [
-                        new QueryExpression(\TicketTask::buildParentCondition())
+                        new QueryExpression(\TicketTask::buildParentCondition()),
                     ];
                 }
 
@@ -987,7 +987,7 @@ final class SQLProvider implements SearchProviderInterface
                             "glpi_problems_users",
                             "glpi_problems_groups"
                         )),
-                    ]
+                    ],
                 ];
 
                 // Entity restrictions
@@ -996,7 +996,7 @@ final class SQLProvider implements SearchProviderInterface
                     $entity_restrictions[] = getEntitiesRestrictRequest(
                         '',
                         $itil_itemtype::getTable() . '_items_id_' . self::computeComplexJoinID([
-                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
+                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'",
                         ]),
                         'entities_id',
                         ''
@@ -1098,7 +1098,7 @@ final class SQLProvider implements SearchProviderInterface
             && !preg_match(QueryBuilder::getInputValidationPattern($opt['datatype'] ?? '')['pattern'], $val)
         ) {
             return [ // Invalid search
-                '1=0'
+                '1=0',
             ];
         }
 
@@ -1135,7 +1135,7 @@ final class SQLProvider implements SearchProviderInterface
             $criteria = [
                 'OR' => [
                     "`table`.`id`" => [$nott ? "<>" : "=", $regs[1]],
-                ]
+                ],
             ];
             if ((int) $regs[1] === 0) {
                 $criteria['OR'][] = "`table`.`id` IS NULL";
@@ -1171,7 +1171,8 @@ final class SQLProvider implements SearchProviderInterface
             /** @noinspection PhpMissingBreakStatementInspection */
             case "notcontains":
                 $nott = !$nott;
-            //negated, use contains case
+                //negated, use contains case
+                // no break
             case "contains":
                 // FIXME
                 // `field LIKE '%test%'` condition is not supposed to be relevant, and can sometimes result in SQL performances issues/warnings/errors,
@@ -1277,7 +1278,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                 }
                 $criteria[] = new QueryExpression($value . ' ' . trim($search_str));
-            } else if (isset($criteria[$value])) {
+            } elseif (isset($criteria[$value])) {
                 $criteria[] = [$value => $SEARCH];
             } else {
                 $criteria[$value] = $SEARCH;
@@ -1291,19 +1292,19 @@ final class SQLProvider implements SearchProviderInterface
                     switch ($searchtype) {
                         case 'equals':
                             return [
-                                "$table.id" => $_SESSION['glpiID']
+                                "$table.id" => $_SESSION['glpiID'],
                             ];
 
                         case 'notequals':
                             return [
-                                "$table.id" => ['<>', $_SESSION['glpiID']]
+                                "$table.id" => ['<>', $_SESSION['glpiID']],
                             ];
                     }
                 }
 
                 if ($itemtype === User::class) { // glpi_users case / not link table
                     $criteria = [
-                        'OR' => []
+                        'OR' => [],
                     ];
                     if (in_array($searchtype, ['equals', 'notequals'])) {
                         $append_criterion_with_search($criteria['OR'], "$table.id");
@@ -1332,22 +1333,22 @@ final class SQLProvider implements SearchProviderInterface
 
                 if (in_array($searchtype, ['equals', 'notequals'])) {
                     $criteria = [
-                        'OR' => []
+                        'OR' => [],
                     ];
                     $append_criterion_with_search($criteria['OR'], "$table.id");
                     if ($val == 0) {
                         if ($searchtype === 'notequals') {
                             $criteria['OR'][] = [
-                                'NOT' => ["$table.id" => null]
+                                'NOT' => ["$table.id" => null],
                             ];
                         } else {
                             $criteria['OR'][] = [
-                                "$table.id" => null
+                                "$table.id" => null,
                             ];
                         }
                     }
                     return $criteria;
-                } else if ($searchtype === 'empty') {
+                } elseif ($searchtype === 'empty') {
                     $criteria = [];
                     $append_criterion_with_search($criteria, "$table.id");
                     return $criteria;
@@ -1378,14 +1379,14 @@ final class SQLProvider implements SearchProviderInterface
                             return [
                                 'OR' => [
                                     "$linktable.users_id" => null,
-                                    "$linktable.alternative_email" => null
-                                ]
+                                    "$linktable.alternative_email" => null,
+                                ],
                             ];
                         }
                     }
                 }
                 $criteria = [
-                    $tmplink => []
+                    $tmplink => [],
                 ];
                 $append_criterion_with_search($criteria[$tmplink], "$table.$name1");
                 $append_criterion_with_search($criteria[$tmplink], "$table.$name2");
@@ -1395,7 +1396,7 @@ final class SQLProvider implements SearchProviderInterface
                     QueryFunction::concat([
                         "$table.$name1",
                         new QueryExpression($DB::quoteValue(' ')),
-                        "$table.$name2"
+                        "$table.$name2",
                     ])
                 );
                 if ($nott && ($val !== 'NULL') && ($val !== 'null')) {
@@ -1403,10 +1404,10 @@ final class SQLProvider implements SearchProviderInterface
                         $tmplink => [
                             'OR' => [
                                 $criteria,
-                                "$table.$field" => null
+                                "$table.$field" => null,
                             ],
-                            new QueryExpression($toadd)
-                        ]
+                            new QueryExpression($toadd),
+                        ],
                     ];
                 }
                 return $criteria;
@@ -1419,7 +1420,7 @@ final class SQLProvider implements SearchProviderInterface
                                 return [];
                             }
                             return [
-                                "$table.id" => $_SESSION['glpigroups']
+                                "$table.id" => $_SESSION['glpigroups'],
                             ];
 
                         case 'notequals':
@@ -1427,7 +1428,7 @@ final class SQLProvider implements SearchProviderInterface
                                 return [];
                             }
                             return [
-                                "$table.id" => ['NOT IN', $_SESSION['glpigroups']]
+                                "$table.id" => ['NOT IN', $_SESSION['glpigroups']],
                             ];
 
                         case 'under':
@@ -1440,7 +1441,7 @@ final class SQLProvider implements SearchProviderInterface
                             }
                             $groups = array_unique($groups);
                             return [
-                                "$table.id" => $groups
+                                "$table.id" => $groups,
                             ];
 
                         case 'notunder':
@@ -1453,7 +1454,7 @@ final class SQLProvider implements SearchProviderInterface
                             }
                             $groups = array_unique($groups);
                             return [
-                                "$table.id" => ['NOT IN', $groups]
+                                "$table.id" => ['NOT IN', $groups],
                             ];
 
                         case 'empty':
@@ -1526,11 +1527,11 @@ final class SQLProvider implements SearchProviderInterface
                 if (count($tocheck)) {
                     if ($nott) {
                         return [
-                            "$table.$field" => ['NOT IN', $tocheck]
+                            "$table.$field" => ['NOT IN', $tocheck],
                         ];
                     }
                     return [
-                        "$table.$field" => $tocheck
+                        "$table.$field" => $tocheck,
                     ];
                 }
                 break;
@@ -1569,19 +1570,19 @@ final class SQLProvider implements SearchProviderInterface
                     if ($val > 0) {
                         $compare = ($nott ? '<>' : '=');
                         return [
-                            "$table.$field" => [$compare, $val]
+                            "$table.$field" => [$compare, $val],
                         ];
                     }
                     if ($val < 0) {
                         $compare = ($nott ? '<' : '>=');
                         return [
-                            "$table.$field" => [$compare, abs($val)]
+                            "$table.$field" => [$compare, abs($val)],
                         ];
                     }
                     // Show all
                     $compare = ($nott ? '<' : '>=');
                     return [
-                        "$table.$field" => [$compare, 0]
+                        "$table.$field" => [$compare, 0],
                     ];
                 }
                 return [];
@@ -1601,11 +1602,11 @@ final class SQLProvider implements SearchProviderInterface
                 }
                 if ($nott) {
                     return [
-                        "$table.$field" => ['NOT IN', $tocheck]
+                        "$table.$field" => ['NOT IN', $tocheck],
                     ];
                 }
                 return [
-                    "$table.$field" => $tocheck
+                    "$table.$field" => $tocheck,
                 ];
 
             case "glpi_notifications.event":
@@ -1614,7 +1615,7 @@ final class SQLProvider implements SearchProviderInterface
                     [$itemtype_val, $event_val] = explode(\Search::SHORTSEP, $val);
                     $criteria = [
                         "$table.event" => $event_val,
-                        "$table.itemtype" => $itemtype_val
+                        "$table.itemtype" => $itemtype_val,
                     ];
                     if ($not) {
                         $criteria = ['NOT' => $criteria];
@@ -1681,9 +1682,9 @@ final class SQLProvider implements SearchProviderInterface
                             $criteria = [
                                 $l => [
                                     [
-                                        $tocompute => [$nott ? '<>' : '=', '']
-                                    ]
-                                ]
+                                        $tocompute => [$nott ? '<>' : '=', ''],
+                                    ],
+                                ],
                             ];
                             $append_criterion_with_search($criteria[$l], $tocompute);
                         } else {
@@ -1764,7 +1765,7 @@ final class SQLProvider implements SearchProviderInterface
                                         date: QueryFunction::now(),
                                         interval: new QueryExpression($numeric_matches[1] . $numeric_matches[2]),
                                         interval_unit: $search_unit
-                                    ))
+                                    )),
                             ];
                         }
                         // ELSE Reformat date if needed
@@ -1783,7 +1784,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $ret .= ")";
                             }
                             return [
-                                new QueryExpression($ret)
+                                new QueryExpression($ret),
                             ];
                         }
                         return [];
@@ -1793,7 +1794,7 @@ final class SQLProvider implements SearchProviderInterface
                     $val = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@', '\5-\3-\1', $val);
                     if ($date_computation) {
                         return [
-                            new QueryExpression(self::makeTextCriteria($date_computation, $val, $nott, ''))
+                            new QueryExpression(self::makeTextCriteria($date_computation, $val, $nott, '')),
                         ];
                     }
                     return [];
@@ -1809,11 +1810,11 @@ final class SQLProvider implements SearchProviderInterface
                     if (!is_numeric($val)) {
                         if (strcasecmp($val, __('No')) == 0) {
                             $val = 0;
-                        } else if (strcasecmp($val, __('Yes')) == 0) {
+                        } elseif (strcasecmp($val, __('Yes')) == 0) {
                             $val = 1;
                         }
                     }
-                // No break here : use number comparaison case
+                    // no break here : use number comparaison case
 
                 case "count":
                 case "mio":
@@ -1864,7 +1865,7 @@ final class SQLProvider implements SearchProviderInterface
                                             new QueryExpression("$tocompute > $val2"),
                                         ],
                                         $ADD
-                                    )
+                                    ),
                                 ];
                             }
                             return array_merge(
@@ -1888,8 +1889,8 @@ final class SQLProvider implements SearchProviderInterface
                             $l => [
                                 [
                                     new QueryExpression("$tocompute $operator 0"),
-                                ]
-                            ]
+                                ],
+                            ],
                         ];
                         $append_criterion_with_search($criteria[$l], $tocompute);
                         return $criteria;
@@ -1902,9 +1903,9 @@ final class SQLProvider implements SearchProviderInterface
                         $criteria = [
                             $l => [
                                 [
-                                    $tocompute => [$nott ? '<>' : '=', '']
-                                ]
-                            ]
+                                    $tocompute => [$nott ? '<>' : '=', ''],
+                                ],
+                            ],
                         ];
                         $append_criterion_with_search($criteria[$l], $tocompute);
                     }
@@ -1932,7 +1933,8 @@ final class SQLProvider implements SearchProviderInterface
             // Or negative search on real value
             if (
                 ($inittable !== \Entity::getTable())
-                && (!$nott && ($val == 0)
+                && (
+                    !$nott && ($val == 0)
                     || ($nott && ($val != 0))
                 )
             ) {
@@ -1945,8 +1947,8 @@ final class SQLProvider implements SearchProviderInterface
             return [
                 'OR' => [
                     new QueryExpression(self::makeTextCriteria($tocompute, $val, $nott, '')),
-                    new QueryExpression(self::makeTextCriteria($tocomputetrans, $val, $nott, ''))
-                ]
+                    new QueryExpression(self::makeTextCriteria($tocomputetrans, $val, $nott, '')),
+                ],
             ];
         }
 
@@ -2150,7 +2152,7 @@ final class SQLProvider implements SearchProviderInterface
                         Session::haveRightsOr(
                             'ticketvalidation',
                             [\TicketValidation::VALIDATEINCIDENT,
-                                \TicketValidation::VALIDATEREQUEST
+                                \TicketValidation::VALIDATEREQUEST,
                             ]
                         )
                     ) {
@@ -2175,7 +2177,7 @@ final class SQLProvider implements SearchProviderInterface
                     $table       = 'changes';
                     $groupetable = "glpi_changes_groups";
                     $linkfield   = "changes_groups_id";
-                } else if ($itemtype === Problem::class) {
+                } elseif ($itemtype === Problem::class) {
                     $right       = 'problem';
                     $table       = 'problems';
                     $groupetable = "glpi_groups_problems";
@@ -2282,7 +2284,7 @@ final class SQLProvider implements SearchProviderInterface
                         false,
                         '',
                         [
-                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'"
+                            'condition' => "AND REFTABLE.`itemtype` = '$itil_itemtype'",
                         ]
                     ));
                 }
@@ -2299,7 +2301,7 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     };
                     $out = \Plugin::doOneHook($plugin_name, $hook_closure);
-                    $out = $out ?? []; // convert null into an empty array
+                    $out ??= []; // convert null into an empty array
                     if (!is_array($out)) {
                         // Toolbox::deprecated('Plugin hook ' . $hook_function . ' should return an array');
                         $out = self::parseJoinString($out);
@@ -2457,17 +2459,17 @@ final class SQLProvider implements SearchProviderInterface
                                 'AND' => [
                                     'glpi_groups_items.itemtype' => $rt . '_TYPE', // Placeholder to be replaced at the end of the SQL construction during union case handling
                                     'glpi_groups_items.type' => Group_Item::GROUP_TYPE_NORMAL,
-                                ]
-                            ]
-                        ]
+                                ],
+                            ],
+                        ],
                     ],
                     'glpi_groups' => [
                         'ON' => [
                             'glpi_groups' => 'id',
-                            'glpi_groups_items' => 'groups_id'
-                        ]
-                    ]
-                ]
+                            'glpi_groups_items' => 'groups_id',
+                        ],
+                    ],
+                ],
             ];
         }
 
@@ -2484,7 +2486,7 @@ final class SQLProvider implements SearchProviderInterface
                 return [];
             };
             $specific_leftjoin_criteria = \Plugin::doOneHook($plugin_name, $hook_closure);
-            $specific_leftjoin_criteria = $specific_leftjoin_criteria ?? []; // convert null into an empty array
+            $specific_leftjoin_criteria ??= []; // convert null into an empty array
             if (!is_array($specific_leftjoin_criteria)) {
                 // Toolbox::deprecated('Plugin hook ' . $hook_function . ' should return an array of join criteria');
                 $specific_leftjoin_criteria = self::parseJoinString($specific_leftjoin_criteria);
@@ -2604,11 +2606,11 @@ final class SQLProvider implements SearchProviderInterface
                     $replaced_key = (string) $new_key !== (string) $key;
                     if (is_array($value)) {
                         $new_criteria[$new_key] = $replace_placeholders($value);
-                    } else if (is_a($value, QueryExpression::class)) {
+                    } elseif (is_a($value, QueryExpression::class)) {
                         $value_string = $value->getValue();
                         $new_value = strtr($value_string, $placeholders);
                         $new_criteria[$new_key] = new QueryExpression($new_value);
-                    } else if ($value !== null) {
+                    } elseif ($value !== null) {
                         $new_criteria[$new_key] = strtr($value, $placeholders);
                     } else {
                         $new_criteria[$new_key] = $value;
@@ -2636,10 +2638,10 @@ final class SQLProvider implements SearchProviderInterface
                                 "$new_table$AS" => [
                                     'ON' => [
                                         $rt => 'id',
-                                        $nt => $linkfield
-                                    ]
-                                ]
-                            ]
+                                        $nt => $linkfield,
+                                    ],
+                                ],
+                            ],
                         ];
                         $append_join_criteria($child_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
                         $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $child_join);
@@ -2655,12 +2657,12 @@ final class SQLProvider implements SearchProviderInterface
                                         $nt => getForeignKeyFieldForTable($cleanrt) . '_1',
                                         [
                                             'OR' => [
-                                                new QueryExpression($DB::quoteName("$rt.id") . ' = ' . $DB::quoteName("$nt." . getForeignKeyFieldForTable($cleanrt) . '_2'))
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
+                                                new QueryExpression($DB::quoteName("$rt.id") . ' = ' . $DB::quoteName("$nt." . getForeignKeyFieldForTable($cleanrt) . '_2')),
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ];
                         $append_join_criteria($item_item_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
                         $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $item_item_join);
@@ -2676,12 +2678,12 @@ final class SQLProvider implements SearchProviderInterface
                                         $rt => getForeignKeyFieldForTable($cleannt) . '_1',
                                         [
                                             'OR' => [
-                                                new QueryExpression($DB::quoteName("$nt.id") . ' = ' . $DB::quoteName("$rt." . getForeignKeyFieldForTable($cleannt) . '_2'))
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
+                                                new QueryExpression($DB::quoteName("$nt.id") . ' = ' . $DB::quoteName("$rt." . getForeignKeyFieldForTable($cleannt) . '_2')),
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ];
                         $append_join_criteria($item_item_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
                         $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $item_item_join);
@@ -2689,8 +2691,9 @@ final class SQLProvider implements SearchProviderInterface
 
                     case "mainitemtype_mainitem":
                         $addmain = 'main';
-                    //addmain defined to be used in itemtype_item case
+                        //addmain defined to be used in itemtype_item case
 
+                        // no break
                     case "itemtype_item":
                         if (!isset($addmain)) {
                             $addmain = '';
@@ -2728,12 +2731,12 @@ final class SQLProvider implements SearchProviderInterface
                                         $nt => "{$addmain}{$items_id_column}",
                                         [
                                             'AND' => [
-                                                "$nt.{$addmain}{$itemtype_column}" => $used_itemtype
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
+                                                "$nt.{$addmain}{$itemtype_column}" => $used_itemtype,
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ];
                         $append_join_criteria($itemtype_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
                         $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $itemtype_join);
@@ -2756,12 +2759,12 @@ final class SQLProvider implements SearchProviderInterface
                                         $rt => 'items_id',
                                         [
                                             'AND' => [
-                                                "$rt.itemtype" => $used_itemtype
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
+                                                "$rt.itemtype" => $used_itemtype,
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ];
                         $append_join_criteria($itemtype_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
                         $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $itemtype_join);
@@ -2782,9 +2785,9 @@ final class SQLProvider implements SearchProviderInterface
                                     'ON' => [
                                         $nt => 'itemtype',
                                         new QueryExpression("'$used_itemtype'"),
-                                    ]
-                                ]
-                            ]
+                                    ],
+                                ],
+                            ],
                         ];
                         $append_join_criteria($itemtype_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
                         $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $itemtype_join);
@@ -2811,10 +2814,10 @@ final class SQLProvider implements SearchProviderInterface
                                 "$new_table$AS" => [
                                     'ON' => [
                                         $rt => $linkfield,
-                                        $nt => 'id'
-                                    ]
-                                ]
-                            ]
+                                        $nt => 'id',
+                                    ],
+                                ],
+                            ],
                         ];
                         $append_join_criteria($standard_join['LEFT JOIN']["$new_table$AS"]['ON'], $add_criteria);
                         $specific_leftjoin_criteria = array_merge_recursive($specific_leftjoin_criteria, $standard_join);
@@ -2870,7 +2873,7 @@ final class SQLProvider implements SearchProviderInterface
         $alias_suffix = ($complexjoin !== '' ? '_' . $complexjoin : '') . '_' . $to_type;
 
         $joins = [
-            'LEFT JOIN' => []
+            'LEFT JOIN' => [],
         ];
 
         // Specific JOIN
@@ -2882,8 +2885,8 @@ final class SQLProvider implements SearchProviderInterface
                 $joins['LEFT JOIN']["`glpi_softwareversions` AS `$softwareversions_table`"] = [
                     'ON' => [
                         $softwareversions_table => 'softwares_id',
-                        $from_table => 'id'
-                    ]
+                        $from_table => 'id',
+                    ],
                 ];
             }
             $items_softwareversions_table = "glpi_items_softwareversions_{$alias_suffix}";
@@ -2896,10 +2899,10 @@ final class SQLProvider implements SearchProviderInterface
                         [
                             'AND' => [
                                 "$items_softwareversions_table.itemtype" => $to_type,
-                                "$items_softwareversions_table.is_deleted" => 0
-                            ]
-                        ]
-                    ]
+                                "$items_softwareversions_table.is_deleted" => 0,
+                            ],
+                        ],
+                    ],
                 ];
             }
             if (!in_array($to_table_alias, $already_link_tables2, true)) {
@@ -2911,9 +2914,9 @@ final class SQLProvider implements SearchProviderInterface
                         [
                             'AND' => [
                                 "$items_softwareversions_table.itemtype" => $to_type,
-                            ] + $to_entity_restrict_criteria + $to_criteria
-                        ]
-                    ]
+                            ] + $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
                 ];
             }
             return $joins;
@@ -2931,10 +2934,10 @@ final class SQLProvider implements SearchProviderInterface
                         [
                             'AND' => [
                                 "$items_softwareversions_table.itemtype" => $from_type,
-                                "$items_softwareversions_table.is_deleted" => 0
-                            ]
-                        ]
-                    ]
+                                "$items_softwareversions_table.is_deleted" => 0,
+                            ],
+                        ],
+                    ],
                 ];
             }
             $softwareversions_table = "glpi_softwareversions{$alias_suffix}";
@@ -2943,8 +2946,8 @@ final class SQLProvider implements SearchProviderInterface
                 $joins['LEFT JOIN']["`glpi_softwareversions` AS `$softwareversions_table`"] = [
                     'ON' => [
                         $items_softwareversions_table => 'softwareversions_id',
-                        $softwareversions_table => 'id'
-                    ]
+                        $softwareversions_table => 'id',
+                    ],
                 ];
             }
             if (!in_array($to_table_alias, $already_link_tables2, true)) {
@@ -2953,7 +2956,7 @@ final class SQLProvider implements SearchProviderInterface
                     'ON' => [
                         $softwareversions_table => 'softwares_id',
                         $to_table_alias => 'id',
-                    ] + $to_criteria
+                    ] + $to_criteria,
                 ];
             }
             $softwarelicenses_table = "glpi_softwarelicenses{$alias_suffix}";
@@ -2964,9 +2967,9 @@ final class SQLProvider implements SearchProviderInterface
                         $to_table_alias => 'id',
                         $softwarelicenses_table => 'softwares_id',
                         [
-                            'AND' => getEntitiesRestrictCriteria($softwarelicenses_table, '', '', true)
-                        ]
-                    ]
+                            'AND' => getEntitiesRestrictCriteria($softwarelicenses_table, '', '', true),
+                        ],
+                    ],
                 ];
             }
             return $joins;
@@ -2980,8 +2983,8 @@ final class SQLProvider implements SearchProviderInterface
                 $joins['LEFT JOIN']["`glpi_infocoms` AS `$infocom_alias`"] = [
                     'ON' => [
                         $from_table => 'id',
-                        $infocom_alias => 'budgets_id'
-                    ]
+                        $infocom_alias => 'budgets_id',
+                    ],
                 ];
             }
             if (!in_array($to_table_alias, $already_link_tables2, true)) {
@@ -2993,9 +2996,9 @@ final class SQLProvider implements SearchProviderInterface
                         [
                             'AND' => [
                                 "$infocom_alias.itemtype" => $to_type,
-                            ] + $to_entity_restrict_criteria + $to_criteria
-                        ]
-                    ]
+                            ] + $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
                 ];
             }
             return $joins;
@@ -3013,9 +3016,9 @@ final class SQLProvider implements SearchProviderInterface
                         [
                             'AND' => [
                                 "$infocom_alias.itemtype" => $from_type,
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ];
             }
             if (!in_array($to_table_alias, $already_link_tables2, true)) {
@@ -3025,9 +3028,9 @@ final class SQLProvider implements SearchProviderInterface
                         $infocom_alias => $to_fk,
                         $to_table_alias => 'id',
                         [
-                            'AND' => $to_entity_restrict_criteria
-                        ] + $to_criteria
-                    ]
+                            'AND' => $to_entity_restrict_criteria,
+                        ] + $to_criteria,
+                    ],
                 ];
             }
             return $joins;
@@ -3041,8 +3044,8 @@ final class SQLProvider implements SearchProviderInterface
                 $joins['LEFT JOIN']["`glpi_reservationitems` AS `$reservationitems_alias`"] = [
                     'ON' => [
                         $from_table => 'reservationitems_id',
-                        $reservationitems_alias => 'id'
-                    ]
+                        $reservationitems_alias => 'id',
+                    ],
                 ];
             }
             if (!in_array($to_table_alias, $already_link_tables2, true)) {
@@ -3054,9 +3057,9 @@ final class SQLProvider implements SearchProviderInterface
                         [
                             'AND' => [
                                 "$reservationitems_alias.itemtype" => $to_type,
-                            ] + $to_entity_restrict_criteria + $to_criteria
-                        ]
-                    ]
+                            ] + $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
                 ];
             }
             return $joins;
@@ -3074,9 +3077,9 @@ final class SQLProvider implements SearchProviderInterface
                         [
                             'AND' => [
                                 "$reservationitems_alias.itemtype" => $from_type,
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ];
             }
             if (!in_array($to_table_alias, $already_link_tables2, true)) {
@@ -3086,9 +3089,9 @@ final class SQLProvider implements SearchProviderInterface
                         $reservationitems_alias => 'id',
                         $to_table_alias => 'reservationitems_id',
                         [
-                            'AND' => $to_entity_restrict_criteria + $to_criteria
-                        ]
-                    ]
+                            'AND' => $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
                 ];
             }
             return $joins;
@@ -3120,9 +3123,9 @@ final class SQLProvider implements SearchProviderInterface
                             'AND' => [
                                 "$relation_table_alias." . 'itemtype_asset' => $asset_itemtype,
                                 "$relation_table_alias." . 'itemtype_peripheral' => $peripheral_itemtype,
-                            ] + $deleted_criteria
-                        ]
-                    ]
+                            ] + $deleted_criteria,
+                        ],
+                    ],
                 ];
             }
             if (!in_array($to_table_alias, $already_link_tables2, true)) {
@@ -3134,9 +3137,9 @@ final class SQLProvider implements SearchProviderInterface
                         [
                             'AND' => [
                                 "$relation_table_alias." . 'itemtype_peripheral' => $peripheral_itemtype,
-                            ] + $to_entity_restrict_criteria + $to_criteria
-                        ]
-                    ]
+                            ] + $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
                 ];
             }
             return $joins;
@@ -3154,9 +3157,9 @@ final class SQLProvider implements SearchProviderInterface
                             'AND' => [
                                 $relation_table_alias . '.itemtype' => $from_referencetype,
                                 $relation_table_alias . '.type' => Group_Item::GROUP_TYPE_NORMAL,
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ];
             }
             if (!in_array($to_table_alias, $already_link_tables2, true)) {
@@ -3166,9 +3169,9 @@ final class SQLProvider implements SearchProviderInterface
                         $to_table_alias => 'id',
                         $relation_table_alias => 'groups_id',
                         [
-                            'AND' => $to_entity_restrict_criteria + $to_criteria
-                        ]
-                    ]
+                            'AND' => $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
                 ];
             }
             return $joins;
@@ -3186,9 +3189,9 @@ final class SQLProvider implements SearchProviderInterface
                             'AND' => [
                                 $relation_table_alias . '.itemtype' => $to_type,
                                 $relation_table_alias . '.type' => Group_Item::GROUP_TYPE_NORMAL,
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ];
             }
             if (!in_array($to_table_alias, $already_link_tables2, true)) {
@@ -3198,9 +3201,9 @@ final class SQLProvider implements SearchProviderInterface
                         $relation_table_alias => 'items_id',
                         $to_table_alias => 'id',
                         [
-                            'AND' => $to_entity_restrict_criteria + $to_criteria
-                        ]
-                    ]
+                            'AND' => $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
                 ];
             }
             return $joins;
@@ -3233,12 +3236,12 @@ final class SQLProvider implements SearchProviderInterface
                         $from_table => $to_fk,
                         $to_table_alias => 'id',
                         [
-                            'AND' => $to_entity_restrict_criteria + $to_criteria
-                        ]
-                    ]
+                            'AND' => $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
                 ];
             }
-        } else if ($to_obj && $to_obj->isField($from_fk)) {
+        } elseif ($to_obj && $to_obj->isField($from_fk)) {
             // $to_table has a foreign key corresponding to $from_table
             if (!in_array($to_table_alias, $already_link_tables2, true)) {
                 $already_link_tables2[] = $to_table_alias;
@@ -3247,12 +3250,12 @@ final class SQLProvider implements SearchProviderInterface
                         $from_table => 'id',
                         $to_table_alias => $from_fk,
                         [
-                            'AND' => $to_entity_restrict_criteria + $to_criteria
-                        ]
-                    ]
+                            'AND' => $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
                 ];
             }
-        } else if ($from_obj && $from_obj->isField('itemtype') && $from_obj->isField('items_id')) {
+        } elseif ($from_obj && $from_obj->isField('itemtype') && $from_obj->isField('items_id')) {
             // $from_table has items_id/itemtype fields
             if (!in_array($to_table_alias, $already_link_tables2, true)) {
                 $already_link_tables2[] = $to_table_alias;
@@ -3263,12 +3266,12 @@ final class SQLProvider implements SearchProviderInterface
                         [
                             'AND' => [
                                 "$from_table.itemtype" => $to_type,
-                            ] + $to_entity_restrict_criteria + $to_criteria
-                        ]
-                    ]
+                            ] + $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
                 ];
             }
-        } else if ($to_obj && $to_obj->isField('itemtype') && $to_obj->isField('items_id')) {
+        } elseif ($to_obj && $to_obj->isField('itemtype') && $to_obj->isField('items_id')) {
             // $to_table has items_id/itemtype fields
             if (!in_array($to_table_alias, $already_link_tables2, true)) {
                 $already_link_tables2[] = $to_table_alias;
@@ -3279,12 +3282,12 @@ final class SQLProvider implements SearchProviderInterface
                         [
                             'AND' => [
                                 "$to_table_alias.itemtype" => $from_type,
-                            ] + $to_entity_restrict_criteria + $to_criteria
-                        ]
-                    ]
+                            ] + $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
                 ];
             }
-        } else if ($from_item_obj && $from_item_obj->isField($from_fk)) {
+        } elseif ($from_item_obj && $from_item_obj->isField($from_fk)) {
             // glpi_$from_items table exists and has a foreign key corresponding to $to_table
             $items_table = $from_item_obj::getTable();
             $items_table_alias = $items_table . $alias_suffix;
@@ -3298,9 +3301,9 @@ final class SQLProvider implements SearchProviderInterface
                         [
                             'AND' => [
                                 "$items_table_alias.itemtype" => $to_type,
-                            ] + $deleted_criteria
-                        ]
-                    ]
+                            ] + $deleted_criteria,
+                        ],
+                    ],
                 ];
             }
             if (!in_array($to_table_alias, $already_link_tables2, true)) {
@@ -3310,12 +3313,12 @@ final class SQLProvider implements SearchProviderInterface
                         $items_table_alias => 'items_id',
                         $to_table_alias => 'id',
                         [
-                            'AND' => $to_entity_restrict_criteria + $to_criteria
-                        ]
-                    ]
+                            'AND' => $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
                 ];
             }
-        } else if ($to_item_obj && $to_item_obj->isField($to_fk)) {
+        } elseif ($to_item_obj && $to_item_obj->isField($to_fk)) {
             // glpi_$to_items table exists and has a foreign key corresponding to $from_table
             $items_table = $to_item_obj::getTable();
             $items_table_alias = $items_table . $alias_suffix;
@@ -3329,9 +3332,9 @@ final class SQLProvider implements SearchProviderInterface
                         [
                             'AND' => [
                                 "$items_table_alias.itemtype" => $from_type,
-                            ] + $deleted_criteria
-                        ]
-                    ]
+                            ] + $deleted_criteria,
+                        ],
+                    ],
                 ];
             }
             if (!in_array($to_table_alias, $already_link_tables2, true)) {
@@ -3341,9 +3344,9 @@ final class SQLProvider implements SearchProviderInterface
                         $items_table_alias => $to_fk,
                         $to_table_alias => 'id',
                         [
-                            'AND' => $to_entity_restrict_criteria + $to_criteria
-                        ]
-                    ]
+                            'AND' => $to_entity_restrict_criteria + $to_criteria,
+                        ],
+                    ],
                 ];
             }
         }
@@ -3432,12 +3435,12 @@ final class SQLProvider implements SearchProviderInterface
                             'AND' => [
                                 "$alias.items_id" => new QueryExpression($DB::quoteName("$table.id")),
                                 "$alias.language" => $_SESSION['glpilanguage'],
-                                "$alias.field"    => $field
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                "$alias.field"    => $field,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -3476,7 +3479,7 @@ final class SQLProvider implements SearchProviderInterface
             );
             if (!empty($out)) {
                 return [
-                    new QueryExpression($out)
+                    new QueryExpression($out),
                 ];
             }
         }
@@ -3498,7 +3501,7 @@ final class SQLProvider implements SearchProviderInterface
                 );
                 if (!empty($out)) {
                     return [
-                        new QueryExpression($out)
+                        new QueryExpression($out),
                     ];
                 }
             }
@@ -3548,7 +3551,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
 
                     return [
-                        $NAME => [$operator, $val]
+                        $NAME => [$operator, $val],
                     ];
                 case "count":
                 case "mio":
@@ -3566,7 +3569,7 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         $regs[1] .= $regs[2];
                         return [
-                            $NAME => [$regs[1], floatval($regs[3] . $regs[4])]
+                            $NAME => [$regs[1], floatval($regs[3] . $regs[4])],
                         ];
                     }
 
@@ -3576,24 +3579,24 @@ final class SQLProvider implements SearchProviderInterface
                             if (!$NOT) {
                                 return [
                                     [$NAME => ['<', $num_val + $searchopt[$ID]["width"]]],
-                                    [$NAME => ['>', $num_val - $searchopt[$ID]["width"]]]
+                                    [$NAME => ['>', $num_val - $searchopt[$ID]["width"]]],
                                 ];
                             }
                             return [
                                 'OR' => [
                                     [$NAME => ['>', $num_val + $searchopt[$ID]["width"]]],
-                                    [$NAME => ['<', $num_val - $searchopt[$ID]["width"]]]
-                                ]
+                                    [$NAME => ['<', $num_val - $searchopt[$ID]["width"]]],
+                                ],
                             ];
                         }
                         // Exact search
                         if (!$NOT) {
                             return [
-                                $NAME => $num_val
+                                $NAME => $num_val,
                             ];
                         }
                         return [
-                            $NAME => ['<>', $num_val]
+                            $NAME => ['<>', $num_val],
                         ];
                     }
                     break;
@@ -3903,7 +3906,7 @@ final class SQLProvider implements SearchProviderInterface
                 $LINK  = " ";
                 $first = false;
             }
-            $COMMONWHERE .= $LINK . "`$itemtable`.`is_deleted` = " . (int)$data['search']['is_deleted'] . " ";
+            $COMMONWHERE .= $LINK . "`$itemtable`.`is_deleted` = " . (int) $data['search']['is_deleted'] . " ";
         }
 
         // Remove template items
@@ -3926,7 +3929,7 @@ final class SQLProvider implements SearchProviderInterface
 
             if ($data['itemtype'] == 'Entity') {
                 $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable);
-            } else if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+            } elseif (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
                 // Will be replace below in Union/Recursivity Hack
                 $COMMONWHERE .= $LINK . " ENTITYRESTRICT ";
             } else {
@@ -3961,7 +3964,7 @@ final class SQLProvider implements SearchProviderInterface
                 if ($data['search']['sort'][$i] == $val) {
                     $sort_fields[] = [
                         'searchopt_id' => $data['search']['sort'][$i],
-                        'order'        => $data['search']['order'][$i] ?? null
+                        'order'        => $data['search']['order'][$i] ?? null,
                     ];
                 }
             }
@@ -4007,7 +4010,7 @@ final class SQLProvider implements SearchProviderInterface
         $numrows = 0;
         //No search : count number of items using a simple count(ID) request and LIMIT search
         if ($data['search']['no_search']) {
-            $LIMIT = " LIMIT " . (int)$data['search']['start'] . ", " . (int)$data['search']['list_limit'];
+            $LIMIT = " LIMIT " . (int) $data['search']['start'] . ", " . (int) $data['search']['list_limit'];
 
             $count = "count(DISTINCT `$itemtable`.`id`)";
             // request currentuser for SQL supervision, not displayed
@@ -4281,7 +4284,7 @@ final class SQLProvider implements SearchProviderInterface
                 'GROUPBY' => $GROUPBY,
                 'HAVING' => $HAVING,
                 'ORDER' => $ORDER,
-                'LIMIT' => $LIMIT
+                'LIMIT' => $LIMIT,
             ];
             $QUERY = $SELECT .
                 $FROM .
@@ -4377,7 +4380,7 @@ final class SQLProvider implements SearchProviderInterface
                             $sql .= "$LINK ($sub_sql)";
                         }
                     }
-                } else if (
+                } elseif (
                     isset($meta_searchopt[$criterion['field']]["usehaving"])
                     || ($meta && "AND NOT" === $criterion['link'])
                 ) {
@@ -4416,7 +4419,7 @@ final class SQLProvider implements SearchProviderInterface
                         $sql .= $new_where;
                     }
                 }
-            } else if (
+            } elseif (
                 isset($criterion['value'])
                 && strlen($criterion['value']) > 0
             ) { // view and all search
@@ -4613,7 +4616,7 @@ final class SQLProvider implements SearchProviderInterface
             $data['data']['execution_time'] = $DBread->execution_time;
             if (isset($data['search']['savedsearches_id'])) {
                 \SavedSearch::updateExecutionTime(
-                    (int)$data['search']['savedsearches_id'],
+                    (int) $data['search']['savedsearches_id'],
                     $DBread->execution_time
                 );
             }
@@ -5167,7 +5170,7 @@ final class SQLProvider implements SearchProviderInterface
                                                         $user->getInfoCard(),
                                                         [
                                                             'link'    => $user->getLinkURL(),
-                                                            'display' => false
+                                                            'display' => false,
                                                         ]
                                                     );
                                                 }
@@ -5214,7 +5217,7 @@ final class SQLProvider implements SearchProviderInterface
                                         $user->getInfoCard(),
                                         [
                                             'link'    => $user->getLinkURL(),
-                                            'display' => false
+                                            'display' => false,
                                         ]
                                     );
                                 }
@@ -5391,7 +5394,7 @@ final class SQLProvider implements SearchProviderInterface
                             : $data[$ID][$k]['tickets_id_2'];
 
                         // If link ID is int or integer string, force conversion to int. Conversion to int and then string to compare is needed to ensure it isn't a decimal
-                        if (is_numeric($linkid) && ((string)(int)$linkid === (string)$linkid)) {
+                        if (is_numeric($linkid) && ((string) (int) $linkid === (string) $linkid)) {
                             $linkid = (int) $linkid;
                         }
                         if ((is_int($linkid) && $linkid > 0) && !isset($displayed[$linkid])) {
@@ -5478,7 +5481,7 @@ final class SQLProvider implements SearchProviderInterface
                                     $options['criteria'][0]['value']      = $data['id'];
                                     $options['criteria'][0]['link']       = 'AND';
                                 }
-                            } else if ($itemtype == 'ITILCategory') {
+                            } elseif ($itemtype == 'ITILCategory') {
                                 $options['criteria'][0]['field']      = 7;
                                 $options['criteria'][0]['searchtype'] = 'equals';
                                 $options['criteria'][0]['value']      = $data['id'];
@@ -5637,10 +5640,10 @@ final class SQLProvider implements SearchProviderInterface
                         if ($_SESSION['glpiduedatewarning_unit'] == '%') {
                             $less_warn_limit = $_SESSION['glpiduedatewarning_less'];
                             $less_warn       = (100 - $percentage);
-                        } else if ($_SESSION['glpiduedatewarning_unit'] == 'hour') {
+                        } elseif ($_SESSION['glpiduedatewarning_unit'] == 'hour') {
                             $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * HOUR_TIMESTAMP;
                             $less_warn       = ($totaltime - $currenttime);
-                        } else if ($_SESSION['glpiduedatewarning_unit'] == 'day') {
+                        } elseif ($_SESSION['glpiduedatewarning_unit'] == 'day') {
                             $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * DAY_TIMESTAMP;
                             $less_warn       = ($totaltime - $currenttime);
                         }
@@ -5650,10 +5653,10 @@ final class SQLProvider implements SearchProviderInterface
                         if ($_SESSION['glpiduedatecritical_unit'] == '%') {
                             $less_crit_limit = $_SESSION['glpiduedatecritical_less'];
                             $less_crit       = (100 - $percentage);
-                        } else if ($_SESSION['glpiduedatecritical_unit'] == 'hour') {
+                        } elseif ($_SESSION['glpiduedatecritical_unit'] == 'hour') {
                             $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * HOUR_TIMESTAMP;
                             $less_crit       = ($totaltime - $currenttime);
-                        } else if ($_SESSION['glpiduedatecritical_unit'] == 'day') {
+                        } elseif ($_SESSION['glpiduedatecritical_unit'] == 'day') {
                             $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * DAY_TIMESTAMP;
                             $less_crit       = ($totaltime - $currenttime);
                         }
@@ -5662,7 +5665,7 @@ final class SQLProvider implements SearchProviderInterface
                             $color = $_SESSION['glpiduedateok_color'];
                             if ($less_crit < $less_crit_limit) {
                                 $color = $_SESSION['glpiduedatecritical_color'];
-                            } else if ($less_warn < $less_warn_limit) {
+                            } elseif ($less_warn < $less_warn_limit) {
                                 $color = $_SESSION['glpiduedatewarning_color'];
                             }
                         }
@@ -5675,7 +5678,7 @@ final class SQLProvider implements SearchProviderInterface
                             'text'         => \Html::convDateTime($data[$ID][0]['name']),
                             'percent'      => $percentage,
                             'percent_text' => $percentage_text,
-                            'color'        => $color
+                            'color'        => $color,
                         ];
                     }
                     break;
@@ -5823,7 +5826,7 @@ final class SQLProvider implements SearchProviderInterface
                                 [
                                     'applyto' => $itemtype . $data[$ID][0]['id'],
                                     'display' => false,
-                                    'url'     => "/ajax/get_item_content.php?itemtype=$itemtype&items_id=$id"
+                                    'url'     => "/ajax/get_item_content.php?itemtype=$itemtype&items_id=$id",
                                 ]
                             )
                         );
@@ -5954,6 +5957,7 @@ final class SQLProvider implements SearchProviderInterface
                         return '';
                     }
 
+                    // no break
                 case "glpi_tickets.priority":
                 case "glpi_problems.priority":
                 case "glpi_changes.priority":
@@ -5971,33 +5975,33 @@ final class SQLProvider implements SearchProviderInterface
                     $result = $DB->request([
                         'SELECT' => [
                             \KnowbaseItem::getTable() . '.is_faq',
-                            \KnowbaseItem::getTable() . '.id'
+                            \KnowbaseItem::getTable() . '.id',
                         ],
                         'FROM'   => \KnowbaseItem::getTable(),
                         'LEFT JOIN' => [
                             \Entity_KnowbaseItem::getTable() => [
                                 'ON'  => [
                                     \Entity_KnowbaseItem::getTable() => \KnowbaseItem::getForeignKeyField(),
-                                    \KnowbaseItem::getTable()        => 'id'
-                                ]
+                                    \KnowbaseItem::getTable()        => 'id',
+                                ],
                             ],
                             \KnowbaseItem_Profile::getTable() => [
                                 'ON'  => [
                                     \KnowbaseItem_Profile::getTable() => \KnowbaseItem::getForeignKeyField(),
-                                    \KnowbaseItem::getTable()         => 'id'
-                                ]
+                                    \KnowbaseItem::getTable()         => 'id',
+                                ],
                             ],
                             \Group_KnowbaseItem::getTable() => [
                                 'ON'  => [
                                     \Group_KnowbaseItem::getTable() => \KnowbaseItem::getForeignKeyField(),
-                                    \KnowbaseItem::getTable()       => 'id'
-                                ]
+                                    \KnowbaseItem::getTable()       => 'id',
+                                ],
                             ],
                             \KnowbaseItem_User::getTable() => [
                                 'ON'  => [
                                     \KnowbaseItem_User::getTable() => \KnowbaseItem::getForeignKeyField(),
-                                    \KnowbaseItem::getTable()      => 'id'
-                                ]
+                                    \KnowbaseItem::getTable()      => 'id',
+                                ],
                             ],
                         ],
                         'WHERE'  => [
@@ -6007,7 +6011,7 @@ final class SQLProvider implements SearchProviderInterface
                                 \KnowbaseItem_Profile::getTable() . '.id' => ['>=', 0],
                                 \Group_KnowbaseItem::getTable() . '.id' => ['>=', 0],
                                 \KnowbaseItem_User::getTable() . '.id' => ['>=', 0],
-                            ]
+                            ],
                         ],
                     ]);
                     $name = $data[$ID][0]['name'];
@@ -6120,7 +6124,7 @@ final class SQLProvider implements SearchProviderInterface
                     $out           = '';
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string)$data[$ID][$k]['name'])) > 0) {
+                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
                             if ($count_display) {
                                 $out .= $separate;
                             }
@@ -6230,7 +6234,7 @@ final class SQLProvider implements SearchProviderInterface
                     return (empty($out) ? '' : $out);
 
                 case "weblink":
-                    $orig_link = trim((string)$data[$ID][0]['name']);
+                    $orig_link = trim((string) $data[$ID][0]['name']);
                     if (!empty($orig_link) && \Toolbox::isValidWebUrl($orig_link)) {
                         // strip begin of link
                         $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/', '', $orig_link);
@@ -6249,7 +6253,7 @@ final class SQLProvider implements SearchProviderInterface
                     $out           = "";
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string)$data[$ID][$k]['name'])) > 0) {
+                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
                             if ($count_display) {
                                 $out .= \Search::LBBR;
                             }
@@ -6271,7 +6275,7 @@ final class SQLProvider implements SearchProviderInterface
                     $out           = "";
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string)$data[$ID][$k]['name'])) > 0) {
+                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
                             if ($count_display) {
                                 $out .= \Search::LBBR;
                             }
@@ -6293,7 +6297,7 @@ final class SQLProvider implements SearchProviderInterface
                     $out           = "";
                     $count_display = 0;
                     for ($k = 0; $k < $data[$ID]['count']; $k++) {
-                        if (strlen(trim((string)$data[$ID][$k]['name'])) > 0) {
+                        if (strlen(trim((string) $data[$ID][$k]['name'])) > 0) {
                             if ($count_display) {
                                 $out .= \Search::LBBR;
                             }
@@ -6336,7 +6340,7 @@ final class SQLProvider implements SearchProviderInterface
                             'percent'      => $percent,
                             'percent_text' => $percent,
                             'color'        => $bar_color,
-                            'text'         => ''
+                            'text'         => '',
                         ];
                     }
 
@@ -6373,7 +6377,7 @@ HTML;
         $append_specific = static function ($specific, $field_data, &$out) use ($so) {
             if (!empty($specific)) {
                 $out .= $specific;
-            } else if (isset($field_data['values'])) {
+            } elseif (isset($field_data['values'])) {
                 // Aggregate values; No special handling
                 return;
             } else {
@@ -6417,7 +6421,7 @@ HTML;
                         [
                             'html'      => true,
                             'searchopt' => $so,
-                            'raw_data'  => $data
+                            'raw_data'  => $data,
                         ]
                     );
 
@@ -6439,7 +6443,7 @@ HTML;
                             [
                                 'html' => true,
                                 'searchopt' => $so,
-                                'raw_data' => $data
+                                'raw_data' => $data,
                             ]
                         );
 

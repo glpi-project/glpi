@@ -35,7 +35,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Toolbox;
 
 /* Test for inc/documenttype.class.php */
 
@@ -45,19 +44,19 @@ class DocumentTypeTest extends DbTestCase
     {
         $doctype = new \DocumentType();
 
-       // Clear types to prevent test to be impacted by potential default types changes
+        // Clear types to prevent test to be impacted by potential default types changes
         $this->assertTrue($doctype->deleteByCriteria(['1']));
 
-        $this->assertGreaterThan(0, (int)$doctype->add(['name' => 'JPG' ,'ext' => '/\.jpe?g$/']));
-        $this->assertGreaterThan(0, (int)$doctype->add(['name' => 'DOC' ,'ext' => 'doc']));
-        $this->assertGreaterThan(0, (int)$doctype->add(['name' => 'XML' ,'ext' => 'xml']));
-        $this->assertGreaterThan(0, (int)$doctype->add(['name' => 'Tarball' ,'ext' => 'tar.gz']));
+        $this->assertGreaterThan(0, (int) $doctype->add(['name' => 'JPG','ext' => '/\.jpe?g$/']));
+        $this->assertGreaterThan(0, (int) $doctype->add(['name' => 'DOC','ext' => 'doc']));
+        $this->assertGreaterThan(0, (int) $doctype->add(['name' => 'XML','ext' => 'xml']));
+        $this->assertGreaterThan(0, (int) $doctype->add(['name' => 'Tarball','ext' => 'tar.gz']));
 
-       // Validate generated pattern
+        // Validate generated pattern
         $pattern = \DocumentType::getUploadableFilePattern();
         $this->assertSame('/((\.jpe?g$)|\.doc$|\.xml$|\.tar\.gz$)/i', $pattern);
 
-       // Validate matches
+        // Validate matches
         $this->assertEquals(1, preg_match($pattern, 'test.jpg'));
         $this->assertEquals(1, preg_match($pattern, 'test.jpeg'));
         $this->assertEquals(0, preg_match($pattern, 'test.jpag'));

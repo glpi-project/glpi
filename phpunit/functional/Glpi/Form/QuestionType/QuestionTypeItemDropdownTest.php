@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use DbTestCase;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -62,7 +61,7 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
             "Category" => [
                 'itemtype' => ITILCategory::class,
-                'items_id' => $category->getID()
+                'items_id' => $category->getID(),
             ],
         ]);
 

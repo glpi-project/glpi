@@ -43,14 +43,14 @@ if (isset($_POST['action'])) {
         $field->fields = $_POST;
         $field->fields['default_value'] = $field->getFieldType()->normalizeValue($_POST['default_value'] ?? null);
         echo $field->getFieldType()->getDefaultValueFormInput();
-    } else if ($_POST['action'] === 'get_field_type_options') {
+    } elseif ($_POST['action'] === 'get_field_type_options') {
         $field->getFromDB($_POST['customfielddefinitions_id']);
         $field->fields['type'] = $_POST['type'];
         $field_options = $field->getFieldType()->getOptions();
         foreach ($field_options as $option) {
             echo $option->getFormInput();
         }
-    } else if ($_POST['action'] === 'purge_field') {
+    } elseif ($_POST['action'] === 'purge_field') {
         $field->check($_POST['customfielddefinitions_id'], PURGE);
         $field->delete(['id' => $_POST['customfielddefinitions_id']]);
     } else {

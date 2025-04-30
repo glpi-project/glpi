@@ -73,7 +73,7 @@ final class EditorManagerTest extends GLPITestCase
                 item_type: '',
                 value_operator: null,
                 value: null,
-            )
+            ),
         ]);
     }
 
@@ -103,7 +103,7 @@ final class EditorManagerTest extends GLPITestCase
                     'logic_operator' => LogicOperator::AND->value,
                     'item' => 'comment-1',
                     'value_operator' => ValueOperator::VISIBLE->value,
-                ]
+                ],
             ],
         ]);
         $editor_manager = $this->getManagerWithData($form_data);
@@ -199,7 +199,7 @@ final class EditorManagerTest extends GLPITestCase
                 'question-1' => 'Question 1',
                 'question-2' => 'Question 2',
                 'question-3' => 'Question 3',
-            ]
+            ],
         ]);
     }
 
@@ -522,8 +522,8 @@ final class EditorManagerTest extends GLPITestCase
                 [
                     'item' => $condition->getItemDropdownKey(),
                     'value_operator' => $condition->getValueOperator()->value,
-                ]
-            ]
+                ],
+            ],
         ];
 
         // Add value if not null

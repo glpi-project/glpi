@@ -46,7 +46,7 @@ class NotificationEventAjax extends NotificationEventAbstract
         $field = self::getTargetFieldName();
 
         if (!isset($data[$field])) {
-           //Missing users_id; set to null
+            //Missing users_id; set to null
             $data[$field] = null;
         }
 
@@ -56,21 +56,21 @@ class NotificationEventAjax extends NotificationEventAbstract
 
     public static function canCron()
     {
-       //notifications are pulled from web browser, it must not be handled from cron
+        //notifications are pulled from web browser, it must not be handled from cron
         return false;
     }
 
 
     public static function getAdminData()
     {
-       //since admin cannot be logged in; no ajax notifications for global admin
+        //since admin cannot be logged in; no ajax notifications for global admin
         return [];
     }
 
 
     public static function getEntityAdminsData($entity)
     {
-       //since entities admin cannot be logged in; no ajax notifications for them
+        //since entities admin cannot be logged in; no ajax notifications for them
         return [];
     }
 

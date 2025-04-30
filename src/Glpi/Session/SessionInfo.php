@@ -49,8 +49,7 @@ final class SessionInfo
         /** @var int[] $entities_ids */
         private array $active_entities_ids = [],
         private int $current_entity_id = 0,
-    ) {
-    }
+    ) {}
 
     public function getUserId(): int
     {

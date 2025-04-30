@@ -50,7 +50,7 @@ class DeviceSensorModelTest extends DbTestCase
             'product_number'           => $this->getUniqueString(),
         ];
         $id = $obj->add($in);
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan(0, (int) $id);
         $this->assertTrue($obj->getFromDB($id));
 
         // getField methods

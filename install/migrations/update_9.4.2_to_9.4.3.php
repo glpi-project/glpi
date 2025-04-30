@@ -50,16 +50,16 @@ function update942to943()
     $migration->setVersion('9.4.3');
 
     /** Fix URL of images inside ITIL objects contents */
-   // This is an exact copy of the same process used in "update940to941()" and "update941to942()"
-   // which was not working for elements having a simple quote in their content.
-   // It has been fixed there for people who had not yet updated to 9.4.1 / 9.4.2 but have to
-   // be put back here for people already having updated to 9.4.1 / 9.4.2.
+    // This is an exact copy of the same process used in "update940to941()" and "update941to942()"
+    // which was not working for elements having a simple quote in their content.
+    // It has been fixed there for people who had not yet updated to 9.4.1 / 9.4.2 but have to
+    // be put back here for people already having updated to 9.4.1 / 9.4.2.
     $migration->displayMessage(sprintf(__('Fix URL of images in ITIL tasks, followups and solutions.')));
 
-   // Search for contents that does not contains the itil object parameter after the docid parameter
-   // (i.e. having a quote that ends the href just after the docid param value).
-   // 1st capturing group is the end of href attribute value
-   // 2nd capturing group is the href attribute ending quote
+    // Search for contents that does not contains the itil object parameter after the docid parameter
+    // (i.e. having a quote that ends the href just after the docid param value).
+    // 1st capturing group is the end of href attribute value
+    // 2nd capturing group is the href attribute ending quote
     $quotes_possible_exp   = ['\'', '&apos;', '&#39;', '&#x27;', '"', '&quot', '&#34;', '&#x22;'];
     $missing_param_pattern = '(document\.send\.php\?docid=[0-9]+)(' . implode('|', $quotes_possible_exp) . ')';
 
@@ -82,7 +82,7 @@ function update942to943()
     ];
 
     $fix_content_fct = function ($content, $itil_id, $itil_fkey) use ($missing_param_pattern) {
-       // Add itil object param between docid param ($1) and ending quote ($2)
+        // Add itil object param between docid param ($1) and ending quote ($2)
         return preg_replace(
             '/' . $missing_param_pattern . '/',
             '$1&amp;' . http_build_query([$itil_fkey => $itil_id]) . '$2',
@@ -94,7 +94,7 @@ function update942to943()
         $itil_fkey  = $itil_specs['itil_fkey'];
         $task_table = $itil_specs['task_table'];
 
-       // Fix followups and solutions
+        // Fix followups and solutions
         foreach (['glpi_itilfollowups', 'glpi_itilsolutions'] as $itil_element_table) {
             $elements_to_fix = $DB->request(
                 [
@@ -103,23 +103,23 @@ function update942to943()
                     'WHERE'     => [
                         'itemtype' => $itil_type,
                         'content'  => ['REGEXP', $missing_param_pattern],
-                    ]
+                    ],
                 ]
             );
             foreach ($elements_to_fix as $data) {
-                 $data['content'] = $fix_content_fct($data['content'], $data['items_id'], $itil_fkey);
-                 $DB->update($itil_element_table, $data, ['id' => $data['id']]);
+                $data['content'] = $fix_content_fct($data['content'], $data['items_id'], $itil_fkey);
+                $DB->update($itil_element_table, $data, ['id' => $data['id']]);
             }
         }
 
-       // Fix tasks
+        // Fix tasks
         $tasks_to_fix = $DB->request(
             [
                 'SELECT'    => ['id', $itil_fkey, 'content'],
                 'FROM'      => $task_table,
                 'WHERE'     => [
                     'content'  => ['REGEXP', $missing_param_pattern],
-                ]
+                ],
             ]
         );
         foreach ($tasks_to_fix as $data) {
@@ -129,7 +129,7 @@ function update942to943()
     }
     /** /Fix URL of images inside ITIL objects contents */
 
-   // add is_private field to change and problems
+    // add is_private field to change and problems
     $migration->addField('glpi_changetasks', 'is_private', 'bool');
     $migration->addField('glpi_problemtasks', 'is_private', 'bool');
     $migration->addKey('glpi_changetasks', 'is_private');
@@ -144,7 +144,7 @@ function update942to943()
     );
     /** /Crontask missing from fresh install */
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

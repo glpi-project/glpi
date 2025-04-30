@@ -134,7 +134,7 @@ class ProfileTest extends DbTestCase
         $iterator = $DB->request([
             'FROM'   => \Profile::getTable(),
             'WHERE'  => \Profile::getUnderActiveProfileRestrictCriteria(),
-            'ORDER'  => 'name'
+            'ORDER'  => 'name',
         ]);
 
         foreach ($iterator as $profile_found) {
@@ -166,13 +166,13 @@ class ProfileTest extends DbTestCase
         // add all ticket rights to this profile
         $profile->update([
             'id'      => $profiles_id,
-            '_ticket' => $all_rights
+            '_ticket' => $all_rights,
         ]);
 
         // switch to self-service interface
         $profile->update([
             'id'        => $profiles_id,
-            'interface' => 'helpdesk'
+            'interface' => 'helpdesk',
         ]);
 
         // retrieve self-service tickets rights
@@ -262,14 +262,14 @@ class ProfileTest extends DbTestCase
         $this->assertFalse($super_admin->canPurgeItem());
 
         $super_admin_2 = $this->createItem("Profile", [
-            "name" => "Super-Admin 2"
+            "name" => "Super-Admin 2",
         ]);
         $this->assertTrue($super_admin->isLastSuperAdminProfile());
         $this->assertFalse($super_admin_2->isLastSuperAdminProfile());
 
         // Two super admin account, can't be deleted because only one has central interface
         $this->updateItem("Profile", $super_admin_2->getID(), [
-            '_profile' => [UPDATE . "_0" => true]
+            '_profile' => [UPDATE . "_0" => true],
         ]);
         $this->assertTrue($super_admin->isLastSuperAdminProfile());
         $this->assertFalse($super_admin->canPurgeItem());
@@ -278,7 +278,7 @@ class ProfileTest extends DbTestCase
 
         // Two super admin account, both can be deleted
         $this->updateItem("Profile", $super_admin_2->getID(), [
-            'interface' => 'central'
+            'interface' => 'central',
         ]);
         $this->assertFalse($super_admin->isLastSuperAdminProfile());
         $this->assertTrue($super_admin->canPurgeItem());
@@ -298,23 +298,23 @@ class ProfileTest extends DbTestCase
         $this->assertTrue($super_admin->isLastSuperAdminProfile());
         $this->assertTrue($super_admin->update([
             'id' => $super_admin->getId(),
-            '_profile' => [UPDATE . "_0" => false]
+            '_profile' => [UPDATE . "_0" => false],
         ]));
         $this->hasSessionMessages(ERROR, [
             // Session messages may contain HTML (allowed), but this message only contains text from translations and it should be santiiized
-            "Can&#039;t remove update right on this profile as it is the only remaining profile with this right."
+            "Can&#039;t remove update right on this profile as it is the only remaining profile with this right.",
         ]);
 
         // Try to change the interface of the lock profile
         $readonly = getItemByTypeName('Profile', 'Read-Only');
         $this->updateItem("Profile", $readonly->getID(), [
-            'interface' => 'helpdesk'
+            'interface' => 'helpdesk',
         ], ['interface']); // Skip interface check as it should not be updated.
         $readonly->getFromDB($readonly->fields['id']); // Reload data
         $this->assertEquals('central', $readonly->fields['interface']);
         $this->hasSessionMessages(ERROR, [
             // Session messages may contain HTML (allowed), but this message only contains text from translations and it should be santiiized
-            "This profile can&#039;t be moved to the simplified interface as it is used for locking items."
+            "This profile can&#039;t be moved to the simplified interface as it is used for locking items.",
         ]);
     }
 

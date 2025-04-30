@@ -51,8 +51,7 @@ final class ITILCategoryFieldConfig implements
         private ITILCategoryFieldStrategy $strategy,
         private ?int $specific_question_id = null,
         private ?int $specific_itilcategory_id = null,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

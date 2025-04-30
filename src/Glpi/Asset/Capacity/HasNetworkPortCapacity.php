@@ -100,7 +100,7 @@ class HasNetworkPortCapacity extends AbstractCapacity
         $networkport = new NetworkPort();
         $networkport->deleteByCriteria(
             [
-                'itemtype' => $classname
+                'itemtype' => $classname,
             ],
             force: true,
             history: false

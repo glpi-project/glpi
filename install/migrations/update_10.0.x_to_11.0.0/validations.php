@@ -47,7 +47,7 @@ foreach ($validation_tables as $validation_table) {
     if (!$DB->fieldExists($validation_table, 'itemtype_target')) {
         $migration->addField($validation_table, 'itemtype_target', 'varchar(255) NOT NULL', [
             'after'     => 'users_id_validate',
-            'update'    => "'User'"
+            'update'    => "'User'",
         ]);
         $needed_migration = true;
     }

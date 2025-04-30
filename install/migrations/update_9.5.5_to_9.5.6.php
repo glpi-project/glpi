@@ -55,24 +55,24 @@ function update955to956()
 
     $migration->setVersion('9.5.6');
 
-   // Change DC itemtype template_name search option ID from 50 to 61 to prevent duplicate IDs now that those itemtypes have Infocom search options.
+    // Change DC itemtype template_name search option ID from 50 to 61 to prevent duplicate IDs now that those itemtypes have Infocom search options.
     $migration->changeSearchOption(Enclosure::class, 50, 61);
     $migration->changeSearchOption(PassiveDCEquipment::class, 50, 61);
     $migration->changeSearchOption(PDU::class, 50, 61);
     $migration->changeSearchOption(Rack::class, 50, 61);
 
-   /* Add `date` to some glpi_documents_items */
+    /* Add `date` to some glpi_documents_items */
     if (!$DB->fieldExists('glpi_documents_items', 'date')) {
         $migration->addField('glpi_documents_items', 'date', 'timestamp');
         $migration->addKey('glpi_documents_items', 'date');
 
-       // Init date from the parent followup
+        // Init date from the parent followup
         $parent_date = new QuerySubQuery([
             'SELECT' => 'date',
             'FROM' => 'glpi_itilfollowups',
             'WHERE' => [
-                'id' => new QueryExpression($DB->quoteName('glpi_documents_items.items_id'))
-            ]
+                'id' => new QueryExpression($DB->quoteName('glpi_documents_items.items_id')),
+            ],
         ]);
 
         $migration->addPostQuery(
@@ -83,7 +83,7 @@ function update955to956()
             )
         );
 
-       // Init date as the value of date_creation for others items
+        // Init date as the value of date_creation for others items
         $migration->addPostQuery(
             $DB->buildUpdate(
                 'glpi_documents_items',
@@ -92,9 +92,9 @@ function update955to956()
             )
         );
     }
-   /* /Add `date` to glpi_documents_items */
+    /* /Add `date` to glpi_documents_items */
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

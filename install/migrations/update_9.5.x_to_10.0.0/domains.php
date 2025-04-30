@@ -44,10 +44,10 @@
 use Glpi\DBAL\QueryExpression;
 
 $migration->addField('glpi_domains', 'is_template', 'bool', [
-    'after' => 'comment'
+    'after' => 'comment',
 ]);
 $migration->addField('glpi_domains', 'template_name', 'string', [
-    'after' => 'is_template'
+    'after' => 'is_template',
 ]);
 $migration->addKey('glpi_domains', 'is_template');
 /** /Add templates to domains  */
@@ -74,7 +74,7 @@ if (!$DB->fieldExists('glpi_domainrecordtypes', 'fields')) {
         'fields',
         'text',
         [
-            'after'  => 'name'
+            'after'  => 'name',
         ]
     );
     foreach (DomainRecordType::getDefaults() as $type) {
@@ -90,19 +90,19 @@ if (!$DB->fieldExists('glpi_domainrecordtypes', 'fields')) {
         );
     }
 } else {
-   // "fields" descriptor already exists, but may correspond to an outdated version
+    // "fields" descriptor already exists, but may correspond to an outdated version
 
-   //add is_fqdn on some domain records types
+    //add is_fqdn on some domain records types
     $fields = [
         'CNAME'  => ['target'],
         'MX'     => ['server'],
         'SOA'    => ['primary_name_server', 'primary_contact'],
-        'SRV'    => ['target']
+        'SRV'    => ['target'],
     ];
 
     $fields_it = $DB->request([
         'FROM'   => 'glpi_domainrecordtypes',
-        'WHERE'  => ['name' => array_keys($fields)]
+        'WHERE'  => ['name' => array_keys($fields)],
     ]);
     foreach ($fields_it as $field) {
         if (empty($field['fields']) || $field['fields'] === '[]') {
@@ -112,8 +112,8 @@ if (!$DB->fieldExists('glpi_domainrecordtypes', 'fields')) {
                     'key'         => 'target',
                     'label'       => 'Target',
                     'placeholder' => 'sip.example.com.',
-                    'is_fqdn'     => true
-                ]
+                    'is_fqdn'     => true,
+                ],
                 ]);
             } else {
                 continue;
@@ -162,14 +162,14 @@ $migration->addField(
     'data_obj',
     'text',
     [
-        'after'  => 'data'
+        'after'  => 'data',
     ]
 );
 
 // Rename date_creation (date the domain is created outside GLPI) field, then re-add field (Date the GLPI item was created)
 if (!$DB->fieldExists(Domain::getTable(), 'date_domaincreation')) {
     $migration->changeField(Domain::getTable(), 'date_creation', 'date_domaincreation', 'datetime', [
-        'after'  => 'date_expiration'
+        'after'  => 'date_expiration',
     ]);
     $migration->dropKey(Domain::getTable(), 'date_creation');
     $migration->migrationOneTable(Domain::getTable());

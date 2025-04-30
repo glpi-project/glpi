@@ -64,7 +64,7 @@ class ManufacturerFilter extends AbstractFilter
 
         if ((int) $value > 0) {
             $criteria["WHERE"] = [
-                "$table.manufacturers_id" => (int) $value
+                "$table.manufacturers_id" => (int) $value,
             ];
         }
 
@@ -80,7 +80,7 @@ class ManufacturerFilter extends AbstractFilter
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'manufacturers_id', 'glpi_manufacturers'),
                 'searchtype' => 'equals',
-                'value'      => (int) $value
+                'value'      => (int) $value,
             ];
         }
 

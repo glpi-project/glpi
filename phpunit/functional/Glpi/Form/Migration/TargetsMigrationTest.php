@@ -200,8 +200,8 @@ final class TargetsMigrationTest extends DbTestCase
                         ),
                         StatusField::getKey()         => new SimpleValueConfig(
                             StatusField::DEFAULT_STATUS
-                        )
-                    ]
+                        ),
+                    ],
                 ],
                 [
                     'itemtype' => FormDestinationChange::class,
@@ -248,8 +248,8 @@ final class TargetsMigrationTest extends DbTestCase
                         ),
                         UrgencyField::getKey()        => new UrgencyFieldConfig(
                             strategy: UrgencyFieldStrategy::FROM_TEMPLATE
-                        )
-                    ]
+                        ),
+                    ],
                 ],
                 [
                     'itemtype' => FormDestinationProblem::class,
@@ -296,10 +296,10 @@ final class TargetsMigrationTest extends DbTestCase
                         ),
                         UrgencyField::getKey()        => new UrgencyFieldConfig(
                             strategy: UrgencyFieldStrategy::FROM_TEMPLATE
-                        )
-                    ]
-                ]
-            ]
+                        ),
+                    ],
+                ],
+            ],
         ];
     }
 

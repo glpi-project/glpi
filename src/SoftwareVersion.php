@@ -42,10 +42,10 @@ class SoftwareVersion extends CommonDBChild
 {
     use Glpi\Features\State;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
 
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype  = 'Software';
     public static $items_id  = 'softwares_id';
 
@@ -122,7 +122,7 @@ class SoftwareVersion extends CommonDBChild
         $twig_params = [
             'item' => $this,
             'softwares_id' => $softwares_id,
-            'params' => $options
+            'params' => $options,
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -147,7 +147,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -163,7 +163,7 @@ TWIG, $twig_params);
             'table'              => OperatingSystem::getTable(),
             'field'              => 'name',
             'name'               => OperatingSystem::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -171,7 +171,7 @@ TWIG, $twig_params);
             'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -180,7 +180,7 @@ TWIG, $twig_params);
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => $this->getStateVisibilityCriteria()
+            'condition'          => $this->getStateVisibilityCriteria(),
         ];
 
         $tab[] = [
@@ -189,7 +189,7 @@ TWIG, $twig_params);
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -229,7 +229,7 @@ TWIG, $twig_params);
         $criteria = [
             'SELECT'    => [
                 'glpi_softwareversions.*',
-                'glpi_states.name AS sname'
+                'glpi_states.name AS sname',
             ],
             'DISTINCT'  => true,
             'FROM'      => 'glpi_softwareversions',
@@ -237,14 +237,14 @@ TWIG, $twig_params);
                 State::getTable()  => [
                     'ON' => [
                         'glpi_softwareversions' => 'states_id',
-                        State::getTable()           => 'id'
-                    ]
-                ]
+                        State::getTable()           => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'glpi_softwareversions.softwares_id'   => $p['softwares_id']
+                'glpi_softwareversions.softwares_id'   => $p['softwares_id'],
             ],
-            'ORDERBY'   => 'name'
+            'ORDERBY'   => 'name',
         ];
 
         if (count($p['used'])) {
@@ -306,21 +306,21 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT' => [
                 "$sv_table.*",
-                "$state_table.name AS sname"
+                "$state_table.name AS sname",
             ],
             'FROM' => $sv_table,
             'LEFT JOIN' => [
                 $state_table  => [
                     'ON' => [
                         $sv_table => 'states_id',
-                        $state_table => 'id'
-                    ]
-                ]
+                        $state_table => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'softwares_id' => $softwares_id
+                'softwares_id' => $softwares_id,
             ],
-            'ORDERBY'   => 'name'
+            'ORDERBY'   => 'name',
         ]);
 
         $tot = 0;
@@ -339,7 +339,7 @@ TWIG, $twig_params);
                 'os' => Dropdown::getDropdownName('glpi_operatingsystems', $data['operatingsystems_id']),
                 'arch' => $data['arch'],
                 'installations' => $nb,
-                'comments' => nl2br(htmlescape($data['comment']))
+                'comments' => nl2br(htmlescape($data['comment'])),
             ];
         }
 
@@ -354,14 +354,14 @@ TWIG, $twig_params);
                 'os' => OperatingSystem::getTypeName(1),
                 'arch' => _n('Architecture', 'Architectures', 1),
                 'installations' => _n('Installation', 'Installations', Session::getPluralNumber()),
-                'comments' => __('Comments')
+                'comments' => __('Comments'),
             ],
             'formatters' => [
                 'version' => 'raw_html',
                 'comments' => 'raw_html',
             ],
             'footers' => [
-                ['', '', '', __('Total'), $tot, '']
+                ['', '', '', __('Total'), $tot, ''],
             ],
             'footer_class' => 'fw-bold',
             'entries' => $entries,
@@ -371,7 +371,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 

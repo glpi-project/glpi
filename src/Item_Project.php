@@ -44,7 +44,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class Item_Project extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'Project';
     public static $items_id_1          = 'projects_id';
 
@@ -69,11 +69,11 @@ class Item_Project extends CommonDBRelation
     public function prepareInputForAdd($input)
     {
 
-       // Avoid duplicate entry
+        // Avoid duplicate entry
         if (
             countElementsInTable($this->getTable(), ['projects_id' => $input['projects_id'],
                 'itemtype'    => $input['itemtype'],
-                'items_id'    => $input['items_id']
+                'items_id'    => $input['items_id'],
             ]) > 0
         ) {
             return false;
@@ -122,7 +122,7 @@ class Item_Project extends CommonDBRelation
                                                               'glpi_entities',
                                                               $project->fields['entities_id']
                                                           )
-                                                          : $project->fields['entities_id'])
+                                                          : $project->fields['entities_id']),
             ]);
             echo "</td><td class='center' width='30%'>";
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -243,11 +243,11 @@ class Item_Project extends CommonDBRelation
                         && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
                     ) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                              // Direct one
-                              $nb = self::countForItem($item);
+                            // Direct one
+                            $nb = self::countForItem($item);
 
-                              // Linked items
-                              $linkeditems = $item->getLinkedItems();
+                            // Linked items
+                            $linkeditems = $item->getLinkedItems();
 
                             if (count($linkeditems)) {
                                 foreach ($linkeditems as $type => $tab) {
@@ -296,7 +296,7 @@ class Item_Project extends CommonDBRelation
         $item_project = new self();
         $item_projects = $item_project->find([
             'itemtype' => $item->getType(),
-            'items_id' => $item->getID()
+            'items_id' => $item->getID(),
         ]);
 
         $used = $entries = [];
@@ -327,13 +327,13 @@ class Item_Project extends CommonDBRelation
                     'projectstates_id' => $state !== false
                         ? [
                             'content' => $state->fields['name'],
-                            'color' => $state->fields['color']
+                            'color' => $state->fields['color'],
                         ] : '',
                     'priority' => [
                         'content' => $priority,
-                        'color' => $prioritycolor
+                        'color' => $prioritycolor,
                     ],
-                    'percent_done' => Html::getProgressBar((float)$project->fields['percent_done'])
+                    'percent_done' => Html::getProgressBar((float) $project->fields['percent_done']),
                 ];
             }
             $entries[] = array_merge($project->fields, $data);
@@ -355,7 +355,7 @@ class Item_Project extends CommonDBRelation
                 'projectstates_id' => 'badge',
                 'percent_done' => 'raw_html',
                 'creation_date' => 'date',
-            ]
+            ],
         ];
 
         TemplateRenderer::getInstance()->display('pages/tools/item_project.html.twig', [
@@ -371,7 +371,7 @@ class Item_Project extends CommonDBRelation
                 'entries' => $entries,
                 'total_number' => count($entries),
                 'filtered_number' => count($entries),
-            ]
+            ],
         ]);
     }
 }

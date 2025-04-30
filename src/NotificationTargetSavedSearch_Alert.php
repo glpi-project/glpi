@@ -46,7 +46,7 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
             'SELECT'          => 'event',
             'DISTINCT'        => true,
             'FROM'            => Notification::getTable(),
-            'WHERE'           => ['itemtype' => SavedSearch_Alert::getType()]
+            'WHERE'           => ['itemtype' => SavedSearch_Alert::getType()],
         ]);
 
         if ($iterator->numRows()) {
@@ -83,7 +83,7 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
         $this->data['##savedsearch.name##']      = $savedsearch->getField('name');
         $this->data['##savedsearch.message##']   = $options['msg'];
         $this->data['##savedsearch.id##']        = $savedsearch->getID();
-        $this->data['##savedsearch.count##']     = (int)$options['data']['totalcount'];
+        $this->data['##savedsearch.count##']     = (int) $options['data']['totalcount'];
         $this->data['##savedsearch.type##']      = $savedsearch->getField('itemtype');
         $url = $savedsearch::getSearchURL(false) . "?action=load&id=" . $savedsearch->getID();
         $this->data['##savedsearch.url##']       = $this->formatURL($options['additionnaloption']['usertype'], $url);
@@ -106,13 +106,13 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
             'savedsearch.id'     => __('ID'),
             'savedsearch.count'  => __('Number of results'),
             'savedsearch.type'   => __('Item type'),
-            'savedsearch.url'    => __('Load saved search')
+            'savedsearch.url'    => __('Load saved search'),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
         asort($this->tag_descriptions);
@@ -131,7 +131,7 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
 
     public function addSpecificTargets($data, $options)
     {
-       //Look for all targets whose type is Notification::ITEM_USER
+        //Look for all targets whose type is Notification::ITEM_USER
         switch ($data['type']) {
             case Notification::USER_TYPE:
                 switch ($data['items_id']) {
@@ -147,7 +147,7 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
                             'email'    => $user->getDefaultEmail(),
                             'language' => $user->getField('language'),
                             'users_id' => $user->getID(),
-                            'usertype' => $usertype
+                            'usertype' => $usertype,
                         ];
                         $this->addToRecipientsList($data);
                 }

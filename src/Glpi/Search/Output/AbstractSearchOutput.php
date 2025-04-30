@@ -62,9 +62,7 @@ abstract class AbstractSearchOutput
      * @param class-string<CommonGLPI> $itemtype
      * @return void
      */
-    public static function showPreSearchDisplay(string $itemtype): void
-    {
-    }
+    public static function showPreSearchDisplay(string $itemtype): void {}
 
     /**
      * Display the search results

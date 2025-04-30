@@ -35,10 +35,6 @@
 
 namespace Glpi\Api\HL\Middleware;
 
-use Glpi\Api\HL\RoutePath;
-use Glpi\Http\Request;
-use Glpi\Http\Response;
-
 class DebugRequestMiddleware extends AbstractMiddleware implements RequestMiddlewareInterface
 {
     public function process(MiddlewareInput $input, callable $next): void

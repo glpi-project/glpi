@@ -42,7 +42,7 @@
  **/
 class Change_Group extends CommonITILActor
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1 = 'Change';
     public static $items_id_1 = 'changes_id';
     public static $itemtype_2 = 'Group';

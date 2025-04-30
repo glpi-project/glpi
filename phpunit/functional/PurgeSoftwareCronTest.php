@@ -80,9 +80,9 @@ class PurgeSoftwareCronTest extends DbTestCase
         // Verify that 10 software exist
         $this->assertSame(
             10,
-            (int)$DB->request([
+            (int) $DB->request([
                 'COUNT' => 'cpt',
-                'FROM'  => \Software::getTable()
+                'FROM'  => \Software::getTable(),
             ])->current()['cpt']
         );
 
@@ -93,9 +93,9 @@ class PurgeSoftwareCronTest extends DbTestCase
         $this->assertSame(3, $purged);
         $this->assertSame(
             7,
-            (int)$DB->request([
+            (int) $DB->request([
                 'COUNT' => 'cpt',
-                'FROM'  => \Software::getTable()
+                'FROM'  => \Software::getTable(),
             ])->current()['cpt']
         );
 
@@ -105,9 +105,9 @@ class PurgeSoftwareCronTest extends DbTestCase
         // There should remain 5 non-eligible software (those with an associated version)
         $this->assertSame(
             5,
-            (int)$DB->request([
+            (int) $DB->request([
                 'COUNT' => 'cpt',
-                'FROM'  => \Software::getTable()
+                'FROM'  => \Software::getTable(),
             ])->current()['cpt']
         );
     }

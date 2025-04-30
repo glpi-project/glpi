@@ -44,7 +44,7 @@ if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST['itemtype'
 
 if (Infocom::canApplyOn($_POST["itemtype"])) {
     Session::checkSeveralRightsOr([$_POST["itemtype"] => UPDATE,
-        "infocom"          => UPDATE
+        "infocom"          => UPDATE,
     ]);
 } else {
     $item->checkGlobal(UPDATE);
@@ -73,7 +73,7 @@ if (
     echo "<table class='tab_glpi w-100'><tr><td>";
 
     $plugdisplay = false;
-   // Specific plugin Type case
+    // Specific plugin Type case
     if (
         ($plug = isPluginItemType($_POST["itemtype"]))
         // Specific for plugin which add link to core object
@@ -83,7 +83,7 @@ if (
             $plug['plugin'],
             'MassiveActionsFieldsDisplay',
             ['itemtype' => $_POST["itemtype"],
-                'options'  => $search
+                'options'  => $search,
             ]
         );
     }
@@ -101,7 +101,7 @@ if (
     if (!$plugdisplay) {
         $options = [];
         $values  = [];
-       // For ticket template or aditional options of massive actions
+        // For ticket template or aditional options of massive actions
         if (isset($_POST['options'])) {
             $options = $_POST['options'];
         }

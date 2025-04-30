@@ -49,10 +49,10 @@ function update945to946()
     $DB->delete(
         'glpi_profilerights',
         [
-            'name'  => 'backup'
+            'name'  => 'backup',
         ]
     );
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
     return $updateresult;
 }

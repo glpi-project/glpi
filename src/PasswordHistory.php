@@ -33,13 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
- /**
-  * Helper class that contains method to handle password history validation or
-  * change
-  *
-  * Implemented temporarily as a singleton, should become some kind of service
-  * once GLPI support depencency injection.
-  */
+/**
+ * Helper class that contains method to handle password history validation or
+ * change
+ *
+ * Implemented temporarily as a singleton, should become some kind of service
+ * once GLPI support depencency injection.
+ */
 final class PasswordHistory
 {
     /**
@@ -176,9 +176,7 @@ final class PasswordHistory
     /**
      * Singleton constructor
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Get the number of passwords stored in glpi_users.password_history that

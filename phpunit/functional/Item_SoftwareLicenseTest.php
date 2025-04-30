@@ -110,7 +110,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $this->assertTrue(
             $lic->update([
                 'id'                       => $lic->fields['id'],
-                'softwareversions_id_use'  => $version1->fields['id']
+                'softwareversions_id_use'  => $version1->fields['id'],
             ])
         );
 
@@ -127,7 +127,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $this->assertTrue(
             $lic->update([
                 'id'                       => $lic->fields['id'],
-                'softwareversions_id_use'  => 0
+                'softwareversions_id_use'  => 0,
             ])
         );
     }
@@ -139,7 +139,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $computer3 = getItemByTypeName('Computer', '_test_pc11');
         $lic       = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
 
-       // Do some installations
+        // Do some installations
         $lic_computer = new \Item_SoftwareLicense();
 
         $input = [
@@ -147,14 +147,14 @@ class Item_SoftwareLicenseTest extends DbTestCase
             'itemtype'              => 'Computer',
             'softwarelicenses_id'   => $lic->fields['id'],
         ];
-        $this->assertGreaterThan(0, (int)$lic_computer->add($input));
+        $this->assertGreaterThan(0, (int) $lic_computer->add($input));
 
         $input = [
             'items_id'              => $computer2->fields['id'],
             'itemtype'              => 'Computer',
             'softwarelicenses_id'   => $lic->fields['id'],
         ];
-        $this->assertGreaterThan(0, (int)$lic_computer->add($input));
+        $this->assertGreaterThan(0, (int) $lic_computer->add($input));
 
         $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
         //License is valid: the number of affectations doesn't exceed declared number
@@ -163,9 +163,9 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $input = [
             'items_id'              => $computer3->fields['id'],
             'itemtype'              => 'Computer',
-            'softwarelicenses_id'   => $lic->fields['id']
+            'softwarelicenses_id'   => $lic->fields['id'],
         ];
-        $this->assertGreaterThan(0, (int)$lic_computer->add($input));
+        $this->assertGreaterThan(0, (int) $lic_computer->add($input));
 
         $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
         //Number of affectations exceed the number declared in the license
@@ -180,7 +180,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $result = $lic_computer->find([
             'items_id'              => $computer->fields['id'],
             'itemtype'              => 'Computer',
-            'softwarelicenses_id'   => $old_lic->fields['id']
+            'softwarelicenses_id'   => $old_lic->fields['id'],
         ]);
         $this->assertTrue($lic_computer->getFromDB(array_keys($result)[0]));
 
@@ -214,13 +214,13 @@ class Item_SoftwareLicenseTest extends DbTestCase
 
         $input = [
             'items_id'  => $source_computer->fields['id'],
-            'itemtype'  => 'Computer'
+            'itemtype'  => 'Computer',
         ];
         $this->assertSame(3, countElementsInTable('glpi_items_softwarelicenses', $input));
 
         $input = [
             'items_id' => $target_computer->fields['id'],
-            'itemtype'  => 'Computer'
+            'itemtype'  => 'Computer',
         ];
         $this->assertSame(3, countElementsInTable('glpi_items_softwarelicenses', $input));
 
@@ -228,7 +228,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $lic_computer = new \Item_SoftwareLicense();
         $lic_computer->deleteByCriteria([
             'items_id' => $target_computer->fields['id'],
-            'itemtype'  => 'Computer'
+            'itemtype'  => 'Computer',
         ], true);
     }
 
@@ -255,7 +255,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $expected = [
             1 => "Summary",
-            2 => "Affected items 2"
+            2 => "Affected items 2",
         ];
         $tabs = array_map(
             'strip_tags',

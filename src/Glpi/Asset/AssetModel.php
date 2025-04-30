@@ -105,7 +105,7 @@ abstract class AssetModel extends \CommonDCModelDropdown
                     'ON'  => [
                         self::getTable()            => AssetDefinition::getForeignKeyField(),
                         AssetDefinition::getTable() => AssetDefinition::getIndexName(),
-                    ]
+                    ],
                 ],
             ],
             'WHERE' => [
@@ -170,14 +170,14 @@ abstract class AssetModel extends \CommonDCModelDropdown
 
         if (
             array_key_exists($definition_fkey, $input)
-            && (int)$input[$definition_fkey] !== $definition_id
+            && (int) $input[$definition_fkey] !== $definition_id
         ) {
             throw new \RuntimeException('Definition does not match the current concrete class.');
         }
 
         if (
             !$this->isNewItem()
-            && (int)$this->fields[$definition_fkey] !== $definition_id
+            && (int) $this->fields[$definition_fkey] !== $definition_id
         ) {
             throw new \RuntimeException('Definition cannot be changed.');
         }
@@ -199,14 +199,14 @@ abstract class AssetModel extends \CommonDCModelDropdown
                 'table'    => $table,
                 'field'    => 'weight',
                 'name'     => __('Weight'),
-                'datatype' => 'decimal'
+                'datatype' => 'decimal',
             ];
             $options[] = [
                 'id'       => '132',
                 'table'    => $table,
                 'field'    => 'required_units',
                 'name'     => __('Required units'),
-                'datatype' => 'number'
+                'datatype' => 'number',
             ];
             $options[] = [
                 'id'       => '133',
@@ -219,21 +219,21 @@ abstract class AssetModel extends \CommonDCModelDropdown
                 'table'    => $table,
                 'field'    => 'power_connections',
                 'name'     => __('Power connections'),
-                'datatype' => 'number'
+                'datatype' => 'number',
             ];
             $options[] = [
                 'id'       => '135',
                 'table'    => $table,
                 'field'    => 'power_consumption',
                 'name'     => __('Power consumption'),
-                'datatype' => 'decimal'
+                'datatype' => 'decimal',
             ];
             $options[] = [
                 'id'       => '136',
                 'table'    => $table,
                 'field'    => 'is_half_rack',
                 'name'     => __('Is half rack'),
-                'datatype' => 'bool'
+                'datatype' => 'bool',
             ];
         } else {
             $options = array_filter($options, static function ($option) {
@@ -276,12 +276,12 @@ abstract class AssetModel extends \CommonDCModelDropdown
                 'name'   => 'required_units',
                 'type'   => 'integer',
                 'min'    => 1,
-                'label'  => __('Required units')
+                'label'  => __('Required units'),
             ];
             $fields[] = [
                 'name'   => 'depth',
                 'type'   => 'depth',
-                'label'  => __('Depth')
+                'label'  => __('Depth'),
             ];
             $fields[] = [
                 'name'   => 'power_connections',
@@ -306,7 +306,7 @@ abstract class AssetModel extends \CommonDCModelDropdown
             $fields[] = [
                 'name'   => 'is_half_rack',
                 'type'   => 'bool',
-                'label'  => __('Is half rack')
+                'label'  => __('Is half rack'),
             ];
         } else {
             $fields = array_filter($fields, static function ($option) {

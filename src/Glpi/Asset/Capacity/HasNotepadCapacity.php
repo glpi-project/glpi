@@ -73,7 +73,7 @@ class HasNotepadCapacity extends AbstractCapacity
     public function getCloneRelations(): array
     {
         return [
-            Notepad::class
+            Notepad::class,
         ];
     }
 

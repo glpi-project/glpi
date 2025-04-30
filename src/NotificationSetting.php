@@ -59,7 +59,7 @@ abstract class NotificationSetting extends CommonDBTM
      */
     public static function getMode()
     {
-       //For PHP 5.x; a method cannot be abstract and static
+        //For PHP 5.x; a method cannot be abstract and static
         throw new \RuntimeException('getMode must be implemented');
     }
 

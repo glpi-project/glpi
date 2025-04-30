@@ -380,7 +380,7 @@ final class Search
             if (!empty($filter_result->getInvalidFilters())) {
                 throw new RSQLException(
                     message: 'RSQL query has invalid filters',
-                    details: array_map(static fn ($rsql_error) => $rsql_error->getMessage(), $filter_result->getInvalidFilters())
+                    details: array_map(static fn($rsql_error) => $rsql_error->getMessage(), $filter_result->getInvalidFilters())
                 );
             }
             $criteria['WHERE'] = [$filter_result->getSQLCriteria()];
@@ -419,15 +419,15 @@ final class Search
                     }
                     $criteria[$join_type] = array_merge($criteria[$join_type], $visibility_restrict[$join_type]);
                 }
-            } else if ($item->isEntityAssign()) {
+            } elseif ($item->isEntityAssign()) {
                 $entity_restrict = getEntitiesRestrictCriteria('_');
             }
             if ($item instanceof Entity) {
                 $entity_restrict = [
                     'OR' => [
                         [$entity_restrict],
-                        [getEntitiesRestrictCriteria('_', 'id')]
-                    ]
+                        [getEntitiesRestrictCriteria('_', 'id')],
+                    ],
                 ];
                 // if $entity_restrict has nothing except empty values as leafs, replace with a simple empty array.
                 // Expected in root entity when recursive. Having empty arrays will fail the query (thinks it is empty IN).
@@ -437,7 +437,7 @@ final class Search
                             if (!$fn_is_empty($where_value)) {
                                 return false;
                             }
-                        } else if (!empty($where_value)) {
+                        } elseif (!empty($where_value)) {
                             return false;
                         }
                     }
@@ -467,7 +467,7 @@ final class Search
 
         // Handle sorting
         if (isset($this->request_params['sort'])) {
-            $sorts = array_map(static fn ($s) => trim($s), explode(',', $this->request_params['sort']));
+            $sorts = array_map(static fn($s) => trim($s), explode(',', $this->request_params['sort']));
             $orderby = [];
             foreach ($sorts as $s) {
                 if ($s === '') {
@@ -500,14 +500,14 @@ final class Search
         $tables_schemas = [];
         if (isset($this->schema['x-table'])) {
             $tables_schemas[$this->schema['x-table']] = $this->schema;
-        } else if (isset($this->schema['x-itemtype'])) {
+        } elseif (isset($this->schema['x-itemtype'])) {
             if (is_subclass_of($this->schema['x-itemtype'], CommonDBTM::class)) {
                 $t = $this->schema['x-itemtype']::getTable();
                 $tables_schemas[$t] = $this->schema;
             } else {
                 throw new RuntimeException('Invalid itemtype');
             }
-        } else if (isset($this->schema['x-subtypes'])) {
+        } elseif (isset($this->schema['x-subtypes'])) {
             foreach ($this->schema['x-subtypes'] as $subtype_info) {
                 if (is_subclass_of($subtype_info['itemtype'], CommonDBTM::class)) {
                     $t = $subtype_info['itemtype']::getTable();
@@ -569,7 +569,7 @@ final class Search
                 return true;
             }
             foreach ($this->joins as $join_alias => $join_definition) {
-                if (str_starts_with((string)$where_field, $this->db_read::quoteName($join_alias) . '.')) {
+                if (str_starts_with((string) $where_field, $this->db_read::quoteName($join_alias) . '.')) {
                     return true;
                 }
             }
@@ -697,7 +697,7 @@ final class Search
             } else {
                 $type_records = $records[$this->schema['x-itemtype']];
                 $criteria['WHERE'] = [
-                    '_.id' => array_column($type_records, 'id')
+                    '_.id' => array_column($type_records, 'id'),
                 ];
             }
             $iterator = $this->db_read->request($criteria);
@@ -781,7 +781,7 @@ final class Search
                 $current_path = implode('.', $new_path);
                 $next_id = array_shift($ids_path);
                 // if current path points to an object, we don't need to add the ID to the path
-                $path_without_ids = implode('.', array_filter(explode('.', $current_path), static fn ($p) => !is_numeric($p)));
+                $path_without_ids = implode('.', array_filter(explode('.', $current_path), static fn($p) => !is_numeric($p)));
                 if (!isset($this->joins[$path_without_ids]['parent_type']) && $this->joins[$path_without_ids]['parent_type'] === Doc\Schema::TYPE_OBJECT) {
                     if (!empty($next_id) && preg_match('/\.\d+/', $current_path)) {
                         $items = ArrayPathAccessor::getElementByArrayPath($hydrated_record, $current_path);
@@ -801,7 +801,7 @@ final class Search
                     $new_path[] = $next_id;
                 }
             }
-            $new_path = array_filter($new_path, static fn ($p) => !empty($p));
+            $new_path = array_filter($new_path, static fn($p) => !empty($p));
             $join_prop_path = implode('.', $new_path);
         }
         return [$join_prop_path ?? $join_name, $id];
@@ -904,7 +904,7 @@ final class Search
                 }
                 $join_prop = array_values($join_prop);
                 // Remove any empty values
-                $join_prop = array_filter($join_prop, static fn ($v) => !empty($v));
+                $join_prop = array_filter($join_prop, static fn($v) => !empty($v));
                 ArrayPathAccessor::setElementByArrayPath($record, $path, $join_prop);
             }
         }
@@ -922,7 +922,7 @@ final class Search
                 if ($join_prop === null) {
                     continue;
                 }
-                $join_prop = array_filter($join_prop, static fn ($v) => !empty($v));
+                $join_prop = array_filter($join_prop, static fn($v) => !empty($v));
                 if (empty($join_prop)) {
                     ArrayPathAccessor::setElementByArrayPath($record, $path, null);
                 }
@@ -1031,9 +1031,9 @@ final class Search
                                             "$trans_alias.language" => \Session::getLanguage(),
                                             "$trans_alias.itemtype" => $itemtype,
                                             "$trans_alias.field" => $field_only,
-                                        ]
-                                    ]
-                                ]
+                                        ],
+                                    ],
+                                ],
                             ];
                         }
                         // alias should be prop name relative to current join
@@ -1234,7 +1234,7 @@ final class Search
             // Field resolution priority: x-field -> x-join.fkey -> property name
             if (isset($prop['x-field'])) {
                 $internal_name = $prop['x-field'];
-            } else if (isset($prop['x-join']['fkey'])) {
+            } elseif (isset($prop['x-join']['fkey'])) {
                 $internal_name = $prop['x-join']['fkey'] ?? $prop_name;
             } else {
                 $internal_name = $prop_name;

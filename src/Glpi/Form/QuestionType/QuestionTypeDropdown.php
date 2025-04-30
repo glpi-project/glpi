@@ -37,7 +37,6 @@ namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\MultipleChoiceFromValuesConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\SingleChoiceFromValuesConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
@@ -191,12 +190,12 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         $values = array_combine(
-            array_map(fn ($option) => $option['uuid'], $this->getValues($question)),
-            array_map(fn ($option) => $option['value'], $this->getValues($question))
+            array_map(fn($option) => $option['uuid'], $this->getValues($question)),
+            array_map(fn($option) => $option['value'], $this->getValues($question))
         );
         $checked_values = array_map(
-            fn ($option) => $option['uuid'],
-            array_filter($this->getValues($question), fn ($option) => $option['checked'])
+            fn($option) => $option['uuid'],
+            array_filter($this->getValues($question), fn($option) => $option['checked'])
         );
         return $twig->renderFromStringTemplate($template, [
             'question'              => $question,
@@ -230,7 +229,7 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'is_multiple_dropdown'       => $this->isMultipleDropdown($question),
-            'is_multiple_dropdown_label' => __('Allow multiple options')
+            'is_multiple_dropdown_label' => __('Allow multiple options'),
         ]);
     }
 
@@ -258,8 +257,8 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         $checked_values = array_map(
-            fn ($option) => $option['uuid'],
-            array_filter($this->getValues($question), fn ($option) => $option['checked'])
+            fn($option) => $option['uuid'],
+            array_filter($this->getValues($question), fn($option) => $option['checked'])
         );
         return $twig->renderFromStringTemplate($template, [
             'question'       => $question,

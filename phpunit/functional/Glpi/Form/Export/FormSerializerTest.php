@@ -176,7 +176,7 @@ final class FormSerializerTest extends \DbTestCase
     {
         // Arrange: create an empty form
         $form = $this->createItem(Form::class, [
-            'entities_id' => $this->getTestRootEntity(only_id: true)
+            'entities_id' => $this->getTestRootEntity(only_id: true),
         ]);
 
         // Act: export then reimport the form as a copy
@@ -245,7 +245,7 @@ final class FormSerializerTest extends \DbTestCase
         );
         $this->assertCount(0, $import_result->getImportedForms());
         $this->assertEquals([
-            $form->fields['name'] => ImportError::MISSING_DATA_REQUIREMENT
+            $form->fields['name'] => ImportError::MISSING_DATA_REQUIREMENT,
         ], $import_result->getFailedFormImports());
     }
 
@@ -374,7 +374,7 @@ final class FormSerializerTest extends \DbTestCase
             Location::class,
             [
                 'name' => 'My location',
-                'entities_id' => $this->getTestRootEntity(only_id: true)
+                'entities_id' => $this->getTestRootEntity(only_id: true),
             ]
         );
 
@@ -488,7 +488,7 @@ final class FormSerializerTest extends \DbTestCase
                 'default_value'     => json_encode($actors_default_value_config->jsonSerialize()),
                 'extra_data'        => json_encode($actors_extra_data_config->jsonSerialize()),
                 'forms_sections_id' => array_values($form_copy->getSections())[1]->fields['id'],
-            ]
+            ],
         ], $questions_data);
     }
 
@@ -514,7 +514,7 @@ final class FormSerializerTest extends \DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => 'test',
-                ]
+                ],
             ]
         );
         $builder->setQuestionVisibility(
@@ -527,7 +527,7 @@ final class FormSerializerTest extends \DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => 'test2',
-                ]
+                ],
             ]
         );
 
@@ -564,7 +564,7 @@ final class FormSerializerTest extends \DbTestCase
                         'value'          => 'test',
                         'value_operator' => ValueOperator::EQUALS->value,
                         'logic_operator' => LogicOperator::AND->value,
-                    ]
+                    ],
                 ],
             ],
             [
@@ -578,7 +578,7 @@ final class FormSerializerTest extends \DbTestCase
                         'value'          => 'test2',
                         'value_operator' => ValueOperator::EQUALS->value,
                         'logic_operator' => LogicOperator::AND->value,
-                    ]
+                    ],
                 ],
             ],
             [
@@ -608,7 +608,7 @@ final class FormSerializerTest extends \DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => "my value",
-                ]
+                ],
             ]
         );
         $form = $this->createForm($builder);
@@ -630,7 +630,7 @@ final class FormSerializerTest extends \DbTestCase
                 logic_operator: LogicOperator::AND->value,
                 value_operator: ValueOperator::EQUALS->value,
                 value: "my value",
-            ))->jsonSerialize()
+            ))->jsonSerialize(),
         ];
         $this->assertEquals(
             $expected_data,
@@ -660,7 +660,7 @@ final class FormSerializerTest extends \DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => "my value",
-                ]
+                ],
             ]
         );
         $form = $this->createForm($builder);
@@ -682,7 +682,7 @@ final class FormSerializerTest extends \DbTestCase
                 logic_operator: LogicOperator::AND->value,
                 value_operator: ValueOperator::EQUALS->value,
                 value: "my value",
-            ))->jsonSerialize()
+            ))->jsonSerialize(),
         ];
         $this->assertEquals(
             $expected_data,
@@ -711,7 +711,7 @@ final class FormSerializerTest extends \DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => "my value",
-                ]
+                ],
             ]
         );
         $form = $this->createForm($builder);
@@ -733,7 +733,7 @@ final class FormSerializerTest extends \DbTestCase
                 logic_operator: LogicOperator::AND->value,
                 value_operator: ValueOperator::EQUALS->value,
                 value: "my value",
-            ))->jsonSerialize()
+            ))->jsonSerialize(),
         ];
         $this->assertEquals(
             $expected_data,
@@ -755,13 +755,13 @@ final class FormSerializerTest extends \DbTestCase
         // Create a Computer
         $computer = $this->createItem('Computer', [
             'name' => 'My computer',
-            'entities_id' => $this->getTestRootEntity(only_id: true)
+            'entities_id' => $this->getTestRootEntity(only_id: true),
         ]);
 
         // Create a monitor
         $monitor = $this->createItem('Monitor', [
             'name' => 'My monitor',
-            'entities_id' => $this->getTestRootEntity(only_id: true)
+            'entities_id' => $this->getTestRootEntity(only_id: true),
         ]);
 
         $form = $this->createForm((new FormBuilder())->addQuestion(
@@ -780,11 +780,11 @@ final class FormSerializerTest extends \DbTestCase
             strategies: [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
             specific_associated_items: [
                 Computer::class => [
-                    $computer->getID()
+                    $computer->getID(),
                 ],
                 Monitor::class => [
-                    $monitor->getID()
-                ]
+                    $monitor->getID(),
+                ],
             ]
         );
 
@@ -798,8 +798,8 @@ final class FormSerializerTest extends \DbTestCase
                 'config' => [
                     TitleField::getKey() => $title_field_config->jsonSerialize(),
                     ITILCategoryField::getKey() => $itil_category_field_config->jsonSerialize(),
-                    AssociatedItemsField::getKey() => $associated_items_config->jsonSerialize()
-                ]
+                    AssociatedItemsField::getKey() => $associated_items_config->jsonSerialize(),
+                ],
             ],
             ["config"],
         );
@@ -1114,7 +1114,7 @@ final class FormSerializerTest extends \DbTestCase
         // Assert: the import should fail
         $this->assertCount(0, $import_result->getImportedForms());
         $this->assertEquals([
-            $form->fields['name'] => ImportError::MISSING_DATA_REQUIREMENT
+            $form->fields['name'] => ImportError::MISSING_DATA_REQUIREMENT,
         ], $import_result->getFailedFormImports());
 
         // Add mapped item to fix the form
@@ -1151,7 +1151,7 @@ final class FormSerializerTest extends \DbTestCase
         $this->assertEquals([
             $forms[0]->fields['name'],
             $forms[2]->fields['name'],
-        ], array_map(fn (Form $form) => $form->fields['name'], $import_result->getImportedForms()));
+        ], array_map(fn(Form $form) => $form->fields['name'], $import_result->getImportedForms()));
     }
 
     public function testAllFieldsAreExportedAndImported(): void
@@ -1270,12 +1270,12 @@ final class FormSerializerTest extends \DbTestCase
             if ($new_relations !== false) {
                 $a = array_filter(
                     $ids_for_default_form,
-                    fn ($key) => $key === $relation_item->getForeignKeyField(),
+                    fn($key) => $key === $relation_item->getForeignKeyField(),
                     ARRAY_FILTER_USE_KEY
                 );
                 $b = array_filter(
                     $ids_for_imported_form,
-                    fn ($key) => $key === $relation_item->getForeignKeyField(),
+                    fn($key) => $key === $relation_item->getForeignKeyField(),
                     ARRAY_FILTER_USE_KEY
                 );
                 if (!empty($a) && !empty($b)) {

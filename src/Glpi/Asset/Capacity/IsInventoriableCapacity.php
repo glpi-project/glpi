@@ -73,7 +73,7 @@ class IsInventoriableCapacity extends AbstractCapacity
                     \Glpi\Inventory\MainAsset\GenericAsset::class        => __('Generic'),
                     \Glpi\Inventory\MainAsset\GenericNetworkAsset::class => \NetworkEquipment::getTypeName(1),
                     \Glpi\Inventory\MainAsset\GenericPrinterAsset::class => \Printer::getTypeName(1),
-                ]
+                ],
             ]
         );
     }
@@ -86,7 +86,7 @@ class IsInventoriableCapacity extends AbstractCapacity
             'table'              => 'glpi_autoupdatesystems',
             'field'              => 'name',
             'name'               => \AutoUpdateSystem::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
         return $tab;
     }
@@ -175,14 +175,14 @@ class IsInventoriableCapacity extends AbstractCapacity
                 'glpi_rulecriterias' => [
                     'FKEY' => [
                         'glpi_rules' => 'id',
-                        'glpi_rulecriterias' => 'rules_id'
-                    ]
-                ]
-            ]
+                        'glpi_rulecriterias' => 'rules_id',
+                    ],
+                ],
+            ],
         ];
         $where += [
             'criteria' => 'itemtype',
-            'pattern' => $classname
+            'pattern' => $classname,
         ];
         $DB->delete(\RuleImportAsset::getTable(), $where, $joins);
     }

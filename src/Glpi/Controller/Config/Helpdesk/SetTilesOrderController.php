@@ -34,7 +34,6 @@
 
 namespace Glpi\Controller\Config\Helpdesk;
 
-use Config;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;

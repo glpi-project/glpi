@@ -47,8 +47,7 @@ final class UploadController extends AbstractController
 {
     public function __construct(
         private IllustrationManager $illustration_manager
-    ) {
-    }
+    ) {}
 
     #[Route(
         "/UI/Illustration/Upload",

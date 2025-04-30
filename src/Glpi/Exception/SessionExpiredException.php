@@ -34,6 +34,4 @@
 
 namespace Glpi\Exception;
 
-class SessionExpiredException extends \Exception
-{
-}
+class SessionExpiredException extends \Exception {}

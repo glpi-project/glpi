@@ -36,7 +36,6 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\StringConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
@@ -87,7 +86,7 @@ final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implem
                 key: Question::TRANSLATION_KEY_DEFAULT_VALUE,
                 name: __('Default value'),
                 value: $question->fields['default_value'] ?? '',
-            )
+            ),
         ];
     }
 }

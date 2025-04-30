@@ -90,7 +90,7 @@ if (isset($_POST["add"]) || isset($_POST['massiveaction'])) {
             4,
             "maintain",
             sprintf(
-            //TRANS: %1$s is the user login, %2$s the field type
+                //TRANS: %1$s is the user login, %2$s the field type
                 __('%1$s adds %2$s field'),
                 $_SESSION["glpiname"],
                 $fieldtype_name

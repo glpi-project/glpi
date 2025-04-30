@@ -62,7 +62,7 @@ if (isset($_POST["update"])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["add"])) {
+} elseif (isset($_POST["add"])) {
     $rulecollection->checkGlobal(CREATE);
 
     $newID = $rule->add($_POST);
@@ -74,7 +74,7 @@ if (isset($_POST["update"])) {
         sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID)
     );
     Html::redirect($rule->getFormURLWithID($newID));
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $rulecollection->checkGlobal(PURGE);
     $rulecollection->deleteRuleOrder($_POST["ranking"]);
     $rule->delete($_POST, 1);
@@ -92,5 +92,5 @@ if (isset($_POST["update"])) {
 
 $menus = ['admin', $rulecollection->menu_type, $rulecollection->menu_option];
 $rule::displayFullPageForItem($_GET["id"], $menus, [
-    'formoptions'  => " data-track-changes='true'"
+    'formoptions'  => " data-track-changes='true'",
 ]);

@@ -60,7 +60,7 @@ trait PluginMigrationTrait
         $messages = $result->getMessages();
 
         $created_items_ids = $result->getCreatedItemsIds();
-        $created_count = \array_reduce($created_items_ids, static fn (int $count, array $ids): int => $count + count($ids), 0);
+        $created_count = \array_reduce($created_items_ids, static fn(int $count, array $ids): int => $count + count($ids), 0);
         if ($created_count > 0) {
             $messages[] = [
                 'type'    => MessageType::Success,
@@ -69,7 +69,7 @@ trait PluginMigrationTrait
         }
 
         $reused_items_ids = $result->getReusedItemsIds();
-        $reused_count = \array_reduce($reused_items_ids, static fn (int $count, array $ids): int => $count + count($ids), 0);
+        $reused_count = \array_reduce($reused_items_ids, static fn(int $count, array $ids): int => $count + count($ids), 0);
         if ($reused_count > 0) {
             $messages[] = [
                 'type'    => MessageType::Success,
@@ -78,7 +78,7 @@ trait PluginMigrationTrait
         }
 
         $ignored_items_ids = $result->getIgnoredItemsIds();
-        $ignored_count = \array_reduce($ignored_items_ids, static fn (int $count, array $ids): int => $count + count($ids), 0);
+        $ignored_count = \array_reduce($ignored_items_ids, static fn(int $count, array $ids): int => $count + count($ids), 0);
         if ($ignored_count > 0) {
             $messages[] = [
                 'type'    => MessageType::Notice,

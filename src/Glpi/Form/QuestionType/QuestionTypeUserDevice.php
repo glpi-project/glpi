@@ -38,7 +38,6 @@ namespace Glpi\Form\QuestionType;
 use CommonItilObject_Item;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\UserDevicesConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
@@ -135,7 +134,7 @@ TWIG;
             'init'                => $question !== null,
             'is_multiple_devices' => $this->isMultipleDevices($question),
             'aria_label_multiple_devices' => _n('Select device...', 'Select devices...', 2),
-            'aria_label_single_device' => _n('Select device...', 'Select devices...', 1)
+            'aria_label_single_device' => _n('Select device...', 'Select devices...', 1),
         ]);
     }
 
@@ -175,7 +174,7 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'is_multiple_devices' => $this->isMultipleDevices($question),
-            'is_multiple_devices_label' => __('Allow multiple devices')
+            'is_multiple_devices_label' => __('Allow multiple devices'),
         ]);
     }
 
@@ -230,7 +229,7 @@ TWIG;
 
             $devices[] = [
                 'itemtype' => $device_parts['itemtype'],
-                'items_id' => $device_parts['id']
+                'items_id' => $device_parts['id'],
             ];
         }
 

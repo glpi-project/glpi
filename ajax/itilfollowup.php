@@ -46,10 +46,10 @@ Html::header_nocache();
 $itilfollowuptemplates_id = $_POST['itilfollowuptemplates_id'] ?? null;
 if ($itilfollowuptemplates_id === null) {
     throw new BadRequestHttpException("Missing or invalid parameter: 'itilfollowuptemplates_id'");
-} else if ($itilfollowuptemplates_id == 0) {
-   // Reset form
+} elseif ($itilfollowuptemplates_id == 0) {
+    // Reset form
     echo json_encode([
-        'content' => ""
+        'content' => "",
     ]);
     return;
 }

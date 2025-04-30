@@ -44,8 +44,7 @@ abstract class AbstractType implements TypeInterface
 {
     public function __construct(
         protected CustomFieldDefinition $custom_field
-    ) {
-    }
+    ) {}
 
     public function getLabel(): string
     {
@@ -123,10 +122,10 @@ abstract class AbstractType implements TypeInterface
                 QueryFunction::jsonUnquote(
                     expression: QueryFunction::jsonExtract([
                         'glpi_assets_assets.custom_fields',
-                        new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"'))
+                        new QueryExpression($DB::quoteValue('$."' . $this->custom_field->fields['id'] . '"')),
                     ])
                 ),
-                new QueryExpression($DB::quoteValue($this->custom_field->fields['default_value']))
+                new QueryExpression($DB::quoteValue($this->custom_field->fields['default_value'])),
             ]),
             'nometa' => true,
             'field_definition' => $this->custom_field,

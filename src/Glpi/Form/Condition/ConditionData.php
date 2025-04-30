@@ -45,8 +45,7 @@ final class ConditionData implements JsonSerializable
         private ?string $value_operator,
         private mixed $value,
         private ?string $logic_operator = null,
-    ) {
-    }
+    ) {}
 
     /**
      * Itemtype + uuid, used for dropdowns to allow selecting type + item using

@@ -50,16 +50,16 @@ class Computer extends CommonDBTM
         post_updateItem as post_updateItemAssignableItem;
     }
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
 
     protected static $forward_entity_to = ['Item_Disk','ItemVirtualMachine',
         'Item_SoftwareVersion', 'Infocom',
         'NetworkPort', 'ReservationItem',
-        'Item_OperatingSystem'
+        'Item_OperatingSystem',
     ];
-   // Specific ones
-   ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
+    // Specific ones
+    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
     public $devices                     = [];
 
     public static $rightname                   = 'computer';
@@ -195,28 +195,28 @@ class Computer extends CommonDBTM
         $update_count = count($this->updates ?? []);
         $input = $this->fields;
         for ($i = 0; $i < $update_count; $i++) {
-           // Update contact of attached items
+            // Update contact of attached items
             if ($this->updates[$i] == 'contact_num' && Entity::getUsedConfig('is_contact_autoupdate', $this->getEntityID())) {
                 $changes['contact_num'] = $input['contact_num'];
             }
             if ($this->updates[$i] == 'contact' && Entity::getUsedConfig('is_contact_autoupdate', $this->getEntityID())) {
                 $changes['contact'] = $input['contact'];
             }
-           // Update users and groups of attached items
+            // Update users and groups of attached items
             if (
                 $this->updates[$i] == 'users_id'
                 && Entity::getUsedConfig('is_user_autoupdate', $this->getEntityID())
             ) {
                 $changes['users_id'] = $input['users_id'];
             }
-           // Update state of attached items
+            // Update state of attached items
             if (
                 ($this->updates[$i] == 'states_id')
                 && (Entity::getUsedConfig('state_autoupdate_mode', $this->getEntityID()) < 0)
             ) {
                 $changes['states_id'] = $input['states_id'];
             }
-           // Update location of attached items
+            // Update location of attached items
             if (
                 $this->updates[$i] == 'locations_id'
                 && Entity::getUsedConfig('is_location_autoupdate', $this->getEntityID())
@@ -244,14 +244,14 @@ class Computer extends CommonDBTM
                             'itemtype_peripheral' => $type,
                             'itemtype_asset'      => self::getType(),
                             'items_id_asset'      => $this->fields["id"],
-                            'is_deleted'          => 0
-                        ]
+                            'is_deleted'          => 0,
+                        ],
                     ]
                 );
                 $item      = new $type();
                 foreach ($items_result as $data) {
-                     $tID = $data['items_id_peripheral'];
-                     $item->getFromDB($tID);
+                    $tID = $data['items_id_peripheral'];
+                    $item->getFromDB($tID);
                     if (!$item->getField('is_global')) {
                         $item_input = $changes;
                         $item_input['id'] = $item->getID();
@@ -266,14 +266,14 @@ class Computer extends CommonDBTM
                 }
             }
 
-           //fields that are not present for devices
+            //fields that are not present for devices
             unset($changes['groups_id']);
             unset($changes['users_id']);
             unset($changes['contact_num']);
             unset($changes['contact']);
 
             if (count($changes) > 0) {
-               // Propagates the changes to linked devices
+                // Propagates the changes to linked devices
                 foreach (Item_Devices::getDeviceTypes() as $device) {
                     $item = new $device();
                     $devices_result = $DB->request(
@@ -283,8 +283,8 @@ class Computer extends CommonDBTM
                             'WHERE'  => [
                                 'itemtype'     => self::getType(),
                                 'items_id'     => $this->fields["id"],
-                                'is_deleted'   => 0
-                            ]
+                                'is_deleted'   => 0,
+                            ],
                         ]
                     );
                     foreach ($devices_result as $data) {
@@ -368,13 +368,13 @@ class Computer extends CommonDBTM
         $iterator = $DB->request([
             'SELECT' => [
                 'itemtype_peripheral',
-                'items_id_peripheral'
+                'items_id_peripheral',
             ],
             'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
                 'itemtype_asset' => self::getType(),
-                'items_id_asset' => $this->getID()
-            ]
+                'items_id_asset' => $this->getID(),
+            ],
         ]);
 
         $tab = [];
@@ -429,7 +429,7 @@ class Computer extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false, // implicit field is id
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -439,7 +439,7 @@ class Computer extends CommonDBTM
             'table'              => 'glpi_computertypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -447,7 +447,7 @@ class Computer extends CommonDBTM
             'table'              => 'glpi_computermodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -464,7 +464,7 @@ class Computer extends CommonDBTM
             'table'              => 'glpi_autoupdatesystems',
             'field'              => 'name',
             'name'               => AutoUpdateSystem::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -512,7 +512,7 @@ class Computer extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -537,7 +537,7 @@ class Computer extends CommonDBTM
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $tab[] = [
@@ -551,13 +551,13 @@ class Computer extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
+                    ],
+                ],
             ],
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -566,7 +566,7 @@ class Computer extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -575,7 +575,7 @@ class Computer extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -583,7 +583,7 @@ class Computer extends CommonDBTM
             'table'              => 'glpi_networks',
             'field'              => 'name',
             'name'               => _n('Network', 'Networks', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -591,7 +591,7 @@ class Computer extends CommonDBTM
             'table'              => 'glpi_manufacturers',
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -601,7 +601,7 @@ class Computer extends CommonDBTM
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
             'datatype'           => 'dropdown',
-            'right'              => 'own_ticket'
+            'right'              => 'own_ticket',
         ];
 
         $tab[] = [
@@ -616,13 +616,13 @@ class Computer extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
+                    ],
+                ],
             ],
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -641,10 +641,10 @@ class Computer extends CommonDBTM
             'table'              => 'glpi_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
-       // add operating system search options
+        // add operating system search options
         $tab = array_merge($tab, Item_OperatingSystem::rawSearchOptionsToAdd(get_class($this)));
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());

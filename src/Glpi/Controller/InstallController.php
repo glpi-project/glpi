@@ -61,8 +61,7 @@ class InstallController extends AbstractController
     public function __construct(
         private readonly ProgressStorage $progress_storage,
         private readonly LoggerInterface $logger
-    ) {
-    }
+    ) {}
 
     #[Route("/Install/InitDatabase", methods: 'POST')]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
@@ -172,7 +171,7 @@ class InstallController extends AbstractController
                     VersionParser::getNormalizedVersion($CFG_GLPI['version'] ?? '0.0.0-dev'),
                     VersionParser::getNormalizedVersion(GLPI_VERSION),
                     '>'
-                )
+                ),
             ]
         );
     }

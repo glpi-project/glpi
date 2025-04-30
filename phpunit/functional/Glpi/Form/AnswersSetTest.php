@@ -34,11 +34,9 @@
 
 namespace tests\units\Glpi\Form;
 
-use CommonGLPI;
 use DbTestCase;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
-use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
@@ -68,7 +66,7 @@ class AnswersSetTest extends DbTestCase
                 ->addQuestion("Name", QuestionTypeShortText::class)
         );
         $answers_set = $answers_handler->saveAnswers($form, [
-            $this->getQuestionId($form, "Name") => "Pierre Paul Jacques"
+            $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
         ], \Session::getLoginUserID());
 
         $answer = new Answer(
@@ -144,10 +142,10 @@ class AnswersSetTest extends DbTestCase
 
         $answers_handler = AnswersHandler::getInstance();
         $answers_handler->saveAnswers($form, [
-            $this->getQuestionId($form, "Name") => "Pierre Paul Jacques"
+            $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
         ], \Session::getLoginUserID());
         $answers_handler->saveAnswers($form, [
-            $this->getQuestionId($form, "Name") => "Paul Pierre Jacques"
+            $this->getQuestionId($form, "Name") => "Paul Pierre Jacques",
         ], \Session::getLoginUserID());
 
         return $form;

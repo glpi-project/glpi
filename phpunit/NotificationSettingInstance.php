@@ -34,8 +34,8 @@
 
 class NotificationSettingInstance extends NotificationSetting
 {
-   //Placebo class to get NotificationSetting abtract class tested
-   //Just defines required methods.
+    //Placebo class to get NotificationSetting abtract class tested
+    //Just defines required methods.
 
     public static function getMode()
     {

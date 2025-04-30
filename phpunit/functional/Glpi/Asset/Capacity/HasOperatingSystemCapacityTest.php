@@ -124,12 +124,12 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         // since tabs are not used from the CLI context
     }
 
-     /**
-     * Test that the "Item_OperatingSystem" search options are registered when
-     * the capacity is enabled and unregistered when disabled.
-     *
-     * @return void
-     */
+    /**
+    * Test that the "Item_OperatingSystem" search options are registered when
+    * the capacity is enabled and unregistered when disabled.
+    *
+    * @return void
+    */
     public function testSearchOptionRegistration(): void
     {
         // Create custom asset definition
@@ -227,7 +227,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [
                 new Capacity(name: $this->getTargetCapacity()),
-                new Capacity(name: HasHistoryCapacity::class)
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $class = $definition->getAssetClassName();
@@ -311,7 +311,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
                 'itemtype' => $subject::getType(),
                 'num'      => '46', // Linked OS version
                 'users_id' => 0,
-            ]
+            ],
         ]);
 
         // Count display preferences, should be 9 (2 for OS + 7 for asset)
@@ -382,7 +382,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Item_OperatingSystem::class,
-            'expected' => 'Used by %d of %d assets'
+            'expected' => 'Used by %d of %d assets',
         ];
     }
 }

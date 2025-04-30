@@ -682,7 +682,7 @@ class AssetDefinitionTest extends DbTestCase
             'plurals' => [
                 'one' => 'Test',
                 'other' => 'Tests',
-            ]
+            ],
         ]));
         $this->assertTrue($definition->update([
             'id' => $definition->getID(),
@@ -691,7 +691,7 @@ class AssetDefinitionTest extends DbTestCase
             'plurals' => [
                 'one' => 'Test FR',
                 'other' => 'Tests FR',
-            ]
+            ],
         ]));
 
         $definition->getFromDB($definition->getID());
@@ -770,15 +770,15 @@ class AssetDefinitionTest extends DbTestCase
         yield [
             'language' => 'not a valid language',
             'expected' => [
-            ]
+            ],
         ];
 
         yield [
             'language' => 'en_US',
             'expected' => [
                 ["id" => "one", "formula" => "n == 1", "examples" => "1"],
-                ["id" => "other", "formula" => null, "examples" => "0, 2~16, 100, 1000, 10000, 100000, 1000000, …"]
-            ]
+                ["id" => "other", "formula" => null, "examples" => "0, 2~16, 100, 1000, 10000, 100000, 1000000, …"],
+            ],
         ];
 
         yield [
@@ -787,7 +787,7 @@ class AssetDefinitionTest extends DbTestCase
                 ["id" => "one", "formula" => "(n == 0 || n == 1)", "examples" => "0, 1"],
                 ["id" => "many", "formula" => "n != 0 && n % 1000000 == 0", "examples" => "1000000, 1c6, 2c6, 3c6, 4c6, 5c6, 6c6, …"],
                 ["id" => "other", "formula" => null, "examples" => "2~17, 100, 1000, 10000, 100000, 1c3, 2c3, 3c3, 4c3, 5c3, 6c3, …"],
-            ]
+            ],
         ];
     }
 
@@ -818,12 +818,12 @@ class AssetDefinitionTest extends DbTestCase
 
         $it = iterator_to_array($DB->request([
             'SELECT' => ['helpdesk_item_type'],
-            'FROM' => 'glpi_profiles'
+            'FROM' => 'glpi_profiles',
         ]), false);
         $this->assertEmpty(
             array_filter(
                 array_column($it, 'helpdesk_item_type'),
-                static fn ($v) => in_array($definition->getAssetClassName(), json_decode($v ?? '[]'), true)
+                static fn($v) => in_array($definition->getAssetClassName(), json_decode($v ?? '[]'), true)
             )
         );
 
@@ -833,18 +833,18 @@ class AssetDefinitionTest extends DbTestCase
                 'helpdesk_item_type' => [
                     getItemByTypeName('Profile', 'Super-Admin', true),
                     getItemByTypeName('Profile', 'Technician', true),
-                ]
-            ]
+                ],
+            ],
         ]));
         $it = iterator_to_array($DB->request([
             'SELECT' => ['helpdesk_item_type'],
-            'FROM' => 'glpi_profiles'
+            'FROM' => 'glpi_profiles',
         ]), false);
         $this->assertCount(
             2,
             array_filter(
                 array_column($it, 'helpdesk_item_type'),
-                static fn ($v) => in_array($definition->getAssetClassName(), json_decode($v ?? '[]', true), true)
+                static fn($v) => in_array($definition->getAssetClassName(), json_decode($v ?? '[]', true), true)
             )
         );
 
@@ -853,18 +853,18 @@ class AssetDefinitionTest extends DbTestCase
             '_profiles_extra' => [
                 'helpdesk_item_type' => [
                     getItemByTypeName('Profile', 'Super-Admin', true),
-                ]
-            ]
+                ],
+            ],
         ]));
         $it = iterator_to_array($DB->request([
             'SELECT' => ['helpdesk_item_type'],
-            'FROM' => 'glpi_profiles'
+            'FROM' => 'glpi_profiles',
         ]), false);
         $this->assertCount(
             1,
             array_filter(
                 $it,
-                static fn ($v) => in_array($definition->getAssetClassName(), json_decode($v['helpdesk_item_type'] ?? '[]', true), true)
+                static fn($v) => in_array($definition->getAssetClassName(), json_decode($v['helpdesk_item_type'] ?? '[]', true), true)
             )
         );
     }

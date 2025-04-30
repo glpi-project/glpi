@@ -42,8 +42,8 @@ use Glpi\Toolbox\VersionParser;
  * @var bool $HEADER_LOADED
  */
 global $CFG_GLPI,
-       $DB,
-       $HEADER_LOADED;
+$DB,
+$HEADER_LOADED;
 
 if (($_SESSION['can_process_update'] ?? false) && isset($_POST['update_end'])) {
     if (isset($_POST['send_stats'])) {
@@ -154,7 +154,7 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
     Html::closeForm();
     echo "</div>";
 } elseif (!empty($_POST["continuer"])) {
-   // Step 2
+    // Step 2
     if ($DB->connected) {
         echo "<h3>" . __s('Database connection successful') . "</h3>";
         echo "<p class='text-center'>";
@@ -167,8 +167,8 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
             (new Update($DB))->isExpectedSecurityKeyFileMissing()
             && (!isset($_POST['missing_key_warning_shown']) || !isset($_POST['ignore']))
         ) {
-           // Display missing security key file form if key file is missing
-           // unless it has already been displayed and user clicks on "ignore" button.
+            // Display missing security key file form if key file is missing
+            // unless it has already been displayed and user clicks on "ignore" button.
             showSecurityKeyCheckForm();
         } else {
             echo "<p>" . __s('Updating the database...') . "</p>";

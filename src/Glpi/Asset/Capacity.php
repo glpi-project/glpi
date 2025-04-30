@@ -41,8 +41,7 @@ class Capacity implements JsonSerializable
     public function __construct(
         private string $name,
         private CapacityConfig $config = new CapacityConfig(),
-    ) {
-    }
+    ) {}
 
     public function getName(): string
     {

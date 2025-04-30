@@ -49,7 +49,7 @@ $rr = new Reservation();
 if (isset($_REQUEST['ajax'])) {
     Html::header_nocache();
     Html::popHeader(__('Simplified interface'));
-} else if (Session::getCurrentInterface() == "helpdesk") {
+} elseif (Session::getCurrentInterface() == "helpdesk") {
     Html::helpHeader(__('Simplified interface'));
 } else {
     Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
@@ -67,7 +67,7 @@ if (isset($_POST["update"])) {
         $rr->update($_POST);
         Html::back();
     }
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $reservationitems_id = key($_POST["items"]);
     if ($rr->delete($_POST, 1)) {
         Event::log(
@@ -76,27 +76,27 @@ if (isset($_POST["update"])) {
             4,
             "inventory",
             //TRANS: %s is the user login
-                 sprintf(
-                     __('%1$s purges the reservation for item %2$s'),
-                     $_SESSION["glpiname"],
-                     $reservationitems_id
-                 )
+            sprintf(
+                __('%1$s purges the reservation for item %2$s'),
+                $_SESSION["glpiname"],
+                $reservationitems_id
+            )
         );
     }
 
-    list($begin_year,$begin_month) = explode("-", $rr->fields["begin"]);
+    [$begin_year, $begin_month] = explode("-", $rr->fields["begin"]);
     Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php?reservationitems_id=" .
                   "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
-} else if (isset($_POST["add"])) {
+} elseif (isset($_POST["add"])) {
     Reservation::handleAddForm($_POST);
     Html::back();
-} else if (isset($_GET["id"])) {
+} elseif (isset($_GET["id"])) {
     if (!isset($_GET['begin'])) {
         $_GET['begin'] = date('Y-m-d H:00:00');
     }
     if (
         empty($_GET["id"])
-        && (!isset($_GET['item']) || (count($_GET['item']) == 0 ))
+        && (!isset($_GET['item']) || (count($_GET['item']) == 0))
     ) {
         Html::back();
     }
@@ -110,7 +110,7 @@ if (isset($_POST["update"])) {
 
 if (isset($_REQUEST['ajax'])) {
     Html::popFooter();
-} else if (Session::getCurrentInterface() == "helpdesk") {
+} elseif (Session::getCurrentInterface() == "helpdesk") {
     Html::helpFooter();
 } else {
     Html::footer();

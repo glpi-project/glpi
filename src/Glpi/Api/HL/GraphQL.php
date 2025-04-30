@@ -116,7 +116,7 @@ final class GraphQL
         foreach ($properties as $schema_field => $schema_field_data) {
             if (!in_array($schema_field, $field_names, true)) {
                 $properties = self::hideOrRemoveProperty($itemtype, $schema_field, $properties, array_keys($fields_requested), $object_prop_key);
-            } else if (isset($fields_requested[$schema_field]) && is_array($fields_requested[$schema_field])) {
+            } elseif (isset($fields_requested[$schema_field]) && is_array($fields_requested[$schema_field])) {
                 $properties[$schema_field] = self::expandSchemaFromRequestedFields($schema_field_data, $fields_requested[$schema_field], $schema_field, $api_version);
             }
         }

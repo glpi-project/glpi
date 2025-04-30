@@ -122,15 +122,15 @@ final class FormTranslation extends ItemTranslation
         return array_merge(
             self::getTranslationsForItem($form),
             ...array_map(
-                fn ($section) => self::getTranslationsForItem($section),
+                fn($section) => self::getTranslationsForItem($section),
                 $form->getSections()
             ),
             ...array_map(
-                fn ($question) => self::getTranslationsForItem($question),
+                fn($question) => self::getTranslationsForItem($question),
                 $form->getQuestions()
             ),
             ...array_map(
-                fn ($comment) => self::getTranslationsForItem($comment),
+                fn($comment) => self::getTranslationsForItem($comment),
                 $form->getFormComments()
             ),
         );

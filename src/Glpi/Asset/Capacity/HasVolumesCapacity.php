@@ -66,7 +66,7 @@ class HasVolumesCapacity extends AbstractCapacity
     public function getCloneRelations(): array
     {
         return [
-            Item_Disk::class
+            Item_Disk::class,
         ];
     }
 

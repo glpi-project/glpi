@@ -34,6 +34,4 @@
 
 namespace GlpiPlugin\Foo\A\B\C\D\E\F\G;
 
-class Bar extends \CommonDBTM
-{
-}
+class Bar extends \CommonDBTM {}

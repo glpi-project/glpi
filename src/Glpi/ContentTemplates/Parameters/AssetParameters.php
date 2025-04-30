@@ -86,7 +86,7 @@ class AssetParameters extends AbstractParameters
             'serial'   => $fields['serial'],
         ];
 
-       // Add asset's entity
+        // Add asset's entity
         if ($entity = Entity::getById($fields['entities_id'])) {
             $entity_parameters = new EntityParameters();
             $values['entity'] = $entity_parameters->getValues($entity);

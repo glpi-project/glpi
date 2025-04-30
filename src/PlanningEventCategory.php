@@ -47,7 +47,7 @@ class PlanningEventCategory extends CommonDropdown
                 'name'  => 'color',
                 'label' => __('Color'),
                 'type'  => 'color',
-            ]
+            ],
         ];
     }
 

@@ -65,70 +65,70 @@ final class ActorConditionHandlerTest extends AbstractConditionHandler
                     'condition_operator'  => ValueOperator::EQUALS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => true,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Equals check - case 2 for $type with $actor_type (different order)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::EQUALS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-1', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => true,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Equals check - case 3 for $type with $actor_type (missing actor)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::EQUALS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
-                        sprintf('%s-1', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => false,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Equals check - case 4 for $type with $actor_type (extra actor)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::EQUALS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
                         sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-3', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-3', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => false,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Equals check - case 5 for $type with $actor_type (completely different)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::EQUALS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-3', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-4', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-4', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => false,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
 
                 // Test actor answers with the NOT_EQUALS operator
@@ -137,70 +137,70 @@ final class ActorConditionHandlerTest extends AbstractConditionHandler
                     'condition_operator'  => ValueOperator::NOT_EQUALS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => false,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Not equals check - case 2 for $type with $actor_type (different order)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::NOT_EQUALS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-1', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => false,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Not equals check - case 3 for $type with $actor_type (missing actor)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::NOT_EQUALS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
-                        sprintf('%s-1', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => true,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Not equals check - case 4 for $type with $actor_type (extra actor)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::NOT_EQUALS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
                         sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-3', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-3', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => true,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Not equals check - case 5 for $type with $actor_type (completely different)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::NOT_EQUALS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-3', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-4', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-4', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => true,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
 
                 // Test actor answers with the CONTAINS operator
@@ -209,67 +209,67 @@ final class ActorConditionHandlerTest extends AbstractConditionHandler
                     'condition_operator'  => ValueOperator::CONTAINS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => true,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Contains check - case 2 for $type with $actor_type (partial match)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::CONTAINS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-3', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-3', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => false,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Contains check - case 3 for $type with $actor_type (extra actors)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::CONTAINS,
                     'condition_value'     => [
-                        sprintf('%s-1', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
                         sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-3', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-3', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => true,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Contains check - case 4 for $type with $actor_type (no match)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::CONTAINS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-3', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-4', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-4', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => false,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Contains check - case 5 for $type with $actor_type (empty submission)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::CONTAINS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [],
                     'expected_result'     => false,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
 
                 // Test actor answers with the NOT_CONTAINS operator
@@ -278,67 +278,67 @@ final class ActorConditionHandlerTest extends AbstractConditionHandler
                     'condition_operator'  => ValueOperator::NOT_CONTAINS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => false,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Not contains check - case 2 for $type with $actor_type (partial match)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::NOT_CONTAINS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-3', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-3', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => true,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Not contains check - case 3 for $type with $actor_type (extra actors)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::NOT_CONTAINS,
                     'condition_value'     => [
-                        sprintf('%s-1', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
                         sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-3', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-3', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => false,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Not contains check - case 4 for $type with $actor_type (no match)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::NOT_CONTAINS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [
                         sprintf('%s-3', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-4', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-4', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'expected_result'     => true,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
                 yield "Not contains check - case 5 for $type with $actor_type (empty submission)" => [
                     'question_type'       => $type,
                     'condition_operator'  => ValueOperator::NOT_CONTAINS,
                     'condition_value'     => [
                         sprintf('%s-1', getForeignKeyFieldForItemType($actor_type)),
-                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type))
+                        sprintf('%s-2', getForeignKeyFieldForItemType($actor_type)),
                     ],
                     'submitted_answer'    => [],
                     'expected_result'     => true,
-                    'question_extra_data' => $extra_data
+                    'question_extra_data' => $extra_data,
                 ];
             }
         }

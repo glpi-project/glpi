@@ -99,13 +99,13 @@ class Appliance_ItemTest extends DbTestCase
 
         $appliance = new \Appliance();
 
-        $appliance_1 = (int)$appliance->add([
+        $appliance_1 = (int) $appliance->add([
             'name'        => 'Test appliance',
             'entities_id' => $entity_id,
         ]);
         $this->assertGreaterThan(0, $appliance_1);
 
-        $appliance_2 = (int)$appliance->add([
+        $appliance_2 = (int) $appliance->add([
             'name'        => 'Test appliance 2',
             'entities_id' => $entity_id,
         ]);
@@ -114,7 +114,7 @@ class Appliance_ItemTest extends DbTestCase
         $itemtypes = [
             'Computer'  => '_test_pc01',
             'Printer'   => '_test_printer_all',
-            'Software'  => '_test_soft'
+            'Software'  => '_test_soft',
         ];
 
         foreach ($itemtypes as $itemtype => $itemname) {
@@ -128,7 +128,7 @@ class Appliance_ItemTest extends DbTestCase
                 $input = [
                     'appliances_id'   => $app,
                     'itemtype'        => $itemtype,
-                    'items_id'        => $items_id
+                    'items_id'        => $items_id,
                 ];
                 $aitem = new \Appliance_Item();
                 $this->assertGreaterThan(0, $aitem->add($input));
@@ -153,7 +153,7 @@ class Appliance_ItemTest extends DbTestCase
 
         $iterator = $DB->request([
             'FROM'   => \Appliance_Item::getTable(),
-            'WHERE'  => ['appliances_id' => [$appliance_1, $appliance_2]]
+            'WHERE'  => ['appliances_id' => [$appliance_1, $appliance_2]],
         ]);
         $this->assertCount(0, $iterator);
     }

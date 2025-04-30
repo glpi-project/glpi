@@ -57,7 +57,7 @@ abstract class CommonITILValidation extends DbTestCase
     public static function testComputeValidationProvider(): array
     {
         return [
-         // 100% validation required
+            // 100% validation required
             [
                 'accepted'           => 0,
                 'refused'            => 0,
@@ -88,7 +88,7 @@ abstract class CommonITILValidation extends DbTestCase
                 'validation_percent' => 100,
                 'result'             => \CommonITILValidation::REFUSED,
             ],
-         // 50% validation required
+            // 50% validation required
             [
                 'accepted'           => 0,
                 'refused'            => 0,
@@ -125,7 +125,7 @@ abstract class CommonITILValidation extends DbTestCase
                 'validation_percent' => 50,
                 'result'             => \CommonITILValidation::REFUSED,
             ],
-         // 0% validation required
+            // 0% validation required
             [
                 'accepted'           => 0,
                 'refused'            => 0,
@@ -567,7 +567,7 @@ abstract class CommonITILValidation extends DbTestCase
                     'status' => \CommonITILValidation::ACCEPTED,
                     'validation_date' => '_CURRENT_TIME_',
                 ],
-            ]
+            ],
         ];
     }
 
@@ -588,7 +588,7 @@ abstract class CommonITILValidation extends DbTestCase
                 // Using placeholder for current user as the session is started after the data in retrieved from the provider
                 if ($v === '_CURRENT_USER_') {
                     $array[$k] = \Session::getLoginUserID();
-                } else if ($v === '_CURRENT_TIME_') {
+                } elseif ($v === '_CURRENT_TIME_') {
                     $array[$k] = $_SESSION["glpi_currenttime"];
                 }
             }
@@ -686,7 +686,7 @@ abstract class CommonITILValidation extends DbTestCase
                 ],
                 'field'    => 'validation_comment',
                 'expected' => [],
-            ]
+            ],
         ];
     }
 
@@ -734,7 +734,7 @@ abstract class CommonITILValidation extends DbTestCase
                 ],
                 'case'    => 'delete',
                 'expected' => sprintf(__('Cancel the approval request to %s'), '_test_group_1'),
-            ]
+            ],
         ];
     }
 

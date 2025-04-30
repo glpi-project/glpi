@@ -69,7 +69,7 @@ class WidgetTest extends DbTestCase
                         '#595959',
                         '#333333',
                     ],
-                ]
+                ],
             ], [
                 'bg_color'  => "#FFFFFF",
                 'nb_series' => 4,
@@ -82,7 +82,7 @@ class WidgetTest extends DbTestCase
                         '#a6a6a6',
                         '#cccccc',
                     ],
-                ]
+                ],
             ], [
                 'bg_color'  => "#FFFFFF",
                 'nb_series' => 1,
@@ -92,7 +92,7 @@ class WidgetTest extends DbTestCase
                     'colors' => [
                         '#999999',
                     ],
-                ]
+                ],
             ],
         ];
     }

@@ -52,7 +52,7 @@ class NetworkPortDialup extends NetworkPortInstantiation
             'item' => $this,
             'netport' => $netport,
             'params' => $options,
-            'connection_label' => __('Connected to')
+            'connection_label' => __('Connected to'),
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG

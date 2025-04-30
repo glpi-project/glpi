@@ -42,7 +42,7 @@ $migration->addField(
     'timestamp',
     [
         'null' => false,
-        'value' => null
+        'value' => null,
     ]
 );
 $migration->addKey('glpi_profiles', 'last_rights_update');
@@ -54,6 +54,6 @@ $migration->addField(
     [
         'null' => false,
         'value' => '1',
-        'after' => 'helpdesk_item_type'
+        'after' => 'helpdesk_item_type',
     ]
 );

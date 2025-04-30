@@ -56,9 +56,7 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
     abstract public function getConfigClass(): string;
     abstract protected function getFieldNameToConvertSpecificSLMID(): string;
 
-    final public function __construct()
-    {
-    }
+    final public function __construct() {}
 
     #[Override]
     public function renderConfigForm(

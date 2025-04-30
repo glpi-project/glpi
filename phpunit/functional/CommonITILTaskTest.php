@@ -35,7 +35,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
 
 class CommonITILTaskTest extends DbTestCase
 {
@@ -117,7 +116,7 @@ class CommonITILTaskTest extends DbTestCase
                 $type_user->find([
                     $foreignkey => $id,
                     'users_id' => 4,
-                    'type' => \CommonITILActor::ASSIGN
+                    'type' => \CommonITILActor::ASSIGN,
                 ])
             );
 
@@ -135,7 +134,7 @@ class CommonITILTaskTest extends DbTestCase
                 $type_user->find([
                     $foreignkey => $id,
                     'users_id' => 3,
-                    'type' => \CommonITILActor::ASSIGN
+                    'type' => \CommonITILActor::ASSIGN,
                 ])
             );
         }

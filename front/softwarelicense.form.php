@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $license->check($_POST['id'], DELETE);
     if ($license->restore($_POST)) {
         Event::log(
@@ -79,7 +79,7 @@ if (isset($_POST["add"])) {
         );
     }
     $license->redirectToList();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $license->check($_POST['id'], DELETE);
     $license->delete($_POST, 0);
     Event::log(
@@ -91,7 +91,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%1$s deletes the license %2$s'), $_SESSION["glpiname"], $_POST["id"])
     );
     $license->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $license->check($_POST['id'], PURGE);
     $license->delete($_POST, 1);
     Event::log(
@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%1$s purges the license %2$s'), $_SESSION["glpiname"], $_POST["id"])
     );
     $license->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $license->check($_POST['id'], UPDATE);
 
     $license->update($_POST);

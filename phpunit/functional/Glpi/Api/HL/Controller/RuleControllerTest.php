@@ -44,7 +44,7 @@ class RuleControllerTest extends \HLAPITestCase
     {
         return [
             'Ticket', 'Change', 'Problem', 'Asset', 'ImportAsset', 'ImportEntity', 'Right',
-            'Location', 'SoftwareCategory'
+            'Location', 'SoftwareCategory',
         ];
     }
 
@@ -120,11 +120,11 @@ class RuleControllerTest extends \HLAPITestCase
                 'conditions' => [
                     0 => [
                         'description' => 'is',
-                        'fields' => ['_auto', 'comment', 'states_id']
+                        'fields' => ['_auto', 'comment', 'states_id'],
                     ],
                     11 => [
                         'description' => 'under',
-                        'fields' => ['locations_id', 'states_id']
+                        'fields' => ['locations_id', 'states_id'],
                     ],
                 ],
             ],
@@ -133,15 +133,15 @@ class RuleControllerTest extends \HLAPITestCase
                 'conditions' => [
                     0 => [
                         'description' => 'is',
-                        'fields' => ['name', '_mailgate', '_x-priority']
+                        'fields' => ['name', '_mailgate', '_x-priority'],
                     ],
                     6 => [
                         'description' => 'regular expression matches',
-                        'fields' => ['name', '_mailgate', '_x-priority']
+                        'fields' => ['name', '_mailgate', '_x-priority'],
                     ],
                     11 => [
                         'description' => 'under',
-                        'fields' => ['_groups_id_of_requester', 'itilcategories_id']
+                        'fields' => ['_groups_id_of_requester', 'itilcategories_id'],
                     ],
                 ],
             ],
@@ -150,7 +150,7 @@ class RuleControllerTest extends \HLAPITestCase
                 'conditions' => [
                     333 => [
                         'description' => 'is CIDR',
-                        'fields' => ['ip']
+                        'fields' => ['ip'],
                     ],
                 ],
             ],
@@ -192,7 +192,7 @@ class RuleControllerTest extends \HLAPITestCase
                     '_itemtype' => 'Item type',
                     'comment' => 'Comments',
                     '_tag' => 'Agent > Inventory tag',
-                    'users_id' => 'User'
+                    'users_id' => 'User',
                 ],
             ],
             [
@@ -209,7 +209,7 @@ class RuleControllerTest extends \HLAPITestCase
                 'criteria' => [
                     'entities_id' => 'Target entity for the asset',
                     'mac' => 'Asset > Network port > MAC',
-                    'link_criteria_port' => 'General > Restrict criteria to same network port'
+                    'link_criteria_port' => 'General > Restrict criteria to same network port',
                 ],
             ],
         ];

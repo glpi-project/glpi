@@ -129,7 +129,7 @@ class CacheManagerTest extends \GLPITestCase
                 'expected_set_error' => 'Invalid DSN: "whoot://invalid".',
                 'expected_get_error' => [
                     'level' => LogLevel::WARNING,
-                    'message' => sprintf('Invalid configuration for cache context "%s".', $context)
+                    'message' => sprintf('Invalid configuration for cache context "%s".', $context),
                 ],
                 'expected_adapter'   => FilesystemAdapter::class, // Fallback adapter
             ];
@@ -142,7 +142,7 @@ class CacheManagerTest extends \GLPITestCase
                 'expected_set_error' => 'Invalid DSN: ["redis://cache1.glpi-project.org","redis://cache2.glpi-project.org"].',
                 'expected_get_error' => [
                     'level' => LogLevel::WARNING,
-                    'message' => sprintf('Invalid configuration for cache context "%s".', $context)
+                    'message' => sprintf('Invalid configuration for cache context "%s".', $context),
                 ],
                 'expected_adapter'   => FilesystemAdapter::class, // Fallback adapter
             ];
@@ -199,7 +199,7 @@ class CacheManagerTest extends \GLPITestCase
                 'expected_set_error' => sprintf('Invalid or non configurable context: "%s".', $context),
                 'expected_get_error' => [
                     'level' => LogLevel::NOTICE,
-                    'message' => sprintf('Invalid or non configurable context: "%s".', $context)
+                    'message' => sprintf('Invalid or non configurable context: "%s".', $context),
                 ],
                 'expected_adapter'   => FilesystemAdapter::class, // Fallback adapter
             ];
@@ -481,8 +481,8 @@ class CacheManagerTest extends \GLPITestCase
                         'plugin_d' => [],
                         'not_a_valid_directory' => [], // Should be ignored
                         'templates' => [], // Should be ignored
-                    ]
-                ]
+                    ],
+                ],
             ],
             $vfs_structure
         );
@@ -514,7 +514,7 @@ class CacheManagerTest extends \GLPITestCase
         $this->assertTrue(file_exists($config_file));
         $this->assertEquals($expected_config, include($config_file));
 
-       // Defines an empty namespace, should be saved as null
+        // Defines an empty namespace, should be saved as null
         $this->assertTrue($instance->setNamespacePrefix(''));
 
         $expected_config = [

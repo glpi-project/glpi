@@ -143,7 +143,7 @@ TWIG, $twig_params);
                 'itemtype'  => self::class,
                 'id'        => $data['linkid'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
-                'number'    => $data['number']
+                'number'    => $data['number'],
             ];
             $license = new SoftwareLicense();
             $license->getFromResultSet($data);
@@ -193,7 +193,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 }

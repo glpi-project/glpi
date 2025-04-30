@@ -38,7 +38,7 @@
  */
 
 $migration->addRight('ticket', \Ticket::READNEWTICKET, [
-    'ticket' => \Ticket::ASSIGN
+    'ticket' => \Ticket::ASSIGN,
 ]);
 
 if (!$DB->fieldExists('glpi_tickets', 'externalid')) {

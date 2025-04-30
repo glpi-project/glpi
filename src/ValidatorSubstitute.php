@@ -223,8 +223,8 @@ final class ValidatorSubstitute extends CommonDBTM
                 $input['substitution_end_date'] = $input['substitution_start_date'];
             }
         } else {
-            $input['substitution_start_date'] = $input['substitution_start_date'] ?? 'NULL';
-            $input['substitution_end_date']   = $input['substitution_end_date'] ?? 'NULL';
+            $input['substitution_start_date'] ??= 'NULL';
+            $input['substitution_end_date'] ??= 'NULL';
         }
 
         // Update begin and end date to apply substitutes

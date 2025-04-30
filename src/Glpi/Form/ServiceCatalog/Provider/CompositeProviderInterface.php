@@ -38,6 +38,4 @@ namespace Glpi\Form\ServiceCatalog\Provider;
 /**
  * @template T of \Glpi\Form\ServiceCatalog\ServiceCatalogCompositeInterface
  */
-interface CompositeProviderInterface extends ItemProviderInterface
-{
-}
+interface CompositeProviderInterface extends ItemProviderInterface {}

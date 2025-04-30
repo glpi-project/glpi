@@ -106,7 +106,7 @@ class NotificationMailingSetting extends NotificationSetting
 
         $tab[] = [
             'id'   => 'common',
-            'name' => __('Characteristics')
+            'name' => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -114,7 +114,7 @@ class NotificationMailingSetting extends NotificationSetting
             'table'         => $this->getTable(),
             'field'         => 'value',
             'name'          => __('Value'),
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         return $tab;

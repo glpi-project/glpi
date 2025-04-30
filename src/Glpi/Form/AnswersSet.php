@@ -103,7 +103,7 @@ final class AnswersSet extends CommonDBChild
         $answers = $this->getAnswers();
         $filtered_answers = array_filter(
             $answers,
-            fn (Answer $answer) => $answer->getQuestionId() == $id
+            fn(Answer $answer) => $answer->getQuestionId() == $id
         );
 
         if (count($filtered_answers) == 1) {
@@ -119,7 +119,7 @@ final class AnswersSet extends CommonDBChild
         $answers = $this->getAnswers();
         return array_filter(
             $answers,
-            fn (Answer $answer) => $answer->getRawType() == $type
+            fn(Answer $answer) => $answer->getRawType() == $type
         );
     }
 
@@ -129,7 +129,7 @@ final class AnswersSet extends CommonDBChild
         $answers = $this->getAnswers();
         return array_filter(
             $answers,
-            fn (Answer $answer) => in_array($answer->getRawType(), $types)
+            fn(Answer $answer) => in_array($answer->getRawType(), $types)
         );
     }
 
@@ -143,7 +143,7 @@ final class AnswersSet extends CommonDBChild
             'table'    => User::getTable(),
             'field'    => 'name',
             'name'     => User::getTypeName(1),
-            'datatype' => 'dropdown'
+            'datatype' => 'dropdown',
         ];
 
         $search_options[] = [
@@ -152,7 +152,7 @@ final class AnswersSet extends CommonDBChild
             'field'         => 'date_creation',
             'name'          => __('Creation date'),
             'datatype'      => 'datetime',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         $search_options[] = [
@@ -161,7 +161,7 @@ final class AnswersSet extends CommonDBChild
             'field'         => 'name',
             'name'          => Form::getTypeName(),
             'datatype'      => 'dropdown',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         return $search_options;
@@ -275,7 +275,7 @@ final class AnswersSet extends CommonDBChild
     protected function countAnswers(Form $form): int
     {
         return countElementsInTable(self::getTable(), [
-            Form::getForeignKeyField() => $form->getID()
+            Form::getForeignKeyField() => $form->getID(),
         ]);
     }
 }

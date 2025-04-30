@@ -56,7 +56,7 @@ class MaintenanceController extends AbstractController
         return $this->render(
             'maintenance.html.twig',
             [
-                'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]
+                'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
             ]
         );
     }

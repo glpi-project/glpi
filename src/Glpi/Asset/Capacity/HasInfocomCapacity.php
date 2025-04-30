@@ -60,7 +60,7 @@ class HasInfocomCapacity extends AbstractCapacity
     public function getCloneRelations(): array
     {
         return [
-            Infocom::class
+            Infocom::class,
         ];
     }
 

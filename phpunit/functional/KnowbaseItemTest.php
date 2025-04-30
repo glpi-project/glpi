@@ -61,7 +61,7 @@ class KnowbaseItemTest extends DbTestCase
         $kb = new \KnowbaseItem();
         $this->assertGreaterThan(
             0,
-            (int)$kb->add([
+            (int) $kb->add([
                 'name'     => 'Test to remove',
                 'answer'   => 'An KB entry to remove',
                 'is_faq'   => 0,
@@ -74,7 +74,7 @@ class KnowbaseItemTest extends DbTestCase
         $comment = new \KnowbaseItem_Comment();
         $input = [
             'knowbaseitems_id' => $kb->getID(),
-            'users_id'         => $users_id
+            'users_id'         => $users_id,
         ];
 
         $id = 0;
@@ -82,16 +82,16 @@ class KnowbaseItemTest extends DbTestCase
             $input['comment'] = "Comment $i";
             $this->assertGreaterThan(
                 $id,
-                (int)$comment->add($input)
+                (int) $comment->add($input)
             );
-            $id = (int)$comment->getID();
+            $id = (int) $comment->getID();
         }
 
         //change KB entry
         $this->assertTrue(
             $kb->update([
                 'id'     => $kb->getID(),
-                'answer' => 'Answer has changed'
+                'answer' => 'Answer has changed',
             ])
         );
 
@@ -99,9 +99,9 @@ class KnowbaseItemTest extends DbTestCase
         $kbu = new \KnowbaseItem_User();
         $this->assertGreaterThan(
             0,
-            (int)$kbu->add([
+            (int) $kbu->add([
                 'knowbaseitems_id'   => $kb->getID(),
-                'users_id'           => $users_id
+                'users_id'           => $users_id,
             ])
         );
 
@@ -109,9 +109,9 @@ class KnowbaseItemTest extends DbTestCase
         $kbe = new \Entity_KnowbaseItem();
         $this->assertGreaterThan(
             0,
-            (int)$kbe->add([
+            (int) $kbe->add([
                 'knowbaseitems_id'   => $kb->getID(),
-                'entities_id'        => 0
+                'entities_id'        => 0,
             ])
         );
 
@@ -119,16 +119,16 @@ class KnowbaseItemTest extends DbTestCase
         $group = new \Group();
         $this->assertGreaterThan(
             0,
-            (int)$group->add([
-                'name'   => 'KB group'
+            (int) $group->add([
+                'name'   => 'KB group',
             ])
         );
         $kbg = new \Group_KnowbaseItem();
         $this->assertGreaterThan(
             0,
-            (int)$kbg->add([
+            (int) $kbg->add([
                 'knowbaseitems_id'   => $kb->getID(),
-                'groups_id'          => $group->getID()
+                'groups_id'          => $group->getID(),
             ])
         );
 
@@ -137,9 +137,9 @@ class KnowbaseItemTest extends DbTestCase
         $kbp = new \KnowbaseItem_Profile();
         $this->assertGreaterThan(
             0,
-            (int)$kbp->add([
+            (int) $kbp->add([
                 'knowbaseitems_id'   => $kb->getID(),
-                'profiles_id'        => $profiles_id
+                'profiles_id'        => $profiles_id,
             ])
         );
 
@@ -148,10 +148,10 @@ class KnowbaseItemTest extends DbTestCase
         $tickets_id = getItemByTypeName('Ticket', '_ticket01', true);
         $this->assertGreaterThan(
             0,
-            (int)$kbi->add([
+            (int) $kbi->add([
                 'knowbaseitems_id'   => $kb->getID(),
                 'itemtype'           => 'Ticket',
-                'items_id'           => $tickets_id
+                'items_id'           => $tickets_id,
             ])
         );
 
@@ -162,14 +162,14 @@ class KnowbaseItemTest extends DbTestCase
             \Entity_KnowbaseItem::getTable(),
             \Group_KnowbaseItem::getTable(),
             \KnowbaseItem_Profile::getTable(),
-            \KnowbaseItem_Item::getTable()
+            \KnowbaseItem_Item::getTable(),
         ];
 
-       //check all relations have been created
+        //check all relations have been created
         foreach ($relations as $relation) {
             $iterator = $DB->request([
                 'FROM'   => $relation,
-                'WHERE'  => ['knowbaseitems_id' => $kb->getID()]
+                'WHERE'  => ['knowbaseitems_id' => $kb->getID()],
             ]);
             $this->assertGreaterThan(0, count($iterator));
         }
@@ -183,7 +183,7 @@ class KnowbaseItemTest extends DbTestCase
         foreach ($relations as $relation) {
             $iterator = $DB->request([
                 'FROM'   => $relation,
-                'WHERE'  => ['knowbaseitems_id' => $kb->getID()]
+                'WHERE'  => ['knowbaseitems_id' => $kb->getID()],
             ]);
             $this->assertSame(0, count($iterator));
         }
@@ -282,7 +282,7 @@ HTML,
             ],
             '_prefix_filename' => [
                 '5e5e92ffd9bd91.11111111',
-            ]
+            ],
         ];
         $fpath = FIXTURE_DIR . '/uploads/foo.txt';
         $this->assertTrue(
@@ -316,7 +316,7 @@ HTML,
             ],
             '_prefix_filename' => [
                 '5e5e92ffd9bd91.44444444',
-            ]
+            ],
         ]);
         $this->assertTrue($success);
         $this->assertStringContainsString('update testUploadDocuments', $instance->fields['answer']);
@@ -714,7 +714,7 @@ HTML,
                 'type' => 'search',
                 'count' => 1,
                 'sort' => ['_knowbaseitem02'],
-            ]
+            ],
         ];
     }
 
@@ -747,7 +747,7 @@ HTML,
         $kb_name = 'Test testGetAnswerAnchors' . mt_rand();
         $input = [
             'name' => $kb_name,
-            'answer' => '<h1>title 1a</h1><h2>title2</h2><h1>title 1b</h1><h1>title 1c</h1>'
+            'answer' => '<h1>title 1a</h1><h2>title2</h2><h1>title 1b</h1><h1>title 1c</h1>',
         ];
         $this->createItems('KnowbaseItem', [$input]);
 
@@ -911,7 +911,7 @@ HTML,
                 'users_id' => $glpi_user,
                 'entities_id' => 0,
                 'is_recursive' => 1,
-            ]
+            ],
         ]);
 
         // Set entity for FAQ 2
@@ -1069,7 +1069,7 @@ HTML,
 
         // Target group
         $group = new \Group();
-        $postonly_group = (int)$group->add([
+        $postonly_group = (int) $group->add([
             'name' => 'Post-only group',
             'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
             'is_recursive' => 1,
@@ -1078,12 +1078,12 @@ HTML,
         $group_user = new \Group_User();
         $this->assertGreaterThan(
             0,
-            (int)$group_user->add([
+            (int) $group_user->add([
                 'groups_id'    => $postonly_group,
                 'users_id'     => getItemByTypeName("User", "post-only", true),
             ])
         );
-        $tech_group = (int)$group->add([
+        $tech_group = (int) $group->add([
             'name' => 'Tech group',
             'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
             'is_recursive' => 1,
@@ -1091,7 +1091,7 @@ HTML,
         $this->assertGreaterThan(0, $tech_group);
         $this->assertGreaterThan(
             0,
-            (int)$group_user->add([
+            (int) $group_user->add([
                 'groups_id'    => $tech_group,
                 'users_id'     => getItemByTypeName("User", "tech", true),
             ])
@@ -1114,17 +1114,17 @@ HTML,
 
         // Target entity
         $entity = new \Entity();
-        $faq_entity1 = (int)$entity->add([
+        $faq_entity1 = (int) $entity->add([
             'name' => 'FAQ 1 entity',
             'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
         ]);
         $this->assertGreaterThan(0, $faq_entity1);
-        $faq_entity2 = (int)$entity->add([
+        $faq_entity2 = (int) $entity->add([
             'name' => 'FAQ 2 entity',
             'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
         ]);
         $this->assertGreaterThan(0, $faq_entity2);
-        $faq_entity11 = (int)$entity->add([
+        $faq_entity11 = (int) $entity->add([
             'name' => 'FAQ 1.1 entity',
             'entities_id' => $faq_entity1,
         ]);
@@ -1409,15 +1409,15 @@ HTML,
             'articles' => [
                 'FAQ 2', 'KB 2', 'KB 3', 'KB 4', 'KB 6', 'KB 7', 'KB 8', 'KB 9',
                 'KB 10', 'KB 12', 'KB 13',
-            ]
+            ],
         ];
 
         // Switch entities
         $this->setEntity("_test_child_1", true);
         yield [
             'articles' => [
-                'FAQ 2', 'KB 2', 'KB 3', 'KB 4', 'KB 7', 'KB 8', 'KB 10', 'KB 12'
-            ]
+                'FAQ 2', 'KB 2', 'KB 3', 'KB 4', 'KB 7', 'KB 8', 'KB 10', 'KB 12',
+            ],
         ];
 
         // Last test, admin should see all articles
@@ -1427,7 +1427,7 @@ HTML,
                 'FAQ 1', 'FAQ 2', 'FAQ 3', 'KB 1', 'KB 2', 'KB 3', 'KB 4',
                 'KB 5', 'KB 6', 'KB 7', 'KB 8', 'KB 9', 'KB 10', 'KB 11',
                 'KB 12', 'KB 13',
-            ]
+            ],
         ];
     }
 
@@ -1439,7 +1439,7 @@ HTML,
         foreach ($values as $value) {
             $criteria = array_merge(\KnowbaseItem::getVisibilityCriteria(false), [
                 'SELECT' => 'name',
-                'FROM' => \KnowbaseItem::getTable()
+                'FROM' => \KnowbaseItem::getTable(),
             ]);
 
             $data = $DB->request($criteria);
@@ -1496,14 +1496,14 @@ HTML,
         $date = date('Y-m-d H:i:s');
         $_SESSION['glpi_currenttime'] = $date;
 
-       // Test item cloning
+        // Test item cloning
         $knowbaseitem = new \KnowbaseItem();
         $this->assertGreaterThan(
             0,
             $id = $knowbaseitem->add([
                 'name'   => 'Test clone knowbaseitem',
                 'answer' => 'Test clone knowbaseitem',
-                'is_faq' => false
+                'is_faq' => false,
             ])
         );
 
@@ -1520,7 +1520,7 @@ HTML,
             0,
             $kbentity->add([
                 'entities_id'  => $eid,
-                'knowbaseitems_id'  => $id
+                'knowbaseitems_id'  => $id,
             ])
         );
 
@@ -1530,7 +1530,7 @@ HTML,
             0,
             $cid = $computer->add([
                 'name'  => 'Test kb clone Cpt',
-                'entities_id'  => $entity->fields['id']
+                'entities_id'  => $entity->fields['id'],
             ])
         );
         $linked_item = new \KnowbaseItem_Item();
@@ -1539,13 +1539,13 @@ HTML,
             $linked_item->add([
                 'itemtype'  => 'Computer',
                 'items_id'  => $cid,
-                'knowbaseitems_id'  => $id
+                'knowbaseitems_id'  => $id,
             ])
         );
 
         //add document
         $document = new \Document();
-        $docid = (int)$document->add(['name' => 'Test link document']);
+        $docid = (int) $document->add(['name' => 'Test link document']);
         $this->assertGreaterThan(0, $docid);
 
         $docitem = new \Document_Item();
@@ -1554,15 +1554,15 @@ HTML,
             $docitem->add([
                 'documents_id' => $docid,
                 'itemtype'     => 'KnowbaseItem',
-                'items_id'     => $id
+                'items_id'     => $id,
             ])
         );
 
-       //clone!
+        //clone!
         $kbitem = new \KnowbaseItem();
         $this->assertTrue($kbitem->getFromDB($id));
         $added = $kbitem->clone();
-        $this->assertGreaterThan(0, (int)$added);
+        $this->assertGreaterThan(0, (int) $added);
         $this->assertNotEquals($kbitem->fields['id'], $added);
 
         $clonedKbitem = new \KnowbaseItem();

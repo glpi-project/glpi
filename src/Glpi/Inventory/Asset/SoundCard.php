@@ -35,7 +35,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
 use Glpi\Inventory\Conf;
 
 class SoundCard extends Device
@@ -47,7 +46,7 @@ class SoundCard extends Device
         $mapping = [
             'name'          => 'designation',
             'manufacturer'  => 'manufacturers_id',
-            'description'   => 'comment'
+            'description'   => 'comment',
         ];
         foreach ($this->data as &$val) {
             foreach ($mapping as $origin => $dest) {

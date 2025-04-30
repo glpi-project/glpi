@@ -35,10 +35,6 @@
 
 namespace Glpi\Api\HL\Middleware;
 
-use Glpi\Api\HL\RoutePath;
-use Glpi\Http\Response;
-use Glpi\Http\Request;
-
 abstract class AbstractMiddleware
 {
     /**

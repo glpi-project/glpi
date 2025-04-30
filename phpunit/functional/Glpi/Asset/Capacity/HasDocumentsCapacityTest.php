@@ -236,7 +236,7 @@ class HasDocumentsCapacityTest extends DbTestCase
             $classname,
             [
                 'name' => __FUNCTION__,
-                'entities_id' => $root_entity_id
+                'entities_id' => $root_entity_id,
             ]
         );
         $document = $this->createTxtDocument();
@@ -296,7 +296,7 @@ class HasDocumentsCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Document::class,
-            'relation_classname' => Document_Item::class
+            'relation_classname' => Document_Item::class,
         ];
     }
 
@@ -305,7 +305,7 @@ class HasDocumentsCapacityTest extends DbTestCase
         yield [
             'target_classname' => Document::class,
             'relation_classname' => Document_Item::class,
-            'expected' => '%d documents attached to %d assets'
+            'expected' => '%d documents attached to %d assets',
         ];
     }
 }

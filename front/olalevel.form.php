@@ -58,7 +58,7 @@ if (isset($_POST["update"])) {
     );
 
     Html::back();
-} else if (isset($_POST["add"])) {
+} elseif (isset($_POST["add"])) {
     $item->check(-1, CREATE, $_POST);
 
     if ($item->add($_POST)) {
@@ -75,7 +75,7 @@ if (isset($_POST["update"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     if (isset($_POST['id'])) {
         $item->check($_POST['id'], PURGE);
         if ($item->delete($_POST, 1)) {
@@ -92,7 +92,7 @@ if (isset($_POST["update"])) {
     }
 
     Html::back();
-} else if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
+} elseif (isset($_GET["id"]) && ($_GET["id"] > 0)) {
     $menus = ["config", "slm", "OlaLevel"];
     OlaLevel::displayFullPageForItem($_GET["id"], $menus);
 }

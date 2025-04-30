@@ -35,9 +35,7 @@
 namespace Glpi\PHPUnit\Tests\Glpi\Form\QuestionType;
 
 use DbTestCase;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Question;
-use Glpi\Form\QuestionType\QuestionTypeActorsConfig;
 use Glpi\Form\QuestionType\QuestionTypeActorsDefaultValueConfig;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Tests\FormBuilder;
@@ -204,7 +202,7 @@ abstract class AbstractQuestionTypeActorsTest extends DbTestCase
             Question::class,
             $this->getQuestionId($form, "Question"),
             [
-                'default_value' => ["0"]
+                'default_value' => ["0"],
             ],
             ['default_value'] // Normally the field doesn't correspond to the defined value, don't verify it here
         );

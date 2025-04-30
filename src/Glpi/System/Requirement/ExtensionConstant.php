@@ -69,15 +69,15 @@ class ExtensionConstant extends AbstractRequirement
         $this->validated = defined($this->name);
         if ($this->validated) {
             $this->validation_messages = [
-                sprintf(__('The constant %s is present.'), $this->name)
+                sprintf(__('The constant %s is present.'), $this->name),
             ];
-        } else if ($this->optional) {
+        } elseif ($this->optional) {
             $this->validation_messages = [
-                sprintf(__('The constant %s is not present.'), $this->name)
+                sprintf(__('The constant %s is not present.'), $this->name),
             ];
         } else {
             $this->validation_messages = [
-                sprintf(__('The constant %s is missing.'), $this->name)
+                sprintf(__('The constant %s is missing.'), $this->name),
             ];
         }
     }

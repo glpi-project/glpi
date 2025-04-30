@@ -247,7 +247,7 @@ class HasKnowbaseCapacityTest extends DbTestCase
         yield [
             'target_classname' => KnowbaseItem::class,
             'relation_classname' => KnowbaseItem_Item::class,
-            'expected' => '%d knowbase items attached to %d assets'
+            'expected' => '%d knowbase items attached to %d assets',
         ];
     }
 }

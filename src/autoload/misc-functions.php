@@ -50,7 +50,7 @@ function isCommandLine()
  */
 function isAPI()
 {
-    $script = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+    $script = $_SERVER['REQUEST_URI'] ?? '';
     if (str_contains($script, 'api.php')) {
         return true;
     }
@@ -76,14 +76,14 @@ function isPluginItemType($classname)
         $plug['plugin'] = $matches[1];
         $plug['class']  = $matches[2];
         return $plug;
-    } else if (substr($classname, 0, \strlen(NS_PLUG)) === NS_PLUG) {
+    } elseif (substr($classname, 0, \strlen(NS_PLUG)) === NS_PLUG) {
         $tab = explode('\\', $classname, 3);
         $plug           = [];
         $plug['plugin'] = $tab[1];
         $plug['class']  = $tab[2];
         return $plug;
     }
-   // Standard case
+    // Standard case
     return false;
 }
 

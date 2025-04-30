@@ -83,7 +83,7 @@ final class AddNewFormTranslationController extends AbstractController
             FormTranslation::$items_id => $form->getID(),
             'language'                 => $language,
             'key'                      => $first_handler->getKey(),
-            'translations'             => '{}'
+            'translations'             => '{}',
         ];
 
         // Right check

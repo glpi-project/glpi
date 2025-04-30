@@ -51,16 +51,16 @@ function update911to913()
 
     $migration->setVersion('9.1.3');
 
-   //Fix duplicated search options
+    //Fix duplicated search options
     if (countElementsInTable("glpi_displaypreferences", ['itemtype' => 'IPNetwork', 'num' => '17']) == 0) {
         $DB->update(
             "glpi_displaypreferences",
             [
-                "num" => 17
+                "num" => 17,
             ],
             [
                 'itemtype'  => "IPNetwork",
-                'num'       => 13
+                'num'       => 13,
             ]
         );
     }
@@ -68,11 +68,11 @@ function update911to913()
         $DB->update(
             "glpi_displaypreferences",
             [
-                "num" => 18
+                "num" => 18,
             ],
             [
                 'itemtype'  => "IPNetwork",
-                'num'       => 14
+                'num'       => 14,
             ]
         );
     }
@@ -88,7 +88,7 @@ function update911to913()
         "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"
     );
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

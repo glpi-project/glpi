@@ -106,24 +106,24 @@ class HasSoftwaresCapacity extends AbstractCapacity
                     'ON' => [
                         $item_v_table   => 'softwareversions_id',
                         $versions_table => 'id',
-                    ]
+                    ],
                 ],
                 $software_table => [
                     'ON' => [
                         $versions_table => 'softwares_id',
                         $software_table => 'id',
-                    ]
+                    ],
                 ],
                 $asset_table => [
                     'ON' => [
                         $item_v_table   => 'items_id',
                         $asset_table    => 'id',
-                    ]
+                    ],
                 ],
             ],
             'WHERE'      => [
                 'itemtype' => $classname,
-            ]
+            ],
         ]);
         foreach ($versions_iterator as $version_data) {
             if (!in_array($version_data['softwares_id'], $softwares_ids, true)) {
@@ -146,24 +146,24 @@ class HasSoftwaresCapacity extends AbstractCapacity
                     'ON' => [
                         $item_l_table   => 'softwarelicenses_id',
                         $licences_table => 'id',
-                    ]
+                    ],
                 ],
                 $software_table => [
                     'ON' => [
                         $licences_table => 'softwares_id',
                         $software_table => 'id',
-                    ]
+                    ],
                 ],
                 $asset_table => [
                     'ON' => [
                         $item_l_table   => 'items_id',
                         $asset_table    => 'id',
-                    ]
+                    ],
                 ],
             ],
             'WHERE'  => [
                 'itemtype' => $classname,
-            ]
+            ],
         ]);
         foreach ($versions_iterator as $version_data) {
             if (!in_array($version_data['softwares_id'], $softwares_ids, true)) {
@@ -197,7 +197,7 @@ class HasSoftwaresCapacity extends AbstractCapacity
         $softwares_version = new Item_SoftwareVersion();
         $softwares_version->deleteByCriteria(
             [
-                'itemtype' => $classname
+                'itemtype' => $classname,
             ],
             force: true,
             history: false
@@ -206,7 +206,7 @@ class HasSoftwaresCapacity extends AbstractCapacity
         $software_licenses = new Item_SoftwareLicense();
         $software_licenses->deleteByCriteria(
             [
-                'itemtype' => $classname
+                'itemtype' => $classname,
             ],
             force: true,
             history: false

@@ -81,7 +81,7 @@ final class SingleChoiceFromValuesConditionHandlerTest extends AbstractCondition
             'condition_value'     => "option_c",
             'submitted_answer'    => "option_b",
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Equals check - case 2 for $type" => [
             'question_type'       => $type,
@@ -89,7 +89,7 @@ final class SingleChoiceFromValuesConditionHandlerTest extends AbstractCondition
             'condition_value'     => "option_c",
             'submitted_answer'    => "option_c",
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
 
         // Test with the NOT EQUALS operator
@@ -99,7 +99,7 @@ final class SingleChoiceFromValuesConditionHandlerTest extends AbstractCondition
             'condition_value'     => "option_c",
             'submitted_answer'    => "option_b",
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not equals check - case 2 for $type" => [
             'question_type'       => $type,
@@ -107,7 +107,7 @@ final class SingleChoiceFromValuesConditionHandlerTest extends AbstractCondition
             'condition_value'     => "option_c",
             'submitted_answer'    => "option_c",
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
     }
 }

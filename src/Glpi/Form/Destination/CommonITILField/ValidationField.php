@@ -270,7 +270,7 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
                     if (is_array($validation_actors)) {
                         $fk = $validation_actors['type'] == 'user' ? User::getForeignKeyField() : Group::getForeignKeyField();
                         $actors_ids = array_map(
-                            fn ($id) => sprintf('%s-%d', $fk, $id),
+                            fn($id) => sprintf('%s-%d', $fk, $id),
                             json_decode($rawData['commonitil_validation_question'], true)['values'] ?? []
                         );
                     }

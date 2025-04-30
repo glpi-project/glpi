@@ -63,7 +63,7 @@ class ForbidExitRule implements Rule
                 )
             )
             ->identifier('glpi.forbidExit')
-            ->build()
+            ->build(),
         ];
     }
 }

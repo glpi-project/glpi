@@ -68,12 +68,12 @@ final class PermissionManager
                     'ON'    => [
                         $profile_table => 'id',
                         Profile_User::getTable() => 'profiles_id',
-                    ]
-                ]
+                    ],
+                ],
             ],
             'WHERE' => [
                 Profile_User::getTableField('users_id') => $users_id,
-            ]
+            ],
         ]);
         $entities = [];
         foreach ($iterator as $row) {

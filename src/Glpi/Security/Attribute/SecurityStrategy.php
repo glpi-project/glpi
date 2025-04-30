@@ -39,6 +39,5 @@ final readonly class SecurityStrategy
 {
     public function __construct(
         public string $strategy,
-    ) {
-    }
+    ) {}
 }

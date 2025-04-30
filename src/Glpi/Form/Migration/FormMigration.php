@@ -58,7 +58,6 @@ use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\ITILActorField;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationChange;
-use Glpi\Form\Destination\FormDestinationInterface;
 use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
@@ -163,7 +162,7 @@ class FormMigration extends AbstractPluginMigration
         return [
             self::PUBLIC_ACCESS_TYPE => DirectAccess::class,
             self::PRIVATE_ACCESS_TYPE => DirectAccess::class,
-            self::RESTRICTED_ACCESS_TYPE => AllowList::class
+            self::RESTRICTED_ACCESS_TYPE => AllowList::class,
         ];
     }
 
@@ -266,34 +265,34 @@ class FormMigration extends AbstractPluginMigration
     {
         $formcreator_schema = [
             'glpi_plugin_formcreator_categories' => [
-                'id', 'name', 'plugin_formcreator_categories_id', 'level'
+                'id', 'name', 'plugin_formcreator_categories_id', 'level',
             ],
             'glpi_plugin_formcreator_forms' => [
                 'id', 'name', 'description', 'plugin_formcreator_categories_id', 'entities_id',
-                'is_recursive', 'is_visible'
+                'is_recursive', 'is_visible',
             ],
             'glpi_plugin_formcreator_sections' => [
-                'id', 'name', 'plugin_formcreator_forms_id', 'order', 'uuid'
+                'id', 'name', 'plugin_formcreator_forms_id', 'order', 'uuid',
             ],
             'glpi_plugin_formcreator_questions' => [
                 'id', 'name', 'plugin_formcreator_sections_id', 'fieldtype', 'required', 'default_values',
-                'itemtype', 'values', 'description', 'row', 'col', 'uuid'
+                'itemtype', 'values', 'description', 'row', 'col', 'uuid',
             ],
             'glpi_plugin_formcreator_forms_users' => [
-                'plugin_formcreator_forms_id', 'users_id'
+                'plugin_formcreator_forms_id', 'users_id',
             ],
             'glpi_plugin_formcreator_forms_groups' => [
-                'plugin_formcreator_forms_id', 'groups_id'
+                'plugin_formcreator_forms_id', 'groups_id',
             ],
             'glpi_plugin_formcreator_forms_profiles' => [
-                'plugin_formcreator_forms_id', 'profiles_id'
+                'plugin_formcreator_forms_id', 'profiles_id',
             ],
             'glpi_plugin_formcreator_forms_languages' => [
-                'plugin_formcreator_forms_id', 'name'
+                'plugin_formcreator_forms_id', 'name',
             ],
             'glpi_plugin_formcreator_conditions' => [
-                'itemtype', 'items_id', 'plugin_formcreator_questions_id', 'show_condition', 'show_value', 'show_logic', 'order'
-            ]
+                'itemtype', 'items_id', 'plugin_formcreator_questions_id', 'show_condition', 'show_value', 'show_logic', 'order',
+            ],
         ];
 
         return $this->checkDbFieldsExists($formcreator_schema);
@@ -347,7 +346,7 @@ class FormMigration extends AbstractPluginMigration
         $raw_form_categories = $this->db->request([
             'SELECT' => ['id', 'name', 'plugin_formcreator_categories_id'],
             'FROM'   => 'glpi_plugin_formcreator_categories',
-            'ORDER'  => ['level ASC']
+            'ORDER'  => ['level ASC'],
         ]);
 
         foreach ($raw_form_categories as $raw_form_category) {
@@ -356,7 +355,7 @@ class FormMigration extends AbstractPluginMigration
                 'forms_categories_id' => $this->getMappedItemTarget(
                     'PluginFormcreatorCategory',
                     $raw_form_category['plugin_formcreator_categories_id']
-                )['items_id'] ?? 0
+                )['items_id'] ?? 0,
             ];
             $form_category = $this->importItem(
                 Category::class,
@@ -388,9 +387,9 @@ class FormMigration extends AbstractPluginMigration
                 'plugin_formcreator_categories_id',
                 'entities_id',
                 'is_recursive',
-                'is_visible AS is_active'
+                'is_visible AS is_active',
             ],
-            'FROM'   => 'glpi_plugin_formcreator_forms'
+            'FROM'   => 'glpi_plugin_formcreator_forms',
         ]);
 
         foreach ($raw_forms as $raw_form) {
@@ -406,7 +405,7 @@ class FormMigration extends AbstractPluginMigration
                     'entities_id'           => $raw_form['entities_id'],
                     'is_recursive'          => $raw_form['is_recursive'],
                     'is_active'             => $raw_form['is_active'],
-                    '_from_migration'       =>  true
+                    '_from_migration'       =>  true,
                 ],
                 [
                     'name'                => $raw_form['name'],
@@ -439,7 +438,7 @@ class FormMigration extends AbstractPluginMigration
         // Retrieve data from glpi_plugin_formcreator_sections table
         $raw_sections = $this->db->request([
             'SELECT' => ['id', 'name', 'plugin_formcreator_forms_id', 'order', 'uuid'],
-            'FROM'   => 'glpi_plugin_formcreator_sections'
+            'FROM'   => 'glpi_plugin_formcreator_sections',
         ]);
 
         foreach ($raw_sections as $raw_section) {
@@ -460,10 +459,10 @@ class FormMigration extends AbstractPluginMigration
                     Form::getForeignKeyField() => $form_id,
                     'name'                     => $raw_section['name'],
                     'rank'                     => $raw_section['order'] - 1, // New rank is 0-based
-                    'uuid'                     => $raw_section['uuid']
+                    'uuid'                     => $raw_section['uuid'],
                 ],
                 [
-                    'uuid' => $raw_section['uuid']
+                    'uuid' => $raw_section['uuid'],
                 ]
             );
 
@@ -496,11 +495,11 @@ class FormMigration extends AbstractPluginMigration
                 'description',
                 'row',
                 'col',
-                'uuid'
+                'uuid',
             ],
             'FROM'   => 'glpi_plugin_formcreator_questions',
             'WHERE'  => ['NOT' => ['fieldtype' => 'description']],
-            'ORDER'  => ['plugin_formcreator_sections_id', 'row', 'col']
+            'ORDER'  => ['plugin_formcreator_sections_id', 'row', 'col'],
         ])));
 
         foreach ($raw_questions as $raw_question) {
@@ -539,8 +538,8 @@ class FormMigration extends AbstractPluginMigration
                                                     : null,
                 'default_value'               => $default_value,
                 'extra_data'                  => $extra_data,
-                'uuid'                        => $raw_question['uuid']
-            ], fn ($value) => $value !== null);
+                'uuid'                        => $raw_question['uuid'],
+            ], fn($value) => $value !== null);
 
             try {
                 $question = $this->importItem(
@@ -591,10 +590,10 @@ class FormMigration extends AbstractPluginMigration
                 'description',
                 'row',
                 'col',
-                'uuid'
+                'uuid',
             ],
             'FROM'   => 'glpi_plugin_formcreator_questions',
-            'WHERE'  => ['fieldtype' => 'description']
+            'WHERE'  => ['fieldtype' => 'description'],
         ]);
 
         foreach ($raw_comments as $raw_comment) {
@@ -609,10 +608,10 @@ class FormMigration extends AbstractPluginMigration
                     'description'                 => $raw_comment['description'],
                     'vertical_rank'               => $raw_comment['row'],
                     'horizontal_rank'             => $raw_comment['col'],
-                    'uuid'                        => $raw_comment['uuid']
+                    'uuid'                        => $raw_comment['uuid'],
                 ],
                 [
-                    'uuid' => $raw_comment['uuid']
+                    'uuid' => $raw_comment['uuid'],
                 ]
             );
 
@@ -650,16 +649,16 @@ class FormMigration extends AbstractPluginMigration
                     [
                         'SELECT' => ['forms_sections_id', 'vertical_rank'],
                         'FROM'   => Question::getTable(),
-                        'WHERE'  => ['NOT' => ['horizontal_rank' => null]]
+                        'WHERE'  => ['NOT' => ['horizontal_rank' => null]],
                     ],
                     [
                         'SELECT' => ['forms_sections_id', 'vertical_rank'],
                         'FROM'   => Comment::getTable(),
-                        'WHERE'  => ['NOT' => ['horizontal_rank' => null]]
-                    ]
+                        'WHERE'  => ['NOT' => ['horizontal_rank' => null]],
+                    ],
                 ]),
                 'GROUPBY' => ['forms_sections_id', 'vertical_rank'],
-                'HAVING'  => ['COUNT(*) = 1']
+                'HAVING'  => ['COUNT(*) = 1'],
             ]);
 
             // If no unique blocks are found, move to the next table
@@ -672,7 +671,7 @@ class FormMigration extends AbstractPluginMigration
             foreach ($single_blocks as $block) {
                 $sections_ranks[] = [
                     'forms_sections_id' => $block['forms_sections_id'],
-                    'vertical_rank'     => $block['vertical_rank']
+                    'vertical_rank'     => $block['vertical_rank'],
                 ];
             }
 
@@ -703,7 +702,7 @@ class FormMigration extends AbstractPluginMigration
                 new QueryExpression(
                     'ROW_NUMBER() OVER ( PARTITION BY forms_sections_id, vertical_rank ORDER BY horizontal_rank ) - 1',
                     'new_horizontal_rank'
-                )
+                ),
             ],
             'FROM' => new QueryUnion([
                 [
@@ -712,10 +711,10 @@ class FormMigration extends AbstractPluginMigration
                         'forms_sections_id',
                         'vertical_rank',
                         'horizontal_rank',
-                        new QueryExpression("'" . Question::getTable() . "'", 'table')
+                        new QueryExpression("'" . Question::getTable() . "'", 'table'),
                     ],
                     'FROM'   => Question::getTable(),
-                    'WHERE'  => ['NOT' => ['horizontal_rank' => null]]
+                    'WHERE'  => ['NOT' => ['horizontal_rank' => null]],
                 ],
                 [
                     'SELECT' => [
@@ -723,11 +722,11 @@ class FormMigration extends AbstractPluginMigration
                         'forms_sections_id',
                         'vertical_rank',
                         'horizontal_rank',
-                        new QueryExpression("'" . Comment::getTable() . "'", 'table')
+                        new QueryExpression("'" . Comment::getTable() . "'", 'table'),
                     ],
                     'FROM'   => Comment::getTable(),
-                    'WHERE'  => ['NOT' => ['horizontal_rank' => null]]
-                ]
+                    'WHERE'  => ['NOT' => ['horizontal_rank' => null]],
+                ],
             ]),
         ]);
 
@@ -752,30 +751,30 @@ class FormMigration extends AbstractPluginMigration
                 'name', // Added to get form name for status reporting
                 new QueryExpression('JSON_ARRAYAGG(users_id)', 'user_ids'),
                 new QueryExpression('JSON_ARRAYAGG(groups_id)', 'group_ids'),
-                new QueryExpression('JSON_ARRAYAGG(profiles_id)', 'profile_ids')
+                new QueryExpression('JSON_ARRAYAGG(profiles_id)', 'profile_ids'),
             ],
             'FROM'   => 'glpi_plugin_formcreator_forms',
             'LEFT JOIN'   => [
                 'glpi_plugin_formcreator_forms_users' => [
                     'ON' => [
                         'glpi_plugin_formcreator_forms_users' => 'plugin_formcreator_forms_id',
-                        'glpi_plugin_formcreator_forms'       => 'id'
-                    ]
+                        'glpi_plugin_formcreator_forms'       => 'id',
+                    ],
                 ],
                 'glpi_plugin_formcreator_forms_groups' => [
                     'ON' => [
                         'glpi_plugin_formcreator_forms_groups' => 'plugin_formcreator_forms_id',
-                        'glpi_plugin_formcreator_forms'        => 'id'
-                    ]
+                        'glpi_plugin_formcreator_forms'        => 'id',
+                    ],
                 ],
                 'glpi_plugin_formcreator_forms_profiles' => [
                     'ON' => [
                         'glpi_plugin_formcreator_forms_profiles' => 'plugin_formcreator_forms_id',
-                        'glpi_plugin_formcreator_forms'          => 'id'
-                    ]
-                ]
+                        'glpi_plugin_formcreator_forms'          => 'id',
+                    ],
+                ],
             ],
-            'GROUPBY' => ['forms_id', 'access_rights']
+            'GROUPBY' => ['forms_id', 'access_rights'],
         ]);
 
         foreach ($raw_form_access_rights as $form_access_rights) {
@@ -800,7 +799,7 @@ class FormMigration extends AbstractPluginMigration
                     Form::getForeignKeyField() => $form->getID(),
                     'strategy'                 => $strategy_class,
                     '_config'                  => self::getStrategyConfigForAccessTypes($form_access_rights)->jsonSerialize(),
-                    'is_active'                => true
+                    'is_active'                => true,
                 ],
                 [
                     Form::getForeignKeyField() => $form->getID(),
@@ -841,18 +840,18 @@ class FormMigration extends AbstractPluginMigration
                 new QueryExpression(
                     'JSON_REMOVE(JSON_OBJECTAGG(COALESCE(itemtype, "NULL"), COALESCE(items_id, "NULL")), "$.NULL")',
                     'associate_items'
-                )
+                ),
             ],
             'FROM'      => 'glpi_plugin_formcreator_targettickets',
             'LEFT JOIN' => [
                 'glpi_plugin_formcreator_items_targettickets' => [
                     'ON' => [
                         'glpi_plugin_formcreator_targettickets'       => 'id',
-                        'glpi_plugin_formcreator_items_targettickets' => 'plugin_formcreator_targettickets_id'
-                    ]
-                ]
+                        'glpi_plugin_formcreator_items_targettickets' => 'plugin_formcreator_targettickets_id',
+                    ],
+                ],
             ],
-            'GROUPBY' => 'glpi_plugin_formcreator_targettickets.id'
+            'GROUPBY' => 'glpi_plugin_formcreator_targettickets.id',
         ]);
 
         $this->processMigrationOfDestination(
@@ -872,7 +871,7 @@ class FormMigration extends AbstractPluginMigration
         $this->progress_indicator?->setProgressBarMessage(__('Importing problem targets...'));
 
         $raw_targets = $this->db->request([
-            'FROM' => 'glpi_plugin_formcreator_targetproblems'
+            'FROM' => 'glpi_plugin_formcreator_targetproblems',
         ]);
 
         $this->processMigrationOfDestination(
@@ -892,7 +891,7 @@ class FormMigration extends AbstractPluginMigration
         $this->progress_indicator?->setProgressBarMessage(__('Importing change targets...'));
 
         $raw_targets = $this->db->request([
-            'FROM' => 'glpi_plugin_formcreator_targetchanges'
+            'FROM' => 'glpi_plugin_formcreator_targetchanges',
         ]);
 
         $this->processMigrationOfDestination(
@@ -969,12 +968,12 @@ class FormMigration extends AbstractPluginMigration
                     Form::getForeignKeyField() => $form->getID(),
                     'itemtype'                 => $destinationClass,
                     'name'                     => $raw_target['name'],
-                    'config'                   => $fields_config
+                    'config'                   => $fields_config,
                 ],
                 [
                     Form::getForeignKeyField() => $form->getID(),
                     'itemtype'                 => $destinationClass,
-                    'name'                     => $raw_target['name']
+                    'name'                     => $raw_target['name'],
                 ]
             );
 
@@ -1014,12 +1013,12 @@ class FormMigration extends AbstractPluginMigration
                 'items_id',
                 'actor_role',
                 'actor_type',
-                'actor_value'
+                'actor_value',
             ],
             'FROM' => 'glpi_plugin_formcreator_targets_actors',
             'WHERE' => [
-                'itemtype' => $fcDestinationClass
-            ]
+                'itemtype' => $fcDestinationClass,
+            ],
         ]);
 
         foreach ($raw_targets_actors as $raw_target_actor) {
@@ -1055,7 +1054,7 @@ class FormMigration extends AbstractPluginMigration
             $configurable_fields = (new $destinationClass())->getConfigurableFields();
             $configurable_fields = array_filter(
                 $configurable_fields,
-                fn ($field) => $field instanceof ITILActorField
+                fn($field) => $field instanceof ITILActorField
             );
 
             foreach ($configurable_fields as $configurable_field) {
@@ -1081,7 +1080,7 @@ class FormMigration extends AbstractPluginMigration
             if (
                 !$destination->update([
                     'id'     => $destination->getID(),
-                    'config' => $fields_config
+                    'config' => $fields_config,
                 ])
             ) {
                 throw new LogicException("Failed to update destination with id {$destination->getID()}");
@@ -1097,7 +1096,7 @@ class FormMigration extends AbstractPluginMigration
         $raw_languages = $this->db->request([
             'SELECT' => [
                 'plugin_formcreator_forms_id',
-                'name'
+                'name',
             ],
             'FROM'   => 'glpi_plugin_formcreator_forms_languages',
         ]);
@@ -1141,7 +1140,7 @@ class FormMigration extends AbstractPluginMigration
                                 FormTranslation::$itemtype => $handler->getItem()->getType(),
                                 'key'                      => $handler->getKey(),
                                 'language'                 => $raw_language['name'],
-                                'translations'             => ['one' => $translations[$handler->getValue()]]
+                                'translations'             => ['one' => $translations[$handler->getValue()]],
                             ],
                             [
                                 FormTranslation::$items_id => $handler->getItem()->getID(),
@@ -1183,46 +1182,46 @@ class FormMigration extends AbstractPluginMigration
                     'ON' => [
                         'glpi_plugin_formcreator_conditions' => 'items_id',
                         'glpi_plugin_formcreator_questions'  => 'id',
-                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorQuestion']]
-                    ]
+                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorQuestion']],
+                    ],
                 ],
                 'glpi_plugin_formcreator_sections' => [
                     'ON' => [
                         'glpi_plugin_formcreator_conditions' => 'items_id',
                         'glpi_plugin_formcreator_sections'   => 'id',
-                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorSection']]
-                    ]
+                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorSection']],
+                    ],
                 ],
                 'glpi_plugin_formcreator_targettickets' => [
                     'ON' => [
                         'glpi_plugin_formcreator_conditions'    => 'items_id',
                         'glpi_plugin_formcreator_targettickets' => 'id',
-                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorTargetTicket']]
-                    ]
+                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorTargetTicket']],
+                    ],
                 ],
                 'glpi_plugin_formcreator_targetchanges' => [
                     'ON' => [
                         'glpi_plugin_formcreator_conditions'    => 'items_id',
                         'glpi_plugin_formcreator_targetchanges' => 'id',
-                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorTargetChange']]
-                    ]
+                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorTargetChange']],
+                    ],
                 ],
                 'glpi_plugin_formcreator_targetproblems' => [
                     'ON' => [
                         'glpi_plugin_formcreator_conditions'     => 'items_id',
                         'glpi_plugin_formcreator_targetproblems' => 'id',
-                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorTargetProblem']]
-                    ]
-                ]
+                        ['AND' => ['glpi_plugin_formcreator_conditions.itemtype' => 'PluginFormcreatorTargetProblem']],
+                    ],
+                ],
             ],
             'HAVING'  => [
                 'NOT' => [
-                    'show_rule' => 'NULL'
+                    'show_rule' => 'NULL',
                 ],
             ],
             'ORDER'  => [
-                'glpi_plugin_formcreator_conditions.order'
-            ]
+                'glpi_plugin_formcreator_conditions.order',
+            ],
         ]);
 
         $conditions = [];
@@ -1363,7 +1362,7 @@ class FormMigration extends AbstractPluginMigration
                     $itemtype,
                     $input,
                     [
-                        'id' => $item_id
+                        'id' => $item_id,
                     ]
                 );
             }
@@ -1382,7 +1381,7 @@ class FormMigration extends AbstractPluginMigration
         $file_path = implode('/', [
             GLPI_LOCAL_I18N_DIR,
             'formcreator',
-            sprintf('form_%d_%s.php', $form_id, $language)
+            sprintf('form_%d_%s.php', $form_id, $language),
         ]);
 
         if (file_exists($file_path)) {

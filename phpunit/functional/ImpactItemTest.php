@@ -57,7 +57,7 @@ class ImpactItemTest extends \DbTestCase
         ]);
 
         $impactItem = \ImpactItem::findForItem($computer);
-        $this->assertEquals($id, (int)$impactItem->fields['id']);
+        $this->assertEquals($id, (int) $impactItem->fields['id']);
     }
 
     public static function prepareInputForUpdateProvider()

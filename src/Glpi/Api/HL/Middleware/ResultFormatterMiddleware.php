@@ -56,7 +56,7 @@ class ResultFormatterMiddleware extends AbstractMiddleware implements ResponseMi
             $input->response = new Response(200, [
                 'Content-Type' => 'text/csv',
             ], $this->formatCSV($data));
-        } else if (strtolower($input->request->getHeaderLine('Accept')) === 'application/xml') {
+        } elseif (strtolower($input->request->getHeaderLine('Accept')) === 'application/xml') {
             $input->response = new Response(200, [
                 'Content-Type' => 'application/xml',
             ], $this->formatXML($data));

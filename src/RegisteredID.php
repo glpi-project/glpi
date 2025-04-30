@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
 
 /**
  * RegisteredID class
@@ -53,7 +52,7 @@ class RegisteredID extends CommonDBChild
     {
         return [
             'PCI' => __('PCI'),
-            'USB' => __('USB')
+            'USB' => __('USB'),
         ];
     }
 

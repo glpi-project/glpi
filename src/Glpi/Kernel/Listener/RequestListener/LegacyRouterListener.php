@@ -51,7 +51,8 @@ final class LegacyRouterListener implements EventSubscriberInterface
     use KernelListenerTrait;
 
     public function __construct(
-        #[Autowire('%kernel.project_dir%')] string $glpi_root,
+        #[Autowire('%kernel.project_dir%')]
+        string $glpi_root,
         array $plugin_directories = PLUGINS_DIRECTORIES,
     ) {
         $this->glpi_root = $glpi_root;

@@ -49,7 +49,7 @@ if (!$DB->fieldExists($table, $field_to_add)) {
         $field_to_add,
         'fkey',
         [
-            'after' => 'id'
+            'after' => 'id',
         ]
     );
     $migration->addKey($table, $field_to_add);
@@ -63,7 +63,7 @@ if (!$DB->fieldExists($table, $field_to_add)) {
         'bool',
         [
             'update' => 1,
-            'after' => 'entities_id'
+            'after' => 'entities_id',
         ]
     );
     $migration->addKey($table, $field_to_add);

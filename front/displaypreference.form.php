@@ -36,7 +36,7 @@
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 Session::checkRightsOr('search_config', [DisplayPreference::PERSONAL,
-    DisplayPreference::GENERAL
+    DisplayPreference::GENERAL,
 ]);
 
 $setupdisplay = new DisplayPreference();

@@ -41,10 +41,10 @@ use Glpi\DBAL\QuerySubQuery;
  **/
 class Profile_User extends CommonDBRelation
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $auto_message_on_action               = false;
 
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1                    = 'User';
     public static $items_id_1                    = 'users_id';
 
@@ -52,7 +52,7 @@ class Profile_User extends CommonDBRelation
     public static $items_id_2                    = 'profiles_id';
     public static $checkItem_2_Rights            = self::DONT_CHECK_ITEM_RIGHTS;
 
-   // Manage Entity properties forwarding
+    // Manage Entity properties forwarding
     public static $disableAutoEntityForwarding   = true;
 
     /**
@@ -71,19 +71,19 @@ class Profile_User extends CommonDBRelation
 
     public function maybeRecursive()
     {
-       // Store is_recursive fields but not really recursive object
+        // Store is_recursive fields but not really recursive object
         return false;
     }
 
 
-   // TODO CommonDBConnexity : check in details if we can replace canCreateItem by canRelationItem ...
+    // TODO CommonDBConnexity : check in details if we can replace canCreateItem by canRelationItem ...
     public function canCreateItem(): bool
     {
 
         $user = new User();
         return $user->can($this->fields['users_id'], READ)
              && Profile::currentUserHaveMoreRightThan([$this->fields['profiles_id']
-                                                               => $this->fields['profiles_id']
+                                                               => $this->fields['profiles_id'],
              ])
              && Session::haveAccessToEntity($this->fields['entities_id']);
     }
@@ -100,7 +100,7 @@ class Profile_User extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
-       // TODO: check if the entities should not be inherited from the profile or the user
+        // TODO: check if the entities should not be inherited from the profile or the user
         $valid_entity = isset($input['entities_id']) && $input['entities_id'] >= 0;
         $valid_profile = isset($input['profiles_id']) && $input['profiles_id'] > 0;
         $valid_user = isset($input['users_id']) && $input['users_id'] > 0;
@@ -214,11 +214,11 @@ class Profile_User extends CommonDBRelation
                     __('%1$s (%2$s)'),
                     self::getTypeName(Session::getPluralNumber()),
                     __('D=Dynamic, R=Recursive')
-                )
+                ),
             ],
             'formatters' => [
                 'entity' => 'raw_html',
-                'profile' => 'raw_html'
+                'profile' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => $total_num,
@@ -227,7 +227,7 @@ class Profile_User extends CommonDBRelation
             'massiveactionparams' => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], count($entries)),
                 'container'        => 'mass' . __CLASS__ . mt_rand(),
-                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
             ],
         ]);
     }
@@ -273,18 +273,18 @@ class Profile_User extends CommonDBRelation
             $sort_params = [
                 "$utable.name $order",
                 "$utable.realname $order",
-                "$utable.firstname $order"
+                "$utable.firstname $order",
             ];
-        } else if ($sort === 'profile') {
+        } elseif ($sort === 'profile') {
             $sort_params = ["$ptable.name $order"];
-        } else if ($sort !== '') {
+        } elseif ($sort !== '') {
             $sort_params = [$sort . ' ' . ($order === 'DESC' ? 'DESC' : 'ASC')];
         }
         if (empty($sort_params)) {
             $sort_params = [
                 "$utable.name ASC",
                 "$utable.realname ASC",
-                "$utable.firstname ASC"
+                "$utable.firstname ASC",
             ];
         }
 
@@ -295,12 +295,12 @@ class Profile_User extends CommonDBRelation
                     'OR' => [
                         "$utable.name" => ['LIKE', "%$v%"],
                         "$utable.realname" => ['LIKE', "%$v%"],
-                        "$utable.firstname" => ['LIKE', "%$v%"]
-                    ]
+                        "$utable.firstname" => ['LIKE', "%$v%"],
+                    ],
                 ];
-            } else if ($k === 'profile') {
+            } elseif ($k === 'profile') {
                 $filter_conditions[] = [
-                    "$ptable.name" => ['LIKE', "%$v%"]
+                    "$ptable.name" => ['LIKE', "%$v%"],
                 ];
             }
         }
@@ -312,30 +312,30 @@ class Profile_User extends CommonDBRelation
                 "$putable.is_recursive",
                 "$putable.is_dynamic",
                 "$ptable.id AS pid",
-                "$ptable.name AS pname"
+                "$ptable.name AS pname",
             ],
             'FROM'         => $putable,
             'INNER JOIN'   => [
                 $utable => [
                     'ON' => [
                         $putable => 'users_id',
-                        $utable  => 'id'
-                    ]
+                        $utable  => 'id',
+                    ],
                 ],
                 $ptable  => [
                     'ON' => [
                         $putable => 'profiles_id',
-                        $ptable  => 'id'
-                    ]
-                ]
+                        $ptable  => 'id',
+                    ],
+                ],
             ],
             'WHERE'        => [
                 "$utable.is_deleted"    => 0,
-                "$putable.entities_id"  => $ID
+                "$putable.entities_id"  => $ID,
             ],
             'ORDER'      => $sort_params,
             'START'      => $start,
-            'LIMIT'      => $limit
+            'LIMIT'      => $limit,
         ];
         if (count($filter_conditions)) {
             $criteria['WHERE'] += $filter_conditions;
@@ -373,7 +373,7 @@ class Profile_User extends CommonDBRelation
             $avatar_params = [
                 'picture' => User::getThumbnailURLForPicture($data['picture'] ?? ''),
                 'initials' => $initials,
-                'initials_bg' => Toolbox::getColorForString($initials)
+                'initials_bg' => Toolbox::getColorForString($initials),
             ];
             $username = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 {% set bg_color = picture is not empty ? 'inherit' : initials_bg %}
@@ -389,7 +389,7 @@ TWIG, $avatar_params) . $username;
                 'itemtype' => self::class,
                 'id' => $data['id'],
                 'name' => $username,
-                'profile' => $data['pname']
+                'profile' => $data['pname'],
             ];
         }
 
@@ -420,7 +420,7 @@ TWIG, $avatar_params) . $username;
             'massiveactionparams' => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
                 'container'        => 'mass' . __CLASS__ . $rand,
-                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
             ],
         ]);
     }
@@ -456,11 +456,11 @@ TWIG, $avatar_params) . $username;
             $sort_params = [
                 "$utable.name $order",
                 "$utable.realname $order",
-                "$utable.firstname $order"
+                "$utable.firstname $order",
             ];
-        } else if ($sort === 'entity') {
+        } elseif ($sort === 'entity') {
             $sort_params = ["$etable.completename $order"];
-        } else if ($sort !== '') {
+        } elseif ($sort !== '') {
             $sort_params = [$sort . ' ' . ($order === 'DESC' ? 'DESC' : 'ASC')];
         }
         if (empty($sort_params)) {
@@ -474,12 +474,12 @@ TWIG, $avatar_params) . $username;
                     'OR' => [
                         "$utable.name" => ['LIKE', "%$v%"],
                         "$utable.realname" => ['LIKE', "%$v%"],
-                        "$utable.firstname" => ['LIKE', "%$v%"]
-                    ]
+                        "$utable.firstname" => ['LIKE', "%$v%"],
+                    ],
                 ];
-            } else if ($k === 'entity') {
+            } elseif ($k === 'entity') {
                 $filter_conditions[] = [
-                    "$etable.completename" => ['LIKE', "%$v%"]
+                    "$etable.completename" => ['LIKE', "%$v%"],
                 ];
             }
         }
@@ -490,7 +490,7 @@ TWIG, $avatar_params) . $username;
                 "$putable.entities_id AS entity",
                 "$putable.id AS linkid",
                 "$putable.is_dynamic",
-                "$putable.is_recursive"
+                "$putable.is_recursive",
             ],
             'DISTINCT'        => true,
             'FROM'            => $putable,
@@ -498,23 +498,23 @@ TWIG, $avatar_params) . $username;
                 $etable  => [
                     'ON' => [
                         $putable => 'entities_id',
-                        $etable  => 'id'
-                    ]
+                        $etable  => 'id',
+                    ],
                 ],
                 $utable  => [
                     'ON' => [
                         $putable => 'users_id',
-                        $utable  => 'id'
-                    ]
-                ]
+                        $utable  => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
                 "$putable.profiles_id"  => $ID,
-                "$utable.is_deleted"    => 0
+                "$utable.is_deleted"    => 0,
             ] + getEntitiesRestrictCriteria($putable, 'entities_id', $_SESSION['glpiactiveentities'], true),
             'ORDER'         => $sort_params,
             'START'         => $start,
-            'LIMIT'         => $limit
+            'LIMIT'         => $limit,
         ];
         if (count($filter_conditions)) {
             $criteria['WHERE'] += $filter_conditions;
@@ -559,7 +559,7 @@ TWIG, $avatar_params) . $username;
             $avatar_params = [
                 'picture' => User::getThumbnailURLForPicture($data['picture'] ?? ''),
                 'initials' => $initials,
-                'initials_bg' => Toolbox::getColorForString($initials)
+                'initials_bg' => Toolbox::getColorForString($initials),
             ];
             $username = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 {% set bg_color = picture is not empty ? 'inherit' : initials_bg %}
@@ -574,7 +574,7 @@ TWIG, $avatar_params) . $username;
                 'itemtype' => self::class,
                 'id' => $data['id'],
                 'name' => $username,
-                'entity' => $entity_names[$data['entity']]
+                'entity' => $entity_names[$data['entity']],
             ];
         }
 
@@ -613,7 +613,7 @@ TWIG, $avatar_params) . $username;
             'massiveactionparams' => [
                 'num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
                 'container'        => 'mass' . __CLASS__ . $rand,
-                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
             ],
         ]);
     }
@@ -636,11 +636,11 @@ TWIG, $avatar_params) . $username;
         $iterator = $DB->request([
             'SELECT'          => [
                 'entities_id',
-                'is_recursive'
+                'is_recursive',
             ],
             'DISTINCT'        => true,
             'FROM'            => 'glpi_profiles_users',
-            'WHERE'           => ['users_id' => (int)$user_ID]
+            'WHERE'           => ['users_id' => (int) $user_ID],
         ]);
         $entities = [];
 
@@ -653,10 +653,10 @@ TWIG, $avatar_params) . $username;
             }
         }
 
-       // Set default user entity at the beginning
+        // Set default user entity at the beginning
         if ($default_first) {
             $user = new User();
-            if ($user->getFromDB((int)$user_ID)) {
+            if ($user->getFromDB((int) $user_ID)) {
                 $ent = $user->getField('entities_id');
                 if (in_array($ent, $entities)) {
                     array_unshift($entities, $ent);
@@ -693,7 +693,7 @@ TWIG, $avatar_params) . $username;
         $iterator = $DB->request([
             'SELECT'          => [
                 "$putable.entities_id",
-                "$putable.is_recursive"
+                "$putable.is_recursive",
             ],
             'DISTINCT'        => true,
             'FROM'            => $putable,
@@ -701,21 +701,21 @@ TWIG, $avatar_params) . $username;
                 $ptable  => [
                     'ON' => [
                         $putable => 'profiles_id',
-                        $ptable  => 'id'
-                    ]
+                        $ptable  => 'id',
+                    ],
                 ],
                 $prtable => [
                     'ON' => [
                         $prtable => 'profiles_id',
-                        $ptable  => 'id'
-                    ]
-                ]
+                        $ptable  => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                "$putable.users_id"  => (int)$user_ID,
+                "$putable.users_id"  => (int) $user_ID,
                 "$prtable.name"      => $rightname,
-                "$prtable.rights"    => ['&', $rights]
-            ]
+                "$prtable.rights"    => ['&', $rights],
+            ],
         ]);
 
         if (count($iterator) > 0) {
@@ -754,7 +754,7 @@ TWIG, $avatar_params) . $username;
 
         $profiles = [];
 
-        $where = ['users_id' => (int)$user_ID];
+        $where = ['users_id' => (int) $user_ID];
         if (count($sqlfilter) > 0) {
             $where = $where + $sqlfilter;
         }
@@ -763,7 +763,7 @@ TWIG, $avatar_params) . $username;
             'SELECT'          => 'profiles_id',
             'DISTINCT'        => true,
             'FROM'            => 'glpi_profiles_users',
-            'WHERE'           => $where
+            'WHERE'           => $where,
         ]);
 
         foreach ($iterator as $data) {
@@ -793,9 +793,9 @@ TWIG, $avatar_params) . $username;
             'SELECT' => ['entities_id', 'is_recursive'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'users_id'     => (int)$users_id,
-                'profiles_id'  => (int)$profiles_id
-            ]
+                'users_id'     => (int) $users_id,
+                'profiles_id'  => (int) $profiles_id,
+            ],
         ]);
 
         $entities = [];
@@ -834,7 +834,7 @@ TWIG, $avatar_params) . $username;
         $iterator = $DB->request([
             'SELECT' => ['entities_id', 'is_recursive'],
             'FROM'   => 'glpi_profiles_users',
-            'WHERE'  => ['users_id' => (int)$users_id]
+            'WHERE'  => ['users_id' => (int) $users_id],
         ]);
 
         $entities = [];
@@ -864,7 +864,7 @@ TWIG, $avatar_params) . $username;
      **/
     public static function getForUser($user_ID, $only_dynamic = false)
     {
-        $condition = ['users_id' => (int)$user_ID];
+        $condition = ['users_id' => (int) $user_ID];
 
         if ($only_dynamic) {
             $condition['is_dynamic'] = 1;
@@ -887,9 +887,9 @@ TWIG, $avatar_params) . $username;
             'COUNT'  => 'cpt',
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'users_id'     => (int)$user_ID,
-                'profiles_id'  => (int)$profile_id
-            ]
+                'users_id'     => (int) $user_ID,
+                'profiles_id'  => (int) $profile_id,
+            ],
         ])->current();
         return $result['cpt'];
     }
@@ -903,7 +903,7 @@ TWIG, $avatar_params) . $username;
     {
 
         $crit = [
-            'users_id' => (int)$user_ID,
+            'users_id' => (int) $user_ID,
         ];
 
         if ($only_dynamic) {
@@ -921,7 +921,7 @@ TWIG, $avatar_params) . $username;
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -930,7 +930,7 @@ TWIG, $avatar_params) . $username;
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -939,7 +939,7 @@ TWIG, $avatar_params) . $username;
             'field'              => 'is_dynamic',
             'name'               => __('Dynamic'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -948,7 +948,7 @@ TWIG, $avatar_params) . $username;
             'field'              => 'name',
             'name'               => self::getTypeName(1),
             'datatype'           => 'dropdown',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -958,7 +958,7 @@ TWIG, $avatar_params) . $username;
             'name'               => User::getTypeName(1),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $tab[] = [
@@ -967,7 +967,7 @@ TWIG, $avatar_params) . $username;
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => true,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -976,7 +976,7 @@ TWIG, $avatar_params) . $username;
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -998,12 +998,12 @@ TWIG, $avatar_params) . $username;
         );
 
         if (isset($this->fields['is_dynamic']) && $this->fields['is_dynamic']) {
-           //TRANS: D for Dynamic
+            //TRANS: D for Dynamic
             $dyn  = __('D');
             $name = sprintf(__('%1$s, %2$s'), $name, $dyn);
         }
         if (isset($this->fields['is_recursive']) && $this->fields['is_recursive']) {
-           //TRANS: R for Recursive
+            //TRANS: R for Recursive
             $rec  = __('R');
             $name = sprintf(__('%1$s, %2$s'), $name, $rec);
         }
@@ -1028,14 +1028,14 @@ TWIG, $avatar_params) . $username;
                                     User::getTable() => [
                                         'FKEY' => [
                                             $this->getTable() => 'users_id',
-                                            User::getTable()  => 'id'
-                                        ]
-                                    ]
+                                            User::getTable()  => 'id',
+                                        ],
+                                    ],
                                 ],
                                 'WHERE'     => [
                                     User::getTable() . '.is_deleted'    => 0,
-                                    $this->getTable() . '.entities_id'  => $item->getID()
-                                ]
+                                    $this->getTable() . '.entities_id'  => $item->getID(),
+                                ],
                             ])->current();
                             $nb        = $count['cpt'];
                         }
@@ -1046,7 +1046,7 @@ TWIG, $avatar_params) . $username;
                 case Profile::class:
                     if (Session::haveRight('user', READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                              $nb = self::countForItem($item);
+                            $nb = self::countForItem($item);
                         }
                         return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
@@ -1164,8 +1164,8 @@ TWIG, $avatar_params) . $username;
         $params['LEFT JOIN']['glpi_entities'] = [
             'FKEY'   => [
                 self::getTable()  => 'entities_id',
-                'glpi_entities'   => 'id'
-            ]
+                'glpi_entities'   => 'id',
+            ],
         ];
         return $params;
     }
@@ -1192,7 +1192,7 @@ TWIG, $avatar_params) . $username;
                 'SELECT' => 'id',
                 'FROM'   => 'glpi_users',
                 'WHERE'  => ['is_active' => 1, 'is_deleted' => 0],
-            ])
+            ]),
         ]);
         $authorizations_ids = array_column($super_admin_authorizations, 'id');
 
@@ -1223,11 +1223,11 @@ TWIG, $avatar_params) . $username;
         }
 
         $profile_flags = [];
-        if ((bool)$this->fields['is_dynamic']) {
+        if ((bool) $this->fields['is_dynamic']) {
             //TRANS: letter 'D' for Dynamic
             $profile_flags[] = __('D');
         }
-        if ((bool)$this->fields['is_recursive']) {
+        if ((bool) $this->fields['is_recursive']) {
             //TRANS: letter 'D' for Dynamic
             $profile_flags[] = __('R');
         }

@@ -54,7 +54,7 @@ class Domain_Item extends CommonDBRelation
         $temp = new self();
         $temp->deleteByCriteria(
             ['itemtype' => $item->getType(),
-                'items_id' => $item->getField('id')
+                'items_id' => $item->getField('id'),
             ]
         );
     }
@@ -86,7 +86,7 @@ class Domain_Item extends CommonDBRelation
     {
         if ($item::class === Domain::class) {
             self::showForDomain($item);
-        } else if (
+        } elseif (
             $item::class === DomainRelation::class
             || in_array($item::class, Domain::getTypes(true), true)
         ) {
@@ -105,7 +105,7 @@ class Domain_Item extends CommonDBRelation
             'glpi_domains_items',
             [
                 "domains_id"   => $item->getID(),
-                "itemtype"     => $types
+                "itemtype"     => $types,
             ]
         );
     }
@@ -117,7 +117,7 @@ class Domain_Item extends CommonDBRelation
         } else {
             $criteria = [
                 'itemtype'  => $item::class,
-                'items_id'  => $item->fields['id']
+                'items_id'  => $item->fields['id'],
             ];
         }
 
@@ -136,7 +136,7 @@ class Domain_Item extends CommonDBRelation
         } else {
             $criteria += [
                 'itemtype'  => $itemtype,
-                'items_id'  => $items_id
+                'items_id'  => $items_id,
             ];
         }
 
@@ -149,7 +149,7 @@ class Domain_Item extends CommonDBRelation
             'domains_id'         => $values['domains_id'],
             'items_id'           => $values['items_id'],
             'itemtype'           => $values['itemtype'],
-            'domainrelations_id' => $values['domainrelations_id']
+            'domainrelations_id' => $values['domainrelations_id'],
         ]);
     }
 
@@ -185,7 +185,7 @@ class Domain_Item extends CommonDBRelation
             'FROM'      => self::getTable(),
             'WHERE'     => ['domains_id' => $instID],
             'ORDER'     => 'itemtype',
-            'LIMIT'     => count(Domain::getTypes(true))
+            'LIMIT'     => count(Domain::getTypes(true)),
         ]);
 
         if ($canedit) {
@@ -247,29 +247,29 @@ TWIG, $twig_params);
                     "$itemTable.*",
                     'glpi_domains_items.id AS items_id',
                     'glpi_domains_items.domainrelations_id',
-                    'glpi_entities.id AS entity'
+                    'glpi_entities.id AS entity',
                 ],
                 'FROM'   => self::getTable(),
                 'INNER JOIN'   => [
                     $itemTable  => [
                         'ON'  => [
                             $itemTable  => 'id',
-                            self::getTable()  => 'items_id'
-                        ]
-                    ]
+                            self::getTable()  => 'items_id',
+                        ],
+                    ],
                 ],
                 'LEFT JOIN'    => [
                     'glpi_entities'   => [
                         'ON'  => [
                             'glpi_entities'   => 'id',
-                            $itemTable        => 'entities_id'
-                        ]
-                    ]
+                            $itemTable        => 'entities_id',
+                        ],
+                    ],
                 ],
                 'WHERE'        => [
                     self::getTable() . '.itemtype'   => $itemtype,
-                    self::getTable() . '.domains_id' => $instID
-                ] + getEntitiesRestrictCriteria($itemTable, '', '', $item->maybeRecursive())
+                    self::getTable() . '.domains_id' => $instID,
+                ] + getEntitiesRestrictCriteria($itemTable, '', '', $item->maybeRecursive()),
             ];
 
             if ($item->maybeTemplate()) {
@@ -330,7 +330,7 @@ TWIG, $twig_params);
             'nofilter' => true,
             'columns' => $columns,
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -338,7 +338,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
     }
@@ -382,7 +382,7 @@ TWIG, $twig_params);
                 'glpi_domains_items.is_dynamic',
                 'glpi_entities.id AS entity',
                 'glpi_domains.name AS assocName',
-                'glpi_domains.*'
+                'glpi_domains.*',
 
             ],
             'FROM'      => self::getTable(),
@@ -390,18 +390,18 @@ TWIG, $twig_params);
                 Domain::getTable()   => [
                     'ON'  => [
                         Domain::getTable()   => 'id',
-                        self::getTable()     => 'domains_id'
-                    ]
+                        self::getTable()     => 'domains_id',
+                    ],
                 ],
                 Entity::getTable()   => [
                     'ON'  => [
                         Domain::getTable()   => 'entities_id',
-                        Entity::getTable()   => 'id'
-                    ]
-                ]
+                        Entity::getTable()   => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [],//to be filled
-            'ORDER'     => 'assocName'
+            'ORDER'     => 'assocName',
         ];
 
         if ($item instanceof DomainRelation) {
@@ -409,7 +409,7 @@ TWIG, $twig_params);
         } else {
             $criteria['WHERE'] = [
                 'glpi_domains_items.itemtype' => $item->getType(),
-                'glpi_domains_items.items_id' => $ID
+                'glpi_domains_items.items_id' => $ID,
             ];
         }
         $criteria['WHERE'] += getEntitiesRestrictCriteria(Domain::getTable(), '', '', true);
@@ -421,10 +421,10 @@ TWIG, $twig_params);
             'OR'  => [
                 'AND' => [
                     "glpi_domains_items.is_deleted" => 0,
-                    "glpi_domains_items.is_dynamic" => 1
+                    "glpi_domains_items.is_dynamic" => 1,
                 ],
-                "glpi_domains_items.is_dynamic" => 0
-            ]
+                "glpi_domains_items.is_dynamic" => 0,
+            ],
         ];
 
         $iterator = $DB->request($criteria);
@@ -463,7 +463,7 @@ TWIG, $twig_params);
             $domain_iterator = $DB->request([
                 'COUNT'  => 'cpt',
                 'FROM'   => Domain::getTable(),
-                'WHERE'  => ['is_deleted' => 0] + getEntitiesRestrictCriteria(Domain::getTable(), '', $entities, true)
+                'WHERE'  => ['is_deleted' => 0] + getEntitiesRestrictCriteria(Domain::getTable(), '', $entities, true),
             ]);
             $result = $domain_iterator->current();
             $nb     = $result['cpt'];
@@ -554,7 +554,7 @@ TWIG, $twig_params);
                 && $data["date_expiration"] <= date('Y-m-d')
             ) {
                 $expiration = "<span class='table-deleted'>{$expiration}</span>";
-            } else if (empty($data["date_expiration"])) {
+            } elseif (empty($data["date_expiration"])) {
                 $expiration = __s('Does not expire');
             }
 
@@ -570,7 +570,7 @@ TWIG, $twig_params);
                 'domainrelations_id' => $relation_names[$data['domainrelations_id']] ?? '',
                 'date_creation' => $data["date_creation"],
                 'date_expiration' => $expiration,
-                'is_dynamic' => Dropdown::getYesNo($data['is_dynamic'])
+                'is_dynamic' => Dropdown::getYesNo($data['is_dynamic']),
             ];
         }
 
@@ -610,7 +610,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit && ($withtemplate < 2),
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
     }

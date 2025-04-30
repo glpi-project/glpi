@@ -144,10 +144,10 @@ class HasContractsCapacityTest extends DbTestCase
         ]);
 
         // Create some contracts that are ready to be assigned to our item
-        list(
+        [
             $contract1,
             $contract2
-        ) = $this->createItems(Contract::class, [
+        ] = $this->createItems(Contract::class, [
             ['name' => 'Contract 1', 'entities_id' => $entity],
             ['name' => 'Contract 2', 'entities_id' => $entity],
         ]);
@@ -197,7 +197,7 @@ class HasContractsCapacityTest extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [
                 new Capacity(name: $this->getTargetCapacity()),
-                new Capacity(name: HasHistoryCapacity::class)
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $class = $definition->getAssetClassName();
@@ -366,7 +366,7 @@ class HasContractsCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Contract::class,
-            'relation_classname' => Contract_Item::class
+            'relation_classname' => Contract_Item::class,
         ];
     }
 
@@ -375,7 +375,7 @@ class HasContractsCapacityTest extends DbTestCase
         yield [
             'target_classname' => Contract::class,
             'relation_classname' => Contract_Item::class,
-            'expected' => '%d contracts attached to %d assets'
+            'expected' => '%d contracts attached to %d assets',
         ];
     }
 }

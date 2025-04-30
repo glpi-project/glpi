@@ -45,7 +45,7 @@ $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 // Add assignable assets rights
 $assignable_asset_rights = [
     'computer', 'monitor', 'software', 'networking', 'printer',
-    'cartridge', 'consumable', 'phone', 'peripheral'
+    'cartridge', 'consumable', 'phone', 'peripheral',
 ];
 foreach ($assignable_asset_rights as $rightname) {
     $migration->addRight($rightname, READ_ASSIGNED, [$rightname => READ]);
@@ -57,99 +57,99 @@ foreach ($assignable_asset_rights as $rightname) {
 $assignable_itemtypes = [
     'Appliance' => [
         'table' => 'glpi_appliances',
-        'rightname' => 'appliance'
+        'rightname' => 'appliance',
     ],
     'Cable' => [
         'table' => 'glpi_cables',
-        'rightname' => 'cable_management'
+        'rightname' => 'cable_management',
     ],
     'CartridgeItem' => [
         'table' => 'glpi_cartridgeitems',
-        'rightname' => 'cartridge'
+        'rightname' => 'cartridge',
     ],
     'Certificate' => [
         'table' => 'glpi_certificates',
-        'rightname' => 'certificate'
+        'rightname' => 'certificate',
     ],
     'Cluster' => [
         'table' => 'glpi_clusters',
-        'rightname' => 'cluster'
+        'rightname' => 'cluster',
     ],
     'Computer' => [
         'table' => 'glpi_computers',
-        'rightname' => 'computer'
+        'rightname' => 'computer',
     ],
     'ConsumableItem' => [
         'table' => 'glpi_consumableitems',
-        'rightname' => 'consumable'
+        'rightname' => 'consumable',
     ],
     'DatabaseInstance' => [
         'table' => 'glpi_databaseinstances',
-        'rightname' => 'databaseinstance'
+        'rightname' => 'databaseinstance',
     ],
     'Domain' => [
         'table' => 'glpi_domains',
-        'rightname' => 'domain'
+        'rightname' => 'domain',
     ],
     'DomainRecord' => [
         'table' => 'glpi_domainrecords',
-        'rightname' => 'domain'
+        'rightname' => 'domain',
     ],
     'Enclosure' => [
         'table' => 'glpi_enclosures',
-        'rightname' => 'datacenter'
+        'rightname' => 'datacenter',
     ],
     'Item_DeviceSimcard' => [
         'table' => 'glpi_items_devicesimcards',
-        'rightname' => 'device'
+        'rightname' => 'device',
     ],
     'Line' => [
         'table' => 'glpi_lines',
-        'rightname' => 'line'
+        'rightname' => 'line',
     ],
     'Monitor' => [
         'table' => 'glpi_monitors',
-        'rightname' => 'monitor'
+        'rightname' => 'monitor',
     ],
     'NetworkEquipment' => [
         'table' => 'glpi_networkequipments',
-        'rightname' => 'networking'
+        'rightname' => 'networking',
     ],
     'PassiveDCEquipment' => [
         'table' => 'glpi_passivedcequipments',
-        'rightname' => 'datacenter'
+        'rightname' => 'datacenter',
     ],
     'PDU' => [
         'table' => 'glpi_pdus',
-        'rightname' => 'datacenter'
+        'rightname' => 'datacenter',
     ],
     'Peripheral' => [
         'table' => 'glpi_peripherals',
-        'rightname' => 'peripheral'
+        'rightname' => 'peripheral',
     ],
     'Phone' => [
         'table' => 'glpi_phones',
-        'rightname' => 'phone'
+        'rightname' => 'phone',
     ],
     'Printer' => [
         'table' => 'glpi_printers',
-        'rightname' => 'printer'
+        'rightname' => 'printer',
     ],
     'Rack' => [
         'table' => 'glpi_racks',
-        'rightname' => 'datacenter'
+        'rightname' => 'datacenter',
     ],
     'Software' => [
         'table' => 'glpi_softwares',
-        'rightname' => 'software'
+        'rightname' => 'software',
     ],
     'SoftwareLicense' => [
         'table' => 'glpi_softwarelicenses',
-        'rightname' => 'license'
+        'rightname' => 'license',
     ],
     'Unmanaged' => [
         'table' => 'glpi_unmanageds',
-        'rightname' => 'unmanaged'
+        'rightname' => 'unmanaged',
     ],
 ];
 
@@ -201,8 +201,8 @@ foreach ($assignable_itemtypes as $itemtype => $specs) {
             ],
             'FROM'   => $itemtype_table,
             'WHERE'  => [
-                'groups_id' => ['>', 0]
-            ]
+                'groups_id' => ['>', 0],
+            ],
         ]));
     }
     if ($DB->fieldExists($itemtype_table, 'groups_id_tech')) {
@@ -216,8 +216,8 @@ foreach ($assignable_itemtypes as $itemtype => $specs) {
             ],
             'FROM'   => $itemtype_table,
             'WHERE'  => [
-                'groups_id_tech' => ['>', 0]
-            ]
+                'groups_id_tech' => ['>', 0],
+            ],
         ]));
     }
 

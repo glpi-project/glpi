@@ -45,8 +45,7 @@ class ProgressController extends AbstractController
 {
     public function __construct(
         private readonly ProgressStorage $progress_storage,
-    ) {
-    }
+    ) {}
 
     #[Route("/progress/check/{key}", methods: 'GET')]
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]

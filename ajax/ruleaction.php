@@ -52,7 +52,7 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
         return;
     }
 
-   // Existing action
+    // Existing action
     if ($_POST['ruleactions_id'] > 0) {
         $already_used = false;
     } else { // New action
@@ -70,7 +70,7 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
         'name'        => "action_type",
         'field'       => $_POST["field"],
         'value'       => $action_type,
-        'alreadyused' => $already_used
+        'alreadyused' => $already_used,
     ]);
 
     echo "<span id='action_type_span$randaction' class='d-inline-block'></span>";
@@ -78,7 +78,7 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
     $paramsaction = ['action_type'                   => '__VALUE__',
         'field'                         => $_POST["field"],
         'sub_type'                      => $_POST["sub_type"],
-        $item->getForeignKeyField()     => $_POST[$item->getForeignKeyField()]
+        $item->getForeignKeyField()     => $_POST[$item->getForeignKeyField()],
     ];
 
     Ajax::updateItemOnSelectEvent(

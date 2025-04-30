@@ -41,7 +41,6 @@ use ImpactCompound;
 use ImpactItem;
 use ImpactRelation;
 use Item_Ticket;
-use Plugin;
 use Ticket;
 
 class ImpactTest extends \DbTestCase
@@ -334,25 +333,25 @@ class ImpactTest extends \DbTestCase
                 'OR' => [
                     [
                         'itemtype_source' => get_class($computer2),
-                        'items_id_source' => $computer2->fields['id']
+                        'items_id_source' => $computer2->fields['id'],
                     ],
                     [
                         'itemtype_impacted' => get_class($computer2),
-                        'items_id_impacted' => $computer2->fields['id']
+                        'items_id_impacted' => $computer2->fields['id'],
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
         $impact_item_computer2_query = [
             'FROM'   => \ImpactItem::getTable(),
             'WHERE'  => [
                 'itemtype' => get_class($computer2),
                 'items_id' => $computer2->fields['id'],
-            ]
+            ],
         ];
         $compound01_members_query = [
             'FROM' => \ImpactItem::getTable(),
-            'WHERE' => ["parent_id" => $compound01_id]
+            'WHERE' => ["parent_id" => $compound01_id],
         ];
 
         // Before deletion
@@ -401,7 +400,7 @@ class ImpactTest extends \DbTestCase
 
     private $graph = [
         'nodes' => [],
-        'edges' => []
+        'edges' => [],
     ];
 
     protected function bfsProvider()

@@ -113,7 +113,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[0]->getID(),
-                ]
+                ],
             ],
             expected_associated_items: [
                 Computer::getType() => [
@@ -175,7 +175,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[1]->getID(),
-                ]
+                ],
             ],
             expected_associated_items: [
                 Computer::getType() => [
@@ -233,7 +233,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[1]->getID(),
-                ]
+                ],
             ],
             expected_associated_items: [
                 Computer::getType() => [
@@ -256,7 +256,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 "Your Monitors" => [
                     'Monitor_' . $monitors[0]->getID(),
                     'Monitor_' . $monitors[1]->getID(),
-                ]
+                ],
             ],
             expected_associated_items: [
                 Monitor::getType() => [
@@ -330,7 +330,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[1]->getID(),
-                ]
+                ],
             ],
             expected_associated_items: [
                 Computer::getType() => [
@@ -362,7 +362,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[0]->getID(),
-                ]
+                ],
             ],
             expected_associated_items: [
                 Computer::getType() => [
@@ -395,7 +395,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             config: new AssociatedItemsFieldConfig(
                 strategies: [
                     AssociatedItemsFieldStrategy::SPECIFIC_VALUES,
-                    AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS
+                    AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS,
                 ],
                 specific_associated_items: [
                     Computer::getType() => [
@@ -438,24 +438,24 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             'fields_to_set' => [
                 'associate_rule' => 1, // PluginFormcreatorAbstractItilTarget::ASSOCIATE_RULE_NONE
             ],
-            'field_config' => fn ($migration, $form) => (new AssociatedItemsField())->getDefaultConfig($form)
+            'field_config' => fn($migration, $form) => (new AssociatedItemsField())->getDefaultConfig($form),
         ];
 
         yield 'Equals to the answer to the question' => [
             'field_key'     => AssociatedItemsField::getKey(),
             'fields_to_set' => [
                 'associate_rule'     => 3, // PluginFormcreatorAbstractItilTarget::ASSOCIATE_RULE_ANSWER
-                'associate_question' => 74
+                'associate_question' => 74,
             ],
-            'field_config' => fn ($migration, $form) => new AssociatedItemsFieldConfig(
+            'field_config' => fn($migration, $form) => new AssociatedItemsFieldConfig(
                 strategies: [AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     $migration->getMappedItemTarget(
                         'PluginFormcreatorQuestion',
                         74
-                    )['items_id'] ?? throw new \Exception("Question not found")
+                    )['items_id'] ?? throw new \Exception("Question not found"),
                 ]
-            )
+            ),
         ];
 
         yield 'Last valid answer' => [
@@ -465,7 +465,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             ],
             'field_config' => new AssociatedItemsFieldConfig(
                 strategies: [AssociatedItemsFieldStrategy::LAST_VALID_ANSWER]
-            )
+            ),
         ];
     }
 
@@ -475,7 +475,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
         global $DB;
         $computer_id = (new Computer())->add([
             'name'        => 'Test Computer for associated items',
-            'entities_id' => $this->getTestRootEntity(true)
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
         $DB->insert(
             'glpi_plugin_formcreator_items_targettickets',
@@ -489,7 +489,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
         );
         $monitor_id = (new Monitor())->add([
             'name'        => 'Test Monitor for associated items',
-            'entities_id' => $this->getTestRootEntity(true)
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
         $DB->insert(
             'glpi_plugin_formcreator_items_targettickets',
@@ -532,7 +532,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
         // Create a computer
         $computer = $this->createItem(Computer::class, [
             'name' => "Computer",
-            'entities_id' => $this->getTestRootEntity(true)
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Create a form
@@ -549,14 +549,14 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                         'specific_associated_items' => [
                             'itemtype' => [
                                 \Computer::getType(),
-                                '0'
+                                '0',
                             ],
                             'items_id' => [
                                 $computer->getID(),
-                            ]
+                            ],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             ["config"],
         );

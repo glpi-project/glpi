@@ -40,7 +40,6 @@ use Glpi\Form\Condition\Type;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
-use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
 use Override;
@@ -92,7 +91,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
                 'item_type'      => Type::QUESTION,
                 'value_operator' => ValueOperator::EQUALS,
                 'value'          => "show",
-            ]
+            ],
         ]);
 
         // Third question: visible if Question 2 is visible
@@ -104,7 +103,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
                 'item_type'      => Type::QUESTION,
                 'value_operator' => ValueOperator::VISIBLE,
                 'value'          => null,
-            ]
+            ],
         ]);
 
         // Fourth question: visible if Question 2 is NOT visible
@@ -116,14 +115,14 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
                 'item_type'      => Type::QUESTION,
                 'value_operator' => ValueOperator::NOT_VISIBLE,
                 'value'          => null,
-            ]
+            ],
         ]);
 
         $form = $this->createForm($form);
 
         // Scenario 1: Question 1 = "show" -> Question 2 visible -> Question 3 visible, Question 4 not visible
         $input1 = $this->mapInput($form, [
-            'answers' => ['Question 1' => "show"]
+            'answers' => ['Question 1' => "show"],
         ]);
 
         $engine = new Engine($form, $input1);
@@ -141,7 +140,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
 
         // Scenario 2: Question 1 = "hide" -> Question 2 not visible -> Question 3 not visible, Question 4 visible
         $input2 = $this->mapInput($form, [
-            'answers' => ['Question 1' => "hide"]
+            'answers' => ['Question 1' => "hide"],
         ]);
 
         $engine = new Engine($form, $input2);
@@ -176,7 +175,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
                 'item_type'      => Type::QUESTION,
                 'value_operator' => ValueOperator::EQUALS,
                 'value'          => "show",
-            ]
+            ],
         ]);
 
         // Third comment: visible if Comment 2 is visible
@@ -188,7 +187,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
                 'item_type'      => Type::COMMENT,
                 'value_operator' => ValueOperator::VISIBLE,
                 'value'          => null,
-            ]
+            ],
         ]);
 
         // Fourth comment: visible if Comment 2 is NOT visible
@@ -200,7 +199,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
                 'item_type'      => Type::COMMENT,
                 'value_operator' => ValueOperator::NOT_VISIBLE,
                 'value'          => null,
-            ]
+            ],
         ]);
 
         $form = $this->createForm($form);
@@ -217,7 +216,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
 
         // Scenario 1: Question 1 = "show" -> Comment 2 visible -> Comment 3 visible, Comment 4 not visible
         $input1 = $this->mapInput($form, [
-            'answers' => ['Question 1' => "show"]
+            'answers' => ['Question 1' => "show"],
         ]);
 
         $engine = new Engine($form, $input1);
@@ -235,7 +234,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
 
         // Scenario 2: Question 1 = "hide" -> Comment 2 not visible -> Comment 3 not visible, Comment 4 visible
         $input2 = $this->mapInput($form, [
-            'answers' => ['Question 1' => "hide"]
+            'answers' => ['Question 1' => "hide"],
         ]);
 
         $engine = new Engine($form, $input2);
@@ -270,7 +269,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
                 'item_type'      => Type::QUESTION,
                 'value_operator' => ValueOperator::EQUALS,
                 'value'          => "show",
-            ]
+            ],
         ]);
 
         // Third section: visible if Section 2 is visible
@@ -282,7 +281,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
                 'item_type'      => Type::SECTION,
                 'value_operator' => ValueOperator::VISIBLE,
                 'value'          => null,
-            ]
+            ],
         ]);
 
         // Fourth section: visible if Section 2 is NOT visible
@@ -294,7 +293,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
                 'item_type'      => Type::SECTION,
                 'value_operator' => ValueOperator::NOT_VISIBLE,
                 'value'          => null,
-            ]
+            ],
         ]);
 
         $form = $this->createForm($form);
@@ -311,7 +310,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
 
         // Scenario 1: Question 1 = "show" -> Section 2 visible -> Section 3 visible, Section 4 not visible
         $input1 = $this->mapInput($form, [
-            'answers' => ['Question 1' => "show"]
+            'answers' => ['Question 1' => "show"],
         ]);
 
         $engine = new Engine($form, $input1);
@@ -329,7 +328,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
 
         // Scenario 2: Question 1 = "hide" -> Section 2 not visible -> Section 3 not visible, Section 4 visible
         $input2 = $this->mapInput($form, [
-            'answers' => ['Question 1' => "hide"]
+            'answers' => ['Question 1' => "hide"],
         ]);
 
         $engine = new Engine($form, $input2);

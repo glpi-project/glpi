@@ -45,8 +45,7 @@ final class QuestionTypeItemExtraDataConfig implements JsonFieldInterface
 
     public function __construct(
         private ?string $itemtype = null,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

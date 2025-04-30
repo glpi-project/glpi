@@ -171,7 +171,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                     'name',
                     'comment',
                     'date_mod',
-                    'date_creation'
+                    'date_creation',
                 ];
 
                 if (!$this->db->tableExists($item_table)) {
@@ -204,7 +204,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         'name',
                         'comment',
                         'date_mod',
-                        'date_creation'
+                        'date_creation',
                     ];
                 }
             }
@@ -551,7 +551,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         'field' => 'itemtype',
                         'from'  => $plugin_itemtype,
                         'to'    => $asset_definition->getAssetClassName(),
-                    ]
+                    ],
                 ]
             );
 

@@ -152,7 +152,7 @@ final class DefaultDataManagerTest extends DbTestCase
                 'name' => 'Test Monitor 2',
                 'users_id' => Session::getLoginUserID(),
                 'entities_id' => $this->getTestRootEntity(true),
-            ]
+            ],
         ]);
 
         // Fetch test users
@@ -180,7 +180,7 @@ final class DefaultDataManagerTest extends DbTestCase
                 Computer::class . '_' . $computer->getID(),
                 Monitor::class . '_' . $monitors[0]->getID(),
                 Monitor::class . '_' . $monitors[1]->getID(),
-            ]
+            ],
         ]);
 
         // Assert: check the created ticket properties
@@ -246,7 +246,7 @@ final class DefaultDataManagerTest extends DbTestCase
                 'name' => 'Test Monitor 2',
                 'users_id' => Session::getLoginUserID(),
                 'entities_id' => $this->getTestRootEntity(true),
-            ]
+            ],
         ]);
 
         // Fetch test users
@@ -274,7 +274,7 @@ final class DefaultDataManagerTest extends DbTestCase
                 Computer::class . '_' . $computer->getID(),
                 Monitor::class . '_' . $monitors[0]->getID(),
                 Monitor::class . '_' . $monitors[1]->getID(),
-            ]
+            ],
         ]);
 
         // Assert: check the created ticket properties

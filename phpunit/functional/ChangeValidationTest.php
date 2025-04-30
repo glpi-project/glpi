@@ -38,6 +38,4 @@ namespace tests\units;
 
 use Glpi\PHPUnit\Tests\CommonITILValidation;
 
-class ChangeValidationTest extends CommonITILValidation
-{
-}
+class ChangeValidationTest extends CommonITILValidation {}

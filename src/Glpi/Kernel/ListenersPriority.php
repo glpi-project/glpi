@@ -103,7 +103,5 @@ final class ListenersPriority
         RequestListener\SessionVariables::class            => 0,
     ];
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 }

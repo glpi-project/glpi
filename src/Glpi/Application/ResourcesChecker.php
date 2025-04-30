@@ -37,9 +37,7 @@ namespace Glpi\Application;
 
 final class ResourcesChecker
 {
-    public function __construct(private string $root_dir)
-    {
-    }
+    public function __construct(private string $root_dir) {}
 
     /**
      * Check that all required resources are up-to-date.
@@ -71,10 +69,10 @@ final class ResourcesChecker
         $autoload = $this->root_dir . '/vendor/autoload.php';
         if (!file_exists($autoload)) {
             return false;
-        } else if (file_exists($this->root_dir . '/composer.lock')) {
+        } elseif (file_exists($this->root_dir . '/composer.lock')) {
             if (!file_exists($this->root_dir . '/.composer.hash')) {
                 return false;
-            } else if (sha1_file($this->root_dir . '/composer.lock') != file_get_contents($this->root_dir . '/.composer.hash')) {
+            } elseif (sha1_file($this->root_dir . '/composer.lock') != file_get_contents($this->root_dir . '/.composer.hash')) {
                 return false;
             }
         }
@@ -82,10 +80,10 @@ final class ResourcesChecker
         // Check node dependencies
         if (!file_exists($this->root_dir . '/public/lib')) {
             return false;
-        } else if (file_exists($this->root_dir . '/package-lock.json')) {
+        } elseif (file_exists($this->root_dir . '/package-lock.json')) {
             if (!file_exists($this->root_dir . '/.package.hash')) {
                 return false;
-            } else if (sha1_file($this->root_dir . '/package-lock.json') != file_get_contents($this->root_dir . '/.package.hash')) {
+            } elseif (sha1_file($this->root_dir . '/package-lock.json') != file_get_contents($this->root_dir . '/.package.hash')) {
                 return false;
             }
         }
@@ -103,7 +101,7 @@ final class ResourcesChecker
         $mo_files = preg_grep('/\.mo$/', $locales_files);
         if (count($mo_files) < count($po_files)) {
             return false;
-        } else if (file_exists($this->root_dir . '/locales/glpi.pot')) {
+        } elseif (file_exists($this->root_dir . '/locales/glpi.pot')) {
             // Assume that `locales/glpi.pot` file only exists when installation mode is GIT
             foreach ($po_files as $po_file) {
                 $po_file = $this->root_dir . '/locales/' . $po_file;

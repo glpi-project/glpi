@@ -37,9 +37,6 @@ namespace Glpi\Api\HL\Middleware;
 
 use CommonDBTM;
 use Glpi\Api\HL\Controller\AbstractController;
-use Glpi\Api\HL\RoutePath;
-use Glpi\Http\Request;
-use Glpi\Http\Response;
 
 class CRUDRequestMiddleware extends AbstractMiddleware implements RequestMiddlewareInterface
 {

@@ -56,7 +56,7 @@ class ThemeTest extends DbTestCase
             'my_theme.scss' => '',
             'my_dark_theme.scss' => <<<SCSS
 \$is-dark: true;
-SCSS
+SCSS,
         ]);
         $theme_manager = $this->getMockBuilder(ThemeManager::class)
             ->onlyMethods(['getCustomThemesDirectory'])

@@ -79,8 +79,8 @@ try {
     ErrorHandler::logCaughtException($e);
 }
 if (!($messages instanceof \Laminas\I18n\Translator\TextDomain)) {
-   // No TextDomain found means that there is no translations for given domain.
-   // It is mostly related to plugins that does not provide any translations.
+    // No TextDomain found means that there is no translations for given domain.
+    // It is mostly related to plugins that does not provide any translations.
     echo $default_response;
     return;
 }

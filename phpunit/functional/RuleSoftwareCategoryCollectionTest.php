@@ -46,20 +46,20 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
 
         $collection = new \RuleSoftwareCategoryCollection();
 
-       //Only process name
+        //Only process name
         $input = ['name' => 'Software'];
         $params = $collection->prepareInputDataForProcess([], $input);
         $this->assertSame($params, $input);
 
-       //Process name + comment
+        //Process name + comment
         $input = ['name' => 'Software', 'comment' => 'Comment'];
         $params = $collection->prepareInputDataForProcess([], $input);
         $this->assertSame($params, $input);
 
-       //Process also manufacturer
+        //Process also manufacturer
         $input = ['name'             => 'Software',
             'comment'          => 'Comment',
-            'manufacturers_id' => 1
+            'manufacturers_id' => 1,
         ];
         $params = $collection->prepareInputDataForProcess([], $input);
         $this->assertSame('My Manufacturer', $params['manufacturer']);
@@ -71,10 +71,10 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
 
         $categoryCollection = new \RuleSoftwareCategoryCollection();
 
-       //Default rule is disabled : no rule should match
+        //Default rule is disabled : no rule should match
         $input = ['name'             => 'MySoft',
             'manufacturer'     => 'My Manufacturer',
-            '_system_category' => 'dev'
+            '_system_category' => 'dev',
         ];
         $result = $categoryCollection->processAllRules(null, null, $input);
         $this->assertSame(["_no_rule_matches" => true], $result);
@@ -90,7 +90,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         //Default rule is disabled : no rule should match
         $input = ['name'             => 'MySoft',
             'manufacturer'     => 'My Manufacturer',
-            '_system_category' => 'dev'
+            '_system_category' => 'dev',
         ];
 
         $rules = getAllDataFromTable(
@@ -102,7 +102,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         $myrule = current($rules);
         $rule->update(['id' => $myrule['id'], 'is_active' => 1]);
 
-       //Force reload of the rules list
+        //Force reload of the rules list
         $categoryCollection->RuleList = new \stdClass();
         $categoryCollection->RuleList->load = true;
 
@@ -111,7 +111,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         $this->assertSame(
             [
                 "_import_category" => '1',
-                "_ruleid"          => $myrule['id']
+                "_ruleid"          => $myrule['id'],
             ],
             $result
         );
@@ -126,18 +126,18 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
 
         $categoryCollection = new \RuleSoftwareCategoryCollection();
 
-       //Default rule is disabled : no rule should match
+        //Default rule is disabled : no rule should match
         $input = ['name'             => 'MySoft',
             'manufacturer'     => 'My Manufacturer',
-            '_system_category' => 'dev'
+            '_system_category' => 'dev',
         ];
 
-       //Let's enable the rule
+        //Let's enable the rule
         $rule     = new \Rule();
         $criteria = new \RuleCriteria();
         $action   = new \RuleAction();
 
-       //Force reload of the rules list
+        //Force reload of the rules list
         $categoryCollection->RuleList = new \stdClass();
         $categoryCollection->RuleList->load = true;
 
@@ -151,7 +151,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
             'sub_type'    => 'RuleSoftwareCategory',
             'match'       => \Rule::AND_MATCHING,
             'condition'   => 0,
-            'description' => ''
+            'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
@@ -161,7 +161,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
                 'rules_id'  => $rules_id,
                 'criteria'  => 'name',
                 'condition' => \Rule::PATTERN_IS,
-                'pattern'   => 'MySoft'
+                'pattern'   => 'MySoft',
             ])
         );
 
@@ -171,7 +171,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
                 'rules_id'    => $rules_id,
                 'action_type' => 'assign',
                 'field'       => 'softwarecategories_id',
-                'value'       => $categories_id
+                'value'       => $categories_id,
             ])
         );
 
@@ -185,7 +185,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         $this->assertSame(
             [
                 "softwarecategories_id" => "$categories_id",
-                "_ruleid"               => $rules_id
+                "_ruleid"               => $rules_id,
             ],
             $result
         );
@@ -197,12 +197,12 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
 
         $categoryCollection = new \RuleSoftwareCategoryCollection();
 
-       //Let's enable the rule
+        //Let's enable the rule
         $rule     = new \Rule();
         $criteria = new \RuleCriteria();
         $action   = new \RuleAction();
 
-       //Force reload of the rules list
+        //Force reload of the rules list
         $categoryCollection->RuleList = new \stdClass();
         $categoryCollection->RuleList->load = true;
 
@@ -212,7 +212,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
             'sub_type'    => 'RuleSoftwareCategory',
             'match'       => \Rule::AND_MATCHING,
             'condition'   => 0,
-            'description' => ''
+            'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
@@ -222,7 +222,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
                 'rules_id'  => $rules_id,
                 'criteria'  => '_system_category',
                 'condition' => \Rule::PATTERN_IS,
-                'pattern'   => 'dev'
+                'pattern'   => 'dev',
             ])
         );
 
@@ -232,7 +232,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
                 'rules_id'    => $rules_id,
                 'action_type' => 'assign',
                 'field'       => '_ignore_import',
-                'value'       => '1'
+                'value'       => '1',
             ])
         );
 
@@ -258,7 +258,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
 
         $input = ['name'             => 'fusioninventory-agent',
             'manufacturer'     => 'Teclib',
-            '_system_category' => 'dev'
+            '_system_category' => 'dev',
         ];
 
         //Test that a software category can be ignored
@@ -266,7 +266,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         $this->assertSame(
             [
                 "_ignore_import" => '1',
-                "_ruleid"        => $rules_id
+                "_ruleid"        => $rules_id,
             ],
             $result
         );

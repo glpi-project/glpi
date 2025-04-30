@@ -54,7 +54,7 @@ abstract class StatData
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Set up link to the download as csv page with the same parameters
+        // Set up link to the download as csv page with the same parameters
         if (count($params)) {
             $base_link = $CFG_GLPI['root_doc'] . '/front/graph.send.php?';
             $params['statdata_itemtype'] = static::class;

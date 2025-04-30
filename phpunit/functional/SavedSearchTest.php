@@ -36,8 +36,6 @@ namespace tests\units;
 
 use DbTestCase;
 
-use function PHPUnit\Framework\assertContains;
-
 /* Test for inc/savedsearch.class.php */
 
 class SavedSearchTest extends DbTestCase
@@ -62,7 +60,7 @@ class SavedSearchTest extends DbTestCase
         $test_child_1 = getItemByTypeName('Entity', '_test_child_1', true);
         $test_child_2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-       //first, as a super-admin
+        //first, as a super-admin
         $this->login();
         $this->assertSame('', \SavedSearch::addVisibilityRestrict());
 
@@ -79,7 +77,7 @@ class SavedSearchTest extends DbTestCase
             ['rights' => 1],
             [
                 'profiles_id'  => 2,
-                'name'         => 'bookmark_public'
+                'name'         => 'bookmark_public',
             ]
         );
 
@@ -115,7 +113,7 @@ class SavedSearchTest extends DbTestCase
         // now add a bookmark on Ticket view
         $bk = new \SavedSearch();
         $this->assertTrue(
-            (bool)$bk->add([
+            (bool) $bk->add([
                 'name'         => 'public root recursive',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
@@ -123,11 +121,11 @@ class SavedSearchTest extends DbTestCase
                 'is_private'   => 0,
                 'entities_id'  => $root_entity_id,
                 'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
             ])
         );
         $this->assertTrue(
-            (bool)$bk->add([
+            (bool) $bk->add([
                 'name'         => 'public root NOT recursive',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
@@ -135,11 +133,11 @@ class SavedSearchTest extends DbTestCase
                 'is_private'   => 0,
                 'entities_id'  => $root_entity_id,
                 'is_recursive' => 0,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
             ])
         );
         $this->assertTrue(
-            (bool)$bk->add([
+            (bool) $bk->add([
                 'name'         => 'public child 1 recursive',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
@@ -147,12 +145,12 @@ class SavedSearchTest extends DbTestCase
                 'is_private'   => 0,
                 'entities_id'  => $child_entity_id,
                 'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
             ])
         );
 
         $this->assertTrue(
-            (bool)$bk->add([
+            (bool) $bk->add([
                 'name'         => 'private TU_USER',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
@@ -160,12 +158,12 @@ class SavedSearchTest extends DbTestCase
                 'is_private'   => 1,
                 'entities_id'  => 0,
                 'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
             ])
         );
 
         $this->assertTrue(
-            (bool)$bk->add([
+            (bool) $bk->add([
                 'name'         => 'private normal user',
                 'type'         => 1,
                 'itemtype'     => 'Ticket',
@@ -173,7 +171,7 @@ class SavedSearchTest extends DbTestCase
                 'is_private'   => 1,
                 'entities_id'  => 0,
                 'is_recursive' => 1,
-                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id
+                'url'          => 'front/ticket.php?itemtype=Ticket&sort=2&order=DESC&start=0&criteria[0][field]=5&criteria[0][searchtype]=equals&criteria[0][value]=' . $tuuser_id,
             ])
         );
         // With UPDATE 'config' right, we still shouldn't see other user's private searches
@@ -212,7 +210,7 @@ class SavedSearchTest extends DbTestCase
             ['rights' => 1],
             [
                 'profiles_id'  => 2,
-                'name'         => 'bookmark_public'
+                'name'         => 'bookmark_public',
             ]
         );
         $this->login('normal', 'normal'); // ACLs have changed: login again.

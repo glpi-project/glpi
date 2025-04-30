@@ -62,8 +62,8 @@ class PurgeSoftwareTask
                             'FROM'   => SoftwareVersion::getTable(),
                         ]
                     ),
-                ]
-            ]
+                ],
+            ],
         ];
     }
 

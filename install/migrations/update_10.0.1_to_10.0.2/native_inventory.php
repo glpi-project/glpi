@@ -41,6 +41,6 @@ $migration->addCrontask(
     'Cleanoldagents',
     DAY_TIMESTAMP,
     options: [
-        'comment' => 'Clean old agents'
+        'comment' => 'Clean old agents',
     ]
 );

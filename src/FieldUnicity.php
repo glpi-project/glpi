@@ -40,7 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class FieldUnicity extends CommonDropdown
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory          = true;
 
     public $can_be_translated  = false;
@@ -74,28 +74,28 @@ class FieldUnicity extends CommonDropdown
             [
                 'name'  => 'is_active',
                 'label' => __('Active'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
             [
                 'name'  => 'itemtype',
                 'label' => _n('Type', 'Types', 1),
-                'type'  => 'unicity_itemtype'
+                'type'  => 'unicity_itemtype',
             ],
             [
                 'name'  => 'fields',
                 'label' => __('Unique fields'),
-                'type'  => 'unicity_fields'
+                'type'  => 'unicity_fields',
             ],
             [
                 'name'  => 'action_refuse',
                 'label' => __('Record into the database denied'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
             [
                 'name'  => 'action_notify',
                 'label' => __('Send a notification'),
-                'type'  => 'bool'
-            ]
+                'type'  => 'bool',
+            ],
         ];
     }
 
@@ -153,7 +153,7 @@ class FieldUnicity extends CommonDropdown
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       //Criteria already added : only display the selected itemtype
+        //Criteria already added : only display the selected itemtype
         if ($ID > 0) {
             if ($item = getItemForItemtype($this->fields['itemtype'])) {
                 echo $item::getTypeName();
@@ -161,7 +161,7 @@ class FieldUnicity extends CommonDropdown
             echo "<input type='hidden' name='itemtype' value='" . htmlescape($this->fields['itemtype']) . "'>";
         } else {
             $options = [];
-           //Add criteria : display dropdown
+            //Add criteria : display dropdown
             foreach ($CFG_GLPI['unicity_types'] as $itemtype) {
                 if ($item = getItemForItemtype($itemtype)) {
                     if ($item::canCreate()) {
@@ -173,7 +173,7 @@ class FieldUnicity extends CommonDropdown
             $rand = Dropdown::showFromArray('itemtype', $options, ['display_emptychoice' => true]);
 
             $params = ['itemtype' => '__VALUE__',
-                'id'       => $ID
+                'id'       => $ID,
             ];
             Ajax::updateItemOnSelectEvent(
                 "dropdown_itemtype$rand",
@@ -202,9 +202,9 @@ class FieldUnicity extends CommonDropdown
         $request = [
             'FROM'   => 'glpi_fieldunicities',
             'WHERE'  => [
-                'itemtype'  => $itemtype
+                'itemtype'  => $itemtype,
             ] + getEntitiesRestrictCriteria('glpi_fieldunicities', '', $entities_id, true),
-            'ORDER'  => ['entities_id DESC']
+            'ORDER'  => ['entities_id DESC'],
         ];
 
         if ($check_active) {
@@ -253,7 +253,7 @@ class FieldUnicity extends CommonDropdown
         self::dropdownFields(
             $unicity->fields['itemtype'],
             ['values' => $unicity_fields,
-                'name'   => '_fields'
+                'name'   => '_fields',
             ]
         );
         echo "</span>";
@@ -283,9 +283,9 @@ class FieldUnicity extends CommonDropdown
             }
         }
 
-       //Search option for this type
+        //Search option for this type
         if ($target = getItemForItemtype($itemtype)) {
-           //Construct list
+            //Construct list
             $values = [];
             foreach ($DB->listFields(getTableForItemType($itemtype)) as $field) {
                 $searchOption = $target->getSearchOptionByField('field', $field['Field']);
@@ -310,7 +310,7 @@ class FieldUnicity extends CommonDropdown
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => self::getTypeName()
+            'name'               => self::getTypeName(),
         ];
 
         $tab[] = [
@@ -319,7 +319,7 @@ class FieldUnicity extends CommonDropdown
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -328,7 +328,7 @@ class FieldUnicity extends CommonDropdown
             'field'              => 'id',
             'name'               => __('ID'),
             'datatype'           => 'number',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -338,7 +338,7 @@ class FieldUnicity extends CommonDropdown
             'name'               => __('Unique fields'),
             'massiveaction'      => false,
             'datatype'           => 'specific',
-            'additionalfields'   => ['itemtype']
+            'additionalfields'   => ['itemtype'],
         ];
 
         $tab[] = [
@@ -348,7 +348,7 @@ class FieldUnicity extends CommonDropdown
             'name'               => _n('Type', 'Types', 1),
             'massiveaction'      => false,
             'datatype'           => 'itemtypename',
-            'itemtype_list'      => 'unicity_types'
+            'itemtype_list'      => 'unicity_types',
         ];
 
         $tab[] = [
@@ -356,7 +356,7 @@ class FieldUnicity extends CommonDropdown
             'table'              => static::getTable(),
             'field'              => 'action_refuse',
             'name'               => __('Record into the database denied'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -364,7 +364,7 @@ class FieldUnicity extends CommonDropdown
             'table'              => static::getTable(),
             'field'              => 'action_notify',
             'name'               => __('Send a notification'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -372,7 +372,7 @@ class FieldUnicity extends CommonDropdown
             'table'              => static::getTable(),
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -380,7 +380,7 @@ class FieldUnicity extends CommonDropdown
             'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -389,7 +389,7 @@ class FieldUnicity extends CommonDropdown
             'field'              => 'is_active',
             'name'               => __('Active'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -397,7 +397,7 @@ class FieldUnicity extends CommonDropdown
             'table'              => 'glpi_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -502,7 +502,7 @@ class FieldUnicity extends CommonDropdown
         $DB->delete(
             self::getTable(),
             [
-                'itemtype'  => ['LIKE', "%Plugin$itemtype%"]
+                'itemtype'  => ['LIKE', "%Plugin$itemtype%"],
             ]
         );
     }
@@ -540,7 +540,7 @@ class FieldUnicity extends CommonDropdown
         foreach ($where_fields as $where_field) {
             $where += [
                 'NOT' => [$where_field => null],
-                $where_field => ['<>', getTableNameForForeignKeyField($where_field) ? 0 : '']
+                $where_field => ['<>', getTableNameForForeignKeyField($where_field) ? 0 : ''],
             ];
         }
         $item_table = $item::getTable();
@@ -550,10 +550,10 @@ class FieldUnicity extends CommonDropdown
             'COUNT'     => 'cpt',
             'FROM'      => $item_table,
             'WHERE'     => [
-                $item_table . '.entities_id'  => $entities
+                $item_table . '.entities_id'  => $entities,
             ] + $where,
             'GROUPBY'   => $fields,
-            'ORDERBY'   => 'cpt DESC'
+            'ORDERBY'   => 'cpt DESC',
         ]);
 
         $entries = [];

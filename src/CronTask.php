@@ -47,10 +47,10 @@ use Glpi\Event;
  */
 class CronTask extends CommonDBTM
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
 
-   // Specific ones
+    // Specific ones
     private static $lockname = '';
     private $timer           = 0.0;
     private $startlog        = 0;
@@ -58,16 +58,16 @@ class CronTask extends CommonDBTM
     public static $rightname        = 'config';
 
     /** The automatic action is disabled */
-    const STATE_DISABLE = 0;
+    public const STATE_DISABLE = 0;
     /** The automatic action is enabled and waiting to be run */
-    const STATE_WAITING = 1;
+    public const STATE_WAITING = 1;
     /** The automatic action was started and hasn't returned to the waiting state yet */
-    const STATE_RUNNING = 2;
+    public const STATE_RUNNING = 2;
 
     /** The automatic action is run internally (run by GLPI via a hidden image src) */
-    const MODE_INTERNAL = 1;
+    public const MODE_INTERNAL = 1;
     /** The automatic action is run with an external scheduler like cron or Task Scheduler */
-    const MODE_EXTERNAL = 2;
+    public const MODE_EXTERNAL = 2;
 
     public static function getForbiddenActionsForMenu()
     {
@@ -130,8 +130,8 @@ class CronTask extends CommonDBTM
     {
         $table = self::getTable();
         return $this->getFromDBByCrit([
-            $table . '.name'      => (string)$name,
-            $table . '.itemtype'  => (string)$itemtype
+            $table . '.name'      => (string) $name,
+            $table . '.itemtype'  => (string) $itemtype,
         ]);
     }
 
@@ -186,7 +186,7 @@ class CronTask extends CommonDBTM
         $iterator = $DB->request([
             'SELECT'          => ['itemtype'],
             'DISTINCT'        => true,
-            'FROM'            => self::getTable()
+            'FROM'            => self::getTable(),
         ]);
         foreach ($iterator as $data) {
             $types[] = $data['itemtype'];
@@ -242,11 +242,11 @@ class CronTask extends CommonDBTM
                 'lastrun'   => QueryFunction::dateFormat(
                     expression: QueryFunction::now(),
                     format: '%Y-%m-%d %H:%i:00'
-                )
+                ),
             ],
             [
                 'id'  => $this->fields['id'],
-                'NOT' => ['state' => self::STATE_RUNNING]
+                'NOT' => ['state' => self::STATE_RUNNING],
             ]
         );
 
@@ -269,7 +269,7 @@ class CronTask extends CommonDBTM
                 'crontasklogs_id' => 0,
                 'state'           => CronTaskLog::STATE_START,
                 'volume'          => 0,
-                'elapsed'         => 0
+                'elapsed'         => 0,
             ]);
             return true;
         }
@@ -323,11 +323,11 @@ class CronTask extends CommonDBTM
         $DB->update(
             self::getTable(),
             [
-                'state'  => $this->fields['state']
+                'state'  => $this->fields['state'],
             ],
             [
                 'id'     => $this->fields['id'],
-                'state'  => self::STATE_RUNNING
+                'state'  => self::STATE_RUNNING,
             ]
         );
 
@@ -337,13 +337,13 @@ class CronTask extends CommonDBTM
             if ($log_state === CronTaskLog::STATE_ERROR) {
                 $content = __('Execution error');
                 $content = 'Execution error';
-            } else if (is_null($retcode)) {
+            } elseif (is_null($retcode)) {
                 $content = __('Action aborted');
                 $content = 'Action aborted';
-            } else if ($retcode < 0) {
+            } elseif ($retcode < 0) {
                 $content = __('Action completed, partially processed');
                 $content = 'Action completed, partially processed';
-            } else if ($retcode > 0) {
+            } elseif ($retcode > 0) {
                 $content = __('Action completed, fully processed');
                 $content = 'Action completed, fully processed';
             } else {
@@ -358,7 +358,7 @@ class CronTask extends CommonDBTM
                 'crontasklogs_id' => $this->startlog,
                 'state'           => $log_state,
                 'volume'          => $this->volume,
-                'elapsed'         => (microtime(true) - $this->timer)
+                'elapsed'         => (microtime(true) - $this->timer),
             ]);
             return true;
         }
@@ -383,7 +383,7 @@ class CronTask extends CommonDBTM
             'crontasklogs_id' => $this->startlog,
             'state'           => CronTaskLog::STATE_RUN,
             'volume'          => $this->volume,
-            'elapsed'         => (microtime(true) - $this->timer)
+            'elapsed'         => (microtime(true) - $this->timer),
         ]);
     }
 
@@ -407,31 +407,31 @@ class CronTask extends CommonDBTM
             // Core crontasks
             [
                 ['NOT' => ['itemtype' => ['LIKE', 'Plugin%']]],
-                ['NOT' => ['itemtype' => ['LIKE', 'GlpiPlugin\\\\' . '%']]]
-            ]
+                ['NOT' => ['itemtype' => ['LIKE', 'GlpiPlugin\\\\' . '%']]],
+            ],
         ];
         foreach (Plugin::getPlugins() as $plug) {
-           // Activated plugin tasks
+            // Activated plugin tasks
             $itemtype_orwhere[] = [
                 'OR' => [
                     ['itemtype' => ['LIKE', sprintf('Plugin%s', $plug) . '%']],
-                    ['itemtype' => ['LIKE', sprintf('GlpiPlugin\\\\%s\\\\', $plug) . '%']]
-                ]
+                    ['itemtype' => ['LIKE', sprintf('GlpiPlugin\\\\%s\\\\', $plug) . '%']],
+                ],
             ];
         }
 
         $WHERE = [
-            ['OR' => $itemtype_orwhere]
+            ['OR' => $itemtype_orwhere],
         ];
 
         if ($name) {
             $WHERE['name'] = $name;
         }
 
-       // In force mode
+        // In force mode
         if ($mode < 0) {
             $WHERE['state'] = ['!=', self::STATE_RUNNING];
-            $WHERE['allowmode'] = ['&', (int)$mode * -1];
+            $WHERE['allowmode'] = ['&', (int) $mode * -1];
         } else {
             $WHERE['state'] = self::STATE_WAITING;
             if ($mode > 0) {
@@ -440,7 +440,7 @@ class CronTask extends CommonDBTM
 
             // Get system lock
             if (is_file(GLPI_CRON_DIR . '/all.lock')) {
-               // Global lock
+                // Global lock
                 return false;
             }
             $locks = [];
@@ -459,24 +459,24 @@ class CronTask extends CommonDBTM
                 ['AND' => [
                     ['hourmin'   => ['<', new QueryExpression($DB::quoteName('hourmax'))]],
                     'hourmin'   => ['<=', $hour_criteria],
-                    'hourmax'   => ['>', $hour_criteria]
-                ]
+                    'hourmax'   => ['>', $hour_criteria],
+                ],
                 ],
                 ['AND' => [
                     'hourmin'   => ['>', new QueryExpression($DB::quoteName('hourmax'))],
                     'OR'        => [
                         'hourmin'   => ['<=', $hour_criteria],
-                        'hourmax'   => ['>', $hour_criteria]
-                    ]
-                ]
-                ]
-            ]
+                        'hourmax'   => ['>', $hour_criteria],
+                    ],
+                ],
+                ],
+            ],
             ];
             $WHERE[] = [
                 'OR' => [
                     'lastrun'   => null,
-                    QueryFunction::unixTimestamp('lastrun') . ' + ' . $DB::quoteName('frequency') . ' <= ' . QueryFunction::unixTimestamp()
-                ]
+                    QueryFunction::unixTimestamp('lastrun') . ' + ' . $DB::quoteName('frequency') . ' <= ' . QueryFunction::unixTimestamp(),
+                ],
             ];
         }
 
@@ -487,15 +487,15 @@ class CronTask extends CommonDBTM
                     substring: 'Plugin',
                     expression: $DB::quoteName('itemtype'),
                     alias: 'ISPLUGIN'
-                )
+                ),
             ],
             'FROM'   => self::getTable(),
             'WHERE'  => $WHERE,
             // Core task before plugins
             'ORDER'  => [
                 'ISPLUGIN',
-                new QueryExpression(QueryFunction::unixTimestamp($DB::quoteName('lastrun')) . ' + ' . $DB::quoteName('frequency'))
-            ]
+                new QueryExpression(QueryFunction::unixTimestamp($DB::quoteName('lastrun')) . ' + ' . $DB::quoteName('frequency')),
+            ],
         ]);
 
         if (count($iterator)) {
@@ -524,7 +524,7 @@ class CronTask extends CommonDBTM
                             date: QueryFunction::now(),
                             interval: 1,
                             interval_unit: 'DAY'
-                        )
+                        ),
                     ],
                 ],
             ]
@@ -550,7 +550,7 @@ class CronTask extends CommonDBTM
                     'state'        => [CronTaskLog::STATE_STOP, CronTaskLog::STATE_ERROR],
                 ],
                 'ORDER'  => 'id DESC',
-                'LIMIT'  => $threshold * 2
+                'LIMIT'  => $threshold * 2,
             ]
         );
 
@@ -614,7 +614,7 @@ class CronTask extends CommonDBTM
             ) {
                 $next_run_display = date('Y-m-d', $next) . " $deb:00:00";
                 $next = strtotime($next_run_display);
-            } else if (
+            } elseif (
                 ($deb < $fin)
                     && ($h >= $this->fields['hourmax'])
             ) {
@@ -646,8 +646,8 @@ class CronTask extends CommonDBTM
             'plugin_info' => isPluginItemType($this->fields["itemtype"]),
             'item_meta' => [
                 'next_run_display' => $next_run_display ?? __('As soon as possible'),
-                'param_description' => $this->getParameterDescription()
-            ]
+                'param_description' => $this->getParameterDescription(),
+            ],
         ]);
         return true;
     }
@@ -662,7 +662,7 @@ class CronTask extends CommonDBTM
         }
         return $this->update([
             'id'      => $this->fields['id'],
-            'lastrun' => 'NULL'
+            'lastrun' => 'NULL',
         ]);
     }
 
@@ -676,7 +676,7 @@ class CronTask extends CommonDBTM
         }
         return $this->update([
             'id'    => $this->fields['id'],
-            'state' => self::STATE_WAITING
+            'state' => self::STATE_WAITING,
         ]);
     }
 
@@ -753,10 +753,10 @@ class CronTask extends CommonDBTM
         return Dropdown::showFromArray(
             $name,
             [self::STATE_DISABLE => __('Disabled'),
-                self::STATE_WAITING => __('Scheduled')
+                self::STATE_WAITING => __('Scheduled'),
             ],
             ['value'   => $value,
-                'display' => $display
+                'display' => $display,
             ]
         );
     }
@@ -853,7 +853,7 @@ class CronTask extends CommonDBTM
         if (self::get_lock()) {
             for ($i = 1; $i <= $max; $i++) {
                 $msgprefix = sprintf(
-                //TRANS: %1$s is mode (external or internal), %2$s is an order number,
+                    //TRANS: %1$s is mode (external or internal), %2$s is an order number,
                     __('%1$s #%2$s'),
                     abs($mode) === self::MODE_EXTERNAL ? __('External') : __('Internal'),
                     $i
@@ -879,7 +879,7 @@ class CronTask extends CommonDBTM
                                 )
                             );
                             try {
-                                  $retcode = $function($crontask);
+                                $retcode = $function($crontask);
                             } catch (\Throwable $e) {
                                 ErrorHandler::logCaughtException($e);
                                 ErrorHandler::displayCaughtExceptionMessage($e);
@@ -900,7 +900,7 @@ class CronTask extends CommonDBTM
                                 $crontask->sendNotificationOnError();
                                 continue;
                             }
-                             $crontask->end($retcode); // Unlock in DB + log end
+                            $crontask->end($retcode); // Unlock in DB + log end
                         } else {
                             Toolbox::logInFile(
                                 'cron',
@@ -923,7 +923,7 @@ class CronTask extends CommonDBTM
                             ) . "\n" . $undefined_msg
                         );
                     }
-                } else if ($i === 1) {
+                } elseif ($i === 1) {
                     $msgcron = sprintf(__('%1$s: %2$s'), $msgprefix, __('Nothing to launch'));
                     Toolbox::logInFile('cron', $msgcron . "\n");
                 }
@@ -965,7 +965,7 @@ class CronTask extends CommonDBTM
             'itemtype'  => $itemtype,
             'name'      => $name,
             'allowmode' => self::MODE_INTERNAL | self::MODE_EXTERNAL,
-            'frequency' => $frequency
+            'frequency' => $frequency,
         ];
 
         $fields = ['allowmode', 'comment', 'hourmax', 'hourmin', 'logs_lifetime', 'mode', 'param', 'state'];
@@ -1008,9 +1008,9 @@ class CronTask extends CommonDBTM
             'WHERE'  => [
                 'OR' => [
                     ['itemtype' => ['LIKE', sprintf('Plugin%s', $plugin) . '%']],
-                    ['itemtype' => ['LIKE', sprintf('GlpiPlugin\\\\%s\\\\', $plugin) . '%']]
-                ]
-            ]
+                    ['itemtype' => ['LIKE', sprintf('GlpiPlugin\\\\%s\\\\', $plugin) . '%']],
+                ],
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -1035,19 +1035,19 @@ class CronTask extends CommonDBTM
         $nbstart = countElementsInTable(
             'glpi_crontasklogs',
             ['crontasks_id' => $this->fields['id'],
-                'state'        => CronTaskLog::STATE_START
+                'state'        => CronTaskLog::STATE_START,
             ]
         );
         $nbstop  = countElementsInTable(
             'glpi_crontasklogs',
             ['crontasks_id' => $this->fields['id'],
-                'state'        => CronTaskLog::STATE_STOP
+                'state'        => CronTaskLog::STATE_STOP,
             ]
         );
         $nberror = countElementsInTable(
             'glpi_crontasklogs',
             ['crontasks_id' => $this->fields['id'],
-                'state'        => CronTaskLog::STATE_ERROR
+                'state'        => CronTaskLog::STATE_ERROR,
             ]
         );
 
@@ -1074,26 +1074,26 @@ class CronTask extends CommonDBTM
                     'MIN' => [
                         'date AS datemin',
                         'elapsed AS elapsedmin',
-                        'volume AS volmin'
+                        'volume AS volmin',
                     ],
                     'MAX' => [
                         'elapsed AS elapsedmax',
-                        'volume AS volmax'
+                        'volume AS volmax',
                     ],
                     'SUM' => [
                         'elapsed AS elapsedtot',
-                        'volume AS voltot'
+                        'volume AS voltot',
                     ],
                     'AVG' => [
                         'elapsed AS elapsedavg',
-                        'volume AS volavg'
-                    ]
+                        'volume AS volavg',
+                    ],
                 ],
                 'FROM'   => CronTaskLog::getTable(),
                 'WHERE'  => [
                     'crontasks_id' => $this->fields['id'],
-                    'state'        => CronTaskLog::STATE_STOP
-                ]
+                    'state'        => CronTaskLog::STATE_STOP,
+                ],
             ])->current();
 
             $stats['datemin'] = $data['datemin'];
@@ -1111,7 +1111,7 @@ class CronTask extends CommonDBTM
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/crontask/statistics.html.twig', [
-            'stats' => $stats
+            'stats' => $stats,
         ]);
     }
 
@@ -1149,7 +1149,7 @@ class CronTask extends CommonDBTM
             ],
             'ORDER'  => 'id DESC',
             'START'  => $start,
-            'LIMIT'  => (int) $_SESSION['glpilist_limit']
+            'LIMIT'  => (int) $_SESSION['glpilist_limit'],
         ];
         $iterator = $DB->request($criteria);
         $count_criteria = $criteria;
@@ -1169,7 +1169,7 @@ class CronTask extends CommonDBTM
                 ),
                 'elapsed'  => $data['elapsed'],
                 'volume'   => $data['volume'],
-                'content'  => $data['content']
+                'content'  => $data['content'],
             ];
         }
 
@@ -1180,7 +1180,7 @@ class CronTask extends CommonDBTM
                 'date' => _n('Date', 'Dates', 1),
                 'elapsed' => __('Total duration'),
                 'volume' => _x('quantity', 'Number'),
-                'content' => __('Description')
+                'content' => __('Description'),
             ],
             'formatters' => [
                 'date' => 'raw_html',
@@ -1190,7 +1190,7 @@ class CronTask extends CommonDBTM
             'entries' => $entries,
             'total_number' => $total_count,
             'filtered_number' => $total_count,
-            'showmassiveactions' => false
+            'showmassiveactions' => false,
         ]);
     }
 
@@ -1220,10 +1220,10 @@ TWIG, ['msg' => __('Last run list')]);
             'WHERE'  => [
                 'OR' => [
                     'id'              => $logid,
-                    'crontasklogs_id' => $logid
-                ]
+                    'crontasklogs_id' => $logid,
+                ],
             ],
-            'ORDER'  => 'id ASC'
+            'ORDER'  => 'id ASC',
         ]);
 
         $first = true;
@@ -1237,7 +1237,7 @@ TWIG, ['msg' => __('Last run list')]);
                     // implode (Run mode: XXX)
                     $list = explode(':', $data['content']);
                     if (count($list) === 2) {
-                           $content = sprintf('%1$s: %2$s', __($list[0]), $list[1]);
+                        $content = sprintf('%1$s: %2$s', __($list[0]), $list[1]);
                     }
                     break;
                 case CronTaskLog::STATE_STOP:
@@ -1263,7 +1263,7 @@ TWIG, ['msg' => __('Last run list')]);
                 'state'   => $state,
                 'elapsed'  => $data['elapsed'],
                 'volume'   => $data['volume'],
-                'content'  => $content
+                'content'  => $content,
             ];
             $first = false;
         }
@@ -1277,7 +1277,7 @@ TWIG, ['msg' => __('Last run list')]);
                 'state' => __('Status'),
                 'elapsed' => __('Duration'),
                 'volume' => _x('quantity', 'Number'),
-                'content' => __('Description')
+                'content' => __('Description'),
             ],
             'formatters' => [
                 'date' => 'datetime',
@@ -1287,7 +1287,7 @@ TWIG, ['msg' => __('Last run list')]);
             'entries' => $entries,
             'total_number' => count($entries),
             'filtered_number' => count($entries),
-            'showmassiveactions' => false
+            'showmassiveactions' => false,
         ]);
     }
 
@@ -1348,7 +1348,7 @@ TWIG, ['msg' => __('Last run list')]);
                     if (Config::canUpdate()) {
                         if ($item->getFromDB($key)) {
                             if ($item->resetDate()) {
-                                 $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
@@ -1376,7 +1376,7 @@ TWIG, ['msg' => __('Last run list')]);
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -1385,7 +1385,7 @@ TWIG, ['msg' => __('Last run list')]);
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -1394,7 +1394,7 @@ TWIG, ['msg' => __('Last run list')]);
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -1406,7 +1406,7 @@ TWIG, ['msg' => __('Last run list')]);
             'nosort'             => true,
             'massiveaction'      => false,
             'datatype'           => 'text',
-            'computation'        => $DB::quoteName('TABLE.id') // Virtual data
+            'computation'        => $DB::quoteName('TABLE.id'), // Virtual data
         ];
 
         $tab[] = [
@@ -1415,7 +1415,7 @@ TWIG, ['msg' => __('Last run list')]);
             'field'              => 'state',
             'name'               => __('Status'),
             'searchtype'         => ['equals', 'notequals'],
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1424,7 +1424,7 @@ TWIG, ['msg' => __('Last run list')]);
             'field'              => 'mode',
             'name'               => __('Run mode'),
             'datatype'           => 'specific',
-            'searchtype'         => ['equals', 'notequals']
+            'searchtype'         => ['equals', 'notequals'],
         ];
 
         $tab[] = [
@@ -1433,7 +1433,7 @@ TWIG, ['msg' => __('Last run list')]);
             'field'              => 'frequency',
             'name'               => __('Run frequency'),
             'datatype'           => 'timestamp',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -1442,7 +1442,7 @@ TWIG, ['msg' => __('Last run list')]);
             'field'              => 'lastrun',
             'name'               => __('Last run'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -1452,7 +1452,7 @@ TWIG, ['msg' => __('Last run list')]);
             'name'               => __('Item type'),
             'massiveaction'      => false,
             'datatype'           => 'itemtypename',
-            'types'              => self::getUsedItemtypes()
+            'types'              => self::getUsedItemtypes(),
         ];
 
         $tab[] = [
@@ -1460,7 +1460,7 @@ TWIG, ['msg' => __('Last run list')]);
             'table'              => self::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -1470,7 +1470,7 @@ TWIG, ['msg' => __('Last run list')]);
             'name'               => __('Begin hour of run period'),
             'datatype'           => 'integer',
             'min'                => 0,
-            'max'                => 24
+            'max'                => 24,
         ];
 
         $tab[] = [
@@ -1480,7 +1480,7 @@ TWIG, ['msg' => __('Last run list')]);
             'name'               => __('End hour of run period'),
             'datatype'           => 'integer',
             'min'                => 0,
-            'max'                => 24
+            'max'                => 24,
         ];
 
         $tab[] = [
@@ -1493,8 +1493,8 @@ TWIG, ['msg' => __('Last run list')]);
             'max'                => 360,
             'step'               => 10,
             'toadd'              => [
-                '0'                  => 'Infinite'
-            ]
+                '0'                  => 'Infinite',
+            ],
         ];
 
         $tab[] = [
@@ -1503,7 +1503,7 @@ TWIG, ['msg' => __('Last run list')]);
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -1512,7 +1512,7 @@ TWIG, ['msg' => __('Last run list')]);
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -1545,7 +1545,7 @@ TWIG, ['msg' => __('Last run list')]);
 
         $task->setVolume($nb);
         if ($nb) {
-           //TRANS: % %1$d is a number, %2$s is a number of seconds
+            //TRANS: % %1$d is a number, %2$s is a number of seconds
             $task->log(sprintf(
                 _n(
                     'Clean %1$d session file created since more than %2$s seconds',
@@ -1798,8 +1798,8 @@ TWIG, ['msg' => __('Last run list')]);
                         $DB::quoteName('frequency') . ' < ' . QueryFunction::unixTimestamp()),
                     new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * ' .
                         HOUR_TIMESTAMP . ' < ' . QueryFunction::unixTimestamp()),
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -1843,27 +1843,27 @@ TWIG, ['msg' => __('Last run list')]);
     {
         return match ($name) {
             'checkupdate' => [
-                'description' => __('Check for new updates')
+                'description' => __('Check for new updates'),
             ],
             'logs'        => [
                 'description' => __('Clean old logs'),
-                'parameter'   => __('System logs retention period (in days, 0 for infinite)')
+                'parameter'   => __('System logs retention period (in days, 0 for infinite)'),
             ],
             'session'     => [
-                'description' => __('Clean expired sessions')
+                'description' => __('Clean expired sessions'),
             ],
             'graph'       => [
-                'description' => __('Clean generated graphics')
+                'description' => __('Clean generated graphics'),
             ],
             'temp'        => [
-                'description' => __('Clean temporary files')
+                'description' => __('Clean temporary files'),
             ],
             'watcher'     => [
-                'description' => __('Monitoring of automatic actions')
+                'description' => __('Monitoring of automatic actions'),
             ],
             'circularlogs' => [
                 'description' => __("Archives log files and deletes aging ones"),
-                'parameter'   => __("Number of days to keep archived logs")
+                'parameter'   => __("Number of days to keep archived logs"),
             ],
             default       => []
         };
@@ -1956,7 +1956,7 @@ TWIG, ['msg' => __('Last run list')]);
             $msg = __('Automatic actions may not be running as expected');
             $params = [
                 'msg' => $msg,
-                'warnings' => '<ul>' . implode('', array_map(static fn ($warning) => '<li>' . htmlescape($warning) . '</li>', $warnings)) . '</ul>'
+                'warnings' => '<ul>' . implode('', array_map(static fn($warning) => '<li>' . htmlescape($warning) . '</li>', $warnings)) . '</ul>',
             ];
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <span class="alert alert-warning p-1 ps-2">

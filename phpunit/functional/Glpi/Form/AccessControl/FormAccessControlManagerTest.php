@@ -125,7 +125,7 @@ final class FormAccessControlManagerTest extends DbTestCase
         $controls = $manager->getActiveAccessControlsForForm($form);
 
         $active_controls = array_map(
-            fn (FormAccessControl $control) => $control->fields['strategy'],
+            fn(FormAccessControl $control) => $control->fields['strategy'],
             $controls
         );
 
@@ -170,7 +170,7 @@ final class FormAccessControlManagerTest extends DbTestCase
         $manager = $this->getManager();
         $sorted_controls = $manager->sortAccessControls($access_controls);
         $sorted_controls = array_map(
-            fn (FormAccessControl $control) => $control->fields['strategy'],
+            fn(FormAccessControl $control) => $control->fields['strategy'],
             $sorted_controls
         );
         $this->assertEquals($expected, $sorted_controls);

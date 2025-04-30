@@ -53,7 +53,6 @@ use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormTesterTrait;
-use PHPUnit\Framework\Attributes\DataProvider;
 use User;
 
 class AnswersHandlerTest extends DbTestCase
@@ -96,7 +95,7 @@ class AnswersHandlerTest extends DbTestCase
                 self::getQuestionId($form_1, "First name") => "John",
                 self::getQuestionId($form_1, "Last name") => "Doe",
                 self::getQuestionId($form_1, "Age") => 78,
-                self::getQuestionId($form_1, "Thoughts about GLPI") => "I love GLPI!!!"
+                self::getQuestionId($form_1, "Thoughts about GLPI") => "I love GLPI!!!",
             ],
             expected_set: [
                 'forms_forms_id' => $form_1->getID(),
@@ -120,7 +119,7 @@ class AnswersHandlerTest extends DbTestCase
                 self::getQuestionId($form_1, "First name") => "John",
                 self::getQuestionId($form_1, "Last name") => "Smith",
                 self::getQuestionId($form_1, "Age") => 19,
-                self::getQuestionId($form_1, "Thoughts about GLPI") => "GLPI is incredible"
+                self::getQuestionId($form_1, "Thoughts about GLPI") => "GLPI is incredible",
             ],
             expected_set: [
                 'forms_forms_id' => $form_1->getID(),

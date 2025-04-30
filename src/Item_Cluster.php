@@ -101,15 +101,15 @@ class Item_Cluster extends CommonDBRelation
             'SELECT' => ['id', 'itemtype', 'items_id'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'clusters_id' => $ID
-            ]
+                'clusters_id' => $ID,
+            ],
         ]);
 
         if ($cluster->canAddItem('itemtype')) {
             (new self())->showForm(-1, [
                 'clusters_id' => $ID,
                 'params' => [
-                    'formfooter' => false
+                    'formfooter' => false,
                 ],
                 'no_header'  => true,
             ]);
@@ -122,7 +122,7 @@ class Item_Cluster extends CommonDBRelation
             $entries[] = [
                 'itemtype' => static::class,
                 'id'       => $row['id'],
-                'item'     => $item->getLink()
+                'item'     => $item->getLink(),
             ];
         }
 
@@ -130,10 +130,10 @@ class Item_Cluster extends CommonDBRelation
             'is_tab' => true,
             'nofilter' => true,
             'columns' => [
-                'item' => _n('Item', 'Items', 1)
+                'item' => _n('Item', 'Items', 1),
             ],
             'formatters' => [
-                'item' => 'raw_html'
+                'item' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -141,7 +141,7 @@ class Item_Cluster extends CommonDBRelation
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
     }
@@ -159,7 +159,7 @@ class Item_Cluster extends CommonDBRelation
         $used = [];
         $iterator = $DB->request([
             'SELECT' => ['itemtype', 'items_id'],
-            'FROM'   => static::getTable()
+            'FROM'   => static::getTable(),
         ]);
         foreach ($iterator as $row) {
             $used [$row['itemtype']][] = $row['items_id'];
@@ -207,7 +207,7 @@ TWIG, $twig_params);
     {
         $error_detected = [];
 
-       //check for requirements
+        //check for requirements
         if (
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))

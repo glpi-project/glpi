@@ -62,7 +62,7 @@ class HasContractsCapacity extends AbstractCapacity
     public function getCloneRelations(): array
     {
         return [
-            Contract_Item::class
+            Contract_Item::class,
         ];
     }
 

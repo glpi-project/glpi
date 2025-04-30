@@ -64,7 +64,7 @@ final class KnowbaseItemController extends AbstractController
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB((int) $id)) {
             throw new NotFoundHttpException();
-        } else if (!$kbitem->canViewItem()) {
+        } elseif (!$kbitem->canViewItem()) {
             throw new AccessDeniedHttpException();
         }
         return new Response($kbitem->fields['answer']);
@@ -86,7 +86,7 @@ final class KnowbaseItemController extends AbstractController
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB((int) $id)) {
             throw new NotFoundHttpException();
-        } else if (!$kbitem->canViewItem()) {
+        } elseif (!$kbitem->canViewItem()) {
             throw new AccessDeniedHttpException();
         }
         return new StreamedResponse(static function () use ($kbitem) {
@@ -147,7 +147,7 @@ final class KnowbaseItemController extends AbstractController
             ) {
                 $icon_class = "ti ti-help faq";
                 $icon_title = __s("This item is part of the FAQ");
-            } else if (
+            } elseif (
                 isset($data['visibility_count'])
                 && $data['visibility_count'] <= 0
             ) {

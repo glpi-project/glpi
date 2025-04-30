@@ -79,7 +79,7 @@ class OLA extends LevelAgreement
     {
         return [
             __("The assignment of an OLA to a ticket causes the recalculation of the date."),
-            __("Escalations defined in the OLA will be triggered under this new date.")
+            __("Escalations defined in the OLA will be triggered under this new date."),
         ];
     }
 }

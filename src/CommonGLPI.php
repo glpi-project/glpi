@@ -50,11 +50,11 @@ class CommonGLPI implements CommonGLPIInterface
      */
     protected static $showTitleInNavigationHeader = false;
 
-   /**
-    * Display list on Navigation Header
-    *
-    * @var boolean
-    */
+    /**
+     * Display list on Navigation Header
+     *
+     * @var boolean
+     */
     protected $displaylist          = true;
 
     /**
@@ -99,9 +99,7 @@ class CommonGLPI implements CommonGLPIInterface
      */
     private static $othertabs = [];
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * Return the localized name of the current Type
@@ -320,14 +318,14 @@ class CommonGLPI implements CommonGLPIInterface
         global $CFG_GLPI;
 
         $onglets = [];
-       // Tabs known by the object
+        // Tabs known by the object
         if ($this->isNewItem()) {
             $this->addDefaultFormTab($onglets);
         } else {
             $onglets = $this->defineTabs($options);
         }
 
-       // Object with class with 'addtabon' attribute
+        // Object with class with 'addtabon' attribute
         if (!$this->isNewItem()) {
             $othertabs = self::getOtherTabs($this->getType());
             foreach ($othertabs as $typetab) {
@@ -389,7 +387,7 @@ class CommonGLPI implements CommonGLPIInterface
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Check if impact analysis is enabled for this item type
+        // Check if impact analysis is enabled for this item type
         if (Impact::isEnabled(static::class)) {
             $this->addStandardTab(Impact::class, $ong, $options);
         }
@@ -451,8 +449,8 @@ class CommonGLPI implements CommonGLPIInterface
                         $menu['links']['add'] = '/front/setup.templates.php?' . 'itemtype=' . $type .
                                           '&add=1';
                         if (!in_array('template', $forbidden)) {
-                              $menu['links']['template'] = '/front/setup.templates.php?' . 'itemtype=' . $type .
-                                                  '&add=0';
+                            $menu['links']['template'] = '/front/setup.templates.php?' . 'itemtype=' . $type .
+                                                '&add=0';
                         }
                     } else {
                         $menu['links']['add'] = $item->getFormURL(false);
@@ -485,7 +483,7 @@ class CommonGLPI implements CommonGLPIInterface
             $newmenu = [
                 strtolower($type) => $menu,
             ];
-           // Force overwrite existing menu
+            // Force overwrite existing menu
             foreach ($data as $key => $val) {
                 $newmenu[$key] = $val;
             }
@@ -636,7 +634,7 @@ class CommonGLPI implements CommonGLPIInterface
     public static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, $options = [])
     {
         switch ($tab) {
-           // All tab
+            // All tab
             case -1:
                 // get tabs and loop over
                 $ong = $item->defineAllTabs(['withtemplate' => $withtemplate]);
@@ -740,7 +738,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         $icon_html = $icon !== '' ? sprintf('<i class="%s me-2"></i>', htmlescape($icon)) : '';
-        $counter_html = $nb !== 0 ? sprintf(' <span class="badge glpi-badge">%d</span>', (int)$nb) : '';
+        $counter_html = $nb !== 0 ? sprintf(' <span class="badge glpi-badge">%d</span>', (int) $nb) : '';
 
         return sprintf(
             '<span class="d-flex align-items-center">%s%s%s</span>',
@@ -872,7 +870,7 @@ class CommonGLPI implements CommonGLPIInterface
     public function showTabsContent($options = [])
     {
 
-       // for objects not in table like central
+        // for objects not in table like central
         if (isset($this->fields['id'])) {
             $ID = $this->fields['id'];
         } else {
@@ -904,8 +902,8 @@ class CommonGLPI implements CommonGLPIInterface
             if ($this instanceof CommonITILObject && $this->isNewItem()) {
                 $this->input = $cleaned_options;
                 $this->saveInput();
-               // $extraparamhtml can be too long in case of ticket with content
-               // (passed in GET in ajax request)
+                // $extraparamhtml can be too long in case of ticket with content
+                // (passed in GET in ajax request)
                 unset($cleaned_options['content']);
             }
         }
@@ -986,7 +984,7 @@ class CommonGLPI implements CommonGLPIInterface
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // for objects not in table like central
+        // for objects not in table like central
         if (isset($this->fields['id'])) {
             $ID = $this->fields['id'];
         } else {
@@ -1007,7 +1005,7 @@ class CommonGLPI implements CommonGLPIInterface
                 unset($cleanoptions['withtemplate']);
             }
             foreach (array_keys($cleanoptions) as $key) {
-               // Do not include id options
+                // Do not include id options
                 if (($key[0] == '_') || ($key == 'id')) {
                     unset($cleanoptions[$key]);
                 }
@@ -1117,7 +1115,7 @@ class CommonGLPI implements CommonGLPIInterface
                     echo "<span class='me-1'>" . $this->getStatusIcon($this->fields['status']) . '</span>';
                 }
                 echo htmlescape($this->getNameID([
-                    'forceid' => $this instanceof CommonITILObject
+                    'forceid' => $this instanceof CommonITILObject,
                 ]));
                 if ($this->isField('is_deleted') && $this->fields['is_deleted']) {
                     $title = $this->isField('date_mod')
@@ -1126,7 +1124,7 @@ class CommonGLPI implements CommonGLPIInterface
                     echo "<span class='mx-2 status rounded-1' title=\"" . $title . "\"
                         data-bs-toggle='tooltip'>
                         <i class='ti ti-trash'></i>";
-                        echo __s('Deleted');
+                    echo __s('Deleted');
                     echo "</span>";
                 }
                 echo "</h3>";
@@ -1225,11 +1223,11 @@ class CommonGLPI implements CommonGLPIInterface
             }
         }
 
-       // try to lock object
-       // $options must contain the id of the object, and if locked by manageObjectLock will contain 'locked' => 1
+        // try to lock object
+        // $options must contain the id of the object, and if locked by manageObjectLock will contain 'locked' => 1
         ObjectLock::manageObjectLock(get_class($this), $options);
 
-       // manage custom options passed to tabs
+        // manage custom options passed to tabs
         if (isset($_REQUEST['tab_params']) && is_array($_REQUEST['tab_params'])) {
             $options += $_REQUEST['tab_params'];
         }
@@ -1302,13 +1300,13 @@ class CommonGLPI implements CommonGLPIInterface
                 KnowbaseItem_Item::getTable() => [
                     'ON'  => [
                         KnowbaseItem_Item::getTable() => KnowbaseItem::getForeignKeyField(),
-                        KnowbaseItem::getTable()      => 'id'
-                    ]
-                ]
+                        KnowbaseItem::getTable()      => 'id',
+                    ],
+                ],
             ],
             'ORDER' => [
-                KnowbaseItem::getTable()      => 'name'
-            ]
+                KnowbaseItem::getTable()      => 'name',
+            ],
         ]);
 
         $found_kbitem = [];
@@ -1350,9 +1348,9 @@ class CommonGLPI implements CommonGLPIInterface
                     'display'   => false,
                     'rand'      => $rand,
                     'condition' => [
-                        KnowbaseItem::getTable() . '.id' => $kbitem_ids
+                        KnowbaseItem::getTable() . '.id' => $kbitem_ids,
                     ],
-                    'on_change' => "getKnowbaseItemAnswer$rand()"
+                    'on_change' => "getKnowbaseItemAnswer$rand()",
                 ]);
                 $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
                 $ret .= $kbitem->showFull(['display' => false]);

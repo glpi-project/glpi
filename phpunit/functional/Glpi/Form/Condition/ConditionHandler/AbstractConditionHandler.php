@@ -78,7 +78,7 @@ abstract class AbstractConditionHandler extends DbTestCase
                 'item_type'      => Type::QUESTION,
                 'value_operator' => $condition_operator,
                 'value'          => $condition_value,
-            ]
+            ],
         ]);
 
         $form = $this->createForm($form);
@@ -98,10 +98,10 @@ abstract class AbstractConditionHandler extends DbTestCase
         );
     }
 
-     /**
-     * Transform a simplified raw input that uses questions names by a real
-     * EngineInput object with the correct ids.
-     */
+    /**
+    * Transform a simplified raw input that uses questions names by a real
+    * EngineInput object with the correct ids.
+    */
     protected function mapInput(Form $form, array $raw_input): EngineInput
     {
         $answers = [];

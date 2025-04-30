@@ -47,8 +47,7 @@ final class CustomSceneController extends AbstractController
 {
     public function __construct(
         private IllustrationManager $illustration_manager
-    ) {
-    }
+    ) {}
 
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     #[Route(

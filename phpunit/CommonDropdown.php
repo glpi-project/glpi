@@ -174,7 +174,7 @@ abstract class CommonDropdown extends DbTestCase
             0,
             $instance->add([
                 'name'      => 'Another name',
-                'comment'   => 'A comment on an object'
+                'comment'   => 'A comment on an object',
             ])
         );
         $this->assertTrue(
@@ -192,7 +192,7 @@ abstract class CommonDropdown extends DbTestCase
         $this->assertTrue(
             $instance->update([
                 'id'     => $instance->getID(),
-                'name'   => 'Changed name'
+                'name'   => 'Changed name',
             ])
         );
         $this->assertTrue(

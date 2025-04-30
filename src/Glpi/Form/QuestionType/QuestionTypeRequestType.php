@@ -37,7 +37,6 @@ namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\RequestTypeConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
@@ -93,7 +92,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'init'               => $question != null,
             'value'              => $this->getDefaultValue($question),
-            'request_types'      => Ticket::getTypes()
+            'request_types'      => Ticket::getTypes(),
         ]);
     }
 

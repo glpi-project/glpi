@@ -70,15 +70,13 @@ class SLA extends LevelAgreement
         return SLM::getIcon();
     }
 
-    public function showFormWarning()
-    {
-    }
+    public function showFormWarning() {}
 
     public function getAddConfirmation(): array
     {
         return [
             __("The assignment of a SLA to a ticket causes the recalculation of the date."),
-            __("Escalations defined in the SLA will be triggered under this new date.")
+            __("Escalations defined in the SLA will be triggered under this new date."),
         ];
     }
 }

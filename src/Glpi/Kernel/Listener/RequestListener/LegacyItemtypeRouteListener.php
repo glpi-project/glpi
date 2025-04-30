@@ -60,9 +60,7 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
 {
     use KernelListenerTrait;
 
-    public function __construct(private UrlMatcherInterface $url_matcher)
-    {
-    }
+    public function __construct(private UrlMatcherInterface $url_matcher) {}
 
     public static function getSubscribedEvents(): array
     {

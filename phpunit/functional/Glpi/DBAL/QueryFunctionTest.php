@@ -55,7 +55,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::dateAdd($date, $interval, $interval_unit, $alias)
+            (string) \Glpi\DBAL\QueryFunction::dateAdd($date, $interval, $interval_unit, $alias)
         );
     }
 
@@ -66,29 +66,29 @@ class QueryFunctionTest extends \GLPITestCase
                 [
                     new QueryExpression("'A'"),
                     new QueryExpression("'B'"),
-                    new QueryExpression("'C'")
-                ], null, "CONCAT('A', 'B', 'C')"
+                    new QueryExpression("'C'"),
+                ], null, "CONCAT('A', 'B', 'C')",
             ],
             [
                 [
                     new QueryExpression("'A'"),
                     new QueryExpression("'B'"),
-                    new QueryExpression("'C'")
-                ], 'concat_alias', "CONCAT('A', 'B', 'C') AS `concat_alias`"
+                    new QueryExpression("'C'"),
+                ], 'concat_alias', "CONCAT('A', 'B', 'C') AS `concat_alias`",
             ],
             [
                 [
                     new QueryExpression("'A'"),
                     'glpi_computers.name',
-                    new QueryExpression("'C'")
-                ], null, "CONCAT('A', `glpi_computers`.`name`, 'C')"
+                    new QueryExpression("'C'"),
+                ], null, "CONCAT('A', `glpi_computers`.`name`, 'C')",
             ],
             [
                 [
                     new QueryExpression("'A'"),
                     'glpi_computers.name',
-                    new QueryExpression("'C'")
-                ], 'concat_alias', "CONCAT('A', `glpi_computers`.`name`, 'C') AS `concat_alias`"
+                    new QueryExpression("'C'"),
+                ], 'concat_alias', "CONCAT('A', `glpi_computers`.`name`, 'C') AS `concat_alias`",
             ],
         ];
     }
@@ -98,7 +98,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::concat($params, $alias)
+            (string) \Glpi\DBAL\QueryFunction::concat($params, $alias)
         );
     }
 
@@ -110,32 +110,32 @@ class QueryFunctionTest extends \GLPITestCase
                 [
                     new QueryExpression("'A'"),
                     new QueryExpression("'B'"),
-                    new QueryExpression("'C'")
-                ], null, "CONCAT_WS(',', 'A', 'B', 'C')"
+                    new QueryExpression("'C'"),
+                ], null, "CONCAT_WS(',', 'A', 'B', 'C')",
             ],
             [
                 new QueryExpression("'-'"),
                 [
                     new QueryExpression("'A'"),
                     new QueryExpression("'B'"),
-                    new QueryExpression("'C'")
-                ], 'concat_alias', "CONCAT_WS('-', 'A', 'B', 'C') AS `concat_alias`"
+                    new QueryExpression("'C'"),
+                ], 'concat_alias', "CONCAT_WS('-', 'A', 'B', 'C') AS `concat_alias`",
             ],
             [
                 new QueryExpression("','"),
                 [
                     new QueryExpression("'A'"),
                     'glpi_computers.name',
-                    new QueryExpression("'C'")
-                ], null, "CONCAT_WS(',', 'A', `glpi_computers`.`name`, 'C')"
+                    new QueryExpression("'C'"),
+                ], null, "CONCAT_WS(',', 'A', `glpi_computers`.`name`, 'C')",
             ],
             [
                 new QueryExpression("','"),
                 [
                     new QueryExpression("'A'"),
                     'glpi_computers.name',
-                    new QueryExpression("'C'")
-                ], 'concat_alias', "CONCAT_WS(',', 'A', `glpi_computers`.`name`, 'C') AS `concat_alias`"
+                    new QueryExpression("'C'"),
+                ], 'concat_alias', "CONCAT_WS(',', 'A', `glpi_computers`.`name`, 'C') AS `concat_alias`",
             ],
         ];
     }
@@ -145,7 +145,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::concat_ws($separator, $params, $alias)
+            (string) \Glpi\DBAL\QueryFunction::concat_ws($separator, $params, $alias)
         );
     }
 
@@ -164,7 +164,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::if($condition, $true, $false, $alias)
+            (string) \Glpi\DBAL\QueryFunction::if($condition, $true, $false, $alias)
         );
     }
 
@@ -183,7 +183,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::ifnull($expression, $value, $alias)
+            (string) \Glpi\DBAL\QueryFunction::ifnull($expression, $value, $alias)
         );
     }
 
@@ -196,7 +196,7 @@ class QueryFunctionTest extends \GLPITestCase
                 'distinct' => false,
                 'order_by' => null,
                 'alias' => null,
-                'expected' => "GROUP_CONCAT(`glpi_computers`.`name`)"
+                'expected' => "GROUP_CONCAT(`glpi_computers`.`name`)",
             ],
             [
                 'expression' => 'glpi_computers.name',
@@ -204,7 +204,7 @@ class QueryFunctionTest extends \GLPITestCase
                 'distinct' => false,
                 'order_by' => null,
                 'alias' => null,
-                'expected' => "GROUP_CONCAT(`glpi_computers`.`name`)"
+                'expected' => "GROUP_CONCAT(`glpi_computers`.`name`)",
             ],
             [
                 'expression' => 'glpi_computers.name',
@@ -212,7 +212,7 @@ class QueryFunctionTest extends \GLPITestCase
                 'distinct' => false,
                 'order_by' => null,
                 'alias' => null,
-                'expected' => "GROUP_CONCAT(`glpi_computers`.`name` SEPARATOR '_')"
+                'expected' => "GROUP_CONCAT(`glpi_computers`.`name` SEPARATOR '_')",
             ],
             [
                 'expression' => 'glpi_computers.name',
@@ -220,7 +220,7 @@ class QueryFunctionTest extends \GLPITestCase
                 'distinct' => true,
                 'order_by' => null,
                 'alias' => null,
-                'expected' => "GROUP_CONCAT(DISTINCT `glpi_computers`.`name` SEPARATOR '_')"
+                'expected' => "GROUP_CONCAT(DISTINCT `glpi_computers`.`name` SEPARATOR '_')",
             ],
             [
                 'expression' => 'glpi_computers.name',
@@ -228,7 +228,7 @@ class QueryFunctionTest extends \GLPITestCase
                 'distinct' => true,
                 'order_by' => 'glpi_computers.is_deleted',
                 'alias' => null,
-                'expected' => "GROUP_CONCAT(DISTINCT `glpi_computers`.`name` ORDER BY `glpi_computers`.`is_deleted` SEPARATOR '_')"
+                'expected' => "GROUP_CONCAT(DISTINCT `glpi_computers`.`name` ORDER BY `glpi_computers`.`is_deleted` SEPARATOR '_')",
             ],
             [
                 'expression' => 'glpi_computers.name',
@@ -236,7 +236,7 @@ class QueryFunctionTest extends \GLPITestCase
                 'distinct' => true,
                 'order_by' => 'glpi_computers.is_deleted',
                 'alias' => 'group_concat_alias',
-                'expected' => "GROUP_CONCAT(DISTINCT `glpi_computers`.`name` ORDER BY `glpi_computers`.`is_deleted` SEPARATOR '_') AS `group_concat_alias`"
+                'expected' => "GROUP_CONCAT(DISTINCT `glpi_computers`.`name` ORDER BY `glpi_computers`.`is_deleted` SEPARATOR '_') AS `group_concat_alias`",
             ],
         ];
     }
@@ -246,7 +246,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::groupConcat($expression, $separator, $distinct, $order_by, $alias)
+            (string) \Glpi\DBAL\QueryFunction::groupConcat($expression, $separator, $distinct, $order_by, $alias)
         );
     }
 
@@ -263,7 +263,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::floor($expression, $alias)
+            (string) \Glpi\DBAL\QueryFunction::floor($expression, $alias)
         );
     }
 
@@ -282,7 +282,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::sum($expression, $distinct, $alias)
+            (string) \Glpi\DBAL\QueryFunction::sum($expression, $distinct, $alias)
         );
     }
 
@@ -301,7 +301,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::count($expression, $distinct, $alias)
+            (string) \Glpi\DBAL\QueryFunction::count($expression, $distinct, $alias)
         );
     }
 
@@ -318,7 +318,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::min($expression, $alias)
+            (string) \Glpi\DBAL\QueryFunction::min($expression, $alias)
         );
     }
 
@@ -335,7 +335,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::avg($expression, $alias)
+            (string) \Glpi\DBAL\QueryFunction::avg($expression, $alias)
         );
     }
 
@@ -352,7 +352,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::cast($expression, $type, $alias)
+            (string) \Glpi\DBAL\QueryFunction::cast($expression, $type, $alias)
         );
     }
 
@@ -369,7 +369,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::convert($expression, $transcoding, $alias)
+            (string) \Glpi\DBAL\QueryFunction::convert($expression, $transcoding, $alias)
         );
     }
 
@@ -386,7 +386,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::now($alias)
+            (string) \Glpi\DBAL\QueryFunction::now($alias)
         );
     }
 
@@ -403,7 +403,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::lower($expression, $alias)
+            (string) \Glpi\DBAL\QueryFunction::lower($expression, $alias)
         );
     }
 
@@ -424,7 +424,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::replace($expression, $search, $replace, $alias)
+            (string) \Glpi\DBAL\QueryFunction::replace($expression, $search, $replace, $alias)
         );
     }
 
@@ -482,7 +482,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::fromUnixtime($expression, $format, $alias)
+            (string) \Glpi\DBAL\QueryFunction::fromUnixtime($expression, $format, $alias)
         );
     }
 
@@ -499,7 +499,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::dateFormat($expression, $format, $alias)
+            (string) \Glpi\DBAL\QueryFunction::dateFormat($expression, $format, $alias)
         );
     }
 
@@ -532,7 +532,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::coalesce($params, $alias)
+            (string) \Glpi\DBAL\QueryFunction::coalesce($params, $alias)
         );
     }
 
@@ -563,7 +563,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::least($params, $alias)
+            (string) \Glpi\DBAL\QueryFunction::least($params, $alias)
         );
     }
 
@@ -592,7 +592,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::timestampdiff($unit, $expression1, $expression2, $alias)
+            (string) \Glpi\DBAL\QueryFunction::timestampdiff($unit, $expression1, $expression2, $alias)
         );
     }
 
@@ -617,7 +617,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::bitCount($expression, $alias)
+            (string) \Glpi\DBAL\QueryFunction::bitCount($expression, $alias)
         );
     }
 
@@ -635,7 +635,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::substring($expression, $start, $length, $alias)
+            (string) \Glpi\DBAL\QueryFunction::substring($expression, $start, $length, $alias)
         );
     }
 
@@ -666,7 +666,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::greatest($params, $alias)
+            (string) \Glpi\DBAL\QueryFunction::greatest($params, $alias)
         );
     }
 
@@ -687,7 +687,7 @@ class QueryFunctionTest extends \GLPITestCase
                 'expression' => new QueryExpression("'2023-01-01'"),
                 'alias' => null,
                 'expected' => "YEAR('2023-01-01')",
-            ]
+            ],
         ];
     }
 
@@ -696,7 +696,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::year($expression, $alias)
+            (string) \Glpi\DBAL\QueryFunction::year($expression, $alias)
         );
     }
 
@@ -729,7 +729,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::timediff($expression1, $expression2, $alias)
+            (string) \Glpi\DBAL\QueryFunction::timediff($expression1, $expression2, $alias)
         );
     }
 
@@ -740,20 +740,20 @@ class QueryFunctionTest extends \GLPITestCase
                 'expression' => 'glpi_computers.name',
                 'substring' => 'test',
                 'alias' => null,
-                'expected' => "LOCATE('test', `glpi_computers`.`name`)"
+                'expected' => "LOCATE('test', `glpi_computers`.`name`)",
             ],
             [
                 'expression' => 'glpi_computers.name',
                 'substring' => 'test',
                 'alias' => 'locate_alias',
-                'expected' => "LOCATE('test', `glpi_computers`.`name`) AS `locate_alias`"
+                'expected' => "LOCATE('test', `glpi_computers`.`name`) AS `locate_alias`",
             ],
             [
                 'expression' => 'glpi_computers.name',
                 'substring' => new QueryExpression('`glpi_computers`.`serial`'),
                 'alias' => null,
-                'expected' => "LOCATE(`glpi_computers`.`serial`, `glpi_computers`.`name`)"
-            ]
+                'expected' => "LOCATE(`glpi_computers`.`serial`, `glpi_computers`.`name`)",
+            ],
         ];
     }
 
@@ -762,7 +762,7 @@ class QueryFunctionTest extends \GLPITestCase
     {
         $this->assertSame(
             $expected,
-            (string)\Glpi\DBAL\QueryFunction::locate($substring, $expression, $alias)
+            (string) \Glpi\DBAL\QueryFunction::locate($substring, $expression, $alias)
         );
     }
 }

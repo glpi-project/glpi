@@ -106,7 +106,7 @@ class AssetTest extends DbTestCase
             $this->assertEquals(
                 [
                     'assets_assetdefinitions_id' => $definition->getID(),
-                    'custom_fields' => '[]'
+                    'custom_fields' => '[]',
                 ],
                 $asset->{$method}([])
             );
@@ -114,7 +114,7 @@ class AssetTest extends DbTestCase
                 [
                     'name' => 'test',
                     'assets_assetdefinitions_id' => $definition->getID(),
-                    'custom_fields' => '[]'
+                    'custom_fields' => '[]',
                 ],
                 $asset->{$method}(['name' => 'test'])
             );
@@ -144,7 +144,7 @@ class AssetTest extends DbTestCase
     public function testSearchOptionsUnicity(): void
     {
         $capacities = array_map(
-            fn (CapacityInterface $capacity) => new Capacity(name: $capacity::class),
+            fn(CapacityInterface $capacity) => new Capacity(name: $capacity::class),
             AssetDefinitionManager::getInstance()->getAvailableCapacities()
         );
         $definition = $this->initAssetDefinition(
@@ -244,7 +244,7 @@ class AssetTest extends DbTestCase
             'label' => 'Test dropdown',
             'type' => DropdownType::class,
             'itemtype' => \Computer::class,
-            'field_options' => ['multiple' => true]
+            'field_options' => ['multiple' => true],
         ], ['field_options']);
 
         $asset = $this->createItem($asset_definition->getAssetClassName(), [

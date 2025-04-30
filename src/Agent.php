@@ -65,7 +65,7 @@ class Agent extends CommonDBTM
 
     /** @var string */
     public static $rightname = 'agent';
-   //static $rightname = 'inventory';
+    //static $rightname = 'inventory';
 
     private static $found_address = false;
 
@@ -92,7 +92,7 @@ class Agent extends CommonDBTM
         $tab = [
             [
                 'id'            => 'common',
-                'name'          => self::getTypeName(1)
+                'name'          => self::getTypeName(1),
             ], [
                 'id'            => '1',
                 'table'         => $this->getTable(),
@@ -168,7 +168,7 @@ class Agent extends CommonDBTM
                 'datatype'         => 'specific',
                 'searchtype'       => 'equals',
                 'additionalfields' => ['itemtype'],
-                'joinparams'       => ['jointype' => 'child']
+                'joinparams'       => ['jointype' => 'child'],
             ],
             [
                 'id'            => '16',
@@ -241,7 +241,7 @@ class Agent extends CommonDBTM
                 'name'          => __('Remote inventory'),
                 'datatype'      => 'bool',
                 'massiveaction' => false,
-            ]
+            ],
 
         ];
 
@@ -424,7 +424,7 @@ class Agent extends CommonDBTM
             'last_contact' => date('Y-m-d H:i:s'),
             'useragent'    => $_SERVER['HTTP_USER_AGENT'] ?? null,
             'agenttypes_id' => $atype->fields['id'],
-            'itemtype'     => $metadata['itemtype'] ?? 'Computer'
+            'itemtype'     => $metadata['itemtype'] ?? 'Computer',
         ];
 
         if (isset($metadata['provider']['version'])) {
@@ -472,7 +472,7 @@ class Agent extends CommonDBTM
         if ($deviceid === 'foo' || (!$has_expected_agent_type && !$aid)) {
             $input += [
                 'items_id' => 0,
-                'id' => 0
+                'id' => 0,
             ];
             $this->fields = $input;
             return 0;
@@ -566,13 +566,13 @@ class Agent extends CommonDBTM
 
         $addresses = [];
 
-       //retrieve linked items
+        //retrieve linked items
         $item = $this->getLinkedItem();
-        if ((int)$item->getID() > 0) {
+        if ((int) $item->getID() > 0) {
             $item_name = $item->getFriendlyName();
             $addresses[] = $item_name;
 
-           //deviceid should contains machines name
+            //deviceid should contains machines name
             $matches = [];
             preg_match('/^(\s)+-\d{4}(-\d{2}){5}$/', $this->fields['deviceid'], $matches);
             if (isset($matches[1])) {
@@ -581,7 +581,7 @@ class Agent extends CommonDBTM
                 }
             }
 
-           //append linked ips
+            //append linked ips
             $ports_iterator = $DB->request([
                 'SELECT' => ['ips.name', 'ips.version'],
                 'FROM'   => NetworkPort::getTable() . ' AS netports',
@@ -592,13 +592,13 @@ class Agent extends CommonDBTM
                         'OR'  => [
                             'AND' => [
                                 'NOT' => [
-                                    'netports.instantiation_type' => 'NULL'
+                                    'netports.instantiation_type' => 'NULL',
                                 ],
-                                'netports.instantiation_type' => 'NetworkPortLocal'
+                                'netports.instantiation_type' => 'NetworkPortLocal',
                             ],
-                            'ips.name'                    => ['127.0.0.1', '::1']
-                        ]
-                    ]
+                            'ips.name'                    => ['127.0.0.1', '::1'],
+                        ],
+                    ],
                 ],
                 'INNER JOIN'   => [
                     NetworkName::getTable() . ' AS netnames' => [
@@ -606,22 +606,22 @@ class Agent extends CommonDBTM
                             'netnames'  => 'items_id',
                             'netports'  => 'id', [
                                 'AND' => [
-                                    'netnames.itemtype'  => NetworkPort::getType()
-                                ]
-                            ]
-                        ]
+                                    'netnames.itemtype'  => NetworkPort::getType(),
+                                ],
+                            ],
+                        ],
                     ],
                     IPAddress::getTable() . ' AS ips' => [
                         'ON'  => [
                             'ips'       => 'items_id',
                             'netnames'  => 'id', [
                                 'AND' => [
-                                    'ips.itemtype' => NetworkName::getType()
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                    'ips.itemtype' => NetworkName::getType(),
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ]);
             foreach ($ports_iterator as $row) {
                 if (!in_array($row['name'], $addresses)) {
@@ -634,26 +634,26 @@ class Agent extends CommonDBTM
                 }
             }
 
-           //append linked domains
+            //append linked domains
             $iterator = $DB->request([
                 'SELECT' => ['d.name'],
                 'FROM'   => Domain_Item::getTable(),
                 'WHERE'  => [
                     'itemtype'  => $item->getType(),
-                    'items_id'  => $item->getID()
+                    'items_id'  => $item->getID(),
                 ],
                 'INNER JOIN'   => [
                     Domain::getTable() . ' AS d'  => [
                         'ON'  => [
                             Domain_Item::getTable() => Domain::getForeignKeyField(),
-                            'd'                     => 'id'
-                        ]
-                    ]
-                ]
+                            'd'                     => 'id',
+                        ],
+                    ],
+                ],
             ]);
 
             foreach ($iterator as $row) {
-                 $addresses[] = sprintf('%s.%s', $item_name, $row['name']);
+                $addresses[] = sprintf('%s.%s', $item_name, $row['name']);
             }
         }
 
@@ -669,7 +669,7 @@ class Agent extends CommonDBTM
     {
         $addresses = $this->guessAddresses();
         $protocols = ['http', 'https'];
-        $port = (int)$this->fields['port'];
+        $port = (int) $this->fields['port'];
         if ($port === 0) {
             $port = self::DEFAULT_PORT;
         }
@@ -788,7 +788,7 @@ class Agent extends CommonDBTM
     {
         $data = [];
 
-        $raw_content = (string)$response->getBody();
+        $raw_content = (string) $response->getBody();
 
         switch ($request) {
             case self::ACTION_STATUS:
@@ -850,9 +850,9 @@ class Agent extends CommonDBTM
                         date: QueryFunction::now(),
                         interval: $retention_time,
                         interval_unit: 'DAY'
-                    )
-                ]
-            ]
+                    ),
+                ],
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -904,7 +904,7 @@ class Agent extends CommonDBTM
                                 $input = [
                                     'id'        => $item->fields['id'],
                                     'states_id' => $config['stale_agents_status'],
-                                    'is_dynamic' => 1
+                                    'is_dynamic' => 1,
                                 ];
                                 if ($item->update($input)) {
                                     $task->addVolume(1);

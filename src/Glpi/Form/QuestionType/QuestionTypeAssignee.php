@@ -99,7 +99,7 @@ final class QuestionTypeAssignee extends AbstractQuestionTypeActors
                 ) {
                     throw new \Exception('Invalid actor: must be able to be assigned');
                 }
-            } else if ($actor['itemtype'] === Group::class) {
+            } elseif ($actor['itemtype'] === Group::class) {
                 // Check if the group can be assigned
                 if (Group::getById($actor['items_id'])->fields['is_assign'] !== 1) {
                     throw new \Exception('Invalid actor: must be able to be assigned');

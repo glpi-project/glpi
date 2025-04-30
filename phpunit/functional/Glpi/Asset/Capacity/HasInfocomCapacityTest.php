@@ -304,7 +304,7 @@ class HasInfocomCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Infocom::class,
-            'expected' => 'Used by %d of %d assets'
+            'expected' => 'Used by %d of %d assets',
         ];
     }
 }

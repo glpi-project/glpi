@@ -205,7 +205,7 @@ class FrontEndAssetsExtension extends AbstractExtension
                 // Apply active entity styles
                 $entity->getFromDB($_SESSION['glpiactive_entity']);
             } else {
-               // Apply root entity styles
+                // Apply root entity styles
                 $entity->getFromDB('0');
             }
             $css = $entity->getCustomCssTag();
@@ -228,7 +228,7 @@ class FrontEndAssetsExtension extends AbstractExtension
             return '';
         }
 
-       // Compute available translation domains
+        // Compute available translation domains
         $locales_domains = ['glpi' => GLPI_VERSION];
         $plugins = Plugin::getPlugins();
         foreach ($plugins as $plugin) {

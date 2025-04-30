@@ -110,7 +110,7 @@ class KnowbaseTest extends DbTestCase
                 'title' => 'Without Category <span class="badge bg-azure-lt" title="This category contains Knowledge base">2</span>',
                 'parent' => 0,
                 'a_attr' => ['data-id' => -1],
-            ]
+            ],
         ];
 
         $tree = \KnowbaseItem::getTreeCategoryList($itemtype, []);
@@ -163,17 +163,17 @@ class KnowbaseTest extends DbTestCase
                                 'title' => 'cat 1.1.2 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>',
                                 'parent' => $cat_1_1_id,
                                 'a_attr' => ['data-id' => $cat_1_1_2_id],
-                            ]
-                        ]
-                    ]
-                ]
+                            ],
+                        ],
+                    ],
+                ],
             ],
             [
                 'key' => -1,
                 'title' => 'Without Category <span class="badge bg-azure-lt" title="This category contains Knowledge base">2</span>',
                 'parent' => 0,
                 'a_attr' => ['data-id' => -1],
-            ]
+            ],
         ];
         $this->assertEquals($expected, $tree);
 
@@ -215,23 +215,23 @@ class KnowbaseTest extends DbTestCase
                                 'title' => 'cat 1.1.2 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>',
                                 'parent' => $cat_1_1_id,
                                 'a_attr' => ['data-id' => $cat_1_1_2_id],
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                     [
                         'key' => $cat_1_3_id,
                         'title' => 'cat 1.3 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>',
                         'parent' => $cat_1_id,
                         'a_attr' => ['data-id' => $cat_1_3_id],
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'key' => -1,
                 'title' => 'Without Category <span class="badge bg-azure-lt" title="This category contains Knowledge base">2</span>',
                 'parent' => 0,
                 'a_attr' => ['data-id' => -1],
-            ]
+            ],
         ];
         $this->assertEquals($expected, $tree);
 
@@ -285,7 +285,7 @@ class KnowbaseTest extends DbTestCase
                 'title' => 'Without Category',
                 'parent' => 0,
                 'a_attr' => ['data-id' => -1],
-            ]
+            ],
         ];
         $this->assertEquals($expected, $tree_with_no_public_faq);
 
@@ -307,17 +307,17 @@ class KnowbaseTest extends DbTestCase
                                 'title' => 'cat 1.2.1 <span class="badge bg-azure-lt" title="This category contains Knowledge base">1</span>',
                                 'parent' => $cat_1_2_id,
                                 'a_attr' => ['data-id' => $cat_1_2_1_id],
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
-                ]
+                ],
             ],
             [
                 'key' => -1,
                 'title' => 'Without Category',
                 'parent' => 0,
                 'a_attr' => ['data-id' => -1],
-            ]
+            ],
         ];
         $this->assertEquals($expected, $tree_with_public_faq);
     }

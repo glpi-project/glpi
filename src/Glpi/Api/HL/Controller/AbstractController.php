@@ -37,16 +37,11 @@ namespace Glpi\Api\HL\Controller;
 
 use CommonDBTM;
 use Glpi\Api\HL\Doc as Doc;
-use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
-use Glpi\Api\HL\RSQLInput;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryUnion;
-use Search;
 
 /**
  * @phpstan-type AdditionalErrorMessage array{priority: string, message: string}
@@ -79,7 +74,7 @@ abstract class AbstractController
         'location' => 'query',
         'schema' => [
             'type' => Doc\Schema::TYPE_STRING,
-        ]
+        ],
     ];
 
     protected const PARAMETER_START = [
@@ -91,7 +86,7 @@ abstract class AbstractController
             'format' => Doc\Schema::FORMAT_INTEGER_INT64,
             'minimum' => 0,
             'default' => 0,
-        ]
+        ],
     ];
 
     protected const PARAMETER_LIMIT = [
@@ -103,7 +98,7 @@ abstract class AbstractController
             'format' => Doc\Schema::FORMAT_INTEGER_INT64,
             'minimum' => 0,
             'default' => 100,
-        ]
+        ],
     ];
 
     protected const PARAMETER_SORT = [
@@ -113,7 +108,7 @@ abstract class AbstractController
         'location' => 'query',
         'schema' => [
             'type' => Doc\Schema::TYPE_STRING,
-        ]
+        ],
     ];
 
     /**
@@ -201,7 +196,7 @@ abstract class AbstractController
                     'x-readonly' => $class !== \Entity::class,
                 ],
                 $name_field => ['type' => Doc\Schema::TYPE_STRING],
-            ]
+            ],
         ];
         if ($full_schema !== null) {
             $schema['x-full-schema'] = $full_schema;
@@ -282,7 +277,7 @@ abstract class AbstractController
                 foreach ($message_texts as $message) {
                     $additional_messages[] = [
                         'priority' => $get_priority_name($priority),
-                        'message' => $message
+                        'message' => $message,
                     ];
                 }
             }
@@ -325,7 +320,7 @@ abstract class AbstractController
             foreach ($errors['invalid'] as $invalid_info) {
                 $msg = [
                     'priority' => 'error',
-                    'message' => 'Invalid parameter: ' . $invalid_info['name']
+                    'message' => 'Invalid parameter: ' . $invalid_info['name'],
                 ];
                 if (isset($invalid_info['reason'])) {
                     $msg['message'] .= '. ' . $invalid_info['reason'];
@@ -361,7 +356,7 @@ abstract class AbstractController
     {
         return new JSONResponse([
             'id' => $id,
-            'href' => $api_path
+            'href' => $api_path,
         ], $status, ['Location' => $api_path]);
     }
 

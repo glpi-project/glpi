@@ -72,7 +72,7 @@ class SessionsConfigurationTest extends \GLPITestCase
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
             [
-                '"session.auto_start" must be set to off.'
+                '"session.auto_start" must be set to off.',
             ],
             $instance->getValidationMessages()
         );

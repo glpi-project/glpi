@@ -86,15 +86,15 @@ class NetworkPortMetrics extends CommonDBChild
         $bdate = new DateTime();
         $bdate->sub(new DateInterval('P1Y'));
         $filters = [
-            'date' => ['>', $bdate->format('Y-m-d')]
+            'date' => ['>', $bdate->format('Y-m-d')],
         ];
         $filters = array_merge($filters, $user_filters);
 
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => [
-                static::$items_id  => $netport->fields['id']
-            ] + $filters
+                static::$items_id  => $netport->fields['id'],
+            ] + $filters,
         ]);
 
         return iterator_to_array($iterator);
@@ -150,7 +150,7 @@ class NetworkPortMetrics extends CommonDBChild
             'line_width'  => 2,
         ];
 
-       //display bytes graph
+        //display bytes graph
         echo "<div class='dashboard netports_metrics bytes'>";
         echo Widget::multipleAreas($bytes_bar_conf);
         echo "</div>";
@@ -170,7 +170,7 @@ class NetworkPortMetrics extends CommonDBChild
 
         echo "</br>";
 
-       //display error graph
+        //display error graph
         echo "<div class='dashboard netports_metrics'>";
         echo Widget::multipleAreas($errors_bar_conf);
         echo "</div>";

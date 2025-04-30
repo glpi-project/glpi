@@ -45,7 +45,7 @@ class RichTextTest extends \GLPITestCase
 {
     public static function getSafeHtmlProvider(): iterable
     {
-       // Empty content would not be altered
+        // Empty content would not be altered
         yield [
             'content'                => null,
             'encode_output_entities' => false,
@@ -57,14 +57,14 @@ class RichTextTest extends \GLPITestCase
             'expected_result'        => '',
         ];
 
-       // Handling of encoded result (to be used in textarea for instance)
+        // Handling of encoded result (to be used in textarea for instance)
         yield [
             'content'                => '<p>Some HTML content with special chars like &gt; &amp; &lt;.</p>',
             'encode_output_entities' => true,
             'expected_result'        => '&lt;p&gt;Some HTML content with special chars like &amp;gt; &amp;amp; &amp;lt;.&lt;/p&gt;',
         ];
 
-       // Handling of special chars (<, > and &)
+        // Handling of special chars (<, > and &)
         $xml_sample = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
@@ -80,7 +80,7 @@ XML;
             'expected_result'        => $result,
         ];
 
-       // Handling of plain-text transformation
+        // Handling of plain-text transformation
         yield [
             'content'                => <<<PLAINTEXT
 Plain text content created by mailcollector.
@@ -105,7 +105,7 @@ PLAINTEXT,
 HTML,
         ];
 
-       // Cleaning of HTML structure
+        // Cleaning of HTML structure
         yield [
             'content'                => <<<HTML
 <!doctype html>
@@ -135,7 +135,7 @@ HTML,
 HTML,
         ];
 
-       // Unauthorized elements should be cleaned, other should be preserved
+        // Unauthorized elements should be cleaned, other should be preserved
         yield [
             'content'                => <<<HTML
 <h1>Form element should be removed</h1>

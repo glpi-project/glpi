@@ -38,7 +38,7 @@ use Glpi\DBAL\QueryExpression;
 /// Class Ticket links
 class Ticket_Ticket extends CommonITILObject_CommonITILObject
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1     = 'Ticket';
     public static $items_id_1     = 'tickets_id_1';
     public static $itemtype_2     = 'Ticket';
@@ -85,11 +85,11 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
                 ) {
                     if ($item->getFromDB($input['tickets_id_1'])) {
                         foreach ($ids as $id) {
-                              $input2                          = [];
-                              $input2['id']                    = $input['tickets_id_1'];
-                              $input2['_link']['tickets_id_1'] = $id;
-                              $input2['_link']['link']         = $input['link'];
-                              $input2['_link']['tickets_id_2'] = $input['tickets_id_1'];
+                            $input2                          = [];
+                            $input2['id']                    = $input['tickets_id_1'];
+                            $input2['_link']['tickets_id_1'] = $id;
+                            $input2['_link']['link']         = $input['link'];
+                            $input2['_link']['tickets_id_2'] = $input['tickets_id_1'];
                             if ($item->can($input['tickets_id_1'], UPDATE)) {
                                 if ($ticket->update($input2)) {
                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
@@ -126,7 +126,7 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Make new database object and fill variables
+        // Make new database object and fill variables
         if (empty($ID)) {
             return [];
         }
@@ -138,15 +138,15 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
             'WHERE'  => [
                 'OR'  => [
                     'tickets_id_1' => $ID,
-                    'tickets_id_2' => $ID
-                ]
-            ]
+                    'tickets_id_2' => $ID,
+                ],
+            ],
         ];
         if ($check_view_rights && !Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
             $ticket_table = Ticket::getTable();
             $criteria['LEFT JOIN'] = [
                 $ticket_table => [
-                    'ON' => new QueryExpression("{$ticket_table}.id=(CASE WHEN {$table}.tickets_id_1={$ID} THEN {$table}.tickets_id_2 ELSE {$table}.tickets_id_1 END)")
+                    'ON' => new QueryExpression("{$ticket_table}.id=(CASE WHEN {$table}.tickets_id_1={$ID} THEN {$table}.tickets_id_2 ELSE {$table}.tickets_id_1 END)"),
                 ],
             ];
             $unused_ref = [];
@@ -165,12 +165,12 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
                 $tickets[$data['id']] = [
                     'link'         => $data['link'],
                     'tickets_id_1' => $data['tickets_id_1'],
-                    'tickets_id'   => $data['tickets_id_1']
+                    'tickets_id'   => $data['tickets_id_1'],
                 ];
             } else {
                 $tickets[$data['id']] = [
                     'link'       => $data['link'],
-                    'tickets_id' => $data['tickets_id_2']
+                    'tickets_id' => $data['tickets_id_2'],
                 ];
             }
         }

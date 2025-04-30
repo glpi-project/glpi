@@ -66,7 +66,7 @@ foreach ($sub_types as $criteria => $sub_type) {
                             'glpi_rules' => 'id',
                             [
                                 'AND' => ['glpi_rules.sub_type' => $sub_type],
-                            ]
+                            ],
                         ],
                     ],
                 ],

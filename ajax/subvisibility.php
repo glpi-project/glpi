@@ -48,7 +48,7 @@ if (!empty($_POST['type']) && isset($_POST['items_id']) && ($_POST['items_id'] >
         case 'Group':
         case 'Profile':
             $params = ['value' => $_SESSION['glpiactive_entity'],
-                'name'  => $prefix . 'entities_id' . $suffix
+                'name'  => $prefix . 'entities_id' . $suffix,
             ];
             if (Session::canViewAllEntities()) {
                 $params['toadd'] = [-1 => __('No restriction')];

@@ -35,7 +35,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Monolog\Logger;
 use Psr\Log\LogLevel;
 
 /* Test for inc/notificationeventajax.class.php */
@@ -95,11 +94,11 @@ class NotificationEventAjaxTest extends DbTestCase
         $uid = getItemByTypeName('User', TU_USER, true);
         $this->assertGreaterThan(
             0,
-            (int)$ticket->add([
+            (int) $ticket->add([
                 'name'                  => '',
                 'description'           => 'My ticket to be notified.',
                 '_users_id_requester'   => $uid,
-                'content'               => ''
+                'content'               => '',
             ])
         );
 
@@ -114,8 +113,8 @@ class NotificationEventAjaxTest extends DbTestCase
             'FROM'   => \Notification::getTable(),
             'WHERE'  => [
                 'itemtype'  => \Ticket::getType(),
-                'event'     => 'new'
-            ]
+                'event'     => 'new',
+            ],
         ]);
         $this->assertSame(1, $iterator->numRows());
         $row = $iterator->current();
@@ -125,8 +124,8 @@ class NotificationEventAjaxTest extends DbTestCase
             'FROM'   => \Notification_NotificationTemplate::getTable(),
             'WHERE'  => [
                 'notifications_id'   => $notif_id,
-                'mode'               => \Notification_NotificationTemplate::MODE_MAIL
-            ]
+                'mode'               => \Notification_NotificationTemplate::MODE_MAIL,
+            ],
         ]);
         $this->assertSame(1, $iterator->numRows());
         $row = $iterator->current();
@@ -137,11 +136,11 @@ class NotificationEventAjaxTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$ticket->add([
+            (int) $ticket->add([
                 'name'                  => '',
                 'description'           => 'My ticket to be notified.',
                 '_users_id_requester'   => $uid,
-                'content'               => ''
+                'content'               => '',
             ])
         );
 

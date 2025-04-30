@@ -129,7 +129,7 @@ $useless_keys = [
         'FK_device',
     ],
     'glpi_dropdowntranslations' => [
-        'typeid'
+        'typeid',
     ],
     'glpi_entities' => [
         'entities_id',

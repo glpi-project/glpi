@@ -40,8 +40,7 @@ class CapacityConfig implements JsonSerializable
 {
     public function __construct(
         private array $values = []
-    ) {
-    }
+    ) {}
 
     public function setValue(string $key, mixed $value): self
     {

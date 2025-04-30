@@ -46,7 +46,7 @@ class ProblemParametersTest extends AbstractParameters
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
         $this->createItem('ITILCategory', [
-            'name' => 'category_testGetValues'
+            'name' => 'category_testGetValues',
         ]);
 
         $itilcategories_id = getItemByTypeName('ITILCategory', 'category_testGetValues', true);

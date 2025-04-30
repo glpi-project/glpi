@@ -530,15 +530,14 @@ EOT;
 
     private function doAuthMiddleware(MiddlewareInput $input): void
     {
-        $action = static function (MiddlewareInput $input, ?callable $next = null) {
-        };
+        $action = static function (MiddlewareInput $input, ?callable $next = null) {};
         foreach ($this->auth_middlewares as $middleware) {
             $explicit_include = in_array(get_class($middleware['middleware']), $input->route_path->getMiddlewares());
             $conditions_met = $explicit_include || $middleware['condition']($input->route_path);
             if (!$conditions_met) {
                 continue;
             }
-            $action = static fn ($input) => $middleware['middleware']($input, $action);
+            $action = static fn($input) => $middleware['middleware']($input, $action);
         }
         $action($input);
     }
@@ -554,22 +553,21 @@ EOT;
             if (!$conditions_met) {
                 continue;
             }
-            $action = static fn ($input) => $middleware['middleware']($input, $action);
+            $action = static fn($input) => $middleware['middleware']($input, $action);
         }
         return $action($input);
     }
 
     private function doResponseMiddleware(MiddlewareInput $input): void
     {
-        $action = static function (MiddlewareInput $input, ?callable $next = null) {
-        };
+        $action = static function (MiddlewareInput $input, ?callable $next = null) {};
         foreach ($this->response_middlewares as $middleware) {
             $explicit_include = in_array(get_class($middleware['middleware']), $input->route_path->getMiddlewares());
             $conditions_met = $explicit_include || $middleware['condition']($input->route_path);
             if (!$conditions_met) {
                 continue;
             }
-            $action = static fn ($input) => $middleware['middleware']($input, $action);
+            $action = static fn($input) => $middleware['middleware']($input, $action);
         }
         $action($input);
     }
@@ -642,7 +640,7 @@ EOT;
             // Do auth middlewares now even if auth isn't required so session data *could* be used like the theme for doc endpoints.
             $this->doAuthMiddleware($middleware_input);
             $auth_from_middleware = $middleware_input->response === null;
-            $this->current_client = $this->current_client ?? $middleware_input->client;
+            $this->current_client ??= $middleware_input->client;
 
             if ($requires_auth && !$auth_from_middleware) {
                 if (!($request->hasHeader('Authorization') && Session::getLoginUserID() !== false)) {
@@ -669,7 +667,7 @@ EOT;
                     }
                     if (count($missing_params)) {
                         $errors = [
-                            'missing' => $missing_params
+                            'missing' => $missing_params,
                         ];
                         $response = AbstractController::getInvalidParametersErrorResponse($errors);
                     }
@@ -712,14 +710,14 @@ EOT;
             if ($request->hasHeader('GLPI-Profile')) {
                 $requested_profile = $request->getHeaderLine('GLPI-Profile');
                 if (is_numeric($requested_profile)) {
-                    Session::changeProfile((int)$requested_profile);
+                    Session::changeProfile((int) $requested_profile);
                 }
             }
             if ($request->hasHeader('GLPI-Entity')) {
                 $requested_entity = $request->getHeaderLine('GLPI-Entity');
                 if (is_numeric($requested_entity)) {
                     $is_recursive = $request->hasHeader('GLPI-Entity-Recursive') && strtolower($request->getHeaderLine('GLPI-Entity-Recursive')) === 'true';
-                    Session::changeActiveEntities((int)$requested_entity, $is_recursive);
+                    Session::changeActiveEntities((int) $requested_entity, $is_recursive);
                 }
             }
         }

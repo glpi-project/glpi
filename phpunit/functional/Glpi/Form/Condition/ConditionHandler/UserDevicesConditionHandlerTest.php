@@ -57,7 +57,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => Computer::class,
             'submitted_answer'    => "Computer_42",
             'expected_result'     => true,
-            'question_extra_data' => $single_config
+            'question_extra_data' => $single_config,
         ];
         yield "IS_ITEMTYPE check - case 2 for $type (Computer)" => [
             'question_type'       => $type,
@@ -65,7 +65,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => Computer::class,
             'submitted_answer'    => "Printer_42",
             'expected_result'     => false,
-            'question_extra_data' => $single_config
+            'question_extra_data' => $single_config,
         ];
         yield "IS_ITEMTYPE check - case 3 for $type (Computer)" => [
             'question_type'       => $type,
@@ -73,7 +73,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => Computer::class,
             'submitted_answer'    => "Phone_42",
             'expected_result'     => false,
-            'question_extra_data' => $single_config
+            'question_extra_data' => $single_config,
         ];
 
         // Test user device answers with the IS_NOT_ITEMTYPE operator (Computer)
@@ -83,7 +83,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => Computer::class,
             'submitted_answer'    => "Computer_42",
             'expected_result'     => false,
-            'question_extra_data' => $single_config
+            'question_extra_data' => $single_config,
         ];
         yield "IS_NOT_ITEMTYPE check - case 2 for $type (Computer)" => [
             'question_type'       => $type,
@@ -91,7 +91,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => Computer::class,
             'submitted_answer'    => "Printer_42",
             'expected_result'     => true,
-            'question_extra_data' => $single_config
+            'question_extra_data' => $single_config,
         ];
         yield "IS_NOT_ITEMTYPE check - case 3 for $type (Computer)" => [
             'question_type'       => $type,
@@ -99,7 +99,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => Computer::class,
             'submitted_answer'    => "Phone_42",
             'expected_result'     => true,
-            'question_extra_data' => $single_config
+            'question_extra_data' => $single_config,
         ];
 
         // Test invalid format cases for single device
@@ -109,7 +109,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => Computer::class,
             'submitted_answer'    => "invalid_value",
             'expected_result'     => false,
-            'question_extra_data' => $single_config
+            'question_extra_data' => $single_config,
         ];
         yield "IS_ITEMTYPE check - invalid format case 2 for $type" => [
             'question_type'       => $type,
@@ -117,7 +117,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => Computer::class,
             'submitted_answer'    => "Computer",
             'expected_result'     => false,
-            'question_extra_data' => $single_config
+            'question_extra_data' => $single_config,
         ];
         yield "IS_ITEMTYPE check - invalid format case 3 for $type" => [
             'question_type'       => $type,
@@ -125,7 +125,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => Computer::class,
             'submitted_answer'    => "42",
             'expected_result'     => false,
-            'question_extra_data' => $single_config
+            'question_extra_data' => $single_config,
         ];
         yield "IS_ITEMTYPE check - invalid format case 4 for $type" => [
             'question_type'       => $type,
@@ -133,7 +133,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => Computer::class,
             'submitted_answer'    => "",
             'expected_result'     => false,
-            'question_extra_data' => $single_config
+            'question_extra_data' => $single_config,
         ];
 
         // Test multiple devices with the AT_LEAST_ONE_ITEM_OF_ITEMTYPE operator
@@ -143,7 +143,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => [Computer::class],
             'submitted_answer'    => ["Computer_42", "Printer_23"],
             'expected_result'     => true,
-            'question_extra_data' => $multiple_config
+            'question_extra_data' => $multiple_config,
         ];
         yield "AT_LEAST_ONE_ITEM_OF_ITEMTYPE check - case 2 (no Computer)" => [
             'question_type'       => $type,
@@ -151,7 +151,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => [Computer::class],
             'submitted_answer'    => ["Printer_23", "Phone_42"],
             'expected_result'     => false,
-            'question_extra_data' => $multiple_config
+            'question_extra_data' => $multiple_config,
         ];
         yield "AT_LEAST_ONE_ITEM_OF_ITEMTYPE check - case 3 (multiple conditions, some match)" => [
             'question_type'       => $type,
@@ -159,7 +159,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => [Computer::class, "Phone"],
             'submitted_answer'    => ["Printer_23", "Phone_42"],
             'expected_result'     => true,
-            'question_extra_data' => $multiple_config
+            'question_extra_data' => $multiple_config,
         ];
         yield "AT_LEAST_ONE_ITEM_OF_ITEMTYPE check - case 4 (empty submission)" => [
             'question_type'       => $type,
@@ -167,7 +167,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => [Computer::class],
             'submitted_answer'    => [],
             'expected_result'     => false,
-            'question_extra_data' => $multiple_config
+            'question_extra_data' => $multiple_config,
         ];
 
         // Test multiple devices with the ALL_ITEMS_OF_ITEMTYPE operator
@@ -177,7 +177,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => [Computer::class],
             'submitted_answer'    => ["Computer_42", "Computer_23"],
             'expected_result'     => true,
-            'question_extra_data' => $multiple_config
+            'question_extra_data' => $multiple_config,
         ];
         yield "ALL_ITEMS_OF_ITEMTYPE check - case 2 (mixed types)" => [
             'question_type'       => $type,
@@ -185,7 +185,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => [Computer::class],
             'submitted_answer'    => ["Computer_42", "Printer_23"],
             'expected_result'     => false,
-            'question_extra_data' => $multiple_config
+            'question_extra_data' => $multiple_config,
         ];
         yield "ALL_ITEMS_OF_ITEMTYPE check - case 3 (multiple allowed types)" => [
             'question_type'       => $type,
@@ -193,7 +193,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => [Computer::class, "Printer"],
             'submitted_answer'    => ["Computer_42", "Printer_23"],
             'expected_result'     => true,
-            'question_extra_data' => $multiple_config
+            'question_extra_data' => $multiple_config,
         ];
         yield "ALL_ITEMS_OF_ITEMTYPE check - case 4 (empty submission)" => [
             'question_type'       => $type,
@@ -201,7 +201,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => [Computer::class],
             'submitted_answer'    => [],
             'expected_result'     => false,
-            'question_extra_data' => $multiple_config
+            'question_extra_data' => $multiple_config,
         ];
         yield "ALL_ITEMS_OF_ITEMTYPE check - case 5 (invalid format with valid item)" => [
             'question_type'       => $type,
@@ -209,7 +209,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => [Computer::class],
             'submitted_answer'    => ["invalid_format", "Computer_42"],
             'expected_result'     => true,
-            'question_extra_data' => $multiple_config
+            'question_extra_data' => $multiple_config,
         ];
         yield "ALL_ITEMS_OF_ITEMTYPE check - case 6 (invalid format)" => [
             'question_type'       => $type,
@@ -217,7 +217,7 @@ final class UserDevicesConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => [Computer::class],
             'submitted_answer'    => ["invalid_format"],
             'expected_result'     => false,
-            'question_extra_data' => $multiple_config
+            'question_extra_data' => $multiple_config,
         ];
     }
 }

@@ -36,9 +36,6 @@
 namespace Glpi\Api\HL;
 
 use CommonGLPI;
-use Glpi\Api\HL\Controller\ComponentController;
-use Glpi\Api\HL\Controller\ProjectController;
-use Glpi\Api\HL\Doc\Response;
 use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Doc\SchemaReference;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -242,13 +239,13 @@ EOT;
             'servers' => [
                 [
                     'url' => $CFG_GLPI['url_base'] . '/api.php',
-                    'description' => 'GLPI High-Level REST API'
-                ]
+                    'description' => 'GLPI High-Level REST API',
+                ],
             ],
             'components' => [
                 'securitySchemes' => $this->getSecuritySchemeComponents(),
                 'schemas' => $component_schemas,
-            ]
+            ],
         ];
 
         $routes = $this->router->getAllRoutes();
@@ -458,13 +455,13 @@ EOT;
                         'authorizationUrl' => $CFG_GLPI['root_doc'] . '/api.php/authorize',
                         'tokenUrl' => $CFG_GLPI['root_doc'] . '/api.php/token',
                         'refreshUrl' => $CFG_GLPI['root_doc'] . '/api.php/token',
-                        'scopes' => $scopes
+                        'scopes' => $scopes,
                     ],
                     'password' => [
                         'tokenUrl' => $CFG_GLPI['root_doc'] . '/api.php/token',
-                        'scopes' => $scopes
-                    ]
-                ]
+                        'scopes' => $scopes,
+                    ],
+                ],
             ],
         ];
     }
@@ -502,9 +499,9 @@ EOT;
                     'schema' => [
                         'type' => 'object',
                         'properties' => [],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         // If there is a parameter with the location of body and name of "_", it should be an object that represents the entire request body (or at least the base schema of it)
@@ -526,7 +523,7 @@ EOT;
                 continue;
             }
             $body_param = [
-                'type' => $route_param->getSchema()->getType()
+                'type' => $route_param->getSchema()->getType(),
             ];
             if ($route_param->getSchema()->getFormat() !== null) {
                 $body_param['format'] = $route_param->getSchema()->getFormat();
@@ -566,8 +563,8 @@ EOT;
     {
         return [
             [
-                'oauth' => []
-            ]
+                'oauth' => [],
+            ],
         ];
     }
 
@@ -590,17 +587,17 @@ EOT;
                 'description' => $response->getDescription(),
                 'content' => [
                     $response_media_type => [
-                        'schema' => $resolved_schema
-                    ]
+                        'schema' => $resolved_schema,
+                    ],
                 ],
             ];
             if ($response_media_type === 'application/json' && $route_path->hasMiddleware(ResultFormatterMiddleware::class)) {
                 // add csv and xml
                 $response_schema['content']['text/csv'] = [
-                    'schema' => $resolved_schema
+                    'schema' => $resolved_schema,
                 ];
                 $response_schema['content']['application/xml'] = [
-                    'schema' => $resolved_schema
+                    'schema' => $resolved_schema,
                 ];
             }
             $response_schemas[$response->getStatusCode()] = $response_schema;
@@ -629,7 +626,7 @@ EOT;
             $default_responses = [
                 '200' => [
                     'description' => 'Success',
-                    'methods' => ['GET', 'PATCH'] // Usually only GET and PATCH methods return 200
+                    'methods' => ['GET', 'PATCH'], // Usually only GET and PATCH methods return 200
                 ],
                 '201' => [
                     'description' => 'Success (created)',
@@ -638,9 +635,9 @@ EOT;
                         'Location' => [
                             'description' => 'The URL of the newly created resource',
                             'schema' => [
-                                'type' => 'string'
-                            ]
-                        ]
+                                'type' => 'string',
+                            ],
+                        ],
                     ],
                     'content' => [
                         'application/json' => [
@@ -649,19 +646,19 @@ EOT;
                                 'properties' => [
                                     'id' => [
                                         'type' => 'integer',
-                                        'format' => 'int64'
+                                        'format' => 'int64',
                                     ],
                                     'href' => [
-                                        'type' => 'string'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                                        'type' => 'string',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 '204' => [
                     'description' => 'Success (no content)',
-                    'methods' => ['DELETE']
+                    'methods' => ['DELETE'],
                 ],
                 '400' => [
                     'description' => 'Bad request',
@@ -734,8 +731,8 @@ EOT;
                             'required' => true,
                             'schema' => [
                                 'type' => 'integer',
-                                'pattern' => $requirement
-                            ]
+                                'pattern' => $requirement,
+                            ],
                         ];
                     } else {
                         $param = [
@@ -744,8 +741,8 @@ EOT;
                             'required' => true,
                             'schema' => [
                                 'type' => 'string',
-                                'pattern' => $requirement
-                            ]
+                                'pattern' => $requirement,
+                            ],
                         ];
                     }
 
@@ -771,13 +768,13 @@ EOT;
                     'name' => 'GLPI-Entity',
                     'in' => 'header',
                     'description' => 'The ID of the entity to use. If not specified, the default entity for the user is used.',
-                    'schema' => ['type' => Schema::TYPE_INTEGER]
+                    'schema' => ['type' => Schema::TYPE_INTEGER],
                 ];
                 $path_schema['parameters']['GLPI-Profile'] = [
                     'name' => 'GLPI-Profile',
                     'in' => 'header',
                     'description' => 'The ID of the profile to use. If not specified, the default profile for the user is used.',
-                    'schema' => ['type' => Schema::TYPE_INTEGER]
+                    'schema' => ['type' => Schema::TYPE_INTEGER],
                 ];
                 $path_schema['parameters']['GLPI-Entity-Recursive'] = [
                     'name' => 'GLPI-Entity-Recursive',
@@ -785,7 +782,7 @@ EOT;
                     'description' => '"true" if the entity access should include child entities. This is false by default.',
                     'schema' => [
                         'type' => Schema::TYPE_STRING,
-                        'enum' => ['true', 'false']
+                        'enum' => ['true', 'false'],
                     ],
                 ];
             }
@@ -798,17 +795,17 @@ EOT;
                 'examples' => [
                     'English_GB' => [
                         'value' => 'en_GB',
-                        'summary' => 'English (United Kingdom)'
+                        'summary' => 'English (United Kingdom)',
                     ],
                     'French_FR' => [
                         'value' => 'fr_FR',
-                        'summary' => 'French (France)'
+                        'summary' => 'French (France)',
                     ],
                     'Portuguese_BR' => [
                         'value' => 'pt_BR',
-                        'summary' => 'Portuguese (Brazil)'
+                        'summary' => 'Portuguese (Brazil)',
                     ],
-                ]
+                ],
             ];
 
             if (strcasecmp($method, 'delete') && $request_body !== null) {
@@ -820,7 +817,7 @@ EOT;
             $path_schemas[$method] = $path_schema;
         }
         return [
-            $route_path->getRoutePath() => $path_schemas
+            $route_path->getRoutePath() => $path_schemas,
         ];
     }
 }

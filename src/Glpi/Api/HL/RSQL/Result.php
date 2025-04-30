@@ -45,8 +45,7 @@ class Result
     public function __construct(
         private QueryExpression $sql_criteria,
         private array $invalid_filters = []
-    ) {
-    }
+    ) {}
 
     public function getSQLCriteria(): QueryExpression
     {

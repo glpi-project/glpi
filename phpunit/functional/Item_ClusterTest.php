@@ -52,7 +52,7 @@ class Item_ClusterTest extends DbTestCase
                 'name'   => 'SRV-NUX-1',
             ], [
                 'name'   => 'SRV-NUX-2',
-            ]
+            ],
         ];
     }
 
@@ -86,7 +86,7 @@ class Item_ClusterTest extends DbTestCase
             $cluster->add([
                 'name'         => 'Test cluster',
                 'uuid'         => 'ytreza',
-                'entities_id'  => 0
+                'entities_id'  => 0,
             ])
         );
 
@@ -95,12 +95,12 @@ class Item_ClusterTest extends DbTestCase
         $SRVNUX1 = getItemByTypeName('Computer', 'SRV-NUX-1', true);
         $SRVNUX2 = getItemByTypeName('Computer', 'SRV-NUX-2', true);
 
-       //try to add without required field
+        //try to add without required field
         $icl->getEmpty();
         $this->assertFalse(
             $icl->add([
                 'itemtype'     => 'Computer',
-                'items_id'     => $SRVNUX1
+                'items_id'     => $SRVNUX1,
             ])
         );
 
@@ -111,7 +111,7 @@ class Item_ClusterTest extends DbTestCase
         $this->assertFalse(
             $icl->add([
                 'clusters_id'  => $cluster->fields['id'],
-                'items_id'     => $SRVNUX1
+                'items_id'     => $SRVNUX1,
             ])
         );
 
@@ -128,25 +128,25 @@ class Item_ClusterTest extends DbTestCase
 
         $this->hasSessionMessages(ERROR, ['An item is required']);
 
-       //try to add without error
+        //try to add without error
         $icl->getEmpty();
         $this->assertGreaterThan(
             0,
             $icl->add([
                 'clusters_id'  => $cluster->fields['id'],
                 'itemtype'     => 'Computer',
-                'items_id'     => $SRVNUX1
+                'items_id'     => $SRVNUX1,
             ])
         );
 
-       //Add another item in cluster
+        //Add another item in cluster
         $icl->getEmpty();
         $this->assertGreaterThan(
             0,
             $icl->add([
                 'clusters_id'  => $cluster->fields['id'],
                 'itemtype'     => 'Computer',
-                'items_id'     => $SRVNUX2
+                'items_id'     => $SRVNUX2,
             ])
         );
 
@@ -154,8 +154,8 @@ class Item_ClusterTest extends DbTestCase
         $items = $DB->request([
             'FROM'   => $icl->getTable(),
             'WHERE'  => [
-                'clusters_id' => $cluster->fields['id']
-            ]
+                'clusters_id' => $cluster->fields['id'],
+            ],
         ]);
         $this->assertCount(2, iterator_to_array($items));
     }

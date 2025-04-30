@@ -42,7 +42,7 @@ class RuleDefineItemtypeTest extends DbTestCase
     {
         $input = [
             'itemtype' => \Phone::class,
-            'name'     => 'Test asset'
+            'name'     => 'Test asset',
         ];
 
         $ruleCollection = new \RuleDefineItemtypeCollection();
@@ -54,7 +54,7 @@ class RuleDefineItemtypeTest extends DbTestCase
     {
         $input = [
             'itemtype' => \Phone::class,
-            'name'     => 'Test asset'
+            'name'     => 'Test asset',
         ];
 
         $ruleCollection = new \RuleDefineItemtypeCollection();
@@ -65,8 +65,8 @@ class RuleDefineItemtypeTest extends DbTestCase
                 [
                     'condition' => \RuleDefineItemtype::PATTERN_IS,
                     'criteria'  => 'itemtype',
-                    'pattern'   => \Phone::class
-                ]
+                    'pattern'   => \Phone::class,
+                ],
             ],
             [
                 'action_type' => 'assign',
@@ -79,7 +79,7 @@ class RuleDefineItemtypeTest extends DbTestCase
         $this->assertSame(
             [
                 'new_itemtype' => \Computer::class,
-                '_ruleid' => $rules_id
+                '_ruleid' => $rules_id,
             ],
             $data
         );
@@ -95,8 +95,8 @@ class RuleDefineItemtypeTest extends DbTestCase
                 [
                     'condition' => \RuleDefineItemtype::REGEX_MATCH,
                     'criteria'  => 'name',
-                    'pattern'   => '/.*phone.*/i'
-                ]
+                    'pattern'   => '/.*phone.*/i',
+                ],
             ],
             [
                 'action_type' => 'assign',
@@ -107,26 +107,26 @@ class RuleDefineItemtypeTest extends DbTestCase
 
         $input = [
             'itemtype' => \Computer::class,
-            'name'     => 'A Phone that does not know what it is!'
+            'name'     => 'A Phone that does not know what it is!',
         ];
         $data = $ruleCollection->processAllRules($input);
         $this->assertSame(
             [
                 'new_itemtype' => \Phone::class,
-                '_ruleid' => $rules_id
+                '_ruleid' => $rules_id,
             ],
             $data
         );
 
         $input = [
             'itemtype' => \Computer::class,
-            'name'     => 'A Computer, not anything else.'
+            'name'     => 'A Computer, not anything else.',
         ];
         $data = $ruleCollection->processAllRules($input);
         $this->assertSame(
             [
                 '_no_rule_matches' => true,
-                '_rule_process' => false
+                '_rule_process' => false,
             ],
             $data
         );
@@ -136,7 +136,7 @@ class RuleDefineItemtypeTest extends DbTestCase
     {
         $input = [
             'itemtype' => \Phone::class,
-            'name'     => 'A test'
+            'name'     => 'A test',
         ];
 
         $ruleCollection = new \RuleDefineItemtypeCollection();
@@ -147,13 +147,13 @@ class RuleDefineItemtypeTest extends DbTestCase
                 [
                     'condition' => \RuleDefineItemtype::PATTERN_IS,
                     'criteria'  => 'itemtype',
-                    'pattern'   => \Phone::class
+                    'pattern'   => \Phone::class,
                 ],
                 [
                     'condition' => \RuleDefineItemtype::PATTERN_EXISTS,
                     'criteria' => 'mac',
-                    'pattern' => 1
-                ]
+                    'pattern' => 1,
+                ],
             ],
             [
                 'action_type' => 'assign',
@@ -166,7 +166,7 @@ class RuleDefineItemtypeTest extends DbTestCase
         $this->assertSame(
             [
                 '_no_rule_matches' => true,
-                '_rule_process' => false
+                '_rule_process' => false,
             ],
             $data
         );
@@ -176,7 +176,7 @@ class RuleDefineItemtypeTest extends DbTestCase
         $this->assertSame(
             [
                 'new_itemtype' => \Computer::class,
-                '_ruleid' => $rules_id
+                '_ruleid' => $rules_id,
             ],
             $data
         );
@@ -187,7 +187,7 @@ class RuleDefineItemtypeTest extends DbTestCase
         $input = [
             'itemtype' => \Computer::class,
             'name'     => 'A test',
-            'mac'      => '00:00:00:00:00:00'
+            'mac'      => '00:00:00:00:00:00',
         ];
 
         $ruleCollection = new \RuleDefineItemtypeCollection();
@@ -198,13 +198,13 @@ class RuleDefineItemtypeTest extends DbTestCase
                 [
                     'condition' => \RuleDefineItemtype::PATTERN_EXISTS,
                     'criteria'  => 'mac',
-                    'pattern'   => 1
+                    'pattern'   => 1,
                 ],
                 [
                     'condition' => \RuleDefineItemtype::PATTERN_EXISTS,
                     'criteria' => 'ifnumber',
-                    'pattern' => 1
-                ]
+                    'pattern' => 1,
+                ],
             ],
             [
                 'action_type' => 'assign',
@@ -217,7 +217,7 @@ class RuleDefineItemtypeTest extends DbTestCase
         $this->assertSame(
             [
                 '_no_rule_matches' => true,
-                '_rule_process' => false
+                '_rule_process' => false,
             ],
             $data
         );
@@ -227,7 +227,7 @@ class RuleDefineItemtypeTest extends DbTestCase
         $this->assertSame(
             [
                 'new_itemtype' => \NetworkEquipment::class,
-                '_ruleid' => $rules_id
+                '_ruleid' => $rules_id,
             ],
             $data
         );

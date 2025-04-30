@@ -46,7 +46,7 @@ if ($DB->fieldExists('glpi_softwarelicenses', 'softwares_id')) {
         'softwares_id',
         "int {$default_key_sign}",
         [
-            'null' => true
+            'null' => true,
         ]
     );
 }

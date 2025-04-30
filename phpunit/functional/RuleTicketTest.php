@@ -74,7 +74,7 @@ class RuleTicketTest extends RuleCommonITILObject
                 'glpi_rules',
                 [
                     'name' => 'Ticket location from item',
-                    'is_active' => 0
+                    'is_active' => 0,
                 ]
             )
         );
@@ -84,7 +84,7 @@ class RuleTicketTest extends RuleCommonITILObject
                 'glpi_rules',
                 [
                     'name' => 'Ticket location from use',
-                    'is_active' => 1
+                    'is_active' => 1,
                 ]
             )
         );
@@ -98,7 +98,7 @@ class RuleTicketTest extends RuleCommonITILObject
         $contractTest1 = new \Contract();
         $contracttest1_id = $contractTest1->add($contractTest1_input = [
             "name"                  => "zabbix",
-            "entities_id"           => 0
+            "entities_id"           => 0,
         ]);
         $this->checkInput($contractTest1, $contracttest1_id, $contractTest1_input);
 
@@ -138,7 +138,7 @@ class RuleTicketTest extends RuleCommonITILObject
         // Create category for ticket
         $category = new \ITILCategory();
         $category_id = $category->add($category_input = [
-            "name" => "zabbix"
+            "name" => "zabbix",
         ]);
         $this->checkInput($category, $category_id, $category_input);
 
@@ -147,7 +147,7 @@ class RuleTicketTest extends RuleCommonITILObject
         $ticketsCreate_id = $ticketCreate->add($ticketCreate_input = [
             'name'              => 'test zabbix',
             'content'           => 'test zabbix',
-            'itilcategories_id' => $category_id
+            'itilcategories_id' => $category_id,
         ]);
 
         $this->checkInput($ticketCreate, $ticketsCreate_id, $ticketCreate_input);
@@ -159,7 +159,7 @@ class RuleTicketTest extends RuleCommonITILObject
             countElementsInTable(
                 \Ticket_Contract::getTable(),
                 ['contracts_id'  => $contracttest1_id,
-                    'tickets_id' => $ticketsCreate_id
+                    'tickets_id' => $ticketsCreate_id,
                 ]
             )
         );
@@ -243,8 +243,8 @@ class RuleTicketTest extends RuleCommonITILObject
             'name'              => 'test ' . $header . ' header',
             'content'           => 'test ' . $header . ' header',
             '_head'             => [
-                $header => $pattern
-            ]
+                $header => $pattern,
+            ],
         ]);
 
         // Verify ITIL Object has priority 5
@@ -256,8 +256,8 @@ class RuleTicketTest extends RuleCommonITILObject
             'name'              => 'test ' . $header . ' header',
             'content'           => 'test ' . $header . ' header',
             '_head'             => [
-                $header => 'header_foo_bar'
-            ]
+                $header => 'header_foo_bar',
+            ],
         ]);
 
         // Verify ITIL Object does not have priority 5
@@ -280,7 +280,7 @@ class RuleTicketTest extends RuleCommonITILObject
         $contract_type_id = $contract_type->add($contract_type_input);
         $this->checkInput($contract_type, $contract_type_id, $contract_type_input);
 
-       // Create rule
+        // Create rule
         $ruleticket = new \RuleTicket();
         $rulecrit   = new \RuleCriteria();
         $ruleaction = new \RuleAction();
@@ -318,16 +318,16 @@ class RuleTicketTest extends RuleCommonITILObject
         $category = new \ITILCategory();
         $category_id = $category->add($category_input = [
             "name" => "group1",
-            "code" => "R"
+            "code" => "R",
         ]);
         $this->checkInput($category, $category_id, $category_input);
 
-       // Create a ticket
+        // Create a ticket
         $ticket = new \Ticket();
         $tickets_id = $ticket->add($ticket_input = [
             'name'              => 'test category code',
             'content'           => 'test category code',
-            'itilcategories_id' => $category_id
+            'itilcategories_id' => $category_id,
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
 
@@ -376,7 +376,7 @@ class RuleTicketTest extends RuleCommonITILObject
         $this->assertTrue($ticket->getFromDB($tickets_id));
         $this->assertEquals($rule_value, $ticket->fields['impact']);
 
-       // Create a second ticket with the contract linked
+        // Create a second ticket with the contract linked
         $ticket_2 = new \Ticket();
         $tickets_id_2 = $ticket->add($ticket_input_2 = [
             'name'              => 'test category code',
@@ -442,7 +442,7 @@ class RuleTicketTest extends RuleCommonITILObject
         $group = new \Group();
         $group_id = $group->add($group_input = [
             "name" => "group1",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id, $group_input);
 
@@ -454,7 +454,7 @@ class RuleTicketTest extends RuleCommonITILObject
         $group_user = new \Group_User();
         $group_user_id = $group_user->add($group_user_input = [
             "groups_id" => $group_id,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id, $group_user_input);
 
@@ -479,7 +479,7 @@ class RuleTicketTest extends RuleCommonITILObject
         $itil_id = $itil->add($itil_input = [
             'name'             => 'Add group requester if requester have default group',
             'content'          => 'test',
-            '_users_id_requester' => $user->fields['id']
+            '_users_id_requester' => $user->fields['id'],
         ]);
         unset($itil_input['_users_id_requester']); // _users_id_requester is stored in glpi_*_users table, so remove it
         $this->checkInput($itil, $itil_id, $itil_input);
@@ -493,14 +493,14 @@ class RuleTicketTest extends RuleCommonITILObject
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id,
-                'type'      => \CommonITILActor::REQUESTER
+                'type'      => \CommonITILActor::REQUESTER,
             ])
         );
 
         //Update ITIL Object to trigger rule
         $itil->update($itil_input = [
             'id' => $itil_id,
-            'content' => 'test on update'
+            'content' => 'test on update',
         ]);
         $this->checkInput($itil, $itil_id, $itil_input);
 
@@ -510,7 +510,7 @@ class RuleTicketTest extends RuleCommonITILObject
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id,
-                'type'      => \CommonITILActor::REQUESTER
+                'type'      => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -627,8 +627,8 @@ class RuleTicketTest extends RuleCommonITILObject
                             [
                                 'itemtype' => $actoritemtype,
                                 'items_id' => $items_id,
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                 ]);
                 $ticket->getFromDB($tickets_id);
@@ -646,8 +646,8 @@ class RuleTicketTest extends RuleCommonITILObject
                     [
                         'itemtype' => 'Supplier',
                         'items_id' => $suppliers_id,
-                    ]
-                ]
+                    ],
+                ],
             ],
         ]);
         $ticket->getFromDB($tickets_id);
@@ -734,7 +734,7 @@ class RuleTicketTest extends RuleCommonITILObject
         //create project "project"
         $projectTest1 = new \Project();
         $projecttest1_id = $projectTest1->add($projectTest1_input = [
-            "name"                  => "project"
+            "name"                  => "project",
         ]);
         $this->checkInput($projectTest1, $projecttest1_id, $projectTest1_input);
 
@@ -775,7 +775,7 @@ class RuleTicketTest extends RuleCommonITILObject
         $ticketCreate = new \Ticket();
         $ticketsCreate_id = $ticketCreate->add($ticketCreate_input = [
             'name'              => 'test project',
-            'content'           => 'test project'
+            'content'           => 'test project',
         ]);
         $this->checkInput($ticketCreate, $ticketsCreate_id, $ticketCreate_input);
 
@@ -786,7 +786,7 @@ class RuleTicketTest extends RuleCommonITILObject
                 \Itil_Project::getTable(),
                 ['itemtype'  =>  \Ticket::getType(),
                     'projects_id'   => $projecttest1_id,
-                    'items_id' => $ticketsCreate_id
+                    'items_id' => $ticketsCreate_id,
                 ]
             )
         );
@@ -795,7 +795,7 @@ class RuleTicketTest extends RuleCommonITILObject
         $ticketUpdate = new \Ticket();
         $ticketsUpdate_id = $ticketUpdate->add($ticketUpdate_input = [
             'name'              => 'test',
-            'content'           => 'test'
+            'content'           => 'test',
         ]);
         $this->checkInput($ticketUpdate, $ticketsUpdate_id, $ticketUpdate_input);
 
@@ -806,7 +806,7 @@ class RuleTicketTest extends RuleCommonITILObject
                 \Itil_Project::getTable(),
                 ['itemtype'  =>  \Ticket::getType(),
                     'projects_id'   => $projecttest1_id,
-                    'items_id' => $ticketsUpdate_id
+                    'items_id' => $ticketsUpdate_id,
                 ]
             )
         );
@@ -816,7 +816,7 @@ class RuleTicketTest extends RuleCommonITILObject
             [
                 'id'      => $ticketsUpdate_id,
                 'name'    => 'test erp',
-                'content' => 'project'
+                'content' => 'project',
             ]
         );
 
@@ -827,7 +827,7 @@ class RuleTicketTest extends RuleCommonITILObject
                 \Itil_Project::getTable(),
                 ['itemtype'  =>  \Ticket::getType(),
                     'projects_id'   => $projecttest1_id,
-                    'items_id' => $ticketsUpdate_id
+                    'items_id' => $ticketsUpdate_id,
                 ]
             )
         );
@@ -853,14 +853,14 @@ class RuleTicketTest extends RuleCommonITILObject
         $group = new \Group();
         $group_id1 = $group->add($group_input = [
             "name"         => "group1",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id1, $group_input);
 
         //create group that doesn't match the rule
         $group_id2 = $group->add($group_input = [
             "name"         => "group2",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id2, $group_input);
 
@@ -906,7 +906,7 @@ class RuleTicketTest extends RuleCommonITILObject
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $ticket_id,
                 'groups_id'          => $group_id1,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -930,7 +930,7 @@ class RuleTicketTest extends RuleCommonITILObject
             $ticketGroup->getFromDBByCrit([
                 'tickets_id'         => $ticket_id,
                 'groups_id'          => $group_id2,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -961,7 +961,7 @@ class RuleTicketTest extends RuleCommonITILObject
             $ticketUser->getFromDBByCrit([
                 'tickets_id'         => $ticket_id,
                 'users_id'           => $user_id,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -989,7 +989,7 @@ class RuleTicketTest extends RuleCommonITILObject
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
             'condition'    => \RuleTicket::ONADD + \RuleTicket::ONUPDATE,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->checkInput($ruleticket, $ruletid, $ruletinput);
 
@@ -1021,7 +1021,7 @@ class RuleTicketTest extends RuleCommonITILObject
             'rules_id'  => $ruletid,
             'criteria'  => 'slas_id_ttr',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => $slas_id_ttr
+            'pattern'   => $slas_id_ttr,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
@@ -1029,7 +1029,7 @@ class RuleTicketTest extends RuleCommonITILObject
             'rules_id'  => $ruletid,
             'criteria'  => 'urgency',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => 5
+            'pattern'   => 5,
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
@@ -1044,7 +1044,7 @@ class RuleTicketTest extends RuleCommonITILObject
             'rules_id'    => $ruletid,
             'action_type' => 'assign',
             'field'       => 'locations_id',
-            'value'       => $location_id
+            'value'       => $location_id,
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
 
@@ -1054,7 +1054,7 @@ class RuleTicketTest extends RuleCommonITILObject
             'name'              => 'test SLA',
             'content'           => 'test SLA',
             'slas_id_ttr'       => $slas_id_ttr,
-            'urgency'           => 5
+            'urgency'           => 5,
         ]);
         $this->checkInput($ticket, $ticket_id, $ticket_input);
 
@@ -1107,19 +1107,19 @@ class RuleTicketTest extends RuleCommonITILObject
             'rules_id'  => $rule->getID(),
             'criteria'  => 'locations_id',
             'condition' => \Rule::PATTERN_DOES_NOT_EXISTS,
-            'pattern'   => 1
+            'pattern'   => 1,
         ]);
         $this->createItem("RuleCriteria", [
             'rules_id'  => $rule->getID(),
             'criteria'  => '_locations_id_of_requester',
             'condition' => \Rule::PATTERN_EXISTS,
-            'pattern'   => 1
+            'pattern'   => 1,
         ]);
         $this->createItem("RuleAction", [
             'rules_id'    => $rule->getID(),
             'action_type' => 'fromuser',
             'field'       => 'locations_id',
-            'value'       => 1
+            'value'       => 1,
         ]);
 
         // Create location and set it to our user
@@ -1128,7 +1128,7 @@ class RuleTicketTest extends RuleCommonITILObject
             'entities_id' => $entity->getID(),
         ]);
         $this->updateItem('User', $user->getID(), [
-            'locations_id' => $user_location->getID()
+            'locations_id' => $user_location->getID(),
         ]);
 
         // Create another location
@@ -1158,7 +1158,7 @@ class RuleTicketTest extends RuleCommonITILObject
     {
         $provider = $this->testAssignLocationFromUserProvider();
         foreach ($provider as $row) {
-            list($input_locations_id, $expected_location_after_creation) = $row;
+            [$input_locations_id, $expected_location_after_creation] = $row;
 
             $input = [
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
@@ -1170,7 +1170,7 @@ class RuleTicketTest extends RuleCommonITILObject
                         [
                             'itemtype' => 'User',
                             'items_id' => getItemByTypeName('User', TU_USER, true),
-                        ]
+                        ],
                     ],
                     // Must have an assigned tech for the test to be meaningfull as this
                     // will trigger some post_update code that will run the rules again
@@ -1178,9 +1178,9 @@ class RuleTicketTest extends RuleCommonITILObject
                         [
                             'itemtype' => 'User',
                             'items_id' => getItemByTypeName('User', TU_USER, true),
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ];
 
             if (!is_null($input_locations_id)) {
@@ -1244,8 +1244,8 @@ class RuleTicketTest extends RuleCommonITILObject
             'content'          => __METHOD__,
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
-        $this->assertEquals($user_id, (int)$ticket->getField('users_id_recipient'));
-        $this->assertEquals($requesttypes_id, (int)$ticket->getField('requesttypes_id'));
+        $this->assertEquals($user_id, (int) $ticket->getField('users_id_recipient'));
+        $this->assertEquals($requesttypes_id, (int) $ticket->getField('requesttypes_id'));
     }
 
     public function testDoNotComputeStatusFollowupWithRule()
@@ -1315,16 +1315,16 @@ class RuleTicketTest extends RuleCommonITILObject
                 'requester' => [
                     [
                         'items_id' => $user1->getID(),
-                        'itemtype' => 'User'
-                    ]
+                        'itemtype' => 'User',
+                    ],
                 ],
                 'assign' => [
                     [
                         'items_id' => $user2->getID(),
-                        'itemtype' => 'User'
-                    ]
+                        'itemtype' => 'User',
+                    ],
                 ],
-            ]
+            ],
         ]);
         $this->assertGreaterThan(0, $tickets_id);
 
@@ -1421,10 +1421,10 @@ class RuleTicketTest extends RuleCommonITILObject
                 'requester' => [
                     [
                         'items_id' => $user1->getID(),
-                        'itemtype' => 'User'
-                    ]
+                        'itemtype' => 'User',
+                    ],
                 ],
-            ]
+            ],
         ]);
         $this->assertGreaterThan(0, $tickets_id);
 

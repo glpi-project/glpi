@@ -63,8 +63,8 @@ class DbTimezones extends AbstractRequirement
         $mysql_db_res = $this->db->request([
             'FROM'   => 'information_schema.schemata',
             'WHERE'  => [
-                'schema_name' => 'mysql'
-            ]
+                'schema_name' => 'mysql',
+            ],
         ]);
         if ($mysql_db_res->count() === 0) {
             $this->validated = false;
@@ -77,8 +77,8 @@ class DbTimezones extends AbstractRequirement
             'WHERE'  => [
                 'table_schema' => 'mysql',
                 'table_type'   => 'BASE TABLE',
-                'table_name'   => ['LIKE', 'time_zone_name']
-            ]
+                'table_name'   => ['LIKE', 'time_zone_name'],
+            ],
         ]);
         if ($tz_table_res->count() === 0) {
             $this->validated = false;

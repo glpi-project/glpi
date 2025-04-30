@@ -236,7 +236,7 @@ class HasAppliancesCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Appliance::class,
-            'relation_classname' => Appliance_Item::class
+            'relation_classname' => Appliance_Item::class,
         ];
     }
 
@@ -245,7 +245,7 @@ class HasAppliancesCapacityTest extends DbTestCase
         yield [
             'target_classname' => Appliance::class,
             'relation_classname' => Appliance_Item::class,
-            'expected' => '%d appliances attached to %d assets'
+            'expected' => '%d appliances attached to %d assets',
         ];
     }
 }

@@ -96,7 +96,7 @@ class HasOperatingSystemCapacity extends AbstractCapacity
     public function getCloneRelations(): array
     {
         return [
-            Item_OperatingSystem::class
+            Item_OperatingSystem::class,
         ];
     }
 

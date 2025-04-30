@@ -53,7 +53,7 @@ class DeleteCommand extends AbstractUserCommand
         $user = new \User();
         if ($user->getFromDBbyName($username)) {
             $user->delete([
-                'id' => $user->getID()
+                'id' => $user->getID(),
             ]);
             $output->writeln('<info>' . __('User deleted') . '</info>');
             return 0;

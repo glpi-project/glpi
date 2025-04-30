@@ -37,7 +37,6 @@ namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\RichTextConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
@@ -135,7 +134,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'question'    => $question,
             'placeholder' => __('Long text'),
-            'aria_label'  => __('Default value')
+            'aria_label'  => __('Default value'),
         ]);
     }
 

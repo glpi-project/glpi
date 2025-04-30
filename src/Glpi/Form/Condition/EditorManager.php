@@ -38,7 +38,6 @@ use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Comment;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
-use LogicException;
 use Session;
 
 final class EditorManager
@@ -210,7 +209,7 @@ final class EditorManager
 
         $condition_handlers = array_filter(
             $itemData->getConditionHandlers($config ?? null),
-            fn (ConditionHandlerInterface $handler): bool => in_array(
+            fn(ConditionHandlerInterface $handler): bool => in_array(
                 $condition->getValueOperator(),
                 $handler->getSupportedValueOperators()
             ),
@@ -236,7 +235,7 @@ final class EditorManager
         $questions = $this->form_data->getQuestionsData();
         $filtered_questions = array_filter(
             $questions,
-            fn (QuestionData $q): bool => $uuid == $q->getUuid(),
+            fn(QuestionData $q): bool => $uuid == $q->getUuid(),
         );
 
         if (count($filtered_questions) === 1) {
@@ -247,7 +246,7 @@ final class EditorManager
         $sections = $this->form_data->getSectionsData();
         $filtered_sections = array_filter(
             $sections,
-            fn (SectionData $s): bool => $uuid == $s->getUuid(),
+            fn(SectionData $s): bool => $uuid == $s->getUuid(),
         );
 
         if (count($filtered_sections) === 1) {
@@ -258,7 +257,7 @@ final class EditorManager
         $comments = $this->form_data->getCommentsData();
         $filtered_comments = array_filter(
             $comments,
-            fn (CommentData $c): bool => $uuid == $c->getUuid(),
+            fn(CommentData $c): bool => $uuid == $c->getUuid(),
         );
 
         if (count($filtered_comments) === 1) {

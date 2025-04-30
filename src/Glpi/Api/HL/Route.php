@@ -65,6 +65,5 @@ class Route
         public array $tags = [],
         /** @var class-string<AbstractMiddleware>[] */
         public array $middlewares = [],
-    ) {
-    }
+    ) {}
 }

@@ -42,7 +42,7 @@
  **/
 class TicketTemplatePredefinedField extends ITILTemplatePredefinedField
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'TicketTemplate';
     public static $items_id = 'tickettemplates_id';
     public static $itiltype = 'Ticket';

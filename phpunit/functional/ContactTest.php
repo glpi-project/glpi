@@ -49,12 +49,12 @@ class ContactTest extends \DbTestCase
 
         // Create ContactType
         $contact_type_id = $this->createItem('ContactType', [
-            'name' => 'Supplier Type'
+            'name' => 'Supplier Type',
         ])->getID();
 
         // Create UserTitle
         $user_title_id = $this->createItem('UserTitle', [
-            'name' => 'User Title'
+            'name' => 'User Title',
         ])->getID();
 
         // Create supplier
@@ -81,7 +81,7 @@ class ContactTest extends \DbTestCase
 
         // Test item cloning
         $added = $contact->clone();
-        $this->assertGreaterThan(0, (int)$added);
+        $this->assertGreaterThan(0, (int) $added);
 
         $clonedContact = new \Contact();
         $this->assertTrue($clonedContact->getFromDB($added));

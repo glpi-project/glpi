@@ -51,7 +51,7 @@ class CheckTwigTemplatesSyntaxCommand extends Command
      *
      * @var integer
      */
-    const ERROR_INVALID_TEMPLATES = 1;
+    public const ERROR_INVALID_TEMPLATES = 1;
 
     protected function configure()
     {
@@ -74,7 +74,7 @@ class CheckTwigTemplatesSyntaxCommand extends Command
             ),
             '/\.twig$/i'
         );
-       /* @var \SplFileInfo $tpl_file */
+        /* @var \SplFileInfo $tpl_file */
         foreach ($tpl_files_iterator as $tpl_file) {
             $output->writeln(
                 sprintf('<comment>Parsing %s...</comment>', $tpl_file->getPathname()),
@@ -83,8 +83,8 @@ class CheckTwigTemplatesSyntaxCommand extends Command
             $tpl_path = str_replace($tpl_dir . '/', '', $tpl_file->getPathname());
             $source = $environment->getLoader()->getSourceContext($tpl_path);
             try {
-                 $token_stream = $environment->tokenize($source);
-                 $environment->parse($token_stream);
+                $token_stream = $environment->tokenize($source);
+                $environment->parse($token_stream);
             } catch (\Twig\Error\Error $e) {
                 $error_messages[] = sprintf(
                     '"%s" in template "%s" at line %s',

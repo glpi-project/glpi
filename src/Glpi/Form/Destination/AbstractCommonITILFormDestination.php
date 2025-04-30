@@ -63,9 +63,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
     /** @return class-string<\CommonITILObject>   */
     abstract public function getTargetItemtype(): string;
 
-    final public function __construct()
-    {
-    }
+    final public function __construct() {}
 
     #[Override]
     final public function renderConfigForm(

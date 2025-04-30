@@ -88,7 +88,7 @@ class GLPIMailer
         }
 
         if (
-            (int)$CFG_GLPI['smtp_mode'] === MAIL_SMTPOAUTH
+            (int) $CFG_GLPI['smtp_mode'] === MAIL_SMTPOAUTH
             && $this->transport instanceof EsmtpTransport
         ) {
             // Prevent usage of other methods to speed-up authentication process
@@ -119,7 +119,7 @@ class GLPIMailer
         if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
             $password = '********';
             if ($with_clear_password) {
-                if ((int)$CFG_GLPI['smtp_mode'] === MAIL_SMTPOAUTH) {
+                if ((int) $CFG_GLPI['smtp_mode'] === MAIL_SMTPOAUTH) {
                     $provider = OauthConfig::getInstance()->getSmtpOauthProvider();
                     $refresh_token = (new GLPIKey())->decrypt($CFG_GLPI['smtp_oauth_refresh_token']);
                     if ($provider !== null && $refresh_token !== '') {
@@ -326,20 +326,20 @@ class GLPIMailer
         $deprecation = true;
         switch ($property) {
             case 'Subject':
-                $this->email->subject((string)$value);
+                $this->email->subject((string) $value);
                 break;
             case 'Body':
-                $this->email->html((string)$value);
+                $this->email->html((string) $value);
                 break;
             case 'AltBody':
-                $this->email->text((string)$value);
+                $this->email->text((string) $value);
                 break;
             case 'MessageID':
                 $this->email->getHeaders()->remove('Message-Id');
-                $this->email->getHeaders()->addHeader('Message-Id', preg_replace('/^<(.*)>$/', '$1', (string)$value));
+                $this->email->getHeaders()->addHeader('Message-Id', preg_replace('/^<(.*)>$/', '$1', (string) $value));
                 break;
             case 'From':
-                $this->email->from((string)$value);
+                $this->email->from((string) $value);
                 break;
             case 'FromName':
                 $header = $this->email->getHeaders()->get('From');
@@ -349,17 +349,17 @@ class GLPIMailer
                         E_USER_WARNING
                     );
                 } else {
-                    $this->email->from(new Address($header->getAddresses()[0]->getAddress(), (string)$value));
+                    $this->email->from(new Address($header->getAddresses()[0]->getAddress(), (string) $value));
                 }
                 break;
             case 'Sender':
-                $this->email->sender((string)$value);
+                $this->email->sender((string) $value);
                 break;
             case 'MessageDate':
                 $this->email->date(new DateTime((string) $value));
                 break;
             case 'ErrorInfo':
-                $this->error = (string)$value;
+                $this->error = (string) $value;
                 break;
             default:
                 trigger_error(
@@ -385,7 +385,7 @@ class GLPIMailer
                 $name  = array_key_exists(0, $arguments) && is_string($arguments[0]) ? $arguments[0] : null;
                 $value = array_key_exists(1, $arguments) && is_string($arguments[1]) ? $arguments[1] : null;
                 if (null === $value && strpos($name, ':') !== false) {
-                    list($name, $value) = explode(':', $name, 2);
+                    [$name, $value] = explode(':', $name, 2);
                 }
                 if ($name !== null && $value !== null) {
                     $this->email->getHeaders()->addTextHeader($name, $value);

@@ -37,7 +37,7 @@
 /// @since 0.83
 class Reminder_User extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'Reminder';
     public static $items_id_1          = 'reminders_id';
     public static $itemtype_2          = 'User';
@@ -64,8 +64,8 @@ class Reminder_User extends CommonDBRelation
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'reminders_id' => $reminders_id
-            ]
+                'reminders_id' => $reminders_id,
+            ],
         ]);
 
         foreach ($iterator as $data) {

@@ -52,7 +52,7 @@ class SetNamespacePrefixCommand extends AbstractCommand implements Configuration
      *
      * @var int
      */
-    const ERROR_UNABLE_TO_WRITE_CONFIG = 1;
+    public const ERROR_UNABLE_TO_WRITE_CONFIG = 1;
 
     protected $requires_db = false;
 
@@ -83,7 +83,7 @@ class SetNamespacePrefixCommand extends AbstractCommand implements Configuration
 
         $prefix = $input->getArgument('prefix');
 
-       // Store configuration
+        // Store configuration
         $success = $this->cache_manager->setNamespacePrefix($prefix);
 
         if (!$success) {

@@ -116,7 +116,7 @@ final class InventoryController extends AbstractController
         }
 
         $inventory_request = new \Glpi\Inventory\Request();
-        $refused_id = (int)$request->get('id');
+        $refused_id = (int) $request->get('id');
 
         $refused = new \RefusedEquipment();
 

@@ -65,7 +65,7 @@ class NumberConditionHandler implements ConditionHandlerInterface
             'attributes' => [
                 'type' => 'number',
                 'step' => 'any',
-            ]
+            ],
         ];
     }
 

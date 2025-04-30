@@ -34,6 +34,4 @@
 
 namespace Glpi\Kernel;
 
-class PostBootEvent
-{
-}
+class PostBootEvent {}

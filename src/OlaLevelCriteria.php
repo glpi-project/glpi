@@ -50,7 +50,7 @@ class OlaLevelCriteria extends RuleCriteria
 
     public function __construct($rule_type = 'OlaLevel')
     {
-       // Override in order not to use glpi_rules table.
+        // Override in order not to use glpi_rules table.
         if ($rule_type !== static::$itemtype) {
             throw new \LogicException(
                 sprintf(
@@ -64,7 +64,7 @@ class OlaLevelCriteria extends RuleCriteria
 
     public function rawSearchOptions()
     {
-       // RuleCriteria search options requires value of rules_id field which does not exists here
+        // RuleCriteria search options requires value of rules_id field which does not exists here
         return [];
     }
 }

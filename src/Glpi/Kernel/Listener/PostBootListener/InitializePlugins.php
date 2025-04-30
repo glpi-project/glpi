@@ -47,9 +47,7 @@ final readonly class InitializePlugins implements EventSubscriberInterface
 {
     use KernelListenerTrait;
 
-    public function __construct(private PluginContainer $pluginContainer)
-    {
-    }
+    public function __construct(private PluginContainer $pluginContainer) {}
 
     public static function getSubscribedEvents(): array
     {

@@ -53,9 +53,7 @@ final class FormAccessControlManager
     /**
      * Private constructor (singleton).
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Singleton access method.
@@ -89,7 +87,7 @@ final class FormAccessControlManager
         $controls = $form->getAccessControls();
         $controls = array_filter(
             $controls,
-            fn ($control) => $control->fields['is_active'],
+            fn($control) => $control->fields['is_active'],
         );
         return array_values($controls);
     }
@@ -270,7 +268,7 @@ final class FormAccessControlManager
     private function getDefinedStrategies(array $access_controls)
     {
         return array_map(
-            fn ($control) => $control->getStrategy(),
+            fn($control) => $control->getStrategy(),
             $access_controls
         );
     }
@@ -282,13 +280,13 @@ final class FormAccessControlManager
     private function getMissingStrategies(array $defined_strategies)
     {
         $defined_strategies_classes = array_map(
-            fn ($strategy) => $strategy::class,
+            fn($strategy) => $strategy::class,
             $defined_strategies
         );
 
         return array_filter(
             $this->getPossibleAccessControlsStrategies(),
-            fn (ControlTypeInterface $strategy) => !in_array(
+            fn(ControlTypeInterface $strategy) => !in_array(
                 $strategy::class,
                 $defined_strategies_classes
             )

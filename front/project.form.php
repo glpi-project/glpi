@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
     } else {
         Html::back();
     }
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $project->check($_POST["id"], DELETE);
 
     $project->delete($_POST);
@@ -79,7 +79,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
     $project->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $project->check($_POST["id"], DELETE);
 
     $project->restore($_POST);
@@ -92,7 +92,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s restores an item'), $_SESSION["glpiname"])
     );
     $project->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $project->check($_POST["id"], PURGE);
     $project->delete($_POST, 1);
 
@@ -105,7 +105,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $project->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $project->check($_POST["id"], UPDATE);
 
     $project->update($_POST);
@@ -119,7 +119,7 @@ if (isset($_POST["add"])) {
     );
 
     Html::back();
-} else if (isset($_GET['_in_modal'])) {
+} elseif (isset($_GET['_in_modal'])) {
     Html::popHeader(Budget::getTypeName(1), in_modal: true);
     $project->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
     Html::popFooter();
@@ -132,7 +132,7 @@ if (isset($_POST["add"])) {
         $menus = ["tools", "project"];
         Project::displayFullPageForItem($_GET["id"], $menus, [
             'withtemplate' => $_GET["withtemplate"],
-            'formoptions'  => "data-track-changes=true"
+            'formoptions'  => "data-track-changes=true",
         ]);
     }
 }

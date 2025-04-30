@@ -76,33 +76,33 @@ class TaskTemplate extends AbstractITILChildTemplate
             ['name'  => 'taskcategories_id',
                 'label' => TaskCategory::getTypeName(1),
                 'type'  => 'dropdownValue',
-                'list'  => true
+                'list'  => true,
             ],
             ['name'  => 'state',
                 'label' => __('Status'),
-                'type'  => 'state'
+                'type'  => 'state',
             ],
             ['name'  => 'is_private',
                 'label' => __('Private'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
             ['name'  => 'actiontime',
                 'label' => __('Duration'),
-                'type'  => 'actiontime'
+                'type'  => 'actiontime',
             ],
             ['name'  => 'users_id_tech',
                 'label' => __('By'),
-                'type'  => 'users_id_tech'
+                'type'  => 'users_id_tech',
             ],
             ['name'  => 'groups_id_tech',
                 'label' => Group::getTypeName(1),
-                'type'  => 'groups_id_tech'
+                'type'  => 'groups_id_tech',
             ], [
                 'name'  => 'pendingreasons_id',
                 'label' => PendingReason::getTypeName(1),
                 'type'  => 'dropdownValue',
-                'list'  => true
-            ]
+                'list'  => true,
+            ],
         ];
     }
 
@@ -117,7 +117,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'field'              => 'content',
             'table'              => $this->getTable(),
             'datatype'           => 'text',
-            'htmltext'           => true
+            'htmltext'           => true,
         ];
 
         $tab[] = [
@@ -125,7 +125,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'name'               => TaskCategory::getTypeName(1),
             'field'              => 'name',
             'table'              => getTableForItemType('TaskCategory'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -133,7 +133,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'table'              => $this->getTable(),
             'field'              => 'is_private',
             'name'               => __('Private'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -146,7 +146,7 @@ class TaskTemplate extends AbstractITILChildTemplate
                 '1'                  => 'notequals',
             ],
             'datatype'           => 'specific',
-            'additionalfields'   => ['use_current_user']
+            'additionalfields'   => ['use_current_user'],
         ];
 
         $tab[] = [
@@ -156,7 +156,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'linkfield'          => 'groups_id_tech',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_task' => 1],
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -165,7 +165,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'field'              => 'actiontime',
             'name'               => __('Total duration'),
             'datatype'           => 'timestamp',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -174,7 +174,7 @@ class TaskTemplate extends AbstractITILChildTemplate
             'field'              => 'state',
             'name'               => __('Status'),
             'searchtype'         => 'equals',
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         return $tab;
@@ -223,9 +223,9 @@ class TaskTemplate extends AbstractITILChildTemplate
                     'toadd'  => [
                         [
                             'id'   => -1,
-                            'text' => __('Current logged-in user')
-                        ]
-                    ]
+                            'text' => __('Current logged-in user'),
+                        ],
+                    ],
                 ]);
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
@@ -251,9 +251,9 @@ class TaskTemplate extends AbstractITILChildTemplate
                     'toadd'  => [
                         [
                             'id'   => -1,
-                            'text' => __('Current logged-in user')
-                        ]
-                    ]
+                            'text' => __('Current logged-in user'),
+                        ],
+                    ],
                 ]);
                 break;
             case 'groups_id_tech':
@@ -313,7 +313,7 @@ class TaskTemplate extends AbstractITILChildTemplate
         if (isset($input['users_id_tech']) && (int) $input['users_id_tech'] == -1) {
             $input['use_current_user'] = 1;
             $input['users_id_tech'] = 0;
-        } else if (isset($input['users_id_tech'])) {
+        } elseif (isset($input['users_id_tech'])) {
             $input['use_current_user'] = 0;
         }
 
@@ -356,13 +356,13 @@ class TaskTemplate extends AbstractITILChildTemplate
                 } else {
                     return " $link ($table_use_current_user = 0)";
                 }
-            } else if ($val == 0) {
+            } elseif ($val == 0) {
                 if ($positive_condition) {
                     return " $link ($table_use_current_user = 0 AND $table_users_id_tech = 0)";
                 } else {
                     return " $link ($table_use_current_user = 1 OR $table_users_id_tech != 0)";
                 }
-            } else if ($val == 'null' && $searchtype == 'empty') {
+            } elseif ($val == 'null' && $searchtype == 'empty') {
                 if ($positive_condition) {
                     return " $link ($table_use_current_user = 0 AND $table_users_id_tech = 0)";
                 } else {

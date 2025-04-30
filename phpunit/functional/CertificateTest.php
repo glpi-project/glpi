@@ -45,7 +45,7 @@ class CertificateTest extends DbTestCase
         $this->login();
         $obj = new \Certificate();
 
-       // Add
+        // Add
         $in = $this->getIn($this->getUniqueString());
         $id = $obj->add($in);
         $this->assertGreaterThan(0, $id);
@@ -66,7 +66,7 @@ class CertificateTest extends DbTestCase
         // Add
         $id = $obj->add([
             'name'        => $this->getUniqueString(),
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $id);
 
@@ -90,7 +90,7 @@ class CertificateTest extends DbTestCase
         // Add
         $id = $obj->add([
             'name' => $this->getUniqueString(),
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $id);
 
@@ -109,7 +109,7 @@ class CertificateTest extends DbTestCase
         // Add
         $id = $certificate->add([
             'name'        => $this->getUniqueString(),
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $id);
 
@@ -189,7 +189,7 @@ class CertificateTest extends DbTestCase
         $id = $obj->add([
             'name'            => $this->getUniqueString(),
             'entities_id'     => 0,
-            'date_expiration' => date('Y-m-d', time() - MONTH_TIMESTAMP)
+            'date_expiration' => date('Y-m-d', time() - MONTH_TIMESTAMP),
         ]);
         $this->assertGreaterThan(0, $id);
 
@@ -200,7 +200,7 @@ class CertificateTest extends DbTestCase
                 'id'                                   => 0,
                 'use_certificates_alert'               => true,
                 'send_certificates_alert_before_delay' => true,
-                'certificates_alert_repeat_interval'   => 6 * HOUR_TIMESTAMP //60 minutes was not enough with phpunit...
+                'certificates_alert_repeat_interval'   => 6 * HOUR_TIMESTAMP, //60 minutes was not enough with phpunit...
             ])
         );
 
@@ -239,7 +239,7 @@ class CertificateTest extends DbTestCase
         $alert_id = $alert_certificate['id'];
         $alert->update([
             'id'    => $alert_id,
-            'date'  => date('Y-m-d', time() - DAY_TIMESTAMP)
+            'date'  => date('Y-m-d', time() - DAY_TIMESTAMP),
         ]);
         $ret      = $crontask->launch($force, 1, 'certificate');
         $this->assertNotEquals(false, $ret);

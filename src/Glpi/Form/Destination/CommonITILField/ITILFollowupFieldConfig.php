@@ -49,8 +49,7 @@ final class ITILFollowupFieldConfig implements
     public function __construct(
         private ITILFollowupFieldStrategy $strategy,
         private ?array $specific_itilfollowuptemplates_ids = null,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

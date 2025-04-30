@@ -34,13 +34,10 @@
 
 namespace Glpi\Console\User;
 
-use Glpi\Console\AbstractCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\Question;
 
 class GrantCommand extends AbstractUserCommand
 {
@@ -85,7 +82,7 @@ class GrantCommand extends AbstractUserCommand
             'users_id' => $user->getID(),
             'profiles_id' => $profile_obj->getID(),
             'entities_id' => $entity_obj->getID(),
-            'is_recursive' => $recursive
+            'is_recursive' => $recursive,
         ];
         if ($profile_user->add($profile_user_input)) {
             $output->writeln('<info>' . __('Profile granted') . '</info>');
@@ -112,7 +109,7 @@ class GrantCommand extends AbstractUserCommand
         $profiles = [];
         $it = $DB->request([
             'SELECT' => ['id', 'name'],
-            'FROM' => \Profile::getTable()
+            'FROM' => \Profile::getTable(),
         ]);
         foreach ($it as $row) {
             $profiles[$row['id']] = $row['name'];

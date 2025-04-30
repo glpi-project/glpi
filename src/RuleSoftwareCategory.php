@@ -42,7 +42,7 @@
  **/
 class RuleSoftwareCategory extends Rule
 {
-   // From Rule
+    // From Rule
     public static $rightname = 'rule_softwarecategories';
 
 

@@ -57,8 +57,8 @@ class ScopeRepository implements ScopeRepositoryInterface
             'SELECT' => 'scopes',
             'FROM'   => 'glpi_oauthclients',
             'WHERE'  => [
-                'identifier' => $clientEntity->getIdentifier()
-            ]
+                'identifier' => $clientEntity->getIdentifier(),
+            ],
         ])->current()['scopes']);
         if (!is_array($allowed_scopes)) {
             $allowed_scopes = [];

@@ -46,8 +46,7 @@ class ActorConditionHandler implements ConditionHandlerInterface
     public function __construct(
         private AbstractQuestionTypeActors $question_type,
         private QuestionTypeActorsExtraDataConfig $extra_data_config,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public function getSupportedValueOperators(): array

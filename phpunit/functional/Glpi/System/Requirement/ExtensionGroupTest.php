@@ -55,7 +55,7 @@ class ExtensionGroupTest extends \GLPITestCase
         $this->assertEquals(
             [
                 'Following extensions are installed: curl.',
-                'Following extensions are missing: fake_ext.'
+                'Following extensions are missing: fake_ext.',
             ],
             $instance->getValidationMessages()
         );
@@ -68,7 +68,7 @@ class ExtensionGroupTest extends \GLPITestCase
         $this->assertEquals(
             [
                 'Following extensions are installed: curl.',
-                'Following extensions are not present: fake_ext.'
+                'Following extensions are not present: fake_ext.',
             ],
             $instance->getValidationMessages()
         );

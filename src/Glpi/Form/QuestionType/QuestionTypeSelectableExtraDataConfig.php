@@ -45,8 +45,7 @@ class QuestionTypeSelectableExtraDataConfig implements JsonFieldInterface
 
     public function __construct(
         private array $options,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

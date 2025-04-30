@@ -39,7 +39,7 @@ use Glpi\DBAL\QueryExpression;
  * @var \Migration $migration
  */
 
- // Add user_dn_hash field
+// Add user_dn_hash field
 $migration->addField('glpi_users', 'user_dn_hash', 'varchar(32)', [
     'after'  => 'user_dn',
 ]);
@@ -51,8 +51,8 @@ $migration->addPostQuery($DB->buildUpdate(
     ],
     [
         'NOT' => [
-            'user_dn' => null
-        ]
+            'user_dn' => null,
+        ],
     ]
 ));
 

@@ -43,10 +43,10 @@ class DomainRecord extends CommonDBChild
         canUpdateItem as canUpdateItemAssignableItem;
     }
 
-    const DEFAULT_TTL = 3600;
+    public const DEFAULT_TTL = 3600;
 
     public static $rightname              = 'domain';
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype        = 'Domain';
     public static $items_id        = 'domains_id';
     public $dohistory              = true;
@@ -101,7 +101,7 @@ class DomainRecord extends CommonDBChild
             'table'              => 'glpi_domains',
             'field'              => 'name',
             'name'               => Domain::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -109,14 +109,14 @@ class DomainRecord extends CommonDBChild
             'table'              => DomainRecordType::getTable(),
             'field'              => 'name',
             'name'               => DomainRecordType::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
             'id'                 => '4',
             'table'              => static::getTable(),
             'field'              => 'ttl',
-            'name'               => __('TTL')
+            'name'               => __('TTL'),
         ];
 
         $tab[] = [
@@ -132,7 +132,7 @@ class DomainRecord extends CommonDBChild
             'field'              => 'name',
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -140,7 +140,7 @@ class DomainRecord extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -148,7 +148,7 @@ class DomainRecord extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -162,13 +162,13 @@ class DomainRecord extends CommonDBChild
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
+                    ],
+                ],
             ],
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -177,7 +177,7 @@ class DomainRecord extends CommonDBChild
             'field'              => 'date_mod',
             'massiveaction'      => false,
             'name'               => __('Last update'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -185,7 +185,7 @@ class DomainRecord extends CommonDBChild
             'table'              => 'glpi_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -237,7 +237,8 @@ class DomainRecord extends CommonDBChild
             return false;
         }
         return parent::canUpdateItem()
-         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
+         && (
+             $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
          || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true)
          );
     }
@@ -245,7 +246,8 @@ class DomainRecord extends CommonDBChild
     public function canDeleteItem(): bool
     {
         return parent::canDeleteItem()
-         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
+         && (
+             $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
          || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true)
          );
     }
@@ -253,7 +255,8 @@ class DomainRecord extends CommonDBChild
     public function canPurgeItem(): bool
     {
         return parent::canPurgeItem()
-         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
+         && (
+             $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
          || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true)
          );
     }
@@ -293,7 +296,7 @@ class DomainRecord extends CommonDBChild
             }
         }
 
-       //search entity
+        //search entity
         if ($add && !isset($input['entities_id'])) {
             $input['entities_id'] = $_SESSION['glpiactive_entity'] ?? 0;
             $input['is_recursive'] = $_SESSION['glpiactive_entity_recursive'] ?? 0;
@@ -316,7 +319,7 @@ class DomainRecord extends CommonDBChild
                     return false;
                 }
                 if ($add === false && !(in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true))) {
-                   //no right to change existing type
+                    //no right to change existing type
                     Session::addMessageAfterRedirect(
                         __s('You are not allowed to edit this type of records'),
                         true,
@@ -355,8 +358,8 @@ class DomainRecord extends CommonDBChild
             (in_array('data', $this->updates, true) || in_array('domainrecordtypes_id', $this->updates, true))
             && !array_key_exists('data_obj', $this->input)
         ) {
-           // Remove data stored as obj if "data" or "record type" changed" and "data_obj" is not part of input.
-           // It ensure that updates that "data_obj" will not contains obsolete values.
+            // Remove data stored as obj if "data" or "record type" changed" and "data_obj" is not part of input.
+            // It ensure that updates that "data_obj" will not contains obsolete values.
             $this->fields['data_obj'] = 'NULL';
             $this->updates[]          = 'data_obj';
         }
@@ -405,11 +408,11 @@ class DomainRecord extends CommonDBChild
                 DomainRecordType::getTable() . ' AS rtype'  => [
                     'ON'  => [
                         'rtype'  => 'id',
-                        'record' => 'domainrecordtypes_id'
-                    ]
-                ]
+                        'record' => 'domainrecordtypes_id',
+                    ],
+                ],
             ],
-            'ORDER'     => ['rtype.name ASC', 'record.name ASC']
+            'ORDER'     => ['rtype.name ASC', 'record.name ASC'],
         ]);
 
         if ($canedit) {
@@ -419,8 +422,8 @@ class DomainRecord extends CommonDBChild
                 'condition' => [
                     'NOT' => [
                         'domains_id'   => ['>', 0],
-                        'NOT'          => ['domains_id' => null]
-                    ]
+                        'NOT'          => ['domains_id' => null],
+                    ],
                 ],
                 'label' => __('Link a record'),
                 'add_btn_msg' => _x('button', 'Add'),
@@ -489,7 +492,7 @@ TWIG, $twig_params);
                     htmlescape($name)
                 ),
                 'ttl'      => $data['ttl'],
-                'data'     => $data['data']
+                'data'     => $data['data'],
             ];
         }
 
@@ -504,7 +507,7 @@ TWIG, $twig_params);
                 'data' => _n('Target', 'Targets', 1),
             ],
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -512,7 +515,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
     }
@@ -528,7 +531,7 @@ TWIG, $twig_params);
             '.'
         );
         if (empty($name_txt)) {
-           //dns root
+            //dns root
             $name_txt = '@';
         }
         return $name_txt;

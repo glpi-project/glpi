@@ -49,7 +49,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $tickets_id = $ticket->add([
             'name' => 'test',
             'content' => 'test',
-            'status' => \Ticket::INCOMING
+            'status' => \Ticket::INCOMING,
         ]);
         $this->assertGreaterThan(0, $tickets_id);
 
@@ -58,7 +58,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $changes_id = $change->add([
             'name' => 'test',
             'content' => 'test',
-            'status' => \Change::INCOMING
+            'status' => \Change::INCOMING,
         ]);
         $this->assertGreaterThan(0, $changes_id);
 
@@ -67,7 +67,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $itil_itil_id = $itil_itil->add([
             'tickets_id' => $tickets_id,
             'changes_id' => $changes_id,
-            'link' => \CommonITILObject_CommonITILObject::LINK_TO
+            'link' => \CommonITILObject_CommonITILObject::LINK_TO,
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
@@ -79,7 +79,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $problems_id = $problem->add([
             'name' => 'test',
             'content' => 'test',
-            'status' => \Problem::INCOMING
+            'status' => \Problem::INCOMING,
         ]);
         $this->assertGreaterThan(0, $problems_id);
 
@@ -88,7 +88,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $itil_itil_id = $itil_itil->add([
             'tickets_id' => $tickets_id,
             'problems_id' => $problems_id,
-            'link' => \CommonITILObject_CommonITILObject::DUPLICATE_WITH
+            'link' => \CommonITILObject_CommonITILObject::DUPLICATE_WITH,
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
@@ -98,7 +98,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $tickets_id2 = $ticket->add([
             'name' => 'test2',
             'content' => 'test2',
-            'status' => \Ticket::INCOMING
+            'status' => \Ticket::INCOMING,
         ]);
         $this->assertGreaterThan(0, $tickets_id2);
 
@@ -107,7 +107,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $ticket_ticket_id = $ticket_ticket->add([
             'tickets_id_1' => $tickets_id2,
             'tickets_id_2' => $tickets_id,
-            'link' => \CommonITILObject_CommonITILObject::LINK_TO
+            'link' => \CommonITILObject_CommonITILObject::LINK_TO,
         ]);
         $this->assertGreaterThan(0, $ticket_ticket_id);
 
@@ -125,7 +125,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $tickets_id = $ticket->add([
             'name' => 'test',
             'content' => 'test',
-            'status' => \Ticket::INCOMING
+            'status' => \Ticket::INCOMING,
         ]);
         $this->assertGreaterThan(0, $tickets_id);
 
@@ -134,7 +134,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $changes_id = $change->add([
             'name' => 'test',
             'content' => 'test',
-            'status' => \Change::INCOMING
+            'status' => \Change::INCOMING,
         ]);
         $this->assertGreaterThan(0, $changes_id);
 
@@ -143,7 +143,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $itil_itil_id = $itil_itil->add([
             'tickets_id' => $tickets_id,
             'changes_id' => $changes_id,
-            'link' => \CommonITILObject_CommonITILObject::LINK_TO
+            'link' => \CommonITILObject_CommonITILObject::LINK_TO,
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
@@ -156,7 +156,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $problems_id = $problem->add([
             'name' => 'test',
             'content' => 'test',
-            'status' => \Problem::INCOMING
+            'status' => \Problem::INCOMING,
         ]);
         $this->assertGreaterThan(0, $problems_id);
 
@@ -165,7 +165,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $itil_itil_id = $itil_itil->add([
             'tickets_id' => $tickets_id,
             'problems_id' => $problems_id,
-            'link' => \CommonITILObject_CommonITILObject::DUPLICATE_WITH
+            'link' => \CommonITILObject_CommonITILObject::DUPLICATE_WITH,
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
@@ -178,7 +178,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         // Update Change status
         $this->assertTrue($change->update([
             'id' => $changes_id,
-            'status' => \Change::PLANNED
+            'status' => \Change::PLANNED,
         ]));
 
         $this->assertEquals(1, \Problem_Ticket::countLinksByStatus('Ticket', $tickets_id, [\Problem::INCOMING]));
@@ -194,7 +194,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $tickets_id = $ticket->add([
             'name' => 'test',
             'content' => 'test',
-            'status' => \Ticket::INCOMING
+            'status' => \Ticket::INCOMING,
         ]);
         $this->assertGreaterThan(0, $tickets_id);
 
@@ -203,7 +203,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $changes_id = $change->add([
             'name' => 'test',
             'content' => 'test',
-            'status' => \Change::INCOMING
+            'status' => \Change::INCOMING,
         ]);
         $this->assertGreaterThan(0, $changes_id);
 
@@ -212,7 +212,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $itil_itil_id = $itil_itil->add([
             'tickets_id' => $tickets_id,
             'changes_id' => $changes_id,
-            'link' => \CommonITILObject_CommonITILObject::LINK_TO
+            'link' => \CommonITILObject_CommonITILObject::LINK_TO,
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
@@ -221,7 +221,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $problems_id = $problem->add([
             'name' => 'test',
             'content' => 'test',
-            'status' => \Problem::INCOMING
+            'status' => \Problem::INCOMING,
         ]);
         $this->assertGreaterThan(0, $changes_id);
 
@@ -230,7 +230,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $itil_itil_id = $itil_itil->add([
             'tickets_id' => $tickets_id,
             'problems_id' => $problems_id,
-            'link' => \CommonITILObject_CommonITILObject::LINK_TO
+            'link' => \CommonITILObject_CommonITILObject::LINK_TO,
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
@@ -246,7 +246,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $tickets_id = $ticket->add([
             'name' => 'test',
             'content' => 'test',
-            'status' => \Ticket::INCOMING
+            'status' => \Ticket::INCOMING,
         ]);
         $this->assertGreaterThan(0, $tickets_id);
 
@@ -255,7 +255,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $changes_id = $change->add([
             'name' => 'test',
             'content' => 'test',
-            'status' => \Change::INCOMING
+            'status' => \Change::INCOMING,
         ]);
         $this->assertGreaterThan(0, $changes_id);
 
@@ -264,7 +264,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $itil_itil_id = $itil_itil->add([
             'tickets_id' => $tickets_id,
             'changes_id' => $changes_id,
-            'link' => \CommonITILObject_CommonITILObject::LINK_TO
+            'link' => \CommonITILObject_CommonITILObject::LINK_TO,
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
@@ -273,7 +273,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $problems_id = $problem->add([
             'name' => 'test',
             'content' => 'test',
-            'status' => \Problem::INCOMING
+            'status' => \Problem::INCOMING,
         ]);
         $this->assertGreaterThan(0, $changes_id);
 
@@ -282,7 +282,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         $itil_itil_id = $itil_itil->add([
             'tickets_id' => $tickets_id,
             'problems_id' => $problems_id,
-            'link' => \CommonITILObject_CommonITILObject::LINK_TO
+            'link' => \CommonITILObject_CommonITILObject::LINK_TO,
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
@@ -297,7 +297,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
             \CommonITILObject_CommonITILObject::LINK_TO,
             \CommonITILObject_CommonITILObject::DUPLICATE_WITH,
             \CommonITILObject_CommonITILObject::SON_OF,
-            \CommonITILObject_CommonITILObject::PARENT_OF
+            \CommonITILObject_CommonITILObject::PARENT_OF,
         ];
         foreach ($link_types as $link_type) {
             $normal = \CommonITILObject_CommonITILObject::getLinkName($link_type, false, false);
@@ -370,7 +370,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                     'tickets_id_1'  => 1,
                     'tickets_id_2'  => 2,
                     'link'          => \CommonITILObject_CommonITILObject::LINK_TO,
-                ]
+                ],
             ],
             [
                 'class' => \Ticket_Ticket::class,
@@ -385,7 +385,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                     'tickets_id_1'  => 2,
                     'tickets_id_2'  => 1,
                     'link'          => \CommonITILObject_CommonITILObject::SON_OF,
-                ]
+                ],
             ],
             [
                 'class' => \Change_Change::class,
@@ -399,7 +399,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                     'changes_id_1'  => 1,
                     'changes_id_2'  => 2,
                     'link'          => \CommonITILObject_CommonITILObject::LINK_TO,
-                ]
+                ],
             ],
             [
                 'class' => \Change_Ticket::class,
@@ -413,7 +413,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                     'changes_id'    => 1,
                     'tickets_id'    => 2,
                     'link'          => \CommonITILObject_CommonITILObject::LINK_TO,
-                ]
+                ],
             ],
             [
                 'class' => \Change_Ticket::class,
@@ -427,7 +427,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                     'changes_id'    => 1,
                     'tickets_id'    => 2,
                     'link'          => \CommonITILObject_CommonITILObject::LINK_TO,
-                ]
+                ],
             ],
             [
                 'class' => \Change_Ticket::class,
@@ -442,7 +442,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                     'changes_id'    => 1,
                     'tickets_id'    => 2,
                     'link'          => \CommonITILObject_CommonITILObject::PARENT_OF,
-                ]
+                ],
             ],
             [
                 'class' => \Change_Ticket::class,
@@ -457,7 +457,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                     'changes_id'    => 1,
                     'tickets_id'    => 2,
                     'link'          => \CommonITILObject_CommonITILObject::SON_OF,
-                ]
+                ],
             ],
             [
                 'class' => \Problem_Ticket::class,
@@ -471,7 +471,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                     'problems_id'   => 1,
                     'tickets_id'    => 2,
                     'link'          => \CommonITILObject_CommonITILObject::LINK_TO,
-                ]
+                ],
             ],
             [
                 'class' => \Problem_Ticket::class,
@@ -486,7 +486,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                     'problems_id'   => 1,
                     'tickets_id'    => 2,
                     'link'          => \CommonITILObject_CommonITILObject::PARENT_OF,
-                ]
+                ],
             ],
             [
                 'class' => \Problem_Ticket::class,
@@ -501,7 +501,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                     'problems_id'   => 1,
                     'tickets_id'    => 2,
                     'link'          => \CommonITILObject_CommonITILObject::SON_OF,
-                ]
+                ],
             ],
         ];
     }

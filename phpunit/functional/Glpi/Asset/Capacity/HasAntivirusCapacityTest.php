@@ -269,7 +269,7 @@ class HasAntivirusCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => ItemAntivirus::class,
-            'expected' => '%d antiviruses attached to %d assets'
+            'expected' => '%d antiviruses attached to %d assets',
         ];
     }
 }

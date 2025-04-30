@@ -106,7 +106,7 @@ class HasCertificatesCapacity extends AbstractCapacity
         $certificate_item = new Certificate_Item();
         $certificate_item->deleteByCriteria(
             [
-                'itemtype' => $classname
+                'itemtype' => $classname,
             ],
             force: true,
             history: false

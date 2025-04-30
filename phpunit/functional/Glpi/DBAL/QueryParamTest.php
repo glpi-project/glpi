@@ -47,7 +47,7 @@ class QueryParamTest extends DbTestCase
             ['', '?'],
             ['?', '?'],
             ['myparam', ':myparam'],
-            [':myparam', ':myparam']
+            [':myparam', ':myparam'],
         ];
     }
 

@@ -36,7 +36,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
 use Glpi\Inventory\Conf;
 
 class Memory extends Device
@@ -50,7 +49,7 @@ class Memory extends Device
             'manufacturer' => 'manufacturers_id',
             'serialnumber' => 'serial',
             'numslots'     => 'busID',
-            'model'        => 'devicememorymodels_id'
+            'model'        => 'devicememorymodels_id',
         ];
 
         foreach ($this->data as $k => &$val) {
@@ -65,8 +64,8 @@ class Memory extends Device
                 continue;
             }
 
-           // Hack to remove Memories with Flash types see ticket
-           // http://forge.fusioninventory.org/issues/1337
+            // Hack to remove Memories with Flash types see ticket
+            // http://forge.fusioninventory.org/issues/1337
             if (
                 property_exists($val, 'type')
                 && preg_match('/Flash/', $val->type)

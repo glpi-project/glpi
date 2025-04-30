@@ -51,14 +51,14 @@ function update0901to0905()
 
     $migration->setVersion('0.90.5');
 
-   // fix https://github.com/glpi-project/glpi/issues/820
-   // remove empty suppliers in tickets
+    // fix https://github.com/glpi-project/glpi/issues/820
+    // remove empty suppliers in tickets
     $DB->delete("glpi_suppliers_tickets", [
         'suppliers_id'       => 0,
-        'alternative_email'  => ""
+        'alternative_email'  => "",
     ]);
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

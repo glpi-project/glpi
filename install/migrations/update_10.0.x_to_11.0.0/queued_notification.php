@@ -49,6 +49,6 @@ $migration->addCrontask(
 $current_config = Config::getConfigurationValues('core');
 if (!isset($current_config['notifications_ajax_expiration_delay'])) {
     $migration->addConfig([
-        'notifications_ajax_expiration_delay' => '30'
+        'notifications_ajax_expiration_delay' => '30',
     ]);
 }

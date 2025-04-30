@@ -156,7 +156,7 @@ class SessionsSecurityConfigurationTest extends \GLPITestCase
         $instance = $this->getMockBuilder(SessionsSecurityConfiguration::class)
             ->onlyMethods([
                 'getCookiesSecure',
-                'getCookiesSamesite'
+                'getCookiesSamesite',
             ])
             ->getMock();
         $instance->method('getCookiesSecure')->willReturn($cookie_secure);

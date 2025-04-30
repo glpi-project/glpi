@@ -38,7 +38,7 @@ use Glpi\Application\View\TemplateRenderer;
 // Relation between Contracts and Suppliers
 class Contract_Supplier extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1 = 'Contract';
     public static $items_id_1 = 'contracts_id';
 
@@ -73,7 +73,7 @@ class Contract_Supplier extends CommonDBRelation
                 case Contract::class:
                     if (Session::haveRight("contact_enterprise", READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                              $nb = self::countForItem($item);
+                            $nb = self::countForItem($item);
                         }
                         return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
@@ -215,7 +215,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 
@@ -335,7 +335,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 }

@@ -58,7 +58,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-27",
             'submitted_answer'    => "2024-02-28",
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Equals check - case 2 for $type (with date)" => [
             'question_type'       => $type,
@@ -66,7 +66,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-28",
             'submitted_answer'    => "2024-02-26",
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Equals check - case 3 for $type (with date)" => [
             'question_type'       => $type,
@@ -74,7 +74,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-27",
             'submitted_answer'    => "2024-02-27",
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
 
         // Test date answers with the NOT_EQUALS operator
@@ -84,7 +84,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-27",
             'submitted_answer'    => "2024-02-28",
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not equals check - case 2 for $type (with date)" => [
             'question_type'       => $type,
@@ -92,7 +92,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-28",
             'submitted_answer'    => "2024-02-26",
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Not equals check - case 3 for $type (with date)" => [
             'question_type'       => $type,
@@ -100,7 +100,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-27",
             'submitted_answer'    => "2024-02-27",
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
 
         // Test date answers with the GREATER_THAN operator
@@ -110,7 +110,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-27",
             'submitted_answer'    => "2024-02-28",
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Greater than check - case 2 for $type (with date)" => [
             'question_type'       => $type,
@@ -118,7 +118,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-28",
             'submitted_answer'    => "2024-02-26",
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Greater than check - case 3 for $type (with date)" => [
             'question_type'       => $type,
@@ -126,7 +126,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-27",
             'submitted_answer'    => "2024-02-27",
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
 
         // Test date answers with the GREATER_THAN_OR_EQUALS operator
@@ -136,7 +136,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-27",
             'submitted_answer'    => "2024-02-28",
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Greater than or equals check - case 2 for $type (with date)" => [
             'question_type'       => $type,
@@ -144,7 +144,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-28",
             'submitted_answer'    => "2024-02-26",
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Greater than or equals check - case 3 for $type (with date)" => [
             'question_type'       => $type,
@@ -152,7 +152,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-27",
             'submitted_answer'    => "2024-02-27",
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
 
         // Test date answers with the LESS_THAN operator
@@ -162,7 +162,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-27",
             'submitted_answer'    => "2024-02-28",
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Less than check - case 2 for $type (with date)" => [
             'question_type'       => $type,
@@ -170,7 +170,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-28",
             'submitted_answer'    => "2024-02-26",
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Less than check - case 3 for $type (with date)" => [
             'question_type'       => $type,
@@ -178,7 +178,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-27",
             'submitted_answer'    => "2024-02-27",
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
 
         // Test date answers with the LESS_THAN_OR_EQUALS operator
@@ -188,7 +188,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-27",
             'submitted_answer'    => "2024-02-28",
             'expected_result'     => false,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Less than or equals check - case 2 for $type (with date)" => [
             'question_type'       => $type,
@@ -196,7 +196,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-28",
             'submitted_answer'    => "2024-02-26",
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
         yield "Less than or equals check - case 3 for $type (with date)" => [
             'question_type'       => $type,
@@ -204,7 +204,7 @@ final class DateConditionHandlerTest extends AbstractConditionHandler
             'condition_value'     => "2024-02-27",
             'submitted_answer'    => "2024-02-27",
             'expected_result'     => true,
-            'question_extra_data' => $extra_data
+            'question_extra_data' => $extra_data,
         ];
     }
 }

@@ -50,22 +50,22 @@ class DeviceBattery extends CommonDevice
                 [
                     'name'  => 'devicebatterytypes_id',
                     'label' => _n('Type', 'Types', 1),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 [
                     'name'   => 'capacity',
                     'label'  => __('Capacity'),
                     'type'   => 'integer',
                     'min'    => 0,
-                    'unit'   => __('mWh')
+                    'unit'   => __('mWh'),
                 ],
                 [
                     'name'   => 'voltage',
                     'label'  => __('Voltage'),
                     'type'   => 'integer',
                     'min'    => 0,
-                    'unit'   => __('mV')
-                ]
+                    'unit'   => __('mV'),
+                ],
             ]
         );
     }
@@ -95,7 +95,7 @@ class DeviceBattery extends CommonDevice
             'table'              => 'glpi_devicebatterytypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -171,7 +171,7 @@ class DeviceBattery extends CommonDevice
             'devicebatterytypes_id' => 'equal',
             'manufacturers_id'      => 'equal',
             'capacity'              => 'delta:10',
-            'voltage'               => 'delta:10'
+            'voltage'               => 'delta:10',
         ];
     }
 

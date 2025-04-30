@@ -89,7 +89,7 @@ if ($isValidItemtype) {
         }
     }
 
-   // Add context if defined
+    // Add context if defined
     if (!empty($context)) {
         $p["context"] = $context;
     }
@@ -111,7 +111,7 @@ if ($isValidItemtype) {
             $CFG_GLPI["root_doc"] . "/ajax/ticketiteminformation.php",
             [
                 'items_id' => '__VALUE__',
-                'itemtype' => $_POST['itemtype']
+                'itemtype' => $_POST['itemtype'],
             ]
         );
     }

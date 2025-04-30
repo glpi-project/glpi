@@ -49,10 +49,10 @@ function update952to953()
 
     $migration->setVersion('9.5.3');
 
-   /* Fix rule criteria names */
+    /* Fix rule criteria names */
     $mapping = [
         'RuleMailCollector' => [
-            'GROUPS' => '_groups_id_requester'
+            'GROUPS' => '_groups_id_requester',
         ],
         'RuleRight' => [
             'GROUPS' => '_groups_id',
@@ -62,7 +62,7 @@ function update952to953()
             'items_locations' => '_locations_id_of_item',
             'items_groups'    => '_groups_id_of_item',
             'items_states'    => '_states_id_of_item',
-        ]
+        ],
     ];
     foreach ($mapping as $type => $names) {
         foreach ($names as $oldname => $newname) {
@@ -76,7 +76,7 @@ function update952to953()
                             'glpi_rules' => [
                                 'FKEY' => [
                                     'glpi_rulecriterias' => 'rules_id',
-                                    'glpi_rules'         => 'id'
+                                    'glpi_rules'         => 'id',
                                 ],
                             ],
                         ],
@@ -85,9 +85,9 @@ function update952to953()
             );
         }
     }
-   /* /Fix rule criteria names */
+    /* /Fix rule criteria names */
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

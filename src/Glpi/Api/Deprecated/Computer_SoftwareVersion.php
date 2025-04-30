@@ -81,7 +81,7 @@ class Computer_SoftwareVersion implements DeprecatedInterface
             "link"       => 'AND',
             "field"      => "5",
             "searchtype" => 'equals',
-            "value"      => "Computer"
+            "value"      => "Computer",
         ];
 
         return $criteria;
@@ -102,7 +102,7 @@ class Computer_SoftwareVersion implements DeprecatedInterface
                  "contains",
                  "notcontains",
                  "equals",
-                 "notequals"
+                 "notequals",
              ],
          ])
          ->deleteSearchOption($soptions, "5");

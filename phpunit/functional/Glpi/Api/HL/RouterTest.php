@@ -37,7 +37,6 @@ namespace tests\units\Glpi\Api\HL;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use GLPITestCase;

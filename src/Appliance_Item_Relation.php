@@ -39,11 +39,11 @@ class Appliance_Item_Relation extends CommonDBRelation
 {
     public static $itemtype_1 = 'Appliance_Item';
     public static $items_id_1 = 'appliances_items_id';
-   //static public $take_entity_1 = false;
+    //static public $take_entity_1 = false;
 
     public static $itemtype_2 = 'itemtype';
     public static $items_id_2 = 'items_id';
-   //static public $take_entity_2 = true;
+    //static public $take_entity_2 = true;
 
     public static function getTypeName($nb = 0)
     {
@@ -111,7 +111,7 @@ class Appliance_Item_Relation extends CommonDBRelation
     {
         $error_detected = [];
 
-       //check for requirements
+        //check for requirements
         if (
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))
@@ -185,8 +185,8 @@ class Appliance_Item_Relation extends CommonDBRelation
             'SELECT' => ['id', 'itemtype', 'items_id'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                Appliance_Item::getForeignKeyField() => $appliances_items_id
-            ]
+                Appliance_Item::getForeignKeyField() => $appliances_items_id,
+            ],
         ]);
 
         $relations = [];
