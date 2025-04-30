@@ -248,6 +248,14 @@ trait PlanningEvent
             return "";
         }
 
+        if (empty($rrule['byday'])) {
+            unset($rrule['byday']);
+        }
+
+        if (empty($rrule['bymonth'])) {
+            unset($rrule['bymonth']);
+        }
+
         if (isset($rrule['exceptions'])) {
             if (is_string($rrule['exceptions']) && strlen($rrule['exceptions'])) {
                 $rrule['exceptions'] = explode(', ', $rrule['exceptions']);

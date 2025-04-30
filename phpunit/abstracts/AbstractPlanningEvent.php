@@ -156,4 +156,44 @@ abstract class AbstractPlanningEvent extends \DbTestCase
         $this->assertTrue($event->delete(['id' => $id]));
         $this->assertFalse($event->getFromDB($id));
     }
+
+    public function testSimpleRepeat()
+    {
+        $this->login();
+
+        $event = new $this->myclass();
+        $id    = $event->add(
+            [
+                'name'       => 'repeat each day',
+                'plan'       => [
+                    'begin'     => $this->begin,
+                    '_duration' => $this->duration,
+                ],
+                'rrule'      => [
+                    'freq'      => 'daily',
+                    'interval'  => 1,
+                    'bymonth'   => '',
+                ],
+                'state'      => \Planning::TODO,
+                'background' => 1,
+            ]
+        );
+
+        $this->assertGreaterThan(0, (int) $id);
+        $this->assertTrue($event->getFromDB($id));
+
+        // check end date
+        if (isset($event->fields['end'])) {
+            $this->assertEquals($this->end, $event->fields['end']);
+        }
+
+        // check rrule encoding
+        $this->assertEquals(
+            '{"freq":"daily","interval":1}',
+            $event->fields['rrule']
+        );
+
+        return $event;
+    }
+
 }
