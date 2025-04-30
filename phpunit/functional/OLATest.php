@@ -1,0 +1,526 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2025 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units;
+
+use DbTestCase;
+use OLA;
+use SLM;
+use Ticket;
+
+class OLATest extends DbTestCase
+{
+    // default delay for tto & ttr ola
+    // see @\LevelAgreement::getDefinitionTimeValues() for available unit values
+    const OLA_TTO_DELAY = [90, 'minute'];
+    const OLA_TTR_DELAY = [2, 'day'];
+
+    public function testAssociateSingleOlaWithCreatedTicket(): void
+    {
+        // arrange
+        $this->login();
+        $ola = $this->createOLA()['ola'];
+
+        // act - create ticket with OLA
+        $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => [$ola->getID()],] + $this->getValidTicketData());
+
+        // assert
+        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
+    }
+
+    public function testAssociateMultipleOlasWithCreatedTicket(): void
+    {
+        // arrange - create 3 OLAs
+        $this->login();
+        ['ola' => $ola1, 'slm' => $slm, 'group' => $group] = $this->createOLA();
+        $ola2 = $this->createOLA(group: $group, slm: $slm)['ola'];
+        $ola3 = $this->createOLA(group: $group, slm: $slm)['ola'];
+        $olas_ids = [$ola1->getID(), $ola2->getID(), $ola3->getID()];
+
+        // act - create ticket with OLA
+        $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => $olas_ids,] + $this->getValidTicketData());
+
+        // assert
+        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $this->assertEqualsCanonicalizing($olas_ids, $fetched_olas, 'Expected OLAs associated with ticket don\'t match the expected IDs');
+    }
+
+    public function testAssociateSingleOlaWithUpdatedTicket(): void
+    {
+        // arrange
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        $ola = $this->createOLA()['ola'];
+
+        // act - update ticket with OLA
+        $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID()] ]);
+
+        // assert
+        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
+    }
+
+    public function testAssociateMultipleOlaWithUpdatedTicket(): void
+    {
+        // arrange
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        ['ola' => $ola1, 'slm' => $slm, 'group' => $group] = $this->createOLA();
+        $ola2 = $this->createOLA(group: $group, slm: $slm)['ola'];
+        $ola3 = $this->createOLA(group: $group, slm: $slm)['ola'];
+        $olas_ids = [$ola1->getID(), $ola2->getID(), $ola3->getID()];
+
+        // act - update ticket with OLA
+        $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => $olas_ids ]);
+
+        // assert
+        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $this->assertEqualsCanonicalizing($olas_ids, $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
+    }
+
+    /**
+     * Ola association is not removed when ticket is updated without OLA fields
+     */
+    public function testUpdateTicketWithoutOlaInputs(): void
+    {
+        // arrange
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        $ola = $this->createOLA()['ola'];
+        $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID()] ]);
+
+        // act - update ticket without OLA fields, note '_la_update' is not set
+        $this->updateItem(Ticket::class, $ticket->getID(), ['name' => $ticket->fields['name']]);
+
+        // assert
+        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
+    }
+
+    /**
+     * Deassociate an OLA from a ticket, and keep the others
+     */
+    public function testDeassociateOlaToTicket(): void
+    {
+        // arrange - add 3 olas to a ticket
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        ['ola' => $ola1, 'slm' => $slm, 'group' => $group] = $this->createOLA();
+        $ola2 = $this->createOLA(group: $group, slm: $slm)['ola'];
+        $ola3 = $this->createOLA(group: $group, slm: $slm)['ola'];
+        $olas_ids = [$ola1->getID(), $ola2->getID(), $ola3->getID()];
+        $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => $olas_ids ]); // no check needed, tested before
+
+        // act - remove an ola from the ticket
+        $updated_olas_ids = [$ola1->getID(), $ola3->getID()]; // $ola2 removed
+        $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => $updated_olas_ids ]);
+
+        // assert
+        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $this->assertEqualsCanonicalizing($updated_olas_ids, $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
+    }
+
+    /**
+     * When passing multiple OLA IDs to the ticket, the same OLA ID should not be passed associated multiple times
+     * Just test for update, no need to test for create (process is in the same function)
+     */
+    public function testUpdateTicketWithSameOlasInputs(): void
+    {
+        // arrange
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        $ola = $this->createOLA()['ola'];
+
+        // act - update ticket
+        $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID(), $ola->getID()] ]);
+
+        // assert
+        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
+    }
+
+    /**
+     * Create a ticket with old form params (olas_id_tto, olas_id_ttr) still works
+     */
+    public function testCreateTicketWithOldFormParams(): void
+    {
+        // arrange
+        $this->login();
+        ['ola' => $ola_tto, 'slm' => $slm, 'group' => $group] = $this->createOLA(ola_type: \SLM::TTO);
+        $ola_ttr = $this->createOLA(ola_type: \SLM::TTR, group: $group, slm: $slm)['ola'];
+
+        // act - update ticket
+        $ticket = $this->createItem(
+            Ticket::class,
+            ['olas_id_tto' => $ola_tto->getID(), 'olas_id_ttr' => $ola_ttr->getID()] + $this->getValidTicketData(),
+            ['olas_id_tto', 'olas_id_ttr'] // do not exist anymore but here we check backward compatibility.
+        );
+
+        // assert
+        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $this->assertEqualsCanonicalizing([$ola_tto->getID(), $ola_ttr->getID()], $fetched_olas, 'Unexpected OLA associated with ticket');
+    }
+
+    /**
+     * Update a ticket with old form params (olas_id_tto, olas_id_ttr) still works
+     */
+    public function testUpdateTicketWithOldFormParams(): void
+    {
+        // arrange
+        $this->login();
+        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        ['ola' => $ola_tto, 'slm' => $slm, 'group' => $group] = $this->createOLA(ola_type: \SLM::TTO);
+        $ola_ttr = $this->createOLA(ola_type: \SLM::TTR, group: $group, slm: $slm)['ola'];
+
+        // act - update ticket
+        $this->updateItem(
+            Ticket::class,
+            $ticket->getID(),
+            ['olas_id_tto' => $ola_tto->getID(), 'olas_id_ttr' => $ola_ttr->getID()],
+            ['olas_id_tto', 'olas_id_ttr'] // do not exist anymore but here we check backward compatibility, so updateItem must no fail.
+        );
+
+        // assert
+        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $this->assertEqualsCanonicalizing([$ola_tto->getID(), $ola_ttr->getID()], $fetched_olas, 'Unexpected OLA associated with ticket');
+    }
+
+    /**
+     * Create a ticket with removed fiels trigger
+     */
+    public function testCreateTicketWithOlaRemovedFieldsThrowsAnExecption(): void
+    {
+        $this->login();
+        $removed_fields = ['ola_tto_begin_date', 'ola_ttr_begin_date', 'internal_time_to_resolve', 'internal_time_to_own', 'olalevels_id_ttr'];
+
+        foreach ($removed_fields as $removed_field) {
+            $this->expectException(\RuntimeException::class);
+            $value = $removed_field === 'olalevels_id_ttr' ? 1 : date('Y-m-d 00:00:00');
+
+            $this->createItem(
+                Ticket::class,
+                [$removed_field => $value] + $this->getValidTicketData(),
+                [$removed_field] // do not exist anymore but here we check backward compatibility, so createItem must no fail.
+            );
+        }
+    }
+
+    /**
+     * Update a ticket with removed fiels trigger
+     */
+    public function testUpdateTicketWithOlaRemovedFieldsThrowsAnExecption(): void
+    {
+        $this->login();
+        $removed_fields = ['ola_tto_begin_date', 'ola_ttr_begin_date', 'internal_time_to_resolve', 'internal_time_to_own', 'olalevels_id_ttr'];
+        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+
+        foreach ($removed_fields as $removed_field) {
+            $this->expectException(\RuntimeException::class);
+            $value = $removed_field === 'olalevels_id_ttr' ? 1 : date('Y-m-d 00:00:00');
+
+            $this->updateItem(
+                $ticket::class,
+                $ticket->getID(),
+                [$removed_field => $value] + $this->getValidTicketData(),
+                [$removed_field] // do not exist anymore but here we check backward compatibility, so updateItem must no fail.
+            );
+        }
+    }
+
+    // @todoseb tests sur olalevels_id_ttr (et olalevels_id_tto?)
+    // @todoseb test à la suppression d'un OLA ? comportement à adopter ? est déjà protégé ?
+    // @todoseb test à la modification d'un OLA ?
+    // @todoseb tests global, ajoute, suppression, reajout
+    // @todoseb tests sur getAssociatedSlas() - ailleurs
+    // @todoseb tests avec des OLA assignées par rule
+
+    /**
+     * - start_time is set at the moment the Ola is assigned to the ticket
+     * - due_time is start_time + ola_tto delay/duration
+     */
+    public function testOlaTtoStartWhenOlaIsAssignedAtCreation(): void
+    {
+        $this->login();
+        // arrange
+        $ola_tto = $this->createOLA(ola_type: \SLM::TTO)['ola'];
+        $start_time_datetime = $this->setCurrentTime('09:00:00');
+        $due_time_datetime = clone $start_time_datetime;
+        $due_time_datetime->add($this->getDefaultTtoDelayInterval());
+
+        // act associate ticket with ola
+        $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => [$ola_tto->getID()]] + $this->getValidTicketData());
+
+        // assert
+        // test using database object
+        $item_ola = new \Item_Ola();
+        assert(true === $item_ola->getFromDBByCrit(['items_id' => $ticket->getID(), 'itemtype' => $ticket::getType(), 'olas_id' => $ola_tto->getID()]), 'failed to find created Item_Ola');
+        // start_time is now
+        $this->assertEquals($start_time_datetime->format('Y-m-d H:i:s'), $item_ola->fields['start_time']);
+        // due_time is set to now() + OLA_TTO_DELAY
+        $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $item_ola->fields['due_time']);
+
+        // test using getAssociatedOlas()
+        $ola = $ticket->getAssociatedOlas()[0];
+        $this->assertEquals($start_time_datetime->format('Y-m-d H:i:s'), $ola['start_time']);
+        $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $ola['due_time']);
+    }
+
+    public function testOlaTtoStartWhenOlaIsAssignedAtUpdate(): void
+    {
+        $this->login();
+        // arrange
+        $ola_tto = $this->createOLA(ola_type: \SLM::TTO)['ola'];
+        $start_time_datetime = $this->setCurrentTime('09:00:00');
+        $due_time_datetime = clone $start_time_datetime;
+        $due_time_datetime->add($this->getDefaultTtoDelayInterval());
+        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+
+        // act associate ticket with ola
+        $this->updateItem($ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
+
+        // assert
+        // test using database object
+        $item_ola = new \Item_Ola();
+        assert(true === $item_ola->getFromDBByCrit(['items_id' => $ticket->getID(), 'itemtype' => $ticket::getType(), 'olas_id' => $ola_tto->getID()]), 'failed to find created Item_Ola');
+        // start_time is now
+        $this->assertEquals($start_time_datetime->format('Y-m-d H:i:s'), $item_ola->fields['start_time']);
+        // due_time is set to now() + OLA_TTO_DELAY
+        $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $item_ola->fields['due_time']);
+
+        // test using getAssociatedOlas()
+        $ola = $ticket->getAssociatedOlas()[0];
+        $this->assertEquals($start_time_datetime->format('Y-m-d H:i:s'), $ola['start_time']);
+        $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $ola['due_time']);
+    }
+
+    /**
+     * @todoseb déplacer
+     * @todo missing fields for form submission (_actors, kb_linked_id, etc, @see front/ticket.form.php, Ticket::post_updateItem, etc)
+     */
+    private function getValidTicketData(): array
+    {
+        return [
+//            'id' => 0,
+//            'entities_id' => 0,
+            'name' => 'ticket name ' . time(),
+//            'date' => null,
+//            'closedate' => null,
+//            'solvedate' => null,
+//            'takeintoaccountdate' => null,
+//            'date_mod' => null,
+//            'users_id_lastupdater' => 0,
+//            'status' => 1,
+//            'users_id_recipient' => 0,
+//            'requesttypes_id' => 0,
+            'content' => 'Ticket Example content',
+//            'urgency' => 1,
+//            'impact' => 1,
+//            'priority' => 1,
+//            'itilcategories_id' => 0,
+//            'type' => 1,
+//            'global_validation' => 1,
+//            'slas_id_ttr' => 0,
+//            'slas_id_tto' => 0,
+//            'slalevels_id_ttr' => 0,
+//            'time_to_resolve' => null,
+//            'time_to_own' => null,
+//            'begin_waiting_date' => null,
+//            'sla_waiting_duration' => 0,
+//            'waiting_duration' => 0,
+//            'close_delay_stat' => 0,
+//            'solve_delay_stat' => 0,
+//            'takeintoaccount_delay_stat' => 0,
+//            'actiontime' => 0,
+//            'is_deleted' => 0,
+//            'locations_id' => 0,
+//            'validation_percent' => 0,
+//            'date_creation' => null,
+//            'tickettemplates_id' => 0,
+//            'externalid' => null,
+        ];
+    }
+
+    /**
+     * @param array $data
+     * @param int $ola_type
+     * @param \Group|null $group
+     * @param \SLM|null $slm
+     *
+     * @return array{ola: OLA, slm: SLM, group: \Group}
+     */
+    private function createOLA(array $data = [], int $ola_type = \SLM::TTO, ?\Group $group = null, ?\SLM $slm = null): array
+    {
+        assert(in_array($ola_type, array_keys(OLA::getTypes())));
+        $slm = $slm ?? $this->createSLM();
+        $group = $group ?? $this->createGroup();
+
+        [$amount, $unit] = match ($ola_type) {
+            SLM::TTO => self::OLA_TTO_DELAY,
+            SLM::TTR => self::OLA_TTR_DELAY,
+        };
+
+        $ola = $this->createItem(
+            Ola::class,
+            $data + [
+            //                'id' => 0,
+                'name' => 'OLA ' . time(),
+            //                'entities_id' => 0,
+                'is_recursive' => 1, // @todoseb voir avec quelqu'un le fonctionnement de l'entité 0 et de la récursivité. car la requete Item_Ola::getListForItem() dans \Ticket::getAssociatedOlas attend soit de la récursivité, soit une entité != 0
+                'type' => $ola_type,
+                'comment' => 'OLA comment ' . time(),
+                'number_time' => $amount,
+                'definition_time' => $unit,
+            //                'use_ticket_calendar' => 0,
+            //                'calendars_id' => 0,
+            //                'date_mod' => null,
+            //                'end_of_working_day' => 0,
+            //                'date_creation' => null,
+                'slms_id' => $slm->getID(),
+                'groups_id' => $group->getID(),
+            ]
+        );
+
+        return ['ola' => $ola, 'slm' => $slm, 'group' => $group];
+    }
+
+    private function createSLM(array $data = [], ?\Calendar $calendar = null): SLM
+    {
+        $calendar = $calendar ?? $this->createCalendar();
+
+        return $this->createItem(
+            SLM::class,
+            $data + [
+                'id' => 0,
+                'name' => 'SLM name ' . time(),
+            //                'entities_id' => 0,
+            //                'is_recursive' => 0,
+                'comment' => 'Slm comment text',
+            //                'use_ticket_calendar' => 0,
+                'calendars_id' => $calendar->getID(),
+            //                'date_mod' => null,
+            //                'date_creation' => null,
+            ]
+        );
+    }
+
+    private function createGroup(): \Group
+    {
+        return $this->createItem(\Group::class, [
+//            'id' => 0,
+//            'entities_id' => 0,
+//            'is_recursive' => 0,
+            'name' => 'Group name ' . time(),
+//            'code' => null,
+            'comment' => 'Group comment text ' . time(),
+//            'ldap_field' => null,
+//            'ldap_value' => null,
+//            'ldap_group_dn' => null,
+//            'date_mod' => null,
+//            'groups_id' => 0,
+//            'completename' => null,
+//            'level' => 0,
+//            'ancestors_cache' => null,
+//            'sons_cache' => null,
+//            'is_requester' => 1,
+//            'is_watcher' => 1,
+//            'is_assign' => 1,
+//            'is_task' => 1,
+//            'is_notify' => 1,
+//            'is_itemgroup' => 1,
+//            'is_usergroup' => 1,
+//            'is_manager' => 1,
+//            'date_creation' => null,
+//            'recursive_membership' => 0,
+//            '2fa_enforced' => 0,
+        ]);
+    }
+
+    /**
+     * Calendar with today & tomorrow set a working day (9:00 to 19:00)
+     */
+    private function createCalendar(): \Calendar
+    {
+        $calendar = $this->createItem(\Calendar::class, ['name' => 'Test Calendar ' . time()]);
+        // today
+        $this->createItem(
+            \CalendarSegment::class,
+            [
+                'calendars_id' => $calendar->getID(),
+                'day'          => (int)date('w'),
+                'begin'        => '09:00:00',
+                'end'          => '19:00:00'
+            ]
+        );
+        // tomorrow
+        $this->createItem(
+            \CalendarSegment::class,
+            [
+                'calendars_id' => $calendar->getID(),
+                'day'          => (int)date('w') === 6 ? 0 : (int)date('w') + 1, // day of the week number
+                'begin'        => '09:00:00',
+                'end'          => '19:00:00'
+            ]
+        );
+
+        return $calendar;
+    }
+
+    /**
+     * Set $_SESSION['glpi_currenttime'] with current day + $time param and return the related DateTime
+     *
+     * @param string $time expected format is H:i:s
+     */
+    private function setCurrentTime(string $time): \DateTime
+    {
+        // assert format is H:i:s
+        assert(1 === preg_match('/^([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $time));
+
+        // set session time
+        $_SESSION['glpi_currenttime'] = date('Y-m-d ' . $time);
+
+        // create and return DateTime
+        $dt = new \DateTime();
+        $dt->setTime(...explode(':', $time));
+
+        return $dt;
+    }
+
+    private function getDefaultTtoDelayInterval(): \DateInterval
+    {
+        [$amount, $unit] = self::OLA_TTO_DELAY;
+
+        return new \DateInterval(sprintf('PT%d%s', $amount, strtoupper(substr($unit, 0, 1))));
+    }
+}
