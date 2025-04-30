@@ -228,7 +228,7 @@
             {
                itemtype: "{{ actor['itemtype'] }}",
                items_id: "{{ actor['items_id'] }}",
-               use_notification: {{ actor['use_notification'] ? "1" : "0" }},
+               use_notification: {{ (actor['use_notification'] ?? false) ? "1" : "0" }},
                alternative_email: "{{ actor['alternative_email'] ?? '' }}",
                default_email: "{{ actor['default_email'] ?? '' }}",
             },

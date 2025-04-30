@@ -168,7 +168,7 @@
                                             >
                                                 <h3 class="mb-2 {{ not form_block.fields.name ? "text-muted" : "" }}">
                                                     {{ translate_item_key(form_block, constant(get_class(form_block) ~ '::TRANSLATION_KEY_NAME'))|default(__('Untitled question')) }}
-                                                    {% if form_block.fields.is_mandatory %}
+                                                    {% if form_block.fields.is_mandatory ?? false %}
                                                         <span class="text-danger">*</span>
                                                     {% endif %}
                                                 </h3>

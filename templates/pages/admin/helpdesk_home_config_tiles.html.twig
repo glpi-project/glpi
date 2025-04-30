@@ -30,6 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set editable = editable|default(false) %}
 {% for tile in tiles %}
     <section
         class="col-12 col-lg-6 col-xl-4 d-flex-soft"

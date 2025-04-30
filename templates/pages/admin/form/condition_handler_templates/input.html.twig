@@ -37,7 +37,7 @@
     placeholder="{{ __("Enter a value...") }}"
     data-glpi-conditions-editor-value
     aria-label="{{ input_label }}"
-    {% for attribute, value in attributes %}
+    {% for attribute, value in (attributes ?? []) %}
         {{ attribute }}="{{ value }}"
     {% endfor %}
 />
