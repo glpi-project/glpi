@@ -45,7 +45,7 @@
         "jquery-migrate": "^3.5.2",
         "jquery-prettytextdiff": "^1.0.4",
         "jquery-ui": "^1.14.1",
-        "jquery.fancytree": "^2.38.4",
+        "jquery.fancytree": "^2.38.5",
         "jquery.rateit": "^1.1.6",
         "leaflet": "^1.9.4",
         "leaflet-control-geocoder": "^3.1.0",
