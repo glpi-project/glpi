@@ -248,23 +248,13 @@ trait PlanningEvent
             return "";
         }
 
-        if (empty($rrule['byday'])) {
-            $rrule['byday'] = [];
-        }
-
-        if (empty($rrule['bymonth'])) {
-            $rrule['bymonth'] = [];
-        }
-
-        if (!empty($rrule['exceptions'])) {
+        if (isset($rrule['exceptions'])) {
             if (is_string($rrule['exceptions']) && strlen($rrule['exceptions'])) {
                 $rrule['exceptions'] = explode(', ', $rrule['exceptions']);
             }
             if (!is_array($rrule['exceptions']) || count($rrule['exceptions']) === 0) {
-                $rrule['exceptions'] = [];
+                unset($rrule['exceptions']);
             }
-        } else {
-            $rrule['exceptions'] = [];
         }
 
         if (count($rrule) > 0) {
