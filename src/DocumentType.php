@@ -154,12 +154,7 @@ class DocumentType extends CommonDropdown
         $options['display'] = false;
         switch ($field) {
             case 'icon':
-                return Dropdown::dropdownIcons(
-                    $name,
-                    $values[$field],
-                    GLPI_ROOT . "/pics/icones",
-                    false
-                );
+                return Dropdown::dropdownIcons($name, $values[$field], '', false);
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }

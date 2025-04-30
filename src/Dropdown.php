@@ -959,7 +959,7 @@ class Dropdown
      *
      * @param string  $myname      the name of the HTML select
      * @param mixed   $value       the preselected value we want
-     * @param string  $store_path  path where icons are stored
+     * @param string  $store_path  path where icons are stored (No longer used)
      * @param boolean $display     display of get string ? (true by default)
      *
      *
@@ -967,71 +967,77 @@ class Dropdown
      *    void if param display=true
      *    string if param display=false (HTML code)
      **/
-    public static function dropdownIcons($myname, $value, $store_path, $display = true, $options = [])
+    public static function dropdownIcons($myname, $value, $store_path = '', $display = true, $options = [])
     {
+        if (!empty($store_path)) {
+            Toolbox::deprecated('The store_path parameter is no longer used.');
+        }
+        $icon_path = GLPI_ROOT . '/public/pics/icones';
+        if ($dh = @opendir($icon_path)) {
+            $files = [];
 
-        if (is_dir($store_path)) {
-            if ($dh = opendir($store_path)) {
-                $files = [];
-
-                while (($file = readdir($dh)) !== false) {
-                    $files[] = $file;
-                }
-
-                closedir($dh);
-                sort($files);
-
-                $values = [];
-                foreach ($files as $file) {
-                    if (preg_match("/\.png$/i", $file)) {
-                        $values[$file] = $file;
-                    }
-                }
-                $rand = mt_rand();
-                self::showFromArray(
-                    $myname,
-                    $values,
-                    array_merge(
-                        [
-                            'value'                 => $value,
-                            'display_emptychoice'   => true,
-                            'display'               => $display,
-                            'noselect2'             => true, // we will instanciate it later
-                            'rand'                  => $rand,
-                        ],
-                        $options
-                    )
-                );
-
-                /** @var array $CFG_GLPI */
-                global $CFG_GLPI;
-
-                // templates for select2 dropdown
-                $js = <<<JAVASCRIPT
-                $(function() {
-                    const formatFormIcon = function(icon) {
-                        if (!icon.id || icon.id == '0') {
-                            return icon.text;
-                        }
-                        var img = '<span><img alt="" src="{$CFG_GLPI['typedoc_icon_dir']}/'+icon.id+'" />';
-                        var label = '<span>'+icon.text+'</span>';
-                        return $(img+'&nbsp;'+label);
-                    };
-                    $("#dropdown_{$myname}{$rand}").select2({
-                        width: '60%',
-                        templateSelection: formatFormIcon,
-                        templateResult: formatFormIcon
-                    });
-                });
-JAVASCRIPT;
-                echo Html::scriptBlock($js);
-            } else {
-               //TRANS: %s is the store path
-                printf(__('Error reading directory %s'), $store_path);
+            while (($file = readdir($dh)) !== false) {
+                $files[] = $file;
             }
+
+            closedir($dh);
+            sort($files);
+
+            $values = [];
+            foreach ($files as $file) {
+                if (preg_match("/\.png$/i", $file)) {
+                    $values[$file] = $file;
+                }
+            }
+            $rand = mt_rand();
+            self::showFromArray(
+                $myname,
+                $values,
+                array_merge(
+                    [
+                        'value'                 => $value,
+                        'display_emptychoice'   => true,
+                        'display'               => $display,
+                        'noselect2'             => true, // we will instanciate it later
+                        'rand'                  => $rand,
+                    ],
+                    $options
+                )
+            );
+
+            /** @var array $CFG_GLPI */
+            global $CFG_GLPI;
+
+            // templates for select2 dropdown
+            $js = <<<JAVASCRIPT
+            $(function() {
+                const formatFormIcon = function(icon) {
+                    if (!icon.id || icon.id == '0') {
+                        return icon.text;
+                    }
+                    var img = '<span><img alt="" src="{$CFG_GLPI['typedoc_icon_dir']}/'+icon.id+'" />';
+                    var label = '<span>'+icon.text+'</span>';
+                    return $(img+'&nbsp;'+label);
+                };
+                $("#dropdown_{$myname}{$rand}").select2({
+                    width: '60%',
+                    templateSelection: formatFormIcon,
+                    templateResult: formatFormIcon
+                });
+            });
+JAVASCRIPT;
+            echo Html::scriptBlock($js);
         } else {
-           //TRANS: %s is the store path
-            printf(__('Error: %s is not a directory'), $store_path);
+            $error_msg = __('Error reading icon directory');
+            echo <<<HTML
+            <div class="alert alert-danger">
+                <span class="fs-4 alert-title">
+                    $error_msg
+                </span>
+            </div>
+HTML;
+
+            trigger_error(sprintf('Error reading directory %s', $icon_path), E_USER_WARNING);
         }
     }
 
