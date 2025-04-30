@@ -1273,24 +1273,17 @@ abstract class CommonITILValidationTest extends DbTestCase
         $this->assertEquals($validationstep->getID(), $itil_validationstep->fields['validationsteps_id'], 'Validationstep not correctly set using _validationsteps_id');
         $this->assertEquals($validationstep->fields['minimal_required_validation_percent'], $itil_validationstep->fields['minimal_required_validation_percent']);
 
-        // act 2 : update validation step & threshold
-        $new_validationstep = $this->createValidationStep(100);
-        assert($new_validationstep->fields['minimal_required_validation_percent'] !== $threshold, 'can not test with the same threshold');
-
+        // act 2 : update validation threshold
         $validation = $this->updateItem(
             $validation::class,
             $validation->getID(),
             [
                 '_validationsteps_threshold' => $threshold,
-                '_validationsteps_id' => $new_validationstep->getID(),
-
             ]
         );
 
         // assert
         $itil_validationstep->getFromDB($validation->fields['itils_validationsteps_id']);
-
-        $this->assertEquals($new_validationstep->getID(), $itil_validationstep->fields['validationsteps_id'], 'Validationstep not correctly set using _validationsteps_id');
         $this->assertEquals($threshold, $itil_validationstep->fields['minimal_required_validation_percent']);
     }
 

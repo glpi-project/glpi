@@ -284,7 +284,7 @@ abstract class CommonITILValidation extends CommonDBChild
     public function prepareInputForAdd($input)
     {
         // validation step is mandatory : add default value is not set
-        if (!isset($input['_validationsteps_id'])) {
+        if (!isset($input['itils_validationsteps_id']) && !isset($input['_validationsteps_id'])) {
             $input['_validationsteps_id'] = ValidationStep::getDefault()->getID();
         }
 
@@ -324,13 +324,20 @@ abstract class CommonITILValidation extends CommonDBChild
         return parent::prepareInputForAdd($input);
     }
 
+    #[Override()]
+    public function pre_addInDB()
+    {
+        if (array_key_exists('_validationsteps_id', $this->input)) {
+            $this->addITILValidationStep($this->input['_validationsteps_id']);
+        }
+    }
+
 
     public function post_addItem()
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->addITILValidationStep($this->input['_validationsteps_id']);
         if (isset($this->input['_validationsteps_threshold'])) {
             $this->updateITILValidationStepThreshold((int) $this->input['_validationsteps_threshold']);
         }
@@ -414,24 +421,11 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function prepareInputForUpdate($input)
     {
-
-        // validation step is mandatory
-        if (isset($input['_validationsteps_id']) && !is_numeric($input['_validationsteps_id'])) {
-            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is mandatory'), '_validationsteps_id'), message_type: ERROR);
-            return false;
-        }
-
-        // validation step exists in db
-        $vs = new ValidationStep();
-        if (isset($input['_validationsteps_id']) && !$vs->getFromDB((int) $input['_validationsteps_id'])) {
-            Session::addMessageAfterRedirect(msg: sprintf(__s('The %s field is invalid'), '_validationsteps_id'), message_type: ERROR);
-            return false;
-        };
-
         $forbid_fields = ['entities_id', static::$items_id, 'is_recursive'];
         // The following fields shouldn't be changed by anyone after the approval is created
         array_push(
             $forbid_fields,
+            'itils_validationsteps_id',
             'users_id',
             'itemtype_target',
             'items_id_target',
@@ -485,23 +479,11 @@ abstract class CommonITILValidation extends CommonDBChild
         parent::post_purgeItem();
     }
 
-
     public function post_updateItem($history = true)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $itil = $this->getItem();
-        if (false === $itil) {
-            throw new \LogicException('Trying to update an approval not linked to an ITIL object.');
-        }
-        /** @var \CommonITILObject $itil */
-
-        if (isset($this->input['_validationsteps_id'])) {
-            $old_itils_validationsteps_id = $this->fields['itils_validationsteps_id'];
-            $this->addITILValidationStep($this->input['_validationsteps_id']);
-            $this->removeUnsedITILValidationStep($old_itils_validationsteps_id);
-        }
         if (isset($this->input['_validationsteps_threshold'])) {
             $this->updateITILValidationStepThreshold((int) $this->input['_validationsteps_threshold']);
         }
@@ -533,7 +515,7 @@ abstract class CommonITILValidation extends CommonDBChild
             $options  = ['validation_id'     => $this->fields["id"],
                 'validation_status' => $this->fields["status"],
             ];
-            NotificationEvent::raiseEvent('validation_answer', $itil, $options, $this);
+            NotificationEvent::raiseEvent('validation_answer', $this->getItem(), $options, $this);
         }
 
         parent::post_updateItem($history);
@@ -2039,13 +2021,7 @@ HTML;
 
         if ($itils_validationstep_id_with_validationstep_id_exists) {
             $itils_validationsteps_id = $ivs->fields['id'];
-            $_validation = new static();
-            if (!$_validation->update(['id' => $this->getID(), 'itils_validationsteps_id' => $itils_validationsteps_id])) {
-                Session::addMessageAfterRedirect('Failed to update associated approval step while adding approval.');
-            };
-            // update current validation to avoid reloading (eg in updateITILValidationStepThreshold())
-            $this->fields['itils_validationsteps_id'] = $itils_validationsteps_id;
-            unset($_validation);
+            $this->input['itils_validationsteps_id'] = $itils_validationsteps_id;
         } else {
             // addValidationStep also update the current Validation
             // load referenced ValidationStep
@@ -2055,29 +2031,17 @@ HTML;
             };
 
             // create ITIL_ValidationStep
-            $itil = $this->getItem();
-            if (!($itil instanceof CommonITILObject)) {
-                throw new \LogicException('Trying to add a approval step to an unexisting linked ITIL object.');
-            }
-            $itil_validationstep = $itil::getValidationStepInstance();
+            $itil_class = static::getItilObjectItemType();
+            $itil_validationstep = $itil_class::getValidationStepInstance();
             $itil_validationstep->add([
                 'validationsteps_id' => $validationsteps_id,
                 'minimal_required_validation_percent' => $vs->fields['minimal_required_validation_percent'],
             ]);
 
-            // update ITILValidation
-            $validation = new static();
-            if (
-                !$validation->update([
-                    'id' => $this->getID(),
-                    'itils_validationsteps_id' => $itil_validationstep->getID(),
-                ])
-            ) {
-                Session::addMessageAfterRedirect('Failed to update associated approval step while adding approval.');
-            };
-
-            $this->fields['itils_validationsteps_id'] = $itil_validationstep->getID();
+            $this->input['itils_validationsteps_id'] = $itil_validationstep->getID();
         }
+
+        unset($this->input['_validationsteps_id']);
     }
 
     /**

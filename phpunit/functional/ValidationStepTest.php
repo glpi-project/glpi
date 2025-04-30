@@ -273,27 +273,6 @@ class ValidationStepTest extends \DbTestCase
             $this->assertFalse($itil_validationstep->getFromDB($itil_validationstep_id), 'The ITIL validation step should not in database');
         }
     }
-    public function testItilValidationStepIsRemovedWhenValidationIsUpdated(): void
-    {
-        $this->login();
-        foreach ([\Ticket::class, \Change::class] as $itil_class) {
-            // arrange - create a validation (+ an itils_validationstep)
-            $vs = $this->createValidationStep(100);
-            [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
-            $itil_validationstep_id = $itil_validationstep->getID();
-
-            $validation = $itil::getValidationClassInstance();
-            $validation_exists = $validation->getFromDBByCrit([$itil::getForeignKeyField() => $itil->getID(), 'itils_validationsteps_id' => $itil_validationstep_id]);
-            assert($validation_exists);
-
-            // act - update the validation to use another validation step
-            $new_vs = $this->createValidationStep(100);
-            $this->updateItem($validation::class, $validation->getID(), ['_validationsteps_id' => $new_vs->getID()]);
-
-            // assert - the itils_validationstep is deleted
-            $this->assertFalse($itil_validationstep->getFromDB($itil_validationstep_id), 'The ITIL validation step should not be in database');
-        }
-    }
 
     public function testGetValidationStepClassName(): void
     {
