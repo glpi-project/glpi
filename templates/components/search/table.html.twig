@@ -33,10 +33,14 @@
 {% import 'components/alerts_macros.html.twig' as alerts %}
 {% set searchform_id = data['searchform_id']|default('search_' ~ rand) %}
 {% set massive_action_form_id = massive_action_form_id ?? "" %}
+{% set is_trashbin = data['search']['is_deleted'] %}
 
 <div class="table-responsive-lg">
-   <table class="search-results table card-table table-hover {{ data['search']['is_deleted'] ? "table-danger deleted-results" : "table-striped" }}"
-          id="{{ searchform_id }}">
+   <table
+      class="search-results table card-table table-hover {{ is_trashbin ? "table-danger deleted-results" : "table-striped" }}"
+      data-testid="{{ is_trashbin ? "search-results-trashbin" : "search-results" }}"
+      id="{{ searchform_id }}"
+   >
       <thead>
          <tr {% if count == 0 %}style="display: none;"{% endif %}>
             {% if showmassiveactions %}

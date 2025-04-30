@@ -598,7 +598,7 @@ final class SearchEngine
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
             'itemtype' => $itemtype,
         ]);
-        echo "<div class='col search-container'>";
+        echo "<div class='col search-container' data-glpi-search-container>";
 
         $output = self::getOutputForLegacyKey($params['display_type'], $params);
         $output::showPreSearchDisplay($itemtype);

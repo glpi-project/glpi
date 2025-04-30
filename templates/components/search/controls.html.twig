@@ -43,7 +43,21 @@
             {% set mainform = mainform ?? true %}
             {% set showaction = showaction ?? true %}
             {% if mainform and showaction %}
-                <form name="searchform{{ normalized_itemtype }}" class="search-form-container needs-validation" novalidate method="get" action="{{ href }}">
+                <form
+                    name="searchform{{ normalized_itemtype }}"
+                    class="search-form-container needs-validation"
+                    novalidate
+                    method="get"
+                    action="{{ href }}"
+                    {% if not user_pref('show_search_form') %}
+                        {# If the split search form is displayed, it has the
+                        responsability of sending the search request instead of
+                        this form which will only be used for sorting operations.
+                        This mean we only mark this form as the "search form"
+                        if the split search form is not enabled #}
+                        data-glpi-search-form
+                    {% endif %}
+                >
             {% endif %}
             {% if not original_params.hide_criteria ?? false %}
                 <div class="primary-controls">
@@ -117,15 +131,21 @@
                 {% endif %}
             </div>
 
+            {% set submit_search_form = "this.closest('[data-glpi-search-container]').querySelector('[data-glpi-search-form]').submit()" %}
             <div class="secondary-controls">
                 {% if may_be_located %}
                     <div class="btn-group me-1 me-xl-2 shadow-none" role="group">
                         {% set table_class = (data['search']['as_map'] == 0 ? "btn-ghost-info" : "") %}
-                        <input type="radio" class="btn-check"
-                            name="as_map" value="1" autocomplete="off"
+                        <input
+                            type="radio"
+                            class="btn-check"
+                            name="as_map"
+                            value="1"
+                            autocomplete="off"
                             id="show_as_table"
-                            onclick="toogle('as_map','','',''); document.forms['searchform{{ normalized_itemtype }}'].submit();"
-                            {{ data['search']['as_map'] == 0 ? 'checked' : '' }} />
+                            onclick="toogle('as_map','','',''); {{ submit_search_form }};"
+                            {{ data['search']['as_map'] == 0 ? 'checked' : '' }}
+                        >
                             <label class="btn btn-icon btn-sm btn-pill px-2 py-1 {{ table_class }}" title="{{ __('Show as table') }}"
                                 for="show_as_table"
                                 data-bs-toggle="tooltip" data-bs-placement="top">
@@ -133,11 +153,16 @@
                             </label >
 
                         {% set located_class = (data['search']['as_map'] == 1 ? "btn-ghost-info" : "") %}
-                        <input type="radio" class="btn-check"
-                            name="as_map" value="1" autocomplete="off"
+                        <input
+                            type="radio"
+                            class="btn-check"
+                            name="as_map"
+                            value="1"
+                            autocomplete="off"
                             id="show_as_map"
-                            onclick="toogle('as_map','','',''); document.forms['searchform{{ normalized_itemtype }}'].submit();"
-                            {{ data['search']['as_map'] == 1 ? 'checked' : '' }} />
+                            onclick="toogle('as_map','','',''); {{ submit_search_form }};"
+                            {{ data['search']['as_map'] == 1 ? 'checked' : '' }}
+                        >
                         <label class="btn btn-icon btn-sm btn-pill px-2 py-1 {{ located_class }}" title="{{ __('Show as map') }}"
                             for="show_as_map"
                             data-bs-toggle="tooltip" data-bs-placement="top">
@@ -147,9 +172,14 @@
                 {% endif %}
 
                 {% if may_be_browsed %}
-                    <button class="btn btn-icon btn-sm {{ data['search']['browse'] == 1 ? "btn-secondary" : "btn-ghost-secondary" }} me-1 me-xl-2 px-1" type="button"
-                            title="{{ __('Toggle browse') }}" data-bs-toggle="tooltip" data-bs-placement="top"
-                            onclick="toogle('browse','','',''); document.forms['searchform{{ normalized_itemtype }}'].submit();">
+                    <button
+                        class="btn btn-icon btn-sm {{ data['search']['browse'] == 1 ? "btn-secondary" : "btn-ghost-secondary" }} me-1 me-xl-2 px-1"
+                        type="button"
+                        title="{{ __('Toggle browse') }}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        onclick="toogle('browse','','',''); {{ submit_search_form }};"
+                    >
                         <i class="ti {{ data['search']['browse'] == 1 ? "ti-checkbox" : "ti-square" }}"></i>
                         <span class="d-flex align-bottom">
                             <i class="ti ti-subtask"></i>
@@ -158,9 +188,14 @@
                 {% endif %}
 
                 {% if may_be_deleted %}
-                    <button class="btn btn-icon btn-sm {{ data['search']['is_deleted'] == 1 ? "btn-danger" : "btn-ghost-danger" }} me-1 me-xl-2 px-1" type="button"
-                            title="{{ __('Show the trashbin') }}" data-bs-toggle="tooltip" data-bs-placement="top"
-                            onclick="toogle('is_deleted','','',''); document.forms['searchform{{ normalized_itemtype }}'].submit();">
+                    <button
+                        class="btn btn-icon btn-sm {{ data['search']['is_deleted'] == 1 ? "btn-danger" : "btn-ghost-danger" }} me-1 me-xl-2 px-1"
+                        type="button"
+                        title="{{ __('Show the trashbin') }}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        onclick="toogle('is_deleted','','',''); {{ submit_search_form }};"
+                    >
                         <i class="ti {{ data['search']['is_deleted'] == 1 ? "ti-checkbox" : "ti-square" }}"></i>
                         <span class="d-flex align-bottom">
                             <i class="ti ti-trash"></i>
@@ -169,10 +204,19 @@
                 {% endif %}
 
                 {% if may_be_unpublished %}
-                    <button class="btn btn-icon btn-sm {{ data['search']['unpublished'] == 1 ? "btn-warning" : "btn-ghost-warning" }} me-1 me-xl-2 px-1" type="button"
-                            title="{{ __('Show unpublished') }}" data-bs-toggle="tooltip" data-bs-placement="top"
-                            onclick="toogle('unpublished','','',''); document.forms['searchform{{ normalized_itemtype }}'].submit();">
-                        <i class="ti {{ data['search']['unpublished'] == 1 ? "ti-checkbox" : "ti-square" }}"></i>
+                    {% set show_unpublished = data['search']['unpublished'] == 1 %}
+                    <button
+                        class="btn btn-icon btn-sm {{ show_unpublished ? "btn-warning" : "btn-ghost-warning" }} me-1 me-xl-2 px-1"
+                        type="button"
+                        title="{{ __('Show unpublished') }}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        onclick="toogle('unpublished','','',''); {{ submit_search_form }};"
+                    >
+                        <i
+                            class="ti {{ show_unpublished ? "ti-checkbox" : "ti-square" }}"
+                            data-testid="unpublished-{{ show_unpublished ? "on" : "off" }}"
+                        ></i>
                         <span class="d-flex align-bottom">
                             <i class="ti ti-eye-off"></i>
                         </span>

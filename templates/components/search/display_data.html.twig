@@ -41,8 +41,12 @@
 
 {# Remove namespace separators for use in HTML attributes #}
 {% set normalized_itemtype = itemtype|replace({'\\': ''}) %}
+{% set as_map = data['search']['as_map'] == 1 %}
 
-<div class="card search-card">
+<div
+    class="card search-card"
+    data-testid="search-format-{{ as_map ? "map" : "table" }}"
+>
     {% if not hide_controls %}
         {% if data['display_type'] == constant('Search::GLOBAL_SEARCH') %}
             <div class="card-header d-flex justify-content-between search-header">
