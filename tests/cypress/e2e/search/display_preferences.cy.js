@@ -143,6 +143,9 @@ describe('Display preferences', () => {
             // an arbitrary amount of time.
             // eslint-disable-next-line cypress/no-unnecessary-waiting
             cy.wait(800);
+
+            // Reseting the alias here seems to make the test less flaky
+            createIframeBodyAlias();
         }
 
         cy.get('@iframeBody').find('#tabspanel-select').select(name);
